@@ -2,303 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BA62837DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004B52837DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgJEObo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:31:44 -0400
-Received: from mxout04.lancloud.ru ([89.108.124.63]:52068 "EHLO
-        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgJEObo (ORCPT
+        id S1726431AbgJEOcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgJEOcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:31:44 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 95CDE2153C1B
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Date:   Mon, 5 Oct 2020 17:31:36 +0300
-From:   Elvira Khabirova <e.khabirova@omprussia.ru>
-To:     <op-tee@lists.trustedfirmware.org>
-CC:     <jens.wiklander@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <k.karasev@omprussia.ru>, <s.shtylyov@omprussia.ru>,
-        <vesa.jaaskelainen@vaisala.com>
-Subject: [PATCH v3] tee: add support for application-based session login
- methods
-Message-ID: <20201005173136.6c220768@akathisia>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 5 Oct 2020 10:32:12 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F9AC0613CE;
+        Mon,  5 Oct 2020 07:32:11 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h20so686331lji.9;
+        Mon, 05 Oct 2020 07:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xVnmPbE/rqcB+pAcWmyPmrjxEQuPQzT1FzRcPGWWoLk=;
+        b=fo7miRmOixdC5jw9TnGWy9aXsWbHOKEzF10iOkZ+BdvyhtfIF7VX9aCmxebMJYIHx3
+         ye8w6uneRWisUJspcvjcOZF7FNZ9gUWxIynBKkfpkhgHUpr9dbQ7cad+qD97PyXukiyR
+         SPDM8d3ZsbzJmGTdh2gb7snYenOlpq3e5EGlZjRYsZ77eIgI8pzh1SnYVsnNCaddzmY5
+         INJfDW6X4h0a5q0qbfdFtff9wT667SCRMhNsxaaG4uT758xTbvwGt1cXH8AxZue5gNd5
+         3axLJkbZvJcsEqo4V58HiFfJ5nyIYSj1VFyjM+d20khw+p4ZqOxg5auUpmTlTbFuZcIO
+         XNEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xVnmPbE/rqcB+pAcWmyPmrjxEQuPQzT1FzRcPGWWoLk=;
+        b=eDPhTWlaX+4S5joHqtUsBZdlPDbmYJawEWGC+sd5CWu1//HOW7wWr2nUfWm1g8JkAk
+         jvmFsYxm1+SyyTIor+7AAGjTSO47n6V/SpBfQEoFOJ3V+okui7NEatOYuAlu+I09qoQp
+         WYPpThOlaIO9TT1jDlt6YhzA+NNmLnpkGOg6ioSHj8OWz211H+guceCDkiagYz4qPNVV
+         kIucfcNHBW32phf/3YIoHwUB7u8cGOKKiR1lDq5i2KE4aivVE2+Q3LxFT1cjZGzKNCI2
+         yH9SK/bf1uOS4WyP5ia0A5Jfk6wwsYn0GuqZ+q+aA4eK65O9EYEoqdim3JVHbgZuze7F
+         kluQ==
+X-Gm-Message-State: AOAM53072YkzZknEtusOXNzAlMiWw4j2i9I51p1Ta90ashkLgJpM46cu
+        GJcoZN8cQHUAxCMdiOhpzYo=
+X-Google-Smtp-Source: ABdhPJy79M0n3h6yKbZzSDkv0hXwaNMwCRiHXmL7YJym18KallJlj1WvZREDzMPnMIRhugJMm5IFYQ==
+X-Received: by 2002:a2e:99c1:: with SMTP id l1mr4360467ljj.95.1601908329479;
+        Mon, 05 Oct 2020 07:32:09 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id c19sm2801125lfc.222.2020.10.05.07.32.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 07:32:08 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] dt-bindings: Add vendor prefix for Ouya Inc.
+To:     Peter Geis <pgwipeout@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+References: <20201004133114.845230-1-pgwipeout@gmail.com>
+ <20201004133114.845230-3-pgwipeout@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0e6cca03-d881-d8e4-a05d-2850dc5339bb@gmail.com>
+Date:   Mon, 5 Oct 2020 17:32:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [89.255.69.56]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1903.lancloud.ru (fd00:f066::73)
+In-Reply-To: <20201004133114.845230-3-pgwipeout@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GP TEE Client API in addition to login methods already supported
-in the kernel also defines several application-based methods:
-TEEC_LOGIN_APPLICATION, TEEC_LOGIN_USER_APPLICATION, and
-TEEC_LOGIN_GROUP_APPLICATION.
+04.10.2020 16:31, Peter Geis пишет:
+> Ouya is a defunct company from 2012 to 2015.
+> They produced a single device, the Ouya game console.
+> In 2015 they were purchased by Razer Inc. and the Ouya was discontinued.
+> All Ouya services were shuttered in 2019.
+> 
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-It specifies credentials generated for TEEC_LOGIN_APPLICATION as only
-depending on the identity of the program, being persistent within one
-implementation, across multiple invocations of the application
-and across power cycles, enabling them to be used to disambiguate
-persistent storage. The exact nature is REE-specific.
+Please note that your s-b tag always should be the last line of the
+commit message. This is not important, so no need to make v4 because of
+that.
 
-As the exact method of generating application identifier strings may
-vary between vendors, setups and installations, add two suggested
-methods and an exact framework for vendors to extend upon.
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 9a5ab7b94789..367dd79c95f6 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -786,6 +786,8 @@ patternProperties:
+>      description: Ortus Technology Co., Ltd.
+>    "^osddisplays,.*":
+>      description: OSD Displays
+> +  "^ouya,.*":
+> +    description: Ouya Inc.
+>    "^overkiz,.*":
+>      description: Overkiz SAS
+>    "^ovti,.*":
+> 
 
-Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
----
-Jens, do you have any advice on finding more reviewers for this?
-
-Changes in v3:
-- Remove free_app_id() and replace it with calls to kfree().
-
-Changes in v2:
-- Rename some functions and variables to make them shorter.
-- Include linux/security.h unconditionally.
-- Restructure error handling in tee_session_calc_client_uuid().
-
- drivers/tee/Kconfig    |  29 ++++++++++
- drivers/tee/tee_core.c | 126 ++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 147 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
-index e99d840c2511..4cd6e0d2aad5 100644
---- a/drivers/tee/Kconfig
-+++ b/drivers/tee/Kconfig
-@@ -11,6 +11,35 @@ config TEE
- 	  This implements a generic interface towards a Trusted Execution
- 	  Environment (TEE).
- 
-+choice
-+	prompt "Application ID for client UUID"
-+	depends on TEE
-+	default TEE_APPID_PATH
-+	help
-+	  This option allows to choose which method will be used to generate
-+	  application identifiers for client UUID generation when login methods
-+	  TEE_LOGIN_APPLICATION, TEE_LOGIN_USER_APPLICATION
-+	  and TEE_LOGIN_GROUP_APPLICATION are used.
-+	  Please be mindful of the security of each method in your particular
-+	  installation.
-+
-+	config TEE_APPID_PATH
-+		bool "Path-based application ID"
-+		help
-+		  Use the executable's path as an application ID.
-+
-+	config TEE_APPID_SECURITY
-+		bool "Security extended attribute based application ID"
-+		help
-+		  Use the executable's security extended attribute as an application ID.
-+endchoice
-+
-+config TEE_APPID_SECURITY_XATTR
-+	string "Security extended attribute to use for application ID"
-+	depends on TEE_APPID_SECURITY
-+	help
-+	  Attribute to be used as an application ID (with the security prefix removed).
-+
- if TEE
- 
- menu "TEE drivers"
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index 64637e09a095..3626ce0d9bd7 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -7,9 +7,12 @@
- 
- #include <linux/cdev.h>
- #include <linux/cred.h>
-+#include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/idr.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/security.h>
- #include <linux/slab.h>
- #include <linux/tee_drv.h>
- #include <linux/uaccess.h>
-@@ -21,7 +24,7 @@
- 
- #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
- 
--#define TEE_UUID_NS_NAME_SIZE	128
-+#define TEE_UUID_NS_NAME_SIZE	PATH_MAX
- 
- /*
-  * TEE Client UUID name space identifier (UUIDv4)
-@@ -125,6 +128,65 @@ static int tee_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+#ifdef CONFIG_TEE_APPID_SECURITY
-+static const char *get_app_id(void **data)
-+{
-+	struct file *exe_file;
-+	const char *name = CONFIG_TEE_APPID_SECURITY_XATTR;
-+	int len;
-+
-+	exe_file = get_mm_exe_file(current->mm);
-+	if (!exe_file)
-+		return ERR_PTR(-ENOENT);
-+
-+	if (!exe_file->f_inode) {
-+		fput(exe_file);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	/*
-+	 * An identifier string for the binary. Depends on the implementation.
-+	 * Could be, for example, a string containing the application vendor ID,
-+	 * or the binary's signature, or its hash and a timestamp.
-+	 */
-+	len = security_inode_getsecurity(exe_file->f_inode, name, data, true);
-+	if (len < 0)
-+		return ERR_PTR(len);
-+
-+	fput(exe_file);
-+
-+	return *data;
-+}
-+#endif /* CONFIG_TEE_APPID_SECURITY */
-+
-+#ifdef CONFIG_TEE_APPID_PATH
-+static const char *get_app_id(void **data)
-+{
-+	struct file *exe_file;
-+	char *path;
-+
-+	*data = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-+	if (!*data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	exe_file = get_mm_exe_file(current->mm);
-+	if (!exe_file) {
-+		kfree(*data);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	path = file_path(exe_file, *data, TEE_UUID_NS_NAME_SIZE);
-+	if (IS_ERR(path)) {
-+		kfree(*data);
-+		return path;
-+	}
-+
-+	fput(exe_file);
-+
-+	return path;
-+}
-+#endif /* CONFIG_TEE_APPID_PATH */
-+
- /**
-  * uuid_v5() - Calculate UUIDv5
-  * @uuid: Resulting UUID
-@@ -197,6 +259,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	gid_t ns_grp = (gid_t)-1;
- 	kgid_t grp = INVALID_GID;
- 	char *name = NULL;
-+	void *app_id_data = NULL;
-+	const char *app_id = NULL;
- 	int name_len;
- 	int rc;
- 
-@@ -217,6 +281,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	 * For TEEC_LOGIN_GROUP:
- 	 * gid=<gid>
- 	 *
-+	 * For TEEC_LOGIN_APPLICATION:
-+	 * app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_USER_APPLICATION:
-+	 * uid=<uid>:app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_GROUP_APPLICATION:
-+	 * gid=<gid>:app=<application id>
- 	 */
- 
- 	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-@@ -227,10 +299,6 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	case TEE_IOCTL_LOGIN_USER:
- 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
- 				    current_euid().val);
--		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
--			rc = -E2BIG;
--			goto out_free_name;
--		}
- 		break;
- 
- 	case TEE_IOCTL_LOGIN_GROUP:
-@@ -243,10 +311,49 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 
- 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x",
- 				    grp.val);
--		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
--			rc = -E2BIG;
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_APPLICATION:
-+		app_id = get_app_id(&app_id_data);
-+		if (IS_ERR(app_id)) {
-+			rc = PTR_ERR(app_id);
-+			goto out_free_name;
-+		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
-+				    app_id);
-+		kfree(app_id_data);
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_USER_APPLICATION:
-+		app_id = get_app_id(&app_id_data);
-+		if (IS_ERR(app_id)) {
-+			rc = PTR_ERR(app_id);
- 			goto out_free_name;
- 		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
-+				    current_euid().val, app_id);
-+		kfree(app_id_data);
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
-+		memcpy(&ns_grp, connection_data, sizeof(gid_t));
-+		grp = make_kgid(current_user_ns(), ns_grp);
-+		if (!gid_valid(grp) || !in_egroup_p(grp)) {
-+			rc = -EPERM;
-+			goto out_free_name;
-+		}
-+
-+		app_id = get_app_id(&app_id_data);
-+		if (IS_ERR(app_id)) {
-+			rc = PTR_ERR(app_id);
-+			goto out_free_name;
-+		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
-+				    grp.val, app_id);
-+		kfree(app_id_data);
- 		break;
- 
- 	default:
-@@ -254,7 +361,10 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 		goto out_free_name;
- 	}
- 
--	rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
-+	if (name_len < TEE_UUID_NS_NAME_SIZE)
-+		rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
-+	else
-+		rc = -E2BIG;
- out_free_name:
- 	kfree(name);
- 
--- 
-2.28.0
-
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
