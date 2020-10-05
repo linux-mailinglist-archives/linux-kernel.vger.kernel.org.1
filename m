@@ -2,163 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F110528372C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543BF283731
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgJEOBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgJEOBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:01:47 -0400
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8B8F20874;
-        Mon,  5 Oct 2020 14:01:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601906507;
-        bh=IUw5gxZqc6qGN8i7SUlEvnd10BdprX3XZZ7hMxScpnk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GzNUlIuZmK3JFaRwcrqqCiBdtkQZrtEIxiqqqOIk4e9S4OC2mZS5Z7zfyoCFtFSla
-         8RPq8cKrW8mVJ0UUjY2JvtRDq90G3pns+FEYImKtRIP5TmXrfpL9Dtuj72ITT/Hujz
-         RGF9jdM1bDBasP7tJolcoRMGshT41F+oRXYi6YUM=
-Received: by mail-ed1-f50.google.com with SMTP id b12so9428239edz.11;
-        Mon, 05 Oct 2020 07:01:46 -0700 (PDT)
-X-Gm-Message-State: AOAM532iYqutUlOypqsqYW5Hu1dqIkRhNUAyBlHKu6D1hXuSTPfA6WYq
-        hB/T7pnxly/nSy4BuKlqAS9Pn3rlUszOo8Rka6g=
-X-Google-Smtp-Source: ABdhPJx2dqmovjzOfxT+9LW1emswS+vMo7h9KFCExlRj/HzmUhCvFZriFFYCrlMs2ZlhjNq3Cv9NtLZoA7y7WCs9+g4=
-X-Received: by 2002:aa7:d1d5:: with SMTP id g21mr17816040edp.348.1601906505321;
- Mon, 05 Oct 2020 07:01:45 -0700 (PDT)
+        id S1726432AbgJEOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgJEOCE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:02:04 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2809BC0613CE;
+        Mon,  5 Oct 2020 07:02:04 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 184so2347408lfd.6;
+        Mon, 05 Oct 2020 07:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X/w3CEZ9lodjlQSct4mip6uwJZ2zGkN0UfUIv/VK97Q=;
+        b=sEoyV/al+Rf3T8SXz6/2wHQ/oV7dBin9RovrWz0nHD2V6hhFwxVbYDTdwoBGlPwhjg
+         iErhE+s88QqAEkJ25gPTkKpLqDpGXzcSkjkSF+ktNhG3muw0uzqM+WN32ZMZJ+qEE9il
+         kVL9SXhCGbm9dLUOkiH/pXP4igo6smVOMj5dhbRRnrTH0oxIgV/Mkcr1UWnfotMNdJeP
+         YZ5CAEYT3bCo60te+2Hj8cxTFa+aye2sAdUhCtSE6Q0Heazk4zFs1NqPfGmEOenjxueN
+         9WF6u1Npl1IzQBhkrVN/sEnwyQOCzCo/GVdGq4oLkifxAmWxKHf6Jr+1u86/+9Vfu+Ny
+         44uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X/w3CEZ9lodjlQSct4mip6uwJZ2zGkN0UfUIv/VK97Q=;
+        b=rGXur0j+IFbdobq9hkuhICB5ZugtrVV+pWwx0Fk45eBxrtVruACpn5RmtdyqKLV7Dg
+         YjGeBMqwEg1lWZxGCzh/jJwNwF7uvUg7mV6E9KAfyXiNuTxZyHnkDPe1pzWfdRXKucQn
+         VFTjv2pFjdylpDhNY7XjOp5k+cIuQ/5meoSXdyxD7IGqFL5V2NZMoECZSABMI+7wOi6U
+         im1F/2AoiKpqf73i4LpDGAbD9aCp23EDY7aJx36cLzMejXFPRZkF3Xc3i4tf2RPAHpbN
+         GSJyGl0L6/t9PC8s5RtGVRySf0mGBGPfzZq+Htbj+PDeHszavCLPW48ZxhynBT6l9H0g
+         g+rw==
+X-Gm-Message-State: AOAM533PumkW5pFHZ6Hthh7swtQXf5BKrCitPAWay0C4AzaUlIxUjv9A
+        3iaz4IFYDvD0IkoxwSFJVpKVeQQU2z8=
+X-Google-Smtp-Source: ABdhPJzUzoij0wOhojrrQPR0ksGCPMNd0wMZDNgXMEiEgucIAuF9OTkcpjE8MHKO2jkCY/L0PYie8g==
+X-Received: by 2002:a19:8488:: with SMTP id g130mr178362lfd.424.1601906522326;
+        Mon, 05 Oct 2020 07:02:02 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id d6sm471414lja.63.2020.10.05.07.02.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 07:02:01 -0700 (PDT)
+Subject: Re: [PATCH v3 1/3] ARM: tegra: Add device-tree for Ouya
+To:     Peter Geis <pgwipeout@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201004133114.845230-1-pgwipeout@gmail.com>
+ <20201004133114.845230-2-pgwipeout@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b3b99578-73c8-17e1-81ff-4b3fdf1b58f3@gmail.com>
+Date:   Mon, 5 Oct 2020 17:02:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CGME20201002192215eucas1p2c1d2baebfe2a9caa11d88175a2899fea@eucas1p2.samsung.com>
- <20201002192210.19967-1-l.stelmach@samsung.com> <20201002192210.19967-2-l.stelmach@samsung.com>
-In-Reply-To: <20201002192210.19967-2-l.stelmach@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 5 Oct 2020 16:01:33 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdGS214XPYXb32QAJgY2jBNgcceb0GjD2XVJJRZZDY84g@mail.gmail.com>
-Message-ID: <CAJKOXPdGS214XPYXb32QAJgY2jBNgcceb0GjD2XVJJRZZDY84g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: net: Add bindings for AX88796C SPI
- Ethernet Adapter
-To:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201004133114.845230-2-pgwipeout@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 at 21:22, =C5=81ukasz Stelmach <l.stelmach@samsung.com> =
-wrote:
->
-> Add bindings for AX88796C SPI Ethernet Adapter.
->
-> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  .../bindings/net/asix,ax88796c-spi.yaml       | 76 +++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
->  2 files changed, 78 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c-s=
-pi.yaml
->
-> diff --git a/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml=
- b/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
-> new file mode 100644
-> index 000000000000..50a488d59dbf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
-> @@ -0,0 +1,76 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/asix,ax88796c-spi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+04.10.2020 16:31, Peter Geis пишет:
+> +	thermal-zones {
+> +		cpu_thermal: cpu-thermal {
+> +			polling-delay = <5000>;
+> +			polling-delay-passive = <5000>;
 > +
-> +title: ASIX AX88796C SPI Ethernet Adapter
+> +			thermal-sensors = <&cpu_temp 1>;
 > +
-> +allOf:
-> +  - $ref: ethernet-controller.yaml#
-> +
-> +description: |
-> +  ASIX AX88796C is an Ethernet controller with a built in PHY. This
-> +  describes SPI mode of the chip.
-> +
-> +  The node for this driver must be a child node of a SPI controller, hen=
-ce
-> +  all mandatory properties described in ../spi/spi-bus.txt must be speci=
-fied.
-> +
-> +maintainers:
-> +  - =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: asix,ax99796c-spi
-> +
-> +  reg:
-> +    description:
-> +      SPI device address.
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 40000000
-> +
-> +  interrupts:
-> +    description:
-> +     GPIO interrupt to which the chip is connected.
-> +    maxItems: 1
-> +
-> +  interrupt-parrent:
-> +    description:
-> +      A phandle of an interrupt controller.
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    description:
-> +      A GPIO line handling reset of the chip. As the line is active low,
-> +      it should be marked GPIO_ACTIVE_LOW.
-> +    maxItems: 1
-> +
-> +  local-mac-address: true
-> +
-> +  mac-address: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-max-frequency
-> +  - interrupts
-> +  - interrupt-parrent
-> +  - reset-gpios
-> +
-> +examples:
-> +  # Artik5 eval board
-> +  - |
-> +    ax88796c@0 {
-> +        compatible =3D "asix,ax88796c";
-> +        local-mac-address =3D [00 00 00 00 00 00]; /* Filled in by a boo=
-tloader */
-> +        interrupt-parent =3D <&gpx2>;
-> +        interrupts =3D <0 IRQ_TYPE_LEVEL_LOW>;
-> +        spi-max-frequency =3D <40000000>;
-> +        reg =3D <0x0>;
-> +        reset-gpios =3D <&gpe0 2 GPIO_ACTIVE_LOW>;
+> +			trips {
+> +				cpu_alert0: cpu-alert0 {
+> +					temperature = <50000>;
+> +					hysteresis = <10000>;
 
-This and IRQ won't compile without defines, which Rob's robot just
-pointed out. It seems you did not test the bindings you post.
+Hello, Peter!
 
-Best regards,
-Krzysztof
+A day ago I was tuning thermal zones for Nexus 7 because found that the
+current variant is a bit too unpractical. In particular temperature
+hysteresis should be small, otherwise cpufreq could get throttled
+enormously to the point that device becomes unusable. This is an
+active-cooling zone, but it looks to me that hysteresis is a bit too
+high and should make Ouya much noisier than it could be.
+
+I suggest to try to set hysteresis to 0.2C here, i.e. hysteresis = <200>.
+
+I also suggest to bump the temperature threshold to 55C in order to
+ignore temporal temperature spikes because CPU temp should be about 40C
+during idle and then it may raise quickly for a brief moments during
+average usage.
+
+> +					type = "active";
+> +				};
+> +				cpu_alert1: cpu-alert1 {
+> +					temperature = <70000>;
+> +					hysteresis = <5000>;
+> +					type = "passive";
+> +				};
+
+And here to 0.2C as well.
+
+> +				cpu_crit: cpu-crit {
+> +					temperature = <90000>;
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+
+The critical zone perhaps should be fine as-is.
