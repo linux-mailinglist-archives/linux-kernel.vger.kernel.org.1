@@ -2,198 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2703928333B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C743128333C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgJEJaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        id S1726128AbgJEJa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbgJEJaV (ORCPT
+        with ESMTP id S1725910AbgJEJa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:30:21 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C6CC0613CE;
-        Mon,  5 Oct 2020 02:30:20 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id b12so8499409edz.11;
-        Mon, 05 Oct 2020 02:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ePZkaljwe6pYtW+StSXkgUMc7x0Nnw0FBYjjoTVvbrs=;
-        b=ZogVZqI0lOvZkQfVc4+275vuy4WtjN891+TWais4csUNd3KBxZu4Wt6YF0nNtiICCe
-         ZNoeIMhZ1Egq4KiKO107ee47HyqepdcZoNi2KXL/i7qZpFuj1JqPvMN2l3VqPh7tDT2q
-         vrxgEF+OmBH4lCnwZ549eDWTmne2Xn1KsYCBoJj2BiRsRkOKGTx+uVp0LDcCK0EMU+mK
-         D7EuqMtGex910dXss17cgFlBX7R/w89nHGx3vLT+ti8soMOadED7CsrKZtkqKzGfCjcU
-         ERlZbneUfXp8yT6gzs/c/w5htutG0p0tU7O3ZS/Ml1gzu/BuHkZ7DKFiQxORS1K53rjE
-         GlxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ePZkaljwe6pYtW+StSXkgUMc7x0Nnw0FBYjjoTVvbrs=;
-        b=mr5iGMQ9w87JD2Zh7Yh57C5VR03+W1vUrQ95P0Yypzmv9biNsa+NWmKVgzLw5a0KhN
-         bbDK2TXkgPfnKg5h4BYf6X/remCVKU2zrz/f2oZQutbK3YNobfofbFLJmPp0fAAEaH1F
-         7cK4K9cICRrJbiIO0yq87l0IgnTLTNFPcNTejmcB9q0RcA/65AMmuiyVA8LvLkWyGoN0
-         7EXlSlvrPH8E5BUSU9VHTj1lWNVVTJ2pORbfiQMo8kfds3oJdNaXo8UXkaL5MzJXeArH
-         mwO0sHrMDpiFQh0FCfTaCRTeoiV2ho7M/D2sxSlU9sW3eJjR/piTy8RiIc6rL5kgc5+a
-         AiHA==
-X-Gm-Message-State: AOAM531ybXClDkBTS8n09p5rukdPiDcpXgJ4FaeS9rRhyYgl9F4cfgwA
-        efJBmKfICOo/PdwhjW7nQME=
-X-Google-Smtp-Source: ABdhPJz2i+YrMbd1UKBch4+iSIOa3IOCRkMWx1costLrg/X1bXQYMVaFDWpCve04LneyiioSUDt/2Q==
-X-Received: by 2002:a50:b745:: with SMTP id g63mr5685774ede.181.1601890219192;
-        Mon, 05 Oct 2020 02:30:19 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n25sm2729579ejd.114.2020.10.05.02.30.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:30:17 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:30:16 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Lars Poeschel <poeschel@lemonage.de>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
-Message-ID: <20201005093016.GD425362@ulmo>
-References: <20200929121953.2817843-1-poeschel@lemonage.de>
- <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
- <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
- <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
- <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
- <20201001112449.GA2364834@kroah.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mSxgbZZZvrAyzONB"
-Content-Disposition: inline
-In-Reply-To: <20201001112449.GA2364834@kroah.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+        Mon, 5 Oct 2020 05:30:29 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6A2C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:30:28 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id c9WR230024C55Sk069WRhV; Mon, 05 Oct 2020 11:30:25 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kPMp6-0003Vi-Uf
+        for linux-kernel@vger.kernel.org; Mon, 05 Oct 2020 11:30:24 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kPMp6-0004BK-SR
+        for linux-kernel@vger.kernel.org; Mon, 05 Oct 2020 11:30:24 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v5.9-rc8
+Date:   Mon,  5 Oct 2020 11:30:24 +0200
+Message-Id: <20201005093024.16032-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Below is the list of build error/warning regressions/improvements in
+v5.9-rc8[1] compared to v5.8[2].
 
---mSxgbZZZvrAyzONB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Summarized:
+  - build errors: +6/-8
+  - build warnings: +59/-30
 
-On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
-> > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> > > Hello,
-> > >=20
-> > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
-> > > Cc:.
-> > >=20
-> > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
-> > > > thank you for your review!
-> > > >=20
-> > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-K=C3=B6nig wro=
-te:
-> > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wr=
-ote:
-> > > > > > From: Lars Poeschel <poeschel@lemonage.de>
-> > > > > >=20
-> > > > > > This adds a class to exported pwm devices.
-> > > > > > Exporting a pwm through sysfs did not yield udev events. The
-> > > > >=20
-> > > > > I wonder what is your use-case here. This for sure also has a pla=
-ce to
-> > > > > be mentioned in the commit log. I suspect there is a better way to
-> > > > > accomplish you way.
-> > > >=20
-> > > > Use-case is to be able to use a pwm from a non-root userspace proce=
-ss.
-> > > > I use udev rules to adjust permissions.
-> > >=20
-> > > Hmm, how do you trigger the export? Without being aware of all the
-> > > details in the sysfs code I would expect that the exported stuff is
-> > > available instantly once the write used to export the PWM is complete=
-d.
-> > > So changing the permissions can be done directly after triggering the
-> > > export in the same process.
-> >=20
-> > The export is triggered through the userspace process itself. Why can it
-> > do this ? Because there is another udev rule, that changes permissions
-> > when a pwmchip appears.
-> > Then I'd like to have the second udev rule, that changes permissions on
-> > the freshly exported pwm. The userspace process can't do this.
-> > You are right I could propably do everything from within udev: If a
-> > pwmchip appears, export certain pwms and right away change their
-> > permissions. It does not also not feel right. It'd require knowledge
-> > from the userspace application to be mapped to udev.
->=20
-> The way the kernel code is now, yes, you will not have any way to
-> trigger it by userspace as the kernel is creating a "raw" struct device
-> that isn't assigned to anything.  That is what needs to be fixed here.
->=20
-> > > Out of interest: What do you use the pwm for? Isn't there a suitable
-> > > kernel driver that can do the required stuff? Compared to the kernel-=
-API
-> > > the sysfs interface isn't atomic. Is this an annoyance?
-> >=20
-> > Use-case is generating a voltage from the pwm. This voltage is used to
-> > signal different states and does not change very often. This is
-> > absolutely not annoying that this is not atomic. We just change the duty
-> > cycle on the fly. Everything else is configured one time at startup.
-> > I'd call what I need pwm-dac. I could not find a ready to use driver.
-> > Maybe I could misuse some kernel driver for this. Maybe I could use
-> > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
-> > there is even a userspace facing part for this, but this is not
-> > devicetree ready.
-> > ...and the worst, please don't blame me: The application is java, so
-> > ioctl is a problem.
->=20
-> I thought java could do ioctls, otherwise how would it ever be able to
-> talk to serial ports?
->=20
-> Anyway, this needs to be fixed in the kernel...
+JFYI, when comparing v5.9-rc8[1] to v5.9-rc7[3], the summaries are:
+  - build errors: +3/-6
+  - build warnings: +0/-9
 
-If atomicity was a problem, we could potentially add a mechanism to the
-sysfs interface to enable that. I don't see a good way of doing that in
-a single file, since that works against how sysfs is designed. But one
-thing I could imagine is adding a file ("lock", or whatever you want to
-call it) that you can use for atomic fencing:
+Happy fixing! ;-)
 
-	$ echo 1 > lock # locks the hardware state
-	$ echo 100 > period
-	$ echo 50 > duty_cycle
-	$ echo 0 > lock # flushes state to hardware
+Thanks to the linux-next team for providing the build service.
 
-But it sounds like that's not even a big issue.
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/549738f15da0e5a00275977623be199fbbf7df50/ (all 192 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bcf876870b95592b52519ed4aafcf9d95999bc9c/ (all 192 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/a1b8638ba1320e6684aa98233c15255eb803fac7/ (all 192 configs)
 
-However, given the use-case description, it sounds to me like
-pwm-regulator would be a better candidate to solve this, because it's
-purpose is literally to generate a voltage using a PWM. There is a
-device tree binding for pwm-regulator, so this should work there as
-well.
 
-Lars, what exactly are the problems that you're running into when trying
-to use pwm-regulator with device tree?
+*** ERRORS ***
 
-Thierry
+6 error regressions:
+  + /kisskb/src/drivers/gpio/gpiolib-cdev.c: error: implicit declaration of function 'in_ia32_syscall' [-Werror=implicit-function-declaration]:  => 430:6
+  + /kisskb/src/drivers/gpio/gpiolib-cdev.c: error: unknown type name 'compat_u64':  => 432:4
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 676:2
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 640:2
+  + error: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!:  => N/A
+  + error: rk3399_gru_sound.c: relocation truncated to fit: R_NDS32_WORD_9_PCREL_RELA against `.text':  => (.text+0x6a8)
 
---mSxgbZZZvrAyzONB
-Content-Type: application/pgp-signature; name="signature.asc"
+8 error improvements:
+  - /kisskb/src/arch/powerpc/include/asm/mmu.h: error: unknown type name 'next_tlbcam_idx': 139:22 => 
+  - /kisskb/src/arch/sparc/include/asm/trap_block.h: error: 'NR_CPUS' undeclared here (not in a function): 54:39 => 
+  - error: modpost: "devm_ioremap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
+  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+  - error: modpost: "devm_platform_ioremap_resource" [drivers/iio/adc/adi-axi-adc.ko] undefined!: N/A => 
+  - error: modpost: "devm_platform_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!: N/A => 
+  - error: modpost: "devm_platform_ioremap_resource" [drivers/staging/clocking-wizard/clk-xlnx-clock-wizard.ko] undefined!: N/A => 
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9656UACgkQ3SOs138+
-s6HD5xAAvnyVRSm0tP6ShHAqbfvbGKSqbPUTqlWsUE+wjnExEvJX4PSDgcs421EZ
-wUN9RpVomYodDxziajQul9gfgLM850jPwVHu5kZq+Jf5+zC3dPblZ5jJKhv6K2XW
-36DniEVx7D571P1cqmuGKXPu+NRt3sXOrASZAQRheKGwVYp1S6i5VZIqTwRNsN9b
-0jb3uP9e86DipQ8vhd7QXreXMMYJfeqo0MJoGZ3sJoVFUd8ZVv1v3hBJyVgrmuew
-33tAnCejJm2Vgkpp4UO/mXunx3a302e5XIICBJCSRxayVZ+bh3wJ2Tnrwp3nc/KP
-D6FKteu4eEJ6KT6b5Q6kryamUSffGiUXdpdy3uDoNj8zmKvBubQ9PjVn2XKDdD/A
-8yb6iMS0+nYbNfae5pmDmCLyzvtpu58BdF7j0ABy/G472V5YtQNntmOyDsgrzFOP
-ySQjhjf/k+ICoLpedv6vTxf1kSV2Pzt5eXCId8gjO9aGmT2PdhC0+Lmu/JhhHOSZ
-fpnybB0Sc3Tg8iEE2nZThZyKhWhXKfUxDlF/BPQWCPGHn0d9Gsh6moS/5ER665Cl
-mxmBFjlWZIc1PCWQEYADOCZb0btYXj4bGQKozp+IH7Iay/kbdMtPv39lrzXsgLr/
-3weuk1GzUjLJdhlMM+XV6VvfckzdXDruxc7iV4wNhEggH7z+Kmg=
-=mIRH
------END PGP SIGNATURE-----
+*** WARNINGS ***
 
---mSxgbZZZvrAyzONB--
+59 warning regressions:
+  + /kisskb/src/arch/arm/crypto/ghash-ce-glue.c: warning: passing argument 4 of 'pmull_ghash_update_p64' from incompatible pointer type:  => 67:44
+  + /kisskb/src/arch/arm/crypto/ghash-ce-glue.c: warning: passing argument 4 of 'pmull_ghash_update_p8' from incompatible pointer type:  => 69:43
+  + /kisskb/src/arch/arm/mach-omap1/board-ams-delta.c: warning: 'ams_delta_camera_power' defined but not used [-Wunused-function]:  => 462:12
+  + /kisskb/src/drivers/crypto/sa2ul.c: warning: (near initialization for 'ad.enc_eng') [-Wmissing-braces]:  => 1858:9, 957:9, 1585:9, 919:9, 971:9, 1845:9, 1569:9, 939:9, 1601:9
+  + /kisskb/src/drivers/crypto/sa2ul.c: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]:  => 1486:33
+  + /kisskb/src/drivers/crypto/sa2ul.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1858:9, 919:9, 1585:9, 957:9, 1569:9, 971:9, 1845:9, 939:9, 1601:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 2527:11, 2342:11
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2527:11, 2342:11
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 4094:11, 4138:11
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c: warning: missing braces around initializer [-Wmissing-braces]: 2714:8, 2712:8 => 2763:8, 2765:8, 4094:11, 4138:11
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: (near initialization for 'cmd.lock_hw') [-Wmissing-braces]:  => 36:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 36:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 1795:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1795:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 1200:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1200:9
+  + /kisskb/src/drivers/gpu/drm/rockchip/cdn-dp-core.c: warning: 'cdn_dp_resume' defined but not used [-Wunused-function]:  => 1124:12
+  + /kisskb/src/drivers/gpu/drm/xlnx/zynqmp_dp.c: warning: (near initialization for 'opts.mipi_dphy') [-Wmissing-braces]:  => 667:9
+  + /kisskb/src/drivers/gpu/drm/xlnx/zynqmp_dp.c: warning: missing braces around initializer [-Wmissing-braces]:  => 667:9
+  + /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: (near initialization for 'cs_counters.cs_counters') [-Wmissing-braces]:  => 282:9
+  + /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: missing braces around initializer [-Wmissing-braces]:  => 282:9
+  + /kisskb/src/drivers/net/ethernet/aurora/nb8800.h: warning: "TCR_DIE" redefined: 92 => 92, 92:0
+  + /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]:  => 62:8, 103:8
+  + /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: missing braces around initializer [-Wmissing-braces]:  => 62:8, 103:8
+  + /kisskb/src/drivers/staging/media/tegra-vde/vde.c: warning: 'tegra_vde_runtime_suspend' defined but not used [-Wunused-function]:  => 916:12
+  + /kisskb/src/drivers/tty/serial/sh-sci.c: warning: unused variable 'sport' [-Wunused-variable]:  => 2677:19
+  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.15' uses dynamic stack allocation:  => 298:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation:  => 8696:1
+  + /kisskb/src/lib/xxhash.c: warning: the frame size of 1616 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 236:1
+  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1584 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1393:1
+  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.59' uses dynamic stack allocation:  => 2293:1
+  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.58' uses dynamic stack allocation:  => 1992:1
+  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.57' uses dynamic stack allocation:  => 2361:1
+  + modpost: WARNING: modpost: EXPORT symbol "_mcount" [vmlinux] version generation failed, symbol will not be versioned.:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3570): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3588): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35a0): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35b8): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35d0): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x35e8): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3600): Section mismatch in reference from the variable qed_mfw_legacy_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3618): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3630): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3648): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3660): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3678): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x3690): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36a8): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36c0): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed.o(.data+0x36d8): Section mismatch in reference from the variable qed_mfw_ext_maps to the variable .init.rodata:qed_mfw_legacy_bb_100g:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x134): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x14c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x164): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x17c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x194): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1ac): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1c4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: lib/test_bitmap.o(.text.unlikely+0x58): Section mismatch in reference from the function bitmap_equal() to the variable .init.rodata:clump_exp:  => N/A
+  + warning: 140 bad relocations:  => N/A
+
+30 warning improvements:
+  - .config: warning: override: reassigning to symbol MIPS_CPS_NS16550_SHIFT: 12352, 12361, 12347 => 12470, 12456
+  - .config: warning: override: reassigning to symbol PPC_64K_PAGES: 12781 => 
+  - .config: warning: override: reassigning to symbol UML_NET_ETHERTAP: 4314, 4286 => 4320
+  - .config: warning: override: reassigning to symbol UML_NET_MCAST: 4319, 4291 => 4325
+  - .config: warning: override: reassigning to symbol UML_NET_SLIP: 4288, 4316 => 4322
+  - .config: warning: override: reassigning to symbol UML_NET_SLIRP: 4293, 4321 => 4327
+  - /kisskb/src/arch/m68k/include/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 122:3, 137:3, 79:22 => 122:3, 79:22
+  - /kisskb/src/arch/powerpc/kernel/head_40x.S: Warning: invalid register expression: 623 => 
+  - /kisskb/src/arch/sh/kernel/cpu/sh2/../../entry-common.S: Warning: overflow in branch to syscall_exit_work; converted into longer instruction sequence: 385, 388 => 
+  - /kisskb/src/arch/sh/kernel/cpu/sh2a/../../entry-common.S: Warning: overflow in branch to syscall_exit_work; converted into longer instruction sequence: 388, 385 => 
+  - /kisskb/src/arch/sh/kernel/cpu/sh3/../../entry-common.S: Warning: overflow in branch to syscall_exit_work; converted into longer instruction sequence: 388, 385 => 
+  - /kisskb/src/arch/sh/kernel/cpu/sh4/../sh3/../../entry-common.S: Warning: overflow in branch to syscall_exit_work; converted into longer instruction sequence: 385, 388 => 
+  - /kisskb/src/drivers/mailbox/imx-mailbox.c: warning: 'imx_mu_resume_noirq' defined but not used [-Wunused-function]: 611:12 => 
+  - /kisskb/src/drivers/mailbox/imx-mailbox.c: warning: 'imx_mu_runtime_resume' defined but not used [-Wunused-function]: 638:12 => 
+  - /kisskb/src/drivers/mailbox/imx-mailbox.c: warning: 'imx_mu_runtime_suspend' defined but not used [-Wunused-function]: 629:12 => 
+  - /kisskb/src/drivers/mailbox/imx-mailbox.c: warning: 'imx_mu_suspend_noirq' defined but not used [-Wunused-function]: 601:12 => 
+  - /kisskb/src/drivers/net/phy/mdio-cavium.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 113:48, 114:37 => 
+  - /kisskb/src/drivers/net/phy/mdio-octeon.c: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 48:3 => 
+  - /kisskb/src/drivers/sh/clk/cpg.c: warning: passing argument 1 of 'ioread16' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]: 46:18 => 
+  - /kisskb/src/drivers/sh/clk/cpg.c: warning: passing argument 1 of 'ioread16' discards 'const' qualifier from pointer target type: 46:18 => 
+  - /kisskb/src/drivers/sh/clk/cpg.c: warning: passing argument 1 of 'ioread32' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]: 51:18 => 
+  - /kisskb/src/drivers/sh/clk/cpg.c: warning: passing argument 1 of 'ioread32' discards 'const' qualifier from pointer target type: 51:18 => 
+  - /kisskb/src/drivers/sh/clk/cpg.c: warning: passing argument 1 of 'ioread8' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]: 41:17 => 
+  - /kisskb/src/drivers/sh/clk/cpg.c: warning: passing argument 1 of 'ioread8' discards 'const' qualifier from pointer target type: 41:17 => 
+  - /kisskb/src/include/linux/compiler_attributes.h: warning: statement will never be executed [-Wswitch-unreachable]: 201:41 => 
+  - /kisskb/src/lib/lz4/lz4hc_compress.c: warning: the frame size of 2144 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 579:1 => 
+  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1384 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1393:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.57' uses dynamic stack allocation: 2230:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.56' uses dynamic stack allocation: 1929:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.55' uses dynamic stack allocation: 2298:1 => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
