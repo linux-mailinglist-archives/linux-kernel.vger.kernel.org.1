@@ -2,157 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB11283467
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AB6283465
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgJEK7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726003AbgJEK71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:59:27 -0400
-Received: from coco.lan (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DE5B20774;
-        Mon,  5 Oct 2020 10:59:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601895566;
-        bh=zkJ+DHXy7q7U/z6Ji5VotkaUPd9ylktWsmGKNxhDIYc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hkgD5qroZ/qT4o892izj25+aOklBhSxTv96+V097oVdGNAb1IeZb0ZD/KDmw72FdS
-         W7QMuiNvsRjZYD6ms3j9uM8am5W5K8VeJd8TaRF34qRTv/P2CpmYBrBxCTsiqNtjil
-         Fkky8YQXoAcRBvoWD0aTk+etv0PS+6Ps8nZ03rNk=
-Date:   Mon, 5 Oct 2020 12:59:20 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 00/14] get rid of the remaining kernel-doc warnings when
- building the docs
-Message-ID: <20201005125920.27a7768d@coco.lan>
-In-Reply-To: <20201005125111.326ff7e2@coco.lan>
-References: <cover.1599732764.git.mchehab+huawei@kernel.org>
-        <20200910181208.GW6583@casper.infradead.org>
-        <20201005125111.326ff7e2@coco.lan>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726362AbgJEK70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:59:26 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:33405 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgJEK7Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:59:25 -0400
+Received: by mail-il1-f207.google.com with SMTP id e73so6938358ill.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 03:59:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=c9vd2UcblXQIBzNNLiatAPji5mQAzL0haYoV14rIOGU=;
+        b=gJIyJnBBJ8QX+D5TWOFBSNy2NFV35/ryrHJO21rLyXv0M+9eYEUZ+DBHic4yAxHOAA
+         BPmegV2mA8dg+45KqWjW96hc7uulVBy/lGLc8eerJ92NQMStb7y5CPUuk8sSGxm3LhcG
+         ZZsTcNWFM5gTphQ3Ps3LdlMtOMRQPa7GvXLkEi30+PJh8fJNm3fRZDAlRpV66sItQude
+         PTr0Jqz0CW2kTp68NmXAb8U978q/2M0tyufR4T6jb8Oakl4idyv613osw+egtjiJhiHr
+         aD29yetm5RugSr1OH/0FBJzcV4XWb56RXrjeH1lDVE8ey194beRjHX4kx9OI8DBMK+aZ
+         K3yw==
+X-Gm-Message-State: AOAM531Px21NoBlWBP07Ix3T5csQ7d34oRLeDJiZXcye16tihfnE70Gp
+        q/yG2nuhrUckdmc6fd6wFGXubmO9jE0KZOtdBLG0FVjjVqvZ
+X-Google-Smtp-Source: ABdhPJzAiJhD6tR1ZaTphNYg6sbm2z671lO6Vg5hBrz5SVvd29Mt5LBcNC2VC7to1fyCITMOzfUm2CA8HOGN8L/uH9z85yrTXM8F
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:c94d:: with SMTP id i13mr11957755ilq.102.1601895562933;
+ Mon, 05 Oct 2020 03:59:22 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 03:59:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fefa4f05b0ea5fcd@google.com>
+Subject: WARNING in handle_bug/usb_submit_urb
+From:   syzbot <syzbot+9b802f11efb574105ec5@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, eli.billauer@gmail.com,
+        gregkh@linuxfoundation.org, gustavoars@kernel.org,
+        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, oneukum@suse.com,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 5 Oct 2020 12:51:11 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+Hello,
 
-> Em Thu, 10 Sep 2020 19:12:08 +0100
-> Matthew Wilcox <willy@infradead.org> escreveu:
-> 
-> > On Thu, Sep 10, 2020 at 12:23:53PM +0200, Mauro Carvalho Chehab wrote:  
-> > > As described on its subject, this series finally get rid of all kernel-doc warnings.
-> > > 
-> > > With this series applied (plus my last series fixing other warnings), building
-> > > the docs is now clean[1] against next-20200909:    
-> > 
-> > Thanks, this has been a truly heroic effort.
-> > 
-> > I'd suggest that we change the kernel build to always run the CHKDOC
-> > instead of at W=1 (or rather, as the patch I just sent out demonstrates,
-> > not at all (oops)).  Otherwise you're just going to have to continue
-> > doing this.  
-> 
-> It sounds a good idea for me to run kernel-doc with W=1 - or even
-> better - with allyesconfig/allmodconfig (no matter if W=0/W=1/W=2).
-> 
-> > At some point, perhaps we can add some other warnings at W=1, like
-> > an EXPORT_SYMBOL of a function which doesn't have kernel-doc.  
-> 
-> Makes sense, but I suspect that supporting it is not too trivial.
-> 
-> I mean, a script checking for EXPORT_SYMBOL* should check not
-> only the C file, but also the included header files, as the
-> kernel-doc markup can be on one of its includes. 
-> 
-> An enhanced version of something like this:
-> 
-> </script>
-> #!/usr/bin/perl
-> 
-> my $file = shift or die "Need a file name";
-> 
-> my @files;
-> my @exports;
-> 
-> my $dir = $file;
-> $dir =~ s,[^\/]+$,,;
-> 
-> push @files, $file;
-> open IN, "<$file";
-> while (<IN>) {
-> 	push @exports, $1 if (m/^EXPORT_SYMBOL.*\(\s*(\S+)\s*\)/);
-> 	push @files, "include/$1" if (m/^\s*#\s*include\s+[\<](\S+)[\>]/);
-> 	push @files, "$dir/$1" if (m/^\s*#\s*include\s+[\"](\S+)[\"]/);
-> }
-> close IN;
-> 
-> my $doc;
-> 
-> foreach my $i (@files) {
-> 	$doc .= qx(./scripts/kernel-doc $i 2>/dev/null);
-> }
-> 
-> foreach my $e (@exports) {
-> 	print "$e doesn't have kernel-doc markups\n" if (!($doc =~ m/\b$e\b/));
-> }
-> </script>
-> 
-> On simple cases, the above script helps to check what's missing:
-> 
-> 	$ ./check_exports drivers/acpi/acpi_lpat.c
-> 	<nothing returned>
-> 	$ ./test drivers/media/v4l2-core/v4l2-common.c 
-> 	__v4l2_find_nearest_size doesn't have kernel-doc markups
-> 	v4l2_apply_frmsize_constraints doesn't have kernel-doc markups
-> 	v4l2_fill_pixfmt_mp doesn't have kernel-doc markups
-> 	v4l2_fill_pixfmt doesn't have kernel-doc markups
-> 
-> Yet, it the actual script will also need to handle some special
-> cases:
-> 
-> - it should check if the Makefile used by the file has a "-I" directive.
->   This could be tricky, due to Makefile recursion.
+syzbot found the following issue on:
 
-Hmm... actually this could be obtained via command line parameters, if 
-the script is called with the same parameter set as the one passed to the
-C compiler.
+HEAD commit:    168ae5a7 Merge 5.9-rc8 into usb-next
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=12bec877900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5429f3643ebc37a
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b802f11efb574105ec5
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120aa50b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134fa5c0500000
 
-> - it should also check if there is a kernel-doc entry for such header.
->   a "git grep" could be used in this case.
-> - It should also handle the optional arguments of kernel-doc, like
->   :internal", :external", ":no-identifiers", "identifiers", as it is
->   possible that there is a kernel-doc entry, but this is excluded
->   by a kernel-doc modifier.
-> - It should also check if the exported symbol is a function,
->   in order to exclude static vars that are exported.
-> 
-> I suspect that there are several other border cases.
-> 
-> Thanks,
-> Mauro
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9b802f11efb574105ec5@syzkaller.appspotmail.com
+
+usb 1-1: Manufacturer: syz
+usb 1-1: SerialNumber: syz
+usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
+usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
+------------[ cut here ]------------
+usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+WARNING: CPU: 1 PID: 21 at drivers/usb/core/urb.c:493 usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 21 Comm: kworker/1:1 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events request_firmware_work_func
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x16e lib/dump_stack.c:118
+ panic+0x2cb/0x702 kernel/panic.c:231
+ __warn.cold+0x20/0x44 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x41/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
+Code: 84 04 03 00 00 e8 3e 98 c6 fd 4c 89 ef e8 66 b6 12 ff 41 89 d8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 20 b3 5d 86 e8 d0 ba 9a fd <0f> 0b e9 c6 f8 ff ff e8 12 98 c6 fd 48 81 c5 40 06 00 00 e9 f2 f7
+RSP: 0018:ffff8881da33f808 EFLAGS: 00010286
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks,
-Mauro
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
