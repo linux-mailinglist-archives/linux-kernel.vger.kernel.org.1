@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1642284006
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70B9284008
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgJEUBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:01:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729424AbgJEUBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:01:01 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F56220848;
-        Mon,  5 Oct 2020 20:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601928060;
-        bh=oj+jcDmEQ2N35sIvH7wXOvwFFCWD41A5g42JGA78/P8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CcgNuec45OLWgjUhYQ+1cd8ZuxyY2vEj9LeaoxPnVEUg85Xun9DtWP0WFPN2yQbZi
-         zrLdvD0cGsTAjKUU1uZHyEwBDnvSZUfSk+X1uFcACU+2rbMjyDCwBu3e8B8EsSzfUS
-         WRHnZ1g890h0ck7szssNEK47AJdYiqblKUIaK1m8=
-Date:   Mon, 5 Oct 2020 20:59:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        ardb@kernel.org, will@kernel.org, catalin.marinas@arm.com,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-kernel@vger.kernel.org
-Subject: Re: [BUG][PATCH] arm64: bti: fix BTI to handle local indirect
- branches
-Message-ID: <20201005195957.GF5139@sirena.org.uk>
-References: <20201005181804.1331237-1-jeremy.linton@arm.com>
+        id S1729568AbgJEUCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729424AbgJEUCD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 16:02:03 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B23C0613CE;
+        Mon,  5 Oct 2020 13:02:02 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id w5so10963811wrp.8;
+        Mon, 05 Oct 2020 13:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kDG90piP9bjjZ54VM7VZ8xIJjJTXJAd5c7/jB4KZCuw=;
+        b=U6Qb2I2EVdvXUonV7xvElgjAtpp5Q39Ju/U+JyYCWKusZ9PHt3ZW7VAe2oyxxPMAqC
+         Gt0YhdLms9ASnHGet4kNAFfvxQ7uyIZhr2rVfjRFxZfkbGrUGJ8hXSWnuW6ZvWEP6FOp
+         5bCGoAOZhUiA+uwkhJ+PTpW/WSLWAlgR6RTIFNcKra4FxY8PxQq7AchY32dmCdDkKe2/
+         LQymcfir9y2x+3OSvq6AwxNSSjZ4LVAAePapsoPLdEx534RH+Kzp9/AL0vDeQ7QyTnjP
+         9Nh4J3uDEXkphCLTh5irFrlrhVOoaIQegw1t7y+cSvsrUYENr+dG435WJUvfzDm8LpNR
+         XG9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kDG90piP9bjjZ54VM7VZ8xIJjJTXJAd5c7/jB4KZCuw=;
+        b=rcA4Yl6DkgNZpj1gdFUUaOGCstO5yHeTqfQkYS2qM/1n1FyA2WyMwLJpKyKTFBuAit
+         2X+zhLE8imp4EYHPzzAsCdXJAfGg7+RS34MuV0LnS59ZGXEagvnVViSxgS782II9YEua
+         SXxT/kVgOp3llr5SYRHKiBYFJfWqlVenKRN7qIyRdxjhAriB59Zy+BmwIUWHFG/bw8Gc
+         LnTVEc+8bs6pFA5juVFpQ1G7C00VQrSGkE++hyE/iVUhdm8PfWD7D+LYDmMdLjxkDa29
+         knJG560qoBcktLcgNiAyM91sbtA6QSTK8CvcS8n+cP9THce9huNGTb6eA78xF1WKWYpC
+         K4zQ==
+X-Gm-Message-State: AOAM530k+FxUoD5UGeCASVHgsI1GYbF+FcVGN/i7b/uvsOvLeqvv42y5
+        Df2z5q6Fd0tbg8Gj96zwWYE=
+X-Google-Smtp-Source: ABdhPJx7wfmIUYe3PgJvRZq15QibKic8hinUwE91butGT+DJ065259eG14cshO9OX8cQ3GLHSYvqUg==
+X-Received: by 2002:adf:f903:: with SMTP id b3mr1108480wrr.142.1601928121488;
+        Mon, 05 Oct 2020 13:02:01 -0700 (PDT)
+Received: from localhost ([91.92.14.102])
+        by smtp.gmail.com with ESMTPSA id s19sm736954wmc.41.2020.10.05.13.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 13:01:09 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] power: supply: max17040: Fix ptr to enum cast
+Date:   Mon,  5 Oct 2020 23:00:38 +0300
+Message-Id: <20201005200038.1032697-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ExXT7PjY8AI4Hyfa"
-Content-Disposition: inline
-In-Reply-To: <20201005181804.1331237-1-jeremy.linton@arm.com>
-X-Cookie: Most of your faults are not your fault.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+clang complains about casting pointers to smaller enum types.
 
---ExXT7PjY8AI4Hyfa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+---
 
-On Mon, Oct 05, 2020 at 01:18:04PM -0500, Jeremy Linton wrote:
+P.S. I fixed a similar issue in v5, but it was in another patch, and the
+test robot only complains about the first issue, so I missed this one.
 
-> The AES code uses a 'br x7' as part of a function called by
-> a macro, that ends up needing a BTI_J as a target. Lets
-> define SYN_CODE_START_LOCAL() for this and replace the
-> SYM_FUNC_START_LOCAL with a SYM_FUNC_CODE_LOCAL in the AES block.
+There is a similar warning in ltc2941-battery-gauge, let me know if I
+should submit a fix for it as well.
 
-Really what the subject here should say is that this code is not a
-standard function and therefore should not be annotated as such - it's
-wrong with or without BTI, BTI just makes it very apparent.  It'd also
-be better to split the change in linkage.h out into a separate patch,
-that'd make things clearer for review.
+ drivers/power/supply/max17040_battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch6=
-4 #1
->   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=3Dj-)
->   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
->   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
->   sp : ffff80001052b730
->   x29: ffff80001052b730 x28: 0000000000000001
->   x27: ffff0001ec8f4000 x26: ffff0001ec5d27b0
+diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
+index 1d7510a59295d..d956c67d51558 100644
+--- a/drivers/power/supply/max17040_battery.c
++++ b/drivers/power/supply/max17040_battery.c
+@@ -247,7 +247,7 @@ static int max17040_get_of_data(struct max17040_chip *chip)
+ {
+ 	struct device *dev = &chip->client->dev;
+ 	struct chip_data *data = &max17040_family[
+-		(enum chip_id) of_device_get_match_data(dev)];
++		(uintptr_t) of_device_get_match_data(dev)];
+ 	int rcomp_len;
+ 	u8 rcomp[2];
 
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative (it often is
-for search engines if nothing else) then it's usually better to pull out
-the relevant sections.
 
-> -SYM_FUNC_START_LOCAL(aesbs_encrypt8)
-> +SYM_CODE_START_LOCAL(aesbs_encrypt8)
->  	ldr		q9, [bskey], #16		// round 0 key
->  	ldr		q8, M0SR
->  	ldr		q24, SR
-> @@ -488,10 +488,10 @@ SYM_FUNC_START_LOCAL(aesbs_encrypt8)
->  	eor		v2.16b, v2.16b, v12.16b
->  	eor		v5.16b, v5.16b, v12.16b
->  	ret
-> -SYM_FUNC_END(aesbs_encrypt8)
-> +SYM_END(aesbs_encrypt8)
+base-commit: f9d293364b452b651292ed3034dd06c57b1754d5
+--
+2.28.0
 
-This should be SYM_CODE_END() to match the opening.  However...
-
->   * When using in-kernel BTI we need to ensure that PCS-conformant assemb=
-ly
-> @@ -42,6 +43,9 @@
->  	SYM_START(name, SYM_L_WEAK, SYM_A_NONE)		\
->  	BTI_C
-> =20
-> +#define SYM_CODE_START_LOCAL(name)			\
-> +	SYM_START(name, SYM_L_LOCAL, SYM_A_ALIGN)       \
-> +	BTI_JC
-
-=2E..this is going to cause problems, SYM_CODE means that we should
-assemble *exactly* what was written since it's some non-standard thing -
-we use it for the vectors table for example.  Looking at the code it's
-not 100% clear that the best approach here isn't just to change the call
-to a regular function call, this isn't a fast path or anything as far as
-I can see so it's unclear to me why we need to tail call.
-
-Failing that I think we need an annotation for tail called functions,=20
-that'd need to be a new thing as I am not seeing anything appropriate in
-the current generic annotations.
-
---ExXT7PjY8AI4Hyfa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl97ezwACgkQJNaLcl1U
-h9Bs2Af+JXsXs6kh94WyAh0jlOgct0f+Ay3VvJxgWnky8BRJrKtYjhANEJr+rrkA
-FvVjaN2Flbf9Qxhq7vEywIqOzaogW+VdUxokEo0/nHMWEr/Y/+8ZNUQmxn3b/y3y
-cZtU6Qhd+sRWFz57DrgOH1M9FGCkpBpEz8ooFOBoUwk/0qqNqO7QHmvLNAiZRhpu
-sYMb19Jq5ZEk0u2fAc/JkYQFSFsSoDVnku3hPuVehwijjpgaTzTxZnHMBYCJp9tq
-0GAjy2kfIuktwjwCrVcTD71O8Fa1pvSkSc6A4tz4lc4cZIl1fbuuFoW+frR3wcnV
-he8dRYfW+kSEWmRc5BuWhvNUyW4JoQ==
-=qGOi
------END PGP SIGNATURE-----
-
---ExXT7PjY8AI4Hyfa--
