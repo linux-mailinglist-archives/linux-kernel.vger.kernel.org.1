@@ -2,119 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6153C283BC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1960C283BCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgJEP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:56:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10926 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726057AbgJEP42 (ORCPT
+        id S1728915AbgJEP63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:58:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54219 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727309AbgJEP63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:56:28 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095FWqNn151652;
-        Mon, 5 Oct 2020 11:56:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=7wBHOKqAVY/TIwlQLiaf/bCoDDVvVqftXBrsOnYNkZE=;
- b=duDwl6Ibbxk26vimL0lz2EZHOUuXHGQwP08119IoMqH9M5hMhw4hv0vSx5YP+4ONB1fD
- J7ZPlwpuc71WlDlH7xIdO4ZeVZNfht1tA40zDUM4opHiGPRcx/BSiHXUswKWx1w1y0xL
- 2UmWiAuQCnGjS5x97ijAcoLY+LCngLxMd8sfh2stiy6I9cPRUgmd4Kk6qLDEgL+y+SuG
- Gzf4G+DSJTNe0LIxfL3rxGskJrIFDjp7NVrYxMQIM2tsaYcxnoopaJ13gDiUiPG/ZsOB
- tReyXQFIRZADrBOwkGNu57I05+mhWlltyKDgB8MfFJQOPY25wUdhKngOkPDLxrhYyTgn AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 340527uenc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 11:56:15 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 095FXFQ4154233;
-        Mon, 5 Oct 2020 11:56:15 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 340527uemn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 11:56:14 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 095FlP66028100;
-        Mon, 5 Oct 2020 15:56:13 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 33xgx82b61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 15:56:12 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 095FuAdR25887062
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 5 Oct 2020 15:56:10 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D576711C05C;
-        Mon,  5 Oct 2020 15:56:10 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1B51711C04A;
-        Mon,  5 Oct 2020 15:56:10 +0000 (GMT)
-Received: from localhost (unknown [9.145.67.211])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon,  5 Oct 2020 15:56:10 +0000 (GMT)
-Date:   Mon, 5 Oct 2020 17:56:08 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v4 4/4] objtool: fix x86 orc generation on big endian
- cross compiles
-Message-ID: <your-ad-here.call-01601913368-ext-6150@work.hours>
-References: <20201002160114.7yb7z7aeijhchpwl@treble>
- <cover.thread-a8def4.your-ad-here.call-01601818410-ext-7687@work.hours>
- <patch-4.thread-a8def4.git-a8def4f04016.your-ad-here.call-01601818410-ext-7687@work.hours>
- <20201005140328.hpbpkfpx3hmpuapt@treble>
+        Mon, 5 Oct 2020 11:58:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601913507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dN5gsjMnqyqI5A2jup6ulYvntmGtep/DzBd0lOh8y1w=;
+        b=KxLCYd3ODn1QSzzSW+dS/LnTpqOt+tKzNgPpuD5GoqP0HkTAt6Tf44WD2yxveZs9sDOaE3
+        z/4o+8vnjON7+/hrMTJ5Q88OnZ+VDtvUbtUOTovN1vft2lhQiMHkb7xyFGCItQrfXBOGhS
+        HPVYsh5dYW3T8B9adP5CHA6vBfscdeg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-qgIJrjfmM7yoddD5iKTd2A-1; Mon, 05 Oct 2020 11:58:23 -0400
+X-MC-Unique: qgIJrjfmM7yoddD5iKTd2A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04D7B107ACF5;
+        Mon,  5 Oct 2020 15:58:22 +0000 (UTC)
+Received: from krava (unknown [10.40.195.156])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 650DD75120;
+        Mon,  5 Oct 2020 15:58:19 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 17:58:18 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: [PATCHv3 1/9] perf tools: Add build id shell test
+Message-ID: <20201005155818.GA249615@krava>
+References: <20200930171512.3986425-1-jolsa@kernel.org>
+ <20200930171512.3986425-2-jolsa@kernel.org>
+ <20201001190530.GD3999500@krava>
+ <CAM9d7chyjSaqhjjT4myfs5p9ExH-3Rugme-OFaF8454yO4_s1w@mail.gmail.com>
+ <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com>
+ <20201002205527.GA7581@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005140328.hpbpkfpx3hmpuapt@treble>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-05_10:2020-10-05,2020-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 spamscore=0 suspectscore=1 priorityscore=1501 mlxlogscore=901
- malwarescore=0 lowpriorityscore=0 adultscore=0 clxscore=1015 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010050115
+In-Reply-To: <20201002205527.GA7581@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 09:03:28AM -0500, Josh Poimboeuf wrote:
-> On Sun, Oct 04, 2020 at 04:30:54PM +0200, Vasily Gorbik wrote:
-> > @@ -77,8 +78,9 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
-> >  	if (entry->feature) {
-> >  		unsigned short feature;
-> > 
-> > -		feature = *(unsigned short *)(sec->data->d_buf + offset +
-> > -					      entry->feature);
-> > +		feature = bswap_if_needed(*(unsigned short *)(sec->data->d_buf +
-> > +							      offset +
-> > +							      entry->feature));
-> >  		arch_handle_alternative(feature, alt);
-> >  	}
-> > ---
-> >  arch/x86/include/asm/orc_types.h              | 10 +++++
-> >  tools/arch/x86/include/asm/orc_types.h        | 10 +++++
-> >  .../arch/x86/include/arch_endianness.h        |  9 +++++
-> 
-> This patch is misformatted.  Almost like it was concatenated with
-> itself?
+Adding test for build id cache that adds binary
+with sha1 and md5 build ids and verifies it's
+added properly.
 
-Indeed. I wonder how that could have happened. Sorry for that. I've
-resent patches with rebased patch
+The test updates build id cache with perf record
+and perf buildid-cache -a.
 
-"objtool: avoid ../ headers includes and name clashes"
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+  v3 changes:
+    - compile examples directly in the test
+    - using 'command' instead of 'which' for detection
 
-on top. This time I checked patches could be applied from outgoing
-mailbox before sending it.
+ tools/perf/tests/shell/buildid.sh | 101 ++++++++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+ create mode 100755 tools/perf/tests/shell/buildid.sh
+
+diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+new file mode 100755
+index 000000000000..4861a20edee2
+--- /dev/null
++++ b/tools/perf/tests/shell/buildid.sh
+@@ -0,0 +1,101 @@
++#!/bin/sh
++# build id cache operations
++# SPDX-License-Identifier: GPL-2.0
++
++# skip if there's no readelf
++if ! [ -x "$(command -v readelf)" ]; then
++	echo "failed: no readelf, install binutils"
++	exit 2
++fi
++
++# skip if there's no compiler
++if ! [ -x "$(command -v cc)" ]; then
++	echo "failed: no compiler, install gcc"
++	exit 2
++fi
++
++ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
++ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
++
++echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
++echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
++
++echo "test binaries: ${ex_sha1} ${ex_md5}"
++
++check()
++{
++	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
++
++	echo "build id: ${id}"
++
++	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
++	echo "link: ${link}"
++
++	if [ ! -h $link ]; then
++		echo "failed: link ${link} does not exist"
++		exit 1
++	fi
++
++	file=${build_id_dir}/.build-id/${id:0:2}/`readlink ${link}`/elf
++	echo "file: ${file}"
++
++	if [ ! -x $file ]; then
++		echo "failed: file ${file} does not exist"
++		exit 1
++	fi
++
++	diff ${file} ${1}
++	if [ $? -ne 0 ]; then
++		echo "failed: ${file} do not match"
++		exit 1
++	fi
++
++	echo "OK for ${1}"
++}
++
++test_add()
++{
++	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
++	perf="perf --buildid-dir ${build_id_dir}"
++
++	${perf} buildid-cache -v -a ${1}
++	if [ $? -ne 0 ]; then
++		echo "failed: add ${1} to build id cache"
++		exit 1
++	fi
++
++	check ${1}
++
++	rm -rf ${build_id_dir}
++}
++
++test_record()
++{
++	data=$(mktemp /tmp/perf.data.XXX)
++	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
++	perf="perf --buildid-dir ${build_id_dir}"
++
++	${perf} record --buildid-all -o ${data} ${1}
++	if [ $? -ne 0 ]; then
++		echo "failed: record ${1}"
++		exit 1
++	fi
++
++	check ${1}
++
++	rm -rf ${build_id_dir}
++	rm -rf ${data}
++}
++
++# add binaries manual via perf buildid-cache -a
++test_add ${ex_sha1}
++test_add ${ex_md5}
++
++# add binaries via perf record post processing
++test_record ${ex_sha1}
++test_record ${ex_md5}
++
++# cleanup
++rm ${ex_sha1} ${ex_md5}
++
++exit ${err}
+-- 
+2.26.2
+
