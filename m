@@ -2,192 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486162836C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B0A2836C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgJENm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbgJENm2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:42:28 -0400
-Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E1BC0613CE;
-        Mon,  5 Oct 2020 06:42:27 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp1.goneo.de (Postfix) with ESMTP id 263E223F06B;
-        Mon,  5 Oct 2020 15:42:26 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.985
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.985 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.085, BAYES_00=-1.9] autolearn=ham
-Received: from smtp1.goneo.de ([127.0.0.1])
-        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id KpSmZlKZ73U7; Mon,  5 Oct 2020 15:42:24 +0200 (CEST)
-Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
-        by smtp1.goneo.de (Postfix) with ESMTPSA id BD5F723F037;
-        Mon,  5 Oct 2020 15:42:23 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 15:42:19 +0200
-From:   Lars Poeschel <poeschel@lemonage.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] pwm: sysfs: Set class on pwm devices
-Message-ID: <20201005134219.bvy7lsy4vguzevhk@lem-wkst-02.lemonage>
-References: <20201002123048.3073128-1-poeschel@lemonage.de>
- <20201002124616.GB3348424@kroah.com>
- <20201002130844.udikqwzspp6zlyhh@lem-wkst-02.lemonage>
- <20201002133512.GB3386034@kroah.com>
+        id S1726164AbgJENmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:42:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:47766 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725932AbgJENmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:42:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBBC4106F;
+        Mon,  5 Oct 2020 06:42:35 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE8B43F70D;
+        Mon,  5 Oct 2020 06:42:33 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 14:42:30 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
+        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
+        hjl.tools@gmail.com, mpe@ellerman.id.au, tony.luck@intel.com,
+        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/4] x86/signal: Introduce helpers to get the maximum
+ signal frame size
+Message-ID: <20201005134230.GS6642@arm.com>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
+ <20200929205746.6763-2-chang.seok.bae@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002133512.GB3386034@kroah.com>
+In-Reply-To: <20200929205746.6763-2-chang.seok.bae@intel.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 03:35:12PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Oct 02, 2020 at 03:08:44PM +0200, Lars Poeschel wrote:
-> > On Fri, Oct 02, 2020 at 02:46:16PM +0200, Greg Kroah-Hartman wrote:
-> > > On Fri, Oct 02, 2020 at 02:30:47PM +0200, poeschel@lemonage.de wrote:
-> > > > From: Lars Poeschel <poeschel@lemonage.de>
-> > > > 
-> > > > This adds a class to exported pwm devices.
-> > > > Exporting a pwm through sysfs did not yield udev events. The
-> > > > dev_uevent_filter function does filter-out devices without a bus or
-> > > > class.
-> > > > This was already addressed in commit
-> > > > commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
-> > > > but this did cause problems and the commit got reverted with
-> > > > commit c289d6625237 ("Revert "pwm: Set class for exported channels in
-> > > > sysfs"")
-> > > > Problem with the previous approach was, that there is a clash if we have
-> > > > multiple pwmchips:
-> > > > 	echo 0 > pwmchip0/export
-> > > > 	echo 0 > pwmchip1/export
-> > > > would both export /sys/class/pwm/pwm0 .
-> > > > 
-> > > > Now this patch changes the sysfs interface. We do include the pwmchip
-> > > > number into the pwm directory that gets exported.
-> > > > With the example above we get:
-> > > > 	/sys/class/pwm/pwm-0-0
-> > > > 	/sys/class/pwm/pwm-1-0
-> > > > We maintain ABI backward compatibility through symlinks.
-> > > > 	/sys/class/pwm/pwmchip0/pwm0
-> > > > 	/sys/class/pwm/pwmchip1/pwm0
-> > > > are now symbolic links to the new names.
-> > > > 
-> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
-> > > > ---
-> > > >  drivers/pwm/sysfs.c | 57 +++++++++++++++++++++++++++++++++++++--------
-> > > >  1 file changed, 47 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
-> > > > index 449dbc0f49ed..c708da17a857 100644
-> > > > --- a/drivers/pwm/sysfs.c
-> > > > +++ b/drivers/pwm/sysfs.c
-> > > > @@ -240,8 +240,10 @@ static void pwm_export_release(struct device *child)
-> > > >  
-> > > >  static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
-> > > >  {
-> > > > +	struct pwm_chip *chip = dev_get_drvdata(parent);
-> > > >  	struct pwm_export *export;
-> > > >  	char *pwm_prop[2];
-> > > > +	char *link_name;
-> > > >  	int ret;
-> > > >  
-> > > >  	if (test_and_set_bit(PWMF_EXPORTED, &pwm->flags))
-> > > > @@ -256,25 +258,39 @@ static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
-> > > >  	export->pwm = pwm;
-> > > >  	mutex_init(&export->lock);
-> > > >  
-> > > > +	export->child.class = parent->class;
-> > > >  	export->child.release = pwm_export_release;
-> > > >  	export->child.parent = parent;
-> > > >  	export->child.devt = MKDEV(0, 0);
-> > > >  	export->child.groups = pwm_groups;
-> > > > -	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
-> > > > +	dev_set_name(&export->child, "pwm-%u-%u", chip->base, pwm->hwpwm);
-> > > >  
-> > > >  	ret = device_register(&export->child);
-> > > > -	if (ret) {
-> > > > -		clear_bit(PWMF_EXPORTED, &pwm->flags);
-> > > > -		put_device(&export->child);
-> > > > -		export = NULL;
-> > > > -		return ret;
-> > > > +	if (ret)
-> > > > +		goto error;
-> > > > +
-> > > > +	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
-> > > > +	if (link_name == NULL) {
-> > > > +		ret = -ENOMEM;
-> > > > +		goto dev_unregister;
-> > > >  	}
-> > > > -	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=pwm%u", pwm->hwpwm);
-> > > > +
-> > > > +	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=%s",
-> > > > +			export->child.kobj.name);
-> > > >  	pwm_prop[1] = NULL;
-> > > >  	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
-> > > 
-> > > Do you still need to do this by hand?  Why can't this uevent field
-> > > belong to the class and have it create this for you automatically when
-> > > the device is added?
-> > 
-> > I did not add this with my patch, it was there before and I wonder, what
-> > purpose it served, since the uevent was filtered because there was no
-> > class there.
-> > Now we have a class and now it works and this is what happens:
-> > 
-> > /sys/class/pwm# echo 0 > pwmchip1/export 
-> > KERNEL[2111.952725] add      /devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1/pwm-1-0 (pwm)
-> > ACTION=add
-> > DEVPATH=/devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1/pwm-1-0
-> > SEQNUM=1546
-> > SUBSYSTEM=pwm
-> > 
-> > KERNEL[2111.955155] change   /devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1 (pwm)
-> > ACTION=change
-> > DEVPATH=/devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1
-> > EXPORT=pwm-1-0
-> > SEQNUM=1547
-> > SUBSYSTEM=pwm
-> > 
-> > The first event is the event from device_register. It informs us that we
-> > now have a new pwm-1-0. Nice.
-> > The second is the event done here "by hand". It informs us, that
-> > pwmchip1 changed. It has a new export now. For me personally this is not
-> > needed, but also I don't think it is wrong.
-> > You decide!
+On Tue, Sep 29, 2020 at 01:57:43PM -0700, Chang S. Bae wrote:
+> Signal frames do not have a fixed format and can vary in size when a number
+> of things change: support XSAVE features, 32 vs. 64-bit apps. Add the code
+> to support a runtime method for userspace to dynamically discover how large
+> a signal stack needs to be.
 > 
-> If the uevent was being filtered out anyway, and never sent, then let's
-> just drop the thing as there is nothing to keep backwards compatible.
+> Introduce a new variable, max_frame_size, and helper functions for the
+> calculation to be used in a new user interface. Set max_frame_size to a
+> system-wide worst-case value, instead of storing multiple app-specific
+> values.
+> 
+> Locate the body of the helper function -- fpu__get_fpstate_sigframe_size()
+> in fpu/signal.c for its relevance.
+> 
+> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/x86/include/asm/fpu/signal.h |  2 ++
+>  arch/x86/include/asm/sigframe.h   | 23 ++++++++++++++++
+>  arch/x86/kernel/cpu/common.c      |  3 +++
+>  arch/x86/kernel/fpu/signal.c      | 20 ++++++++++++++
+>  arch/x86/kernel/signal.c          | 45 +++++++++++++++++++++++++++++++
+>  5 files changed, 93 insertions(+)
 
-I had a sleepless night about this. I felt something is wrong with this.
-I investigated a bit:
-- for the kobject_uevent_env line git blame found this commit 552c02e3e7cfe
-  ("pwm: Send a uevent on the pwmchip device upon channel sysfs
-  (un)export")
-- the commit message explicitly mentions my use case! (udev event to
-  change permissions of exported pwm)
-- git log says the commit right before is this one: commit c289d6625237
-  ("Revert "pwm: Set class for exported channels in sysfs""). This is
-  the commit, that reverts the previous addition of the pwmchip class
-  right as is to the pwm. The one that had the sysfs name clash.
+[...]
 
-I must have done something horribly wrong. I tried again and now I can
-get this udev change event. I don't know what I did wrong. The event is
-not filtered, because this is sent on behalf of the parent that had the
-class attached right from the start. This is my mistake. I am very sorry
-for the noise.
-I think best is now to keep everything as is, right ?
+> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+> index be0d7d4152ec..239a0b23a4b0 100644
+> --- a/arch/x86/kernel/signal.c
+> +++ b/arch/x86/kernel/signal.c
+> @@ -663,6 +663,51 @@ SYSCALL_DEFINE0(rt_sigreturn)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * The FP state frame contains an XSAVE buffer which must be 64-byte aligned.
+> + * If a signal frame starts at an unaligned address, extra space is required.
+> + * This is the max alignment padding, conservatively.
+> + */
+> +#define MAX_XSAVE_PADDING	63UL
+> +
+> +/*
+> + * The frame data is composed of the following areas and laid out as:
+> + *
+> + * -------------------------
+> + * | alignment padding     |
+> + * -------------------------
+> + * | (f)xsave frame        |
+> + * -------------------------
+> + * | fsave header          |
+> + * -------------------------
+> + * | siginfo + ucontext    |
+> + * -------------------------
+> + */
+> +
+> +/* max_frame_size tells userspace the worst case signal stack size. */
+> +static unsigned long __ro_after_init max_frame_size;
+> +
+> +void __init init_sigframe_size(void)
+> +{
+> +	/*
+> +	 * Use the largest of possible structure formats. This might
+> +	 * slightly oversize the frame for 64-bit apps.
+> +	 */
+> +
+> +	if (IS_ENABLED(CONFIG_X86_32) ||
+> +	    IS_ENABLED(CONFIG_IA32_EMULATION))
+> +		max_frame_size = max((unsigned long)SIZEOF_sigframe_ia32,
+> +				     (unsigned long)SIZEOF_rt_sigframe_ia32);
+> +
+> +	if (IS_ENABLED(CONFIG_X86_X32_ABI))
+> +		max_frame_size = max(max_frame_size, (unsigned long)SIZEOF_rt_sigframe_x32);
+> +
+> +	if (IS_ENABLED(CONFIG_X86_64))
+> +		max_frame_size = max(max_frame_size, (unsigned long)SIZEOF_rt_sigframe);
+> +
+> +	max_frame_size += fpu__get_fpstate_sigframe_size() + MAX_XSAVE_PADDING;
 
-Regards,
-Lars
+For arm64, we round the worst-case padding up by one.
+
+I can't remember the full rationale for this, but it at least seemed a
+bit weird to report a size that is not a multiple of the alignment.
+
+I'm can't think of a clear argument as to why it really matters, though.
+
+[...]
+
+Cheers
+---Dave
