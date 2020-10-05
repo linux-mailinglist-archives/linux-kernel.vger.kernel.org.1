@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7059283949
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C8428394D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgJEPNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbgJEPNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:13:20 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01BE320774;
-        Mon,  5 Oct 2020 15:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601910799;
-        bh=nUstTbZFE441mCJQxfectIWPeG+24jEfaZ3swSN40oM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RrvOlwNQM47Bc4U7dPJ5LwWZPHDDjes+NAiPrfg+3Wf0ea1EDnUN7F/zUr5xNrPTB
-         8sOEHjI336aULMWTKNqVSnJVDXq8DCvUmdhngmZL1VU5LgdVEsXD55jbUTaEofeLgn
-         K+iJNgIvI/f3ayZNeCAWhbCH0rGYtptWhxrxjwT4=
-Date:   Mon, 5 Oct 2020 16:13:13 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201005151313.GA23892@willie-the-truck>
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <20201004233146.GP29330@paulmck-ThinkPad-P72>
- <20201005023846.GA359428@rowland.harvard.edu>
- <20201005082002.GA23216@willie-the-truck>
- <20201005091247.GA23575@willie-the-truck>
- <20201005142351.GB376584@rowland.harvard.edu>
+        id S1726666AbgJEPP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJEPP0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:15:26 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17432C0613CE;
+        Mon,  5 Oct 2020 08:15:26 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id md26so12497633ejb.10;
+        Mon, 05 Oct 2020 08:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y31mklWIaVyvGZ7mJma/uuUN73dmoDf6at6W+72Rl5c=;
+        b=gt285/Y2YUgHn/6SKGxtJhCeDDVzMc96zhMIWuItRd2xLFz3MdnXJLrgUQNJioTlrZ
+         8lHhur0W15e2huFOD4WA20Gz9lLI6fkql42Ao7dnyQR7hXuJjR0Pix1JpGSFKfSrFjrA
+         b3t0RcmzXw1X+Es/K2m03C1n1ZuTYfkyHlgcF6a1rjtDpSX52lr3dnPpZIN8vC+t6CaW
+         5gVe2KVhrplmx1PgziFpwOdGDqa1XqNYxPM3AIA7Cqy1YgTRTZU5TiNFxl47TImoE9W+
+         4mOM+IO+Fv239tMbXmr5np4I6LxiB8zvD68krpqlfLYDlPXV9FtEAi3vQt8v9T2xlQoK
+         9srg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y31mklWIaVyvGZ7mJma/uuUN73dmoDf6at6W+72Rl5c=;
+        b=E58xKG2+WoIruOxqIoDKXKWf1/mUqP5jf0WsuoZBffNYePEFA47H+CnGhnMov7zzvd
+         DocwTIvluDvdrzrA6WzeDYOpO+wRSgl6tXGYBVAVzZL28il3ll+3+i/p+dttyOJJZZzy
+         Qbn2Fx6DrCz9G0qt0qPah+DoFZ4VKii7QatZqQ6KkC0vXg5iYZ8rzHizItQKZPcE7O3g
+         145hnB3xFeaRzN949AwN/cCmTJ6CysrUjZRcBsuz6goDH6YnP0t1pzK8WDCI3JmEdnRN
+         qSJxOK/GBhgUO6OK/wHcWy3MLy15mdRCXVDbmwZ0KNOTn0mbtJf1FAAWwCTbL1MJ/Kot
+         noMQ==
+X-Gm-Message-State: AOAM530C3q0zoVfN/ETuWq7VKPstm2PM74SZRP3lTBmdugnDpF75zfPj
+        lEv0PgZ6qYWB5JIfbAiCqEK8p7/MFR/JXDX19U4=
+X-Google-Smtp-Source: ABdhPJxRqwRzTW/rmKk8KAbLE3gpmwftE1hSwgrBJbfMOhD1HiurKmAFgrW/QbXevze1GFXMk+/CzgM21GkPjOXAcNQ=
+X-Received: by 2002:a17:906:340b:: with SMTP id c11mr171122ejb.213.1601910924796;
+ Mon, 05 Oct 2020 08:15:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005142351.GB376584@rowland.harvard.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201005150313.149754-1-konradybcio@gmail.com> <20201005150313.149754-12-konradybcio@gmail.com>
+In-Reply-To: <20201005150313.149754-12-konradybcio@gmail.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Mon, 5 Oct 2020 17:14:49 +0200
+Message-ID: <CAMS8qEV3kFgCZ34GsOSoy19YceF9q=01JazQHknvxnVJg4thcA@mail.gmail.com>
+Subject: Re: [PATCH 11/11] arm64: dts: qcom: Add support for Microsoft Lumia
+ 950 XL (Cityman)
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 10:23:51AM -0400, Alan Stern wrote:
-> On Mon, Oct 05, 2020 at 10:12:48AM +0100, Will Deacon wrote:
-> > On Mon, Oct 05, 2020 at 09:20:03AM +0100, Will Deacon wrote:
-> > > On Sun, Oct 04, 2020 at 10:38:46PM -0400, Alan Stern wrote:
-> > > > Considering the bug in herd7 pointed out by Akira, we should rewrite P1 as:
-> > > > 
-> > > > P1(int *x, int *y)
-> > > > {
-> > > > 	int r2;
-> > > > 
-> > > > 	r = READ_ONCE(*y);
-> > > 
-> > > (r2?)
-> > > 
-> > > > 	WRITE_ONCE(*x, r2);
-> > > > }
-> > > > 
-> > > > Other than that, this is fine.
-> > > 
-> > > But yes, module the typo, I agree that this rewrite is much better than the
-> > > proposal above. The definition of control dependencies on arm64 (per the Arm
-> > > ARM [1]) isn't entirely clear that it provides order if the WRITE is
-> > > executed on both paths of the branch, and I believe there are ongoing
-> > > efforts to try to tighten that up. I'd rather keep _that_ topic separate
-> > > from the "bug in herd" topic to avoid extra confusion.
-> > 
-> > Ah, now I see that you're changing P1 here, not P0. So I'm now nervous
-> > about claiming that this is a bug in herd without input from Jade or Luc,
-> > as it does unfortunately tie into the definition of control dependencies
-> > and it could be a deliberate choice.
-> 
-> I think you misunderstood.  The bug in herd7 affects the way it handles 
-> P1, not P0.  With
-> 
-> 	r2 = READ_ONCE(*y);
-> 	WRITE_ONCE(*x, r2);
-> 
-> herd7 generates a data dependency from the read to the write.  With
-> 
-> 	WRITE_ONCE(*x, READ_ONCE(*y));
-> 
-> it doesn't generate any dependency, even though the code does exactly 
-> the same thing as far as the memory model is concerned.  That's the bug 
-> I was referring to.
+>+dtb-$(CONFIG_ARCH_QCOM)        += msm8994-msft-lumia-cityman.dts
 
-Thanks, that clears things up. There were lots of mentions of "control
-dependency" in the mail thread that threw me, because this bug is clearly
-about data dependencies!
+I made a typo and instead of .dtb I wrote .dts here. Could that be
+fixed when applying so that I don't have to spam you guys with 11 more
+mails?
 
-> The failure to recognize the dependency in P0 should be considered a 
-> combined limitation of the memory model and herd7.  It's not a simple 
-> mistake that can be fixed by a small rewrite of herd7; rather it's a 
-> deliberate choice we made based on herd7's inherent design.  We 
-> explicitly said that control dependencies extend only to the code in the 
-> branches of an "if" statement; anything beyond the end of the statement 
-> is not considered to be dependent.
-
-Interesting. How does this interact with loops that are conditionally broken
-out of, e.g.  a relaxed cmpxchg() loop or an smp_cond_load_relaxed() call
-prior to a WRITE_ONCE()?
-
-Will
+Konrad
