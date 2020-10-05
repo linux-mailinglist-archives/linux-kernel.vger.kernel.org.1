@@ -2,114 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3422F283EE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D47283E20
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgJESlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:41:15 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:48876 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgJESlP (ORCPT
+        id S1727871AbgJESTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727067AbgJESTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:41:15 -0400
-X-Greylist: delayed 1344 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 14:41:14 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=DocFb8exhfUXSoZBKE3Y45sf3gaeuZsjqUNzJjJ4OXQ=; b=ubzNNhWRXYmNL10IK204xrjoqE
-        Pn0xi7QMHXGykASr/hURFXjqqO3F3l7tnHrSOKNQmBRbNJwjbQMP4sPc0Wnf2wziEkkFnEtsRPfvs
-        eOxUJMwEzkmxdZuF9SM8DqXkUvo6/yy8fJ72lM2JJMNTBZzSLnpNUquhj1Jfv7uC1JPg=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1kPV4U-00043H-0E; Mon, 05 Oct 2020 18:18:50 +0000
-Received: from [54.239.6.186] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1kPV4T-0004A2-Gg; Mon, 05 Oct 2020 18:18:49 +0000
-Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
- correctly
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org
-References: <160190516028.40160.9733543991325671759.stgit@devnote2>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
-Date:   Mon, 5 Oct 2020 19:18:47 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.1
+        Mon, 5 Oct 2020 14:19:04 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67671C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:19:04 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id n61so9536617ota.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=In0H1HeRaahBqHRJG3WYCn/jPrfcT39VxygZWdrKz0U=;
+        b=G9VnZHdzNM4pErmtEpJ1P06DEL/kfTfrDzrcMiS0K+PneP38wM4nkksUdHu+NCcAnW
+         PVRbECL0+y0gPnfU9bYGb1SRyEpPt5657CnVeVTSzpK2xDkX7uaij8f6nYicopqm7U4/
+         ZJe/HUFY5gn3zR59Rrrr6FYo2oi5CTo7poOTk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=In0H1HeRaahBqHRJG3WYCn/jPrfcT39VxygZWdrKz0U=;
+        b=VIFLDAA9s3eRN/902B8wvDu+tqP3DsK7vvXyJO1zEgI3+Jk0zrpLnU7LDd+WKYnMAY
+         0/51BGUG2LmZ0rE6a2YXXc5i/NtUeJ4SWEQWJUNRPV3UIZElWWYRT2cRODWTJ0DDyk9D
+         AxIa1MMIJcOKn6cew6Om7ePuRiZoRu3xwlqRlMo3DGbMu6dySH5gUgV3QtCNA1QkY/WQ
+         CTDWfdVsI8wVsHn0AhiOoAHHGT8RDLbS3T4W/R3y0IFWPDK4MunlMqHpzocgh/ofT1+z
+         lFdnrW5TzwbkT/D+kLljjo7T/AR6Jb4ixhu7DRV8nSWbgoCQDSfTtlE/rl2a0fYc7ZVe
+         5mhA==
+X-Gm-Message-State: AOAM532O2D2eBd5Gba1KQhFFw5AclhNh/gL4r5uKJsCHcwctyGmWwmSs
+        8yNN1oCSf+SigakgWYYtY/C5ek1QwRQyw0fTJQybrg==
+X-Google-Smtp-Source: ABdhPJwb2udB+ti8/BSw9azKpCYNapb5vn8dmsFNQ+jSRevONoZR7A89yIg5NYGsYY62/1FIqsrs3xTq/GQw/OTXO8g=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr364384otj.303.1601921943802;
+ Mon, 05 Oct 2020 11:19:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <160190516028.40160.9733543991325671759.stgit@devnote2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20201004192152.3298573-1-robdclark@gmail.com> <20201005092419.15608-1-hdanton@sina.com>
+ <20201005140203.GS438822@phenom.ffwll.local> <CAF6AEGveqvvv9MfBMAr34y9664fPouGjwPrK=v9OLVXv4dHzxg@mail.gmail.com>
+In-Reply-To: <CAF6AEGveqvvv9MfBMAr34y9664fPouGjwPrK=v9OLVXv4dHzxg@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 5 Oct 2020 20:18:52 +0200
+Message-ID: <CAKMK7uHH2imD+8pG-bN8kXcOjvkcta88LXFC2Yb8hw25-cLBeQ@mail.gmail.com>
+Subject: Re: [PATCH 13/14] drm/msm: Drop struct_mutex in shrinker path
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+On Mon, Oct 5, 2020 at 6:49 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Mon, Oct 5, 2020 at 7:02 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Mon, Oct 05, 2020 at 05:24:19PM +0800, Hillf Danton wrote:
+> > >
+> > > On Sun,  4 Oct 2020 12:21:45
+> > > > From: Rob Clark <robdclark@chromium.org>
+> > > >
+> > > > Now that the inactive_list is protected by mm_lock, and everything
+> > > > else on per-obj basis is protected by obj->lock, we no longer depend
+> > > > on struct_mutex.
+> > > >
+> > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > ---
+> > > >  drivers/gpu/drm/msm/msm_gem.c          |  1 -
+> > > >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 54 --------------------------
+> > > >  2 files changed, 55 deletions(-)
+> > > >
+> > > [...]
+> > >
+> > > > @@ -71,13 +33,8 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+> > > >  {
+> > > >     struct msm_drm_private *priv =
+> > > >             container_of(shrinker, struct msm_drm_private, shrinker);
+> > > > -   struct drm_device *dev = priv->dev;
+> > > >     struct msm_gem_object *msm_obj;
+> > > >     unsigned long freed = 0;
+> > > > -   bool unlock;
+> > > > -
+> > > > -   if (!msm_gem_shrinker_lock(dev, &unlock))
+> > > > -           return SHRINK_STOP;
+> > > >
+> > > >     mutex_lock(&priv->mm_lock);
+> > >
+> > > Better if the change in behavior is documented that SHRINK_STOP will
+> > > no longer be needed.
+> >
+> > btw I read through this and noticed you have your own obj lock, plus
+> > mutex_lock_nested. I strongly recommend to just cut over to dma_resv_lock
+> > for all object lock needs (soc drivers have been terrible with this
+> > unfortuntaly), and in the shrinker just use dma_resv_trylock instead of
+> > trying to play clever games outsmarting lockdep.
+> >
+> > I recently wrote an entire blog length rant on why I think
+> > mutex_lock_nested is too dangerous to be useful:
+> >
+> > https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
+> >
+> > Not anything about this here, just general comment. The problem extends to
+> > shmem helpers and all that also having their own locks for everything.
+>
+> the shrinker lock class has existed for a while.. and is based on the
+> idea that anything in the get-pages/vmap path cannot happen on a
+> WONTNEED bo.. although perhaps there should be a few more 'if
+> (WARN_ON(obj->madv != WILLNEED)) return -EBUSY'..
 
-On 05/10/2020 14:39, Masami Hiramatsu wrote:
-> Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
-> address conversion.
-> 
-> In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-> to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-> assumes the given virtual address is in contiguous kernel memory
-> area, it can not convert the per-cpu memory if it is allocated on
-> vmalloc area (depends on CONFIG_SMP).
+Yeah it works, but it's the kind of really clever stuff that
+eventually bites again. For pretty much no benefit, if the lock is
+held then you can assume someone else is using the object and you
+won't be able to shrink it anyway. So trylock is enough.
 
-Are you sure about this? I have a .config with CONFIG_SMP=y where the 
-per-cpu region for CPU0 is allocated outside of vmalloc area.
+> replacing obj->lock with dma_resv lock, might be a nice cleanup.. but
+> I think it will be a bit churny..
 
-However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING 
-was enabled.
-
-[...]
-
-> Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
-
-FWIW, I think the bug was already present before 250c9af3d831.
-
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->   arch/arm/xen/enlighten.c |    2 +-
->   include/xen/arm/page.h   |    3 +++
->   2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-> index e93145d72c26..a6ab3689b2f4 100644
-> --- a/arch/arm/xen/enlighten.c
-> +++ b/arch/arm/xen/enlighten.c
-> @@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
->   	pr_info("Xen: initializing cpu%d\n", cpu);
->   	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
->   
-> -	info.mfn = virt_to_gfn(vcpup);
-> +	info.mfn = percpu_to_gfn(vcpup);
->   	info.offset = xen_offset_in_page(vcpup);
->   
->   	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
-> diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
-> index 39df751d0dc4..ac1b65470563 100644
-> --- a/include/xen/arm/page.h
-> +++ b/include/xen/arm/page.h
-> @@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
->   	})
->   #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) << XEN_PAGE_SHIFT))
->   
-> +#define percpu_to_gfn(v)	\
-> +	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
-> +
->   /* Only used in PV code. But ARM guests are always HVM. */
->   static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
->   {
-> 
-
-Cheers,
-
+Oh fully agreed, I tried to push the helpers a bit in that direction
+for shmem/cma and gave up. Just something I think we should have in
+mind. And in case your gpu ever becomes discrete ... yes the churn is
+terrible :-/
+-Daniel
 -- 
-Julien Grall
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
