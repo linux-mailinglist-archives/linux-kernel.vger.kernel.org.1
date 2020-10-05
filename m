@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7A2283320
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B619283327
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725931AbgJEJZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJEJZt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:25:49 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA56C0613CE;
-        Mon,  5 Oct 2020 02:25:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C4Zvr57dPz9sSn;
-        Mon,  5 Oct 2020 20:25:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601889945;
-        bh=nBtq0iMdoADKekhuB0pTLrmsjxA9ckU9vz1iB8xF9bA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=t+rH66vXJ9F7eqYFb3eRQFFOO2vESmuXZjb8iDy1Nn6wl7coeLDstj7IpbWyuX2Sh
-         0Kq4DJ82+hGRIg+g9nYrur59m3z5T4wAYAIQzo4XO6ANXlPniFhOPaSf1edQPaZAEt
-         Ee4f2c9r25ubyE+O9aCcg/frqSJ2hPetFn7Izl/Z8yIIVnruLPFLDZLSnNyIjU5I9n
-         UuxsQPAW4Fw2Z3FEC1OapAXSDa2wB8mnvp/vPA6m4iQy26TRft/LdwzcM2RkgyrRp2
-         lnqLBItf3N03WTQFuYZupcWivQmOe/pU2Ums6fpzNUxutTj0M8McMPPRQjjjjgIAxP
-         IsVa7StRHS3GQ==
-Date:   Mon, 5 Oct 2020 20:25:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kevin Hilman <khilman@baylibre.com>,
-        Carlo Caione <carlo@caione.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: linux-next: Signed-off-by missing for commit in the amlogic tree
-Message-ID: <20201005202543.5cb4a828@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/D/_GefiEZ9RfQrRP0j1FAFr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1725983AbgJEJ1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:27:55 -0400
+Received: from mga03.intel.com ([134.134.136.65]:53116 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJEJ1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:27:54 -0400
+IronPort-SDR: tllKcpAyux/2IverV7CmtDJKhrp0CwajQOTOovyj4sTvcBn2RVL8nvj32CB1yj+9pMDyySip2V
+ KS38pTRk1pHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="163468592"
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="163468592"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 02:27:51 -0700
+IronPort-SDR: nxJLfi3SMBzrnw1ffB+5VA/Jr74ND9wQBQIPZeAN4WBzX1QKcrfs86CheK7Qaw6MGuvH3C0NOs
+ NS+98dfCuXRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="340820755"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga004.fm.intel.com with ESMTP; 05 Oct 2020 02:27:48 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
+        linux-hwmon@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v5 0/2] Add hwmon driver for Moortec PVT controller
+Date:   Mon,  5 Oct 2020 17:27:44 +0800
+Message-Id: <cover.1601889876.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/D/_GefiEZ9RfQrRP0j1FAFr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Patch 1 adds DT bindings schema in YAML format.
+Patch 2 adds driver for MR75203 PVT controller.
 
-Hi all,
+v5:
+- Add bits.h header.
+- Use memset32() instead of using loop.
+- Address other code quality related review concerns.
+- Add Reviewed-by tags.
 
-Commits
+v4:
+- Fix a spelling mistake in comments.
+- Add return value error checking for all regmap_reads/writes.
+- Remove unnecessary else statement and a validation check.
 
-  b3cf5ff01d47 ("arm64: dts: meson-axg-s400: enable USB OTG")
-  628c9c809f84 ("arm64: dts: meson-axg: add USB nodes")
+v3:
+- Resolve make dt_binding_check errors.
+- Add vendor prefix and type reference for one property in yaml schema.
+- Update new property name in the driver.
 
-are missing a Signed-off-by from their committers.
+v2:
+- Address below review concerns from Andy Shevchenko
+ * Add more info in comments for clamp_val usage for clk sys cycles.
+ * Add mod_devicetable.h & property.h and remove of.h
+ * Remove unnecessary additional mutex lock from driver. Rely on regmap's
+   internal lock.
+ * Use units in timeout macros.
+ * Use HZ_PER_MHZ instead of direct values.
+ * Use devm_platform_ioremap_resource_byname() instead of separate calls.
+ * Use device property read API instead of OF API.
+- Address below review concerns from Guenter Roeck
+ * Improve commit message - add hardware monitoring driver.
+ * Remove unnecessary platform_set_drvdata. Instead add driver data in
+   function args at one place where it is used. Fix a issue related to it.
+ * Remove unnecessary NULL assignment.
+- Address below review concerns from Philipp Zabel
+ * Switch to devm_reset_control_get_exclusive().
+ * Move reset_deassert at the last after clk_enable in probe.
+- Resolve make dt_binding_check error.
+- Add MODULE_LICENSE
 
---=20
-Cheers,
-Stephen Rothwell
+v1:
+- Initial version.
 
---Sig_/D/_GefiEZ9RfQrRP0j1FAFr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+Rahul Tanwar (2):
+  Add DT bindings schema for PVT controller
+  Add hardware monitoring driver for Moortec MR75203 PVT controller
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl965pcACgkQAVBC80lX
-0GxEawf+PF4XaUrJ7H7UInSSo+cUNdknPyfkcl/gL6zdxyCFYdVB2W8BcjfRGe/M
-qCt4ngB8c0+LtiXIZ+Uda6aq7cVHN7yNZ/s85RCNA2aR4krYExJekcTNXK7v70Wo
-DLrPWDU/iy09jLSnQ6cZw7DU8g+RrdVNvETsTIrhQyRpCTv/0YcTO1s1rXDePtef
-ueKTE2khmWTyou+PySO0HfDxX+RuW1sNaFriouwnmZUfeEUwXnUaHVl6hOp6axgq
-Gb/v/qk+1jj6CUYIGwcjwWc+Lsqkr1oHbB0F8mvdbgwM4vyjIad1Xx3kPNIYpe2H
-+udk0OCQROLqUJlibzTzTTspvew51Q==
-=ByWF
------END PGP SIGNATURE-----
+ .../devicetree/bindings/hwmon/moortec,mr75203.yaml |  71 +++
+ drivers/hwmon/Kconfig                              |  10 +
+ drivers/hwmon/Makefile                             |   1 +
+ drivers/hwmon/mr75203.c                            | 656 +++++++++++++++++++++
+ 4 files changed, 738 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/moortec,mr75203.yaml
+ create mode 100644 drivers/hwmon/mr75203.c
 
---Sig_/D/_GefiEZ9RfQrRP0j1FAFr--
+-- 
+2.11.0
+
