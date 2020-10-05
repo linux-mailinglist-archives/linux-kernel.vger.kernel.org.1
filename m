@@ -2,176 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFB02835A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D9728359B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgJEMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:16:07 -0400
-Received: from mga07.intel.com ([134.134.136.100]:64423 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgJEMQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:16:05 -0400
-IronPort-SDR: uh2RaNJo+xsZ80DTaLUiy8ND85NAGE9g0pXJDpyKjTkwBAbkVkqzAhm0GL8ianZn9QYnsb4tfX
- VlyNaUsvTBUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="227548110"
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="227548110"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 05:15:29 -0700
-IronPort-SDR: wsBWwSr0FVKe1J6GMO9fuGVhlhCkBjZALlmfwFxxmZIyc0tu3eQVednjIO54kMtSYkYExZ7mPi
- pae6ZKzmmdhA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="296094490"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with SMTP; 05 Oct 2020 05:15:24 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 05 Oct 2020 15:15:24 +0300
-Date:   Mon, 5 Oct 2020 15:15:24 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tim Murray <timmurray@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>, Qais Yousef <qais.yousef@arm.com>
-Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
-Message-ID: <20201005121524.GI6112@intel.com>
-References: <20200930211723.3028059-1-robdclark@gmail.com>
- <CAKMK7uHHPWE3h7ssG-dpb3czwbP5VtZYztMA=CpvQ4HV4LQTXA@mail.gmail.com>
- <CAF6AEGszF60dWn37m63wujjtuObqkz2ZqEN3LHaPhCkKa1cdmA@mail.gmail.com>
- <CAKMK7uEd853irzdBMCcaNEMAeOZKVFcFpgNtcYrgQkmHxdT3-w@mail.gmail.com>
- <20201002105256.GA6112@intel.com>
- <20201002110544.GB6112@intel.com>
- <CAF6AEGv+UnZJoBj_ELRVr4sQeMs52vAgyw2g+wtabLPBrYDKvw@mail.gmail.com>
+        id S1726137AbgJEMQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:16:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24830 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725970AbgJEMQB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:16:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601900158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KBX1TXpOrcsq29GpOBaph461kpBMaGykfCUU1aPiYHU=;
+        b=fvHmXnd/fhhhC3C85g5BFdrmIpJzZWl5CQY8AFLn5GsGl0KDJ3JJSe4R3ZvDt25eNjR9m5
+        xo8z6DUemt8FrHNcCRD5m8SUc+Mwt/J4VIvIrWXNXAGx2CNk1585qZjzFvUewNG6lU/qI9
+        K/+lR5RrkkZmAC3aPnEaNTgZhZOnKDQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-BY-7UwbeNrSQH1yvi3bonA-1; Mon, 05 Oct 2020 08:15:54 -0400
+X-MC-Unique: BY-7UwbeNrSQH1yvi3bonA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 110A38030CD;
+        Mon,  5 Oct 2020 12:15:51 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-222.ams2.redhat.com [10.36.114.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACE6D277C6;
+        Mon,  5 Oct 2020 12:15:36 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Wei Liu <wei.liu@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH v2 0/5] mm: place pages to the freelist tail when onlining and undoing isolation
+Date:   Mon,  5 Oct 2020 14:15:29 +0200
+Message-Id: <20201005121534.15649-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF6AEGv+UnZJoBj_ELRVr4sQeMs52vAgyw2g+wtabLPBrYDKvw@mail.gmail.com>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:55:52AM -0700, Rob Clark wrote:
-> On Fri, Oct 2, 2020 at 4:05 AM Ville Syrjälä
-> <ville.syrjala@linux.intel.com> wrote:
-> >
-> > On Fri, Oct 02, 2020 at 01:52:56PM +0300, Ville Syrjälä wrote:
-> > > On Thu, Oct 01, 2020 at 05:25:55PM +0200, Daniel Vetter wrote:
-> > > > On Thu, Oct 1, 2020 at 5:15 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Oct 1, 2020 at 12:25 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > > >
-> > > > > > On Wed, Sep 30, 2020 at 11:16 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > > > >
-> > > > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > > > >
-> > > > > > > The android userspace treats the display pipeline as a realtime problem.
-> > > > > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > > > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > > > > > that I found.)
-> > > > > > >
-> > > > > > > But this presents a problem with using workqueues for non-blocking
-> > > > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > > > > > preempt the worker.  Which is not really the outcome you want.. once
-> > > > > > > the required fences are scheduled, you want to push the atomic commit
-> > > > > > > down to hw ASAP.
-> > > > > > >
-> > > > > > > But the decision of whether commit_work should be RT or not really
-> > > > > > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > > > > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > > > > > >
-> > > > > > > To handle this, convert non-blocking commit_work() to use per-CRTC
-> > > > > > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
-> > > > > > > used to avoid serializing commits when userspace is using a per-CRTC
-> > > > > > > update loop.  And the last patch exposes the task id to userspace as
-> > > > > > > a CRTC property, so that userspace can adjust the priority and sched
-> > > > > > > policy to fit it's needs.
-> > > > > > >
-> > > > > > >
-> > > > > > > v2: Drop client cap and in-kernel setting of priority/policy in
-> > > > > > >     favor of exposing the kworker tid to userspace so that user-
-> > > > > > >     space can set priority/policy.
-> > > > > >
-> > > > > > Yeah I think this looks more reasonable. Still a bit irky interface,
-> > > > > > so I'd like to get some kworker/rt ack on this. Other opens:
-> > > > > > - needs userspace, the usual drill
-> > > > >
-> > > > > fwiw, right now the userspace is "modetest + chrt".. *probably* the
-> > > > > userspace will become a standalone helper or daemon, mostly because
-> > > > > the chrome gpu-process sandbox does not allow setting SCHED_FIFO.  I'm
-> > > > > still entertaining the possibility of switching between rt and cfs
-> > > > > depending on what is in the foreground (ie. only do rt for android
-> > > > > apps).
-> > > > >
-> > > > > > - we need this also for vblank workers, otherwise this wont work for
-> > > > > > drivers needing those because of another priority inversion.
-> > > > >
-> > > > > I have a thought on that, see below..
-> > > >
-> > > > Hm, not seeing anything about vblank worker below?
-> > > >
-> > > > > > - we probably want some indication of whether this actually does
-> > > > > > something useful, not all drivers use atomic commit helpers. Not sure
-> > > > > > how to do that.
-> > > > >
-> > > > > I'm leaning towards converting the other drivers over to use the
-> > > > > per-crtc kwork, and then dropping the 'commit_work` from atomic state.
-> > > > > I can add a patch to that, but figured I could postpone that churn
-> > > > > until there is some by-in on this whole idea.
-> > > >
-> > > > i915 has its own commit code, it's not even using the current commit
-> > > > helpers (nor the commit_work). Not sure how much other fun there is.
-> > >
-> > > I don't think we want per-crtc threads for this in i915. Seems
-> > > to me easier to guarantee atomicity across multiple crtcs if
-> > > we just commit them from the same thread.
-> >
-> > Oh, and we may have to commit things in a very specific order
-> > to guarantee the hw doesn't fall over, so yeah definitely per-crtc
-> > thread is a no go.
-> 
-> If I'm understanding the i915 code, this is only the case for modeset
-> commits?  I suppose we could achieve the same result by just deciding
-> to pick the kthread of the first CRTC for modeset commits.  I'm not
-> really so much concerned about parallelism for modeset.
+When adding separate memory blocks via add_memory*() and onlining them
+immediately, the metadata (especially the memmap) of the next block will be
+placed onto one of the just added+onlined block. This creates a chain
+of unmovable allocations: If the last memory block cannot get
+offlined+removed() so will all dependent ones. We directly have unmovable
+allocations all over the place.
 
-I'm not entirely happy about the random differences between modesets
-and other commits. Ideally we wouldn't need any.
+This can be observed quite easily using virtio-mem, however, it can also
+be observed when using DIMMs. The freshly onlined pages will usually be
+placed to the head of the freelists, meaning they will be allocated next,
+turning the just-added memory usually immediately un-removable. The
+fresh pages are cold, prefering to allocate others (that might be hot)
+also feels to be the natural thing to do.
 
-Anyways, even if we ignore modesets we still have the issue with
-atomicity guarantees across multiple crtcs. So I think we still
-don't want per-crtc threads, rather it should be thread for each 
-commit.
+It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: when
+adding separate, successive memory blocks, each memory block will have
+unmovable allocations on them - for example gigantic pages will fail to
+allocate.
 
-Well, if the crtcs aren't running in lockstep then maybe we could
-shove them off to separate threads, but that'll just complicate things
-needlessly I think since we'd need yet another way to iterate
-the crtcs in each thread. With the thread-per-commit apporach we
-can just use the normal atomic iterators.
+While the ZONE_NORMAL doesn't provide any guarantees that memory can get
+offlined+removed again (any kind of fragmentation with unmovable
+allocations is possible), there are many scenarios (hotplugging a lot of
+memory, running workload, hotunplug some memory/as much as possible) where
+we can offline+remove quite a lot with this patchset.
 
-> 
-> > I don't even understand the serialization argument. If the commits
-> > are truly independent then why isn't the unbound wq enough to avoid
-> > the serialization? It should just spin up a new thread for each commit
-> > no?
-> 
-> The problem with wq is prioritization and SCHED_FIFO userspace
-> components stomping on the feet of commit_work. That is the entire
-> motivation of this series in the first place, so no we cannot use
-> unbound wq.
+a) To visualize the problem, a very simple example:
 
-This is a bit dejavu of the vblank worker discussion, where I actually
-did want a per-crtc RT kthread but people weren't convinced they
-actually help. The difference is that for vblank workers we actually
-tried to get some numbers, here I've not seen any.
+Start a VM with 4GB and 8GB of virtio-mem memory:
+
+ [root@localhost ~]# lsmem
+ RANGE                                 SIZE  STATE REMOVABLE  BLOCK
+ 0x0000000000000000-0x00000000bfffffff   3G online       yes   0-23
+ 0x0000000100000000-0x000000033fffffff   9G online       yes 32-103
+
+ Memory block size:       128M
+ Total online memory:      12G
+ Total offline memory:      0B
+
+Then try to unplug as much as possible using virtio-mem. Observe which
+memory blocks are still around. Without this patch set:
+
+ [root@localhost ~]# lsmem
+ RANGE                                  SIZE  STATE REMOVABLE   BLOCK
+ 0x0000000000000000-0x00000000bfffffff    3G online       yes    0-23
+ 0x0000000100000000-0x000000013fffffff    1G online       yes   32-39
+ 0x0000000148000000-0x000000014fffffff  128M online       yes      41
+ 0x0000000158000000-0x000000015fffffff  128M online       yes      43
+ 0x0000000168000000-0x000000016fffffff  128M online       yes      45
+ 0x0000000178000000-0x000000017fffffff  128M online       yes      47
+ 0x0000000188000000-0x0000000197ffffff  256M online       yes   49-50
+ 0x00000001a0000000-0x00000001a7ffffff  128M online       yes      52
+ 0x00000001b0000000-0x00000001b7ffffff  128M online       yes      54
+ 0x00000001c0000000-0x00000001c7ffffff  128M online       yes      56
+ 0x00000001d0000000-0x00000001d7ffffff  128M online       yes      58
+ 0x00000001e0000000-0x00000001e7ffffff  128M online       yes      60
+ 0x00000001f0000000-0x00000001f7ffffff  128M online       yes      62
+ 0x0000000200000000-0x0000000207ffffff  128M online       yes      64
+ 0x0000000210000000-0x0000000217ffffff  128M online       yes      66
+ 0x0000000220000000-0x0000000227ffffff  128M online       yes      68
+ 0x0000000230000000-0x0000000237ffffff  128M online       yes      70
+ 0x0000000240000000-0x0000000247ffffff  128M online       yes      72
+ 0x0000000250000000-0x0000000257ffffff  128M online       yes      74
+ 0x0000000260000000-0x0000000267ffffff  128M online       yes      76
+ 0x0000000270000000-0x0000000277ffffff  128M online       yes      78
+ 0x0000000280000000-0x0000000287ffffff  128M online       yes      80
+ 0x0000000290000000-0x0000000297ffffff  128M online       yes      82
+ 0x00000002a0000000-0x00000002a7ffffff  128M online       yes      84
+ 0x00000002b0000000-0x00000002b7ffffff  128M online       yes      86
+ 0x00000002c0000000-0x00000002c7ffffff  128M online       yes      88
+ 0x00000002d0000000-0x00000002d7ffffff  128M online       yes      90
+ 0x00000002e0000000-0x00000002e7ffffff  128M online       yes      92
+ 0x00000002f0000000-0x00000002f7ffffff  128M online       yes      94
+ 0x0000000300000000-0x0000000307ffffff  128M online       yes      96
+ 0x0000000310000000-0x0000000317ffffff  128M online       yes      98
+ 0x0000000320000000-0x0000000327ffffff  128M online       yes     100
+ 0x0000000330000000-0x000000033fffffff  256M online       yes 102-103
+
+ Memory block size:       128M
+ Total online memory:     8.1G
+ Total offline memory:      0B
+
+With this patch set:
+
+ [root@localhost ~]# lsmem
+ RANGE                                 SIZE  STATE REMOVABLE BLOCK
+ 0x0000000000000000-0x00000000bfffffff   3G online       yes  0-23
+ 0x0000000100000000-0x000000013fffffff   1G online       yes 32-39
+
+ Memory block size:       128M
+ Total online memory:       4G
+ Total offline memory:      0B
+
+All memory can get unplugged, all memory block can get removed. Of course,
+no workload ran and the system was basically idle, but it highlights the
+issue - the fairly deterministic chain of unmovable allocations. When a
+huge page for the 2MB memmap is needed, a just-onlined 4MB page will
+be split. The remaining 2MB page will be used for the memmap of the next
+memory block. So one memory block will hold the memmap of the two following
+memory blocks. Finally the pages of the last-onlined memory block will get
+used for the next bigger allocations - if any allocation is unmovable,
+all dependent memory blocks cannot get unplugged and removed until that
+allocation is gone.
+
+Note that with bigger memory blocks (e.g., 256MB), *all* memory
+blocks are dependent and none can get unplugged again!
+
+b) Experiment with memory intensive workload
+
+I performed an experiment with an older version of this patch set
+(before we used undo_isolate_page_range() in online_pages():
+Hotplug 56GB to a VM with an initial 4GB, onlining all memory to
+ZONE_NORMAL right from the kernel when adding it. I then run various
+memory intensive workloads that consume most system memory for a total of
+45 minutes. Once finished, I try to unplug as much memory as possible.
+
+With this change, I am able to remove via virtio-mem (adding individual
+128MB memory blocks) 413 out of 448 added memory blocks. Via individual
+(256MB) DIMMs 380 out of 448 added memory blocks. (I don't have any numbers
+without this patchset, but looking at the above example, it's at most half
+of the 448 memory blocks for virtio-mem, and most probably none for DIMMs).
+
+Again, there are workloads that might behave very differently due to the
+nature of ZONE_NORMAL.
+
+This change also affects (besodes memory onlining):
+- Other users of undo_isolate_page_range(): Pages are always placed to the
+  tail.
+-- When memory offlining fails
+-- When memory isolation fails after having isolated some pageblocks
+-- When alloc_contig_range() either succeeds or fails
+- Other users of __putback_isolated_page(): Pages are always placed to the
+  tail.
+-- Free page reporting
+- Other users of __free_pages_core()
+-- AFAIKs, any memory that is getting exposed to the buddy during boot.
+   IIUC we will now usually allocate memory from lower addresses within
+   a zone first (especially during boot).
+- Other users of generic_online_page()
+-- Hyper-V balloon
+
+v1 -> v2:
+- Avoid changing indentation/alignment of function parameters
+- Minor spelling fixes
+- "mm/page_alloc: convert "report" flag of __free_one_page() to a proper
+   flag"
+-- fop_t -> fpi_t
+-- Clarify/extend documentation of FPI_SKIP_REPORT_NOTIFY
+- "mm/page_alloc: move pages to tail in move_to_free_list()"
+-- Perform change for all move_to_free_list()/move_freepages_block() users
+   to simplify.
+-- Adjust subject/description accordingly.
+- "mm/page_alloc: place pages to tail in __free_pages_core()"
+-- s/init_single_page/__init_single_page/
+
+RFC -> v1:
+- Tweak some patch descriptions
+- "mm/page_alloc: place pages to tail in __putback_isolated_page()"
+-- FOP_TO_TAIL now has higher precedence than page shuffling
+-- Add a note that nothing should rely on FOP_TO_TAIL for correctness
+- "mm/page_alloc: always move pages to the tail of the freelist in
+   unset_migratetype_isolate()"
+-- Use "bool" parameter for move_freepages_block() as requested
+- "mm/page_alloc: place pages to tail in __free_pages_core()"
+-- Eliminate set_page_refcounted() + page_ref_dec() and add a comment
+- "mm/memory_hotplug: update comment regarding zone shuffling"
+-- Added
+
+David Hildenbrand (5):
+  mm/page_alloc: convert "report" flag of __free_one_page() to a proper
+    flag
+  mm/page_alloc: place pages to tail in __putback_isolated_page()
+  mm/page_alloc: move pages to tail in move_to_free_list()
+  mm/page_alloc: place pages to tail in __free_pages_core()
+  mm/memory_hotplug: update comment regarding zone shuffling
+
+ mm/memory_hotplug.c | 11 +++---
+ mm/page_alloc.c     | 84 +++++++++++++++++++++++++++++++++++----------
+ mm/page_isolation.c |  5 +++
+ 3 files changed, 75 insertions(+), 25 deletions(-)
 
 -- 
-Ville Syrjälä
-Intel
+2.26.2
+
