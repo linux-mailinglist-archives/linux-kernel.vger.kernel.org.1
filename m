@@ -2,94 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5A8283815
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28611283817
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgJEOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
+        id S1726323AbgJEOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgJEOng (ORCPT
+        with ESMTP id S1725911AbgJEOoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:43:36 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04840C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:43:35 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id d18so2338453uae.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:43:34 -0700 (PDT)
+        Mon, 5 Oct 2020 10:44:25 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7641C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:44:24 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id r8so9700697qtp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:44:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TU+j+Xbieh3FK7psjds/MoW9/sFR78wjEXA54zTt1Co=;
-        b=AUBIqNhqqIjxGu5JNrH+FhF31uWdVM26CNAWD5OoumwwqeZWHte8dEyW+WdIHRaHEf
-         U5H0w5E4gnmRWqV0eqDgSAREaCIm9B+bdHSe0ZNZviL6o2bzCa/gKxNDOVx1bGQ6WVeR
-         IrTXsFPHUXMHIFX//x/rzb0POtn12pszquBG0=
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NIPvw8e1heuwMKuiOcUyxto/CHGsF04EOz1itR69nNQ=;
+        b=cDltzreSvmKHasVP3qz8D7gEjIMIpYVbydvudTIc7UnmM2uZZIQmxeyIDV13AHU20b
+         lejw9pOPvN5XSioyhdXPD3md7iOgNH/8YNGOFiMEPr5aqtFf/NVAJxc/RWyprr5CY57D
+         9FYIwELFv5jEd5B5gc6CepLCU7943Sdj1RT3I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TU+j+Xbieh3FK7psjds/MoW9/sFR78wjEXA54zTt1Co=;
-        b=e+eGLqfm+ySu5GXRuZr2YcIQuJV2RsiLc+dbUw/DyczRkLl/S5P6RxAtK8quOwGJ9x
-         YLZW7y0DUQ1hNGCmIpd5hvSAuvThnAraAeNU+tTUKZpDha4c6/Nza6ng4kn8BMVOlKa0
-         zZYZWXTRmIdIjRrUk1WM/WN+5lG48HoIiNGR3Wj7X3SqD8U/MEoqgbvGR9sItwUDflQj
-         Wy5mVcpSZaE9Kq/my3hwiZyVwr2BObgrceV/6GMH73DxVnujdaC/C12qlbJEIZGc1E6o
-         6T9WPL3PMZdeTZcRE/6BSMfPfy2eZ1BY7AyEKcQFuuzhr1I63XIX1W7am6FHjviQbLpq
-         Q71Q==
-X-Gm-Message-State: AOAM533AhdatIRyxm2e6bcdH+SYPW210X4q6EW1WSc0JKUyjy+d4AI7n
-        2B9sh4zQKypz35h1dUYtk+b0Amy34G5k6A==
-X-Google-Smtp-Source: ABdhPJwI8vvbpRMFwNCXxsxfUauxKJyxD0A59b5TbTDSXTuUkGN0GZ1a+UmRrrjZc6M2mRS3S/Mw6Q==
-X-Received: by 2002:ab0:d93:: with SMTP id i19mr31572uak.7.1601909013986;
-        Mon, 05 Oct 2020 07:43:33 -0700 (PDT)
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
-        by smtp.gmail.com with ESMTPSA id i25sm25699uac.2.2020.10.05.07.43.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 07:43:33 -0700 (PDT)
-Received: by mail-vs1-f51.google.com with SMTP id u74so1801396vsc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:43:33 -0700 (PDT)
-X-Received: by 2002:a67:f4c2:: with SMTP id s2mr287395vsn.4.1601909012755;
- Mon, 05 Oct 2020 07:43:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NIPvw8e1heuwMKuiOcUyxto/CHGsF04EOz1itR69nNQ=;
+        b=tcdfdTfNTv9xVKPgYHCpjuwEnjqGMXV/CjLfRQDxn6Kz4CqWRP4+IZXje1TufvdFHl
+         Nq+p0btzp6LS6J+ZAqWAkMab6OI09W/fHuSjNxa6jmbAI84iHTNzN7/65wbKZENGMIwG
+         GqiNPed99jwd2ua1SYPknu4183/csp8BMS0x81jS/JFXb8t8Nc6veuevrlQfeAUfKgvi
+         6y+b+E131jEo7+dwnVflET94DhgffeUR+QX67UcGuxqCqkxpOH79CFvHjNIbq1PODFu9
+         lF9NmkRXubA381deaI3K5tZf3+WCcqbPTvjqIlB9RNFEV8miJ7HpnKtw7m5hrBDoRDZQ
+         hbvQ==
+X-Gm-Message-State: AOAM532PooXMPibQjzoB/KDOvL8u5IUEctT0sotdL/u7CiPN1lPYhC8H
+        62bT7BUcMulW78g7TXDA7roU+A==
+X-Google-Smtp-Source: ABdhPJxTF+6qQlaN6mNtASaz9cwRdEycr27ZrgJNp2KPaVaehyLs5/DnPs64AVUOGl/HF6q0dD0YUw==
+X-Received: by 2002:ac8:760f:: with SMTP id t15mr158142qtq.35.1601909063978;
+        Mon, 05 Oct 2020 07:44:23 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id k22sm190690qkk.13.2020.10.05.07.44.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:44:23 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 10:44:22 -0400
+From:   joel@joelfernandes.org
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201005144422.GB524504@google.com>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <20201004233146.GP29330@paulmck-ThinkPad-P72>
+ <20201005023846.GA359428@rowland.harvard.edu>
+ <20201005140353.GW29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201005090321.8724-1-vigneshr@ti.com>
-In-Reply-To: <20201005090321.8724-1-vigneshr@ti.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 5 Oct 2020 07:43:21 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XLWgyS0T5h9JtNpDSo4PebUYX-YEAW9nBo5VyhKRbvYA@mail.gmail.com>
-Message-ID: <CAD=FV=XLWgyS0T5h9JtNpDSo4PebUYX-YEAW9nBo5VyhKRbvYA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mtd: spi-nor: Prefer asynchronous probe"
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005140353.GW29330@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Oct 05, 2020 at 07:03:53AM -0700, Paul E. McKenney wrote:
+> On Sun, Oct 04, 2020 at 10:38:46PM -0400, Alan Stern wrote:
+> > On Sun, Oct 04, 2020 at 04:31:46PM -0700, Paul E. McKenney wrote:
+> > > Nice simple example!  How about like this?
+> > > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > commit c964f404eabe4d8ce294e59dda713d8c19d340cf
+> > > Author: Alan Stern <stern@rowland.harvard.edu>
+> > > Date:   Sun Oct 4 16:27:03 2020 -0700
+> > > 
+> > >     manual/kernel: Add a litmus test with a hidden dependency
+> > >     
+> > >     This commit adds a litmus test that has a data dependency that can be
+> > >     hidden by control flow.  In this test, both the taken and the not-taken
+> > >     branches of an "if" statement must be accounted for in order to properly
+> > >     analyze the litmus test.  But herd7 looks only at individual executions
+> > >     in isolation, so fails to see the dependency.
+> > >     
+> > >     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > 
+> > > diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
+> > > new file mode 100644
+> > > index 0000000..6baecf9
+> > > --- /dev/null
+> > > +++ b/manual/kernel/crypto-control-data.litmus
+> > > @@ -0,0 +1,31 @@
+> > > +C crypto-control-data
+> > > +(*
+> > > + * LB plus crypto-control-data plus data
+> > > + *
+> > > + * Result: Sometimes
+> > > + *
+> > > + * This is an example of OOTA and we would like it to be forbidden.
+> > > + * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
+> > > + * control-dependent on the preceding READ_ONCE.  But the dependencies are
+> > > + * hidden by the form of the conditional control construct, hence the 
+> > > + * name "crypto-control-data".  The memory model doesn't recognize them.
+> > > + *)
+> > > +
+> > > +{}
+> > > +
+> > > +P0(int *x, int *y)
+> > > +{
+> > > +	int r1;
+> > > +
+> > > +	r1 = 1;
+> > > +	if (READ_ONCE(*x) == 0)
+> > > +		r1 = 0;
+> > > +	WRITE_ONCE(*y, r1);
+> > > +}
+> > > +
+> > > +P1(int *x, int *y)
+> > > +{
+> > > +	WRITE_ONCE(*x, READ_ONCE(*y));
+> > > +}
+> > > +
+> > > +exists (0:r1=1)
+> > 
+> > Considering the bug in herd7 pointed out by Akira, we should rewrite P1 as:
+> > 
+> > P1(int *x, int *y)
+> > {
+> > 	int r2;
+> > 
+> > 	r = READ_ONCE(*y);
+> > 	WRITE_ONCE(*x, r2);
+> > }
+> > 
+> > Other than that, this is fine.
+> 
+> Updated as suggested by Will, like this?
 
-On Mon, Oct 5, 2020 at 2:03 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
->
-> This reverts commit 03edda0e1edaa3c2e99239c66e3c14d749318fd6.
->
-> This leads to warn dump like [1] on some platforms and reorders MTD
-> devices thus may break user space expectations. So revert the change.
->
-> [1]:
->
-> [    1.849801] ------------[ cut here ]------------
-> [    1.854271] mscc_felix 0000:00:00.5: device is disabled, skipping
-> [    1.858753] WARNING: CPU: 1 PID: 7 at kernel/kmod.c:136 __request_module+0x3a4/0x568
->
-> [...]
->
-> Reported-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 1 -
->  1 file changed, 1 deletion(-)
+LGTM as well,
 
-Thank you for the revert and sorry for the breakage.
+FWIW:
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+thanks,
+
+ - Joel
+
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit adf43667b702582331d68acdf3732a6a017a182c
+> Author: Alan Stern <stern@rowland.harvard.edu>
+> Date:   Sun Oct 4 16:27:03 2020 -0700
+> 
+>     manual/kernel: Add a litmus test with a hidden dependency
+>     
+>     This commit adds a litmus test that has a data dependency that can be
+>     hidden by control flow.  In this test, both the taken and the not-taken
+>     branches of an "if" statement must be accounted for in order to properly
+>     analyze the litmus test.  But herd7 looks only at individual executions
+>     in isolation, so fails to see the dependency.
+>     
+>     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
+> new file mode 100644
+> index 0000000..cdcdec9
+> --- /dev/null
+> +++ b/manual/kernel/crypto-control-data.litmus
+> @@ -0,0 +1,34 @@
+> +C crypto-control-data
+> +(*
+> + * LB plus crypto-control-data plus data
+> + *
+> + * Result: Sometimes
+> + *
+> + * This is an example of OOTA and we would like it to be forbidden.
+> + * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
+> + * control-dependent on the preceding READ_ONCE.  But the dependencies are
+> + * hidden by the form of the conditional control construct, hence the 
+> + * name "crypto-control-data".  The memory model doesn't recognize them.
+> + *)
+> +
+> +{}
+> +
+> +P0(int *x, int *y)
+> +{
+> +	int r1;
+> +
+> +	r1 = 1;
+> +	if (READ_ONCE(*x) == 0)
+> +		r1 = 0;
+> +	WRITE_ONCE(*y, r1);
+> +}
+> +
+> +P1(int *x, int *y)
+> +{
+> +	int r2;
+> +
+> +	r2 = READ_ONCE(*y);
+> +	WRITE_ONCE(*x, r2);
+> +}
+> +
+> +exists (0:r1=1)
