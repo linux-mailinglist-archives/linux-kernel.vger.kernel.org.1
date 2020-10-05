@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4375283058
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BE528305C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbgJEGY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 02:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725267AbgJEGY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:24:58 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6E6C207EA;
-        Mon,  5 Oct 2020 06:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601879097;
-        bh=Yrr7GNWUAVWaaz1jIc/uXs8U/IEt8VrM/dIArGoeqEE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ThJc1ZmtFFTxYDdNdNd+qvSTOF09HxfMQO8wyxvIf3O/jNqXFBOknbeaXhDwLlWAs
-         PrdZrskYzZZoD3C1yFpNziMtzwMXM8CWgS2UJsNIFlZq4Gs/IBNJnAl5IpT1GVcSz7
-         FfpjLECmQYssfScz4NDLWjzumgZ8IcsQuQBSbbac=
-Received: by mail-oo1-f54.google.com with SMTP id b12so1963023oop.13;
-        Sun, 04 Oct 2020 23:24:57 -0700 (PDT)
-X-Gm-Message-State: AOAM53123GvanQ29Bce+sClk1yAQAIKz/SECzV4FJMN+7Z/kHElaRCtN
-        2iyxLcAwjwFtTXgDjQlTl3ur6wDACse/I5RyORc=
-X-Google-Smtp-Source: ABdhPJzwJdZHBBVYKQctaaNGjxR/8GlzP9k3E5YR5UECckChEgp4tsYN+VVHxlTisKvVtVRgs7r5+77Nd5DZOWBgB5I=
-X-Received: by 2002:a4a:c3ca:: with SMTP id e10mr4325783ooq.41.1601879097030;
- Sun, 04 Oct 2020 23:24:57 -0700 (PDT)
+        id S1725903AbgJEG0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 02:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgJEG0g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 02:26:36 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19C2C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 23:26:36 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t23so3331039pji.0
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 23:26:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SKaQ5+8uUmRtIWBKZSxd+2jDGXEKN5QdEKsAPMYJkgg=;
+        b=hVUBIPjnHGOWjGUi1oUG2maCLkvuCE7pMNCmJn6gkaIVPZ8LdYKidM635ZHKQeHwr+
+         l2knVD95lg4NSfyju+W6598JCldz5UwtjNiq5Jw8H8LWwbCeS4VjYFXgNY9WYCMElFUg
+         2atFKK1Z5tvYk+DhYbjVwhkBzLDgUhCcKGzBzX8j4fumt3o5pOmUeq9QqIeXEm7BnOnZ
+         a+C2Am6JbEg4Ha9fo3qOa+KC6LPN927a6o67oRVjFKDbmc9/uYW0fgX+Cks4uxcGs2HW
+         NWZrgF1TEebG01jSrJh4i4AjHHuHT+bSBFJDRKzAlvEWgDfpYYZ6UGBMMucpf0+sffjM
+         zsXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SKaQ5+8uUmRtIWBKZSxd+2jDGXEKN5QdEKsAPMYJkgg=;
+        b=SWm4GRkEcGYHqVevhVPKmlyza2fAZs0amBgs7Thx3x40BOmhmhIAKBu2WoGJhevxn8
+         nnjfDqTe2oUhtGJi7Qk/xsES4zSJqqLqJ7NtL1exCpo1WIeswCgUOAyFXD0/VoUAMBd0
+         QbBt91D8CqYU0ynfTg0Uv+ZeZczNZwthARyMWF0JiPYzn+kQr0nKWA8I8qZ2fgPs+U/6
+         oddSiFGF1SF4mdIQViDJK1x4PO0M588rskclxaYjTjCaGl4qZ8KLVlvfi0rAb9UnnXnM
+         DPV/bGhB4X39k6Pk5HZ9RH+C4ZG3Lts6R6SNd29y8I/C5aSHqc7G8PGvQsJmbnFwLHAL
+         ND8A==
+X-Gm-Message-State: AOAM531hCXNinJUP6qK4k7EJdK212AEQwMLyJhUJ6nmH3jOaK/H9/KDC
+        UAatsCX+aRa0gl67MQ/nLopv6Q==
+X-Google-Smtp-Source: ABdhPJzMX/4YpxutBiiXM2fWXSSduuaC0HQCvEVYpnrcJsYem70ESjGjA5g+ApA82zM/o6oW1zh/YQ==
+X-Received: by 2002:a17:90a:e282:: with SMTP id d2mr104042pjz.159.1601879196092;
+        Sun, 04 Oct 2020 23:26:36 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id j6sm10860110pfi.129.2020.10.04.23.26.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 04 Oct 2020 23:26:35 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 11:56:33 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     rnayak@codeaurora.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/8] drm/msm: Unconditionally call
+ dev_pm_opp_of_remove_table()
+Message-ID: <20201005062633.ejpehkpeuwksrx3e@vireshk-i7>
+References: <cover.1598594714.git.viresh.kumar@linaro.org>
+ <6e4110032f8711e8bb0acbeccfe66dec3b09d5c1.1598594714.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <20200930065617.934638-1-palmerdabbelt@google.com>
- <20201002064905.GA27115@infradead.org> <5692716.lOV4Wx5bFT@positron.chronox.de>
- <CAMj1kXEnOh4MBiVVgkhd4P81eRPCVi3+y6JcD58jL45-eh324A@mail.gmail.com> <20201005061918.GB1856@infradead.org>
-In-Reply-To: <20201005061918.GB1856@infradead.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 5 Oct 2020 08:24:46 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
-Message-ID: <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: jitterentropy - bind statically into kernel
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Stephan M??ller" <smueller@chronox.de>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        kernel test robot <lkp@intel.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e4110032f8711e8bb0acbeccfe66dec3b09d5c1.1598594714.git.viresh.kumar@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 at 08:19, Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Sun, Oct 04, 2020 at 11:16:10PM +0200, Ard Biesheuvel wrote:
-> > On Sun, 4 Oct 2020 at 20:48, Stephan M??ller <smueller@chronox.de> wrote:
-> > >
-> > > The RISC-V architecture is about to implement the callback
-> > > random_get_entropy with a function that is not exported to modules.
-> >
-> > Why is that? Wouldn't it be better to export the symbol instead?
->
-> get_cycles is a low-level time keeping detail that really should not
-> be exported, and at least for RISC-V this would be the only modular
-> user.  Once that is sorted out I'll audit other common architectures
-> to drop the export, as it isn't something that should be used in ramdom
-> driver code.
+On 28-08-20, 11:37, Viresh Kumar wrote:
+> dev_pm_opp_of_remove_table() doesn't report any errors when it fails to
+> find the OPP table with error -ENODEV (i.e. OPP table not present for
+> the device). And we can call dev_pm_opp_of_remove_table()
+> unconditionally here.
+> 
+> While at it, also create a label to put clkname.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Fair enough.
+Can someone please apply this and the other drm patch (2/8) ?
 
-But this means we should fix the jitterentropy driver rather than
-sidestepping the issue by only allowing it to be built in a way where
-we don't happen to notice that the symbol in question is not meant for
-general consumption.
-
-If jitterentropy is a special case, we could put a alternate
-non-'static inline' version of random_get_entropy() in the core
-kernel, and only export it if JITTER_ENTROPY is built as a module in
-the first place. But I'd prefer it if jitterentropy switches to an API
-that is suitable for driver consumption.
+-- 
+viresh
