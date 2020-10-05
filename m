@@ -2,112 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A6728386B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8D7283870
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgJEOql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52610 "EHLO mail.kernel.org"
+        id S1726984AbgJEOqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:46:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:49322 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726655AbgJEOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:45:27 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6F94208A9;
-        Mon,  5 Oct 2020 14:45:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601909116;
-        bh=vOWJK81gI4SZUmr6nCexPxODyzmE8BKlV1U476drK1E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vfmvDe97DRa5d01lkJddtGMy1ThYi0NJ1vOSWiT/ZriRpurd37wzYdmL/3P5ithdA
-         QtCDzBIIgwj4yacwtnKrrd83T4fsND4hryjyU4E+BHEQ4RxK6V0JGf4C/1Zb5e/u+D
-         NIK1idHAZ8YPjJnfn/ssB52eiCl+7fmd7REZf0as=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 5.8 12/12] iommu/vt-d: Fix lockdep splat in iommu_flush_dev_iotlb()
-Date:   Mon,  5 Oct 2020 10:45:00 -0400
-Message-Id: <20201005144501.2527477-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201005144501.2527477-1-sashal@kernel.org>
-References: <20201005144501.2527477-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1726934AbgJEOqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:46:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB30A106F;
+        Mon,  5 Oct 2020 07:46:45 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25BBA3F70D;
+        Mon,  5 Oct 2020 07:46:44 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        egranata@google.com, jbhayana@google.com,
+        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, cristian.marussi@arm.com
+Subject: [PATCH 0/7] SCMIv3.0 Sensor Extensions
+Date:   Mon,  5 Oct 2020 15:45:12 +0100
+Message-Id: <20201005144518.31832-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+Hi,
 
-[ Upstream commit 1a3f2fd7fc4e8f24510830e265de2ffb8e3300d2 ]
+this series is meant to add support for the new SCMI Sensor Protocol
+features defined by the upcoming SCMIv3.0 specification, whose BETA
+release is available at [1].
 
-Lock(&iommu->lock) without disabling irq causes lockdep warnings.
+The series is currently based on for-next/scmi [2] on top of:
 
-[   12.703950] ========================================================
-[   12.703962] WARNING: possible irq lock inversion dependency detected
-[   12.703975] 5.9.0-rc6+ #659 Not tainted
-[   12.703983] --------------------------------------------------------
-[   12.703995] systemd-udevd/284 just changed the state of lock:
-[   12.704007] ffffffffbd6ff4d8 (device_domain_lock){..-.}-{2:2}, at:
-               iommu_flush_dev_iotlb.part.57+0x2e/0x90
-[   12.704031] but this lock took another, SOFTIRQ-unsafe lock in the past:
-[   12.704043]  (&iommu->lock){+.+.}-{2:2}
-[   12.704045]
+commit 66d90f6ecee7 ("firmware: arm_scmi: Enable building as a single
+		     module")
 
-               and interrupts could create inverse lock ordering between
-               them.
+Any feedback welcome,
 
-[   12.704073]
-               other info that might help us debug this:
-[   12.704085]  Possible interrupt unsafe locking scenario:
+Thanks,
 
-[   12.704097]        CPU0                    CPU1
-[   12.704106]        ----                    ----
-[   12.704115]   lock(&iommu->lock);
-[   12.704123]                                local_irq_disable();
-[   12.704134]                                lock(device_domain_lock);
-[   12.704146]                                lock(&iommu->lock);
-[   12.704158]   <Interrupt>
-[   12.704164]     lock(device_domain_lock);
-[   12.704174]
-                *** DEADLOCK ***
+Cristian
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20200927062428.13713-1-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/iommu/intel/iommu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[1]:https://developer.arm.com/documentation/den0056/c/
+[2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index fbe0b0cc56edf..24a84d294fd01 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2617,7 +2617,7 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
- 		}
- 
- 		/* Setup the PASID entry for requests without PASID: */
--		spin_lock(&iommu->lock);
-+		spin_lock_irqsave(&iommu->lock, flags);
- 		if (hw_pass_through && domain_type_is_si(domain))
- 			ret = intel_pasid_setup_pass_through(iommu, domain,
- 					dev, PASID_RID2PASID);
-@@ -2627,7 +2627,7 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
- 		else
- 			ret = intel_pasid_setup_second_level(iommu, domain,
- 					dev, PASID_RID2PASID);
--		spin_unlock(&iommu->lock);
-+		spin_unlock_irqrestore(&iommu->lock, flags);
- 		if (ret) {
- 			dev_err(dev, "Setup RID2PASID failed\n");
- 			dmar_remove_one_dev_info(dev);
+Cristian Marussi (6):
+  firmware: arm_scmi: rework scmi_sensors_protocol_init
+  firmware: arm_scmi: add SCMIv3.0 Sensors descriptors extensions
+  hwmon: scmi: update hwmon internal scale data type
+  firmware: arm_scmi: add SCMIv3.0 Sensors timestamped reads
+  firmware: arm_scmi: add SCMIv3.0 Sensor configuration support
+  firmware: arm_scmi: add SCMIv3.0 Sensor notifications
+
+ drivers/firmware/arm_scmi/sensors.c | 722 ++++++++++++++++++++++++++--
+ drivers/hwmon/scmi-hwmon.c          |   2 +-
+ include/linux/scmi_protocol.h       | 287 ++++++++++-
+ 3 files changed, 956 insertions(+), 55 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
