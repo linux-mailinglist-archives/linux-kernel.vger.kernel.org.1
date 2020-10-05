@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE7D2831BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CF82831C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbgJEIS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:18:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgJEIS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:18:56 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E49382075A;
-        Mon,  5 Oct 2020 08:18:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601885935;
-        bh=a3hZG38nYuH7ILLCqeYIKDVFUN9qdL0tXSCBnJt0vzA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pGsi91aD4lBD6yc0gsiR25lvFINWAXfZpxfZCc5MjxthOts5lTbemiXU1Hp9+Ubow
-         uqQAJ15FB4S6M0w2JRwpjK9QMRHsAXI88AvRmCQYBmu5CAJdYfMAkpd41p7cBVYICA
-         /z/Iy6BZzchFaIQnVREfWDwuvwTAM1RWJXIO2XTs=
-Date:   Mon, 5 Oct 2020 10:19:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tammo Block <tammo.block@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3 0/6] vt: Add SRG mouse reporting features
-Message-ID: <20201005081939.GA407265@kroah.com>
-References: <cover.1594032517.git.tammo.block@gmail.com>
- <20201002123002.GA3346488@kroah.com>
- <CAEHKo2nK+S42FmjN3NDh8g8+yNvcpeBAbY8sq+wUxbRmZcbCGA@mail.gmail.com>
+        id S1726078AbgJEITv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:19:51 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:35263 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgJEITu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:19:50 -0400
+Received: by mail-lf1-f67.google.com with SMTP id w11so9803249lfn.2;
+        Mon, 05 Oct 2020 01:19:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q4XZrXEeQD517Aqzlbe9SxhNn9MS2ME8Yf3Gk4LM/sc=;
+        b=Z0eTS6wkdakt7z8JAuccJ3Bo/6i9KkIAnCR/lVi130QkTevqXszRWzOGBDRIWQeux/
+         PcImaqDeDYKn7EqqgON0tHwD0SM4XASHx8RIIl67ucQxDCmVTJFGEnut0QdXF85NzoAO
+         Bdq4vwKGXUSjsdLDThF3aQi85uduV8gzzTKP2alGzONOdRLVYw832Zm98R2bTQem/8g5
+         Ae3l9rKQ866HZMqD3+82ehM4XRhXqEm2S9WlXVvVXUM4MbF9FgR0RY2804OXjo0qAMrv
+         oCI0Hkm5fgqfsKmk3E7jYeVhhe4MiuUeU58t92TETlw4ZIadmWNL/dV4zwFHYNAjKFZH
+         ecFw==
+X-Gm-Message-State: AOAM530bMyH95brR8KFs3gDQmQnV5wucIfLMLqLD4SFZJEmkPycfyyjz
+        aIeTiI+UQ3CCjPbwhARM1Gs=
+X-Google-Smtp-Source: ABdhPJzBO+i0G1WlEF/XcGMfyolfNZxzJtOqB8x0vXbXApEAKorWqT2Xqz9AF+kZWMnBtTWOyZs8SQ==
+X-Received: by 2002:a05:6512:31d:: with SMTP id t29mr2351786lfp.327.1601885989265;
+        Mon, 05 Oct 2020 01:19:49 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id a28sm264798lfi.60.2020.10.05.01.19.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 01:19:48 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kPLii-0001TC-FA; Mon, 05 Oct 2020 10:19:45 +0200
+Date:   Mon, 5 Oct 2020 10:19:44 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Cc:     =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: serial: qmi_wwan: add Cellient MPL200 card
+Message-ID: <20201005081944.GK5141@localhost>
+References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
+ <4688927cbf36fe0027340ea5e0c3aaf1445ba256.1601715478.git.wilken.gottwalt@mailbox.org>
+ <87d01yovq5.fsf@miraculix.mork.no>
+ <20201004203042.093ac473@monster.powergraphx.local>
+ <20201005080612.GI5141@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEHKo2nK+S42FmjN3NDh8g8+yNvcpeBAbY8sq+wUxbRmZcbCGA@mail.gmail.com>
+In-Reply-To: <20201005080612.GI5141@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 10:06:38AM +0200, Tammo Block wrote:
-> Hi Greg,
-> 
-> Am Fr., 2. Okt. 2020 um 14:30 Uhr schrieb Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org>:
-> >
-> > On Mon, Jul 06, 2020 at 12:57:22PM +0200, Tammo Block wrote:
-> > > Hi everybody,
-> > >
-> > > this patchset adds xterm like mouse reporting features to the console.
-> > >
-> > > The linux virtual console has support for mouse reporting since 1994 or so,
-> > > but the kernel only supports the original X10/X11 style standard protocols.
-> > > To support more protocols these patches expand the kernel structures in a
-> > > up- and downwards compatible way, see the last patch for detailed
-> > > documentation and pointers to even more detailed docs.
-> > >
-> > > The main goal is to become compatible with xterm, as most TUI software today
-> > > is tested in xterm or another compatible terminal.
-> > >
-> > > Support by the mouse daemons (consolation, gpm) will be needed too.
-> >
-> > What happened to this feature.  Was there a new set of patches or was
-> > this the last one?
-> 
-> This was the last set, there were no further comments in any direction.
-> 
-> > mouse support for the console feels odd these dyas, who would use this?
-> >
-> Well .... at least i am using it .. ;-)
-> 
-> This is in fact not a really new feature, but an improvement of an old feature.
-> The patch just tries to be compatible with xterm and other modern terminals
-> to be able to run stuff like midnight commander or similar programs.
-> 
-> I am personally using console tty's for long running or controlling stuff
-> and being able to use the mouse (especially for cut n' paste) seems useful.
-> At least for me. But my personal habits might be odd ...
-> 
-> Feel free to ignore the patches if you don't consider this feature useful.
-> If you do consider it useful I can rebase against whatever you like.
+On Mon, Oct 05, 2020 at 10:06:12AM +0200, Johan Hovold wrote:
+> On Sun, Oct 04, 2020 at 08:30:42PM +0200, Wilken Gottwalt wrote:
 
-Rebasing against 5.10-rc1 comes out in a few weeks, and resending it
-then seems like a good idea.
+> > Oh sorry, looks like I got it mixed up a bit. It was my first attempt to submit
+> > a patch set. Which is the best way to resubmit an update if the other part of
+> > the patch set gets accepted? The documentation about re-/submitting patch sets
+> > is a bit thin.
+> 
+> Just send these as individual patches (not a series) as they are
+> independent and go through separate trees.
+> 
+> Also, I never received the USB serial patch, only this one, so you need
+> to resend both anyway.
 
-thanks,
+Found it flagged spam, so no need to resend that one.
 
-greg k-h
+Just resend the networking one with a v2 prefix. In general, you could
+mention in a changelog in the cover letter that you've removed patches
+that have already been applied.
+
+Johan
