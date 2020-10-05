@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E337C283680
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591E8283682
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgJEN2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:28:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50568 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgJEN2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:28:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601904513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IPqPNbDqClbP8EksYsOoKg3cRZhaMTz9vJe273I/bK0=;
-        b=krA5UWKlDkZ8d6gQzz6GVnSDlOTpq8O4pe01xbORAvttEp0Gzw71JSEInos1S4atPTME/n
-        9Y0tAZeKgGDZ+xA6yFopD4TuC79/IY3EgltPVyucHOz7CTngy7EFAGNe/hQLrvZ+CXWO7F
-        SDn0q2jTm7UQh+npH5kFG/M490rvevU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 70346ACD8;
-        Mon,  5 Oct 2020 13:28:33 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 15:28:30 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH 6/9] mm, page_alloc: cache pageset high and batch in
- struct zone
-Message-ID: <20201005132830.GB4555@dhcp22.suse.cz>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-7-vbabka@suse.cz>
+        id S1726123AbgJEN25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgJEN24 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:28:56 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9C6C0613CE;
+        Mon,  5 Oct 2020 06:28:56 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u8so10878664lff.1;
+        Mon, 05 Oct 2020 06:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pDfp+8jOaUeqI88f58G9d3pgrodgYrD29BLFi8aPWHs=;
+        b=XHwHZs6I/CK3sd9jDKPmF1UqwJYJ53JBn2m9d89uwdZVrxeYSUI3vD9v3uiGWcVgkt
+         RKn1CcbnELQ+4OV9z8d+pGkmSiC9QrGQrVfhjSloGJ30C6vd+dUjVO/GIpewsP6DGNsl
+         3nbBPzeg37N3K/MoLJoHyTJ4JcND13yAFqvwPPqIdbNFKEzZ55mNQl2cOHQLjsF0ePK/
+         OD7X3ca/9b0qE2AS2CYKlvLGNphlCTFilptvxGFYRnvAicaP56jSFGSZgOgX618WjQbp
+         UmMqzFm2umphzrt7unSi5tv1Vqqv96QPiseiYX9RZOLrkOzIj+no+ELeZCSGlGd24KWv
+         nGhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pDfp+8jOaUeqI88f58G9d3pgrodgYrD29BLFi8aPWHs=;
+        b=rPn1Ri2/O+FyIBrkCkI+ozK8yfa75fqx16JRRDq4j0rQeLkrd4uWBt3SAosaXTCXJ5
+         DcDrVXsJeSY9fC4xmmfxD3iOReXl3v5jbvgCmJkMZJgT3YyHnjTteSfQ6ekdZZMFlAOF
+         ATHA/ycGxoYuKigWVQTmIasKVSrQwwB3DC/lz2U/wyiRRgNXqqKhwxUjyRoC5rcF9PHO
+         aeRy4MM7WPoPm23F7tt4g7kms1YhUgRO/4LPbqk7SpW5uq3ItPvyf6tGGy1mfi6glVt8
+         YjRH9Copb8GmjYwH1sNeZ4R8dZvPALT0Mvxs/xHmRRG/pO/W0wI0FvjNRNrgMjzA0fhV
+         HXHA==
+X-Gm-Message-State: AOAM530Ulpo7YWZkatQtheNk7JgWxQWWac9aZ1xyxPcds7d7z0TdBiuU
+        7NxiVMrgH9LLNyPrAWB+p3+d3egvxjM=
+X-Google-Smtp-Source: ABdhPJzYnCEZuOgmvTnVXNmuhQidi8+UND8HD9ZaURgVJOb85YF35KkKZhBGO5IvLcC/lQpRq4nEiA==
+X-Received: by 2002:a19:b4b:: with SMTP id 72mr5295868lfl.590.1601904534662;
+        Mon, 05 Oct 2020 06:28:54 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id b16sm2594099ljh.34.2020.10.05.06.28.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 06:28:54 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+ <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
+ <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
+ <20201005095351.GI425362@ulmo>
+ <ae48aaaf-fe10-6de4-06bb-2afbde799168@gmail.com>
+ <20201005111547.GQ425362@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <39cb0056-1447-2232-d33c-adb17114740a@gmail.com>
+Date:   Mon, 5 Oct 2020 16:28:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922143712.12048-7-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201005111547.GQ425362@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-09-20 16:37:09, Vlastimil Babka wrote:
-> All per-cpu pagesets for a zone use the same high and batch values, that are
-> duplicated there just for performance (locality) reasons. This patch adds the
-> same variables also to struct zone as a shared copy.
+05.10.2020 14:15, Thierry Reding пишет:
+> On Mon, Oct 05, 2020 at 01:36:55PM +0300, Dmitry Osipenko wrote:
+>> 05.10.2020 12:53, Thierry Reding пишет:
+>>> On Fri, Oct 02, 2020 at 05:50:08PM +0300, Dmitry Osipenko wrote:
+>>>> 02.10.2020 17:22, Dmitry Osipenko пишет:
+>>>>>>  static int tegra_smmu_of_xlate(struct device *dev,
+>>>>>>  			       struct of_phandle_args *args)
+>>>>>>  {
+>>>>>> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
+>>>>>> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
+>>>>>>  	u32 id = args->args[0];
+>>>>>>  
+>>>>>> +	of_node_put(args->np);
+>>>>>> +
+>>>>>> +	if (!mc || !mc->smmu)
+>>>>>> +		return -EPROBE_DEFER;
+>>>>> platform_get_drvdata(NULL) will crash.
+>>>>>
+>>>>
+>>>> Actually, platform_get_drvdata(NULL) can't happen. I overlooked this.
+>>>
+>>> How so? It's technically possible for the iommus property to reference a
+>>> device tree node for which no platform device will ever be created, in
+>>> which case of_find_device_by_node() will return NULL. That's very
+>>> unlikely and perhaps worth just crashing on to make sure it gets fixed
+>>> immediately.
+>>
+>> The tegra_smmu_ops are registered from the SMMU driver itself and MC
+>> driver sets platform data before SMMU is initialized, hence device is
+>> guaranteed to exist and mc can't be NULL.
 > 
-> This will be useful later for making possible to disable pcplists temporarily
-> by setting high value to 0, while remembering the values for restoring them
-> later. But we can also immediately benefit from not updating pagesets of all
-> possible cpus in case the newly recalculated values (after sysctl change or
-> memory online/offline) are actually unchanged from the previous ones.
-
-Advantage of this patch is not really clear from it in isolation. Maybe
-merge it with the patch which uses the duplicated state.
-
+> Yes, but that assumes that args->np points to the memory controller's
+> device tree node. It's obviously a mistake to do this, but I don't think
+> anyone will prevent you from doing this:
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/linux/mmzone.h |  6 ++++++
->  mm/page_alloc.c        | 16 ++++++++++++++--
->  2 files changed, 20 insertions(+), 2 deletions(-)
+> 	iommus = <&{/chosen} 0>;
 > 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 90721f3156bc..7ad3f14dbe88 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -470,6 +470,12 @@ struct zone {
->  #endif
->  	struct pglist_data	*zone_pgdat;
->  	struct per_cpu_pageset __percpu *pageset;
-> +	/*
-> +	 * the high and batch values are copied to individual pagesets for
-> +	 * faster access
-> +	 */
-> +	int pageset_high;
-> +	int pageset_batch;
->  
->  #ifndef CONFIG_SPARSEMEM
->  	/*
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index de3b48bda45c..901907799bdc 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5824,6 +5824,8 @@ static void build_zonelists(pg_data_t *pgdat)
->   * Other parts of the kernel may not check if the zone is available.
->   */
->  static void pageset_init(struct per_cpu_pageset *p);
-> +#define BOOT_PAGESET_HIGH	0
-> +#define BOOT_PAGESET_BATCH	1
->  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
->  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
->  
-> @@ -6213,8 +6215,8 @@ static void pageset_init(struct per_cpu_pageset *p)
->  	 * need to be as careful as pageset_update() as nobody can access the
->  	 * pageset yet.
->  	 */
-> -	pcp->high = 0;
-> -	pcp->batch = 1;
-> +	pcp->high = BOOT_PAGESET_HIGH;
-> +	pcp->batch = BOOT_PAGESET_BATCH;
->  }
->  
->  /*
-> @@ -6238,6 +6240,14 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
->  		new_batch = max(1UL, 1 * new_batch);
->  	}
->  
-> +	if (zone->pageset_high != new_high ||
-> +	    zone->pageset_batch != new_batch) {
-> +		zone->pageset_high = new_high;
-> +		zone->pageset_batch = new_batch;
-> +	} else {
-> +		return;
-> +	}
-> +
->  	for_each_possible_cpu(cpu) {
->  		p = per_cpu_ptr(zone->pageset, cpu);
->  		pageset_update(&p->pcp, new_high, new_batch);
-> @@ -6300,6 +6310,8 @@ static __meminit void zone_pcp_init(struct zone *zone)
->  	 * offset of a (static) per cpu variable into the per cpu area.
->  	 */
->  	zone->pageset = &boot_pageset;
-> +	zone->pageset_high = BOOT_PAGESET_HIGH;
-> +	zone->pageset_batch = BOOT_PAGESET_BATCH;
->  
->  	if (populated_zone(zone))
->  		printk(KERN_DEBUG "  %s zone: %lu pages, LIFO batch:%u\n",
-> -- 
-> 2.28.0
+> In that case, since no platform device is created for the /chosen node,
+> iommu_pdev will end up being NULL and platform_get_drvdata() will crash.
 
--- 
-Michal Hocko
-SUSE Labs
+But then Tegra SMMU isn't associated with the device's IOMMU path, and
+thus, tegra_smmu_of_xlate() won't be invoked for this device.
+
+> That said, I'm fine with not adding a check for that. If anyone really
+> does end up messing this up they deserve the crash.
+> 
+> I'm still a bit undecided about the mc->smmu check because I haven't
+> convinced myself yet that it can't happen.
+
+For now I can't see any realistic situation where mc->smmu could be NULL.
