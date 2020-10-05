@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64DB283175
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDC6283177
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgJEIFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:05:47 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53618 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725898AbgJEIFq (ORCPT
+        id S1726018AbgJEIFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:05:52 -0400
+Received: from smtprelay0174.hostedemail.com ([216.40.44.174]:34992 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725898AbgJEIFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:05:46 -0400
-Received: by mail-wm1-f66.google.com with SMTP id f21so2311520wml.3;
-        Mon, 05 Oct 2020 01:05:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=epaOtiR7tFx4/XOOg9iXSMt8xfS4r3yEvrrCUOibwn8=;
-        b=bWmcQTR/zFK58sPVE+7DRSXnwxmbYrCde8z3owfsnE+yPmVm84mw2e9hdu0Yw0oXne
-         dIaMu6FQf2c1x0sT4ZD4H/k/5YBoThbAdJbIjQRPXH4Q/eEnM98rMIeCD4otYztt3k6G
-         /77hH/UQ37wsD4P3UA2zLmEXbtZtGBM2Jxv/Rf2hFRVEFA5O5nC99i0nx1/PldIDWHX6
-         nMACE1zC65axOUvHtuW7YZ3W6PnwGJGvp5YfTA6Fkf2h9ZUt1K2QyE/An+nSF23bmUKS
-         CuOSG+52nwBBeBkM5V8RGn/MZV9qaQmuhWgGhs3sSx4NHJBYlkN66VPFAVtipp8IIx3z
-         EwgQ==
-X-Gm-Message-State: AOAM531/4v2XnJwkfm1tzhbN3yW+ZpYcAfo+LOwF8CJ0fGtc5Y+kjgN+
-        Q4HNYB+ZrGbZ0irpEWir3V4=
-X-Google-Smtp-Source: ABdhPJxQiC77o6IdaUGbmW18uKR5W+lznFvVF0rPnHifJ2GCzGskfXFyZq/guojTAJI0eU35JbvMoA==
-X-Received: by 2002:a7b:cf04:: with SMTP id l4mr6794958wmg.137.1601885144602;
-        Mon, 05 Oct 2020 01:05:44 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id u188sm7538987wmu.0.2020.10.05.01.05.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Oct 2020 01:05:43 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 10:05:41 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] i2c: imx: Fix reset of I2SR_IAL flag
-Message-ID: <20201005080541.GA7135@kozik-lap>
-References: <20201002152305.4963-1-ceggers@arri.de>
- <20201002152305.4963-2-ceggers@arri.de>
+        Mon, 5 Oct 2020 04:05:52 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 5F708182CF668;
+        Mon,  5 Oct 2020 08:05:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3874:4321:5007:7576:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13019:13069:13161:13229:13311:13357:13439:14181:14659:14721:14777:21080:21627:30003:30026:30029:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bite38_220bb4e271bc
+X-Filterd-Recvd-Size: 1817
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  5 Oct 2020 08:05:50 +0000 (UTC)
+Message-ID: <c51588b4e8a2096c1453070b983da5ce8617a622.camel@perches.com>
+Subject: Re: [PATCH RFC] checkpatch: add new warnings to author signoff
+ checks.
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 05 Oct 2020 01:05:49 -0700
+In-Reply-To: <CABJPP5BwVmWiFcxHKdCYnN_mOE1G=eHUDq8yqqHFaO3cYhp+oA@mail.gmail.com>
+References: <20201005064842.33495-1-dwaipayanray1@gmail.com>
+         <a5cba9bb723626091f8790c794efe8de4ab184b8.camel@perches.com>
+         <CABJPP5BwVmWiFcxHKdCYnN_mOE1G=eHUDq8yqqHFaO3cYhp+oA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201002152305.4963-2-ceggers@arri.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 05:23:03PM +0200, Christian Eggers wrote:
-> According to the "VFxxx Controller Reference Manual" (and the comment
-> block starting at line 97), Vybrid requires writing a one for clearing
-> an interrupt flag. Syncing the method for clearing I2SR_IIF in
-> i2c_imx_isr().
+On Mon, 2020-10-05 at 13:10 +0530, Dwaipayan Ray wrote:
+> On Mon, Oct 5, 2020 at 12:48 PM Joe Perches <joe@perches.com> wrote:
+> > On Mon, 2020-10-05 at 12:18 +0530, Dwaipayan Ray wrote:
+> > > The author signed-off-by checks are currently very vague.
+> > > Cases like same name or same address are not handled separately.
+[]
+> > And for mismatches, it's really not known that
+> > it should be one way or the or the other is it?
+> > 
 > 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Cc: stable@vger.kernel.org
-> ---
->  drivers/i2c/busses/i2c-imx.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
+> I think that's true. But since the mail in the
+> From: part is the one which with others are being
+> compared, I think maybe it should have the higher
+> priority, and be treated as the expected one.
+
+I rather expect it to be the other way around.
+
+The Signed-off-by: line should be authoritative
+as that is what is put in the commit log.
 
 
-Tested (not extensively) on Vybrid VF500 (Toradex VF50):
-Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-The I2C on Vybrid VF500 still works fine. I did not test this actual
-condition (arbitration) but only a regular I2C driver (BQ27xxx fuel
-gauge).
-
-Best regards,
-Krzysztof
 
