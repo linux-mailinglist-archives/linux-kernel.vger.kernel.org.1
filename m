@@ -2,178 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9D028419F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF7E2841A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgJEUoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        id S1729226AbgJEUpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgJEUoX (ORCPT
+        with ESMTP id S1726935AbgJEUpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:44:23 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766E0C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 13:44:23 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id n61so9995901ota.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 13:44:23 -0700 (PDT)
+        Mon, 5 Oct 2020 16:45:22 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732BCC0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 13:45:22 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id n136so1757144pfd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 13:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=i+a+onhnw5zyB3us1wI7DEbzeIgfstqEDNNlUgwfzAs=;
-        b=KosbtFW5QSv368/xZbHD/8mJiLgmkIx7Mv5QznpfN9xqaMYO4OM4i7lUgxBCD6D4v5
-         WmWe7YHNnti+6Yp3JVDoHwOaWXH2a9x+r9N55PnZF1zfReTFjQ0dKBrJCFXSLnkHGvzM
-         9zgkhP2Cpsn2QZJjCDio0V3Li1x/WU4UPLmNI=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VMCvM/lVmSD+WoCXLV03EzHmNxDtsAkuJmb4ll+kKtw=;
+        b=AIKmxUEZMVDxIcg4HDZZ+EWVJoorsD2ZAvAuSzmr2xiBCxBBInJKEqNLtgwRijVi1o
+         NQDA1gGYhDFfByHmbEUT7KdTnwM+WC56xrdpnNaNeWxehBLmen+AolAiZtMbKSJKJDDL
+         YCTrr8HUyH4yokR8Q6GoVT47D0p276zMrnMCY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=i+a+onhnw5zyB3us1wI7DEbzeIgfstqEDNNlUgwfzAs=;
-        b=Lu2Zh4ksocIBjwcGiuECrvh2cWmnHu0U2VelKuW14eUsLSjvXL3o0/r6Ie3oPJi/19
-         rP6OBC94yiVU2DaDKC0IkpsQF1REfoky8Tgw2oCXaxh4UXomsiV7w9zGoiAUinrNuTUH
-         q8X4/aeiEfOhIuB45hUHFovTEoadKlZk4C0DQ9X3tbMnjUjAcqr4x7StCNbfeNYhASyK
-         fRICEQ+r53o+9aUsdmQSI7Y+fDcIKVfG1+vyorh2aCFS4e2a7HskNv/CpfyhLsT3S0UL
-         dmlMYmxylQ/zRcPXXRCjPPJclTbp5QYbKAK/9ZFW3eHlctLfXQNsbwZChr1KRKDjGj6j
-         ETyQ==
-X-Gm-Message-State: AOAM532gBmScWs4PvWag8fuzk5B+FgGahxLddebiE3hvMBPGTJUOudo1
-        ntPRPaR0y1Tdr7UqjDJM46ZspQ==
-X-Google-Smtp-Source: ABdhPJzy5iU3wH7kPqTGaJbPbc+1Alw03U6xfQy9cQQn617uy8ppWkmJUPmDPNWEb/PRIjO1b04qLA==
-X-Received: by 2002:a05:6830:17d8:: with SMTP id p24mr807078ota.111.1601930662637;
-        Mon, 05 Oct 2020 13:44:22 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l23sm229649otk.79.2020.10.05.13.44.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 13:44:21 -0700 (PDT)
-Subject: Re: KASAN: null-ptr-deref Write in event_handler
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <000000000000810a4405b0ece316@google.com>
- <CAAeHK+xWQp87S=bF2RfUjcudGaLVjk3yKLL-bxRzVM=YNRtzRA@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2947473d-76cd-a663-049a-4d51a97e2a3e@linuxfoundation.org>
-Date:   Mon, 5 Oct 2020 14:44:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=VMCvM/lVmSD+WoCXLV03EzHmNxDtsAkuJmb4ll+kKtw=;
+        b=m27FmcKQT3Iiscij02moI8MBgBTLfGG0QtE6rLSRIIoi4fB2up6cE0nWn1MB0hvnPn
+         CbNbRuYC4UoXLttxWFxO1R5U/Q6i4vzIA4NWyCeCuJ724hJ1Pnqr8/fo/UYH+k6Y7nV0
+         WPSCuuSh7HJNmrQNR9ul+X0r59EhdVuSdFTiWMl/fcT69OyicHUfBFhIW9twebqBMfpP
+         PH3+bh30+LXANOh+HfRaKjS3ZRzApDKJ/tV2P8zk/pWHo+mfaBeG/Wzl+WTSf2fbdgPr
+         10h8QaChgKRyfbFQQrisVOzMLFEROFbvWKJTPNQ3Qe7JQp6yI67zPUxryZKndfEZdqmL
+         ztsw==
+X-Gm-Message-State: AOAM533ycyvoqxsilBbJmwxkMTL1fNKmKjJTT3+XMWdMd/NaqE94GcFD
+        WhSbHNXD7FiwU1UMWU9X+JWNFw==
+X-Google-Smtp-Source: ABdhPJxGnRw0v6Z5EdICY7GvvnOsRaK8GQdlmuTPfJGHKAxCOIZBLjUIdSH/e7cTEU/ZnbdVPz/c/w==
+X-Received: by 2002:aa7:9522:0:b029:142:2501:3986 with SMTP id c2-20020aa795220000b029014225013986mr1325575pfp.75.1601930721886;
+        Mon, 05 Oct 2020 13:45:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s4sm800489pfu.107.2020.10.05.13.45.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 13:45:21 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: splice: Adjust for handler fallback removal
+Date:   Mon,  5 Oct 2020 13:45:17 -0700
+Message-Id: <20201005204517.2652730-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+xWQp87S=bF2RfUjcudGaLVjk3yKLL-bxRzVM=YNRtzRA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 8:04 AM, Andrey Konovalov wrote:
-> On Mon, Oct 5, 2020 at 3:59 PM syzbot
-> <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com> wrote:
->>
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=15781d8f900000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
->> dashboard link: https://syzkaller.appspot.com/bug?extid=bf1a360e305ee719e364
->> compiler:       gcc (GCC) 10.1.0-syz 20200507
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1364f367900000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com
->>
->> vhci_hcd: stop threads
->> vhci_hcd: release socket
->> vhci_hcd: disconnect device
->> ==================================================================
->> BUG: KASAN: null-ptr-deref in instrument_atomic_write include/linux/instrumented.h:71 [inline]
->> BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
->> BUG: KASAN: null-ptr-deref in refcount_add include/linux/refcount.h:201 [inline]
->> BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:241 [inline]
->> BUG: KASAN: null-ptr-deref in get_task_struct include/linux/sched/task.h:104 [inline]
->> BUG: KASAN: null-ptr-deref in kthread_stop+0x90/0x7e0 kernel/kthread.c:591
->> Write of size 4 at addr 000000000000001c by task kworker/u4:5/2519
->>
->> CPU: 1 PID: 2519 Comm: kworker/u4:5 Not tainted 5.9.0-rc7-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Workqueue: usbip_event event_handler
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:77 [inline]
->>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
->>   __kasan_report mm/kasan/report.c:517 [inline]
->>   kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
->>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
->>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
->>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
->>   atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
->>   refcount_add include/linux/refcount.h:201 [inline]
->>   refcount_inc include/linux/refcount.h:241 [inline]
->>   get_task_struct include/linux/sched/task.h:104 [inline]
->>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
->>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
->>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
->>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
->>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->> ==================================================================
->> Kernel panic - not syncing: panic_on_warn set ...
->> CPU: 1 PID: 2519 Comm: kworker/u4:5 Tainted: G    B             5.9.0-rc7-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Workqueue: usbip_event event_handler
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:77 [inline]
->>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
->>   panic+0x382/0x7fb kernel/panic.c:231
->>   end_report+0x4d/0x53 mm/kasan/report.c:104
->>   __kasan_report mm/kasan/report.c:520 [inline]
->>   kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
->>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
->>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
->>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
->>   atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
->>   refcount_add include/linux/refcount.h:201 [inline]
->>   refcount_inc include/linux/refcount.h:241 [inline]
->>   get_task_struct include/linux/sched/task.h:104 [inline]
->>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
->>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
->>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
->>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
->>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->> Kernel Offset: disabled
->> Rebooting in 86400 seconds..
-> 
-> Hi Valentina and Shuah,
-> 
-> There appears to be a race condition in the USB/IP vhci_hcd shutdown
-> procedure. It happens quite often during fuzzing with syzkaller, and
-> prevents us from going deeper into the USB/IP code.
-> 
-> Could you advise us what would be the best fix for this?
-> 
+Some pseudo-filesystems do not have an explicit splice fops since adding
+commit 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops"),
+and now will reject attempts to use splice() in those filesystem paths.
 
-Hi Andrey,
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Link: https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
+Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ .../selftests/splice/short_splice_read.sh     | 119 ++++++++++++++----
+ 1 file changed, 98 insertions(+), 21 deletions(-)
 
-Reading the comments for this routine, looks like there is an assumption
-that context begins cleanup and race conditions aren't considered.
-
-The right fix is holding vhci->lock and vdev->priv_lock to protect
-critical sections in this routine. I will send a patch for this.
-
-thanks,
--- Shuah
-
+diff --git a/tools/testing/selftests/splice/short_splice_read.sh b/tools/testing/selftests/splice/short_splice_read.sh
+index 7810d3589d9a..22b6c8910b18 100755
+--- a/tools/testing/selftests/splice/short_splice_read.sh
++++ b/tools/testing/selftests/splice/short_splice_read.sh
+@@ -1,21 +1,87 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
++#
++# Test for mishandling of splice() on pseudofilesystems, which should catch
++# bugs like 11990a5bd7e5 ("module: Correctly truncate sysfs sections output")
++#
++# Since splice fallback was removed as part of the set_fs() rework, many of these
++# tests expect to fail now. See https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
+ set -e
+ 
++DIR=$(dirname "$0")
++
+ ret=0
+ 
++expect_success()
++{
++	title="$1"
++	shift
++
++	echo "" >&2
++	echo "$title ..." >&2
++
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "ok: $title succeeded" >&2
++		;;
++	1)
++		echo "FAIL: $title should work" >&2
++		ret=$(( ret + 1 ))
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
++}
++
++expect_failure()
++{
++	title="$1"
++	shift
++
++	echo "" >&2
++	echo "$title ..." >&2
++
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "FAIL: $title unexpectedly worked" >&2
++		ret=$(( ret + 1 ))
++		;;
++	1)
++		echo "ok: $title correctly failed" >&2
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
++}
++
+ do_splice()
+ {
+ 	filename="$1"
+ 	bytes="$2"
+ 	expected="$3"
++	report="$4"
+ 
+-	out=$(./splice_read "$filename" "$bytes" | cat)
++	out=$("$DIR"/splice_read "$filename" "$bytes" | cat)
+ 	if [ "$out" = "$expected" ] ; then
+-		echo "ok: $filename $bytes"
++		echo "      matched $report" >&2
++		return 0
+ 	else
+-		echo "FAIL: $filename $bytes"
+-		ret=1
++		echo "      no match: '$out' vs $report" >&2
++		return 1
+ 	fi
+ }
+ 
+@@ -23,34 +89,45 @@ test_splice()
+ {
+ 	filename="$1"
+ 
++	echo "  checking $filename ..." >&2
++
+ 	full=$(cat "$filename")
++	rc=$?
++	if [ $rc -ne 0 ] ; then
++		return 2
++	fi
++
+ 	two=$(echo "$full" | grep -m1 . | cut -c-2)
+ 
+ 	# Make sure full splice has the same contents as a standard read.
+-	do_splice "$filename" 4096 "$full"
++	echo "    splicing 4096 bytes ..." >&2
++	if ! do_splice "$filename" 4096 "$full" "full read" ; then
++		return 1
++	fi
+ 
+ 	# Make sure a partial splice see the first two characters.
+-	do_splice "$filename" 2 "$two"
++	echo "    splicing 2 bytes ..." >&2
++	if ! do_splice "$filename" 2 "$two" "'$two'" ; then
++		return 1
++	fi
++
++	return 0
+ }
+ 
+-# proc_single_open(), seq_read()
+-test_splice /proc/$$/limits
+-# special open, seq_read()
+-test_splice /proc/$$/comm
++### /proc/$pid/ has no splice interface; these should all fail.
++expect_failure "proc_single_open(), seq_read() splice" test_splice /proc/$$/limits
++expect_failure "special open(), seq_read() splice" test_splice /proc/$$/comm
+ 
+-# proc_handler, proc_dointvec_minmax
+-test_splice /proc/sys/fs/nr_open
+-# proc_handler, proc_dostring
+-test_splice /proc/sys/kernel/modprobe
+-# proc_handler, special read
+-test_splice /proc/sys/kernel/version
++### /proc/sys/ has a splice interface; these should all succeed.
++expect_success "proc_handler: proc_dointvec_minmax() splice" test_splice /proc/sys/fs/nr_open
++expect_success "proc_handler: proc_dostring() splice" test_splice /proc/sys/kernel/modprobe
++expect_success "proc_handler: special read splice" test_splice /proc/sys/kernel/version
+ 
++### /sys/ has no splice interface; these should all fail.
+ if ! [ -d /sys/module/test_module/sections ] ; then
+-	modprobe test_module
++	expect_success "test_module kernel module load" modprobe test_module
+ fi
+-# kernfs, attr
+-test_splice /sys/module/test_module/coresize
+-# kernfs, binattr
+-test_splice /sys/module/test_module/sections/.init.text
++expect_failure "kernfs attr splice" test_splice /sys/module/test_module/coresize
++expect_failure "kernfs binattr splice" test_splice /sys/module/test_module/sections/.init.text
+ 
+ exit $ret
+-- 
+2.25.1
 
