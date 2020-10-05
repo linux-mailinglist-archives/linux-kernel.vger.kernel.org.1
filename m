@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FCF28352B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AEE283529
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgJELuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgJELuM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:50:12 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5CC0613CE;
-        Mon,  5 Oct 2020 04:50:12 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726005AbgJELtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725914AbgJELtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:49:47 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C4f6Q6DNzz9sTR;
-        Mon,  5 Oct 2020 22:50:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601898607;
-        bh=Vtk2gHjFMqGZrcdPRvFpNYaBIQVKO8j/8HtNePDvMH8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=buqXebmj8y90Gj1kpt6bCOcMByq6jKPYDKXkdpEPeQlug3Rh8RjIXG0zoowSi0b30
-         rKb3LYtj8wG++P9E4pgSRvL8FWxafx4IdHM4mEQAuN5HdwyvGWO9TflKFddCx0qQvj
-         4K2/ltR65la8UJRR781aCmIpzGFoEKJUUM5Ex1iR3Q3g7PCHpO4XO2Ur9+WJvwFFfF
-         1/G+ZfybLioLiugvu8T3XpRo3WgKTtmvI+y7LjbWCFqgsoXiSyTQTIUmxF5EcGAQkv
-         CEj9h4kNM9kX0k2WYCrXUE9inVjfnEzeyHF5oVEoCUgWCseurSgu/q5tQeYd9PvNug
-         3Cy+f4Gxv89mA==
-Date:   Mon, 5 Oct 2020 22:50:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ikjoon Jang <ikjn@chromium.org>
-Subject: linux-next: Fixes tag needs some work in the battery tree
-Message-ID: <20201005225004.0d3b59a1@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id B27CB20757;
+        Mon,  5 Oct 2020 11:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601898585;
+        bh=x2E7D/Bq7z8jOY7BiQWC//3JD7gQJsyO7QhtZ0g1+8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ggN5USXx2aHa9HR1XYsNlXca9WXHJ+MB1Abz/y/1ghvlIO6xVY++tmNYTlYmUfLWT
+         EpZfRRfZAttuK677+5RTDcN2eLBm1nYuwAgWldxF7adXHKC8tGSxnO5DJ4Fop9mYKx
+         fnPnr0MyJhjW+yRrT1lATeU/n/M7sQdOkOOBUxkE=
+Date:   Mon, 5 Oct 2020 13:50:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201005115030.GA682263@kroah.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003143925.GB800720@kroah.com>
+ <20201005084554.GA3403@infradead.org>
+ <20201005114250.GB181338@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oNbfhNGLK1e9q6kry924NWu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005114250.GB181338@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oNbfhNGLK1e9q6kry924NWu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 05, 2020 at 02:42:50PM +0300, Jarkko Sakkinen wrote:
+> On Mon, Oct 05, 2020 at 09:45:54AM +0100, Christoph Hellwig wrote:
+> > On Sat, Oct 03, 2020 at 04:39:25PM +0200, Greg KH wrote:
+> > > > @@ -0,0 +1,173 @@
+> > > > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> > > 
+> > > You use gpl-only header files in this file, so how in the world can it
+> > > be bsd-3 licensed?
+> > > 
+> > > Please get your legal department to agree with this, after you explain
+> > > to them how you are mixing gpl2-only code in with this file.
+> > > 
+> > > > +// Copyright(c) 2016-18 Intel Corporation.
+> > > 
+> > > Dates are hard to get right :(
+> > 
+> > As is comment formatting apparently.  Don't use // comments for anything
+> > but the SPDX header, please.
+> 
+> I'll bring some context to this.
+> 
+> When I moved into using SPDX, I took the example from places where I saw
+> also the copyright using "//". That's the reason for the choice.
+> 
+> I.e.
+> 
+> $ git grep "// Copyright" | wc -l
+> 2123
+> 
+> I don't care, which one to use, just wondering is it done in the wrong
+> way in all these sites?
 
-Hi all,
+Probably, but I know at least one subsystem requires their headers to be
+in this manner.  There's no accounting for taste :)
 
-In commit
+thanks,
 
-  f9d293364b45 ("power: supply: sbs-battery: keep error code when get_prope=
-rty() fails")
-
-Fixes tag
-
-  Fixes: c4f382930145 (power: supply: sbs-battery: don't assume i2c errors =
-as battery disconnect)
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 395a7251dc2b ("power: supply: sbs-battery: don't assume i2c errors a=
-s battery disconnect")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oNbfhNGLK1e9q6kry924NWu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl97CGwACgkQAVBC80lX
-0GyUowf+IgrqGbxVs4BKWuBzOPnjW1cQ3fwH7C2XgKzC+cmGRbrKhW7iPv+5G3j+
-+4WoDsBkt9s+DpEpyY+XGnB6ay1hDZ4bFr+JEEZvgK29T5epvFilH+Y6MlZIdUbi
-OlVgH9ivmUqJOanQyabQckKG5ase11mmm41umRyqpJWKZZODWSYpexp7vK+bVsK8
-/whRBZjz/g9+NVarZ+41cxNy0tKt7FWTVCVuigMMM1nPtHZds8VsGj19qgimr+Ko
-NtJk/3Qtt+EVrILleUrdw3FvUo4h+LVkr0vrd0SY0n7gSG9lnxj4clL0iX2rdFoN
-v8c9Qfbg9BiEMyD6OnaHJ/uKtXaj9g==
-=OKeb
------END PGP SIGNATURE-----
-
---Sig_/oNbfhNGLK1e9q6kry924NWu--
+greg k-h
