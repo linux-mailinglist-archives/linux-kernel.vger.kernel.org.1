@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591E8283682
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A9C283688
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgJEN25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S1726147AbgJENaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgJEN24 (ORCPT
+        with ESMTP id S1725914AbgJENaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:28:56 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9C6C0613CE;
-        Mon,  5 Oct 2020 06:28:56 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id u8so10878664lff.1;
-        Mon, 05 Oct 2020 06:28:56 -0700 (PDT)
+        Mon, 5 Oct 2020 09:30:23 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544B6C0613CE;
+        Mon,  5 Oct 2020 06:30:23 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so6904827pff.6;
+        Mon, 05 Oct 2020 06:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pDfp+8jOaUeqI88f58G9d3pgrodgYrD29BLFi8aPWHs=;
-        b=XHwHZs6I/CK3sd9jDKPmF1UqwJYJ53JBn2m9d89uwdZVrxeYSUI3vD9v3uiGWcVgkt
-         RKn1CcbnELQ+4OV9z8d+pGkmSiC9QrGQrVfhjSloGJ30C6vd+dUjVO/GIpewsP6DGNsl
-         3nbBPzeg37N3K/MoLJoHyTJ4JcND13yAFqvwPPqIdbNFKEzZ55mNQl2cOHQLjsF0ePK/
-         OD7X3ca/9b0qE2AS2CYKlvLGNphlCTFilptvxGFYRnvAicaP56jSFGSZgOgX618WjQbp
-         UmMqzFm2umphzrt7unSi5tv1Vqqv96QPiseiYX9RZOLrkOzIj+no+ELeZCSGlGd24KWv
-         nGhg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KiVd1CB6lv+K5WRh3wsB+klp28Y/L0HyIFaj1iXVxLg=;
+        b=LiUPfJAYlPG24Mmd5k3kdAcFh4fpsIM6iQfhPWi/GlYdSZy5/Y4NYgjBGt2cWC63y0
+         PDxPAR8L1oTJoFcesFGZLGZqlLto66HKZI4ehZsOp+VRkpzuYs0skwwrEunRomaR5CCi
+         ATI5+0Jucupp3yVEMFZcUHP3sY6agPxRApErUiuLyaa6D9cu6GCcuhawlrK26U+y9iYi
+         CJmxovGG7JrVxpRJ6pdQapAALr9QIHtQmVQFWmQhPK9A+uGPTX2Vc47snJPzEe3LYpfd
+         CuMRzPTNW1qOKEYLQCzQgZv7tjNKKNRtdjntyBrip+MiAEbnxi37FYLVHU7onUjCJRYp
+         dQrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=pDfp+8jOaUeqI88f58G9d3pgrodgYrD29BLFi8aPWHs=;
-        b=rPn1Ri2/O+FyIBrkCkI+ozK8yfa75fqx16JRRDq4j0rQeLkrd4uWBt3SAosaXTCXJ5
-         DcDrVXsJeSY9fC4xmmfxD3iOReXl3v5jbvgCmJkMZJgT3YyHnjTteSfQ6ekdZZMFlAOF
-         ATHA/ycGxoYuKigWVQTmIasKVSrQwwB3DC/lz2U/wyiRRgNXqqKhwxUjyRoC5rcF9PHO
-         aeRy4MM7WPoPm23F7tt4g7kms1YhUgRO/4LPbqk7SpW5uq3ItPvyf6tGGy1mfi6glVt8
-         YjRH9Copb8GmjYwH1sNeZ4R8dZvPALT0Mvxs/xHmRRG/pO/W0wI0FvjNRNrgMjzA0fhV
-         HXHA==
-X-Gm-Message-State: AOAM530Ulpo7YWZkatQtheNk7JgWxQWWac9aZ1xyxPcds7d7z0TdBiuU
-        7NxiVMrgH9LLNyPrAWB+p3+d3egvxjM=
-X-Google-Smtp-Source: ABdhPJzYnCEZuOgmvTnVXNmuhQidi8+UND8HD9ZaURgVJOb85YF35KkKZhBGO5IvLcC/lQpRq4nEiA==
-X-Received: by 2002:a19:b4b:: with SMTP id 72mr5295868lfl.590.1601904534662;
-        Mon, 05 Oct 2020 06:28:54 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id b16sm2594099ljh.34.2020.10.05.06.28.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 06:28:54 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
- <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
- <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
- <20201005095351.GI425362@ulmo>
- <ae48aaaf-fe10-6de4-06bb-2afbde799168@gmail.com>
- <20201005111547.GQ425362@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <39cb0056-1447-2232-d33c-adb17114740a@gmail.com>
-Date:   Mon, 5 Oct 2020 16:28:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=KiVd1CB6lv+K5WRh3wsB+klp28Y/L0HyIFaj1iXVxLg=;
+        b=rhBmjkhQ7JdBUv7W5DMRnFkFcvlZrwBRGbBsRTlIjjQgJFoMDmUrsgFe6JfebkG2hJ
+         OBZrxoTRnbkDeKXtyTh+3zcblQJA44zzEw6LeMVi+TcEjwEub1CH4q6g1UDqLUWqejLp
+         4Ayw0wycmohogG7hpCA3OlyhQKt9n3IpKozPz1ZR2BCHeyqyujA7FfAu95rET5nIaRDP
+         nUiW/9HRKHIgsTpvyjRPp1Yj/xZLZWkQDq5P4/AiCZYcVm5RJeYTK6RJhki5vDbl4fW9
+         51Mv+bu0Q68jZl7g0wDiWx8O9Ehq0MwTYWQBF+Spc0IyuOSOcMk1aD5HkcFbelDnKtZM
+         qBHQ==
+X-Gm-Message-State: AOAM531Mdcqux07LwTuVi19ACFZfv8ngIlRHZPzH7TSTs2pazjJxfKlE
+        1qisVDa9sRe9K01EmnA0jzhkbIPEumwfqP5b/8I=
+X-Google-Smtp-Source: ABdhPJx42KObFaC35cretEvYRkAKYv1Q6kZMzxHGXyv3iTLzMgdH/w8QfHF+vIObQGxlrDZlOylVfQ==
+X-Received: by 2002:a63:5858:: with SMTP id i24mr14417015pgm.449.1601904622430;
+        Mon, 05 Oct 2020 06:30:22 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.199.235])
+        by smtp.gmail.com with ESMTPSA id k7sm10597169pjs.9.2020.10.05.06.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 06:30:21 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org, joe@perches.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
+Date:   Mon,  5 Oct 2020 18:59:58 +0530
+Message-Id: <20201005132958.5712-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201005111547.GQ425362@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.10.2020 14:15, Thierry Reding пишет:
-> On Mon, Oct 05, 2020 at 01:36:55PM +0300, Dmitry Osipenko wrote:
->> 05.10.2020 12:53, Thierry Reding пишет:
->>> On Fri, Oct 02, 2020 at 05:50:08PM +0300, Dmitry Osipenko wrote:
->>>> 02.10.2020 17:22, Dmitry Osipenko пишет:
->>>>>>  static int tegra_smmu_of_xlate(struct device *dev,
->>>>>>  			       struct of_phandle_args *args)
->>>>>>  {
->>>>>> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
->>>>>> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
->>>>>>  	u32 id = args->args[0];
->>>>>>  
->>>>>> +	of_node_put(args->np);
->>>>>> +
->>>>>> +	if (!mc || !mc->smmu)
->>>>>> +		return -EPROBE_DEFER;
->>>>> platform_get_drvdata(NULL) will crash.
->>>>>
->>>>
->>>> Actually, platform_get_drvdata(NULL) can't happen. I overlooked this.
->>>
->>> How so? It's technically possible for the iommus property to reference a
->>> device tree node for which no platform device will ever be created, in
->>> which case of_find_device_by_node() will return NULL. That's very
->>> unlikely and perhaps worth just crashing on to make sure it gets fixed
->>> immediately.
->>
->> The tegra_smmu_ops are registered from the SMMU driver itself and MC
->> driver sets platform data before SMMU is initialized, hence device is
->> guaranteed to exist and mc can't be NULL.
-> 
-> Yes, but that assumes that args->np points to the memory controller's
-> device tree node. It's obviously a mistake to do this, but I don't think
-> anyone will prevent you from doing this:
-> 
-> 	iommus = <&{/chosen} 0>;
-> 
-> In that case, since no platform device is created for the /chosen node,
-> iommu_pdev will end up being NULL and platform_get_drvdata() will crash.
+When get_registers() fails in set_ethernet_addr(),the uninitialized
+value of node_id gets copied over as the address.
+So, check the return value of get_registers().
 
-But then Tegra SMMU isn't associated with the device's IOMMU path, and
-thus, tegra_smmu_of_xlate() won't be invoked for this device.
+If get_registers() executed successfully (i.e., it returns
+sizeof(node_id)), copy over the MAC address using ether_addr_copy()
+(instead of using memcpy()).
 
-> That said, I'm fine with not adding a check for that. If anyone really
-> does end up messing this up they deserve the crash.
-> 
-> I'm still a bit undecided about the mc->smmu check because I haven't
-> convinced myself yet that it can't happen.
+Else, if get_registers() failed instead, a randomly generated MAC
+address is set as the MAC address instead.
 
-For now I can't see any realistic situation where mc->smmu could be NULL.
+Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
+Acked-by: Petko Manolov <petkan@nucleusys.com>
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+Changes in v4:
+	* Use netdev_notice() instead of dev_warn() and update the 
+	  logged message to show the new random MAC as well 
+	  (Suggested by Joe Perches <joe@perches.com>)
+	* Convert set_ethernet_addr()'s return type back to void.
+	  Since we're not treating get_registers() (and thus 
+	  set_ethernet_addr()) failing as an erroneous condition,
+	  we can perform the error handling (setting a random
+	  ethernet address) that was being done in v3 within 
+	  set_ethernet_addr() itself.
+	  (Suggested by Petko Manolov <petkan@nucleusys.com>)
+
+Changes in v3:
+	* Set a random MAC address to the device rather than making
+	  the device not work at all in the even set_ethernet_addr()
+	  fails. (Suggested by David Miller <davem@davemloft.net>)
+	* Update set_ethernet_addr() to use ether_addr_copy() to copy 
+	  the MAC Address (instead of using memcpy() for that same).
+	  (Suggested by Joe Perches <joe@perches.com>)
+
+
+Changes in v2:
+	* Modified condition checking get_registers()'s return value to 
+		ret == sizeof(node_id)
+	  for stricter checking in compliance with the new 
+	  usb_control_msg_recv() API 
+	  (Suggested by Petko Manolov <petkan@nucleusys.com>)
+	* Added Acked-by: Petko Manolov
+
+ drivers/net/usb/rtl8150.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+index 733f120c852b..9d079dc2a535 100644
+--- a/drivers/net/usb/rtl8150.c
++++ b/drivers/net/usb/rtl8150.c
+@@ -274,12 +274,20 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
+ 		return 1;
+ }
+ 
+-static inline void set_ethernet_addr(rtl8150_t * dev)
++static void set_ethernet_addr(rtl8150_t *dev)
+ {
+-	u8 node_id[6];
++	u8 node_id[ETH_ALEN];
++	int ret;
++
++	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
+ 
+-	get_registers(dev, IDR, sizeof(node_id), node_id);
+-	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
++	if (ret == sizeof(node_id)) {
++		ether_addr_copy(dev->netdev->dev_addr, node_id);
++	} else {
++		eth_hw_addr_random(dev->netdev);
++		netdev_notice(dev->netdev, "Assigned a random MAC address: %pM\n",
++			      dev->netdev->dev_addr);
++	}
+ }
+ 
+ static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
+-- 
+2.25.1
+
