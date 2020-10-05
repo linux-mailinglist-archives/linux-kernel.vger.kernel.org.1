@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3136F283C98
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49642283C9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728993AbgJEQeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:34:20 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35036 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726615AbgJEQeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:34:19 -0400
+        id S1729020AbgJEQfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726615AbgJEQfI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:35:08 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D07C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:35:08 -0700 (PDT)
 Received: from zn.tnic (p200300ec2f07d500f39533324043f5fb.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d500:f395:3332:4043:f5fb])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D2B0D1EC02FC;
-        Mon,  5 Oct 2020 18:34:18 +0200 (CEST)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4072D1EC02FC;
+        Mon,  5 Oct 2020 18:35:07 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601915658;
+        t=1601915707;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=34oJRrVot99MQyvWDKFEdCK+jBkfjNgeQbuykoTWHrg=;
-        b=NQhnvVD+VjEasGQCMB9YP3JOKR1X9x8U0TpNU+qKBJ3QWSh7seBzDcjDW4qIlbCGErdfMH
-        pPdSBm42YjOe3IfBGw06h0iVnvSS+ZY2dieTiGahyQ/8e/8OmsWAwjfqKjkcffeeVzf+mP
-        99ixgR2sApNlX1v29WZ3ciEMIsYuGH8=
-Date:   Mon, 5 Oct 2020 18:34:14 +0200
+        bh=wY2WCDO/97x9Dd0KpvIDIOeYdJiQ3SNJO6GVxtLZR80=;
+        b=hIRQgNyFpbCK2OZGGoZXSGQcFOamz9G5sCKSHGmstSxGrdwDwvuwGJVrWWX/XT9xuFPaQj
+        siKBSAcRHbkrCSAFD7fGhu4Jx5wraVj9F8MixQt7wiKzo8v/AW4QNIEJf3ToERD/4kq+fL
+        EmoP8fgoueddR2rI7SSLml6/DYIe8HY=
+Date:   Mon, 5 Oct 2020 18:35:03 +0200
 From:   Borislav Petkov <bp@alien8.de>
 To:     Tony Luck <tony.luck@intel.com>
 Cc:     Youquan Song <youquan.song@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] x86/mce: Add _ASM_EXTABLE_CPY for copy user access
-Message-ID: <20201005163414.GG21151@zn.tnic>
+Subject: Re: [PATCH v2 2/7] x86/mce: Provide method to find out the type of
+ exception handle
+Message-ID: <20201005163503.GH21151@zn.tnic>
 References: <20200921113144.GD5901@zn.tnic>
  <20200930232611.15355-1-tony.luck@intel.com>
- <20200930232611.15355-4-tony.luck@intel.com>
+ <20200930232611.15355-3-tony.luck@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200930232611.15355-4-tony.luck@intel.com>
+In-Reply-To: <20200930232611.15355-3-tony.luck@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 04:26:07PM -0700, Tony Luck wrote:
-> From: Youquan Song <youquan.song@intel.com>
-> 
-> _ASM_EXTABLE_UA is a general exception entry to record the exception fixup
-> for all exception spots between kernel and user space access.
-> 
-> To enable recovery from machine checks while coping data from user
-> addresses we need to be able to distinguish the places that are
+On Wed, Sep 30, 2020 at 04:26:06PM -0700, Tony Luck wrote:
+> diff --git a/arch/x86/mm/extable.c b/arch/x86/mm/extable.c
+> index 1d6cb07f4f86..de869665309e 100644
+> --- a/arch/x86/mm/extable.c
+> +++ b/arch/x86/mm/extable.c
+> @@ -125,17 +125,21 @@ __visible bool ex_handler_clear_fs(const struct exception_table_entry *fixup,
+>  }
+>  EXPORT_SYMBOL(ex_handler_clear_fs);
+>  
+> -__visible bool ex_has_fault_handler(unsigned long ip)
+> +enum handler_type ex_fault_handler_type(unsigned long ip)
 
-Who's "we"?
+Function name needs a verb:
+
+s!ex_fault_handler_type!ex_get_fault_handler_type!g
 
 -- 
 Regards/Gruss,
