@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568C5283A30
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70512283A0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgJEPcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:32:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59314 "EHLO mail.kernel.org"
+        id S1727815AbgJEPax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:30:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727937AbgJEPcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:32:00 -0400
+        id S1727729AbgJEPaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:30:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3C912074F;
-        Mon,  5 Oct 2020 15:31:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C3D420874;
+        Mon,  5 Oct 2020 15:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911920;
-        bh=unoHxtSRdKvnphH9lXj1ePIn2asvOMskiEcRPQoPudE=;
+        s=default; t=1601911807;
+        bh=qPYWIyVdrjyoSIbS7VuHFKq3PlreSVhO+6fYCOjymSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QwT7ssBW5moeYT2M9c7zG1B1nsJ1z10nTof24sbd0DsO5hhMDJIVsoPDp3p1T7sBD
-         oTW5PmB2RT5fEouBm1RFyhcQhrx04li9nAKxPtEo+QS3uPke5jdr37bNrbwUe8SXgv
-         XAlnybdD6upiXLY0u7oGv6uPSgxjLiwKP8C2wAVE=
+        b=fqhrzea/PZU68PWn9TYLUDZlZ7IsTkhZlK2IcKNg3rCcfsM6jUfGCe2oo64d4q+Np
+         RAtPSIw2ADKpc1UjI0UxJq1w9bo1oV6PT0O5TJvVw5k2SkG1YPIjzet6ECuDCziS8s
+         LF6YayKCpH+x4CwNhjjYn0kzzr48KxQOhJkatl+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Cerveny <m.cerveny@computer.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 30/85] drm/sun4i: mixer: Extend regmap max_register
-Date:   Mon,  5 Oct 2020 17:26:26 +0200
-Message-Id: <20201005142116.187768222@linuxfoundation.org>
+        stable@vger.kernel.org, Jean Delvare <jdelvare@suse.de>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 15/57] drm/amdgpu: restore proper ref count in amdgpu_display_crtc_set_config
+Date:   Mon,  5 Oct 2020 17:26:27 +0200
+Message-Id: <20201005142110.531455949@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
+In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
+References: <20201005142109.796046410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Cerveny <m.cerveny@computer.org>
+From: Jean Delvare <jdelvare@suse.de>
 
-[ Upstream commit 74ea06164cda81dc80e97790164ca533fd7e3087 ]
+commit a39d0d7bdf8c21ac7645c02e9676b5cb2b804c31 upstream.
 
-Better guess. Secondary CSC registers are from 0xF0000.
+A recent attempt to fix a ref count leak in
+amdgpu_display_crtc_set_config() turned out to be doing too much and
+"fixed" an intended decrease as if it were a leak. Undo that part to
+restore the proper balance. This is the very nature of this function
+to increase or decrease the power reference count depending on the
+situation.
 
-Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
-Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200906162140.5584-3-m.cerveny@computer.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Consequences of this bug is that the power reference would
+eventually get down to 0 while the display was still in use,
+resulting in that display switching off unexpectedly.
+
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Fixes: e008fa6fb415 ("drm/amdgpu: fix ref count leak in amdgpu_display_crtc_set_config")
+Cc: stable@vger.kernel.org
+Cc: Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/sun4i/sun8i_mixer.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-index cc4fb916318f3..c3304028e3dcd 100644
---- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-@@ -307,7 +307,7 @@ static struct regmap_config sun8i_mixer_regmap_config = {
- 	.reg_bits	= 32,
- 	.val_bits	= 32,
- 	.reg_stride	= 4,
--	.max_register	= 0xbfffc, /* guessed */
-+	.max_register	= 0xffffc, /* guessed */
- };
- 
- static int sun8i_mixer_of_get_id(struct device_node *node)
--- 
-2.25.1
-
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -297,7 +297,7 @@ int amdgpu_display_crtc_set_config(struc
+ 	   take the current one */
+ 	if (active && !adev->have_disp_power_ref) {
+ 		adev->have_disp_power_ref = true;
+-		goto out;
++		return ret;
+ 	}
+ 	/* if we have no active crtcs, then drop the power ref
+ 	   we got before */
 
 
