@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72569284357
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8509C28420C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgJFA2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:28:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32306 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgJFA2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:28:17 -0400
-IronPort-SDR: 0TUlEdmekibR2kh+PS+MtYXujUk1h5iDMJ5/dzGoiH2dI58jWQlosAW4Q0+kHs7MPaP1YkOFMG
- 5zS043mxfULg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="228348091"
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="228348091"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 16:37:56 -0700
-IronPort-SDR: cMO7g/JJOouwTrPvicRrhZmZGubU0+t3+tCdhI6VoU1wbxPmEsPkrxQc6AhgK16oPsfKgsZzTg
- 9traa417jWuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="516668265"
-Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 05 Oct 2020 14:22:05 -0700
-Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kPXvl-0000xF-1c; Mon, 05 Oct 2020 21:22:01 +0000
-Date:   Tue, 6 Oct 2020 05:21:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     kbuild-all@lists.01.org, John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>
-Subject: [RFC PATCH] dma-buf: system_heap: sys_uncached_heap can be static
-Message-ID: <20201005212117.GA34870@c357f605a08d>
-References: <20201003040257.62768-8-john.stultz@linaro.org>
+        id S1726594AbgJEVVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgJEVVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 17:21:41 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAEAC0613CE;
+        Mon,  5 Oct 2020 14:21:41 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f07d500e8a8b27a6c9dedad.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d500:e8a8:b27a:6c9d:edad])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BFE731EC043F;
+        Mon,  5 Oct 2020 23:21:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601932899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=MCAVsjIGduo7Jx/tk0rieZGJEROJ0+tB1wk6wvhwUng=;
+        b=sUwYrM/0mDgj0KaIjjMVGVsGYo3PFzssq75BLZOdfhgQ4nhsQJQ2JV2Q197U/pRcwDtoaT
+        5yltqNS9Bv+eRv12rQCwJkguDfr/52pjpfqV0VlfGTJXzn9pnMtpF0kZNeYAvz2HHMJFFZ
+        6jal2Epf9UT+4qVN1XwE0nKUlX4BsXw=
+Date:   Mon, 5 Oct 2020 23:21:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel test robot <lkp@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v4 06/13] x86/platform/uv: Add and Decode Arch Type in
+ UVsystab
+Message-ID: <20201005212135.GL21151@zn.tnic>
+References: <20201005203929.148656-1-mike.travis@hpe.com>
+ <20201005203929.148656-7-mike.travis@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201003040257.62768-8-john.stultz@linaro.org>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201005203929.148656-7-mike.travis@hpe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 05, 2020 at 03:39:22PM -0500, Mike Travis wrote:
+> A patch to add and process the UV Arch Type field in the UVsystab passed
+> from UV BIOS to the kernel. 
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- system_heap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What does that mean?
 
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 952f1fd9dacfda..fa17959d81795d 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -22,7 +22,7 @@
- #include <linux/vmalloc.h>
- 
- struct dma_heap *sys_heap;
--struct dma_heap *sys_uncached_heap;
-+static struct dma_heap *sys_uncached_heap;
- 
- struct system_heap_buffer {
- 	struct dma_heap *heap;
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
