@@ -2,196 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE8D28332F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B004283333
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgJEJ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:28:23 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:46534 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEJ2X (ORCPT
+        id S1725974AbgJEJ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbgJEJ3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:28:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1601890101; x=1604482101;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=2XTki7Wtt8lKhXhxFExEy330dGcZJJ+yCH2YpWzBwuE=;
-        b=NMjcHcfWYUt7rqdCM6uP40JvSMLHHKdGnUl3Ek2wQ2ZHstGbOOL7kiLwJGdzd2PT
-        ZPgr6NrYWy5evo2poiCe2+v3tskIiyEJnmiWiCeOv9b600eUI1iT6MixV+tc1Izf
-        ZuIzcxoGQfBI2mBY9NOv8d2ETc9pnd2lP6U88Zt/w2A=;
-X-AuditID: c39127d2-253ff70000001c25-67-5f7ae735d18a
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id EB.6A.07205.537EA7F5; Mon,  5 Oct 2020 11:28:21 +0200 (CEST)
-Received: from [172.16.23.108] ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2020100511282131-551518 ;
-          Mon, 5 Oct 2020 11:28:21 +0200 
-Subject: Re: [PATCH v2 5/5] media: mt9p031: Fix corrupted frame after
- restarting stream
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dirk Bender <d.bender@phytec.de>
-References: <20200930105133.139981-1-s.riedmueller@phytec.de>
- <20200930105133.139981-5-s.riedmueller@phytec.de>
- <20201002000549.GK3722@pendragon.ideasonboard.com>
-From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
-Message-ID: <3c8853a6-de34-014d-d10a-d6a55083c4bf@phytec.de>
-Date:   Mon, 5 Oct 2020 11:28:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Oct 2020 05:29:32 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B09C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:29:31 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id j136so8031816wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NkkZ0AZItfPzXXyiWUs3wdbhFkdEuozzWE5YN7fX2Ds=;
+        b=RD6Sa7SS02XMmSEITYc+16rUxDLnGebQGiPycqS2AHIUGt1HKXcbyFJO2j0zhLR3ZV
+         MYcG6n/KPVssa/d74T6uHaLPmzw2YIJ1RxZv5UH86MyTQlbgSGwcY3lCojdvHOvoyLYr
+         3InQKiPVQXm4doK9Npsgmpq0pyMNNUx9LU9zwy/R4Ti81NIxZHdTsUYc32lFcxjUghCM
+         zJUY/Iu5ON7FYBKZ9+lmmO5Sk7FYh54C7wOC7bqTUUXmPugywv4W1v8BMeNvxBdNZqK5
+         TkRXl7IBaL10uym0Pw2B4bUGB1dniXKZJs8Nz3qozzlnsaxB/V2jYceXHMtovB6Oemp3
+         S4+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NkkZ0AZItfPzXXyiWUs3wdbhFkdEuozzWE5YN7fX2Ds=;
+        b=rGZxti69zpQvTx4gkV6E7uZX4a7Z8pPQoePbnCwhC9DC5pjW/KKRuOVnZwFoh4DQb+
+         wwAQ27uRUHBE2HHQWvX5qwv49UqCs0pY2kHdiY/UpZWGx0phzvuPTgOsUlKa1QK+PVSA
+         gIupCVnCmRhH1l7nGIMAdRKLdF8Z+JLWpSIJjEIEo0iDyBHsOeCBBTGIeyszB+m7xd/0
+         j2cw5CXaW0VHzPKjR7zC3/wOXHQMCvJ9QJZ/H6sA7xbUPiNjTx3933hVLRbMAinv9jil
+         UhxxyZfuG0OTaxfjZXagtBbHqjCViK06RnJxO0+bWrmKKqcIEqXEufZ0PMFS3zYepQ3Y
+         wXuA==
+X-Gm-Message-State: AOAM530T5O/lvfquX8yhjUHOoCB6L25qJZ4qY/d0Dw8q6YRNuhWtCO2n
+        VQDGb4ph4cAz+04l2ecaDJRF49V212ZmO4uhj1ueiw==
+X-Google-Smtp-Source: ABdhPJzdTHCSzPEmyky+jVTYpmIeNA4gwh4eafVoKki6ciFaZTe6pNy41Z81p02iQGgR8m4sm1feM4sG9bAxg7oIc+Q=
+X-Received: by 2002:a7b:cd93:: with SMTP id y19mr15306469wmj.112.1601890169505;
+ Mon, 05 Oct 2020 02:29:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201002000549.GK3722@pendragon.ideasonboard.com>
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 05.10.2020 11:28:21,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 05.10.2020 11:28:21,
-        Serialize complete at 05.10.2020 11:28:21
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWyRoCBS9f0eVW8wZJeSYvOiUvYLS7vmsNm
-        0bNhK6vFsk1/mCw+bfnG5MDqMbtjJqvHplWdbB7zTgZ6fN4kF8ASxWWTkpqTWZZapG+XwJXR
-        f2ETW0GbQsWvT8+YGxjXSHYxcnJICJhIXNj6nLWLkYtDSGAbo8TKW3/ZIZzTjBKTFn5i6WLk
-        4BAWiJR488gFpEFEwEKid9F0RpAaZoEdjBIb1txihmhYxiixfuVbZpAqNgEnicXnO9hAbF4B
-        G4k5B14zgQxiEVCRmH8sD8QUBZq5c4clRIWgxMmZT1hAbE4Be4nHq9aygIyUEGhkknix5is7
-        xKVCEqcXnwUbzywgL7H97Rwo20xi3uaHULa4xK0n85kmMArNQjJ3FpKWWUhaZiFpWcDIsopR
-        KDczOTu1KDNbryCjsiQ1WS8ldRMjMBIOT1S/tIOxb47HIUYmDsZDjBIczEoivHphFfFCvCmJ
-        lVWpRfnxRaU5qcWHGKU5WJTEeTfwloQJCaQnlqRmp6YWpBbBZJk4OKUaGONLgmrydj08Uh7N
-        MdVGfxdLz+biVsmb+7y/dDwuEM/+bfnwhFWY/MtbeUenNvyct2CF1DbRohtJxYfTd33J+35g
-        zpOH+2N0LrGFZor2zfDXerDxTkNChff07sLTC2M+3JaXP+r8LcudO231Cf055lPZGFx+55/i
-        P9fL7Vy/P3xndV3KMmGND0osxRmJhlrMRcWJAMqvSchyAgAA
+References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-6-elver@google.com>
+ <CAG48ez3X4dqXAEa7NFf6Vm3kq6Rk+z0scWqK6TV6jTo5+Pu+aA@mail.gmail.com>
+In-Reply-To: <CAG48ez3X4dqXAEa7NFf6Vm3kq6Rk+z0scWqK6TV6jTo5+Pu+aA@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 5 Oct 2020 11:29:18 +0200
+Message-ID: <CAG_fn=Wsxd+7COTzkqg-h82EzZgHq_bAM+u3u2rMh6VOmVQTdg@mail.gmail.com>
+Subject: Re: [PATCH v4 05/11] mm, kfence: insert KFENCE hooks for SLUB
+To:     Jann Horn <jannh@google.com>
+Cc:     Marco Elver <elver@google.com>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On Fri, Oct 2, 2020 at 9:07 AM Jann Horn <jannh@google.com> wrote:
+>
+> On Tue, Sep 29, 2020 at 3:38 PM Marco Elver <elver@google.com> wrote:
+> > Inserts KFENCE hooks into the SLUB allocator.
+> [...]
+> > diff --git a/mm/slub.c b/mm/slub.c
+> [...]
+> > @@ -3290,8 +3314,14 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, =
+gfp_t flags, size_t size,
+> >         c =3D this_cpu_ptr(s->cpu_slab);
+> >
+> >         for (i =3D 0; i < size; i++) {
+> > -               void *object =3D c->freelist;
+> > +               void *object =3D kfence_alloc(s, s->object_size, flags)=
+;
+>
+> kfence_alloc() will invoke ->ctor() callbacks if the current slab has
+> them. Is it fine to invoke such callbacks from here, where we're in
+> the middle of a section that disables interrupts to protect against
+> concurrent freelist changes? If someone decides to be extra smart and
+> uses a kmem_cache with a ->ctor that can allocate memory from the same
+> kmem_cache, or something along those lines, this could lead to
+> corruption of the SLUB freelist. But I'm not sure whether that can
+> happen in practice.
 
-On 02.10.20 02:05, Laurent Pinchart wrote:
-> Hi Stefan,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Sep 30, 2020 at 12:51:33PM +0200, Stefan Riedmueller wrote:
->> From: Dirk Bender <d.bender@phytec.de>
->>
->> To prevent corrupted frames after starting and stopping the sensor it's
-> 
-> s/it's/its/
+From cache_init_objs_debug() in mm/slab.c:
 
-thanks, I'll fix that.
+                /*
+                 * Constructors are not allowed to allocate memory from the=
+ same
+                 * cache which they are a constructor for.  Otherwise, dead=
+lock.
+                 * They must also be threaded.
+                 */
 
-> 
->> datasheet specifies a specific pause sequence to follow:
->>
->> Stopping:
->> 	Set Pause_Restart Bit -> Set Restart Bit -> Set Chip_Enable Off
->>
->> Restarting:
->> 	Set Chip_Enable On -> Clear Pause_Restart Bit
->>
->> The Restart Bit is cleared automatically and must not be cleared
->> manually as this would cause undefined behavior.
->>
->> Signed-off-by: Dirk Bender <d.bender@phytec.de>
->> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
->> ---
->> No changes in v2
->> ---
->>   drivers/media/i2c/mt9p031.c | 25 +++++++++++++++++++++++++
->>   1 file changed, 25 insertions(+)
->>
->> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
->> index d10457361e6c..d59f66e3dcf3 100644
->> --- a/drivers/media/i2c/mt9p031.c
->> +++ b/drivers/media/i2c/mt9p031.c
->> @@ -80,6 +80,8 @@
->>   #define		MT9P031_PIXEL_CLOCK_SHIFT(n)		((n) << 8)
->>   #define		MT9P031_PIXEL_CLOCK_DIVIDE(n)		((n) << 0)
->>   #define MT9P031_FRAME_RESTART				0x0b
->> +#define		MT9P031_FRAME_RESTART_SET		(1 << 0)
->> +#define		MT9P031_FRAME_PAUSE_RESTART_SET		(1 << 1)
-> 
-> The fields are named Restart and Pause_Restart, I would drop _SET. Could
-> you also sort them from MSB to LSB as for the other registers ? Using
-> BIT() would be good too, although this could be done as an additional
-> patch to convert all the existing macros.
+So, no, it is not allowed to allocate from the same cache in the constructo=
+r.
 
-I'll do that. Also I will rename the register to MT9P031_RESTART and the 
-bits to MT9P031_FRAME_RESTART and MT9P031_FRAME_PAUSE_RESTART.
 
-> 
->>   #define MT9P031_SHUTTER_DELAY				0x0c
->>   #define MT9P031_RST					0x0d
->>   #define		MT9P031_RST_ENABLE			1
->> @@ -483,9 +485,25 @@ static int mt9p031_set_params(struct mt9p031 *mt9p031)
->>   static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
->>   {
->>   	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
->> +	struct i2c_client *client = v4l2_get_subdevdata(subdev);
->> +	int val;
->>   	int ret;
->>   
->>   	if (!enable) {
->> +		val = mt9p031_read(client, MT9P031_FRAME_RESTART);
-> 
-> Do you need to read the register ? Can't you write
-> MT9P031_FRAME_PAUSE_RESTART_SET and then MT9P031_FRAME_PAUSE_RESTART_SET
-> | MT9P031_FRAME_RESTART_SET ? And actually, can't we just write both
-> bits in one go, do we need two writes ?
+> Still, it might be nicer if you could code this to behave like a
+> fastpath miss: Update c->tid, turn interrupts back on (___slab_alloc()
+> will also do that if it has to call into the page allocator), then let
+> kfence do the actual allocation in a more normal context, then turn
+> interrupts back off and go on. If that's not too complicated?
+>
+> Maybe Christoph Lameter has opinions on whether this is necessary...
+> it admittedly is fairly theoretical.
+>
+> > +               if (unlikely(object)) {
+> > +                       p[i] =3D object;
+> > +                       continue;
+> > +               }
+> > +
+> > +               object =3D c->freelist;
+> >                 if (unlikely(!object)) {
+> >                         /*
+> >                          * We may have removed an object from c->freeli=
+st using
 
-I think you're right we don't necessarily need to read the registers. The 
-only other bit is not used by the driver.
 
-But I think we do need two separate writes, at least that is what the 
-datasheet states.
 
-So I would drop the read but keep both write, ok?
+--
+Alexander Potapenko
+Software Engineer
 
-> 
->> +
->> +		/* enable pause restart */
->> +		val |= MT9P031_FRAME_PAUSE_RESTART_SET;
->> +		ret = mt9p031_write(client, MT9P031_FRAME_RESTART, val);
->> +		if (ret < 0)
->> +			return ret;
->> +
->> +		/* enable restart + keep pause restart set */
->> +		val |= MT9P031_FRAME_RESTART_SET;
->> +		ret = mt9p031_write(client, MT9P031_FRAME_RESTART, val);
->> +		if (ret < 0)
->> +			return ret;
->> +
->>   		/* Stop sensor readout */
->>   		ret = mt9p031_set_output_control(mt9p031,
->>   						 MT9P031_OUTPUT_CONTROL_CEN, 0);
->> @@ -505,6 +523,13 @@ static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
->>   	if (ret < 0)
->>   		return ret;
->>   
->> +	val = mt9p031_read(client, MT9P031_FRAME_RESTART);
->> +	/* disable reset + pause restart */
->> +	val &= ~MT9P031_FRAME_PAUSE_RESTART_SET;
-> 
-> Same here, I think you can simply write MT9P031_FRAME_PAUSE_RESTART_SET.
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
-I'll drop the read here as well. But I need to make sure, that the Restart 
-Bit is not cleared manually here.
-
-Regards,
-Stefan
-
-> 
->> +	ret = mt9p031_write(client, MT9P031_FRAME_RESTART, val);
->> +	if (ret < 0)
->> +		return ret;
->> +
->>   	return mt9p031_pll_enable(mt9p031);
->>   }
->>   
-> 
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
