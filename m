@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73407283292
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FC6283295
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgJEIwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:52:04 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:45670 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725895AbgJEIwE (ORCPT
+        id S1725935AbgJEIw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJEIw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:52:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1601887921; x=1604479921;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=rIiIosLA4VGrYp/A3KE5JPx8OOQgdFYeqoT8ZArhhc8=;
-        b=GjumZ8wsuQzZI+aaUWrGO0KTk5mvZlbZaTvUAAcjlvyzpuqJ25dj3X2F7bwwjEPu
-        Kw62E0KlvfnpYSU413J6Kod+FT2ZBp5mTYV/N/ePYcTxBrJHYK5DmmeWNiQ3O6iF
-        vk99cgS/pcT3bK5j57+IDpt/tBtyFyySRNVEsdHE+N8=;
-X-AuditID: c39127d2-269ff70000001c25-dd-5f7adeb17a13
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 19.3A.07205.1BEDA7F5; Mon,  5 Oct 2020 10:52:01 +0200 (CEST)
-Received: from [172.16.23.108] ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2020100510520110-551248 ;
-          Mon, 5 Oct 2020 10:52:01 +0200 
-Subject: Re: [PATCH v2 4/5] media: mt9p031: Make pixel clock polarity
- configurable by DT
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Hemp <c.hemp@phytec.de>
-References: <20200930105133.139981-1-s.riedmueller@phytec.de>
- <20200930105133.139981-4-s.riedmueller@phytec.de>
- <20201001161031.GP26842@paasikivi.fi.intel.com>
- <20201001161111.GQ26842@paasikivi.fi.intel.com>
-From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
-Message-ID: <1121fe39-2965-0782-85cc-2dcb9996b978@phytec.de>
-Date:   Mon, 5 Oct 2020 10:52:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Oct 2020 04:52:56 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69AEC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 01:52:56 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id l4so4398335ota.7
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zBv6kKM3dGEQmeeDgKUdUDXl4YNkEuWp7ZkHMGBjG2U=;
+        b=PbSorY/wjjyVTk6RWJP+7cLPX10on36ynefRf8xyVUV5nAIJbPs+YkIvpcKyCD+P8Z
+         78/fpujGqqB18pss8znR6iTX5WUiWstDXbwlKc+yAIvesg4wvZb8iICgRWWhT1lFPboh
+         oF+4juoKRGnS3g9W0f6RRB+5Mzf71rLrN/5ruotfSWGEr8zLK4/klmym2TODYTum/xKb
+         2gerYU+p4VjUx1vgWRjFfaLI23jZiZfjHtsl58jWkHLzNkjiRfhgiR6W/fy8gfxUoHY+
+         Socntdc3fnENfynf+mdFXPPSH7XMXzWvArB8EwD688En2ndkzfFlWtRzMH1W9cS7kV3Q
+         sszA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zBv6kKM3dGEQmeeDgKUdUDXl4YNkEuWp7ZkHMGBjG2U=;
+        b=S02leKfMhdCbcbefusKl8vzmwr790QnyyW5NrP/97MFyhrWyj9A8Z+lsmVU7OL0WdT
+         EH1iC2FovlE7KkVfuAwnXnnTeuZPdkAOK9vagIep7jBkk/kIn4S0hcCOHbGL+bHOZ55K
+         2XDdwaUQ987PyX7aXT7rzNFWl3IthUzPHaWggEZan4RlQETniDZdtcjPDHIkxncctve6
+         6Epk4TbiSyL1AcCEdvaS9jH7yiWA/BxHkb11At9hm1TUb3U+5gClIYyQIHelEqdQorWS
+         NoErpg6HNNkxRngA/LdXm07dt8bJ6f6iF5IID+qzz1o+T/xNsAYQPSM+Fzy8ZYdf/E6S
+         A9Xg==
+X-Gm-Message-State: AOAM532HTBBAFDbPSBWclRELPnhauWypSoRIAWBbo8ON1HhY5G9Q7fYA
+        wfB6xhQJnFa9D4EZO10Dn/Z1hJbq/4V4GyKTFj/lS3PiCfcwIg==
+X-Google-Smtp-Source: ABdhPJxC6iKQENcB3w7OV28e3Th1vuHlgdW/e6/U6XO33nCwqKtHv/SsDDmYMV1XhbRBBEoNYlf2Ql4KjJ9TSY46q08=
+X-Received: by 2002:a9d:4b18:: with SMTP id q24mr10631578otf.265.1601887975881;
+ Mon, 05 Oct 2020 01:52:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201001161111.GQ26842@paasikivi.fi.intel.com>
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 05.10.2020 10:52:01,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 05.10.2020 10:52:01,
-        Serialize complete at 05.10.2020 10:52:01
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsWyRoCBS3fjvap4g9+zeSw6Jy5ht7i8aw6b
-        Rc+GrawWyzb9YbL4tOUbkwOrx+yOmawem1Z1snnMOxno8XmTXABLFJdNSmpOZllqkb5dAlfG
-        s1V2BRNYK95t2cfawDiZpYuRk0NCwETi+sQVjF2MXBxCAtsYJe4vWMAGkhASOM0ocXtKBogt
-        LBAlcXjBOtYuRg4OEQF9iUkPzEDqmQUOMUo0dM5mh2i+yiixasUpZpAGNgEnicXnO8AG8QrY
-        SMz5CdLMycEioCJx8sk5dpBBogKREjt3WEKUCEqcnPkE7CBOoPKzPxcwQhzXyCSxdL0RhC0k
-        cXrxWbDxzALyEtvfzoGyzSTmbX4IZYtL3Hoyn2kCo9AsJGNnIWmZhaRlFpKWBYwsqxiFcjOT
-        s1OLMrP1CjIqS1KT9VJSNzECo+DwRPVLOxj75ngcYmTiYAR6moNZSYRXL6wiXog3JbGyKrUo
-        P76oNCe1+BCjNAeLkjjvBt6SMCGB9MSS1OzU1ILUIpgsEwenVANj/4Sv8o/8VRuYUyWWHm/g
-        ls+z0zVNeJSc/67VS6/wrqrNhlnswSxyVzVXF7GqPuM+VfHTX+1KcCqfzrHIT/bLK0punjJ3
-        NmCZckxGlE+j7zPXTa2vr+XOPHy8hrmk7kzNombH3Eusf6uV2e0ZhZnsQ1QUTYP5oh4+WV1S
-        lZgQse+Nf/pZHiWW4oxEQy3mouJEADj9DCdwAgAA
+References: <20201005064842.33495-1-dwaipayanray1@gmail.com>
+ <a5cba9bb723626091f8790c794efe8de4ab184b8.camel@perches.com>
+ <CABJPP5BwVmWiFcxHKdCYnN_mOE1G=eHUDq8yqqHFaO3cYhp+oA@mail.gmail.com>
+ <c51588b4e8a2096c1453070b983da5ce8617a622.camel@perches.com>
+ <CABJPP5CAY+qJU8wnGZ7JgugeN9CyFbdct6nAsxpY0NdyaNuWLQ@mail.gmail.com> <f1536dd1c1fbf53a848b27a2817a973fbf809719.camel@perches.com>
+In-Reply-To: <f1536dd1c1fbf53a848b27a2817a973fbf809719.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Mon, 5 Oct 2020 14:22:33 +0530
+Message-ID: <CABJPP5ASsEu5n3cwYxSB4PWYnW+gjXuL_+zSmrpivgHBE7fcnw@mail.gmail.com>
+Subject: Re: [PATCH RFC] checkpatch: add new warnings to author signoff checks.
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On Mon, Oct 5, 2020 at 2:13 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-10-05 at 13:50 +0530, Dwaipayan Ray wrote:
+> > On Mon, Oct 5, 2020 at 1:35 PM Joe Perches <joe@perches.com> wrote:
+> > > On Mon, 2020-10-05 at 13:10 +0530, Dwaipayan Ray wrote:
+> > > > On Mon, Oct 5, 2020 at 12:48 PM Joe Perches <joe@perches.com> wrote:
+> > > > > On Mon, 2020-10-05 at 12:18 +0530, Dwaipayan Ray wrote:
+> > > > > > The author signed-off-by checks are currently very vague.
+> > > > > > Cases like same name or same address are not handled separately.
+> > > []
+> > > > > And for mismatches, it's really not known that
+> > > > > it should be one way or the or the other is it?
+> > > > >
+> > > >
+> > > > I think that's true. But since the mail in the
+> > > > From: part is the one which with others are being
+> > > > compared, I think maybe it should have the higher
+> > > > priority, and be treated as the expected one.
+> > >
+> > > I rather expect it to be the other way around.
+> > >
+> > > The Signed-off-by: line should be authoritative
+> > > as that is what is put in the commit log.
+> > >
+> > >
+> > Yes that makes sense. So is it just better to point at
+> > the difference?
+> > Like:
+> > Author email in From: (something) differs from
+> > Signed-off-by: (something2).
+>
+> I think so yes.
+>
+> That's what I suggested when I replied to you
+> with your first attempt.
+>
+> https://lore.kernel.org/lkml/7958ded756c895ca614ba900aae7b830a992475e.camel@perches.com/
+>
+>                         WARN("NO_AUTHOR_SIGN_OFF",
+>                              "From:/SoB: email address mismatch: 'From: $author' != 'Signed-off-by: $authorsignoff'\n");
+>
+> And please keep replies on list.
+>
+Yes sure, I missed to cc the list.
 
-On 01.10.20 18:11, Sakari Ailus wrote:
-> On Thu, Oct 01, 2020 at 07:10:31PM +0300, Sakari Ailus wrote:
->>> @@ -1079,6 +1094,9 @@ mt9p031_get_pdata(struct i2c_client *client)
->>>   	of_property_read_u32(np, "input-clock-frequency", &pdata->ext_freq);
->>>   	of_property_read_u32(np, "pixel-clock-frequency", &pdata->target_freq);
->>>   
->>> +	pdata->pixclk_pol = !!(endpoint.bus.parallel.flags &
->>> +			       V4L2_MBUS_PCLK_SAMPLE_RISING);
->>
->> Could you document this in DT bindings? And the default, too.
-> 
-> Please make it a separate patch.
+I will fix the issues and get back to you with a new patch.
 
-Sure, I'll send a separate patch for the DT bindings.
-
-Regards,
-Stefan
-
-> 
+Thanks,
+Dwaipayan.
