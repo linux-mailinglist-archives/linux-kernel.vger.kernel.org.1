@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8E428358E
+	by mail.lfdr.de (Postfix) with ESMTP id 66B0028358C
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgJEMOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        id S1726773AbgJEMOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgJEMMb (ORCPT
+        with ESMTP id S1726165AbgJEMMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:12:31 -0400
+        Mon, 5 Oct 2020 08:12:32 -0400
 Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B61C0613B0
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:12:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16210C0613B1
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:12:30 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id 11B5723FD2C;
-        Mon,  5 Oct 2020 14:12:27 +0200 (CEST)
+        by smtp2.goneo.de (Postfix) with ESMTP id F1B02241620;
+        Mon,  5 Oct 2020 14:12:28 +0200 (CEST)
 X-Virus-Scanned: by goneo
 X-Spam-Flag: NO
-X-Spam-Score: -2.989
+X-Spam-Score: -2.988
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.989 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.089, BAYES_00=-1.9] autolearn=ham
+X-Spam-Status: No, score=-2.988 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.088, BAYES_00=-1.9] autolearn=ham
 Received: from smtp2.goneo.de ([127.0.0.1])
         by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id lButTQ8Cprdw; Mon,  5 Oct 2020 14:12:26 +0200 (CEST)
+        with ESMTP id M9II5blvmEh5; Mon,  5 Oct 2020 14:12:27 +0200 (CEST)
 Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp2.goneo.de (Postfix) with ESMTPA id 0795123F789;
-        Mon,  5 Oct 2020 14:12:25 +0200 (CEST)
+        by smtp2.goneo.de (Postfix) with ESMTPA id D0C3F23F913;
+        Mon,  5 Oct 2020 14:12:26 +0200 (CEST)
 From:   poeschel@lemonage.de
 To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
         linux-kernel@vger.kernel.org (open list)
 Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH v3 13/32] auxdisplay: Make use of enum for backlight on / off
-Date:   Mon,  5 Oct 2020 14:11:41 +0200
-Message-Id: <20201005121200.3427363-14-poeschel@lemonage.de>
+Subject: [PATCH v3 14/32] auxdisplay: Move init_display to hd44780_common
+Date:   Mon,  5 Oct 2020 14:11:42 +0200
+Message-Id: <20201005121200.3427363-15-poeschel@lemonage.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005121200.3427363-1-poeschel@lemonage.de>
 References: <20201005121200.3427363-1-poeschel@lemonage.de>
@@ -48,46 +50,377 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lars Poeschel <poeschel@lemonage.de>
 
-To turn the backlight on or off use our new enum CHARLCD_ON /
-CHARLCD_OFF.
+The init_display function is moved over to hd44780_common. charlcd uses
+it via it's ops function pointer and drivers initialize the ops with the
+common hd44780_common_init_display function.
 
 Reviewed-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
 ---
- drivers/auxdisplay/charlcd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/auxdisplay/charlcd.c        | 95 ++---------------------------
+ drivers/auxdisplay/charlcd.h        |  9 +++
+ drivers/auxdisplay/hd44780.c        |  2 +
+ drivers/auxdisplay/hd44780_common.c | 88 ++++++++++++++++++++++++++
+ drivers/auxdisplay/hd44780_common.h |  2 +
+ drivers/auxdisplay/panel.c          |  3 +
+ 6 files changed, 110 insertions(+), 89 deletions(-)
 
 diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index 154419513186..9631f70e8128 100644
+index 9631f70e8128..94f6b0afab13 100644
 --- a/drivers/auxdisplay/charlcd.c
 +++ b/drivers/auxdisplay/charlcd.c
-@@ -115,7 +115,7 @@ static void charlcd_bl_off(struct work_struct *work)
- 	if (priv->bl_tempo) {
- 		priv->bl_tempo = false;
- 		if (!(priv->flags & LCD_FLAG_L))
--			priv->lcd.ops->backlight(&priv->lcd, 0);
-+			priv->lcd.ops->backlight(&priv->lcd, CHARLCD_OFF);
- 	}
- 	mutex_unlock(&priv->bl_tempo_lock);
+@@ -8,7 +8,6 @@
+ 
+ #include <linux/atomic.h>
+ #include <linux/ctype.h>
+-#include <linux/delay.h>
+ #include <linux/fs.h>
+ #include <linux/miscdevice.h>
+ #include <linux/module.h>
+@@ -26,17 +25,7 @@
+ /* Keep the backlight on this many seconds for each flash */
+ #define LCD_BL_TEMPO_PERIOD	4
+ 
+-#define LCD_FLAG_B		0x0004	/* Blink on */
+-#define LCD_FLAG_C		0x0008	/* Cursor on */
+-#define LCD_FLAG_D		0x0010	/* Display on */
+-#define LCD_FLAG_F		0x0020	/* Large font mode */
+-#define LCD_FLAG_N		0x0040	/* 2-rows mode */
+-#define LCD_FLAG_L		0x0080	/* Backlight enabled */
+-
+ /* LCD commands */
+-#define LCD_CMD_ENTRY_MODE	0x04	/* Set entry mode */
+-#define LCD_CMD_CURSOR_INC	0x02	/* Increment cursor */
+-
+ #define LCD_CMD_DISPLAY_CTRL	0x08	/* Display control */
+ #define LCD_CMD_DISPLAY_ON	0x04	/* Set display on */
+ #define LCD_CMD_CURSOR_ON	0x02	/* Set cursor on */
+@@ -84,12 +73,6 @@ struct charlcd_priv {
+ /* Device single-open policy control */
+ static atomic_t charlcd_available = ATOMIC_INIT(1);
+ 
+-/* sleeps that many milliseconds with a reschedule */
+-static void long_sleep(int ms)
+-{
+-	schedule_timeout_interruptible(msecs_to_jiffies(ms));
+-}
+-
+ /* turn the backlight on or off */
+ void charlcd_backlight(struct charlcd *lcd, enum charlcd_onoff on)
+ {
+@@ -177,76 +160,6 @@ static void charlcd_clear_fast(struct charlcd *lcd)
+ 	charlcd_home(lcd);
  }
-@@ -132,7 +132,7 @@ void charlcd_poke(struct charlcd *lcd)
  
- 	mutex_lock(&priv->bl_tempo_lock);
- 	if (!priv->bl_tempo && !(priv->flags & LCD_FLAG_L))
--		lcd->ops->backlight(lcd, 1);
-+		lcd->ops->backlight(lcd, CHARLCD_ON);
- 	priv->bl_tempo = true;
- 	schedule_delayed_work(&priv->bl_work, LCD_BL_TEMPO_PERIOD * HZ);
- 	mutex_unlock(&priv->bl_tempo_lock);
-@@ -829,7 +829,7 @@ int charlcd_unregister(struct charlcd *lcd)
- 	the_charlcd = NULL;
- 	if (lcd->ops->backlight) {
- 		cancel_delayed_work_sync(&priv->bl_work);
--		priv->lcd.ops->backlight(&priv->lcd, 0);
-+		priv->lcd.ops->backlight(&priv->lcd, CHARLCD_OFF);
+-static int charlcd_init_display(struct charlcd *lcd)
+-{
+-	void (*write_cmd_raw)(struct hd44780_common *hdc, int cmd);
+-	struct charlcd_priv *priv = charlcd_to_priv(lcd);
+-	struct hd44780_common *hdc = lcd->drvdata;
+-	u8 init;
+-
+-	if (hdc->ifwidth != 4 && hdc->ifwidth != 8)
+-		return -EINVAL;
+-
+-	priv->flags = ((lcd->height > 1) ? LCD_FLAG_N : 0) | LCD_FLAG_D |
+-		      LCD_FLAG_C | LCD_FLAG_B;
+-
+-	long_sleep(20);		/* wait 20 ms after power-up for the paranoid */
+-
+-	/*
+-	 * 8-bit mode, 1 line, small fonts; let's do it 3 times, to make sure
+-	 * the LCD is in 8-bit mode afterwards
+-	 */
+-	init = LCD_CMD_FUNCTION_SET | LCD_CMD_DATA_LEN_8BITS;
+-	if (hdc->ifwidth == 4) {
+-		init >>= 4;
+-		write_cmd_raw = hdc->write_cmd_raw4;
+-	} else {
+-		write_cmd_raw = hdc->write_cmd;
+-	}
+-	write_cmd_raw(hdc, init);
+-	long_sleep(10);
+-	write_cmd_raw(hdc, init);
+-	long_sleep(10);
+-	write_cmd_raw(hdc, init);
+-	long_sleep(10);
+-
+-	if (hdc->ifwidth == 4) {
+-		/* Switch to 4-bit mode, 1 line, small fonts */
+-		hdc->write_cmd_raw4(hdc, LCD_CMD_FUNCTION_SET >> 4);
+-		long_sleep(10);
+-	}
+-
+-	/* set font height and lines number */
+-	hdc->write_cmd(hdc,
+-		LCD_CMD_FUNCTION_SET |
+-		((hdc->ifwidth == 8) ? LCD_CMD_DATA_LEN_8BITS : 0) |
+-		((priv->flags & LCD_FLAG_F) ? LCD_CMD_FONT_5X10_DOTS : 0) |
+-		((priv->flags & LCD_FLAG_N) ? LCD_CMD_TWO_LINES : 0));
+-	long_sleep(10);
+-
+-	/* display off, cursor off, blink off */
+-	hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CTRL);
+-	long_sleep(10);
+-
+-	hdc->write_cmd(hdc,
+-		LCD_CMD_DISPLAY_CTRL |	/* set display mode */
+-		((priv->flags & LCD_FLAG_D) ? LCD_CMD_DISPLAY_ON : 0) |
+-		((priv->flags & LCD_FLAG_C) ? LCD_CMD_CURSOR_ON : 0) |
+-		((priv->flags & LCD_FLAG_B) ? LCD_CMD_BLINK_ON : 0));
+-
+-	charlcd_backlight(lcd, (priv->flags & LCD_FLAG_L) ? 1 : 0);
+-
+-	long_sleep(10);
+-
+-	/* entry mode set : increment, cursor shifting */
+-	hdc->write_cmd(hdc, LCD_CMD_ENTRY_MODE | LCD_CMD_CURSOR_INC);
+-
+-	lcd->ops->clear_display(lcd);
+-	lcd->addr.x = 0;
+-	lcd->addr.y = 0;
+-	return 0;
+-}
+-
+ /*
+  * Parses a movement command of the form "(.*);", where the group can be
+  * any number of subcommands of the form "(x|y)[0-9]+".
+@@ -418,7 +331,9 @@ static inline int handle_lcd_special_code(struct charlcd *lcd)
+ 		break;
  	}
+ 	case 'I':	/* reinitialize display */
+-		charlcd_init_display(lcd);
++		lcd->ops->init_display(lcd);
++		priv->flags = ((lcd->height > 1) ? LCD_FLAG_N : 0) | LCD_FLAG_D |
++			LCD_FLAG_C | LCD_FLAG_B;
+ 		processed = 1;
+ 		break;
+ 	case 'G': {
+@@ -727,6 +642,8 @@ static int charlcd_init(struct charlcd *lcd)
+ 	struct charlcd_priv *priv = charlcd_to_priv(lcd);
+ 	int ret;
  
- 	return 0;
++	priv->flags = ((lcd->height > 1) ? LCD_FLAG_N : 0) | LCD_FLAG_D |
++		      LCD_FLAG_C | LCD_FLAG_B;
+ 	if (lcd->ops->backlight) {
+ 		mutex_init(&priv->bl_tempo_lock);
+ 		INIT_DELAYED_WORK(&priv->bl_work, charlcd_bl_off);
+@@ -737,7 +654,7 @@ static int charlcd_init(struct charlcd *lcd)
+ 	 * Since charlcd_init_display() needs to write data, we have to
+ 	 * enable mark the LCD initialized just before.
+ 	 */
+-	ret = charlcd_init_display(lcd);
++	ret = lcd->ops->init_display(lcd);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/auxdisplay/charlcd.h b/drivers/auxdisplay/charlcd.h
+index e5b22e72fdc8..6281cf299a6d 100644
+--- a/drivers/auxdisplay/charlcd.h
++++ b/drivers/auxdisplay/charlcd.h
+@@ -9,6 +9,13 @@
+ #ifndef _CHARLCD_H
+ #define _CHARLCD_H
+ 
++#define LCD_FLAG_B		0x0004	/* Blink on */
++#define LCD_FLAG_C		0x0008	/* Cursor on */
++#define LCD_FLAG_D		0x0010	/* Display on */
++#define LCD_FLAG_F		0x0020	/* Large font mode */
++#define LCD_FLAG_N		0x0040	/* 2-rows mode */
++#define LCD_FLAG_L		0x0080	/* Backlight enabled */
++
+ enum charlcd_onoff {
+ 	CHARLCD_OFF = 0,
+ 	CHARLCD_ON,
+@@ -45,6 +52,7 @@ struct charlcd {
+  * @clear_display: Again clear the whole display, set the cursor to 0, 0. The
+  * values in addr.x and addr.y are set to 0, 0 by charlcd prior to calling this
+  * function.
++ * @init_display: Initialize the display.
+  */
+ struct charlcd_ops {
+ 	void (*clear_fast)(struct charlcd *lcd);
+@@ -53,6 +61,7 @@ struct charlcd_ops {
+ 	int (*gotoxy)(struct charlcd *lcd);
+ 	int (*home)(struct charlcd *lcd);
+ 	int (*clear_display)(struct charlcd *lcd);
++	int (*init_display)(struct charlcd *lcd);
+ };
+ 
+ void charlcd_backlight(struct charlcd *lcd, enum charlcd_onoff on);
+diff --git a/drivers/auxdisplay/hd44780.c b/drivers/auxdisplay/hd44780.c
+index 40ea6d25dbe1..5916da09f738 100644
+--- a/drivers/auxdisplay/hd44780.c
++++ b/drivers/auxdisplay/hd44780.c
+@@ -130,6 +130,7 @@ static const struct charlcd_ops hd44780_ops_gpio8 = {
+ 	.gotoxy		= hd44780_common_gotoxy,
+ 	.home		= hd44780_common_home,
+ 	.clear_display	= hd44780_common_clear_display,
++	.init_display	= hd44780_common_init_display,
+ };
+ 
+ /* Send a command to the LCD panel in 4 bit GPIO mode */
+@@ -177,6 +178,7 @@ static const struct charlcd_ops hd44780_ops_gpio4 = {
+ 	.gotoxy		= hd44780_common_gotoxy,
+ 	.home		= hd44780_common_home,
+ 	.clear_display	= hd44780_common_clear_display,
++	.init_display	= hd44780_common_init_display,
+ };
+ 
+ static int hd44780_probe(struct platform_device *pdev)
+diff --git a/drivers/auxdisplay/hd44780_common.c b/drivers/auxdisplay/hd44780_common.c
+index 6bc2b3bf6139..8e64de2e44f2 100644
+--- a/drivers/auxdisplay/hd44780_common.c
++++ b/drivers/auxdisplay/hd44780_common.c
+@@ -9,6 +9,19 @@
+ /* LCD commands */
+ #define LCD_CMD_DISPLAY_CLEAR	0x01	/* Clear entire display */
+ 
++#define LCD_CMD_ENTRY_MODE	0x04	/* Set entry mode */
++#define LCD_CMD_CURSOR_INC	0x02	/* Increment cursor */
++
++#define LCD_CMD_DISPLAY_CTRL	0x08	/* Display control */
++#define LCD_CMD_DISPLAY_ON	0x04	/* Set display on */
++#define LCD_CMD_CURSOR_ON	0x02	/* Set cursor on */
++#define LCD_CMD_BLINK_ON	0x01	/* Set blink on */
++
++#define LCD_CMD_FUNCTION_SET	0x20	/* Set function */
++#define LCD_CMD_DATA_LEN_8BITS	0x10	/* Set data length to 8 bits */
++#define LCD_CMD_TWO_LINES	0x08	/* Set to two display lines */
++#define LCD_CMD_FONT_5X10_DOTS	0x04	/* Set char font to 5x10 dots */
++
+ #define LCD_CMD_SET_DDRAM_ADDR	0x80	/* Set display data RAM address */
+ 
+ /* sleeps that many milliseconds with a reschedule */
+@@ -70,6 +83,81 @@ int hd44780_common_clear_display(struct charlcd *lcd)
+ }
+ EXPORT_SYMBOL_GPL(hd44780_common_clear_display);
+ 
++int hd44780_common_init_display(struct charlcd *lcd)
++{
++	struct hd44780_common *hdc = lcd->drvdata;
++
++	void (*write_cmd_raw)(struct hd44780_common *hdc, int cmd);
++	u8 init;
++
++	if (hdc->ifwidth != 4 && hdc->ifwidth != 8)
++		return -EINVAL;
++
++	hdc->hd44780_common_flags = ((lcd->height > 1) ? LCD_FLAG_N : 0) |
++		LCD_FLAG_D | LCD_FLAG_C | LCD_FLAG_B;
++
++	long_sleep(20);		/* wait 20 ms after power-up for the paranoid */
++
++	/*
++	 * 8-bit mode, 1 line, small fonts; let's do it 3 times, to make sure
++	 * the LCD is in 8-bit mode afterwards
++	 */
++	init = LCD_CMD_FUNCTION_SET | LCD_CMD_DATA_LEN_8BITS;
++	if (hdc->ifwidth == 4) {
++		init >>= 4;
++		write_cmd_raw = hdc->write_cmd_raw4;
++	} else {
++		write_cmd_raw = hdc->write_cmd;
++	}
++	write_cmd_raw(hdc, init);
++	long_sleep(10);
++	write_cmd_raw(hdc, init);
++	long_sleep(10);
++	write_cmd_raw(hdc, init);
++	long_sleep(10);
++
++	if (hdc->ifwidth == 4) {
++		/* Switch to 4-bit mode, 1 line, small fonts */
++		hdc->write_cmd_raw4(hdc, LCD_CMD_FUNCTION_SET >> 4);
++		long_sleep(10);
++	}
++
++	/* set font height and lines number */
++	hdc->write_cmd(hdc,
++		LCD_CMD_FUNCTION_SET |
++		((hdc->ifwidth == 8) ? LCD_CMD_DATA_LEN_8BITS : 0) |
++		((hdc->hd44780_common_flags & LCD_FLAG_F) ?
++			LCD_CMD_FONT_5X10_DOTS : 0) |
++		((hdc->hd44780_common_flags & LCD_FLAG_N) ?
++			LCD_CMD_TWO_LINES : 0));
++	long_sleep(10);
++
++	/* display off, cursor off, blink off */
++	hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CTRL);
++	long_sleep(10);
++
++	hdc->write_cmd(hdc,
++		LCD_CMD_DISPLAY_CTRL |	/* set display mode */
++		((hdc->hd44780_common_flags & LCD_FLAG_D) ?
++			LCD_CMD_DISPLAY_ON : 0) |
++		((hdc->hd44780_common_flags & LCD_FLAG_C) ?
++			LCD_CMD_CURSOR_ON : 0) |
++		((hdc->hd44780_common_flags & LCD_FLAG_B) ?
++			LCD_CMD_BLINK_ON : 0));
++
++	charlcd_backlight(lcd,
++			(hdc->hd44780_common_flags & LCD_FLAG_L) ? 1 : 0);
++
++	long_sleep(10);
++
++	/* entry mode set : increment, cursor shifting */
++	hdc->write_cmd(hdc, LCD_CMD_ENTRY_MODE | LCD_CMD_CURSOR_INC);
++
++	hd44780_common_clear_display(lcd);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hd44780_common_init_display);
++
+ struct hd44780_common *hd44780_common_alloc(void)
+ {
+ 	struct hd44780_common *hd;
+diff --git a/drivers/auxdisplay/hd44780_common.h b/drivers/auxdisplay/hd44780_common.h
+index 11ec4baf6997..cefd78d67675 100644
+--- a/drivers/auxdisplay/hd44780_common.h
++++ b/drivers/auxdisplay/hd44780_common.h
+@@ -7,6 +7,7 @@ struct hd44780_common {
+ 	int ifwidth;			/* 4-bit or 8-bit (default) */
+ 	int bwidth;			/* Default set by hd44780_alloc() */
+ 	int hwidth;			/* Default set by hd44780_alloc() */
++	unsigned long hd44780_common_flags;
+ 	void (*write_data)(struct hd44780_common *hdc, int data);
+ 	void (*write_cmd)(struct hd44780_common *hdc, int cmd);
+ 	/* write_cmd_raw4 is for 4-bit connected displays only */
+@@ -18,5 +19,6 @@ int hd44780_common_print(struct charlcd *lcd, int c);
+ int hd44780_common_gotoxy(struct charlcd *lcd);
+ int hd44780_common_home(struct charlcd *lcd);
+ int hd44780_common_clear_display(struct charlcd *lcd);
++int hd44780_common_init_display(struct charlcd *lcd);
+ struct hd44780_common *hd44780_common_alloc(void);
+ 
+diff --git a/drivers/auxdisplay/panel.c b/drivers/auxdisplay/panel.c
+index 8adf627529f1..583bd22d3abd 100644
+--- a/drivers/auxdisplay/panel.c
++++ b/drivers/auxdisplay/panel.c
+@@ -878,6 +878,7 @@ static const struct charlcd_ops charlcd_serial_ops = {
+ 	.gotoxy		= hd44780_common_gotoxy,
+ 	.home		= hd44780_common_home,
+ 	.clear_display	= hd44780_common_clear_display,
++	.init_display	= hd44780_common_init_display,
+ };
+ 
+ static const struct charlcd_ops charlcd_parallel_ops = {
+@@ -886,6 +887,7 @@ static const struct charlcd_ops charlcd_parallel_ops = {
+ 	.gotoxy		= hd44780_common_gotoxy,
+ 	.home		= hd44780_common_home,
+ 	.clear_display	= hd44780_common_clear_display,
++	.init_display	= hd44780_common_init_display,
+ };
+ 
+ static const struct charlcd_ops charlcd_tilcd_ops = {
+@@ -894,6 +896,7 @@ static const struct charlcd_ops charlcd_tilcd_ops = {
+ 	.gotoxy		= hd44780_common_gotoxy,
+ 	.home		= hd44780_common_home,
+ 	.clear_display	= hd44780_common_clear_display,
++	.init_display	= hd44780_common_init_display,
+ };
+ 
+ /* initialize the LCD driver */
 -- 
 2.28.0
 
