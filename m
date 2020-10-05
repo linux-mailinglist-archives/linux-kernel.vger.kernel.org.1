@@ -2,93 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB4E283D9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A785283D8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgJERjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:39:08 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:61591 "EHLO m42-4.mailgun.net"
+        id S1729131AbgJERiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:38:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726807AbgJERjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:39:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601919547; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=eRf9jW9jS41DO7Op1A/0+/28Gl8ale7y2hjxzaxyung=; b=D3lcXkGCbdXO4M1sbJ3umRRes9Sr5TqdFJAMNzTrQ9RlVYnEJNPmHw/L4Lxn+F6O3pOXxMnU
- FVA2XGYZh4Obu5tFBlvDUvZB4J191jJxW+OkRwjZ3hWoQsBWmJ5u4wShBpcSehT5GY4VQnGH
- 7jFesApVR6VPHO26QNU4nzkUbXk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f7b5a19bfed2afaa6152003 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 17:38:33
- GMT
-Sender: gkohli=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C79A3C433CA; Mon,  5 Oct 2020 17:38:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.4] (unknown [122.183.41.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729028AbgJERhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:37:52 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: gkohli)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48C08C4344A;
-        Mon,  5 Oct 2020 17:38:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 48C08C4344A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
-Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        stable@vger.kernel.org
-References: <1600955705-27382-1-git-send-email-gkohli@codeaurora.org>
- <71b8fe4c-7be2-fe51-cd84-890320c98cda@codeaurora.org>
- <20201005102515.07859ddf@gandalf.local.home>
- <20201005102745.2e49bc42@gandalf.local.home>
- <6ebba9b9-0add-0313-3982-01031d946f44@codeaurora.org>
- <20201005123204.46a1cfc4@gandalf.local.home>
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-Message-ID: <a9c0c7fc-c5ca-c4b8-b91c-3bce64f0eab4@codeaurora.org>
-Date:   Mon, 5 Oct 2020 23:08:27 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        by mail.kernel.org (Postfix) with ESMTPSA id AD13B207BC;
+        Mon,  5 Oct 2020 17:37:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601919471;
+        bh=tFG0JqB8IHZBPJY4wcxKXzAXMJr4lsMJdOAIBLq4nDA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uL1Qk5/JLJCNt4V/FpjDy+n7+JGr5zw6dRGOw/mk2Xg0H93f0YKdoo5Rlfeqf4K1w
+         vOTAc1FJJly4VQ8DWz8mZI+uwuR+fjdaFRVZxIps8/ITbTe/Z3ggczDtyQRGxK1euL
+         X0u/pTJ+h4yyYBN1guEFuZB1cY4/hf/yEUYpr/XI=
+Date:   Mon, 5 Oct 2020 19:38:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Sathish Narsimman <sathish.narasimman@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
+ whitelist"
+Message-ID: <20201005173835.GB2388217@kroah.com>
+References: <20201003160713.GA1512229@kroah.com>
+ <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
+ <20201004105124.GA2429@kroah.com>
+ <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
+ <20201005083624.GA2442@kroah.com>
+ <220D3B4E-D73E-43AD-8FF8-887D1A628235@holtmann.org>
+ <20201005124018.GA800868@kroah.com>
+ <824BC92C-5035-4B80-80E7-298508E4ADD7@holtmann.org>
+ <20201005161149.GA2378402@kroah.com>
+ <0C92E812-BF43-46A6-A069-3F7F3278FBB4@holtmann.org>
 MIME-Version: 1.0
-In-Reply-To: <20201005123204.46a1cfc4@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0C92E812-BF43-46A6-A069-3F7F3278FBB4@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 05, 2020 at 07:14:44PM +0200, Marcel Holtmann wrote:
+> Hi Greg,
+> 
+> >>>>>>>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
+> >>>>>>>>>>> breaks all bluetooth connections on my machine.
+> >>>>>>>>>>> 
+> >>>>>>>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
+> >>>>>>>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
+> >>>>>>>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
+> >>>>>>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>>>>>>>>>> ---
+> >>>>>>>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
+> >>>>>>>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
+> >>>>>>>>>>> 
+> >>>>>>>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
+> >>>>>>>>>>> stopped working on my desktop system.  I finally got the time to do
+> >>>>>>>>>>> bisection today, and it came down to this patch.  Reverting it on top of
+> >>>>>>>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
+> >>>>>>>>>>> work.
+> >>>>>>>>>>> 
+> >>>>>>>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
+> >>>>>>>>>>> issue?
+> >>>>>>>>>> 
+> >>>>>>>>>> can you be specific what breaks since our guys and I also think the
+> >>>>>>>>>> ChromeOS guys have been testing these series of patches heavily.
+> >>>>>>>>> 
+> >>>>>>>>> My bluetooth trackball does not connect at all.  With this reverted, it
+> >>>>>>>>> all "just works".
+> >>>>>>>>> 
+> >>>>>>>>> Same I think for a Bluetooth headset, can check that again if you really
+> >>>>>>>>> need me to, but the trackball is reliable here.
+> >>>>>>>>> 
+> >>>>>>>>>> When you run btmon does it indicate any errors?
+> >>>>>>>>> 
+> >>>>>>>>> How do I run it and where are the errors displayed?
+> >>>>>>>> 
+> >>>>>>>> you can do btmon -w trace.log and just let it run like tcdpump.
+> >>>>>>> 
+> >>>>>>> Ok, attached.
+> >>>>>>> 
+> >>>>>>> The device is not connecting, and then I open the gnome bluetooth dialog
+> >>>>>>> and it scans for devices in the area, but does not connect to my
+> >>>>>>> existing devices at all.
+> >>>>>>> 
+> >>>>>>> Any ideas?
+> >>>>>> 
+> >>>>>> the trace file is from -rc7 or from -rc7 with this patch reverted?
+> >>>>>> 
+> >>>>>> I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
+> >>>>>> 
+> >>>>>> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+> >>>>>> index e0269192f2e5..94c0daa9f28d 100644
+> >>>>>> --- a/net/bluetooth/hci_request.c
+> >>>>>> +++ b/net/bluetooth/hci_request.c
+> >>>>>> @@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
+> >>>>>>              return -1;
+> >>>>>> 
+> >>>>>>      /* White list can not be used with RPAs */
+> >>>>>> -       if (!allow_rpa && !use_ll_privacy(hdev) &&
+> >>>>>> +       if (!allow_rpa &&
+> >>>>>>          hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
+> >>>>>>              return -1;
+> >>>>>>      }
+> >>>>>> @@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
+> >>>>>>              }
+> >>>>>> 
+> >>>>>>              /* White list can not be used with RPAs */
+> >>>>>> -               if (!allow_rpa && !use_ll_privacy(hdev) &&
+> >>>>>> +               if (!allow_rpa &&
+> >>>>>>                  hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
+> >>>>>>                      return 0x00;
+> >>>>>>              }
+> >>>>>> 
+> >>>>>> 
+> >>>>>> If you just do the above, does thing work for you again?
+> >>>>> 
+> >>>>> Corrupted white-space issues aside, yes, it works!
+> >>>> 
+> >>>> I just pasted it from a different terminal ;)
+> >>>> 
+> >>>>> I am running 5.9-rc8 with just this change on it and my tracball works
+> >>>>> just fine.
+> >>>>> 
+> >>>>>> My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
+> >>>>> 
+> >>>>> How would one go about enabling such a hardware feature if they wanted
+> >>>>> to?  :)
+> >>>> 
+> >>>> I need to understand what is going wrong for you. I have a suspicion,
+> >>>> but first I need to understand what kind of device you have. I hope
+> >>>> the trace file is enough.
+> >>> 
+> >>> If you need any other information, just let me know, this is a USB
+> >>> Bluetooth controller from Intel:
+> >>> 
+> >>> 	$ lsusb | grep Blue
+> >>> 	Bus 009 Device 002: ID 8087:0029 Intel Corp. AX200 Bluetooth
+> >>> 
+> >>> And the output of usb-devices for it:
+> >>> 	T:  Bus=09 Lev=01 Prnt=01 Port=04 Cnt=01 Dev#=  2 Spd=12  MxCh= 0
+> >>> 	D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> >>> 	P:  Vendor=8087 ProdID=0029 Rev=00.01
+> >>> 	C:  #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+> >>> 	I:  If#=0x0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> >>> 	I:  If#=0x1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> >> 
+> >> I already figured out that it is one of our controllers. The trace file gives it away.
+> >> 
+> >> So my suspicion is that the device you want to connect to uses RPA (aka random addresses). And we added support for resolving them in the firmware. Your hardware does support that, but the host side is not fully utilizing it and thus your device is filtered out.
+> > 
+> > Dude, get an email client that line-wraps :)
+> > 
+> >> If I am not mistaken, then the use_ll_privacy() check in these two specific places need to be replaced with LL Privacy Enabled check. And then the allow_rpa condition will do its job as expected.
+> >> 
+> >> We can confirm this if you send me a trace with the patch applied.
+> > 
+> > Want me to disconnect the device and then reconnect it using
+> > bluetootctl?  I'll go do that now...
+> > 
+> > Ok, it's attached, I did:
+> > 
+> > $ bluetoothctl disconnect F1:85:91:79:73:70
+> > Attempting to disconnect from F1:85:91:79:73:70
+> > [CHG] Device F1:85:91:79:73:70 ServicesResolved: no
+> > Successful disconnected
+> > 
+> > And then the gnome bluetooth daemon (or whatever it has) reconnected it
+> > automatically, so you can see the connection happen, and some movements
+> > in the log.
+> > 
+> > If there's anything else you need, just let me know.
+> 
+> so the trace file indicates that you are using static addresses and not RPAs. Now I am confused.
+> 
+> What is the content of /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys?
 
+f1:85:91:79:73:70 (type 1) f02567096e8537e5dac1cadf548fa750 00:00:00:00:00:00
 
-On 10/5/2020 10:02 PM, Steven Rostedt wrote:
-> On Mon, 5 Oct 2020 21:59:02 +0530
-> Gaurav Kohli <gkohli@codeaurora.org> wrote:
+> The only way I can explain this if you have an entry in that file, but the device is not using it.
 > 
->> Hi Steven,
->>
->> I am using normal git send-email(never saw problem with this), Not sure
->> what is wrong. In my older mail i have kept you in to and rest in cc.
->>
->> Let me try to resent it.
-> 
-> The Cc is working (I got it in my LKML box), but I don't see any connection
-> in my server. Note, the rostedt@goodmis.org is a server at my home.
-> 
-> -- Steve
-> 
+> If you have btmgmt (from bluez.git) you can try "./tools/btmgmt irks” to clear that list and try again.
 
-Thanks for update, i will verify my account settings and will send my 
-patch tomorrow.
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Ok, I did that, and reconnected, this is still with the kernel that has
+the patch.  Want me to reboot to a "clean" 5.9-rc8?
+
+thanks,
+
+greg k-h
