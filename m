@@ -2,140 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B8C283648
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D1C283650
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgJENKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:10:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJENKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:10:16 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26696207BC;
-        Mon,  5 Oct 2020 13:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601903415;
-        bh=kDjkkbRUbpOP0s/mbwqdmPJKM4HIZwidUfRO/Yv/FQw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r9K6pmsQVtLYS/JRnrZIBTBmJC0nvLDZNOF/a8V/iMZfyIsrdMcqjHjm7xYIhqEBR
-         4qVHGlZ9NbjN4LG9aAVVdf9CBXO+xQzPpKbKXG6pqlR33+eit7iR9NVmoyZj79Koh2
-         m3zuOdF05CvQ/3tsGGolWWL14W6WH+i/KN8kej9Q=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kPQFp-00HNNO-4d; Mon, 05 Oct 2020 14:10:13 +0100
+        id S1726096AbgJENMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:12:53 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:39656 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJENMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:12:53 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095DCRvw029620;
+        Mon, 5 Oct 2020 09:12:37 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33xp74m3jc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 05 Oct 2020 09:12:36 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 095DCZ2t019542
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 5 Oct 2020 09:12:35 -0400
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 5 Oct 2020 06:12:21 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 5 Oct 2020 06:12:20 -0700
+Received: from saturn.ad.analog.com ([10.48.65.110])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 095DCT0b004599;
+        Mon, 5 Oct 2020 09:12:30 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <jdelvare@suse.com>, <linux@roeck-us.net>, <corbet@lwn.net>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] docs: hwmon: (ltc2945): update datasheet link
+Date:   Mon, 5 Oct 2020 16:12:26 +0300
+Message-ID: <20201005131226.1774081-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 05 Oct 2020 14:10:13 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
-Subject: Re: [PATCH 3/3] soc/tegra: pmc: Don't create fake interrupt hierarchy
- levels
-In-Reply-To: <20201005113335.GT425362@ulmo>
-References: <20201005111443.1390096-1-maz@kernel.org>
- <20201005111443.1390096-4-maz@kernel.org> <20201005113335.GT425362@ulmo>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <f5b711ff9289d41f25b0ea3b6658651f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, tglx@linutronix.de, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-05_07:2020-10-05,2020-10-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=999 clxscore=1011 spamscore=0 bulkscore=0
+ adultscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010050099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-05 12:33, Thierry Reding wrote:
-> On Mon, Oct 05, 2020 at 12:14:43PM +0100, Marc Zyngier wrote:
->> The Tegra PMC driver does ungodly things with the interrupt hierarchy,
->> repeatedly corrupting it by pulling hwirq numbers out of thin air,
->> overriding existing IRQ mappings and changing the handling flow
->> of unsuspecting users.
->> 
->> All of this is done in the name of preserving the interrupt hierarchy
->> even when these levels do not exist in the HW. Together with the use
->> of proper IRQs for IPIs, this leads to an unbootable system as the
->> rescheduling IPI gets repeatedly repurposed for random drivers...
->> 
->> Instead, let's allow the hierarchy to be trimmed to the level that
->> actually makes sense for the HW, and not any deeper. This avoids
->> having unnecessary callbacks, overriding mappings, and otherwise
->> keeps the hierarchy sane.
->> 
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> ---
->>  drivers/soc/tegra/pmc.c | 79 
->> +++++++++++++++--------------------------
->>  1 file changed, 29 insertions(+), 50 deletions(-)
->> 
->> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
->> index 9960f7c18431..4eea3134fb3e 100644
->> --- a/drivers/soc/tegra/pmc.c
->> +++ b/drivers/soc/tegra/pmc.c
->> @@ -1993,6 +1993,30 @@ static int tegra_pmc_irq_translate(struct 
->> irq_domain *domain,
->>  	return 0;
->>  }
->> 
->> +/* Trim the irq hierarchy from a particular irq domain */
->> +static void trim_hierarchy(unsigned int virq, struct irq_domain 
->> *domain)
->> +{
->> +	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
->> +
->> +	/* The PMC doesn't generate any interrupt by itself */
->> +	if (WARN_ON(!irq_data->parent_data))
->> +		return;
->> +
->> +	/* Skip until we find the right domain */
->> +	while (irq_data->parent_data && irq_data->parent_data->domain != 
->> domain)
->> +		irq_data = irq_data->parent_data;
->> +
->> +	/* Sever the inner part of the hierarchy...  */
->> +	tail = irq_data->parent_data;
->> +	irq_data->parent_data = NULL;
->> +
->> +	/* ... and free it */
->> +	for (irq_data = tail; irq_data; irq_data = tail) {
->> +		tail = irq_data->parent_data;
->> +		kfree(irq_data);
->> +	};
->> +}
-> 
-> That kind of looks like what I originally wanted to do and (naively)
-> thought that passing the (0, NULL, NULL) triplet would achieve.
-> 
-> Given that this is fairly low-level stuff that deals with the inner
-> workings of the IRQ infrastructure, should we eventually pull this out
-> of the driver and make it into a core helper? I don't seriously expect
-> this to be widely useful, but putting it into the core might help keep
-> it more maintainable.
+Old one isn't working anymore. Update to the latest datasheet link.
 
-That's the ultimate plan, but I wanted to give it some soaking time
-on Tegra before exposing it to the outside world 
-(irq_domain_free_irq_data()
-could be rewritten in terms of this primitive, for example).
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ Documentation/hwmon/ltc2945.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I volunteer to do that work if you think it's a good idea.
-
-Sure, once we know we're good to go with this.
-
-Thanks,
-
-         M.
+diff --git a/Documentation/hwmon/ltc2945.rst b/Documentation/hwmon/ltc2945.rst
+index 20c884985367..8d65c141ce2b 100644
+--- a/Documentation/hwmon/ltc2945.rst
++++ b/Documentation/hwmon/ltc2945.rst
+@@ -11,7 +11,7 @@ Supported chips:
+ 
+     Datasheet:
+ 
+-	http://cds.linear.com/docs/en/datasheet/2945fa.pdf
++	https://www.analog.com/media/en/technical-documentation/data-sheets/2945fb.pdf
+ 
+ Author: Guenter Roeck <linux@roeck-us.net>
+ 
 -- 
-Jazz is not dead. It just smells funny...
+2.25.1
+
