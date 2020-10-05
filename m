@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDEF28351B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C23283519
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgJELjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJELjh (ORCPT
+        id S1725994AbgJELjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:39:35 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:42081 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJELjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:39:37 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B317C0613CE;
-        Mon,  5 Oct 2020 04:39:36 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id d24so6464514lfa.8;
-        Mon, 05 Oct 2020 04:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y0xp8TscW6ysKMCr2r9U27WWoLB5uN36ncLR0InNu6M=;
-        b=Q1QJaCwR7QmgTQpB7W9IZr6u+/K5tEtym5SGqybofKshKVP8hucO3W2ctcnfWfRd5Z
-         O/9OfMUEWe7zf3C2Sba4YeLEXMojrdJAUGPPljq6Bb/S265rW1EvG4sm6djayinnNC5i
-         OEfQtUV7MAGDo9tNi73VYB4T6vn0+gQpghifwMbCvQ/UXCIRWA3oX6/t6+5jTiweo5P6
-         xGg4oRuPLXkrrS5DfqKlZebzYrEi9pPp+RhnN57C9BU6t6mUvSPy5yySqKXhqlRgX4JH
-         L7QfW7MlYAtzcp70UYaNN+PfWhGWFKIw9y827VXrHJFSdfWs54SPSy0Etw8RlEoUO8ie
-         Gqvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y0xp8TscW6ysKMCr2r9U27WWoLB5uN36ncLR0InNu6M=;
-        b=VEw+9KMjlgWb4yKLcNQde/xqKypQ0XLYQCFurcdbJRR1BB7rlQ8lsl+np67Qg0h5Tn
-         txzsafNw5crMKgcVf+PlObyNiWUAJpqj2o+jEabQR7eUn4LFhJFhgtIC/w79yKw0uA3E
-         b3APFoqgo/CsBlCsJ9hKJwnZNcO3ZO9VhAwn5rCFzuYva1vxxfv8W9fhuj/PIvP+BeuB
-         2OCcLF9zCPKqA4B/K8S2YU+MLBTH2n/xP8BMOMjSfByQQTGL8YDMCweclM4Knk9/Qlcw
-         +cwHofep1gLrUbzc3S/SdeqHOG1czZzt/iMhl0CJBU3zbOstb2G8nuVrRcIGNPULZGYm
-         E5jw==
-X-Gm-Message-State: AOAM5318fbTaZ0KQ9lMpPTw5JbeclNKT3EkxLMN+c1JahorkquKuwyhZ
-        1fh6OvwzTLoOxRuXd3nMQzkJZhImr+vpyM41460=
-X-Google-Smtp-Source: ABdhPJzRYS2ZHOE77CR1mvVjx3e05wKh9jexyi53q9nXKBpB4NhRbGtDd4gKcn3elYJPUCptpsm1aoG6sR0AHEAR/jk=
-X-Received: by 2002:ac2:4e92:: with SMTP id o18mr5941668lfr.527.1601897974630;
- Mon, 05 Oct 2020 04:39:34 -0700 (PDT)
+        Mon, 5 Oct 2020 07:39:35 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id CB2D05C00FF;
+        Mon,  5 Oct 2020 07:39:33 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 07:39:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=4AhZLjFKEOusupGCr/OMydiBcPg
+        aw3RrqYS1wR4Erto=; b=P2hwOPLnQJSxKifr01eJwX9kJwDBN33KdT2b0DLa+tn
+        lpfXeNsj/vm0Wd9mxy7mN1V3DIiFjIL0nw8AR8TZWaaU++oSuakbKviaZnMFRa3d
+        ijYTEzNfp6Hq1aw/lMVbae84A3RRT0y+k0rNw/UJluYDR7Z9gux8Z2XQSIwCJHr8
+        5T+VjXDXhtRRaUA89qmDGQbRQrWWEUoeDTmk3ToOtfgTwx77F8u8W1lB72hqiTgP
+        73f5KC4xHDHc4QimJ2mFzOFtbYCUxJoPXOaP8a2e/g2RbfWZmcmzbuC0YQ1r0cCN
+        xH3z+Zpynn5KtOCJH8ZvvvpRPnWgiTnH7404O1EDvjg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4AhZLj
+        FKEOusupGCr/OMydiBcPgaw3RrqYS1wR4Erto=; b=Ub4y/Pk4MJLrc697Luo4KP
+        270lb1nYL2kPeYjdzLWDd9/vpO3sCEM8zv01SruU0oGaLDXbwLohWgAD9qkPaXI3
+        oW7rHLG02tuN6+XKjU23+d52gn5ZynH5G/fW16Ly8y6eU0lPqtJ5DAi+rUwUjoWz
+        Kt1Zm23+BrTdsC2DPMaRQKC4xHKMbS1iIdxJJSoAsayNQsAz/F1Km8D2n7N9Decf
+        HFkQnMkZfPErpVCL7VyJjMDAzvRMBb6H+8EsDH9X8T/twRFooN6X9KGdoJzpqZqa
+        lXNhZ2YwQmbrQIDnaWjXQ2lkUo50WotYjx4CvaT1y7ew2zK3xwpUOvT9J8S7o1uQ
+        ==
+X-ME-Sender: <xms:9AV7XxqONFQWqUQj_bWdjTUr8XubKzhqDKn2BuqVyAvy96e0NRpZ6g>
+    <xme:9AV7Xzr5-eW8rVxYB77FQkWMgVAN9lSCH7YroZkgoLRu9V6xJDNzAQAKaP_S_R-o1
+    7vAqf9qLs-2po2iZkc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdeghecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:9QV7X-ORMYZy5s7VqSeUdl-_eU_83ut3pYyot1VYgqvF7ST5G4DEdg>
+    <xmx:9QV7X857VEhZ-tCbnt4emVhkvf0HeGXE_cn9r3om06v3kM2Jgawj1g>
+    <xmx:9QV7Xw6PX7W5TgbA7kVFOeB9iQIJ0U4xHHaQ4msqm_wlkmU6vnY5bw>
+    <xmx:9QV7X_ZFHPm5elaqsuS59KNBcgDmzuOqzcJXWOHmInnPiErlLXztxw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AF9593064683;
+        Mon,  5 Oct 2020 07:39:32 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 13:39:31 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/25] ASoC: sun8i-codec: Enable all supported sample
+ rates
+Message-ID: <20201005113931.djphs5lsdjujlzmx@gilmour.lan>
+References: <20201001021148.15852-1-samuel@sholland.org>
+ <20201001021148.15852-18-samuel@sholland.org>
 MIME-Version: 1.0
-References: <20200930190143.27032-1-krzk@kernel.org> <20200930190143.27032-9-krzk@kernel.org>
- <0a0afea6-8cbb-3e89-5a4f-89660c942ca3@pengutronix.de> <20201001073208.GA5208@kozik-lap>
- <027fd826-6822-9e92-0c6c-2ebed63f4a07@pengutronix.de> <20201001103704.GA26287@kozik-lap>
- <7fcea21d-4651-9ba7-5331-86530296a847@pengutronix.de> <20201002082012.GA6605@pi3>
- <20201002084119.buc6z7hpesoahmg2@pengutronix.de>
-In-Reply-To: <20201002084119.buc6z7hpesoahmg2@pengutronix.de>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 5 Oct 2020 08:39:22 -0300
-Message-ID: <CAOMZO5BMQ_OzvYfb1WJ1C3TJ5w49UvUQa6xb1XA--_kE94wQKA@mail.gmail.com>
-Subject: Re: [PATCH v2 08/12] ARM: dts: imx6dl-pico: fix board compatibles
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Robert Jones <rjones@gateworks.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jruaklk2q64a4on7"
+Content-Disposition: inline
+In-Reply-To: <20201001021148.15852-18-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
 
-On Fri, Oct 2, 2020 at 5:41 AM Marco Felsch <m.felsch@pengutronix.de> wrote:
+--jruaklk2q64a4on7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Question is what was the author's intention? @Fabio do you have any
-> comments here?
+On Wed, Sep 30, 2020 at 09:11:40PM -0500, Samuel Holland wrote:
+> The system sample rate programmed into the hardware is really a clock
+> divider from SYSCLK to the ADC and DAC. Since we support two SYSCLK
+> frequencies, we can use all sample rates corresponding to one of those
+> frequencies divided by any available divisor.
+>=20
+> This commit enables support for those sample rates. It also stops
+> advertising support for a 64 kHz sample rate, which is not supported.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 
-Krzysztof's patch looks good:
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Maxime
 
-Thanks
+--jruaklk2q64a4on7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sF8wAKCRDj7w1vZxhR
+xZkxAQC122WVocQPizizO35rpyzxgSrmH+hLpPcw4Gn8E8Ue8QEA/8+dpDZdPRTt
+ygWEfyJQboRXo9aAtWzasJRMVkB5bQs=
+=H99Z
+-----END PGP SIGNATURE-----
+
+--jruaklk2q64a4on7--
