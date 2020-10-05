@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875BC283534
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35658283537
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725967AbgJELxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:53:19 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57475 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJELxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:53:18 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C4fB42MDZz9ryj;
-        Mon,  5 Oct 2020 22:53:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601898796;
-        bh=90DJR4YZuZUi5jw0C6qKl2jVLUGZP7/Y2iUBXg2iYzA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lm/F8KSL3UJumn0GzXqvdh+lEcESwzfVcHJTAefeaw6u2wMbuIXYIUFqSXpiTLbeY
-         RfSw8Idtk6tzIxuJlgw6jyPbpEQVGzcOHD3ZEV6JfvqtdHEI9UVGGuyWZpEfmR0Uys
-         bHXlxx+Ly+QlYUUHWCEWQwCB/ApCugC+SPcycHzGZHHxZDKib+Qm4reeKZ8EbEUhUQ
-         fwF+ZohLbFKYXqyBEd/iIAOIQVHW7I+j60dYB9JZ5trvzy1ZSZ4P1ay8ttgxEITcs6
-         ztppoRuktmPN/U3R+NQ4FEg5sd77iCIWwcciaAhFfK76eYionNQELKhnw5uhWlAe46
-         FrxAQCGpNAajQ==
-Date:   Mon, 5 Oct 2020 22:53:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: linux-next: Fixes tag needs some work in the rcu tree
-Message-ID: <20201005225315.0dd420c4@canb.auug.org.au>
+        id S1725940AbgJEL6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:58:12 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36104 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJEL6M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:58:12 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095Bw6Ip043067;
+        Mon, 5 Oct 2020 06:58:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601899086;
+        bh=2aQlBRVkqm7tCgrVtYFnKACp9DuQDSDBLtTfAYARDzs=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=pFNObrq2uKoPCWI+w1EWi/4+4SF+zGHPgU2rsfQAovAt8ufIKZN9FUmq9lhcZEjcX
+         Uy8C/SH5qd0kM5WXmga2hRtQuCN/HCu6LVIXrffNioTqqZyzWWYrObNYw39E+a9viu
+         FXvFM0zWEF+MNwG2DNKNUKXKt0Oht2t1mUACaSkk=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095Bw5FH067227
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 5 Oct 2020 06:58:06 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
+ 2020 06:58:05 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 5 Oct 2020 06:58:05 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095Bw5UG034528;
+        Mon, 5 Oct 2020 06:58:05 -0500
+Date:   Mon, 5 Oct 2020 06:58:05 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+CC:     <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j7200-main: Add McASP nodes
+Message-ID: <20201005115805.d6yhykn7oc6x2tbu@charm>
+References: <20201005074850.11247-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GY5RmMK1ieA1qis=h4au0Ch";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201005074850.11247-1-peter.ujfalusi@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GY5RmMK1ieA1qis=h4au0Ch
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10:48-20201005, Peter Ujfalusi wrote:
+> Add the nodes for McASP 0-2 and keep them disabled because several
+> required properties are not present as they are board specific.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 57 +++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> index 72d6496e88dd..cc6c2a81887a 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> @@ -446,4 +446,61 @@ usb0: usb@6000000 {
+>  			dr_mode = "otg";
+>  		};
+>  	};
+> +
+> +	mcasp0: mcasp@02b00000 {
+> +		compatible = "ti,am33xx-mcasp-audio";
+> +		reg = <0x0 0x02b00000 0x0 0x2000>,
+> +			<0x0 0x02b08000 0x0 0x1000>;
+> +		reg-names = "mpu","dat";
+> +		interrupts = <GIC_SPI 544 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 545 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-names = "tx", "rx";
+> +
+> +		dmas = <&main_udmap 0xc400>, <&main_udmap 0x4400>;
+> +		dma-names = "tx", "rx";
+> +
+> +		clocks = <&k3_clks 174 40>;
+> +		clock-names = "fck";
+> +		power-domains = <&k3_pds 174 TI_SCI_PD_EXCLUSIVE>;
+> +
+> +		status = "disabled";
 
-Hi all,
+I see that there is inconsistent usage of "disabled" in our SoC.dts
 
-n commit
+Our generic rule has been set them to disabled in board.dtsi
+McASP and DSS for existing SoC dts do not follow this.. which is a tad
+confusing.. (considering that not even all uarts come out on every board
+and every uart needs pinmux to function..)
 
-  fe0d06f03320 ("srcu: Avoid escaped section names")
+Tero: Thoughts?
 
-Fixes tag
+[...]
 
-  Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU(=
-) in modules")
-
-has these problem(s):
-
-  - leading word 'commit' unexpected
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/GY5RmMK1ieA1qis=h4au0Ch
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl97CSsACgkQAVBC80lX
-0GwYtQf/WrYd/Z3TNl2TBYnC0OxS5m6O8daev4PabvO/lM9A9Z8v2HhPokA+rcWe
-1LUu3q2hDXmfZio/g0WWB1o5ZVyfPQUtT2xTfownmgFpfK6k6tYfs5Tt3Sl7/GCz
-ETumcqHRaBTvWGDKD8kiM/hibLdZJuLhz7VpYvMtFV20Dm/uf5JhU/2iEScFaYWx
-0SYWOdP+/Ah1u/5yOXKBwVaUsrX/5zF6guJ5DhHZSR3L2mhKCX00eopT3HeL+Idh
-hcP4wtTRr9MbsNYxEslbnDLS49jLSZ8jMLw6lA2BKYkX0/p31NBo5mUw9NVnE9ZE
-eUSAIwk2X3Rds3dkSgUfVqlB6JlFkg==
-=p3Lz
------END PGP SIGNATURE-----
-
---Sig_/GY5RmMK1ieA1qis=h4au0Ch--
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
