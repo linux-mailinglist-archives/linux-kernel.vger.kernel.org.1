@@ -2,159 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF988283165
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D34228316F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgJEIE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        id S1725982AbgJEIFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgJEIEz (ORCPT
+        with ESMTP id S1725936AbgJEIFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:04:55 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9811DC0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 01:04:53 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id g12so2978623wrp.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:04:53 -0700 (PDT)
+        Mon, 5 Oct 2020 04:05:01 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323A2C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 01:05:01 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dt13so1174580ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:05:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=IeiNTBeAySgxF765tOCATEDwXLrm3RiAjoTBQHN6wK0=;
-        b=QT2sz2z2T2ObbOF9cBuqPj/xMs2V2JkpGaC1yQPewHnLjCK6KfpJxnFBd52Yg4AGmP
-         VJxRGRPxaRQLhLWf/cJj+4TFWIvc5S6rpMyihLW8guAo+UvNRqZKoELqvBpOePuA/Etp
-         z293SdQf8ZGebrwCEz1gY7IlvwFjzz13UZb9UEwJiawxT5K21aKdmv/U8ZWx8aU8cdsz
-         g1EJ2lezQTBEJzLkUS6vaHwbRc5HEANA2MQBDDgPE/harsOdRDrcIYwSmq3urQxn7+oQ
-         VI6XlJwzca0RWlRBNRLXanZ5iKvZaicHTe2BxzY/5qO5xvvbJ/G2d1fmd5VfFwE503zT
-         3Stw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yzyDdyQdfmfcye8jOjz2zOKzbZtAhYoUBBiOMnzMJnI=;
+        b=QpmDh47ZptXqOyxcRB6BNAqIbj4BVSK0Y0RQxnzKYZu+apEMXpEc2bXAgmPZhsg+OE
+         Esnifd2MF89xHGo7SemEDbMaDaejPNBeXcg5Z71FEdsLi36tkCsTCbvHCDKw6ftkeG0P
+         +dNlaF0UVpmOJCvGnNGrXmJULkg86EsdK/g46t9QgFj1M6IBQ3+h6/+mi4llS2mG/f1z
+         ctKVI61TKoYctsdvd4iUxZF6HIqcO8Hw0MFime9hOicWL2/QKb2wCASKw7nZEIGGnHm5
+         ZzFP2yp+xC92GsMNXKLpVVyDR/JFM8OE99hIQGLp83/IuOd5qcIGH3bhFVmjcYZzOGxy
+         EvYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IeiNTBeAySgxF765tOCATEDwXLrm3RiAjoTBQHN6wK0=;
-        b=meDU0V3hFPFB4XfycXoH/LMcyf33lf2YBrtLPpkN3NS1p1z5gW4xIDAAEAeYyF5PTY
-         sbyMiU/yOPLPfvzHjVDWaZrjYaUbGhkz215EMlc22zXNuwvT5yohiZNPHslvdPJl0lTW
-         vp8T3Ap5PhHXixy6rc8FtvhsaKpXqmQs0s/Y8nrx0nKrBhd62WTXwQ+sv1WhMF7/p0Q7
-         FVrrx5BQSC67O6JCldjUMLg69UQjgeaHnPKc9Nv25OcxMkEp+Fe9H5HYgmm6HcqxIBhl
-         KK2Qrj8lXF6XnNZsLXNBIAtotn0S607QpARSQNrN3jO6GvkITqKoeScFSzxXBnjOOunJ
-         32zg==
-X-Gm-Message-State: AOAM530EsqPHK39SjL9vZs6PNVIv+F3yvwdlmKoRmUqAzYHrABcAJwg0
-        bt4lz3e7dlEH2xQrRCOKMyj8MA==
-X-Google-Smtp-Source: ABdhPJxB5n46P+iT3QRjzewwc6VgfO5oWkwQMA51B+oAEZSgUCF8P3GFXLcjkKteouHQRqUkrIZvVQ==
-X-Received: by 2002:adf:f10e:: with SMTP id r14mr9419051wro.337.1601885092289;
-        Mon, 05 Oct 2020 01:04:52 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id x2sm11899009wrl.13.2020.10.05.01.04.49
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=yzyDdyQdfmfcye8jOjz2zOKzbZtAhYoUBBiOMnzMJnI=;
+        b=MMhn3bNgo3cuzYYImo8w3znSyyFs4hasDOBRDLn8ck2lnzYuh/eLqilQI3QpAc9zrv
+         nOJ3iYKFofxjDJF9tZO0GHWLURsqf6XCZqid+t+ExJ6oRaY9wtrf+XRa0f1nMIE0VTYv
+         fwkWM2OKNwmZTuLIP8FxcENO3wKKyEdcVgP7GWjVX8J/gimJdZ66XtbZPV3PHNufbuRr
+         r8/pPQK8V52G2Xo0YZlUlfdNXiCD7PhpJQ+nXy9IMa1jZ4C5jRwvcbd4JB23PUb0itSa
+         M3Ch3so33E51lW0IBjuA7EoRBIEgtjP6QA9kjLCVcXcy/obIojUThg94BGFJ+Z7IbBvx
+         dkRg==
+X-Gm-Message-State: AOAM532lAT90/cf9DkEHIHIjPZkcfyd2dzv93X6WEYGMIoCfCk39WqkD
+        cSx4zotgWYLyTLaYkKAMX6A=
+X-Google-Smtp-Source: ABdhPJzcuBEaPS8c7LdvWvuxsE/k2aAozTjGmanmxaw3IbLNcn6v1mRRTSLlByU9OO/o2AqTb3zKgQ==
+X-Received: by 2002:a17:906:118f:: with SMTP id n15mr8653433eja.394.1601885099874;
+        Mon, 05 Oct 2020 01:04:59 -0700 (PDT)
+Received: from gmail.com (563B83F3.dsl.pool.telekom.hu. [86.59.131.243])
+        by smtp.gmail.com with ESMTPSA id t16sm7467954eje.39.2020.10.05.01.04.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 01:04:51 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 09:04:48 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-spi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Another round of adding missing
- 'additionalProperties'
-Message-ID: <20201005080448.GT6148@dell>
-References: <20201002234143.3570746-1-robh@kernel.org>
+        Mon, 05 Oct 2020 01:04:58 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 5 Oct 2020 10:04:56 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rik van Riel <riel@surriel.com>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com, aubrey.li@linux.intel.com,
+        yu.c.chen@intel.com
+Subject: Re: [sched/fair] fcf0553db6: netperf.Throughput_Mbps -30.8%
+ regression
+Message-ID: <20201005080456.GA3521702@gmail.com>
+References: <20201004132716.GS393@shao2-debian>
+ <20201004162108.GC3165@suse.de>
+ <20201005065101.GE2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
+In-Reply-To: <20201005065101.GE2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Oct 2020, Rob Herring wrote:
 
-> Another round of wack-a-mole. The json-schema default is additional
-> unknown properties are allowed, but for DT all properties should be
-> defined.
+* Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Sun, Oct 04, 2020 at 05:21:08PM +0100, Mel Gorman wrote:
+> > On Sun, Oct 04, 2020 at 09:27:16PM +0800, kernel test robot wrote:
+> > > Greeting,
+> > > 
+> > > FYI, we noticed a -30.8% regression of netperf.Throughput_Mbps due to commit:
+> > > 
+> > > 
+> > > commit: fcf0553db6f4c79387864f6e4ab4a891601f395e ("sched/fair: Remove meaningless imbalance calculation")
+> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > > 
+> > 
+> > This commit was the start of a series that made large changes to load
+> > balancing.  The series was not bisect-safe and has since been reconciled
+> > with the NUMA balancing. Any workload with a potential load balancing
+> > problem has to be checked against the latest kernel to see if the problem
+> > persists there. If it does, then tip/sched/core should be checked or
+> > 5.10-rc1 when it comes out as tip has a few more LB changes pending.
 > 
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: openipmi-developer@lists.sourceforge.net
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linux-rockchip@lists.infradead.org
-> Cc: linux-stm32@st-md-mailman.stormreply.com
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> 
-> I'll take this thru the DT tree.
+> What Mel said ;-)
 
-[...]
+Basically it would be nice to test either the following commit directly 
+(which is the latest relevant sched/core commit):
 
->  .../bindings/mfd/gateworks-gsc.yaml           |  2 ++
->  .../bindings/mfd/xylon,logicvc.yaml           | 14 +++++++++++--
+   233e7aca4c8a: ("sched/fair: Use dst group while checking imbalance for NUMA balancer")
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+Or a -next version that includes these commits.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+
+	Ingo
