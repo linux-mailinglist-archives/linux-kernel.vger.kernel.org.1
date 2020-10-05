@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D116728328E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73407283292
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgJEIvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:51:00 -0400
-Received: from mga11.intel.com ([192.55.52.93]:21822 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgJEIvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:51:00 -0400
-IronPort-SDR: z+Fx/dibISAEjPm5kj+GmNz2Z0J/utniesi2n9H3YM+7tsAM9J68MGo9Y41qBy88fXdt1eE59l
- IWiSyPISO9gQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="160664693"
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="160664693"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 01:50:55 -0700
-IronPort-SDR: /rXJ0NVdpl3wjhvBXnEay4keEDbVBuVrYjAbwSw6Ra1x0d9MeoAf14Zp07zBChmqgF8/r7UYtf
- nc9IFqwaYNlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="515923347"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 05 Oct 2020 01:50:55 -0700
-Received: from [10.214.146.139] (rtanwar-MOBL.gar.corp.intel.com [10.214.146.139])
-        by linux.intel.com (Postfix) with ESMTP id 2C38558088D;
-        Mon,  5 Oct 2020 01:50:51 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] Add hardware monitoring driver for Moortec MR75203
- PVT controller
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
-        linux-hwmon@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, rtanwar@maxlinear.com
-References: <cover.1601621983.git.rahul.tanwar@linux.intel.com>
- <e8c462ffc826d06c108aac45f8476083097cfa55.1601621983.git.rahul.tanwar@linux.intel.com>
- <20201002181135.GI3956970@smile.fi.intel.com>
-From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
-Message-ID: <f224391a-2e51-ec37-7045-4a16f04b5384@linux.intel.com>
-Date:   Mon, 5 Oct 2020 16:50:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1725946AbgJEIwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:52:04 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:45670 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbgJEIwE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:52:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1601887921; x=1604479921;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rIiIosLA4VGrYp/A3KE5JPx8OOQgdFYeqoT8ZArhhc8=;
+        b=GjumZ8wsuQzZI+aaUWrGO0KTk5mvZlbZaTvUAAcjlvyzpuqJ25dj3X2F7bwwjEPu
+        Kw62E0KlvfnpYSU413J6Kod+FT2ZBp5mTYV/N/ePYcTxBrJHYK5DmmeWNiQ3O6iF
+        vk99cgS/pcT3bK5j57+IDpt/tBtyFyySRNVEsdHE+N8=;
+X-AuditID: c39127d2-269ff70000001c25-dd-5f7adeb17a13
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 19.3A.07205.1BEDA7F5; Mon,  5 Oct 2020 10:52:01 +0200 (CEST)
+Received: from [172.16.23.108] ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020100510520110-551248 ;
+          Mon, 5 Oct 2020 10:52:01 +0200 
+Subject: Re: [PATCH v2 4/5] media: mt9p031: Make pixel clock polarity
+ configurable by DT
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Hemp <c.hemp@phytec.de>
+References: <20200930105133.139981-1-s.riedmueller@phytec.de>
+ <20200930105133.139981-4-s.riedmueller@phytec.de>
+ <20201001161031.GP26842@paasikivi.fi.intel.com>
+ <20201001161111.GQ26842@paasikivi.fi.intel.com>
+From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
+Message-ID: <1121fe39-2965-0782-85cc-2dcb9996b978@phytec.de>
+Date:   Mon, 5 Oct 2020 10:52:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201002181135.GI3956970@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201001161111.GQ26842@paasikivi.fi.intel.com>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 05.10.2020 10:52:01,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 05.10.2020 10:52:01,
+        Serialize complete at 05.10.2020 10:52:01
+X-TNEFEvaluated: 1
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsWyRoCBS3fjvap4g9+zeSw6Jy5ht7i8aw6b
+        Rc+GrawWyzb9YbL4tOUbkwOrx+yOmawem1Z1snnMOxno8XmTXABLFJdNSmpOZllqkb5dAlfG
+        s1V2BRNYK95t2cfawDiZpYuRk0NCwETi+sQVjF2MXBxCAtsYJe4vWMAGkhASOM0ocXtKBogt
+        LBAlcXjBOtYuRg4OEQF9iUkPzEDqmQUOMUo0dM5mh2i+yiixasUpZpAGNgEnicXnO8AG8QrY
+        SMz5CdLMycEioCJx8sk5dpBBogKREjt3WEKUCEqcnPkE7CBOoPKzPxcwQhzXyCSxdL0RhC0k
+        cXrxWbDxzALyEtvfzoGyzSTmbX4IZYtL3Hoyn2kCo9AsJGNnIWmZhaRlFpKWBYwsqxiFcjOT
+        s1OLMrP1CjIqS1KT9VJSNzECo+DwRPVLOxj75ngcYmTiYAR6moNZSYRXL6wiXog3JbGyKrUo
+        P76oNCe1+BCjNAeLkjjvBt6SMCGB9MSS1OzU1ILUIpgsEwenVANj/4Sv8o/8VRuYUyWWHm/g
+        ls+z0zVNeJSc/67VS6/wrqrNhlnswSxyVzVXF7GqPuM+VfHTX+1KcCqfzrHIT/bLK0punjJ3
+        NmCZckxGlE+j7zPXTa2vr+XOPHy8hrmk7kzNombH3Eusf6uV2e0ZhZnsQ1QUTYP5oh4+WV1S
+        lZgQse+Nf/pZHiWW4oxEQy3mouJEADj9DCdwAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sakari,
 
-Hi Andy
+On 01.10.20 18:11, Sakari Ailus wrote:
+> On Thu, Oct 01, 2020 at 07:10:31PM +0300, Sakari Ailus wrote:
+>>> @@ -1079,6 +1094,9 @@ mt9p031_get_pdata(struct i2c_client *client)
+>>>   	of_property_read_u32(np, "input-clock-frequency", &pdata->ext_freq);
+>>>   	of_property_read_u32(np, "pixel-clock-frequency", &pdata->target_freq);
+>>>   
+>>> +	pdata->pixclk_pol = !!(endpoint.bus.parallel.flags &
+>>> +			       V4L2_MBUS_PCLK_SAMPLE_RISING);
+>>
+>> Could you document this in DT bindings? And the default, too.
+> 
+> Please make it a separate patch.
 
-On 3/10/2020 2:11 am, Andy Shevchenko wrote:
-> On Fri, Oct 02, 2020 at 03:04:27PM +0800, Rahul Tanwar wrote:
->> PVT controller (MR75203) is used to configure & control
->> Moortec embedded analog IP which contains temprature
->> sensor(TS), voltage monitor(VM) & process detector(PD)
->> modules. Add hardware monitoring driver to support
->> MR75203 PVT controller.
-> Some nit-picks below.
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
->
->> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
->> ---
->>  drivers/hwmon/Kconfig   |  10 +
->>  drivers/hwmon/Makefile  |   1 +
->>  drivers/hwmon/mr75203.c | 651 ++++++++++++++++++++++++++++++++++++++++++++++++
->>  3 files changed, 662 insertions(+)
->>  create mode 100644 drivers/hwmon/mr75203.c
-
-[...]
-
->> +		pvt_temp.config = temp_config;
->> +
->> +		pvt_info[index++] = &pvt_temp;
->> +	}
->> +
->> +	if (pd_num) {
->> +		ret = pvt_get_regmap(pdev, "pd", pvt);
->> +		if (ret)
->> +			return ret;
->> +	}
->> +
->> +	if (vm_num) {
->> +		u32 num = vm_num;
->> +
->> +		ret = pvt_get_regmap(pdev, "vm", pvt);
->> +		if (ret)
->> +			return ret;
->> +
->> +		pvt->vm_idx = devm_kcalloc(dev, vm_num, sizeof(*pvt->vm_idx),
->> +					   GFP_KERNEL);
->> +		if (!pvt->vm_idx)
->> +			return -ENOMEM;
->> +		for (i = 0; i < vm_num; i++)
->> +			pvt->vm_idx[i] = i;
-> What the point if you are replace them below in one case?
->
->> +		ret = device_property_read_u8_array(dev, "intel,vm-map",
->> +						    pvt->vm_idx, vm_num);
->> +		if (!ret)
-> Misses {} and because of above
->
-> 	if (ret) {
-> 		for () ...
-> 	} else {
-> 		for () ...
-> 	}
->
->> +			for (i = 0; i < vm_num; i++)
->> +				if (pvt->vm_idx[i] >= vm_num ||
->> +				    pvt->vm_idx[i] == 0xff) {
->> +					num = i;
->> +					break;
->> +				}
-> Or looking in this, perhaps move the incremental for-loop here and start it
-> with num which is 0.
-
-Not able to understand what exactly you are suggesting here. Presently
-it is like below:
-1. Init vm_idx array with incremental values.
-2. Read array from device property.
-3. If success, figure out the last valid value and assign to num.
-
-Can you please elaborate and explain more clearly? Thanks.
+Sure, I'll send a separate patch for the DT bindings.
 
 Regards,
-Rahul
+Stefan
 
-
+> 
