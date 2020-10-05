@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E1E283434
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0065B283439
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbgJEKuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEKup (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:50:45 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702F9C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 03:50:45 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t9so352976wrq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 03:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M2zjVVLnmwFQgT7Kn7CpiF/4Y0RRRZlogY57D59OL1Q=;
-        b=azTf+aCmxMcqsH4Q4OfDxJ0dGV/q88u03C/J+CGqrLXxLnSr1TDFyK7CNHb19lKJBQ
-         zdh/JJy7p5benO94gyyJT53xEev17bUpps4y4pLsUM0aIMQXsK6FQJLPFv5W7TzYRvHu
-         OFW8pRS5yIuyHvkfEY3Pnzy+Fq6iHIGUuZxZRj8D+eKJ9PaDqkhlZxc2oyoEmf/ZvXKY
-         E5lvDFa1vXAlioPuUeqqcLraDukoJYrnCW5ogg44vvIoeY+0vd2hcLBRtxdhkc7ikxky
-         AQA5dBAT7nSQxMVmoVhbGiBeVkjV6s3Xstr3TfpbY5u8dAAP736uCK/nE+PX+wRAYmqA
-         mqEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M2zjVVLnmwFQgT7Kn7CpiF/4Y0RRRZlogY57D59OL1Q=;
-        b=ofPc3WvvD6Gv5scq/w9KFticrEH92tOyBIaD2xF3pR1k3hShKcpu8c8rw5UypC08XV
-         CZS6XSK4NbnFBKyJ3SeKxqAntRYFri7ftjgtAlUo4isztTubFaIW6ict0kaQmy0eScba
-         tj9yUlSZhuycPqYVtUIsCtbgWFvxNFuy/MBkeKtkdIHK4px9Hpx/MwOUTbv+ezcU61p3
-         foEI67/W4WXKzBdi7P+XCLI9T9v7MXqoQbcSrZzsm1CM4AP//82TdC/wQH6dWMdrxkO0
-         6JzC/MLq6tJ5qtvPrUN1NzRf/XR/7VhL5smdPRhWcBW1MYmmVRvULui8KmeCTRTloYAJ
-         kp3w==
-X-Gm-Message-State: AOAM531GRC4WR2177G0uAu6r9MNSLCtAiu4ntaKTIdEFlT9fzSbmv8FT
-        aP/SazpYedPc6uih0Ae5VeNTyw==
-X-Google-Smtp-Source: ABdhPJyEPRxZd10VmSgHtfqoF+IWeXOoAoyzPP9zyjZ+55dwWBSUiJ1xTTKQhGeCWZvHzXjTlfeNWg==
-X-Received: by 2002:a5d:62d0:: with SMTP id o16mr2426402wrv.388.1601895044152;
-        Mon, 05 Oct 2020 03:50:44 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id m13sm12871557wrr.74.2020.10.05.03.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 03:50:43 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 12:50:41 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        mjpeg-users@lists.sourceforge.net, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] media: zoran: fix spelling mistake and make error
- message more meaningful
-Message-ID: <20201005105041.GB29306@Red>
-References: <20201002101620.86156-1-colin.king@canonical.com>
+        id S1726131AbgJEKvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:51:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725843AbgJEKvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:51:18 -0400
+Received: from coco.lan (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 418BF2075A;
+        Mon,  5 Oct 2020 10:51:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601895077;
+        bh=4OZXvYEaDRzDOXb/7IFJUiGBAPzcVGPoz4LXHlc+Bl0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dYgGAMVarHPWzRHMSiBuWg7wF7PdOhjbeWHDiY215YprZryfPtEFlLM1tcrwxcHS9
+         Hz8kDwV2btUEoVLJCEOln+PfzYXrSXqh4A8Dj0J0EYmJii5mkGrop+x3w3LfEdb4rq
+         GtgmRBKNHGcco1XDU1YoUOOShXreCCSSmv6QRvgo=
+Date:   Mon, 5 Oct 2020 12:51:11 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 00/14] get rid of the remaining kernel-doc warnings when
+ building the docs
+Message-ID: <20201005125111.326ff7e2@coco.lan>
+In-Reply-To: <20200910181208.GW6583@casper.infradead.org>
+References: <cover.1599732764.git.mchehab+huawei@kernel.org>
+        <20200910181208.GW6583@casper.infradead.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002101620.86156-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 11:16:20AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in a pci_err error message. Fix this and
-> make the error message a little more meaningful.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/staging/media/zoran/zoran_driver.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
-> index 808196ea5b81..d9f8b21edf6a 100644
-> --- a/drivers/staging/media/zoran/zoran_driver.c
-> +++ b/drivers/staging/media/zoran/zoran_driver.c
-> @@ -666,7 +666,7 @@ static int zoran_g_selection(struct file *file, void *__fh, struct v4l2_selectio
->  
->  	if (sel->type != V4L2_BUF_TYPE_VIDEO_OUTPUT &&
->  	    sel->type != V4L2_BUF_TYPE_VIDEO_CAPTURE) {
-> -		pci_err(zr->pci_dev, "%s invalid combinaison\n", __func__);
-> +		pci_err(zr->pci_dev, "%s invalid selection type combination\n", __func__);
->  		return -EINVAL;
->  	}
->  
-> -- 
-> 2.27.0
-> 
+Em Thu, 10 Sep 2020 19:12:08 +0100
+Matthew Wilcox <willy@infradead.org> escreveu:
 
-Hello
+> On Thu, Sep 10, 2020 at 12:23:53PM +0200, Mauro Carvalho Chehab wrote:
+> > As described on its subject, this series finally get rid of all kernel-doc warnings.
+> > 
+> > With this series applied (plus my last series fixing other warnings), building
+> > the docs is now clean[1] against next-20200909:  
+> 
+> Thanks, this has been a truly heroic effort.
+> 
+> I'd suggest that we change the kernel build to always run the CHKDOC
+> instead of at W=1 (or rather, as the patch I just sent out demonstrates,
+> not at all (oops)).  Otherwise you're just going to have to continue
+> doing this.
 
-Acked-by: Corentin Labbe <clabbe@baylibre.com>
+It sounds a good idea for me to run kernel-doc with W=1 - or even
+better - with allyesconfig/allmodconfig (no matter if W=0/W=1/W=2).
 
-Thanks
+> At some point, perhaps we can add some other warnings at W=1, like
+> an EXPORT_SYMBOL of a function which doesn't have kernel-doc.
+
+Makes sense, but I suspect that supporting it is not too trivial.
+
+I mean, a script checking for EXPORT_SYMBOL* should check not
+only the C file, but also the included header files, as the
+kernel-doc markup can be on one of its includes. 
+
+An enhanced version of something like this:
+
+</script>
+#!/usr/bin/perl
+
+my $file = shift or die "Need a file name";
+
+my @files;
+my @exports;
+
+my $dir = $file;
+$dir =~ s,[^\/]+$,,;
+
+push @files, $file;
+open IN, "<$file";
+while (<IN>) {
+	push @exports, $1 if (m/^EXPORT_SYMBOL.*\(\s*(\S+)\s*\)/);
+	push @files, "include/$1" if (m/^\s*#\s*include\s+[\<](\S+)[\>]/);
+	push @files, "$dir/$1" if (m/^\s*#\s*include\s+[\"](\S+)[\"]/);
+}
+close IN;
+
+my $doc;
+
+foreach my $i (@files) {
+	$doc .= qx(./scripts/kernel-doc $i 2>/dev/null);
+}
+
+foreach my $e (@exports) {
+	print "$e doesn't have kernel-doc markups\n" if (!($doc =~ m/\b$e\b/));
+}
+</script>
+
+On simple cases, the above script helps to check what's missing:
+
+	$ ./check_exports drivers/acpi/acpi_lpat.c
+	<nothing returned>
+	$ ./test drivers/media/v4l2-core/v4l2-common.c 
+	__v4l2_find_nearest_size doesn't have kernel-doc markups
+	v4l2_apply_frmsize_constraints doesn't have kernel-doc markups
+	v4l2_fill_pixfmt_mp doesn't have kernel-doc markups
+	v4l2_fill_pixfmt doesn't have kernel-doc markups
+
+Yet, it the actual script will also need to handle some special
+cases:
+
+- it should check if the Makefile used by the file has a "-I" directive.
+  This could be tricky, due to Makefile recursion.
+- it should also check if there is a kernel-doc entry for such header.
+  a "git grep" could be used in this case.
+- It should also handle the optional arguments of kernel-doc, like
+  :internal", :external", ":no-identifiers", "identifiers", as it is
+  possible that there is a kernel-doc entry, but this is excluded
+  by a kernel-doc modifier.
+- It should also check if the exported symbol is a function,
+  in order to exclude static vars that are exported.
+
+I suspect that there are several other border cases.
+
+Thanks,
+Mauro
