@@ -2,115 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6226E283DA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB736283DA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbgJERjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:39:13 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:21375 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbgJERjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:39:13 -0400
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7b5a3e0000>; Tue, 06 Oct 2020 01:39:10 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
- 2020 17:38:58 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 5 Oct 2020 17:38:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jW8m/vx134I9COQ6t6Kr7JRTQESbBCkEuzc1wgrwxR0gB0y7/1zeWxRrW9L+vrtMdYcqke/tKQaa3RzjvoqUprvU+FP5mzd2r10+48m0xZitmuVNHNAfPLGfVf22aeL9byyGjeM321TodvP29OGOhQWVgQCMtTLOEMfD/ZB1af3P0oZEREKxB+9eDCkmzp3rHDk0GDYstiyLkXuznTVTBxQZu9Et+BsKQm0YPprBPLm1hyO31Nc8MZIobIxFRC9IccGQoqs7E/IYMqUfcxaQHjAHpsrECCPKbPGU8r6Cb44u0m7oohtzn4QN9J/W09NhyXKSYOmWeRQgMB1Xb+hpAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fSYl5KD7934AouZDNUKobCCSeGROG8RmBta0PxNC5ew=;
- b=AyfWItsk0TOyFTxKRfB6+wbl7GR3LkEC4l2QTjkMZ7XFKyWLXpCVFGIvuFggiGmEBW3VDEwiyG4cIsVAWpZ9t5Tt7/fMLIyGiurEYy5XBwe3OlFB3FUlKcpBps+YXJT57Dcysz2hpv5ck1BsErmSExXMCx+JwpfguCRXYkYGNq5ovnBmUo9EAXbb8UU6CcpK2GAi5J/ouGyvDy8kjHjKWprq6Imq2TmhPwLHIoFHACQb65r3pfsmu9jNEgbJHUkQ2LQW/O8m76NQjH3FKtJwhN/HJuk7jueo4zBLFdb46JDVhpbEVnsBZ9iQWW36MsxCLeycZ9+23uhCuzz4d2zv5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3833.namprd12.prod.outlook.com (2603:10b6:5:1cf::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Mon, 5 Oct
- 2020 17:38:56 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
- 17:38:56 +0000
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     andrew Morton <akpm@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>, <linux-mm@kvack.org>
-CC:     Hans Verkuil <hans.verkuil@cisco.com>, Jan Kara <jack@suse.cz>,
-        "Mauro Carvalho Chehab" <mchehab@osg.samsung.com>,
-        Mel Gorman <mgorman@suse.de>, <stable@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        <linux-media@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Date:   Mon, 5 Oct 2020 14:38:54 -0300
-Message-ID: <0-v1-447bb60c11dd+174-frame_vec_fix_jgg@nvidia.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR15CA0058.namprd15.prod.outlook.com
- (2603:10b6:208:237::27) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1728643AbgJERkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbgJERkY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:40:24 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A29C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:40:24 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o25so6461517pgm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:40:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0x+JZOoXwFLYRCqH3tH4GfIK1OTrgLVrqW6+u8GPgMo=;
+        b=irSjnc1l6aN2/LNmSd1JVQw+Pso5loUUuwnYOT5ko3rX9CEg8BLfNqk/3iECwR1a0f
+         iVurChZAt30/5UULBHgtbIqhzDCsoR3WiL/CB27KkcsIjVJV2QxFwBwESCwEXRxF+igU
+         hbjkAazeIxAoEb2viMZFtPdA2UfQtt0z92GiYPOb6DyXU85MB0ZBWcY0xjyiGvsOgmtL
+         iTlDaxiQn0mY/vTiS5q5X/bIVODeb9yqV8BBu4sfFtZLIJoDp/VsD0mQP9+SmDDR8npd
+         mqQ4L1+e4G62EfOkyxEozW6Tv/c8PQ6spG1j8M2u32ZS2E08sjTYRa4KDPanfYDPEt52
+         6aGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0x+JZOoXwFLYRCqH3tH4GfIK1OTrgLVrqW6+u8GPgMo=;
+        b=W4SHUxULjitpl6y864rg4wNR96LerWQXpseZqbT43SLgvnXGrROJeYlS8JSAb4WqQ/
+         ZDNDr4+OcEwIQXBGyGRnYeyIy4hlDm9rtRXd//3THeFer12gAGWegNILidmXc4ZSdhA0
+         ZRnzz/QmkiFUuqqiTSbQ1taXV0Bx8aoPr07L9FeHky+7/AUsIADVNYyJEo6X9dL8+LXC
+         XOqePASLp4vFfWZ6dn6NL3M1oB6xWY+Ujb3WAqbqTDgil4Eyl49NuEDRJnNRyHmhmbDL
+         AWa8Csq296kCaotBQQpqIaLusXLqmKWByjLIxq1LykVGIKSk+lwk+yFKQT+fVZRMwMAW
+         MCLg==
+X-Gm-Message-State: AOAM53152gBUlWLrecBvfTdyXHuQD0wiROew3Kvmrq7qDX4AC7cywuMx
+        tbZJOBJZnG25Nd284RAVzJg=
+X-Google-Smtp-Source: ABdhPJzkqmmJhqBPqom6ZC7Q1Qspohey6g6VVt+GSew2RCk4ZccNWRfsSGVUMkOkAcaWeuHv78NLbA==
+X-Received: by 2002:a62:3815:0:b029:152:80d4:2a6f with SMTP id f21-20020a6238150000b029015280d42a6fmr619899pfa.72.1601919623413;
+        Mon, 05 Oct 2020 10:40:23 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:6930:697a:aab2:e913:9e57])
+        by smtp.gmail.com with ESMTPSA id l21sm163689pjq.54.2020.10.05.10.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 10:40:22 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] checkpatch: add new warnings to author signoff checks.
+Date:   Mon,  5 Oct 2020 23:09:33 +0530
+Message-Id: <20201005173933.171074-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0058.namprd15.prod.outlook.com (2603:10b6:208:237::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Mon, 5 Oct 2020 17:38:55 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kPURq-0003yS-3O; Mon, 05 Oct 2020 14:38:54 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601919550; bh=EBBzMnzHdglFg4fc6Q+vYu+a20ACUXFYGuuOSwtJCqE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Date:Message-ID:Content-Transfer-Encoding:Content-Type:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=C65HOUx2sQwA0Z9I/HyXi7Zoe3KWz2BvP970C8OBm0crjJnTlAQ9SwKEK9gCZ2JuJ
-         xsMHNVefxVm4z0kcNHciCuL3fCUmbzQfF0nmTHZMz3tur14QYYvpOLexv6QGM/VZYv
-         KoSBZo72nEDtXB7fLlMqU2qXAr98pxbePnvJ9c/QsofRl1hs/Kc0hj4At+mY/00pGF
-         5iJ15jO/Yg+195FUsBtZ9nyQbHi745UfgTQ3xdsFePRU9fE511l5uxZTQRVFMAIATu
-         K2smzSXW5xmuHxphoHyhxOye2XS0aTl6UiSK+ucwxNoILLw7aNa/Q4IdswsUHnMgL1
-         9gj6ae060YOrQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When get_vaddr_frames() does its hacky follow_pfn() loop it should never
-be allowed to extract a struct page from a normal VMA. This could allow a
-serious use-after-free problem on any kernel memory.
+The author signed-off-by checks are currently very vague.
+Cases like same name or same address are not handled separately.
 
-Restrict this to only work on VMA's with one of VM_IO | VM_PFNMAP
-set. This limits the use-after-free problem to only IO memory, which while
-still serious, is an improvement.
+For example, running checkpatch on commit be6577af0cef
+("parisc: Add atomic64_set_release() define to avoid CPU soft lockups"),
+gives:
 
-Cc: stable@vger.kernel.org
-Fixes: 8025e5ddf9c1 ("[media] mm: Provide new get_vaddr_frames() helper")
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+WARNING: Missing Signed-off-by: line by nominal patch author
+'John David Anglin <dave.anglin@bell.net>'
+
+The signoff line was:
+"Signed-off-by: Dave Anglin <dave.anglin@bell.net>"
+
+Clearly the author has signed off but with a slightly different version
+of his name. A more appropriate warning would have been to point out
+at the name mismatch instead.
+
+Previously, the values assumed by $authorsignoff were either 0 or 1
+to indicate whether a proper sign off by author is present.
+Extended the checks to handle three new cases.
+
+$authorsignoff values now denote the following:
+
+0: Missing sign off by patch author.
+
+1: Sign off present and identical.
+
+2: Addresses match, but names are different.
+   "James Watson <james@gmail.com>", "James <james@gmail.com>"
+
+3: Names match, but addresses are different.
+   "James Watson <james@watson.com>", "James Watson <james@gmail.com>"
+
+4: Names match, but addresses excluding mail extensions are same.
+   "James Watson <james@gmail.com>", "James Watson <james+a@gmail.com>"
+
+For case 4, a --strict check message is generated, and for the
+other cases 0, 2 and 3, warnings are generated.
+
+Link: https://lore.kernel.org/lkml/7958ded756c895ca614ba900aae7b830a992475e.camel@perches.com/
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- mm/frame_vector.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ scripts/checkpatch.pl | 54 +++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 50 insertions(+), 4 deletions(-)
 
-diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-index 10f82d5643b6de..26cb20544b6c37 100644
---- a/mm/frame_vector.c
-+++ b/mm/frame_vector.c
-@@ -99,6 +99,10 @@ int get_vaddr_frames(unsigned long start, unsigned int n=
-r_frames,
- 		if (ret >=3D nr_frames || start < vma->vm_end)
- 			break;
- 		vma =3D find_vma_intersection(mm, start, start + 1);
-+		if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
-+			ret =3D -EINVAL;
-+			goto out;
-+		}
- 	} while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
- out:
- 	if (locked)
---=20
-2.28.0
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 31624bbb342e..62c83e9715ab 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2347,6 +2347,7 @@ sub process {
+ 	my $signoff = 0;
+ 	my $author = '';
+ 	my $authorsignoff = 0;
++	my $author_sob = '';
+ 	my $is_patch = 0;
+ 	my $is_binding_patch = -1;
+ 	my $in_header_lines = $file ? 0 : 1;
+@@ -2674,9 +2675,34 @@ sub process {
+ 		if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
+ 			$signoff++;
+ 			$in_commit_log = 0;
+-			if ($author ne '') {
++			if ($author ne ''  && $authorsignoff != 1) {
+ 				if (same_email_addresses($1, $author)) {
+ 					$authorsignoff = 1;
++				} else {
++					my $ctx = $1;
++					my ($email_name, $email_comment, $email_address, $comment1) = parse_email($ctx);
++					my ($author_name, $author_comment, $author_address, $comment2) = parse_email($author);
++
++					if ($email_address eq $author_address) {
++						$author_sob = $ctx;
++						$authorsignoff = 2;
++					} elsif ($email_name eq $author_name) {
++						$author_sob = $ctx;
++						$authorsignoff = 3;
++
++						my $address1 = $email_address;
++						my $address2 = $author_address;
++
++						if ($address1 =~ /(\S+)\+\S+(\@.*)/) {
++							$address1 = $1.$2;
++						}
++						if ($address2 =~ /(\S+)\+\S+(\@.*)/) {
++							$address2 = $1.$2;
++						}
++						if ($address1 eq $address2) {
++							$authorsignoff = 4;
++						}
++					}
+ 				}
+ 			}
+ 		}
+@@ -6891,9 +6917,29 @@ sub process {
+ 		if ($signoff == 0) {
+ 			ERROR("MISSING_SIGN_OFF",
+ 			      "Missing Signed-off-by: line(s)\n");
+-		} elsif (!$authorsignoff) {
+-			WARN("NO_AUTHOR_SIGN_OFF",
+-			     "Missing Signed-off-by: line by nominal patch author '$author'\n");
++		} elsif ($authorsignoff != 1) {
++			# authorsignoff values:
++			# 0 -> missing sign off
++			# 1 -> sign off identical
++			# 2 -> addresses match, names different
++			# 3 -> names match, addresses different
++			# 4 -> names match, addresses excuding mail extensions (subaddresses) match
++
++			my $sob_msg = "'From: $author' != 'Signed-off-by: $author_sob'";
++
++			if ($authorsignoff == 0) {
++				WARN("NO_AUTHOR_SIGN_OFF",
++				     "Missing Signed-off-by: line by nominal patch author '$author'\n");
++			} elsif ($authorsignoff == 2) {
++				WARN("NO_AUTHOR_SIGN_OFF",
++				     "From:/Signed-off-by: email name mismatch:\n$sob_msg\n");
++			} elsif ($authorsignoff == 3) {
++				WARN("NO_AUTHOR_SIGN_OFF",
++				     "From:/Signed-off-by: email address mismatch:\n$sob_msg\n");
++			} elsif ($authorsignoff == 4) {
++				CHK("NO_AUTHOR_SIGN_OFF",
++				    "From:/Signed-off-by: email extension mismatch:\n$sob_msg\n");
++			}
+ 		}
+ 	}
+ 
+-- 
+2.27.0
 
