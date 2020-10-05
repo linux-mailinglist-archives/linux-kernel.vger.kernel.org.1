@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AEF2842D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 01:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEDD2842DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 01:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgJEXKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 19:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgJEXKv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 19:10:51 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB7FC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 16:10:50 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id q1so9375389ilt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 16:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I+19In+AF8vbe5roNkvtzXIzPIKxxJmAyqKvRnxYHxg=;
-        b=BS6SH4XjD2E9BeMtV9Ry2peuJIXCcVp+SN4ASVt01msa0PaugSkbAwCspmEfvCmJKA
-         6sC3wb5pIZFqhpAMtCaWe3siCscKGSI+iF8xTxKYh6eplHGmlYLnOzpB1rKk5kkJIR7y
-         mQKmQdNJCwtMubZDEnmsEbsUmNAutr+Ox/RbL7cA/MrebykTkb+cLZ17ROha0JGOZC1M
-         okkrKPlDmmLZoa/QstcF8VL04RXC1xCo6DWNBtu5Bq2XQwu7hjpq825VnbeDoozZbPTg
-         VNvNyWgRF4YFufyFhRGWpcJAEqOo42v/k077GX4zdSGGnfV8IQ1nLyqiiG8OLD6KAkh4
-         fYpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I+19In+AF8vbe5roNkvtzXIzPIKxxJmAyqKvRnxYHxg=;
-        b=Y+Tec9DRm8txydA0UxbThv4N0oIzzv4wn9qW/bRbA8cUdvMmR6O4gGlvlXauWqg8AW
-         Xtgr88t05A2aciojP2vyBR9zWb5wLWY6lWayD5D7VFCf66fQaHIst7WDB9UjCkhWJ7YM
-         ubx2HzFZ+EzhPaaTBlUozLn+kb6xTYEwNFUcgE/lM6E0KhnXj+XG8yAmN9qp9bhicsUn
-         R5QVSByO5iP3/TOS21TUETEAMLmfG5oiE5T2YgSXimZj4fvhs7+4+5aSY6tp6xonU1ut
-         2PgRdOhnqlplZHC4C3kgoIU/Y/P9lZ6pAstuoeQt9ZSU8svp0Q/XdiElsQ7ISIO/XtKp
-         7aHQ==
-X-Gm-Message-State: AOAM531jylMsqFLobzjz+0CXk98ubjOtDh9n+iQO266LQLxp0oPQQw8u
-        gD9m6bmEjzvzUcI4fZhrGn/pWzIjpNOFc0KPMA==
-X-Google-Smtp-Source: ABdhPJwYOe9jPW3SMkdh5mYsVyRUN/Q79GKl/WUiTcYecraiKvSDabUBijfHHpJMbLX3H69f1UJ5nAI4FYzuCTNV0T8=
-X-Received: by 2002:a92:b109:: with SMTP id t9mr1270322ilh.191.1601939450075;
- Mon, 05 Oct 2020 16:10:50 -0700 (PDT)
+        id S1726799AbgJEXQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 19:16:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:60900 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725865AbgJEXQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 19:16:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5353B113E;
+        Mon,  5 Oct 2020 16:16:29 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E2C5F3F70D;
+        Mon,  5 Oct 2020 16:16:28 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 00:16:27 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Puhov <peter.puhov@linaro.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+Subject: Re: [RFC 0/3] cpufreq: cppc: Add support for frequency invariance
+Message-ID: <20201005231627.GB18029@arm.com>
+References: <cover.1594289009.git.viresh.kumar@linaro.org>
+ <20200709124349.GA15342@arm.com>
+ <20200710030032.3yq3lqqybhy5m744@vireshk-i7>
+ <CAKfTPtBpOdRSV0gb2CoC8J9GnuPiqZ+MbQLLc6NdSmjJhb0cgA@mail.gmail.com>
+ <20200825095629.GA15469@arm.com>
+ <20200827075149.ixunmyi3m6ygtehu@vireshk-i7>
+ <20200827112740.GA9923@arm.com>
+ <20201005075822.6odp2ulk6wopcwtn@vireshk-i7>
 MIME-Version: 1.0
-References: <cover.1601925251.git.luto@kernel.org>
-In-Reply-To: <cover.1601925251.git.luto@kernel.org>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Mon, 5 Oct 2020 19:10:39 -0400
-Message-ID: <CAMzpN2j9h7FjpG_s_a09vKTCV+CYafjsKgK-k2RH7TG59FWz-w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Clean up x86_32 stackprotector
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005075822.6odp2ulk6wopcwtn@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 3:30 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> x86_32 stackprotector is a maintenance nightmare.  Clean it up.  This
-> disables stackprotector on x86_32 on GCC 8.1 and on all clang
-> versions -- I'll file a bug for the latter.
+Hi Viresh,
 
-This should be doable on 64-bit too.  All that would need to be done
-is to remove the zero-base of the percpu segment (which would simplify
-alot of other code).
+On Monday 05 Oct 2020 at 13:28:22 (+0530), Viresh Kumar wrote:
+> On 27-08-20, 12:27, Ionela Voinescu wrote:
+> > I am in the middle of unifying AMU counter and cpufreq invariance through
+> > something like this, so if you like the idea and you don't think I'm
+> > stepping too much on your toes with this, I can consider the usecase in
+> > my (what should be) generic support. So in the end this might end up
+> > being just a matter of adding a new invariance source (CPPC counters).
+> 
+> Any update on this ?
+> 
 
---
-Brian Gerst
+I have some code for this, but not yet in the final state I wanted to
+bring it to. The code has some dependencies/conflicts with the FFH support
+and in small part with the new BL_SWITCHER patches so I wanted to get
+those through first.
+
+I'm in the middle of some distractions now, so probably it will take a
+around two-three more weeks before I submit the code for review.
+
+Sorry for the delay,
+Ionela.
+
+> -- 
+> viresh
