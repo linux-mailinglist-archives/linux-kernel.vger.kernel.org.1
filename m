@@ -2,184 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F872835E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098432835E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgJEMnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:43:16 -0400
-Received: from mga03.intel.com ([134.134.136.65]:7964 "EHLO mga03.intel.com"
+        id S1726133AbgJEMng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:43:36 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:37944 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgJEMnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:43:16 -0400
-IronPort-SDR: Q9Rks55IvrR2CoJC1t/c8cIYT6ea1pLXHp4AapYRfoUySXIQXwyN3cS73JsQ5tVfFcZAiA+UpP
- h625V6ZTHVKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="163545019"
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="163545019"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 05:42:32 -0700
-IronPort-SDR: G9dnizgGPtxNNAXe6/x7v0Mz4SvuKnUCt80Ba6+1bU1yeWZpWmFUeSLbjM15/XSsDwcjdImhmi
- dVWXcTfMP6Ag==
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="525480521"
-Received: from bclindho-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.32.27])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 05:42:23 -0700
-Date:   Mon, 5 Oct 2020 15:42:21 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201005124221.GA191854@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
- <20201004143246.GA3561@linux.intel.com>
- <20201005094246.GB151835@kroah.com>
+        id S1725930AbgJEMng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:43:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601901814; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=tU0TqlUvWa2j8PEBBpsVnjkiW09OMXXbmI8+GEaHnO8=; b=JxUxk4lhNhjB1mLVvK2Be0ywXxAANtfVZ7XtHEUwnafzS0qy+OzgZ+VlOtuXeX4x+AE806ss
+ iDpfDqxO/1xkfY7tFU5on8gqrdmR6b8jE9CTMNUl1ruokfuQ4/qPsst93SmgY6czPe3zCMXC
+ EgER0LK5uud+T5uwLurCNBPUlqA=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f7b14d842f9861fb100958b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 12:43:04
+ GMT
+Sender: pkondeti=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 10560C433C8; Mon,  5 Oct 2020 12:43:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pkondeti)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D38BDC433CA;
+        Mon,  5 Oct 2020 12:43:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D38BDC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
+Date:   Mon, 5 Oct 2020 18:12:58 +0530
+From:   Pavan Kondeti <pkondeti@codeaurora.org>
+To:     Yun Hsiang <hsiang023167@gmail.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] sched/uclamp: release per-task uclamp control if
+ user set to default value
+Message-ID: <20201005124258.GA11335@codeaurora.org>
+References: <20200928082643.133257-1-hsiang023167@gmail.com>
+ <8272de8d-9868-d419-e2bb-d5e2c0614b63@arm.com>
+ <20201002053812.GA176142@ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005094246.GB151835@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201002053812.GA176142@ubuntu>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:42:46AM +0200, Greg KH wrote:
-> > > You use gpl-only header files in this file, so how in the world can it
-> > > be bsd-3 licensed?
+On Fri, Oct 02, 2020 at 01:38:12PM +0800, Yun Hsiang wrote:
+> On Wed, Sep 30, 2020 at 03:12:51PM +0200, Dietmar Eggemann wrote:
+> Hi Dietmar,
+> 
+> > Hi Yun,
+> > 
+> > On 28/09/2020 10:26, Yun Hsiang wrote:
+> > > If the user wants to release the util clamp and let cgroup to control it,
+> > > we need a method to reset.
 > > > 
-> > > Please get your legal department to agree with this, after you explain
-> > > to them how you are mixing gpl2-only code in with this file.
-> > 
-> > I'll do what I already stated that I will do. Should I do something
-> > more?
-> 
-> This was written before your previous response.
-
-OK, that is weird, I got this one some time later.
-
-> > > > +	mutex_lock(&encl->lock);
-> > > > +	atomic_or(SGX_ENCL_DEAD, &encl->flags);
+> > > So if the user set the task uclamp to the default value (0 for UCLAMP_MIN
+> > > and 1024 for UCLAMP_MAX), reset the user_defined flag to release control.
 > > > 
-> > > So you set a flag that this is dead, and then instantly delete it?  Why
-> > > does that matter?  I see you check for this flag elsewhere, but as you
-> > > are just about to delete this structure, how can this be an issue?
+> > > Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
 > > 
-> > It matters because ksgxswapd (sgx_reclaimer_*) might be processing it.
-> 
-> I don't see that happening in this patch, did I miss it?
-
-It's implemented in 16/24:
-
-https://lore.kernel.org/linux-sgx/20201004223921.GA48517@linux.intel.com/T/#u
-
-> > It will use the flag to skip the operations that it would do to a victim
-> > page, when the enclave is still alive.
-> 
-> Again, why are you adding flags when the patch does not use them?
-> Please put new functionality in the specific patch that uses it.
-> 
-> And can you really rely on this?  How did sgx_reclaimer_* (whatever that
-> is), get the reference on this object in the first place?  Again, I
-> don't see that happening at all in here, and at a quick glance in the
-> other patches I don't see it there either.  What am I missing?
-
-I went through the patch, and yes, they can be migrated to 16/24.
-I agree with this, no excuses.
-
-In 16/24 pages are added to sgx_active_page_list from which they are
-swapped by the reclaimer to the main memory when Enclave Page Cache
-(EPC), the memory where enclave pages reside, gets full.
-
-When a reclaimer thread takes a victim page from that list, it will also
-get a kref to the enclave so that struct sgx_encl instance does not
-get wiped while it's doing its job.
-
-> > Because ksgxswapd needs the alive enclave instance while it is in the
-> > process of swapping a victim page. The reason for this is the
-> > hierarchical nature of the enclave pages.
+> > could you explain with a little bit more detail why you would need this
+> > feature?
 > > 
-> > As an example, a write operation to main memory, EWB (SDM vol 3D 40-79)
+> > Currently we assume that once the per-task uclamp (user-defined) values
+> > are set, you could only change the effective uclamp values of this task
+> > by (1) moving it into another taskgroup or (2) changing the system
+> > default uclamp values.
+> > 
 > 
-> What is that referencing?
-
-https://software.intel.com/content/dam/develop/public/us/en/documents/332831-sdm-vol-3d.pdf
-
-> > needs to access SGX Enclave Control Structure (SECS) page, which is
-> > contains global data for an enclave, like the unswapped child count.
+> Assume a module that controls group (such as top-app in android) uclamp and
+> task A in the group.
+> Once task A set uclamp, it will not be affected by the group setting.
+> If task A doesn't want to control itself anymore,
+> it can not go back to the initial state to let the module(group) control.
+> But the other tasks in the group will be affected by the group.
 > 
-> Ok, but how did it get access to this structure in the first place, like
-> I ask above?
-
-I guess I answered that, and I also fully agree with your suggestions.
-
-It used to be many iterations ago that enclaves were not file based but
-just memory mappings (long story short: was not great way to make them
-multiprocess, that's why file centered now), and then refcount played a
-bigger role. Having those "extras" in this patch is by no means
-intentional but more like cruft of many iterations of refactoring.
-
-Sometimes when you work long with this kind of pile of code, which has
-converged through many iterations, you really need someone else to point
-some of the simple and obvious things out.
-
-> > There is a patch that adds "sgx/provision".
+> The policy might be
+> 1) if the task wants to control it's uclamp, use task uclamp value
+> (but under group uclamp constraint)
+> 2) if the task doesn't want to control it's uclamp, use group uclamp value.
 > 
-> What number in this series?
+> If the policy is proper, we need a reset method for per-task uclamp.
 
-It's 15/24.
+Right. It would be nice to have the capability to reset per-task uclamp
+settings. In Android, I have seen tasks in top-app affining to Big cluster.
+When these tasks move to background, the cpuset automatically override the
+affinity of tasks. If the same use case is extended to use uclamp to set a
+high value for some tasks in top-app, there should be a way to reset the
+uclamp settings when they are moved to background. I don't know if we ever
+see this implemented in Android.
 
 > 
-> > Either works for me. Should I flatten them to "sgx_enclave" and
-> > "sgx_provision", or keep them as they are?
-> 
-> Having 2 char nodes in a subdir is better than one, I will give you
-> that.  But none is even better, don't you think?
+> > > ---
+> > >  kernel/sched/core.c | 7 +++++--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index 9a2fbf98fd6f..fa63d70d783a 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -1187,6 +1187,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
+> > >  				  const struct sched_attr *attr)
+> > >  {
+> > >  	enum uclamp_id clamp_id;
+> > > +	bool user_defined;
+> > >  
+> > >  	/*
+> > >  	 * On scheduling class change, reset to default clamps for tasks
+> > > @@ -1210,14 +1211,16 @@ static void __setscheduler_uclamp(struct task_struct *p,
+> > >  	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+> > >  		return;
+> > >  
+> > > +	user_defined = attr->sched_util_min == 0 ? false : true;
+> > >  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+> > >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+> > > -			      attr->sched_util_min, true);
+> > > +			      attr->sched_util_min, user_defined);
+> > >  	}
+> > >  
+> > > +	user_defined = attr->sched_util_max == 1024 ? false : true;
 
-I think that having just "sgx_enclave" and "sgx_provision" would be
-better.
+This does not work for all cases. Lets say a task is in a cgroup which
+restricts uclamp.max. The task want to lift this restriction by setting
+uclamp.max = 1024. With your approach, we don't honor this. Correct?
 
-I've been thinking about this for a while but at the same time try not
-to be too proactive without feedback. One reason would be that "enclave"
-and "provision" without the subdir are not good identifiers.
+> > >  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+> > >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+> > > -			      attr->sched_util_max, true);
+> > > +			      attr->sched_util_max, user_defined);
+> > >  	}
+> > >  }
 
-I also recalled this discussion:
+Thanks,
+Pavan
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-https://lkml.org/lkml/2019/12/23/158
-
-and was wondering how that subdir would even play with /sys/class/misc,
-if we decide to add attributes? Not enough knowledge to answer this.
-
-Anyway, I'll put a note to my backlog on this, and also to move the
-previously discussed cruft to the correct patch.
-
-> thanks,
-> 
-> greg k-h
-
-Thank you.
-
-/Jarkko
