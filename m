@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC912838BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24B9283741
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgJEPDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:03:19 -0400
-Received: from www1102.sakura.ne.jp ([219.94.129.142]:21191 "EHLO
-        www1102.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgJEPDT (ORCPT
+        id S1726482AbgJEOEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:04:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42783 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725903AbgJEOEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:03:19 -0400
-X-Greylist: delayed 3583 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 11:03:18 EDT
-Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
-        by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 095E3Kbe031802;
-        Mon, 5 Oct 2020 23:03:20 +0900 (JST)
-        (envelope-from katsuhiro@katsuster.net)
-Received: from www1102.sakura.ne.jp (219.94.129.142)
- by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
- Mon, 05 Oct 2020 23:03:20 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
-Received: from localhost.localdomain (80.57.232.153.ap.dti.ne.jp [153.232.57.80])
-        (authenticated bits=0)
-        by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 095E3Dnx031782
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Mon, 5 Oct 2020 23:03:20 +0900 (JST)
-        (envelope-from katsuhiro@katsuster.net)
-From:   Katsuhiro Suzuki <katsuhiro@katsuster.net>
-To:     Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Subject: [PATCH v3] arm64: dts: rockchip: add SPDIF node for rk3399-rockpro64
-Date:   Mon,  5 Oct 2020 23:03:11 +0900
-Message-Id: <20201005140311.2507530-1-katsuhiro@katsuster.net>
-X-Mailer: git-send-email 2.28.0
+        Mon, 5 Oct 2020 10:04:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601906639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5FiubZDjnEvbMrof1WsbVv3DYVP1R+np4/DBi1Pvea4=;
+        b=AuKPEKYIzqsd92fooobbwPV2m//mIS/Nd88GZcBmElcg9RAcw9pLdttkpJGaS4yRPJjXTc
+        5c9b/DzWpDnUpd5ooTI+eEP34pUStwdWVx1bO9OUC5lgAnld6fQcaUl5aRGHjVQ9byuwnf
+        UPswJ07vnNXSU56xVN2v6AeFvex1EY0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4--71tJyiMOjmzBkmiMdQs5g-1; Mon, 05 Oct 2020 10:03:58 -0400
+X-MC-Unique: -71tJyiMOjmzBkmiMdQs5g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2C21101FFA0;
+        Mon,  5 Oct 2020 14:03:55 +0000 (UTC)
+Received: from treble (ovpn-119-43.rdu2.redhat.com [10.10.119.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C06C378824;
+        Mon,  5 Oct 2020 14:03:36 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 09:03:28 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 4/4] objtool: fix x86 orc generation on big endian
+ cross compiles
+Message-ID: <20201005140328.hpbpkfpx3hmpuapt@treble>
+References: <20201002160114.7yb7z7aeijhchpwl@treble>
+ <cover.thread-a8def4.your-ad-here.call-01601818410-ext-7687@work.hours>
+ <patch-4.thread-a8def4.git-a8def4f04016.your-ad-here.call-01601818410-ext-7687@work.hours>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <patch-4.thread-a8def4.git-a8def4f04016.your-ad-here.call-01601818410-ext-7687@work.hours>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds 'disabled' SPDIF sound node and related settings
-of SPDIF for rk3399-rockpro64.
+On Sun, Oct 04, 2020 at 04:30:54PM +0200, Vasily Gorbik wrote:
+> @@ -77,8 +78,9 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
+>  	if (entry->feature) {
+>  		unsigned short feature;
+> 
+> -		feature = *(unsigned short *)(sec->data->d_buf + offset +
+> -					      entry->feature);
+> +		feature = bswap_if_needed(*(unsigned short *)(sec->data->d_buf +
+> +							      offset +
+> +							      entry->feature));
+>  		arch_handle_alternative(feature, alt);
+>  	}
+> ---
+>  arch/x86/include/asm/orc_types.h              | 10 +++++
+>  tools/arch/x86/include/asm/orc_types.h        | 10 +++++
+>  .../arch/x86/include/arch_endianness.h        |  9 +++++
+>  tools/objtool/check.c                         |  5 ++-
+>  tools/objtool/endianness.h                    | 38 +++++++++++++++++++
+>  tools/objtool/orc_dump.c                      |  5 ++-
+>  tools/objtool/orc_gen.c                       |  3 ++
+>  tools/objtool/special.c                       |  6 ++-
+>  8 files changed, 80 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/objtool/arch/x86/include/arch_endianness.h
+>  create mode 100644 tools/objtool/endianness.h
+> 
+> diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
+> index fdbffec4cfde..5a2baf28a1dc 100644
 
-RockPro64 has output pins for SPDIF Tx. But RK3399 does not have
-enough DMA channel for enabling SPDIF tx. Current settings are:
+This patch is misformatted.  Almost like it was concatenated with
+itself?
 
-  - I2S0     (Req num 0, 1): Enabled : Output to 40pins header CON40
-  - I2S1     (Req num 2, 3): Enabled : Output to ES8316 on board
-  - I2S2     (Req num 4, 5): Enabled : Output to internal HDMI core
-  - SPDIF Tx (Req num 7)   : Disabled: Output to connector J10
-
-If users want to enable ALL sound I/Os, we need 7 DMA channels for
-it. But unfortunately, RK3399 has only 6 DMA channels. So users have
-to choose from the following:
-
-  - Disable one of I2S (Ex. I2S0) and enable SPDIF tx
-  - Keep enable I2S0/1/2 and disable SPDIF tx
-
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-
----
-
-Changes in v3:
-  - Refine commit description why adding disabled node
-
-Changes in v2:
-  - Remove redundant status property
----
- .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-index 6e553ff47534..58097245994a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-@@ -76,6 +76,23 @@ sound {
- 		dais = <&i2s1_p0>;
- 	};
- 
-+	sound-dit {
-+		compatible = "audio-graph-card";
-+		label = "rockchip,rk3399";
-+		dais = <&spdif_p0>;
-+	};
-+
-+	spdif-dit {
-+		compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+
-+		port {
-+			dit_p0_0: endpoint {
-+				remote-endpoint = <&spdif_p0_0>;
-+			};
-+		};
-+	};
-+
- 	vcc12v_dcin: vcc12v-dcin {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc12v_dcin";
-@@ -698,6 +715,16 @@ &sdhci {
- 	status = "okay";
- };
- 
-+&spdif {
-+	pinctrl-0 = <&spdif_bus_1>;
-+
-+	spdif_p0: port {
-+		spdif_p0_0: endpoint {
-+			remote-endpoint = <&dit_p0_0>;
-+		};
-+	};
-+};
-+
- &spi1 {
- 	status = "okay";
- 
 -- 
-2.28.0
+Josh
 
