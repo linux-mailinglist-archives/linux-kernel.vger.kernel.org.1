@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBDD283130
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92097283132
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgJEH4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
+        id S1725988AbgJEH4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725895AbgJEH4i (ORCPT
+        with ESMTP id S1725914AbgJEH4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:56:38 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB4C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 00:56:38 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id i2so1781110pgh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:56:38 -0700 (PDT)
+        Mon, 5 Oct 2020 03:56:41 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E92C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 00:56:41 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id g29so5500901pgl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:56:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=J4qdGO1JzbarEAt5kXWVquFeUU4w8XJCRXx1wssOX40=;
-        b=glhwHwWoSPB7vbpkNltzCZuIRGmvdyF6aRXSvux7O0gh5RDnah9YJzBYE9y2Xx44M/
-         zwHQJY+Fgh/LqIs5bqvnnxpiqx+pExQIHmT9Ll7y7kKqV3fxk+NcEsv3N9BSma9+eGWD
-         o5wweXxZMJEBbpXKu2pV65Wxdz4yxYUEO69GSmfju/ZuaoSjSIcrjz+e4FJXifMSIgqH
-         NaJ6vLSkY4c9IhJDFdQylXKYC+thaP7DlFZp24MQSrmulZs4IcJbkMdhLQF61BielJOS
-         Uu6OnbbC2DfMp9xXIZtc+U3yAPJqZng/TqzzsONmA86UFq0l9i8i68hfRgzXA+eZz5SA
-         TI3A==
+        bh=nYf6GPt1wRUI8w200qpKr/LuqlJa9al57JJ7Q+opvEQ=;
+        b=hLbJsgCZapLKk39/1FZQk05+VxQTPVQ/ckuhiTIxrxmFV/QyEuRSE6lK3Dcjw/Ttqn
+         UnlrYEshMpTMNfxszZk+OBg5SQaP5abwxlOFb/T6t7L/xK41J4YazhiL79Q+YMlhX84V
+         G8Wl/cIdDjF7siv0rrPvJgBO7mesydHLLiVy7TW6baA2NcTX4n7eJSDnzj5pJjLqzyua
+         dGCSv5KhJEzt6IGyXiXM/jfob8zu8oc3j2bqMuLMjrs8L6Y8z3h0R0SZkM+0iz8bankW
+         Tx0yPYJENsA4Kd35xc7sbludoQlQecrIYmcqEhyCKGS0X21HN+ej37A1gZOskLRjIJaO
+         bX3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=J4qdGO1JzbarEAt5kXWVquFeUU4w8XJCRXx1wssOX40=;
-        b=W+AZZ/t6xcKnTAtpc/7YZJHs07jALVFDBwgZsyToi6ntmr+kMj74Yjbp8plN2DVHEC
-         UxQ33dEhdBoDdxbxexN1iwMF7D4m3Zus4p5F8a9L/woNjkQEJwEfQTsh+KB+3SJSYYhk
-         ljZTmnaWSIHIs/UyX/LG02Z9bvTfSSHYiv9iG76zIYHz49guIf2AxAJqcOFMOQBRoL+4
-         wqa3nM3vOFauDaLXEtlSeZv/THZGdAxW/m9SxoTf41EbKd0qXGINcnJz8CY+T84GSz4o
-         OMHRsnMwOZpB1CR1ae280YaXRr0jympSboh5+qaY8AUk/1Gm2b42yrSA6wHPOk95B6Fp
-         NKaA==
-X-Gm-Message-State: AOAM532YM16oatenJeXSCNa7TQxha53ZHTLW8H7pemzWeljImzUx/dnz
-        wfg1XNwDLjXaOFVEeHCAUMBfYw==
-X-Google-Smtp-Source: ABdhPJxAPv4l/65ZQQxBev3hTwT1tahpTGcKOaCmgb9omR+AFrSB6szG8y8TZQb+6Qc7oC6P5QWnqg==
-X-Received: by 2002:a63:c547:: with SMTP id g7mr13254623pgd.234.1601884598314;
-        Mon, 05 Oct 2020 00:56:38 -0700 (PDT)
+        bh=nYf6GPt1wRUI8w200qpKr/LuqlJa9al57JJ7Q+opvEQ=;
+        b=czbqdhBs+PYGhNNtlD/bJpsUPtPonGDzFyH5N8Cg1GxRx3cUrpReb6cJpK7PxsLhKC
+         XP0slvHMCXoDksrKKYY5RhP44yUPbnN3j8ojxUGKFET8SWxm9nvzHZhUF6cIFtaltYc6
+         v7o3W0csFo/TWeu7YBwHd1egVMjz6m6r5bXFw4Uwcb+7XC9VRnMCkV4nKkdnwMFlaw5b
+         +S98fmIJV7G5RWnIdecWvNZaHrk477Ea+bShv4dix8s7uxdyCOEmd2xN1lwlhk52wfqx
+         sVoYvCX5DiEjCIsdQvvwWoA5/9sNj1as2d45aOhvX4hGHSyaKarkk9JzOPsKxqCmq4me
+         Hr/g==
+X-Gm-Message-State: AOAM533b3eOpK4Rf1AuuOcM4vi3azTFs/QQPTl3h08jUR80YB7oYRc3a
+        5M7G9VP+KEcuPDeeEEOq243Haw==
+X-Google-Smtp-Source: ABdhPJy2AkqRQJNbK0grU2beG+3LdlZf199gBlJg2TQ13yIuW3jlQ2yx9MrZj/I0egK7qZw1Lg9X/Q==
+X-Received: by 2002:aa7:8e43:0:b029:151:3e50:afa6 with SMTP id d3-20020aa78e430000b02901513e50afa6mr6668641pfr.59.1601884601412;
+        Mon, 05 Oct 2020 00:56:41 -0700 (PDT)
 Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id n8sm9215326pff.188.2020.10.05.00.56.37
+        by smtp.gmail.com with ESMTPSA id z1sm9798018pgu.80.2020.10.05.00.56.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Oct 2020 00:56:37 -0700 (PDT)
+        Mon, 05 Oct 2020 00:56:40 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Rafael Wysocki <rjw@rjwysocki.net>,
         Viresh Kumar <viresh.kumar@linaro.org>
@@ -55,9 +55,9 @@ Cc:     linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
         sudeep.holla@arm.com, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/5] cpufreq: stats: Remove locking
-Date:   Mon,  5 Oct 2020 13:26:02 +0530
-Message-Id: <d2dadb9656aa49a8ba1a5ddaf9ccab6c32383539.1601884370.git.viresh.kumar@linaro.org>
+Subject: [PATCH V3 3/5] cpufreq: stats: Mark few conditionals with unlikely()
+Date:   Mon,  5 Oct 2020 13:26:03 +0530
+Message-Id: <bcd08a46937c3c4f36853e8be1b11aef5a290248.1601884370.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1601884370.git.viresh.kumar@linaro.org>
 References: <cover.1601884370.git.viresh.kumar@linaro.org>
@@ -67,62 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The locking isn't required anymore as stats can get updated only from
-one place at a time. Remove it.
+Since this will be part of scheduler's hotpath in some cases, use
+unlikely() for few of the obvious conditionals.
 
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/cpufreq/cpufreq_stats.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/cpufreq/cpufreq_stats.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-index 498d962ba224..45a067855367 100644
+index 45a067855367..bba04da3a278 100644
 --- a/drivers/cpufreq/cpufreq_stats.c
 +++ b/drivers/cpufreq/cpufreq_stats.c
-@@ -19,7 +19,6 @@ struct cpufreq_stats {
- 	unsigned int state_num;
- 	unsigned int last_index;
- 	u64 *time_in_state;
--	spinlock_t lock;
- 	unsigned int *freq_table;
- 	unsigned int *trans_table;
+@@ -260,7 +260,7 @@ void cpufreq_stats_record_transition(struct cpufreq_policy *policy,
+ 	struct cpufreq_stats *stats = policy->stats;
+ 	int old_index, new_index;
  
-@@ -41,7 +40,6 @@ static void cpufreq_stats_reset_table(struct cpufreq_stats *stats)
- {
- 	unsigned int count = stats->max_state;
- 
--	spin_lock(&stats->lock);
- 	memset(stats->time_in_state, 0, count * sizeof(u64));
- 	memset(stats->trans_table, 0, count * count * sizeof(int));
- 	stats->last_time = get_jiffies_64();
-@@ -50,7 +48,6 @@ static void cpufreq_stats_reset_table(struct cpufreq_stats *stats)
- 	/* Adjust for the time elapsed since reset was requested */
- 	WRITE_ONCE(stats->reset_pending, 0);
- 	cpufreq_stats_update(stats, READ_ONCE(stats->reset_time));
--	spin_unlock(&stats->lock);
- }
- 
- static ssize_t show_total_trans(struct cpufreq_policy *policy, char *buf)
-@@ -244,7 +241,6 @@ void cpufreq_stats_create_table(struct cpufreq_policy *policy)
- 	stats->state_num = i;
- 	stats->last_time = get_jiffies_64();
- 	stats->last_index = freq_table_get_index(stats, policy->cur);
--	spin_lock_init(&stats->lock);
- 
- 	policy->stats = stats;
- 	ret = sysfs_create_group(&policy->kobj, &stats_attr_group);
-@@ -277,11 +273,9 @@ void cpufreq_stats_record_transition(struct cpufreq_policy *policy,
- 	if (old_index == -1 || new_index == -1 || old_index == new_index)
+-	if (!stats)
++	if (unlikely(!stats))
  		return;
  
--	spin_lock(&stats->lock);
- 	cpufreq_stats_update(stats, stats->last_time);
+ 	if (unlikely(READ_ONCE(stats->reset_pending)))
+@@ -270,7 +270,7 @@ void cpufreq_stats_record_transition(struct cpufreq_policy *policy,
+ 	new_index = freq_table_get_index(stats, new_freq);
  
- 	stats->last_index = new_index;
- 	stats->trans_table[old_index * stats->max_state + new_index]++;
- 	stats->total_trans++;
--	spin_unlock(&stats->lock);
- }
+ 	/* We can't do stats->time_in_state[-1]= .. */
+-	if (old_index == -1 || new_index == -1 || old_index == new_index)
++	if (unlikely(old_index == -1 || new_index == -1 || old_index == new_index))
+ 		return;
+ 
+ 	cpufreq_stats_update(stats, stats->last_time);
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
