@@ -2,159 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90178283F64
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11238283F72
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgJETOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 15:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
+        id S1729278AbgJETSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 15:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJETON (ORCPT
+        with ESMTP id S1725864AbgJETSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 15:14:13 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B62BC0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 12:14:13 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id v8so10385100iom.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 12:14:13 -0700 (PDT)
+        Mon, 5 Oct 2020 15:18:14 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9815AC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 12:18:14 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id h2so5818pll.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 12:18:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xwAxPetPQqjNloRqroHgPvWNU+a4/LgMNfeziHOHJfY=;
-        b=F2TRLVcMaGt3VPEEmegwbHPJ4ou8ND6anmLed18QlQIrqj8v2nxubg6lM79u1s4oi9
-         pUIrVv2FRRGNSC8ASvas42okTQ3qCh7q3fWtd6bfHviFqAceEtSblKsomzFqK+lMqnir
-         MxxNaca8KW2t8a/hAAHLN2eXGppKSuGDWm1aA=
+        bh=3v9XMAoPYBW3DQG8S1vG0ISp7LAFeik4tO7mnWA/PIE=;
+        b=Flg1imdKdG4du95+yUiD8rHugdWmz6cDZdnv/sBc3wx8jJOqjfa7uieMvm3riwXyUI
+         d404b0MWwm+wMfVIA1reIs4P7RfcgVAqIpujkXFfeGQEYKFlADn4+XkI+2HukATPeqjj
+         2eyzcNW5tsvijHild1n+/cAlaRhHeKyu75KtNhSIAkAh88eoo7p7HAJQxh0SbSRxNPSw
+         O9mCkSyio2shfaTtsaPjtbxApzM7O79tx8SirEtDb/FvTfqwcoMnaYwxbWALS9PFd0d7
+         KrheOFiQ//V0ZFuzS/Zyhige/8QeCpzLB8Glud45L1MBzR04prFwwbB3Gu8AWu5iL204
+         v6/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xwAxPetPQqjNloRqroHgPvWNU+a4/LgMNfeziHOHJfY=;
-        b=ptEpLgQeE7wVByma9L1+PdrS+8tUGFNFeAnu1OebNQdKMNfB0BibxnMgAAsTNdU4nL
-         Ia5b8GmXhbnZ84R8Qk20GF5zn/7H5aR1mXlZjSSaHX43LZktP2qW7bqE84eehOVWmsrP
-         fBovPOFhpiOjJ8fLOfmcdelrekHte/xQy4ZBRJoQQ3WaQKJV9Op2z4oFTXK54dx9i/Hi
-         KpnsimuDmAv7Q/DbxtBd3JqblzvniH96aQgnlsSQb49kpBx15UDqt5hGlScGUI5ngsFs
-         tJHuOJTfxuSiG8pFEoz4nIbt3mdt+0hPGcu09Gkz91CuPGvzjCLdikaN43QYaQjjsBJe
-         WSRg==
-X-Gm-Message-State: AOAM532+AzMQxxN/IuGr5MSWGZLST6SrmIv/lr+iILOH/JrXtwhFSBTW
-        FIRM95/8dzcWjaJROGtUgXS6f3OKHTZ/m40aHezp
-X-Google-Smtp-Source: ABdhPJzZTWc5aDIps9qCUH4gIcx01yrGYSRg4jL6Z7cAHeANHCNGR8ghILZwdUivcGDVDXopZEUHL3dxxcJiPt4KNJA=
-X-Received: by 2002:a05:6638:dd3:: with SMTP id m19mr1345504jaj.115.1601925252825;
- Mon, 05 Oct 2020 12:14:12 -0700 (PDT)
+        bh=3v9XMAoPYBW3DQG8S1vG0ISp7LAFeik4tO7mnWA/PIE=;
+        b=IctX/K9L6f1iouvLuLi34KDN3vjwSxqisfWN8qdfySB/FPeXuv4pCeXnluNqyFtWGE
+         e8GODOpKCZQGtzoplsGRVxka2hB+quysKeVlT5pXQqyV5hHeKMsxQ/g2StQV/p2Q0fOr
+         pyTMjDZmuqNwhDFE0tt8qX9OH4YKmH02PfJE5VjslYsMjyfdi5sj/H9eQIjMgXTLmRCm
+         nnBREQfOm0w748NfyUAHGRobuBTdppGgDZBi0w9gvfKf5ols7YZ1PitAKYDKbiC0Hwoh
+         onOcgo2ph/SU0urj0V3LK9V28ilpTFVrhcv/R2skH5Epm6JD8DXaMWlsByUD6VAB03cf
+         rz3g==
+X-Gm-Message-State: AOAM533XNTeuQY1uvPpzVXZI9eGOQrKXaMRionh+a0noJfg04N5BFn+G
+        /LcIVEAKYpuL8uTaYvRSI2VEawrsgKOuDXsGLq0=
+X-Google-Smtp-Source: ABdhPJzg/smmDdSNBg0mwczEB7Lzlcc/N8/29nYapgcYl/zwOjuHCvGd9zmnksVlr8dsnxPs/GFCiCSVeZHsW0cr4N8=
+X-Received: by 2002:a17:90a:ab0b:: with SMTP id m11mr904112pjq.197.1601925494043;
+ Mon, 05 Oct 2020 12:18:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
- <1593266228-61125-2-git-send-email-guoren@kernel.org> <20200911204512.GA2705@aurel32.net>
- <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
- <20200914103836.GB2705@aurel32.net> <87lfgzeidk.fsf@igel.home> <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
-In-Reply-To: <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 5 Oct 2020 12:14:01 -0700
-Message-ID: <CAOnJCUJhb2K89pRETbfTJ=5jHQhWfyfrOUu8zOE77j+id6OpSA@mail.gmail.com>
-Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Hu <nickhu@andestech.com>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20201002233057.74462-1-coiby.xu@gmail.com>
+In-Reply-To: <20201002233057.74462-1-coiby.xu@gmail.com>
+From:   Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Date:   Tue, 6 Oct 2020 00:47:37 +0530
+Message-ID: <CAAs364_NiSJ-mH+v938Mz-qLgDjUsO=7V7FLPo9=Tne63bUxXw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] staging: greybus: fix warnings about endianness
+ detected by sparse
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Alex Elder <elder@linaro.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 9:19 AM Guo Ren <guoren@kernel.org> wrote:
+On Sat, Oct 3, 2020 at 5:01 AM Coiby Xu <coiby.xu@gmail.com> wrote:
 >
-> How about this, revert the commit and don't free INIT_DATA_SECTION. I
-> think the solution is safe enough, but wast a little memory.
+> This patch fix the following warnings from sparse,
 >
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index f3586e3..34d00d9 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -22,13 +22,11 @@ SECTIONS
->         /* Beginning of code and text segment */
->         . = LOAD_OFFSET;
->         _start = .;
-> -       _stext = .;
->         HEAD_TEXT_SECTION
->         . = ALIGN(PAGE_SIZE);
+> $ make C=2 drivers/staging/greybus/
+> drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
+> drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
+> drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
+> drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:691:41:    expected unsigned int access
+> drivers/staging/greybus/audio_topology.c:691:41:    got restricted __le32 [usertype] access
+> drivers/staging/greybus/audio_topology.c:746:44: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:746:44:    expected unsigned int
+> drivers/staging/greybus/audio_topology.c:746:44:    got restricted __le32
+> drivers/staging/greybus/audio_topology.c:748:52: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:748:52:    expected unsigned int
+> drivers/staging/greybus/audio_topology.c:748:52:    got restricted __le32
+> drivers/staging/greybus/audio_topology.c:802:42: warning: restricted __le32 degrades to integer
+> drivers/staging/greybus/audio_topology.c:805:50: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:805:50:    expected restricted __le32
+> drivers/staging/greybus/audio_topology.c:805:50:    got unsigned int
+> drivers/staging/greybus/audio_topology.c:814:50: warning: restricted __le32 degrades to integer
+> drivers/staging/greybus/audio_topology.c:817:58: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:817:58:    expected restricted __le32
+> drivers/staging/greybus/audio_topology.c:817:58:    got unsigned int
+> drivers/staging/greybus/audio_topology.c:889:25: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_topology.c:889:25:    expected unsigned int access
+> drivers/staging/greybus/audio_topology.c:889:25:    got restricted __le32 [usertype] access
 >
->         __init_begin = .;
->         INIT_TEXT_SECTION(PAGE_SIZE)
-> -       INIT_DATA_SECTION(16)
->         . = ALIGN(8);
->         __soc_early_init_table : {
->                 __soc_early_init_table_start = .;
-> @@ -55,6 +53,7 @@ SECTIONS
->         . = ALIGN(SECTION_ALIGN);
->         .text : {
->                 _text = .;
-> +               _stext = .;
->                 TEXT_TEXT
->                 SCHED_TEXT
->                 CPUIDLE_TEXT
-> @@ -67,6 +66,8 @@ SECTIONS
->                 _etext = .;
->         }
->
-> +       INIT_DATA_SECTION(16)
-> +
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Alex Elder <elder@linaro.org>
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+Hi Coiby,
 
-I think you need to move EXIT_DATA as well. Currently, we have init
-data & text in one section.
-In general it is better idea to separate those similar to ARM64.
-Additionally, ARM64 applies different mapping for init data & text
-as the init data section is marked as non-executable[1]
+Thanks for sharing the patch. Sorry, I could not reply to the v1 series.
+Now, I have gone through the patches. Looks good (all 3 patches).
 
-However, we don't modify any permission for any init sections. Should
-we do that as well ?
+Reviewed-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
 
-[1] https://patchwork.kernel.org/patch/9572869/
-
->         /* Start of data section */
->         _sdata = .;
->         RO_DATA(SECTION_ALIGN)
->
-> On Thu, Sep 24, 2020 at 3:36 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
-> >
-> > On Sep 14 2020, Aurelien Jarno wrote:
-> >
-> > > How should we proceed to get that fixed in time for 5.9? For the older
-> > > branches where it has been backported (so far 5.7 and 5.8), should we
-> > > just get that commit reverted instead?
-> >
-> > Can this please be resolved ASAP?
-> >
-> > Andreas.
-> >
-> > --
-> > Andreas Schwab, schwab@linux-m68k.org
-> > GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> > "And now for something completely different."
->
->
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
-
--- 
-Regards,
-Atish
+--
+Thanks,
