@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3320A28330A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F3528330E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgJEJSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:18:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27924 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725887AbgJEJSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:18:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601889530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q3XcxoXhY4tkNoJfwZZRV7A+yw9a/CNVKalRc3OmXs8=;
-        b=MPKFWAcgfkTAvj43dcyR7r7B6oyzeFsd8emosAbq7a0SgvMP9HrYMjR6Pc2I1+D3c0gQwP
-        vPjz9OnwnWi7GHkTeNwbSbmYK24B0YdMagtUajoiZU8Uou8RkU5EXBw1L11elGnNG7qMCg
-        sFgqwuNiAxsr7wwuEnQe8nkiPfpXzu8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-3K1Cle1vNj-5hzQ1vMFxRw-1; Mon, 05 Oct 2020 05:18:47 -0400
-X-MC-Unique: 3K1Cle1vNj-5hzQ1vMFxRw-1
-Received: by mail-ed1-f72.google.com with SMTP id dn20so3007317edb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:18:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q3XcxoXhY4tkNoJfwZZRV7A+yw9a/CNVKalRc3OmXs8=;
-        b=uGDSvdz4svxvJbn+h5X3H9ZQ3E88NvV7vqeieVuZYy74ZRo50h5vvKoh8RsMeGVvd1
-         DSmTe8ncxybqYqour5AfGCcByzNgkoNDQJy8aUMeX4zZKNy+GeTFGTA1R+L3MNnye1Nw
-         2tvOYZ+eY6TSadgjCLj76dEzCarzR7onggWPTy36yA7IjvDLbhDX99boFz08OKgLs+gZ
-         TuicV6ZVcagVxvhcCaGfUsERkqGFbOtyL8ULygyJRFIyh3lR6FBXYSXnaUBtbpl3t1OX
-         CkBqb+L2YiQXo987Qkl/wZmaI3iRAS7QlnIx23y22RN0nxJ03In7A3bBSapVD7TbSGaA
-         2sZQ==
-X-Gm-Message-State: AOAM530gsC1NplcXjHqK0zsT87e3RO3ghP/Cf3MQCnNbQeePfhrvZM9x
-        wQwvxsxW6IbJnSevmVaLbjcMwfLQA2yjSCsjoaC4UKBB9sAEl2P6GWiSETYG029CDss8udobJ3E
-        QXy7KkfMJy9bT9FQZTzfANYkf
-X-Received: by 2002:a17:906:515:: with SMTP id j21mr14332827eja.105.1601889525713;
-        Mon, 05 Oct 2020 02:18:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxk35PxolVpg9uR0Lvf99rilKe3o7bOBze0DPf4z50pe1DzStwj49LCJfw/NK55ktPt8VURDA==
-X-Received: by 2002:a17:906:515:: with SMTP id j21mr14332813eja.105.1601889525536;
-        Mon, 05 Oct 2020 02:18:45 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id b25sm37579eds.66.2020.10.05.02.18.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 02:18:44 -0700 (PDT)
-Subject: Re: [PATCH v3] bluetooth: hci_h5: fix memory leak in h5_close
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201001194329.9328-1-anant.thazhemadam@gmail.com>
- <20201004051708.21985-1-anant.thazhemadam@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <407eed16-ba46-0ba6-544f-d5e820a1ced7@redhat.com>
-Date:   Mon, 5 Oct 2020 11:18:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201004051708.21985-1-anant.thazhemadam@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1725970AbgJEJUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:20:22 -0400
+Received: from mail-eopbgr680068.outbound.protection.outlook.com ([40.107.68.68]:30720
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725901AbgJEJUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:20:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EMsr+aiq93I+BKfMoAy1UIYybSv8dLXC1y63FSsJv8CmKski/wXXZwTJbiqfv6DOJuPa7mpQrecHg85VSIVYg61dppoPUsU0KRTL9iWS1Ob44XXboTMk1knlFOdIMLFzHim3BOp8zT39fsSkFHPLGnd0wwEFyic0Uufzpow1Rq5dEiw316OiJ+oN+dPPmQ8K3W7hya/RGTtiZ7tzgBBUISLZYuihvHac+mqTNKS6Ss9sQ/nEBGEYcjs20Gp+VMqC1zj16nVz+AjNJtpfrVPljIt57I7s7bhcXqT7VQnWZbeAm4gMMslQyywpFEOUJxf/ZpcAd6xRQIMmn/ITL5vdAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kctmlg0ShEREel+lRtHSfrLPxX03EO6LLd1wt5g29EM=;
+ b=kw8c1eRped+K12xr2n3I/DnXZCygy/+Z7MJvK8KfoMVajMLUOdEZxM28XzXnNXbw/lS7l12a9r2pMUa80PkEg8SeN/u8Sk+r9qOyHAj/XWPF8POGJAqg89eEuFJDRvOmfB/1alpFi/onVvPIeh7sAL95Mww8NBHdgnXRzeG3Lq6hi45jZCp/pS2ubtspgddAeiX4rx0nshMFSwPDNtJfkoYY8L20Z8xddk7nhh8DHW2Mnnuyr3j/9kJXEUEf4oMA15YDhJiILKxhPrPaP85+L0vjrn5+OpvBlSCNJnzuBoo5bcHT6TnetENyc9yd8vYPhlHGQoNXKBaIGjXGrS2O5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kctmlg0ShEREel+lRtHSfrLPxX03EO6LLd1wt5g29EM=;
+ b=NvqdO79UW/T+gvVNb419jkdpUEGgkBDIAItSAzHaYQDt9XTEbIQe+roKR3jYKSyYDbeWC6pGdAUcWe1gcdB3IVC5ckLiL8KEpDrxZR09QaVZzpTf6euVBHIsy52B07clX9PQx7GV2udElX0lKG1tVNL5NY7ukL2HADAdkWlqzFc=
+Authentication-Results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
+ by DS7PR03MB5560.namprd03.prod.outlook.com (2603:10b6:5:2d0::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Mon, 5 Oct
+ 2020 09:20:18 +0000
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
+ 09:20:18 +0000
+Date:   Mon, 5 Oct 2020 17:19:50 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: phy: marvell: Use phy_read_paged() instead of open
+ coding it
+Message-ID: <20201005171804.735de777@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [124.74.246.114]
+X-ClientProxiedBy: TY2PR02CA0067.apcprd02.prod.outlook.com
+ (2603:1096:404:e2::31) To DM6PR03MB4555.namprd03.prod.outlook.com
+ (2603:10b6:5:102::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TY2PR02CA0067.apcprd02.prod.outlook.com (2603:1096:404:e2::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Mon, 5 Oct 2020 09:20:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78ea45c9-9df2-431f-4b4c-08d8690fe021
+X-MS-TrafficTypeDiagnostic: DS7PR03MB5560:
+X-Microsoft-Antispam-PRVS: <DS7PR03MB55608E491BD5318A160354A6ED0C0@DS7PR03MB5560.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1148;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h+z6Mu3IrJTX1T2VmKLX+LxzvP60r1yTLdM8dgDMlJemgfoTuIU2M4PnHQlrUBHk91VNkn8nAtDNrL8UzYVKlcqrjvMqijYd0YSxiiFc9QM70KOFpq64I7DtMaAVNPEuYVPhZ/klDm0bnKzrdjjpqCol6+fnRne96Ba82Yrf29ypFfZAaOtrHWUn40hkFjRkeWzn29r+ttmZGEMxmmlF5bygJ114FE159Zgk8JENGN90I+5MPzYE10EZQsxkNli1Tt65xLop/vp59rj4mSeWNAvNYeAQhywpqUSnLF5S1sDn0+5cQNI4IvmHY5zGsH3JJ6ynPF091f3i+adGva8ovQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39850400004)(396003)(346002)(376002)(136003)(2906002)(8936002)(9686003)(16526019)(66946007)(66556008)(66476007)(186003)(26005)(8676002)(55016002)(83380400001)(1076003)(5660300002)(6666004)(478600001)(52116002)(7696005)(316002)(110136005)(6506007)(4326008)(956004)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: BmrArEkc40TYxrNbShLBzvliSACMlaLltCx5k2ah5Fh875j9Lx/6RZXX1UYvXcYtFkWFCN9wmFYZVYGjuklBfByyxrsLwQqcq67xLmjzW9ZZJfELv2zC2C1WaSW85eADWJ5sT/2dzCPNWCXOt9qMCwP3gNrOdzX9yH/80un3/jlzsL5MCZrlgS8HMXPN1Gcae66dStqP/qS6ploEnYqEoFGjj/yTDFFIiS5o0pGBn9mzGNvL/HA0vjEPken/+v7vZ1K2gURxYAc87HLVcZi4RxP3XGegTN+8D8WwTCUDAJvpFjkTkdfx84wcFkLOdOj0o//h2xI7D3k3SyDU1Mk26oGHrHpH69dIRD3FFMcixNJYq3u4IMDceCf1qbMFTxg1uLf10Ug090YdxndmzPIeuYsZGqnVJgQiSBfqJG6y+rhmodsF2f5V4QUZjpDo140x8SKV1j4ys79v6iCGAYKa+RJZ9708IL+oSeC4pbC64JhnX2PFJFBr0b3OITY+zNlL5Mq0WdmCxC6misnKUyVFkKQjt37yBrxydKMn9HZn7je7zZHF5fi4VgPjHlG61LKHxz5VYJdrDYIYFA0rAvhNMGLteKIcw5Uh2irEtvo4+BWmWJ6jMFFPWsqyEV+fBguAHu0u/AHVkiKPK7FpNPZ7ZQ==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78ea45c9-9df2-431f-4b4c-08d8690fe021
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2020 09:20:18.0588
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wHNSos8tkHbMndNuCqSH28U5UZxyHizgltjPpk+w2V1pf4Z/vm02e6QjxhJAntkRscjsI1+DhxzfbGXwRJBnmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR03MB5560
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Convert m88e1318_get_wol() to use the well implemented phy_read_paged()
+instead of open coding it.
 
-On 10/4/20 7:17 AM, Anant Thazhemadam wrote:
-> When h5_close() is called and !hu->serdev, h5 is directly freed.
-> However, h5->rx_skb is not freed before h5 is freed, which causes
-> a memory leak.
-> Freeing h5->rx_skb (when !hu->serdev) fixes this memory leak before
-> freeing h5.
-> 
-> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
-> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
-> Changes in v3:
-> 	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
-> 	* Do not incorrectly and unnecessarily call serdev_device_close()
-> 
-> Changes in v2:
-> 	* Fixed the Fixes tag
-> 
-> Hans de Goede also suggested calling h5_reset_rx() on close (for both, !hu->serdev
-> and hu->serdev cases).
-> However, doing so seems to lead to a null-ptr-dereference error,
->          https://syzkaller.appspot.com/text?tag=CrashReport&x=136a9a5d900000,
-> and for this reason, it has not been implemented.
-> 
-> Instead, directly freeing h5->rx_skb seems to suffice in preventing the memory leak
-> reported.
-> And since h5 is freed immediately after freeing h5->rx_skb, assigning h5->rx_skb to
-> be NULL isn't necessary.
-> 
->   drivers/bluetooth/hci_h5.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-> index e41854e0d79a..171e55c080ce 100644
-> --- a/drivers/bluetooth/hci_h5.c
-> +++ b/drivers/bluetooth/hci_h5.c
-> @@ -248,8 +248,10 @@ static int h5_close(struct hci_uart *hu)
->   	if (h5->vnd && h5->vnd->close)
->   		h5->vnd->close(h5);
->   
-> -	if (!hu->serdev)
-> +	if (!hu->serdev){
-> +		kfree_skb(h5->rx_skb);
->   		kfree(h5);
-> +	}
->   
->   	return 0;
->   }
-> 
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ drivers/net/phy/marvell.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-To fully fix the memleak you also need to add a kfree_skb(h5->rx_skb);
-call to the end of h5_serdev_remove(), because in the hu->serdev case
-that is where the h5 struct will be free-ed (it is free-ed after that
-function exits).
-
-Regards,
-
-Hans
+diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
+index bb86ac0bd092..5aec673a0120 100644
+--- a/drivers/net/phy/marvell.c
++++ b/drivers/net/phy/marvell.c
+@@ -1598,21 +1598,15 @@ static int m88e1121_did_interrupt(struct phy_device *phydev)
+ static void m88e1318_get_wol(struct phy_device *phydev,
+ 			     struct ethtool_wolinfo *wol)
+ {
+-	int oldpage, ret = 0;
++	int ret;
+ 
+ 	wol->supported = WAKE_MAGIC;
+ 	wol->wolopts = 0;
+ 
+-	oldpage = phy_select_page(phydev, MII_MARVELL_WOL_PAGE);
+-	if (oldpage < 0)
+-		goto error;
+-
+-	ret = __phy_read(phydev, MII_88E1318S_PHY_WOL_CTRL);
+-	if (ret & MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE)
++	ret = phy_read_paged(phydev, MII_MARVELL_WOL_PAGE,
++			     MII_88E1318S_PHY_WOL_CTRL);
++	if (ret >= 0 && ret & MII_88E1318S_PHY_WOL_CTRL_MAGIC_PACKET_MATCH_ENABLE)
+ 		wol->wolopts |= WAKE_MAGIC;
+-
+-error:
+-	phy_restore_page(phydev, oldpage, ret);
+ }
+ 
+ static int m88e1318_set_wol(struct phy_device *phydev,
+-- 
+2.28.0
 
