@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29467283857
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB9E283855
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgJEOqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:46:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57667 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726849AbgJEOqT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726854AbgJEOqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 5 Oct 2020 10:46:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601909178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=ptyKuh8WxjRCHezLemPMrH21hGCsiTIELZD7s9BSjQE=;
-        b=DPEHuD+womOA2lb1nwiAWYUp/aOvKZI7+QWIeQ8GJ107XzXcb2UJd9zmErhMapak6uSZ1R
-        wmTHdt5ZdqXZTmlcwQ9oVB4eWFGSHto5fNSYW9Z/sb0Krjt8NCPB0xbkQIvVqDc51QHmt3
-        8tAiaUte4s1Pvag06iBiMAY1on2B+M4=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-275-YHgSlCVZMiidS94yKOrePg-1; Mon, 05 Oct 2020 10:46:16 -0400
-X-MC-Unique: YHgSlCVZMiidS94yKOrePg-1
-Received: by mail-qk1-f198.google.com with SMTP id w126so6794276qka.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:46:16 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726834AbgJEOqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:46:15 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BF6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:46:14 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id dn5so9646488edb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:46:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bJDWLFQK3NHbczue04Ad/oGIga5mw5RnC9F1EX3+XdE=;
+        b=hl2motqvUtv+mvTksLda5r+AFkPsIl17oAkAoCpovuZwVAOmI4uF6k4X0hrbeu5UIV
+         4L63H25KQUKF8MNUkLWt/WneZgSx81pfLMMNxbhsI9ViwK7Q3zswPYsHmCMJd7yWREPt
+         5ZNnY8RT6kVH5ja7Img8nnNnLSz+y+pOeFYeo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ptyKuh8WxjRCHezLemPMrH21hGCsiTIELZD7s9BSjQE=;
-        b=RkO970RCpexkZAV7gHhE9duXic5Xd7kPZxahEcSOkTPrh2hExvy8aZ8mJycMYMAvF8
-         H3huYU/Pb/1mq25GPctqWjI2R2Ec3VVZdPelr0WZk+cXhUbsSyjKq6VOyC/qApJlArfx
-         AkBnOlEBhXrZI1pyrJXrhuyp70fmjxOs1uhSOQ3Dp046ZCCs1hUnEY9VjB6jALNGiU7A
-         YydRChCJgXaaOEtNgLLhr1stZOKEr4dnBgUxhjKFwNH5VNLyvdmpRRE5PXZ5bu4c0U6F
-         i9L7QrUejS9QawIEq9CnkQ+1bRx3favrOx0C7OM8awDlhZ4MgGbwQZ5v5md50u9Hkilz
-         TDGg==
-X-Gm-Message-State: AOAM530pS1eefzDNzfqOqna3bH8m3wHf+yiFeiuIlx8qFQI/MgP+Pkv0
-        V+Pt0UgmAYDx7796RxE+GPzeyWRwSWkAM3omn9DoU/pOXKehfKayYdxyI5X61qJLw9N4dgTGeRh
-        vJfx4h5pVavWQuN/HetPrZq8u
-X-Received: by 2002:a37:62d6:: with SMTP id w205mr289253qkb.229.1601909176252;
-        Mon, 05 Oct 2020 07:46:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzRfTKS3+jTPIJZ4QlireY6tUWjq/ctyLnV1eg1G0RryjdqD9T03AY8QFV8BktptD3/3u4pFw==
-X-Received: by 2002:a37:62d6:: with SMTP id w205mr289222qkb.229.1601909175969;
-        Mon, 05 Oct 2020 07:46:15 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id i90sm303450qtd.92.2020.10.05.07.46.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bJDWLFQK3NHbczue04Ad/oGIga5mw5RnC9F1EX3+XdE=;
+        b=RA+kzuARX0I9nSIcHkYNfioBEmhbEZoiIomvpNd3q2e7kM/5mNAh3zwou/7on+LVWy
+         hv6IhhrxdzS0++C6eY7hMDXrKnppqdnGZTODq7QcIMGEPJSNDyhKy5ExxWESyOaoitw+
+         tHzlhEJn8lhn/XQSEUZrY2OvAsHPWdWOwh6GaVIHI04XB5m4cZ0n1eo30GR0DeU7K1YZ
+         P6cngtRf3HFldYpwnI/GnrOaG8S1mAVw69bmyDajG/z/k5MKJV8GypIx1oeRJ+RwQZx5
+         xXs4792VkPx75z+ZlGdQ/a7rEAn8TQmXpVjanUsg7UhmF/P+zxTdbKbh+DQBq103dEE4
+         WA7w==
+X-Gm-Message-State: AOAM531eMxrmRpHbj3b7FUiIT8m0VrKwMSckdOv3378SoElPMO6Dq/Jd
+        AkvJpk1/FpQ5SdNGBsGs0wj9GQ==
+X-Google-Smtp-Source: ABdhPJx3qUGwmmpBOZFS45fQE04+dVbMCBwt75MdVDrLzDmAkcFM+DYTDIcRGfMI2aS/KZIlZn93kw==
+X-Received: by 2002:aa7:dd49:: with SMTP id o9mr16283240edw.331.1601909173219;
+        Mon, 05 Oct 2020 07:46:13 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:b1f1])
+        by smtp.gmail.com with ESMTPSA id a5sm36220edl.6.2020.10.05.07.46.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 07:46:15 -0700 (PDT)
-From:   trix@redhat.com
-To:     njavali@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, natechancellor@gmail.com,
-        ndesaulniers@google.com
-Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] scsi: qla2xxx: initialize value
-Date:   Mon,  5 Oct 2020 07:45:44 -0700
-Message-Id: <20201005144544.25335-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Mon, 05 Oct 2020 07:46:12 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 15:46:12 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luigi Semenzato <semenzato@google.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH RFC v2] Opportunistic memory reclaim
+Message-ID: <20201005144612.GB108347@chrisdown.name>
+References: <20201005081313.732745-1-andrea.righi@canonical.com>
+ <20201005112555.GA108347@chrisdown.name>
+ <20201005135130.GA850459@xps-13-7390>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201005135130.GA850459@xps-13-7390>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Andrea Righi writes:
+>senpai is focused at estimating the ideal memory requirements without
+>affecting performance. And this covers the use case about reducing
+>memory footprint.
+>
+>In my specific use-case (hibernation) I would let the system use as much
+>memory as possible if it's doing any activity (reclaiming memory only
+>when the kernel decides that it needs to reclaim memory) and apply a
+>more aggressive memory reclaiming policy when the system is mostly idle.
 
-clang static analysis reports this problem:
+ From this description, I don't see any reason why it needs to be implemented in 
+kernel space. All of that information is available to userspace, and all of the 
+knobs are there.
 
-qla_nx2.c:694:3: warning: 6th function call argument is
-  an uninitialized value
-        ql_log(ql_log_fatal, vha, 0xb090,
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As it is I'm afraid of the "only when the system is mostly idle" comment, 
+because it's usually after such periods that applications need to do large 
+retrievals, and now they're going to be in slowpath (eg. periodic jobs).
 
-In qla8044_poll_reg(), when reading the reg fails, the
-error is reported by reusing the timeout error reporter.
-Because the value is unset, a garbage value will be
-reported.  So initialize the value.
+Such tradeoffs for a specific situation might be fine in userspace as a 
+distribution maintainer, but codifying them in the kernel seems premature to 
+me, especially for a knob which we will have to maintain forever onwards.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/scsi/qla2xxx/qla_nx2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>I could probably implement this behavior adjusting memory.high
+>dynamically, like senpai, but I'm worried about potential sudden large
+>allocations that may require to respond faster at increasing
+>memory.high. I think the user-space triggered memory reclaim approach is
+>a safer solution from this perspective.
 
-diff --git a/drivers/scsi/qla2xxx/qla_nx2.c b/drivers/scsi/qla2xxx/qla_nx2.c
-index 3a415b12dcec..01ccd4526707 100644
---- a/drivers/scsi/qla2xxx/qla_nx2.c
-+++ b/drivers/scsi/qla2xxx/qla_nx2.c
-@@ -659,7 +659,7 @@ static int
- qla8044_poll_reg(struct scsi_qla_host *vha, uint32_t addr,
- 	int duration, uint32_t test_mask, uint32_t test_result)
- {
--	uint32_t value;
-+	uint32_t value = 0;
- 	int timeout_error;
- 	uint8_t retries;
- 	int ret_val = QLA_SUCCESS;
--- 
-2.18.1
-
+Have you seen Shakeel's recent "per-memcg reclaim interface" patches? I suspect 
+they may help you there.
