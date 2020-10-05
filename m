@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6CD284237
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E97284240
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgJEVje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 17:39:34 -0400
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]:49318 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726693AbgJEVje (ORCPT
+        id S1726811AbgJEVrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:47:14 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:50244 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726693AbgJEVrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:39:34 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 095LdNsH001905; Tue, 6 Oct 2020 06:39:24 +0900
-X-Iguazu-Qid: 2wHHD8Mc11nAaW7xS4
-X-Iguazu-QSIG: v=2; s=0; t=1601933963; q=2wHHD8Mc11nAaW7xS4; m=7f25MoKqdZ3HZEJCZTZtQKDhX5Pv9dJwOq2cngcRJ2k=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1112) id 095LdM2Y008188;
-        Tue, 6 Oct 2020 06:39:23 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 095LdMX3026631;
-        Tue, 6 Oct 2020 06:39:22 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 095LdMfn031406;
-        Tue, 6 Oct 2020 06:39:22 +0900
-Date:   Tue, 6 Oct 2020 06:39:21 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: visconti: PINCTRL_TMPV7700 should depend on
- ARCH_VISCONTI
-X-TSB-HOP: ON
-Message-ID: <20201005213921.xjjhmyr7c25mul64@toshiba.co.jp>
-References: <20201005125049.26926-1-geert+renesas@glider.be>
+        Mon, 5 Oct 2020 17:47:14 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095LlBef090828;
+        Mon, 5 Oct 2020 16:47:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601934431;
+        bh=IzNDb+Sqr84pSnpY5Wb8vCOpype3sqlW9bWo7BJh3DM=;
+        h=From:To:CC:Subject:Date;
+        b=snWzWs4XP/YczbD/E5/cgXnirgxvjLYD+YVgsXCTDCCqQpoyba6hjBM2Addz/qyFc
+         K21vSsjw0W0EktMvz6IDOCVe+1BJ+R5U46IgS37v8ZoguSoIZpCFxUCQFDAU57V/3h
+         hPkGrB4cdjiY/oCU+ZC/f2JVZgDQJ5rTis68C520=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095LlBsJ038585
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 5 Oct 2020 16:47:11 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
+ 2020 16:47:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 5 Oct 2020 16:47:11 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095LlBC5089657;
+        Mon, 5 Oct 2020 16:47:11 -0500
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+To:     <sre@kernel.org>, <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <dmurphy@ti.com>, Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Subject: [PATCH v6 0/2] Introduce the BQ256XX family of chargers
+Date:   Mon, 5 Oct 2020 16:47:07 -0500
+Message-ID: <20201005214709.10924-1-r-rivera-matos@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005125049.26926-1-geert+renesas@glider.be>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hello,
 
-On Mon, Oct 05, 2020 at 02:50:49PM +0200, Geert Uytterhoeven wrote:
-> The Toshiba Visconti TMPV7700 series pin controller is only present on
-> Visconti SoCs.  Hence add a dependency on ARCH_VISCONTI, to prevent
-> asking the user about this driver when configuring a kernel without
-> Visconti platform support.
-> 
-> Fixes: a68a7844264e4fb9 ("pinctrl: visconti: Add Toshiba Visconti SoCs pinctrl support")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+This patchset introduces the bq256xx family of charging ICs. The bq256xx
+ICs are highly integrated, buck, switching chargers intended for use in 
+smartphones, tablets, and portable electronics.
 
-Thanks for your fixing.
+Ricardo Rivera-Matos (2):
+  dt-bindings: power: Add the bq256xx dt bindings
+  power: supply: bq256xx: Introduce the BQ256XX charger driver
 
-Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+ .../bindings/power/supply/bq256xx.yaml        |  110 +
+ drivers/power/supply/Kconfig                  |   11 +
+ drivers/power/supply/Makefile                 |    1 +
+ drivers/power/supply/bq256xx_charger.c        | 1803 +++++++++++++++++
+ 4 files changed, 1925 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.yaml
+ create mode 100644 drivers/power/supply/bq256xx_charger.c
 
-Best regards,
-  Nobuhiro
+-- 
+2.28.0
 
-> ---
->  drivers/pinctrl/visconti/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/visconti/Kconfig b/drivers/pinctrl/visconti/Kconfig
-> index 198ec33189cc4706..42653fc60413d203 100644
-> --- a/drivers/pinctrl/visconti/Kconfig
-> +++ b/drivers/pinctrl/visconti/Kconfig
-> @@ -9,6 +9,6 @@ config PINCTRL_VISCONTI
->  config PINCTRL_TMPV7700
->  	bool "Toshiba Visconti TMPV7700 series pinctrl driver"
->  	depends on OF
-> -	depends on ARM64 || COMPILE_TEST
-> +	depends on ARCH_VISCONTI || COMPILE_TEST
->  	select PINCTRL_VISCONTI
-> -	default ARM64 && ARCH_VISCONTI
-> +	default ARCH_VISCONTI
-> -- 
-> 2.17.1
-> 
-> 
