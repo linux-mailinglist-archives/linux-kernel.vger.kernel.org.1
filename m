@@ -2,125 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76985283735
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F0128373A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJEOCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgJEOCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:02:12 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4284CC0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:02:10 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id v12so8918381wmh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:02:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Kw0jH99mH65cgbBf0cAKvt7u45o+bI69PtoRz7plT9I=;
-        b=LKbavLR8ZdTnQm7tlmWwgndIQwhen8v8O8x1psZ+HIE2wmAD24D+bXj5NwsJAvyS/R
-         MQkiaMJ/+ob1zWMVtrd+sEWT6BKvZocdCnxbzPsmOqi3r39+dbuF1VEaGtZJZGoHTneV
-         0F4uvulqQGo0uTF43vmMZxaBExbJ8UbT6Sb9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Kw0jH99mH65cgbBf0cAKvt7u45o+bI69PtoRz7plT9I=;
-        b=KyLnZGJjNucofJTkFFPX9rHlCMYExUlsGEq1mnNRL9FQDJX20LlKYWzO1g+xAtrUR7
-         i6bolX1RtPKLqnbKTeEAWvkuUw2orjATTVTfQOVYh4Wkkra+LYMGrUmYt7vWJbluoTkv
-         yIyaWrzPtEOw0mixXZGtT69p96rMrCnV4/myZFVQxY8qYH+qmAzd0OXaQKS/wbuo7zCc
-         vGoBWhowk9KybaSClvqLI5OgqW+mlVO9AnDd4CpHy+X5WJgDR5anq66jRmOPoINMW92X
-         48kMdlquw9CgX6FYi4LnrVRRmaIW07tIEv/3BnjJry2Ick/5uyKHImpi9LnHBPBKsDTz
-         ktkg==
-X-Gm-Message-State: AOAM533usaRnhQaSaalwIJDRCuEvmOiI9yC2gWQM2XI2C6Qu61pZVkl3
-        jrIo/LE8sf4o1kNjlqxZipQquA==
-X-Google-Smtp-Source: ABdhPJxaKvPpL0rwdLNrB+ck47hYngpJ9D4J1RqIbGrDU+BZnsh9AH/S/PSgGf1teantMnWe2hZn8w==
-X-Received: by 2002:a1c:2905:: with SMTP id p5mr17734071wmp.187.1601906526822;
-        Mon, 05 Oct 2020 07:02:06 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t15sm78967wrp.20.2020.10.05.07.02.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 07:02:05 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 16:02:03 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/14] drm/msm: Drop struct_mutex in shrinker path
-Message-ID: <20201005140203.GS438822@phenom.ffwll.local>
-Mail-Followup-To: Hillf Danton <hdanton@sina.com>,
-        Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20201004192152.3298573-1-robdclark@gmail.com>
- <20201005092419.15608-1-hdanton@sina.com>
+        id S1726519AbgJEOCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:02:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725954AbgJEOCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:02:24 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF4492085B;
+        Mon,  5 Oct 2020 14:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601906543;
+        bh=rxc3XhX1nx8QuYTrJNvWee/HrGELRzW/U/KzDS85YDg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ju6CVsNsFA93xbg1UKUxKjShRajQ/HLrcgiXnddy29nUbWxNnJRf7+J6mTVH6W+Rt
+         w4m2JALHdxvEcrxSQKRqm0+Afzu7qww67afRDxpJwdAOzuIqI/6V4LISaXISHX3sUy
+         nXGOo5NPECZ74QJ4T0P95XWd+tlbOdW3vLe18lWE=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kPR4H-00HOH4-7u; Mon, 05 Oct 2020 15:02:21 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel-team@android.com
+Subject: [PATCH] gpio: pca953x: Survive spurious interrupts
+Date:   Mon,  5 Oct 2020 15:02:17 +0100
+Message-Id: <20201005140217.1390851-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005092419.15608-1-hdanton@sina.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, bgolaszewski@baylibre.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:24:19PM +0800, Hillf Danton wrote:
-> 
-> On Sun,  4 Oct 2020 12:21:45
-> > From: Rob Clark <robdclark@chromium.org>
-> > 
-> > Now that the inactive_list is protected by mm_lock, and everything
-> > else on per-obj basis is protected by obj->lock, we no longer depend
-> > on struct_mutex.
-> > 
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  drivers/gpu/drm/msm/msm_gem.c          |  1 -
-> >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 54 --------------------------
-> >  2 files changed, 55 deletions(-)
-> > 
-> [...]
-> 
-> > @@ -71,13 +33,8 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
-> >  {
-> >  	struct msm_drm_private *priv =
-> >  		container_of(shrinker, struct msm_drm_private, shrinker);
-> > -	struct drm_device *dev = priv->dev;
-> >  	struct msm_gem_object *msm_obj;
-> >  	unsigned long freed = 0;
-> > -	bool unlock;
-> > -
-> > -	if (!msm_gem_shrinker_lock(dev, &unlock))
-> > -		return SHRINK_STOP;
-> >  
-> >  	mutex_lock(&priv->mm_lock);
-> 
-> Better if the change in behavior is documented that SHRINK_STOP will
-> no longer be needed.
+The pca953x driver never checks the result of irq_find_mapping(),
+which returns 0 when no mapping is found. When a spurious interrupt
+is delivered (which can happen under obscure circumstances), the
+kernel explodes as it still tries to handle the error code as
+a real interrupt.
 
-btw I read through this and noticed you have your own obj lock, plus
-mutex_lock_nested. I strongly recommend to just cut over to dma_resv_lock
-for all object lock needs (soc drivers have been terrible with this
-unfortuntaly), and in the shrinker just use dma_resv_trylock instead of
-trying to play clever games outsmarting lockdep.
+Handle this particular case and warn on spurious interrupts.
 
-I recently wrote an entire blog length rant on why I think
-mutex_lock_nested is too dangerous to be useful:
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/gpio/gpio-pca953x.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
-
-Not anything about this here, just general comment. The problem extends to
-shmem helpers and all that also having their own locks for everything.
--Daniel
+diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+index fb61f2fc6ed7..c2d6121c48c9 100644
+--- a/drivers/gpio/gpio-pca953x.c
++++ b/drivers/gpio/gpio-pca953x.c
+@@ -824,8 +824,21 @@ static irqreturn_t pca953x_irq_handler(int irq, void *devid)
+ 	ret = pca953x_irq_pending(chip, pending);
+ 	mutex_unlock(&chip->i2c_lock);
+ 
+-	for_each_set_bit(level, pending, gc->ngpio)
+-		handle_nested_irq(irq_find_mapping(gc->irq.domain, level));
++	if (ret) {
++		ret = 0;
++
++		for_each_set_bit(level, pending, gc->ngpio) {
++			int nested_irq = irq_find_mapping(gc->irq.domain, level);
++
++			if (unlikely(nested_irq <= 0)) {
++				dev_warn_ratelimited(gc->parent, "unmapped interrupt %d\n", level);
++				continue;
++			}
++
++			handle_nested_irq(nested_irq);
++			ret = 1;
++		}
++	}
+ 
+ 	return IRQ_RETVAL(ret);
+ }
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.28.0
+
