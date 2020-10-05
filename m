@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC0328418C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE1A2841EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729273AbgJEUkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:40:22 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:25902 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725901AbgJEUkU (ORCPT
+        id S1729645AbgJEVK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:10:57 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:45958 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725861AbgJEVKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:40:20 -0400
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095Ka4bF000340;
-        Mon, 5 Oct 2020 20:40:02 GMT
+        Mon, 5 Oct 2020 17:10:55 -0400
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095KcSI3030596;
+        Mon, 5 Oct 2020 20:40:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pps0720;
- bh=wTpBA8Ls3CK3O7fX2SUA91NPjO/F6LuNEpxo68hpGdk=;
- b=LOm8FIXlKQtwh8yeZSTG3ljH3Ek2644VMoElzpgyLb6Y4k6CfllvJD1ryzFa8NopnLXH
- /jGlP+5AKUghoJH2G+uA3vJTpuEVZXTI89GFGWM7WNR/jtxoxAD33QleC0YVGripg+Ih
- GOkZZ8e4D5FRnKryYCkNdrQiZCIxahrZ1j4B0D11Ck5GuEvgp3MTAun1eWiLVMVi52Kk
- MN37HHKC+iAauszFbnh99o+ifyWOpDJ6GlfZgJpdZZdM2PlawZBXJ8X8/eGuS75m0fOm
- 6JX+QxlA/W6sBIW3CtRRwsrPW2PwUrpu0aJu7P04gYEbDTxmqaxOFEjrxsAyS+VxXmhz pg== 
-Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33xgdvkasa-1
+ bh=sOnF2UoAiqg/1bNIyAOc4tSJ3dqUFELMZNSnhbpzfhg=;
+ b=LltPiaTAEMl41OK17Wzv/sBOizKyxwSWq60yTslqz5iLvQfGg7Umi6KDzwDMC/xW2rmF
+ MjQJw8UH7Nm80Xc4wHGhPBmVB7DkdoFRuHB0o+j/bTbTTP8j4junCWpNLclQLaTuYLXo
+ LsPkZtC3UcV10fNHalPTeKrytZs5icnj/tLwkpNeR98t4+mEZD37ObYXkUBaY2Yg546A
+ oH4IblS+kSOFXMyxMuA7b7Ic5CPG2NiFJNhhap55s0d8KqGweaaVJIKsDqruixy13ePk
+ rGGlcABnlwc8wFZuXbq/3bpoFCHXsxkyHaespW0shxGQ/4M8A3Tvew3BQCfg206v4VJY wA== 
+Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
+        by mx0a-002e3701.pphosted.com with ESMTP id 33y2pux2rh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 20:40:02 +0000
+        Mon, 05 Oct 2020 20:40:03 +0000
 Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3425.houston.hpe.com (Postfix) with ESMTP id A592CAC;
-        Mon,  5 Oct 2020 20:40:01 +0000 (UTC)
+        by g9t5008.houston.hpe.com (Postfix) with ESMTP id ED54A68;
+        Mon,  5 Oct 2020 20:40:02 +0000 (UTC)
 Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 63B484E;
-        Mon,  5 Oct 2020 20:40:00 +0000 (UTC)
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id B407F50;
+        Mon,  5 Oct 2020 20:40:01 +0000 (UTC)
 From:   Mike Travis <mike.travis@hpe.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -54,9 +54,9 @@ Cc:     Mike Travis <mike.travis@hpe.com>,
         Jian Cai <caij2003@gmail.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH v4 06/13] x86/platform/uv: Add and Decode Arch Type in UVsystab
-Date:   Mon,  5 Oct 2020 15:39:22 -0500
-Message-Id: <20201005203929.148656-7-mike.travis@hpe.com>
+Subject: [PATCH v4 07/13] x86/platform/uv: Update MMIOH references based on new UV5 MMRs.
+Date:   Mon,  5 Oct 2020 15:39:23 -0500
+Message-Id: <20201005203929.148656-8-mike.travis@hpe.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201005203929.148656-1-mike.travis@hpe.com>
 References: <20201005203929.148656-1-mike.travis@hpe.com>
@@ -65,365 +65,313 @@ Content-Transfer-Encoding: 8bit
 X-HPE-SCL: -1
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-10-05_15:2020-10-05,2020-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 mlxlogscore=999 impostorscore=0 spamscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010050144
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2010050145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A patch to add and process the UV Arch Type field in the UVsystab passed
-from UV BIOS to the kernel.  This allows the system to be recognized
-without relying on the OEM_ID which OEMs want to change.
+Make modifications to the MMIOH mappings to accommodate changes for UV5.
 
 Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Reviewed-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
 Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 Reported-by: kernel test robot <lkp@intel.com>
 ---
- arch/x86/include/asm/uv/bios.h     |  16 +++-
- arch/x86/kernel/apic/x2apic_uv_x.c | 135 +++++++++++++++++++++++++----
- arch/x86/platform/uv/bios_uv.c     |  27 ++++--
- 3 files changed, 148 insertions(+), 30 deletions(-)
+ arch/x86/kernel/apic/x2apic_uv_x.c | 212 ++++++++++++++++++++---------
+ 1 file changed, 144 insertions(+), 68 deletions(-)
 
-diff --git a/arch/x86/include/asm/uv/bios.h b/arch/x86/include/asm/uv/bios.h
-index 70050d0136c3..97ac595ebc6a 100644
---- a/arch/x86/include/asm/uv/bios.h
-+++ b/arch/x86/include/asm/uv/bios.h
-@@ -5,8 +5,8 @@
- /*
-  * UV BIOS layer definitions.
-  *
-- *  Copyright (c) 2008-2009 Silicon Graphics, Inc.  All Rights Reserved.
-- *  Copyright (c) Russ Anderson <rja@sgi.com>
-+ * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-+ * Copyright (c) Russ Anderson <rja@sgi.com>
-  */
- 
- #include <linux/rtc.h>
-@@ -71,6 +71,11 @@ struct uv_gam_range_entry {
- 	u32	limit;		/* PA bits 56:26 (UV_GAM_RANGE_SHFT) */
- };
- 
-+#define	UV_AT_SIZE	8	/* 7 character arch type + NULL char */
-+struct uv_arch_type_entry {
-+	char	archtype[UV_AT_SIZE];
-+};
-+
- #define	UV_SYSTAB_SIG			"UVST"
- #define	UV_SYSTAB_VERSION_1		1	/* UV2/3 BIOS version */
- #define	UV_SYSTAB_VERSION_UV4		0x400	/* UV4 BIOS base version */
-@@ -79,10 +84,14 @@ struct uv_gam_range_entry {
- #define	UV_SYSTAB_VERSION_UV4_3		0x403	/* - GAM Range PXM Value */
- #define	UV_SYSTAB_VERSION_UV4_LATEST	UV_SYSTAB_VERSION_UV4_3
- 
-+#define	UV_SYSTAB_VERSION_UV5		0x500	/* UV5 GAM base version */
-+#define	UV_SYSTAB_VERSION_UV5_LATEST	UV_SYSTAB_VERSION_UV5
-+
- #define	UV_SYSTAB_TYPE_UNUSED		0	/* End of table (offset == 0) */
- #define	UV_SYSTAB_TYPE_GAM_PARAMS	1	/* GAM PARAM conversions */
- #define	UV_SYSTAB_TYPE_GAM_RNG_TBL	2	/* GAM entry table */
--#define	UV_SYSTAB_TYPE_MAX		3
-+#define	UV_SYSTAB_TYPE_ARCH_TYPE	3	/* UV arch type */
-+#define	UV_SYSTAB_TYPE_MAX		4
- 
- /*
-  * The UV system table describes specific firmware
-@@ -133,6 +142,7 @@ extern s64 uv_bios_reserved_page_pa(u64, u64 *, u64 *, u64 *);
- extern int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus);
- 
- extern int uv_bios_init(void);
-+extern unsigned long get_uv_systab_phys(bool msg);
- 
- extern unsigned long sn_rtc_cycles_per_second;
- extern int uv_type;
 diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index fca5f94d055e..9b7a334578e6 100644
+index 9b7a334578e6..f2c5a03b5cf7 100644
 --- a/arch/x86/kernel/apic/x2apic_uv_x.c
 +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -31,7 +31,8 @@ static u64			gru_start_paddr, gru_end_paddr;
- static union uvh_apicid		uvh_apicid;
- static int			uv_node_id;
- 
--/* Unpack OEM/TABLE ID's to be NULL terminated strings */
-+/* Unpack AT/OEM/TABLE ID's to be NULL terminated strings */
-+static u8 uv_archtype[UV_AT_SIZE];
- static u8 oem_id[ACPI_OEM_ID_SIZE + 1];
- static u8 oem_table_id[ACPI_OEM_TABLE_ID_SIZE + 1];
- 
-@@ -284,18 +285,102 @@ static void __init uv_stringify(int len, char *to, char *from)
- 	strncpy(to, from, len-1);
+@@ -226,6 +226,13 @@ static void __init uv_tsc_check_sync(void)
+ 		mark_tsc_unstable("UV BIOS");
  }
  
-+/* Find UV arch type entry in UVsystab */
-+static unsigned long __init early_find_archtype(struct uv_systab *st)
-+{
-+	int i;
++/* Selector for (4|4A|5) structs */
++#define uvxy_field(sname, field, undef) (	\
++	is_uv(UV4A) ? sname.s4a.field :		\
++	is_uv(UV4) ? sname.s4.field :		\
++	is_uv(UV3) ? sname.s3.field :		\
++	undef)
 +
-+	for (i = 0; st->entry[i].type != UV_SYSTAB_TYPE_UNUSED; i++) {
-+		unsigned long ptr = st->entry[i].offset;
-+
-+		if (!ptr)
-+			continue;
-+		ptr += (unsigned long)st;
-+		if (st->entry[i].type == UV_SYSTAB_TYPE_ARCH_TYPE)
-+			return ptr;
-+	}
-+	return 0;
-+}
-+
-+/* Validate UV arch type field in UVsystab */
-+static int __init decode_arch_type(unsigned long ptr)
-+{
-+	struct uv_arch_type_entry *uv_ate = (struct uv_arch_type_entry *)ptr;
-+	int n = strlen(uv_ate->archtype);
-+
-+	if (n > 0 && n < sizeof(uv_ate->archtype)) {
-+		pr_info("UV: UVarchtype received from BIOS\n");
-+		uv_stringify(UV_AT_SIZE, uv_archtype, uv_ate->archtype);
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+/* Determine if UV arch type entry might exist in UVsystab */
-+static int __init early_get_arch_type(void)
-+{
-+	unsigned long uvst_physaddr, uvst_size, ptr;
-+	struct uv_systab *st;
-+	u32 rev;
-+	int ret;
-+
-+	uvst_physaddr = get_uv_systab_phys(0);
-+	if (!uvst_physaddr)
-+		return 0;
-+
-+	st = early_memremap_ro(uvst_physaddr, sizeof(struct uv_systab));
-+	if (!st) {
-+		pr_err("UV: Cannot access UVsystab, remap failed\n");
-+		return 0;
-+	}
-+
-+	rev = st->revision;
-+	if (rev < UV_SYSTAB_VERSION_UV5) {
-+		early_memunmap(st, sizeof(struct uv_systab));
-+		return 0;
-+	}
-+
-+	uvst_size = st->size;
-+	early_memunmap(st, sizeof(struct uv_systab));
-+	st = early_memremap_ro(uvst_physaddr, uvst_size);
-+	if (!st) {
-+		pr_err("UV: Cannot access UVarchtype, remap failed\n");
-+		return 0;
-+	}
-+
-+	ptr = early_find_archtype(st);
-+	if (!ptr) {
-+		early_memunmap(st, uvst_size);
-+		return 0;
-+	}
-+
-+	ret = decode_arch_type(ptr);
-+	early_memunmap(st, uvst_size);
-+	return ret;
-+}
-+
- static int __init uv_set_system_type(char *_oem_id)
+ /* [Copied from arch/x86/kernel/cpu/topology.c:detect_extended_topology()] */
+ 
+ #define SMT_LEVEL			0	/* Leaf 0xb SMT level */
+@@ -878,6 +885,7 @@ static __init void get_lowmem_redirect(unsigned long *base, unsigned long *size)
+ }
+ 
+ enum map_type {map_wb, map_uc};
++static const char * const mt[] = { "WB", "UC" };
+ 
+ static __init void map_high(char *id, unsigned long base, int pshift, int bshift, int max_pnode, enum map_type map_type)
  {
--	/* Save OEM ID */
-+	/* Save OEM_ID passed from ACPI MADT */
- 	uv_stringify(sizeof(oem_id), oem_id, _oem_id);
- 
--	/* Set hubless type if true */
--	if (strncmp(oem_id, "SGI", 3) != 0) {
--		if (strncmp(oem_id, "NSGI", 4) != 0)
-+	/* Check if BIOS sent us a UVarchtype */
-+	if (!early_get_arch_type())
-+
-+		/* If not use OEM ID for UVarchtype */
-+		uv_stringify(UV_AT_SIZE, uv_archtype, _oem_id);
-+
-+	/* Check if not hubbed */
-+	if (strncmp(uv_archtype, "SGI", 3) != 0) {
-+
-+		/* (Not hubbed), check if not hubless */
-+		if (strncmp(uv_archtype, "NSGI", 4) != 0)
-+
-+			/* (Not hubless), not a UV */
- 			return 0;
- 
- 		/* UV4 Hubless: CH */
--		if (strncmp(oem_id, "NSGI4", 5) == 0)
-+		if (strncmp(uv_archtype, "NSGI4", 5) == 0)
- 			uv_hubless_system = 0x11;
- 
- 		/* UV3 Hubless: UV300/MC990X w/o hub */
-@@ -314,10 +399,10 @@ static int __init uv_set_system_type(char *_oem_id)
- 
- 	/* Set hubbed type if true */
- 	uv_hub_info->hub_revision =
--		!strncmp(oem_id, "SGI5", 4) ? UV5_HUB_REVISION_BASE :
--		!strncmp(oem_id, "SGI4", 4) ? UV4_HUB_REVISION_BASE :
--		!strncmp(oem_id, "SGI3", 4) ? UV3_HUB_REVISION_BASE :
--		!strcmp(oem_id, "SGI2") ? UV2_HUB_REVISION_BASE : 0;
-+		!strncmp(uv_archtype, "SGI5", 4) ? UV5_HUB_REVISION_BASE :
-+		!strncmp(uv_archtype, "SGI4", 4) ? UV4_HUB_REVISION_BASE :
-+		!strncmp(uv_archtype, "SGI3", 4) ? UV3_HUB_REVISION_BASE :
-+		!strcmp(uv_archtype, "SGI2") ? UV2_HUB_REVISION_BASE : 0;
- 
- 	switch (uv_hub_info->hub_revision) {
- 	case UV5_HUB_REVISION_BASE:
-@@ -388,8 +473,7 @@ static int __init uv_acpi_madt_oem_check(char *_oem_id, char *_oem_table_id)
- 	return 0;
- 
- badbios:
--	pr_err("UV: OEM_ID:%s OEM_TABLE_ID:%s\n", oem_id, oem_table_id);
--	pr_err("UV: Current UV Type or BIOS not supported\n");
-+	pr_err("UV: UVarchtype:%s not supported\n", uv_archtype);
- 	BUG();
- }
- 
-@@ -1180,6 +1264,7 @@ static void __init decode_gam_rng_tbl(unsigned long ptr)
- 	pr_info("UV: GRT: %d entries, sockets(min:%x,max:%x) pnodes(min:%x,max:%x)\n", index, _min_socket, _max_socket, _min_pnode, _max_pnode);
- }
- 
-+/* Walk through UVsystab decoding the fields */
- static int __init decode_uv_systab(void)
- {
- 	struct uv_systab *st;
-@@ -1209,7 +1294,8 @@ static int __init decode_uv_systab(void)
- 		if (!ptr)
- 			continue;
- 
--		ptr = ptr + (unsigned long)st;
-+		/* point to payload */
-+		ptr += (unsigned long)st;
- 
- 		switch (st->entry[i].type) {
- 		case UV_SYSTAB_TYPE_GAM_PARAMS:
-@@ -1219,6 +1305,15 @@ static int __init decode_uv_systab(void)
- 		case UV_SYSTAB_TYPE_GAM_RNG_TBL:
- 			decode_gam_rng_tbl(ptr);
- 			break;
-+
-+		case UV_SYSTAB_TYPE_ARCH_TYPE:
-+			/* already processed in early startup */
-+			break;
-+
-+		default:
-+			pr_err("UV:%s:Unrecognized UV_SYSTAB_TYPE:%d, skipped\n",
-+				__func__, st->entry[i].type);
-+			break;
- 		}
- 	}
- 	return 0;
-@@ -1259,7 +1354,7 @@ static void __init build_socket_tables(void)
- 			pr_info("UV: No UVsystab socket table, ignoring\n");
- 			return;
- 		}
--		pr_crit("UV: Error: UVsystab address translations not available!\n");
-+		pr_err("UV: Error: UVsystab address translations not available!\n");
- 		BUG();
- 	}
- 
-@@ -1385,9 +1480,9 @@ static int __maybe_unused proc_hubless_show(struct seq_file *file, void *data)
- 	return 0;
- }
- 
--static int __maybe_unused proc_oemid_show(struct seq_file *file, void *data)
-+static int __maybe_unused proc_archtype_show(struct seq_file *file, void *data)
- {
--	seq_printf(file, "%s/%s\n", oem_id, oem_table_id);
-+	seq_printf(file, "%s/%s\n", uv_archtype, oem_table_id);
- 	return 0;
- }
- 
-@@ -1396,7 +1491,7 @@ static __init void uv_setup_proc_files(int hubless)
- 	struct proc_dir_entry *pde;
- 
- 	pde = proc_mkdir(UV_PROC_NODE, NULL);
--	proc_create_single("oemid", 0, pde, proc_oemid_show);
-+	proc_create_single("archtype", 0, pde, proc_archtype_show);
- 	if (hubless)
- 		proc_create_single("hubless", 0, pde, proc_hubless_show);
- 	else
-@@ -1448,12 +1543,14 @@ static void __init uv_system_init_hub(void)
- 
- 	map_low_mmrs();
- 
--	/* Get uv_systab for decoding: */
-+	/* Get uv_systab for decoding, setup UV BIOS calls */
- 	uv_bios_init();
- 
- 	/* If there's an UVsystab problem then abort UV init: */
--	if (decode_uv_systab() < 0)
-+	if (decode_uv_systab() < 0) {
-+		pr_err("UV: Mangled UVsystab format\n");
+@@ -889,11 +897,13 @@ static __init void map_high(char *id, unsigned long base, int pshift, int bshift
+ 		pr_info("UV: Map %s_HI base address NULL\n", id);
  		return;
-+	}
- 
- 	build_socket_tables();
- 	build_uv_gr_table();
-diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
-index a2f447dffea6..b148b4c8c2ec 100644
---- a/arch/x86/platform/uv/bios_uv.c
-+++ b/arch/x86/platform/uv/bios_uv.c
-@@ -2,8 +2,8 @@
- /*
-  * BIOS run time interface routines.
-  *
-- *  Copyright (c) 2008-2009 Silicon Graphics, Inc.  All Rights Reserved.
-- *  Copyright (c) Russ Anderson <rja@sgi.com>
-+ * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-+ * Copyright (c) Russ Anderson <rja@sgi.com>
-  */
- 
- #include <linux/efi.h>
-@@ -170,16 +170,27 @@ int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus)
- 				(u64)decode, (u64)domain, (u64)bus, 0, 0);
+ 	}
+-	pr_debug("UV: Map %s_HI 0x%lx - 0x%lx\n", id, paddr, paddr + bytes);
+ 	if (map_type == map_uc)
+ 		init_extra_mapping_uc(paddr, bytes);
+ 	else
+ 		init_extra_mapping_wb(paddr, bytes);
++
++	pr_info("UV: Map %s_HI 0x%lx - 0x%lx %s (%d segments)\n",
++		id, paddr, paddr + bytes, mt[map_type], max_pnode + 1);
  }
  
--int uv_bios_init(void)
-+unsigned long get_uv_systab_phys(bool msg)
- {
--	uv_systab = NULL;
- 	if ((uv_systab_phys == EFI_INVALID_TABLE_ADDR) ||
- 	    !uv_systab_phys || efi_runtime_disabled()) {
--		pr_crit("UV: UVsystab: missing\n");
--		return -EEXIST;
-+		if (msg)
-+			pr_crit("UV: UVsystab: missing\n");
-+		return 0;
- 	}
-+	return uv_systab_phys;
-+}
+ static __init void map_gru_high(int max_pnode)
+@@ -927,52 +937,74 @@ static __init void map_mmr_high(int max_pnode)
+ 		pr_info("UV: MMR disabled\n");
+ }
+ 
+-/* UV3/4 have identical MMIOH overlay configs, UV4A is slightly different */
+-static __init void map_mmioh_high_uv34(int index, int min_pnode, int max_pnode)
+-{
+-	unsigned long overlay;
+-	unsigned long mmr;
+-	unsigned long base;
+-	unsigned long nasid_mask;
+-	unsigned long m_overlay;
+-	int i, n, shift, m_io, max_io;
+-	int nasid, lnasid, fi, li;
+-	char *id;
+-
+-	if (index == 0) {
+-		id = "MMIOH0";
+-		m_overlay = UVH_RH_GAM_MMIOH_OVERLAY_CONFIG0;
+-		overlay = uv_read_local_mmr(m_overlay);
+-		base = overlay & UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_BASE_MASK;
++/* Arch specific ENUM cases */
++enum mmioh_arch {
++	UV2_MMIOH = -1,
++	UVY_MMIOH0, UVY_MMIOH1,
++	UVX_MMIOH0, UVX_MMIOH1,
++};
 +
-+int uv_bios_init(void)
++/* Calculate and Map MMIOH Regions */
++static void __init calc_mmioh_map(enum mmioh_arch index,
++	int min_pnode, int max_pnode,
++	int shift, unsigned long base, int m_io, int n_io)
 +{
-+	unsigned long uv_systab_phys_addr;
++	unsigned long mmr, nasid_mask;
++	int nasid, min_nasid, max_nasid, lnasid, mapped;
++	int i, fi, li, n, max_io;
++	char id[8];
 +
-+	uv_systab = NULL;
-+	uv_systab_phys_addr = get_uv_systab_phys(1);
-+	if (!uv_systab_phys_addr)
-+		return -EEXIST;
++	/* One (UV2) mapping */
++	if (index == UV2_MMIOH) {
++		strncpy(id, "MMIOH", sizeof(id));
++		max_io = max_pnode;
++		mapped = 0;
++		goto map_exit;
++	}
++
++	/* small and large MMIOH mappings */
++	switch (index) {
++	case UVY_MMIOH0:
++		mmr = UVH_RH10_GAM_MMIOH_REDIRECT_CONFIG0;
++		nasid_mask = UVH_RH10_GAM_MMIOH_OVERLAY_CONFIG0_BASE_MASK;
++		n = UVH_RH10_GAM_MMIOH_REDIRECT_CONFIG0_DEPTH;
++		min_nasid = min_pnode;
++		max_nasid = max_pnode;
++		mapped = 1;
++		break;
++	case UVY_MMIOH1:
++		mmr = UVH_RH10_GAM_MMIOH_REDIRECT_CONFIG1;
++		nasid_mask = UVH_RH10_GAM_MMIOH_OVERLAY_CONFIG1_BASE_MASK;
++		n = UVH_RH10_GAM_MMIOH_REDIRECT_CONFIG1_DEPTH;
++		min_nasid = min_pnode;
++		max_nasid = max_pnode;
++		mapped = 1;
++		break;
++	case UVX_MMIOH0:
+ 		mmr = UVH_RH_GAM_MMIOH_REDIRECT_CONFIG0;
+-		m_io = (overlay & UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_M_IO_MASK)
+-			>> UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_M_IO_SHFT;
+-		shift = UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_M_IO_SHFT;
++		nasid_mask = UVH_RH_GAM_MMIOH_OVERLAY_CONFIG0_BASE_MASK;
+ 		n = UVH_RH_GAM_MMIOH_REDIRECT_CONFIG0_DEPTH;
+-		nasid_mask = UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_NASID_MASK;
+-	} else {
+-		id = "MMIOH1";
+-		m_overlay = UVH_RH_GAM_MMIOH_OVERLAY_CONFIG1;
+-		overlay = uv_read_local_mmr(m_overlay);
+-		base = overlay & UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_BASE_MASK;
++		min_nasid = min_pnode * 2;
++		max_nasid = max_pnode * 2;
++		mapped = 1;
++		break;
++	case UVX_MMIOH1:
+ 		mmr = UVH_RH_GAM_MMIOH_REDIRECT_CONFIG1;
+-		m_io = (overlay & UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_M_IO_MASK)
+-			>> UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_M_IO_SHFT;
+-		shift = UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_M_IO_SHFT;
++		nasid_mask = UVH_RH_GAM_MMIOH_OVERLAY_CONFIG1_BASE_MASK;
+ 		n = UVH_RH_GAM_MMIOH_REDIRECT_CONFIG1_DEPTH;
+-		nasid_mask = UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG1_NASID_MASK;
+-	}
+-	pr_info("UV: %s overlay 0x%lx base:0x%lx m_io:%d\n", id, overlay, base, m_io);
+-	if (!(overlay & UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_ENABLE_MASK)) {
+-		pr_info("UV: %s disabled\n", id);
++		min_nasid = min_pnode * 2;
++		max_nasid = max_pnode * 2;
++		mapped = 1;
++		break;
++	default:
++		pr_err("UV:%s:Invalid mapping type:%d\n", __func__, index);
+ 		return;
+ 	}
  
--	uv_systab = ioremap(uv_systab_phys, sizeof(struct uv_systab));
-+	uv_systab = ioremap(uv_systab_phys_addr, sizeof(struct uv_systab));
- 	if (!uv_systab || strncmp(uv_systab->signature, UV_SYSTAB_SIG, 4)) {
- 		pr_err("UV: UVsystab: bad signature!\n");
- 		iounmap(uv_systab);
-@@ -191,7 +202,7 @@ int uv_bios_init(void)
- 		int size = uv_systab->size;
+-	/* Convert to NASID: */
+-	min_pnode *= 2;
+-	max_pnode *= 2;
+-	max_io = lnasid = fi = li = -1;
++	/* enum values chosen so (index mod 2) is MMIOH 0/1 (low/high) */
++	snprintf(id, sizeof(id), "MMIOH%d", index%2);
  
- 		iounmap(uv_systab);
--		uv_systab = ioremap(uv_systab_phys, size);
-+		uv_systab = ioremap(uv_systab_phys_addr, size);
- 		if (!uv_systab) {
- 			pr_err("UV: UVsystab: ioremap(%d) failed!\n", size);
- 			return -EFAULT;
++	max_io = lnasid = fi = li = -1;
+ 	for (i = 0; i < n; i++) {
+ 		unsigned long m_redirect = mmr + i * 8;
+ 		unsigned long redirect = uv_read_local_mmr(m_redirect);
+@@ -982,9 +1014,12 @@ static __init void map_mmioh_high_uv34(int index, int min_pnode, int max_pnode)
+ 			pr_info("UV: %s redirect base 0x%lx(@0x%lx) 0x%04x\n",
+ 				id, redirect, m_redirect, nasid);
+ 
+-		/* Invalid NASID: */
+-		if (nasid < min_pnode || max_pnode < nasid)
++		/* Invalid NASID check */
++		if (nasid < min_nasid || max_nasid < nasid) {
++			pr_err("UV:%s:Invalid NASID:%x (range:%x..%x)\n",
++				__func__, index, min_nasid, max_nasid );
+ 			nasid = -1;
++		}
+ 
+ 		if (nasid == lnasid) {
+ 			li = i;
+@@ -1007,7 +1042,8 @@ static __init void map_mmioh_high_uv34(int index, int min_pnode, int max_pnode)
+ 			}
+ 			addr1 = (base << shift) + f * (1ULL << m_io);
+ 			addr2 = (base << shift) + (l + 1) * (1ULL << m_io);
+-			pr_info("UV: %s[%03d..%03d] NASID 0x%04x ADDR 0x%016lx - 0x%016lx\n", id, fi, li, lnasid, addr1, addr2);
++			pr_info("UV: %s[%03d..%03d] NASID 0x%04x ADDR 0x%016lx - 0x%016lx\n",
++				id, fi, li, lnasid, addr1, addr2);
+ 			if (max_io < l)
+ 				max_io = l;
+ 		}
+@@ -1015,43 +1051,83 @@ static __init void map_mmioh_high_uv34(int index, int min_pnode, int max_pnode)
+ 		lnasid = nasid;
+ 	}
+ 
+-	pr_info("UV: %s base:0x%lx shift:%d M_IO:%d MAX_IO:%d\n", id, base, shift, m_io, max_io);
++map_exit:
++	pr_info("UV: %s base:0x%lx shift:%d m_io:%d max_io:%d max_pnode:0x%x\n",
++		id, base, shift, m_io, max_io, max_pnode);
+ 
+-	if (max_io >= 0)
++	if (max_io >= 0 && !mapped)
+ 		map_high(id, base, shift, m_io, max_io, map_uc);
+ }
+ 
+ static __init void map_mmioh_high(int min_pnode, int max_pnode)
+ {
+-	union uvh_rh_gam_mmioh_overlay_config_u mmioh;
+-	unsigned long mmr, base;
+-	int shift, enable, m_io, n_io;
++	/* UVY flavor */
++	if (UVH_RH10_GAM_MMIOH_OVERLAY_CONFIG0) {
++		union uvh_rh10_gam_mmioh_overlay_config0_u mmioh0;
++		union uvh_rh10_gam_mmioh_overlay_config1_u mmioh1;
++
++		mmioh0.v = uv_read_local_mmr(UVH_RH10_GAM_MMIOH_OVERLAY_CONFIG0);
++		if (unlikely(mmioh0.s.enable == 0))
++			pr_info("UV: MMIOH0 disabled\n");
++		else
++			calc_mmioh_map(UVY_MMIOH0, min_pnode, max_pnode,
++				UVH_RH10_GAM_MMIOH_OVERLAY_CONFIG0_BASE_SHFT,
++				mmioh0.s.base, mmioh0.s.m_io, mmioh0.s.n_io);
+ 
+-	if (is_uv3_hub() || is_uv4_hub()) {
+-		/* Map both MMIOH regions: */
+-		map_mmioh_high_uv34(0, min_pnode, max_pnode);
+-		map_mmioh_high_uv34(1, min_pnode, max_pnode);
++		mmioh1.v = uv_read_local_mmr(UVH_RH10_GAM_MMIOH_OVERLAY_CONFIG1);
++		if (unlikely(mmioh1.s.enable == 0))
++			pr_info("UV: MMIOH1 disabled\n");
++		else
++			calc_mmioh_map(UVY_MMIOH1, min_pnode, max_pnode,
++				UVH_RH10_GAM_MMIOH_OVERLAY_CONFIG1_BASE_SHFT,
++				mmioh1.s.base, mmioh1.s.m_io, mmioh1.s.n_io);
+ 		return;
+ 	}
++	/* UVX flavor */
++	if (UVH_RH_GAM_MMIOH_OVERLAY_CONFIG0) {
++		union uvh_rh_gam_mmioh_overlay_config0_u mmioh0;
++		union uvh_rh_gam_mmioh_overlay_config1_u mmioh1;
++
++		mmioh0.v = uv_read_local_mmr(UVH_RH_GAM_MMIOH_OVERLAY_CONFIG0);
++		if (unlikely(mmioh0.s.enable == 0))
++			pr_info("UV: MMIOH0 disabled\n");
++		else {
++			unsigned long base = uvxy_field(mmioh0, base, 0);
++			int m_io = uvxy_field(mmioh0, m_io, 0);
++			int n_io = uvxy_field(mmioh0, n_io, 0);
++
++			calc_mmioh_map(UVX_MMIOH0, min_pnode, max_pnode,
++				UVH_RH_GAM_MMIOH_OVERLAY_CONFIG0_BASE_SHFT,
++				base, m_io, n_io);
++		}
+ 
+-	if (is_uv2_hub()) {
+-		mmr	= UVH_RH_GAM_MMIOH_OVERLAY_CONFIG;
+-		shift	= UVH_RH_GAM_MMIOH_OVERLAY_CONFIG_BASE_SHFT;
+-		mmioh.v	= uv_read_local_mmr(mmr);
+-		enable	= !!mmioh.s2.enable;
+-		base	= mmioh.s2.base;
+-		m_io	= mmioh.s2.m_io;
+-		n_io	= mmioh.s2.n_io;
+-
+-		if (enable) {
+-			max_pnode &= (1 << n_io) - 1;
+-			pr_info(
+-			"UV: base:0x%lx shift:%d N_IO:%d M_IO:%d max_pnode:0x%x\n",
+-				base, shift, m_io, n_io, max_pnode);
+-			map_high("MMIOH", base, shift, m_io, max_pnode, map_uc);
+-		} else {
+-			pr_info("UV: MMIOH disabled\n");
++		mmioh1.v = uv_read_local_mmr(UVH_RH_GAM_MMIOH_OVERLAY_CONFIG1);
++		if (unlikely(mmioh1.s.enable == 0))
++			pr_info("UV: MMIOH1 disabled\n");
++		else {
++			unsigned long base = uvxy_field(mmioh1, base, 0);
++			int m_io = uvxy_field(mmioh1, m_io, 0);
++			int n_io = uvxy_field(mmioh1, n_io, 0);
++
++			calc_mmioh_map(UVX_MMIOH1, min_pnode, max_pnode,
++				UVH_RH_GAM_MMIOH_OVERLAY_CONFIG1_BASE_SHFT,
++				base, m_io, n_io);
+ 		}
++		return;
++	}
++
++	/* UV2 flavor */
++	if (UVH_RH_GAM_MMIOH_OVERLAY_CONFIG) {
++		union uvh_rh_gam_mmioh_overlay_config_u mmioh;
++
++		mmioh.v	= uv_read_local_mmr(UVH_RH_GAM_MMIOH_OVERLAY_CONFIG);
++		if (unlikely(mmioh.s2.enable == 0))
++			pr_info("UV: MMIOH disabled\n");
++		else
++			calc_mmioh_map(UV2_MMIOH, min_pnode, max_pnode,
++				UV2H_RH_GAM_MMIOH_OVERLAY_CONFIG_BASE_SHFT,
++				mmioh.s2.base, mmioh.s2.m_io, mmioh.s2.n_io);
++		return;
+ 	}
+ }
+ 
 -- 
 2.21.0
 
