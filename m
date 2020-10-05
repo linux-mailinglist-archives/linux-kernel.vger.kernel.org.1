@@ -2,130 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F721283C16
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C076283C53
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728875AbgJEQHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726935AbgJEQG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:06:59 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD6C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:06:58 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id m34so6270445pgl.9
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 09:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LGmWu344m4jMEqdBtYLPl0c0TkEOVMbk7UWio27A8Tk=;
-        b=TkYSb/e7IOhIm473jbED8Jj8Gt7X//gQS0DCxhl2MpeHIO2cL//HrD1VNMgZDVv4Op
-         tdc/OJZF1o+6GbyIiXng/RllmZiQFuDmKjRLk1Vq+b7jCiccz6QQ0uL1oUYIKBegc+5/
-         LY8ZOCP+Ja5PacfngtFqf0IpWp+wUJnOauK2I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LGmWu344m4jMEqdBtYLPl0c0TkEOVMbk7UWio27A8Tk=;
-        b=qJpTKQPlT35zxMjecCkAaqiND7r/qpdPLoPy3D5e/lUo/4+Yp5SXZ8mHWMZxdsAD6N
-         96VlzcuyHJOqyWBJok1ze0yOAN0Ci9EvQMtkAmtZ1bCb7PLu7OPBdBGHLw/YNX22HNnG
-         vbw2dxCUSDPY1GhRfgTlsTA9KAHy62NLuAQF2m0NfN3AUlQKaql5kqF3u5iHylbT7IHq
-         kZsC+MDL7L2ZG5YQSYpM/TuL+zjQKk2nbRtmtiVi0vdWi8psQbiQh1SWChtyrN/FOkBI
-         z1w0nuOr6cnDvrL5S2ds4dW5MCwyGVom1OS4OvjDX3QM3iJLuwJs5wLQaHp49Ky5Busc
-         Y4nA==
-X-Gm-Message-State: AOAM5331USEPZ8PRkVCi2Q9CXsXuRMe+aPcJsdFa4AnnnpdOR9BjmqWO
-        ioERW2xRVb/jXRO4WPZrSGjwZg==
-X-Google-Smtp-Source: ABdhPJxoD4AkZV57gSQe+UrxBrkB+2XoPl8vTz2YUuZPZkWvT/re6yST0kT0PwW8roq357JyeEWMtA==
-X-Received: by 2002:a63:1e0c:: with SMTP id e12mr178561pge.386.1601914017645;
-        Mon, 05 Oct 2020 09:06:57 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id c67sm328060pfa.209.2020.10.05.09.06.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 09:06:56 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 09:06:55 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Rob Herring <robh@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201005160655.GA4135817@google.com>
-References: <20200929220912.GF1621304@google.com>
- <20200930013229.GB194665@rowland.harvard.edu>
- <20200930124915.GA1826870@google.com>
- <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
- <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
- <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
- <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
- <20201002183633.GA296334@rowland.harvard.edu>
- <CAL_JsqKHFA5RWz1SRLkR2JXydURL2pA+4C0+C+4SrJR_h4M0dw@mail.gmail.com>
- <20201003124142.GA318272@rowland.harvard.edu>
+        id S1728979AbgJEQTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:19:48 -0400
+Received: from mailout05.rmx.de ([94.199.90.90]:58833 "EHLO mailout05.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728083AbgJEQTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:19:47 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout05.rmx.de (Postfix) with ESMTPS id 4C4m5Q41h0z9tlD;
+        Mon,  5 Oct 2020 18:19:38 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4C4m455p7Dz2xG2;
+        Mon,  5 Oct 2020 18:18:29 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.143) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 5 Oct
+ 2020 18:08:50 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] net: dsa: microchip: fix race condition
+Date:   Mon, 5 Oct 2020 18:08:29 +0200
+Message-ID: <20201005160829.5607-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201003124142.GA318272@rowland.harvard.edu>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.143]
+X-RMX-ID: 20201005-181837-4C4m455p7Dz2xG2-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 08:41:42AM -0400, Alan Stern wrote:
-> On Fri, Oct 02, 2020 at 05:58:22PM -0500, Rob Herring wrote:
-> > On Fri, Oct 2, 2020 at 1:36 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > Regardless of how the situation is represented in DT, there remains the
-> > > issue of where (i.e., in which driver module) the appropriate code
-> > > belongs.  This goes far beyond USB.  In general, what happens when one
-> > > sort of device normally isn't hooked up through a power regulator, so
-> > > its driver doesn't have any code to enable a regulator, but then some
-> > > system does exactly that?
-> > >
-> > > Even worse, what if the device is on a discoverable bus, so the driver
-> > > doesn't get invoked at all until the device is discovered, but on the
-> > > new system it can't be discovered until the regulator is enabled?
-> > 
-> > Yep, it's the same issue here with USB, MDIO which just came up a few
-> > weeks ago, MMC/SD which hacked around it with 'mmc-pwrseq' binding
-> > (not something I want to duplicate) and every other discoverable bus.
-> > What do they all have in common? The kernel's driver model being
-> > unable to cope with this situation. We really need a common solution
-> > here and not bus or device specific hack-arounds.
-> 
-> To me this doesn't seem quite so much to be a weakness of the kernel's 
-> driver model.
-> 
-> It's a platform-specific property, one that is not discoverable and 
-> therefore needs to be represented somehow in DT or ACPI or something 
-> similar.  Something that says "Device A cannot operate or be discovered 
-> until power regulator B is enabled", for example.
-> 
-> The decision to enable the power regulator at system startup would be 
-> kernel policy, not a part of the DT description.  But there ought to be 
-> a standard way of recognizing which resource requirements of this sort 
-> should be handled at startup.  Then there could be a special module (in 
-> the driver model core? -- that doesn't really seem appropriate) which 
-> would search through the whole DT database for resources of this kind 
-> and enable them.
+Between queuing the delayed work and finishing the setup of the dsa
+ports, the process may sleep in request_module() and the queued work may
+be executed prior the initialization of the DSA ports is finished. In
+ksz_mib_read_work(), a NULL dereference will happen within
+netof_carrier_ok(dp->slave).
 
-This might work for some cases that only have a single resource or multiple
-resources but no timing/sequencing requirements. For the more complex cases
-it would probably end up in something similar to the pwrseq series
-(https://lore.kernel.org/patchwork/project/lkml/list/?series=314989&state=%2A&archive=both),
-which was nack-ed by Rafael, Rob also expressed he didn't want to go
-down that road.
+Not queuing the delayed work in ksz_init_mib_timer() make things even
+worse because the work will now be queued for immediate execution
+(instead of 2000 ms) in ksz_mac_link_down() via
+dsa_port_link_register_of().
 
-It seems to me that initialization of the resources needs to be done by
-the/a driver for the device, which knows about the sequencing requirements.
-Potentially this could be done in a pre-probe function that you brought up
-earlier.
+Solution:
+1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
+2. Only queue delayed work in ksz_mac_link_down() if init is completed.
+3. Queue work once in ksz_switch_register(), after dsa_register_switch()
+has completed.
+
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Cc: stable@vger.kernel.org
+---
+Call tree:
+ksz9477_i2c_probe()
+\--ksz9477_switch_register()
+   \--ksz_switch_register()
+      +--dsa_register_switch()
+      |  \--dsa_switch_probe()
+      |     \--dsa_tree_setup()
+      |        \--dsa_tree_setup_switches()
+      |           +--dsa_switch_setup()
+      |           |  +--ksz9477_setup()
+      |           |  |  \--ksz_init_mib_timer()
+      |           |  |     |--/* Start the timer 2 seconds later. */
+      |           |  |     \--schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
+      |           |  \--__mdiobus_register()
+      |           |     \--mdiobus_scan()
+      |           |        \--get_phy_device()
+      |           |           +--get_phy_id()
+      |           |           \--phy_device_create()
+      |           |              |--/* sleeping, ksz_mib_read_work() can be called meanwhile */
+      |           |              \--request_module()
+      |           |
+      |           \--dsa_port_setup()
+      |              +--/* Called for non-CPU ports */
+      |              +--dsa_slave_create()
+      |              |  +--/* Too late, ksz_mib_read_work() may be called beforehand */
+      |              |  \--port->slave = ...
+      |             ...
+      |              +--Called for CPU port */
+      |              \--dsa_port_link_register_of()
+      |                 \--ksz_mac_link_down()
+      |                    +--/* mib_read must be initialized here */
+      |                    +--/* work is already scheduled, so it will be executed after 2000 ms */
+      |                    \--schedule_delayed_work(&dev->mib_read, 0);
+      \-- /* here port->slave is setup properly, scheduling the delayed work should be safe */
+
+static void ksz_mib_read_work()
+\--netif_carrier_ok(dp->slave);  dp->slave has not been initialized yet
+
+
+ drivers/net/dsa/microchip/ksz_common.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index 8e755b50c9c1..a94d2278b95c 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -103,14 +103,8 @@ void ksz_init_mib_timer(struct ksz_device *dev)
+ 
+ 	INIT_DELAYED_WORK(&dev->mib_read, ksz_mib_read_work);
+ 
+-	/* Read MIB counters every 30 seconds to avoid overflow. */
+-	dev->mib_read_interval = msecs_to_jiffies(30000);
+-
+ 	for (i = 0; i < dev->mib_port_cnt; i++)
+ 		dev->dev_ops->port_init_cnt(dev, i);
+-
+-	/* Start the timer 2 seconds later. */
+-	schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
+ }
+ EXPORT_SYMBOL_GPL(ksz_init_mib_timer);
+ 
+@@ -143,7 +137,9 @@ void ksz_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
+ 
+ 	/* Read all MIB counters when the link is going down. */
+ 	p->read = true;
+-	schedule_delayed_work(&dev->mib_read, 0);
++	/* timer started */
++	if (dev->mib_read_interval)
++		schedule_delayed_work(&dev->mib_read, 0);
+ }
+ EXPORT_SYMBOL_GPL(ksz_mac_link_down);
+ 
+@@ -446,6 +442,12 @@ int ksz_switch_register(struct ksz_device *dev,
+ 		return ret;
+ 	}
+ 
++	/* Read MIB counters every 30 seconds to avoid overflow. */
++	dev->mib_read_interval = msecs_to_jiffies(30000);
++
++	/* Start the MIB timer. */
++	schedule_delayed_work(&dev->mib_read, 0);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(ksz_switch_register);
+-- 
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+
