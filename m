@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83964283A6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56E32839ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgJEPeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:34:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34396 "EHLO mail.kernel.org"
+        id S1727655AbgJEP3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:29:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728222AbgJEPeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:34:00 -0400
+        id S1727645AbgJEP3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:29:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFD1C206DD;
-        Mon,  5 Oct 2020 15:33:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3B95207BC;
+        Mon,  5 Oct 2020 15:29:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601912040;
-        bh=m8yyWdT17sxwA4pTD6kXD50OTjR8orcJ4BiXJpbqZAw=;
+        s=default; t=1601911773;
+        bh=j68fgYVUD757L8KB396LSDxduAyFexJ5G8C9wuKfpW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZ1UiTcwrttjb1UMW8sNR0ybLa4cz+GvlVlIwvEdgOyc2VGUddS7YE2BwDEImHt6P
-         Z/3T1hPjoaay2ulnAHVPWd8hhwgYOhgmv4h4Bm1ktGLpzt7OC26DKGA14SphT6EnIe
-         CYOKKYC/CPn37Dl/Cbt6feVKx7AXqJzSt5XzCdlM=
+        b=UZHe2TnuQVDvXZuOrcfWQp0HKuFvOpiML5TFRyzkGf7TXPF/2fBI5JARkWdRo4dWL
+         F4E/dqV3y1K/tDOqsHan2pabJKMHAUA1VDyhhDBbvU4d8wrWdE8sg48SR/2qnbxdqe
+         8AXQXgnB9E2L/SeBu6u8eblEhBQ2xvdFwWr7nuWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xianting Tian <tian.xianting@h3c.com>,
-        Keith Busch <kbusch@kernel.org>,
+        stable@vger.kernel.org, James Smart <james.smart@broadcom.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
         Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 47/85] nvme-pci: fix NULL req in completion handler
-Date:   Mon,  5 Oct 2020 17:26:43 +0200
-Message-Id: <20201005142116.990743223@linuxfoundation.org>
+Subject: [PATCH 5.4 32/57] nvme-fc: fail new connections to a deleted host or remote port
+Date:   Mon,  5 Oct 2020 17:26:44 +0200
+Message-Id: <20201005142111.353152708@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
+In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
+References: <20201005142109.796046410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xianting Tian <tian.xianting@h3c.com>
+From: James Smart <james.smart@broadcom.com>
 
-[ Upstream commit 50b7c24390a53c78de546215282fb52980f1d7b7 ]
+[ Upstream commit 9e0e8dac985d4bd07d9e62922b9d189d3ca2fccf ]
 
-Currently, we use nvmeq->q_depth as the upper limit for a valid tag in
-nvme_handle_cqe(), it is not correct. Because the available tag number
-is recorded in tagset, which is not equal to nvmeq->q_depth.
+The lldd may have made calls to delete a remote port or local port and
+the delete is in progress when the cli then attempts to create a new
+controller. Currently, this proceeds without error although it can't be
+very successful.
 
-The nvme driver registers interrupts for queues before initializing the
-tagset, because it uses the number of successful request_irq() calls to
-configure the tagset parameters. This allows a race condition with the
-current tag validity check if the controller happens to produce an
-interrupt with a corrupted CQE before the tagset is initialized.
+Fix this by validating that both the host port and remote port are
+present when a new controller is to be created.
 
-Replace the driver's indirect tag check with the one already provided by
-the block layer.
-
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/nvme/host/fc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 90346cba87d1e..cc3ae9c63a01b 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -942,13 +942,6 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
- 	struct nvme_completion *cqe = &nvmeq->cqes[idx];
- 	struct request *req;
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index da801a14cd13d..65b3dc9cd693b 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -3319,12 +3319,14 @@ nvme_fc_create_ctrl(struct device *dev, struct nvmf_ctrl_options *opts)
+ 	spin_lock_irqsave(&nvme_fc_lock, flags);
+ 	list_for_each_entry(lport, &nvme_fc_lport_list, port_list) {
+ 		if (lport->localport.node_name != laddr.nn ||
+-		    lport->localport.port_name != laddr.pn)
++		    lport->localport.port_name != laddr.pn ||
++		    lport->localport.port_state != FC_OBJSTATE_ONLINE)
+ 			continue;
  
--	if (unlikely(cqe->command_id >= nvmeq->q_depth)) {
--		dev_warn(nvmeq->dev->ctrl.device,
--			"invalid id %d completed on queue %d\n",
--			cqe->command_id, le16_to_cpu(cqe->sq_id));
--		return;
--	}
--
- 	/*
- 	 * AEN requests are special as they don't time out and can
- 	 * survive any kind of queue freeze and often don't respond to
-@@ -962,6 +955,13 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
- 	}
+ 		list_for_each_entry(rport, &lport->endp_list, endp_list) {
+ 			if (rport->remoteport.node_name != raddr.nn ||
+-			    rport->remoteport.port_name != raddr.pn)
++			    rport->remoteport.port_name != raddr.pn ||
++			    rport->remoteport.port_state != FC_OBJSTATE_ONLINE)
+ 				continue;
  
- 	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
-+	if (unlikely(!req)) {
-+		dev_warn(nvmeq->dev->ctrl.device,
-+			"invalid id %d completed on queue %d\n",
-+			cqe->command_id, le16_to_cpu(cqe->sq_id));
-+		return;
-+	}
-+
- 	trace_nvme_sq(req, cqe->sq_head, nvmeq->sq_tail);
- 	nvme_end_request(req, cqe->status, cqe->result);
- }
+ 			/* if fail to get reference fall through. Will error */
 -- 
 2.25.1
 
