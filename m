@@ -2,166 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9C02833ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BDD2833F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgJEKUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        id S1725937AbgJEK1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEKUW (ORCPT
+        with ESMTP id S1725887AbgJEK1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:20:22 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2F6C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 03:20:22 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n14so6559005pff.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 03:20:22 -0700 (PDT)
+        Mon, 5 Oct 2020 06:27:47 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C996C0613CE;
+        Mon,  5 Oct 2020 03:27:47 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l24so8701722edj.8;
+        Mon, 05 Oct 2020 03:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=jjWpyhIn8QwfdFpcP4+HohDEnBzUEE/fbmKlGGGnJpI=;
-        b=dZErvdU5Vozs/H9HJ1WQ7fycErkGqsaUcfs6ujrfmWZJ/RV2BsTt4EVNo90DrJsbBZ
-         AgW3emHAH9r1BW6ttQYJj2rpvb5Rr08c1hIht+gRG+v20XeG4Yv7iPSfOW/L1pkU3ZYF
-         2iSMueUze9Ab6/O3+J1To34bmChdpBvHRodW0=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5KmV2gDNIgSSSWj29BV9SBfsq532geSZKQtqfX0xzgc=;
+        b=IWJeKhIX+kos+LH759fRya86SswM6Y+55TCgc7CYYuSqqZyD3eISdLQfWqNUPlv8iz
+         I1QdXl1p4vOZQnJq8KjI6DsGKezE165a7f4Eu2gR8hRjPRjWhraWfT1pqT9OlEstHFNy
+         vWqf7Za9uBG8qe/DpNkVqwC3DRctaDbRplu0RpJqJysqtVMzGv6U0v0n8nFgxbDbtQB8
+         p8jYrYoI0ZjzzYvaxYKOyAO8wy6a/mvhc75Ds4YNfecQbftYbLqm3CHz7Sv+nRH1MWVc
+         6S4cFcXLNByeanNs/0vb01p0Y9cvAwi8y42LmQtX40mEsPs2RvH8IBc2fpjs/1PDEUNA
+         yVWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=jjWpyhIn8QwfdFpcP4+HohDEnBzUEE/fbmKlGGGnJpI=;
-        b=Jigm0SiuBJcAEUTqPrSYOtVN1Y6DzELbpEvpyfaM1EeeXSmG+BllfZnbKCO1vq4xa5
-         xXHHiUliwRlp2QUW8OpORXUn2UvJGTKTlbvKkeMnaVtNXNiZBjmYM4BhN8GHqxDRQbR+
-         IkWlmuCTUNipdyE1TWX3pCR6O66oerPUpgZqTDRN1407k88I4hBkkNdLTxr0Y+Cgw4O4
-         iiVkCxBDx3+W+rsoSdKT+S+kDoG3omfFy+hiEDTaZmUoCpktwfcvOi16lyqN7+pYjOFy
-         kjfFU/wSroBKWTigqZvzavk85OPsqB7URuYNXV8tspN65dgeTWbZB+umXNXEcEMp50HD
-         qHsg==
-X-Gm-Message-State: AOAM532/I1v77SKdSb/IL3Ktj2qMnJbOkTnGHgXNougPQfgE3XXXgFcZ
-        YKsIxJ5bEiu7rdZs0AHdZnIRyoSQZXM/3A==
-X-Google-Smtp-Source: ABdhPJxLqf2oc0rxtlZUkYgC5U+H5/6VvudtE8iz1CiY2Z3vYla1kDBUBpGqLhXyd1M9w7rqnEMtBg==
-X-Received: by 2002:a63:1b54:: with SMTP id b20mr11741152pgm.161.1601893221382;
-        Mon, 05 Oct 2020 03:20:21 -0700 (PDT)
-Received: from rayagonda.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id c9sm10339216pgl.92.2020.10.05.03.20.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5KmV2gDNIgSSSWj29BV9SBfsq532geSZKQtqfX0xzgc=;
+        b=isKT/wjvJGCotZapGoj5Jx42eTrilnn9HIoJvGc4e/sm2S1/ylyUeUE1G2jrosR+Yb
+         UR6n2xa1iESGCSL9gL9drm+KUMFakEezZuAGeQJtJQ3hp5kOHAA3DLin51lnI8gVDL5q
+         dsKrQBLCb42mPDV29szufwNzRaquEYHMOtA5otMxF7tTFQ096d+9Iiis/cRjoGnh3t9y
+         cUrxpCgwxgzneknpO+ral+2LxDdp4FvhUCpistrD9gCANdgUOk1+sZx4TsKT0jXXesQ1
+         lsMe74LK6f+mKAn+YX9LGevMDxKLfw171z9Y4d961a+WQSOpm3ycXbpP0c3gY3A6s+7m
+         AEnA==
+X-Gm-Message-State: AOAM532ICOw/WaH23SHOvzXcmiypzUS4KTWIeUjPR6Q0LxE2zoeYN1Vf
+        8WLGSD1Jwdhuo9s/e2IA6ts=
+X-Google-Smtp-Source: ABdhPJzC/yBKkW5Vj60He0Lq8p3op1rsl2V7E8B0k/gS5cJ9Eb0A6RXbkq5xQZU07OZozb+SFXY5Mw==
+X-Received: by 2002:a05:6402:1c1b:: with SMTP id ck27mr10813669edb.218.1601893666133;
+        Mon, 05 Oct 2020 03:27:46 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id m2sm7806717ejo.4.2020.10.05.03.27.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 03:20:20 -0700 (PDT)
-From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-To:     zajec5@gmail.com, linux-mips@vger.kernel.org,
+        Mon, 05 Oct 2020 03:27:44 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 12:27:43 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Subject: [PATCH v1 1/1] firmware: tee_bnxt: reduce shared mem size to 4K
-Date:   Mon,  5 Oct 2020 15:50:10 +0530
-Message-Id: <20201005102010.22800-1-rayagonda.kokatanur@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000074f6c905b0e9d4bc"
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20201005102743.GM425362@ulmo>
+References: <20200930153131.GB3833404@ulmo>
+ <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
+ <20200930160626.GD3833404@ulmo>
+ <f11d7d8a-8ce6-a53c-6219-ceec05432002@gmail.com>
+ <20200930164707.GB3852280@ulmo>
+ <35115ac1-fb25-7226-7b50-61193669e696@gmail.com>
+ <20201001075811.GA3919720@ulmo>
+ <4dbf5bcb-76af-53c5-31cf-880debbcebf3@gmail.com>
+ <20201005091610.GC425362@ulmo>
+ <1adede6e-ecbd-eea4-bd40-4969cd8719cc@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qySB1iFW++5nzUxH"
+Content-Disposition: inline
+In-Reply-To: <1adede6e-ecbd-eea4-bd40-4969cd8719cc@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000074f6c905b0e9d4bc
 
-Reduce the DMA shared memory for OP-TEE and Linux to 4K.
+--qySB1iFW++5nzUxH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
----
- drivers/firmware/broadcom/tee_bnxt_fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Oct 05, 2020 at 12:38:20PM +0300, Dmitry Osipenko wrote:
+> 05.10.2020 12:16, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> ...
+> >> I think you meant regmap in regards to protecting IO accesses, but this
+> >> is not what regmap is about if IO accesses are atomic by nature.
+> >=20
+> > Then why is there regmap-mmio?
+>=20
+> To protect programming sequences for example, actually that's the only
+> real use-case I saw in kernel drivers once. In our case there are no
+> sequences that require protection, at least I'm not aware about that.
 
-diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
-index ed10da5313e8..3da6a01aff9b 100644
---- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-+++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-@@ -12,7 +12,7 @@
- 
- #include <linux/firmware/broadcom/tee_bnxt_fw.h>
- 
--#define MAX_SHM_MEM_SZ	SZ_4M
-+#define MAX_SHM_MEM_SZ	SZ_4K
- 
- #define MAX_TEE_PARAM_ARRY_MEMB		4
- 
--- 
-2.17.1
+True. But I'd still prefer to have a more formal mechanism of handing
+out access to registers.
 
+Either way, this isn't very relevant in the case of tegra20-devfreq
+because there's really no reason for it to be a separate driver with
+device tree lookup since it's all internal to the MC driver. The only
+reason (unless I'm missing something) for that is to have the code
+located in drivers/devfreq. We can do that without requiring DT lookup
+either like we did for tegra-smmu/tegra-mc, or by directly copying the
+code into drivers/memory.
 
---00000000000074f6c905b0e9d4bc
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+It's become fairly common in recent years to group code by IP rather
+than functionality. We nowadays have good tools to help with subsystem
+wide refactoring that make it much less necessary for subsystem code to
+be concentrated in a single directory.
 
-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
-xVUYGnc0GLrYeHC2X4wJbUsgi+UFM/rVW0RKe5Sg4xmLXWc/rBhXDBVPeFVdN2dYsk5MyDRM/fXj
-cAA+xTX+SQGoND8CAwEAAaOCAdcwggHTMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
-gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
-c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
-c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
-MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
-HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
-b25hbHNpZ24yc2hhMmczLmNybDArBgNVHREEJDAigSByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
-Y29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJ
-nXsLYTAdBgNVHQ4EFgQU1rE7oQJ7FiSTADFOqokePoGwIq4wDQYJKoZIhvcNAQELBQADggEBAD8I
-VcITGu1E61LQLR1zygqFw8ByKPgiiprMuQB74Viskl7pAZigzYJB8H3Mpd2ljve+GRo8yvbBC76r
-Gi5WdS06XI5vuImDJ2g6QUt754rj7xEYftM5Gy9ZMslKNvSiPPh1/ACx5w7ecD1ZK0YLMKGATeBD
-XybduRFIEPZBAjgJ5LOYT2ax3ZesfAkan1XJ97yLA93edgTTO2cbUAADTIMFWm4lI/e14wdGmK0I
-FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
-YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
-FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
-biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
-hkiG9w0BCQQxIgQgT4n1FTIaAUGbZ2ntLUodGHeNmg9p1fCKFii/u0s2riIwGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMDA1MTAyMDIxWjBpBgkqhkiG9w0BCQ8x
-XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
-CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAN0L
-3qsjHzpH81jnkPpF9K8CDXQ92hl1oKzEz2jO0IcY2LQ8Ue+KNcsGGZbbB9AT/uXXoRAQLYFZ1Q8D
-cL/3E90E2Hki5owv8PDfwe5jrmfbZ80hcMACtCFJbjCJPsuKv6GEy5ea71SgayZybHqUGgW+/pzr
-R2Z49EQ55r1PLOhmICxTQIW+QrzJBPVvLsskdWxqPhUumKub/esKjOvuYdC8uwdIGI+TYltx3daZ
-mDvd6Y+e+vZ3NCQmxymSMxEWtDD3DJpTvDrHbhv+95bfswRcs+73TvM6FiQct5twEWBS9gBoHihy
-iS7fqaB+IEtj+jBWmsos4M77LFSP7y+nsQg=
---00000000000074f6c905b0e9d4bc--
+> >> Secondly, you're missing that tegra30-devfreq driver will also need to
+> >> perform the MC lookup [3] and then driver will no longer work for the
+> >> older DTs if phandle becomes mandatory because these DTs do not have t=
+he
+> >> MC phandle in the ACTMON node.
+> >>
+> >> [3]
+> >> https://github.com/grate-driver/linux/commit/441d19281f9b3428a4db1ecb3=
+a02e1ec02a8ad7f
+> >>
+> >> So we will need the fall back for T30/124 as well.
+> >=20
+> > No, we don't need the fallback because this is new functionality which
+> > can and should be gated on the existence of the new phandle. If there's
+> > no phandle then we have no choice but to use the old code to ensure old
+> > behaviour.
+>=20
+> You just repeated what I was trying to say:)
+>=20
+> Perhaps I spent a bit too much time touching that code to the point that
+> lost feeling that there is a need to clarify everything in details.
+
+I assumed that by "fall back" you meant the lookup-by-compatible. But
+what I was talking about is the fall back to the current code which does
+not use the MC device tree node at all. The latter is going to be
+required to ensure that the code continues to work as-is. But the former
+is not required because we have fall back code that already works with
+old device trees. New code that is using the memory controller's timings
+nodes can be gated on the existence of the phandle in DT and doing so is
+not going to break backwards-compatibility.
+
+But perhaps I was misunderstanding what you were trying to say.
+
+Thierry
+
+--qySB1iFW++5nzUxH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl969RwACgkQ3SOs138+
+s6G1uw/+POISSA1dSYwJw8XxtVmoFQobW0FgPp8MEtDSZyOea5EwjMXveabSeRTz
+nNTOnZ5uvaC6YRvDRaX/8m1vttDVyJvJsh+z+WJVA4HiJjArkZn9xTL7blDLikru
+bwhR78xyrBOEDRGFHsYWOWFLSNwhgbWlf10Q6hX3+Y5tZinZ/1j+bGW38AcDpweL
+1lCuth97mrmlZX/adEoGXUCzz1P1YdGh35adRXd0GojfZ9wIuVYvPzZkGSC1FuXk
+mnXl/h26SIf8mr6wFberNXlqazexCnnfih6hLLPj7F02hupbgJ6So4K8usEaQHZq
+UJNz/B6vmapODjYA1runxE50eBKPNV6+33D4h7UaSb0xrwBPWH451Vh4Om6DKJMu
+l9I8yLvwR3K0MdhI8kc+PU2/qp3a6HOgI4FtfYuAbWJbbVxb9MbdplWsWhlwqgg+
+JIhZ6l8J9nXpM8ExkTOhKgc6LvJDzncdMnNG/QJGUbDP0wSPisIenwR6Cr5UCYOV
+yy9R19+JxgPRoDLz/zF5hELJpqbuWogHCWrUSpvYk4cLZabYAtbUSygudC28CnI/
+q6zKlWwxbSlPqHVijHrQVJSfVj+qRLPLHYUcGj4V5f544yIwUyRCB2e2XkzwbWTa
+BMWVa4uPsvkkgqg6pic/9NA0DELSS25reEYeNcBkc1u07EIb+rg=
+=i1Fp
+-----END PGP SIGNATURE-----
+
+--qySB1iFW++5nzUxH--
