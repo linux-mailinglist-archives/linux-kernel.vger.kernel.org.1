@@ -2,67 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDC6283177
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB569283178
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgJEIFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:05:52 -0400
-Received: from smtprelay0174.hostedemail.com ([216.40.44.174]:34992 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725898AbgJEIFw (ORCPT
+        id S1726072AbgJEIGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:06:21 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:37794 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgJEIGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:05:52 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 5F708182CF668;
-        Mon,  5 Oct 2020 08:05:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3874:4321:5007:7576:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13019:13069:13161:13229:13311:13357:13439:14181:14659:14721:14777:21080:21627:30003:30026:30029:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: bite38_220bb4e271bc
-X-Filterd-Recvd-Size: 1817
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  5 Oct 2020 08:05:50 +0000 (UTC)
-Message-ID: <c51588b4e8a2096c1453070b983da5ce8617a622.camel@perches.com>
-Subject: Re: [PATCH RFC] checkpatch: add new warnings to author signoff
- checks.
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 05 Oct 2020 01:05:49 -0700
-In-Reply-To: <CABJPP5BwVmWiFcxHKdCYnN_mOE1G=eHUDq8yqqHFaO3cYhp+oA@mail.gmail.com>
-References: <20201005064842.33495-1-dwaipayanray1@gmail.com>
-         <a5cba9bb723626091f8790c794efe8de4ab184b8.camel@perches.com>
-         <CABJPP5BwVmWiFcxHKdCYnN_mOE1G=eHUDq8yqqHFaO3cYhp+oA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 5 Oct 2020 04:06:21 -0400
+Received: by mail-lf1-f67.google.com with SMTP id z19so9767109lfr.4;
+        Mon, 05 Oct 2020 01:06:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Pqt87N2/oWHfTXcWeuFEUpVJyuj9uGxDoWHyl4VsuNw=;
+        b=qEtDfkL4oRXA+ryHTsbpYGG8IzG2j8dp257iHRp4FKd8sYhTVm3pHYDcWkoNTCkhqa
+         OEa2hQyoqI2WRjfBFfESyFQWAGKWbHfSzxLMb6BKxVxnDgOqsHmGhqO5369sIOEbKGUp
+         +XUsMnAzfRLaq45sqQJSY+tpVB2umlZ4oKmjQ4rP0Sz1ylJ2+4+VezeDFS2IjKRsd5Wy
+         OQ4PW6RACVbHbUGPGL+ryK7GrtWrL8KY4PUAvQ2d1e/vBRnaukAWFptX14zzNcQlrGRi
+         PQlHtkRN1V4AePfQAMQB32SM+it+PDrSATZgCHwrlqW8TnoOTuO6MtyM0v5PqYn86XI7
+         BTRQ==
+X-Gm-Message-State: AOAM532qIWzOMHcmeiIxIJdFfis4keDoZxtoy6bACW0y06gs9lMcQ8ms
+        GdiQmwv0ogGGZGq/gnWEQWsVH5G+Isk=
+X-Google-Smtp-Source: ABdhPJwMDK/OvFS7GonadUK7h37lMatnXiLgyf7iqxV5X6VIN7PAAQ766so0hyMXMUkcm8G6Y4028Q==
+X-Received: by 2002:a19:430f:: with SMTP id q15mr5962457lfa.191.1601885178228;
+        Mon, 05 Oct 2020 01:06:18 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id q11sm2691823lfc.309.2020.10.05.01.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 01:06:17 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kPLVc-0006Wk-Rh; Mon, 05 Oct 2020 10:06:13 +0200
+Date:   Mon, 5 Oct 2020 10:06:12 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Cc:     =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: serial: qmi_wwan: add Cellient MPL200 card
+Message-ID: <20201005080612.GI5141@localhost>
+References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
+ <4688927cbf36fe0027340ea5e0c3aaf1445ba256.1601715478.git.wilken.gottwalt@mailbox.org>
+ <87d01yovq5.fsf@miraculix.mork.no>
+ <20201004203042.093ac473@monster.powergraphx.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201004203042.093ac473@monster.powergraphx.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-05 at 13:10 +0530, Dwaipayan Ray wrote:
-> On Mon, Oct 5, 2020 at 12:48 PM Joe Perches <joe@perches.com> wrote:
-> > On Mon, 2020-10-05 at 12:18 +0530, Dwaipayan Ray wrote:
-> > > The author signed-off-by checks are currently very vague.
-> > > Cases like same name or same address are not handled separately.
-[]
-> > And for mismatches, it's really not known that
-> > it should be one way or the or the other is it?
-> > 
+On Sun, Oct 04, 2020 at 08:30:42PM +0200, Wilken Gottwalt wrote:
+> On Sun, 04 Oct 2020 17:29:38 +0200
+> Bjørn Mork <bjorn@mork.no> wrote:
 > 
-> I think that's true. But since the mail in the
-> From: part is the one which with others are being
-> compared, I think maybe it should have the higher
-> priority, and be treated as the expected one.
+> > Wilken Gottwalt <wilken.gottwalt@mailbox.org> writes:
+> > 
+> > > Add usb ids of the Cellient MPL200 card.
+> > >
+> > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+> > > ---
+> > >  drivers/net/usb/qmi_wwan.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+> > > index 07c42c0719f5..0bf2b19d5d54 100644
+> > > --- a/drivers/net/usb/qmi_wwan.c
+> > > +++ b/drivers/net/usb/qmi_wwan.c
+> > 
+> > This is not a 'usb: serial' driver. Please resend with a less confusing
+> > subject prefix.
+> > 
+> > > @@ -1432,6 +1432,7 @@ static const struct usb_device_id products[] = {
+> > >  	{QMI_GOBI_DEVICE(0x1199, 0x901b)},	/* Sierra Wireless MC7770 */
+> > >  	{QMI_GOBI_DEVICE(0x12d1, 0x14f1)},	/* Sony Gobi 3000 Composite */
+> > >  	{QMI_GOBI_DEVICE(0x1410, 0xa021)},	/* Foxconn Gobi 3000 Modem device (Novatel
+> > > E396) */
+> > > +	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},	/* Cellient MPL200 (rebranded Qualcomm
+> > > 0x05c6) */ 
+> > >  	{ }					/* END */
+> > >  };
+> > 
+> > 
+> > This table is supposed to be organized by device type.  The last section
+> > is for Gobi2k and Gobi3k devices.  Please try to put new devices into
+> > the correct section.
+> 
+> Oh sorry, looks like I got it mixed up a bit. It was my first attempt to submit
+> a patch set. Which is the best way to resubmit an update if the other part of
+> the patch set gets accepted? The documentation about re-/submitting patch sets
+> is a bit thin.
 
-I rather expect it to be the other way around.
+Just send these as individual patches (not a series) as they are
+independent and go through separate trees.
 
-The Signed-off-by: line should be authoritative
-as that is what is put in the commit log.
+Also, I never received the USB serial patch, only this one, so you need
+to resend both anyway.
 
-
-
+Johan
