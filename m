@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF5A283B96
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074CA283B9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgJEPsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgJEPsd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:48:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA609C0613CE;
-        Mon,  5 Oct 2020 08:48:32 -0700 (PDT)
-Date:   Mon, 05 Oct 2020 15:48:28 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601912909;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=X1QsCQ/nqHzEMGRxGzS/ypcU7g5Cvcg1CMBrnKVfsLM=;
-        b=sOLa7XIW2nPphWs4j7UUWXLG+JslJABm1XIEGR00agB7EI7wRQNI5ln03URGQi/rkN6udE
-        K6oycyBPkulXLyo1xEBdK8nMb4JJ4OhnBZkMKlEzpbqD725sv39emuE5vonOoi8dqjd8Ek
-        d7KwDeAspllDUMb3ZgSre21SPRJmdeKw6HPF8p97h8eFX2nveFPmCchSRq6VBtRDwocbeU
-        4c+CB8hp7nW6CujpOC3BIHAF8Azt3SLREXntqg1y8Sl+tCZQ4iEI3CSPtHZebp9h7nPfPx
-        D2yPJJujzpMNwpq6VKNMghaLXnjLakKDI7bgOz/FvwMTqX8IaxgV4b2kO3o6JA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601912909;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=X1QsCQ/nqHzEMGRxGzS/ypcU7g5Cvcg1CMBrnKVfsLM=;
-        b=wmuLBO9LkwaN49i49FyK7JZyFq42hKty6E/QhTlLIBVjVqSckdQWgZ1aW4iu/ydgcmmklf
-        nJSwR3VGUjjIUyDQ==
-From:   "tip-bot2 for Jann Horn" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Permit __kasan_check_{read,write} under UACCESS
-Cc:     Jann Horn <jannh@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S1728192AbgJEPt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:49:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726057AbgJEPt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:49:27 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E778E20639;
+        Mon,  5 Oct 2020 15:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601912966;
+        bh=Zy4P3SidGYOFwyXdIOB7Da8tjGHn39EZ/UTZpf4p2Jk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bfDTt+uXz5X/ckwrCAM7lYPL8v8IvwRbYOR6QgVukMcbu2xUD77mNnWUZockUb4oU
+         PbkONv9MOALDk6XlSgp9RodG4LLRGc/2bPzFhD2Q7B2JWeDHQqgKjD6+8VkIjqBP1G
+         RsVFmh1NAzf7aZhQ9T5Tpwn0OJLbi8R+DmH9mP/0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B3D6B352301E; Mon,  5 Oct 2020 08:49:25 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 08:49:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Will Deacon <will@kernel.org>, parri.andrea@gmail.com,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201005154925.GY29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <20201004233146.GP29330@paulmck-ThinkPad-P72>
+ <20201005023846.GA359428@rowland.harvard.edu>
+ <20201005082002.GA23216@willie-the-truck>
+ <20201005091247.GA23575@willie-the-truck>
+ <20201005142351.GB376584@rowland.harvard.edu>
+ <20201005151313.GA23892@willie-the-truck>
+ <20201005151639.GE376584@rowland.harvard.edu>
+ <20201005153519.GJ2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <160191290839.7002.472467128792746457.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005153519.GJ2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/core branch of tip:
+On Mon, Oct 05, 2020 at 05:35:19PM +0200, Peter Zijlstra wrote:
+> On Mon, Oct 05, 2020 at 11:16:39AM -0400, Alan Stern wrote:
+> > On Mon, Oct 05, 2020 at 04:13:13PM +0100, Will Deacon wrote:
+> > > > The failure to recognize the dependency in P0 should be considered a 
+> > > > combined limitation of the memory model and herd7.  It's not a simple 
+> > > > mistake that can be fixed by a small rewrite of herd7; rather it's a 
+> > > > deliberate choice we made based on herd7's inherent design.  We 
+> > > > explicitly said that control dependencies extend only to the code in the 
+> > > > branches of an "if" statement; anything beyond the end of the statement 
+> > > > is not considered to be dependent.
+> > > 
+> > > Interesting. How does this interact with loops that are conditionally broken
+> > > out of, e.g.  a relaxed cmpxchg() loop or an smp_cond_load_relaxed() call
+> > > prior to a WRITE_ONCE()?
+> > 
+> > Heh --  We finesse this issue by not supporting loops at all!  :-)
+> 
+> Right, so something like:
+> 
+> 	smp_cond_load_relaxed(x, !VAL);
+> 	WRITE_ONCE(*y, 1);
+> 
+> Would be modeled like:
+> 
+> 	r1 = READ_ONCE(*x);
+> 	if (!r1)
+> 		WRITE_ONCE(*y, 1);
+> 
+> with an r1==0 constraint in the condition I suppose ?
 
-Commit-ID:     b0b8e56b82c06b3bb6e5fb66d0e9c9c3fd3ce555
-Gitweb:        https://git.kernel.org/tip/b0b8e56b82c06b3bb6e5fb66d0e9c9c3fd3=
-ce555
-Author:        Jann Horn <jannh@google.com>
-AuthorDate:    Tue, 29 Sep 2020 00:49:16 +02:00
-Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
-CommitterDate: Fri, 02 Oct 2020 09:28:08 -05:00
+Yes, you got it!
 
-objtool: Permit __kasan_check_{read,write} under UACCESS
+However, it is more efficient to use the "filter" clause to tell herd7
+about executions that are to be discarded.
 
-Building linux-next with JUMP_LABEL=3Dn and KASAN=3Dy, I got this objtool
-warning:
-
-arch/x86/lib/copy_mc.o: warning: objtool: copy_mc_to_user()+0x22: call to
-__kasan_check_read() with UACCESS enabled
-
-What happens here is that copy_mc_to_user() branches on a static key in a
-UACCESS region:
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 __uaccess_begin();
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (static_branch_unlikely(&copy_mc_fragile_key))
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D copy_mc_fragi=
-le(to, from, len);
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D copy_mc_generic(to, from, len);
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 __uaccess_end();
-
-and the !CONFIG_JUMP_LABEL version of static_branch_unlikely() uses
-static_key_enabled(), which uses static_key_count(), which uses
-atomic_read(), which calls instrument_atomic_read(), which uses
-kasan_check_read(), which is __kasan_check_read().
-
-Let's permit these KASAN helpers in UACCESS regions - static keys should
-probably work under UACCESS, I think.
-
-PeterZ adds:
-
-  It's not a matter of permitting, it's a matter of being safe and
-  correct. In this case it is, because it's a thin wrapper around
-  check_memory_region() which was already marked safe.
-
-  check_memory_region() is correct because the only thing it ends up
-  calling is kasa_report() and that is also marked safe because that is
-  annotated with user_access_save/restore() before it does anything else.
-
-  On top of that, all of KASAN is noinstr, so nothing in here will end up
-  in tracing and/or call schedule() before the user_access_save().
-
-Signed-off-by: Jann Horn <jannh@google.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- tools/objtool/check.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 2df9f76..3d14134 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -583,6 +583,8 @@ static const char *uaccess_safe_builtin[] =3D {
- 	"__asan_store4_noabort",
- 	"__asan_store8_noabort",
- 	"__asan_store16_noabort",
-+	"__kasan_check_read",
-+	"__kasan_check_write",
- 	/* KASAN in-line */
- 	"__asan_report_load_n_noabort",
- 	"__asan_report_load1_noabort",
+							Thanx, Paul
