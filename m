@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEB52839B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806AE283A03
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbgJEP2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:28:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53224 "EHLO mail.kernel.org"
+        id S1727140AbgJEPaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:30:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727386AbgJEP2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:28:22 -0400
+        id S1727746AbgJEPaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:30:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A74120637;
-        Mon,  5 Oct 2020 15:28:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5D6C2100A;
+        Mon,  5 Oct 2020 15:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911701;
-        bh=4Re7HBhYvPVuXWMeiyzrdcU+qK8tChuuzXlPrYKtkn8=;
+        s=default; t=1601911818;
+        bh=BgZQWKUaW7PpbmVoYL+qbRFZb5/Fc4dgOhBsRWHram8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C7/Lgwg0XrjzaOTEL50k/dmEHBtKVTQOmUzTX18RZwoH/ULh5h/UEXJz17s1fFF3L
-         13LJrv1PIrxjpsgrjtn3E7gl8l3X2FbUjsHyxFRqmj22k17oD29bA18v9Ex0T5rgjD
-         a9UjykHTmxPnbIlkhTDPSuiWvmV5N8Zmp+vjSr/w=
+        b=tK6xQtqfWdDiz0A/KSDwHqWsrDwVN+k6iXd+WaFCNobpReFYvCuRu0W5+c0tNLdxc
+         wV0GPFR2sYaR+AJRDOYWl7o1oZVTvHdzGmPO2rLBPnngcgMLAJmsz/IjubaF2YmjfI
+         gcBsL8RP6bIk8EnPp5FUOWHhz5ArfTksklPeZbzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 14/38] drm/sun4i: mixer: Extend regmap max_register
+Subject: [PATCH 5.4 19/57] drm/sun4i: mixer: Extend regmap max_register
 Date:   Mon,  5 Oct 2020 17:26:31 +0200
-Message-Id: <20201005142109.356401927@linuxfoundation.org>
+Message-Id: <20201005142110.721388936@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
-References: <20201005142108.650363140@linuxfoundation.org>
+In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
+References: <20201005142109.796046410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,10 +60,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-index 71a798e5d5591..649b57e5e4b78 100644
+index 18b4881f44814..12b99ba575017 100644
 --- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
 +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-@@ -364,7 +364,7 @@ static struct regmap_config sun8i_mixer_regmap_config = {
+@@ -396,7 +396,7 @@ static struct regmap_config sun8i_mixer_regmap_config = {
  	.reg_bits	= 32,
  	.val_bits	= 32,
  	.reg_stride	= 4,
