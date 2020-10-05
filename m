@@ -2,192 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8E9283CBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E3B283CC1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbgJEQqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:46:00 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:55227 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727195AbgJEQqA (ORCPT
+        id S1727781AbgJEQsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:48:15 -0400
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.115]:44786 "EHLO
+        mail1.bemta23.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726772AbgJEQsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:46:00 -0400
-Received: by mail-pj1-f66.google.com with SMTP id az3so98527pjb.4;
-        Mon, 05 Oct 2020 09:45:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dt/RNrQ4SL4MPuEQRo7CMCIUWEGjo0wgoqzjdBTj0Yk=;
-        b=XLnHOpEwXsoaJ2jjP+xMOfB2nGUKyMcw2jm76/ZcRHuXn9XFnHUt4j0GCFl15Y40Bb
-         fkSe6+vqfI1B+YBUyajFjoX2TgaE3WyYdw0MtbRM4dvmNCE22AVNp8xsgdDsnuYt64Dq
-         17il1ogv2jlHfjW6xByeM0KzlXjq0XtLkYrvnDjDIucQ87jS1cQTLtUcjAZHgpxYFaLY
-         p+T1exvSkdOnjLEBzFCj7XxdE130nOI4AQQlG081AA2eM2y91Z3n34g0QlSzEW8AV9bS
-         iX9JRf8TxMCRig8gI1O9tY04oTz/GnCV4ASLZgnD1U90WetXKrcL1TkNqcM0W77hzRU9
-         gNGA==
-X-Gm-Message-State: AOAM5337G2SX1gkhr0+DHwtBEdwnHwaXl2ZaKnH4xzgDbPwTO44c5Kd7
-        mzw1hTZGXrH0hBuF3bN4DKY=
-X-Google-Smtp-Source: ABdhPJxtxTQiQ0BLq93Fdnp0PeKNKbN4Cbv75Bx9SP0o/TRLQz3L/Xalj2K7vpyTXJShGV4hphd7yw==
-X-Received: by 2002:a17:90b:4204:: with SMTP id iw4mr245153pjb.175.1601916359186;
-        Mon, 05 Oct 2020 09:45:59 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id 31sm132457pgs.59.2020.10.05.09.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 09:45:58 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 09:45:57 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Weight, Russell H" <russell.h.weight@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>
-Subject: Re: [PATCH 01/10] fpga: fpga-mgr: Add devm_fpga_mgr_register() API
-Message-ID: <20201005164557.GA157831@epycbox.lan>
-References: <20201004051423.75879-1-mdf@kernel.org>
- <20201004051423.75879-2-mdf@kernel.org>
- <DM6PR11MB3819DC09D49EBE947F558F36850C0@DM6PR11MB3819.namprd11.prod.outlook.com>
+        Mon, 5 Oct 2020 12:48:14 -0400
+Received: from [100.112.4.31] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-4.bemta.az-c.us-east-1.aws.symcld.net id 4C/B1-22503-B4E4B7F5; Mon, 05 Oct 2020 16:48:11 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRWlGSWpSXmKPExsWSLveKTdfbrzr
+  e4MlebYtJM/4zW+y/LmHRtdDAYuH9U6wWX7/dZrd4c3w6k8Xyff2MFpd3zWGz+Nx7hNGiqbMJ
+  yOqYzGKxes8LZou1X+axOfB6TJo5g9lj56y77B6/tq1h8di8Qstj3slAj562TUwe7/ddZfP4v
+  EkugCOKNTMvKb8igTXjy5pV7AWXOCtmz/jO0sD4ib2LkYtDSOA/o8TDi92sEM5zRolPL1czdT
+  FycAgLZEtMeynXxcjJISJQLLF30hWwBmaBlSwSl/o/MkE0tDNLbGiaww5SxSagLbFlyy82EJt
+  XwFai894aVhCbRUBFYsK3b4wgtqhAhMSa4xOZIGoEJU7OfMICYnMKxEr09R8Fq2EWsJCYOf88
+  lC0ucevJfCYIW15i+9s5zCC2hICCxKz2newQdoLEspd3mCcwCs5CMnYWklGzkIyahWTUAkaWV
+  YymSUWZ6RkluYmZObqGBga6hoZGuma6ZhZ6iVW6yXqlxbqpicUluoZ6ieXFesWVuck5KXp5qS
+  WbGIERmlLA5rKDccmbD3qHGCU5mJREebV8quOF+JLyUyozEosz4otKc1KLDzFqcHAIXDl4ZDa
+  jFEtefl6qkgTvVJA6waLU9NSKtMwcYBKBKZXg4FES4a0DSfMWFyTmFmemQ6ROMSpKifMeBUkI
+  gCQySvPg2mCJ6xKjrJQwLyMDA4MQT0FqUW5mCar8K0ZxDkYlYd633kBTeDLzSuCmvwJazAS0+
+  PbRCpDFJYkIKakGpn25tw8sXFR2KkDBVnDzFf7Fkz3U9yVPfLnhp7lPk1+K3CvGtgelKV5izK
+  n2Xhv+X6vuv5JUk+rqxbfsmdvdcxN6LD4q6h47O6M3OemNzRSvDKVYXdY7KTYKF/ar7L9i21S
+  yOud055ZF8eam215m7VvzRW/PkfM23VeldT4frJp9ruzpZE6D6t986w+X8ISr5Pr/jnkz+eK9
+  uc//XPvE8mflixBL9mzb5SfKhGU97EvL53ywuXNpQk3wB8HJTu5VLkxH1zkYzq9htjZKj72lN
+  /H4QY9jNjuWs59yZRWZ6idYqXB2CXuDG0tRR/vZt3YxAV7aV9OWmtnX8qtue5086Y/08w9nHp
+  w8a7I2+v21NUosxRmJhlrMRcWJAKLfq7/XAwAA
+X-Env-Sender: markpearson@lenovo.com
+X-Msg-Ref: server-54.tower-406.messagelabs.com!1601916489!1091018!1
+X-Originating-IP: [103.30.234.6]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 22615 invoked from network); 5 Oct 2020 16:48:11 -0000
+Received: from unknown (HELO lenovo.com) (103.30.234.6)
+  by server-54.tower-406.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 5 Oct 2020 16:48:11 -0000
+Received: from reswpmail04.lenovo.com (unknown [10.62.32.23])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by Forcepoint Email with ESMTPS id A167F9EC14C539EDC414;
+        Tue,  6 Oct 2020 00:48:06 +0800 (CST)
+Received: from localhost.localdomain (10.46.54.144) by reswpmail04.lenovo.com
+ (10.62.32.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Mon, 5 Oct 2020
+ 09:47:58 -0700
+Subject: Re: [External] RE: [RFC] Documentation: Add documentation for new
+ performance_profile sysfs class
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
+CC:     Hans de Goede <hdegoede@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mark Pearson <mpearson@lenovo.com>,
+        Elia Devito <eliadevito@gmail.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Benjamin Berg <bberg@redhat.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201003131938.9426-1-hdegoede@redhat.com>
+ <20201003131938.9426-2-hdegoede@redhat.com>
+ <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <Mz2G7glm3yMTniKA6SHM011dDkTFF4_otICrMQfVLheopX8JMGSupPleyjyK8OY0tyUazu09nX7XhleBVdl4ozTCWXCPGyvV58Qc-UUTvig=@protonmail.com>
+ <DM6PR19MB26369E7468931E63B69A0604FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Mark Pearson <markpearson@lenovo.com>
+Message-ID: <91a9bb74-49e7-0a8d-cbc1-3f1907293fa4@lenovo.com>
+Date:   Mon, 5 Oct 2020 12:47:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819DC09D49EBE947F558F36850C0@DM6PR11MB3819.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR19MB26369E7468931E63B69A0604FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.46.54.144]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ reswpmail04.lenovo.com (10.62.32.23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hao,
 
-On Mon, Oct 05, 2020 at 05:18:40AM +0000, Wu, Hao wrote:
-> > Subject: [PATCH 01/10] fpga: fpga-mgr: Add devm_fpga_mgr_register() API
-> > 
-> > Add a devm_fpga_mgr_register() API that can be used to register a FPGA
-> > Manager that was created using devm_fpga_mgr_create().
-> > 
-> > Introduce a struct fpga_mgr_devres that makes the devres
-> > allocation a little bit more readable and gets reused for
-> > devm_fpga_mgr_create() devm_fpga_mgr_register().
-> > 
-> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> > ---
-> >  drivers/fpga/fpga-mgr.c       | 76 ++++++++++++++++++++++++++++++-----
-> >  include/linux/fpga/fpga-mgr.h |  2 +
-> >  2 files changed, 68 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-> > index f38bab01432e..774ac98fb69c 100644
-> > --- a/drivers/fpga/fpga-mgr.c
-> > +++ b/drivers/fpga/fpga-mgr.c
-> > @@ -21,6 +21,10 @@
-> >  static DEFINE_IDA(fpga_mgr_ida);
-> >  static struct class *fpga_mgr_class;
-> > 
-> > +struct fpga_mgr_devres {
-> > +	struct fpga_manager *mgr;
-> > +};
-> > +
-> >  /**
-> >   * fpga_image_info_alloc - Allocate a FPGA image info struct
-> >   * @dev: owning device
-> > @@ -651,21 +655,21 @@ struct fpga_manager
-> > *devm_fpga_mgr_create(struct device *dev, const char *name,
-> >  					  const struct fpga_manager_ops
-> > *mops,
-> >  					  void *priv)
-> >  {
-> > -	struct fpga_manager **ptr, *mgr;
-> > +	struct fpga_mgr_devres *dr;
-> > 
-> > -	ptr = devres_alloc(devm_fpga_mgr_release, sizeof(*ptr),
-> > GFP_KERNEL);
-> > -	if (!ptr)
-> > +	dr = devres_alloc(devm_fpga_mgr_release, sizeof(*dr), GFP_KERNEL);
+
+On 2020-10-05 12:11 p.m., Limonciello, Mario wrote:
+>>
+>> Excuse my ignorance, but I don't really see why this interface would be tied
+>> to
+>> ACPI devices? Why is it not possible to write a driver that implements this
+>> interface
+>> and directly modifies device registers? Am I missing something obvious here?
+>>
 > 
-> Should we update devm_fpga_mgr_release function to use fpga_mgr_devres as well?
-Yes!
+> When implemented for the two vendors mentioned here, it would be using a
+> proprietary "firmware API" implemented by those two vendors.  For example write
+> arguments (0x1, 0x2) to ACPI-WMI method WMFT and it will cause firmware to coordinate
+> using undisclosed protocol to affect the platform changes desirable.
 > 
-> > +	if (!dr)
-> >  		return NULL;
-> > 
-> > -	mgr = fpga_mgr_create(dev, name, mops, priv);
-> > -	if (!mgr) {
-> > -		devres_free(ptr);
-> > -	} else {
-> > -		*ptr = mgr;
-> > -		devres_add(dev, ptr);
-> > +	dr->mgr = fpga_mgr_create(dev, name, mops, priv);
-> > +	if (!dr->mgr) {
-> > +		devres_free(dr);
-> > +		return NULL;
-> >  	}
-> > 
-> > -	return mgr;
-> > +	devres_add(dev, dr);
-> > +
-> > +	return dr->mgr;
-> >  }
-> >  EXPORT_SYMBOL_GPL(devm_fpga_mgr_create);
-> > 
-> > @@ -722,6 +726,58 @@ void fpga_mgr_unregister(struct fpga_manager
-> > *mgr)
-> >  }
-> >  EXPORT_SYMBOL_GPL(fpga_mgr_unregister);
-> > 
-> > +static int fpga_mgr_devres_match(struct device *dev, void *priv,
+> This is different in my mind from "kernel writes to a specific register" to set
+> power properties of a specific device.
 > 
-> Maybe it's better to use "res" instead of "priv" which matches the
-> dr_match_t, and also devm_fpga_mgr_release function. 
-Can do.
-> 
-> > +				 void *match_data)
-> > +{
-> > +	struct fpga_mgr_devres *dr = priv;
-> > +
-> > +	return match_data == dr->mgr;
-> > +}
-> > +
-> > +static void devm_fpga_mgr_unregister(struct device *dev, void *priv)
-> > +{
-> 
-> Same.
-Ditto.
-> 
-> > +	struct fpga_mgr_devres *dr = priv;
-> > +
-> > +	fpga_mgr_unregister(dr->mgr);
-> > +}
-> > +
-> > +/**
-> > + * devm_fpga_mgr_register - resource managed variant of
-> > fpga_mgr_register()
-> > + * @dev: managing device for this FPGA manager
-> > + * @mgr: fpga manager struct
-> > + *
-> > + * This is the devres variant of fpga_mgr_register() for which the unregister
-> > + * function will be called automatically when the managing device is
-> > detached.
-> > + */
-> > +int devm_fpga_mgr_register(struct device *dev, struct fpga_manager *mgr)
-> > +{
-> > +	struct fpga_mgr_devres *dr;
-> > +	int err;
-> > +
-> > +	/* Make sure that the struct fpga_manager * that is passed in is
-> > +	 * managed itself.
-> > +	 */
-> 
-> Should we use the same style for code comments here, 
-> I see other places in this file are using style like
-Can do.
-> 
-> /*
->   * ......
->   */
-> 
-> Thanks
-> Hao
-Thanks,
-Moritz
+
+Just curious on this point - isn't that (mostly) what all hardware does? 
+You write to it and the device does "stuff" to achieve the required 
+effect. Yes this is in proprietary firmware, but from my experience with 
+hardware devices that's not uncommon these days anyway.
+
+Let me know if I'm misunderstanding something here. I couldn't see the 
+difference between a register written to via ACPI and one written to via 
+some other protocol (SMBUS? or whatever)
+
+Mark
+
+
