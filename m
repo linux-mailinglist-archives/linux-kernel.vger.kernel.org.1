@@ -2,267 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCF8283876
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C021B283854
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgJEOrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:47:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:49392 "EHLO foss.arm.com"
+        id S1726825AbgJEOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726979AbgJEOqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:46:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 502DA143D;
-        Mon,  5 Oct 2020 07:46:53 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AED923F70D;
-        Mon,  5 Oct 2020 07:46:51 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        egranata@google.com, jbhayana@google.com,
-        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com, cristian.marussi@arm.com
-Subject: [PATCH 4/6] firmware: arm_scmi: add SCMIv3.0 Sensors timestamped reads
-Date:   Mon,  5 Oct 2020 15:45:16 +0100
-Message-Id: <20201005144518.31832-5-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005144518.31832-1-cristian.marussi@arm.com>
-References: <20201005144518.31832-1-cristian.marussi@arm.com>
+        id S1726654AbgJEOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:45:27 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10E622100A;
+        Mon,  5 Oct 2020 14:45:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601909122;
+        bh=9jf8/2pMdLGUD/SuF7vDmhqV2XjIPuHv9JsZXVZ+gzo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uyNjSHjNJxnl/0RLVq0jbpA0xwDK8OrleTUPValTLDndmB4OABnbw/H6YCyzB0wEg
+         bfVFX0okbOwGJzlepmw/+Ka5jGlG6O772uTILww4xiqf5/StTQy4ViNTzVQOdge+z9
+         tplzLPmyPsL8dRLUZ2gVt6eP0sTByVC4Lcvrvpgo=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.4 4/4] iommu/vt-d: Fix lockdep splat in iommu_flush_dev_iotlb()
+Date:   Mon,  5 Oct 2020 10:45:17 -0400
+Message-Id: <20201005144517.2527627-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201005144517.2527627-1-sashal@kernel.org>
+References: <20201005144517.2527627-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new .reading_get_timestamped() method to sensor_ops to support SCMIv3.0
-timestamped reads.
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+[ Upstream commit 1a3f2fd7fc4e8f24510830e265de2ffb8e3300d2 ]
+
+Lock(&iommu->lock) without disabling irq causes lockdep warnings.
+
+[   12.703950] ========================================================
+[   12.703962] WARNING: possible irq lock inversion dependency detected
+[   12.703975] 5.9.0-rc6+ #659 Not tainted
+[   12.703983] --------------------------------------------------------
+[   12.703995] systemd-udevd/284 just changed the state of lock:
+[   12.704007] ffffffffbd6ff4d8 (device_domain_lock){..-.}-{2:2}, at:
+               iommu_flush_dev_iotlb.part.57+0x2e/0x90
+[   12.704031] but this lock took another, SOFTIRQ-unsafe lock in the past:
+[   12.704043]  (&iommu->lock){+.+.}-{2:2}
+[   12.704045]
+
+               and interrupts could create inverse lock ordering between
+               them.
+
+[   12.704073]
+               other info that might help us debug this:
+[   12.704085]  Possible interrupt unsafe locking scenario:
+
+[   12.704097]        CPU0                    CPU1
+[   12.704106]        ----                    ----
+[   12.704115]   lock(&iommu->lock);
+[   12.704123]                                local_irq_disable();
+[   12.704134]                                lock(device_domain_lock);
+[   12.704146]                                lock(&iommu->lock);
+[   12.704158]   <Interrupt>
+[   12.704164]     lock(device_domain_lock);
+[   12.704174]
+                *** DEADLOCK ***
+
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20200927062428.13713-1-baolu.lu@linux.intel.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/arm_scmi/sensors.c | 134 ++++++++++++++++++++++++++--
- include/linux/scmi_protocol.h       |  22 +++++
- 2 files changed, 151 insertions(+), 5 deletions(-)
+ drivers/iommu/intel-iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-index eab846f41bb0..cbdcc37fc975 100644
---- a/drivers/firmware/arm_scmi/sensors.c
-+++ b/drivers/firmware/arm_scmi/sensors.c
-@@ -156,6 +156,27 @@ struct scmi_msg_sensor_reading_get {
- #define SENSOR_READ_ASYNC	BIT(0)
- };
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 2ffec65df3889..1147626f0d253 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -2560,14 +2560,14 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
+ 		}
  
-+struct scmi_resp_sensor_reading_get {
-+	__le64 readings;
-+};
-+
-+struct scmi_resp_sensor_reading_complete {
-+	__le32 id;
-+	__le64 readings;
-+};
-+
-+struct scmi_sensor_reading_le {
-+	__le32 sensor_value_low;
-+	__le32 sensor_value_high;
-+	__le32 timestamp_low;
-+	__le32 timestamp_high;
-+};
-+
-+struct scmi_resp_sensor_reading_complete_v3 {
-+	__le32 id;
-+	struct scmi_sensor_reading_le readings[];
-+};
-+
- struct scmi_sensor_trip_notify_payld {
- 	__le32 agent_id;
- 	__le32 sensor_id;
-@@ -556,6 +577,21 @@ scmi_sensor_trip_point_config(const struct scmi_handle *handle, u32 sensor_id,
- 	return ret;
- }
- 
-+/**
-+ * scmi_sensor_reading_get  - Read scalar sensor value
-+ * @handle: Platform handle
-+ * @sensor_id: Sensor ID
-+ * @value: The 64bit value sensor reading
-+ *
-+ * This function returns a single 64 bit reading value representing the sensor
-+ * value; if the platform SCMI Protocol implementation and the sensor support
-+ * multiple axis and timestamped-reads, this just returns the first axis while
-+ * dropping the timestamp value.
-+ * Use instead the @scmi_sensor_reading_get_timestamped to retrieve the array of
-+ * timestamped multi-axis values.
-+ *
-+ * Return: 0 on Success
-+ */
- static int scmi_sensor_reading_get(const struct scmi_handle *handle,
- 				   u32 sensor_id, u64 *value)
- {
-@@ -573,18 +609,105 @@ static int scmi_sensor_reading_get(const struct scmi_handle *handle,
- 
- 	sensor = t->tx.buf;
- 	sensor->id = cpu_to_le32(sensor_id);
-+	if (s->async) {
-+		sensor->flags = cpu_to_le32(SENSOR_READ_ASYNC);
-+		ret = scmi_do_xfer_with_response(handle, t);
-+		if (!ret) {
-+			struct scmi_resp_sensor_reading_complete *resp;
-+
-+			resp = t->rx.buf;
-+			if (le32_to_cpu(resp->id) == sensor_id)
-+				*value = le64_to_cpu(resp->readings);
-+			else
-+				ret = -EPROTO;
-+		}
-+	} else {
-+		sensor->flags = cpu_to_le32(0);
-+		ret = scmi_do_xfer(handle, t);
-+		if (!ret) {
-+			struct scmi_resp_sensor_reading_get *resp;
-+
-+			resp = t->rx.buf;
-+			*value = le64_to_cpu(resp->readings);
-+		}
-+	}
- 
-+	scmi_xfer_put(handle, t);
-+	return ret;
-+}
-+
-+static inline void
-+scmi_parse_sensor_readings(struct scmi_sensor_reading *out,
-+			   const struct scmi_sensor_reading_le *in)
-+{
-+	out->value = get_unaligned_le64((void *)&in->sensor_value_low);
-+	out->timestamp = get_unaligned_le64((void *)&in->timestamp_low);
-+}
-+
-+/**
-+ * scmi_sensor_reading_get_timestamped  - Read multiple-axis timestamped values
-+ * @handle: Platform handle
-+ * @sensor_id: Sensor ID
-+ * @count: The length of the provided @readings array
-+ * @readings: An array of elements each representing a timestamped per-axis
-+ *	      reading of type @struct scmi_sensor_reading.
-+ *	      Returned readings are ordered as the @axis descriptors array
-+ *	      included in @struct scmi_sensor_info and the max number of
-+ *	      returned elements is min(@count, @num_axis); ideally the provided
-+ *	      array should be of length @count equal to @num_axis.
-+ *
-+ * Return: 0 on Success
-+ */
-+static int
-+scmi_sensor_reading_get_timestamped(const struct scmi_handle *handle,
-+				    u32 sensor_id, u8 count,
-+				    struct scmi_sensor_reading *readings)
-+{
-+	int ret;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_sensor_reading_get *sensor;
-+	struct sensors_info *si = handle->sensor_priv;
-+	struct scmi_sensor_info *s = si->sensors + sensor_id;
-+
-+	if (!count || !readings ||
-+	    (!s->num_axis && count > 1) || (s->num_axis && count > s->num_axis))
-+		return -EINVAL;
-+
-+	ret = scmi_xfer_get_init(handle, SENSOR_READING_GET,
-+				 SCMI_PROTOCOL_SENSOR, sizeof(*sensor), 0, &t);
-+	if (ret)
-+		return ret;
-+
-+	sensor = t->tx.buf;
-+	sensor->id = cpu_to_le32(sensor_id);
- 	if (s->async) {
- 		sensor->flags = cpu_to_le32(SENSOR_READ_ASYNC);
- 		ret = scmi_do_xfer_with_response(handle, t);
--		if (!ret)
--			*value = get_unaligned_le64((void *)
--						    ((__le32 *)t->rx.buf + 1));
-+		if (!ret) {
-+			int i;
-+			struct scmi_resp_sensor_reading_complete_v3 *resp;
-+
-+			resp = t->rx.buf;
-+			/* Retrieve only the number of requested axis anyway */
-+			if (le32_to_cpu(resp->id) == sensor_id)
-+				for (i = 0; i < count; i++)
-+					scmi_parse_sensor_readings(&readings[i],
-+								   &resp->readings[i]);
-+			else
-+				ret = -EPROTO;
-+		}
- 	} else {
- 		sensor->flags = cpu_to_le32(0);
- 		ret = scmi_do_xfer(handle, t);
--		if (!ret)
--			*value = get_unaligned_le64(t->rx.buf);
-+		if (!ret) {
-+			int i;
-+			struct scmi_sensor_reading_le *resp_readings;
-+
-+			resp_readings = t->rx.buf;
-+			for (i = 0; i < count; i++)
-+				scmi_parse_sensor_readings(&readings[i],
-+							   &resp_readings[i]);
-+		}
- 	}
- 
- 	scmi_xfer_put(handle, t);
-@@ -611,6 +734,7 @@ static const struct scmi_sensor_ops sensor_ops = {
- 	.info_get = scmi_sensor_info_get,
- 	.trip_point_config = scmi_sensor_trip_point_config,
- 	.reading_get = scmi_sensor_reading_get,
-+	.reading_get_timestamped = scmi_sensor_reading_get_timestamped,
- };
- 
- static int scmi_sensor_set_notify_enabled(const struct scmi_handle *handle,
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 1f5c52a460bb..24d5b7ebf508 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -149,6 +149,20 @@ struct scmi_power_ops {
- 			 u32 *state);
- };
- 
-+/**
-+ * scmi_sensor_reading  - represent a timestamped read
-+ *
-+ * Used by @reading_get_timestamped method.
-+ *
-+ * @value: The signed value sensor read.
-+ * @timestamp: An unsigned timestamp for the sensor read, as provided by
-+ *	       SCMI platform. Set to zero when not available.
-+ */
-+struct scmi_sensor_reading {
-+	long long value;
-+	unsigned long long timestamp;
-+};
-+
- /**
-  * scmi_range_attrs  - specifies a sensor or axis values' range
-  * @min_range: The minimum value which can be represented by the sensor/axis.
-@@ -387,6 +401,11 @@ enum scmi_sensor_class {
-  * @info_get: get the information of the specified sensor
-  * @trip_point_config: selects and configures a trip-point of interest
-  * @reading_get: gets the current value of the sensor
-+ * @reading_get_timestamped: gets the current value and timestamp, when
-+ *			     available, of the sensor. (as of v2.1 spec)
-+ *			     Supports multi-axis sensors for sensors which
-+ *			     supports it and if the @reading array size of
-+ *			     @count entry equals the sensor num_axis
-  */
- struct scmi_sensor_ops {
- 	int (*count_get)(const struct scmi_handle *handle);
-@@ -396,6 +415,9 @@ struct scmi_sensor_ops {
- 				 u32 sensor_id, u8 trip_id, u64 trip_value);
- 	int (*reading_get)(const struct scmi_handle *handle, u32 sensor_id,
- 			   u64 *value);
-+	int (*reading_get_timestamped)(const struct scmi_handle *handle,
-+				       u32 sensor_id, u8 count,
-+				       struct scmi_sensor_reading *readings);
- };
- 
- /**
+ 		/* Setup the PASID entry for requests without PASID: */
+-		spin_lock(&iommu->lock);
++		spin_lock_irqsave(&iommu->lock, flags);
+ 		if (hw_pass_through && domain_type_is_si(domain))
+ 			ret = intel_pasid_setup_pass_through(iommu, domain,
+ 					dev, PASID_RID2PASID);
+ 		else
+ 			ret = intel_pasid_setup_second_level(iommu, domain,
+ 					dev, PASID_RID2PASID);
+-		spin_unlock(&iommu->lock);
++		spin_unlock_irqrestore(&iommu->lock, flags);
+ 		if (ret) {
+ 			dev_err(dev, "Setup RID2PASID failed\n");
+ 			dmar_remove_one_dev_info(dev);
 -- 
-2.17.1
+2.25.1
 
