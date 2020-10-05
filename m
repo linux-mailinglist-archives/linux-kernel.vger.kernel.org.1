@@ -2,170 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7C4282EAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 03:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E64282EAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 03:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725873AbgJEBoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 21:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        id S1725870AbgJEBtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 21:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgJEBoS (ORCPT
+        with ESMTP id S1725841AbgJEBtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 21:44:18 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0577C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 18:44:17 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id o5so7680774wrn.13
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 18:44:17 -0700 (PDT)
+        Sun, 4 Oct 2020 21:49:08 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79919C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 18:49:06 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id b4so1402469vkh.9
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 18:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lwACq6EY+00lWsh3rNkUGyKYCrtYeYAMaw1jRuUMdvs=;
-        b=fNg5L3S+yHkDMcPhytLgg77oXhuGNesWJz1Wby+q2X5qI+BlWOuCZdCreZagdPpykA
-         hVChIHuVuwG4JEHlHrkcdP5O6izL9Fagv1e5d9WkRXvAgyq2c8zdN/mgIoF1JbLj+LlY
-         IXXuboAELVu6iL1Yu2NzIclkeJP271fhX8O8JQ8/7wzQtjgVwLFxmkzwHPbkOXdtjKze
-         Q+dl7geC9CM1zgW4IlZ0ief7jL3WP0fvTz3DFhdqAybB18Aw1uD7Tw1R7s2EQP5yqatM
-         np4RWoVtRE9Iq0QRodksw1cK7WtYQvIMrk8TA7+sCbam+Kj8kF9LZGqiaF/GNLt4uiK9
-         eFhA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2lmMV2Y8mISG/tvEWlp6fnU0SdlI2sIGYtkotIAtRLw=;
+        b=nnl422yTOPm6IkjE14WBio3h2Icx2/pcDWxb45tgMnk31zxzH7+tuWqYKj5XSTm+dr
+         zfpvH49lM5TBLAWOaNuyfZpXsyjpPIp3TSJ6Wx9Gn47bRWr7ZSJsVpalVwWRpWVzLiQv
+         WFb8GdZkYiLmazRgEepaYR9B0sfsPxR9a4clo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lwACq6EY+00lWsh3rNkUGyKYCrtYeYAMaw1jRuUMdvs=;
-        b=VbIxCBSBHuQI7MF3Lk2372CUFE+O47eD/S3zg/XGMCqEHFzrOFqPWzhrQWhi31QjtH
-         HpaIRafzNxWezMfaclZ55pmFeFTS/a48cYQiqEl0Fwa9AwBkF4278C2RLUQxJngtIjHo
-         9/QrCExCXmbFsSjbvAtSFLnnGbd6tRTwzXUgyLjtJWgXg7GMvNhntny85gZ57E+bX4Df
-         ogWDgadYrqsQXf2HDs2MmelfZT/8Jifhtp923jQ+gmEtalFcaH1i5gCUVMnuBCmZ+cVu
-         HnBHAV3HDY732TznQA6MsapSqWYfaAyIYp2FSln+SDeXZ4JHe3MhGZsLfCi3ztPiMzuF
-         lwzw==
-X-Gm-Message-State: AOAM532DrFaZU5aOREava8MgzIp4k3AzNqYV4uzC096Mt+jJAEiOf0lg
-        H1yj/Q/j1DWtw9cm5bMcslhpYXvgQzb22A==
-X-Google-Smtp-Source: ABdhPJxsq+kWrH67eZyvDx8Cy5yRg/8erdAlDa9QjbtL9+0FsHS5K3VJ74xw7Q3p98KM4TjZwG6e/Q==
-X-Received: by 2002:a5d:4c4c:: with SMTP id n12mr14403425wrt.162.1601862255972;
-        Sun, 04 Oct 2020 18:44:15 -0700 (PDT)
-Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id s19sm6745390wmc.41.2020.10.04.18.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 18:44:15 -0700 (PDT)
-From:   Jann Horn <jannh@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH resend] seccomp: Make duplicate listener detection non-racy
-Date:   Mon,  5 Oct 2020 03:44:01 +0200
-Message-Id: <20201005014401.490175-1-jannh@google.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2lmMV2Y8mISG/tvEWlp6fnU0SdlI2sIGYtkotIAtRLw=;
+        b=bzAbivMsjiLMYdFN9ew6YoEKXTZHHvEsVL8u/53F1ChVPoxo12dDackoX7f2+3eRwN
+         k0sktJzAYMkb7N3iMsplevJa5Bj9qofB1vDz6nnDzWt0SkkUudV29pOYfl4I30JnvfTU
+         phMOCC7vKivSPiWgUH4CteNk8zajRrwTBxjask2ETQb/U9GDqq2c/bNUbOYViPqYePUz
+         WZ/srYwBJhMwu+LbQT/4skZhRYQq3jokKSv23BgXpPWlRRafyYNyyr6auxtCXLNt6by4
+         mhIdM7IQEH+760pwB5B6JCGunKvMNJ5+OZTWA7J+GK5rv7MrAlJ5pRq55+C7OCXtYGkl
+         JbyQ==
+X-Gm-Message-State: AOAM533PdT4fEsfXLLY9CMH/JUCZVA+VKYgFBHj78jL/a0F7u3t7mYs7
+        OvUk0epnvFZEBGn2XaX51IDIcSLMTt7wnv0Brf/kcA==
+X-Google-Smtp-Source: ABdhPJxVuKZU7HGy8n1aGfozCk+JpbflK7CVf3FkX7vnQkxcs5NLUy3KPbdtKx6uShjXr79sM56BrPINpqDtuPE9sOg=
+X-Received: by 2002:a1f:a905:: with SMTP id s5mr1751735vke.10.1601862545471;
+ Sun, 04 Oct 2020 18:49:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
+ <20201001160154.3587848-7-enric.balletbo@collabora.com> <ee2b40c3-b565-22ed-34f4-4259d546a623@gmail.com>
+In-Reply-To: <ee2b40c3-b565-22ed-34f4-4259d546a623@gmail.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Mon, 5 Oct 2020 09:48:54 +0800
+Message-ID: <CANMq1KDNKsE5oWxsg-zPS1L07dZySjoQc-fRWsXc5ngdi98Kgg@mail.gmail.com>
+Subject: Re: [PATCH v2 06/12] soc: mediatek: pm-domains: Add SMI block as bus
+ protection block
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, init_listener() tries to prevent adding a filter with
-SECCOMP_FILTER_FLAG_NEW_LISTENER if one of the existing filters already
-has a listener. However, this check happens without holding any lock that
-would prevent another thread from concurrently installing a new filter
-(potentially with a listener) on top of the ones we already have.
+On Fri, Oct 2, 2020 at 4:56 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
+>
+>
+>
+> On 01/10/2020 18:01, Enric Balletbo i Serra wrote:
+> > From: Matthias Brugger <mbrugger@suse.com>
+> >
+> > Apart from the infracfg block, the SMI block is used to enable the bus
+> > protection for some power domains. Add support for this block.
+> >
+> > Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > ---
+> >
+> > Changes in v2: None
+> >
+> >   drivers/soc/mediatek/mtk-pm-domains.c | 64 ++++++++++++++++++++-------
+> >   include/linux/soc/mediatek/infracfg.h |  6 +++
+> >   2 files changed, 53 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> > index b5e7c9846c34..38f2630bdd0a 100644
+> > --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> > +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> > @@ -56,8 +56,25 @@
+> >
+> >   #define SPM_MAX_BUS_PROT_DATA               3
+> >
+> > +#define _BUS_PROT(_mask, _set, _clr, _sta, _update) {        \
+> > +             .bus_prot_mask = (_mask),               \
+> > +             .bus_prot_set = _set,                   \
+> > +             .bus_prot_clr = _clr,                   \
+> > +             .bus_prot_sta = _sta,                   \
+> > +             .bus_prot_reg_update = _update,         \
+> > +     }
+> > +
+> > +#define BUS_PROT_WR(_mask, _set, _clr, _sta)         \
+> > +             _BUS_PROT(_mask, _set, _clr, _sta, false)
+> > +
+> > +#define BUS_PROT_UPDATE(_mask, _set, _clr, _sta)             \
+> > +             _BUS_PROT(_mask, _set, _clr, _sta, true)
+> > +
+> >   struct scpsys_bus_prot_data {
+> >       u32 bus_prot_mask;
+> > +     u32 bus_prot_set;
+> > +     u32 bus_prot_clr;
+> > +     u32 bus_prot_sta;
+> >       bool bus_prot_reg_update;
+> >   };
+> >
+> > @@ -69,6 +86,7 @@ struct scpsys_bus_prot_data {
+> >    * @sram_pdn_ack_bits: The mask for sram power control acked bits.
+> >    * @caps: The flag for active wake-up action.
+> >    * @bp_infracfg: bus protection for infracfg subsystem
+> > + * @bp_smi: bus protection for smi subsystem
+> >    */
+> >   struct scpsys_domain_data {
+> >       u32 sta_mask;
+> > @@ -77,6 +95,7 @@ struct scpsys_domain_data {
+> >       u32 sram_pdn_ack_bits;
+> >       u8 caps;
+> >       const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
+> > +     const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
+> >   };
+> >
+> >   struct scpsys_domain {
+> > @@ -86,6 +105,7 @@ struct scpsys_domain {
+> >       int num_clks;
+> >       struct clk_bulk_data *clks;
+> >       struct regmap *infracfg;
+> > +     struct regmap *smi;
+> >   };
+> >
+> >   struct scpsys_soc_data {
+> > @@ -175,9 +195,9 @@ static int _scpsys_bus_protect_enable(const struct scpsys_bus_prot_data *bpd, st
+> >               if (bpd[i].bus_prot_reg_update)
+> >                       regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, mask);
+> >               else
+> > -                     regmap_write(regmap, INFRA_TOPAXI_PROTECTEN_SET, mask);
+> > +                     regmap_write(regmap, bpd[i].bus_prot_set, mask);
+> >
+> > -             ret = regmap_read_poll_timeout(regmap, INFRA_TOPAXI_PROTECTSTA1,
+> > +             ret = regmap_read_poll_timeout(regmap, bpd[i].bus_prot_sta,
+> >                                              val, (val & mask) == mask,
+> >                                              MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
+> >               if (ret)
+> > @@ -193,7 +213,11 @@ static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
+> >       int ret;
+> >
+> >       ret = _scpsys_bus_protect_enable(bpd, pd->infracfg);
+> > -     return ret;
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     bpd = pd->data->bp_smi;
+> > +     return _scpsys_bus_protect_enable(bpd, pd->smi);
 
-Theoretically, this is also a data race: The plain load from
-current->seccomp.filter can race with concurrent writes to the same
-location.
+Not a huge fan or reusing bpd for 2 different things.
 
-Fix it by moving the check into the region that holds the siglock to guard
-against concurrent TSYNC.
+I think this is easier to follow:
 
-(I am not marking this for stable backport because I believe that this does
-not have any implications beyond a theoretical data race and allowing
-userspace to create seccomp filters with weird semantics if userspace
-concurrently installs seccomp filters in a way no benign userspace workload
-would.)
+_scpsys_bus_protect_enable(pd->data->bp_infracfg, pd->infracfg);
+...
+_scpsys_bus_protect_enable(pd->data->bp_smi, pd->smi);
 
-(The "Fixes" tag points to the commit that introduced the theoretical
-data race; concurrent installation of another filter with TSYNC only
-became possible later, in commit 51891498f2da ("seccomp: allow TSYNC and
-USER_NOTIF together").)
 
-Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
-Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
-Signed-off-by: Jann Horn <jannh@google.com>
----
-NOTE: After Tycho gave his Reviewed-by, I've had to adjust the errno
-to -EBUSY (my original patch broke UAPI, good thing we have selftests),
-remove the unused "cur" from init_listener(), and remove the now
-useless initialization of "ret".
-
-resending because the first time I mangled the diff... sorry
-
- kernel/seccomp.c | 38 +++++++++++++++++++++++++++++++-------
- 1 file changed, 31 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 676d4af62103..c359ef4380ad 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1472,13 +1472,7 @@ static const struct file_operations seccomp_notify_ops = {
- 
- static struct file *init_listener(struct seccomp_filter *filter)
- {
--	struct file *ret = ERR_PTR(-EBUSY);
--	struct seccomp_filter *cur;
--
--	for (cur = current->seccomp.filter; cur; cur = cur->prev) {
--		if (cur->notif)
--			goto out;
--	}
-+	struct file *ret;
- 
- 	ret = ERR_PTR(-ENOMEM);
- 	filter->notif = kzalloc(sizeof(*(filter->notif)), GFP_KERNEL);
-@@ -1504,6 +1498,31 @@ static struct file *init_listener(struct seccomp_filter *filter)
- 	return ret;
- }
- 
-+/*
-+ * Does @new_child have a listener while an ancestor also has a listener?
-+ * If so, we'll want to reject this filter.
-+ * This only has to be tested for the current process, even in the TSYNC case,
-+ * because TSYNC installs @child with the same parent on all threads.
-+ * Note that @new_child is not hooked up to its parent at this point yet, so
-+ * we use current->seccomp.filter.
-+ */
-+static bool has_duplicate_listener(struct seccomp_filter *new_child)
-+{
-+	struct seccomp_filter *cur;
-+
-+	/* must be protected against concurrent TSYNC */
-+	lockdep_assert_held(&current->sighand->siglock);
-+
-+	if (!new_child->notif)
-+		return false;
-+	for (cur = current->seccomp.filter; cur; cur = cur->prev) {
-+		if (cur->notif)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /**
-  * seccomp_set_mode_filter: internal function for setting seccomp filter
-  * @flags:  flags to change filter behavior
-@@ -1575,6 +1594,11 @@ static long seccomp_set_mode_filter(unsigned int flags,
- 	if (!seccomp_may_assign_mode(seccomp_mode))
- 		goto out;
- 
-+	if (has_duplicate_listener(prepared)) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	ret = seccomp_attach_filter(flags, prepared);
- 	if (ret)
- 		goto out;
-
-base-commit: fb0155a09b0224a7147cb07a4ce6034c8d29667f
--- 
-2.28.0.806.g8561365e88-goog
-
+> >   }
+> >  [snip]
