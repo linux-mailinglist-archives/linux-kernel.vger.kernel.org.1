@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D3A283361
+	by mail.lfdr.de (Postfix) with ESMTP id A5B07283362
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgJEJfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726057AbgJEJfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:35:47 -0400
+Received: from mga12.intel.com ([192.55.52.136]:50803 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725996AbgJEJfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Oct 2020 05:35:46 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:33761 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEJfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:35:45 -0400
-Received: by mail-oi1-f196.google.com with SMTP id m7so8142222oie.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:35:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fOHq8ttm+axOfCqb3gilUIhzEo0SNEuwrnUmi/HXg9U=;
-        b=ayjZUsUJNo/Hku8gxkjfwW4zSr4FglBPJtP/VdlavXnPlFuQ+t/yoUz2M9wrAmVhCr
-         7F7p1f0qblimMMRiOsPzNFPyMHTbk418B2j8xRnT4XFqR/tO/BQx4fpmBYdWAVYRQEYn
-         aME7iERpF/dh3YqZNrnA3x7m7w2uVkSWK4rOLBqqj5HmZYJGPKqR2bzrYKlRLksqJPTW
-         +sAVnqEJNGsJYdSlanNgUvCo20nwMEpQY812RwjvUW6vAVCjE7+dXlR+UspEx+3Z9V8K
-         zbucboiLWipyAF68fxFkiAC2aQQOJc3iv+QxktF/2QhW3qrbg2dT+LuM1JsdOKpLOfec
-         If8w==
-X-Gm-Message-State: AOAM530J9bhHRHD9YFhtUPZvmaPUlytMNevexL46utMBYTLviubwUd5r
-        SwYj8SRwlG3OH6Z0xKOm7Pxra6ZItzqFh+yNzToDpONlYXQ=
-X-Google-Smtp-Source: ABdhPJxQvtVwBT1CE/ubaIowPCNTvuRGIsiC4PHbnUUYk3h8xeBuuUD9hBlEsEMtLK07G31CeRc3ifBGlIs04D/cMr8=
-X-Received: by 2002:aca:c490:: with SMTP id u138mr3264897oif.54.1601890544653;
- Mon, 05 Oct 2020 02:35:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201005093024.16032-1-geert@linux-m68k.org>
-In-Reply-To: <20201005093024.16032-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 5 Oct 2020 11:35:33 +0200
-Message-ID: <CAMuHMdVqpgro9Qzn39fK9R2-2xDm6LDe6uOB5gSTrdRxbecNXQ@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.9-rc8
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+IronPort-SDR: qQ9DiyjycTSqqTnDHuTj9pZgHTVrQTFqcQ90az9JCKGFP3HnbBR84e26vl2rYHDMnCVeDsWJnN
+ MTbWKoHJkemg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="142755581"
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="142755581"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 02:35:45 -0700
+IronPort-SDR: bz6AhyrVwio06dKoiKbmdtFKhE2a4F1NB0oI4T/AlXgityM+kZs4N5M4uC8ldNGgSXZN7v/RIv
+ 5yGORhHys56Q==
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="516663355"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 02:35:44 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kPMuA-004aFA-Vi; Mon, 05 Oct 2020 12:35:38 +0300
+Date:   Mon, 5 Oct 2020 12:35:38 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 1/4] bitops: Introduce the for_each_set_clump macro
+Message-ID: <20201005093538.GM3956970@smile.fi.intel.com>
+References: <cover.1601679791.git.syednwaris@gmail.com>
+ <dcd0580812ebae079e6f5035b990b195ccc6b709.1601679791.git.syednwaris@gmail.com>
+ <CAHp75VcoGAjrPa7rcORsaDXZLb-n+U3hG0k6O+weMVYweSPVxg@mail.gmail.com>
+ <CACG_h5pianK4DRL5YeuSuN0gv6Jvcndc=_wLCL4QgmZyR=bOMw@mail.gmail.com>
+ <CAHp75VdC+eH0ScksdAVp==HnDMTMY3vVUZM5NZy6mfVSR0YoLA@mail.gmail.com>
+ <20201003125626.GA3732@shinobu>
+ <CAHp75VdfGCnoyOEn9-c0O4cx7t8GRTH+Ux_gYiRvZeOnDyQryg@mail.gmail.com>
+ <CACG_h5roN0dKGYMcZ3BXNzSMAWdU06mAx8NrpuomaubSRfdm-A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACG_h5roN0dKGYMcZ3BXNzSMAWdU06mAx8NrpuomaubSRfdm-A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 11:33 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.9-rc8[1] to v5.9-rc7[3], the summaries are:
->   - build errors: +3/-6
+On Sat, Oct 03, 2020 at 08:38:14PM +0530, Syed Nayyar Waris wrote:
+> On Sat, Oct 3, 2020 at 6:32 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Sat, Oct 3, 2020 at 3:56 PM William Breathitt Gray
+> > <vilhelm.gray@gmail.com> wrote:
+> > > On Sat, Oct 03, 2020 at 03:45:04PM +0300, Andy Shevchenko wrote:
+> > > > On Sat, Oct 3, 2020 at 2:37 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> > > > > On Sat, Oct 3, 2020 at 2:14 PM Andy Shevchenko
+> > > > > <andy.shevchenko@gmail.com> wrote:
+> > > > > > On Sat, Oct 3, 2020 at 2:51 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
 
-  + /kisskb/src/drivers/gpio/gpiolib-cdev.c: error: implicit
-declaration of function 'in_ia32_syscall'
-[-Werror=implicit-function-declaration]:  => 430:6
-  + /kisskb/src/drivers/gpio/gpiolib-cdev.c: error: unknown type name
-'compat_u64':  => 432:4
+...
 
-x86_64/um-all{mod,yes}config
+> > > > > > > +               map[index] &= ~BITMAP_FIRST_WORD_MASK(start);
+> > > > > > > +               map[index] |= value << offset;
+> > > >
+> > > > Side note: I would prefer + 0 here and there, but it's up to you.
+> 
+> Andy what do you mean by the above statement, can you please clarify?
+> Can you please elaborate on the above statement.
 
-  + error: rk3399_gru_sound.c: relocation truncated to fit:
-R_NDS32_WORD_9_PCREL_RELA against `.text':  => (.text+0x6a8)
+Sure. I meant something like
 
-nds32-allyesconfig
+               map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+               map[index + 0] |= value << offset;
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/549738f15da0e5a00275977623be199fbbf7df50/ (all 192 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/a1b8638ba1320e6684aa98233c15255eb803fac7/ (all 192 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
+> > > > > > > +               map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > > > > > > +               map[index + 1] |= (value >> space);
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+With Best Regards,
+Andy Shevchenko
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
