@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF13283521
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04C2283525
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgJELnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:43:03 -0400
-Received: from mga12.intel.com ([192.55.52.136]:61919 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJELnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:43:03 -0400
-IronPort-SDR: jBPAHEFpqM9OQdwJ01UoeWgBqcttLy+m4glL0WddQFS4YhGA8sjuFNFCh+FZjeCURevsrF3+Wz
- uPdixApzgOfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="142779237"
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="142779237"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 04:43:01 -0700
-IronPort-SDR: VDNSVHaXebCyecFKJNH0q24ztWK1mpo2jx7buzjkD5BF/lc4fl1TSxSDAr3xtwP9EQqSTOBx0J
- bJnnJgEFkMWg==
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="459464201"
-Received: from bclindho-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.32.27])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 04:42:52 -0700
-Date:   Mon, 5 Oct 2020 14:42:50 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201005114250.GB181338@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
- <20201005084554.GA3403@infradead.org>
+        id S1725940AbgJELsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:48:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50683 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725914AbgJELsI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:48:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601898485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AD/nE9PKmOMsBgMmJ0SSv5yafe9PfgDunkARCL4humU=;
+        b=MMJrVoPJVRPp59D4xSan+zCO0pqX8LhOqlRHV8QE/Iu4/FjEo0ESw1O2BKsY2jKorISUUE
+        SDDsZjttlc/5kHQeVwIOW9eIFzANwtfZwvheXTx+GASAGgHINJnXloDvl0uS4cLgY+efjo
+        t9cctzAsmoTU2G3KEm4vQc3a2cQI0Tc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-QtlBZf7BOVCIUTgOh1sBSw-1; Mon, 05 Oct 2020 07:48:03 -0400
+X-MC-Unique: QtlBZf7BOVCIUTgOh1sBSw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12E3710866AB;
+        Mon,  5 Oct 2020 11:48:02 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-115-185.ams2.redhat.com [10.36.115.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A6627747B0;
+        Mon,  5 Oct 2020 11:47:54 +0000 (UTC)
+From:   Mohammed Gamal <mgamal@redhat.com>
+To:     linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        vkuznets@redhat.com, Tianyu.Lan@microsoft.com, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org,
+        Mohammed Gamal <mgamal@redhat.com>
+Subject: [PATCH RESEND] hv: clocksource: Add notrace attribute to read_hv_sched_clock_*() functions
+Date:   Mon,  5 Oct 2020 13:47:44 +0200
+Message-Id: <20201005114744.1149630-1-mgamal@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005084554.GA3403@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 09:45:54AM +0100, Christoph Hellwig wrote:
-> On Sat, Oct 03, 2020 at 04:39:25PM +0200, Greg KH wrote:
-> > > @@ -0,0 +1,173 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > 
-> > You use gpl-only header files in this file, so how in the world can it
-> > be bsd-3 licensed?
-> > 
-> > Please get your legal department to agree with this, after you explain
-> > to them how you are mixing gpl2-only code in with this file.
-> > 
-> > > +// Copyright(c) 2016-18 Intel Corporation.
-> > 
-> > Dates are hard to get right :(
-> 
-> As is comment formatting apparently.  Don't use // comments for anything
-> but the SPDX header, please.
+When selecting function_graph tracer with the command:
+ # echo function_graph > /sys/kernel/debug/tracing/current_tracer
 
-I'll bring some context to this.
+The kernel crashes with the following stack trace:
 
-When I moved into using SPDX, I took the example from places where I saw
-also the copyright using "//". That's the reason for the choice.
+[69703.122389] BUG: stack guard page was hit at 000000001056545c (stack is 00000000fa3f8fed..0000000005d39503)
+[69703.122403] kernel stack overflow (double-fault): 0000 [#1] SMP PTI
+[69703.122413] CPU: 0 PID: 16982 Comm: bash Kdump: loaded Not tainted 4.18.0-236.el8.x86_64 #1
+[69703.122420] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
+[69703.122433] RIP: 0010repare_ftrace_return+0xa/0x110
+[69703.122458] Code: 05 00 0f 0b 48 c7 c7 10 ca 69 ae 0f b6 f0 e8 4b 52 0c 00 31 c0 eb ca 66 0f 1f 84 00 00 00 00 00 55 48 89 e5 41 56 41 55 41 54 <53> 48 83 ec 18 65 48 8b 04 25 28 00 00 00 48 89 45 d8 31 c0 48 85
+[69703.122467] RSP: 0018:ffffbd6d01118000 EFLAGS: 00010086
+[69703.122476] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000003
+[69703.122484] RDX: 0000000000000000 RSI: ffffbd6d011180d8 RDI: ffffffffadce7550
+[69703.122491] RBP: ffffbd6d01118018 R08: 0000000000000000 R09: ffff9d4b09266000
+[69703.122498] R10: ffff9d4b0fc04540 R11: ffff9d4b0fc20a00 R12: ffff9d4b6e42aa90
+[69703.122506] R13: ffff9d4b0fc20ab8 R14: 00000000000003e8 R15: ffffbd6d0111837c
+[69703.122514] FS:  00007fd5f2588740(0000) GS:ffff9d4b6e400000(0000) knlGS:0000000000000000
+[69703.122521] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[69703.122528] CR2: ffffbd6d01117ff8 CR3: 00000000565d8001 CR4: 00000000003606f0
+[69703.122538] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[69703.122545] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[69703.122552] Call Trace:
+[69703.122568]  ftrace_graph_caller+0x6b/0xa0
+[69703.122589]  ? read_hv_sched_clock_tsc+0x5/0x20
+[69703.122599]  read_hv_sched_clock_tsc+0x5/0x20
+[69703.122611]  sched_clock+0x5/0x10
+[69703.122621]  sched_clock_local+0x12/0x80
+[69703.122631]  sched_clock_cpu+0x8c/0xb0
+[69703.122644]  trace_clock_global+0x21/0x90
+[69703.122655]  ring_buffer_lock_reserve+0x100/0x3c0
+[69703.122671]  trace_buffer_lock_reserve+0x16/0x50
+[69703.122683]  __trace_graph_entry+0x28/0x90
+[69703.122695]  trace_graph_entry+0xfd/0x1a0
+[69703.122705]  ? read_hv_clock_tsc_cs+0x10/0x10
+[69703.122714]  ? sched_clock+0x5/0x10
+[69703.122723]  prepare_ftrace_return+0x99/0x110
+[69703.122734]  ? read_hv_clock_tsc_cs+0x10/0x10
+[69703.122743]  ? sched_clock+0x5/0x10
+[...]
 
-I.e.
+Setting the notrace attribute for read_hv_sched_clock_msr() and
+read_hv_sched_clock_tsc() fixes it
 
-$ git grep "// Copyright" | wc -l
-2123
+Fixes: bd00cd52d5be ("clocksource/drivers/hyperv: Add Hyper-V specific
+sched clock function")
+Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+---
+ drivers/clocksource/hyperv_timer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I don't care, which one to use, just wondering is it done in the wrong
-way in all these sites?
+diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+index 09aa44cb8a91d..ba04cb381cd3f 100644
+--- a/drivers/clocksource/hyperv_timer.c
++++ b/drivers/clocksource/hyperv_timer.c
+@@ -341,7 +341,7 @@ static u64 notrace read_hv_clock_tsc_cs(struct clocksource *arg)
+ 	return read_hv_clock_tsc();
+ }
+ 
+-static u64 read_hv_sched_clock_tsc(void)
++static u64 notrace read_hv_sched_clock_tsc(void)
+ {
+ 	return (read_hv_clock_tsc() - hv_sched_clock_offset) *
+ 		(NSEC_PER_SEC / HV_CLOCK_HZ);
+@@ -404,7 +404,7 @@ static u64 notrace read_hv_clock_msr_cs(struct clocksource *arg)
+ 	return read_hv_clock_msr();
+ }
+ 
+-static u64 read_hv_sched_clock_msr(void)
++static u64 notrace read_hv_sched_clock_msr(void)
+ {
+ 	return (read_hv_clock_msr() - hv_sched_clock_offset) *
+ 		(NSEC_PER_SEC / HV_CLOCK_HZ);
+-- 
+2.26.2
 
-/Jarkko
