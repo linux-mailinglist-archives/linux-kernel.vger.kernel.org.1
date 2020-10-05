@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0036283C79
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0179283C85
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgJEQ3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:29:06 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4302 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728945AbgJEQ3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:29:06 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7b499b0001>; Mon, 05 Oct 2020 09:28:11 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
- 2020 16:29:05 +0000
-Subject: Re: [RFC PATCH v3 1/2] ext4/xfs: add page refcount helper
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20201001181715.17416-1-rcampbell@nvidia.com>
- <20201001181715.17416-2-rcampbell@nvidia.com> <20201002055627.GA8891@lst.de>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <2789432c-e3b2-e3f4-1904-c96f03ea9c2a@nvidia.com>
-Date:   Mon, 5 Oct 2020 09:29:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20201002055627.GA8891@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601915291; bh=r9u8GXqftmRJy6EtN3cah6v+xD2lZJO4Ups13dnHtFk=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=W6dT2vN9G+XROLp0BSTe855+S4z08HJa3Gfh0W6r0EKEq7vB8Jay6CRRfwcHtuXIV
-         2o1YotZGXN+vg+kCc/KhuaYs27wWp6YGSyLuE/N7aVfn0JPCTweWnDR/yXR2s0hvna
-         nfTBMUxKO63a04ZJvvJofytj4zqZ6oSBkQ23/cqTQazVfJBr8M3LPP22wkc4NihHJW
-         kk8qK2PQnJjcZUrZ+0aFnklh9zRZEPG5qnNhwFjAm9hk7GNvjNM7NfRsLfaJvIEP9p
-         8vssxx+uVESJYNYHFhYea8xGw9/17BMUVyDYNLXgElPUOKCAxR75lxpOUQlst6oZf6
-         V61ahFjm77LGQ==
+        id S1728989AbgJEQai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:30:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:52554 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727006AbgJEQai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:30:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AE1711D4;
+        Mon,  5 Oct 2020 09:30:37 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.49.124])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1FA5B3F66B;
+        Mon,  5 Oct 2020 09:30:33 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+Cc:     amitk@kernel.org, corbet@lwn.net, daniel.lezcano@linaro.org,
+        lukasz.luba@arm.com, Dietmar.Eggemann@arm.com, qperret@google.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
+        rjw@rjwysocki.net
+Subject: [RESEND][PATCH v2 3/3] dt-bindings: thermal: update sustainable-power with abstract scale
+Date:   Mon,  5 Oct 2020 17:30:16 +0100
+Message-Id: <20201005163016.13650-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Update the documentation for the binding 'sustainable-power' and allow
+to provide values in an abstract scale. It is required when the cooling
+devices use an abstract scale for their power values.
 
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
 
-On 10/1/20 10:56 PM, Christoph Hellwig wrote:
-> On Thu, Oct 01, 2020 at 11:17:14AM -0700, Ralph Campbell wrote:
->> There are several places where ZONE_DEVICE struct pages assume a reference
->> count == 1 means the page is idle and free. Instead of open coding this,
->> add a helper function to hide this detail.
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> 
-> Looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
+Hi Rob,
+ 
+This is a fixed patch for DT binding, which now passes the
+make dt_binding_check (I have changed tabs into spaces).
+The former patch error that I have received is here [1]. 
 
-Thanks for the review.
-I'll resend this as an independent patch.
+Regards,
+Lukasz
+
+[1] https://lore.kernel.org/linux-pm/20201002114426.31277-1-lukasz.luba@arm.com/T/#md4b02a3ada592df67446566180643ba56788c159
+
+ .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+index 3ec9cc87ec50..c445927749c3 100644
+--- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
++++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+@@ -99,10 +99,15 @@ patternProperties:
+       sustainable-power:
+         $ref: /schemas/types.yaml#/definitions/uint32
+         description:
+-          An estimate of the sustainable power (in mW) that this thermal zone
+-          can dissipate at the desired control temperature. For reference, the
+-          sustainable power of a 4-inch phone is typically 2000mW, while on a
+-          10-inch tablet is around 4500mW.
++          An estimate of the sustainable power (in mW or in an abstract scale)
++          that this thermal zone can dissipate at the desired control
++          temperature. For reference, the sustainable power of a 4-inch phone
++          is typically 2000mW, while on a 10-inch tablet is around 4500mW.
++
++          It is possible to express the sustainable power in an abstract
++          scale. This is the case when the related cooling devices use also
++          abstract scale to express their power usage. The scale must be
++          consistent.
+ 
+       trips:
+         type: object
+-- 
+2.17.1
+
