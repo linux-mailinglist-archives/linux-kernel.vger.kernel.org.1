@@ -2,62 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408E42836D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7712836D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgJENpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgJENpb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:45:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060C0C0613CE;
-        Mon,  5 Oct 2020 06:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OxXif+fXbfucPONjNwEH+NLF4UmeyrvEGunwmbnw5JM=; b=R096EP6yyDiow6cJ7rHZnAPYG8
-        XTxa1BqFo8QeU/Zouw5LAZK387teemOLgybXYU7Vzp6kQFvYFUk6IQQZvnuoGBZnawLf4Fx4TZycH
-        jKEJnWxy/No8eqiC1ga+ReKT3sDhk/wWZuUZZT3cE02wi5Cq4eMSXlOqLpf2NBCe11ZfcRA1ijbzO
-        C7eU8Q5i3RfPquMlr4X68CN130Kd8vlWEy+t/bkyayH7L5e4n7H8GM8OYNOJriAP1cy7Uhbd+SWdx
-        giXnvVKjJ+khNMi/k+ef1fk62uzplk0Ff9foz/Fd/8hlF9+vQp1ogsQcd4ZIlDJaCP/uguhdSV2d7
-        u0OkvdwA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPQnw-0003BW-EP; Mon, 05 Oct 2020 13:45:28 +0000
-Date:   Mon, 5 Oct 2020 14:45:28 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        ??rjan Eide <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
- re-using the system heap
-Message-ID: <20201005134528.GA11644@infradead.org>
-References: <20201003040257.62768-1-john.stultz@linaro.org>
- <20201003040257.62768-8-john.stultz@linaro.org>
+        id S1726396AbgJENpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:45:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:47844 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725936AbgJENpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:45:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96F92106F;
+        Mon,  5 Oct 2020 06:45:39 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B6933F70D;
+        Mon,  5 Oct 2020 06:45:37 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 14:45:34 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
+        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
+        hjl.tools@gmail.com, mpe@ellerman.id.au, tony.luck@intel.com,
+        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+Message-ID: <20201005134534.GT6642@arm.com>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201003040257.62768-8-john.stultz@linaro.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200929205746.6763-1-chang.seok.bae@intel.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How is this going to deal with VIVT caches?
+On Tue, Sep 29, 2020 at 01:57:42PM -0700, Chang S. Bae wrote:
+> During signal entry, the kernel pushes data onto the normal userspace
+> stack. On x86, the data pushed onto the user stack includes XSAVE state,
+> which has grown over time as new features and larger registers have been
+> added to the architecture.
+> 
+> MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+> typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+> compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+> constant indicates to userspace how much data the kernel expects to push on
+> the user stack, [2][3].
+> 
+> However, this constant is much too small and does not reflect recent
+> additions to the architecture. For instance, when AVX-512 states are in
+> use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
+> 
+> The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+> cause user stack overflow when delivering a signal.
+> 
+> In this series, we suggest a couple of things:
+> 1. Provide a variable minimum stack size to userspace, as a similar
+>    approach to [5]
+> 2. Avoid using a too-small alternate stack
+
+I can't comment on the x86 specifics, but the approach followed in this
+series does seem consistent with the way arm64 populates
+AT_MINSIGSTKSZ.
+
+I need to dig up my glibc hacks for providing a sysconf interface to
+this...
+
+Cheers
+---Dave
+
+> 
+> [1]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/bits/sigstack.h;h=b9dca794da093dc4d41d39db9851d444e1b54d9b;hb=HEAD
+> [2]: https://www.gnu.org/software/libc/manual/html_node/Signal-Stack.html
+> [3]: https://man7.org/linux/man-pages/man2/sigaltstack.2.html
+> [4]: https://bugzilla.kernel.org/show_bug.cgi?id=153531
+> [5]: https://blog.linuxplumbersconf.org/2017/ocw/system/presentations/4671/original/plumbers-dm-2017.pdf
+> 
+> Chang S. Bae (4):
+>   x86/signal: Introduce helpers to get the maximum signal frame size
+>   x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+>   x86/signal: Prevent an alternate stack overflow before a signal
+>     delivery
+>   selftest/x86/signal: Include test cases for validating sigaltstack
+> 
+>  arch/x86/ia32/ia32_signal.c               |  11 +-
+>  arch/x86/include/asm/elf.h                |   4 +
+>  arch/x86/include/asm/fpu/signal.h         |   2 +
+>  arch/x86/include/asm/sigframe.h           |  25 +++++
+>  arch/x86/include/uapi/asm/auxvec.h        |   6 +-
+>  arch/x86/kernel/cpu/common.c              |   3 +
+>  arch/x86/kernel/fpu/signal.c              |  20 ++++
+>  arch/x86/kernel/signal.c                  |  66 +++++++++++-
+>  tools/testing/selftests/x86/Makefile      |   2 +-
+>  tools/testing/selftests/x86/sigaltstack.c | 126 ++++++++++++++++++++++
+>  10 files changed, 258 insertions(+), 7 deletions(-)
+>  create mode 100644 tools/testing/selftests/x86/sigaltstack.c
+> 
+> --
+> 2.17.1
+> 
