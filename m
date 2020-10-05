@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D29283756
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F2F28375C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgJEOIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        id S1726078AbgJEOJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgJEOIR (ORCPT
+        with ESMTP id S1725903AbgJEOJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:08:17 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55145C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:08:17 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id w11so11063312lfn.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Q/zdfYEifwQYC1tCHHSSSZhx/UYtdSVO8Lzn1xEk2s=;
-        b=HUdALV59wtUBoJ6qxMJ35CEWIX+kDFGUqyqa0JuG7XefbPovQk/QdtJLMynscuYes1
-         cm6rmsiYvFDdhiI7XMA4omMGULLYDlVlqO3o71GskjCJOngVweiAuhTUNnaSrQ3dUb5M
-         0emqz/GMzEqPS+vJ4moe08uS/AYC2ud+RZvHokZdbb/Ff7kZeJlLTumb5lubX8WWat16
-         lr79k6sez9K77pKHdQRtI9Chb8dYmd/1Q/mi+AMj15wfbwpFkqVzAcLfOwtKElboKx6F
-         MaudUe6y7wAcHNU/P5DaX12P3+X9GpOimUzi5cXK1hkF5VXwryRHLfgiCMQ/7mJz6UbJ
-         Zuxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Q/zdfYEifwQYC1tCHHSSSZhx/UYtdSVO8Lzn1xEk2s=;
-        b=qwpDIeFQ04sNJx/KxkvMW4gYvEKmmOSuYfBWQ88+UyNQhId132W6qDm2+kif2PSU0A
-         CQhnjDevU6AsvDdb1riD+PAFCNc2hRDC02d0o6o75F5g4yov3cclHnb8hV0sHboGRczz
-         kSw6OWYD/jpgmS2e2uwADDT4fT8SwIDshE4XSD0dE2I9UvIUZz2SXzTLxp97ialsx71d
-         tfFaIBcd9HI1CT2iH9pvl9JVlfk0VhHAqd4DO92XpOrqNRS1FUVVX3R0PMEbZt5hgX/W
-         I/MB6yWhJK0q5rFfDydj57dW5FvPlHcO6fRlPZFlQpkpLyliekc9q6stphLfwvaU2WvP
-         bgIw==
-X-Gm-Message-State: AOAM533AHoaalFmmc5wKv9clUQcJf88pmOXjMbiwppsp7entNhcy+o00
-        /Bpc9aVKcfarxhKMZHogVbxB7SiOoIF1urM3/azItHoFGbZQZQ==
-X-Google-Smtp-Source: ABdhPJxkJYiXlHS/tZKafFAGQmDTcC4D+vwZudITpZIRxWhyG5FyXFCr7ARBvDoGTxXlfBl1KTeBS1r7cukUXIYqVgY=
-X-Received: by 2002:a19:cb12:: with SMTP id b18mr6308085lfg.417.1601906895743;
- Mon, 05 Oct 2020 07:08:15 -0700 (PDT)
+        Mon, 5 Oct 2020 10:09:47 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9F3C0613CE;
+        Mon,  5 Oct 2020 07:09:47 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 6A10CC63C3; Mon,  5 Oct 2020 15:09:44 +0100 (BST)
+Date:   Mon, 5 Oct 2020 15:09:44 +0100
+From:   Sean Young <sean@mess.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH V3 1/2] bindings: media: gpio-ir-receiver: add
+ linux,autosuspend-period property
+Message-ID: <20201005140944.GA8102@gofer.mess.org>
+References: <20200922190807.6830-1-qiangqing.zhang@nxp.com>
+ <20200922190807.6830-2-qiangqing.zhang@nxp.com>
+ <20200929155201.GA665464@bogus>
+ <20201003084656.GA29917@gofer.mess.org>
+ <CAL_JsqKEqG_Xous_gf=t9LTY8ZGzwcCYNjMDEGt8bA17JUgW-g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201003063143.13093-1-foxhlchen@gmail.com> <ca694fc8-5f1b-ebf0-b891-c9a20225704f@redhat.com>
-In-Reply-To: <ca694fc8-5f1b-ebf0-b891-c9a20225704f@redhat.com>
-From:   Fox Chen <foxhlchen@gmail.com>
-Date:   Mon, 5 Oct 2020 22:08:04 +0800
-Message-ID: <CAC2o3D+X48sR4kFi9nS_atpTuSRWDnX92RD3uCUeh9AHXGnaNw@mail.gmail.com>
-Subject: Re: [Cluster-devel] [PATCH] gfs2: gfs2_read_sb: put gfs2_assert
- inside the loop
-To:     Andrew Price <anprice@redhat.com>
-Cc:     rpeterso@redhat.com, agruenba@redhat.com, cluster-devel@redhat.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKEqG_Xous_gf=t9LTY8ZGzwcCYNjMDEGt8bA17JUgW-g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 9:23 PM Andrew Price <anprice@redhat.com> wrote:
->
-> On 03/10/2020 07:31, Fox Chen wrote:
-> > for (x = 2;; x++) {
-> >          ...
-> >          gfs2_assert(sdp, x <= GFS2_MAX_META_HEIGHT);  <--- after
-> >          ...
-> >          if (d != sdp->sd_heightsize[x - 1] || m)
-> >                  break;
-> >          sdp->sd_heightsize[x] = space;
-> > }
+On Mon, Oct 05, 2020 at 08:36:39AM -0500, Rob Herring wrote:
+> On Sat, Oct 3, 2020 at 3:46 AM Sean Young <sean@mess.org> wrote:
 > >
-> > sdp->sd_max_height = x
-> > gfs2_assert(sdp, sdp->sd_max_height <= GFS2_MAX_META_HEIGHT) <--- before
+> > On Tue, Sep 29, 2020 at 10:52:01AM -0500, Rob Herring wrote:
+> > > On Wed, Sep 23, 2020 at 03:08:06AM +0800, Joakim Zhang wrote:
+> > > > Add linux,autosuspend-period property for gpio ir receiver. Some cpuidle
+> > > > systems wake from idle may take a bit long time, for such case, need
+> > > > disable cpuidle temporarily.
+> > > >
+> > > > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> > > > ---
+> > > > ChangeLogs:
+> > > > V1->V2:
+> > > >     * New add.
+> > > > V2->V3:
+> > > >     * linux,autosuspend-period = 125; -> linux,autosuspend-period = <125>;
+> > > > ---
+> > > >  Documentation/devicetree/bindings/media/gpio-ir-receiver.txt | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
+> > > > index 58261fb7b408..e1447c9b0e26 100644
+> > > > --- a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
+> > > > +++ b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
+> > > > @@ -7,6 +7,8 @@ Required properties:
+> > > >  Optional properties:
+> > > >     - linux,rc-map-name: see rc.txt file in the same
+> > > >       directory.
+> > > > +        - linux,autosuspend-period: autosuspend delay time,
+> > > > +          the unit is milisecond.
+> > >
+> > > What makes this linux specific?
 > >
-> > Before this patch, gfs2_assert is put outside of the loop of
-> > sdp->sd_heightsize[x] calculation. When something goes wrong,
->
-> So this looks related to one of the recent syzbot reports, where the
-> "something goes wrong" is the block size in the on-disk superblock was
-> zeroed and that leads eventually to this out-of-bounds write. The
-> correct fix in that case would be to add a validity check for the block
-> size in gfs2_check_sb().
->
+> > Good point. "linux,autosuspend-period" does not say what is being
+> > suspended either. How about "cpuidle-suspend-period" instead?
+> 
+> 'cpuidle' is a Linuxism. And you also need a unit suffix.
+> 
+> I'm not clear on how autosuspend which is generally how long a
+> peripheral is idle before runtime suspending it relates to this which
+> seems to be concerned with cpu wakeup latency. I'm assuming you need
+> to wake up within a certain time period to capture GPIO edges. Don't
+> you know what this time would be based on IR data rates and can
+> provide that constraint to cpuidle?
+> 
+> Also, we can set autosuspend times from sysfs. Why do you need to do
+> this from DT?
 
-Yes, I saw this bug from the syzbot report and I though instead of
-KASAN gfs2_assert should be able to catch it so I proposed this patch.
-:)
+This driver collects the timings of the edges on the gpio line, and sends
+them to the IR decoders. Waking up the cpu out of cpuidle causes random
+delays and therefore timing are off, on some hardware. This setting turns
+off cpuidle for a period to prevent these problems.
 
-thank you both for your comments.
+Note that on this soc cpuidle is causing huge delays, 500 microseconds or so.
 
 
-fox
+Sean
