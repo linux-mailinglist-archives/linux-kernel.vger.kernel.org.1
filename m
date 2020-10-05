@@ -2,234 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DEC283CF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAAE283D00
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbgJEQ7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:59:30 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:35665 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgJEQ73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:59:29 -0400
-Received: by mail-ej1-f67.google.com with SMTP id u21so13077480eja.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 09:59:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=9xdFXdrMJn7e4RT0XELuQJR5xwLkLE02GAd02MCi5hg=;
-        b=XR300pT2O0ev70NukXxSMsfAG5hKC1u7T0i2zxKMzpbHGqZo5sFn2NCbg2WrdyuYvi
-         mbHegcdXQpDXz3itvBWNnkdAM8hvAvK2HvPgrc/vWcBib11M5ytoa+t8mZpY32XStj+t
-         n2obt64K4GStZV54MOf5qkNW7lRvLAa4KMwucdPJQQWAB1QN1Qss8uG5A+N0tPCdUPzS
-         UT8Mcy9zvn/w9aIWkXbVElpo4T0kutRbrVZr8HDvXB7oCqdk6kwpp4oJ2YRHE6NAw8C6
-         4McMftFP/1tnQ4g8Q3iJnfEWCAHz8f/NRxseDS9yNCvIYwTRAhyHLSdW1wCHyX3GfYm8
-         Fqww==
-X-Gm-Message-State: AOAM533vPWNEd8aiNIS4mWLHqQVUMzTpizWN6pAyqeRysMfA0xjwB0BO
-        EgpwvjYVK0G3+evHd/xM7+w=
-X-Google-Smtp-Source: ABdhPJzuMuHWwURAOEzsGEOe3utNQreoflFTlZr+gen8TuQEDbd1QOzdm/vuD3J/Wl5bmF9e0AYVfQ==
-X-Received: by 2002:a17:906:22d8:: with SMTP id q24mr605502eja.479.1601917166686;
-        Mon, 05 Oct 2020 09:59:26 -0700 (PDT)
-Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
-        by smtp.gmail.com with ESMTPSA id 12sm274022edw.50.2020.10.05.09.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 09:59:25 -0700 (PDT)
-References: <20200928082643.133257-1-hsiang023167@gmail.com>
- <8272de8d-9868-d419-e2bb-d5e2c0614b63@arm.com>
- <20201002053812.GA176142@ubuntu>
- <57e6b3d3-22cd-0533-cfe7-e689c7983fcc@arm.com>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Patrick Bellasi <patrick.bellasi@matbug.net>
-To:     Yun Hsiang <hsiang023167@gmail.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
-Subject: Re: [PATCH 1/1] sched/uclamp: release per-task uclamp control if
- user set to default value
-In-reply-to: <57e6b3d3-22cd-0533-cfe7-e689c7983fcc@arm.com>
-Message-ID: <87o8lg7gpi.derkling@matbug.net>
-Date:   Mon, 05 Oct 2020 18:58:17 +0200
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1727802AbgJERDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:03:30 -0400
+Received: from relay.sw.ru ([185.231.240.75]:50324 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726320AbgJERDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:03:30 -0400
+Received: from [172.16.25.93] (helo=amikhalitsyn-pc0.sw.ru)
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
+        id 1kPTsk-0039Uv-Gp; Mon, 05 Oct 2020 20:02:38 +0300
+From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+To:     miklos@szeredi.hu
+Cc:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] overlayfs: add OVL_IOC_GETINFOFD ioctl that opens ovlinfofd
+Date:   Mon,  5 Oct 2020 20:02:27 +0300
+Message-Id: <20201005170227.11340-1-alexander.mikhalitsyn@virtuozzo.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
+References: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Second variant of possible interface to get source-dirs fhandles from
+userspace. OVL_IOC_GETINFOFD ioctls opens special [ovlinfofd] descriptor
+which is really just seq_file. When read from this seq_file we will get
+something like this:
+===
+numlower: 2
+L fhandle-bytes:c fhandle-type:1 f_handle:9685a2160200000000000000
+L fhandle-bytes:c fhandle-type:1 f_handle:c74cd5c10300000000000000
+U fhandle-bytes:c fhandle-type:1 f_handle:e45842640400000000000000
+W fhandle-bytes:c fhandle-type:1 f_handle:d393374d0500000000000000
+===
 
-Hi Yun, Dietmar,
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: Andrei Vagin <avagin@gmail.com>
+Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: David Howells <dhowells@redhat.com>
+Cc: linux-unionfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+---
+ fs/overlayfs/readdir.c | 171 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 171 insertions(+)
 
-On Mon, Oct 05, 2020 at 14:38:18 +0200, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote...
-
-> + Patrick Bellasi <patrick.bellasi@matbug.net>
-> + Qais Yousef <qais.yousef@arm.com>
->
-> On 02.10.20 07:38, Yun Hsiang wrote:
->> On Wed, Sep 30, 2020 at 03:12:51PM +0200, Dietmar Eggemann wrote:
->
-> [...]
->
->>> On 28/09/2020 10:26, Yun Hsiang wrote:
->>>> If the user wants to release the util clamp and let cgroup to control it,
->>>> we need a method to reset.
->>>>
->>>> So if the user set the task uclamp to the default value (0 for UCLAMP_MIN
->>>> and 1024 for UCLAMP_MAX), reset the user_defined flag to release control.
->>>>
->>>> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
->>>
->>> could you explain with a little bit more detail why you would need this
->>> feature?
->>>
->>> Currently we assume that once the per-task uclamp (user-defined) values
->>> are set, you could only change the effective uclamp values of this task
->>> by (1) moving it into another taskgroup or (2) changing the system
->>> default uclamp values.
->>>
->> 
->> Assume a module that controls group (such as top-app in android) uclamp and
->> task A in the group.
->> Once task A set uclamp, it will not be affected by the group setting.
-
-That's not true, and Dietmar example here after is correct.
-
-We call it uclamp since the values are clamps, which are always
-aggregate somehow at different levels. IOW, a task has never a full free
-choice of the final effective value.
-
-> This depends on the uclamp values of A and /TG (the task group).
->
-> Both uclamp values are max aggregated (max aggregation between
-> system-wide, taskgroup and task values for UCLAMP_MIN and UCLAMP_MAX).
->
-> (1) system-wide: /proc/sys/kernel/sched_util_clamp_[min,max]
->
-> (2) taskgroup (hierarchy): /sys/fs/cgroup/cpu/TG/cpu.uclamp.[min,max]
->
-> (3) task A:
->
-> Example: [uclamp_min, uclamp_max]
->
-> (1)  [1024, 1024]
->
-> (2)  [25.00 (256), 75.00 (768)]
->
-> (3a) [128, 512] : both values are not affected by /TG
->
-> (3b) [384, 896] : both values are affected by /TG
->
->
->> If task A doesn't want to control itself anymore,
-
-To be precise, in this case we should say: "if a task don't want to give
-up anymore".
-
-Indeed, the base idea is that a task can always and only
-"ask for less". What it really gets (effective value) is the minimum
-among its request, what the group allows and the system wide value on
-top, i.e ref [4,5]:
-
-   eff_value = MIN(system-wide, MIN(tg, task))
-
-
->> it can not go back to the initial state to let the module(group) control.
->
-> In case A changes its values e.g. from 3a to 3b it will go back to be
-> controlled by /TG again (like it was when it had no user defined
-> values).
-
-True, however it's also true that strictly speaking once a task has
-defined a per-task value, we will always aggregate/clamp that value wrt
-to TG and SystemWide value.
-
->> But the other tasks in the group will be affected by the group.
-
-This is not clear to me.
-
-All tasks in a group will be treated independently. All the tasks are
-subject to the same _individual_ aggregation/clamping policy.
-
-> Yes, in case they have no user defined values or have values greater
-> than the one of /TG.
->
->> The policy might be
->> 1) if the task wants to control it's uclamp, use task uclamp value
-
-Again, worth to stress, a task has _never_ full control of it's clamp.
-Precisely, a task has the freedom to always ask less than what it's
-enforced at TG/System level.
-
-IOW, task-specific uclamp values support only a "nice" policy, where a
-task can only give up something. Either be _less_ boosted or _more_
-capped, which in both cases corresponds to asking for _less_ CPU
-bandwidth.
-
->> (but under group uclamp constraint)
->
-> That would be example 3a.
->
->> 2) if the task doesn't want to control it's uclamp, use group uclamp value.
->
-> That would be example 3b.
->
->> If the policy is proper, we need a reset method for per-task uclamp.
->> 
->>>> ---
->>>>  kernel/sched/core.c | 7 +++++--
->>>>  1 file changed, 5 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->>>> index 9a2fbf98fd6f..fa63d70d783a 100644
->>>> --- a/kernel/sched/core.c
->>>> +++ b/kernel/sched/core.c
->>>> @@ -1187,6 +1187,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
->>>>  				  const struct sched_attr *attr)
->>>>  {
->>>>  	enum uclamp_id clamp_id;
->>>> +	bool user_defined;
->>>>  
->>>>  	/*
->>>>  	 * On scheduling class change, reset to default clamps for tasks
->>>> @@ -1210,14 +1211,16 @@ static void __setscheduler_uclamp(struct task_struct *p,
->>>>  	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
->>>>  		return;
->>>>  
->>>> +	user_defined = attr->sched_util_min == 0 ? false : true;
->
-> In case we would need a way to reset user defined values, using 0 and
-> 1024 for this is problematic because both are valid uclamp values.
-> But I'm pretty sure you can avoid this by using the max aggregation
-> between A and /TG to turn task uclamp values on or off.
-> This is obviously also true when A moves from /TG into another taskgroup
-> with appropriate uclamp values.
->
-> [...]
-
-All the above considered, I think there is still an argument for what
-Yun is asking.
-
-It's true that in principle, for example, a task can just set its
-util_min=1024 to always get the maximum boost value allowed by its
-current TG. However, that would probably not work very well if the task
-is then moved to the root group, where by default we allow 1024.
-
-It's a sort of corner case, true, but it's there. :)
-
-If we want to fix this case, thus allowing a task to "get back"
-its original state with user_define=false, however we should NOT
-play with the clamp values and confusing their semantic.
-
-A possible alternative would be to add in a new possible value for
-sched_attr::sched_flags [1] to be used via sched_setparam() syscall,
-e.g. a SCHED_FLAG_UTIL_CLAMP_RESET flag similar to [2].
-Such a flag can be consumed in __setscheduler_uclamp() [3] to reset the
-user defined status.
-
-Best,
-Patrick
-
-
-[1] https://elixir.bootlin.com/linux/v5.9-rc8/source/include/uapi/linux/sched/types.h#L104
-[2] https://elixir.bootlin.com/linux/v5.9-rc8/source/include/uapi/linux/sched.h#L133
-[3] https://elixir.bootlin.com/linux/v5.9-rc8/source/kernel/sched/core.c#L1445
-[4] https://elixir.bootlin.com/linux/v5.9-rc8/source/kernel/sched/core.c#L1108
-[5] https://elixir.bootlin.com/linux/v5.9-rc8/source/kernel/sched/core.c#L1086
+diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
+index 12ee043d2b3a..60c3c47a6b3e 100644
+--- a/fs/overlayfs/readdir.c
++++ b/fs/overlayfs/readdir.c
+@@ -14,6 +14,9 @@
+ #include <linux/cred.h>
+ #include <linux/ratelimit.h>
+ #include <linux/exportfs.h>
++#include <linux/anon_inodes.h>
++#include <linux/seq_file.h>
++#include <linux/syscalls.h>
+ #include "overlayfs.h"
+ 
+ struct ovl_cache_entry {
+@@ -1067,11 +1070,175 @@ static long ovl_ioctl_get_work_fhandle(struct super_block *sb,
+ 	return __ovl_ioctl_get_fhandle(ofs->workbasedir, arg);
+ }
+ 
++static int ovlinfofd_release(struct inode *inode, struct file *file)
++{
++	printk("ovlinfofd_release\n");
++	return single_release(inode, file);
++}
++
++#ifdef CONFIG_PROC_FS
++static void ovlinfofd_show_fdinfo(struct seq_file *m, struct file *f)
++{
++	/* TODO */
++}
++#endif
++
++static const struct file_operations ovlinfofd_fops = {
++	.owner		= THIS_MODULE,
++#ifdef CONFIG_PROC_FS
++	.show_fdinfo	= ovlinfofd_show_fdinfo,
++#endif
++	.release	= ovlinfofd_release,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++};
++
++static long __ovl_ioctl_show_dentry_fhandle(struct seq_file *s,
++					    const char *prefix,
++					    struct dentry *origin)
++{
++	struct ovl_mnt_opt_fh *fh;
++	int ret = 0, i;
++
++	fh = __ovl_encode_mnt_opt_fh(origin);
++	if (IS_ERR(fh))
++		return PTR_ERR(fh);
++
++	seq_printf(s, "%s fhandle-bytes:%x fhandle-type:%x f_handle:",
++		   prefix, fh->fh.handle_bytes, fh->fh.handle_type);
++
++	for (i = 0; i < fh->fh.handle_bytes; i++)
++		seq_printf(s, "%02x", (int)fh->fh.f_handle[i]);
++
++	seq_putc(s, '\n');
++
++	kfree(fh);
++	return ret;
++}
++
++static long ovl_ioctl_show_lower_fhandle(struct seq_file *s,
++					 unsigned long arg)
++{
++	struct super_block *sb = s->private;
++	struct ovl_entry *oe = sb->s_root->d_fsdata;
++	struct dentry *origin;
++
++	if (arg >= oe->numlower)
++		return -EINVAL;
++
++	origin = oe->lowerstack[arg].dentry;
++
++	return __ovl_ioctl_show_dentry_fhandle(s, "L", origin);
++}
++
++static long ovl_ioctl_show_upper_fhandle(struct seq_file *s)
++{
++	struct super_block *sb = s->private;
++	struct ovl_fs *ofs = sb->s_fs_info;
++	struct dentry *origin;
++
++	if (!ofs->config.upperdir)
++		return -EINVAL;
++
++	origin = OVL_I(d_inode(sb->s_root))->__upperdentry;
++
++	return __ovl_ioctl_show_dentry_fhandle(s, "U", origin);
++}
++
++static long ovl_ioctl_show_work_fhandle(struct seq_file *s)
++{
++	struct super_block *sb = s->private;
++	struct ovl_fs *ofs = sb->s_fs_info;
++
++	if (!ofs->config.upperdir)
++		return -EINVAL;
++
++	return __ovl_ioctl_show_dentry_fhandle(s, "W", ofs->workbasedir);
++}
++
++static int ovlinfofd_show(struct seq_file *s, void *unused)
++{
++	struct super_block *sb = s->private;
++	struct ovl_entry *oe = sb->s_root->d_fsdata;
++	int i;
++
++	printk("ovlinfofd_show\n");
++
++	seq_printf(s, "numlower: %d\n", oe->numlower);
++
++	for (i = 0; i < oe->numlower; i++)
++		ovl_ioctl_show_lower_fhandle(s, i);
++	ovl_ioctl_show_upper_fhandle(s);
++	ovl_ioctl_show_work_fhandle(s);
++
++	return 0;
++}
++
++static long ovl_ioctl_get_info_fd(struct super_block *sb,
++				  unsigned long arg)
++{
++	struct ovl_fs *ofs = sb->s_fs_info;
++	struct ovl_entry *oe = sb->s_root->d_fsdata;
++	int err, ufd, flags = arg;
++	struct fd f;
++
++	if (flags & ~(O_CLOEXEC))
++		return -EINVAL;
++
++	/* FIXME Comment taken from signalfd.c. Need to think about this.
++	 * When we call this, the initialization must be complete, since
++	 * anon_inode_getfd() will install the fd.
++	 */
++	ufd = anon_inode_getfd("[ovlinfofd]", &ovlinfofd_fops, NULL,
++				O_RDONLY | (flags & (O_CLOEXEC)));
++	if (ufd < 0)
++		return ufd;
++
++	f = fdget(ufd);
++	if (!f.file) {
++		err = -EBADF;
++		goto err_close;
++	}
++
++	/*
++	 * It's good to have some good guess of seq_file buffer size
++	 * from start because if we will just use single_open() function
++	 * then we will make several seq_file overflows and .show callback
++	 * will be called several times. It's very bad for performance.
++	 *
++	 * Guess is very simple: we show fhandles as hex string. So,
++	 * all that we need is take MAX_HANDLE_SZ * 2 and multiply by
++	 * number of overlayfs mount source-dirs.
++	 */
++	err = single_open_size(f.file, ovlinfofd_show, sb,
++			       MAX_HANDLE_SZ * 2 *
++			       (oe->numlower + 2 * !!ofs->config.upperdir));
++	if (err)
++		goto err_fdput;
++
++	/*
++	 * We doing tricky things by combining anon_inode_getfd with seq_files,
++	 * so, it's better to check that all fine with fops after single_open_size
++	 * call.
++	 */
++	WARN_ON(f.file->f_op != &ovlinfofd_fops);
++	fdput(f);
++
++	return ufd;
++
++err_fdput:
++	fdput(f);
++err_close:
++	ksys_close(ufd);
++	return err;
++}
++
+ #define	OVL_IOC_GETLWRFHNDLSNUM			_IO('o', 1)
+ // DISCUSS: what if MAX_HANDLE_SZ will change?
+ #define	OVL_IOC_GETLWRFHNDL			_IOR('o', 2, struct ovl_mnt_opt_fh)
+ #define	OVL_IOC_GETUPPRFHNDL			_IOR('o', 3, struct ovl_mnt_opt_fh)
+ #define	OVL_IOC_GETWRKFHNDL			_IOR('o', 4, struct ovl_mnt_opt_fh)
++#define	OVL_IOC_GETINFOFD			_IO('o', 5)
+ 
+ static long ovl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+@@ -1094,6 +1261,10 @@ static long ovl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		ret = ovl_ioctl_get_work_fhandle(file_inode(file)->i_sb, arg);
+ 		break;
+ 
++	case OVL_IOC_GETINFOFD:
++		ret = ovl_ioctl_get_info_fd(file_inode(file)->i_sb, arg);
++		break;
++
+ 	default:
+ 		ret = -ENOTTY;
+ 	}
+-- 
+2.25.1
 
