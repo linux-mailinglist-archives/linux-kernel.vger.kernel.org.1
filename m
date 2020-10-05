@@ -2,259 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA482834A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70472834A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgJELHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgJELHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:07:24 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DD53206CB;
-        Mon,  5 Oct 2020 11:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601896042;
-        bh=aiB74UBX50eB78Vr1MNMCSYA/Urhg7ub9kQL64a2k8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=seAghN8PVpd1pAXHRcJLcU+a/ksHouhOb1AXGy12PXR5zni5WaRHWc+v1wfBZIOvV
-         s5HBW1/NQ96lNcyKrf02kfdBtRc0Io5ByGq4owaPefBWeWuVDYtj9QyYB/5gdm6VVb
-         2efNZeF5iNONrdkyhKIHilRfEx9/uVk7x5XlAEYI=
-Date:   Mon, 5 Oct 2020 13:08:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     ChiYuan Huang <u0084500@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cy_huang <cy_huang@richtek.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Fix if vbus before cc,
- hard_reset_count not reset issue
-Message-ID: <20201005110808.GA298743@kroah.com>
-References: <1599060933-8092-1-git-send-email-u0084500@gmail.com>
- <20200902165713.GG56237@roeck-us.net>
- <CADiBU3_iHk4aoM8o6GcaTmWDZT4ymvb0Ff-XeLLZ0C9dhCnLZQ@mail.gmail.com>
- <fd2a33fc-2383-66cb-0fd7-d5aa0cc9111f@roeck-us.net>
- <CADiBU3_vYAmHDCONrExzyM+1CTfqJx_eS1hYG8aHkNWFzTcwfg@mail.gmail.com>
- <63c7f5e4-eff2-1420-30a5-a0b98a7815e0@roeck-us.net>
- <CADiBU3-83rVLqhVAqqSGc0qQ66PHsGVVcp_m3sm_4ZS5A+GXKQ@mail.gmail.com>
- <CADiBU3_c5O-yUac-ytp5WoQQ12edkU+4wn+WNBOVGRGM15NBJA@mail.gmail.com>
- <20201002133145.GA3384841@kroah.com>
- <c2d689eb-5538-6af2-614f-766521100273@roeck-us.net>
+        id S1726096AbgJELIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJELIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:08:24 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917D7C0613CE;
+        Mon,  5 Oct 2020 04:08:23 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id h24so4713413ejg.9;
+        Mon, 05 Oct 2020 04:08:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FZnH0gtambJRJ5Gy4z4Dh52PL6dm4E2p/R1Klp5kTwY=;
+        b=ZvIKgvNBKNLul4XDS4CGQE3XGtkixGHab39jqzuTHfNfiV7ljvi3WDisCn+NaQRecK
+         FaHU+7MN8J9Z0KAZmsTBYyrth98rQpZe9QecC75rZkXjAcwBQYwCDIdtFgTo9AyiIaIk
+         w83CwnRjQb/sH4XKTGKD1rHY3GylPHi8zSvthI+JCoimT4/zNJeyuC2Azxymh7drIfvv
+         9TccLTMuehpVHsWubL3DyQDt2gGLw8eooFxszjsq5CzkLbJcm59sSldQoWn3n7uz3bwC
+         NR0Y9IJ/YzlU51wLMi/GDGHDj25cwRZhQgmWwknxRmxz9Bt3UjDBEOoByFPHNUtvt8YB
+         xkLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FZnH0gtambJRJ5Gy4z4Dh52PL6dm4E2p/R1Klp5kTwY=;
+        b=LYQOOiyerFqMtbstelKsXYLX6qpbN9hJNSIXBaxKix+S427vqNDXetVNTHt/Dym0Ip
+         CTjz0srmJrn/B6EPu1xfZXATJ0BhSTkrGek7mGscdVOI4RbW2ZvOSkixwZze0TMXcLUo
+         APAoaMdq6coARuF0Lvrg3fH2LGArybgpFPEo7vWYmAkcuovgJAdbHPJbGBT06wlJJS8O
+         YxNLdI9gxBx5d1l9GIEdXmLNwrly1/8I3p8RgNru2O+lODyEV5IHsonQARPvBkVg59ws
+         YQ3UZpaW6UTJPAKqLQ1ztgdgbjeVMwT8nfU8dOVbavJ/ZvHjHE7EY6DGnpW42fNFH4yR
+         508w==
+X-Gm-Message-State: AOAM530iS6Ea/B77LVApKB2zwIEUIW1OXh8yKFWOYWFpRMP9ZVWa/A4g
+        0dB/hAC9xduqCyIL/jZhUew=
+X-Google-Smtp-Source: ABdhPJxLyI0e7K5U3LTAdpwo/4FZjk7EhBdRHifi+9FqGD0tAHbYzQ8Z9OV6JgGtl2lVkiTwx9JpPw==
+X-Received: by 2002:a17:906:dc9:: with SMTP id p9mr9849710eji.403.1601896102200;
+        Mon, 05 Oct 2020 04:08:22 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id k18sm7894278ejk.42.2020.10.05.04.08.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 04:08:21 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 13:08:19 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201005110819.GP425362@ulmo>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+ <20201001112449.GA2364834@kroah.com>
+ <20201005093016.GD425362@ulmo>
+ <20201005094530.GA154185@kroah.com>
+ <20201005101721.GL425362@ulmo>
+ <20201005104023.GB245520@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JPKYlvo4+BwO1+FT"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c2d689eb-5538-6af2-614f-766521100273@roeck-us.net>
+In-Reply-To: <20201005104023.GB245520@kroah.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 07:26:24AM -0700, Guenter Roeck wrote:
-> On 10/2/20 6:31 AM, Greg KH wrote:
-> > On Tue, Sep 15, 2020 at 11:07:18AM +0800, ChiYuan Huang wrote:
-> >> Hi, Guenter:
-> >>
-> >> ChiYuan Huang <u0084500@gmail.com> 於 2020年9月6日 週日 下午11:22寫道：
-> >>>
-> >>> Guenter Roeck <linux@roeck-us.net> 於 2020年9月5日 週六 下午11:51寫道：
-> >>>>
-> >>>> On 9/4/20 6:24 PM, ChiYuan Huang wrote:
-> >>>>> Guenter Roeck <linux@roeck-us.net> 於 2020年9月5日 週六 上午3:41寫道：
-> >>>>>>
-> >>>>>> On 9/3/20 9:21 AM, ChiYuan Huang wrote:
-> >>>>>>> Guenter Roeck <linux@roeck-us.net> 於 2020年9月3日 週四 上午12:57寫道：
-> >>>>>>>>
-> >>>>>>>> On Wed, Sep 02, 2020 at 11:35:33PM +0800, cy_huang wrote:
-> >>>>>>>>> From: ChiYuan Huang <cy_huang@richtek.com>
-> >>>>>>>>>
-> >>>>>>>>> Fix: If vbus event is before cc_event trigger, hard_reset_count
-> >>>>>>>>> won't bt reset for some case.
-> >>>>>>>>>
-> >>>>>>>>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> >>>>>>>>> ---
-> >>>>>>>>> Below's the flow.
-> >>>>>>>>>
-> >>>>>>>>> _tcpm_pd_vbus_off() -> run_state_machine to change state to SNK_UNATTACHED
-> >>>>>>>>> call tcpm_snk_detach() -> tcpm_snk_detach() -> tcpm_detach()
-> >>>>>>>>> tcpm_port_is_disconnected() will be called.
-> >>>>>>>>> But port->attached is still true and port->cc1=open and port->cc2=open
-> >>>>>>>>>
-> >>>>>>>>> It cause tcpm_port_is_disconnected return false, then hard_reset_count won't be reset.
-> >>>>>>>>> After that, tcpm_reset_port() is called.
-> >>>>>>>>> port->attached become false.
-> >>>>>>>>>
-> >>>>>>>>> After that, cc now trigger cc_change event, the hard_reset_count will be kept.
-> >>>>>>>>> Even tcpm_detach will be called, due to port->attached is false, tcpm_detach()
-> >>>>>>>>> will directly return.
-> >>>>>>>>>
-> >>>>>>>>> CC_EVENT will only trigger drp toggling again.
-> >>>>>>>>> ---
-> >>>>>>>>>  drivers/usb/typec/tcpm/tcpm.c | 3 +--
-> >>>>>>>>>  1 file changed, 1 insertion(+), 2 deletions(-)
-> >>>>>>>>>
-> >>>>>>>>> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> >>>>>>>>> index a48e3f90..5c73e1d 100644
-> >>>>>>>>> --- a/drivers/usb/typec/tcpm/tcpm.c
-> >>>>>>>>> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> >>>>>>>>> @@ -2797,8 +2797,7 @@ static void tcpm_detach(struct tcpm_port *port)
-> >>>>>>>>>               port->tcpc->set_bist_data(port->tcpc, false);
-> >>>>>>>>>       }
-> >>>>>>>>>
-> >>>>>>>>> -     if (tcpm_port_is_disconnected(port))
-> >>>>>>>>> -             port->hard_reset_count = 0;
-> >>>>>>>>> +     port->hard_reset_count = 0;
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Doesn't that mean that the state machine will never enter
-> >>>>>>>> error recovery ?
-> >>>>>>>>
-> >>>>>>> I think it does't affect the error recovery.
-> >>>>>>> All error recovery seems to check pd_capable flag.
-> >>>>>>>
-> >>>>>>> >From my below case, it's A to C cable only. There is no USBPD contract
-> >>>>>>> will be estabilished.
-> >>>>>>>
-> >>>>>>> This case occurred following by the below test condition
-> >>>>>>> Cable -> A to C (default Rp bind to vbus) connected to PC.
-> >>>>>>> 1. first time plugged in the cable with PC
-> >>>>>>> It will make HARD_RESET_COUNT  to be equal 2
-> >>>>>>> 2. And then plug out. At that time HARD_RESET_COUNT is till 2.
-> >>>>>>> 3. next time plugged in again.
-> >>>>>>> Due to hard_reset_count is still 2 , after wait_cap_timeout, the state
-> >>>>>>> eventually changed to SNK_READY.
-> >>>>>>> But during the state transition, no hard_reset  be sent.
-> >>>>>>>
-> >>>>>>> Defined in the USBPD policy engine, typec transition to USBPD, all
-> >>>>>>> variables must be reset included hard_reset_count.
-> >>>>>>> So it expected SNK must send hard_reset again.
-> >>>>>>>
-> >>>>>>> The original code defined hard_reset_count must be reset only when
-> >>>>>>> tcpm_port_is_disconnected.
-> >>>>>>>
-> >>>>>>> It doesn't make sense that it only occurred in some scenario.
-> >>>>>>> If tcpm_detach is called, hard_reset count must be reset also.
-> >>>>>>>
-> >>>>>>
-> >>>>>> If a hard reset fails, the state machine may cycle through states
-> >>>>>> HARD_RESET_SEND, HARD_RESET_START, SRC_HARD_RESET_VBUS_OFF,
-> >>>>>> SRC_HARD_RESET_VBUS_ON back to SRC_UNATTACHED. In this state,
-> >>>>>> tcpm_src_detach() and with it tcpm_detach() is called. The hard
-> >>>>>> reset counter is incremented in HARD_RESET_SEND. If tcpm_detach()
-> >>>>>> resets the counter, the state machine will keep cycling through hard
-> >>>>>> resets without ever entering the error recovery state. I am not
-> >>>>>> entirely sure where the counter should be reset, but tcpm_detach()
-> >>>>>> seems to be the wrong place.
-> >>>>>
-> >>>>> This case you specified means locally error occurred.
-> >>>>
-> >>>> It could be a local error (with the local hardware), or with the
-> >>>> remote partner not accepting the reset. We only know that an error
-> >>>> occurred.
-> >>>>
-> >>>>> It intended to re-run the state machine from typec  to USBPD.
-> >>>>> >From my understanding, hard_reset_count to be reset is reasonable.
-> >>>>>
-> >>>>> The normal stare from the state transition you specified is
-> >>>>> HARD_RESET_SEND, HARD_RESET_START -> SRC_HARD_RESET_VBUS_OFF,
-> >>>>> SRC_HARD_RESET_VBUS_ON -> received VBUS_EVENT then go to SRC_STARTUP.
-> >>>>>
-> >>>> The operational word is "normal". Error recovery is expected to handle
-> >>>> situations which are not normal.
-> >>>
-> >>> Following by the USBPD 3.0 revision 1.2, section 8.3.3.24.1
-> >>> The ErrorRecovery state is  used to electronically disconnect Port
-> >>> Partner using the USB Type-C connector.
-> >>> And there's one sentence to be said "The ErrorRecovery staste shall
-> >>> map to USB Type-C Error Recovery state operations".
-> >>> I also read ErrorRecovery state in USB TYPE-C 1.3 spec.
-> >>> Section 4.5.2.2.2.1   ErrorRecovery state requirement listed the below text.
-> >>> The port shall not drive VBUS or VCONN, and shall present a
-> >>> high-impedance to ground (above
-> >>> zOPEN) on its CC1 and CC2 pins.
-> >>> Section 4.5.2.2.2.2 Exiting from the error recovery state
-> >>> I read the description. The roughly meaning is to change the state to
-> >>> Unattached(Src or Snk) after tErrorRecovery.
-> >>>
-> >>> Summary the above text.
-> >>> Reset HardResetCounter is ok in tcpm_detach.
-> >>> My patch is just to relax the counter reset conditions during tcpm_detach().
-> >>> If not, it will check tcpm_port_is_disconnected().
-> >>> And only two scenario, the hard reset count will be cleared to 0 at this case.
-> >>> 1) port not attached and cc1=open and cc2=open
-> >>> 2) port attached and either (polarity=cc1, cc1=open) or (polarity=cc2, cc2=open)
-> >>>
-> >>> I think this judgement is narrow in tcpm_detach case.
-> >>>
-> >>>>
-> >>>> I don't question the need to reset the counter. The only question
-> >>>> is where and when to reset it.
-> >>>>
-> >>> I re-check all tcpm code for hard reset counter about the increment and reset.
-> >>> They all meets USBPD spec. Only the detach case, I'm wondering why it
-> >>> need to add the check for tcpm_port_is_disconnected().
-> >>>
-> >> Below's the real case log.
-> >> [ 4848.046358] VBUS off
-> >> [ 4848.046384] state change SNK_READY -> SNK_UNATTACHED
-> >> [ 4848.050908] Setting voltage/current limit 0 mV 0 mA
-> >> [ 4848.050936] polarity 0
-> >> [ 4848.052593] Requesting mux state 0, usb-role 0, orientation 0
-> >> [ 4848.053222] Start toggling
-> >> [ 4848.086500] state change SNK_UNATTACHED -> TOGGLING
-> >> [ 4848.089983] CC1: 0 -> 0, CC2: 3 -> 3 [state TOGGLING, polarity 0, connected]
-> >> [ 4848.089993] state change TOGGLING -> SNK_ATTACH_WAIT
-> >> [ 4848.090031] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 200 ms
-> >> [ 4848.141162] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_ATTACH_WAIT,
-> >> polarity 0, disconnected]
-> >> [ 4848.141170] state change SNK_ATTACH_WAIT -> SNK_ATTACH_WAIT
-> >> [ 4848.141184] pending state change SNK_ATTACH_WAIT -> SNK_UNATTACHED @ 20 ms
-> >> [ 4848.163156] state change SNK_ATTACH_WAIT -> SNK_UNATTACHED [delayed 20 ms]
-> >> [ 4848.163162] Start toggling
-> >> [ 4848.216918] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
-> >> [ 4848.216954] state change TOGGLING -> SNK_ATTACH_WAIT
-> >> [ 4848.217080] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 200 ms
-> >> [ 4848.231771] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_ATTACH_WAIT,
-> >> polarity 0, disconnected]
-> >> [ 4848.231800] state change SNK_ATTACH_WAIT -> SNK_ATTACH_WAIT
-> >> [ 4848.231857] pending state change SNK_ATTACH_WAIT -> SNK_UNATTACHED @ 20 ms
-> >> [ 4848.256022] state change SNK_ATTACH_WAIT -> SNK_UNATTACHED [delayed 20 ms]
-> >> [ 4848.256049] Start toggling
-> >> [ 4848.871148] VBUS on
-> >> [ 4848.885324] CC1: 0 -> 0, CC2: 0 -> 3 [state TOGGLING, polarity 0, connected]
-> >> [ 4848.885372] state change TOGGLING -> SNK_ATTACH_WAIT
-> >> [ 4848.885548] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 200 ms
-> >> [ 4849.088240] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 200 ms]
-> >> [ 4849.088284] state change SNK_DEBOUNCED -> SNK_ATTACHED
-> >> [ 4849.088291] polarity 1
-> >> [ 4849.088769] Requesting mux state 1, usb-role 2, orientation 2
-> >> [ 4849.088895] state change SNK_ATTACHED -> SNK_STARTUP
-> >> [ 4849.088907] state change SNK_STARTUP -> SNK_DISCOVERY
-> >> [ 4849.088915] Setting voltage/current limit 5000 mV 0 mA
-> >> [ 4849.088927] vbus=0 charge:=1
-> >> [ 4849.090505] state change SNK_DISCOVERY -> SNK_WAIT_CAPABILITIES
-> >> [ 4849.090828] pending state change SNK_WAIT_CAPABILITIES -> SNK_READY @ 240 ms
-> >> [ 4849.335878] state change SNK_WAIT_CAPABILITIES -> SNK_READY [delayed 240 ms]
-> >>
-> >> You can see the next type c attach log.
-> >> It directly change state from SNK_WAIT_CAPABILITIES to SNK_READY due
-> >> to not reset hard_reset_count.
-> >>
-> >> It's easy to reproduce if you plugout USB Adapater w/i AtoC cable connected.
-> > 
-> > What ever happened with this patch, is there still disagreement?
-> > 
-> 
-> Yes, there is. I wouldn't have added the conditional without reason,
-> and I am concerned that removing it entirely will open another problem.
-> Feel free to apply, though - I can't prove that my concern is valid,
-> and after all we'll get reports from the field later if it is.
 
-Ok, can I get an ack so I know who to come back to in the future if
-there are issues?  :)
+--JPKYlvo4+BwO1+FT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Mon, Oct 05, 2020 at 12:40:23PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Oct 05, 2020 at 12:17:21PM +0200, Thierry Reding wrote:
+> > On Mon, Oct 05, 2020 at 11:45:30AM +0200, Greg Kroah-Hartman wrote:
+> > > On Mon, Oct 05, 2020 at 11:30:16AM +0200, Thierry Reding wrote:
+> > > > On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
+> > > > > On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> > > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-K=C3=B6nig=
+ wrote:
+> > > > > > > Hello,
+> > > > > > >=20
+> > > > > > > I added Greg Kroah-Hartman who I discussed this with via irc =
+a bit to
+> > > > > > > Cc:.
+> > > > > > >=20
+> > > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > > > > thank you for your review!
+> > > > > > > >=20
+> > > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-K=C3=
+=B6nig wrote:
+> > > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemona=
+ge.de wrote:
+> > > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > > > >=20
+> > > > > > > > > > This adds a class to exported pwm devices.
+> > > > > > > > > > Exporting a pwm through sysfs did not yield udev events=
+=2E The
+> > > > > > > > >=20
+> > > > > > > > > I wonder what is your use-case here. This for sure also h=
+as a place to
+> > > > > > > > > be mentioned in the commit log. I suspect there is a bett=
+er way to
+> > > > > > > > > accomplish you way.
+> > > > > > > >=20
+> > > > > > > > Use-case is to be able to use a pwm from a non-root userspa=
+ce process.
+> > > > > > > > I use udev rules to adjust permissions.
+> > > > > > >=20
+> > > > > > > Hmm, how do you trigger the export? Without being aware of al=
+l the
+> > > > > > > details in the sysfs code I would expect that the exported st=
+uff is
+> > > > > > > available instantly once the write used to export the PWM is =
+completed.
+> > > > > > > So changing the permissions can be done directly after trigge=
+ring the
+> > > > > > > export in the same process.
+> > > > > >=20
+> > > > > > The export is triggered through the userspace process itself. W=
+hy can it
+> > > > > > do this ? Because there is another udev rule, that changes perm=
+issions
+> > > > > > when a pwmchip appears.
+> > > > > > Then I'd like to have the second udev rule, that changes permis=
+sions on
+> > > > > > the freshly exported pwm. The userspace process can't do this.
+> > > > > > You are right I could propably do everything from within udev: =
+If a
+> > > > > > pwmchip appears, export certain pwms and right away change their
+> > > > > > permissions. It does not also not feel right. It'd require know=
+ledge
+> > > > > > from the userspace application to be mapped to udev.
+> > > > >=20
+> > > > > The way the kernel code is now, yes, you will not have any way to
+> > > > > trigger it by userspace as the kernel is creating a "raw" struct =
+device
+> > > > > that isn't assigned to anything.  That is what needs to be fixed =
+here.
+> > > > >=20
+> > > > > > > Out of interest: What do you use the pwm for? Isn't there a s=
+uitable
+> > > > > > > kernel driver that can do the required stuff? Compared to the=
+ kernel-API
+> > > > > > > the sysfs interface isn't atomic. Is this an annoyance?
+> > > > > >=20
+> > > > > > Use-case is generating a voltage from the pwm. This voltage is =
+used to
+> > > > > > signal different states and does not change very often. This is
+> > > > > > absolutely not annoying that this is not atomic. We just change=
+ the duty
+> > > > > > cycle on the fly. Everything else is configured one time at sta=
+rtup.
+> > > > > > I'd call what I need pwm-dac. I could not find a ready to use d=
+river.
+> > > > > > Maybe I could misuse some kernel driver for this. Maybe I could=
+ use
+> > > > > > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator co=
+uld work,
+> > > > > > there is even a userspace facing part for this, but this is not
+> > > > > > devicetree ready.
+> > > > > > ...and the worst, please don't blame me: The application is jav=
+a, so
+> > > > > > ioctl is a problem.
+> > > > >=20
+> > > > > I thought java could do ioctls, otherwise how would it ever be ab=
+le to
+> > > > > talk to serial ports?
+> > > > >=20
+> > > > > Anyway, this needs to be fixed in the kernel...
+> > > >=20
+> > > > If atomicity was a problem, we could potentially add a mechanism to=
+ the
+> > > > sysfs interface to enable that. I don't see a good way of doing tha=
+t in
+> > > > a single file, since that works against how sysfs is designed. But =
+one
+> > > > thing I could imagine is adding a file ("lock", or whatever you wan=
+t to
+> > > > call it) that you can use for atomic fencing:
+> > > >=20
+> > > > 	$ echo 1 > lock # locks the hardware state
+> > > > 	$ echo 100 > period
+> > > > 	$ echo 50 > duty_cycle
+> > > > 	$ echo 0 > lock # flushes state to hardware
+> > > >=20
+> > > > But it sounds like that's not even a big issue.
+> > >=20
+> > > That is exactly what configfs was designed for :)
+> >=20
+> > Interesting... for some reason I had never thought about configfs in
+> > this context. But it does indeed sound like it could solve this problem
+> > in a better way.
+> >=20
+> > My memory is a bit sketchy, but I think for USB device controllers this
+> > works by exposing each controller in configfs and then configuring
+> > things like endpoints within the controller's directory. So I wonder if
+> > instead of requesting PWMs via sysfs, we should rather expose them via
+> > configfs items.
+> >=20
+> > Something like:
+> >=20
+> > 	# mkdir /configfs/7000a000.pwm/0
+> >=20
+> > could then be the equivalent of exporting PWM channel 0 of the given PWM
+> > chip in sysfs, except that now you get a configfs directory with
+> > attributes that you can use to inspect and reconfigure the PWM channel
+> > and ultimately apply the changes atomically.
+> >=20
+> > How does that work from a permissions point of view? How do we ensure
+> > that people don't need root privileges to access these?
+>=20
+> To change things in configfs, yes, I'm pretty sure you need root access.
+> But to read things, sysfs is fine.  I don't really know what you are
+> wanting to do here, both create a device and change the options over
+> time?
 
-greg k-h
+Yes, I'm wondering if we should replace the write usages in sysfs with a
+better configfs implementation. We obviously can't remove the existing
+sysfs ABI, but for anything that's meant to be atomic we could point
+people at the configfs interface.
+
+If configfs would also solve the permissions problem that Lars and
+others have been trying to solve that would be two birds with one stone.
+
+On the other hand, I'm wondering how much use there is in pursuing this
+because as I mentioned earlier there are better alternatives (such as
+pwm-regulator) that cater better to these specific use-cases and already
+deal with atomicity. pwm-regulator should also show up as a separate
+device in sysfs and allow permissions to be set using udev.
+
+Thierry
+
+--JPKYlvo4+BwO1+FT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl96/qAACgkQ3SOs138+
+s6EHlxAAnw47bakhJ7pzr0YY//RcORi2PCEra8IOTptsOPLTx7y2qSTwTE27SJaa
+Z+dTiXDZyn/TgThFeisDR+bXFpGN/msYGeYVL9cyLMNVMdfHhPlNGy8jRgwq9gNM
+4tWJmPQ0L9d+NsEEm1KNErvDwjIKcZYBZnVsqvNUQ4bHqCz5P6FMsnA05xT81mgL
+tCDK7DqEE0hUjgWGLfe5le08aruPjjR9WSIbc43+aI33zD5jiXgbnXuxdlsX+22x
+jr4IiSos4Vjwzi+es1/BFmP1Se/frtBd923H+ov/QF50tDNJpIawYSjZmX0PgTBa
+09+NxOVUqxl3nghsTW2+LaNxsEtuv9IyT6LVfYDum6VVaEDlgzd/jIQ9x158OfLB
+79uWZSV0In1MqFpS1vlbh6A+k2wmwN8MWCFFmdoXMbFul4y79SCwu+a9LomQFin3
+Q16vo1oA+ejcnUiF1orp5jjtbUg7pJopaL9obIeVGzX4wAy6QUwxuRmhbZPZKYfG
+qaz8RJuetJMEu55G+xTdbuCIT6UZ34xYMv2EjfThzVOZzkbaWesgZHi3wpfuoR2B
+6FtnLwoPba0WD71948vYlrEMWN021CFgSBms78p26wkyMhV2uS2SyYu18wb9xTwx
+64Cp1aaZlrBOACSzVlvupJNx8xZziW/ryuqTgLBpaSoGgY3MmU8=
+=IfWI
+-----END PGP SIGNATURE-----
+
+--JPKYlvo4+BwO1+FT--
