@@ -2,109 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6BE2830C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673F72830D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgJEHU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:20:56 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:55088 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725891AbgJEHU4 (ORCPT
+        id S1725904AbgJEHYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgJEHYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:20:56 -0400
-X-UUID: d911ef3a93b44619816314289bc9ae34-20201005
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7EnrdO3x7asX9gTBacmmrzjObvtt04/zORNX+OpwJXg=;
-        b=jc6flCCH9zmnOil4U8qr3ODs5lxQ8OBSH+4DPbecZ1wNMWvpx79Z+IxBhOQOfbtnclJDhWb78DN71ZOw2P5p5CmCWWeSr2hOg4k/qkz1Gn6iQeKiv3pGm85pqDf72y86gHS3WlIjESTFqkDscvgfxeVXd/JHzyPadIWcMRZkbic=;
-X-UUID: d911ef3a93b44619816314289bc9ae34-20201005
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1810721124; Mon, 05 Oct 2020 15:20:51 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 5 Oct 2020 15:20:49 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 5 Oct 2020 15:20:48 +0800
-Message-ID: <1601882449.15742.4.camel@mtkswgap22>
-Subject: Re: [PATCH v7 2/2] soc: mediatek: add mt6779 devapc driver
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>
-Date:   Mon, 5 Oct 2020 15:20:49 +0800
-In-Reply-To: <CAAOTY_-KTs6-5ZpzAWs0Yn-R3AJc8tRhDyKbp8bx60EJtfu-_Q@mail.gmail.com>
-References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
-         <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
-         <CAAOTY_-KTs6-5ZpzAWs0Yn-R3AJc8tRhDyKbp8bx60EJtfu-_Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Mon, 5 Oct 2020 03:24:34 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1365CC0613CE;
+        Mon,  5 Oct 2020 00:24:34 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id h24so3834073ejg.9;
+        Mon, 05 Oct 2020 00:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MOoMUNrkhGZILoIhNc/dlvzV5zVbmrqMoAnmuY4eMSA=;
+        b=VND59Zbet/KRWzmur5rvDuze5kYvzLamPTqto7EYeIVjVjun97JRANNXnmN52xtJPS
+         V6cno2OJpkk7CV/Kcmq5nCC7ceCHiVaWUNqeZR+0DZofRafS2yTI3Lazx9z7Tvlzq1Cx
+         +RSpSL63uzHVlhCFVxDg8D11qeH/psJBVZ8FigMu2q6StL8FqWi9S844dq/lejD/LrF3
+         7HeAZE7RBhT2Vz37yDItncQ2B5maD8KAmX9Hk1zHWaAPX1eJ9tBafuUSTAIOK76/ICSM
+         pDGI4ll3t7YJDIU7SpQc4AbTvr9FigdbbZZkZET8A8VwiKJqz5QD36JeCtZhP7U9mYa7
+         es+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MOoMUNrkhGZILoIhNc/dlvzV5zVbmrqMoAnmuY4eMSA=;
+        b=gJL1NgqsQGLGdmUgWX4Jgc+oDHYKgw2sXgTwhZoCaS5nER9v+pzbkgKnC6hfwMPRZC
+         MI2hSH0KvLh+MiIiBBppi7oW0OUN/JVqkmMvx/oHR8EqACd5MOnLcI1B9s8bvyUf0aqR
+         dkN6CLWSNd+XMVu5F5W+KNNW4aX/aBqDuP2BN8j7R62AGtVUTCX3XWxDxnoUYyyFDK0E
+         M9XycgeNCKfzMGd68zZX8FWWxhHkepj8gYxMWHNgeseiNkQFMFQ1sW2LanhkqqwKVL29
+         AbuSJo0HvUGtJoeh9WoIlcFf0RU/V2Z1KOgReWz8eBhxc4/1gODLf+4ogxDlZYg6ZLUB
+         PsUw==
+X-Gm-Message-State: AOAM530fVJ1/UA+WuI7Dm8JTvipHZaLJZuTS5yGWmucARFFjU/f0Tck3
+        tOJEJhqy9mFZ2ZSuFyuKTsE=
+X-Google-Smtp-Source: ABdhPJyaprDj3vNIgEstQkI1/gr5T0mTsIn0lSpxJf7kACCbHJqVocFVarVQSfPQCXbaaBIZbAOcHA==
+X-Received: by 2002:a17:906:f1cf:: with SMTP id gx15mr13922584ejb.241.1601882672006;
+        Mon, 05 Oct 2020 00:24:32 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id 92sm8020654edm.30.2020.10.05.00.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 00:24:30 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 09:24:29 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20201005072429.GB425362@ulmo>
+References: <20200930213244.GA10573@Asurada-Nvidia>
+ <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
+ <20201001012630.GA28240@Asurada-Nvidia>
+ <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
+ <20201001024850.GA28456@Asurada-Nvidia>
+ <20201001102316.GF3919720@ulmo>
+ <20201001110425.GB1272@Asurada>
+ <b966844e-4289-3ff0-9512-852f8419a664@gmail.com>
+ <20201002010751.GA26971@Asurada-Nvidia>
+ <1b621b9d-cdc3-c7aa-2fa2-d728ae2bbc5d@gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 1231EE9725B1C9C9F42046DE7BAF97293F3EDAC9A16F4C5A7FAF9C62563B81552000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OwLcNYc0lM97+oe1"
+Content-Disposition: inline
+In-Reply-To: <1b621b9d-cdc3-c7aa-2fa2-d728ae2bbc5d@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2h1bi1LdWFuZywNCg0KT24gU2F0LCAyMDIwLTEwLTAzIGF0IDAwOjI0ICswODAwLCBDaHVu
-LUt1YW5nIEh1IHdyb3RlOg0KPiBIaSwgTmVhbDoNCj4gDQo+IE5lYWwgTGl1IDxuZWFsLmxpdUBt
-ZWRpYXRlay5jb20+IOaWvCAyMDIw5bm0OOaciDI35pelIOmAseWbmyDkuIrljYgxMTowN+Wvq+mB
-k++8mg0KPiA+DQo+ID4gTWVkaWFUZWsgYnVzIGZhYnJpYyBwcm92aWRlcyBUcnVzdFpvbmUgc2Vj
-dXJpdHkgc3VwcG9ydCBhbmQgZGF0YQ0KPiA+IHByb3RlY3Rpb24gdG8gcHJldmVudCBzbGF2ZXMg
-ZnJvbSBiZWluZyBhY2Nlc3NlZCBieSB1bmV4cGVjdGVkDQo+ID4gbWFzdGVycy4NCj4gPiBUaGUg
-c2VjdXJpdHkgdmlvbGF0aW9uIGlzIGxvZ2dlZCBhbmQgc2VudCB0byB0aGUgcHJvY2Vzc29yIGZv
-cg0KPiA+IGZ1cnRoZXIgYW5hbHlzaXMgb3IgY291bnRlcm1lYXN1cmVzLg0KPiA+DQo+ID4gQW55
-IG9jY3VycmVuY2Ugb2Ygc2VjdXJpdHkgdmlvbGF0aW9uIHdvdWxkIHJhaXNlIGFuIGludGVycnVw
-dCwgYW5kDQo+ID4gaXQgd2lsbCBiZSBoYW5kbGVkIGJ5IG10ay1kZXZhcGMgZHJpdmVyLiBUaGUg
-dmlvbGF0aW9uDQo+ID4gaW5mb3JtYXRpb24gaXMgcHJpbnRlZCBpbiBvcmRlciB0byBmaW5kIHRo
-ZSBtdXJkZXJlci4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IE5lYWwgTGl1IDxuZWFsLmxpdUBt
-ZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL0tjb25maWcg
-ICAgICB8ICAgIDkgKysNCj4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvTWFrZWZpbGUgICAgIHwg
-ICAgMSArDQo+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1kZXZhcGMuYyB8ICAzMDUgKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAzIGZpbGVzIGNoYW5nZWQs
-IDMxNSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9t
-ZWRpYXRlay9tdGstZGV2YXBjLmMNCj4gPg0KPiANCj4gW3NuaXBdDQo+IA0KPiA+ICsNCj4gPiAr
-c3RhdGljIGludCBtdGtfZGV2YXBjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
-DQo+ID4gK3sNCj4gPiArICAgICAgIHN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZSA9IHBkZXYtPmRl
-di5vZl9ub2RlOw0KPiA+ICsgICAgICAgc3RydWN0IG10a19kZXZhcGNfY29udGV4dCAqY3R4Ow0K
-PiA+ICsgICAgICAgdTMyIGRldmFwY19pcnE7DQo+ID4gKyAgICAgICBpbnQgcmV0Ow0KPiA+ICsN
-Cj4gPiArICAgICAgIGlmIChJU19FUlIobm9kZSkpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVy
-biAtRU5PREVWOw0KPiA+ICsNCj4gPiArICAgICAgIGN0eCA9IGRldm1fa3phbGxvYygmcGRldi0+
-ZGV2LCBzaXplb2YoKmN0eCksIEdGUF9LRVJORUwpOw0KPiA+ICsgICAgICAgaWYgKCFjdHgpDQo+
-ID4gKyAgICAgICAgICAgICAgIHJldHVybiAtRU5PTUVNOw0KPiA+ICsNCj4gPiArICAgICAgIGN0
-eC0+ZGF0YSA9IG9mX2RldmljZV9nZXRfbWF0Y2hfZGF0YSgmcGRldi0+ZGV2KTsNCj4gPiArICAg
-ICAgIGN0eC0+ZGV2ID0gJnBkZXYtPmRldjsNCj4gPiArDQo+ID4gKyAgICAgICBjdHgtPmluZnJh
-X2Jhc2UgPSBvZl9pb21hcChub2RlLCAwKTsNCj4gPiArICAgICAgIGlmICghY3R4LT5pbmZyYV9i
-YXNlKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPiArDQo+ID4gKyAg
-ICAgICBkZXZhcGNfaXJxID0gaXJxX29mX3BhcnNlX2FuZF9tYXAobm9kZSwgMCk7DQo+ID4gKyAg
-ICAgICBpZiAoIWRldmFwY19pcnEpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFM
-Ow0KPiA+ICsNCj4gPiArICAgICAgIGN0eC0+aW5mcmFfY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2
-LT5kZXYsICJkZXZhcGMtaW5mcmEtY2xvY2siKTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY3R4
-LT5pbmZyYV9jbGspKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPiAr
-DQo+ID4gKyAgICAgICBpZiAoY2xrX3ByZXBhcmVfZW5hYmxlKGN0eC0+aW5mcmFfY2xrKSkNCj4g
-PiArICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+IA0KPiBXaGF0IHdvdWxkIGhhcHBl
-biBpZiB5b3UgZG8gbm90IGVuYWJsZSB0aGlzIGNsb2NrPyBJIHRoaW5rIHRoaXMNCj4gaGFyZHdh
-cmUgaXMgYWxyZWFkeSBpbml0aWFsaXplZCBpbiB0cnVzdCB6b25lLg0KPiANCj4gUmVnYXJkcywN
-Cj4gQ2h1bi1LdWFuZy4NCg0KSXQgY2Fubm90IGhhbmRsZSB2aW9sYXRpb24gaWYgdGhlIGNsb2Nr
-IGlzIGRpc2FibGVkLg0KVGhpcyBwYXJ0cyBvZiBoYXJkd2FyZSBpcyBub3QgaW5pdGlhbGl6ZWQg
-aW4gVHJ1c3Rab25lLg0KDQpUaGUgYW5vdGhlciBwYXJ0cyBvZiBoYXJkd2FyZSBpcyBpbml0aWFs
-aXplZCBpbiBUcnVzdFpvbmUgd2hpY2ggaXMNCnJlc3BvbnNpYmxlIGZvciBwZXJtaXNzaW9uIGNv
-bnRyb2wuIEkgdGhpbmsgdGhhdCBpcyB0aGUgcGFydCB3aGF0IHlvdQ0KaW50ZW5kIHRvIGV4cHJl
-c3MuDQoNCi1OZWFsDQoNCj4gDQo+ID4gKw0KPiA+ICsgICAgICAgcmV0ID0gZGV2bV9yZXF1ZXN0
-X2lycSgmcGRldi0+ZGV2LCBkZXZhcGNfaXJxLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAoaXJxX2hhbmRsZXJfdClkZXZhcGNfdmlvbGF0aW9uX2lycSwNCj4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgSVJRRl9UUklHR0VSX05PTkUsICJkZXZhcGMiLCBjdHgp
-Ow0KPiA+ICsgICAgICAgaWYgKHJldCkgew0KPiA+ICsgICAgICAgICAgICAgICBjbGtfZGlzYWJs
-ZV91bnByZXBhcmUoY3R4LT5pbmZyYV9jbGspOw0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4g
-cmV0Ow0KPiA+ICsgICAgICAgfQ0KPiA+ICsNCj4gPiArICAgICAgIHBsYXRmb3JtX3NldF9kcnZk
-YXRhKHBkZXYsIGN0eCk7DQo+ID4gKw0KPiA+ICsgICAgICAgc3RhcnRfZGV2YXBjKGN0eCk7DQo+
-ID4gKw0KPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQoNCg==
 
+--OwLcNYc0lM97+oe1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Oct 02, 2020 at 04:55:34AM +0300, Dmitry Osipenko wrote:
+> 02.10.2020 04:07, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Thu, Oct 01, 2020 at 11:33:38PM +0300, Dmitry Osipenko wrote:
+> >>>>> If we can't come to an agreement on globalizing mc pointer, would
+> >>>>> it be possible to pass tegra_mc_driver through tegra_smmu_probe()
+> >>>>> so we can continue to use driver_find_device_by_fwnode() as v1?
+> >>>>>
+> >>>>> v1: https://lkml.org/lkml/2020/9/26/68
+> >>>>
+> >>>> tegra_smmu_probe() already takes a struct tegra_mc *. Did you mean
+> >>>> tegra_smmu_probe_device()? I don't think we can do that because it i=
+sn't
+> >>>
+> >>> I was saying to have a global parent_driver pointer: similar to
+> >>> my v1, yet rather than "extern" the tegra_mc_driver, we pass it
+> >>> through egra_smmu_probe() and store it in a static global value
+> >>> so as to call tegra_smmu_get_by_fwnode() in ->probe_device().
+> >>>
+> >>> Though I agree that creating a global device pointer (mc) might
+> >>> be controversial, yet having a global parent_driver pointer may
+> >>> not be against the rule, considering that it is common in iommu
+> >>> drivers to call driver_find_device_by_fwnode in probe_device().
+> >>
+> >> You don't need the global pointer if you have SMMU OF node.
+> >>
+> >> You could also get driver pointer from mc->dev->driver.
+> >>
+> >> But I don't think you need to do this at all. The probe_device() could
+> >> be invoked only for the tegra_smmu_ops and then seems you could use
+> >> dev_iommu_priv_set() in tegra_smmu_of_xlate(), like sun50i-iommu driver
+> >> does.
+> >=20
+> > Getting iommu device pointer using driver_find_device_by_fwnode()
+> > is a common practice in ->probe_device() of other iommu drivers.
+>=20
+> Please give me a full list of the IOMMU drivers which use this method.
+
+ARM SMMU and ARM SMMU v3 do this and so does virtio-iommu. Pretty much
+all the other drivers for ARM platforms have their own variations of
+tegra_smmu_find() using of_find_device_by_node() at some point.
+
+What others do differently is that they call of_find_device_by_node()
+=66rom ->of_xlate(), which is notably different from what we do in
+tegra-smmu (where we call it from ->probe_device()). It's entirely
+possible that we can do that as well, which is what we've been
+discussing in a different sub-thread, but like I mentioned there I do
+recall that being problematic, otherwise I wouldn't have left all the
+comments in the code.
+
+If we can determine that moving this to ->of_xlate() works fine in all
+cases, then I think that's something that we should do for tegra-smmu to
+become more consistent with other drivers.
+
+> > But this requires a device_driver pointer that tegra-smmu doesn't
+> > have. So passing tegra_mc_driver through tegra_smmu_probe() will
+> > address it.
+> >=20
+>=20
+> If you're borrowing code and ideas from other drivers, then at least
+> please borrow them from a modern good-looking drivers. And I already
+> pointed out that following cargo cult is not always a good idea.
+>=20
+> ARM-SMMU isn't a modern driver and it has legacy code. You shouldn't
+> copy it blindly. The sun50i-iommu driver was added half year ago, you
+> may use it as a reference.
+
+That's nonsense. There's no such thing as "modern" drivers is Linux
+because they are constantly improved. Yes, ARM SMMU may have legacy code
+paths, but that's because it has been around for much longer than others
+and therefore is much more mature.
+
+I can't say much about sun50i-iommu because I'm not familiar with it,
+but I have seen plenty of "modern" drivers that turn out to be much
+worse than "old" drivers. New doesn't always mean better.
+
+> Always consult the IOMMU core code. If you're too unsure about
+> something, then maybe better to start a new thread and ask Joerg about
+> the best modern practices that IOMMU drivers should use.
+
+This doesn't really have anything to do with the IOMMU core code. This
+has to do with platform and firmware code, so the IOMMU core is only
+marginally involved.
+
+Thierry
+
+--OwLcNYc0lM97+oe1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl96yioACgkQ3SOs138+
+s6GDnhAAhlKinPut4FcB4WuAdyApdRrVDRVNZ3iJ23ac44Pu91Fo0+HN9gZo6F+v
+/riVDr5JjARTFFDLvwSbDTjnVRFTXSr1QDQBtJX6IOd/awV5zFgwu++UO80tYbUL
++qc9IqXpYBYBYgBhBwlQGsuicr2UoNWdJYYuEgwJ+7pUlSKfHtwkSgi23uA0KRKT
+NqMS1loug5GviocVllqGNoqzLEiVybAFWubk/LsNEPgTbEiKYfGuGf0dDbthhM84
+o81pZADWgCE5y0KQrQJo+BI5TZCCF13DBks/UhF9jnZaS3lY74/uXnbpinY393Bx
+DcinRV4pmg9haL0rItHA5wgeslmf0CnXACY3yGzdRaCiclciI/n1oGcf+qV2wN5+
+Qm08xdUopMCGpEhxq+yBZtlVTdFED0QueerN/PZgSzCev9RJmqccHyY3MTmV7uiK
+pEe2SYSPORQRAJAgYyUHe6ydx5Nz4sIceCYsAjieHVT3me+MyoXkkqKMBKG5lHrc
+t63/fR7b3zcejf9JEDJ8lxa/F7cFV/FtblT8mqEWJ2R1WMVC56aiUBAdVuTqWPJd
+D2NI3UkXdQQliOTCn0M1Fsg6X6hUM91ksYxNFZSclQ7IcG+u3ba4Lh4V9xKL8+2C
+G7dhftDMDr6btNmxmWsyftIBcy/g3p0SCMCS2Hf0zjfGqrdoNkc=
+=WdES
+-----END PGP SIGNATURE-----
+
+--OwLcNYc0lM97+oe1--
