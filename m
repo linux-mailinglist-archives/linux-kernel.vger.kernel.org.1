@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3D52841FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA73284204
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbgJEVQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 17:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46068 "EHLO
+        id S1729778AbgJEVRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbgJEVQs (ORCPT
+        with ESMTP id S1725795AbgJEVRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:16:48 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A5CC0613CE;
-        Mon,  5 Oct 2020 14:16:48 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07d500e8a8b27a6c9dedad.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d500:e8a8:b27a:6c9d:edad])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D75051EC043F;
-        Mon,  5 Oct 2020 23:16:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601932605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=dE3g1QnWgOyBwTq45i2ttuO0EC2fpZHAT0HKDBoHGUA=;
-        b=QVnZNjf3hbhaQZ4AgwqcSctRmixErRDP8UYZ9c7E0CdGyUxAFaEGdF7NPj1DCG6VPV78oM
-        dmThDG3RA38hv75xuh/Zphl/Meg3RhkNrcXmf2LeT0K41ziD5b86YzEYYllLdaSKq3+MIz
-        JpTr1D7F/pW6mDjsFTDXN3+Xwzm8sZk=
-Date:   Mon, 5 Oct 2020 23:16:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mike Travis <mike.travis@hpe.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v4 03/13] x86/platform/uv: Adjust references in UV kernel
- modules
-Message-ID: <20201005211611.GK21151@zn.tnic>
-References: <20201005203929.148656-1-mike.travis@hpe.com>
- <20201005203929.148656-4-mike.travis@hpe.com>
+        Mon, 5 Oct 2020 17:17:44 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C250C0613CE;
+        Mon,  5 Oct 2020 14:17:43 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id m11so4503492otk.13;
+        Mon, 05 Oct 2020 14:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hyrdjCdnHrdnldaqzFTSI9iGwYW5D1gYzC8h8Hdh80E=;
+        b=hFgY9RJ2qsAss5wIW2AxUadyOfAnf6CQjsgCVefWPsCZqqELm7merCDWGa1rybmzr6
+         8w/zsCZT2umo8TaaFDLvQJELkr6QJQO8W/QpUSXjtQiI2LdLFz6qOD21uPf1FAWIhvyu
+         IsiMJRbHlKpm2YrTfdHLzBa4NGXolkXO7iA4cGG5dSUnxV9KEusz2DjMbPW/+Y4HGuLH
+         0m6D059Odxk7jRY8v+1edojV4DH1kVJO5vuV5FSQle4DK0/szSJ5Euq4ZJ4BYD8Wny7s
+         5KZ90jwQ/4IbVzEhHegzBagh8JdzK3hH09kJjNV0LREIe2P8XSOeuPX+oLvzipE0rUaY
+         4W2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hyrdjCdnHrdnldaqzFTSI9iGwYW5D1gYzC8h8Hdh80E=;
+        b=lz+Hz/2GjVao67DboC/ZGFiGO55cyUlQOD/dr72Ws2AxwYz0mI5nwJWukDHoLghvQQ
+         2KqiKiDav2ZwFybXj9JVp1V1ceD/cxyJPT1ulENgBQ45Nh2AEt1axeHtwgjBzI6rKavp
+         OoL5zyDVDGHukM5Qcf8NH4EzsetsMAzFd+jbLQHG/466x+ucfHDAHm597+bXQH010uDb
+         pzWAl8VTluTFT6i8i8TCAkoYzKebUYy/bw6KTSgX7liICvKvjPKS9lVewFaWLc4anhrr
+         WyURgkmMREaDIhZlwVCcxkTyWFi9ormrWwNDZ6ZPzlCTI994+4M1G9e5tfWfIgi6rQKs
+         UBHA==
+X-Gm-Message-State: AOAM530yxDqWT1C7Umy4K5HkTogRYHsiRdHbJxNzfMkvsY3mTRRMpcSO
+        sQN5G2/cpqAHsuEIdIwsAPuz4zI6o/9QU8abqhU=
+X-Google-Smtp-Source: ABdhPJwsw1a1+5vVblSv5qH5DSnI+PjKy8oR+ovdmUsJkjIp8Zb5VId6ArhnL/Vpg4zMKTCYJeDQKOpsUSVTyu76Klw=
+X-Received: by 2002:a9d:5545:: with SMTP id h5mr807618oti.269.1601932662759;
+ Mon, 05 Oct 2020 14:17:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201005203929.148656-4-mike.travis@hpe.com>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com> <20201005134534.GT6642@arm.com>
+In-Reply-To: <20201005134534.GT6642@arm.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Mon, 5 Oct 2020 14:17:06 -0700
+Message-ID: <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 03:39:19PM -0500, Mike Travis wrote:
-> Make a small symbol change (is_uv() ==> is_uv_sys()) to accommodate a
-> change in the uv_mmrs.h file (is_uv() is the new arch selector function).
-> 
-> Signed-off-by: Mike Travis <mike.travis@hpe.com>
-> Reviewed-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-> ---
->  drivers/misc/sgi-xp/xp.h            | 8 ++++----
->  drivers/misc/sgi-xp/xp_main.c       | 4 ++--
->  drivers/misc/sgi-xp/xp_uv.c         | 6 ++++--
->  drivers/misc/sgi-xp/xpc_main.c      | 6 +++---
->  drivers/misc/sgi-xp/xpc_partition.c | 2 +-
->  drivers/misc/sgi-xp/xpnet.c         | 2 +-
->  6 files changed, 15 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/misc/sgi-xp/xp.h b/drivers/misc/sgi-xp/xp.h
-> index 06469b12aced..0af267baf031 100644
-> --- a/drivers/misc/sgi-xp/xp.h
-> +++ b/drivers/misc/sgi-xp/xp.h
-> @@ -17,11 +17,11 @@
->  
->  #if defined CONFIG_X86_UV || defined CONFIG_IA64_SGI_UV
->  #include <asm/uv/uv.h>
-> -#define is_uv()		is_uv_system()
-> +#define is_uv_sys()		is_uv_system()
+On Mon, Oct 5, 2020 at 6:45 AM Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> On Tue, Sep 29, 2020 at 01:57:42PM -0700, Chang S. Bae wrote:
+> > During signal entry, the kernel pushes data onto the normal userspace
+> > stack. On x86, the data pushed onto the user stack includes XSAVE state,
+> > which has grown over time as new features and larger registers have been
+> > added to the architecture.
+> >
+> > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+> > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+> > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+> > constant indicates to userspace how much data the kernel expects to push on
+> > the user stack, [2][3].
+> >
+> > However, this constant is much too small and does not reflect recent
+> > additions to the architecture. For instance, when AVX-512 states are in
+> > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
+> >
+> > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+> > cause user stack overflow when delivering a signal.
+> >
+> > In this series, we suggest a couple of things:
+> > 1. Provide a variable minimum stack size to userspace, as a similar
+> >    approach to [5]
+> > 2. Avoid using a too-small alternate stack
+>
+> I can't comment on the x86 specifics, but the approach followed in this
+> series does seem consistent with the way arm64 populates
+> AT_MINSIGSTKSZ.
+>
+> I need to dig up my glibc hacks for providing a sysconf interface to
+> this...
 
-Do I see it correctly that you can simply use is_uv_system() directly
-instead of this macro indirection?
+Here is my proposal for glibc:
+
+https://sourceware.org/pipermail/libc-alpha/2020-September/118098.html
+
+1. Define SIGSTKSZ and MINSIGSTKSZ to 64KB.
+2. Add _SC_RSVD_SIG_STACK_SIZE for signal stack size reserved by the kernel.
+3. Deprecate SIGSTKSZ and MINSIGSTKSZ if _SC_RSVD_SIG_STACK_SIZE
+is in use.
+
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+H.J.
