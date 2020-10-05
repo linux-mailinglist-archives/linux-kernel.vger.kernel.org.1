@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0837828426D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2556528426F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgJEWNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 18:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgJEWNG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:13:06 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F51EC0613CE;
-        Mon,  5 Oct 2020 15:13:04 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e2so1063259wme.1;
-        Mon, 05 Oct 2020 15:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=opXg3DNLE1Hq7nY9CYlvag4DFBGykwv3/vPigtoFB+Q=;
-        b=CyVcSDQjPY6tb6KDjXAaXDLbyBPkOb1liLoIUo6+6vYorTEQEJOn2gSQpzJFxG8jNv
-         MY+8pBwF6LetdIrdD2YcrkTdOdoY1lseV8L24+DZ1hRlk1vvkIVay3DHxM/BHBEzl2yS
-         MlDYmU1buWtjjYMmpfnGpP+Cg7f2PRekGxWp8KZmsCZecKQ1T0zbjxUge/AswjCcFN0c
-         s0wv725Yxegw5rmYSNQRCmm9Vqk6l6XVSz93uj66BTf1nP1+1AeWfMwxiZJF4DevE3xq
-         06hEP3sRDMHEliPKQknGV8djPjGeIqK/dcAotsaAB3w41XXZRHFXkhwin9FcL3i3FVXZ
-         qOCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=opXg3DNLE1Hq7nY9CYlvag4DFBGykwv3/vPigtoFB+Q=;
-        b=JdFMScZeV39Z4Cq3AYsiSh/OuUedmuaMun1l1OTKw7ICWpV5vrk54Wqzj4WylMpUTI
-         GTxhw5JiBLjz6Xy2E8QI/H9F2TNUZXfUpo2Umkv4GXWldwwTjT7yUm+LFtJhswAWkzqM
-         b558HYH0lhyOttr1K2bZNfYCRGyWBTQS81qpfflA2FnFKpOv8Ygu8zCnw5dlPylMQHTe
-         JZ09pys2jSJJ05e3h8YoA0PZWD5+BLsmDGAyzPmyAAuScQsBVVPl2GvbKuEKMEiCp6aZ
-         5zIjeMUofoLhuAFfoEdIrgGoEauQBT9d7MXq7b5K3gvQvXGEWzodkCmLwhLSq6dyUgvq
-         BUpw==
-X-Gm-Message-State: AOAM530U4gckpRd2QxWrEXdlnn+z2IAYo5ErJVWQk/Tc8HE4BBdws265
-        g/xBc9D+fEMmJd2Uh2skLupeaZ09QE0=
-X-Google-Smtp-Source: ABdhPJwpYDv0yXhx9o3mJtV9SABXSqejr0G6obHVp2N0iOXcIX+9A0NnwOtKAl6mjIVEGScfO5e7yQ==
-X-Received: by 2002:a7b:c259:: with SMTP id b25mr1380434wmj.141.1601935982976;
-        Mon, 05 Oct 2020 15:13:02 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id g12sm1552581wro.89.2020.10.05.15.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 15:13:02 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        linux-man@vger.kernel.org, libc-alpha@sourceware.org,
+        id S1726772AbgJEWRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 18:17:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725870AbgJEWRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 18:17:54 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 449FB206CB;
+        Mon,  5 Oct 2020 22:17:53 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 18:17:51 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] off_t.3: New link to system_data_types(7)
-Date:   Tue,  6 Oct 2020 00:12:48 +0200
-Message-Id: <20201005221247.13065-2-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
-References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
+Subject: Re: [PATCH v4 7/7] tracing: Change synthetic event string format to
+ limit printed length
+Message-ID: <20201005181751.1338afbc@gandalf.local.home>
+In-Reply-To: <b6bdb34e70d970e8026daa3503db6b8e5cdad524.1601848695.git.zanussi@kernel.org>
+References: <cover.1601848695.git.zanussi@kernel.org>
+        <b6bdb34e70d970e8026daa3503db6b8e5cdad524.1601848695.git.zanussi@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
----
- man3/off_t.3 | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 man3/off_t.3
+On Sun,  4 Oct 2020 17:14:09 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-diff --git a/man3/off_t.3 b/man3/off_t.3
-new file mode 100644
-index 000000000..db50c0f09
---- /dev/null
-+++ b/man3/off_t.3
-@@ -0,0 +1 @@
-+.so man7/system_data_types.7
--- 
-2.28.0
+> From: Steven Rostedt <rostedt@goodmis.org>
+> 
+> Change the format for printing synthetic field strings to limit the
+> length of the string printed even if it's not correctly terminated.
+> 
+> Description from Steve:
+> 
+> I also added this for a bit of paranoid, and probably should be a
+> separate patch, just to make sure if the string isn't nul terminated,
+> this will keep it from bleeding pass the end of the string.
+
+Just FYI. In the future, for something like this, you should still have
+your own Signed-off-by, as you are sending it (and part of the commit
+path). You could also add:
+
+[ Need signed-off-by from Steven ]
+
+Which I would have also added as well.
+
+Thanks!
+
+-- Steve
+
+
+> ---
+>  kernel/trace/trace_events_synth.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> index 24bc6d61aa40..742ce5f62d6d 100644
+> --- a/kernel/trace/trace_events_synth.c
+> +++ b/kernel/trace/trace_events_synth.c
+> @@ -234,7 +234,7 @@ static const char *synth_field_fmt(char *type)
+>  	else if (strcmp(type, "gfp_t") == 0)
+>  		fmt = "%x";
+>  	else if (synth_field_is_string(type))
+> -		fmt = "%s";
+> +		fmt = "%.*s";
+>  
+>  	return fmt;
+>  }
+> @@ -303,11 +303,13 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
+>  				str_field = (char *)entry + data_offset;
+>  
+>  				trace_seq_printf(s, print_fmt, se->fields[i]->name,
+> +						 STR_VAR_LEN_MAX,
+>  						 str_field,
+>  						 i == se->n_fields - 1 ? "" : " ");
+>  				n_u64++;
+>  			} else {
+>  				trace_seq_printf(s, print_fmt, se->fields[i]->name,
+> +						 STR_VAR_LEN_MAX,
+>  						 (char *)&entry->fields[n_u64],
+>  						 i == se->n_fields - 1 ? "" : " ");
+>  				n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
 
