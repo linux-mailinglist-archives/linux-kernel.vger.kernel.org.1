@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074CA283B9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36B8283BA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbgJEPt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:49:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgJEPt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:49:27 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E778E20639;
-        Mon,  5 Oct 2020 15:49:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601912966;
-        bh=Zy4P3SidGYOFwyXdIOB7Da8tjGHn39EZ/UTZpf4p2Jk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bfDTt+uXz5X/ckwrCAM7lYPL8v8IvwRbYOR6QgVukMcbu2xUD77mNnWUZockUb4oU
-         PbkONv9MOALDk6XlSgp9RodG4LLRGc/2bPzFhD2Q7B2JWeDHQqgKjD6+8VkIjqBP1G
-         RsVFmh1NAzf7aZhQ9T5Tpwn0OJLbi8R+DmH9mP/0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B3D6B352301E; Mon,  5 Oct 2020 08:49:25 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 08:49:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Will Deacon <will@kernel.org>, parri.andrea@gmail.com,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201005154925.GY29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <20201004233146.GP29330@paulmck-ThinkPad-P72>
- <20201005023846.GA359428@rowland.harvard.edu>
- <20201005082002.GA23216@willie-the-truck>
- <20201005091247.GA23575@willie-the-truck>
- <20201005142351.GB376584@rowland.harvard.edu>
- <20201005151313.GA23892@willie-the-truck>
- <20201005151639.GE376584@rowland.harvard.edu>
- <20201005153519.GJ2628@hirez.programming.kicks-ass.net>
+        id S1728400AbgJEPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgJEPuS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:50:18 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E77C0613CE;
+        Mon,  5 Oct 2020 08:50:16 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b12so9880691edz.11;
+        Mon, 05 Oct 2020 08:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rxLRdxz1SNdBolBKufjW/igKHzYiiGTYqjWSfG4kZwE=;
+        b=ajncl+zXLrMl6JFVpt4+y/oZrvOkxGCFA4xqhUbubmnFZnSXZ0FrOp0KAzaPifvyNz
+         lc9/EdxsRcOGe1ZeWoor9vTo22ltkW0IswzyMxrnz7FK9mvs3Tl5UHtoZTqxm5s5cYdJ
+         K75O8up2EqEdq3NZcq7ibiIp2gNqFYZndc4fZqY6A6Lj2XzrQfkgNCyAne80OnqPXLs7
+         7l5dGuB1u64VwHog3K/lwolQCJKCHeH2O22TdwcHWUV2/g2dwq++4SQp4Kzwey2vxfRs
+         PfF2lUAcngqpOzNieE1xevrvDnB2bgD6P0hZu95VVZR9o9+g4EkcWRKXhlldArs4MNIm
+         q05w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rxLRdxz1SNdBolBKufjW/igKHzYiiGTYqjWSfG4kZwE=;
+        b=afHGOTYotnYKPQB6OPfrUdOWdioCyFIluEHYwjqdB+6DQXGg38zQJ1Bluk7DkKM8Ux
+         C3A/h61FA8enwMx1IsTFD+MOyetN32tyNoO6YKD0WMOqyQChio+XPCFRvbK+N9/rXeZM
+         aYqIzs7U15tl29NldGZpAxxB8Mp/vhP2IgvzsHd0tKjDRZY1E3rtD6snO/VeWpidUCDF
+         4gPF/zQMNK/KsaGayg34kq3mafzXHC9FP8woUwuBVo26Sha1nCFylLknKmfKE82MGSYp
+         AzD5wBumTAt2N3kEmwebkLaQmiF5y6orJ0EGlTP+wqrjbqrIdQE05vmSbLNGIAAW258L
+         iAqQ==
+X-Gm-Message-State: AOAM533WbDOnzT34a40MFmbFgQSZa2WEB3iNkjASAO3PsuAVg97hulVj
+        9e3WdX84xPZqgXugbvyv3LpYy+EASfU4t2Hi2NpFVcnt++4Ewg==
+X-Google-Smtp-Source: ABdhPJxvt2AbjzpK6NK9btt1D5gL+PeDRiMZNhhr7XuRbgPGC57wVzeWIAt9TLjE9TKu5thw6ExQZUyxkLaDDPVp3a0=
+X-Received: by 2002:a50:9e87:: with SMTP id a7mr234569edf.297.1601913014980;
+ Mon, 05 Oct 2020 08:50:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005153519.GJ2628@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201005150313.149754-1-konradybcio@gmail.com>
+ <20201005150313.149754-4-konradybcio@gmail.com> <c03ace9d-d983-c1f8-ab74-ed585aeb2364@linaro.org>
+ <CAMS8qEXBrF-j5ObahFVcJFMuC7=ucz+y7XBzTyuJAqejsE0F+g@mail.gmail.com> <0eb34c71-3e1c-9950-de30-6b163d7cca3a@linaro.org>
+In-Reply-To: <0eb34c71-3e1c-9950-de30-6b163d7cca3a@linaro.org>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Mon, 5 Oct 2020 17:49:39 +0200
+Message-ID: <CAMS8qEW2rxYCc-7dQKPMBKQzbw0w1CtxNPVJYbeBPb2-1WvfDg@mail.gmail.com>
+Subject: Re: [PATCH 03/11] arm64: dts: qcom: pm8994: Add thermal-zones for
+ temp alarm
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:35:19PM +0200, Peter Zijlstra wrote:
-> On Mon, Oct 05, 2020 at 11:16:39AM -0400, Alan Stern wrote:
-> > On Mon, Oct 05, 2020 at 04:13:13PM +0100, Will Deacon wrote:
-> > > > The failure to recognize the dependency in P0 should be considered a 
-> > > > combined limitation of the memory model and herd7.  It's not a simple 
-> > > > mistake that can be fixed by a small rewrite of herd7; rather it's a 
-> > > > deliberate choice we made based on herd7's inherent design.  We 
-> > > > explicitly said that control dependencies extend only to the code in the 
-> > > > branches of an "if" statement; anything beyond the end of the statement 
-> > > > is not considered to be dependent.
-> > > 
-> > > Interesting. How does this interact with loops that are conditionally broken
-> > > out of, e.g.  a relaxed cmpxchg() loop or an smp_cond_load_relaxed() call
-> > > prior to a WRITE_ONCE()?
-> > 
-> > Heh --  We finesse this issue by not supporting loops at all!  :-)
-> 
-> Right, so something like:
-> 
-> 	smp_cond_load_relaxed(x, !VAL);
-> 	WRITE_ONCE(*y, 1);
-> 
-> Would be modeled like:
-> 
-> 	r1 = READ_ONCE(*x);
-> 	if (!r1)
-> 		WRITE_ONCE(*y, 1);
-> 
-> with an r1==0 constraint in the condition I suppose ?
+>What do you mean by they are not "online at once" ?
 
-Yes, you got it!
+msm8992/4 are infamous for their thermal issues. Manufacturers have
+been known for straight up disabling some cores or tuning the kernel
+in such a way that some cores get disabled due to the thermal
+constraints.
 
-However, it is more efficient to use the "filter" clause to tell herd7
-about executions that are to be discarded.
-
-							Thanx, Paul
+Konrad
