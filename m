@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFD4283EFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947D5283CA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgJESsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:48:43 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6073 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725940AbgJESsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:48:42 -0400
-IronPort-SDR: 7zcPUNdQjXrXvJPuSiRRSbLjR0qMtGvOzFRAv8upB209E2ULv30Zwpy433O2nK3gcjPX23Nmzt
- AMU5wCDafiMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="161223978"
-X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
-   d="scan'208";a="161223978"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 11:48:36 -0700
-IronPort-SDR: pwdHY0+Clex6uhiQvof1tlh+ZaTorD5tBhzBp13QuXfmQhYbhxrk1rlflHdcUNlRaW+BpzA2ca
- mig0mG0rW8rw==
-X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
-   d="scan'208";a="516318049"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 09:37:48 -0700
-Date:   Mon, 5 Oct 2020 09:37:44 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: filter guest NX capability for cpuid2
-Message-ID: <20201005163743.GE11938@linux.intel.com>
-References: <20201005145921.84848-1-tianjia.zhang@linux.alibaba.com>
- <87ft6s8zdg.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft6s8zdg.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1727331AbgJEQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727069AbgJEQjx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:39:53 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6B8C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:39:53 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a200so2462389pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 09:39:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bgKuiZru+fzYOW+rknHpx1Qb/5rCkL8zdBgqBiopZMo=;
+        b=l6LKrMfjBVohHwxF9jv9cqtVCwnHkEr5vlQIuvPbeEgaOLBzDUY+wRtP25s/t70Hhk
+         5kWV73hIpokOwi1l3tHFPB2vRCReQJOQ4ip2SfbDgwGkEVVTeChIsI38ZzqFLsIBYJ54
+         Co2LtOtfJKXU4ezUVwnCkRZlXHoLRNgYZANjYnRB2g2PAYqQGWe+iLcKStDvNMwo9wl4
+         2IEPUjd/4a30CwRyaXqR5Y/7BZTsWDS/rqJ5l9ENklSFMXLNAF4CIFlDSZ3Q4xVN9M0O
+         H3omOE7p1NxvhbLbxwFC1f0wKnxwTlqnG1HOfQuubft5h5kKaYf0aCI7hgPx+yG0l8YJ
+         X32g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=bgKuiZru+fzYOW+rknHpx1Qb/5rCkL8zdBgqBiopZMo=;
+        b=b/C8GsxcW4iGboJnNJmy74iAudproIsR0P2KnWM1rnJsnIC2IKroetiOgEmyEfFrPD
+         vny1pwUioAtGI9N7elx+4b+yt9GDlpB6/ydbj89oy/xHCgxIrz/1ILwN6w9dYMU3kmgl
+         TjSf8yeg/uRb3WzpPk78iB2z84zGWhdVjn2NYySKX+niaye1qTBlH2HFDhen4aumd62l
+         OSws4jhRHoJZX0Dx8b7vLzxGfO131HwrovZB3IWxOWgef10hugPfmvlRaE0dHHIAhIR/
+         I9JBpRRSeLlhN64fwf48n/Z+mWJWURwPgXucJ59sAA62NLnay8ZdO0Zu3IQxIWUq/v+L
+         fl4Q==
+X-Gm-Message-State: AOAM531tDU6haBFknikjrAwW6F/xaS/+gBA4sfh862GSW1i20OOV59bT
+        9czptCjU/Lqc2hNkBba1jJ2TFg==
+X-Google-Smtp-Source: ABdhPJzscDCmybkxTYMeNPHRJvgED0ZxQ648JzxM13dAod0j3fjEo4NfbnuwNAzcN1JII0PYa0oCnw==
+X-Received: by 2002:a05:6a00:1356:b029:13e:5203:fba3 with SMTP id k22-20020a056a001356b029013e5203fba3mr565585pfu.3.1601915992319;
+        Mon, 05 Oct 2020 09:39:52 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id z9sm418686pfk.118.2020.10.05.09.39.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 09:39:51 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 09:39:51 -0700 (PDT)
+X-Google-Original-Date: Mon, 05 Oct 2020 09:39:45 PDT (-0700)
+Subject:     Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
+In-Reply-To: <87lfglt6z1.fsf@igel.home>
+CC:     guoren@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
+        aou@eecs.berkeley.edu, tglx@linutronix.de, tycho@tycho.ws,
+        nickhu@andestech.com, linux-riscv@lists.infradead.org,
+        guoren@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     schwab@linux-m68k.org
+Message-ID: <mhng-847e71cf-64bc-464b-8d09-3bcec40aa491@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:29:47PM +0200, Vitaly Kuznetsov wrote:
-> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> writes:
-> 
-> > Original KVM_SET_CPUID has removed NX on non-NX hosts as it did
-> > before. but KVM_SET_CPUID2 does not. The two should be consistent.
-> >
-> > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > ---
-> >  arch/x86/kvm/cpuid.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > index 3fd6eec202d7..3e7ba2b11acb 100644
-> > --- a/arch/x86/kvm/cpuid.c
-> > +++ b/arch/x86/kvm/cpuid.c
-> > @@ -257,6 +257,7 @@ int kvm_vcpu_ioctl_set_cpuid2(struct kvm_vcpu *vcpu,
-> >  		goto out;
-> >  	}
-> >  
-> > +	cpuid_fix_nx_cap(vcpu);
-> >  	kvm_update_cpuid_runtime(vcpu);
-> >  	kvm_vcpu_after_set_cpuid(vcpu);
-> >  out:
-> 
-> I stumbled upon this too and came to the conclusion this is
-> intentional, e.g. see this:
-> 
-> commit 0771671749b59a507b6da4efb931c44d9691e248
-> Author: Dan Kenigsberg <danken@qumranet.com>
-> Date:   Wed Nov 21 17:10:04 2007 +0200
-> 
->     KVM: Enhance guest cpuid management
-> 
-> ...
-> 
->     [avi: fix original KVM_SET_CPUID not removing nx on non-nx hosts as it did
->           before]
-> 
-> but this is a very, very old story.
+On Mon, 05 Oct 2020 01:25:22 PDT (-0700), schwab@linux-m68k.org wrote:
+> On Sep 14 2020, Aurelien Jarno wrote:
+>
+>> How should we proceed to get that fixed in time for 5.9? For the older
+>> branches where it has been backported (so far 5.7 and 5.8), should we
+>> just get that commit reverted instead?
+>
+> Why is this still broken?
 
-Doesn't mean it's bogus though :-)  _If_ we want to extend this behavior to
-KVM_SET_CPUID2, there should be a justified need.
+Sorry, I hadn't seen this.  I'm not seeing a boot failure on 5.9-rc8 with just
+CONFIG_HARDENED_USERCPOY=y in addition to defconfig (on QEMU, though I doubt
+that's relevant here).  It looks like the fix is to essentially revert this,
+which I'm fine with, but I'd prefer to have a failing test to make sure this
+doesn't break again.
+
+Guo: I don't see an actual patch (signed off and such) posted for this, do you
+mind posting one?  Otherwise I'll take a crack at constructing the revert
+myself.
