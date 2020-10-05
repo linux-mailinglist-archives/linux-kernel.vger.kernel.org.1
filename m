@@ -2,205 +2,433 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7982F283C1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9E2283C27
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgJEQL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:11:29 -0400
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:45340 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726657AbgJEQL3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:11:29 -0400
-Received: from pps.filterd (m0170396.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095G9P61002805;
-        Mon, 5 Oct 2020 12:11:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=g9LVSuVP84x+hiiS8FkKmDKcAQOl2odneLFvkT5Uxz8=;
- b=MNwYnu3btygRKD7uFCsZFzmTgcmO9/J41Mt/vlGds+p1MMF+Aihp/OsvScK1k1bB65Y4
- BW7PVqJ0dnc4H4KjONwWrCnU1JnLvL2Xhs8603KKz3Zboij2makfQHQI4xjTRVd5PwE6
- 3ppd76UW7k0lDzZ39zaMMN7maDR+64CKJKZp6mo71UcSJPvviCRJSYbSLqyVTzNZq4EX
- B0zR8scKmcxtHCo3xNDa/gNI2e5Bti4zVpROPjWK+VALRQeAPSQLDmx7dccIAx3/TagV
- VJtHl2LQbF4gqa8pXPd914PxIDWyRiSqgjv3lfYP8t3RKbdYsCAEgc1d/FcI2LbD24Ki 6g== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com with ESMTP id 33xn4x5fn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 12:11:11 -0400
-Received: from pps.filterd (m0133268.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095G2o02025974;
-        Mon, 5 Oct 2020 12:11:10 -0400
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
-        by mx0a-00154901.pphosted.com with ESMTP id 3406npr479-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 05 Oct 2020 12:11:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N6jslcAf6AH3iP5uu0YFR6teuKpKL1rLFsCYPEWIVerwtVokvsXoDJpr8HXthM4Vi0+dCVE5XcBmufBziHYpsVgjrXECZQr1MSnFFVp1zSCsBqd1XQT0DrtIOKHHYwYURsR6zi6rnN1NzGVaJvzSnCCDmFfjsY1/I1JUUX0OZjaxrKakIUXs0QwUADCc9wjNQaJqCwEb2hlYbxv6gMbBWTIFn09xaodOD/O1RwRZIoRciHAh1o/cay0x5yJIuxpqzi6N2gAVFUM41zqEW/LpJf8xYUrmk+aNyJcuUzBOrMMayKvatLAwenP2DQ4BGac958iY/6Kt5xy2nIjiGVubDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g9LVSuVP84x+hiiS8FkKmDKcAQOl2odneLFvkT5Uxz8=;
- b=DwOhtgIcWRqJd+cjccFpR2lbnYDf1/C/+Z1+z1Z8ELkCWJf4+CIdCdU57hWjwIfgTruryQ/p1BHU8Y1sSeC1uqKpWPlRpNPouENzk/vJYKsYYFnLFMSoWfQqv95fyUedeptqzwZEBmkYQZq0CcQ0ExJ6hyiMONrKeIrUOq9shrm+18girLEWmmm7miae0j4G7DZrw5UgTPgVVcdZrZcB7fiT6jNju0PFynIaKbBDhr/QE3MGWGgrM031jygEk25c50CnjdQkanXgGw84KmJGC17fgDOvRL6+V8D7DT2h/uy5Kp0e4M2H3VsSFpJ/etv/uwyItlgt0bfyINXGJWUE6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g9LVSuVP84x+hiiS8FkKmDKcAQOl2odneLFvkT5Uxz8=;
- b=nFFk5jj2RJP7PJP4zz86DzNcNMfMZGsYPaJWQznUv+exJ7e/11nefB16bceco19jZj+UG3/Y1CKHhydxgHqaEIco6iwvTbRYj9W8/SNaXIRDD+lBEwC++x9WaAer1tXS2qlGd0x/ng6KiCWcAmJNjfTI4S/Y0hn74ThCnxQ7hIo=
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
- by DM5PR19MB1481.namprd19.prod.outlook.com (2603:10b6:3:ba::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Mon, 5 Oct
- 2020 16:11:08 +0000
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a4b8:d5c9:29da:39b2]) by DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a4b8:d5c9:29da:39b2%4]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
- 16:11:08 +0000
-From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
-To:     =?utf-8?B?QmFybmFiw6FzIFDFkWN6ZQ==?= <pobrn@protonmail.com>
-CC:     Hans de Goede <hdegoede@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mark Pearson <mpearson@lenovo.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Pearson <markpearson@lenovo.com>
-Subject: RE: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class
-Thread-Topic: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class
-Thread-Index: AQHWmYfgDjG0YI7kc0C9HQeldGcjC6mI+DtAgAAZsQCAAB1x8A==
-Date:   Mon, 5 Oct 2020 16:11:08 +0000
-Message-ID: <DM6PR19MB26369E7468931E63B69A0604FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
-References: <20201003131938.9426-1-hdegoede@redhat.com>
- <20201003131938.9426-2-hdegoede@redhat.com>
- <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <Mz2G7glm3yMTniKA6SHM011dDkTFF4_otICrMQfVLheopX8JMGSupPleyjyK8OY0tyUazu09nX7XhleBVdl4ozTCWXCPGyvV58Qc-UUTvig=@protonmail.com>
-In-Reply-To: <Mz2G7glm3yMTniKA6SHM011dDkTFF4_otICrMQfVLheopX8JMGSupPleyjyK8OY0tyUazu09nX7XhleBVdl4ozTCWXCPGyvV58Qc-UUTvig=@protonmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-10-05T16:11:05.1289172Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=52c0acc1-4dc0-460b-82bd-730a6c16ce22;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: protonmail.com; dkim=none (message not signed)
- header.d=none;protonmail.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [76.251.167.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a2926fd1-68fe-4340-07bf-08d8694944f9
-x-ms-traffictypediagnostic: DM5PR19MB1481:
-x-microsoft-antispam-prvs: <DM5PR19MB1481512262EE02730390D317FA0C0@DM5PR19MB1481.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XKOG+GVpFjeV1hUt2IO77vVXgYvnoVOUUkrDQHOLclOxLSnFAU1Lk7IbN1VXidtd1aLFsMaPvPIHJlpRPY9DPtc1mslrkopTgtRKK1Wtmh94/eBdGthZTxZb3w8o1G56QretgCjAcjuOs2Bhdu/qglrPq5Qa4VfTzG22xwNjRFusFmrBpLQdJEwnBrWEz3cekPgkGq02Pai0RU+gXTXoFKqPfG101ikGQ9rXQOgEWsV4EyOWChqh3PlfTwV47oNUi947CM7QxW0i9svfMoxL9tKAKGspxKmNLCZMrCMs/JQ63zxEbi9XpGsA7NfLsNF4MdFjWphY8YBAk1V0swoQMQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(346002)(136003)(366004)(396003)(66574015)(83380400001)(7696005)(6506007)(26005)(8676002)(33656002)(9686003)(8936002)(478600001)(55016002)(6916009)(186003)(54906003)(786003)(86362001)(66476007)(66946007)(64756008)(66446008)(66556008)(7416002)(4326008)(52536014)(316002)(76116006)(5660300002)(2906002)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: gyk0VD+Hk+aEXP2oKcEYo3wFbDzjhfr1jVwaUB+aNtG5qp09DlBabaxDGOGqoXRVw4UeD0s2sBv3WdEFnaStKqU9XrzOvRLp++qBMJMES44LFsVWckajKYfNUMSsUpaPOEqBB/5r4YPysp1vw6XudPUv3NSvep8wHoD6pa/GZJhGgSXEb4ESjZ2voc142vN4y7kMX537b9LALJqP1aRUjwTwHaEaWlLVu6rfGILO+yqKD0ZHOKjsLdCUUs3KmZ5N2l/GVbiG5oSQJG0QbS/qAnvj4OGCviScqJnqRTtUhiY/vS6a0XQBRtmJF5IIUWTAnF1awM8sJ9C982dBxk8LsxZ/fNkKadPfD+rPYx9CSevWwRmgNP4uq91vtfEw6SJ5DrYBi9xhQ6q7dtuRefEgjdCof38tq7im1FAkPBlhu3bhpTa+SDZyjKzyjGpTqwYDHjZZw00dhHfdx/OheMX6QMmiJEq3mdW+NlB3IE2aE0HySaFkTvC4hUsb+mTIrHXdJ9UdvWJ3WmimoPgnAwzQmySs6Rj7W2x1+rqySdk1eBV1AzgA37cRPSXfWIZNNPCiBkVJz19B3zfvS8zmlpW8V/TJY95OAK+6oMvuk3wABdIXNcMwUgR7X6Ehchx+lXsg0RsllJ8Sem4b49kCJHX/fQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728211AbgJEQMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:12:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726657AbgJEQMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:12:23 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B667206DD;
+        Mon,  5 Oct 2020 16:12:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601914342;
+        bh=pdHlQPz4mf002rX/QtQTAU1eLyO9isayy4TZRHcdJHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h4cGT7Uv6gSipm8mwKa55HNx0Ros9ACxIc+3wwDIV1Qiz/pgBf43MR+mvHU3MGtZU
+         wyjmk08uGJ+rF1LoaA6D2mS1zWiaNQ5aoVcNTnhAVLfPq6LpcJaeA2MvktJ5bRHj8b
+         qVJrDQVXPuEKhDFhRqzu3NB4eKLq87TLQgvCbTm8=
+Date:   Mon, 5 Oct 2020 18:11:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Sathish Narsimman <sathish.narasimman@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
+ whitelist"
+Message-ID: <20201005161149.GA2378402@kroah.com>
+References: <20201003135449.GA2691@kroah.com>
+ <A1C95238-CBCB-4FD4-B46D-A62AED0C77E5@holtmann.org>
+ <20201003160713.GA1512229@kroah.com>
+ <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
+ <20201004105124.GA2429@kroah.com>
+ <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
+ <20201005083624.GA2442@kroah.com>
+ <220D3B4E-D73E-43AD-8FF8-887D1A628235@holtmann.org>
+ <20201005124018.GA800868@kroah.com>
+ <824BC92C-5035-4B80-80E7-298508E4ADD7@holtmann.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2926fd1-68fe-4340-07bf-08d8694944f9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2020 16:11:08.2376
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lyss7HO4lovkI7suHYoTQ5cQyrcMr+B8+829egavqChOS/rL8XhV8BSTb9K0UIEqTnZeJUyEa/CGUYltd1PwL16is5OtKXD+x0cFf50C4pI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR19MB1481
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-05_11:2020-10-05,2020-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 suspectscore=0 priorityscore=1501
- mlxscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010050117
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 bulkscore=0 adultscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010050118
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
+In-Reply-To: <824BC92C-5035-4B80-80E7-298508E4ADD7@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAyMDIwLiBva3TDs2JlciA1LiwgaMOpdGbFkSAxNDo1OCBrZWx0ZXrDqXNzZWwsIExpbW9uY2ll
-bGxvLCBNYXJpbyDDrXJ0YToNCj4gPiA+IE9uIG1vZGVybiBzeXN0ZW1zIENQVS9HUFUvLi4uIHBl
-cmZvcm1hbmNlIGlzIG9mdGVuIGR5bmFtaWNhbGx5DQo+IGNvbmZpZ3VyYWJsZQ0KPiA+ID4gaW4g
-dGhlIGZvcm0gb2YgZS5nLiB2YXJpYWJsZSBjbG9jay1zcGVlZHMgYW5kIFRQRC4gVGhlIHBlcmZv
-cm1hbmNlIGlzDQo+IG9mdGVuDQo+ID4gPiBhdXRvbWF0aWNhbGx5IGFkanVzdGVkIHRvIHRoZSBs
-b2FkIGJ5IHNvbWUgYXV0b21hdGljLW1lY2hhbmlzbSAod2hpY2ggbWF5DQo+ID4gPiB2ZXJ5IHdl
-bGwgbGl2ZSBvdXRzaWRlIHRoZSBrZXJuZWwpLg0KPiA+ID4gVGhlc2UgYXV0byBwZXJmb3JtYW5j
-ZS1hZGp1c3RtZW50IG1lY2hhbmlzbXMgb2Z0ZW4gY2FuIGJlIGNvbmZpZ3VyZWQgd2l0aA0KPiA+
-ID4gb25lIG9mIHNldmVyYWwgcGVyZm9ybWFuY2UtcHJvZmlsZXMsIHdpdGggZWl0aGVyIGEgYmlh
-cyB0b3dhcmRzIGxvdy1wb3dlcg0KPiA+ID4gY29uc3VtcHRpb24gKGFuZCBjb29sIGFuZCBxdWll
-dCkgb3IgdG93YXJkcyBwZXJmb3JtYW5jZSAoYW5kIGhpZ2hlciBwb3dlcg0KPiA+ID4gY29uc3Vt
-cHRpb24gYW5kIHRoZXJtYWxzKS4NCj4gPiA+IEludHJvZHVjZSBhIG5ldyBwZXJmb3JtYW5jZV9w
-cm9maWxlIGNsYXNzL3N5c2ZzIEFQSSB3aGljaCBvZmZlcnMgYSBnZW5lcmljDQo+ID4gPiBBUEkg
-Zm9yIHNlbGVjdGluZyB0aGUgcGVyZm9ybWFuY2UtcHJvZmlsZSBvZiB0aGVzZSBhdXRvbWF0aWMt
-bWVjaGFuaXNtcy4NCj4gPg0KPiA+IElmIGludHJvZHVjaW5nIGFuIEFQSSBmb3IgdGhpcyAtIGxl
-dCBtZSBhc2sgdGhlIHF1ZXN0aW9uLCB3aHkgZXZlbiBsZXQgZWFjaA0KPiA+IGRyaXZlciBvZmZl
-ciBhIGNsYXNzIGludGVyZmFjZSBhbmQgdXNlcnNwYWNlIG5lZWQgdG8gY2hhbmdlICJlYWNoIiBk
-cml2ZXIncw0KPiA+IHBlcmZvcm1hbmNlIHNldHRpbmc/DQo+ID4NCj4gPiBJIHdvdWxkIHRoaW5r
-IHRoYXQgeW91IGNvdWxkIGp1c3Qgb2ZmZXIgc29tZXRoaW5nIGtlcm5lbC13aWRlIGxpa2UNCj4g
-PiAvc3lzL3Bvd2VyL3BlcmZvcm1hbmNlLXByb2ZpbGUNCj4gPg0KPiA+IFVzZXJzcGFjZSBjYW4g
-cmVhZCBhbmQgd3JpdGUgdG8gYSBzaW5nbGUgZmlsZS4gQWxsIGRyaXZlcnMgY2FuIGdldCBub3Rp
-ZmllZA0KPiA+IG9uIHRoaXMgc3lzZnMgZmlsZSBjaGFuZ2luZy4NCj4gPg0KPiANCj4gVGhhdCBt
-YWtlcyBzZW5zZSwgaW4gbXkgb3BpbmlvbiwgZnJvbSB0aGUgcmVndWxhciB1c2VyJ3MgcGVyc3Bl
-Y3RpdmU6DQo+IG9uZSBzd2l0Y2ggdG8gcnVsZSB0aGVtIGFsbCwgbm8gZnVzcy4gSG93ZXZlciwg
-SSBkb24ndCB0aGluayB0aGF0IHNjYWxlcyB3ZWxsLg0KPiBXaGF0IGlmIHRoZSBoeXBvdGhldGlj
-YWwgdXNlcnMgd2FudHMgdG8gcnVuIGEgQ1BVLWhlYXZ5IHdvcmtsb2FkLCBhbmQgdGh1cw0KPiB3
-YW50cw0KPiB0byBwdXQgdGhlIEdQVSBpbnRvICJsb3ctcG93ZXIiIG1vZGUgYW5kIHRoZSBDUFUg
-aW50byAicGVyZm9ybWFuY2UiIG1vZGU/IFdoYXQNCj4gaWYNCj4gdGhlIHVzZXJzIHdhbnRzIHRv
-IHB1dCBvbmUgR1BVIGludG8gImxvdy1wb3dlciIgbW9kZSwgYnV0IHRoZSBvdGhlciBvbmUgaW50
-bw0KPiAicGVyZm9ybWFuY2UiPyBXaXRoIHRoZSBjdXJyZW50IHNwZWNpZmljYXRpb24sIHRoZSB1
-c2VyJ3MgbmVlZHMgY291bGQgYmUNCj4gZWFzaWx5DQo+IHNhdGlzZmllZC4gSSBkb24ndCBzZWUg
-aG93IHRoYXQncyBwb3NzaWJsZSB3aXRoIGEgc2luZ2xlIHN3aXRjaC4gTm9uZXRoZWxlc3MsDQo+
-IEkgdGhpbmsNCj4gdGhhdCBhIHNpbmdsZSBnbG9iYWwgc3dpdGNoICppbiBhZGRpdGlvbiogdG8g
-dGhlIGNsYXNzIGRldmljZXMgY291bGQgcG9zc2libHkNCj4gc2ltcGxpZnkgdGhlIHVzZXJzcGFj
-ZS1rZXJuZWwgaW50ZXJhY3Rpb24gZm9yIG1vc3QgdXNlcnMuDQoNCkkgdGhpbmsgdGhhdCB0aGUg
-bW9tZW50IHlvdSByZXByZXNlbnQgYSBwbGF0Zm9ybS9zeXN0ZW0gZGV2aWNlIGFzIGEgc3dpdGNo
-IHlvdQ0KbG9zZSB0aGUgYWJpbGl0eSB0byBzZXQgZGlmZmVyZW50IHBvbGljaWVzIGZvciBvdGhl
-ciB0eXBlcyBvZiBkZXZpY2VzIHNlcGFyYXRlbHkuDQoNCldoYXQgaWYgdXNpbmcgdGhlIHBsYXRm
-b3JtL3N5c3RlbSBkZXZpY2UgYWN0dWFsbHkgL2Fsc28vIG9yY2hlc3RyYXRlcyBjaGFuZ2VzIHRv
-DQp0aG9zZSBvdGhlciBkZXZpY2VzIHlvdSBtZW50aW9uPyAgVGhlbiBpdCBiZWNvbWVzIGFuIG9y
-ZGVyIG9mIGV2ZW50cyBwcm9ibGVtLCBvcg0Kd29yc2UgYSBwcm9ibGVtIHdoZXJlIG9uZSBzd2l0
-Y2ggc2hvd3MgIndyb25nIiB2YWx1ZS4NCg0KPiANCj4gDQo+ID4gVGhlIHN5c3RlbXMgdGhhdCBy
-ZWFjdCBpbiBmaXJtd2FyZSAoc3VjaCBhcyB0aGUgdHdvIHRoYXQgcHJvbXB0ZWQNCj4gPiB0aGlz
-IGRpc2N1c3Npb24pIGNhbiBjaGFuZ2UgYXQgdGhhdCB0aW1lLiBJdCBsZWF2ZXMgdGhlIHBvc3Np
-YmlsaXR5IGZvciBhDQo+ID4gbW9yZSBvcGVuIGtlcm5lbCBpbXBsZW1lbnRhdGlvbiB0aGF0IGNh
-biBkbyB0aGUgc2FtZSB0aGluZyB0aG91Z2ggdG9vIGJ5DQo+ID4gZGlyZWN0bHkgbW9kaWZ5aW5n
-IGRldmljZSByZWdpc3RlcnMgaW5zdGVhZCBvZiBBQ1BJIGRldmljZXMuDQo+ID4NCj4gDQo+IEV4
-Y3VzZSBteSBpZ25vcmFuY2UsIGJ1dCBJIGRvbid0IHJlYWxseSBzZWUgd2h5IHRoaXMgaW50ZXJm
-YWNlIHdvdWxkIGJlIHRpZWQNCj4gdG8NCj4gQUNQSSBkZXZpY2VzPyBXaHkgaXMgaXQgbm90IHBv
-c3NpYmxlIHRvIHdyaXRlIGEgZHJpdmVyIHRoYXQgaW1wbGVtZW50cyB0aGlzDQo+IGludGVyZmFj
-ZQ0KPiBhbmQgZGlyZWN0bHkgbW9kaWZpZXMgZGV2aWNlIHJlZ2lzdGVycz8gQW0gSSBtaXNzaW5n
-IHNvbWV0aGluZyBvYnZpb3VzIGhlcmU/DQo+IA0KDQpXaGVuIGltcGxlbWVudGVkIGZvciB0aGUg
-dHdvIHZlbmRvcnMgbWVudGlvbmVkIGhlcmUsIGl0IHdvdWxkIGJlIHVzaW5nIGENCnByb3ByaWV0
-YXJ5ICJmaXJtd2FyZSBBUEkiIGltcGxlbWVudGVkIGJ5IHRob3NlIHR3byB2ZW5kb3JzLiAgRm9y
-IGV4YW1wbGUgd3JpdGUNCmFyZ3VtZW50cyAoMHgxLCAweDIpIHRvIEFDUEktV01JIG1ldGhvZCBX
-TUZUIGFuZCBpdCB3aWxsIGNhdXNlIGZpcm13YXJlIHRvIGNvb3JkaW5hdGUNCnVzaW5nIHVuZGlz
-Y2xvc2VkIHByb3RvY29sIHRvIGFmZmVjdCB0aGUgcGxhdGZvcm0gY2hhbmdlcyBkZXNpcmFibGUu
-DQoNClRoaXMgaXMgZGlmZmVyZW50IGluIG15IG1pbmQgZnJvbSAia2VybmVsIHdyaXRlcyB0byBh
-IHNwZWNpZmljIHJlZ2lzdGVyIiB0byBzZXQNCnBvd2VyIHByb3BlcnRpZXMgb2YgYSBzcGVjaWZp
-YyBkZXZpY2UuDQoNCg0KDQo=
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 05, 2020 at 05:44:48PM +0200, Marcel Holtmann wrote:
+> Hi Greg,
+> 
+> >>>>>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
+> >>>>>>>>> breaks all bluetooth connections on my machine.
+> >>>>>>>>> 
+> >>>>>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
+> >>>>>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
+> >>>>>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
+> >>>>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>>>>>>>> ---
+> >>>>>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
+> >>>>>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
+> >>>>>>>>> 
+> >>>>>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
+> >>>>>>>>> stopped working on my desktop system.  I finally got the time to do
+> >>>>>>>>> bisection today, and it came down to this patch.  Reverting it on top of
+> >>>>>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
+> >>>>>>>>> work.
+> >>>>>>>>> 
+> >>>>>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
+> >>>>>>>>> issue?
+> >>>>>>>> 
+> >>>>>>>> can you be specific what breaks since our guys and I also think the
+> >>>>>>>> ChromeOS guys have been testing these series of patches heavily.
+> >>>>>>> 
+> >>>>>>> My bluetooth trackball does not connect at all.  With this reverted, it
+> >>>>>>> all "just works".
+> >>>>>>> 
+> >>>>>>> Same I think for a Bluetooth headset, can check that again if you really
+> >>>>>>> need me to, but the trackball is reliable here.
+> >>>>>>> 
+> >>>>>>>> When you run btmon does it indicate any errors?
+> >>>>>>> 
+> >>>>>>> How do I run it and where are the errors displayed?
+> >>>>>> 
+> >>>>>> you can do btmon -w trace.log and just let it run like tcdpump.
+> >>>>> 
+> >>>>> Ok, attached.
+> >>>>> 
+> >>>>> The device is not connecting, and then I open the gnome bluetooth dialog
+> >>>>> and it scans for devices in the area, but does not connect to my
+> >>>>> existing devices at all.
+> >>>>> 
+> >>>>> Any ideas?
+> >>>> 
+> >>>> the trace file is from -rc7 or from -rc7 with this patch reverted?
+> >>>> 
+> >>>> I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
+> >>>> 
+> >>>> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+> >>>> index e0269192f2e5..94c0daa9f28d 100644
+> >>>> --- a/net/bluetooth/hci_request.c
+> >>>> +++ b/net/bluetooth/hci_request.c
+> >>>> @@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
+> >>>>               return -1;
+> >>>> 
+> >>>>       /* White list can not be used with RPAs */
+> >>>> -       if (!allow_rpa && !use_ll_privacy(hdev) &&
+> >>>> +       if (!allow_rpa &&
+> >>>>           hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
+> >>>>               return -1;
+> >>>>       }
+> >>>> @@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
+> >>>>               }
+> >>>> 
+> >>>>               /* White list can not be used with RPAs */
+> >>>> -               if (!allow_rpa && !use_ll_privacy(hdev) &&
+> >>>> +               if (!allow_rpa &&
+> >>>>                   hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
+> >>>>                       return 0x00;
+> >>>>               }
+> >>>> 
+> >>>> 
+> >>>> If you just do the above, does thing work for you again?
+> >>> 
+> >>> Corrupted white-space issues aside, yes, it works!
+> >> 
+> >> I just pasted it from a different terminal ;)
+> >> 
+> >>> I am running 5.9-rc8 with just this change on it and my tracball works
+> >>> just fine.
+> >>> 
+> >>>> My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
+> >>> 
+> >>> How would one go about enabling such a hardware feature if they wanted
+> >>> to?  :)
+> >> 
+> >> I need to understand what is going wrong for you. I have a suspicion,
+> >> but first I need to understand what kind of device you have. I hope
+> >> the trace file is enough.
+> > 
+> > If you need any other information, just let me know, this is a USB
+> > Bluetooth controller from Intel:
+> > 
+> > 	$ lsusb | grep Blue
+> > 	Bus 009 Device 002: ID 8087:0029 Intel Corp. AX200 Bluetooth
+> > 
+> > And the output of usb-devices for it:
+> > 	T:  Bus=09 Lev=01 Prnt=01 Port=04 Cnt=01 Dev#=  2 Spd=12  MxCh= 0
+> > 	D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> > 	P:  Vendor=8087 ProdID=0029 Rev=00.01
+> > 	C:  #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+> > 	I:  If#=0x0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> > 	I:  If#=0x1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> 
+> I already figured out that it is one of our controllers. The trace file gives it away.
+> 
+> So my suspicion is that the device you want to connect to uses RPA (aka random addresses). And we added support for resolving them in the firmware. Your hardware does support that, but the host side is not fully utilizing it and thus your device is filtered out.
+
+Dude, get an email client that line-wraps :)
+
+> If I am not mistaken, then the use_ll_privacy() check in these two specific places need to be replaced with LL Privacy Enabled check. And then the allow_rpa condition will do its job as expected.
+> 
+> We can confirm this if you send me a trace with the patch applied.
+
+Want me to disconnect the device and then reconnect it using
+bluetootctl?  I'll go do that now...
+
+Ok, it's attached, I did:
+
+$ bluetoothctl disconnect F1:85:91:79:73:70
+Attempting to disconnect from F1:85:91:79:73:70
+[CHG] Device F1:85:91:79:73:70 ServicesResolved: no
+Successful disconnected
+
+And then the gnome bluetooth daemon (or whatever it has) reconnected it
+automatically, so you can see the connection happen, and some movements
+in the log.
+
+If there's anything else you need, just let me know.
+
+thanks,
+
+greg k-h
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="trace-disconnect-connect.log"
+Content-Transfer-Encoding: quoted-printable
+
+btsnoop=00=00=00=00=01=00=00=07=D1=00=00=00'=00=00=00'=FF=FF=00=0C=00=00=00=
+=00=00=E2=8E=A1=C7o=E5=DALinux version 5.9.0-rc8-dirty (x86_64)=00=00=00=00=
+!=00=00=00!=FF=FF=00=0C=00=00=00=00=00=E2=8E=A1=C7o=E5=DDBluetooth subsyste=
+m version 2.22=00=00=00=00=10=00=00=00=10=00=00=00=00=00=00=00=00=00=E2=8E=
+=A1=C7o=E5=DE=00=01pe=F6=85=E0Phci0=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=08=00=00=00=00=00=E2=8E=A1=C7o=E5=DF=00=00=00=08=00=00=00=08=00=00=00
+=00=00=00=00=00=E2=8E=A1=C7o=E5=DFpe=F6=85=E0P=02=00=00=00=00=1E=00=00=00=
+=1E=FF=FF=00=0E=00=00=00=00=00=E2=8E=A1=C7o=E5=E0=01=00=00=00=02=00=01=12=
+=00=01=00=00=00=10bluetoothd=00=00=00=00=00=00=00=00=00=0D=00=00=00=0D=00=
+=00=00=10=00=00=00=00=00=E2=8E=A1=C7=C2=B1=FD=01=00=00=00=14=00psy=91=85=F1=
+=02=00=00=00=06=00=00=00=06=00=00=00=02=00=00=00=00=00=E2=8E=A1=C7=C2=B2=3D=
+=06=04=03=01=0E=13=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=
+=A1=C7=C4=87>=0F=04=00=01=06=04=00=00=00=06=00=00=00=06=00=00=00=03=00=00=
+=00=00=00=E2=8E=A1=C7=C8}B=05=04=00=01=0E=16=00=00=00=10=00=00=00=10=00=00=
+=00=11=00=00=00=00=00=E2=8E=A1=C7=C8}q=01=00=00=00=01=00=14=00=00psy=91=85=
+=F1=02=00=00=00=0B=00=00=00=0B=00=00=00=02=00=00=00=00=00=E2=8E=A1=C7=C9=B3=
+BA =08=00=00=01=00`=000=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=
+=00=E2=8E=A1=C7=C9=BE=B0=0E=04=01A =00=00=00=00	=00=00=00	=00=00=00=02=00=
+=00=00=00=00=E2=8E=A1=C7=C9=BE=C7B =06=01=01=00=00=00=00=00=00=00=06=00=00=
+=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=C9=CE=C0=0E=04=02B =00=00=00=
+=005=00=00=005=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=CA@=82>3=0D=01=13=00=
+=00=C1=A2!=0ElT=01=00=FF=7F=A9=00=00=00=00=00=00=00=00=00=19=02=01=12=05=02=
+&=18=14=18=0F	MyRun 18004074=00=00=008=00=00=008=00=00=00=03=00=00=00=00=00=
+=E2=8E=A1=C7=CAY/>6=0D=01=12=00=01=0B=D2=B4=E8=C5X=01=00=FF=7F=AB=00=00=00=
+=00=00=00=00=00=00=1C=03=03o=FD=17=16o=FD>=E2w&=F1=BEg=B6=EFe=BAP=C7=F5=91j=
+=0B=3D=E6=B9=00=00=007=00=00=007=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=CAt=
+=9C>5=0D=01=12=00=00=18=B9=1A=ADk=A8=01=00=FF=7F=A1=00=00=00=00=00=00=00=00=
+=00=1B=1A=FFL=00=02=15Pv\=B7=D9=EAN!=99=A4=FA=87=96=13=A4=92{=AFC=D5=CE=00=
+=00=00.=00=00=00.=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=CC=1Ak>,=0D=01=13=
+=00=01+S=C2nPU=01=00=FF=7F=A1=00=00=00=00=00=00=00=00=00=12=02=01=1A=02
+=0C=0B=FFL=00=10=06=11=1E=C7=91f=E2=00=00=00.=00=00=00.=00=00=00=03=00=00=
+=00=00=00=E2=8E=A1=C7=CC=BA=91>,=0D=01=13=00=01=ACo3q=B5f=01=00=FF=7F=AF=00=
+=00=00=00=00=00=00=00=00=12=02=01=1A=02
+=07=0B=FFL=00=10=06<=1EIc=07=F5=00=00=008=00=00=008=00=00=00=03=00=00=00=00=
+=00=E2=8E=A1=C7=CD=16b>6=0D=01=13=00=00=04=A7=CF=DAc=E0=01=00=FF=7F=BA=00=
+=00=00=00=00=00=00=00=00=1C=11=06>=D9=F5.=B7=F1?=BC=80EK3=F6l=81&	=16*%=E0c=
+=DA=CF=A6=F9=00=00=008=00=00=008=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=CD=
+=BCh>6=0D=01=12=00=01h=D7)nZs=01=00=FF=7F=A4=00=00=00=00=00=00=00=00=00=1C=
+=03=03=9F=FE=17=16=9F=FE=02fM4Wt-UVwuA=00=00=01t=F9=86=E1|=00=00=00&=00=00=
+=00&=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=CF=D3v>$=0D=01=10=00=01=183=97C=
+=A87=01=00=FF=7F=A4=00=00=00=00=00=00=00=00=00
+=02=01=1A=06=FFL=00
+=01=00=00=00=00-=00=00=00-=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=D2JO>+=0D=
+=01=13=00=013=07=B8=85;n=01=00=FF=7F=A0=00=00=00=00=00=00=00=00=00=11=02=01=
+=1A=02
+=0C
+=FFL=00=10=05=03=1CE=F3=DA=00=00=00;=00=00=00;=00=00=00=03=00=00=00=00=00=
+=E2=8E=A1=C7=D2R=10>9=0D=01=10=00=01=92=88=00=1B=AC=00=01=00=FF=7F=AF=00=00=
+=00=00=00=00=00=00=00=1F=02=01=1A=03=03o=FD=17=16o=FD=8B$=8F=FF=CC=85=991JM=
+=A8a=1C=8690=FEN}=FB=00=00=00;=00=00=00;=00=00=00=03=00=00=00=00=00=E2=8E=
+=A1=C7=D2Y=E0>9=0D=01=10=00=01=06=C6=83=F2=9CF=01=00=FF=7F=A2=00=00=00=00=
+=00=00=00=00=00=1F=1E=FF=06=00=01	 =02'=F3=A0=ECw=D3e=0Fb=9D=93=F2%=F6UD=88=
+9=00Q4=AB=E0=00=00=00;=00=00=00;=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=D5B=
+=1A>9=0D=01=10=00=01"=17N=CA=A4+=01=00=FF=7F=A2=00=00=00=00=00=00=00=00=00=
+=1F=1E=FF=06=00=01	 =02w=FE.=A2=D2C[=F3=C4{=87=F7=A0|=C5Z=ADr:=E6=18=B4m=00=
+=00=00-=00=00=00-=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=D9za>+=0D=01=13=00=
+=01=D5=13=DF7=E7q=01=00=FF=7F=A0=00=00=00=00=00=00=00=00=00=11=02=01=1A=02
+=0C
+=FFL=00=10=05W=18=B7=DB	=00=00=00-=00=00=00-=00=00=00=03=00=00=00=00=00=E2=
+=8E=A1=C7=E0=19=C7>+=0D=01=13=00=01y{=81"=1CU=01=00=FF=7F=A5=00=00=00=00=00=
+=00=00=00=00=11=02=01=1A=02
+=0C
+=FFL=00=10=05=1B=1C=FB;=E7=00=00=00%=00=00=00%=00=00=00=03=00=00=00=00=00=
+=E2=8E=A1=C7=F2A=A4>#=0D=01=13=00=00=1EIx=19=99=F0=01=00=FF=7F=A6=00=00=00=
+=00=00=00=00=00=00	=02=01=06=05=FF=87=00=0C=99=00=00=00=1C=00=00=00=1C=00=
+=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F3b=97>=1A=0D=01=15=00=01psy=91=85=F1=
+=01=00=FF=7F=BC=00=00=00pe=F6=85=E0P=00=00=00=00	=00=00=00	=00=00=00=02=00=
+=00=00=00=00=E2=8E=A1=C7=F3b=C5B =06=00=00=00=00=00=00=00=00=00=06=00=00=00=
+=06=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F3n:=0E=04=02B =00=00=00=00=1D=
+=00=00=00=1D=00=00=00=02=00=00=00=00=00=E2=8E=A1=C7=F3naC =1A=00=00=01psy=
+=91=85=F1=01`=00`=00=06=00	=00,=00=D8=00=00=00=00=00=00=00=00=06=00=00=00=
+=06=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F3}=DA=0F=04=00=02C =00=00=00!=
+=00=00=00!=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F3=99H>=1F
+=00=01=0E=00=01psy=91=85=F1=00=00=00=00=00=00=00=00=00=00=00=00=06=00,=00=
+=D8=00=00=00=00=00=13=00=00=00=13=00=00=00=11=00=00=00=00=00=E2=8E=A1=C7=F3=
+=99h=01=00=00=00=0B=00psy=91=85=F1=02=00=00=00=00=00=00=00=00=00=05=00=00=
+=00=05=00=00=00=02=00=00=00=00=00=E2=8E=A1=C7=F3=99=B4=16 =02=01=0E=00=00=
+=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F3=A1=02>=04=14=
+=01=0E=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F3=
+=A4=EA=0F=04=00=01=16 =00=00=00=0E=00=00=00=0E=00=00=00=03=00=00=00=00=00=
+=E2=8E=A1=C7=F3=D7=BB>=0C=04=00=01=0E=01=00=00=00=00=00=00=00=00=00=00=1F=
+=00=00=00=1F=00=00=00=02=00=00=00=00=00=E2=8E=A1=C7=F3=D80=19 =1C=01=0E=D1=
+=FD=EES=CE=A1=981=A1C=EDA=88:=A4=F9+~,G=B8=D5=0C]$\=00=00=00=06=00=00=00=06=
+=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F3=E3i=0F=04=00=01=19 =00=00=00=06=
+=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F4=FC=AD=08=04=00=01=0E=
+=01=00=00=00=07=00=00=00=07=00=00=00=02=00=00=00=00=00=E2=8E=A1=C7=F4=FC=D8=
+|=0C=04=01=0E=B8=0B=00=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=
+=8E=A1=C7=F4=FD=01=01=0E=07=00=03=00=04=00=02=05=02=00=00=00=08=00=00=00=08=
+=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F5=08`=0E=06=01|=0C=00=01=0E=00=00=
+=00=1E=00=00=00=1E=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F5=192=01.=1A=00=
+=16=00=04=00=1B+=00=FF=04=00=01=01=01=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F5=1B=E7=
+=13=05=01=01=0E=01=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=
+=8E=A1=C7=F55=AC=01.=0E=00
+=00=04=00=1B'=00=00=00=04=F0=FF=00=00=00=00=00=0B=00=00=00=0B=00=00=00=05=
+=00=00=00=00=00=E2=8E=A1=C7=F57=B2=01.=07=00=03=00=04=00=03=17=00=00=00=00=
+=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F58=DA=01=0E=07=00=
+=03=00=04=00
+=1D=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F5S=
+=CD=01.=0E=00
+=00=04=00=1B'=00=00=004=F0=FF=00=00=00=00=00=07=00=00=00=07=00=00=00=03=00=
+=00=00=00=00=E2=8E=A1=C7=F5V=7F=13=05=01=01=0E=01=00=00=00=00
+=00=00=00
+=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F5=8DF=01.=06=00=02=00=04=00=0Bd=00=
+=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F5=8D=AC=01=0E=
+=07=00=03=00=04=00
+=1A=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F5=8F=
+=94=01.=0E=00
+=00=04=00=1B'=00=00=00=07=10=00=00=00=00=00=00=12=00=00=00=12=00=00=00=05=
+=00=00=00=00=00=E2=8E=A1=C7=F5=AB=B2=01.=0E=00
+=00=04=00=1B'=00=00=00=04=00=00=00=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F5=ACn=13=05=01=01=0E=01=00=00=00=00=10=00=00=
+=00=10=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F5=C8=10=01.=0C=00=08=00=04=
+=00=0B=02m=04=1D=B0"=00=00=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=
+=E2=8E=A1=C7=F5=C8^=01=0E=07=00=03=00=04=00
+=03=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F5=CA=
+Z=01.=0E=00
+=00=04=00=1B'=00=00=00=07=10=00=00=00=00=00=00=12=00=00=00=12=00=00=00=05=
+=00=00=00=00=00=E2=8E=A1=C7=F5=E6K=01.=0E=00
+=00=04=00=1B'=00=00=00=02=10=00=00=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F5=E6=F6=13=05=01=01=0E=01=00=00=00=00=10=00=00=
+=00=10=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6=02=A8=01.=0C=00=08=00=04=
+=00=0BMX Ergo=00=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=
+=C7=F6=02=F6=01=0E=07=00=03=00=04=00
+=05=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6=04=
+=F1=01.=0E=00
+=00=04=00=1B'=00=00=00=02=10=00=00=00=00=00=00=12=00=00=00=12=00=00=00=05=
+=00=00=00=00=00=E2=8E=A1=C7=F6 =E2=01.=0E=00
+=00=04=00=1B'=00=00=00=01=00=00=00=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F6!=90=13=05=01=01=0E=01=00=00=00=00=0B=00=00=
+=00=0B=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6=3D=19=01.=07=00=03=00=04=
+=00=0B=C2=03=00=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=
+=F6=3De=01=0E=07=00=03=00=04=00
+ =00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6?b=01=
+=2E=0E=00
+=00=04=00=1B'=00=00=00=01=00=00=00=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F6\6=13=05=01=01=0E=01=00=00=00=00=0D=00=00=00=
+=0D=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6w=BD=01.	=00=05=00=04=00=0B=11=
+=01=00=03=00=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F6=
+x=0B=01=0E=07=00=03=00=04=00
+%=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6z=07=
+=01.=0E=00
+=00=04=00=1B'=00=00=00=00=F0=FF=00=00=00=00=00=12=00=00=00=12=00=00=00=05=
+=00=00=00=00=00=E2=8E=A1=C7=F6=96=10=01.=0E=00
+=00=04=00=1B'=00=00=00=FF=EF=FF=00=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F6=96=CC=13=05=01=01=0E=01=00=00=00=00=1F=00=00=
+=00=1F=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6=B2=E2=01.=1B=00=17=00=04=
+=00=0B=05=01	=02=A1=01=85=02	=01=A1=00=95=10u=01=15=00%=01=05	=00=00=00=0B=
+=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F6=B30=01=0E=07=00=03=
+=00=04=00
+)=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6=D0=
+=AE=01.=0E=00
+=00=04=00=1B'=00=00=00=00=E0=FF=00=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F6=D1T=13=05=01=01=0E=01=00=00=00=00=0B=00=00=
+=00=0B=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6=EC=DF=01.=07=00=03=00=04=
+=00=0B=02=01=00=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=
+=F6=ED-=01=0E=07=00=03=00=04=00
+-=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F6=EF*=
+=01.=0E=00
+=00=04=00=1B'=00=00=00=00=E0=FF=00=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F7=0B=FB=13=05=01=01=0E=01=00=00=00=00=0B=00=00=
+=00=0B=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F7'e=01.=07=00=03=00=04=00=0B=
+=11=01=00=00=00=0B=00=00=00=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F7'=
+=B3=01=0E=07=00=03=00=04=00
+0=00=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F7F=93=
+=13=05=01=01=0E=01=00=00=00=00=0B=00=00=00=0B=00=00=00=05=00=00=00=00=00=E2=
+=8E=A1=C7=F7a=FD=01.=07=00=03=00=04=00=0B=11=02=00=00=00=0B=00=00=00=0B=00=
+=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F7bJ=01=0E=07=00=03=00=04=00
+4=00=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F7=81*=
+=13=05=01=01=0E=01=00=00=00=00
+=00=00=00
+=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F7=9C=8E=01.=06=00=02=00=04=00=0B=
+=01=00=00=00=0F=00=00=00=0F=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F7=9C=DB=
+=01=0E=0B=00=07=00=04=00=08=01=00=FF=FF:+=00=00=00=07=00=00=00=07=00=00=00=
+=03=00=00=00=00=00=E2=8E=A1=C7=F7=BB=C2=13=05=01=01=0E=01=00=00=00=00=0D=00=
+=00=00=0D=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F7=D7@=01.	=00=05=00=04=00=
+=01=08=01=00
+=00=00=00=0F=00=00=00=0F=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F7=D7=8F=01=
+=0E=0B=00=07=00=04=00=10=01=00=FF=FF=00(=00=00=00=07=00=00=00=07=00=00=00=
+=03=00=00=00=00=00=E2=8E=A1=C7=F7=F6Z=13=05=01=01=0E=01=00=00=00=00=1C=00=
+=00=00=1C=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F8=12U=01.=18=00=14=00=04=
+=00=11=06=01=00=07=00=00=18=08=00=0B=00=01=18=0C=00=1A=00
+=18=00=00=00=0D=00=00=00=0D=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F8=12=A3=
+=01=0E	=00=05=00=04=00=0C%=00=16=00=00=00=00=07=00=00=00=07=00=00=00=03=00=
+=00=00=00=00=E2=8E=A1=C7=F80=F1=13=05=01=01=0E=01=00=00=00=00=1F=00=00=00=
+=1F=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F8M=08=01.=1B=00=17=00=04=00=0D=
+=19=01)=10=81=02=05=01=16=01=F8&=FF=07u=0C=95=02	0	1=00=00=00=0B=00=00=00=
+=0B=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F8MW=01=0E=07=00=03=00=04=00
+(=00=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F8k=89=
+=13=05=01=01=0E=01=00=00=00=00=0B=00=00=00=0B=00=00=00=05=00=00=00=00=00=E2=
+=8E=A1=C7=F8=86=F2=01.=07=00=03=00=04=00=0B=01=00=00=00=00=0B=00=00=00=0B=
+=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F8=87B=01=0E=07=00=03=00=04=00
+,=00=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F8=A6"=
+=13=05=01=01=0E=01=00=00=00=00=0B=00=00=00=0B=00=00=00=05=00=00=00=00=00=E2=
+=8E=A1=C7=F8=C1=8A=01.=07=00=03=00=04=00=0B=01=00=00=00=00=0F=00=00=00=0F=
+=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F8=C1=D7=01=0E=0B=00=07=00=04=00=10=
+=1B=00=FF=FF=00(=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=
+=A1=C7=F8=E0=B8=13=05=01=01=0E=01=00=00=00=00=16=00=00=00=16=00=00=00=05=00=
+=00=00=00=00=E2=8E=A1=C7=F8=FC=81=01.=12=00=0E=00=04=00=11=06=1B=00=1D=00=
+=0F=18=1E=004=00=12=18=00=00=00=0D=00=00=00=0D=00=00=00=04=00=00=00=00=00=
+=E2=8E=A1=C7=F8=FC=CE=01=0E	=00=05=00=04=00=0C%=00,=00=00=00=00=07=00=00=00=
+=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=F9=1BP=13=05=01=01=0E=01=00=00=
+=00=00=1F=00=00=00=1F=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F97g=01.=1B=00=
+=17=00=04=00=0D=81=06=15=81%=7Fu=08=95=01	8=81=06=95=01=05=0C
+8=02=81=00=00=00=0D=00=00=00=0D=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F97=
+=B5=01=0E	=00=05=00=04=00=12(=00=01=00=00=00=00=07=00=00=00=07=00=00=00=03=
+=00=00=00=00=00=E2=8E=A1=C7=F9U=E7=13=05=01=01=0E=01=00=00=00=00	=00=00=00	=
+=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=F9qI=01.=05=00=01=00=04=00=13=00=00=
+=00=0D=00=00=00=0D=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F9q=96=01=0E	=00=
+=05=00=04=00=12,=00=01=00=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=
+=00=E2=8E=A1=C7=F9=90~=13=05=01=01=0E=01=00=00=00=00	=00=00=00	=00=00=00=05=
+=00=00=00=00=00=E2=8E=A1=C7=F9=AB=E2=01.=05=00=01=00=04=00=13=00=00=00=0F=
+=00=00=00=0F=00=00=00=04=00=00=00=00=00=E2=8E=A1=C7=F9=AC0=01=0E=0B=00=07=
+=00=04=00=105=00=FF=FF=00(=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=
+=00=E2=8E=A1=C7=F9=CB=16=13=05=01=01=0E=01=00=00=00=00=1E=00=00=00=1E=00=00=
+=00=05=00=00=00=00=00=E2=8E=A1=C7=F9=E7%=01.=1A=00=16=00=04=00=11=145=00=FF=
+=FFm=04=00 =1F=01=00=80=00=10=00=00=00=00=01=00=00=00=00=0D=00=00=00=0D=00=
+=00=00=04=00=00=00=00=00=E2=8E=A1=C7=FA=0F=96=01=0E	=00=05=00=04=00=0C%=00B=
+=00=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=FF.=08=
+=13=05=01=01=0E=01=00=00=00=00=1F=00=00=00=1F=00=00=00=05=00=00=00=00=00=E2=
+=8E=A1=C7=FFH=1D=01.=1B=00=17=00=04=00=0D=06=C0=C0=06C=FF
+=02=02=A1=01=85=11u=08=95=13=15=00&=FF=00=00=00=00=0D=00=00=00=0D=00=00=00=
+=04=00=00=00=00=00=E2=8E=A1=C7=FFH=9E=01=0E	=00=05=00=04=00=12=0B=00=02=00=
+=00=00=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=FFh=93=13=
+=05=01=01=0E=01=00=00=00=00	=00=00=00	=00=00=00=05=00=00=00=00=00=E2=8E=A1=
+=C7=FF=81=F3=01.=05=00=01=00=04=00=13=00=00=00=0D=00=00=00=0D=00=00=00=04=
+=00=00=00=00=00=E2=8E=A1=C7=FF=82E=01=0E	=00=05=00=04=00=0C%=00X=00=00=00=
+=00=07=00=00=00=07=00=00=00=03=00=00=00=00=00=E2=8E=A1=C7=FF=A3%=13=05=01=
+=01=0E=01=00=00=00=00=12=00=00=00=12=00=00=00=05=00=00=00=00=00=E2=8E=A1=C7=
+=FF=BC=D7=01.=0E=00
+=00=04=00=0D	=02=81=00	=02=91=00=C0
+--OXfL5xGRrasGEqWY--
