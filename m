@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14655283D6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC64283D9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728782AbgJERhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:37:10 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:52188 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728479AbgJERhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:37:03 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9343F1A0952;
-        Mon,  5 Oct 2020 19:37:01 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 86EF91A094A;
-        Mon,  5 Oct 2020 19:37:01 +0200 (CEST)
-Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 3FF202033F;
-        Mon,  5 Oct 2020 19:37:01 +0200 (CEST)
-From:   Diana Craciun <diana.craciun@oss.nxp.com>
-To:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
-        laurentiu.tudor@nxp.com, Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH v6 10/10] vfio/fsl-mc: Add support for device reset
-Date:   Mon,  5 Oct 2020 20:36:54 +0300
-Message-Id: <20201005173654.31773-11-diana.craciun@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005173654.31773-1-diana.craciun@oss.nxp.com>
-References: <20201005173654.31773-1-diana.craciun@oss.nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729068AbgJERip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:38:45 -0400
+Received: from mail-pg1-f180.google.com ([209.85.215.180]:42480 "EHLO
+        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729070AbgJERho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:37:44 -0400
+Received: by mail-pg1-f180.google.com with SMTP id m34so6439807pgl.9;
+        Mon, 05 Oct 2020 10:37:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aprF6xPNXCBOuFtymro1Q67MneG20sCa3QmW8wApzg0=;
+        b=Pb+afr6GQVteC2e0wjWMCMwy2Mvxxxj6MP0UKvec6gEIn0hy/kqFxahhpDmDDb5oVL
+         nx4MhFY6b2CpZ/0ijlMgyHdWhk7+0Z8Dn6rtRSDDbhX2y7May6MuhE0bjjBQzeThDtQl
+         ODCbfL5pRLr1BujIKpUKU26Qoa2/oShlP1bnxEKIYlhlR1Al48/3yPNruNa0ODgTcI2X
+         fsiNyntIpFBPdlEE7NLjBI/xauPA5eF3qYivT8/McmrOgU7S09u6/jnUo5NTUUPN05eu
+         RE78YQtEolF7OeQHdA8FHBsAuOmPlVadSr6d2U6dy9VSnfIMJGPdrM66v2Y4y/iHHgsR
+         z/bQ==
+X-Gm-Message-State: AOAM53362uOFAzy7XG+j52dGqX3QkwrPe9kw7eaP63jWOMmjaNYUsD38
+        RBqtN1d5snWoaX+pYfY9DdiBkahIXyU=
+X-Google-Smtp-Source: ABdhPJwniWOSMbFSjPxJ6/MdmZDNFYQCSiMqaAq/lQXov41zECxvvGSNwxqem1FZGOOeRI+Y8N5zGg==
+X-Received: by 2002:a63:5c19:: with SMTP id q25mr558011pgb.17.1601919462992;
+        Mon, 05 Oct 2020 10:37:42 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id b1sm528905pft.127.2020.10.05.10.37.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 10:37:42 -0700 (PDT)
+From:   Moritz Fischer <mdf@kernel.org>
+To:     linux-fpga@vger.kernel.org
+Cc:     trix@redhat.com, hao.wu@intel.com, michal.simek@xilinx.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        russell.h.weight@intel.com, matthew.gerlach@intel.com,
+        Moritz Fischer <mdf@kernel.org>
+Subject: 
+Date:   Mon,  5 Oct 2020 10:37:25 -0700
+Message-Id: <20201005173735.162408-1-mdf@kernel.org>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently only resetting the DPRC container is supported which
-will reset all the objects inside it. Resetting individual
-objects is possible from the userspace by issueing commands
-towards MC firmware.
+Subject: [PATCH v2 00/10] Introduce devm_fpga_mgr_register()
 
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+This patchset introduces the devm_fpga_mgr_register API,
+a devres managed version of fpga_mgr_register().
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-index d95568cd8021..d009f873578c 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-@@ -217,6 +217,10 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
- 			return -EINVAL;
- 
- 		info.flags = VFIO_DEVICE_FLAGS_FSL_MC;
-+
-+		if (is_fsl_mc_bus_dprc(mc_dev))
-+			info.flags |= VFIO_DEVICE_FLAGS_RESET;
-+
- 		info.num_regions = mc_dev->obj_desc.region_count;
- 		info.num_irqs = mc_dev->obj_desc.irq_count;
- 
-@@ -299,7 +303,19 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
- 	}
- 	case VFIO_DEVICE_RESET:
- 	{
--		return -ENOTTY;
-+		int ret;
-+		struct fsl_mc_device *mc_dev = vdev->mc_dev;
-+
-+		/* reset is supported only for the DPRC */
-+		if (!is_fsl_mc_bus_dprc(mc_dev))
-+			return -ENOTTY;
-+
-+		ret = dprc_reset_container(mc_dev->mc_io, 0,
-+					   mc_dev->mc_handle,
-+					   mc_dev->obj_desc.id,
-+					   DPRC_RESET_OPTION_NON_RECURSIVE);
-+		return ret;
-+
- 	}
- 	default:
- 		return -ENOTTY;
+It reduces boilerplate being repeated literally in every
+single driver by moving it to the fpga-mgr core.
+
+Changes from v1:
+- Addressed Hao's feedback
+   - priv -> res
+   - comment style
+   - use fpga_mgr_devres consistently
+
+- Addressed Tom's feedback
+   - err -> ret
+   - removed removal of deprecated API
+   - added Reviewed-by: tags
+
+Moritz Fischer (10):
+  fpga: fpga-mgr: Add devm_fpga_mgr_register() API
+  fpga: fpga-mgr: altera-ps-spi: Simplify registration
+  fpga: fpga-mgr: dfl-fme-mgr: Simplify registration
+  fpga: fpga-mgr: ice40-spi: Simplify registration
+  fpga: fpga-mgr: machxo2-spi: Simplify registration
+  fpga: fpga-mgr: socfpga: Simplify registration
+  fpga: fpga-mgr: ts73xx: Simplify registration
+  fpga: fpga-mgr: xilinx-spi: Simplify registration
+  fpga: fpga-mgr: zynqmp: Simplify registration
+  fpga: fpga-mgr: altera-pr-ip: Simplify registration
+
+ drivers/fpga/altera-pr-ip-core-plat.c  | 10 ----
+ drivers/fpga/altera-pr-ip-core.c       | 14 +----
+ drivers/fpga/altera-ps-spi.c           | 14 +----
+ drivers/fpga/dfl-fme-mgr.c             | 12 +---
+ drivers/fpga/fpga-mgr.c                | 76 ++++++++++++++++++++++----
+ drivers/fpga/ice40-spi.c               | 14 +----
+ drivers/fpga/machxo2-spi.c             | 14 +----
+ drivers/fpga/socfpga.c                 | 14 +----
+ drivers/fpga/ts73xx-fpga.c             | 14 +----
+ drivers/fpga/xilinx-spi.c              | 14 +----
+ drivers/fpga/zynqmp-fpga.c             | 21 +------
+ include/linux/fpga/altera-pr-ip-core.h |  1 -
+ include/linux/fpga/fpga-mgr.h          |  2 +
+ 13 files changed, 77 insertions(+), 143 deletions(-)
+
 -- 
-2.17.1
-
+2.28.0
