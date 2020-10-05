@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49439283A7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE4A283B5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgJEPew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:34:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728263AbgJEPeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:34:18 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A03620637;
-        Mon,  5 Oct 2020 15:34:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601912057;
-        bh=VnHJlXDtB5Ll4IxeGyEK24Vc2mPCDLLSkEaY4eh9zBE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fvfx39FJxLfUngP6SnqELol2YSiIZ1TlFT+r7ykYFjPccrJnLD7Zc8IWhoB3BXaOh
-         I8HJKLNtleNYYfDfXDCN00RJczfrahB6HO0/qvjolaW7LuuZ7zJ9NExxmKiojpTMCJ
-         kfFZ3ACbpRlApPs1FOoN5xr89GhAuPffwzMUqzK8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.8 85/85] ep_create_wakeup_source(): dentry name can change under you...
-Date:   Mon,  5 Oct 2020 17:27:21 +0200
-Message-Id: <20201005142118.822227725@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728853AbgJEPlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727480AbgJEP2y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:28:54 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D80C0613A7;
+        Mon,  5 Oct 2020 08:28:52 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id b12so9796176edz.11;
+        Mon, 05 Oct 2020 08:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cenGKJzkLKJNDoOLw4v3WNu1rdhsMcz91gS2ZObX+fE=;
+        b=HWbxr7g218E/jgD/+3VtUzYLXTq9LiHkq9FQIOpDCcL3MbGRW/XjhYgC9dLzVBW1UG
+         JYevzJ37I+usd6wJA06EKErrcAojBLVxWq8GEBiyv2HW9ZSmcyfQxdYYuedpJ5L0zAer
+         HmWKJhXMIdL3yR8P6uXlxQlMSrh7yVyPzR+cwWIpB220d1sKVID4azq8XXB0lVmtfZVO
+         2CIQT3ZUT+ph14mt8sg8FSqdpMDDs05Kmk264J+uEpsVni5+uNCiQ+2kTtjuAv6ghu3I
+         7yIll7ZK+E72YXJ7+SCCL+PBLyCtTIxQjTx+kiIjuOLzkqeNw/N2XvM6d/1qN9QI6Wto
+         ZOgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cenGKJzkLKJNDoOLw4v3WNu1rdhsMcz91gS2ZObX+fE=;
+        b=B5AHOxaxfzbjRdLP2RTM429AVo3dAfBojns3CNBLPo6QYuxBAMJgjS0M8Wdt/DTU7H
+         GQ8ac5vKn5RWT2go29GDbWJyQ4KK9bqNFULqqC1TQ6xFjPory4UUe0yzka23PDjx1n+1
+         3xKdIxjvkdCrKL2ZBbt9VpOajNQOS53oqEJs+85g64hIV3fLENP4i6sBThA+IuNUGgIK
+         OAQILZHOgAp7UDaTUJW0FO6b9qOP+MOpG856f3iKHIWAgSRCnx/JmekpNgwzjiKBZ+5R
+         ygn8oUpDcba7pp7qzWH8N2VmaHy2Z1WBN8qCnDtjGT8CjKDXDUi61PFihzNx9IqGPHew
+         h/Nw==
+X-Gm-Message-State: AOAM531MmyGfG+p+z4cs+fPt6GzPTdoyhyehNXt8hxMUNr83PdZm4Z6x
+        o+/z0zMiT2kdqwp+P22qb8y9z28fMWi8jIiz9LA=
+X-Google-Smtp-Source: ABdhPJzR/+JcgozZaRVsiD5h30TjNMV/X/qN/nhWubBMpVT8nvxNFVNUQ/eZNBuDiofxzGginvn+g6ps0WTKzHYh6UM=
+X-Received: by 2002:a05:6402:3c1:: with SMTP id t1mr126673edw.231.1601911731452;
+ Mon, 05 Oct 2020 08:28:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201005150313.149754-1-konradybcio@gmail.com>
+ <20201005150313.149754-4-konradybcio@gmail.com> <c03ace9d-d983-c1f8-ab74-ed585aeb2364@linaro.org>
+In-Reply-To: <c03ace9d-d983-c1f8-ab74-ed585aeb2364@linaro.org>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Mon, 5 Oct 2020 17:28:15 +0200
+Message-ID: <CAMS8qEXBrF-j5ObahFVcJFMuC7=ucz+y7XBzTyuJAqejsE0F+g@mail.gmail.com>
+Subject: Re: [PATCH 03/11] arm64: dts: qcom: pm8994: Add thermal-zones for
+ temp alarm
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+>Don't you want to add a 'hot' trip point, so userspace can get the
+>notification and have an opportunity to do some action like unplugging
+>some CPU before a wild shutdown happens ?
 
-commit 3701cb59d892b88d569427586f01491552f377b1 upstream.
+PM8998 doesn't do that and so I followed.
 
-or get freed, for that matter, if it's a long (separately stored)
-name.
+Anyway, msm8992/4 will never have all CPUs online at once, unless
+it's put in a freezer, so unplugging isn't much of an argument :D
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+If you want though, I can resend this patch AND add a hot point to pm8998.
 
----
- fs/eventpoll.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1448,7 +1448,7 @@ static int reverse_path_check(void)
- 
- static int ep_create_wakeup_source(struct epitem *epi)
- {
--	const char *name;
-+	struct name_snapshot n;
- 	struct wakeup_source *ws;
- 
- 	if (!epi->ep->ws) {
-@@ -1457,8 +1457,9 @@ static int ep_create_wakeup_source(struc
- 			return -ENOMEM;
- 	}
- 
--	name = epi->ffd.file->f_path.dentry->d_name.name;
--	ws = wakeup_source_register(NULL, name);
-+	take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
-+	ws = wakeup_source_register(NULL, n.name.name);
-+	release_dentry_name_snapshot(&n);
- 
- 	if (!ws)
- 		return -ENOMEM;
-
-
+Konrad
