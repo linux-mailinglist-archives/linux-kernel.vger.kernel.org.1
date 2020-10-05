@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B01C283E3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA268283E3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgJESXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:23:48 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16297 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgJESXs (ORCPT
+        id S1728011AbgJESYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgJESYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:23:48 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7b64a60000>; Mon, 05 Oct 2020 11:23:34 -0700
-Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
- 2020 18:23:43 +0000
-Subject: Re: [PATCH 0/3] soc/tegra: Prevent the PMC driver from corrupting
- interrupt routing
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Marc Zyngier <maz@kernel.org>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>, <kernel-team@android.com>
-References: <20201005111443.1390096-1-maz@kernel.org>
- <20201005112217.GR425362@ulmo> <da38356394b63e2210f0e52d2e9bdc60@kernel.org>
- <20201005154529.GB628746@ulmo>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <dbe75937-dd24-6d2a-e3ea-265b8fa70def@nvidia.com>
-Date:   Mon, 5 Oct 2020 19:23:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Oct 2020 14:24:19 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EDFC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:24:19 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 188so2234126qkk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OCSLqGNh9b5YSmYsk1DlWKJeyULS7OR1a85rgALsc9w=;
+        b=MCDa+1cwmN3uqvhljUtqnjRDTYQZ/bi0REuAsgRPHawGFRLu9yuU9WlllBKYKSYWoC
+         COppqAsu3MTAife2gP8sPBj5BM2BbGaDJxEwZvtuafwP4a4hdfpwdn/NGDE42M6wmPYx
+         w6RKz8PK1yLHK6fqWqsgZhdkxQJNKhX5RC2wxagFLtzU3TwNIOuknrBo7berTriabUSB
+         qqTiGv8KasNRDd1sfsDjr2lO2IxW1f9KChgBRQcBUplHmmgGaWF66ZIebhDq1VNBfLXS
+         ScC9FSdcE4fiChkQkPfTWWSWJq5i1UZonfVL4S1jsX1F1gH31b2ZbJ02j2EKwtYWInDJ
+         gSCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OCSLqGNh9b5YSmYsk1DlWKJeyULS7OR1a85rgALsc9w=;
+        b=UCatfvQjC7Rn4jEzy8key/d3+ViLy3U1koyny+yl89Tr/hjbBMpHb/NIEGURCzvpsu
+         bTlkyMFRmnDAcqcO+nRXTYe6a+fatGfGeSyi5lsNTxREuD8d2FssnppIN36xmg0dSgh+
+         ugfa1mAzM7sJp1dBarwLbljmi6yywycj5QHFI2L2rRJGLKMmXvB9qGHdeiusNjxu884j
+         J1NcZK6NvAYAD+zjajORtbH2pvF1srS77TuM9f9j6H8tT0f4v5R/kXg6nDDAHN59CSXa
+         126l1hBHcgFBmwO/a/DMiXxxzdKbtZIPhX9OkVHsYjYfC8/TFcVyQlq+/6oOpQefq8EC
+         7h5g==
+X-Gm-Message-State: AOAM530IB/rm/69rfSpJFLNz/59+FjuVwgWdOVJJxtJxwp9NqCrTTnP9
+        S/e1hI5/FGrXdnH7/OrpQc1uxoUfd2qYez29mIoOQg==
+X-Google-Smtp-Source: ABdhPJxukAgIYi20kSI9kjVPF33fEc4rKpb9eQYgj02bTfT4kUplSjOE1HGcZ8LTlpn7FoBl8beo3/6xylx4QC83AAg=
+X-Received: by 2002:a05:620a:4d0:: with SMTP id 16mr1333224qks.200.1601922258954;
+ Mon, 05 Oct 2020 11:24:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201005154529.GB628746@ulmo>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601922215; bh=43qLkfMkgiR0apRtpQZNUfVg1Tg+QRHwig6v00fr+Zw=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=PRHpOuQw16ofs6Vhug06TKk2WA6/b0+5NfJ3aRwxtidCCURFCS7e0rmDgs0lOhu02
-         2jYUfg/3ehTT7GOgjWjadCrsKn2xyCaZ5CLES6UGo34fivCwLjGYELfa1onBL1Ik2E
-         V8Or3xumIMNkTHTMhKTIDoc63l3XQumSfxnMpNUXRnsZR2ts5sHbQlLQIDnbk79Pcx
-         rV6n0js5IccOhY6Ke+ixhJJM1C1ALOAYsFnFk1NWDeJRYxsmlVBb3qNbYFD/8UxFBG
-         FterQJ1Sshmdp0R5Vesu+Ju66qqVVcJFnuZCKjpF0G+is3RL0el+i2eBeX+EXBFPZT
-         KJhAT7/s9v0VQ==
+References: <20201001181715.17416-1-rcampbell@nvidia.com>
+In-Reply-To: <20201001181715.17416-1-rcampbell@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 5 Oct 2020 11:24:07 -0700
+Message-ID: <CAPcyv4gu=So5PgQU9LezhW4vUQt+paaUr1T6CAvQYjh0XzkkgQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/2] mm: remove extra ZONE_DEVICE struct page refcount
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Linux MM <linux-mm@kvack.org>, kvm-ppc@vger.kernel.org,
+        nouveau@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 1, 2020 at 11:17 AM Ralph Campbell <rcampbell@nvidia.com> wrote:
+>
+> This is still an RFC because after looking at the pmem/dax code some
+> more, I realized that the ZONE_DEVICE struct pages are being inserted
+> into the process' page tables with vmf_insert_mixed() and a zero
+> refcount on the ZONE_DEVICE struct page. This is sort of OK because
+> insert_pfn() increments the reference count on the pgmap which is what
+> prevents memunmap_pages() from freeing the struct pages and it doesn't
+> check for a non-zero struct page reference count.
+> But, any calls to get_page() will hit the VM_BUG_ON_PAGE() that
+> checks for a reference count == 0.
+>
+> // mmap() an ext4 file that is mounted -o dax.
+> ext4_dax_fault()
+>   ext4_dax_huge_fault()
+>     dax_iomap_fault(&ext4_iomap_ops)
+>       dax_iomap_pte_fault()
+>         ops->iomap_begin() // ext4_iomap_begin()
+>           ext4_map_blocks()
+>           ext4_set_iomap()
+>         dax_iomap_pfn()
+>         dax_insert_entry()
+>         vmf_insert_mixed(pfn)
+>           __vm_insert_mixed()
+>             if (!IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) &&
+>                 !pfn_t_devmap(pfn) && pfn_t_valid(pfn))
+>               insert_page()
+>                 get_page(page) // XXX would trigger VM_BUG_ON_PAGE()
+>                 page_add_file_rmap()
+>                 set_pte_at()
+>             else
+>               insert_pfn()
+>                 pte_mkdevmap()
+>                 set_pte_at()
+>
+> Should pmem set the page reference count to one before inserting the
+> pfn into the page tables (and decrement when removing devmap PTEs)?
+> What about MEMORY_DEVICE_GENERIC and MEMORY_DEVICE_PCI_P2PDMA use cases?
+> Where should they icrement/decrement the page reference count?
+> I don't know enough about how these are used to really know what to
+> do at this point. If people want me to continue to work on this series,
+> I will need some guidance.
 
-On 05/10/2020 16:45, Thierry Reding wrote:
-
-...
-
->>> Let Jon and myself do a bit of testing with this to verify that the wake
->>> up paths are still working.
->>
->> Sure. Let me know what you find.
-> 
-> The results are in and it's a bit of a mixed bag. I was able to confirm
-> that Tegra194 also boots again after this series and I'm also able to
-> resume from sleep using either rtcwake or the power-key as wakeup
-> source, so the wake-events mechanism is still functional after the
-> series. I do see a bit of breakage on resume, but none of that seems
-> related to your patches and is likely something that crept in while we
-> were looking into the current issue.
-> 
-> Jon had started a job in our test farm in parallel and that came back
-> with a failing suspend/resume test on Tegra186 (Jetson TX2), but that
-> seems to have been a pre-existing issue. This was already in linux-next
-> around next-20200910 and Jon had been investigating it when the boot
-> failures due to the IPI changes started happening. So I then hooked up
-> my Jetson TX2 and verified locally that I can properly suspend/resume
-> using either rtcwake or the power-key as wakeup source, just like I
-> previously did on Tegra194 (Jetson AGX Xavier). Tegra186 seems to be a
-> little more unstable because it didn't boot every time for me, but that
-> is probably not related to this.
-
-Yes my feeling is that those are other issues too that we need to look
-at next.
-
-> So, I'm tempted to say:
-> 
-> Tested-by: Thierry Reding <treding@nvidia.com>
-
-Yes and you can have my ...
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Thanks again Marc for tracking this down!
-
-Cheers
-Jon
-
--- 
-nvpublic
+fs/dax could take the reference when inserting, but that would mean
+that ext4 and xfs would need to go back to checking for 1 to be page
+idle. I think that's ok because the filesystem is actually not
+checking for page-idle it's checking for "get_user_pages()" idle.
