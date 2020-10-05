@@ -2,205 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5499528328B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244B9283205
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgJEIue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:50:34 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:46849 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgJEIuc (ORCPT
+        id S1725994AbgJEI3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbgJEI3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:50:32 -0400
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 09589ZmF047800
-        for <linux-kernel@vger.kernel.org>; Mon, 5 Oct 2020 16:09:35 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 09588T6L047498;
-        Mon, 5 Oct 2020 16:08:32 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 5 Oct
- 2020 16:28:11 +0800
-From:   "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
-To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <minyard@acm.org>, <arnd@arndb.de>,
-        <gregkh@linuxfoundation.org>, <linus.walleij@linaro.org>,
-        <haiyue.wang@linux.intel.com>, <cyrilbur@gmail.com>,
-        <rlippert@google.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-gpio@vger.kernel.org>
-CC:     <ryan_chen@aspeedtech.com>
-Subject: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Date:   Mon, 5 Oct 2020 16:28:06 +0800
-Message-ID: <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
-References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
+        Mon, 5 Oct 2020 04:29:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E145C0613CE;
+        Mon,  5 Oct 2020 01:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kqzUKtK8GOb7bW4H3n/BFL1qICkSEHQYXjLgPEjS2CE=; b=Glk+6xlfldc5C47KvhK2HtCy16
+        5q1YyA1feL1tcE7Hzba/dTGO/FxmAE2DI74IF+5jWJiiOO59aBZnRDlV8g2D9Y1FO2655hlVoQw5b
+        3GWKGKcU1hQ4yqZqVolk105sJMA7jG5Fdi4BlYPhG0Kr3jv/YiyWiew4liHZYYCmLZunB1ODmTkQF
+        IOK8DIAj9Pm4aePKRQdja4x/zTMTQjpl/3A5dva1fvbte/Aq8HFsnf3FTcSkp15MwLhCYSABHhomg
+        r7fZkCLM89YznfPZ18GTqcE0XfvGjyoNVeQXzrX3oY6JROSZ6DYKlPxTAJzThg6XXVp3SuiT4Omre
+        MlopKnsA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPLru-0008Kj-3d; Mon, 05 Oct 2020 08:29:14 +0000
+Date:   Mon, 5 Oct 2020 09:29:14 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
+ cache maintenance
+Message-ID: <20201005082914.GA31702@infradead.org>
+References: <20201001002709.21361-1-jonathan@marek.ca>
+ <20201001002709.21361-3-jonathan@marek.ca>
+ <20201002075321.GA7547@infradead.org>
+ <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 09588T6L047498
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LPC controller has no concept of the BMC and the Host partitions.
-This patch fixes the documentation by removing the description on LPC
-partitions. The register offsets illustrated in the DTS node examples
-are also fixed to adapt to the LPC DTS change.
+On Fri, Oct 02, 2020 at 08:46:35AM -0400, Jonathan Marek wrote:
+> > > +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
+> > > +		size_t range_start, size_t range_end)
+> > > +{
+> > > +	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+> > > +
+> > > +	/* TODO: sync only the required range, and don't invalidate on clean */
+> > > +
+> > > +	if (flags & MSM_GEM_SYNC_CACHE_CLEAN)
+> > > +		sync_for_device(msm_obj);
+> > > +
+> > > +	if (flags & MSM_GEM_SYNC_CACHE_INVALIDATE)
+> > > +		sync_for_cpu(msm_obj);
+> > 
+> > And make to these ones as well.  They are complete abuses of the DMA
+> > API, and while we had to live with that for now to not cause regressions
+> > they absoutely must not be exposed in a userspace ABI like this.
+> > 
+> 
+> How do you propose that cached non-coherent memory be implemented? It is a
+> useful feature for userspace.
 
-Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
----
- .../devicetree/bindings/mfd/aspeed-lpc.txt    | 85 +++----------------
- 1 file changed, 14 insertions(+), 71 deletions(-)
+If the driver is using the DMA API you need to use dma_alloc_noncoherent
+and friends as of 5.10 (see the iommu list for the discussion).
 
-diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-index a92acf1dd491..866f54a09e09 100644
---- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-+++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-@@ -9,13 +9,7 @@ primary use case of the Aspeed LPC controller is as a slave on the bus
- conditions it can also take the role of bus master.
- 
- The LPC controller is represented as a multi-function device to account for the
--mix of functionality it provides. The principle split is between the register
--layout at the start of the I/O space which is, to quote the Aspeed datasheet,
--"basically compatible with the [LPC registers from the] popular BMC controller
--H8S/2168[1]", and everything else, where everything else is an eclectic
--collection of functions with a esoteric register layout. "Everything else",
--here labeled the "host" portion of the controller, includes, but is not limited
--to:
-+mix of functionality, which includes, but is not limited to:
- 
- * An IPMI Block Transfer[2] Controller
- 
-@@ -44,8 +38,8 @@ Required properties
- ===================
- 
- - compatible:	One of:
--		"aspeed,ast2400-lpc", "simple-mfd"
--		"aspeed,ast2500-lpc", "simple-mfd"
-+		"aspeed,ast2400-lpc", "simple-mfd", "syscon"
-+		"aspeed,ast2500-lpc", "simple-mfd", "syscon"
- 
- - reg:		contains the physical address and length values of the Aspeed
-                 LPC memory region.
-@@ -55,66 +49,17 @@ Required properties
- - ranges: 	Maps 0 to the physical address and length of the LPC memory
-                 region
- 
--Required LPC Child nodes
--========================
--
--BMC Node
----------
--
--- compatible:	One of:
--		"aspeed,ast2400-lpc-bmc"
--		"aspeed,ast2500-lpc-bmc"
--
--- reg:		contains the physical address and length values of the
--                H8S/2168-compatible LPC controller memory region
--
--Host Node
-----------
--
--- compatible:   One of:
--		"aspeed,ast2400-lpc-host", "simple-mfd", "syscon"
--		"aspeed,ast2500-lpc-host", "simple-mfd", "syscon"
--
--- reg:		contains the address and length values of the host-related
--                register space for the Aspeed LPC controller
--
--- #address-cells: <1>
--- #size-cells:	<1>
--- ranges: 	Maps 0 to the address and length of the host-related LPC memory
--                region
--
- Example:
- 
- lpc: lpc@1e789000 {
--	compatible = "aspeed,ast2500-lpc", "simple-mfd";
-+	compatible = "aspeed,ast2500-lpc", "simple-mfd", "syscon";
- 	reg = <0x1e789000 0x1000>;
- 
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	ranges = <0x0 0x1e789000 0x1000>;
--
--	lpc_bmc: lpc-bmc@0 {
--		compatible = "aspeed,ast2500-lpc-bmc";
--		reg = <0x0 0x80>;
--	};
--
--	lpc_host: lpc-host@80 {
--		compatible = "aspeed,ast2500-lpc-host", "simple-mfd", "syscon";
--		reg = <0x80 0x1e0>;
--		reg-io-width = <4>;
--
--		#address-cells = <1>;
--		#size-cells = <1>;
--		ranges = <0x0 0x80 0x1e0>;
--	};
- };
- 
--BMC Node Children
--==================
--
--
--Host Node Children
--==================
- 
- LPC Host Interface Controller
- -------------------
-@@ -145,14 +90,12 @@ Optional properties:
- 
- Example:
- 
--lpc-host@80 {
--	lpc_ctrl: lpc-ctrl@0 {
--		compatible = "aspeed,ast2500-lpc-ctrl";
--		reg = <0x0 0x80>;
--		clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
--		memory-region = <&flash_memory>;
--		flash = <&spi>;
--	};
-+lpc_ctrl: lpc-ctrl@80 {
-+	compatible = "aspeed,ast2500-lpc-ctrl";
-+	reg = <0x80 0x80>;
-+	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
-+	memory-region = <&flash_memory>;
-+	flash = <&spi>;
- };
- 
- LPC Host Controller
-@@ -174,9 +117,9 @@ Required properties:
- 
- Example:
- 
--lhc: lhc@20 {
-+lhc: lhc@a0 {
- 	compatible = "aspeed,ast2500-lhc";
--	reg = <0x20 0x24 0x48 0x8>;
-+	reg = <0xa0 0x24 0xc8 0x8>;
- };
- 
- LPC reset control
-@@ -194,8 +137,8 @@ Required properties:
- 
- Example:
- 
--lpc_reset: reset-controller@18 {
-+lpc_reset: reset-controller@98 {
-         compatible = "aspeed,ast2500-lpc-reset";
--        reg = <0x18 0x4>;
-+        reg = <0x98 0x4>;
-         #reset-cells = <1>;
- };
--- 
-2.17.1
-
+If you use the raw IOMMU API (which I think the msm drm driver does) you
+need to work with the maintainers to implement a cache synchronization
+API that is not tied to the DMA API.
