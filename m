@@ -2,147 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EC72841CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1202841D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729013AbgJEUz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:55:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725997AbgJEUzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:55:49 -0400
-Received: from earth.universe (dyndsl-095-033-158-146.ewe-ip-backbone.de [95.33.158.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8DB5207EA;
-        Mon,  5 Oct 2020 20:55:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601931347;
-        bh=RauhoP+lY6PB4M6PjyFmPFjt0my1MIgv0r1A7kpjI2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HkOPmEqswDfagOwa/8h6eYeJ28nUpx4kzUzMEiO5C2WpZ/JyxwPsMpOCvfalXuv/N
-         SHdwGJl0wavO+zZoAFWHwvQtMiirhu1+TeuQnuYzBjE+S+5qOuOKtkPXd2EjrwLySS
-         ddJlXztUaG/j988mXtEhLvSqV8GY7zi9RJGnOy4s=
-Received: by earth.universe (Postfix, from userid 1000)
-        id B9D193C0C87; Mon,  5 Oct 2020 22:55:45 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 22:55:45 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Richard Weinberger <richard@nod.at>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 4/4] dt-bindings: Explicitly allow additional properties
- in common schemas
-Message-ID: <20201005205545.sqvohrh7jpt7w63w@earth.universe>
-References: <20201005183830.486085-1-robh@kernel.org>
- <20201005183830.486085-5-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7db5qni5yh4rtlce"
-Content-Disposition: inline
-In-Reply-To: <20201005183830.486085-5-robh@kernel.org>
+        id S1727282AbgJEU5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgJEU5p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 16:57:45 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5226DC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 13:57:45 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d81so848046wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 13:57:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=0eiYnVUSZWaB7wjTbIdc+IOLA3BxLnNTNEEMhygD1Ts=;
+        b=kQw3aCS/Afak1JMHu44Vl9eOt2UZHhjFsmf0/eoMBBrhfzNwwe4z9cFieF2+muK/Xn
+         jW/6fEctYM5tOZ52kdkdFjj6CwFswNljkxUUglGD4d1sxepxX+nXDF7l7hs7gDP8v38J
+         eY3DZaVWJDg0toAapAVa9U4P/94e2YaMIz6S6KsSLBl1rY2TZcra1qZl9jQ8zemCpqb2
+         RbnB44Mmr76drR+GvahpSGXZzus56PsdwQN+2rT0lE6Leaoe2txdjGk9O9hwF8QHnLUv
+         E03HZk/oA9qbcYZMtfiZeSsh1BpgTnesYp6K/MTEIXW7i3G4mYw25B7eABjnfjVqcsWC
+         TB7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0eiYnVUSZWaB7wjTbIdc+IOLA3BxLnNTNEEMhygD1Ts=;
+        b=GZWoyOY4ZGyYari8y5yh829Jkut96hCLTzqYbs5Po+LUofI23ljuQ/AaimaZDD6+39
+         Q4QptrvfxED8bK16P9JJoGMdyAtSvZNZ6XjiBgJM4O9YM1nT478VEZjCh8+K+xkakXtW
+         cluVbgVk0Uvvt7lea9m6I9kasFaJCwlLuW6kJNICq9ZAueZ5WPBLIlWGag9l5erjxQkU
+         UZR8htdXlpozxGHbGN8e6t72n/nU1X/LASyCu0k4NblDuhUhNi4wVwAa+prN7eDKJyXs
+         5S+PmbKURchDu4PCziOq52+5rVdjW/pOMll9v0Sl+ZZMzIG0wskyqQomBbgo4YwPAX/z
+         btFw==
+X-Gm-Message-State: AOAM533THM4TgpDRpRcwX5Pw8/bP8FixOxP3k0eDyMcG5JqL9N/vjBI5
+        YEcfNZ9RH6Bv9qdQ2BT56kE=
+X-Google-Smtp-Source: ABdhPJyYsi9VQcnonSkp6FT2w5YczNf/fjur2N+ipdQc3Q+Ko2Ny3v6++Z2bPFWyL7yGgMvbwKlu0A==
+X-Received: by 2002:a05:600c:4108:: with SMTP id j8mr1235393wmi.116.1601931464022;
+        Mon, 05 Oct 2020 13:57:44 -0700 (PDT)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id c16sm1515319wrx.31.2020.10.05.13.57.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Oct 2020 13:57:43 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] kernel/relay.c: drop unneeded initialization
+Date:   Mon,  5 Oct 2020 21:57:27 +0100
+Message-Id: <20201005205727.1147-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The variable 'consumed' is initialized with the consumed count but
+immediately after that the consumed count is updated and assigned to
+'consumed' again thus overwriting the previous value.
+So, drop the unneeded initialization.
 
---7db5qni5yh4rtlce
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
 
-Hi,
+The resultant binary stayed same after this change. Verified with
+md5sum which remained same with and without this change.
 
-On Mon, Oct 05, 2020 at 01:38:30PM -0500, Rob Herring wrote:
-> In order to add meta-schema checks for additional/unevaluatedProperties
-> being present, all schema need to make this explicit. As common/shared
-> schema are included by other schemas, they should always allow for
-> additionalProperties.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  [...]
->  .../devicetree/bindings/power/supply/power-supply.yaml       | 2 ++
->  [...]
+$ md5sum kernel/relay.o 
+20854215a46e241520576a5d3c523073  kernel/relay.o
 
-Acked-by: Sebastian Reichel <sre@kernel.org>
+ kernel/relay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- Sebastian
+diff --git a/kernel/relay.c b/kernel/relay.c
+index fb4e0c530c08..b08d936d5fa7 100644
+--- a/kernel/relay.c
++++ b/kernel/relay.c
+@@ -1002,7 +1002,7 @@ static int relay_file_read_avail(struct rchan_buf *buf)
+ 	size_t subbuf_size = buf->chan->subbuf_size;
+ 	size_t n_subbufs = buf->chan->n_subbufs;
+ 	size_t produced = buf->subbufs_produced;
+-	size_t consumed = buf->subbufs_consumed;
++	size_t consumed;
+ 
+ 	relay_file_read_consume(buf, 0, 0);
+ 
+-- 
+2.11.0
 
---7db5qni5yh4rtlce
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl97iEsACgkQ2O7X88g7
-+pr9vg//fpVYpKsaZc4pw203Kmzwve+W4z3OPaQS7g1Y93QHWykKxFYpCgOrbmA7
-Ikwy3xwBLfMhPIUs8KZDsiaLVkKTi9XJifhEKiG4Uz772vFOZqAPgskcT6Sx4+iN
-4lqd7WmgV3hGelDss8qw6dQ1FY0/MHuMXvoDeNHTvqi0ZhttRrQmOEO6spkWL1io
-39Au/Pxbh2dK06Y7Y0qoKlqCKxnL4fWlUjFqJkJI+d4LjK/XYvukOTPmAhEYfP2H
-tZ38WZd/3SxwQD+Nh6ZJCfKC54D00G54g+fkxhaiypSSgI1IPWfIsrqPfPnVMowq
-wI2fo/C10LMZ1kqUi/LCW+OET8aePRkYjUMWZ2GBNRY9MJCJH/WkOPy7PaKHrOfU
-EdJx9OH7guvFWaEJGhClazwYS6QkM8CEKy7Nd5nJTeQOBEg/p2Lb2etNPNq34nju
-o9euArIjrnqbHK5X9Ijyvhaqw3bxsVPmPkOGUayDMB44UtwHNFqIosmboJnkJ6bt
-BGS1zVnJs2sdLMqMZcCwfHGoX00rThZgvCACDas7fVEdsZgtaEnCW8aySbWCKPdY
-1gtR+xdosJheKba+kMxfhmR0nm62rAmJvS9XOZaBY+cveye5NtC3kvk+Al5ixucd
-jYmH3Iudn+0hC44ZPGUl49YUa5cwsX8NZlyh8ItyWm/x+WiVyb8=
-=9y9P
------END PGP SIGNATURE-----
-
---7db5qni5yh4rtlce--
