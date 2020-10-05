@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEA8284060
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E51D28406A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729624AbgJEUH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:07:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:57184 "EHLO foss.arm.com"
+        id S1729648AbgJEUKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:10:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:57274 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729424AbgJEUH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:07:56 -0400
+        id S1729424AbgJEUKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 16:10:44 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 888B211D4;
-        Mon,  5 Oct 2020 13:07:55 -0700 (PDT)
-Received: from bogus (unknown [10.57.48.110])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7923E3F70D;
-        Mon,  5 Oct 2020 13:07:53 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 21:07:44 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>
-Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Message-ID: <20201005200744.robd42nkt6ahg52x@bogus>
-References: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
- <20201001142149.23445-3-muhammad.husaini.zulkifli@intel.com>
- <20201001153526.GD906@bogus>
- <ce2bcac9-8341-d7c1-0652-309ca4e9413c@xilinx.com>
- <20201002105840.GE906@bogus>
- <1b714566-d6dd-ead1-322e-f92847b923f3@xilinx.com>
- <20201002145115.GA6520@bogus>
- <BYAPR11MB30151480E71BBA232E9B0ADEB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
- <20201005084441.znou7licvvtomva4@bogus>
- <BYAPR11MB3015F4E8FDF3CB1273A35EFAB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56E6E1435;
+        Mon,  5 Oct 2020 13:10:43 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [10.119.48.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4FD03F70D;
+        Mon,  5 Oct 2020 13:10:42 -0700 (PDT)
+Subject: Re: [BUG][PATCH] arm64: bti: fix BTI to handle local indirect
+ branches
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        ardb@kernel.org, will@kernel.org, catalin.marinas@arm.com,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-kernel@vger.kernel.org
+References: <20201005181804.1331237-1-jeremy.linton@arm.com>
+ <20201005195957.GF5139@sirena.org.uk>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <c554e7cb-2773-a49f-a126-fdc56be029ca@arm.com>
+Date:   Mon, 5 Oct 2020 15:10:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR11MB3015F4E8FDF3CB1273A35EFAB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20201005195957.GF5139@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:04:10PM +0000, Zulkifli, Muhammad Husaini wrote:
+Hi,
 
-> To be clarify keembay_sd_voltage_selection function as Michal's prefers is
-> actually using the firmware driver. This function located in firmware
-> driver.
 
-OK, it can be just one function place it in any file you think is more
-appropriate need not be arasan controller driver. Any reasons why this
-can't work ? Can even be in some header.
+On 10/5/20 2:59 PM, Mark Brown wrote:
+> On Mon, Oct 05, 2020 at 01:18:04PM -0500, Jeremy Linton wrote:
+> 
+>> The AES code uses a 'br x7' as part of a function called by
+>> a macro, that ends up needing a BTI_J as a target. Lets
+>> define SYN_CODE_START_LOCAL() for this and replace the
+>> SYM_FUNC_START_LOCAL with a SYM_FUNC_CODE_LOCAL in the AES block.
+> 
+> Really what the subject here should say is that this code is not a
+> standard function and therefore should not be annotated as such - it's
+> wrong with or without BTI, BTI just makes it very apparent.  It'd also
+> be better to split the change in linkage.h out into a separate patch,
+> that'd make things clearer for review.
+> 
+>>    CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+>>    pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+>>    pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+>>    lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+>>    sp : ffff80001052b730
+>>    x29: ffff80001052b730 x28: 0000000000000001
+>>    x27: ffff0001ec8f4000 x26: ffff0001ec5d27b0
+> 
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative (it often is
+> for search engines if nothing else) then it's usually better to pull out
+> the relevant sections.
+> 
+>> -SYM_FUNC_START_LOCAL(aesbs_encrypt8)
+>> +SYM_CODE_START_LOCAL(aesbs_encrypt8)
+>>   	ldr		q9, [bskey], #16		// round 0 key
+>>   	ldr		q8, M0SR
+>>   	ldr		q24, SR
+>> @@ -488,10 +488,10 @@ SYM_FUNC_START_LOCAL(aesbs_encrypt8)
+>>   	eor		v2.16b, v2.16b, v12.16b
+>>   	eor		v5.16b, v5.16b, v12.16b
+>>   	ret
+>> -SYM_FUNC_END(aesbs_encrypt8)
+>> +SYM_END(aesbs_encrypt8)
+> 
+> This should be SYM_CODE_END() to match the opening.  However...
+> 
+>>    * When using in-kernel BTI we need to ensure that PCS-conformant assembly
+>> @@ -42,6 +43,9 @@
+>>   	SYM_START(name, SYM_L_WEAK, SYM_A_NONE)		\
+>>   	BTI_C
+>>   
+>> +#define SYM_CODE_START_LOCAL(name)			\
+>> +	SYM_START(name, SYM_L_LOCAL, SYM_A_ALIGN)       \
+>> +	BTI_JC
+> 
+> ...this is going to cause problems, SYM_CODE means that we should
+> assemble *exactly* what was written since it's some non-standard thing -
+> we use it for the vectors table for example.  Looking at the code it's
+> not 100% clear that the best approach here isn't just to change the call
+> to a regular function call, this isn't a fast path or anything as far as
+> I can see so it's unclear to me why we need to tail call.
 
-int keembay_sd_voltage_selection(int volt)
-{
-	int res;
+Well for some workloads its could be AFAIK. OTOH, Ard mentioned dumping 
+the tail call too, and I think that is pretty reasonable. So it looks 
+like that is a better plan since it also avoids all this SYM_ flailing.
 
-	arm_smccc_1_1_invoke(KEEMBAY_SET_SD_VOLTAGE_FUNC_ID, volt, &res)
-
-	/* appropriate error check if needed here */
-
-	return res;
-}
-
-> I will call this func during voltage switching from arasan controller. I
-> believe this implementation require DT to specify the compatible name and
-> method use either smc/hvc.
-
-No, use the standard one as detected by arm_smccc_1_1_invoke
-(It calls arm_smccc_get_conduit internally and use SMC/HVC based on that)
 
 > 
-> Are you saying that by using simple smcc based function library I should
-> call below func() in arasan controller. For example
-> 1) arm_smccc_get_version(void)
-> 2) arm_smccc_version_init(arm_smccc_get_version(), SMCCC_CONDUIT_SMC);
+> Failing that I think we need an annotation for tail called functions,
+> that'd need to be a new thing as I am not seeing anything appropriate in
+> the current generic annotations.
+> 
 
-Nope
-
-> 3) arm_smccc_1_1_invoke(KEEMBAY_SET_SD_VOLTAGE_FUNC_ID, voltage_value ,  &res);
-
-Just this.
-
--- 
-Regards,
-Sudeep
