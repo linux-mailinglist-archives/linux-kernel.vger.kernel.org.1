@@ -2,225 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0B2283794
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D38283791
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgJEOWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:22:45 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:13202 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725911AbgJEOWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:22:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601907762; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=kORaE4cBBfq+qvU6Hetuv1UcX0BfJ40u4vJsH37nAmg=; b=kFgBGiF2zzrHDYcII3v3pRDEd+0Ac0biIqJuoGj2bynl2Xrcw/RQ0F9e+JWZsVZwxzSlPv28
- 92+5yu3CNNANABpIKKKl7ncyQm9U7/DIa9w8NPY3/J7DzaH6W2oVftRxD5ETUPTloMjPg7zT
- kEcdwrGsGui0rg+huK9TqWPCfH8=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f7b2c294f8cc67c31ba3bf3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 14:22:33
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 82DD8C433C8; Mon,  5 Oct 2020 14:22:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CFB3C433C8;
-        Mon,  5 Oct 2020 14:22:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6CFB3C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 5 Oct 2020 08:22:26 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 05/14] drm/msm: Document and rename preempt_lock
-Message-ID: <20201005142226.GD4204@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201004192152.3298573-1-robdclark@gmail.com>
- <20201004192152.3298573-6-robdclark@gmail.com>
+        id S1726164AbgJEOWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgJEOWm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:22:42 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E13C0613CE;
+        Mon,  5 Oct 2020 07:22:41 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id h24so5662683ejg.9;
+        Mon, 05 Oct 2020 07:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=e/lZhaxCRr5BovF0A1Nmo/njVQx8pABrvOL8ijbfSPk=;
+        b=MBz8kZzFan8wo1BK+ir1/+F+2M4mk77f4qpC5OzgVCnub564dYUiB0OFBm+IafOyBA
+         2EL/OKsv1KEe7plP6id+uPtrxMZQKR3cCmZkRQysULFs5WTlWwmhRXd1eIFZIeyPcIs2
+         pmP4ivSVfIpE8UqHnJ95BgapkT+0npSie7s1y26fbPATovMxC/By3MFOTGngAYOYoeeX
+         9RnwDuHg31sibSbnGTcRbTY2MCecsbT2Cjw6OR5dyh63fskNA3xSHVBztDATv/UhZlo8
+         o//2v1W0opCe1aAtlXn0bShrFiGeZGqbRMIfGxWzN+4zL9JCUd/SKqoaIVv4AQ9LKgXC
+         oxIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=e/lZhaxCRr5BovF0A1Nmo/njVQx8pABrvOL8ijbfSPk=;
+        b=FhrFRJnaV5Gjqo3NZH1S7CyAn3ge+QS73C1GpcdpghkcUk6JtIkVi8qxC6iPlirWtI
+         24SfNqzn+ArvHEiEaqVDXiVfKV+Jk1tmdnk6K7wF8UUlOHdJpxXjpwDogOTTj0STOflW
+         9w5ddAJAHLPwaC9XUGLx/9P4AZjfCQA4dxu5vvDh37TlB/saKQu4ycuCIhrjSk6hurU1
+         BGsWTab/v+mo5vgEVajna2hx72aLHynpxOlExHCj5WxxLeil5pQzvLYHVsJpMRpmEiZz
+         JYW87EK25XRo0gEgId/d3fepigtp6lGED+pIRfUbJhYI05i7gHXhZkcp9XWz7TAb5iDW
+         QJ+g==
+X-Gm-Message-State: AOAM532+SDYHhphsrMTMkGmD5F0QfFmK0I8rQ84DzS8r+FEOK8mMmdsV
+        IQu5StrSFroQCG7Qp8ZMvKA=
+X-Google-Smtp-Source: ABdhPJyq2WAXeuWpH0EsM0A11GYqoWFcHmHPoW6C+LT7kuXTUkDowJ9pc1oN4eOI24q0fsaT1wRkwQ==
+X-Received: by 2002:a17:906:5fc6:: with SMTP id k6mr5709468ejv.494.1601907760363;
+        Mon, 05 Oct 2020 07:22:40 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id i7sm8566566ejo.22.2020.10.05.07.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:22:38 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 16:22:37 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+Message-ID: <20201005142237.GA628746@ulmo>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+ <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
+ <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
+ <20201005095351.GI425362@ulmo>
+ <ae48aaaf-fe10-6de4-06bb-2afbde799168@gmail.com>
+ <20201005111547.GQ425362@ulmo>
+ <39cb0056-1447-2232-d33c-adb17114740a@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
 Content-Disposition: inline
-In-Reply-To: <20201004192152.3298573-6-robdclark@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <39cb0056-1447-2232-d33c-adb17114740a@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 12:21:37PM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Before adding another lock, give ring->lock a more descriptive name.
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  4 ++--
->  drivers/gpu/drm/msm/adreno/a5xx_preempt.c | 12 ++++++------
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 ++--
->  drivers/gpu/drm/msm/msm_ringbuffer.c      |  2 +-
->  drivers/gpu/drm/msm/msm_ringbuffer.h      |  7 ++++++-
->  5 files changed, 17 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index c941c8138f25..543437a2186e 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -36,7 +36,7 @@ void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
->  		OUT_RING(ring, upper_32_bits(shadowptr(a5xx_gpu, ring)));
->  	}
->  
-> -	spin_lock_irqsave(&ring->lock, flags);
-> +	spin_lock_irqsave(&ring->preempt_lock, flags);
->  
->  	/* Copy the shadow to the actual register */
->  	ring->cur = ring->next;
-> @@ -44,7 +44,7 @@ void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
->  	/* Make sure to wrap wptr if we need to */
->  	wptr = get_wptr(ring);
->  
-> -	spin_unlock_irqrestore(&ring->lock, flags);
-> +	spin_unlock_irqrestore(&ring->preempt_lock, flags);
->  
->  	/* Make sure everything is posted before making a decision */
->  	mb();
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_preempt.c b/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
-> index 7e04509c4e1f..183de1139eeb 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_preempt.c
-> @@ -45,9 +45,9 @@ static inline void update_wptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
->  	if (!ring)
->  		return;
->  
-> -	spin_lock_irqsave(&ring->lock, flags);
-> +	spin_lock_irqsave(&ring->preempt_lock, flags);
->  	wptr = get_wptr(ring);
-> -	spin_unlock_irqrestore(&ring->lock, flags);
-> +	spin_unlock_irqrestore(&ring->preempt_lock, flags);
->  
->  	gpu_write(gpu, REG_A5XX_CP_RB_WPTR, wptr);
->  }
-> @@ -62,9 +62,9 @@ static struct msm_ringbuffer *get_next_ring(struct msm_gpu *gpu)
->  		bool empty;
->  		struct msm_ringbuffer *ring = gpu->rb[i];
->  
-> -		spin_lock_irqsave(&ring->lock, flags);
-> +		spin_lock_irqsave(&ring->preempt_lock, flags);
->  		empty = (get_wptr(ring) == ring->memptrs->rptr);
-> -		spin_unlock_irqrestore(&ring->lock, flags);
-> +		spin_unlock_irqrestore(&ring->preempt_lock, flags);
->  
->  		if (!empty)
->  			return ring;
-> @@ -132,9 +132,9 @@ void a5xx_preempt_trigger(struct msm_gpu *gpu)
->  	}
->  
->  	/* Make sure the wptr doesn't update while we're in motion */
-> -	spin_lock_irqsave(&ring->lock, flags);
-> +	spin_lock_irqsave(&ring->preempt_lock, flags);
->  	a5xx_gpu->preempt[ring->id]->wptr = get_wptr(ring);
-> -	spin_unlock_irqrestore(&ring->lock, flags);
-> +	spin_unlock_irqrestore(&ring->preempt_lock, flags);
->  
->  	/* Set the address of the incoming preemption record */
->  	gpu_write64(gpu, REG_A5XX_CP_CONTEXT_SWITCH_RESTORE_ADDR_LO,
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 8915882e4444..fc85f008d69d 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -65,7 +65,7 @@ static void a6xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
->  		OUT_RING(ring, upper_32_bits(shadowptr(a6xx_gpu, ring)));
->  	}
->  
-> -	spin_lock_irqsave(&ring->lock, flags);
-> +	spin_lock_irqsave(&ring->preempt_lock, flags);
->  
->  	/* Copy the shadow to the actual register */
->  	ring->cur = ring->next;
-> @@ -73,7 +73,7 @@ static void a6xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
->  	/* Make sure to wrap wptr if we need to */
->  	wptr = get_wptr(ring);
->  
-> -	spin_unlock_irqrestore(&ring->lock, flags);
-> +	spin_unlock_irqrestore(&ring->preempt_lock, flags);
->  
->  	/* Make sure everything is posted before making a decision */
->  	mb();
-> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
-> index 935bf9b1d941..1b6958e908dc 100644
-> --- a/drivers/gpu/drm/msm/msm_ringbuffer.c
-> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
-> @@ -46,7 +46,7 @@ struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
->  	ring->memptrs_iova = memptrs_iova;
->  
->  	INIT_LIST_HEAD(&ring->submits);
-> -	spin_lock_init(&ring->lock);
-> +	spin_lock_init(&ring->preempt_lock);
->  
->  	snprintf(name, sizeof(name), "gpu-ring-%d", ring->id);
->  
-> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.h b/drivers/gpu/drm/msm/msm_ringbuffer.h
-> index 0987d6bf848c..4956d1bc5d0e 100644
-> --- a/drivers/gpu/drm/msm/msm_ringbuffer.h
-> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.h
-> @@ -46,7 +46,12 @@ struct msm_ringbuffer {
->  	struct msm_rbmemptrs *memptrs;
->  	uint64_t memptrs_iova;
->  	struct msm_fence_context *fctx;
-> -	spinlock_t lock;
-> +
-> +	/*
-> +	 * preempt_lock protects preemption and serializes wptr updates against
-> +	 * preemption.  Can be aquired from irq context.
-> +	 */
-> +	spinlock_t preempt_lock;
->  };
->  
->  struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
-> -- 
-> 2.26.2
-> 
+On Mon, Oct 05, 2020 at 04:28:53PM +0300, Dmitry Osipenko wrote:
+> 05.10.2020 14:15, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Mon, Oct 05, 2020 at 01:36:55PM +0300, Dmitry Osipenko wrote:
+> >> 05.10.2020 12:53, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Fri, Oct 02, 2020 at 05:50:08PM +0300, Dmitry Osipenko wrote:
+> >>>> 02.10.2020 17:22, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>>>>>  static int tegra_smmu_of_xlate(struct device *dev,
+> >>>>>>  			       struct of_phandle_args *args)
+> >>>>>>  {
+> >>>>>> +	struct platform_device *iommu_pdev =3D of_find_device_by_node(ar=
+gs->np);
+> >>>>>> +	struct tegra_mc *mc =3D platform_get_drvdata(iommu_pdev);
+> >>>>>>  	u32 id =3D args->args[0];
+> >>>>>> =20
+> >>>>>> +	of_node_put(args->np);
+> >>>>>> +
+> >>>>>> +	if (!mc || !mc->smmu)
+> >>>>>> +		return -EPROBE_DEFER;
+> >>>>> platform_get_drvdata(NULL) will crash.
+> >>>>>
+> >>>>
+> >>>> Actually, platform_get_drvdata(NULL) can't happen. I overlooked this.
+> >>>
+> >>> How so? It's technically possible for the iommus property to referenc=
+e a
+> >>> device tree node for which no platform device will ever be created, in
+> >>> which case of_find_device_by_node() will return NULL. That's very
+> >>> unlikely and perhaps worth just crashing on to make sure it gets fixed
+> >>> immediately.
+> >>
+> >> The tegra_smmu_ops are registered from the SMMU driver itself and MC
+> >> driver sets platform data before SMMU is initialized, hence device is
+> >> guaranteed to exist and mc can't be NULL.
+> >=20
+> > Yes, but that assumes that args->np points to the memory controller's
+> > device tree node. It's obviously a mistake to do this, but I don't think
+> > anyone will prevent you from doing this:
+> >=20
+> > 	iommus =3D <&{/chosen} 0>;
+> >=20
+> > In that case, since no platform device is created for the /chosen node,
+> > iommu_pdev will end up being NULL and platform_get_drvdata() will crash.
+>=20
+> But then Tegra SMMU isn't associated with the device's IOMMU path, and
+> thus, tegra_smmu_of_xlate() won't be invoked for this device.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Indeed, you're right! It used to be that ops were assigned to the bus
+without any knowledge about the specific instances that might exist, but
+nowadays there's struct iommu_device which properly encapsulates all of
+that, so yeah, I don't think this can ever be NULL.
+
+Although that makes me wonder why we aren't going one step further and
+pass struct iommu_device * into ->of_xlate(), which would avoid the need
+for us to do the look up once more.
+
+Thierry
+
+--2fHTh5uZTiUOsy+g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl97LCkACgkQ3SOs138+
+s6GUWxAAwst4IWu/G106iJ18+V0k/VEU3oYZtPoGitMHGJworwYhaqmAocTs2CJ5
+6QftbaeJtFwiYhpWjhm+u79QgtKtYHMQH162UjeGDiXVM9fjIMf0+1oBnmd8LKkw
+MxzaiYSvm5QzFQe4Ib/KzpNutCzgLncuf2VDPpG2XvUtAPDaj25hRQH89orrbbVG
+RzfcHQ0p4fsz4t2IQgJf7aeMzU+NrvvFBRD/FEI8LfqMfuGehLecbjEi1LKnrjbR
+coz/2Kn+fjkjdC8H24XLvSK3U5ifRd0Ck3xdo6OAe8WE+wXdXlPqY40JzNLjfoDw
+PBnp4YGw2Qy1fQ/oFwEyyW5MeBUMe7IcoAAGES7p8Z/KuMNvEDa86n6qoEZn8/fx
+P7J5jyT3L1fJAnASD5P+L3I5TwTENOrdG0XxZMUVCH64GgkrdtN0lL/QIlEx3mJe
+Xr2VAauFsQgqFw1f8PrFQFiXX/0RU+vFE7ucF81okFKpvuqZdouwc8ye+AKf//pF
++iNxHmcRePB4GSe6hqO84EpgTcvpQo6RfA1ECG5J84cXOE4TIcefy7WT1K3vatWv
+l+U/4Z+B8HCP5P2Bo0BsOO27/nOdkv7pMKe2XvrsAuwWSGZsxJRSYlA+Rr1vE/fy
+nFrCH8cy94ewqryTQqz7MplvRG7CnQtivYdgSPG5BxYbHxJHmR4=
+=IQAU
+-----END PGP SIGNATURE-----
+
+--2fHTh5uZTiUOsy+g--
