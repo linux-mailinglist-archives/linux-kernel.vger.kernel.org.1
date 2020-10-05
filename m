@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3376F282EE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 04:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BA3282EED
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 04:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgJECky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 22:40:54 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58491 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725845AbgJECky (ORCPT
+        id S1725865AbgJECo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 22:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgJECo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 22:40:54 -0400
-X-UUID: 1ac8d4c9d4a4466c9d72dde7ac8ccaf5-20201005
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=EUI7uOkc6wflbcN4dLdDFLe1TAyO6/KD9JziaxsXixA=;
-        b=YD4ULh4jHW2Np/msBKmiLJBTH2iiTAfYPXFdSQ8FQloyGk6XrupFx1KDuLTr1AGwkQZvJSPMTNEnSscLIhAspzCMXYqb8RuuegRlHeHAI70i2pEpdeVxJ/1+XtW7vm6tlame/a3iBrbRz7P/kltJxZwlXw3L9iK1yaYnj09k2Ko=;
-X-UUID: 1ac8d4c9d4a4466c9d72dde7ac8ccaf5-20201005
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
-        (envelope-from <chinwen.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 46171417; Mon, 05 Oct 2020 10:40:50 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 5 Oct 2020 10:40:44 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 5 Oct 2020 10:40:44 +0800
-From:   Chinwen Chang <chinwen.chang@mediatek.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>
-Subject: [RESEND, PATCH v4 3/3] mm: proc: smaps_rollup: do not stall write attempts on mmap_lock
-Date:   Mon, 5 Oct 2020 10:40:14 +0800
-Message-ID: <1601865614-4918-4-git-send-email-chinwen.chang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1601865614-4918-1-git-send-email-chinwen.chang@mediatek.com>
-References: <1601865614-4918-1-git-send-email-chinwen.chang@mediatek.com>
+        Sun, 4 Oct 2020 22:44:56 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADC9C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 19:44:55 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id y14so2566312pfp.13
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 19:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gb3wgZey/nhsUecQI0AK4E4FVf7KdU6hAxj0QQpUtZo=;
+        b=ChzSdbai67Qi4PgOp3i2KgxrVOLTQeiAORiKr5YQ4egkY/X8Skdh+hMj/XPSJ1jvLS
+         6xeRixitvxivStC+vCD4eo2KB+PPkQP3nkKPsUKyafzcw4vpkeTyUjCfKnskJGY4ci/G
+         dgxyCfNfHOru/RQUr2cd3Pg7kfiwbCHjNqALY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gb3wgZey/nhsUecQI0AK4E4FVf7KdU6hAxj0QQpUtZo=;
+        b=sQRqQuRmdDuWUUV0tIow1aLJF4kwVGPK2SyPG1E1HWG75QljSHD72qi4Yb2+yTmFGe
+         Rb1+vVqMpd4U138YqJFiwgT4YFJYT5GFXiUQYboZG9pQ8sV/63R4JhjZOGiDJQReEZqU
+         kxm5doZ4eLxCLnL8JPoPE7ubUt/D81EipHyun2bAk0SrT5yXwadl9SdcEAnP2mOgVp+C
+         yi0upedUOJUjLVYqZG8Y7AwlMFYXr6Z4GKoyVC/DTgvdLGNrt8iJ9dhgD3ph8U174IJF
+         bqHpF8fpJNjXJLsbYKg9jRpImWSBg9vzOLp9FfRmyUl+0F2//seNgyISZVLz1p/VvCBj
+         prOw==
+X-Gm-Message-State: AOAM531tQbD2PBftVSLHxforeU8chloYpxLNxs0+LwbRsq70ul81NJqy
+        rAktY1TGalvgzhKSL44djb9DYw==
+X-Google-Smtp-Source: ABdhPJxuY76yHrON3z58BIX8r/cD0A+mO0MomIEAZVJmWe2JaRCoyuG+FKkz3vVRLizjdpgxmxvVXg==
+X-Received: by 2002:a63:165b:: with SMTP id 27mr12021369pgw.197.1601865894675;
+        Sun, 04 Oct 2020 19:44:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y4sm8782814pgl.67.2020.10.04.19.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Oct 2020 19:44:53 -0700 (PDT)
+Date:   Sun, 4 Oct 2020 19:44:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <202010041944.7FEE22407B@keescook>
+References: <20200914132249.40c88461@canb.auug.org.au>
+ <202010031451.ABC49D88@keescook>
+ <20201004102437.12fb0442@canb.auug.org.au>
+ <202010040125.B5AD5B757@keescook>
+ <20201004210018.5bbc6126@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004210018.5bbc6126@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-c21hcHNfcm9sbHVwIHdpbGwgdHJ5IHRvIGdyYWIgbW1hcF9sb2NrIGFuZCBnbyB0aHJvdWdoIHRo
-ZSB3aG9sZSB2bWENCmxpc3QgdW50aWwgaXQgZmluaXNoZXMgdGhlIGl0ZXJhdGluZy4gV2hlbiBl
-bmNvdW50ZXJpbmcgbGFyZ2UgcHJvY2Vzc2VzLA0KdGhlIG1tYXBfbG9jayB3aWxsIGJlIGhlbGQg
-Zm9yIGEgbG9uZ2VyIHRpbWUsIHdoaWNoIG1heSBibG9jayBvdGhlcg0Kd3JpdGUgcmVxdWVzdHMg
-bGlrZSBtbWFwIGFuZCBtdW5tYXAgZnJvbSBwcm9ncmVzc2luZyBzbW9vdGhseS4NCg0KVGhlcmUg
-YXJlIHVwY29taW5nIG1tYXBfbG9jayBvcHRpbWl6YXRpb25zIGxpa2UgcmFuZ2UtYmFzZWQgbG9j
-a3MsIGJ1dA0KdGhlIGxvY2sgYXBwbGllZCB0byBzbWFwc19yb2xsdXAgd291bGQgYmUgdGhlIGNv
-YXJzZSB0eXBlLCB3aGljaCBkb2Vzbid0DQphdm9pZCB0aGUgb2NjdXJyZW5jZSBvZiB1bnBsZWFz
-YW50IGNvbnRlbnRpb24uDQoNClRvIHNvbHZlIGFmb3JlbWVudGlvbmVkIGlzc3VlLCB3ZSBhZGQg
-YSBjaGVjayB3aGljaCBkZXRlY3RzIHdoZXRoZXINCmFueW9uZSB3YW50cyB0byBncmFiIG1tYXBf
-bG9jayBmb3Igd3JpdGUgYXR0ZW1wdHMuDQoNCkNoYW5nZSBzaW5jZSB2MToNCi0gSWYgY3VycmVu
-dCBWTUEgaXMgZnJlZWQgYWZ0ZXIgZHJvcHBpbmcgdGhlIGxvY2ssIGl0IHdpbGwgcmV0dXJuDQot
-IGluY29tcGxldGUgcmVzdWx0LiBUbyBmaXggdGhpcyBpc3N1ZSwgcmVmaW5lIHRoZSBjb2RlIGZs
-b3cgYXMNCi0gc3VnZ2VzdGVkIGJ5IFN0ZXZlLiBbMV0NCg0KQ2hhbmdlIHNpbmNlIHYyOg0KLSBX
-aGVuIGdldHRpbmcgYmFjayB0aGUgbW1hcCBsb2NrLCB0aGUgYWRkcmVzcyB3aGVyZSB5b3Ugc3Rv
-cHBlZCBsYXN0DQotIHRpbWUgY291bGQgbm93IGJlIGluIHRoZSBtaWRkbGUgb2YgYSB2bWEuIEFk
-ZCBvbmUgbW9yZSBjaGVjayB0byBoYW5kbGUNCi0gdGhpcyBjYXNlIGFzIHN1Z2dlc3RlZCBieSBN
-aWNoZWwuIFsyXQ0KDQpDaGFuZ2Ugc2luY2UgdjM6DQotIGxhc3Rfc3RvcHBlZCBpcyBlYXNpbHkg
-Y29uZnVzZWQgd2l0aCBsYXN0X3ZtYV9lbmQuIFJlcGxhY2UgaXQgd2l0aA0KLSBhIGRpcmVjdCBj
-YWxsIHRvIHNtYXBfZ2F0aGVyX3N0YXRzKHZtYSwgJm1zcywgbGFzdF92bWFfZW5kKSBhcw0KLSBz
-dWdnZXN0ZWQgYnkgU3RldmUuIFszXQ0KDQpbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGtt
-bC9iZjQwNjc2ZS1iMTRiLTQ0Y2QtNzVjZS00MTljNzAxOTQ3ODNAYXJtLmNvbS8NClsyXSBodHRw
-czovL2xvcmUua2VybmVsLm9yZy9sa21sL0NBTk42ODlGdENzQzcxY2pBanMwR1BzcE9oZ29fSFJq
-K2RpV3NvVTF3cjk4WVBrdGdXZ0BtYWlsLmdtYWlsLmNvbS8NClszXSBodHRwczovL2xvcmUua2Vy
-bmVsLm9yZy9sa21sL2RiMGQ0MGUyLTcyZjMtMDlkNS1jMTYyLTljNDkyMThmMTI4ZkBhcm0uY29t
-Lw0KDQpDaGFuZ2UtSWQ6IElkY2RiNjQ3OGNjZDA2YTllNWVkZDRlZGE5Mjg1Mzc4ZTk2MWE2Yjk0
-DQpTaWduZWQtb2ZmLWJ5OiBDaGlud2VuIENoYW5nIDxjaGlud2VuLmNoYW5nQG1lZGlhdGVrLmNv
-bT4NClJldmlld2VkLWJ5OiBTdGV2ZW4gUHJpY2UgPHN0ZXZlbi5wcmljZUBhcm0uY29tPg0KQ0M6
-IE1pY2hlbCBMZXNwaW5hc3NlIDx3YWxrZW5AZ29vZ2xlLmNvbT4NCi0tLQ0KIGZzL3Byb2MvdGFz
-a19tbXUuYyB8IDY2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrLQ0KIDEgZmlsZSBjaGFuZ2VkLCA2NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9u
-KC0pDQoNCmRpZmYgLS1naXQgYS9mcy9wcm9jL3Rhc2tfbW11LmMgYi9mcy9wcm9jL3Rhc2tfbW11
-LmMNCmluZGV4IDc2ZTYyM2EuLjFhODA2MjQgMTAwNjQ0DQotLS0gYS9mcy9wcm9jL3Rhc2tfbW11
-LmMNCisrKyBiL2ZzL3Byb2MvdGFza19tbXUuYw0KQEAgLTg2Nyw5ICs4NjcsNzMgQEAgc3RhdGlj
-IGludCBzaG93X3NtYXBzX3JvbGx1cChzdHJ1Y3Qgc2VxX2ZpbGUgKm0sIHZvaWQgKnYpDQogDQog
-CWhvbGRfdGFza19tZW1wb2xpY3kocHJpdik7DQogDQotCWZvciAodm1hID0gcHJpdi0+bW0tPm1t
-YXA7IHZtYTsgdm1hID0gdm1hLT52bV9uZXh0KSB7DQorCWZvciAodm1hID0gcHJpdi0+bW0tPm1t
-YXA7IHZtYTspIHsNCiAJCXNtYXBfZ2F0aGVyX3N0YXRzKHZtYSwgJm1zcywgMCk7DQogCQlsYXN0
-X3ZtYV9lbmQgPSB2bWEtPnZtX2VuZDsNCisNCisJCS8qDQorCQkgKiBSZWxlYXNlIG1tYXBfbG9j
-ayB0ZW1wb3JhcmlseSBpZiBzb21lb25lIHdhbnRzIHRvDQorCQkgKiBhY2Nlc3MgaXQgZm9yIHdy
-aXRlIHJlcXVlc3QuDQorCQkgKi8NCisJCWlmIChtbWFwX2xvY2tfaXNfY29udGVuZGVkKG1tKSkg
-ew0KKwkJCW1tYXBfcmVhZF91bmxvY2sobW0pOw0KKwkJCXJldCA9IG1tYXBfcmVhZF9sb2NrX2tp
-bGxhYmxlKG1tKTsNCisJCQlpZiAocmV0KSB7DQorCQkJCXJlbGVhc2VfdGFza19tZW1wb2xpY3ko
-cHJpdik7DQorCQkJCWdvdG8gb3V0X3B1dF9tbTsNCisJCQl9DQorDQorCQkJLyoNCisJCQkgKiBB
-ZnRlciBkcm9wcGluZyB0aGUgbG9jaywgdGhlcmUgYXJlIGZvdXIgY2FzZXMgdG8NCisJCQkgKiBj
-b25zaWRlci4gU2VlIHRoZSBmb2xsb3dpbmcgZXhhbXBsZSBmb3IgZXhwbGFuYXRpb24uDQorCQkJ
-ICoNCisJCQkgKiAgICstLS0tLS0rLS0tLS0tKy0tLS0tLS0tLS0tKw0KKwkJCSAqICAgfCBWTUEx
-IHwgVk1BMiB8IFZNQTMgICAgICB8DQorCQkJICogICArLS0tLS0tKy0tLS0tLSstLS0tLS0tLS0t
-LSsNCisJCQkgKiAgIHwgICAgICB8ICAgICAgfCAgICAgICAgICAgfA0KKwkJCSAqICA0ayAgICAg
-OGsgICAgIDE2ayAgICAgICAgIDQwMGsNCisJCQkgKg0KKwkJCSAqIFN1cHBvc2Ugd2UgZHJvcCB0
-aGUgbG9jayBhZnRlciByZWFkaW5nIFZNQTIgZHVlIHRvDQorCQkJICogY29udGVudGlvbiwgdGhl
-biB3ZSBnZXQ6DQorCQkJICoNCisJCQkgKglsYXN0X3ZtYV9lbmQgPSAxNmsNCisJCQkgKg0KKwkJ
-CSAqIDEpIFZNQTIgaXMgZnJlZWQsIGJ1dCBWTUEzIGV4aXN0czoNCisJCQkgKg0KKwkJCSAqICAg
-IGZpbmRfdm1hKG1tLCAxNmsgLSAxKSB3aWxsIHJldHVybiBWTUEzLg0KKwkJCSAqICAgIEluIHRo
-aXMgY2FzZSwganVzdCBjb250aW51ZSBmcm9tIFZNQTMuDQorCQkJICoNCisJCQkgKiAyKSBWTUEy
-IHN0aWxsIGV4aXN0czoNCisJCQkgKg0KKwkJCSAqICAgIGZpbmRfdm1hKG1tLCAxNmsgLSAxKSB3
-aWxsIHJldHVybiBWTUEyLg0KKwkJCSAqICAgIEl0ZXJhdGUgdGhlIGxvb3AgbGlrZSB0aGUgb3Jp
-Z2luYWwgb25lLg0KKwkJCSAqDQorCQkJICogMykgTm8gbW9yZSBWTUFzIGNhbiBiZSBmb3VuZDoN
-CisJCQkgKg0KKwkJCSAqICAgIGZpbmRfdm1hKG1tLCAxNmsgLSAxKSB3aWxsIHJldHVybiBOVUxM
-Lg0KKwkJCSAqICAgIE5vIG1vcmUgdGhpbmdzIHRvIGRvLCBqdXN0IGJyZWFrLg0KKwkJCSAqDQor
-CQkJICogNCkgKGxhc3Rfdm1hX2VuZCAtIDEpIGlzIHRoZSBtaWRkbGUgb2YgYSB2bWEgKFZNQScp
-Og0KKwkJCSAqDQorCQkJICogICAgZmluZF92bWEobW0sIDE2ayAtIDEpIHdpbGwgcmV0dXJuIFZN
-QScgd2hvc2UgcmFuZ2UNCisJCQkgKiAgICBjb250YWlucyBsYXN0X3ZtYV9lbmQuDQorCQkJICog
-ICAgSXRlcmF0ZSBWTUEnIGZyb20gbGFzdF92bWFfZW5kLg0KKwkJCSAqLw0KKwkJCXZtYSA9IGZp
-bmRfdm1hKG1tLCBsYXN0X3ZtYV9lbmQgLSAxKTsNCisJCQkvKiBDYXNlIDMgYWJvdmUgKi8NCisJ
-CQlpZiAoIXZtYSkNCisJCQkJYnJlYWs7DQorDQorCQkJLyogQ2FzZSAxIGFib3ZlICovDQorCQkJ
-aWYgKHZtYS0+dm1fc3RhcnQgPj0gbGFzdF92bWFfZW5kKQ0KKwkJCQljb250aW51ZTsNCisNCisJ
-CQkvKiBDYXNlIDQgYWJvdmUgKi8NCisJCQlpZiAodm1hLT52bV9lbmQgPiBsYXN0X3ZtYV9lbmQp
-DQorCQkJCXNtYXBfZ2F0aGVyX3N0YXRzKHZtYSwgJm1zcywgbGFzdF92bWFfZW5kKTsNCisJCX0N
-CisJCS8qIENhc2UgMiBhYm92ZSAqLw0KKwkJdm1hID0gdm1hLT52bV9uZXh0Ow0KIAl9DQogDQog
-CXNob3dfdm1hX2hlYWRlcl9wcmVmaXgobSwgcHJpdi0+bW0tPm1tYXAtPnZtX3N0YXJ0LA0KLS0g
-DQoxLjkuMQ0K
+On Sun, Oct 04, 2020 at 09:00:18PM +1100, Stephen Rothwell wrote:
+> Hi Kees,
+> 
+> On Sun, 4 Oct 2020 01:27:01 -0700 Kees Cook <keescook@chromium.org> wrote:
+> >
+> > I assume CONFIG_CONSTRUCTORS is enabled for your build (it should be for
+> 
+> yes, indeed.
+> 
+> > allmodconfig). Does this patch fix it? (I'm kind of blindly guessing
+> > based on my understanding of where this could be coming from...)
+> > 
+> > 
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> > index e1843976754a..22f14956214a 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -701,6 +701,7 @@
+> >  #ifdef CONFIG_CONSTRUCTORS
+> >  #define KERNEL_CTORS()	. = ALIGN(8);			   \
+> >  			__ctors_start = .;		   \
+> > +			KEEP(*(SORT(.ctors.*)))		   \
+> >  			KEEP(*(.ctors))			   \
+> >  			KEEP(*(SORT(.init_array.*)))	   \
+> >  			KEEP(*(.init_array))		   \
+> 
+> And that makes the messages go away.
 
+Okay then! Thanks for testing. :) I'm not sure why the ppc-hosted
+compiler generates those. Regardless, I'll send a proper patch...
+
+-- 
+Kees Cook
