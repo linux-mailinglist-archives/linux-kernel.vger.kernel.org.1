@@ -2,310 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3546A2832CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B832832CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbgJEJLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:11:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23911 "EHLO
+        id S1725973AbgJEJMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:12:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40771 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725885AbgJEJLK (ORCPT
+        by vger.kernel.org with ESMTP id S1725943AbgJEJMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:11:10 -0400
+        Mon, 5 Oct 2020 05:12:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601889068;
+        s=mimecast20190719; t=1601889132;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KsePg+8OJjmgGODX6qQL/O9iT0ASJKU1fWBCLAva6cw=;
-        b=in0F7B0XBqCQ5i8qmavGbunItY7Fyb98qwgSWfLPBB/8Pbt/CIBr6CT+YQ7IyxGFsL473V
-        hD58a9mbhyDZ6oJu0T/eWZY6UdjvkZWC6ypZU0Q9c37P+SEP2gArtJWBqJLWvk57c7W6ld
-        sq6K3brt+aTzf+9JrkOqygmEU7wvo6o=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-HCvPuM2lPxWKXC4r7qmb_g-1; Mon, 05 Oct 2020 05:11:05 -0400
-X-MC-Unique: HCvPuM2lPxWKXC4r7qmb_g-1
-Received: by mail-wm1-f70.google.com with SMTP id c204so2202676wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:11:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KsePg+8OJjmgGODX6qQL/O9iT0ASJKU1fWBCLAva6cw=;
-        b=njKRaTHbW7Ry5k7BlwtZGXLKnAtB/qls9RX7eBFygHUDlS/UECDYWF3zri/6D5cUbR
-         KSYokO6COpsqdgXozHAppd4xq3GRbvvmlgJErsag+5nzuj0Wx0UvyI7JdCIyz+iyS5uD
-         rcRCMA3uZnRdpL76/Zn26wXRyvCpSzVO4MV+2zI6CplsAO6bVjGk14rWDd8l+KXyIrhG
-         1eo6mm59H21DOY7VaZKSi4mybm2es52BC4M0bmb4FR5vKv7530Dtv0QuEF3nbtFc70dB
-         0XhQY7gyIyS3+fmdNptwlw+RUgdH9ud4FT7xxHDWAXQTgvpiPR5ar74eqQTFptS/rlsf
-         ZhtQ==
-X-Gm-Message-State: AOAM533OZeoMCboZw+idpbDqvIVzsuNp2lVL2B1M0NroVNihtLxRCblh
-        YAMOSXTGJ8JLzIJo38O5XNKzRUO3taDataEQwUDxk0LTrqrejwSH8kQpEx3m7NjTcRUOwkNcbNJ
-        025Yy/0e0QfyhMrFFZP1ecqfm
-X-Received: by 2002:a5d:5307:: with SMTP id e7mr16260573wrv.215.1601889063420;
-        Mon, 05 Oct 2020 02:11:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBy3SFk+78FUQCZfTEV11ezLX36GUPG/U3Tt9OU9m5OZV6n6bFNO3jZ6K2hfRRuQDS8G+05g==
-X-Received: by 2002:a5d:5307:: with SMTP id e7mr16260542wrv.215.1601889063055;
-        Mon, 05 Oct 2020 02:11:03 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.91.67])
-        by smtp.gmail.com with ESMTPSA id z67sm12489067wme.41.2020.10.05.02.11.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:11:02 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:11:00 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Peng Liu <iwtbavbm@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, valentin.schneider@arm.com,
-        raistlin@linux.it
-Subject: Re: [PATCH v4] sched/deadline: Fix sched_dl_global_validate()
-Message-ID: <20201005091100.GA4352@localhost.localdomain>
-References: <20200925162032.GA9692@iZj6chx1xj0e0buvshuecpZ>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=NXwve0WxqZeoBW32EWOjz60HzfWSOgOTQAftpXofwqM=;
+        b=Vz8KQleqFOYNvn6hQ2AJdms3vAdVE/U0Mxxp8Z8TAXOM5CM+X6ml2VypAWvLN8aA1ZA3lc
+        JabO7yxnWq3K6NazVxvjZnzJ+LIECL69YhguASJqcOwWUIc8Sw1YrjnvyQOi06TzqnzYcr
+        oMim0zQrtq62EKlPMn2jFZiAZYJUkfw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-YxpvOLN6NPWKnYXBtXMdiw-1; Mon, 05 Oct 2020 05:12:08 -0400
+X-MC-Unique: YxpvOLN6NPWKnYXBtXMdiw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC8451084D94;
+        Mon,  5 Oct 2020 09:11:15 +0000 (UTC)
+Received: from [10.36.114.222] (ovpn-114-222.ams2.redhat.com [10.36.114.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F0E060BFA;
+        Mon,  5 Oct 2020 09:11:08 +0000 (UTC)
+Subject: Re: [PATCH v1 3/5] mm/page_alloc: always move pages to the tail of
+ the freelist in unset_migratetype_isolate()
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20200928182110.7050-1-david@redhat.com>
+ <20200928182110.7050-4-david@redhat.com>
+ <20201002132404.GI4555@dhcp22.suse.cz>
+ <df0c45bf-223f-1f0b-ce3d-f2b2e05626bd@redhat.com>
+ <20201005065648.GO4555@dhcp22.suse.cz>
+ <20201005082049.GI3227@techsingularity.net>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <d466322e-054c-9303-5eb3-833dce410651@redhat.com>
+Date:   Mon, 5 Oct 2020 11:11:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925162032.GA9692@iZj6chx1xj0e0buvshuecpZ>
+In-Reply-To: <20201005082049.GI3227@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 05.10.20 10:20, Mel Gorman wrote:
+> On Mon, Oct 05, 2020 at 08:56:48AM +0200, Michal Hocko wrote:
+>> On Fri 02-10-20 17:20:09, David Hildenbrand wrote:
+>>> On 02.10.20 15:24, Michal Hocko wrote:
+>>>> On Mon 28-09-20 20:21:08, David Hildenbrand wrote:
+>>>>> Page isolation doesn't actually touch the pages, it simply isolates
+>>>>> pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
+>>>>>
+>>>>> We already place pages to the tail of the freelists when undoing
+>>>>> isolation via __putback_isolated_page(), let's do it in any case
+>>>>> (e.g., if order <= pageblock_order) and document the behavior.
+>>>>>
+>>>>> Add a "to_tail" parameter to move_freepages_block() but introduce a
+>>>>> a new move_to_free_list_tail() - similar to add_to_free_list_tail().
+>>>>>
+>>>>> This change results in all pages getting onlined via online_pages() to
+>>>>> be placed to the tail of the freelist.
+>>>>
+>>>> Is there anything preventing to do this unconditionally? Or in other
+>>>> words is any of the existing callers of move_freepages_block benefiting
+>>>> from adding to the head?
+>>>
+>>> 1. mm/page_isolation.c:set_migratetype_isolate()
+>>>
+>>> We move stuff to the MIGRATE_ISOLATE list, we don't care about the order
+>>> there.
+>>>
+>>> 2. steal_suitable_fallback():
+>>>
+>>> I don't think we care too much about the order when already stealing
+>>> pageblocks ... and the freelist is empty I guess?
+>>>
+>>> 3. reserve_highatomic_pageblock()/unreserve_highatomic_pageblock()
+>>>
+>>> Not sure if we really care.
+>>
+>> Honestly, I have no idea. I can imagine that some atomic high order
+>> workloads (e.g. in net) might benefit from cache line hot pages but I am
+>> not sure this is really observable.
+> 
+> The highatomic reserve is more concerned that about the allocation
+> succeeding than it is about cache hotness.
+> 
 
-On 26/09/20 00:20, Peng Liu wrote:
-> I created another root domain(contains 2 CPUs) besides the default
-> one, and the global default rt bandwidth is 95%. Then launched a
-> DL process which need 25% bandwidth and moved it to the new root
-> domain, so far so good.
-> 
-> Then I tried to change global rt bandwidth to 20% with cmd:
-> 	echo 200000 > /proc/sys/kernel/sched_rt_runtime_us
-> but ending with the below error:
-> 	bash: echo: write error: Device or resource busy
-> Only values greater than 250000 could work.
-> 
-> The new root domain contains two CPUs, thus should could provide
-> totally 2*20%(>25%) bandwidth. So the error is strange.
-> Finally I found it's the sched_dl_global_validate() mistakenly
-> do the validation.
-> 
-> When change sched_rt_{runtime, period}_us, then
-> 
->   sched_rt_handler()
->     -->	sched_dl_bandwidth_validate()
-> 	{
-> 		new_bw = global_rt_runtime()/global_rt_period();
-> 
-> 		for_each_possible_cpu(cpu) {
-> 			dl_b = dl_bw_of(cpu);
-> 			if (new_bw < dl_b->total_bw)
-> 				ret = -EBUSY;
-> 		}
-> 	}
-> 
-> Under CONFIG_SMP, dl_bw is per root domain , but not per CPU,
-> dl_b->total_bw is the allocated bandwidth of the whole root domain.
-> we should compare dl_b->total_bw against cpus*new_bw, where 'cpus'
-> is the number of CPUs of the root domain.
-> 
-> Also, below annotation(in kernel/sched/sched.h) implied implementation
-> only appeared in SCHED_DEADLINE v2[1], then deadline scheduler kept
-> evolving till got merged(v9), but the annotation remains unchanged,
-> meaningless and misleading, correct it.
-> 
-> * With respect to SMP, the bandwidth is given on a per-CPU basis,
-> * meaning that:
-> *  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
-> *  - dl_total_bw array contains, in the i-eth element, the currently
-> *    allocated bandwidth on the i-eth CPU.
-> 
-> [1]: https://lore.kernel.org/lkml/1267385230.13676.101.camel@Palantir/
-> 
-> Fixes: 332ac17ef5bf ("sched/deadline: Add bandwidth management for SCHED_DEADLINE tasks")
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Peng Liu <iwtbavbm@gmail.com>
-> ---
-> 
-> v4 <-- v3:
->  - refine changelog;
->  - eliminate the ugly #ifdef guys with Peter's method;
-> 
-> v3 <-- v2:
->  - fix build error for !CONFIG_SMP, reported by kernel test robot;
-> 
-> v2 <-- v1:
->  - replace cpumask_weight(cpu_rq(cpu)->rd->span) with dl_bw_cpus(cpu),
->    suggested by Juri;
-> 
->  kernel/sched/deadline.c | 43 ++++++++++++++++++++++++++++++++---------
->  kernel/sched/sched.h    | 22 +++++++++------------
->  kernel/sched/topology.c |  1 +
->  3 files changed, 44 insertions(+), 22 deletions(-)
-> 
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 3862a28cd05d..c95af33b7274 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -97,6 +97,17 @@ static inline unsigned long dl_bw_capacity(int i)
->  		return __dl_bw_capacity(i);
->  	}
->  }
-> +
-> +static inline bool dl_bw_visited(int cpu, u64 gen)
-> +{
-> +	struct root_domain *rd = cpu_rq(cpu)->rd;
-> +
-> +	if (rd->visit_gen == gen)
-> +		return true;
-> +
-> +	rd->visit_gen = gen;
-> +	return false;
-> +}
->  #else
->  static inline struct dl_bw *dl_bw_of(int i)
->  {
-> @@ -112,6 +123,11 @@ static inline unsigned long dl_bw_capacity(int i)
->  {
->  	return SCHED_CAPACITY_SCALE;
->  }
-> +
-> +static inline bool dl_bw_visited(int cpu, u64 gen)
-> +{
-> +	return false;
-> +}
->  #endif
->  
->  static inline
-> @@ -2511,33 +2527,38 @@ const struct sched_class dl_sched_class
->  	.update_curr		= update_curr_dl,
->  };
->  
-> +static u64 dl_generation;
-> +
->  int sched_dl_global_validate(void)
->  {
->  	u64 runtime = global_rt_runtime();
->  	u64 period = global_rt_period();
->  	u64 new_bw = to_ratio(period, runtime);
->  	struct dl_bw *dl_b;
-> -	int cpu, ret = 0;
-> +	int cpu, cpus, ret = 0;
->  	unsigned long flags;
-> +	u64 gen = ++dl_generation;
->  
->  	/*
->  	 * Here we want to check the bandwidth not being set to some
->  	 * value smaller than the currently allocated bandwidth in
->  	 * any of the root_domains.
-> -	 *
-> -	 * FIXME: Cycling on all the CPUs is overdoing, but simpler than
-> -	 * cycling on root_domains... Discussion on different/better
-> -	 * solutions is welcome!
+Thanks Mel and Michal. I'll simplify this patch then - and if it turns
+out to be an actual problem, we can change that one instance, adding a
+proper comment.
 
-So, this patch changes 2 things: it actually fixes the problem and it
-optimizes scanning of root domains. Even though the changes are limited,
-I'd be more comfortable if we split them in two (fix + optimization).
+Thanks!
 
-Would you be up for doing it?
-
->  	 */
->  	for_each_possible_cpu(cpu) {
->  		rcu_read_lock_sched();
-> +
-> +		if (dl_bw_visited(cpu, gen))
-> +			goto next;
-> +
->  		dl_b = dl_bw_of(cpu);
-> +		cpus = dl_bw_cpus(cpu);
->  
->  		raw_spin_lock_irqsave(&dl_b->lock, flags);
-> -		if (new_bw < dl_b->total_bw)
-> +		if (new_bw * cpus < dl_b->total_bw)
->  			ret = -EBUSY;
->  		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
->  
-> +next:
->  		rcu_read_unlock_sched();
->  
->  		if (ret)
-> @@ -2563,6 +2584,7 @@ static void init_dl_rq_bw_ratio(struct dl_rq *dl_rq)
->  void sched_dl_do_global(void)
->  {
->  	u64 new_bw = -1;
-> +	u64 gen = ++dl_generation;
->  	struct dl_bw *dl_b;
->  	int cpu;
->  	unsigned long flags;
-> @@ -2573,11 +2595,14 @@ void sched_dl_do_global(void)
->  	if (global_rt_runtime() != RUNTIME_INF)
->  		new_bw = to_ratio(global_rt_period(), global_rt_runtime());
->  
-> -	/*
-> -	 * FIXME: As above...
-> -	 */
->  	for_each_possible_cpu(cpu) {
->  		rcu_read_lock_sched();
-> +
-> +		if (dl_bw_visited(cpu, gen)) {
-> +			rcu_read_unlock_sched();
-> +			continue;
-> +		}
-> +
->  		dl_b = dl_bw_of(cpu);
->  
->  		raw_spin_lock_irqsave(&dl_b->lock, flags);
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 28709f6b0975..c23976bc38e9 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -258,10 +258,11 @@ struct rt_bandwidth {
->  void __dl_clear_params(struct task_struct *p);
->  
->  /*
-> - * To keep the bandwidth of -deadline tasks and groups under control
-> + * To keep the bandwidth of -deadline tasks under control
->   * we need some place where:
-> - *  - store the maximum -deadline bandwidth of the system (the group);
-> - *  - cache the fraction of that bandwidth that is currently allocated.
-> + *  - store the maximum -deadline bandwidth of each CPU;
-> + *  - cache the fraction of that bandwidth that is currently allocated
-> + *    in each root domain;
->   *
->   * This is all done in the data structure below. It is similar to the
->   * one used for RT-throttling (rt_bandwidth), with the main difference
-> @@ -269,17 +270,10 @@ void __dl_clear_params(struct task_struct *p);
->   * do not decrease any runtime while the group "executes", neither we
->   * need a timer to replenish it.
->   *
-> - * With respect to SMP, the bandwidth is given on a per-CPU basis,
-> + * With respect to SMP, the bandwidth is given on per root domain basis,
->   * meaning that:
-> - *  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
-> - *  - dl_total_bw array contains, in the i-eth element, the currently
-> - *    allocated bandwidth on the i-eth CPU.
-> - * Moreover, groups consume bandwidth on each CPU, while tasks only
-> - * consume bandwidth on the CPU they're running on.
-> - * Finally, dl_total_bw_cpu is used to cache the index of dl_total_bw
-> - * that will be shown the next time the proc or cgroup controls will
-> - * be red. It on its turn can be changed by writing on its own
-> - * control.
-> + *  - bw (< 100%) is the deadline bandwidth of each CPU;
-> + *  - total_bw is the currently allocated bandwidth on each root domain.
->   */
->  struct dl_bandwidth {
->  	raw_spinlock_t		dl_runtime_lock;
-> @@ -801,6 +795,8 @@ struct root_domain {
->  	struct dl_bw		dl_bw;
->  	struct cpudl		cpudl;
->  
-> +	u64			visit_gen;
-> +
-
-I think this deserves a comment explaining what it is and how it's used.
-
-Also, do we really need an u64? Maybe an smaller type would be OK as
-well and could fit in the 4 bytes hole that seems available after
-dlo_count, I'm thinking.
-
+-- 
 Thanks,
-Juri
+
+David / dhildenb
 
