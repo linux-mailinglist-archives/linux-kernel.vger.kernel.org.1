@@ -2,146 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70086283DA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E60283DAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgJERm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:42:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43640 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725973AbgJERm0 (ORCPT
+        id S1728473AbgJERoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728027AbgJERoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:42:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601919744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lTv8qVn50BVMe41mnHOhz5zFgfNAnMlsJzHtN4tUUYY=;
-        b=bcrPOG5WzxlRbADGHmq3n7/I3sPoquZde/Zzy49TBoknUVzSSwVcLbuodKJKGU4IcairOE
-        gRdMjICMonAVMPzeCQZcV09KiDueo64vaDvvFuMbC2WN+/y6JciB8q88q1yZK3IE7qzuDR
-        EyLdN1K0VHn8PWvbul42RZ1ng8QG8tU=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-9bxhHGEaPuOkDzEb8xMGlA-1; Mon, 05 Oct 2020 13:42:23 -0400
-X-MC-Unique: 9bxhHGEaPuOkDzEb8xMGlA-1
-Received: by mail-oi1-f200.google.com with SMTP id z25so2000517oih.23
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:42:23 -0700 (PDT)
+        Mon, 5 Oct 2020 13:44:13 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D223C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:44:12 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id a16so4688358vsp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T0SUN6EKstVpoqlENVYkDpfxgRN2mhcM+hd8aVgx82Y=;
+        b=Bjhy7mLEf3dMbcB301h2+hrEGKwW0Lztpw8VQTUMYjrf5E1N0OvXzBbiN7Nm22aCGw
+         9lKqHBSMuJczFFO2SHFwXrme+RSj2XbTPmbMh7WBl7D7F4LgcymOwFioF5/PDyoF94sI
+         03dR3zYUPifD8/ZTSvWCz2HfMihd2oVmvihvE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lTv8qVn50BVMe41mnHOhz5zFgfNAnMlsJzHtN4tUUYY=;
-        b=ukn8QdsLuSpkwyInDvsmqYQ49tQEAG8U8BGhcyX6TEZloQPZ4WRXWtyOXcBojELE1Y
-         Qp6gsdaSgFK73ZjrzvW2mm/BpWd+WpZZ5EDfVr88l1/StqKLBC1OGkhdEOT/eOUi77Pi
-         ypfp1MIef6y8+CMGT22oJaO3a3wKken5p34XzbwF/919pavMXBGmjIbYaYFGN9dXgp/j
-         CzQ/yUbo6btvDNrVpHNTB3n9Qj6Z2QSLkozvHs3oPUSerIVhKuSEeX3TA5RJEESNjfbX
-         8TU8hpr2m7Y8TCZ+YDA/ucD/S7MSWTxez5ODEUitaWq+sDssqhVLoHyLZFU6A3NW559R
-         GrKQ==
-X-Gm-Message-State: AOAM533g1IkSgz5dNIkCF2w52a5YoJlwgIVQfmW8seLVhmEH5EqpHstO
-        dVtJKtNZuXDv86UrIyWdaSwcNXc+uvs7DozEiXWnNIO/s0Lvz+vRMkdGdjXwIBkh3jwpAGsWCXZ
-        UNQT7YR01KAt2PlP9heET1nVRv1gdJ/fCzIW2JjvK
-X-Received: by 2002:a9d:a24:: with SMTP id 33mr255765otg.305.1601919741907;
-        Mon, 05 Oct 2020 10:42:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUwdJyVHIEtrpCyi9x3L1lyrhCd75vZ9+/aBnXjciOlpkIe+CX5Y4ESH+Vq6Rhy3CxhWne8HCSfmc8OJPjzQc=
-X-Received: by 2002:a9d:a24:: with SMTP id 33mr255732otg.305.1601919741596;
- Mon, 05 Oct 2020 10:42:21 -0700 (PDT)
+        bh=T0SUN6EKstVpoqlENVYkDpfxgRN2mhcM+hd8aVgx82Y=;
+        b=dLGOnWF9wv9leebtf6AE75M+eHOQk98GzWMAGCToTGIsxMd2cQtEprZlMHYhj52DQi
+         VKPUhfhoTQ2aIS7YnpP2WjMMltFAYIgF9WXtMvj6If6+dlmteTTBeVcVLY00heocca9S
+         AFMwP5DdzlvIYWhku6y4dFwNNwGYHDxQv686Ud5vIceaAI2YZJV4Ri1gJiq/aigdIXdr
+         Ivt89SroVX+AyAm11fIiuUNEaQbNmckB5qMAjiWgLB7PjfxwHUI3dyaES3wr2IRIWhXi
+         Gk2lngBeIdktHRS9fYlrvPa9jC0nOGmY/a+BB15LPKxHzfyy965bTLZSNCl0C6T8/oa5
+         w4Zw==
+X-Gm-Message-State: AOAM533d8Byh+EkimnS38kveZOPk7RWJnrLW8UTb8YJ4kBLiNf5gWMlS
+        /XIMQP/t2e/ps2LQxCY0DeMOopWHXzEm7g==
+X-Google-Smtp-Source: ABdhPJxnj6BK28W2dT29giOG8yId6N/F/zvIduQNhCRxZXl4H+L2nPUDjgnwDkzSbagYfFHsw7nxgg==
+X-Received: by 2002:a05:6102:201b:: with SMTP id p27mr997656vsr.0.1601919851532;
+        Mon, 05 Oct 2020 10:44:11 -0700 (PDT)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id h8sm94723vsj.34.2020.10.05.10.44.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 10:44:10 -0700 (PDT)
+Received: by mail-vs1-f41.google.com with SMTP id w25so4693071vsk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:44:10 -0700 (PDT)
+X-Received: by 2002:a67:f4c2:: with SMTP id s2mr992567vsn.4.1601919849846;
+ Mon, 05 Oct 2020 10:44:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200907134745.25732-1-chenzhou10@huawei.com> <e9b1b5db-a848-468e-6baf-2f7b4d658805@oracle.com>
- <20201005170937.GA14576@gaia>
-In-Reply-To: <20201005170937.GA14576@gaia>
-From:   Bhupesh Sharma <bhsharma@redhat.com>
-Date:   Mon, 5 Oct 2020 23:12:10 +0530
-Message-ID: <CACi5LpMWUmP1df8fB8psJY_cNGHF9MNn+TNK4B4edaRHvOXxGQ@mail.gmail.com>
-Subject: Re: [PATCH v12 0/9] support reserving crashkernel above 4G on arm64 kdump
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     John Donnelly <john.p.donnelly@oracle.com>,
-        Chen Zhou <chenzhou10@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        RuiRui Yang <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Prabhakar Kushwaha <prabhakar.pkin@gmail.com>,
-        Simon Horman <horms@verge.net.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, nsaenzjulienne@suse.de,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
+References: <20201005163016.13650-1-lukasz.luba@arm.com>
+In-Reply-To: <20201005163016.13650-1-lukasz.luba@arm.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 5 Oct 2020 10:43:58 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W70OPB=ufEfqAJEeZBNwr5yPOCmkM7R2uLKnEj6tZ1qA@mail.gmail.com>
+Message-ID: <CAD=FV=W70OPB=ufEfqAJEeZBNwr5yPOCmkM7R2uLKnEj6tZ1qA@mail.gmail.com>
+Subject: Re: [RESEND][PATCH v2 3/3] dt-bindings: thermal: update
+ sustainable-power with abstract scale
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        amitk@kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin, Chen,
+Hi,
 
-On Mon, Oct 5, 2020 at 10:39 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+On Mon, Oct 5, 2020 at 9:30 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
 >
-> On Sat, Sep 12, 2020 at 06:44:29AM -0500, John Donnelly wrote:
-> > On 9/7/20 8:47 AM, Chen Zhou wrote:
-> > > Chen Zhou (9):
-> > >    x86: kdump: move CRASH_ALIGN to 2M
-> > >    x86: kdump: make the lower bound of crash kernel reservation
-> > >      consistent
-> > >    x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
-> > >      reserve_crashkernel[_low]()
-> > >    x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
-> > >    arm64: kdump: introduce some macroes for crash kernel reservation
-> > >    arm64: kdump: reimplement crashkernel=X
-> > >    kdump: add threshold for the required memory
-> > >    arm64: kdump: add memory for devices by DT property
-> > >      linux,usable-memory-range
-> > >    kdump: update Documentation about crashkernel
-> [...]
-> > I did a brief unit-test on 5.9-rc4.
-> >
-> > Please add:
-> >
-> > Tested-by:  John Donnelly <John.p.donnelly@oracle.com>
+> Update the documentation for the binding 'sustainable-power' and allow
+> to provide values in an abstract scale. It is required when the cooling
+> devices use an abstract scale for their power values.
 >
-> Thanks for testing.
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
 >
-> > This activity is over a year old. It needs accepted.
+> Hi Rob,
 >
-> It's getting there, hopefully in 5.11. There are some minor tweaks to
-> address.
+> This is a fixed patch for DT binding, which now passes the
+> make dt_binding_check (I have changed tabs into spaces).
+> The former patch error that I have received is here [1].
+>
+> Regards,
+> Lukasz
+>
+> [1] https://lore.kernel.org/linux-pm/20201002114426.31277-1-lukasz.luba@arm.com/T/#md4b02a3ada592df67446566180643ba56788c159
 
-I think my earlier email with the test results on this series bounced
-off the mailing list server (for some weird reason), but I still see
-several issues with this patchset. I will add specific issues in the
-review comments for each patch again, but overall, with a crashkernel
-size of say 786M, I see the following issue:
+...and because I suspect you might not look at any patches that fail
+your auto-checker, I'd appreciate it if you could comment on the
+discussion on the previous version of the patch.  Thanks!  :-)
 
-# cat /proc/cmdline
-BOOT_IMAGE=(hd7,gpt2)/vmlinuz-5.9.0-rc7+ root=<..snip..>
-rd.lvm.lv=<..snip..> crashkernel=786M
-
-I see two regions of size 786M and 256M reserved in low and high
-regions respectively, So we reserve a total of 1042M of memory, which
-is an incorrect behaviour:
-
-# dmesg | grep -i crash
-[    0.000000] Reserving 256MB of low memory at 2816MB for crashkernel
-(System low RAM: 768MB)
-[    0.000000] Reserving 786MB of memory at 654158MB for crashkernel
-(System RAM: 130816MB)
-[    0.000000] Kernel command line:
-BOOT_IMAGE=(hd2,gpt2)/vmlinuz-5.9.0-rc7+
-root=/dev/mapper/rhel_ampere--hr330a--03-root ro
-rd.lvm.lv=rhel_ampere-hr330a-03/root
-rd.lvm.lv=rhel_ampere-hr330a-03/swap crashkernel=786M cma=1024M
-
-# cat /proc/iomem | grep -i crash
-  b0000000-bfffffff : Crash kernel (low)
-  bfcbe00000-bffcffffff : Crash kernel
-
-IMO, we should test this feature more before including this in 5.11
-
-Thanks,
-Bhupesh
-
+-Doug
