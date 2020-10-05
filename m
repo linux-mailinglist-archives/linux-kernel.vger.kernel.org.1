@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F83B2831C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE7D2831BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgJEITe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:19:34 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:44057 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgJEITe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:19:34 -0400
-Received: by mail-lj1-f194.google.com with SMTP id a5so1040817ljj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:19:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x9WlGX4960t6tCleUdRFmMIolYpt1rsEaqaNiXS3akc=;
-        b=lzRpDXZ7ZTcwKPdBA0mwGyKGWkZvTtUWBy+X1HtmkiOv5JkAt1JhSqK2qrR5cTqp0e
-         MnvbsmrTXin9OIrdPy0K9qCdpdDDY0MPa/7P+IMPwH/QmLFGPyXriDBDVClWImAQd6Zl
-         vmLNg1oALX5fIhFdQDehkAejyd8kWqLztwfQ7Ipa3Do4O2FF8+Pa6EVsbPCBPZYE1BR2
-         k7FE23xan/2uHjaQbgD7PVryOEMUYEIHwwDph1v/qQeE+tmNT7M3esPVKvW3PgD7U0Un
-         xr8fCVHpsiHazYUh7m6ePExWSoaUH+8cnGi/ECLPufunWbC23+BKd6xL41upZCxDz+In
-         fTvA==
-X-Gm-Message-State: AOAM531Uw0/JJ593Hlio+q8940JbAcm/JZcDRfJ2/lF26eje4Oq2vtoJ
-        McejIy/1Dib9CUOYJIzfUFE=
-X-Google-Smtp-Source: ABdhPJzF1f0W6IBdqaAKx1QGNwgjoU81gEHwHMS7QXapRi5+CnryetiK0NDEeT/vi1y19I1K+t5E2w==
-X-Received: by 2002:a05:651c:1181:: with SMTP id w1mr4467435ljo.363.1601885971139;
-        Mon, 05 Oct 2020 01:19:31 -0700 (PDT)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id m28sm251594lfq.228.2020.10.05.01.19.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 01:19:30 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:19:24 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-Subject: [PATCH 2/2] regulator: bd9576: Fix print
-Message-ID: <c4f55add237455555df0597c72052022f7a669f6.1601885841.git.matti.vaittinen@fi.rohmeurope.com>
-References: <3d92de2085f0c074929861a2f791bf4070920e83.1601885841.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1725983AbgJEIS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:18:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgJEIS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:18:56 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E49382075A;
+        Mon,  5 Oct 2020 08:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601885935;
+        bh=a3hZG38nYuH7ILLCqeYIKDVFUN9qdL0tXSCBnJt0vzA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pGsi91aD4lBD6yc0gsiR25lvFINWAXfZpxfZCc5MjxthOts5lTbemiXU1Hp9+Ubow
+         uqQAJ15FB4S6M0w2JRwpjK9QMRHsAXI88AvRmCQYBmu5CAJdYfMAkpd41p7cBVYICA
+         /z/Iy6BZzchFaIQnVREfWDwuvwTAM1RWJXIO2XTs=
+Date:   Mon, 5 Oct 2020 10:19:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tammo Block <tammo.block@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3 0/6] vt: Add SRG mouse reporting features
+Message-ID: <20201005081939.GA407265@kroah.com>
+References: <cover.1594032517.git.tammo.block@gmail.com>
+ <20201002123002.GA3346488@kroah.com>
+ <CAEHKo2nK+S42FmjN3NDh8g8+yNvcpeBAbY8sq+wUxbRmZcbCGA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3d92de2085f0c074929861a2f791bf4070920e83.1601885841.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CAEHKo2nK+S42FmjN3NDh8g8+yNvcpeBAbY8sq+wUxbRmZcbCGA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The print in probe is done using pr_info. Correct print call would be
-dev_dbg because:
- - Severity should really be dbg
- - The dev pointer is given as first argument
+On Mon, Oct 05, 2020 at 10:06:38AM +0200, Tammo Block wrote:
+> Hi Greg,
+> 
+> Am Fr., 2. Okt. 2020 um 14:30 Uhr schrieb Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org>:
+> >
+> > On Mon, Jul 06, 2020 at 12:57:22PM +0200, Tammo Block wrote:
+> > > Hi everybody,
+> > >
+> > > this patchset adds xterm like mouse reporting features to the console.
+> > >
+> > > The linux virtual console has support for mouse reporting since 1994 or so,
+> > > but the kernel only supports the original X10/X11 style standard protocols.
+> > > To support more protocols these patches expand the kernel structures in a
+> > > up- and downwards compatible way, see the last patch for detailed
+> > > documentation and pointers to even more detailed docs.
+> > >
+> > > The main goal is to become compatible with xterm, as most TUI software today
+> > > is tested in xterm or another compatible terminal.
+> > >
+> > > Support by the mouse daemons (consolation, gpm) will be needed too.
+> >
+> > What happened to this feature.  Was there a new set of patches or was
+> > this the last one?
+> 
+> This was the last set, there were no further comments in any direction.
+> 
+> > mouse support for the console feels odd these dyas, who would use this?
+> >
+> Well .... at least i am using it .. ;-)
+> 
+> This is in fact not a really new feature, but an improvement of an old feature.
+> The patch just tries to be compatible with xterm and other modern terminals
+> to be able to run stuff like midnight commander or similar programs.
+> 
+> I am personally using console tty's for long running or controlling stuff
+> and being able to use the mouse (especially for cut n' paste) seems useful.
+> At least for me. But my personal habits might be odd ...
+> 
+> Feel free to ignore the patches if you don't consider this feature useful.
+> If you do consider it useful I can rebase against whatever you like.
 
-Fixes: b014e9fae7e7de4329a7092ade4256982c5ce974
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
+Rebasing against 5.10-rc1 comes out in a few weeks, and resending it
+then seems like a good idea.
 
-Sorry folks! This should have never slip in...
+thanks,
 
- drivers/regulator/bd9576-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
-index 4137fa9a73bb..a8b5832a5a1b 100644
---- a/drivers/regulator/bd9576-regulator.c
-+++ b/drivers/regulator/bd9576-regulator.c
-@@ -275,7 +275,7 @@ static int bd957x_probe(struct platform_device *pdev)
- 		dev_dbg(&pdev->dev, "Found BD9576MUF\n");
- 		break;
- 	case ROHM_CHIP_TYPE_BD9573:
--		pr_info(&pdev->dev, "Found BD9573MUF\n");
-+		dev_dbg(&pdev->dev, "Found BD9573MUF\n");
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "Unsupported chip type\n");
--- 
-2.21.0
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+greg k-h
