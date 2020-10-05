@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BFB283D15
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C3A283D12
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgJERNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:13:09 -0400
-Received: from relay.sw.ru ([185.231.240.75]:53084 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725815AbgJERNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:13:09 -0400
-Received: from [192.168.15.249] (helo=alex-laptop)
-        by relay3.sw.ru with smtp (Exim 4.94)
-        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
-        id 1kPU22-0039XN-Av; Mon, 05 Oct 2020 20:12:14 +0300
-Date:   Mon, 5 Oct 2020 20:12:22 +0300
-From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     miklos@szeredi.hu, Amir Goldstein <amir73il@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] overlayfs: add OVL_IOC_GETINFOFD ioctl that opens
- ovlinfofd
-Message-Id: <20201005201222.d1f42917d060a5f7138b6446@virtuozzo.com>
-In-Reply-To: <83d78791-b650-c8d5-e18a-327d065d53d7@infradead.org>
-References: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
-        <20201005170227.11340-1-alexander.mikhalitsyn@virtuozzo.com>
-        <83d78791-b650-c8d5-e18a-327d065d53d7@infradead.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727904AbgJERM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:12:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725815AbgJERM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:12:58 -0400
+Received: from gaia (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A099B207EA;
+        Mon,  5 Oct 2020 17:12:52 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 18:12:49 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     will@kernel.org, james.morse@arm.com, tglx@linutronix.de,
+        mingo@redhat.com, dyoung@redhat.com, bhe@redhat.com,
+        corbet@lwn.net, John.P.donnelly@oracle.com,
+        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
+        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com
+Subject: Re: [PATCH v12 7/9] kdump: add threshold for the required memory
+Message-ID: <20201005171248.GB14576@gaia>
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
+ <20200907134745.25732-8-chenzhou10@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907134745.25732-8-chenzhou10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 10:08:42 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On Mon, Sep 07, 2020 at 09:47:43PM +0800, Chen Zhou wrote:
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 3f735cb37ace..d11d597a470d 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -378,6 +378,15 @@ int __init reserve_crashkernel_low(void)
+>  }
+>  
+>  #if defined(CONFIG_X86) || defined(CONFIG_ARM64)
+> +
+> +/*
+> + * Add a threshold for required memory size of crashkernel. If required memory
+> + * size is greater than threshold, just go for high allocation directly. The
+> + * value of threshold is set as half of the total low memory.
+> + */
+> +#define REQUIRED_MEMORY_THRESHOLD	(memblock_mem_size(CRASH_ADDR_LOW_MAX >> \
+> +			PAGE_SHIFT) >> 1)
+> +
+>  #ifdef CONFIG_KEXEC_CORE
+>  /*
+>   * reserve_crashkernel() - reserves memory for crash kernel
+> @@ -422,7 +431,7 @@ void __init reserve_crashkernel(void)
+>  		 * So try low memory first and fall back to high memory
+>  		 * unless "crashkernel=size[KMG],high" is specified.
+>  		 */
+> -		if (!high)
+> +		if (!high && crash_size <= REQUIRED_MEMORY_THRESHOLD)
+>  			crash_base = memblock_find_in_range(CRASH_ALIGN,
+>  						CRASH_ADDR_LOW_MAX,
+>  						crash_size, CRASH_ALIGN);
 
-> On 10/5/20 10:02 AM, Alexander Mikhalitsyn wrote:
-> >  #define	OVL_IOC_GETLWRFHNDLSNUM			_IO('o', 1)
-> >  // DISCUSS: what if MAX_HANDLE_SZ will change?
-> >  #define	OVL_IOC_GETLWRFHNDL			_IOR('o', 2, struct ovl_mnt_opt_fh)
-> >  #define	OVL_IOC_GETUPPRFHNDL			_IOR('o', 3, struct ovl_mnt_opt_fh)
-> >  #define	OVL_IOC_GETWRKFHNDL			_IOR('o', 4, struct ovl_mnt_opt_fh)
-> > +#define	OVL_IOC_GETINFOFD			_IO('o', 5)
-> 
-> Hi,
-> 
-> Quoting (repeating) from
-> https://lore.kernel.org/lkml/9cd0e9d1-f124-3f2d-86e6-e6e96a1ccb1e@infradead.org/:
-> 
-> This needs to have Documentation/userspace-api/ioctl/ioctl-number.rst
-> updated also.
-> 
-> ...
-> 
-> Are you waiting until it's past RFC stage?
-> 
-> thanks.
-> -- 
-> ~Randy
-> 
+Since any change now is affecting the x86 semantics slightly, I'd
+suggest you drop this patch. We can add it later if needed, once the
+core changes are in.
 
-Hi,
+Thinking about this, if one requires a crashkernel reservation that
+allocates all of the ZONE_DMA, it would probably be noticed and explicit
+,high/,low options can be used.
 
-thank you! I will prepare this change too when we
-decide which ioctls to add. ;)
+Note that we are also trying to make ZONE_DMA full 32-bit on non-RPi4
+hardware.
 
-Regards,
-Alex.
+-- 
+Catalin
