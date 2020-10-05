@@ -2,272 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2302831CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52D12831D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgJEIVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:21:08 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:4668 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgJEIVI (ORCPT
+        id S1726018AbgJEIXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgJEIXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:21:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601886067; x=1633422067;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=XMuN0bNMo3ru9pfjhL9Lk/8bn2f2+41c5m3S+Lnm8Lk=;
-  b=LnjNzZzbd0LQuIXsQkWWv9pWCoy4FH4gZ1kaZMDz1ng61qmv2SBGUq4y
-   OFsrlBheXHcna7woLXq1vR0RFMy9o/bi2QlHlPLLvPpGzDrHqpV7Trv9D
-   Mt50cKvSzl2TiJHAheqPPIQq7Lv+rYrlgTkBvlpI2U22umDEnHFaVFGXS
-   Xb1r8l7ivNTqhMT1th+zryRRVi6Q3SjyR5CjsMNIu0fyVkqdIISNKeSB/
-   RYFNISNpaOE614ZmMPA18C6zscsqePlK3ksWEjb14R7Lq6dq4xaTnpR7a
-   M6QrqzSSn1ZLuvFW0H9PA5OI1PRZ2184TdnLRWg/3b+dQlkNZGn1W5/mk
-   g==;
-IronPort-SDR: pyKFPTQM1P4WcuEoDRkyK3x4CeHDogceLVDDPsF8i0nEtMl3dOqfpTsF4isW5sYYeLK8zw3yNS
- /0BSfNmzMavXiNFGD2YfcJw0SaeXEZ9KPQdaL06l5MWKwWZ2nS6m7jiOnL+7IdQ3CjlsqJqJCW
- RKYLz8YdrJSOwvf+iQ20NvpQrRBLqrO+BAPeiFhln3VVJko9pjZHXw5FqiHN8C25E1JZBe8EWU
- hUeIue3yf4J4UfOt9huE3RdevCa/ypKXG6xozks9Y9A0QFIzrbJ1Z0Yre1QyABZQi0D3Vhvafd
- DMk=
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="28719323"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Oct 2020 01:21:06 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 5 Oct 2020 01:21:04 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Mon, 5 Oct 2020 01:21:03 -0700
-References: <20200903133528.8595-1-lars.povlsen@microchip.com> <20200903133528.8595-2-lars.povlsen@microchip.com> <CACRpkdZUQG1T_Bx5G275tSjDez0skDKGSc370B57FZ35NA6iEA@mail.gmail.com> <87r1r5wky3.fsf@soft-dev15.microsemi.net> <CACRpkdYxK6Uf1_3Me7hbJZ+rPAUXCj4k7D2e5je7iBNZosEtQw@mail.gmail.com>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: pinctrl: Add bindings for pinctrl-mchp-sgpio driver
-In-Reply-To: <CACRpkdYxK6Uf1_3Me7hbJZ+rPAUXCj4k7D2e5je7iBNZosEtQw@mail.gmail.com>
-Date:   Mon, 5 Oct 2020 10:21:02 +0200
-Message-ID: <87lfglxevl.fsf@soft-dev15.microsemi.net>
+        Mon, 5 Oct 2020 04:23:17 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F423C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 01:23:17 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id r78so1556001vke.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PAtojNlzxsPSd/oxSbWU6AgTlxaiRO+YzHrraKa81XU=;
+        b=gyoWLoyN2VqKSQUGjaeXiikTJWtx72t3wYzZbXZx182qcx3MgphEc/i7bNxdWUt4JR
+         p6iHceJFvUI4O16eyMMM3reWwuwyMYAufz523LgXdBtppTniJ495/oCKjHGComZeh8LW
+         +uJT3KfVpno2D13HeTPcBG+PQQfVJ3q4YdJBwRQNc+FW706nYXyWMK396mRP1z1mgCJ5
+         /oe6sjNivB8jf+syiAa2H1rtnkE0D1VmKX4rJwzgZuct8DiXn96wHWXUoMAgP7nuz/cd
+         HHmrmQHXkDKXZEgkhdFCqJ4ZlaMdpbVlQINusmhpAkU+BQBH5hrjus6bU9QzdnJVA2Bk
+         ZyAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PAtojNlzxsPSd/oxSbWU6AgTlxaiRO+YzHrraKa81XU=;
+        b=Eg/+zC0XV0vD28oi2tqu77GayUJyBt1e21wCl3B9vJHmCnf6wp+64wWh2FWkMNZ1uT
+         /FHUE3CcHI9GL6avFpq8G3UgadgMn+XmBstrA/93yrXML6gZjCHs2rHEC/ZNAkG1U7rl
+         qvh+Mi02ds44L+jq5qowFSfnewqZjQK10WJTh+1ZPfXFmACkht5H3QZIUergNz4XByvo
+         /ol/Jy/Md+2NdLDCnuU3A1pKLsHOk+s9Ltb5XKNe1C4j3I8aRlg88sNSqztfeD87FePz
+         dvk8ARLLtcAOF5xPtaX/nHiUmlYKa16fipygkP+5ALLV4RTWWoQE2N/aGYazHh59l5dt
+         IN7g==
+X-Gm-Message-State: AOAM532ALcRXaPTL+cgcD/JyUPYJ40tWX7ietXWLC0ardDCjUxrRwZW0
+        zSyXh/gzA+SnhgjuzqjjlbKYg9DFrA/h002UiZg0ZQ==
+X-Google-Smtp-Source: ABdhPJwGZ6eccEIM+OsJP2XgVXqZ+kYGEJi5PQ/SV4uGTlX8apsmqUeuDGFG8ICx3DEANTyofZmeyrlumVW4clNVEGE=
+X-Received: by 2002:a1f:1f46:: with SMTP id f67mr2216453vkf.6.1601886196064;
+ Mon, 05 Oct 2020 01:23:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201002164915.938217-1-jbrunet@baylibre.com>
+In-Reply-To: <20201002164915.938217-1-jbrunet@baylibre.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 5 Oct 2020 10:22:40 +0200
+Message-ID: <CAPDyKFo6T_P+TQQZSzFgHwLeE08f146KxKBpAutv209MXq0mjA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Brad Harper <bjharper@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++ Tglx
 
-Linus Walleij writes:
+On Fri, 2 Oct 2020 at 18:49, Jerome Brunet <jbrunet@baylibre.com> wrote:
+>
+> IRQF_ONESHOT was added to this driver to make sure the irq was not enabled
+> again until the thread part of the irq had finished doing its job.
+>
+> Doing so upsets RT because, under RT, the hardirq part of the irq handler
+> is not migrated to a thread if the irq is claimed with IRQF_ONESHOT.
+> In this case, it has been reported to eventually trigger a deadlock with
+> the led subsystem.
+>
+> Preventing RT from doing this migration was certainly not the intent, the
+> description of IRQF_ONESHOT does not really reflect this constraint:
+>
+>  > IRQF_ONESHOT - Interrupt is not reenabled after the hardirq handler finished.
+>  >              Used by threaded interrupts which need to keep the
+>  >              irq line disabled until the threaded handler has been run.
+>
+> This is exactly what this driver was trying to acheive so I'm still a bit
+> confused whether this is a driver or an RT issue.
+>
+> Anyway, this can be solved driver side by manually disabling the IRQs
+> instead of the relying on the IRQF_ONESHOT. IRQF_ONESHOT may then be removed
+> while still making sure the irq won't trigger until the threaded part of
+> the handler is done.
 
-> Hi Lars,
->
-> thanks for working on this!
->
-> On Sun, Sep 13, 2020 at 9:11 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
->> > What I do not understand is why this GPIO controller is placed in the
->> > bindings of the pin controllers? Do you plan to add pin control
->> > properties to the bindings in the future?
->>
->> I have made provisions for some of the generic pinconf parameters, and
->> since the controller also has support for some alternate modes like
->> (syncronized) blink at various rates, I thought I better add it as
->> pinctrl straight away.
->
-> OK fair enough let's keep the bindings here.
->
-> BTW the latter function sounds like some kind of PWM?
+Thomas, may I have your opinion on this one.
 
-Yes, it has PWM functionality as well.
+I have no problem to apply $subject patch, but as Jerome also
+highlights above - this kind of makes me wonder if this is an RT
+issue, that perhaps deserves to be solved in a generic way.
 
->
->> >> +  gpio-controller: true
->> >> +
->> >> +  '#gpio-cells':
->> >> +    description: GPIO consumers must specify four arguments, first the
->> >> +      port number, then the bit number, then a input/output flag and
->> >> +      finally the GPIO flags (from include/dt-bindings/gpio/gpio.h).
->> >> +      The dt-bindings/gpio/mchp-sgpio.h file define manifest constants
->> >> +      PIN_INPUT and PIN_OUTPUT.
->> >> +    const: 4
->> >
->> > I do not follow this new third input/output flag at all.
->>
->> Its actually a sort of bank address, since the individual "pins" are
->> unidirectional.
->
-> I'm a bit confused here...
-> The standard advice for any "banked" GPIOs is to represent
-> each "bank" as a separate node (with a corresponding gpio_chip
-> in the Linux kernel). Then you can just use the standard
-> bindings to pick a line from one of these nodes.
+What do you think?
 
-Yes, that seems to be a good model.
+Kind regards
+Uffe
 
 >
->> The PIN_INPUT/PIN_OUTPUT is defined in similar fashion in other pinctrl
->> binding header files... I can drop the define and use, but as it will be
->> used to address individual pins, I think it adds to readability.
+> Fixes: eb4d81127746 ("mmc: meson-gx: correct irq flag")
+> Reported-by: Brad Harper <bjharper@gmail.com>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>  drivers/mmc/host/meson-gx-mmc.c | 47 ++++++++++++++++++++-------------
+>  1 file changed, 29 insertions(+), 18 deletions(-)
 >
-> Hmmm. What makes these names expecially confusing is the
-> Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml defines:
-> input-enable
-> input-disable
-> output-enable
-> output-high
-> output-low
+> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+> index 08a3b1c05acb..effc356db904 100644
+> --- a/drivers/mmc/host/meson-gx-mmc.c
+> +++ b/drivers/mmc/host/meson-gx-mmc.c
+> @@ -101,8 +101,7 @@
+>  #define   IRQ_RESP_STATUS BIT(14)
+>  #define   IRQ_SDIO BIT(15)
+>  #define   IRQ_EN_MASK \
+> -       (IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN | IRQ_RESP_STATUS |\
+> -        IRQ_SDIO)
+> +       (IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN)
 >
-> In the Linux kernel further there is:
-> include/linux/pinctrl/pinconf-generic.h that defines:
-> PIN_CONFIG_INPUT_ENABLE
-> PIN_CONFIG_OUTPUT_ENABLE
-> PIN_CONFIG_OUTPUT
+>  #define SD_EMMC_CMD_CFG 0x50
+>  #define SD_EMMC_CMD_ARG 0x54
+> @@ -170,6 +169,7 @@ struct meson_host {
+>         dma_addr_t descs_dma_addr;
 >
-> Since you are using the pin control framework this gets really
-> hard to hash out.
+>         int irq;
+> +       u32 irq_en;
 >
-
-Yes, as the pins are fixed-function, the "input-enable", "input-disable"
-and "output-enable" are not really useful.
-
-> I don't really understand why it is needed.
+>         bool vqmmc_enabled;
+>  };
+> @@ -842,22 +842,24 @@ static irqreturn_t meson_mmc_irq(int irq, void *dev_id)
+>         struct meson_host *host = dev_id;
+>         struct mmc_command *cmd;
+>         struct mmc_data *data;
+> -       u32 irq_en, status, raw_status;
+> +       u32  status, raw_status;
+>         irqreturn_t ret = IRQ_NONE;
 >
->> Like this (excerpts from a DT with a switchdev driver using SFP's and
->> LED's on sgpio):
->>
->> /{
->>         leds {
->>                 compatible = "gpio-leds";
->>                 led@0 {
->>                         label = "eth60:yellow";
->>                         gpios = <&sgpio1 28 0 PIN_OUTPUT GPIO_ACTIVE_LOW>;
->>                         default-state = "off";
->>                 };
->>                 ...
->>         };
->> };
+> -       irq_en = readl(host->regs + SD_EMMC_IRQ_EN);
+> +       /* Disable irqs */
+> +       writel(0, host->regs + SD_EMMC_IRQ_EN);
+> +
+>         raw_status = readl(host->regs + SD_EMMC_STATUS);
+> -       status = raw_status & irq_en;
+> +       status = raw_status & host->irq_en;
 >
-> If what you intend to achieve is to make the GPIO come up in output mode,
-> you can either just have the driver do that as needed by the consumer.
-> If you absolutely have to do it in the device tree, then implement
-> pin control (pin config) and have it something like this:
+>         if (!status) {
+>                 dev_dbg(host->dev,
+>                         "Unexpected IRQ! irq_en 0x%08x - status 0x%08x\n",
+> -                        irq_en, raw_status);
+> -               return IRQ_NONE;
+> +                        host->irq_en, raw_status);
+> +               goto none;
+>         }
 >
-> leds {
->         compatible = "gpio-leds";
->         pinctrl-names = "default";
->         pinctrl-0 = <&my_led_pinctrl>;
->         led@0 {
->                 label = "eth60:yellow";
->                 gpios = <&sgpio1 28 GPIO_ACTIVE_LOW>;
->                 default-state = "off";
->         };
->         ...
+>         if (WARN_ON(!host) || WARN_ON(!host->cmd))
+> -               return IRQ_NONE;
+> +               goto none;
 >
->         my_led_pinctrl: pinctrl-led {
->                 pins = "gpio95"; // Just an example way of referring to the pin
->                 bias-disable;
->                 output-enable;
->         };
-> };
-
-No, the PIN_OUTPUT is purely for adressing. But as you suggested, I'll
-split the into separate nodes. That will eliminate the "PIN_OUTPUT" and
-the bindings header.
-
+>         /* ack all raised interrupts */
+>         writel(status, host->regs + SD_EMMC_STATUS);
+> @@ -908,6 +910,11 @@ static irqreturn_t meson_mmc_irq(int irq, void *dev_id)
+>         if (ret == IRQ_HANDLED)
+>                 meson_mmc_request_done(host->mmc, cmd->mrq);
 >
->> >> +  microchip,sgpio-port-ranges:
->> >> +    description: This is a sequence of tuples, defining intervals of
->> >> +      enabled ports in the serial input stream. The enabled ports must
->> >> +      match the hardware configuration in order for signals to be
->> >> +      properly written/read to/from the controller holding
->> >> +      registers. Being tuples, then number of arguments must be
->> >> +      even. The tuples mast be ordered (low, high) and are
->> >> +      inclusive. Arguments must be between 0 and 31.
->> >> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> >> +    minItems: 2
->> >> +    maxItems: 64
->> >
->> > And you are *absolutely sure* that you can't just figure this out
->> > from the compatible string? Or add a few compatible strings for
->> > the existing variants?
->>
->> Yes, this really needs to be configured for each board individually -
->> and cant be probed. It defines how the bitstream to/from the shift
->> registers is constructed/demuxed.
+> +none:
+> +       /* Enable the irq again if the thread will not run */
+> +       if (ret != IRQ_WAKE_THREAD)
+> +               writel(host->irq_en, host->regs + SD_EMMC_IRQ_EN);
+> +
+>         return ret;
+>  }
 >
-> And you have considered the option of simply letting the driver
-> check which board we are then? The property at the very
-> top of the device tree.
+> @@ -934,15 +941,17 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
+>         struct mmc_command *next_cmd, *cmd = host->cmd;
+>         struct mmc_data *data;
+>         unsigned int xfer_bytes;
+> +       int ret = IRQ_HANDLED;
 >
-> if (of_machine_is_compatible("my_board")) {
->     ....
-> } else if (of_machine_is_compatible("my_other_board")) {
->     ....
-> }
-
-No, board-specific code is undesireable, as our customers should be able
-to design own boards without driver changes.
-
+> -       if (WARN_ON(!cmd))
+> -               return IRQ_NONE;
+> +       if (WARN_ON(!cmd)) {
+> +               ret = IRQ_NONE;
+> +               goto out;
+> +       }
 >
-> So that you simply use the board compatible string to determine
-> this?
+>         if (cmd->error) {
+>                 meson_mmc_wait_desc_stop(host);
+>                 meson_mmc_request_done(host->mmc, cmd->mrq);
+> -
+> -               return IRQ_HANDLED;
+> +               goto out;
+>         }
 >
->> >> +/* mchp-sgpio specific pin type defines */
->> >> +#undef PIN_OUTPUT
->> >> +#undef PIN_INPUT
->> >> +#define PIN_OUTPUT     0
->> >> +#define PIN_INPUT      1
->> >
->> > I'm not a fan of this. It seems like something that should be set in
->> > response to the gpiochip callbacks .direction_input and
->> > .direction_output callbacks.
->> >
->>
->> As I tried to explain above, its a part of the pin address - aka bank
->> selector - whether your are accessing the input or the output side. And
->> since the directions have totally different - and concurrent - use, they
->> need to be individually addressed, not "configured".
->>
->> In the example presented, sgpio2-p28b0 IN is loss-of-signal, and the
->> OUT is the sfp tx-disable control.
+>         data = cmd->data;
+> @@ -959,7 +968,10 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
+>         else
+>                 meson_mmc_request_done(host->mmc, cmd->mrq);
 >
-> I suspect the proper way to do it is to create one node for
-> the input side and one node for the output side and also create
-> two different gpio chips in the kernel.
+> -       return IRQ_HANDLED;
+> +out:
+> +       /* Re-enable the irqs */
+> +       writel(host->irq_en, host->regs + SD_EMMC_IRQ_EN);
+> +       return ret;
+>  }
 >
-> my-device {
->        compatible = "my-device";
->        gpioin: input-gpio {
->            ....
->        };
->        gpioout: output-gpio {
->            ....
->        };
-> };
+>  /*
+> @@ -1133,13 +1145,12 @@ static int meson_mmc_probe(struct platform_device *pdev)
 >
-> Note: I didn't think over the naming in this example.
+>         /* clear, ack and enable interrupts */
+>         writel(0, host->regs + SD_EMMC_IRQ_EN);
+> -       writel(IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN,
+> -              host->regs + SD_EMMC_STATUS);
+> -       writel(IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN,
+> -              host->regs + SD_EMMC_IRQ_EN);
+> +       host->irq_en = IRQ_EN_MASK;
+> +       writel(host->irq_en, host->regs + SD_EMMC_STATUS);
+> +       writel(host->irq_en, host->regs + SD_EMMC_IRQ_EN);
 >
-> You will need code in your driver to parse the subnodes and
-> populate two gpio_chips.
-
-Yes, I will modify the driver to use separate nodes for each direction.
-
-Thank you for your comments, it is highly appreciated.
-
----Lars
-
+>         ret = request_threaded_irq(host->irq, meson_mmc_irq,
+> -                                  meson_mmc_irq_thread, IRQF_ONESHOT,
+> +                                  meson_mmc_irq_thread, 0,
+>                                    dev_name(&pdev->dev), host);
+>         if (ret)
+>                 goto err_init_clk;
+> --
+> 2.25.4
 >
-> Yours,
-> Linus Walleij
-
--- 
-Lars Povlsen,
-Microchip
