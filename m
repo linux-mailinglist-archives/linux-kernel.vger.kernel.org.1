@@ -2,444 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B236F284251
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6A2284253
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgJEV6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 17:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726714AbgJEV6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:58:20 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E37C42068E;
-        Mon,  5 Oct 2020 21:58:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601935099;
-        bh=vSfCc3VGzgAkGYGH4VoWVDFDyZnqi7f7RPcG6Siacfk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=x1otGtNCSn1jZhhBtotXZwn666+5wf5LTpsyYNmxaPFx29P0ir562jUirJ2wMKamW
-         o2orrHxD+0fUgb0qwNsi/RDEzfJy1kykEueOXin4dek2/aO+K1b3/TwgQSs19opGdd
-         SHh/aR/EtLKlQH7vz+TOXGzf1+2JVK+YHCJedMJU=
-Date:   Mon, 5 Oct 2020 16:58:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pratyush Anand <pratyush.anand@gmail.com>
-Subject: Re: [PATCH 1/2] PCI: dwc: armada-8k driver needs OF support
-Message-ID: <20201005215817.GA3063223@bjorn-Precision-5520>
+        id S1726969AbgJEV7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgJEV7W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 17:59:22 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA07C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 14:59:22 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id n6so4402230ioc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 14:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LsnSp/dKPJAZzQDStydfHkWvldA7av+IiYeRmlTt4/8=;
+        b=mz35yaD2r8hUgO+GSF0qAc5vVEH3SeonsFMI6KdZcoNNym7Pd6MsbUxcZddO1PUpwj
+         FuSvqYFGvVTvOxAIBDiGdxHbcGf5apD+7AUJNzeh/DAQUGFCAn95imvjTx/aoQkuzizu
+         GiHSQTfvzp1v+81QiEdV2g1IPvpclyBIRUaXJfuObYRAVWgnJcB1B+ho/ky6OW7bo+Xo
+         w221HwZ1DrqnO5qC3CP+PilfLZjpCP6LxySy25/cR2hp5r6Z8PbchAvmbKoqQ3QOWj14
+         Y2IumtFdbYlxhwdmxL1zwsdbsOz7RrFs3Y4GiADconT3Wz+PSWJPXkvcRv355nUo1QB+
+         WFMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LsnSp/dKPJAZzQDStydfHkWvldA7av+IiYeRmlTt4/8=;
+        b=huMAZThSfPZmWYIPks8lDLut37m2ZtL3GYrMhBGti1aKNxZ8vPGyKSGpA71VEwoeY+
+         0DnErx4HmHuo0eU69tfUYvk8yNxfAArPwr+mQl41+5P9aaM+ClocSu01DNPzC2VQx/YM
+         SQZ9qy7eDXDV4CYOlNOetc/HRBQQcYNmCuziDUOr4mUICebMEOAMIC55KaCmQe7/GhHL
+         ssFFh354RAJC4Dt/tybvIGA+GDOlyx3nlQr/K8lOn4SKMtdiGetEZS6oVswbjfR3/LSh
+         sIiAGP9joi7XktAF4OsZMbHNa20MDkPbJeut9ofDz8ItseOEbqaxUYzOB7GguaEHENWm
+         z4zg==
+X-Gm-Message-State: AOAM530ST0+n8kpnDxFEBhtls+Xh2B5VRww01VfhyQrC2VmAT1tp/yBV
+        B3mCxYQ+PCQnCXISob6Ei8wPTArL96XrXJWYZ/Al0w==
+X-Google-Smtp-Source: ABdhPJwjTBSl3nKHIt88uqzRTedY2UYNL8AQKBPtKmiB17i5PNDeTdDSbTwz6PXhv5HgYzm+iHS2EIQ7SlwYxMDwUcQ=
+X-Received: by 2002:a5d:9e0c:: with SMTP id h12mr1525893ioh.163.1601935161379;
+ Mon, 05 Oct 2020 14:59:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001111729.GA6420@e121166-lin.cambridge.arm.com>
+References: <20200909215752.1725525-1-shakeelb@google.com> <20200928210216.GA378894@cmpxchg.org>
+ <CALvZod7afgoAL7KyfjpP-LoSFGSHv7XtfbbnVhEEhsiZLqZu9A@mail.gmail.com> <20201001151058.GB493631@cmpxchg.org>
+In-Reply-To: <20201001151058.GB493631@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 5 Oct 2020 14:59:10 -0700
+Message-ID: <CALvZod66T4-y2JQnN+favf6tnKkkFQ17HZ8EAAX0GXAcbO4v+w@mail.gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.com>, andrea.righi@canonical.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:17:30PM +0100, Lorenzo Pieralisi wrote:
-> On Thu, Oct 01, 2020 at 09:42:43AM +0200, Thomas Petazzoni wrote:
-> > Fixes the following build warning when CONFIG_OF is disabled:
-> > 
-> > drivers/pci/controller/dwc/pcie-armada8k.c:344:34: warning: ‘armada8k_pcie_of_match’ defined but not used [-Wunused-const-variable=]
-> >   344 | static const struct of_device_id armada8k_pcie_of_match[] = {
-> >       |                                  ^~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-> > Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-> > ---
-> >  drivers/pci/controller/dwc/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> Merged both patches into pci/dwc, thanks.
+Hi Johannes,
 
-Can we do something like the following instead?  Untested other than
-building for x86 64-bit.  It's a little bit of a mix of of_match_ptr()
-changes, a gpio/consumer.h change, and a bunch of Kconfig changes.  I
-didn't bother to sort or split them apart.
+On Thu, Oct 1, 2020 at 8:12 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> Hello Shakeel,
+>
+> On Wed, Sep 30, 2020 at 08:26:26AM -0700, Shakeel Butt wrote:
+> > On Mon, Sep 28, 2020 at 2:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > Workloads may not
+> > > allocate anything for hours, and then suddenly allocate gigabytes
+> > > within seconds. A sudden onset of streaming reads through the
+> > > filesystem could destroy the workingset measurements, whereas a limit
+> > > would catch it and do drop-behind (and thus workingset sampling) at
+> > > the exact rate of allocations.
+> > >
+> > > Again I believe something that may be doable as a hyperscale operator,
+> > > but likely too fragile to get wider applications beyond that.
+> > >
+> > > My take is that a proactive reclaim feature, whose goal is never to
+> > > thrash or punish but to keep the LRUs warm and the workingset trimmed,
+> > > would ideally have:
+> > >
+> > > - a pressure or size target specified by userspace but with
+> > >   enforcement driven inside the kernel from the allocation path
+> > >
+> > > - the enforcement work NOT be done synchronously by the workload
+> > >   (something I'd argue we want for *all* memory limits)
+> > >
+> > > - the enforcement work ACCOUNTED to the cgroup, though, since it's the
+> > >   cgroup's memory allocations causing the work (again something I'd
+> > >   argue we want in general)
+> >
+> > For this point I think we want more flexibility to control the
+> > resources we want to dedicate for proactive reclaim. One particular
+> > example from our production is the batch jobs with high memory
+> > footprint. These jobs don't have enough CPU quota but we do want to
+> > proactively reclaim from them. We would prefer to dedicate some amount
+> > of CPU to proactively reclaim from them independent of their own CPU
+> > quota.
+>
+> Would it not work to add headroom for this reclaim overhead to the CPU
+> quota of the job?
+>
+> The reason I'm asking is because reclaim is only one side of the
+> proactive reclaim medal. The other side is taking faults and having to
+> do IO and/or decompression (zswap, compressed btrfs) on the workload
+> side. And that part is unavoidably consuming CPU and IO quota of the
+> workload. So I wonder how much this can generally be separated out.
+>
+> It's certainly something we've been thinking about as well. Currently,
+> because we use memory.high, we have all the reclaim work being done by
+> a privileged daemon outside the cgroup, and the workload pressure only
+> stems from the refault side.
+>
+> But that means a workload is consuming privileged CPU cycles, and the
+> amount varies depending on the memory access patterns - how many
+> rotations the reclaim scanner is doing etc.
+>
+> So I do wonder whether this "cost of business" of running a workload
+> with a certain memory footprint should be accounted to the workload
+> itself. Because at the end of the day, the CPU you have available will
+> dictate how much memory you need, and both of these axes affect how
+> you can schedule this job in a shared compute pool. Do neighboring
+> jobs on the same host leave you either the memory for your colder
+> pages, or the CPU (and IO) to trim them off?
+>
+> For illustration, compare extreme examples of this.
+>
+>         A) A workload that has its executable/libraries and a fixed
+>            set of hot heap pages. Proactive reclaim will be relatively
+>            slow and cheap - a couple of deactivations/rotations.
+>
+>         B) A workload that does high-speed streaming IO and generates
+>            a lot of drop-behind cache; or a workload that has a huge
+>            virtual anon set with lots of allocations and MADV_FREEing
+>            going on. Proactive reclaim will be fast and expensive.
+>
+> Even at the same memory target size, these two types of jobs have very
+> different requirements toward the host environment they can run on.
+>
+> It seems to me that this is cost that should be captured in the job's
+> overall resource footprint.
 
-Also handy for historians to include the
+I understand your point but from the usability perspective, I am
+finding it hard to deploy/use.
 
-  $ make W=1 drivers/pci/controller/dwc/pcie-armada8k.o
+As you said, the proactive reclaim cost will be different for
+different types of workload but I do not expect the job owners telling
+me how much headroom their jobs need.
 
-that generated the warning.
+I would have to start with a fixed headroom for a job, have to monitor
+the resource usage of the proactive reclaim for it and dynamically
+adjust the headroom to not steal the CPU from the job (I am assuming
+there is no isolation between job and proactive reclaim).
 
-
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index f18c3725ef80..c74581b0e4ec 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -8,13 +8,11 @@ config PCI_MVEBU
- 	depends on ARCH_MVEBU || ARCH_DOVE || COMPILE_TEST
- 	depends on MVEBU_MBUS
- 	depends on ARM
--	depends on OF
- 	select PCI_BRIDGE_EMUL
- 
- config PCI_AARDVARK
- 	bool "Aardvark PCIe controller"
- 	depends on (ARCH_MVEBU && ARM64) || COMPILE_TEST
--	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCI_BRIDGE_EMUL
- 	help
-@@ -34,7 +32,6 @@ config PCIE_XILINX_NWL
- 
- config PCI_FTPCI100
- 	bool "Faraday Technology FTPCI100 PCI controller"
--	depends on OF
- 	default ARCH_GEMINI
- 
- config PCI_TEGRA
-@@ -85,7 +82,6 @@ config PCI_HOST_COMMON
- 
- config PCI_HOST_GENERIC
- 	tristate "Generic PCI host controller"
--	depends on OF
- 	select PCI_HOST_COMMON
- 	select IRQ_DOMAIN
- 	help
-@@ -94,7 +90,6 @@ config PCI_HOST_GENERIC
- 
- config PCIE_XILINX
- 	bool "Xilinx AXI PCIe host bridge support"
--	depends on OF || COMPILE_TEST
- 	help
- 	  Say 'Y' here if you want kernel to support the Xilinx AXI PCIe
- 	  Host Bridge driver.
-@@ -110,7 +105,7 @@ config PCIE_XILINX_CPM
- config PCI_XGENE
- 	bool "X-Gene PCIe controller"
- 	depends on ARM64 || COMPILE_TEST
--	depends on OF || (ACPI && PCI_QUIRKS)
-+	depends on ACPI && PCI_QUIRKS
- 	help
- 	  Say Y here if you want internal PCI support on APM X-Gene SoC.
- 	  There are 5 internal PCIe ports available. Each port is GEN3 capable
-@@ -127,7 +122,6 @@ config PCI_XGENE_MSI
- 
- config PCI_V3_SEMI
- 	bool "V3 Semiconductor PCI controller"
--	depends on OF
- 	depends on ARM || COMPILE_TEST
- 	default ARCH_INTEGRATOR_AP
- 
-@@ -145,7 +139,6 @@ config PCIE_IPROC
- config PCIE_IPROC_PLATFORM
- 	tristate "Broadcom iProc PCIe platform bus driver"
- 	depends on ARCH_BCM_IPROC || (ARM && COMPILE_TEST)
--	depends on OF
- 	select PCIE_IPROC
- 	default ARCH_BCM_IPROC
- 	help
-@@ -189,7 +182,7 @@ config PCIE_ALTERA_MSI
- config PCI_HOST_THUNDER_PEM
- 	bool "Cavium Thunder PCIe controller to off-chip devices"
- 	depends on ARM64 || COMPILE_TEST
--	depends on OF || (ACPI && PCI_QUIRKS)
-+	depends on ACPI && PCI_QUIRKS
- 	select PCI_HOST_COMMON
- 	help
- 	  Say Y here if you want PCIe support for CN88XX Cavium Thunder SoCs.
-@@ -197,7 +190,7 @@ config PCI_HOST_THUNDER_PEM
- config PCI_HOST_THUNDER_ECAM
- 	bool "Cavium Thunder ECAM controller to on-chip devices on pass-1.x silicon"
- 	depends on ARM64 || COMPILE_TEST
--	depends on OF || (ACPI && PCI_QUIRKS)
-+	depends on ACPI && PCI_QUIRKS
- 	select PCI_HOST_COMMON
- 	help
- 	  Say Y here if you want ECAM support for CN88XX-Pass-1.x Cavium Thunder SoCs.
-@@ -209,7 +202,6 @@ config PCIE_ROCKCHIP
- config PCIE_ROCKCHIP_HOST
- 	tristate "Rockchip PCIe host controller"
- 	depends on ARCH_ROCKCHIP || COMPILE_TEST
--	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select MFD_SYSCON
- 	select PCIE_ROCKCHIP
-@@ -221,7 +213,6 @@ config PCIE_ROCKCHIP_HOST
- config PCIE_ROCKCHIP_EP
- 	bool "Rockchip PCIe endpoint controller"
- 	depends on ARCH_ROCKCHIP || COMPILE_TEST
--	depends on OF
- 	depends on PCI_ENDPOINT
- 	select MFD_SYSCON
- 	select PCIE_ROCKCHIP
-@@ -233,7 +224,6 @@ config PCIE_ROCKCHIP_EP
- config PCIE_MEDIATEK
- 	tristate "MediaTek PCIe controller"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
--	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	help
- 	  Say Y here if you want to enable PCIe controller support on
-@@ -241,7 +231,7 @@ config PCIE_MEDIATEK
- 
- config PCIE_TANGO_SMP8759
- 	bool "Tango SMP8759 PCIe controller (DANGEROUS)"
--	depends on ARCH_TANGO && PCI_MSI && OF
-+	depends on ARCH_TANGO && PCI_MSI
- 	depends on BROKEN
- 	select PCI_HOST_COMMON
- 	help
-@@ -271,7 +261,6 @@ config VMD
- config PCIE_BRCMSTB
- 	tristate "Broadcom Brcmstb PCIe host controller"
- 	depends on ARCH_BCM2835 || COMPILE_TEST
--	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	help
- 	  Say Y here to enable PCIe host controller support for
-@@ -287,7 +276,6 @@ config PCI_HYPERV_INTERFACE
- config PCI_LOONGSON
- 	bool "LOONGSON PCI Controller"
- 	depends on MACH_LOONGSON64 || COMPILE_TEST
--	depends on OF
- 	depends on PCI_QUIRKS
- 	default MACH_LOONGSON64
- 	help
-diff --git a/drivers/pci/controller/cadence/Kconfig b/drivers/pci/controller/cadence/Kconfig
-index 5d30564190e1..cb3b19f801a2 100644
---- a/drivers/pci/controller/cadence/Kconfig
-+++ b/drivers/pci/controller/cadence/Kconfig
-@@ -8,13 +8,11 @@ config PCIE_CADENCE
- 
- config PCIE_CADENCE_HOST
- 	bool
--	depends on OF
- 	select IRQ_DOMAIN
- 	select PCIE_CADENCE
- 
- config PCIE_CADENCE_EP
- 	bool
--	depends on OF
- 	depends on PCI_ENDPOINT
- 	select PCIE_CADENCE
- 
-@@ -23,7 +21,6 @@ config PCIE_CADENCE_PLAT
- 
- config PCIE_CADENCE_PLAT_HOST
- 	bool "Cadence PCIe platform host controller"
--	depends on OF
- 	select PCIE_CADENCE_HOST
- 	select PCIE_CADENCE_PLAT
- 	help
-@@ -33,7 +30,6 @@ config PCIE_CADENCE_PLAT_HOST
- 
- config PCIE_CADENCE_PLAT_EP
- 	bool "Cadence PCIe platform endpoint controller"
--	depends on OF
- 	depends on PCI_ENDPOINT
- 	select PCIE_CADENCE_EP
- 	select PCIE_CADENCE_PLAT
-@@ -47,7 +43,6 @@ config PCI_J721E
- 
- config PCI_J721E_HOST
- 	bool "TI J721E PCIe platform host controller"
--	depends on OF
- 	select PCIE_CADENCE_HOST
- 	select PCI_J721E
- 	help
-@@ -57,7 +52,6 @@ config PCI_J721E_HOST
- 
- config PCI_J721E_EP
- 	bool "TI J721E PCIe platform endpoint controller"
--	depends on OF
- 	depends on PCI_ENDPOINT
- 	select PCIE_CADENCE_EP
- 	select PCI_J721E
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 044a3761c44f..ab55cd76680e 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -23,7 +23,7 @@ config PCI_DRA7XX_HOST
- 	bool "TI DRA7xx PCIe controller Host Mode"
- 	depends on SOC_DRA7XX || COMPILE_TEST
- 	depends on PCI_MSI_IRQ_DOMAIN
--	depends on OF && HAS_IOMEM && TI_PIPE3
-+	depends on HAS_IOMEM && TI_PIPE3
- 	select PCIE_DW_HOST
- 	select PCI_DRA7XX
- 	default y if SOC_DRA7XX
-@@ -39,7 +39,7 @@ config PCI_DRA7XX_EP
- 	bool "TI DRA7xx PCIe controller Endpoint Mode"
- 	depends on SOC_DRA7XX || COMPILE_TEST
- 	depends on PCI_ENDPOINT
--	depends on OF && HAS_IOMEM && TI_PIPE3
-+	depends on HAS_IOMEM && TI_PIPE3
- 	select PCIE_DW_EP
- 	select PCI_DRA7XX
- 	help
-@@ -131,7 +131,7 @@ config PCI_KEYSTONE_EP
- 
- config PCI_LAYERSCAPE
- 	bool "Freescale Layerscape PCIe controller - Host mode"
--	depends on OF && (ARM || ARCH_LAYERSCAPE || COMPILE_TEST)
-+	depends on ARM || ARCH_LAYERSCAPE || COMPILE_TEST
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select MFD_SYSCON
- 	select PCIE_DW_HOST
-@@ -144,7 +144,7 @@ config PCI_LAYERSCAPE
- 
- config PCI_LAYERSCAPE_EP
- 	bool "Freescale Layerscape PCIe controller - Endpoint mode"
--	depends on OF && (ARM || ARCH_LAYERSCAPE || COMPILE_TEST)
-+	depends on ARM || ARCH_LAYERSCAPE || COMPILE_TEST
- 	depends on PCI_ENDPOINT
- 	select PCIE_DW_EP
- 	help
-@@ -155,7 +155,7 @@ config PCI_LAYERSCAPE_EP
- 	  controller works in RC mode.
- 
- config PCI_HISI
--	depends on OF && (ARM64 || COMPILE_TEST)
-+	depends on ARM64 || COMPILE_TEST
- 	bool "HiSilicon Hip05 and Hip06 SoCs PCIe controllers"
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
-@@ -166,7 +166,7 @@ config PCI_HISI
- 
- config PCIE_QCOM
- 	bool "Qualcomm PCIe controller"
--	depends on OF && (ARCH_QCOM || COMPILE_TEST)
-+	depends on ARCH_QCOM || COMPILE_TEST
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
- 	help
-@@ -210,7 +210,7 @@ config PCIE_ARTPEC6_EP
- 
- config PCIE_INTEL_GW
- 	bool "Intel Gateway PCIe host controller support"
--	depends on OF && (X86 || COMPILE_TEST)
-+	depends on X86 || COMPILE_TEST
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
- 	help
-@@ -220,7 +220,7 @@ config PCIE_INTEL_GW
- 	  hardware wrappers.
- 
- config PCIE_KIRIN
--	depends on OF && (ARM64 || COMPILE_TEST)
-+	depends on ARM64 || COMPILE_TEST
- 	bool "HiSilicon Kirin series SoCs PCIe controllers"
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
-@@ -282,7 +282,7 @@ config PCIE_TEGRA194_EP
- config PCIE_UNIPHIER
- 	bool "Socionext UniPhier PCIe host controllers"
- 	depends on ARCH_UNIPHIER || COMPILE_TEST
--	depends on OF && HAS_IOMEM
-+	depends on HAS_IOMEM
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
- 	help
-@@ -292,7 +292,7 @@ config PCIE_UNIPHIER
- config PCIE_UNIPHIER_EP
- 	bool "Socionext UniPhier PCIe endpoint controllers"
- 	depends on ARCH_UNIPHIER || COMPILE_TEST
--	depends on OF && HAS_IOMEM
-+	depends on HAS_IOMEM
- 	depends on PCI_ENDPOINT
- 	select PCIE_DW_EP
- 	help
-@@ -301,7 +301,7 @@ config PCIE_UNIPHIER_EP
- 
- config PCIE_AL
- 	bool "Amazon Annapurna Labs PCIe controller"
--	depends on OF && (ARM64 || COMPILE_TEST)
-+	depends on ARM64 || COMPILE_TEST
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
- 	help
-diff --git a/drivers/pci/controller/dwc/pcie-armada8k.c b/drivers/pci/controller/dwc/pcie-armada8k.c
-index 13901f359a41..f02dcbab0041 100644
---- a/drivers/pci/controller/dwc/pcie-armada8k.c
-+++ b/drivers/pci/controller/dwc/pcie-armada8k.c
-@@ -350,7 +350,7 @@ static struct platform_driver armada8k_pcie_driver = {
- 	.probe		= armada8k_pcie_probe,
- 	.driver = {
- 		.name	= "armada8k-pcie",
--		.of_match_table = of_match_ptr(armada8k_pcie_of_match),
-+		.of_match_table = armada8k_pcie_of_match,
- 		.suppress_bind_attrs = true,
- 	},
- };
-diff --git a/drivers/pci/controller/dwc/pcie-spear13xx.c b/drivers/pci/controller/dwc/pcie-spear13xx.c
-index 62846562da0b..b2ef8ffde79e 100644
---- a/drivers/pci/controller/dwc/pcie-spear13xx.c
-+++ b/drivers/pci/controller/dwc/pcie-spear13xx.c
-@@ -303,7 +303,7 @@ static struct platform_driver spear13xx_pcie_driver = {
- 	.probe		= spear13xx_pcie_probe,
- 	.driver = {
- 		.name	= "spear-pcie",
--		.of_match_table = of_match_ptr(spear13xx_pcie_of_match),
-+		.of_match_table = spear13xx_pcie_of_match,
- 		.suppress_bind_attrs = true,
- 	},
- };
-diff --git a/drivers/pci/controller/mobiveil/Kconfig b/drivers/pci/controller/mobiveil/Kconfig
-index a62d247018cf..c6529955bc56 100644
---- a/drivers/pci/controller/mobiveil/Kconfig
-+++ b/drivers/pci/controller/mobiveil/Kconfig
-@@ -14,7 +14,6 @@ config PCIE_MOBIVEIL_HOST
- config PCIE_MOBIVEIL_PLAT
- 	bool "Mobiveil AXI PCIe controller"
- 	depends on ARCH_ZYNQMP || COMPILE_TEST
--	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_MOBIVEIL_HOST
- 	help
-@@ -25,7 +24,7 @@ config PCIE_MOBIVEIL_PLAT
- config PCIE_LAYERSCAPE_GEN4
- 	bool "Freescale Layerscape PCIe Gen4 controller"
- 	depends on PCI
--	depends on OF && (ARM64 || ARCH_LAYERSCAPE)
-+	depends on ARM64 || ARCH_LAYERSCAPE
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_MOBIVEIL_HOST
- 	help
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index 1559f79e63b6..1c5f2fd47c51 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -9,7 +9,7 @@
-  */
- 
- #include <linux/delay.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/irqdomain.h>
-diff --git a/drivers/pci/controller/pci-ftpci100.c b/drivers/pci/controller/pci-ftpci100.c
-index da3cd216da00..9a50698abffd 100644
---- a/drivers/pci/controller/pci-ftpci100.c
-+++ b/drivers/pci/controller/pci-ftpci100.c
-@@ -566,7 +566,7 @@ static const struct of_device_id faraday_pci_of_match[] = {
- static struct platform_driver faraday_pci_driver = {
- 	.driver = {
- 		.name = "ftpci100",
--		.of_match_table = of_match_ptr(faraday_pci_of_match),
-+		.of_match_table = faraday_pci_of_match,
- 		.suppress_bind_attrs = true,
- 	},
- 	.probe  = faraday_pci_probe,
-diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
-index 1f54334f09f7..c91dec10440f 100644
---- a/drivers/pci/controller/pci-v3-semi.c
-+++ b/drivers/pci/controller/pci-v3-semi.c
-@@ -903,7 +903,7 @@ static const struct of_device_id v3_pci_of_match[] = {
- static struct platform_driver v3_pci_driver = {
- 	.driver = {
- 		.name = "pci-v3-semi",
--		.of_match_table = of_match_ptr(v3_pci_of_match),
-+		.of_match_table = v3_pci_of_match,
- 		.suppress_bind_attrs = true,
- 	},
- 	.probe  = v3_pci_probe,
+This seems very hard to use as compared to setting aside a fixed
+amount of CPU for proactive reclaim system wide. Please correct me if
+I am misunderstanding something.
