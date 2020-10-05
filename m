@@ -2,102 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A397A2836AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD342836B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgJENgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:36:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgJENgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:36:52 -0400
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726058AbgJENjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:39:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58406 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725939AbgJENjX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:39:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601905162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RiIV2Bc34+L4aK/HFnm2Yp0/KJXrqOEk8M9yFNQfSIE=;
+        b=HYQB9mHPYcFZ2KL+65zYWhcFHLEVn48ECb8tMCG32Vn13AUQ+GPayy+ROeIJWz2UX3dkFB
+        Ro8AMXsw2dp10Jge/k9i6sJPUfmUa8/DMScTnWq/vv7G+GeZURhZl0WLs8l8yg+T7sU95d
+        TjMI0Bu9qbUTV5TYIKaJz8tqwp/+vkc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-123-t7QGNDB7PqKXzg7uW4RL2Q-1; Mon, 05 Oct 2020 09:39:20 -0400
+X-MC-Unique: t7QGNDB7PqKXzg7uW4RL2Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5ADA720774;
-        Mon,  5 Oct 2020 13:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601905011;
-        bh=ZIFB3rgf26rt5j5jyMIodGOuMafdvBhjlRX/3PIzwfs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=y/aOCBZPeKbzI6w2BUZ53/alYwBumqxwqs9wxTEyFpDNSe7+Iqeu3PBeqs13z2h/U
-         LLziP3TdpkgaDBOgepVjvTyhxQqmYA108Oqo9avokmWyd8d24JD7hrLjIUJLhyxhXU
-         9SKToKrwm/l3AAw/bUfH4XNk3HooI8RTrykqWRTk=
-Received: by mail-oi1-f182.google.com with SMTP id t77so5217265oie.4;
-        Mon, 05 Oct 2020 06:36:51 -0700 (PDT)
-X-Gm-Message-State: AOAM53068eSIuuFbikfCmeP/6EPee1OPcWK/6YWLSLw8Bd3AYveW4blf
-        xtdE3+xkLwdAEQgLRdO85cn05uddb0NwxLiWpQ==
-X-Google-Smtp-Source: ABdhPJyGs5QRZXi2qUMhyXkN0ZTEB+WjvBFpuxhQAOv16pvutHt7q3CX0sNVLLFIy9B+jn4ovbMkwFpiJqg2gYBlnEQ=
-X-Received: by 2002:a05:6808:10e:: with SMTP id b14mr9024261oie.152.1601905010756;
- Mon, 05 Oct 2020 06:36:50 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB1D318A0735;
+        Mon,  5 Oct 2020 13:39:18 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 044875C1BD;
+        Mon,  5 Oct 2020 13:39:14 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 09:39:07 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
+ dereference
+Message-ID: <20201005133907.GE1530324@optiplex-lnx>
+References: <87sgb9oz1u.fsf@yhuang-dev.intel.com>
+ <20200923130138.GM795820@optiplex-lnx>
+ <87blhwng5f.fsf@yhuang-dev.intel.com>
+ <20200924020928.GC1023012@optiplex-lnx>
+ <877dsjessq.fsf@yhuang-dev.intel.com>
+ <20200924063038.GD1023012@optiplex-lnx>
+ <87tuvnd3db.fsf@yhuang-dev.intel.com>
+ <20200924150833.GE1023012@optiplex-lnx>
+ <87r1qqbkx5.fsf@yhuang-dev.intel.com>
+ <20201001143157.GA1530324@optiplex-lnx>
 MIME-Version: 1.0
-References: <20200922190807.6830-1-qiangqing.zhang@nxp.com>
- <20200922190807.6830-2-qiangqing.zhang@nxp.com> <20200929155201.GA665464@bogus>
- <20201003084656.GA29917@gofer.mess.org>
-In-Reply-To: <20201003084656.GA29917@gofer.mess.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 5 Oct 2020 08:36:39 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKEqG_Xous_gf=t9LTY8ZGzwcCYNjMDEGt8bA17JUgW-g@mail.gmail.com>
-Message-ID: <CAL_JsqKEqG_Xous_gf=t9LTY8ZGzwcCYNjMDEGt8bA17JUgW-g@mail.gmail.com>
-Subject: Re: [PATCH V3 1/2] bindings: media: gpio-ir-receiver: add
- linux,autosuspend-period property
-To:     Sean Young <sean@mess.org>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001143157.GA1530324@optiplex-lnx>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 3, 2020 at 3:46 AM Sean Young <sean@mess.org> wrote:
->
-> On Tue, Sep 29, 2020 at 10:52:01AM -0500, Rob Herring wrote:
-> > On Wed, Sep 23, 2020 at 03:08:06AM +0800, Joakim Zhang wrote:
-> > > Add linux,autosuspend-period property for gpio ir receiver. Some cpuidle
-> > > systems wake from idle may take a bit long time, for such case, need
-> > > disable cpuidle temporarily.
+On Thu, Oct 01, 2020 at 10:31:57AM -0400, Rafael Aquini wrote:
+> On Fri, Sep 25, 2020 at 11:21:58AM +0800, Huang, Ying wrote:
+> > Rafael Aquini <aquini@redhat.com> writes:
+> > >> Or, can you help to run the test with a debug kernel based on upstream
+> > >> kernel.  I can provide some debug patch.
+> > >> 
 > > >
-> > > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > > ---
-> > > ChangeLogs:
-> > > V1->V2:
-> > >     * New add.
-> > > V2->V3:
-> > >     * linux,autosuspend-period = 125; -> linux,autosuspend-period = <125>;
-> > > ---
-> > >  Documentation/devicetree/bindings/media/gpio-ir-receiver.txt | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> > > index 58261fb7b408..e1447c9b0e26 100644
-> > > --- a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> > > +++ b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> > > @@ -7,6 +7,8 @@ Required properties:
-> > >  Optional properties:
-> > >     - linux,rc-map-name: see rc.txt file in the same
-> > >       directory.
-> > > +        - linux,autosuspend-period: autosuspend delay time,
-> > > +          the unit is milisecond.
-> >
-> > What makes this linux specific?
+> > > Sure, I can set your patches to run with the test cases we have that tend to 
+> > > reproduce the issue with some degree of success.
+> > 
+> > Thanks!
+> > 
+> > I found a race condition.  During THP splitting, "head" may be unlocked
+> > before calling split_swap_cluster(), because head != page during
+> > deferred splitting.  So we should call split_swap_cluster() before
+> > unlocking.  The debug patch to do that is as below.  Can you help to
+> > test it?
+> > 
+> > Best Regards,
+> > Huang, Ying
+> > 
+> > ------------------------8<----------------------------
+> > From 24ce0736a9f587d2dba12f12491c88d3e296a491 Mon Sep 17 00:00:00 2001
+> > From: Huang Ying <ying.huang@intel.com>
+> > Date: Fri, 25 Sep 2020 11:10:56 +0800
+> > Subject: [PATCH] dbg: Call split_swap_clsuter() before unlock page during
+> >  split THP
+> > 
+> > ---
+> >  mm/huge_memory.c | 13 +++++++------
+> >  1 file changed, 7 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index faadc449cca5..8d79e5e6b46e 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -2444,6 +2444,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+> >  
+> >  	remap_page(head);
+> >  
+> > +	if (PageSwapCache(head)) {
+> > +		swp_entry_t entry = { .val = page_private(head) };
+> > +
+> > +		split_swap_cluster(entry);
+> > +	}
+> > +
+> >  	for (i = 0; i < HPAGE_PMD_NR; i++) {
+> >  		struct page *subpage = head + i;
+> >  		if (subpage == page)
+> > @@ -2678,12 +2684,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >  		}
+> >  
+> >  		__split_huge_page(page, list, end, flags);
+> > -		if (PageSwapCache(head)) {
+> > -			swp_entry_t entry = { .val = page_private(head) };
+> > -
+> > -			ret = split_swap_cluster(entry);
+> > -		} else
+> > -			ret = 0;
+> > +		ret = 0;
+> >  	} else {
+> >  		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+> >  			pr_alert("total_mapcount: %u, page_count(): %u\n",
+> > -- 
+> > 2.28.0
+> > 
+> 
+> I left it running for several days, on several systems that had seen the
+> crash hitting before, and no crashes were observed for either the upstream
+> kernel nor the distro build 4.18-based kernel.
+> 
+> I guess we can comfortably go with your patch. Thanks!
+> 
 >
-> Good point. "linux,autosuspend-period" does not say what is being
-> suspended either. How about "cpuidle-suspend-period" instead?
+Ping
 
-'cpuidle' is a Linuxism. And you also need a unit suffix.
+Are you going to post this patchfix soon? Or do you rather have me
+posting it?
 
-I'm not clear on how autosuspend which is generally how long a
-peripheral is idle before runtime suspending it relates to this which
-seems to be concerned with cpu wakeup latency. I'm assuming you need
-to wake up within a certain time period to capture GPIO edges. Don't
-you know what this time would be based on IR data rates and can
-provide that constraint to cpuidle?
+regards, 
 
-Also, we can set autosuspend times from sysfs. Why do you need to do
-this from DT?
-
-Rob
