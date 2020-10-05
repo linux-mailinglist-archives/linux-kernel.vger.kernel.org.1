@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7402835FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3F12835F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgJENAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:00:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20947 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgJENAA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:00:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601902799;
+        id S1726018AbgJEM7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:59:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33064 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJEM7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:59:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601902788;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=x7QPPNUTCaSWIZPB/ju4HImGo/gOqjVPUMvGsrjSBRM=;
-        b=cfNcbX1chkxu2m+ZXGja7C/hqZYqJ6Of98tjJvRc7+EGuzxA0R3J03Albjkv0L2DB8fGCu
-        AM7Xpzcq/ZYwhKJWjd2+13cKXjGdp6oqRUZ+OKg0j0LxSDaOdcqi+fy6SUaEvkAStXpQVo
-        PpBY08b1WOfI2x+etRjTgTIOtOIKJgM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-ld2Mgjp4MsG1mSYjxeU3AA-1; Mon, 05 Oct 2020 08:59:58 -0400
-X-MC-Unique: ld2Mgjp4MsG1mSYjxeU3AA-1
-Received: by mail-wm1-f71.google.com with SMTP id 73so1683775wma.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 05:59:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x7QPPNUTCaSWIZPB/ju4HImGo/gOqjVPUMvGsrjSBRM=;
-        b=M5iHMkQX8d/VEeQSg3eiaYiLOOkVSHwRFGL7ED9qp99QQ3/oVnm2f5ThYVHoGP3EVq
-         VBCk2muL6+DfIlf7kMtS6ZyCXvAMCE0ZJioy0/e0E4/eNuhEzWjmZb8k51Vo+2QHQPC3
-         aWSr1Ezn84T/Gqq++BgiR55M8Je3vokBgYJnuymTpk8e1l91CeMhNm9hetTWIy94bdoP
-         Ky4VWbPkPeiH/y46oP4jZJvtwCWCj95ixtMW59Lb4I2eA0xnrjuKX23OJRRB0Pf3+UWQ
-         XaRiYMvuLNwRA88D6y4ONfaWidFFccKM6BFz6AVsj2FPosQHa9csuIQlCNjBXznXyYsq
-         GrGQ==
-X-Gm-Message-State: AOAM532M/6jniu6pIWyK5X+7gRJMPQmZU3dKp4w4kQBl6TEgyQZGIND0
-        coPv/JtkXa886rENGLwfJR0kIjc7OgGPEtUi4yfoJXSS5fhxba3W59FrDb/EA8iXZavqaMX/BGq
-        Bo5JOIBrM4Une0vfd91N/WE2GYk47SwnS9xzGr/VX
-X-Received: by 2002:a1c:b40b:: with SMTP id d11mr11275484wmf.152.1601902795887;
-        Mon, 05 Oct 2020 05:59:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw4hxQWHIG5sEkr7qJpu1eFp9BDYMA93jUhI2KXY8YUaEdNsvYM/MXWprVTBQPZx+qivjKOkAq6RZb3jjKD8QE=
-X-Received: by 2002:a1c:b40b:: with SMTP id d11mr11275462wmf.152.1601902795672;
- Mon, 05 Oct 2020 05:59:55 -0700 (PDT)
+        bh=kCM0oof2PQlpqDAFDYbRfe2VVJ0jwjtnBd72MEgWLrY=;
+        b=Mr8NVk3jK92CRd9X4z4PT6ZjAJ2N0fJwCULzy9k5qDzgjZdI4XBP8k14mPGGj3P8FT/hrF
+        QBKQQ6RsGMKWxQOv2wtGxc0iSLRUMwbjeOdGpem8CsktlGqRsM3t/EsM32AE2jKtsjjbMm
+        Ev7t1JdtFcN6P6D76LtjNPfMqpZTZkU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DB771AC4C;
+        Mon,  5 Oct 2020 12:59:47 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 14:59:46 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH 3/9] mm, page_alloc: remove setup_pageset()
+Message-ID: <20201005125946.GY4555@dhcp22.suse.cz>
+References: <20200922143712.12048-1-vbabka@suse.cz>
+ <20200922143712.12048-4-vbabka@suse.cz>
 MIME-Version: 1.0
-References: <20201003063143.13093-1-foxhlchen@gmail.com>
-In-Reply-To: <20201003063143.13093-1-foxhlchen@gmail.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 5 Oct 2020 14:59:44 +0200
-Message-ID: <CAHc6FU4--0duukwCutZGct_0hgrkCr3Rcje6QRWVwM7rdDTsjQ@mail.gmail.com>
-Subject: Re: [PATCH] gfs2: gfs2_read_sb: put gfs2_assert inside the loop
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        cluster-devel <cluster-devel@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922143712.12048-4-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fox Chen,
+On Tue 22-09-20 16:37:06, Vlastimil Babka wrote:
+> We initialize boot-time pagesets with setup_pageset(), which sets high and
+> batch values that effectively disable pcplists.
+> 
+> We can remove this wrapper if we just set these values for all pagesets in
+> pageset_init(). Non-boot pagesets then subsequently update them to the proper
+> values.
+> 
+> No functional change.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/page_alloc.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 26069c8d1b19..76c2b4578723 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5823,7 +5823,7 @@ static void build_zonelists(pg_data_t *pgdat)
+>   * not check if the processor is online before following the pageset pointer.
+>   * Other parts of the kernel may not check if the zone is available.
+>   */
+> -static void setup_pageset(struct per_cpu_pageset *p);
+> +static void pageset_init(struct per_cpu_pageset *p);
+>  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
+>  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
+>  
+> @@ -5891,7 +5891,7 @@ build_all_zonelists_init(void)
+>  	 * (a chicken-egg dilemma).
+>  	 */
+>  	for_each_possible_cpu(cpu)
+> -		setup_pageset(&per_cpu(boot_pageset, cpu));
+> +		pageset_init(&per_cpu(boot_pageset, cpu));
+>  
+>  	mminit_verify_zonelist();
+>  	cpuset_init_current_mems_allowed();
+> @@ -6210,12 +6210,15 @@ static void pageset_init(struct per_cpu_pageset *p)
+>  	pcp = &p->pcp;
+>  	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++)
+>  		INIT_LIST_HEAD(&pcp->lists[migratetype]);
+> -}
+>  
+> -static void setup_pageset(struct per_cpu_pageset *p)
+> -{
+> -	pageset_init(p);
+> -	pageset_update(&p->pcp, 0, 1);
+> +	/*
+> +	 * Set batch and high values safe for a boot pageset. A true percpu
+> +	 * pageset's initialization will update them subsequently. Here we don't
+> +	 * need to be as careful as pageset_update() as nobody can access the
+> +	 * pageset yet.
 
-On Sat, Oct 3, 2020 at 8:33 AM Fox Chen <foxhlchen@gmail.com> wrote:
-> Before this patch, gfs2_assert is put outside of the loop of
-> sdp->sd_heightsize[x] calculation. When something goes wrong,
-> x exceeds the size of GFS2_MAX_META_HEIGHT, it may already crash inside
-> the loop when
->
-> sdp->sd_heightsize[x] = space
->
-> tries to reach the out-of-bound
-> location, gfs2_assert won't help here.
+Isn't this slightly misleading? pageset_init is called from setup_zone_pageset
+which is called from the memory hotplug as well. Isn't this more about
+early zone initialization rather than boot pagesets? Or am I misreading
+the patch?
 
-that's true, but the smallest possible block size is 1024 bytes, and
-with that, the height cannot grow bigger than 10. So the assert is
-basically there only for documentation purposes.
+> +	 */
+> +	pcp->high = 0;
+> +	pcp->batch = 1;
+>  }
+>  
+>  /*
+> -- 
+> 2.28.0
 
-Thanks,
-Andreas
-
+-- 
+Michal Hocko
+SUSE Labs
