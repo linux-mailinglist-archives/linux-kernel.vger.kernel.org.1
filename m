@@ -2,194 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EB1284001
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1642284006
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729558AbgJET7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 15:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729536AbgJET7n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 15:59:43 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E84FC0613CE;
-        Mon,  5 Oct 2020 12:59:43 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id c6so54336plr.9;
-        Mon, 05 Oct 2020 12:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v5MvUxw3ZB12lg7pYNQ9g8Q6+t1ltW3gSsaG6iUl7NA=;
-        b=pBSnV8GHp99nHecDrhbFq2Q5/I3f9S/LZlX1Vus5qfyg1xT3yt6VO05moym/CfogKl
-         8C76S1L9KdcZBWegnBP0XNzb4jEDVyxwCMHX4fiaN72HPWuzLF1pM6QYpT/cJC8mvS2A
-         BtZSpQoVEWo+ivbmprv3wp3pbWWxd93OR5O9/GIojsUupswDGE0LcGwu1A4UpNtCTpd/
-         BHoodD36Eer+wymMKfG8qCbO93ZeUizIIHoSEmH9iH46fgwCsdsf5vOTralNymeawi16
-         akNRkAnXh3anwCpXdMhyoGhH5KmOSTYoXJ6eVKx+/yrOUVuyVQlZn9huOQwishNu5+R8
-         dlyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v5MvUxw3ZB12lg7pYNQ9g8Q6+t1ltW3gSsaG6iUl7NA=;
-        b=E6bMlJFgydfsUDUQ4NuLu++YS93QjcGI/pYm1dkMYQ/Aj2vaB5YbCAeUGi5pNfK9q9
-         +hx77DFjn8mPpGBKiH00h2jJ8GYNRvaRRea27yZOoKkOmQh11Ui24hGnn3T3uo9uYxyG
-         SJH2wwr9AJzhXgwzSLKzoDRPEgyw8WR7JLMzsjfi/9X1pWigpplD8gu3R6ag2ZREQHW8
-         lkuQMqwMrrG9rwScAxXSfH98PjMalEQH8SuSggfWrtpYPT7zFqW/JtJ0OUEs5ST0kb3o
-         ZDPfRjEW9/h3h10GCALuYT8sANUJV02l7TDWJlJ+LFltbzKrFJMmE/c5c1prhLJrqwGL
-         Yr4g==
-X-Gm-Message-State: AOAM533ask3tk8CSiPSY1xAObN6DOBvzKxKw0y1C2yAA/nXTNTIrT9/q
-        Osj5MfjJvuMg6wveTt1W3MaqDBADp597aA==
-X-Google-Smtp-Source: ABdhPJx9AWJfslURrqrpa2/s6kozXsl9A1u3rf3SFBpZ4BNZ8nUInlemdxkAR16VWwVxadlJPv8VRQ==
-X-Received: by 2002:a17:90a:5d94:: with SMTP id t20mr1092379pji.20.1601927982179;
-        Mon, 05 Oct 2020 12:59:42 -0700 (PDT)
-Received: from [10.230.29.112] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id ne16sm401296pjb.11.2020.10.05.12.59.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 12:59:41 -0700 (PDT)
-To:     Christian Eggers <ceggers@arri.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20201005160829.5607-1-ceggers@arri.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH] net: dsa: microchip: fix race condition
-Message-ID: <66fce8e0-f6ae-488d-25c8-648606703778@gmail.com>
-Date:   Mon, 5 Oct 2020 12:59:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        id S1729563AbgJEUBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729424AbgJEUBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 16:01:01 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F56220848;
+        Mon,  5 Oct 2020 20:00:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601928060;
+        bh=oj+jcDmEQ2N35sIvH7wXOvwFFCWD41A5g42JGA78/P8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CcgNuec45OLWgjUhYQ+1cd8ZuxyY2vEj9LeaoxPnVEUg85Xun9DtWP0WFPN2yQbZi
+         zrLdvD0cGsTAjKUU1uZHyEwBDnvSZUfSk+X1uFcACU+2rbMjyDCwBu3e8B8EsSzfUS
+         WRHnZ1g890h0ck7szssNEK47AJdYiqblKUIaK1m8=
+Date:   Mon, 5 Oct 2020 20:59:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        ardb@kernel.org, will@kernel.org, catalin.marinas@arm.com,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-kernel@vger.kernel.org
+Subject: Re: [BUG][PATCH] arm64: bti: fix BTI to handle local indirect
+ branches
+Message-ID: <20201005195957.GF5139@sirena.org.uk>
+References: <20201005181804.1331237-1-jeremy.linton@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005160829.5607-1-ceggers@arri.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ExXT7PjY8AI4Hyfa"
+Content-Disposition: inline
+In-Reply-To: <20201005181804.1331237-1-jeremy.linton@arm.com>
+X-Cookie: Most of your faults are not your fault.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--ExXT7PjY8AI4Hyfa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/5/2020 9:08 AM, Christian Eggers wrote:
-> Between queuing the delayed work and finishing the setup of the dsa
-> ports, the process may sleep in request_module() and the queued work may
-> be executed prior the initialization of the DSA ports is finished. In
-> ksz_mib_read_work(), a NULL dereference will happen within
-> netof_carrier_ok(dp->slave).
-> 
-> Not queuing the delayed work in ksz_init_mib_timer() make things even
-> worse because the work will now be queued for immediate execution
-> (instead of 2000 ms) in ksz_mac_link_down() via
-> dsa_port_link_register_of().
-> 
-> Solution:
-> 1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
-> 2. Only queue delayed work in ksz_mac_link_down() if init is completed.
-> 3. Queue work once in ksz_switch_register(), after dsa_register_switch()
-> has completed.
-> 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Cc: stable@vger.kernel.org
+On Mon, Oct 05, 2020 at 01:18:04PM -0500, Jeremy Linton wrote:
 
-This looks fine to me and the analysis appears to be correct, don't you 
-need to pair the test for dev->mib_read_internal being non zero with 
-setting it to zero in ksz_switch_unregister()?
+> The AES code uses a 'br x7' as part of a function called by
+> a macro, that ends up needing a BTI_J as a target. Lets
+> define SYN_CODE_START_LOCAL() for this and replace the
+> SYM_FUNC_START_LOCAL with a SYM_FUNC_CODE_LOCAL in the AES block.
 
-You would also most likely want to add a Fixes: tag such that this can 
-be back ported to stable trees?
+Really what the subject here should say is that this code is not a
+standard function and therefore should not be annotated as such - it's
+wrong with or without BTI, BTI just makes it very apparent.  It'd also
+be better to split the change in linkage.h out into a separate patch,
+that'd make things clearer for review.
 
-> ---
-> Call tree:
-> ksz9477_i2c_probe()
-> \--ksz9477_switch_register()
->     \--ksz_switch_register()
->        +--dsa_register_switch()
->        |  \--dsa_switch_probe()
->        |     \--dsa_tree_setup()
->        |        \--dsa_tree_setup_switches()
->        |           +--dsa_switch_setup()
->        |           |  +--ksz9477_setup()
->        |           |  |  \--ksz_init_mib_timer()
->        |           |  |     |--/* Start the timer 2 seconds later. */
->        |           |  |     \--schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
->        |           |  \--__mdiobus_register()
->        |           |     \--mdiobus_scan()
->        |           |        \--get_phy_device()
->        |           |           +--get_phy_id()
->        |           |           \--phy_device_create()
->        |           |              |--/* sleeping, ksz_mib_read_work() can be called meanwhile */
->        |           |              \--request_module()
->        |           |
->        |           \--dsa_port_setup()
->        |              +--/* Called for non-CPU ports */
->        |              +--dsa_slave_create()
->        |              |  +--/* Too late, ksz_mib_read_work() may be called beforehand */
->        |              |  \--port->slave = ...
->        |             ...
->        |              +--Called for CPU port */
->        |              \--dsa_port_link_register_of()
->        |                 \--ksz_mac_link_down()
->        |                    +--/* mib_read must be initialized here */
->        |                    +--/* work is already scheduled, so it will be executed after 2000 ms */
->        |                    \--schedule_delayed_work(&dev->mib_read, 0);
->        \-- /* here port->slave is setup properly, scheduling the delayed work should be safe */
-> 
-> static void ksz_mib_read_work()
-> \--netif_carrier_ok(dp->slave);  dp->slave has not been initialized yet
-> 
-> 
->   drivers/net/dsa/microchip/ksz_common.c | 16 +++++++++-------
->   1 file changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-> index 8e755b50c9c1..a94d2278b95c 100644
-> --- a/drivers/net/dsa/microchip/ksz_common.c
-> +++ b/drivers/net/dsa/microchip/ksz_common.c
-> @@ -103,14 +103,8 @@ void ksz_init_mib_timer(struct ksz_device *dev)
->   
->   	INIT_DELAYED_WORK(&dev->mib_read, ksz_mib_read_work);
->   
-> -	/* Read MIB counters every 30 seconds to avoid overflow. */
-> -	dev->mib_read_interval = msecs_to_jiffies(30000);
-> -
->   	for (i = 0; i < dev->mib_port_cnt; i++)
->   		dev->dev_ops->port_init_cnt(dev, i);
-> -
-> -	/* Start the timer 2 seconds later. */
-> -	schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
->   }
->   EXPORT_SYMBOL_GPL(ksz_init_mib_timer);
->   
-> @@ -143,7 +137,9 @@ void ksz_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
->   
->   	/* Read all MIB counters when the link is going down. */
->   	p->read = true;
-> -	schedule_delayed_work(&dev->mib_read, 0);
-> +	/* timer started */
-> +	if (dev->mib_read_interval)
-> +		schedule_delayed_work(&dev->mib_read, 0);
->   }
->   EXPORT_SYMBOL_GPL(ksz_mac_link_down);
->   
-> @@ -446,6 +442,12 @@ int ksz_switch_register(struct ksz_device *dev,
->   		return ret;
->   	}
->   
-> +	/* Read MIB counters every 30 seconds to avoid overflow. */
-> +	dev->mib_read_interval = msecs_to_jiffies(30000);
-> +
-> +	/* Start the MIB timer. */
-> +	schedule_delayed_work(&dev->mib_read, 0);
-> +
->   	return 0;
->   }
->   EXPORT_SYMBOL(ksz_switch_register);
-> 
+>   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch6=
+4 #1
+>   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=3Dj-)
+>   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+>   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+>   sp : ffff80001052b730
+>   x29: ffff80001052b730 x28: 0000000000000001
+>   x27: ffff0001ec8f4000 x26: ffff0001ec5d27b0
 
--- 
-Florian
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative (it often is
+for search engines if nothing else) then it's usually better to pull out
+the relevant sections.
+
+> -SYM_FUNC_START_LOCAL(aesbs_encrypt8)
+> +SYM_CODE_START_LOCAL(aesbs_encrypt8)
+>  	ldr		q9, [bskey], #16		// round 0 key
+>  	ldr		q8, M0SR
+>  	ldr		q24, SR
+> @@ -488,10 +488,10 @@ SYM_FUNC_START_LOCAL(aesbs_encrypt8)
+>  	eor		v2.16b, v2.16b, v12.16b
+>  	eor		v5.16b, v5.16b, v12.16b
+>  	ret
+> -SYM_FUNC_END(aesbs_encrypt8)
+> +SYM_END(aesbs_encrypt8)
+
+This should be SYM_CODE_END() to match the opening.  However...
+
+>   * When using in-kernel BTI we need to ensure that PCS-conformant assemb=
+ly
+> @@ -42,6 +43,9 @@
+>  	SYM_START(name, SYM_L_WEAK, SYM_A_NONE)		\
+>  	BTI_C
+> =20
+> +#define SYM_CODE_START_LOCAL(name)			\
+> +	SYM_START(name, SYM_L_LOCAL, SYM_A_ALIGN)       \
+> +	BTI_JC
+
+=2E..this is going to cause problems, SYM_CODE means that we should
+assemble *exactly* what was written since it's some non-standard thing -
+we use it for the vectors table for example.  Looking at the code it's
+not 100% clear that the best approach here isn't just to change the call
+to a regular function call, this isn't a fast path or anything as far as
+I can see so it's unclear to me why we need to tail call.
+
+Failing that I think we need an annotation for tail called functions,=20
+that'd need to be a new thing as I am not seeing anything appropriate in
+the current generic annotations.
+
+--ExXT7PjY8AI4Hyfa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl97ezwACgkQJNaLcl1U
+h9Bs2Af+JXsXs6kh94WyAh0jlOgct0f+Ay3VvJxgWnky8BRJrKtYjhANEJr+rrkA
+FvVjaN2Flbf9Qxhq7vEywIqOzaogW+VdUxokEo0/nHMWEr/Y/+8ZNUQmxn3b/y3y
+cZtU6Qhd+sRWFz57DrgOH1M9FGCkpBpEz8ooFOBoUwk/0qqNqO7QHmvLNAiZRhpu
+sYMb19Jq5ZEk0u2fAc/JkYQFSFsSoDVnku3hPuVehwijjpgaTzTxZnHMBYCJp9tq
+0GAjy2kfIuktwjwCrVcTD71O8Fa1pvSkSc6A4tz4lc4cZIl1fbuuFoW+frR3wcnV
+he8dRYfW+kSEWmRc5BuWhvNUyW4JoQ==
+=qGOi
+-----END PGP SIGNATURE-----
+
+--ExXT7PjY8AI4Hyfa--
