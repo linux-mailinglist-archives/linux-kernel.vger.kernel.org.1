@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBA12841DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D566D2841E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgJEVFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 17:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgJEVFO (ORCPT
+        id S1729594AbgJEVJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:09:48 -0400
+Received: from smtprelay0178.hostedemail.com ([216.40.44.178]:56042 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725861AbgJEVJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:05:14 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7D0C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 14:05:14 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o25so6773066pgm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 14:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S28irEL+s00l76Xd6JezzJDnWUqPSi/xIcPO6jGVw0k=;
-        b=i13avUSEFUfkzqcD46Nq22pgh7sreScxeo625UkqLK+daDX8lE4BFXwZCR+i0RWl4j
-         kQm9H9aDflprfWtjdjMu/szcbm39wcJ2ojG/5XrIVT5i/zqP2JxIZQoZeRQA5IF5ZQ8c
-         QofnFVvrTWOYSLWkSa8Di/OBLzw49kjy9yTGw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S28irEL+s00l76Xd6JezzJDnWUqPSi/xIcPO6jGVw0k=;
-        b=r9P6aRYUNaN4xTP8bE/e59aaqcnS18czXOg/ND6wEuK0p4p+gB3llf4PRWWnzPgccv
-         2w9kENnnd2YJraQIU4PyEznsUQJuURolojRsRpphZrFcPNHuTJvC/qVirpSlM4YPbP76
-         8dyZOeG0LuIgv7WBMBeCPbZ45eDBZ1Bl21ykyqZ8FwZ3YqWufqvIWbIeTiRZ4HB3tmQc
-         8c8LEdVjo+2JoDUCsNG2PM8co20kOEsvxdHWGzn5xhTRShBVJyTFW3ih9DIQW7a0O62s
-         JjKTxJpGp0LbfdsJWKNAEMz4tmE6sIGmcxxWen+xHJHOP2YRPzsFdRAYuSQAQjfz0PaZ
-         ze6g==
-X-Gm-Message-State: AOAM530yQhbCNTSfzJUe/oEdMzkZPz0lmIU5zhSc8uikqLRB7MYwnjc7
-        Dlu6C/IzKorJlvKgWz79CN0nZA==
-X-Google-Smtp-Source: ABdhPJz/S0gfoJShrvVKOkjfbJx02Hws0BkXYZdBoTIGEHtSmorXowh1oXM2pwYvKWxA6ebn5AMJEw==
-X-Received: by 2002:a63:a510:: with SMTP id n16mr1283040pgf.256.1601931913748;
-        Mon, 05 Oct 2020 14:05:13 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q12sm478376pjd.16.2020.10.05.14.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 14:05:12 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 14:05:11 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] kernel/sysctl.c: drop unneeded assignment in
- proc_do_large_bitmap()
-Message-ID: <202010051404.CEE37CD617@keescook>
-References: <20201005203749.28083-1-sudipm.mukherjee@gmail.com>
+        Mon, 5 Oct 2020 17:09:48 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id BC787182CED5B;
+        Mon,  5 Oct 2020 21:09:47 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2827:3138:3139:3140:3141:3142:3354:3622:3865:3866:3868:3870:3872:3873:3874:4184:4321:5007:7576:7903:7974:8957:10004:10400:10848:11026:11232:11473:11658:11783:11914:12297:12740:12895:13894:14093:14096:14097:14180:14181:14659:14721:21060:21080:21324:21433:21451:21627:21819:30003:30022:30029:30030:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: fold37_3305bb7271c1
+X-Filterd-Recvd-Size: 3213
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  5 Oct 2020 21:09:46 +0000 (UTC)
+Message-ID: <c1ca28e77e8e3bfa7aadf3efa8ed70f97a9d369c.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add new warnings to author signoff
+ checks.
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 05 Oct 2020 14:09:45 -0700
+In-Reply-To: <CABJPP5DDmurU9c2qCoJcg7hvwnkYo4LCx+TW6xKG2G23Uf_Cxw@mail.gmail.com>
+References: <20201005192409.192317-1-dwaipayanray1@gmail.com>
+         <1d8396cb33b33c3d0107ba701b7e597041dfdbc2.camel@perches.com>
+         <CABJPP5DDmurU9c2qCoJcg7hvwnkYo4LCx+TW6xKG2G23Uf_Cxw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005203749.28083-1-sudipm.mukherjee@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 09:37:49PM +0100, Sudip Mukherjee wrote:
-> The variable 'first' is assigned 0 inside the while loop in the if block
-> but it is not used in the if block and is only used in the else block.
-> So, remove the unneeded assignment.
+On Tue, 2020-10-06 at 01:37 +0530, Dwaipayan Ray wrote:
+> On Tue, Oct 6, 2020 at 1:07 AM Joe Perches <joe@perches.com> wrote:
+> > On Tue, 2020-10-06 at 00:54 +0530, Dwaipayan Ray wrote:
+> > > The author signed-off-by checks are currently very vague.
+> > > Cases like same name or same address are not handled separately.
+> > 
+> > When you run tests for this, how many mismatches are
+> > caused by name formatting changes like:
+> > 
+> > From: "Developer, J. Random" <jrd@bigcorp.com>
+> > ...
+> > Signed-off-by: "J. Random Developer" <jrd@bigcorp.com>?
+> > 
+> > Should these differences generate a warning?
+> > 
+> 
+> Hi,
+> I ran my tests on non merge commits between v5.7 and v5.8.
+> 
+> There were a total of 250 NO_AUTHOR_SIGN_OFF Warnings
+> 
+> 203 of these were email address mismatches.
+> 32 of these were name mismatches.
+> 
+> So for the name mismatches, the typical cases are like:
+> 
+> 'From: tannerlove <tannerlove@google.com>' != 'Signed-off-by: Tanner
+> Love <tannerlove@google.com>'
+> 'From: "朱灿灿" <zhucancan@vivo.com>' != 'Signed-off-by: zhucancan
+> <zhucancan@vivo.com>'
+> 'From: Yuval Basson <ybason@marvell.com>' != 'Signed-off-by: Yuval
+> Bason <ybason@marvell.com>'
+> 'From: allen <allen.chen@ite.com.tw>' != 'Signed-off-by: Allen Chen
+> <allen.chen@ite.com.tw>'
+> 
+> I didn't find the exact formatting change you mentioned in my commit range.
+> But I did find something like:
+> 
+> 'From: "Paul A. Clarke" <pc@us.ibm.com>' != 'Signed-off-by: Paul
+> Clarke <pc@us.ibm.com>'
+> 
+> So it's like some have parts of their names removed, some have language
+> conflicts, and yet some have well different spellings, or initials,
+> etc. It's like
+> a wide variety of things happening here.
+> 
+> I think considering these, it should be warned about, and let people know
+> that there might be something wrong going on.
+> 
+> What do you think?
 
-True, but in this case, please move the definition of "first" into the
-else block so it in only in scope there.
+Except for comments and quotes like:
 
-Thanks!
+	From: J. Random Developer (BigCorp) <jrd@bigcorp.com>
+	Signed-off-by: "J. Random Developer" <jrd@bigcorp.com>
 
--Kees
+I think any time there's a mismatch, there
+should be a warning emitted.
 
-> 
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> ---
-> 
-> The resultant binary stayed same after this change. Verified with
-> md5sum which remained same with and without this change.
-> 
-> $ md5sum kernel/sysctl.o 
-> e9e97adbfd3f0b32f83dd35d100c0e4e  kernel/sysctl.o
-> 
->  kernel/sysctl.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index ce75c67572b9..b51ebfd1ba6e 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -1508,7 +1508,6 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
->  			}
->  
->  			bitmap_set(tmp_bitmap, val_a, val_b - val_a + 1);
-> -			first = 0;
->  			proc_skip_char(&p, &left, '\n');
->  		}
->  		left += skipped;
-> -- 
-> 2.11.0
-> 
+That includes any subaddress detail difference.
 
--- 
-Kees Cook
+
