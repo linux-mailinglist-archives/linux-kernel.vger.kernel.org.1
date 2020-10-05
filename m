@@ -2,139 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BC9283392
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DD5283395
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgJEJr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEJr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:47:57 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB6AC0613CE;
-        Mon,  5 Oct 2020 02:47:56 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id n22so8578364edt.4;
-        Mon, 05 Oct 2020 02:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8FVfgUbPigKX8q6acs/usUL41ngU1LBGrHZ+WyTTHpU=;
-        b=jFFP2Tx+qnv8xeJv5u+m8BMlaEvC9R8HisLPC2n45BC78Gaj+EG538YmJx3bfIl9AG
-         FQbQCH56fruWaCLp0aoQBXR8s32E9BaTtJ7rMPUEJ07Y7kt2qDHFz4AlTBuUFk8SD6vK
-         gHPVFv041qFnDatTOgx8Q4luMBuDBdolJoIuJupQCt2EUmqc21uEpaWzMnMh3PLI/AnW
-         KGgqD442EcPSJzE4gJ9NmTwsxMgh7CKyuuFTkaE1p7oPrTaUwzLDEhhGs9vTWci2ushb
-         yQQz73y/GCHV6QzYV7/i1T5jg8a3SZHQ3aNC7L39z/PtC1f09iJn++mvtEeQjeC42WHP
-         /2fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8FVfgUbPigKX8q6acs/usUL41ngU1LBGrHZ+WyTTHpU=;
-        b=qZdqAnxvuHlx3gjxQNuKi3EyC2XfXbOyp9NuS2IZyLaKkLrXS/vHA10KdTfmOUvT6s
-         oZuExwp4AQxmCmyt1aiHPnhJ7FU3fP2PxiC7r0zk1CJ2EEzNrKJCu7zZfJzUIxpAPVeM
-         j9dVgklSPY/3qKBwXEIPhczYLBkl5XMpJkvshKEdsvhxN3VWcEooKIBx/yQI34not9sH
-         NI8LFlL4rY62jQndldn5hk32DxC7IjK7aZ8vDWSPuoN4IJAN9AETzY14S00MyboEVsSo
-         636HZh1+Y4oAEttAhaktAkdT2iYK+pwgIzEkL1lzAPCOHrIFTM36zgdk+d2ehkBC8wO4
-         wE3w==
-X-Gm-Message-State: AOAM532Fqm2qNt40CpqlNE7oTP3KTDfv38sQZrslowOEQXHSWiPAs6fQ
-        9ND9FsJ23ocFtPjPjLjWr1M=
-X-Google-Smtp-Source: ABdhPJzj1lshRyTwroPH5unbnCt2C6kPU7UiCL8EBBHIsEdetc+VATQp5cQQopto3L7ArF3KqR3LXQ==
-X-Received: by 2002:aa7:c54f:: with SMTP id s15mr3575372edr.107.1601891275435;
-        Mon, 05 Oct 2020 02:47:55 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id s1sm1950125edi.44.2020.10.05.02.47.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:47:53 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:47:52 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-Message-ID: <20201005094752.GG425362@ulmo>
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
- <c42f1f51-9fa5-6503-91aa-3809f1f27d0c@gmail.com>
- <0f186339-1e49-4878-834e-11ae8bf140f2@gmail.com>
- <20201002195328.GE29706@Asurada-Nvidia>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Y+xroYBkGM9OatJL"
-Content-Disposition: inline
-In-Reply-To: <20201002195328.GE29706@Asurada-Nvidia>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+        id S1726002AbgJEJsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:48:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48854 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725887AbgJEJsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:48:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 12DC6AD1A;
+        Mon,  5 Oct 2020 09:48:19 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: alchemy: Share prom_init implementation
+Date:   Mon,  5 Oct 2020 11:48:14 +0200
+Message-Id: <20201005094815.49773-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.16.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+All boards have the same prom_init() function. Move it to common code and
+delete the duplicates.
 
---Y+xroYBkGM9OatJL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/alchemy/board-gpr.c          | 17 -----------------
+ arch/mips/alchemy/board-mtx1.c         | 17 -----------------
+ arch/mips/alchemy/board-xxs1500.c      | 18 ------------------
+ arch/mips/alchemy/common/prom.c        | 20 ++++++++++++++++++++
+ arch/mips/alchemy/devboards/platform.c | 17 -----------------
+ 5 files changed, 20 insertions(+), 69 deletions(-)
 
-On Fri, Oct 02, 2020 at 12:53:28PM -0700, Nicolin Chen wrote:
-> On Fri, Oct 02, 2020 at 05:58:29PM +0300, Dmitry Osipenko wrote:
-> > 02.10.2020 17:22, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > 02.10.2020 09:08, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > >> -static void tegra_smmu_release_device(struct device *dev)
-> > >> -{
-> > >> -	dev_iommu_priv_set(dev, NULL);
-> > >> -}
-> > >> +static void tegra_smmu_release_device(struct device *dev) {}
-> > >=20
-> > > Please keep the braces as-is.
-> > >=20
-> >=20
-> > I noticed that you borrowed this style from the sun50i-iommu driver, but
-> > this is a bit unusual coding style for the c files. At least to me it's
-> > unusual to see header-style function stub in a middle of c file. But
-> > maybe it's just me.
->=20
-> I don't see a rule in ./Documentation/process/coding-style.rst
-> against this, and there're plenty of drivers doing so. If you
-> feel uncomfortable with this style, you may add a rule to that
-> doc so everyone will follow :)
+diff --git a/arch/mips/alchemy/board-gpr.c b/arch/mips/alchemy/board-gpr.c
+index 6c47318946e4..f587c40b6d00 100644
+--- a/arch/mips/alchemy/board-gpr.c
++++ b/arch/mips/alchemy/board-gpr.c
+@@ -31,23 +31,6 @@ const char *get_system_type(void)
+ 	return "GPR";
+ }
+ 
+-void __init prom_init(void)
+-{
+-	unsigned char *memsize_str;
+-	unsigned long memsize;
+-
+-	prom_argc = fw_arg0;
+-	prom_argv = (char **)fw_arg1;
+-	prom_envp = (char **)fw_arg2;
+-
+-	prom_init_cmdline();
+-
+-	memsize_str = prom_getenv("memsize");
+-	if (!memsize_str || kstrtoul(memsize_str, 0, &memsize))
+-		memsize = 0x04000000;
+-	add_memory_region(0, memsize, BOOT_MEM_RAM);
+-}
+-
+ void prom_putchar(char c)
+ {
+ 	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
+diff --git a/arch/mips/alchemy/board-mtx1.c b/arch/mips/alchemy/board-mtx1.c
+index 23093535399f..68ea57511629 100644
+--- a/arch/mips/alchemy/board-mtx1.c
++++ b/arch/mips/alchemy/board-mtx1.c
+@@ -30,23 +30,6 @@ const char *get_system_type(void)
+ 	return "MTX-1";
+ }
+ 
+-void __init prom_init(void)
+-{
+-	unsigned char *memsize_str;
+-	unsigned long memsize;
+-
+-	prom_argc = fw_arg0;
+-	prom_argv = (char **)fw_arg1;
+-	prom_envp = (char **)fw_arg2;
+-
+-	prom_init_cmdline();
+-
+-	memsize_str = prom_getenv("memsize");
+-	if (!memsize_str || kstrtoul(memsize_str, 0, &memsize))
+-		memsize = 0x04000000;
+-	add_memory_region(0, memsize, BOOT_MEM_RAM);
+-}
+-
+ void prom_putchar(char c)
+ {
+ 	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
+diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
+index c67dfe1f4997..b184baa4e56a 100644
+--- a/arch/mips/alchemy/board-xxs1500.c
++++ b/arch/mips/alchemy/board-xxs1500.c
+@@ -25,24 +25,6 @@ const char *get_system_type(void)
+ 	return "XXS1500";
+ }
+ 
+-void __init prom_init(void)
+-{
+-	unsigned char *memsize_str;
+-	unsigned long memsize;
+-
+-	prom_argc = fw_arg0;
+-	prom_argv = (char **)fw_arg1;
+-	prom_envp = (char **)fw_arg2;
+-
+-	prom_init_cmdline();
+-
+-	memsize_str = prom_getenv("memsize");
+-	if (!memsize_str || kstrtoul(memsize_str, 0, &memsize))
+-		memsize = 0x04000000;
+-
+-	add_memory_region(0, memsize, BOOT_MEM_RAM);
+-}
+-
+ void prom_putchar(char c)
+ {
+ 	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
+diff --git a/arch/mips/alchemy/common/prom.c b/arch/mips/alchemy/common/prom.c
+index af312b5e33f6..cfa203064d3c 100644
+--- a/arch/mips/alchemy/common/prom.c
++++ b/arch/mips/alchemy/common/prom.c
+@@ -34,6 +34,8 @@
+  */
+ 
+ #include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/sizes.h>
+ #include <linux/string.h>
+ 
+ #include <asm/bootinfo.h>
+@@ -76,6 +78,24 @@ char *prom_getenv(char *envname)
+ 	return NULL;
+ }
+ 
++void __init prom_init(void)
++{
++	unsigned char *memsize_str;
++	unsigned long memsize;
++
++	prom_argc = (int)fw_arg0;
++	prom_argv = (char **)fw_arg1;
++	prom_envp = (char **)fw_arg2;
++
++	prom_init_cmdline();
++
++	memsize_str = prom_getenv("memsize");
++	if (!memsize_str || kstrtoul(memsize_str, 0, &memsize))
++		memsize = SZ_64M; /* minimum memsize is 64MB RAM */
++
++	add_memory_region(0, memsize, BOOT_MEM_RAM);
++}
++
+ static inline unsigned char str2hexnum(unsigned char c)
+ {
+ 	if (c >= '0' && c <= '9')
+diff --git a/arch/mips/alchemy/devboards/platform.c b/arch/mips/alchemy/devboards/platform.c
+index 8d4b65c3268a..754bdd2ca630 100644
+--- a/arch/mips/alchemy/devboards/platform.c
++++ b/arch/mips/alchemy/devboards/platform.c
+@@ -20,23 +20,6 @@
+ 
+ #include <prom.h>
+ 
+-void __init prom_init(void)
+-{
+-	unsigned char *memsize_str;
+-	unsigned long memsize;
+-
+-	prom_argc = (int)fw_arg0;
+-	prom_argv = (char **)fw_arg1;
+-	prom_envp = (char **)fw_arg2;
+-
+-	prom_init_cmdline();
+-	memsize_str = prom_getenv("memsize");
+-	if (!memsize_str || kstrtoul(memsize_str, 0, &memsize))
+-		memsize = 64 << 20; /* all devboards have at least 64MB RAM */
+-
+-	add_memory_region(0, memsize, BOOT_MEM_RAM);
+-}
+-
+ void prom_putchar(char c)
+ {
+ 	if (alchemy_get_cputype() == ALCHEMY_CPU_AU1300)
+-- 
+2.16.4
 
-I also prefer braces on separate lines. Even better would be to just
-drop this entirely and make ->release_device() optional. At least the
-following drivers could be cleaned up that way:
-
-    * fsl-pamu
-    * msm-iommu
-    * sun50i-iommu
-    * tegra-gart
-    * tegra-smmu
-
-And it looks like mtk-iommu and mtk-iommu-v1 do only iommu_fwspec_free()
-in their ->release_device() implementations, but that's already done via
-iommu_release_device().
-
-Thierry
-
---Y+xroYBkGM9OatJL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9668UACgkQ3SOs138+
-s6E2dg//V+pp9h+NZZeSpxS6ef49t6f3JNwWjeDDqOJXRqCkou8l/ocyhlvDyypT
-rk9YAef+4foynhex5mIEEeQ7KOSgG0wCv1FuH5AlIN5uo/H4NO1pyB4c/P0pSEb+
-aj6MfC5oV+ZTNpTTYWGsVv9naSRu6l47V99kv9B8pguq7aU9286Ef/oDTtqgp3bz
-xJoEmgiUOtzxkQQZX+//+VFoWzcxbEsNe16zPKxYU+EWH6aqYCK6d5teTROfujjO
-JfbsWm8/3/i3gRvhSNDc7bdM2NAx8f66RA15z3PAKiKSSoKAaKedJZOxINYCO2rx
-s0u9wQqo36mTujtIIsoq8L3mjcysi+FsInikeX1+FDusQKGOAFQMUHS+odMpi8/4
-uUXeGsWNdDBP4e61fLfG53dc2rvqHSvkycwqtXMTpSQc3ToXXoY8y/b6yyCEh+Rm
-2mUSe/9KyKaGTm1mvMyL+zAvfYsMbFPD8W6q12e9lpPBzdOSuSufBtvgJZTw9UUi
-tqO38VLE6TxhC2Z0x4Eoi/yVPmfgDl4F+XkeA2c4IN872hPrhjSDI4uCL32Rj37d
-th/YMvGIIGQ3btUqonM3/ghgFXJGhvR31IudFTLoa4qIhhtqF8bSqD8ZUGJMW9zR
-QUfY8opIepx9pdQ3ZDzDNnTNZjRXS1LdKqjM8cKZsctUB83ENyw=
-=vOdp
------END PGP SIGNATURE-----
-
---Y+xroYBkGM9OatJL--
