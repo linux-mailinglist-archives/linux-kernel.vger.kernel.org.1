@@ -2,140 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E609283F15
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C563A283F1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgJESy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728944AbgJESy2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:54:28 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98109C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:54:27 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id d28so3405161ote.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=riuDo1IoXfibXlfR95ykbMPthEQRl10/UIOttc6DAlc=;
-        b=OPEUVmyk+vRCYMZLowcoJCe66KrXHU7rFzOGuwvpAWzjQt85t26GeiBNJSVlLLjdvw
-         IPvkPM1oH6EvZKjVxvy+zdz/tX3xjNAE+ZPS2bki4mizwYxgbHlbrh2rQasAL+fFyYAY
-         b+JjR1NWVmVC0VwtGmMDFoA2fjzgOz0Zifv98=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=riuDo1IoXfibXlfR95ykbMPthEQRl10/UIOttc6DAlc=;
-        b=hh3okiQYk8vdGVDYns42Pol1DEJOhmpi72iDF27e/WxCmwoz5FYnm0rDHGjSUf3/sO
-         ZvkAprBtUko2Plf98QUHBQI37XaOIBYqYwjoXYTFj1FTCEaGZq5QgDm+FE8m8Jspyk1G
-         iq2lxpMX9iFnT/KdRrZkLMvDuB/XQnUxfGP5fO0kBPbxJjYLMc6bXPApbhtDAXgHgzIK
-         zIsu2FRkaxUa6mUGHeP8zhKLkJfMzdB2ALh6SHhSc3MtuZTygONW82mALBrERlCC3Uxl
-         W13qnurpCdJn3L1J1KlAwndgkBPLu+GkCfFJO4BNJfkQrn67ANveW9CKltxxQ45bjVzH
-         ZE8w==
-X-Gm-Message-State: AOAM530JSm5apxwKG5IWVHUJdzfg4eLKe6+3kHwFQ9E8AcYyuvGJ4Tdc
-        yu3WHNYQ6V8J5BHdSjZdlQAJasGE7tc0po2tDJNC0A==
-X-Google-Smtp-Source: ABdhPJy2iw+CknXeuJOFUrqB9oxUe8+tYDJ+itV1cU93c0kTfuWKEYCQyo751DNTn5DqrD42UQCpOE2tQNA/FTrVskw=
-X-Received: by 2002:a05:6830:1647:: with SMTP id h7mr493595otr.281.1601924066976;
- Mon, 05 Oct 2020 11:54:26 -0700 (PDT)
+        id S1729237AbgJESzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726657AbgJESy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 14:54:59 -0400
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE716212CC;
+        Mon,  5 Oct 2020 18:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601924098;
+        bh=o0uZ3cy1uUvq1q42gg9ToRESHRIfyYhiAJYGZGaJ4a8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Hb5erTv+Q7MnF65HqGf1maRgYcNOD6J+hfcjTDjozf7VWCe1xd0jt1IMK5L7d/cbf
+         50e8UZA36NsTwi/ttQiYpN86dkwSLIeMlj5DZDhkofXY+YJCypXY4p2y6EToegV4HD
+         S4seMCR6Hf1wVrLgwigsfHUTg6jENETvOs+CBaAM=
+Received: by mail-oi1-f178.google.com with SMTP id x69so9739526oia.8;
+        Mon, 05 Oct 2020 11:54:58 -0700 (PDT)
+X-Gm-Message-State: AOAM5330Fwn8f4Z1VsTtfHzhoyX0zJ1jKB8yIZjB9/Q0mk8fAR3+TAC/
+        6WyJrzy896E35gVGhu8VZ2Hil0t+rzbSnfpQSbA=
+X-Google-Smtp-Source: ABdhPJxUf3YRHsN+3zOiuiFukAzNhJRe7DJu0hkIA4QXQZBgRak9hZTbV+MiN9GSPyztKl9WTMrWdlz4zGFc9skvM6I=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr438708oig.47.1601924097988;
+ Mon, 05 Oct 2020 11:54:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
- <20201002175303.390363-2-daniel.vetter@ffwll.ch> <20201002180603.GL9916@ziepe.ca>
- <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
- <20201002233118.GM9916@ziepe.ca> <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
- <20201004125059.GP9916@ziepe.ca> <CAKMK7uF0AfuYGsHzKXhF=k-mAW=Wx_APf9fY9M9ormnwypoxZA@mail.gmail.com>
- <20201005172854.GA5177@ziepe.ca> <CAKMK7uFzxWF7V=7vkeNC-8shsPZRgdz9fYTsn0ayENv2BpnFEg@mail.gmail.com>
- <20201005183704.GC5177@ziepe.ca>
-In-Reply-To: <20201005183704.GC5177@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 5 Oct 2020 20:54:15 +0200
-Message-ID: <CAKMK7uH97Yb2JFviG_ynGC1hbQ69h9hcyFVFd2PFYHCDzfBN6g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+References: <20201005181804.1331237-1-jeremy.linton@arm.com>
+In-Reply-To: <20201005181804.1331237-1-jeremy.linton@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 5 Oct 2020 20:54:46 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEkrRvp5Xd_+D_V7Nr1uiKnfAEdZU4kciC5R7_H8aRNZA@mail.gmail.com>
+Message-ID: <CAMj1kXEkrRvp5Xd_+D_V7Nr1uiKnfAEdZU4kciC5R7_H8aRNZA@mail.gmail.com>
+Subject: Re: [BUG][PATCH] arm64: bti: fix BTI to handle local indirect branches
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 8:37 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Mon, 5 Oct 2020 at 20:18, Jeremy Linton <jeremy.linton@arm.com> wrote:
 >
-> On Mon, Oct 05, 2020 at 08:16:33PM +0200, Daniel Vetter wrote:
->
-> > > kvm is some similar hack added for P2P DMA, see commit
-> > > add6a0cd1c5ba51b201e1361b05a5df817083618. It might be protected by notifiers..
-> >
-> > Yeah my thinking is that kvm (and I think also vfio, also seems to
-> > have mmu notifier nearby) are ok because of the mmu notiifer. Assuming
-> > that one works correctly.
->
-> vfio doesn't have a notifier, Alex was looking to add a vfio private
-> scheme in the vma->private_data:
->
-> https://lore.kernel.org/kvm/159017449210.18853.15037950701494323009.stgit@gimli.home/
->
-> Guess it never happened.
+> The AES code uses a 'br x7' as part of a function called by
+> a macro, that ends up needing a BTI_J as a target.
 
-I was mislead by the mmu notifier in drivers/vfio/vfio.c. But looking
-closer, that's only used by some drivers, I guess to make sure their
-device pagetables are kept in sync with reality. And not to make sure
-the vfio pfn view is kept in sync with reality.
+Could we instead just drop the tail call, i.e, replace it with a ret
+and do a 'bl' after it returns? The indirect call does not really
+serve a purpose here anyway
 
-This could get real nasty I think.
 
-> > > So, the answer really is that s390 and media need fixing, and this API
-> > > should go away (or become kvm specific)
-> >
-> > I'm still not clear how you want fo fix this, since your vma->dma_buf
-> > idea is kinda a decade long plan and so just not going to happen:
+> Lets
+> define SYN_CODE_START_LOCAL() for this and replace the
+> SYM_FUNC_START_LOCAL with a SYM_FUNC_CODE_LOCAL in the AES block.
 >
-> Well, it doesn't mean we have to change every part of dma_buf to
-> participate in this. Just the bits media cares about. Or maybe it is
-> some higher level varient on top of dma_buf.
+> Without this kernels compiled with the aes_neon_bs will OOPS
+> at boot.
 >
-> Or don't use dma_buf for this, add a new object that just provides
-> refcounts and P2P DMA connection for IO pfn ranges..
-
-So good news is, I dug some layers deeper in v4l, and there's only 2
-users which do actually handle pfn and don't immediately convert to a
-pages array:
-- videbuf-dma-contig.c. Luckily videobuf 1 is deprecated since
-forever, so I think we might get away with either just breaking this,
-or at least tainting kernels and hiding it behind a nasty Kconfig.
-This only uses follow_pfn, which we need to keep anyway for vfio in
-the unsafe variant :-/
-- videbuf2-vmalloc.c Digging through history this was added to support
-import of v4l buffers from drivers that needed contig memory. And way
-back before CMA, that meant carveout memory not backed by struct page
-*. That should now all have struct pages and be managed by CMA (since
-videbuf2-dma-contig.c just uses dma_alloc_coherent underneath), so I
-think we can just switch to pin_user_pages(FOLL_LONGTERM here too).
-
-iow I think I can outright delete the frame vector stuff.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>   Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
+>   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+>   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+>   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+>   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+>   sp : ffff80001052b730
+>   x29: ffff80001052b730 x28: 0000000000000001
+>   x27: ffff0001ec8f4000 x26: ffff0001ec5d27b0
+>   x25: ffff0001ec8f4000 x24: ffff80001052bc00
+>   x23: 0000000000000018 x22: 000000000000000a
+>   x21: ffff0001ec5d2100 x20: ffff0001ec8f4080
+>   x19: ffff0001ec8f4000 x18: 0000000000000004
+>   x17: 0000000000000000 x16: ffffadb4db85d310
+>   x15: 0000000000000200 x14: 0000000000000010
+>   x13: 0000000000000200 x12: ffff0001ec5d2100
+>   x11: 000000000000000a x10: 0000020000200000
+>   x9 : ffffadb4db7e7488 x8 : 0000000000000000
+>   x7 : ffffadb4614fb110 x6 : 0000000000000000
+>   x5 : ffff80001052bc00 x4 : 0000000000000020
+>   x3 : 000000000000000a x2 : ffff0001ec5d2100
+>   x1 : ffff0001ec8f4000 x0 : ffff0001ec8f4000
+>   Kernel panic - not syncing: bad mode
+>   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+>   Call trace:
+>    dump_backtrace+0x0/0x1c0
+>    show_stack+0x24/0x30
+>    dump_stack+0xc0/0x118
+>    panic+0x144/0x358
+>    arm64_serror_panic+0x0/0x98
+>    el1_sync_handler+0x60/0x110
+>    el1_sync+0xb4/0x180
+>    aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+>    __xts_crypt+0xb0/0x2dc [aes_neon_bs]
+>    xts_encrypt+0x28/0x3c [aes_neon_bs]
+>   crypto_skcipher_encrypt+0x50/0x84
+>   simd_skcipher_encrypt+0xc8/0xe0
+>   crypto_skcipher_encrypt+0x50/0x84
+>   test_skcipher_vec_cfg+0x224/0x5f0
+>   test_skcipher+0xbc/0x120
+>   alg_test_skcipher+0xa0/0x1b0
+>   alg_test+0x3dc/0x47c
+>   cryptomgr_test+0x38/0x60
+>   kthread+0x11c/0x120
+>   ret_from_fork+0x10/0x18
+>  SMP: stopping secondary CPUs
+>  Kernel Offset: 0x2db4cb7e0000 from 0xffff800010000000
+>  PHYS_OFFSET: 0xffffcf2440000000
+>  CPU features: 0x7e0152,20c02020
+>  Memory Limit: none
+>  ---[ end Kernel panic - not syncing: bad mode ]---
+>
+> Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> ---
+>  arch/arm64/crypto/aes-neonbs-core.S | 8 ++++----
+>  arch/arm64/include/asm/linkage.h    | 6 +++++-
+>  2 files changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
+> index b357164379f6..76de87ee80e1 100644
+> --- a/arch/arm64/crypto/aes-neonbs-core.S
+> +++ b/arch/arm64/crypto/aes-neonbs-core.S
+> @@ -428,7 +428,7 @@ SYM_FUNC_START(aesbs_convert_key)
+>  SYM_FUNC_END(aesbs_convert_key)
+>
+>         .align          4
+> -SYM_FUNC_START_LOCAL(aesbs_encrypt8)
+> +SYM_CODE_START_LOCAL(aesbs_encrypt8)
+>         ldr             q9, [bskey], #16                // round 0 key
+>         ldr             q8, M0SR
+>         ldr             q24, SR
+> @@ -488,10 +488,10 @@ SYM_FUNC_START_LOCAL(aesbs_encrypt8)
+>         eor             v2.16b, v2.16b, v12.16b
+>         eor             v5.16b, v5.16b, v12.16b
+>         ret
+> -SYM_FUNC_END(aesbs_encrypt8)
+> +SYM_END(aesbs_encrypt8)
+>
+>         .align          4
+> -SYM_FUNC_START_LOCAL(aesbs_decrypt8)
+> +SYM_CODE_START_LOCAL(aesbs_decrypt8)
+>         lsl             x9, rounds, #7
+>         add             bskey, bskey, x9
+>
+> @@ -553,7 +553,7 @@ SYM_FUNC_START_LOCAL(aesbs_decrypt8)
+>         eor             v3.16b, v3.16b, v12.16b
+>         eor             v5.16b, v5.16b, v12.16b
+>         ret
+> -SYM_FUNC_END(aesbs_decrypt8)
+> +SYM_END(aesbs_decrypt8)
+>
+>         /*
+>          * aesbs_ecb_encrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
+> diff --git a/arch/arm64/include/asm/linkage.h b/arch/arm64/include/asm/linkage.h
+> index ba89a9af820a..92c81ae8ac1e 100644
+> --- a/arch/arm64/include/asm/linkage.h
+> +++ b/arch/arm64/include/asm/linkage.h
+> @@ -11,7 +11,8 @@
+>   * set the architecture version to v8.5 we use the hint instruction
+>   * instead.
+>   */
+> -#define BTI_C hint 34 ;
+> +#define BTI_C  hint 34 ;
+> +#define BTI_JC hint 38 ;
+>
+>  /*
+>   * When using in-kernel BTI we need to ensure that PCS-conformant assembly
+> @@ -42,6 +43,9 @@
+>         SYM_START(name, SYM_L_WEAK, SYM_A_NONE)         \
+>         BTI_C
+>
+> +#define SYM_CODE_START_LOCAL(name)                     \
+> +       SYM_START(name, SYM_L_LOCAL, SYM_A_ALIGN)       \
+> +       BTI_JC
+>  #endif
+>
+>  /*
+> --
+> 2.25.4
+>
