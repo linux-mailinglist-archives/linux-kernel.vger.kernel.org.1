@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304C7283274
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF5D28327A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgJEIs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:48:29 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:54271 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJEIs0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:48:26 -0400
-Received: by mail-io1-f78.google.com with SMTP id x1so4321840iov.20
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:48:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=G6GsEG0RkZVPyjNqFfG3gKAiPzYx/YvR1ErOT0J12wk=;
-        b=oDAQjLlE6lZL+hvN0W+h+Vhpf+3F0A9gSb+32a7IIB0k5on2W4FBl3agbnjAt6xZYy
-         IkObSNJMZ2YJBAGusLx6JtON3neGFT0MKJFK6mrJRnVwxvXHVFL+VJLjZPuMCN+BnEco
-         Zpa9xU2PvUURddL52x1oSZiFVp0VgXdWKt/N6lsz946FQKaNZdWDBCirD7J8a8aaUCRJ
-         1zzhZm2pJoF7q0X5NkojM874ENG5aKrMYvp0IJavcSF6nDtEETabbXNBuSs5H0jUIGvq
-         5ChX9TCryZnmp1V8LfMuzYAtPdTJmr6VtiZy2YmHVPTyJuULdkhqFxO73qGD33R/H6Kd
-         h6Sg==
-X-Gm-Message-State: AOAM530RsU2grxFlxuVM451GteUAzGvBdhH0ps+z3TuAh6RVhviAOSAh
-        VWkp9K0wVV6SymttK3HnEcBHlN9QiXm0RwddjHHt+yDzyEN4
-X-Google-Smtp-Source: ABdhPJxw2ZHnZrRMBSuA1WY+gur9HBw2dHlqtd6vUguLvgBjUDr/uw/WblqcEjpQDK1G6HYqIVz6onKMWuISYP6z3YVBcHt47jO4
+        id S1726017AbgJEItF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:49:05 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64418 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725880AbgJEItF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:49:05 -0400
+IronPort-SDR: uGqchOwkkklW18mwUVMcEfMwBogu42Fes3tt+3VBsoX9WmLasEjfx/GztLD7TqgKp2igAozXaI
+ nqD9+C9sSpKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="160739423"
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="160739423"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 01:48:58 -0700
+IronPort-SDR: UPd8fX2UVZGZuWU587nv6Y5qXeQGSdpctqkoRfk2qW9uO47f/ntw6qFjqksYNiLg5cgddKIsE+
+ j4TNDqJjK8VA==
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="515922828"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 01:48:54 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 741AF205CA; Mon,  5 Oct 2020 11:48:52 +0300 (EEST)
+Date:   Mon, 5 Oct 2020 11:48:52 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is
+ disabled
+Message-ID: <20201005084852.GD26842@paasikivi.fi.intel.com>
+References: <20201004122234.802044-1-acourbot@chromium.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:130e:: with SMTP id g14mr5716639ilr.205.1601887705328;
- Mon, 05 Oct 2020 01:48:25 -0700 (PDT)
-Date:   Mon, 05 Oct 2020 01:48:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a5738205b0e88b7d@google.com>
-Subject: WARNING in __ib_unregister_device
-From:   syzbot <syzbot+8f167a5e27d042b88f5e@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004122234.802044-1-acourbot@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Alexandre,
 
-syzbot found the following issue on:
+On Sun, Oct 04, 2020 at 09:22:34PM +0900, Alexandre Courbot wrote:
+> The addition of MT8183 support added a dependency on the SCP remoteproc
+> module. However the initial patch used the "select" Kconfig directive,
+> which may result in the SCP module to not be compiled if remoteproc was
+> disabled. In such a case, mtk-vcodec would try to link against
+> non-existent SCP symbols. "select" was clearly misused here as explained
+> in kconfig-language.txt.
+> 
+> Replace this by a "depends" directive on at least one of the VPU and
+> SCP modules, to allow the driver to be compiled as long as one of these
+> is enabled, and adapt the code to support this new scenario.
+> 
+> Also adapt the Kconfig text to explain the extra requirements for MT8173
+> and MT8183.
+> 
+> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-HEAD commit:    f5083d0c drivers/net/wan/hdlc_fr: Improvements to the code..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11546beb900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6c5266df853ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=8f167a5e27d042b88f5e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Thanks for the patch!
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8f167a5e27d042b88f5e@syzkaller.appspotmail.com
+I wonder if this driver suffers from similar object lifetime management
+issues than V4L2 and MC do, albeit not related to either. Say, what happens
+if you unbind the other device while mtk-vcodec is in use?
 
-smc: removing ib device syz1
-------------[ cut here ]------------
-sysfs group 'power' not found for kobject 'syz1'
-WARNING: CPU: 1 PID: 30473 at fs/sysfs/group.c:279 sysfs_remove_group+0x126/0x170 fs/sysfs/group.c:279
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 30473 Comm: kworker/u4:0 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound ib_unregister_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:sysfs_remove_group+0x126/0x170 fs/sysfs/group.c:279
-Code: 48 89 d9 49 8b 14 24 48 b8 00 00 00 00 00 fc ff df 48 c1 e9 03 80 3c 01 00 75 37 48 8b 33 48 c7 c7 c0 31 9b 88 e8 8c ae 58 ff <0f> 0b eb 98 e8 a1 69 ca ff e9 01 ff ff ff 48 89 df e8 94 69 ca ff
-RSP: 0018:ffffc9001599fbd8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffffff88fa00e0 RCX: 0000000000000000
-RDX: ffff888065092380 RSI: ffffffff815f7935 RDI: fffff52002b33f6d
-RBP: 0000000000000000 R08: 0000000000000001 R09: ffff8880ae531927
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880666c46d8
-R13: ffffffff88fa0680 R14: ffff8880a6adb100 R15: ffff8880aa071800
- dpm_sysfs_remove+0x97/0xb0 drivers/base/power/sysfs.c:801
- device_del+0x18b/0xd90 drivers/base/core.c:3080
- __ib_unregister_device+0xb5/0x1a0 drivers/infiniband/core/device.c:1464
- ib_unregister_work+0x15/0x30 drivers/infiniband/core/device.c:1569
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+-- 
+Regards,
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Sakari Ailus
