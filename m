@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A232837A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1EA2837A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgJEOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:25:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24061 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725903AbgJEOZM (ORCPT
+        id S1726478AbgJEOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:24:56 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:50635 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725903AbgJEOYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:25:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601907911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XyV5hB/0dQitvt3KevO7X3T92YrCjomOZnM1DMGfiBA=;
-        b=iq11V04vvP5dD5SQVluBgHGqHjogR5H2cBG0Yd8bpZqEu1lXvAJfO9zO6jy32Nzc8IeiTs
-        jKweP+7qwLICOM3IOhJanoBUhbNhXnsAhzpmcWpZaj+MYlV4XJSmA4LE4l+T5ijvSgveyT
-        ZzNeQI6vjKTc8GCGSwQ1hdUEuq7qcVg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-CH9R334rMsOsITQz4QhS3A-1; Mon, 05 Oct 2020 10:25:07 -0400
-X-MC-Unique: CH9R334rMsOsITQz4QhS3A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F2F085C708;
-        Mon,  5 Oct 2020 14:25:05 +0000 (UTC)
-Received: from treble (ovpn-119-43.rdu2.redhat.com [10.10.119.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 539B25C221;
-        Mon,  5 Oct 2020 14:24:15 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 09:23:53 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Matt Helsley <mhelsley@vmware.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Raphael Gault <raphael.gault@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool: avoid ../ headers includes and name clashes
-Message-ID: <20201005142353.q5tcvw4vf4lgd37r@treble>
-References: <patch.git-cac1912eff37.your-ad-here.call-01601816519-ext-4857@work.hours>
+        Mon, 5 Oct 2020 10:24:55 -0400
+Received: (qmail 377866 invoked by uid 1000); 5 Oct 2020 10:24:54 -0400
+Date:   Mon, 5 Oct 2020 10:24:54 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201005142454.GC376584@rowland.harvard.edu>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <20201004233146.GP29330@paulmck-ThinkPad-P72>
+ <20201005023846.GA359428@rowland.harvard.edu>
+ <20201005140353.GW29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <patch.git-cac1912eff37.your-ad-here.call-01601816519-ext-4857@work.hours>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201005140353.GW29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 03:05:42PM +0200, Vasily Gorbik wrote:
-> Doesn't this make it instantly obvious where are these files come from?
+On Mon, Oct 05, 2020 at 07:03:53AM -0700, Paul E. McKenney wrote:
+> Updated as suggested by Will, like this?
 > 
->  #include <objtool/warn.h>
->  #include <arch/elf.h>
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit adf43667b702582331d68acdf3732a6a017a182c
+> Author: Alan Stern <stern@rowland.harvard.edu>
+> Date:   Sun Oct 4 16:27:03 2020 -0700
+> 
+>     manual/kernel: Add a litmus test with a hidden dependency
+>     
+>     This commit adds a litmus test that has a data dependency that can be
+>     hidden by control flow.  In this test, both the taken and the not-taken
+>     branches of an "if" statement must be accounted for in order to properly
+>     analyze the litmus test.  But herd7 looks only at individual executions
+>     in isolation, so fails to see the dependency.
+>     
+>     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
+> new file mode 100644
+> index 0000000..cdcdec9
+> --- /dev/null
+> +++ b/manual/kernel/crypto-control-data.litmus
+> @@ -0,0 +1,34 @@
+> +C crypto-control-data
+> +(*
+> + * LB plus crypto-control-data plus data
+> + *
+> + * Result: Sometimes
+> + *
+> + * This is an example of OOTA and we would like it to be forbidden.
+> + * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
+> + * control-dependent on the preceding READ_ONCE.  But the dependencies are
+> + * hidden by the form of the conditional control construct, hence the 
+> + * name "crypto-control-data".  The memory model doesn't recognize them.
+> + *)
+> +
+> +{}
+> +
+> +P0(int *x, int *y)
+> +{
+> +	int r1;
+> +
+> +	r1 = 1;
+> +	if (READ_ONCE(*x) == 0)
+> +		r1 = 0;
+> +	WRITE_ONCE(*y, r1);
+> +}
+> +
+> +P1(int *x, int *y)
+> +{
+> +	int r2;
+> +
+> +	r2 = READ_ONCE(*y);
+> +	WRITE_ONCE(*x, r2);
+> +}
+> +
+> +exists (0:r1=1)
 
-Indeed, this is a lot better!  If I'm not mistaken, this conflicts with
-your other series.  Would you mind rebasing this on top of the others?
+Perfect!
 
--- 
-Josh
-
+Alan
