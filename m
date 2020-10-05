@@ -2,93 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C69E283638
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AC428363A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgJENGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgJENGR (ORCPT
+        id S1726057AbgJENGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:06:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40557 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJENGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:06:17 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656E5C0613CE;
-        Mon,  5 Oct 2020 06:06:17 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id u3so5570252pjr.3;
-        Mon, 05 Oct 2020 06:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RpEUWf5x3kBexxHD9w8MwGv2yxAHkVms5tc+d1P5ftk=;
-        b=Eu3Cd3nJUFxao8jHyz/1h1nT6pL0kgPvCTDJ952w4TfnfOOCDT7lbsxcwJDWUm+dcc
-         6RCxnwvrixDEo5j0CZUw8neUUo5QM6jakhLdUD6UNV6kqT/uTg9P6B77/7PsfnSGAezR
-         pmBunyaw6lFye15n4BSNagyUmDp92pu+bgUlKdi2GNG7uhz/M5zSQn6Lyx9HXPbdDstM
-         a0fXsISMTG96NqokpZdyfNvK/qOl7vOXJgDA16KjGCJFQp3y3FKrcry2gBEg/bVrJDsR
-         AZ3vDkVWbPPWHdwkKCckQ/vjW+9/zZG3WIPFxulCC7AtXghNxJjXUIMWfopQ7twOJhUu
-         lVaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RpEUWf5x3kBexxHD9w8MwGv2yxAHkVms5tc+d1P5ftk=;
-        b=L7CKLbkeJEgQfRfROeiRyLq0BMYJlI1Wivu7I4EA1wNq+A75Ay1fhOiSiGlWR4K7wq
-         +Libm7r/UFf7m/kVaZSlCMzGdLAD94iauNDssGt2t0HPvSBhqdKZ4FGZveua5SQb5l7H
-         hUF9W5ITChBAQqsVkUlwGiBmyFBAnCepElxyXD+6BR+Kv0qhsK0BTW+wuE4okoEDYzNq
-         oMyICuqf3yjFTQpQpvdINJG+OE8GkcxZCPbNufcpY/o13ifOpTYgTms4f7TiUcOeOw1X
-         m7Ee0m4XMDoxoF6sw0SNcXBtUouuK9ZLWssZbByrGeUQtL2M7CbAGLbQJl5MMyA7h1+M
-         366Q==
-X-Gm-Message-State: AOAM531S/rUngFkKklsrdg/ORDRIj5OJTsMe/22PTtszSHLszeBUB0U7
-        6u40maCQYg3upDp6YDH2VkM=
-X-Google-Smtp-Source: ABdhPJzmjPUnYF+MlBN1/fP5Lbivcd90LOYT44vpOpU++yw3cOIscCpHxkqEJbeI8bfjptF2xM3lBg==
-X-Received: by 2002:a17:90b:204d:: with SMTP id ji13mr5233053pjb.83.1601903176770;
-        Mon, 05 Oct 2020 06:06:16 -0700 (PDT)
-Received: from sol (106-69-166-86.dyn.iinet.net.au. [106.69.166.86])
-        by smtp.gmail.com with ESMTPSA id g129sm12401261pfb.9.2020.10.05.06.06.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 06:06:15 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 21:06:10 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 5/5] gpio: uapi: clarify the meaning of 'empty' char
- arrays
-Message-ID: <20201005130610.GA33067@sol>
-References: <20201005070329.21055-1-warthog618@gmail.com>
- <20201005070329.21055-6-warthog618@gmail.com>
- <CAHp75VdJ7zqPtWXKp3cUqPw3ZT7K0Dxzf7NYK+Zk9ZBhAPqG4g@mail.gmail.com>
+        Mon, 5 Oct 2020 09:06:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601903194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rT1In7KRFR7gVxexNgzl5bOh4i2rJfIrzyttGdWSaSU=;
+        b=W5LLHa2qbuVL/WeFlSVhL2pd67eDov/KL2XkZynyvgE0iLmmedAIMsBUUPRjnrLtSkEgJM
+        AmRyy+cpFpviJ2/zMlchRnzs8jxurSq/oRRsJstS5oTwMR2oIGyJWZtnGWU4XqCn8/zWk2
+        4F1qqquxqpTJlYyJCLnPF8lVzWX0lq0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-lZdmJO2zN8KT4an-unLauQ-1; Mon, 05 Oct 2020 09:06:31 -0400
+X-MC-Unique: lZdmJO2zN8KT4an-unLauQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B2B2EA5E1;
+        Mon,  5 Oct 2020 13:06:29 +0000 (UTC)
+Received: from starship (unknown [10.35.206.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F253B26185;
+        Mon,  5 Oct 2020 13:06:26 +0000 (UTC)
+Message-ID: <90e7b37a614d2cd723726a44b81395c3e9d158f0.camel@redhat.com>
+Subject: Re: [PATCH 1/3] KVM: x86: disconnect kvm_check_cpuid() from
+ vcpu->arch.cpuid_entries
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Wei Huang <whuang2@amd.com>, linux-kernel@vger.kernel.org
+Date:   Mon, 05 Oct 2020 16:06:25 +0300
+In-Reply-To: <87imbo99hv.fsf@vitty.brq.redhat.com>
+References: <20201001130541.1398392-1-vkuznets@redhat.com>
+         <20201001130541.1398392-2-vkuznets@redhat.com>
+         <85c31c92e6775b9d8ccd088e3f61659cac1c8cae.camel@redhat.com>
+         <87imbo99hv.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdJ7zqPtWXKp3cUqPw3ZT7K0Dxzf7NYK+Zk9ZBhAPqG4g@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 02:01:22PM +0300, Andy Shevchenko wrote:
-> On Mon, Oct 5, 2020 at 10:07 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Clarify that a char array containing a string is considered 'empty' if
-> > the first character is the null terminator. The remaining characters
-> > are not relevant to this determination.
+On Mon, 2020-10-05 at 13:51 +0200, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
 > 
-> >   * @label: a functional name for this GPIO chip, such as a product
-> > - * number, may be empty
-> > + * number, may be empty (i.e. label[0] == '\0')
+> > On Thu, 2020-10-01 at 15:05 +0200, Vitaly Kuznetsov wrote:
+> > > As a preparatory step to allocating vcpu->arch.cpuid_entries dynamically
+> > > make kvm_check_cpuid() check work with an arbitrary 'struct kvm_cpuid_entry2'
+> > > array.
+> > > 
+> > > Currently, when kvm_check_cpuid() fails we reset vcpu->arch.cpuid_nent to
+> > > 0 and this is kind of weird, i.e. one would expect CPUIDs to remain
+> > > unchanged when KVM_SET_CPUID[2] call fails.
+> > Since this specific patch doesn't fix this, maybe move this chunk to following patches,
+> > or to the cover letter?
 > 
-> I would rather put it like
-> "...may be empty string (i.e. label == "")"
+> Basically, this kind of pairs with what's after 'No functional change
+> intended' below: we admit the problem but don't fix it because we can't
+> (yet) and then in PATCH3 we do two things at once. It would be great to
+> separate these two changes but this doesn't seem to be possible without
+> an unneeded code churn.
+> 
+> That said, I'm completely fine with dropping this chunk from the commit
+> message if it sound inapropriate here.
+It just threw me a bit off course while trying to understand what the patch does.
+
+Best regards,
+	Maxim Levitsky
+
+> 
+> > > No functional change intended. It would've been possible to move the updated
+> > > kvm_check_cpuid() in kvm_vcpu_ioctl_set_cpuid2() and check the supplied
+> > > input before we start updating vcpu->arch.cpuid_entries/nent but we
+> > > can't do the same in kvm_vcpu_ioctl_set_cpuid() as we'll have to copy
+> > > 'struct kvm_cpuid_entry' entries first. The change will be made when
+> > > vcpu->arch.cpuid_entries[] array becomes allocated dynamically.
+> > > 
+> > > Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > > ---
+> > >  arch/x86/kvm/cpuid.c | 38 +++++++++++++++++++++++---------------
+> > >  1 file changed, 23 insertions(+), 15 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > > index 37c3668a774f..529348ddedc1 100644
+> > > --- a/arch/x86/kvm/cpuid.c
+> > > +++ b/arch/x86/kvm/cpuid.c
+> > > @@ -54,7 +54,24 @@ static u32 xstate_required_size(u64 xstate_bv, bool compacted)
+> > >  
+> > >  #define F feature_bit
+> > >  
+> > > -static int kvm_check_cpuid(struct kvm_vcpu *vcpu)
+> > > +static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
+> > > +	struct kvm_cpuid_entry2 *entries, int nent, u32 function, u32 index)
+> > > +{
+> > > +	struct kvm_cpuid_entry2 *e;
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < nent; i++) {
+> > > +		e = &entries[i];
+> > > +
+> > > +		if (e->function == function && (e->index == index ||
+> > > +		    !(e->flags & KVM_CPUID_FLAG_SIGNIFCANT_INDEX)))
+> > > +			return e;
+> > > +	}
+> > > +
+> > > +	return NULL;
+> > > +}
+> > > +
+> > > +static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+> > >  {
+> > >  	struct kvm_cpuid_entry2 *best;
+> > >  
+> > > @@ -62,7 +79,7 @@ static int kvm_check_cpuid(struct kvm_vcpu *vcpu)
+> > >  	 * The existing code assumes virtual address is 48-bit or 57-bit in the
+> > >  	 * canonical address checks; exit if it is ever changed.
+> > >  	 */
+> > > -	best = kvm_find_cpuid_entry(vcpu, 0x80000008, 0);
+> > > +	best = cpuid_entry2_find(entries, nent, 0x80000008, 0);
+> > >  	if (best) {
+> > >  		int vaddr_bits = (best->eax & 0xff00) >> 8;
+> > >  
+> > > @@ -220,7 +237,7 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+> > >  		vcpu->arch.cpuid_entries[i].padding[2] = 0;
+> > >  	}
+> > >  	vcpu->arch.cpuid_nent = cpuid->nent;
+> > > -	r = kvm_check_cpuid(vcpu);
+> > > +	r = kvm_check_cpuid(vcpu->arch.cpuid_entries, cpuid->nent);
+> > >  	if (r) {
+> > >  		vcpu->arch.cpuid_nent = 0;
+> > >  		kvfree(cpuid_entries);
+> > > @@ -250,7 +267,7 @@ int kvm_vcpu_ioctl_set_cpuid2(struct kvm_vcpu *vcpu,
+> > >  			   cpuid->nent * sizeof(struct kvm_cpuid_entry2)))
+> > >  		goto out;
+> > >  	vcpu->arch.cpuid_nent = cpuid->nent;
+> > > -	r = kvm_check_cpuid(vcpu);
+> > > +	r = kvm_check_cpuid(vcpu->arch.cpuid_entries, cpuid->nent);
+> > >  	if (r) {
+> > >  		vcpu->arch.cpuid_nent = 0;
+> > >  		goto out;
+> > > @@ -940,17 +957,8 @@ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+> > >  struct kvm_cpuid_entry2 *kvm_find_cpuid_entry(struct kvm_vcpu *vcpu,
+> > >  					      u32 function, u32 index)
+> > >  {
+> > > -	struct kvm_cpuid_entry2 *e;
+> > > -	int i;
+> > > -
+> > > -	for (i = 0; i < vcpu->arch.cpuid_nent; ++i) {
+> > > -		e = &vcpu->arch.cpuid_entries[i];
+> > > -
+> > > -		if (e->function == function && (e->index == index ||
+> > > -		    !(e->flags & KVM_CPUID_FLAG_SIGNIFCANT_INDEX)))
+> > > -			return e;
+> > > -	}
+> > > -	return NULL;
+> > > +	return cpuid_entry2_find(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent,
+> > > +				 function, index);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(kvm_find_cpuid_entry);
+> > >  
+> > 
+> > Other than minor note to the commit message, this looks fine, so
+> > Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > 
+> 
+> Thanks!
 > 
 
-I'm not keen on that alternative as what it suggests is actually a
-pointer comparison, and even if the user realizes that they may instead
-use "strlen(label) == 0", when they shouldn't be assuming that a null
-terminator is present in the array.  I avoided mentioning "string" and
-kept it in terms of the char array for the same reason.
 
-Cheers,
-Kent.
