@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0829D28354C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C53A28354B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgJEMCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJEMCu (ORCPT
+        id S1726128AbgJEMCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:02:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39386 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJEMCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:02:50 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7355AC0613CE;
-        Mon,  5 Oct 2020 05:02:50 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4C4fP256txzKmXF;
-        Mon,  5 Oct 2020 14:02:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :references:in-reply-to:message-id:subject:subject:from:from
-        :date:date:received; s=mail20150812; t=1601899363; bh=pih6XgYDkh
-        l48V+BsdGHAYaFoA2g7od1ZzQAq6LaM3s=; b=bZNQL9/M/c46lCFj+XsdjFomlb
-        G98zlxnUJks+QKFqtFg0oplTkuqy9pTZgW3W8PfC1zkk02ZvN+aThC44fMgoDc9o
-        6EaqjNlsGEVFwS1VSCxm07yb1zs/e3XaAZv2+Ab+LXKSpsfJiXX/2xGb8dTRxTuO
-        NG7WHbN/Yc7s8Jpq1dgXKD4LjYDN+u37mktqx/SHcE2t7NPfevUYDN8c4NDLp55V
-        j04414kXIDG+Tn+MHCAgiRp92Co4cW4AI7K6u3y/zHSpWh4EhOPvOqzPEpuX9lfm
-        xsqUzF0EQqtFWC0a/uW4SHbA+JIxc+Ty3gjKUcLI8Ly1NUl2P//Fdj5PEyuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1601899364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mUslHDM4D0qu0GiOwSg49uvZ9RTQWIl97TGFJy+Ih0E=;
-        b=nUQMiglFZLtrGqPlmNGbErRmOJql+THZNLU0KNInbb+ndEz3EXGMWHC9TkPj6710kqcaI5
-        HjdiOpUYUAeV1rrJ2dnfkhCIN1qcQGfLuk91tvicdGR5PFifOkL0gYeQ0rQLh7GQ/wbXPd
-        LlVuvkXRPAsnqY4dWvrPjEYCfQq902hPva0gE5oK1ShuUcxClrDOIaBjQOJsLPfBsNlG4L
-        1B3Rrc/zU+dLzB6eShCy9dr2nC0vvttsm/nMqktvOQfh84C8Hi8OZtr0YdXLHjt+OnjeRX
-        EQO3134kIX8hm+zhHXuCQgzCpi68n+7ETo4aZ8E/vZDXpa2oVUR6USHWv+FrKw==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
-        with ESMTP id RgbikclqFlhw; Mon,  5 Oct 2020 14:02:43 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 14:02:41 +0200
-From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?ISO-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <20201005140241.54fcd211@monster.powergraphx.local>
-In-Reply-To: <20201005110638.GP5141@localhost>
-References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
-        <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
-        <20201005082045.GL5141@localhost>
-        <20201005130134.459b4de9@monster.powergraphx.local>
-        <20201005110638.GP5141@localhost>
+        Mon, 5 Oct 2020 08:02:37 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095C2VYW003925;
+        Mon, 5 Oct 2020 07:02:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601899351;
+        bh=7e6FoBB+l9eBlwfzRMeBLOM9X8Im0mRKKOhVL5kZdTc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=VvmExfSLkJYJLFG2iokpftPXH/2t4Sq4PjrIiQkONokzYZBLzfXGSirSoWMj63J0E
+         PaRgDC30PpymXs3Oze06idfpkmPrCVyiqv8x2EmTaSrcNMZg33UFCSe+bCNdr40LCU
+         TPus9wgxnV35FUrXoxE3bErLGcF2OJd047T1xihg=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095C2VrM073032
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 5 Oct 2020 07:02:31 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
+ 2020 07:02:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 5 Oct 2020 07:02:31 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095C2TcU023448;
+        Mon, 5 Oct 2020 07:02:30 -0500
+Subject: Re: [PATCH] arm64: dts: ti: k3-j7200-main: Add McASP nodes
+To:     Nishanth Menon <nm@ti.com>
+CC:     <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>
+References: <20201005074850.11247-1-peter.ujfalusi@ti.com>
+ <20201005115805.d6yhykn7oc6x2tbu@charm>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <5a9ed7d3-fcfd-edbf-fc34-112a7e55aa1c@ti.com>
+Date:   Mon, 5 Oct 2020 15:02:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -4.96 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 84BFD17F1
-X-Rspamd-UID: 40de2a
+In-Reply-To: <20201005115805.d6yhykn7oc6x2tbu@charm>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 13:06:38 +0200
-Johan Hovold <johan@kernel.org> wrote:
 
-> On Mon, Oct 05, 2020 at 01:01:34PM +0200, Wilken Gottwalt wrote:
-> > On Mon, 5 Oct 2020 10:20:45 +0200
-> > Johan Hovold <johan@kernel.org> wrote:
-> > 
-> > > On Sat, Oct 03, 2020 at 11:40:29AM +0200, Wilken Gottwalt wrote:
-> > > > Add usb ids of the Cellient MPL200 card.
-> > > > 
-> > > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> > > > ---
-> 
-> > > > @@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
-> > > >  	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2,
-> > > > 0xff, 0x02, 0x01) }, { USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID,
-> > > > MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x00, 0x00) }, { USB_DEVICE(CELLIENT_VENDOR_ID,
-> > > > CELLIENT_PRODUCT_MEN200) },
-> > > > +	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
-> > > > +	  .driver_info = RSVD(1) | RSVD(4) },
-> > > 
-> > > Would you mind posting the output of "lsusb -v" for this device?
-> > 
-> > I would like to, but unfortunately I lost access to this really rare hardware
-> > about a month ago. It is a Qualcomm device (0x05c6:0x9025) with a slightly
-> > modified firmware to rebrand it as a Cellient product with a different vendor
-> > id. How to proceed here, if I have no access to it anymore? Drop it?
-> 
-> No, that's ok, I've applied the patch now. It's just that in case we
-> ever need to revisit the handling of quirky devices, it has proven
-> useful to have a record the descriptors.
-> 
-> Do you remember the interface layout and why you blacklisted interface
-> 1?
 
-If I remember correctly this interface belongs to the GPS data, but the
-card itself has no connector for a GPS antenna. The NMEA protocol data
-there were bogus values. I'm not sure if there is a hardware revision
-which has the connector, but the firmware seems to support it. Interface
-4 is the qmi endpoint for sure. The other endpoints are Hayes protocol
-and diag.
+On 05/10/2020 14.58, Nishanth Menon wrote:
+> On 10:48-20201005, Peter Ujfalusi wrote:
+>> Add the nodes for McASP 0-2 and keep them disabled because several
+>> required properties are not present as they are board specific.
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 57 ++++++++++++++++++++++=
++
+>>  1 file changed, 57 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/bo=
+ot/dts/ti/k3-j7200-main.dtsi
+>> index 72d6496e88dd..cc6c2a81887a 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+>> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+>> @@ -446,4 +446,61 @@ usb0: usb@6000000 {
+>>  			dr_mode =3D "otg";
+>>  		};
+>>  	};
+>> +x
+>> +	mcasp0: mcasp@02b00000 {
+>> +		compatible =3D "ti,am33xx-mcasp-audio";
+>> +		reg =3D <0x0 0x02b00000 0x0 0x2000>,
+>> +			<0x0 0x02b08000 0x0 0x1000>;
+>> +		reg-names =3D "mpu","dat";
+>> +		interrupts =3D <GIC_SPI 544 IRQ_TYPE_LEVEL_HIGH>,
+>> +				<GIC_SPI 545 IRQ_TYPE_LEVEL_HIGH>;
+>> +		interrupt-names =3D "tx", "rx";
+>> +
+>> +		dmas =3D <&main_udmap 0xc400>, <&main_udmap 0x4400>;
+>> +		dma-names =3D "tx", "rx";
+>> +
+>> +		clocks =3D <&k3_clks 174 40>;
+>> +		clock-names =3D "fck";
+>> +		power-domains =3D <&k3_pds 174 TI_SCI_PD_EXCLUSIVE>;
+>> +
+>> +		status =3D "disabled";
+>=20
+> I see that there is inconsistent usage of "disabled" in our SoC.dts
+>=20
+> Our generic rule has been set them to disabled in board.dtsi
+> McASP and DSS for existing SoC dts do not follow this.. which is a tad
+> confusing.. (considering that not even all uarts come out on every boar=
+d
+> and every uart needs pinmux to function..)
 
-greetings,
-Will
+"keep them disabled because several required properties are not present
+as they are board specific."
+
+In board file the enabled mcasp must be updated with options that is
+required for operation. Without those option the McASP can not be
+initialized.
+
+I think we have been revisiting the very same discussion every time we
+have a new SoC with McASP...
+
+>=20
+> Tero: Thoughts?
+>=20
+> [...]
+>=20
+
+- P=C3=A9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
