@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FC1283FEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6E4283FF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgJETz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 15:55:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:42023 "EHLO mga01.intel.com"
+        id S1729529AbgJET7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 15:59:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729424AbgJETzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 15:55:54 -0400
-IronPort-SDR: THvRdd0BTsWeJXHA1uuRiJbq0EaLCsM97Pl1dOV3MoOsksOLb+ZR6pT89u0h7P+R/AK2+zvWx6
- aihQ/BY5GOhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="181660127"
-X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
-   d="scan'208";a="181660127"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 12:55:37 -0700
-IronPort-SDR: oks1G58Ig037L17T3WhrWzyljR5CTaWaV5j6ZFyDqNKr97d3ytPGeEvEeTJC0asMgVHxHe5sjT
- 3U5oqdNIuB5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
-   d="scan'208";a="353550113"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by orsmga007.jf.intel.com with ESMTP; 05 Oct 2020 12:55:37 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: [PATCH 2/2] KVM: VMX: Ignore userspace MSR filters for x2APIC when APICV is enabled
-Date:   Mon,  5 Oct 2020 12:55:32 -0700
-Message-Id: <20201005195532.8674-3-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005195532.8674-1-sean.j.christopherson@intel.com>
-References: <20201005195532.8674-1-sean.j.christopherson@intel.com>
+        id S1729424AbgJET7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 15:59:17 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92FED2100A;
+        Mon,  5 Oct 2020 19:59:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601927956;
+        bh=lZLALtjavDkXurE9Is+8RTaRVsXxwohHJkUhoRrYMA8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NyeL888xOvfoVXZGiW1dPmrcZ9gswWQQqe+nc6Ex5K0Ie0kJXh7C32oTCfqyX1jLj
+         gDVpFxS5geiuCdw89ui6zzL1ud1xBE2Etcw44DYvPOonUEY/wUGW18XykhmcUlcGvI
+         QzHbNQMA+kHhTw1nen3JBk7XDTQLuSvDkQ80xYi4=
+Received: by mail-oi1-f169.google.com with SMTP id c13so9977640oiy.6;
+        Mon, 05 Oct 2020 12:59:16 -0700 (PDT)
+X-Gm-Message-State: AOAM532P4DLmnUmg0MTCoe53dMKqrbVomTtC0ucHHynrD9ppiMS46hgx
+        pZ1YaU9GqiE9PS3ABME9fhhg/nf0WlgLigsZYw==
+X-Google-Smtp-Source: ABdhPJxEl1lGVEtl2PfV0oWDWrsUbMTd7JVujQTh7El1xeMA1UkxI2WFTrP8Sa5CQ5G7EJnljCPTP1NbDiDj5mNWn9g=
+X-Received: by 2002:a54:4f89:: with SMTP id g9mr653207oiy.106.1601927955868;
+ Mon, 05 Oct 2020 12:59:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+ <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
+ <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
+ <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
+ <20201002183633.GA296334@rowland.harvard.edu> <CAL_JsqKHFA5RWz1SRLkR2JXydURL2pA+4C0+C+4SrJR_h4M0dw@mail.gmail.com>
+ <20201003124142.GA318272@rowland.harvard.edu> <20201005160655.GA4135817@google.com>
+ <20201005161527.GI376584@rowland.harvard.edu> <20201005191812.GB4135817@google.com>
+ <20201005193611.GA389867@rowland.harvard.edu>
+In-Reply-To: <20201005193611.GA389867@rowland.harvard.edu>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 5 Oct 2020 14:59:04 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK8V9PUCUD1iZQr52b28G39JraY=doZWzk0gNvu15qW-g@mail.gmail.com>
+Message-ID: <CAL_JsqK8V9PUCUD1iZQr52b28G39JraY=doZWzk0gNvu15qW-g@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete onboard
+ USB hubs
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework the resetting of the MSR bitmap for x2APIC MSRs to ignore
-userspace filtering when APICV is enabled.  Allowing userspace to
-intercept reads to x2APIC MSRs when APICV is fully enabled for the guest
-simply can't work.   The LAPIC and thus virtual APIC is in-kernel and
-cannot be directly accessed by userspace.  If userspace wants to
-intercept x2APIC MSRs, then it should first disable APICV.
+On Mon, Oct 5, 2020 at 2:36 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Mon, Oct 05, 2020 at 12:18:12PM -0700, Matthias Kaehlcke wrote:
+> > On Mon, Oct 05, 2020 at 12:15:27PM -0400, Alan Stern wrote:
+> > > The conclusion is that we need to have code that is aware of some
+> > > detailed needs of a specific device but is not part of the device's
+> > > driver.  I'm not sure what the best way to implement this would be.
+> >
+> > Wouldn't it be possible to load the module when the DT specifies that
+> > the device exists? For USB the kernel would need the VID/PID to identify
+> > the module, these could be extracted from the compatible string.
+>
+> Loading a driver module whenever DT says a device exists?  Not a bad
+> idea.  I don't know what would be involved, but no doubt it is possible.
 
-Opportunistically change the behavior to reset the full range of MSRs if
-and only if APICV is enabled for KVM.  The MSR bitmaps are initialized
-to intercept all reads and writes by default, and enable_apicv cannot be
-toggled after KVM is loaded.  I.e. if APICV is disabled, simply toggle
-the TPR MSR accordingly.
+MODULE_DEVICE_TABLE mostly as I mentioned in my other reply.
 
-Note, this still allows userspace to intercept reads and writes to TPR,
-and writes to EOI and SELF_IPI.  It is at least plausible userspace
-interception could work for those registers, though it is still silly.
+> Note that, except for a few special cases, the kernel identifies the
+> appropriate driver for USB hubs not by the VID/PID but instead by the
+> device class or interface class.  I suppose the compatible string could
+> include that information too?
 
-Cc: Alexander Graf <graf@amazon.com>
-Cc: Aaron Lewis <aaronlewis@google.com>
-Cc: Peter Xu <peterx@redhat.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/vmx.c | 46 +++++++++++++++++++++++++++---------------
- 1 file changed, 30 insertions(+), 16 deletions(-)
+We can go back to 1998 OpenFirmware and it's already there[1].
+'usb,class9' for a hub. There's a few other variations defined.
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 25ef0b22ac9e..e23c41ccfac9 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -3782,28 +3782,42 @@ static u8 vmx_msr_bitmap_mode(struct kvm_vcpu *vcpu)
- 	return mode;
- }
- 
--static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
-+static void vmx_reset_x2apic_msrs_for_apicv(struct kvm_vcpu *vcpu, u8 mode)
- {
-+	unsigned long *msr_bitmap = to_vmx(vcpu)->vmcs01.msr_bitmap;
-+	unsigned long read_intercept;
- 	int msr;
- 
--	for (msr = 0x800; msr <= 0x8ff; msr++) {
--		bool apicv = !!(mode & MSR_BITMAP_MODE_X2APIC_APICV);
-+	read_intercept = (mode & MSR_BITMAP_MODE_X2APIC_APICV) ? 0 : ~0;
- 
--		vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_R, !apicv);
--		vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_W, true);
-+	for (msr = 0x800; msr <= 0x8ff; msr += BITS_PER_LONG) {
-+		unsigned int read_idx = msr / BITS_PER_LONG;
-+		unsigned int write_idx = read_idx + (0x800 / sizeof(long));
-+
-+		msr_bitmap[read_idx] = read_intercept;
-+		msr_bitmap[write_idx] = ~0ul;
- 	}
-+}
- 
--	if (mode & MSR_BITMAP_MODE_X2APIC) {
--		/*
--		 * TPR reads and writes can be virtualized even if virtual interrupt
--		 * delivery is not in use.
--		 */
--		vmx_disable_intercept_for_msr(vcpu, X2APIC_MSR(APIC_TASKPRI), MSR_TYPE_RW);
--		if (mode & MSR_BITMAP_MODE_X2APIC_APICV) {
--			vmx_enable_intercept_for_msr(vcpu, X2APIC_MSR(APIC_TMCCT), MSR_TYPE_RW);
--			vmx_disable_intercept_for_msr(vcpu, X2APIC_MSR(APIC_EOI), MSR_TYPE_W);
--			vmx_disable_intercept_for_msr(vcpu, X2APIC_MSR(APIC_SELF_IPI), MSR_TYPE_W);
--		}
-+static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
-+{
-+	if (!cpu_has_vmx_msr_bitmap())
-+		return;
-+
-+	if (enable_apicv)
-+		vmx_reset_x2apic_msrs_for_apicv(vcpu, mode);
-+
-+	/*
-+	 * TPR reads and writes can be virtualized even if virtual interrupt
-+	 * delivery is not in use.
-+	 */
-+	vmx_set_intercept_for_msr(vcpu, X2APIC_MSR(APIC_TASKPRI), MSR_TYPE_RW,
-+				  !(mode & MSR_BITMAP_MODE_X2APIC));
-+
-+	if (mode & MSR_BITMAP_MODE_X2APIC_APICV) {
-+		vmx_enable_intercept_for_msr(vcpu, X2APIC_MSR(APIC_TMCCT), MSR_TYPE_RW);
-+		vmx_disable_intercept_for_msr(vcpu, X2APIC_MSR(APIC_EOI), MSR_TYPE_W);
-+		vmx_disable_intercept_for_msr(vcpu, X2APIC_MSR(APIC_SELF_IPI), MSR_TYPE_W);
- 	}
- }
- 
--- 
-2.28.0
+> > Having the initialization code outside of the driver could lead to code
+> > duplication, since the driver might want to power the device down in
+> > certain situations (e.g. system suspend).
+>
+> True.  On the other hand, how common do you think it would be for
+> drivers not to want to mess with the power settings?
 
+I think in that case you'd generally want firmware to enable things
+and the kernel then does no power control.
+
+We have ~1500 boards using DT and maybe ~10 with USB devices described
+in DT. So the whole thing is not common to begin with.
+
+Rob
+
+[1] https://www.devicetree.org/open-firmware/bindings/usb/usb-1_0.ps
