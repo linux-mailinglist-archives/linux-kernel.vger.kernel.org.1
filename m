@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329A52835C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526E42835CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgJEM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S1726138AbgJEM1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgJEM1p (ORCPT
+        with ESMTP id S1726200AbgJEM1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Oct 2020 08:27:45 -0400
 Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006B3C0613A8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074A6C0613A9
         for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:27:44 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id 8E5EA23F6E9;
+        by smtp2.goneo.de (Postfix) with ESMTP id D210723F737;
         Mon,  5 Oct 2020 14:27:43 +0200 (CEST)
 X-Virus-Scanned: by goneo
 X-Spam-Flag: NO
-X-Spam-Score: -2.98
+X-Spam-Score: -2.979
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.98 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.080, BAYES_00=-1.9] autolearn=ham
+X-Spam-Status: No, score=-2.979 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.079, BAYES_00=-1.9] autolearn=ham
 Received: from smtp2.goneo.de ([127.0.0.1])
         by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8IFpecwhnM45; Mon,  5 Oct 2020 14:27:42 +0200 (CEST)
+        with ESMTP id 1DIAyAOs1iDD; Mon,  5 Oct 2020 14:27:42 +0200 (CEST)
 Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp2.goneo.de (Postfix) with ESMTPA id D910223F913;
-        Mon,  5 Oct 2020 14:27:41 +0200 (CEST)
+        by smtp2.goneo.de (Postfix) with ESMTPA id 9CB3623F707;
+        Mon,  5 Oct 2020 14:27:42 +0200 (CEST)
 From:   poeschel@lemonage.de
 To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
         Willy Tarreau <willy@haproxy.com>,
         Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lars Poeschel <poeschel@lemonage.de>
-Subject: [PATCH v4 00/32] Make charlcd device independent
-Date:   Mon,  5 Oct 2020 14:27:00 +0200
-Message-Id: <20201005122732.3429347-1-poeschel@lemonage.de>
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
+Subject: [PATCH v4 01/32] auxdisplay: Use an enum for charlcd  backlight on/off ops
+Date:   Mon,  5 Oct 2020 14:27:01 +0200
+Message-Id: <20201005122732.3429347-2-poeschel@lemonage.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201005122732.3429347-1-poeschel@lemonage.de>
+References: <20201005122732.3429347-1-poeschel@lemonage.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,86 +50,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lars Poeschel <poeschel@lemonage.de>
 
-This tries to make charlcd device independent. At the moment hd44780
-device specific code is contained deep in charlcd. This moves this out
-into a hd44780_common module, where the two hd44780 drivers we have at
-the moment (hd44780 and panel) can use this from. The goal is that at
-the end other drivers can use the charlcd interface.
-I add one such driver at the end with the last patch.
-I submitted this already some time ago, where the wish was so split
-this into smaller chunks what I try to do with this new patchset.
-Most of the patches pick one specific function in charlcd and move the
-device specific code into hd44780_common.
+We use an enum for calling the functions in charlcd, that turn the
+backlight on or off. This enum is generic and can be used for other
+charlcd turn of / turn off operations as well.
 
-As a note to patch 30:
-This might slightly change behaviour.
-On hd44780 displays with one or two lines the previous implementation
-did still write characters to the buffer of the display even if they are
-currently not visible. The shift_display command could be used so set
-the "viewing window" to a new position in the buffer and then you could
-see the characters previously written.
-This described behaviour does not work for hd44780 displays with more
-than two display lines. There simply is not enough buffer.
-So the behaviour was a bit inconsistens across different displays.
-The new behaviour is to stop writing character at the end of a visible
-line, even if there would be room in the buffer. This allows us to have
-an easy implementation, that should behave equal on all supported
-displays. This is not hd44780 hardware dependents anymore.
+Reviewed-by: Willy Tarreau <w@1wt.eu>
+Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+---
+ drivers/auxdisplay/charlcd.c | 2 +-
+ drivers/auxdisplay/charlcd.h | 7 ++++++-
+ drivers/auxdisplay/hd44780.c | 2 +-
+ drivers/auxdisplay/panel.c   | 2 +-
+ 4 files changed, 9 insertions(+), 4 deletions(-)
 
-Link: https://lore.kernel.org/lkml/20191016082430.5955-1-poeschel@lemonage.de/
-Link: https://lore.kernel.org/lkml/CANiq72kS-u_Xd_m+2CQVh-JCncPf1XNXrXAZ=4z+mze8fwv2kw@mail.gmail.com/
-
-Lars Poeschel (32):
-  auxdisplay: Use an enum for charlcd  backlight on/off ops
-  auxdisplay: Introduce hd44780_common.[ch]
-  auxdisplay: Move hwidth and bwidth to struct hd44780_common
-  auxdisplay: Move ifwidth to struct hd44780_common
-  auxdisplay: Move write_data pointer to hd44780_common
-  auxdisplay: Move write_cmd pointers to hd44780 drivers
-  auxdisplay: Move addr out of charlcd_priv
-  auxdisplay: hd44780_common_print
-  auxdisplay: provide hd44780_common_gotoxy
-  auxdisplay: add home to charlcd_ops
-  auxdisplay: Move clear_display to hd44780_common
-  auxdisplay: make charlcd_backlight visible to hd44780_common
-  auxdisplay: Make use of enum for backlight on / off
-  auxdisplay: Move init_display to hd44780_common
-  auxdisplay: implement hd44780_common_shift_cursor
-  auxdisplay: Implement hd44780_common_display_shift
-  auxdisplay: Implement a hd44780_common_display
-  auxdisplay: Implement hd44780_common_cursor
-  auxdisplay: Implement hd44780_common_blink
-  auxdisplay: cleanup unnecessary hd44780 code in charlcd
-  auxdisplay: Implement hd44780_common_fontsize
-  auxdisplay: Implement hd44780_common_lines
-  auxdisplay: Remove unnecessary hd44780 from charlcd
-  auxdisplay: Move char redefine code to hd44780_common
-  auxdisplay: Call charlcd_backlight in place
-  auxdisplay: hd44780_common: Reduce clear_display timeout
-  auxdisplay: hd44780: Remove clear_fast
-  auxdisplay: charlcd: replace last device specific stuff
-  auxdisplay: Change gotoxy calling interface
-  auxdisplay: charlcd: Do not print chars at end of line
-  auxdisplay: lcd2s DT binding doc
-  auxdisplay: add a driver for lcd2s character display
-
- .../bindings/auxdisplay/modtronix,lcd2s.yaml  |  58 +++
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- drivers/auxdisplay/Kconfig                    |  30 ++
- drivers/auxdisplay/Makefile                   |   2 +
- drivers/auxdisplay/charlcd.c                  | 412 +++++-------------
- drivers/auxdisplay/charlcd.h                  |  86 +++-
- drivers/auxdisplay/hd44780.c                  | 120 +++--
- drivers/auxdisplay/hd44780_common.c           | 368 ++++++++++++++++
- drivers/auxdisplay/hd44780_common.h           |  34 ++
- drivers/auxdisplay/lcd2s.c                    | 409 +++++++++++++++++
- drivers/auxdisplay/panel.c                    | 180 ++++----
- 11 files changed, 1251 insertions(+), 450 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
- create mode 100644 drivers/auxdisplay/hd44780_common.c
- create mode 100644 drivers/auxdisplay/hd44780_common.h
- create mode 100644 drivers/auxdisplay/lcd2s.c
-
+diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
+index 5aee0f546351..8aaee0fea9ab 100644
+--- a/drivers/auxdisplay/charlcd.c
++++ b/drivers/auxdisplay/charlcd.c
+@@ -101,7 +101,7 @@ static void long_sleep(int ms)
+ }
+ 
+ /* turn the backlight on or off */
+-static void charlcd_backlight(struct charlcd *lcd, int on)
++static void charlcd_backlight(struct charlcd *lcd, enum charlcd_onoff on)
+ {
+ 	struct charlcd_priv *priv = charlcd_to_priv(lcd);
+ 
+diff --git a/drivers/auxdisplay/charlcd.h b/drivers/auxdisplay/charlcd.h
+index 00911ad0f3de..c66f038e5d2b 100644
+--- a/drivers/auxdisplay/charlcd.h
++++ b/drivers/auxdisplay/charlcd.h
+@@ -9,6 +9,11 @@
+ #ifndef _CHARLCD_H
+ #define _CHARLCD_H
+ 
++enum charlcd_onoff {
++	CHARLCD_OFF = 0,
++	CHARLCD_ON,
++};
++
+ struct charlcd {
+ 	const struct charlcd_ops *ops;
+ 	const unsigned char *char_conv;	/* Optional */
+@@ -30,7 +35,7 @@ struct charlcd_ops {
+ 	/* Optional */
+ 	void (*write_cmd_raw4)(struct charlcd *lcd, int cmd);	/* 4-bit only */
+ 	void (*clear_fast)(struct charlcd *lcd);
+-	void (*backlight)(struct charlcd *lcd, int on);
++	void (*backlight)(struct charlcd *lcd, enum charlcd_onoff on);
+ };
+ 
+ struct charlcd *charlcd_alloc(unsigned int drvdata_size);
+diff --git a/drivers/auxdisplay/hd44780.c b/drivers/auxdisplay/hd44780.c
+index bcbe13092327..5982158557bb 100644
+--- a/drivers/auxdisplay/hd44780.c
++++ b/drivers/auxdisplay/hd44780.c
+@@ -37,7 +37,7 @@ struct hd44780 {
+ 	struct gpio_desc *pins[PIN_NUM];
+ };
+ 
+-static void hd44780_backlight(struct charlcd *lcd, int on)
++static void hd44780_backlight(struct charlcd *lcd, enum charlcd_onoff on)
+ {
+ 	struct hd44780 *hd = lcd->drvdata;
+ 
+diff --git a/drivers/auxdisplay/panel.c b/drivers/auxdisplay/panel.c
+index 1c82d824ae00..de623ae219f1 100644
+--- a/drivers/auxdisplay/panel.c
++++ b/drivers/auxdisplay/panel.c
+@@ -708,7 +708,7 @@ static void lcd_send_serial(int byte)
+ }
+ 
+ /* turn the backlight on or off */
+-static void lcd_backlight(struct charlcd *charlcd, int on)
++static void lcd_backlight(struct charlcd *charlcd, enum charlcd_onoff on)
+ {
+ 	if (lcd.pins.bl == PIN_NONE)
+ 		return;
 -- 
 2.28.0
 
