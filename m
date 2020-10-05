@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2556528426F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818ED284278
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgJEWRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 18:17:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        id S1727097AbgJEW0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 18:26:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:59930 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgJEWRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:17:54 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 449FB206CB;
-        Mon,  5 Oct 2020 22:17:53 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 18:17:51 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 7/7] tracing: Change synthetic event string format to
- limit printed length
-Message-ID: <20201005181751.1338afbc@gandalf.local.home>
-In-Reply-To: <b6bdb34e70d970e8026daa3503db6b8e5cdad524.1601848695.git.zanussi@kernel.org>
-References: <cover.1601848695.git.zanussi@kernel.org>
-        <b6bdb34e70d970e8026daa3503db6b8e5cdad524.1601848695.git.zanussi@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725861AbgJEW0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 18:26:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28E8F113E;
+        Mon,  5 Oct 2020 15:26:35 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E70D3F70D;
+        Mon,  5 Oct 2020 15:26:33 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        broonie@kernel.org, robh@kernel.org, satyakim@qti.qualcomm.com,
+        etienne.carriere@linaro.org, cristian.marussi@arm.com
+Subject: [PATCH 0/4] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
+Date:   Mon,  5 Oct 2020 23:26:19 +0100
+Message-Id: <20201005222623.1123-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  4 Oct 2020 17:14:09 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+Hi,
 
-> From: Steven Rostedt <rostedt@goodmis.org>
-> 
-> Change the format for printing synthetic field strings to limit the
-> length of the string printed even if it's not correctly terminated.
-> 
-> Description from Steve:
-> 
-> I also added this for a bit of paranoid, and probably should be a
-> separate patch, just to make sure if the string isn't nul terminated,
-> this will keep it from bleeding pass the end of the string.
+this series introduces the support for the new SCMI Voltage Domain Protocol
+defined by the upcoming SCMIv3.0 specification, whose BETA release is
+available at [1].
 
-Just FYI. In the future, for something like this, you should still have
-your own Signed-off-by, as you are sending it (and part of the commit
-path). You could also add:
+Afterwards, a new generic SCMI Regulator driver is developed on top of the
+new SCMI VD Protocol.
 
-[ Need signed-off-by from Steven ]
+The series is currently based on for-next/scmi [2] on top of:
 
-Which I would have also added as well.
+commit 66d90f6ecee7 ("firmware: arm_scmi: Enable building as a single
+		     module")
 
-Thanks!
+Any feedback welcome,
 
--- Steve
+Thanks,
+
+Cristian
+
+[1]:https://developer.arm.com/documentation/den0056/c/
+[2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
 
 
-> ---
->  kernel/trace/trace_events_synth.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index 24bc6d61aa40..742ce5f62d6d 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -234,7 +234,7 @@ static const char *synth_field_fmt(char *type)
->  	else if (strcmp(type, "gfp_t") == 0)
->  		fmt = "%x";
->  	else if (synth_field_is_string(type))
-> -		fmt = "%s";
-> +		fmt = "%.*s";
->  
->  	return fmt;
->  }
-> @@ -303,11 +303,13 @@ static enum print_line_t print_synth_event(struct trace_iterator *iter,
->  				str_field = (char *)entry + data_offset;
->  
->  				trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> +						 STR_VAR_LEN_MAX,
->  						 str_field,
->  						 i == se->n_fields - 1 ? "" : " ");
->  				n_u64++;
->  			} else {
->  				trace_seq_printf(s, print_fmt, se->fields[i]->name,
-> +						 STR_VAR_LEN_MAX,
->  						 (char *)&entry->fields[n_u64],
->  						 i == se->n_fields - 1 ? "" : " ");
->  				n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
+Cristian Marussi (4):
+  firmware: arm_scmi: Add Voltage Domain Support
+  firmware: arm_scmi: add SCMI Voltage Domain devname
+  regulator: add SCMI driver
+  dt-bindings: arm: add support for SCMI Regulators
+
+ .../devicetree/bindings/arm/arm,scmi.txt      |  44 ++
+ drivers/firmware/arm_scmi/Makefile            |   2 +-
+ drivers/firmware/arm_scmi/common.h            |   1 +
+ drivers/firmware/arm_scmi/driver.c            |   3 +
+ drivers/firmware/arm_scmi/voltage.c           | 378 ++++++++++++++
+ drivers/regulator/Kconfig                     |   9 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/scmi-regulator.c            | 488 ++++++++++++++++++
+ include/linux/scmi_protocol.h                 |  64 +++
+ 9 files changed, 989 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/firmware/arm_scmi/voltage.c
+ create mode 100644 drivers/regulator/scmi-regulator.c
+
+-- 
+2.17.1
 
