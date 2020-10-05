@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B00928306E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3E2283070
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgJEGoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 02:44:16 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:36991 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJEGoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:44:15 -0400
-Received: by mail-wr1-f68.google.com with SMTP id h7so4535571wre.4
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 23:44:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OzN1JPXKv6Spexj0EdyUYa+k+0ic40CtwBqEYlJv0uk=;
-        b=c8bhvhnhBjP5jK5AeMYkiqxNK0zu/lboU4fLHLIp38CO7+yTdF6qhZ5BVDIj+cCKrE
-         8TwZp1earI2N3vEBlCCFS/nqvsmQzBaKEXFShO0DE4B2Cf7jp9Ts3GbAjbcbuwPcY1Tr
-         3lHb3e7RQ7yVlz8nAPJJqOeWx6/W8bs/X6GUDPGvq7xeuU9f/fdWh2O8Sq4lgS2lVorH
-         lJCPOMzIG4S+4IjgSSRyVnTrc3sRNP0UTVricEFBArAlto46FnNXe3ZDIS3dLBIJATkX
-         AD9tvajTipB1SIH6Dj+iBfh2GoocfoyHax5KW7PJUQLN0PYE7RhsUzzBvn89PqfkgjHZ
-         JVlA==
-X-Gm-Message-State: AOAM532WSf+heQZb/T7tN1Q5tL6giZO8Sv+QbBHclPOo156uxYYkOBYx
-        AgM3KDq6w0sWjvcZ09gBSjFUK2kAQttEUfpSxzJsi5uFW48=
-X-Google-Smtp-Source: ABdhPJzJraKz/rfOgCeb7Og+IIW+gvj3yn/RrgEdiZeXLCFiS1Menw7IFtSrPZBBB90TxwYwsWX0dVxlg/op711mQkk=
-X-Received: by 2002:a05:6000:104c:: with SMTP id c12mr15240286wrx.133.1601880253409;
- Sun, 04 Oct 2020 23:44:13 -0700 (PDT)
+        id S1725930AbgJEGov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 02:44:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725881AbgJEGov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 02:44:51 -0400
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8B162083B;
+        Mon,  5 Oct 2020 06:44:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601880291;
+        bh=wsAVEaV1+h1cDZGoNWJx95GIyKoJhBW7f/aAlsRaZi0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i8rGxo6JPfgAgmgQZLNkgC4n7PLiYYbnTKY/fMM8grr7zqt7WfvBskF/auZcnUYLp
+         Lr20+zeyZ3g7xCTbOdEwbqxVo67XfcUT2iuncGiJ8fm4z4r846eH988apXeGGmHxLX
+         o/SuOxWdx+53ExQovJWw5yYVDs0pwP8+ve5nTTqM=
+Received: by mail-oi1-f180.google.com with SMTP id z26so7755266oih.12;
+        Sun, 04 Oct 2020 23:44:50 -0700 (PDT)
+X-Gm-Message-State: AOAM530CdnNO2FYqXThAs4nBiS22Ehf9YxsbhMiNohf1xeDGnZY0oJNb
+        Un+CcFtRNxOsDdD2JnYtsDvn8GyQboKJz/BH0Ww=
+X-Google-Smtp-Source: ABdhPJyEZCGyj5e57q59leoKnW6YWhhIYyupKGdmMavLkSJgFy4/I0xNh6NzK3ZRa9LfvAyoGzOKA9XsxaxydYUqh/U=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr7393683oig.47.1601880290247;
+ Sun, 04 Oct 2020 23:44:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200611085900.49740-1-tomeu.vizoso@collabora.com>
- <20200611085900.49740-2-tomeu.vizoso@collabora.com> <1b72d5ad-365f-e7fb-624e-b88420ff264b@arm.com>
-In-Reply-To: <1b72d5ad-365f-e7fb-624e-b88420ff264b@arm.com>
-From:   Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Date:   Mon, 5 Oct 2020 08:44:02 +0200
-Message-ID: <CAAObsKBHe1a4cSe0LS64ikEVzU55FBK4yQbLpMxvOJsP9s=1Nw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] panfrost: Add compatible string for bifrost
-To:     Steven Price <steven.price@arm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+References: <20200930065617.934638-1-palmerdabbelt@google.com>
+ <20201005061918.GB1856@infradead.org> <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
+ <2588700.mWSkj6HvKX@tauon.chronox.de>
+In-Reply-To: <2588700.mWSkj6HvKX@tauon.chronox.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 5 Oct 2020 08:44:39 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFL4gfrK1+zRG9sajTk62yRh3WzBG46KfKD=iM=VQMTAQ@mail.gmail.com>
+Message-ID: <CAMj1kXFL4gfrK1+zRG9sajTk62yRh3WzBG46KfKD=iM=VQMTAQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: jitterentropy - bind statically into kernel
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        kernel test robot <lkp@intel.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jun 2020 at 11:00, Steven Price <steven.price@arm.com> wrote:
+On Mon, 5 Oct 2020 at 08:40, Stephan Mueller <smueller@chronox.de> wrote:
 >
-> On 11/06/2020 09:58, Tomeu Vizoso wrote:
-> > Mesa now supports some Bifrost devices, so enable it.
-> >
-> > Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> Am Montag, 5. Oktober 2020, 08:24:46 CEST schrieb Ard Biesheuvel:
 >
-> Reviewed-by: Steven Price <steven.price@arm.com>
+> Hi Ard,
 >
-> I've also dug out my Hikey960 (from the box it's been in since lock down
-> started), so I'll see if I can get things running on there, at the
-> moment I'm seeing some DATA_INVALID_FAULT regressions running my hacked
-> DDK :(
+> > If jitterentropy is a special case, we could put a alternate
+> > non-'static inline' version of random_get_entropy() in the core
+> > kernel, and only export it if JITTER_ENTROPY is built as a module in
+> > the first place. But I'd prefer it if jitterentropy switches to an API
+> > that is suitable for driver consumption.
+>
+> Which API do you have in mind? In user space, I use
+> clock_gettime(CLOCK_REALTIME) which also considers the clock source.
+>
 
-Hi!
+AFAICT, that call is backed by ktime_get_real_ts64(), which is already
+being exported to modules.
 
-Has this one fallen through the cracks?
-
-Thanks,
-
-Tomeu
-
->
-> Steve
->
-> > ---
-> >   drivers/gpu/drm/panfrost/panfrost_drv.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > index 882fecc33fdb..8ff8e140f91e 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > @@ -677,6 +677,7 @@ static const struct of_device_id dt_match[] = {
-> >       { .compatible = "arm,mali-t830", .data = &default_data, },
-> >       { .compatible = "arm,mali-t860", .data = &default_data, },
-> >       { .compatible = "arm,mali-t880", .data = &default_data, },
-> > +     { .compatible = "arm,mali-bifrost", .data = &default_data, },
-> >       {}
-> >   };
-> >   MODULE_DEVICE_TABLE(of, dt_match);
-> >
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Could you please check whether that works for your driver?
