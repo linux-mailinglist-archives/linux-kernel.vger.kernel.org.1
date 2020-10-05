@@ -2,147 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD1128307F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52046283088
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgJEG65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 02:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        id S1725896AbgJEHDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725869AbgJEG65 (ORCPT
+        with ESMTP id S1725870AbgJEHDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:58:57 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0F0C0613CE;
-        Sun,  4 Oct 2020 23:58:56 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id j2so8062443eds.9;
-        Sun, 04 Oct 2020 23:58:56 -0700 (PDT)
+        Mon, 5 Oct 2020 03:03:02 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8869BC0613CE;
+        Mon,  5 Oct 2020 00:03:02 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w21so6200802pfc.7;
+        Mon, 05 Oct 2020 00:03:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=gRVfMn1y3J1C+vGuMZF2LipjcOOXpjH1BPs85qkeY9I=;
-        b=mJKhyuUpK1czGMhr3NIrmOT1aqCSpfTCVHRLKrrKneUrmoSvr9uQMBqETyYeNoea+U
-         IeK0JjiPdhyJxJetWUGZ5zAqvuNnkEP584WnevYsaklihWJVxY+3h9kS7nHTHc+P8PHp
-         vYxA/ZSzphHvZwIQzVLyMypYaWBL2sVQdIP2Ugd1nZSflP8DnoqvJ/s20hjdy5Yt94L4
-         Sh/jrVpidiEAS4OPFTM1SfwILy75ZxYh+W6Xo/dCTS/rqLAKv6EmJ+lTedfOJ7gBnVaR
-         D+l2Yr5RUEpVAoAGnLy0UhmFRK6lVzXqZS4X3740EQAKkVn6Q+yNzH5OcVje6JdQHbEr
-         A7bA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CdYIVgI4n9+eIXSWNl8hCgM/Orv/73d8eXm3ox+1Bvg=;
+        b=D3lIrlki6OBjMUooYn06CVt0oWLi4Ybtn96ssD5v2aFpKehk9okXIhWtghu8PQEoCf
+         zEuWhieq+PcdWnc1hNfcpDyuixCko/7r73xTS2qwCh2jJ7ikFeA/rDIAYYlDX33JXJW4
+         I0F+YDyz6pVHSPY++GBYsvD71DHqEngxlLDIIY59/AZPmbNID2AtCa6WeP9Fc4XI+iGK
+         NpUyOOWFUyPkLCPjFl7DxBFNUbESzbTCuaNMspfZ3KgESj20SJllo0na8luWUE4i4RQi
+         Wl3hTi0dokpnUf2dxhQnXxhXPsLOGf/J9+sqmI0qvWLYLm9m0s2OCb5mejPXjvcb19y1
+         lJkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=gRVfMn1y3J1C+vGuMZF2LipjcOOXpjH1BPs85qkeY9I=;
-        b=c4rV2e/jwenD7Bg+BAzsYTINNooD0JRv9vjs1FhRjtxoi++KWbjIwLmTE9p3A6fTVn
-         8NatEH5XkEIa/cPD1lRXXwcKpKJaEr9wZ6SlWZ026UyPwAJxC34OgrWzBjUim/ODRjFR
-         3H6PM9v0e9YR8sMXDdGvGusvTQK9jNSGmFcJQP+DUYXISSLAaE5+IlcYJD7tXLVn6D+0
-         dNh7A8GqtfBrmMCR1Zv22IJ17PiANLfuCHeozJ0zMrOVcpwel+7TaK3g+IZw9GcTgSh5
-         gpzcdrWQ6YQQfl1s0nVKB/3F8MgcHpBIPX/wNcTo6aQkHAw7lRjIyEwe5P12NQslFh15
-         r42w==
-X-Gm-Message-State: AOAM5336f1gn8uiegfwokYFYr7y/d/Fht+y8ba0SPQpnSxHzaICn2oth
-        aPPP8EIb5U5Vq1USY4j31zI=
-X-Google-Smtp-Source: ABdhPJzoG44HkP0BJW9eFlGS3ah1NuoR/b/9sdRFfTA7f/mr7xp3yJ8sldhhlKCyJmpnepeMNEGJkQ==
-X-Received: by 2002:aa7:d690:: with SMTP id d16mr7880545edr.301.1601881135466;
-        Sun, 04 Oct 2020 23:58:55 -0700 (PDT)
-Received: from felia ([2001:16b8:2dcc:7300:fc41:427:81ae:8ef0])
-        by smtp.gmail.com with ESMTPSA id a13sm200597edx.53.2020.10.04.23.58.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CdYIVgI4n9+eIXSWNl8hCgM/Orv/73d8eXm3ox+1Bvg=;
+        b=HdGFL3hZHUmoYW7x1hCj/Eup8+Ubdq94tSK6CvvvzCJ6BGUCrA3Nbl/kuesQwnMH9j
+         kUJXvLdTmoJHZKhnN5asUCKxQ0ZaslS/A/qFhX1osmgofg9paz3obccBSzBOMP+oWl3N
+         Cqpx64jMCoyPrTSGIKbAFTsa6K9ZWC8V7DWVmwYDu9teo1yIdGK1b+x52dFjYeMb34iP
+         Q7gQKWQstGsmq86cQD4nRjQvxP90Q+xIs8fHQW+fvmT+PvoPXUY8dzCvK0dJCcS/bwzT
+         XcxLl7MHTTLzSaF5R/M3bryZU4WvygNxB5i8BtI72bQXUWtLGPm+198JmWgA8z7dxjdT
+         4YVw==
+X-Gm-Message-State: AOAM533mo+aomPTOfCbXKUauajqT7WFxm7tULgdjICm4nsmALJ3piTGA
+        unUWNVt227FcifU3sDQPudeO8gu6rAynZg==
+X-Google-Smtp-Source: ABdhPJw1djVNAva+dusKY7gcKuVR2UvLLQLAFqRbNGpAhwVISIxANWQurE5TF9h9u9W/9Upm1vldiA==
+X-Received: by 2002:aa7:8001:0:b029:142:2501:34e6 with SMTP id j1-20020aa780010000b0290142250134e6mr15924953pfi.63.1601881381467;
+        Mon, 05 Oct 2020 00:03:01 -0700 (PDT)
+Received: from sol.lan (106-69-166-86.dyn.iinet.net.au. [106.69.166.86])
+        by smtp.gmail.com with ESMTPSA id j4sm10567908pfj.143.2020.10.05.00.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 23:58:54 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Mon, 5 Oct 2020 08:58:53 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Mel Gorman <mgorman@techsingularity.net>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH] mm/vmscan: drop unneeded assignment in kswapd()
-In-Reply-To: <20201004192437.GF3227@techsingularity.net>
-Message-ID: <alpine.DEB.2.21.2010050831010.6202@felia>
-References: <20201004125827.17679-1-lukas.bulwahn@gmail.com> <20201004192437.GF3227@techsingularity.net>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 05 Oct 2020 00:03:00 -0700 (PDT)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH] gpiolib: cdev: switch from kstrdup() to kstrndup()
+Date:   Mon,  5 Oct 2020 15:02:46 +0800
+Message-Id: <20201005070246.20927-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use kstrndup() to copy line labels from the userspace provided char
+array, rather than ensuring the char array contains a null terminator
+and using kstrdup().
 
+Note that the length provided to kstrndup() still assumes that the char
+array does contain a null terminator, so the maximum string length is one
+less than the array.  This is consistent with the previous behaviour.
 
-On Sun, 4 Oct 2020, Mel Gorman wrote:
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Kent Gibson <warthog618@gmail.com>
+---
 
-> On Sun, Oct 04, 2020 at 02:58:27PM +0200, Lukas Bulwahn wrote:
-> > The refactoring to kswapd() in commit e716f2eb24de ("mm, vmscan: prevent
-> > kswapd sleeping prematurely due to mismatched classzone_idx") turned an
-> > assignment to reclaim_order into a dead store, as in all further paths,
-> > reclaim_order will be assigned again before it is used.
-> > 
-> > make clang-analyzer on x86_64 tinyconfig caught my attention with:
-> > 
-> >   mm/vmscan.c: warning: Although the value stored to 'reclaim_order' is
-> >   used in the enclosing expression, the value is never actually read from
-> >   'reclaim_order' [clang-analyzer-deadcode.DeadStores]
-> > 
-> > Compilers will detect this unneeded assignment and optimize this anyway.
-> > So, the resulting binary is identical before and after this change.
-> > 
-> > Simplify the code and remove unneeded assignment to make clang-analyzer
-> > happy.
-> > 
-> > No functional change. No change in binary code.
-> > 
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> 
-> I'm not really keen on this. With the patch, reclaim_order can be passed
-> uninitialised to kswapd_try_to_sleep. While a sufficiently smart
-> compiler might be able to optimise how reclaim_order is used, it's not
-> guaranteed either. Similarly, a change in kswapd_try_to_sleep and its
-> called functions could rely on reclaim_order being a valid value and
-> then introduce a subtle bug.
->
+The change to kstrndup() was suggested by Andy as part of the review of
+the uAPI v2.  This patch is my initial interpretion of that suggestion,
+applied to both the v2 case and the two corresponding v1 cases.
 
-Just for my own understanding:
+I have since realized that the consumer_label is copied back to userspace,
+so in the existing code the consumer_label, which may have been modified,
+is implicitly a return value.  I doubt that is intentional or that it is
+used as such, but strictly speaking this change may break the v1 ABI??
+If so, it will be necessary to restore the setting of the last array entry
+to '\0'.
 
-How would you see reclaim_order being passed unitialised to 
-kswapd_try_to_sleep?
+Cheers,
+Kent.
 
-From kswapd() entry, any path must reach the line
+ drivers/gpio/gpiolib-cdev.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-  alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index 73386fcc252d..94733aab3224 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -307,11 +307,11 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
+ 	lh->gdev = gdev;
+ 	get_device(&gdev->dev);
+ 
+-	/* Make sure this is terminated */
+-	handlereq.consumer_label[sizeof(handlereq.consumer_label)-1] = '\0';
+-	if (strlen(handlereq.consumer_label)) {
+-		lh->label = kstrdup(handlereq.consumer_label,
+-				    GFP_KERNEL);
++	if (handlereq.consumer_label[0] != '\0') {
++		/* label is only initialized if consumer_label is set */
++		lh->label = kstrndup(handlereq.consumer_label,
++				     sizeof(handlereq.consumer_label) - 1,
++				     GFP_KERNEL);
+ 		if (!lh->label) {
+ 			ret = -ENOMEM;
+ 			goto out_free_lh;
+@@ -1322,11 +1322,10 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
+ 		INIT_DELAYED_WORK(&lr->lines[i].work, debounce_work_func);
+ 	}
+ 
+-	/* Make sure this is terminated */
+-	ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
+-	if (strlen(ulr.consumer)) {
++	if (ulr.consumer[0] != '\0') {
+ 		/* label is only initialized if consumer is set */
+-		lr->label = kstrdup(ulr.consumer, GFP_KERNEL);
++		lr->label = kstrndup(ulr.consumer, sizeof(ulr.consumer) - 1,
++				     GFP_KERNEL);
+ 		if (!lr->label) {
+ 			ret = -ENOMEM;
+ 			goto out_free_linereq;
+@@ -1711,11 +1710,11 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
+ 	le->gdev = gdev;
+ 	get_device(&gdev->dev);
+ 
+-	/* Make sure this is terminated */
+-	eventreq.consumer_label[sizeof(eventreq.consumer_label)-1] = '\0';
+-	if (strlen(eventreq.consumer_label)) {
+-		le->label = kstrdup(eventreq.consumer_label,
+-				    GFP_KERNEL);
++	if (eventreq.consumer_label[0] != '\0') {
++		/* label is only initialized if consumer_label is set */
++		le->label = kstrndup(eventreq.consumer_label,
++				     sizeof(eventreq.consumer_label) - 1,
++				     GFP_KERNEL);
+ 		if (!le->label) {
+ 			ret = -ENOMEM;
+ 			goto out_free_le;
 
-before kswap_try_to_sleep(...).
-
-Then it reads back the order into alloc_order and reclaim_order
-and resets pgdat->kswapd to 0.
-I argue that the second store to reclaim_order is not used.
-
-Path kthread_should_stop() is true:
-Then, it either exits and does not use those temporary values, 
-reclaim_order and alloc_order, at all.
-
-Path try_to_freeze() is true:
-It goes back to the beginning of the loop and repeats reading alloc_order 
-and reclaim_order after the reset to 0, and then passes that to 
-kswapd_try_to_sleep(...). Previous reclaim_order is not used.
-
-So, the previous store to alloc_order and reclaim_order is lost.
-(Is that intentional?) 
-
-Path try_to_freeze() is false:
-We call trace_mm_vmscan_kswapd_wake with alloc_order but not with 
-reclaim_order. reclaim_order is set by the return of balance_pgdat(...);
-So, the previous reclaim_order is again not used.
-
-The diff in the patch might be a bit small, but we are looking at the 
-second assignment after kswapd_try_to_sleep(...), not the first assignment 
-that just looks the same.
-
-
-Lukas
-
+base-commit: 237d96164f2c2b33d0d5094192eb743e9e1b04ad
+-- 
+2.28.0
 
