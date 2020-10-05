@@ -2,142 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD342836B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF5A2836B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgJENjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:39:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725939AbgJENjX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:39:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601905162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RiIV2Bc34+L4aK/HFnm2Yp0/KJXrqOEk8M9yFNQfSIE=;
-        b=HYQB9mHPYcFZ2KL+65zYWhcFHLEVn48ECb8tMCG32Vn13AUQ+GPayy+ROeIJWz2UX3dkFB
-        Ro8AMXsw2dp10Jge/k9i6sJPUfmUa8/DMScTnWq/vv7G+GeZURhZl0WLs8l8yg+T7sU95d
-        TjMI0Bu9qbUTV5TYIKaJz8tqwp/+vkc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-123-t7QGNDB7PqKXzg7uW4RL2Q-1; Mon, 05 Oct 2020 09:39:20 -0400
-X-MC-Unique: t7QGNDB7PqKXzg7uW4RL2Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726160AbgJENj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:39:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgJENj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:39:28 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB1D318A0735;
-        Mon,  5 Oct 2020 13:39:18 +0000 (UTC)
-Received: from optiplex-lnx (unknown [10.3.128.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 044875C1BD;
-        Mon,  5 Oct 2020 13:39:14 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 09:39:07 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
- dereference
-Message-ID: <20201005133907.GE1530324@optiplex-lnx>
-References: <87sgb9oz1u.fsf@yhuang-dev.intel.com>
- <20200923130138.GM795820@optiplex-lnx>
- <87blhwng5f.fsf@yhuang-dev.intel.com>
- <20200924020928.GC1023012@optiplex-lnx>
- <877dsjessq.fsf@yhuang-dev.intel.com>
- <20200924063038.GD1023012@optiplex-lnx>
- <87tuvnd3db.fsf@yhuang-dev.intel.com>
- <20200924150833.GE1023012@optiplex-lnx>
- <87r1qqbkx5.fsf@yhuang-dev.intel.com>
- <20201001143157.GA1530324@optiplex-lnx>
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CD0420756;
+        Mon,  5 Oct 2020 13:39:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601905167;
+        bh=CKM1wiIeFzqvHmo0o+SIVvTlYWd5wGgfK9tUsLJKEWI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=daqmAbFNxPj/Sj6BaL6WyxNtCjQtE1j7egFu2nYTyIUjjP3v53bMT4MCmakcMkACm
+         x+QEf4FkSlYnEGwp7xXuqSm7TP8Iwu/6WJY5h42zPj57Xp/nUct9Vzb0lXlNVHgNFX
+         i1nfKAtvv4K8Dc1qIDXDRjdvfo8SyCXodd0YUUKw=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        takahiro.akashi@linaro.org
+Subject: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn correctly
+Date:   Mon,  5 Oct 2020 22:39:20 +0900
+Message-Id: <160190516028.40160.9733543991325671759.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001143157.GA1530324@optiplex-lnx>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 10:31:57AM -0400, Rafael Aquini wrote:
-> On Fri, Sep 25, 2020 at 11:21:58AM +0800, Huang, Ying wrote:
-> > Rafael Aquini <aquini@redhat.com> writes:
-> > >> Or, can you help to run the test with a debug kernel based on upstream
-> > >> kernel.  I can provide some debug patch.
-> > >> 
-> > >
-> > > Sure, I can set your patches to run with the test cases we have that tend to 
-> > > reproduce the issue with some degree of success.
-> > 
-> > Thanks!
-> > 
-> > I found a race condition.  During THP splitting, "head" may be unlocked
-> > before calling split_swap_cluster(), because head != page during
-> > deferred splitting.  So we should call split_swap_cluster() before
-> > unlocking.  The debug patch to do that is as below.  Can you help to
-> > test it?
-> > 
-> > Best Regards,
-> > Huang, Ying
-> > 
-> > ------------------------8<----------------------------
-> > From 24ce0736a9f587d2dba12f12491c88d3e296a491 Mon Sep 17 00:00:00 2001
-> > From: Huang Ying <ying.huang@intel.com>
-> > Date: Fri, 25 Sep 2020 11:10:56 +0800
-> > Subject: [PATCH] dbg: Call split_swap_clsuter() before unlock page during
-> >  split THP
-> > 
-> > ---
-> >  mm/huge_memory.c | 13 +++++++------
-> >  1 file changed, 7 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index faadc449cca5..8d79e5e6b46e 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -2444,6 +2444,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
-> >  
-> >  	remap_page(head);
-> >  
-> > +	if (PageSwapCache(head)) {
-> > +		swp_entry_t entry = { .val = page_private(head) };
-> > +
-> > +		split_swap_cluster(entry);
-> > +	}
-> > +
-> >  	for (i = 0; i < HPAGE_PMD_NR; i++) {
-> >  		struct page *subpage = head + i;
-> >  		if (subpage == page)
-> > @@ -2678,12 +2684,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
-> >  		}
-> >  
-> >  		__split_huge_page(page, list, end, flags);
-> > -		if (PageSwapCache(head)) {
-> > -			swp_entry_t entry = { .val = page_private(head) };
-> > -
-> > -			ret = split_swap_cluster(entry);
-> > -		} else
-> > -			ret = 0;
-> > +		ret = 0;
-> >  	} else {
-> >  		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
-> >  			pr_alert("total_mapcount: %u, page_count(): %u\n",
-> > -- 
-> > 2.28.0
-> > 
-> 
-> I left it running for several days, on several systems that had seen the
-> crash hitting before, and no crashes were observed for either the upstream
-> kernel nor the distro build 4.18-based kernel.
-> 
-> I guess we can comfortably go with your patch. Thanks!
-> 
->
-Ping
+Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
+address conversion.
 
-Are you going to post this patchfix soon? Or do you rather have me
-posting it?
+In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
+to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
+assumes the given virtual address is in contiguous kernel memory
+area, it can not convert the per-cpu memory if it is allocated on
+vmalloc area (depends on CONFIG_SMP).
 
-regards, 
+Without this fix, the Dom0 kernel will fail to boot with following
+errors.
+
+[    0.466172] Xen: initializing cpu0
+[    0.469601] ------------[ cut here ]------------
+[    0.474295] WARNING: CPU: 0 PID: 1 at arch/arm64/xen/../../arm/xen/enlighten.c:153 xen_starting_cpu+0x160/0x180
+[    0.484435] Modules linked in:
+[    0.487565] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc4+ #4
+[    0.493895] Hardware name: Socionext Developer Box (DT)
+[    0.499194] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+[    0.504836] pc : xen_starting_cpu+0x160/0x180
+[    0.509263] lr : xen_starting_cpu+0xb0/0x180
+[    0.513599] sp : ffff8000116cbb60
+[    0.516984] x29: ffff8000116cbb60 x28: ffff80000abec000
+[    0.522366] x27: 0000000000000000 x26: 0000000000000000
+[    0.527754] x25: ffff80001156c000 x24: fffffdffbfcdb600
+[    0.533129] x23: 0000000000000000 x22: 0000000000000000
+[    0.538511] x21: ffff8000113a99c8 x20: ffff800010fe4f68
+[    0.543892] x19: ffff8000113a9988 x18: 0000000000000010
+[    0.549274] x17: 0000000094fe0f81 x16: 00000000deadbeef
+[    0.554655] x15: ffffffffffffffff x14: 0720072007200720
+[    0.560037] x13: 0720072007200720 x12: 0720072007200720
+[    0.565418] x11: 0720072007200720 x10: 0720072007200720
+[    0.570801] x9 : ffff8000100fbdc0 x8 : ffff800010715208
+[    0.576182] x7 : 0000000000000054 x6 : ffff00001b790f00
+[    0.581564] x5 : ffff800010bbf880 x4 : 0000000000000000
+[    0.586945] x3 : 0000000000000000 x2 : ffff80000abec000
+[    0.592327] x1 : 000000000000002f x0 : 0000800000000000
+[    0.597716] Call trace:
+[    0.600232]  xen_starting_cpu+0x160/0x180
+[    0.604309]  cpuhp_invoke_callback+0xac/0x640
+[    0.608736]  cpuhp_issue_call+0xf4/0x150
+[    0.612728]  __cpuhp_setup_state_cpuslocked+0x128/0x2c8
+[    0.618030]  __cpuhp_setup_state+0x84/0xf8
+[    0.622192]  xen_guest_init+0x324/0x364
+[    0.626097]  do_one_initcall+0x54/0x250
+[    0.630003]  kernel_init_freeable+0x12c/0x2c8
+[    0.634428]  kernel_init+0x1c/0x128
+[    0.637988]  ret_from_fork+0x10/0x18
+[    0.641635] ---[ end trace d95b5309a33f8b27 ]---
+[    0.646337] ------------[ cut here ]------------
+[    0.651005] kernel BUG at arch/arm64/xen/../../arm/xen/enlighten.c:158!
+[    0.657697] Internal error: Oops - BUG: 0 [#1] SMP
+[    0.662548] Modules linked in:
+[    0.665676] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.9.0-rc4+ #4
+[    0.673398] Hardware name: Socionext Developer Box (DT)
+[    0.678695] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+[    0.684338] pc : xen_starting_cpu+0x178/0x180
+[    0.688765] lr : xen_starting_cpu+0x144/0x180
+[    0.693188] sp : ffff8000116cbb60
+[    0.696573] x29: ffff8000116cbb60 x28: ffff80000abec000
+[    0.701955] x27: 0000000000000000 x26: 0000000000000000
+[    0.707344] x25: ffff80001156c000 x24: fffffdffbfcdb600
+[    0.712718] x23: 0000000000000000 x22: 0000000000000000
+[    0.718107] x21: ffff8000113a99c8 x20: ffff800010fe4f68
+[    0.723481] x19: ffff8000113a9988 x18: 0000000000000010
+[    0.728863] x17: 0000000094fe0f81 x16: 00000000deadbeef
+[    0.734245] x15: ffffffffffffffff x14: 0720072007200720
+[    0.739626] x13: 0720072007200720 x12: 0720072007200720
+[    0.745008] x11: 0720072007200720 x10: 0720072007200720
+[    0.750390] x9 : ffff8000100fbdc0 x8 : ffff800010715208
+[    0.755771] x7 : 0000000000000054 x6 : ffff00001b790f00
+[    0.761153] x5 : ffff800010bbf880 x4 : 0000000000000000
+[    0.766534] x3 : 0000000000000000 x2 : 00000000deadbeef
+[    0.771916] x1 : 00000000deadbeef x0 : ffffffffffffffea
+[    0.777304] Call trace:
+[    0.779819]  xen_starting_cpu+0x178/0x180
+[    0.783898]  cpuhp_invoke_callback+0xac/0x640
+[    0.788325]  cpuhp_issue_call+0xf4/0x150
+[    0.792317]  __cpuhp_setup_state_cpuslocked+0x128/0x2c8
+[    0.797619]  __cpuhp_setup_state+0x84/0xf8
+[    0.801779]  xen_guest_init+0x324/0x364
+[    0.805683]  do_one_initcall+0x54/0x250
+[    0.809590]  kernel_init_freeable+0x12c/0x2c8
+[    0.814016]  kernel_init+0x1c/0x128
+[    0.817583]  ret_from_fork+0x10/0x18
+[    0.821226] Code: d0006980 f9427c00 cb000300 17ffffea (d4210000)
+[    0.827415] ---[ end trace d95b5309a33f8b28 ]---
+[    0.832076] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[    0.839815] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+
+Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ arch/arm/xen/enlighten.c |    2 +-
+ include/xen/arm/page.h   |    3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+index e93145d72c26..a6ab3689b2f4 100644
+--- a/arch/arm/xen/enlighten.c
++++ b/arch/arm/xen/enlighten.c
+@@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
+ 	pr_info("Xen: initializing cpu%d\n", cpu);
+ 	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
+ 
+-	info.mfn = virt_to_gfn(vcpup);
++	info.mfn = percpu_to_gfn(vcpup);
+ 	info.offset = xen_offset_in_page(vcpup);
+ 
+ 	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
+diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
+index 39df751d0dc4..ac1b65470563 100644
+--- a/include/xen/arm/page.h
++++ b/include/xen/arm/page.h
+@@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
+ 	})
+ #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) << XEN_PAGE_SHIFT))
+ 
++#define percpu_to_gfn(v)	\
++	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
++
+ /* Only used in PV code. But ARM guests are always HVM. */
+ static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
+ {
 
