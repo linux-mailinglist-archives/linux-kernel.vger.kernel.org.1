@@ -2,147 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D55283F6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D43283F74
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgJETSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 15:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726657AbgJETSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 15:18:02 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3202207BC;
-        Mon,  5 Oct 2020 19:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601925482;
-        bh=IcC9o9ngStTEJMrfG0NT9+M7gPC+tGiHzkcWMzeEH04=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eTPy7ux9+kBD5aIrq0LxKtk8NbctDnlPPjb/PNEGek2TFJaE/arGQ69695aoMfMPD
-         edVEP2EDFp7C03t9Y2IcGekgWXTVRJEL9qc3iqDWBosRSdjodDBnDz3gPHYrjbVPdA
-         VTHaCaCcJo76aNP7XscZIUS6sptyrdGN5VGOhdas=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id BE8AE3523039; Mon,  5 Oct 2020 12:18:01 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 12:18:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        id S1729285AbgJETSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 15:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729271AbgJETSO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 15:18:14 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF957C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 12:18:14 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t14so6613382pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 12:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3GA56NAT+rDqMXV6hlkrQNn+gOyv5hJPGyi8gBGz2Yw=;
+        b=Q9MEsXX0361UUwV7RuVD/f0AKxW7z6wkFZdTRrgWCTYOfgH577knEikRgtzBHQjMjT
+         npieQ9L0cO6YMbO9IpY6eJPPMihiD9dMciZQBeFIUd080itgkBLZ5bijX9xOlUr9LPPC
+         w3wuJAbkk1nAMWytYU9SF4dfcGLrMkvFlZcAA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3GA56NAT+rDqMXV6hlkrQNn+gOyv5hJPGyi8gBGz2Yw=;
+        b=XWQy8ba48BD9V9NfbGGDFOg2wOV6UrahpctOTh/EtBYGkclOUhHVJscvHAWsXg4D5/
+         7lBC3HW9wcHAZg5CcA4gmjdX905GwlJ0eg4hWlhxW18iwn6IGX2qke0UaM7Few1x3Zli
+         /hEd0KYFT9PhDqE89176NVaxqv1cZk9htLmw1GPGhKtzN2q45B93sOyUCcTgeiQoNJFc
+         OBmKG+RUCXx27y/Q6xDvPDoqArR1yy97buONuWnXpu0f8eA+usawivFBgDwyfjIM3htp
+         BlXtIZzW6Sb6qudZaxbEEqBsn4Frnt3RdjSu+8mthVRJ4kqdB5d9blL3L+vaKqViDYHB
+         cW1A==
+X-Gm-Message-State: AOAM53068FZnVq7pCvRxrUvdCkrtnMDhisStxmwuG2dZ36fsyg3rd/7O
+        ZYRvidfv6m9ahEPhcbABo/2aZw==
+X-Google-Smtp-Source: ABdhPJybYrDyDmNEj+u3/qlEH3IdseL3kHfXOlCVbiW/p1EWpvW/cAS0DSyWz22/1QvVdrp4IgDZrQ==
+X-Received: by 2002:a63:d50a:: with SMTP id c10mr1007307pgg.26.1601925494272;
+        Mon, 05 Oct 2020 12:18:14 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id fv13sm334222pjb.50.2020.10.05.12.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 12:18:13 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 12:18:12 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
 To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Bug in herd7 [Was: Re: Litmus test for question from Al Viro]
-Message-ID: <20201005191801.GF29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <045c643f-6a70-dfdf-2b1e-f369a667f709@gmail.com>
- <20201003171338.GA323226@rowland.harvard.edu>
- <20201005151557.4bcxumreoekgwmsa@yquem.inria.fr>
- <20201005155310.GH376584@rowland.harvard.edu>
- <20201005165223.GB29330@paulmck-ThinkPad-P72>
- <20201005181949.GA387079@rowland.harvard.edu>
+Cc:     Rob Herring <robh@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201005191812.GB4135817@google.com>
+References: <20200930124915.GA1826870@google.com>
+ <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+ <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
+ <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
+ <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
+ <20201002183633.GA296334@rowland.harvard.edu>
+ <CAL_JsqKHFA5RWz1SRLkR2JXydURL2pA+4C0+C+4SrJR_h4M0dw@mail.gmail.com>
+ <20201003124142.GA318272@rowland.harvard.edu>
+ <20201005160655.GA4135817@google.com>
+ <20201005161527.GI376584@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005181949.GA387079@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201005161527.GI376584@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 02:19:49PM -0400, Alan Stern wrote:
-> On Mon, Oct 05, 2020 at 09:52:23AM -0700, Paul E. McKenney wrote:
-> > On Mon, Oct 05, 2020 at 11:53:10AM -0400, Alan Stern wrote:
-> > > I tested the new commit -- it does indeed fix the problem.
+On Mon, Oct 05, 2020 at 12:15:27PM -0400, Alan Stern wrote:
+> On Mon, Oct 05, 2020 at 09:06:55AM -0700, Matthias Kaehlcke wrote:
+> > On Sat, Oct 03, 2020 at 08:41:42AM -0400, Alan Stern wrote:
+> > > The decision to enable the power regulator at system startup would be 
+> > > kernel policy, not a part of the DT description.  But there ought to be 
+> > > a standard way of recognizing which resource requirements of this sort 
+> > > should be handled at startup.  Then there could be a special module (in 
+> > > the driver model core? -- that doesn't really seem appropriate) which 
+> > > would search through the whole DT database for resources of this kind 
+> > > and enable them.
 > > 
-> > Beat me to it, very good!  ;-)
+> > This might work for some cases that only have a single resource or multiple
+> > resources but no timing/sequencing requirements. For the more complex cases
+> > it would probably end up in something similar to the pwrseq series
+> > (https://lore.kernel.org/patchwork/project/lkml/list/?series=314989&state=%2A&archive=both),
+> > which was nack-ed by Rafael, Rob also expressed he didn't want to go
+> > down that road.
 > > 
-> > But were you using the crypto-control-data litmus test?
+> > It seems to me that initialization of the resources needs to be done by
+> > the/a driver for the device, which knows about the sequencing requirements.
+> > Potentially this could be done in a pre-probe function that you brought up
+> > earlier.
 > 
-> I was not.  The test I used was what you get by starting from the 
-> version of crypto-control-data that had the one-liner in P1, and then 
-> replacing P0 with:
+> One of the important points of my suggestion was that the resource init 
+> should be done _outside_ of the device's driver, precisely because the 
+> driver module might not even be loaded until the resources are set up 
+> and the device is discovered.
 > 
-> P0(int *x, int *y)
-> {
-> 	int r1;
-> 
-> 	r1 = READ_ONCE(*x);
-> 	smp_mb();
-> 	WRITE_ONCE(*y, 1);
-> }
-> 
-> Without the new commit this test is allowed; with the new commit it 
-> isn't (as we would expect).  Also, the graphical output from herd7 shows 
-> the data dependency in P1 with the commit, and doesn't show it without 
-> the commit.
-> 
-> >  That one still
-> > gets me Sometimes:
-> > 
-> > $ herd7 -version
-> > 7.56+02~dev, Rev: 0f3f8188a326d5816a82fb9970fcd209a2678859
-> > $ herd7 -conf linux-kernel.cfg ~/paper/scalability/LWNLinuxMM/litmus/manual/kernel/crypto-control-data.litmus
-> > Test crypto-control-data Allowed
-> > States 2
-> > 0:r1=0;
-> > 0:r1=1;
-> > Ok
-> > Witnesses
-> > Positive: 1 Negative: 4
-> > Condition exists (0:r1=1)
-> > Observation crypto-control-data Sometimes 1 4
-> > Time crypto-control-data 0.00
-> > Hash=10898119bac87e11f31dc22bbb7efe17
-> > 
-> > Or did I mess something up?
-> 
-> You didn't mess up anything.  That's the whole point of this litmus 
-> test: It should be forbidden because it is an example of OOTA, but LKMM 
-> allows it.  Even with Luc's new commit.
+> The conclusion is that we need to have code that is aware of some 
+> detailed needs of a specific device but is not part of the device's 
+> driver.  I'm not sure what the best way to implement this would be.
 
-OK, got it.
+Wouldn't it be possible to load the module when the DT specifies that
+the device exists? For USB the kernel would need the VID/PID to identify
+the module, these could be extracted from the compatible string.
 
-Aside from naming and comment, how about my adding the following?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-C crypto-control-data-1
-(*
- * LB plus crypto-mb-data plus data.
- *
- * Result: Never
- *
- * This is an example of OOTA and we would like it to be forbidden.
- * If you want herd7 to get the right answer, you must use herdtools
- * 0f3f8188a326 (" [herd] Fix dependency definition") or later.
- *)
-
-{}
-
-P0(int *x, int *y)
-{
-	int r1;
-
-	r1 = READ_ONCE(*x);
-	smp_mb();
-	WRITE_ONCE(*y, r1);
-}
-
-P1(int *x, int *y)
-{
-	int r2;
-
-	WRITE_ONCE(*x, READ_ONCE(*y));
-}
-
-exists (0:r1=1)
+Having the initialization code outside of the driver could lead to code
+duplication, since the driver might want to power the device down in
+certain situations (e.g. system suspend).
