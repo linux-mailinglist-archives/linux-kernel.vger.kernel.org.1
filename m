@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6718283B77
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E2D283A0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728670AbgJEPmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52938 "EHLO mail.kernel.org"
+        id S1727806AbgJEPaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727227AbgJEP2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:28:07 -0400
+        id S1727194AbgJEPaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:30:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 891B720637;
-        Mon,  5 Oct 2020 15:28:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA2D5207BC;
+        Mon,  5 Oct 2020 15:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911686;
-        bh=f6mRYexfxpR8P5LZOq7F9XtT3LyAljWXdZMPYLjFUTk=;
+        s=default; t=1601911810;
+        bh=lX9O4hxvxd90v1IeDiyJoQVpOMMiA7ft8aBH2MqUH60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BftXpj8W+xnUdQuXdCi5ncqTBL/hWMcFOKSNhxclzUDk7iuEUUdK6Yk2411Crm2OL
-         F8D57LqmCXS6QqGyhRb/9YwCH0S34vvFExXugmTZpKqb7Vv0GdQJXSa8JaJBsW8HKJ
-         Cv4MbwT+rAX0uEV8FvUfGDKw4l+S1gaJ289HrTYQ=
+        b=S7zk5jhw8pMgeQKgRw+Bpt/fJhWM2128cuvBb3Xb3Vt1khauXwU+TBF95GzGLmVGO
+         rmR6kLFiLDXSdBlHOnTqY+qagjlejMFxFyR8Q/Ci7Qr6LTrfHKL1xFFWyxbIUBmas8
+         vPn0nXp1yrPQQh5Ex7pnKAq5fxzZ6LVQQ4r+QWwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9s=20Barrantes=20Silman?= 
-        <andresbs2000@protonmail.com>, Jiri Kosina <jkosina@suse.cz>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.19 10/38] Input: i8042 - add nopnp quirk for Acer Aspire 5 A515
-Date:   Mon,  5 Oct 2020 17:26:27 +0200
-Message-Id: <20201005142109.161604892@linuxfoundation.org>
+        stable@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Xu Kai <xukai@nationalchip.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 16/57] clocksource/drivers/timer-gx6605s: Fixup counter reload
+Date:   Mon,  5 Oct 2020 17:26:28 +0200
+Message-Id: <20201005142110.580380989@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
-References: <20201005142108.650363140@linuxfoundation.org>
+In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
+References: <20201005142109.796046410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+From: Guo Ren <guoren@linux.alibaba.com>
 
-commit 5fc27b098dafb8e30794a9db0705074c7d766179 upstream.
+[ Upstream commit bc6717d55d07110d8f3c6d31ec2af50c11b07091 ]
 
-Touchpad on this laptop is not detected properly during boot, as PNP
-enumerates (wrongly) AUX port as disabled on this machine.
+When the timer counts to the upper limit, an overflow interrupt is
+generated, and the count is reset with the value in the TIME_INI
+register. But the software expects to start counting from 0 when
+the count overflows, so it forces TIME_INI to 0 to solve the
+potential interrupt storm problem.
 
-Fix that by adding this board (with admittedly quite funny DMI
-identifiers) to nopnp quirk list.
-
-Reported-by: Andrés Barrantes Silman <andresbs2000@protonmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Link: https://lore.kernel.org/r/nycvar.YFH.7.76.2009252337340.3336@cbobk.fhfr.pm
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Tested-by: Xu Kai <xukai@nationalchip.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/1597735877-71115-1-git-send-email-guoren@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/clocksource/timer-gx6605s.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -725,6 +725,13 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_BOARD_VENDOR, "MICRO-STAR INTERNATIONAL CO., LTD"),
- 		},
- 	},
-+	{
-+		/* Acer Aspire 5 A515 */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_NAME, "Grumpy_PK"),
-+			DMI_MATCH(DMI_BOARD_VENDOR, "PK"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/drivers/clocksource/timer-gx6605s.c b/drivers/clocksource/timer-gx6605s.c
+index 80d0939d040b5..8d386adbe8009 100644
+--- a/drivers/clocksource/timer-gx6605s.c
++++ b/drivers/clocksource/timer-gx6605s.c
+@@ -28,6 +28,7 @@ static irqreturn_t gx6605s_timer_interrupt(int irq, void *dev)
+ 	void __iomem *base = timer_of_base(to_timer_of(ce));
  
+ 	writel_relaxed(GX6605S_STATUS_CLR, base + TIMER_STATUS);
++	writel_relaxed(0, base + TIMER_INI);
+ 
+ 	ce->event_handler(ce);
+ 
+-- 
+2.25.1
+
 
 
