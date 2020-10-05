@@ -2,232 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEDB2833CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5E22833CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgJEKGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:06:43 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2955 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725843AbgJEKGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:06:43 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 02787A4B9FC69663E295;
-        Mon,  5 Oct 2020 11:06:40 +0100 (IST)
-Received: from [127.0.0.1] (10.47.2.205) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 5 Oct 2020
- 11:06:37 +0100
-Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
- 23/23] perf metricgroup: remove duped metric group events)
-To:     Ian Rogers <irogers@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20200507140819.126960-1-irogers@google.com>
- <20200507140819.126960-24-irogers@google.com>
- <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
- <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
-Date:   Mon, 5 Oct 2020 11:03:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1725934AbgJEKEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJEKEX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:04:23 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F906C0613CE;
+        Mon,  5 Oct 2020 03:04:23 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id k14so8639946edo.1;
+        Mon, 05 Oct 2020 03:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=p3BM0kPaZyOPUQYWBvmUtL1qF+A5L+ek6VHw+7yxmPQ=;
+        b=YMGSZ4jX8zZy/zJA+ymFeHemM9uTXw8KWpy+9+08a+s1kDuU+FLEHyOUFoHkq8CaJb
+         VinWd4eIsN1NT7RSoqjueiIPYt6K50guGxOOeLU+hNIO3jW2Avr4mwvaXTNeVNYjOxmC
+         hcx9QpFLQDk8ACHS9yPxfLlnN+JQT0Co0jVeL032FxGChFzsojq6wzwOzRB8wxws6PIg
+         ThfJi+SYghZlg73IKb1qisxGHnkxezbWHSO3o0zD+9NyellUwFrg3sFVnyR2SEa+TMgo
+         81W9tYs8VlPs0UiVzP25lc+0FaDu1VnKXr/Iz3BpSzBdHgv0gMArSb7ui3aSVv+LzzSU
+         ssFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=p3BM0kPaZyOPUQYWBvmUtL1qF+A5L+ek6VHw+7yxmPQ=;
+        b=ES5sCH4DQyDm2mhTPX9nwdVmxl0h7QFDT1cWAdrBEBwcqDeWhMPtjNVl7NWB2OREvz
+         rWCaSqnZIPtInxIzGEGm9Hpb+NT1B7kE6H1v5PJMQUQm+55zwzfzYANijbrJRsyIe1VR
+         RG0peuPtImhCNVPXywG4o3vu917HSKSuyWL9//pK/qgaN9Y8rQdzcF40TlX6OERaTVO3
+         fGsx1waGq1B0dMspKdgxDfKCOTTRpzCslZ1tQauUQsvgCgfUyrJ7SMEfIbjhh9lJ6fnN
+         sJszbYWmqDcFhrdLPEmyF6VBum0wVXU05RDiwOAe1UNF1eQ83dF8nvN5p4YotCBZuxhf
+         9ZEw==
+X-Gm-Message-State: AOAM5330VPEAIn+Zw5znA25qurHGaKd9sngng58mMS5DaACIjf0k0EAl
+        zjImSvt9PoHNQHJSews0dug=
+X-Google-Smtp-Source: ABdhPJynxv4HgFVq+YzG8NngdyxhCbkuUZlkdwXEwFycADMLdau1/kA3SvY2XMssurYI9UWUoDYGZg==
+X-Received: by 2002:a50:fe82:: with SMTP id d2mr15842040edt.86.1601892262334;
+        Mon, 05 Oct 2020 03:04:22 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id u9sm7675435eje.119.2020.10.05.03.04.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 03:04:20 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 12:04:19 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, digetx@gmail.com, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] iommu/tegra-smmu: Add PCI support
+Message-ID: <20201005100419.GK425362@ulmo>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-4-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.2.205]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PEfPc/DjvCj+JzNg"
+Content-Disposition: inline
+In-Reply-To: <20201002060807.32138-4-nicoleotsuka@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/2020 21:46, Ian Rogers wrote:
-> On Fri, Oct 2, 2020 at 5:00 AM John Garry <john.garry@huawei.com> wrote:
->>
->> On 07/05/2020 15:08, Ian Rogers wrote:
->>
->> Hi Ian,
->>
->> I was wondering if you ever tested commit 2440689d62e9 ("perf
->> metricgroup: Remove duped metric group events") for when we have a
->> metric which aliases multiple instances of the same uncore PMU in the
->> system?
-> 
-> Sorry for this, I hadn't tested such a metric and wasn't aware of how
-> the aliasing worked. I sent a fix for this issue here:
-> https://lore.kernel.org/lkml/20200917201807.4090224-1-irogers@google.com/
-> Could you see if this addresses the issue for you? I don't see the
-> change in Arnaldo's trees yet.
 
-Unfortunately this does not seem to fix my issue.
+--PEfPc/DjvCj+JzNg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So for that patch, you say you fix metric expression for DRAM_BW_Use, 
-which is:
+On Thu, Oct 01, 2020 at 11:08:07PM -0700, Nicolin Chen wrote:
+> This patch simply adds support for PCI devices.
+>=20
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>=20
+> Changelog
+> v3->v4
+>  * Dropped !iommu_present() check
+>  * Added CONFIG_PCI check in the exit path
+> v2->v3
+>  * Replaced ternary conditional operator with if-else in .device_group()
+>  * Dropped change in tegra_smmu_remove()
+> v1->v2
+>  * Added error-out labels in tegra_smmu_probe()
+>  * Dropped pci_request_acs() since IOMMU core would call it.
+>=20
+>  drivers/iommu/tegra-smmu.c | 37 +++++++++++++++++++++++++++----------
+>  1 file changed, 27 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index 02d02b0c55c4..b701a7b55e84 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pci.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+> @@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(s=
+truct device *dev)
+>  	group->smmu =3D smmu;
+>  	group->soc =3D soc;
+> =20
+> -	group->group =3D iommu_group_alloc();
+> +	if (dev_is_pci(dev))
+> +		group->group =3D pci_device_group(dev);
+> +	else
+> +		group->group =3D generic_device_group(dev);
+> +
+>  	if (IS_ERR(group->group)) {
+>  		devm_kfree(smmu->dev, group);
+>  		mutex_unlock(&smmu->lock);
+> @@ -1069,22 +1074,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device=
+ *dev,
+>  	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
+> =20
+>  	err =3D iommu_device_register(&smmu->iommu);
+> -	if (err) {
+> -		iommu_device_sysfs_remove(&smmu->iommu);
+> -		return ERR_PTR(err);
+> -	}
+> +	if (err)
+> +		goto err_sysfs;
+> =20
+>  	err =3D bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
+> -	if (err < 0) {
+> -		iommu_device_unregister(&smmu->iommu);
+> -		iommu_device_sysfs_remove(&smmu->iommu);
+> -		return ERR_PTR(err);
+> -	}
+> +	if (err < 0)
+> +		goto err_unregister;
+> +
+> +#ifdef CONFIG_PCI
+> +	err =3D bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
+> +	if (err < 0)
+> +		goto err_bus_set;
+> +#endif
+> =20
+>  	if (IS_ENABLED(CONFIG_DEBUG_FS))
+>  		tegra_smmu_debugfs_init(smmu);
+> =20
+>  	return smmu;
+> +
+> +err_bus_set: __maybe_unused;
+> +	bus_set_iommu(&platform_bus_type, NULL);
+> +err_unregister:
+> +	iommu_device_unregister(&smmu->iommu);
+> +err_sysfs:
+> +	iommu_device_sysfs_remove(&smmu->iommu);
 
-{
-  "BriefDescription": "Average external Memory Bandwidth Use for reads 
-and writes [GB / sec]",
-  "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + 
-uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
-  "MetricGroup": "Memory_BW",
-"MetricName": "DRAM_BW_Use"
-},
+Can you please switch to label names that are more consistent with the
+others in this driver? Notably the ones in tegra_smmu_domain_alloc().
+The idea is to describe in the name of the label what's happening at the
+label. Something like this, for example:
 
-But this metric expression does not include any alias events; rather I 
-think it is just cas_count_write + cas_count_read event count for PMU 
-uncore_imc / duration_time.
+unset_platform_bus:
+	bus_set_iommu(&platform_bus_type, NULL);
+unregister:
+	iommu_device_unregister(&smmu->iommu);
+remove_sysfs:
+	iommu_device_sysfs_remove(&smmu->iommu);
 
-When I say alias, I mean - as an example, we have event:
+Thierry
 
-     {
-         "BriefDescription": "write requests to memory controller. 
-Derived from unc_m_cas_count.wr",
-         "Counter": "0,1,2,3",
-         "EventCode": "0x4",
-         "EventName": "LLC_MISSES.MEM_WRITE",
-         "PerPkg": "1",
-         "ScaleUnit": "64Bytes",
-         "UMask": "0xC",
-         "Unit": "iMC"
-     },
+--PEfPc/DjvCj+JzNg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-And then reference LLC_MISSES.MEM_WRITE in a metric expression:
+-----BEGIN PGP SIGNATURE-----
 
-"MetricExpr": "LLC_MISSES.MEM_WRITE / duration_time",
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9676MACgkQ3SOs138+
+s6E57BAAt0AeCX/qjGZv2yu0JoZxyVMxx2y3P3p1t8cvhgWhppRMaXErd01bAZoA
+vh4HYhmi1vVbnfyDxtafYXY7jUKwwe1Kwo4zjAnNqzm1xYRTeeEtZ0f03xhMviDk
+G0y7pIXOZeMUozoR0cSruq8ZF7+tVmdmTL2A9ybZBwFXIuL7f1vhizd2Fk9aprvd
+lSwhz43OVmYWWPRAjM+1HBJ1R+klw3SUy/ZBg6kaQX/sBeFnQ3InmapFZ7B+iKt4
+ARXioQv0Kb935t1ABIYJZu26tunTZrMcdhekIOWyn345a7VuHtCOgaUYPSoDJsX4
+1Y+kDStZD9/FZ/EpvCt8saacx1gnJ+yChbiAM/gheIeK5D/42rp4GNElfxOC9Edy
+6qZGXMGCAcrvfCZjozsfNTAg7yG91BshhODi0vtR/ljoKtCdc6A6gGgPb7d6454j
+9KQSrgy0XdV1hI+UOhCVcCWAuY7niE57OHaLSLE58b84Y3q52kGEq8gq7eSVS2ug
+86V8ywHa/NQvE9bVMpwpqIKw5EX5cp3YEHHSmDQufaUlVHHw1kqcVGsDk7YjY7wM
+zJ15fJegbRpPTRKfNehb64hKemeSWjOSi+Ipgkxk8k5WirUp0PiGEUsNEozTBizL
+QMxkTR/VGoott/nWoAAEV+t50W8p/zgdc/ZXbwIq755B9qskBds=
+=E6uA
+-----END PGP SIGNATURE-----
 
-This is what seems to be broken for when the alias matches > 1 PMU.
-
-Please check this.
-
-Thanks,
-John
-
-> 
-> Thanks,
-> Ian
-> 
->> I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an
->> issue where find_evsel_group() fails for the uncore metrics under the
->> condition mentioned above.
->>
->> Unfortunately I don't have an x86 machine to which this test applies.
->> However, as an experiment, I added a test metric to my broadwell JSON:
->>
->> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
->> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
->> index 8cdc7c13dc2a..fc6d9adf996a 100644
->> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
->> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
->> @@ -348,5 +348,11 @@
->>           "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
->>           "MetricGroup": "Power",
->>           "MetricName": "C7_Pkg_Residency"
->> +    },
->> +    {
->> +        "BriefDescription": "test metric",
->> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE *
->> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
->> +        "MetricGroup": "Test",
->> +        "MetricName": "test_metric_inc"
->>       }
->> ]
->>
->>
->> And get this:
->>
->> john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M
->> test_metric_inc sleep 1
->> Using CPUID GenuineIntel-6-3D-4
->> metric expr unc_cbo_xsnp_response.miss_xcore *
->> unc_cbo_xsnp_response.miss_eviction for test_metric_inc
->> found event unc_cbo_xsnp_response.miss_eviction
->> found event unc_cbo_xsnp_response.miss_xcore
->> adding
->> {unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
->> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
->> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
->> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
->> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
->> Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore *
->> unc_cbo_xsnp_response.miss_eviction
->> task-clock: 688876 688876 688876
->> context-switches: 2 688876 688876
->> cpu-migrations: 0 688876 688876
->> page-faults: 69 688876 688876
->> cycles: 2101719 695690 695690
->> instructions: 1180534 695690 695690
->> branches: 249450 695690 695690
->> branch-misses: 10815 695690 695690
->>
->> Performance counter stats for 'sleep 1':
->>
->>                0.69 msec task-clock                #    0.001 CPUs
->> utilized
->>                   2      context-switches          #    0.003 M/sec
->>
->>                   0      cpu-migrations            #    0.000 K/sec
->>
->>                  69      page-faults               #    0.100 M/sec
->>
->>           2,101,719      cycles                    #    3.051 GHz
->>
->>           1,180,534      instructions              #    0.56  insn per
->> cycle
->>             249,450      branches                  #  362.112 M/sec
->>
->>              10,815      branch-misses             #    4.34% of all
->> branches
->>
->>         1.001177693 seconds time elapsed
->>
->>         0.001149000 seconds user
->>         0.000000000 seconds sys
->>
->>
->> john@localhost:~/linux/tools/perf>
->>
->>
->> Any idea what is going wrong here, before I have to dive in? The issue
->> seems to be this named commit.
->>
->> Thanks,
->> John
->>
->>> A metric group contains multiple metrics. These metrics may use the same
->>> events. If metrics use separate events then it leads to more
->>> multiplexing and overall metric counts fail to sum to 100%.
->>> Modify how metrics are associated with events so that if the events in
->>> an earlier group satisfy the current metric, the same events are used.
->>> A record of used events is kept and at the end of processing unnecessary
->>> events are eliminated.
->>>
->>> Before:
-> .
-> 
-
+--PEfPc/DjvCj+JzNg--
