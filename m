@@ -2,85 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0752E2835C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329A52835C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgJEM0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:26:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJEM0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:26:51 -0400
-Received: from localhost (unknown [94.238.213.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B91A2078D;
-        Mon,  5 Oct 2020 12:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601900810;
-        bh=cPWhv4qf92jldfjMFg9lqz8+5AvD07QXH8qqecG62qQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sb/nXA9UVqkPCudYLEjw8X/s6LuxvCYZ7dfAeuMZT0vPNdM+ylP6Cu7iYb87yE8m+
-         wWDy434mrD7A3YfMOVSocbOzt8jKzfEGUHiJpQaAjBlApxQufGxk2t+jvG6Yxwqmx5
-         vZOZBuv8JG15MBMw5vhNE2XAoYPoQMoskSTj96tQ=
-Date:   Mon, 5 Oct 2020 14:26:48 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Phil Auld <pauld@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH 3/5] sched: Detect call to schedule from critical entry
- code
-Message-ID: <20201005122648.GA1743@lothringen>
-References: <20201005104919.5250-1-frederic@kernel.org>
- <20201005104919.5250-4-frederic@kernel.org>
- <20201005112353.GI2628@hirez.programming.kicks-ass.net>
+        id S1726555AbgJEM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726209AbgJEM1p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:27:45 -0400
+Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006B3C0613A8
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:27:44 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.goneo.de (Postfix) with ESMTP id 8E5EA23F6E9;
+        Mon,  5 Oct 2020 14:27:43 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.98
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.98 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.080, BAYES_00=-1.9] autolearn=ham
+Received: from smtp2.goneo.de ([127.0.0.1])
+        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8IFpecwhnM45; Mon,  5 Oct 2020 14:27:42 +0200 (CEST)
+Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
+        by smtp2.goneo.de (Postfix) with ESMTPA id D910223F913;
+        Mon,  5 Oct 2020 14:27:41 +0200 (CEST)
+From:   poeschel@lemonage.de
+To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lars Poeschel <poeschel@lemonage.de>
+Subject: [PATCH v4 00/32] Make charlcd device independent
+Date:   Mon,  5 Oct 2020 14:27:00 +0200
+Message-Id: <20201005122732.3429347-1-poeschel@lemonage.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005112353.GI2628@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 01:23:53PM +0200, Peter Zijlstra wrote:
-> On Mon, Oct 05, 2020 at 12:49:17PM +0200, Frederic Weisbecker wrote:
-> > Detect calls to schedule() between user_enter() and user_exit(). Those
-> > are symptoms of early entry code that either forgot to protect a call
-> > to schedule() inside exception_enter()/exception_exit() or, in the case
-> > of HAVE_CONTEXT_TRACKING_OFFSTACK, enabled interrupts or preemption in
-> > a wrong spot.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Marcelo Tosatti <mtosatti@redhat.com>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Phil Auld <pauld@redhat.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > ---
-> >  kernel/sched/core.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 2d95dc3f4644..d31a79e073e3 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -4295,6 +4295,7 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
-> >  		preempt_count_set(PREEMPT_DISABLED);
-> >  	}
-> >  	rcu_sleep_check();
-> > +	WARN_ON_ONCE(ct_state() == CONTEXT_USER);
-> 
-> 	SCHED_WARN_ON() ?
+From: Lars Poeschel <poeschel@lemonage.de>
 
-Bah! That's exactly what I was looking for.
+This tries to make charlcd device independent. At the moment hd44780
+device specific code is contained deep in charlcd. This moves this out
+into a hd44780_common module, where the two hd44780 drivers we have at
+the moment (hd44780 and panel) can use this from. The goal is that at
+the end other drivers can use the charlcd interface.
+I add one such driver at the end with the last patch.
+I submitted this already some time ago, where the wish was so split
+this into smaller chunks what I try to do with this new patchset.
+Most of the patches pick one specific function in charlcd and move the
+device specific code into hd44780_common.
 
-> No point in unconditionally polluting that path. Although, per MeL, we
-> should probably invest in CONFIG_SCHED_DEBUG_I_MEANS_IT :/
+As a note to patch 30:
+This might slightly change behaviour.
+On hd44780 displays with one or two lines the previous implementation
+did still write characters to the buffer of the display even if they are
+currently not visible. The shift_display command could be used so set
+the "viewing window" to a new position in the buffer and then you could
+see the characters previously written.
+This described behaviour does not work for hd44780 displays with more
+than two display lines. There simply is not enough buffer.
+So the behaviour was a bit inconsistens across different displays.
+The new behaviour is to stop writing character at the end of a visible
+line, even if there would be room in the buffer. This allows us to have
+an easy implementation, that should behave equal on all supported
+displays. This is not hd44780 hardware dependents anymore.
 
-Because CONFIG_SCHED_DEBUG is often used by default on distros?
+Link: https://lore.kernel.org/lkml/20191016082430.5955-1-poeschel@lemonage.de/
+Link: https://lore.kernel.org/lkml/CANiq72kS-u_Xd_m+2CQVh-JCncPf1XNXrXAZ=4z+mze8fwv2kw@mail.gmail.com/
 
-Thanks.
+Lars Poeschel (32):
+  auxdisplay: Use an enum for charlcd  backlight on/off ops
+  auxdisplay: Introduce hd44780_common.[ch]
+  auxdisplay: Move hwidth and bwidth to struct hd44780_common
+  auxdisplay: Move ifwidth to struct hd44780_common
+  auxdisplay: Move write_data pointer to hd44780_common
+  auxdisplay: Move write_cmd pointers to hd44780 drivers
+  auxdisplay: Move addr out of charlcd_priv
+  auxdisplay: hd44780_common_print
+  auxdisplay: provide hd44780_common_gotoxy
+  auxdisplay: add home to charlcd_ops
+  auxdisplay: Move clear_display to hd44780_common
+  auxdisplay: make charlcd_backlight visible to hd44780_common
+  auxdisplay: Make use of enum for backlight on / off
+  auxdisplay: Move init_display to hd44780_common
+  auxdisplay: implement hd44780_common_shift_cursor
+  auxdisplay: Implement hd44780_common_display_shift
+  auxdisplay: Implement a hd44780_common_display
+  auxdisplay: Implement hd44780_common_cursor
+  auxdisplay: Implement hd44780_common_blink
+  auxdisplay: cleanup unnecessary hd44780 code in charlcd
+  auxdisplay: Implement hd44780_common_fontsize
+  auxdisplay: Implement hd44780_common_lines
+  auxdisplay: Remove unnecessary hd44780 from charlcd
+  auxdisplay: Move char redefine code to hd44780_common
+  auxdisplay: Call charlcd_backlight in place
+  auxdisplay: hd44780_common: Reduce clear_display timeout
+  auxdisplay: hd44780: Remove clear_fast
+  auxdisplay: charlcd: replace last device specific stuff
+  auxdisplay: Change gotoxy calling interface
+  auxdisplay: charlcd: Do not print chars at end of line
+  auxdisplay: lcd2s DT binding doc
+  auxdisplay: add a driver for lcd2s character display
+
+ .../bindings/auxdisplay/modtronix,lcd2s.yaml  |  58 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/auxdisplay/Kconfig                    |  30 ++
+ drivers/auxdisplay/Makefile                   |   2 +
+ drivers/auxdisplay/charlcd.c                  | 412 +++++-------------
+ drivers/auxdisplay/charlcd.h                  |  86 +++-
+ drivers/auxdisplay/hd44780.c                  | 120 +++--
+ drivers/auxdisplay/hd44780_common.c           | 368 ++++++++++++++++
+ drivers/auxdisplay/hd44780_common.h           |  34 ++
+ drivers/auxdisplay/lcd2s.c                    | 409 +++++++++++++++++
+ drivers/auxdisplay/panel.c                    | 180 ++++----
+ 11 files changed, 1251 insertions(+), 450 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
+ create mode 100644 drivers/auxdisplay/hd44780_common.c
+ create mode 100644 drivers/auxdisplay/hd44780_common.h
+ create mode 100644 drivers/auxdisplay/lcd2s.c
+
+-- 
+2.28.0
+
