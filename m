@@ -2,257 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E72283453
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4E728343D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgJEK5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:57:38 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:7011 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgJEK5h (ORCPT
+        id S1725946AbgJEKy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgJEKy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:57:37 -0400
+        Mon, 5 Oct 2020 06:54:27 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA56C0613CE;
+        Mon,  5 Oct 2020 03:54:26 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id x2so5371839pjk.0;
+        Mon, 05 Oct 2020 03:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1601895457; x=1633431457;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=l5NtKKXh8lnaVbSOqEWKn09KUGXWIIHHku7wHzntlJw=;
-  b=ZDbrk5X2QziRUILzoyZeDcJN30kO78h2kxuP+AWPhJ7/mINlKZrk6i0R
-   /R4QhUR20oWLWdWoH+aBQLo5asFUHK1TLRQkOQkpmmazmjjBRodYEjUPH
-   6ASkerrc8VcEMOMnTJYXDtSYpnRzgK8tEC2aXCB/u05k0zDpYIfMB/OjL
-   I=;
-X-IronPort-AV: E=Sophos;i="5.77,338,1596499200"; 
-   d="scan'208";a="57790269"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 05 Oct 2020 10:57:35 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id 353F3C062F;
-        Mon,  5 Oct 2020 10:57:22 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.146) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 5 Oct 2020 10:57:06 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v21 05/18] mm/idle_page_tracking: Make PG_(idle|young) reusable
-Date:   Mon, 5 Oct 2020 12:55:09 +0200
-Message-ID: <20201005105522.23841-6-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005105522.23841-1-sjpark@amazon.com>
-References: <20201005105522.23841-1-sjpark@amazon.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kc2IEv3JfGigt4VvcPf4/imXiA2zA0r0UImduGDyPLs=;
+        b=FtrpYIa4biS3xspWPVZx7Rl4dlZzbOP7i4dNzLodRnAZfyYuA/uFTVl8hbNY7X9U6X
+         Ae3ke5kb5vnO0wgw75ygfIn8eQi7vcrmRl4EeZIB+TjOrdDPTZeMXga4xNYJn2cYakSs
+         NyXlkJH67DyYXEGfNbxVZemRyYdPbRSqfO2QRHCr4JaoEajfABqQN1bJIsf66iKU9A2L
+         3KlY1rXrmvD2TCKds88ndohmhIxEYriy/FWQqiVB0hcZpO2UqPrH0yukhv8yx1XWBhmv
+         KGAVWefgvTqD6JIFsad035cTHq2G5jScTdIF2VsGMeqH4TFOfoM4F8hafYYeJTq+mEDR
+         Isyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kc2IEv3JfGigt4VvcPf4/imXiA2zA0r0UImduGDyPLs=;
+        b=bmLFK0irlmosA8HjviviThtFYbtDGgNrJmcw/0OvPDfViNziE/R2HN196BeyFpkjzk
+         DAGDUFjXZULqpvStBZxmlZl4lRcBg2OTFhBnzcXKKeXQYSW1CT24yPvQbQUnXFufqA+x
+         +2mzYeVkHjMz0EINe+34lVULVsY41oxxy2SUgjJe6quA/5fua08MwNKBXsusy6OWdZ7H
+         MUUoNGIeWCO5S4zhBH8m2UPWV3Bu/kZD07B82jgnS+LeON3ZlrJ9PkpaQRdFGJB4qmje
+         Ao0siaruK28nKeqnTB/9XrNZBVr47UxmiVpTXbZgeCEK951QIrkMZpdTjMc3N75OSOPY
+         q78Q==
+X-Gm-Message-State: AOAM530Aawj6l9U4Mf9YGxb3f8winjTn8HZWNW9cAF3SeZ5cXT0gh3Jr
+        2iOHnMjod4sqmqyT1ERtTkg=
+X-Google-Smtp-Source: ABdhPJzDz8UtqskcUzNMNbSX5dATFgx7DtiVwuiqDs1U/yKwH0x9+LCauwqLoDmVtvHztYso1htocw==
+X-Received: by 2002:a17:90a:e64b:: with SMTP id ep11mr13636504pjb.208.1601895265748;
+        Mon, 05 Oct 2020 03:54:25 -0700 (PDT)
+Received: from gli-arch.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
+        by smtp.gmail.com with ESMTPSA id p6sm12170526pfn.63.2020.10.05.03.54.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 03:54:25 -0700 (PDT)
+From:   Ben Chuang <benchuanggli@gmail.com>
+X-Google-Original-From: Ben Chuang <ben.chuanggli@gmail.com>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw,
+        Ben Chuang <ben.chuanggli@gmail.com>
+Subject: [PATCH -next] mmc: sdhci-pci-gli: Add CQHCI Support for GL9763E
+Date:   Mon,  5 Oct 2020 18:55:09 +0800
+Message-Id: <20201005105509.11343-1-ben.chuanggli@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.146]
-X-ClientProxiedBy: EX13d09UWC002.ant.amazon.com (10.43.162.102) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 
-PG_idle and PG_young allows the two PTE Accessed bit users,
-IDLE_PAGE_TRACKING and the reclaim logic concurrently work while don't
-interfere each other.  That is, when they need to clear the Accessed
-bit, they set PG_young and PG_idle to represent the previous state of
-the bit, respectively.  And when they need to read the bit, if the bit
-is cleared, they further read the PG_young and PG_idle, respectively, to
-know whether the other has cleared the bit meanwhile or not.
+Add CQHCI initialization and implement CQHCI operations for GL9763E.
+Use bit19 of the register (0x888) to decide whether to disable command
+queuing. If the bit is set, the command queuing will be disabled.
 
-We could add another page flag and extend the mechanism to use the flag
-if we need to add another concurrent PTE Accessed bit user subsystem.
-However, it would be only waste the space.  Instead, if the new
-subsystem is mutually exclusive with IDLE_PAGE_TRACKING, it could simply
-reuse the PG_idle flag.  However, it's impossible because the flags are
-dependent on IDLE_PAGE_TRACKING.
-
-To allow such reuse of the flags, this commit separates the PG_young and
-PG_idle flag logic from IDLE_PAGE_TRACKING and introduces new kernel
-config, 'PAGE_IDLE_FLAG'.  Hence, if !IDLE_PAGE_TRACKING and
-IDLE_PAGE_FLAG, a new subsystem would be able to reuse PG_idle.
-
-In the next commit, DAMON's reference implementation of the virtual
-memory address space monitoring primitives will use it.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 ---
- include/linux/page-flags.h     |  4 ++--
- include/linux/page_ext.h       |  2 +-
- include/linux/page_idle.h      |  6 +++---
- include/trace/events/mmflags.h |  2 +-
- mm/Kconfig                     |  8 ++++++++
- mm/page_ext.c                  | 12 +++++++++++-
- mm/page_idle.c                 | 10 ----------
- 7 files changed, 26 insertions(+), 18 deletions(-)
+ drivers/mmc/host/sdhci-pci-gli.c | 150 ++++++++++++++++++++++++++++++-
+ 1 file changed, 148 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 6be1aa559b1e..7736d290bb61 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -132,7 +132,7 @@ enum pageflags {
- #ifdef CONFIG_MEMORY_FAILURE
- 	PG_hwpoison,		/* hardware poisoned page. Don't touch */
- #endif
--#if defined(CONFIG_IDLE_PAGE_TRACKING) && defined(CONFIG_64BIT)
-+#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
- 	PG_young,
- 	PG_idle,
- #endif
-@@ -432,7 +432,7 @@ static inline bool set_hwpoison_free_buddy_page(struct page *page)
- #define __PG_HWPOISON 0
- #endif
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index 5da2b06d84ae..9887485a4134 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -14,6 +14,7 @@
+ #include <linux/delay.h>
+ #include "sdhci.h"
+ #include "sdhci-pci.h"
++#include "cqhci.h"
  
--#if defined(CONFIG_IDLE_PAGE_TRACKING) && defined(CONFIG_64BIT)
-+#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
- TESTPAGEFLAG(Young, young, PF_ANY)
- SETPAGEFLAG(Young, young, PF_ANY)
- TESTCLEARFLAG(Young, young, PF_ANY)
-diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
-index cfce186f0c4e..c9cbc9756011 100644
---- a/include/linux/page_ext.h
-+++ b/include/linux/page_ext.h
-@@ -19,7 +19,7 @@ struct page_ext_operations {
- enum page_ext_flags {
- 	PAGE_EXT_OWNER,
- 	PAGE_EXT_OWNER_ALLOCATED,
--#if defined(CONFIG_IDLE_PAGE_TRACKING) && !defined(CONFIG_64BIT)
-+#if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
- 	PAGE_EXT_YOUNG,
- 	PAGE_EXT_IDLE,
- #endif
-diff --git a/include/linux/page_idle.h b/include/linux/page_idle.h
-index 1e894d34bdce..d8a6aecf99cb 100644
---- a/include/linux/page_idle.h
-+++ b/include/linux/page_idle.h
-@@ -6,7 +6,7 @@
- #include <linux/page-flags.h>
- #include <linux/page_ext.h>
+ /*  Genesys Logic extra registers */
+ #define SDHCI_GLI_9750_WT         0x800
+@@ -81,9 +82,16 @@
+ #define   GLI_9763E_VHS_REV_R      0x0
+ #define   GLI_9763E_VHS_REV_M      0x1
+ #define   GLI_9763E_VHS_REV_W      0x2
++#define PCIE_GLI_9763E_MB	 0x888
++#define   GLI_9763E_MB_CMDQ_OFF	   BIT(19)
+ #define PCIE_GLI_9763E_SCR	 0x8E0
+ #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
  
--#ifdef CONFIG_IDLE_PAGE_TRACKING
-+#ifdef CONFIG_PAGE_IDLE_FLAG
- 
- #ifdef CONFIG_64BIT
- static inline bool page_is_young(struct page *page)
-@@ -106,7 +106,7 @@ static inline void clear_page_idle(struct page *page)
- }
- #endif /* CONFIG_64BIT */
- 
--#else /* !CONFIG_IDLE_PAGE_TRACKING */
-+#else /* !CONFIG_PAGE_IDLE_FLAG */
- 
- static inline bool page_is_young(struct page *page)
- {
-@@ -135,6 +135,6 @@ static inline void clear_page_idle(struct page *page)
- {
- }
- 
--#endif /* CONFIG_IDLE_PAGE_TRACKING */
-+#endif /* CONFIG_PAGE_IDLE_FLAG */
- 
- #endif /* _LINUX_MM_PAGE_IDLE_H */
-diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
-index 5fb752034386..4d182c32071b 100644
---- a/include/trace/events/mmflags.h
-+++ b/include/trace/events/mmflags.h
-@@ -73,7 +73,7 @@
- #define IF_HAVE_PG_HWPOISON(flag,string)
- #endif
- 
--#if defined(CONFIG_IDLE_PAGE_TRACKING) && defined(CONFIG_64BIT)
-+#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
- #define IF_HAVE_PG_IDLE(flag,string) ,{1UL << flag, string}
- #else
- #define IF_HAVE_PG_IDLE(flag,string)
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 7ae7f3fbce64..c43e1092099e 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -765,10 +765,18 @@ config DEFERRED_STRUCT_PAGE_INIT
- 	  lifetime of the system until these kthreads finish the
- 	  initialisation.
- 
-+config PAGE_IDLE_FLAG
-+	bool "Add PG_idle and PG_young flags"
-+	help
-+	  This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
-+	  Accessed bit writers can set the state of the bit in the flags to let
-+	  other PTE Accessed bit readers don't disturbed.
++#define SDHCI_GLI_9763E_CQE_BASE_ADDR	 0x200
++#define GLI_9763E_CQE_TRNS_MODE	   (SDHCI_TRNS_MULTI | \
++				    SDHCI_TRNS_BLK_CNT_EN | \
++				    SDHCI_TRNS_DMA)
 +
- config IDLE_PAGE_TRACKING
- 	bool "Enable idle page tracking"
- 	depends on SYSFS && MMU
- 	select PAGE_EXTENSION if !64BIT
-+	select PAGE_IDLE_FLAG
- 	help
- 	  This feature allows to estimate the amount of user pages that have
- 	  not been touched during a given period of time. This information can
-diff --git a/mm/page_ext.c b/mm/page_ext.c
-index a3616f7a0e9e..f9a6ff65ac0a 100644
---- a/mm/page_ext.c
-+++ b/mm/page_ext.c
-@@ -58,11 +58,21 @@
-  * can utilize this callback to initialize the state of it correctly.
-  */
+ #define PCI_GLI_9755_WT       0x800
+ #define   PCI_GLI_9755_WT_EN    BIT(0)
+ #define   GLI_9755_WT_EN_ON     0x1
+@@ -578,6 +586,30 @@ static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
  
-+#if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
-+static bool need_page_idle(void)
+ 	return sdhci_pci_resume_host(chip);
+ }
++
++static int sdhci_cqhci_gli_resume(struct sdhci_pci_chip *chip)
 +{
-+	return true;
-+}
-+struct page_ext_operations page_idle_ops = {
-+	.need = need_page_idle,
-+};
-+#endif
++	struct sdhci_pci_slot *slot = chip->slots[0];
++	int ret;
 +
- static struct page_ext_operations *page_ext_ops[] = {
- #ifdef CONFIG_PAGE_OWNER
- 	&page_owner_ops,
++	ret = sdhci_pci_gli_resume(chip);
++	if (ret)
++		return ret;
++
++	return cqhci_resume(slot->host->mmc);
++}
++
++static int sdhci_cqhci_gli_suspend(struct sdhci_pci_chip *chip)
++{
++	struct sdhci_pci_slot *slot = chip->slots[0];
++	int ret;
++
++	ret = cqhci_suspend(slot->host->mmc);
++	if (ret)
++		return ret;
++
++	return sdhci_suspend_host(slot->host);
++}
  #endif
--#if defined(CONFIG_IDLE_PAGE_TRACKING) && !defined(CONFIG_64BIT)
-+#if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
- 	&page_idle_ops,
- #endif
- };
-diff --git a/mm/page_idle.c b/mm/page_idle.c
-index 057c61df12db..144fb4ed961d 100644
---- a/mm/page_idle.c
-+++ b/mm/page_idle.c
-@@ -211,16 +211,6 @@ static const struct attribute_group page_idle_attr_group = {
- 	.name = "page_idle",
+ 
+ static void gl9763e_hs400_enhanced_strobe(struct mmc_host *mmc,
+@@ -614,6 +646,110 @@ static void sdhci_set_gl9763e_signaling(struct sdhci_host *host,
+ 	sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
+ }
+ 
++static void sdhci_gl9763e_dumpregs(struct mmc_host *mmc)
++{
++	sdhci_dumpregs(mmc_priv(mmc));
++}
++
++static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
++{
++	struct cqhci_host *cq_host = mmc->cqe_private;
++	u32 value;
++
++	value = cqhci_readl(cq_host, CQHCI_CFG);
++	value |= CQHCI_ENABLE;
++	cqhci_writel(cq_host, value, CQHCI_CFG);
++}
++
++static void sdhci_gl9763e_cqe_enable(struct mmc_host *mmc)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++
++	sdhci_writew(host, GLI_9763E_CQE_TRNS_MODE, SDHCI_TRANSFER_MODE);
++	sdhci_cqe_enable(mmc);
++}
++
++static u32 sdhci_gl9763e_cqhci_irq(struct sdhci_host *host, u32 intmask)
++{
++	int cmd_error = 0;
++	int data_error = 0;
++
++	if (!sdhci_cqe_irq(host, intmask, &cmd_error, &data_error))
++		return intmask;
++
++	cqhci_irq(host->mmc, intmask, cmd_error, data_error);
++
++	return 0;
++}
++
++static void sdhci_gl9763e_cqe_post_disable(struct mmc_host *mmc)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++	struct cqhci_host *cq_host = mmc->cqe_private;
++	u32 value;
++
++	value = cqhci_readl(cq_host, CQHCI_CFG);
++	value &= ~CQHCI_ENABLE;
++	cqhci_writel(cq_host, value, CQHCI_CFG);
++	sdhci_writew(host, 0x0, SDHCI_TRANSFER_MODE);
++}
++
++static const struct cqhci_host_ops sdhci_gl9763e_cqhci_ops = {
++	.enable         = sdhci_gl9763e_cqe_enable,
++	.disable        = sdhci_cqe_disable,
++	.dumpregs       = sdhci_gl9763e_dumpregs,
++	.pre_enable     = sdhci_gl9763e_cqe_pre_enable,
++	.post_disable   = sdhci_gl9763e_cqe_post_disable,
++};
++
++static int gl9763e_add_host(struct sdhci_pci_slot *slot)
++{
++	struct device *dev = &slot->chip->pdev->dev;
++	struct sdhci_host *host = slot->host;
++	struct cqhci_host *cq_host;
++	bool dma64;
++	int ret;
++
++	ret = sdhci_setup_host(host);
++	if (ret)
++		return ret;
++
++	cq_host = devm_kzalloc(dev, sizeof(*cq_host), GFP_KERNEL);
++	if (!cq_host) {
++		ret = -ENOMEM;
++		goto cleanup;
++	}
++
++	cq_host->mmio = host->ioaddr + SDHCI_GLI_9763E_CQE_BASE_ADDR;
++	cq_host->ops = &sdhci_gl9763e_cqhci_ops;
++
++	dma64 = host->flags & SDHCI_USE_64_BIT_DMA;
++	if (dma64)
++		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
++
++	ret = cqhci_init(cq_host, host->mmc, dma64);
++	if (ret)
++		goto cleanup;
++
++	ret = __sdhci_add_host(host);
++	if (ret)
++		goto cleanup;
++
++	return 0;
++
++cleanup:
++	sdhci_cleanup_host(host);
++	return ret;
++}
++
++static void sdhci_gl9763e_reset(struct sdhci_host *host, u8 mask)
++{
++	if ((host->mmc->caps2 & MMC_CAP2_CQE) && (mask & SDHCI_RESET_ALL) &&
++	    host->mmc->cqe_private)
++		cqhci_deactivate(host->mmc);
++	sdhci_reset(host, mask);
++}
++
+ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
+ {
+ 	struct pci_dev *pdev = slot->chip->pdev;
+@@ -636,7 +772,9 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
+ 
+ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+ {
++	struct pci_dev *pdev = slot->chip->pdev;
+ 	struct sdhci_host *host = slot->host;
++	u32 value;
+ 
+ 	host->mmc->caps |= MMC_CAP_8_BIT_DATA |
+ 			   MMC_CAP_1_8V_DDR |
+@@ -646,6 +784,11 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+ 			    MMC_CAP2_HS400_ES |
+ 			    MMC_CAP2_NO_SDIO |
+ 			    MMC_CAP2_NO_SD;
++
++	pci_read_config_dword(pdev, PCIE_GLI_9763E_MB, &value);
++	if (!(value & GLI_9763E_MB_CMDQ_OFF))
++		host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
++
+ 	gli_pcie_enable_msi(slot);
+ 	host->mmc_host_ops.hs400_enhanced_strobe =
+ 					gl9763e_hs400_enhanced_strobe;
+@@ -699,9 +842,10 @@ static const struct sdhci_ops sdhci_gl9763e_ops = {
+ 	.set_clock		= sdhci_set_clock,
+ 	.enable_dma		= sdhci_pci_enable_dma,
+ 	.set_bus_width		= sdhci_set_bus_width,
+-	.reset			= sdhci_reset,
++	.reset			= sdhci_gl9763e_reset,
+ 	.set_uhs_signaling	= sdhci_set_gl9763e_signaling,
+ 	.voltage_switch		= sdhci_gli_voltage_switch,
++	.irq                    = sdhci_gl9763e_cqhci_irq,
  };
  
--#ifndef CONFIG_64BIT
--static bool need_page_idle(void)
--{
--	return true;
--}
--struct page_ext_operations page_idle_ops = {
--	.need = need_page_idle,
--};
--#endif
--
- static int __init page_idle_init(void)
- {
- 	int err;
+ const struct sdhci_pci_fixes sdhci_gl9763e = {
+@@ -709,6 +853,8 @@ const struct sdhci_pci_fixes sdhci_gl9763e = {
+ 	.probe_slot	= gli_probe_slot_gl9763e,
+ 	.ops            = &sdhci_gl9763e_ops,
+ #ifdef CONFIG_PM_SLEEP
+-	.resume         = sdhci_pci_gli_resume,
++	.resume		= sdhci_cqhci_gli_resume,
++	.suspend	= sdhci_cqhci_gli_suspend,
+ #endif
++	.add_host       = gl9763e_add_host,
+ };
 -- 
-2.17.1
+2.28.0
 
