@@ -2,66 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49723283643
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B8C283648
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgJENI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:08:56 -0400
-Received: from verein.lst.de ([213.95.11.211]:59012 "EHLO verein.lst.de"
+        id S1726078AbgJENKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:10:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725931AbgJENI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:08:56 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 7EDB367373; Mon,  5 Oct 2020 15:08:52 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 15:08:52 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Auger Eric <eric.auger@redhat.com>, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, robin.murphy@arm.com,
-        dwmw2@infradead.org, eric.auger.pro@gmail.com,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>, hch@lst.de
-Subject: Re: [RFC 0/3] iommu: Reserved regions for IOVAs beyond dma_mask
- and iommu aperture
-Message-ID: <20201005130852.GB2163@lst.de>
-References: <20200928195037.22654-1-eric.auger@redhat.com> <20200928164224.12350d84@w520.home> <1cbaf3e7-cf88-77f6-4cc4-46dcd60eb649@redhat.com> <20200929121849.455af184@w520.home> <20201005104410.GA12138@e121166-lin.cambridge.arm.com>
+        id S1725891AbgJENKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:10:16 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26696207BC;
+        Mon,  5 Oct 2020 13:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601903415;
+        bh=kDjkkbRUbpOP0s/mbwqdmPJKM4HIZwidUfRO/Yv/FQw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r9K6pmsQVtLYS/JRnrZIBTBmJC0nvLDZNOF/a8V/iMZfyIsrdMcqjHjm7xYIhqEBR
+         4qVHGlZ9NbjN4LG9aAVVdf9CBXO+xQzPpKbKXG6pqlR33+eit7iR9NVmoyZj79Koh2
+         m3zuOdF05CvQ/3tsGGolWWL14W6WH+i/KN8kej9Q=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kPQFp-00HNNO-4d; Mon, 05 Oct 2020 14:10:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005104410.GA12138@e121166-lin.cambridge.arm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 05 Oct 2020 14:10:13 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Venkat Reddy Talla <vreddytalla@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Subject: Re: [PATCH 3/3] soc/tegra: pmc: Don't create fake interrupt hierarchy
+ levels
+In-Reply-To: <20201005113335.GT425362@ulmo>
+References: <20201005111443.1390096-1-maz@kernel.org>
+ <20201005111443.1390096-4-maz@kernel.org> <20201005113335.GT425362@ulmo>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <f5b711ff9289d41f25b0ea3b6658651f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, tglx@linutronix.de, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:44:10AM +0100, Lorenzo Pieralisi wrote:
-> > I see that there are both OF and ACPI hooks in pci_dma_configure() and
-> > both modify dev->dma_mask, which is what pci-sysfs is exposing here,
-> > but I'm not convinced this even does what it's intended to do.  The
-> > driver core calls this via the bus->dma_configure callback before
-> > probing a driver, but then what happens when the driver calls
-> > pci_set_dma_mask()?  This is just a wrapper for dma_set_mask() and I
-> > don't see anywhere that would take into account the existing
-> > dev->dma_mask.  It seems for example that pci_dma_configure() could
-> > produce a 42 bit mask as we have here, then the driver could override
-> > that with anything that the dma_ops.dma_supported() callback finds
-> > acceptable, and I don't see any instances where the current
-> > dev->dma_mask is considered.  Am I overlooking something? 
+On 2020-10-05 12:33, Thierry Reding wrote:
+> On Mon, Oct 05, 2020 at 12:14:43PM +0100, Marc Zyngier wrote:
+>> The Tegra PMC driver does ungodly things with the interrupt hierarchy,
+>> repeatedly corrupting it by pulling hwirq numbers out of thin air,
+>> overriding existing IRQ mappings and changing the handling flow
+>> of unsuspecting users.
+>> 
+>> All of this is done in the name of preserving the interrupt hierarchy
+>> even when these levels do not exist in the HW. Together with the use
+>> of proper IRQs for IPIs, this leads to an unbootable system as the
+>> rescheduling IPI gets repeatedly repurposed for random drivers...
+>> 
+>> Instead, let's allow the hierarchy to be trimmed to the level that
+>> actually makes sense for the HW, and not any deeper. This avoids
+>> having unnecessary callbacks, overriding mappings, and otherwise
+>> keeps the hierarchy sane.
+>> 
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> ---
+>>  drivers/soc/tegra/pmc.c | 79 
+>> +++++++++++++++--------------------------
+>>  1 file changed, 29 insertions(+), 50 deletions(-)
+>> 
+>> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+>> index 9960f7c18431..4eea3134fb3e 100644
+>> --- a/drivers/soc/tegra/pmc.c
+>> +++ b/drivers/soc/tegra/pmc.c
+>> @@ -1993,6 +1993,30 @@ static int tegra_pmc_irq_translate(struct 
+>> irq_domain *domain,
+>>  	return 0;
+>>  }
+>> 
+>> +/* Trim the irq hierarchy from a particular irq domain */
+>> +static void trim_hierarchy(unsigned int virq, struct irq_domain 
+>> *domain)
+>> +{
+>> +	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
+>> +
+>> +	/* The PMC doesn't generate any interrupt by itself */
+>> +	if (WARN_ON(!irq_data->parent_data))
+>> +		return;
+>> +
+>> +	/* Skip until we find the right domain */
+>> +	while (irq_data->parent_data && irq_data->parent_data->domain != 
+>> domain)
+>> +		irq_data = irq_data->parent_data;
+>> +
+>> +	/* Sever the inner part of the hierarchy...  */
+>> +	tail = irq_data->parent_data;
+>> +	irq_data->parent_data = NULL;
+>> +
+>> +	/* ... and free it */
+>> +	for (irq_data = tail; irq_data; irq_data = tail) {
+>> +		tail = irq_data->parent_data;
+>> +		kfree(irq_data);
+>> +	};
+>> +}
 > 
-> I don't think so but Christoph and Robin can provide more input on
-> this - it is a long story.
+> That kind of looks like what I originally wanted to do and (naively)
+> thought that passing the (0, NULL, NULL) triplet would achieve.
 > 
-> ACPI and OF bindings set a default dma_mask (and dev->bus_dma_limit),
-> this does not prevent a driver from overriding the dev->dma_mask but DMA
-> mapping code still takes into account the dev->bus_dma_limit.
-> 
-> This may help:
-> 
-> git log -p 03bfdc31176c
+> Given that this is fairly low-level stuff that deals with the inner
+> workings of the IRQ infrastructure, should we eventually pull this out
+> of the driver and make it into a core helper? I don't seriously expect
+> this to be widely useful, but putting it into the core might help keep
+> it more maintainable.
 
-This is at best a historic artefact.  Bus drivers have no business
-messing with the DMA mask, dev->bus_dma_limit is the way to communicate
-addressing limits on the bus (or another interconnect closer to the CPU).
+That's the ultimate plan, but I wanted to give it some soaking time
+on Tegra before exposing it to the outside world 
+(irq_domain_free_irq_data()
+could be rewritten in terms of this primitive, for example).
+
+> I volunteer to do that work if you think it's a good idea.
+
+Sure, once we know we're good to go with this.
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
