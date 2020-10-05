@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39AD283A3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202D8283A4F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgJEPco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:32:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60346 "EHLO mail.kernel.org"
+        id S1728131AbgJEPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:33:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728046AbgJEPck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:32:40 -0400
+        id S1728107AbgJEPdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:33:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B57E020B80;
-        Mon,  5 Oct 2020 15:32:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83B0B20637;
+        Mon,  5 Oct 2020 15:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911960;
-        bh=Teh2OF51j5GQpR2E2cre2gfVUdcI0zZAKAiH2EDcWUQ=;
+        s=default; t=1601911989;
+        bh=dCz7OQ/JYPDJsQPHxnG8M+hDDFlJbKaWyCh0Aa5bvGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qX2E3dWrDdSs8Xd+pU6yo2MrTrWrX//pF2srReexCjwubkbhx6YB7XUa+Jjam9DoX
-         M+Gtvk04r5dHJKRnL1xqVkNCrREU6lOGQ2cZKaruBoz5Icy0BxmtMjzOXR1dubv/JV
-         bOmew232973vr4gGUsW8mtOuaXnMR/3t2u5yL98E=
+        b=XdfZ3Q9nTvgAgCPqU/Kn0r45LpoEHZ4HD3vVK3jemGvCynvETyzHPIQDgaEc6DHhc
+         nYEZ57avCdbxUYr5U6fTJZrB77Yyy6WnXzVUC5ve2cytQ88qBDyGix7LGhsSOImPk0
+         V63/wP7olG5gxhOCFdI1M/xakNfGPrK+neBTewKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aloka Dixit <alokad@codeaurora.org>,
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
         Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 39/85] mac80211: Fix radiotap header channel flag for 6GHz band
-Date:   Mon,  5 Oct 2020 17:26:35 +0200
-Message-Id: <20201005142116.611543754@linuxfoundation.org>
+Subject: [PATCH 5.8 40/85] mac80211: do not allow bigger VHT MPDUs than the hardware supports
+Date:   Mon,  5 Oct 2020 17:26:36 +0200
+Message-Id: <20201005142116.659029536@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
 References: <20201005142114.732094228@linuxfoundation.org>
@@ -43,36 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aloka Dixit <alokad@codeaurora.org>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 412a84b5714af56f3eb648bba155107b5edddfdf ]
+[ Upstream commit 3bd5c7a28a7c3aba07a2d300d43f8e988809e147 ]
 
-Radiotap header field 'Channel flags' has '2 GHz spectrum' set to
-'true' for 6GHz packet.
-Change it to 5GHz as there isn't a separate option available for 6GHz.
+Limit maximum VHT MPDU size by local capability.
 
-Signed-off-by: Aloka Dixit <alokad@codeaurora.org>
-Link: https://lore.kernel.org/r/010101747ab7b703-1d7c9851-1594-43bf-81f7-f79ce7a67cc6-000000@us-west-2.amazonses.com
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20200917125031.45009-1-nbd@nbd.name
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/mac80211/vht.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 5c5af4b5fc080..f2c3ac648fc08 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -451,7 +451,8 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 	else if (status->bw == RATE_INFO_BW_5)
- 		channel_flags |= IEEE80211_CHAN_QUARTER;
+diff --git a/net/mac80211/vht.c b/net/mac80211/vht.c
+index 9c6045f9c24da..d1b64d0751f2e 100644
+--- a/net/mac80211/vht.c
++++ b/net/mac80211/vht.c
+@@ -168,10 +168,7 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
+ 	/* take some capabilities as-is */
+ 	cap_info = le32_to_cpu(vht_cap_ie->vht_cap_info);
+ 	vht_cap->cap = cap_info;
+-	vht_cap->cap &= IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_3895 |
+-			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_7991 |
+-			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_11454 |
+-			IEEE80211_VHT_CAP_RXLDPC |
++	vht_cap->cap &= IEEE80211_VHT_CAP_RXLDPC |
+ 			IEEE80211_VHT_CAP_VHT_TXOP_PS |
+ 			IEEE80211_VHT_CAP_HTC_VHT |
+ 			IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK |
+@@ -180,6 +177,9 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
+ 			IEEE80211_VHT_CAP_RX_ANTENNA_PATTERN |
+ 			IEEE80211_VHT_CAP_TX_ANTENNA_PATTERN;
  
--	if (status->band == NL80211_BAND_5GHZ)
-+	if (status->band == NL80211_BAND_5GHZ ||
-+	    status->band == NL80211_BAND_6GHZ)
- 		channel_flags |= IEEE80211_CHAN_OFDM | IEEE80211_CHAN_5GHZ;
- 	else if (status->encoding != RX_ENC_LEGACY)
- 		channel_flags |= IEEE80211_CHAN_DYN | IEEE80211_CHAN_2GHZ;
++	vht_cap->cap |= min_t(u32, cap_info & IEEE80211_VHT_CAP_MAX_MPDU_MASK,
++			      own_cap.cap & IEEE80211_VHT_CAP_MAX_MPDU_MASK);
++
+ 	/* and some based on our own capabilities */
+ 	switch (own_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) {
+ 	case IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ:
 -- 
 2.25.1
 
