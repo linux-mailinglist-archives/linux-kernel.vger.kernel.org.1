@@ -2,159 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F052728355A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CFA28355E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgJEMG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:06:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgJEMG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:06:28 -0400
-Received: from coco.lan (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726096AbgJEMHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgJEMHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:07:30 -0400
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9ABC0613CE;
+        Mon,  5 Oct 2020 05:07:29 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E7882075A;
-        Mon,  5 Oct 2020 12:06:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601899587;
-        bh=calSC86nxnRZayzM+fSWlEyXNmfxDUtQSyrvMVMYC0s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aUn6iRTgb/p6UI+FI1CHDbAIH+GO8Q6/p7Ud9d43JOk3wFlM3AbPpopAFjI3jICyk
-         UBm1Ms6O4vK3FzHKJlZv5Sp/mowa7y3J3dFW3w/OPY+xOhABJhnuJ7LoM6f9l3Fu6G
-         9yIm//0Xy3ZCB6wKgxmJrspYBQF3zYITOw4TCtYc=
-Date:   Mon, 5 Oct 2020 14:06:22 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 35/52] docs: fs: fscrypt.rst: get rid of :c:type:
- tags
-Message-ID: <20201005140622.50693933@coco.lan>
-In-Reply-To: <20200930170637.GB9698@sol.localdomain>
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
-        <689d790237b64fc7d81fcf97ac303cc1dbdd33d4.1601467849.git.mchehab+huawei@kernel.org>
-        <20200930162144.GA9698@sol.localdomain>
-        <20200930185333.66dacbc6@coco.lan>
-        <20200930170637.GB9698@sol.localdomain>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4C4fVS3Tt8zKm5Q;
+        Mon,  5 Oct 2020 14:07:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :references:in-reply-to:message-id:subject:subject:from:from
+        :date:date:received; s=mail20150812; t=1601899645; bh=uW44uYPrhB
+        Ak9bdc1yCwjJpGoZBR7+lNRqJgmDKEtuQ=; b=g/g/Egz1LWJ8/l/+iPloHI1gWt
+        YWjY4ZCxMZ7f35deW9qVtVKgv/B66cw68Jw54rZQ8bBh0QXeGifK6C/MELPrEq5H
+        49mfdl63pk8naBbXlDmp44LFsT68ChZ+k8qeJjW3xnnRf8votgc2eXZTE0Vi4MHD
+        394mywM4dvYPW6SRMEbOiPE2J8EFk5pDcPytI6++as3Qjah0Ow8oPuHOnIH/8wzB
+        IDy44OJIlSDFwCfL2Pyw6j64NqwrwzmDh8NqlgSAuu1VXhc2rBa7YhmbvJCcqMLt
+        B0nkF+YReEI8ewXx8fI1oVJNp2P1+M+d9r6uinM07X+L80IvpNQYZMAylcAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1601899646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RYy9CaSjXdLF8peC9exJg+yhvC7heRaR3PJTeXb8sjM=;
+        b=C5C1Bq/J8CI8e8FJNy+sV0Uy1CWdz8LhfEpw8jyMV61mWBXGdJuOqMykgE/7FGlMc2hwMU
+        vVU7HD/pjvXxEwYRNw1scd8eSfY2jIbI1PoZR97xf3NuaVY8EpxinXCBQQjFbsYMA0lrq1
+        NSJgOeA86gboKG9hhU3zuCts755QjDs3glpLLcIVdFeNt0FguAmvpfPfMCxSLYHUxw0ZUg
+        0ESYKXY0sXlsDwo2LsAN+gMY6osYgOwrPHZCWoUvOOScF52+qJQYYybzNEkqhYGv4tDPWp
+        ECUA6PjvceY26kc/zYH6DcZp9f8k/t8gLTHlRsYV2WBiVzBuC0FOu7EbvgKLcQ==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id VqJVNEQz4qN1; Mon,  5 Oct 2020 14:07:25 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 14:07:23 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     Lars Melin <larsm17@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        =?ISO-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
+Message-ID: <20201005140723.56f6c434@monster.powergraphx.local>
+In-Reply-To: <5222246c-08d7-dcf8-248d-c1fefc72c46f@gmail.com>
+References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
+        <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
+        <20201005082045.GL5141@localhost>
+        <20201005130134.459b4de9@monster.powergraphx.local>
+        <20201005110638.GP5141@localhost>
+        <5222246c-08d7-dcf8-248d-c1fefc72c46f@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -5.98 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 8B9A91824
+X-Rspamd-UID: 543473
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Mon, 5 Oct 2020 18:36:36 +0700
+Lars Melin <larsm17@gmail.com> wrote:
 
-Em Wed, 30 Sep 2020 10:06:37 -0700
-Eric Biggers <ebiggers@kernel.org> escreveu:
-
-> > I double checked: it is against next-20200922. The reason of
-> > not being today's next is that I didn't want any new warnings
-> > to be introduced before I finish this patch series.
+> On 10/5/2020 18:06, Johan Hovold wrote:
+> > On Mon, Oct 05, 2020 at 01:01:34PM +0200, Wilken Gottwalt wrote:
+> >> On Mon, 5 Oct 2020 10:20:45 +0200
+> >> Johan Hovold <johan@kernel.org> wrote:
+> >>
+> >>> On Sat, Oct 03, 2020 at 11:40:29AM +0200, Wilken Gottwalt wrote:
+> >>>> Add usb ids of the Cellient MPL200 card.
+> >>>>
+> >>>> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+> >>>> ---
 > > 
-> > Anyway, I'm planning to do a rebase tomorrow on the top of the 
-> > latest -next.
-> >   
+> >>>> @@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
+> >>>>   	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2,
+> >>>> 0xff, 0x02, 0x01) }, { USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID,
+> >>>> MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x00, 0x00) }, { USB_DEVICE(CELLIENT_VENDOR_ID,
+> >>>> CELLIENT_PRODUCT_MEN200) },
+> >>>> +	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
+> >>>> +	  .driver_info = RSVD(1) | RSVD(4) },
+> >>>
+> >>> Would you mind posting the output of "lsusb -v" for this device?
+> >>
+> >> I would like to, but unfortunately I lost access to this really rare hardware
+> >> about a month ago. It is a Qualcomm device (0x05c6:0x9025) with a slightly
+> >> modified firmware to rebrand it as a Cellient product with a different vendor
+> >> id. How to proceed here, if I have no access to it anymore? Drop it?
+> > 
+> > No, that's ok, I've applied the patch now. It's just that in case we
+> > ever need to revisit the handling of quirky devices, it has proven
+> > useful to have a record the descriptors.
+> > 
+> > Do you remember the interface layout and why you blacklisted interface
+> > 1?
+> > 
+> > Johan
+> > 
 > 
-> Doesn't work.  Here's what I did:
-
-...
-
-> Cover: ./v4_20200930_mchehab_huawei_fix_html_build_with_sphinx_3_1_and_above.cover
->  Link: https://lore.kernel.org/r/cover.1601467849.git.mchehab+huawei@kernel.org
->  Base: not found
->        git am ./v4_20200930_mchehab_huawei_fix_html_build_with_sphinx_3_1_and_above.mbx
+> It is very likely that Cellient has replaced the VID with their own and 
+> kept the PID, it is something other mfgrs has done when buying modules 
+> from Qualcomm's series of devices with predefined composition.
 > 
-> e@sol ~/linux $ git am ./v4_20200930_mchehab_huawei_fix_html_build_with_sphinx_3_1_and_above.mbx
-> Applying: docs: cdomain.py: add support for a new Sphinx 3.1+ tag
-> Applying: docs: cdomain.py: extend it to handle new Sphinx 3.x tags
-> Applying: docs: conf.py: disable automarkup for Sphinx 3.x
-> Applying: scripts: kernel-doc: make it more compatible with Sphinx 3.x
-> Applying: scripts: kernel-doc: use a less pedantic markup for funcs on Sphinx 3.x
-> Applying: scripts: kernel-doc: fix troubles with line counts
-> Applying: scripts: kernel-doc: reimplement -nofunction argument
-> Applying: scripts: kernel-doc: fix typedef identification
-> Applying: scripts: kernel-doc: don't mangle with parameter list
-> Applying: docs: kerneldoc.py: append the name of the parsed doc file
-> Applying: docs: kerneldoc.py: add support for kerneldoc -nosymbol
-> Applying: media: docs: make CEC documents compatible with Sphinx 3.1+
-> Applying: media: docs: make V4L documents more compatible with Sphinx 3.1+
-> error: patch failed: Documentation/userspace-api/media/v4l/hist-v4l2.rst:202
-> error: Documentation/userspace-api/media/v4l/hist-v4l2.rst: patch does not apply
-> error: patch failed: Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst:227
-> error: Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst: patch does not apply
-> Patch failed at 0013 media: docs: make V4L documents more compatible with Sphinx 3.1+
-> hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
+> The MS Windows driver for 05c6:9025 describes the interfaces as:
+> 
+> MI_00 Qualcomm HS-USB Diagnostics 9025
+> MI_01 Android Composite ADB Interface
+> MI_02 Qualcomm HS-USB Android Modem 9025
+> MI_03 Qualcomm HS-USB NMEA 9025
+> MI_04 Qualcomm Wireless HS-USB Ethernet Adapter 9025
+> MI_05 USB Mass Storage Device
+> 
+> where the net interface is for QMI/RMNET.
+> It fully matches the blacklisting Wilken has done for 2692:9025
 
-Well, the media patches were indeed based at the media upstream tree.
-As I maintain the media tree, and the changes for it are huge, I opted
-to merge from media before applying this series. Btw, the series
-is also after the other fix patches for the warnings with Sphinx 2.x 
-that I sent previously. It might eventually conflict with the Sphinx 3.x
-patch series.
+Does your device have a GPS connector? Mine had not and I'm not sure
+if the description of MI_01 is actually correct. I remember looking at
+this port and seeing bogus NMEA data.
 
-At the current version, there are 101 patches against next-20201002, being
-about half of them fixing all doc warnings on Sphinx 2.x, and the other 
-ones fixing almost all Sphinx 3.x warnings.
-
-The latest version at:
-
-	https://git.linuxtv.org/mchehab/experimental.git/log/?h=sphinx3-fixes-v4
-
-In the specific case of fscript.rst, there are only two patches on my
-series affecting it, both as part of this /52 series:
-
-	$ git log next-20200922..devel/sphinx3-fixes-v4 Documentation/filesystems/fscrypt.rst
-	commit ee4af6dd20dd6d2ac7f5d970abac960a36679e13
-	Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-	Date:   Tue Sep 29 09:13:18 2020 +0200
-
-	    docs: fs: fscrypt.rst: get rid of :c:type: tags
-    
-	    The :c:type: tag has problems with Sphinx 3.x, as structs
-	    there should be declared with c:struct.
-    
-	    So, remove them, relying at automarkup.py extension to
-	    convert them into cross-references.
-    
-	    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-	commit 0945e3961d006e210e374b6d3224d9108c1dfa25
-	Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-	Date:   Fri Sep 25 12:01:25 2020 +0200
-
-	    docs: get rid of :c:type explicit declarations for structs
-    
-	    The :c:type:`foo` only works properly with structs before
-	    Sphinx 3.x.
-    
-	    On Sphinx 3.x, structs should now be declared using the
-	    .. c:struct, and referenced via :c:struct tag.
-    
-	    As we now have the automarkup.py macro, that automatically
-	    convert:
-        	    struct foo
-    
-	    into cross-references, let's get rid of that, solving
-	    several warnings when building docs with Sphinx 3.x.
-    
-	    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Anyway, I'm waiting for the today's next, in order to do another
-rebase, fixing any new warning that might be added, and to post the
-patches that weren't merged yet via other trees.
-
-The end goal is to have zero warnings with Sphinx 2.x, and the minimal
-number of warnings with 3.x (right now, there's just 6 warnings
-with 3.x - fixing those require fixes at Sphinx C domain parser).
-
-Thanks,
-Mauro
+greetings,
+Will
