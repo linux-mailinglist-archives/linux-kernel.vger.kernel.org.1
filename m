@@ -2,79 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BD0283DFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0279283E04
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbgJESJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgJESJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:09:04 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7969E2100A;
-        Mon,  5 Oct 2020 18:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601921344;
-        bh=JQrEJw5wL+Whaph7CBgSEPJ12ogkEyC+vf6sNyfuM5k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZkXE3kGUmTDZXbcKJl87bPVlRStDAZk38su9z0U54VxB0tSMESlqZrb9fkvDwoIPA
-         4/nYQnmOOaPB1Olz9iQs9FR3UW2mPIFgVr1fn7Zg3FrWm4Rep0Ksq90ofbqzW/8hbw
-         jD63EbUZKTakwpw5soBCn1mO1Ohrjsi+4QvSzbGY=
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        linux-kselftest@vger.kernel.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Gabor Kertesz <gabor.kertesz@arm.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>
-Subject: Re: [PATCH v2 0/6] kselftest: arm64/mte: Tests for user-space MTE
-Date:   Mon,  5 Oct 2020 19:08:57 +0100
-Message-Id: <160192033783.52795.7154690742315956684.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201002115630.24683-1-amit.kachhap@arm.com>
-References: <20201002115630.24683-1-amit.kachhap@arm.com>
+        id S1727758AbgJESKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgJESKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 14:10:18 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B007C0613CE;
+        Mon,  5 Oct 2020 11:10:18 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l126so7471534pfd.5;
+        Mon, 05 Oct 2020 11:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YoMIv66+/pcP+7tXkGyfiaP3wPkP8AZJOUeLQyrbhCo=;
+        b=s1FvaNLzk9ENAUF+dImr5G6uF3ttayAdr3ACaxBA/MFA6jo+FY6tDANTn01a3raqQD
+         9Dxru8Cv/VQ9HJfZkv490IkLOJ6zk4WjW2gdMjjjhdIMli3lmGNoaAbkEGAlRSVvmwQr
+         A22Oro0X+4/rXIkuQhY0A3e93DBSE2Ah8ihWqV9RiH94dSKJ+454v6WUhX8Qku/2fCB9
+         IaoYapNlRFdrGPIPkEkUsp4K4vTB4xNAJiQTFCGNXZ8MBzTqadDJn3b8pZVGKYK5XkxE
+         VlRsacm41HnJBo8cXHBiPeH7kiXkkYUa3KaUPA3FcwVcd1QgWybul8C3I51cWAxKKyth
+         kmvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YoMIv66+/pcP+7tXkGyfiaP3wPkP8AZJOUeLQyrbhCo=;
+        b=JKjH0w0r40GrEyehYAg6BsQSXjiEtwFJpO5vX9XHY4rx/1I89b4p/lmW12mG0qG62T
+         wTJVSnT+GhIW9E+2sEUsn8aVpIb4fBdJozwLppUTcbTpZJhHcMhKXUndIZt4spGWaRKU
+         Nyi5VysLpVa20PQ+qQVxXgqv7gwG45eon2Vh4QL10+lPGDXAad4z+C0Mt4gKj8DatVoj
+         R6WJ1OaELHcr6L+/efBS10QeMZ708jujnbIn+4eNTZRqHvQ0osxikJRCoDigoELH27Nk
+         jwYssDyqM7Dtd9Yet3QBeTHpqnPP79PeDqsxPVSBNOmRL1ogBH3bdj5v6PnI9nvCppX0
+         4f3Q==
+X-Gm-Message-State: AOAM530iomReTvihl2+cCcvo/V9UP7sitjMa8LRcZT1WKzELmQtdA5f+
+        t43uTEYJOiBNQgZl4FDV7HA=
+X-Google-Smtp-Source: ABdhPJyH4fsGnVblPJB5N4pgMwQJmZq67gBl5WqwS0SGCx7kk269VvXfguknhYlG7b9tInkRJJ8m+Q==
+X-Received: by 2002:a63:4945:: with SMTP id y5mr679607pgk.181.1601921417989;
+        Mon, 05 Oct 2020 11:10:17 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id v5sm550037pfu.151.2020.10.05.11.10.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 11:10:16 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 11:10:14 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sylvain Lemieux <slemieux.tyco@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Barry Song <baohua@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Nick Dyer <nick@shmanahar.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ferruh Yigit <fery@cypress.com>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Peter Hutterer <peter.hutterer@redhat.com>,
+        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
+        kernel@collabora.com, Patrik Fimml <patrikf@chromium.org>
+Subject: Re: [PATCH v4 7/7] Input: Add "inhibited" property
+Message-ID: <20201005181014.GL1009802@dtor-ws>
+References: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
+ <20200608112211.12125-1-andrzej.p@collabora.com>
+ <20200608112211.12125-8-andrzej.p@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200608112211.12125-8-andrzej.p@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 17:26:24 +0530, Amit Daniel Kachhap wrote:
-> These patch series adds below kselftests to test the user-space support for the
-> ARMv8.5 Memory Tagging Extension present in arm64 tree [1]. This patch
-> series is based on Linux v5.9-rc3.
-> 
-> 1) This test-case verifies that the memory allocated by kernel mmap interface
-> can support tagged memory access. It first checks the presence of tags at
-> address[56:59] and then proceeds with read and write. The pass criteria for
-> this test is that tag fault exception should not happen.
-> 
-> [...]
+Hi Andrzej,
 
-Applied to arm64 (for-next/late-arrivals), thanks!
+On Mon, Jun 08, 2020 at 01:22:11PM +0200, Andrzej Pietrasiewicz wrote:
+> @@ -284,8 +284,11 @@ static int input_get_disposition(struct input_dev *dev,
+>  	case EV_KEY:
+>  		if (is_event_supported(code, dev->keybit, KEY_MAX)) {
+>  
+> -			/* auto-repeat bypasses state updates */
+> -			if (value == 2) {
+> +			/*
+> +			 * auto-repeat bypasses state updates but repeat
+> +			 * events are ignored if the key is not pressed
+> +			 */
+> +			if (value == 2 && test_bit(code, dev->key)) {
+>  				disposition = INPUT_PASS_TO_HANDLERS;
+>  				break;
+>  			}
 
-[1/6] kselftest/arm64: Add utilities and a test to validate mte memory
-      https://git.kernel.org/arm64/c/e9b60476bea0
-[2/6] kselftest/arm64: Verify mte tag inclusion via prctl
-      https://git.kernel.org/arm64/c/f3b2a26ca78d
-[3/6] kselftest/arm64: Check forked child mte memory accessibility
-      https://git.kernel.org/arm64/c/dfe537cf4718
-[4/6] kselftest/arm64: Verify all different mmap MTE options
-      https://git.kernel.org/arm64/c/53ec81d23213
-[5/6] kselftest/arm64: Verify KSM page merge for MTE pages
-      https://git.kernel.org/arm64/c/f981d8fa2646
-[6/6] kselftest/arm64: Check mte tagged user address in kernel
-      https://git.kernel.org/arm64/c/4dafc08d0ba4
+Is this chunk really part of inhibit support? I'd think we cancel
+autorepeat timer when we are releasing a key, no?
 
-Cheers,
+Thanks.
+
 -- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Dmitry
