@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CE928422D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6CD284237
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgJEVh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 17:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJEVh0 (ORCPT
+        id S1726751AbgJEVje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:39:34 -0400
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:49318 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726693AbgJEVje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:37:26 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3742C0613CE;
-        Mon,  5 Oct 2020 14:37:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C4v7z0VqVzB3tZ;
-        Tue,  6 Oct 2020 08:37:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601933839;
-        bh=iqKQLzV/9MJ4NlJgoNl0vHUi9R13MPmpW2o15p6wdSQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qE6ZL/5iK1gljFs/d101JfILjdDIXvJJa6swE4QEwKSrGHqV6Q6g6YN7Gtw+DSN0B
-         xe6TimBl2LoOmM4TPJKp6pt5EzSdHWLsJKA8AMZSDSEvajZlZnHzKvSOVBhb1khWCd
-         y5dmjB/r2vnTOSjXnKCr9mY1zeOaUKVSbbcVI4eKdkLTLKXr8hVucKAVFGH7IRI6cf
-         I44TR11izDdriSINvFwbZHqwxv9QxMz482yfcNlqYGyyXxk9mdXJF9H6xdDz4ISOZP
-         WVUWDI1pRpcrU2DvnORNLXiFBKPRJcDIsAYfBGCoYc6KqQrNaWeaEGWeyu2v84oYI6
-         3eStAipXGfG4g==
-Date:   Tue, 6 Oct 2020 08:37:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the dma-mapping
- tree
-Message-ID: <20201006083718.4f3ef310@canb.auug.org.au>
+        Mon, 5 Oct 2020 17:39:34 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 095LdNsH001905; Tue, 6 Oct 2020 06:39:24 +0900
+X-Iguazu-Qid: 2wHHD8Mc11nAaW7xS4
+X-Iguazu-QSIG: v=2; s=0; t=1601933963; q=2wHHD8Mc11nAaW7xS4; m=7f25MoKqdZ3HZEJCZTZtQKDhX5Pv9dJwOq2cngcRJ2k=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1112) id 095LdM2Y008188;
+        Tue, 6 Oct 2020 06:39:23 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 095LdMX3026631;
+        Tue, 6 Oct 2020 06:39:22 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 095LdMfn031406;
+        Tue, 6 Oct 2020 06:39:22 +0900
+Date:   Tue, 6 Oct 2020 06:39:21 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: visconti: PINCTRL_TMPV7700 should depend on
+ ARCH_VISCONTI
+X-TSB-HOP: ON
+Message-ID: <20201005213921.xjjhmyr7c25mul64@toshiba.co.jp>
+References: <20201005125049.26926-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Nej0ub_i+pHPOWozsaU0XVM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005125049.26926-1-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Nej0ub_i+pHPOWozsaU0XVM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Geert,
 
-Hi all,
+On Mon, Oct 05, 2020 at 02:50:49PM +0200, Geert Uytterhoeven wrote:
+> The Toshiba Visconti TMPV7700 series pin controller is only present on
+> Visconti SoCs.  Hence add a dependency on ARCH_VISCONTI, to prevent
+> asking the user about this driver when configuring a kernel without
+> Visconti platform support.
+> 
+> Fixes: a68a7844264e4fb9 ("pinctrl: visconti: Add Toshiba Visconti SoCs pinctrl support")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Commit
+Thanks for your fixing.
 
-  82a18d4ce1ef ("cma: decrease CMA_ALIGNMENT lower limit to 2")
+Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 
-is missing a Signed-off-by from its committer.
+Best regards,
+  Nobuhiro
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Nej0ub_i+pHPOWozsaU0XVM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl97kg4ACgkQAVBC80lX
-0GyYDgf8CSO8JWh0Cazr82eEloh7y4MIwr6XKgKVblTguuvlBFAKJv1Sf4zRpypM
-ON0nUBB8znqbm47U2r+Zs5Mloc0jiPN/bj7sP3NJE2XZycnEL0rx7TU0+R/6k1p4
-akH/sreJdjKxZ+xosPuxftA794th1cSIHTABO4ziFVnfreYThC+eqMgHLBmohKNA
-tM4eTBaOAKqkhfZaYhf8SKgG4Ia8MP6OWnF5aazd+nr1LgamrenVs92+32nfE/JN
-qMdNnhJYC5oFaiQj6PZ8tdtBkGGN9SEQNy27U0t4qoNhzbhDjLZ9wOwY7GmZdp5x
-NMj3FFE46aN3vQitB2+i9EVvs9cOxQ==
-=uJnf
------END PGP SIGNATURE-----
-
---Sig_/Nej0ub_i+pHPOWozsaU0XVM--
+> ---
+>  drivers/pinctrl/visconti/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/visconti/Kconfig b/drivers/pinctrl/visconti/Kconfig
+> index 198ec33189cc4706..42653fc60413d203 100644
+> --- a/drivers/pinctrl/visconti/Kconfig
+> +++ b/drivers/pinctrl/visconti/Kconfig
+> @@ -9,6 +9,6 @@ config PINCTRL_VISCONTI
+>  config PINCTRL_TMPV7700
+>  	bool "Toshiba Visconti TMPV7700 series pinctrl driver"
+>  	depends on OF
+> -	depends on ARM64 || COMPILE_TEST
+> +	depends on ARCH_VISCONTI || COMPILE_TEST
+>  	select PINCTRL_VISCONTI
+> -	default ARM64 && ARCH_VISCONTI
+> +	default ARCH_VISCONTI
+> -- 
+> 2.17.1
+> 
+> 
