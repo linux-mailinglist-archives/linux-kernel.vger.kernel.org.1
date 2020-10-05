@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BE528305C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D86283068
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgJEG0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 02:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgJEG0g (ORCPT
+        id S1725885AbgJEGke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 02:40:34 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:14262 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgJEGke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:26:36 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19C2C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 23:26:36 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t23so3331039pji.0
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 23:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SKaQ5+8uUmRtIWBKZSxd+2jDGXEKN5QdEKsAPMYJkgg=;
-        b=hVUBIPjnHGOWjGUi1oUG2maCLkvuCE7pMNCmJn6gkaIVPZ8LdYKidM635ZHKQeHwr+
-         l2knVD95lg4NSfyju+W6598JCldz5UwtjNiq5Jw8H8LWwbCeS4VjYFXgNY9WYCMElFUg
-         2atFKK1Z5tvYk+DhYbjVwhkBzLDgUhCcKGzBzX8j4fumt3o5pOmUeq9QqIeXEm7BnOnZ
-         a+C2Am6JbEg4Ha9fo3qOa+KC6LPN927a6o67oRVjFKDbmc9/uYW0fgX+Cks4uxcGs2HW
-         NWZrgF1TEebG01jSrJh4i4AjHHuHT+bSBFJDRKzAlvEWgDfpYYZ6UGBMMucpf0+sffjM
-         zsXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SKaQ5+8uUmRtIWBKZSxd+2jDGXEKN5QdEKsAPMYJkgg=;
-        b=SWm4GRkEcGYHqVevhVPKmlyza2fAZs0amBgs7Thx3x40BOmhmhIAKBu2WoGJhevxn8
-         nnjfDqTe2oUhtGJi7Qk/xsES4zSJqqLqJ7NtL1exCpo1WIeswCgUOAyFXD0/VoUAMBd0
-         QbBt91D8CqYU0ynfTg0Uv+ZeZczNZwthARyMWF0JiPYzn+kQr0nKWA8I8qZ2fgPs+U/6
-         oddSiFGF1SF4mdIQViDJK1x4PO0M588rskclxaYjTjCaGl4qZ8KLVlvfi0rAb9UnnXnM
-         DPV/bGhB4X39k6Pk5HZ9RH+C4ZG3Lts6R6SNd29y8I/C5aSHqc7G8PGvQsJmbnFwLHAL
-         ND8A==
-X-Gm-Message-State: AOAM531hCXNinJUP6qK4k7EJdK212AEQwMLyJhUJ6nmH3jOaK/H9/KDC
-        UAatsCX+aRa0gl67MQ/nLopv6Q==
-X-Google-Smtp-Source: ABdhPJzMX/4YpxutBiiXM2fWXSSduuaC0HQCvEVYpnrcJsYem70ESjGjA5g+ApA82zM/o6oW1zh/YQ==
-X-Received: by 2002:a17:90a:e282:: with SMTP id d2mr104042pjz.159.1601879196092;
-        Sun, 04 Oct 2020 23:26:36 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id j6sm10860110pfi.129.2020.10.04.23.26.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 04 Oct 2020 23:26:35 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:56:33 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     rnayak@codeaurora.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/8] drm/msm: Unconditionally call
- dev_pm_opp_of_remove_table()
-Message-ID: <20201005062633.ejpehkpeuwksrx3e@vireshk-i7>
-References: <cover.1598594714.git.viresh.kumar@linaro.org>
- <6e4110032f8711e8bb0acbeccfe66dec3b09d5c1.1598594714.git.viresh.kumar@linaro.org>
+        Mon, 5 Oct 2020 02:40:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1601880032;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=BfPJTkHJ25aT4xHJTt8bqUqo6Mmt7owb63RplAlMbz0=;
+        b=Q6sQmNeXAk8G1J0FDlQF03ZyjoIjvoEBOM2MmK7wCRScluNxjE3U3K51hIeJeRpWG8
+        6XtikIQfxeBi54qMX8FZYKVXwHTFSHNr3GtyXDKP1TBYQ+dqsKu+2KsySLFLu3GaAf/O
+        ErCic+mJhUYhKXuONdcekE3tm7j03Qz/VBvh40fEyPkmdVGbGINSWUV2NkucMaPD8MFQ
+        7IzgxIMTj0MmpnQWSys3LEsJCogQjxRCJlCOkZRCXgBHh0FXFHo0Iiyc8pQP3D62LpDZ
+        6Lbf3e/12TmQuFSpc5Vm2YhNx+aQWKRkzFjNJDI5jcSeDnEqKMRN6frzPcQGLmv4DAGI
+        ZBZw==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9x2wdNs6neUFoh7cs3k0="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 47.2.1 AUTH)
+        with ESMTPSA id C0b627w956eQB0K
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 5 Oct 2020 08:40:26 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        kernel test robot <lkp@intel.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: jitterentropy - bind statically into kernel
+Date:   Mon, 05 Oct 2020 08:40:25 +0200
+Message-ID: <2588700.mWSkj6HvKX@tauon.chronox.de>
+In-Reply-To: <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
+References: <20200930065617.934638-1-palmerdabbelt@google.com> <20201005061918.GB1856@infradead.org> <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e4110032f8711e8bb0acbeccfe66dec3b09d5c1.1598594714.git.viresh.kumar@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-08-20, 11:37, Viresh Kumar wrote:
-> dev_pm_opp_of_remove_table() doesn't report any errors when it fails to
-> find the OPP table with error -ENODEV (i.e. OPP table not present for
-> the device). And we can call dev_pm_opp_of_remove_table()
-> unconditionally here.
-> 
-> While at it, also create a label to put clkname.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Am Montag, 5. Oktober 2020, 08:24:46 CEST schrieb Ard Biesheuvel:
 
-Can someone please apply this and the other drm patch (2/8) ?
+Hi Ard,
 
--- 
-viresh
+> If jitterentropy is a special case, we could put a alternate
+> non-'static inline' version of random_get_entropy() in the core
+> kernel, and only export it if JITTER_ENTROPY is built as a module in
+> the first place. But I'd prefer it if jitterentropy switches to an API
+> that is suitable for driver consumption.
+
+Which API do you have in mind? In user space, I use 
+clock_gettime(CLOCK_REALTIME) which also considers the clock source.
+
+Thanks
+Stephan
+
+
