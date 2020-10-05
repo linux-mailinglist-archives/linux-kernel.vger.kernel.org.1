@@ -2,510 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D9F283578
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BA8283567
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgJEMNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgJEMMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:12:55 -0400
-Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384B1C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:12:54 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id CBCC123F4F0;
-        Mon,  5 Oct 2020 14:12:49 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.98
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.98 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.080, BAYES_00=-1.9] autolearn=ham
-Received: from smtp2.goneo.de ([127.0.0.1])
-        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Gjz9LEkFrlQg; Mon,  5 Oct 2020 14:12:48 +0200 (CEST)
-Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp2.goneo.de (Postfix) with ESMTPA id DA21223FF33;
-        Mon,  5 Oct 2020 14:12:47 +0200 (CEST)
-From:   poeschel@lemonage.de
-To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Lars Poeschel <poeschel@lemonage.de>
-Subject: [PATCH v3 32/32] auxdisplay: add a driver for lcd2s character display
-Date:   Mon,  5 Oct 2020 14:12:00 +0200
-Message-Id: <20201005121200.3427363-33-poeschel@lemonage.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005121200.3427363-1-poeschel@lemonage.de>
-References: <20201005121200.3427363-1-poeschel@lemonage.de>
+        id S1725940AbgJEMMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJEMMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:12:10 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9909F2075A;
+        Mon,  5 Oct 2020 12:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601899928;
+        bh=dhglsjHj4uwibotr7svIV7suAuWFKGapEQPRlLvR6+E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h9ToBfZSo9u9ALqvzX1BUl23M0jH5agkcgYRO+27Yk80nbt2ExRlhO/MZXvt5uIvT
+         OTGu50kN793xjNukX+hdX5gknTcDq8j6rY4lO95yzOJclGkqyt3st0c+38LsZGHArD
+         ZhvTcRq33Z5VoysOK1d24DGIyO6cT7VVlKpPq+xc=
+Date:   Mon, 5 Oct 2020 14:12:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201005121253.GA687559@kroah.com>
+References: <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+ <20201001112449.GA2364834@kroah.com>
+ <20201005093016.GD425362@ulmo>
+ <20201005094530.GA154185@kroah.com>
+ <20201005101721.GL425362@ulmo>
+ <20201005104023.GB245520@kroah.com>
+ <20201005110819.GP425362@ulmo>
+ <20201005111738.GA367715@kroah.com>
+ <20201005115819.GU425362@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201005115819.GU425362@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Poeschel <poeschel@lemonage.de>
+On Mon, Oct 05, 2020 at 01:58:19PM +0200, Thierry Reding wrote:
+> On Mon, Oct 05, 2020 at 01:17:38PM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 05, 2020 at 01:08:19PM +0200, Thierry Reding wrote:
+> > > On Mon, Oct 05, 2020 at 12:40:23PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Mon, Oct 05, 2020 at 12:17:21PM +0200, Thierry Reding wrote:
+> > > > > On Mon, Oct 05, 2020 at 11:45:30AM +0200, Greg Kroah-Hartman wrote:
+> > > > > > On Mon, Oct 05, 2020 at 11:30:16AM +0200, Thierry Reding wrote:
+> > > > > > > On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
+> > > > > > > > On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> > > > > > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > > > > > > > > > Hello,
+> > > > > > > > > > 
+> > > > > > > > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > > > > > > > > Cc:.
+> > > > > > > > > > 
+> > > > > > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > > > > > > > thank you for your review!
+> > > > > > > > > > > 
+> > > > > > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > > > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > This adds a class to exported pwm devices.
+> > > > > > > > > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > > > > > > > > 
+> > > > > > > > > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > > > > > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > > > > > > > > accomplish you way.
+> > > > > > > > > > > 
+> > > > > > > > > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > > > > > > > > I use udev rules to adjust permissions.
+> > > > > > > > > > 
+> > > > > > > > > > Hmm, how do you trigger the export? Without being aware of all the
+> > > > > > > > > > details in the sysfs code I would expect that the exported stuff is
+> > > > > > > > > > available instantly once the write used to export the PWM is completed.
+> > > > > > > > > > So changing the permissions can be done directly after triggering the
+> > > > > > > > > > export in the same process.
+> > > > > > > > > 
+> > > > > > > > > The export is triggered through the userspace process itself. Why can it
+> > > > > > > > > do this ? Because there is another udev rule, that changes permissions
+> > > > > > > > > when a pwmchip appears.
+> > > > > > > > > Then I'd like to have the second udev rule, that changes permissions on
+> > > > > > > > > the freshly exported pwm. The userspace process can't do this.
+> > > > > > > > > You are right I could propably do everything from within udev: If a
+> > > > > > > > > pwmchip appears, export certain pwms and right away change their
+> > > > > > > > > permissions. It does not also not feel right. It'd require knowledge
+> > > > > > > > > from the userspace application to be mapped to udev.
+> > > > > > > > 
+> > > > > > > > The way the kernel code is now, yes, you will not have any way to
+> > > > > > > > trigger it by userspace as the kernel is creating a "raw" struct device
+> > > > > > > > that isn't assigned to anything.  That is what needs to be fixed here.
+> > > > > > > > 
+> > > > > > > > > > Out of interest: What do you use the pwm for? Isn't there a suitable
+> > > > > > > > > > kernel driver that can do the required stuff? Compared to the kernel-API
+> > > > > > > > > > the sysfs interface isn't atomic. Is this an annoyance?
+> > > > > > > > > 
+> > > > > > > > > Use-case is generating a voltage from the pwm. This voltage is used to
+> > > > > > > > > signal different states and does not change very often. This is
+> > > > > > > > > absolutely not annoying that this is not atomic. We just change the duty
+> > > > > > > > > cycle on the fly. Everything else is configured one time at startup.
+> > > > > > > > > I'd call what I need pwm-dac. I could not find a ready to use driver.
+> > > > > > > > > Maybe I could misuse some kernel driver for this. Maybe I could use
+> > > > > > > > > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+> > > > > > > > > there is even a userspace facing part for this, but this is not
+> > > > > > > > > devicetree ready.
+> > > > > > > > > ...and the worst, please don't blame me: The application is java, so
+> > > > > > > > > ioctl is a problem.
+> > > > > > > > 
+> > > > > > > > I thought java could do ioctls, otherwise how would it ever be able to
+> > > > > > > > talk to serial ports?
+> > > > > > > > 
+> > > > > > > > Anyway, this needs to be fixed in the kernel...
+> > > > > > > 
+> > > > > > > If atomicity was a problem, we could potentially add a mechanism to the
+> > > > > > > sysfs interface to enable that. I don't see a good way of doing that in
+> > > > > > > a single file, since that works against how sysfs is designed. But one
+> > > > > > > thing I could imagine is adding a file ("lock", or whatever you want to
+> > > > > > > call it) that you can use for atomic fencing:
+> > > > > > > 
+> > > > > > > 	$ echo 1 > lock # locks the hardware state
+> > > > > > > 	$ echo 100 > period
+> > > > > > > 	$ echo 50 > duty_cycle
+> > > > > > > 	$ echo 0 > lock # flushes state to hardware
+> > > > > > > 
+> > > > > > > But it sounds like that's not even a big issue.
+> > > > > > 
+> > > > > > That is exactly what configfs was designed for :)
+> > > > > 
+> > > > > Interesting... for some reason I had never thought about configfs in
+> > > > > this context. But it does indeed sound like it could solve this problem
+> > > > > in a better way.
+> > > > > 
+> > > > > My memory is a bit sketchy, but I think for USB device controllers this
+> > > > > works by exposing each controller in configfs and then configuring
+> > > > > things like endpoints within the controller's directory. So I wonder if
+> > > > > instead of requesting PWMs via sysfs, we should rather expose them via
+> > > > > configfs items.
+> > > > > 
+> > > > > Something like:
+> > > > > 
+> > > > > 	# mkdir /configfs/7000a000.pwm/0
+> > > > > 
+> > > > > could then be the equivalent of exporting PWM channel 0 of the given PWM
+> > > > > chip in sysfs, except that now you get a configfs directory with
+> > > > > attributes that you can use to inspect and reconfigure the PWM channel
+> > > > > and ultimately apply the changes atomically.
+> > > > > 
+> > > > > How does that work from a permissions point of view? How do we ensure
+> > > > > that people don't need root privileges to access these?
+> > > > 
+> > > > To change things in configfs, yes, I'm pretty sure you need root access.
+> > > > But to read things, sysfs is fine.  I don't really know what you are
+> > > > wanting to do here, both create a device and change the options over
+> > > > time?
+> > > 
+> > > Yes, I'm wondering if we should replace the write usages in sysfs with a
+> > > better configfs implementation. We obviously can't remove the existing
+> > > sysfs ABI, but for anything that's meant to be atomic we could point
+> > > people at the configfs interface.
+> > 
+> > How about fixing the sysfs interface so that it's usable, like the
+> > proposed patch does?  What you all have now is not working.
+> > 
+> > When the revised version is sent, not this version...
+> 
+> I'm not sure which patch you're referring to. I don't see anything in my
+> inbox. I'll go check the spam, perhaps it's landed there.
 
-This driver allows to use a lcd2s 20x4 character display from modtronix
-engineering as an auxdisplay charlcd device.
-
-Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
----
- drivers/auxdisplay/Kconfig  |  11 +
- drivers/auxdisplay/Makefile |   1 +
- drivers/auxdisplay/lcd2s.c  | 409 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 421 insertions(+)
- create mode 100644 drivers/auxdisplay/lcd2s.c
-
-diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-index a56171d1a1ba..12054daee7a6 100644
---- a/drivers/auxdisplay/Kconfig
-+++ b/drivers/auxdisplay/Kconfig
-@@ -173,6 +173,17 @@ config HT16K33
- 	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
- 	  LED controller driver with keyscan.
- 
-+config LCD2S
-+	tristate "lcd2s 20x4 character display over I2C console"
-+	depends on I2C
-+	select CHARLCD
-+	default n
-+	help
-+	  This is a driver that lets you use the lcd2s 20x4 character display
-+	  from modtronix engineering as a console output device. The display
-+	  is a simple single color character display. You have to connect it
-+	  to an I2C bus.
-+
- config ARM_CHARLCD
- 	bool "ARM Ltd. Character LCD Driver"
- 	depends on PLAT_VERSATILE
-diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
-index 7e8a8c3eb3c3..307771027c89 100644
---- a/drivers/auxdisplay/Makefile
-+++ b/drivers/auxdisplay/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_IMG_ASCII_LCD)	+= img-ascii-lcd.o
- obj-$(CONFIG_HD44780)		+= hd44780.o
- obj-$(CONFIG_HT16K33)		+= ht16k33.o
- obj-$(CONFIG_PARPORT_PANEL)	+= panel.o
-+obj-$(CONFIG_LCD2S)		+= lcd2s.o
-diff --git a/drivers/auxdisplay/lcd2s.c b/drivers/auxdisplay/lcd2s.c
-new file mode 100644
-index 000000000000..4b8c597a26fa
---- /dev/null
-+++ b/drivers/auxdisplay/lcd2s.c
-@@ -0,0 +1,409 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  console driver for LCD2S 4x20 character displays connected through i2c.
-+ *  The display also has a spi interface, but the driver does not support
-+ *  this yet.
-+ *
-+ *  This is a driver allowing you to use a LCD2S 4x20 from modtronix
-+ *  engineering as auxdisplay character device.
-+ *
-+ *  (C) 2019 by Lemonage Software GmbH
-+ *  Author: Lars PÃ¶schel <poeschel@lemonage.de>
-+ *  All rights reserved.
-+ */
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/i2c.h>
-+#include <linux/delay.h>
-+
-+#include "charlcd.h"
-+
-+#define LCD2S_CMD_CUR_MOVES_FWD		0x09
-+#define LCD2S_CMD_CUR_BLINK_OFF		0x10
-+#define LCD2S_CMD_CUR_UL_OFF		0x11
-+#define LCD2S_CMD_DISPLAY_OFF		0x12
-+#define LCD2S_CMD_CUR_BLINK_ON		0x18
-+#define LCD2S_CMD_CUR_UL_ON		0x19
-+#define LCD2S_CMD_DISPLAY_ON		0x1a
-+#define LCD2S_CMD_BACKLIGHT_OFF		0x20
-+#define LCD2S_CMD_BACKLIGHT_ON		0x28
-+#define LCD2S_CMD_WRITE			0x80
-+#define LCD2S_CMD_MOV_CUR_RIGHT		0x83
-+#define LCD2S_CMD_MOV_CUR_LEFT		0x84
-+#define LCD2S_CMD_SHIFT_RIGHT		0x85
-+#define LCD2S_CMD_SHIFT_LEFT		0x86
-+#define LCD2S_CMD_SHIFT_UP		0x87
-+#define LCD2S_CMD_SHIFT_DOWN		0x88
-+#define LCD2S_CMD_CUR_ADDR		0x89
-+#define LCD2S_CMD_CUR_POS		0x8a
-+#define LCD2S_CMD_CUR_RESET		0x8b
-+#define LCD2S_CMD_CLEAR			0x8c
-+#define LCD2S_CMD_DEF_CUSTOM_CHAR	0x92
-+#define LCD2S_CMD_READ_STATUS		0xd0
-+
-+#define LCD2S_CHARACTER_SIZE		8
-+
-+#define LCD2S_STATUS_BUF_MASK		0x7f
-+
-+struct lcd2s_data {
-+	struct i2c_client *i2c;
-+	struct charlcd *charlcd;
-+};
-+
-+static s32 lcd2s_wait_buf_free(const struct i2c_client *client, int count)
-+{
-+	s32 status;
-+
-+	status = i2c_smbus_read_byte_data(client, LCD2S_CMD_READ_STATUS);
-+	if (status < 0)
-+		return status;
-+
-+	while ((status & LCD2S_STATUS_BUF_MASK) < count) {
-+		mdelay(1);
-+		status = i2c_smbus_read_byte_data(client,
-+						  LCD2S_CMD_READ_STATUS);
-+		if (status < 0)
-+			return status;
-+	}
-+	return 0;
-+}
-+
-+static int lcd2s_i2c_master_send(const struct i2c_client *client,
-+				 const char *buf, int count)
-+{
-+	s32 status;
-+
-+	status = lcd2s_wait_buf_free(client, count);
-+	if (status < 0)
-+		return status;
-+
-+	return i2c_master_send(client, buf, count);
-+}
-+
-+static int lcd2s_i2c_smbus_write_byte(const struct i2c_client *client, u8 value)
-+{
-+	s32 status;
-+
-+	status = lcd2s_wait_buf_free(client, 1);
-+	if (status < 0)
-+		return status;
-+
-+	return i2c_smbus_write_byte(client, value);
-+}
-+
-+static int lcd2s_print(struct charlcd *lcd, int c)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+	u8 buf[2] = { LCD2S_CMD_WRITE, c };
-+
-+	lcd2s_i2c_master_send(lcd2s->i2c, buf, sizeof(buf));
-+	return 0;
-+}
-+
-+static int lcd2s_gotoxy(struct charlcd *lcd, unsigned int x, unsigned int y)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+	u8 buf[] = { LCD2S_CMD_CUR_POS, y + 1, x + 1};
-+
-+	lcd2s_i2c_master_send(lcd2s->i2c, buf, sizeof(buf));
-+
-+	return 0;
-+}
-+
-+static int lcd2s_home(struct charlcd *lcd)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_RESET);
-+	return 0;
-+}
-+
-+static int lcd2s_init_display(struct charlcd *lcd)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	/* turn everything off, but display on */
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_DISPLAY_ON);
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_BACKLIGHT_OFF);
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_MOVES_FWD);
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_BLINK_OFF);
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_UL_OFF);
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CLEAR);
-+
-+	return 0;
-+}
-+
-+static int lcd2s_shift_cursor(struct charlcd *lcd, enum charlcd_shift_dir dir)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	if (dir == CHARLCD_SHIFT_LEFT)
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_MOV_CUR_LEFT);
-+	else
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_MOV_CUR_RIGHT);
-+
-+	return 0;
-+}
-+
-+static int lcd2s_shift_display(struct charlcd *lcd, enum charlcd_shift_dir dir)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	if (dir == CHARLCD_SHIFT_LEFT)
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_SHIFT_LEFT);
-+	else
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_SHIFT_RIGHT);
-+
-+	return 0;
-+}
-+
-+static void lcd2s_backlight(struct charlcd *lcd, enum charlcd_onoff on)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	if (on)
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_BACKLIGHT_ON);
-+	else
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_BACKLIGHT_OFF);
-+}
-+
-+static int lcd2s_display(struct charlcd *lcd, enum charlcd_onoff on)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	if (on)
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_DISPLAY_ON);
-+	else
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_DISPLAY_OFF);
-+
-+	return 0;
-+}
-+
-+static int lcd2s_cursor(struct charlcd *lcd, enum charlcd_onoff on)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	if (on)
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_UL_ON);
-+	else
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_UL_OFF);
-+
-+	return 0;
-+}
-+
-+static int lcd2s_blink(struct charlcd *lcd, enum charlcd_onoff on)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	if (on)
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_BLINK_ON);
-+	else
-+		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_BLINK_OFF);
-+
-+	return 0;
-+}
-+
-+static int lcd2s_fontsize(struct charlcd *lcd, enum charlcd_fontsize size)
-+{
-+	return 0;
-+}
-+
-+static int lcd2s_lines(struct charlcd *lcd, enum charlcd_lines lines)
-+{
-+	return 0;
-+}
-+
-+static int lcd2s_redefine_char(struct charlcd *lcd, char *esc)
-+{
-+	/* Generator : LGcxxxxx...xx; must have <c> between '0'
-+	 * and '7', representing the numerical ASCII code of the
-+	 * redefined character, and <xx...xx> a sequence of 16
-+	 * hex digits representing 8 bytes for each character.
-+	 * Most LCDs will only use 5 lower bits of the 7 first
-+	 * bytes.
-+	 */
-+
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+	u8 buf[LCD2S_CHARACTER_SIZE + 2] = { LCD2S_CMD_DEF_CUSTOM_CHAR };
-+	u8 value;
-+	int shift, i;
-+
-+	if (!strchr(esc, ';'))
-+		return 0;
-+
-+	esc++;
-+
-+	buf[1] = *(esc++) - '0';
-+	if (buf[1] > 7)
-+		return 1;
-+
-+	i = 0;
-+	shift = 0;
-+	value = 0;
-+	while (*esc && i < LCD2S_CHARACTER_SIZE + 2) {
-+		shift ^= 4;
-+		if (*esc >= '0' && *esc <= '9') {
-+			value |= (*esc - '0') << shift;
-+		} else if (*esc >= 'A' && *esc <= 'Z') {
-+			value |= (*esc - 'A' + 10) << shift;
-+		} else if (*esc >= 'a' && *esc <= 'z') {
-+			value |= (*esc - 'a' + 10) << shift;
-+		} else {
-+			esc++;
-+			continue;
-+		}
-+
-+		if (shift == 0) {
-+			buf[i++] = value;
-+			value = 0;
-+		}
-+
-+		esc++;
-+	}
-+
-+	lcd2s_i2c_master_send(lcd2s->i2c, buf, sizeof(buf));
-+	return 1;
-+}
-+
-+static int lcd2s_clear_display(struct charlcd *lcd)
-+{
-+	struct lcd2s_data *lcd2s = lcd->drvdata;
-+
-+	/* This implicitly sets cursor to first row and column */
-+	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CLEAR);
-+	return 0;
-+}
-+
-+static const struct charlcd_ops lcd2s_ops = {
-+	.print		= lcd2s_print,
-+	.backlight	= lcd2s_backlight,
-+	.gotoxy		= lcd2s_gotoxy,
-+	.home		= lcd2s_home,
-+	.clear_display	= lcd2s_clear_display,
-+	.init_display	= lcd2s_init_display,
-+	.shift_cursor	= lcd2s_shift_cursor,
-+	.shift_display	= lcd2s_shift_display,
-+	.display	= lcd2s_display,
-+	.cursor		= lcd2s_cursor,
-+	.blink		= lcd2s_blink,
-+	.fontsize	= lcd2s_fontsize,
-+	.lines		= lcd2s_lines,
-+	.redefine_char	= lcd2s_redefine_char,
-+};
-+
-+static int lcd2s_i2c_probe(struct i2c_client *i2c,
-+				const struct i2c_device_id *id)
-+{
-+	struct charlcd *lcd;
-+	struct lcd2s_data *lcd2s;
-+	int err;
-+
-+	if (!i2c_check_functionality(i2c->adapter,
-+			I2C_FUNC_SMBUS_WRITE_BYTE_DATA |
-+			I2C_FUNC_SMBUS_WRITE_BLOCK_DATA))
-+		return -EIO;
-+
-+	/* Test, if the display is responding */
-+	err = lcd2s_i2c_smbus_write_byte(i2c, LCD2S_CMD_DISPLAY_OFF);
-+	if (err < 0)
-+		return err;
-+
-+	lcd = charlcd_alloc();
-+	if (!lcd)
-+		return -ENOMEM;
-+
-+	lcd2s = kzalloc(sizeof(struct lcd2s_data), GFP_KERNEL);
-+	if (!lcd2s) {
-+		err = -ENOMEM;
-+		goto fail1;
-+	}
-+
-+	lcd->drvdata = lcd2s;
-+	lcd2s->i2c = i2c;
-+	lcd2s->charlcd = lcd;
-+
-+	/* Required properties */
-+	err = device_property_read_u32(&i2c->dev, "display-height-chars",
-+			&lcd->height);
-+	if (err)
-+		goto fail2;
-+
-+	err = device_property_read_u32(&i2c->dev, "display-width-chars",
-+			&lcd->width);
-+	if (err)
-+		goto fail2;
-+
-+	lcd->ops = &lcd2s_ops;
-+
-+	err = charlcd_register(lcd2s->charlcd);
-+	if (err)
-+		goto fail2;
-+
-+	i2c_set_clientdata(i2c, lcd2s);
-+	return 0;
-+
-+fail2:
-+	kfree(lcd2s);
-+fail1:
-+	kfree(lcd);
-+	return err;
-+}
-+
-+static int lcd2s_i2c_remove(struct i2c_client *i2c)
-+{
-+	struct lcd2s_data *lcd2s = i2c_get_clientdata(i2c);
-+
-+	kfree(lcd2s->charlcd);
-+	charlcd_unregister(lcd2s->charlcd);
-+	return 0;
-+}
-+
-+static const struct i2c_device_id lcd2s_i2c_id[] = {
-+	{ "lcd2s", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, lcd2s_i2c_id);
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id lcd2s_of_table[] = {
-+	{ .compatible = "modtronix,lcd2s" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lcd2s_of_table);
-+#endif
-+
-+static struct i2c_driver lcd2s_i2c_driver = {
-+	.driver = {
-+		.name = "lcd2s",
-+		.owner = THIS_MODULE,
-+#ifdef CONFIG_OF
-+		.of_match_table = of_match_ptr(lcd2s_of_table),
-+#endif
-+	},
-+	.probe = lcd2s_i2c_probe,
-+	.remove = lcd2s_i2c_remove,
-+	.id_table = lcd2s_i2c_id,
-+};
-+
-+static int __init lcd2s_modinit(void)
-+{
-+	int ret = 0;
-+
-+	ret = i2c_add_driver(&lcd2s_i2c_driver);
-+	if (ret != 0)
-+		pr_err("Failed to register lcd2s driver\n");
-+
-+	return ret;
-+}
-+module_init(lcd2s_modinit)
-+
-+static void __exit lcd2s_exit(void)
-+{
-+	i2c_del_driver(&lcd2s_i2c_driver);
-+}
-+module_exit(lcd2s_exit)
-+
-+MODULE_DESCRIPTION("LCD2S character display driver");
-+MODULE_AUTHOR("Lars Poeschel");
-+MODULE_LICENSE("GPL");
--- 
-2.28.0
+See:
+	https://lore.kernel.org/r/20201002123048.3073128-1-poeschel@lemonage.de
 
