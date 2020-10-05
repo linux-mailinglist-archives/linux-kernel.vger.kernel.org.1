@@ -2,187 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F686283740
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD05283742
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgJEODy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:03:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725994AbgJEODy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:03:54 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB5172085B;
-        Mon,  5 Oct 2020 14:03:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601906634;
-        bh=rPKKEHFJii9QESxIUuAk2pgrsBu48DTfgCUSvN6yTww=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AD5TwCiBcRQE5TSLC9Qk6DVbeq7Ikrh1TUcsQJjMbS6dVUj3T7d4lbXrAPsow9YuM
-         QIbbzYmstyaLZ6ZgRyO5FQyfvT4f9s8KRTOwmXuQHqBLap9oT7bmJvyKKmRYCPnK8n
-         yCkmRPaR2MS7oIRxRrfqEB30SHsqUgFauYfCav/0=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AF99E352301E; Mon,  5 Oct 2020 07:03:53 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 07:03:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201005140353.GW29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <20201004233146.GP29330@paulmck-ThinkPad-P72>
- <20201005023846.GA359428@rowland.harvard.edu>
+        id S1726555AbgJEOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:04:04 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:42240 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgJEOEC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:04:02 -0400
+Received: by mail-oi1-f193.google.com with SMTP id 16so1174920oix.9;
+        Mon, 05 Oct 2020 07:04:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jcb+2/70PszYHXyW4L95C/uGG2EZ8iNbr9zT465Oa80=;
+        b=q2Y3LmguVa0+xeBKieIvGGUXJ7b45Nxs2t3k9l8D/W+mdkOgwA/n3dlmPROLFYOEvK
+         ZEjmmKWFOw6NSxozesoralXBgEQC8X6u0Oock23cCsEQzh+9Yg5VtxUMe9M9yJY3iwO+
+         lV9CFurod/mQnBw7DyA69bRE43pp28bftI45UfL4HQTQJn3dTTIkd958VI9GLKjv2Hav
+         GTCQKbovbKeiOe+iBb2ITaID2OT1cVzPlaebWiOIgdwNKi5sK+RZ2KBx0a/a4PXcpG+O
+         KiR8wdcWnay1eZNPlFi6sDlbDRBJ+VlGYruz8ye2LFidj2LOEyMLJq3d4d0shuueH7/6
+         xZ+A==
+X-Gm-Message-State: AOAM53025B8dIhU37/iJIo7De/zd/2Ww9LDXT4nEef6rHgdVt0fod+qY
+        WgzMC1npRwz5ZDuNxWuvFw==
+X-Google-Smtp-Source: ABdhPJy3QFjx9s0Phb6R+RWSxq5sCwP+Ktun0EurtTGiFSdb4RaCkut6rj30bR9aJFbk0V23t6U52Q==
+X-Received: by 2002:aca:d03:: with SMTP id 3mr7996466oin.112.1601906641296;
+        Mon, 05 Oct 2020 07:04:01 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m205sm53951oib.43.2020.10.05.07.03.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:04:00 -0700 (PDT)
+Received: (nullmailer pid 99419 invoked by uid 1000);
+        Mon, 05 Oct 2020 14:03:59 -0000
+Date:   Mon, 5 Oct 2020 09:03:59 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: net: Add bindings for AX88796C SPI
+ Ethernet Adapter
+Message-ID: <20201005140359.GB92530@bogus>
+References: <CGME20201002192215eucas1p2c1d2baebfe2a9caa11d88175a2899fea@eucas1p2.samsung.com>
+ <20201002192210.19967-1-l.stelmach@samsung.com>
+ <20201002192210.19967-2-l.stelmach@samsung.com>
+ <CAJKOXPeLiKQLSud4f9zxqBdR9a1sk04K56_=jtQr1FGxyDmDuQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005023846.GA359428@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJKOXPeLiKQLSud4f9zxqBdR9a1sk04K56_=jtQr1FGxyDmDuQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 10:38:46PM -0400, Alan Stern wrote:
-> On Sun, Oct 04, 2020 at 04:31:46PM -0700, Paul E. McKenney wrote:
-> > Nice simple example!  How about like this?
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit c964f404eabe4d8ce294e59dda713d8c19d340cf
-> > Author: Alan Stern <stern@rowland.harvard.edu>
-> > Date:   Sun Oct 4 16:27:03 2020 -0700
-> > 
-> >     manual/kernel: Add a litmus test with a hidden dependency
-> >     
-> >     This commit adds a litmus test that has a data dependency that can be
-> >     hidden by control flow.  In this test, both the taken and the not-taken
-> >     branches of an "if" statement must be accounted for in order to properly
-> >     analyze the litmus test.  But herd7 looks only at individual executions
-> >     in isolation, so fails to see the dependency.
-> >     
-> >     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
+On Sat, Oct 03, 2020 at 12:09:55PM +0200, Krzysztof Kozlowski wrote:
+> On Fri, 2 Oct 2020 at 21:22, Łukasz Stelmach <l.stelmach@samsung.com> wrote:
+> >
+> > Add bindings for AX88796C SPI Ethernet Adapter.
+> >
+> > Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> > ---
+> >  .../bindings/net/asix,ax88796c-spi.yaml       | 76 +++++++++++++++++++
+> >  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+> >  2 files changed, 78 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml b/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
 > > new file mode 100644
-> > index 0000000..6baecf9
+> > index 000000000000..50a488d59dbf
 > > --- /dev/null
-> > +++ b/manual/kernel/crypto-control-data.litmus
-> > @@ -0,0 +1,31 @@
-> > +C crypto-control-data
-> > +(*
-> > + * LB plus crypto-control-data plus data
-> > + *
-> > + * Result: Sometimes
-> > + *
-> > + * This is an example of OOTA and we would like it to be forbidden.
-> > + * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
-> > + * control-dependent on the preceding READ_ONCE.  But the dependencies are
-> > + * hidden by the form of the conditional control construct, hence the 
-> > + * name "crypto-control-data".  The memory model doesn't recognize them.
-> > + *)
+> > +++ b/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
+> > @@ -0,0 +1,76 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/net/asix,ax88796c-spi.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > +
-> > +{}
+> > +title: ASIX AX88796C SPI Ethernet Adapter
 > > +
-> > +P0(int *x, int *y)
-> > +{
-> > +	int r1;
-> > +
-> > +	r1 = 1;
-> > +	if (READ_ONCE(*x) == 0)
-> > +		r1 = 0;
-> > +	WRITE_ONCE(*y, r1);
-> > +}
-> > +
-> > +P1(int *x, int *y)
-> > +{
-> > +	WRITE_ONCE(*x, READ_ONCE(*y));
-> > +}
-> > +
-> > +exists (0:r1=1)
+> > +allOf:
+> > +  - $ref: ethernet-controller.yaml#
 > 
-> Considering the bug in herd7 pointed out by Akira, we should rewrite P1 as:
+> Order of top-level entries please:
+> 1. id, schema
+> 2. title
+> 3. maintainers
+> 4. description
+> and then allOf. See example-schema.yaml.
 > 
-> P1(int *x, int *y)
-> {
-> 	int r2;
+> > +
+> > +description: |
+> > +  ASIX AX88796C is an Ethernet controller with a built in PHY. This
+> > +  describes SPI mode of the chip.
+> > +
+> > +  The node for this driver must be a child node of a SPI controller, hence
+> > +  all mandatory properties described in ../spi/spi-bus.txt must be specified.
+
+Did you read spi-bus.txt?
+
+> > +
+> > +maintainers:
+> > +  - Łukasz Stelmach <l.stelmach@samsung.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: asix,ax99796c-spi
+
+'spi' is implied by the bus the device is on, so drop.
+
+> > +
+> > +  reg:
+> > +    description:
+> > +      SPI device address.
 > 
-> 	r = READ_ONCE(*y);
-> 	WRITE_ONCE(*x, r2);
-> }
+> Skip description, it's trivial.
 > 
-> Other than that, this is fine.
+> > +    maxItems: 1
+> > +
+> > +  spi-max-frequency:
+> > +    maximum: 40000000
+> > +
+> > +  interrupts:
+> > +    description:
+> > +     GPIO interrupt to which the chip is connected.
+> 
+> Skip the description. It's trivial and might be not accurate (does not
+> have to be a GPIO).
+> 
+> > +    maxItems: 1
+> > +
+> > +  interrupt-parrent:
 
-Updated as suggested by Will, like this?
+Typo. But you don't need to list interrupt-parent.
 
-							Thanx, Paul
+> > +    description:
+> > +      A phandle of an interrupt controller.
+> 
+> Skip description.
 
-------------------------------------------------------------------------
+> 
+> > +    maxItems: 1
+> > +
+> > +  reset-gpios:
+> > +    description:
+> > +      A GPIO line handling reset of the chip. As the line is active low,
+> > +      it should be marked GPIO_ACTIVE_LOW.
+> > +    maxItems: 1
+> > +
+> > +  local-mac-address: true
+> > +
+> > +  mac-address: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - spi-max-frequency
+> > +  - interrupts
+> > +  - interrupt-parrent
+> > +  - reset-gpios
+> 
+> Additional properties false.
+> 
+> > +
+> > +examples:
+> > +  # Artik5 eval board
+> > +  - |
+> > +    ax88796c@0 {
 
-commit adf43667b702582331d68acdf3732a6a017a182c
-Author: Alan Stern <stern@rowland.harvard.edu>
-Date:   Sun Oct 4 16:27:03 2020 -0700
+ethernet@0
 
-    manual/kernel: Add a litmus test with a hidden dependency
-    
-    This commit adds a litmus test that has a data dependency that can be
-    hidden by control flow.  In this test, both the taken and the not-taken
-    branches of an "if" statement must be accounted for in order to properly
-    analyze the litmus test.  But herd7 looks only at individual executions
-    in isolation, so fails to see the dependency.
-    
-    Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > +        compatible = "asix,ax88796c";
+> > +        local-mac-address = [00 00 00 00 00 00]; /* Filled in by a bootloader */
+> > +        interrupt-parent = <&gpx2>;
+> > +        interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
+> > +        spi-max-frequency = <40000000>;
+> > +        reg = <0x0>;
+> > +        reset-gpios = <&gpe0 2 GPIO_ACTIVE_LOW>;
+> > +        controller-data {
 
-diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
-new file mode 100644
-index 0000000..cdcdec9
---- /dev/null
-+++ b/manual/kernel/crypto-control-data.litmus
-@@ -0,0 +1,34 @@
-+C crypto-control-data
-+(*
-+ * LB plus crypto-control-data plus data
-+ *
-+ * Result: Sometimes
-+ *
-+ * This is an example of OOTA and we would like it to be forbidden.
-+ * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
-+ * control-dependent on the preceding READ_ONCE.  But the dependencies are
-+ * hidden by the form of the conditional control construct, hence the 
-+ * name "crypto-control-data".  The memory model doesn't recognize them.
-+ *)
-+
-+{}
-+
-+P0(int *x, int *y)
-+{
-+	int r1;
-+
-+	r1 = 1;
-+	if (READ_ONCE(*x) == 0)
-+		r1 = 0;
-+	WRITE_ONCE(*y, r1);
-+}
-+
-+P1(int *x, int *y)
-+{
-+	int r2;
-+
-+	r2 = READ_ONCE(*y);
-+	WRITE_ONCE(*x, r2);
-+}
-+
-+exists (0:r1=1)
+Not documented.
+
+> > +            samsung,spi-feedback-delay = <2>;
+> > +        };
+> > +    };
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index 2baee2c817c1..5ce5c4a43735 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -117,6 +117,8 @@ patternProperties:
+> >      description: Asahi Kasei Corp.
+> >    "^asc,.*":
+> >      description: All Sensors Corporation
+> > +  "^asix,.*":
+> > +    description: ASIX Electronics Corporation
+> 
+> Separate patch please.
+> 
+> Best regards,
+> Krzysztof
+> 
+> >    "^aspeed,.*":
+> >      description: ASPEED Technology Inc.
+> >    "^asus,.*":
+> > --
+> > 2.26.2
+> >
