@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E6B283D5A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7350283D5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgJERff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        id S1728022AbgJERgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbgJERff (ORCPT
+        with ESMTP id S1727344AbgJERgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:35:35 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD25EC0613A8
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:35:33 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id s7so6959666qkh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:35:33 -0700 (PDT)
+        Mon, 5 Oct 2020 13:36:22 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C1DC0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:36:22 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id y14so4152645pfp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:36:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dKlbhuywYV4trrm533av5g+rTKLjmfZBMKtZHffEpfg=;
-        b=Ogo60Itj+Op78dH8jXVJTtV1hFSvseMGAPGjIPJsWqBdL7wrA/UqdSqhsRz6b6AZDM
-         I9lloFYxDZt04k/RrwXKkkLdJMtxhJtNbj12+kE6LDkefxEQsCuRyrXoqt5kaQaq6WYb
-         TAJSecm4UNC7SEcfUU6PY9R+QlVJxVh8DUZlIM8VVCjCl2LyiL/ccw9cwG5QMQ2xTI44
-         Tsx7MrXatCC9vxW+HHqRf4BEp5WLpvB6gW+CUVpFiZvvvlnoDb5wXthNwJdpMlarLbeU
-         y3GuwL2OQtzoT2TdhVV09xynxfFdakx3hgKX1AnIaRavPLMbXV35KK2VeBNdbDGcrEVO
-         zBrg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tGneaUPSfmwmZclVabdMQtlpK5P/Q67PdE+cZq4zgcM=;
+        b=GBwOGDWDRut7KhZTbQ6/Yi5l7rHvibdoTP1rWlTv094qtnCKgxidxIjLDZIspampjB
+         dEWxjaqxkI2E/pLxBwkz5mNnUeWikWSVhEc0F4xiw4LQqc0VI+I/Gpd4Kw0BxlVF7DvU
+         sCs3d4yP1p+CFlSyF9mp7MdSst1cLCLOTL++2rVcqvUzrV6Qqb3lrSTYJ1tpzX6QbWqf
+         LlxpmqrhyBE54li2VPtdndcbISMNFKzaemvvZkv8UnyrU86L3/cXE6fMebI+Bb0oaqvY
+         iMjhvjfAnZDS7s06AEcd/aUI/xi+GG8yG7ggyZ2pIr3MbiSjAuXsVuF/5jGVm+q8wydN
+         XmvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dKlbhuywYV4trrm533av5g+rTKLjmfZBMKtZHffEpfg=;
-        b=FuC+Q7Xsu2kiYrV+6FnWVR6ggHIrev9SLIK5jDIpEgTC50mt/u1dIWMgx/EpFMBwTj
-         au/W3jrrwuPL+3snb2Fb59oV4eIw7M2IrqKKi8TMbqHJJ7B6PQxWf8/Ranr1vtS6Glh9
-         zS7hBneUx/jkCBNa13NUDv2xt0ESM8vOkPgDLkoeCFuAX1GGLShdAQyx+wIG3quahyW6
-         7OR+ha7OUbbAR6iWqSXI6TB8AqeT7uFgsNFuRB+76jQY+zsOUR8STB9qIqwAfl4qaKEc
-         E248MZ9jXx2DdupC/VOIipB/x0FGA6idO6wmROLWUwVdp92ExFEZpRCh8Plgy5/KlmAC
-         iADA==
-X-Gm-Message-State: AOAM532ccOZbQAn2TaniVrVaWxaMVzDd7NZeoQIsPaT+MkH+Ig+AJlwM
-        d6icBXqMAm2xCqbmBp6Wu+mSOQ==
-X-Google-Smtp-Source: ABdhPJxqFhDsb/GS5ATRJ1dE6t/BFvds0ofvMeomDoUgmoopjs8lj4GVNFEIhuceI6nxBgwZWdG7Tg==
-X-Received: by 2002:a37:9e87:: with SMTP id h129mr1161317qke.276.1601919332852;
-        Mon, 05 Oct 2020 10:35:32 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id c13sm320627qtq.5.2020.10.05.10.35.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 10:35:32 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kPUOZ-00020z-L7; Mon, 05 Oct 2020 14:35:31 -0300
-Date:   Mon, 5 Oct 2020 14:35:31 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Message-ID: <20201005173531.GB5177@ziepe.ca>
-References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
- <20201002175303.390363-2-daniel.vetter@ffwll.ch>
- <cb56763e-4fda-a783-03ae-7f749ec55981@nvidia.com>
- <CAKMK7uGzZ2dBe040vP1BJmQ7cuhj_OQHL0ncyz5XyUcb=bPjmg@mail.gmail.com>
- <f5130c7f-eebe-7b21-62b8-68f08212b106@nvidia.com>
- <20201003232441.GO9916@ziepe.ca>
- <CAKMK7uFjGDiWMD+KeEFziY-nqWy_FtCpn0rekb70yVLaxzJHjA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGneaUPSfmwmZclVabdMQtlpK5P/Q67PdE+cZq4zgcM=;
+        b=HhJqWs+ERsgyyBO+ic1gZdA81Bg5d03SxbLOoS0zFxDD35Ch4kPnu/rKuEqrYmpoHl
+         Mh+kcgeRvqlOJlZ+RVa/++gtYdiQbm8LKhMeU+3oRDS2GeuhSjd/zThh79VVCASaPV31
+         CNyninv2SRiwPm7W1x05d3KqjIrCeYJqFK0hyL9EbBCdQipcV52pWhga5CXAze4Q5ROs
+         3iJg6GFQUkErHgk+X6sd4BFmqe+7t7LqEj2BIyspG1kGqPVysG3MNr+rOKI0MqCmmecO
+         75T8eMcarHs8q9x1jMozFQAUBUxhgft3AF4IBME7kZWRDzm1tXBppqCyElFecnmAC0lc
+         G9ug==
+X-Gm-Message-State: AOAM532sOczllwxFs3f0SJIvnNRaLfBLfPpvJnRLVpgr1IalFRVYgdz0
+        hveksKfWOV3ZkhxWVpapCVE6gXwDet1qw9AIxkkOYg==
+X-Google-Smtp-Source: ABdhPJxn56caBLZKbrVaopjudCJE86MNDFRX0mqIhB6Pn1QzmCP8YlqsezxHYWQwvGujFEdbYWR/mgySkQY/MAL1pbA=
+X-Received: by 2002:a65:6858:: with SMTP id q24mr596445pgt.10.1601919381716;
+ Mon, 05 Oct 2020 10:36:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFjGDiWMD+KeEFziY-nqWy_FtCpn0rekb70yVLaxzJHjA@mail.gmail.com>
+References: <20201005025720.2599682-1-keescook@chromium.org>
+In-Reply-To: <20201005025720.2599682-1-keescook@chromium.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 5 Oct 2020 10:36:11 -0700
+Message-ID: <CAKwvOdnVJW0wDuMvgfKUE248gbDTT1CYmDY=hczaFNQ_39OfjA@mail.gmail.com>
+Subject: Re: [PATCH v2] vmlinux.lds.h: Keep .ctors.* with .ctors
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 01:20:31PM +0200, Daniel Vetter wrote:
+On Sun, Oct 4, 2020 at 7:57 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Under some circumstances, the compiler generates .ctors.* sections. This
+> is seen doing a cross compile of x86_64 from a powerpc64el host:
+>
+> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/trace_clock.o' being
+> placed in section `.ctors.65435'
+> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ftrace.o' being
+> placed in section `.ctors.65435'
+> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ring_buffer.o' being
+> placed in section `.ctors.65435'
+>
+> Include these orphans along with the regular .ctors section.
 
-> Yeah I think that works. I tried understanding gup.c code a bit more,
-> and it looks like FOLL_LONGTERM only works for the pup_fast variant
-> right now? All others seem to have this comment that it's somehow
-> incompatible with FAULT_FLAG_ALLOW_RETRY and daxfs. But grepping
-> around for that didn't show up anything, at least not nearby dax code.
-> For my understanding of all this, what's the hiccup there?
+It's very curious to see different behavior based on whether one is
+targeting x86_64 via native compilation vs cross compilation.
 
-IIRC it needs the VMA and various other flows can't return the vma
-list becuse they unlock the mmap_sem will running
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-> For plans, I only started this for a bit of my own learning, but I
-> think I'll respin with the following changes:
-> - convert exynos and habanalabs to pin_user_pages_fast directly,
-> instead of going through this frame-vector detour
+>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: 83109d5d5fba ("x86/build: Warn on orphan section placement")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> v2: brown paper bag version: fix whitespace for proper backslash alignment
+> ---
+>  include/asm-generic/vmlinux.lds.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index 5430febd34be..b83c00c63997 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -684,6 +684,7 @@
+>  #ifdef CONFIG_CONSTRUCTORS
+>  #define KERNEL_CTORS() . = ALIGN(8);                      \
+>                         __ctors_start = .;                 \
+> +                       KEEP(*(SORT(.ctors.*)))            \
+>                         KEEP(*(.ctors))                    \
+>                         KEEP(*(SORT(.init_array.*)))       \
+>                         KEEP(*(.init_array))               \
+> --
+> 2.25.1
+>
 
-+1
 
-Jason
+-- 
+Thanks,
+~Nick Desaulniers
