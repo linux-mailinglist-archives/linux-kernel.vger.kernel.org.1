@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2BD28422A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CE928422D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgJEVgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 17:36:49 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:23796 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725616AbgJEVgs (ORCPT
+        id S1726674AbgJEVh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 17:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgJEVh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:36:48 -0400
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095La5Wk026355;
-        Mon, 5 Oct 2020 21:36:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pps0720;
- bh=wefYufi/SyhpH8c7CRLVlRheotu72P1NKL0A3Cqfe7U=;
- b=hTExfM30NxzMA59OdPc98Sh1hHw7IRlpoqp1KndtUp1bzChAmlZRpKYPuII+uoVnIFii
- 2yJBXk4w3DxRkvTuM/F5Sd+YfJdEkHpWzEa4U2pUcw0oC1RsgjHhrlfTvl10Z5dIHXmd
- EqKbOwAM6gYtL7Yxgmah9IKE6/lnhH2KD2QzkM+i54R+9EBCfVQ0acdXI7aCDZ3PiIQ1
- 5wGP1YA4/hKVCc0+UwjTJ2ZU5L0g25NQIZ7MWShEtG29SpwnSC/orZKkLrhwdoMg7R1r
- YLR3RQEg1zex4eDsq36/HZGCQ7mjqK4rgws3ACdjXStWTpYpM3Fkag28COJ6rkXer0hM xQ== 
-Received: from g2t2352.austin.hpe.com (g2t2352.austin.hpe.com [15.233.44.25])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33xgdvknh3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 21:36:05 +0000
-Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
-        by g2t2352.austin.hpe.com (Postfix) with ESMTP id DC40785;
-        Mon,  5 Oct 2020 21:36:01 +0000 (UTC)
-Received: from [16.99.129.98] (unknown [16.99.129.98])
-        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 3DCFE54;
-        Mon,  5 Oct 2020 21:35:59 +0000 (UTC)
-Subject: Re: [PATCH v4 06/13] x86/platform/uv: Add and Decode Arch Type in
- UVsystab
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel test robot <lkp@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20201005203929.148656-1-mike.travis@hpe.com>
- <20201005203929.148656-7-mike.travis@hpe.com>
- <20201005212135.GL21151@zn.tnic>
-From:   Mike Travis <mike.travis@hpe.com>
-Message-ID: <d2c7d3d8-3863-f15f-7ec6-ae41cf8b2657@hpe.com>
-Date:   Mon, 5 Oct 2020 14:35:58 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Mon, 5 Oct 2020 17:37:26 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3742C0613CE;
+        Mon,  5 Oct 2020 14:37:25 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C4v7z0VqVzB3tZ;
+        Tue,  6 Oct 2020 08:37:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601933839;
+        bh=iqKQLzV/9MJ4NlJgoNl0vHUi9R13MPmpW2o15p6wdSQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qE6ZL/5iK1gljFs/d101JfILjdDIXvJJa6swE4QEwKSrGHqV6Q6g6YN7Gtw+DSN0B
+         xe6TimBl2LoOmM4TPJKp6pt5EzSdHWLsJKA8AMZSDSEvajZlZnHzKvSOVBhb1khWCd
+         y5dmjB/r2vnTOSjXnKCr9mY1zeOaUKVSbbcVI4eKdkLTLKXr8hVucKAVFGH7IRI6cf
+         I44TR11izDdriSINvFwbZHqwxv9QxMz482yfcNlqYGyyXxk9mdXJF9H6xdDz4ISOZP
+         WVUWDI1pRpcrU2DvnORNLXiFBKPRJcDIsAYfBGCoYc6KqQrNaWeaEGWeyu2v84oYI6
+         3eStAipXGfG4g==
+Date:   Tue, 6 Oct 2020 08:37:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the dma-mapping
+ tree
+Message-ID: <20201006083718.4f3ef310@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201005212135.GL21151@zn.tnic>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-05_16:2020-10-05,2020-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 mlxlogscore=582 impostorscore=0 spamscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010050153
+Content-Type: multipart/signed; boundary="Sig_/Nej0ub_i+pHPOWozsaU0XVM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/Nej0ub_i+pHPOWozsaU0XVM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 10/5/2020 2:21 PM, Borislav Petkov wrote:
-> On Mon, Oct 05, 2020 at 03:39:22PM -0500, Mike Travis wrote:
->> A patch to add and process the UV Arch Type field in the UVsystab passed
->> from UV BIOS to the kernel.
-> 
-> What does that mean?
-> 
+Commit
 
-There have been recent cases where OEM's want to use the OEM_ID in the 
-ACPI tables to brand their own product.  The UV BIOS used that field to 
-tell the Linux kernel which UV arch the running system is.  The Arch 
-Type in the UVsystab (also created by UV BIOS) now carries that field in 
-systems that support it.
+  82a18d4ce1ef ("cma: decrease CMA_ALIGNMENT lower limit to 2")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Nej0ub_i+pHPOWozsaU0XVM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl97kg4ACgkQAVBC80lX
+0GyYDgf8CSO8JWh0Cazr82eEloh7y4MIwr6XKgKVblTguuvlBFAKJv1Sf4zRpypM
+ON0nUBB8znqbm47U2r+Zs5Mloc0jiPN/bj7sP3NJE2XZycnEL0rx7TU0+R/6k1p4
+akH/sreJdjKxZ+xosPuxftA794th1cSIHTABO4ziFVnfreYThC+eqMgHLBmohKNA
+tM4eTBaOAKqkhfZaYhf8SKgG4Ia8MP6OWnF5aazd+nr1LgamrenVs92+32nfE/JN
+qMdNnhJYC5oFaiQj6PZ8tdtBkGGN9SEQNy27U0t4qoNhzbhDjLZ9wOwY7GmZdp5x
+NMj3FFE46aN3vQitB2+i9EVvs9cOxQ==
+=uJnf
+-----END PGP SIGNATURE-----
+
+--Sig_/Nej0ub_i+pHPOWozsaU0XVM--
