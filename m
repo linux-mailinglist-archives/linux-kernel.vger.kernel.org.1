@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6746728374B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5D928374D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgJEOFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:05:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54666 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgJEOFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:05:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601906732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mDtDQhketcq7bMXAoB6v7sjRm5Re7JG6raTUQ0gvII0=;
-        b=J6sJ0/9XfbH2tDhmw6JcLzTejZ6/O+2B99IlIP1jiHEFQd47mJRtX5qFt5VLVsmXIUTtiO
-        KsY/UlocAlhcdgVaax+795HYkTbvfT63EEut912Uw2J5KFN5a7K6iNqLse6WyIDnzGrnKB
-        KZn+RafdJBQi9weioRMV6Q1DU1da5hc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 446F6ADD8;
-        Mon,  5 Oct 2020 14:05:32 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 16:05:31 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH 9/9] mm, page_alloc: optionally disable pcplists during
- page isolation
-Message-ID: <20201005140531.GE4555@dhcp22.suse.cz>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-10-vbabka@suse.cz>
- <10cdae53-c64b-e371-1b83-01d1af7a131e@redhat.com>
- <e0ab17e9-6c05-cf32-9e2d-efbf011860a2@redhat.com>
- <2ce92f9a-eaa2-45b2-207c-46a79d6a2bde@suse.cz>
+        id S1726483AbgJEOFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726329AbgJEOFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:05:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2408C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:05:38 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h7so6105514wre.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rYgwu/tsb6hqZBI1Z2tL8xDFx5slTZgCuj1UmwV+264=;
+        b=CTB3t9HGVokgEOA3jolJ7ACDLs2ngsZCF7EaI13IHHQzva/DwYCi/n9j6GSDldLMKA
+         WdyH9vanMUZ96PtuSw2eGBuXWYDlRiN8d2rBC2cxzVO2sUIub0tdKaMY8SXiVum0DR6b
+         7JYvH8fRACBp77gNIGx9YiphHbDGcHPRYoYR0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=rYgwu/tsb6hqZBI1Z2tL8xDFx5slTZgCuj1UmwV+264=;
+        b=Hrg19DM4vjdQa5pVffH6ATCq1pYFPECly2jGToUFgjers8I2QBtj4kLSBaMLvGo/Ya
+         Z/9Tx+ZUL5lIngg7JRDAI3mhG5kcAMRCMmj/PFnfmGPyRPQMkD4lBASxWsOdJ1O5/DCA
+         QPXkedTQ1SgpureJ1fyC4bFkNNy7lkxmE5HSNRdHZ53YLCVaHV+S2ZW/3uFpURbTMJbR
+         o6skPZ6fJzUTiOssM9VqUkJB+QvtgiVqIWl+b8GkcqeK1zMmvID8pKKiZ+fhJpOc7Q39
+         jQ34flvP1XRdpzNheztZAPEm4GWE9WUI6D8FG4TvunHwtFSzjx6IsST7I6RyU+fozCPz
+         7i7A==
+X-Gm-Message-State: AOAM531/UxGaa/eB9NaRBaz8Dn8WBbw/vDRitIPKopUTA4GIbkCuGQ0Q
+        /5Ld8byCd7Vm7LPKN5IXzFD2YQ==
+X-Google-Smtp-Source: ABdhPJxMi1nfPkfOLmjDQdRZMHgZdbkFC/+JLPXFZ9DTO+fLouH+y58TOZSpuAE0JIFp8TB0TQHTug==
+X-Received: by 2002:adf:c3c2:: with SMTP id d2mr3520496wrg.191.1601906737472;
+        Mon, 05 Oct 2020 07:05:37 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z19sm12730698wmi.3.2020.10.05.07.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:05:36 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 16:05:34 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] Revert "gpu/drm: ingenic: Add option to mmap GEM buffers
+ cached"
+Message-ID: <20201005140534.GT438822@phenom.ffwll.local>
+Mail-Followup-To: Stephen Rothwell <sfr@canb.auug.org.au>,
+        Paul Cercueil <paul@crapouillou.net>, od@zcrc.me,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Christoph Hellwig <hch@lst.de>
+References: <20200930165212.GA8833@lst.de>
+ <20201004141758.1013317-1-paul@crapouillou.net>
+ <20201004195921.GA556605@ravnborg.org>
+ <ZE1PHQ.WGCBAFO9R38I3@crapouillou.net>
+ <20201005230150.5637fa42@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2ce92f9a-eaa2-45b2-207c-46a79d6a2bde@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201005230150.5637fa42@canb.auug.org.au>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 25-09-20 13:10:05, Vlastimil Babka wrote:
-> On 9/25/20 12:54 PM, David Hildenbrand wrote:
-> >>> --- a/mm/page_isolation.c
-> >>> +++ b/mm/page_isolation.c
-> >>> @@ -15,6 +15,22 @@
-> >>>  #define CREATE_TRACE_POINTS
-> >>>  #include <trace/events/page_isolation.h>
-> >>>  
-> >>> +void zone_pcplist_disable(struct zone *zone)
-> >>> +{
-> >>> +	down_read(&pcp_batch_high_lock);
-> >>> +	if (atomic_inc_return(&zone->pcplist_disabled) == 1) {
-> >>> +		zone_update_pageset_high_and_batch(zone, 0, 1);
-> >>> +		__drain_all_pages(zone, true);
-> >>> +	}
-> >> Hm, if one CPU is still inside the if-clause, the other one would
-> >> continue, however pcp wpould not be disabled and zones not drained when
-> >> returning.
+On Mon, Oct 05, 2020 at 11:01:50PM +1100, Stephen Rothwell wrote:
+> Hi Paul,
 > 
-> Ah, well spotted, thanks!
+> On Sun, 04 Oct 2020 22:11:23 +0200 Paul Cercueil <paul@crapouillou.net> wrote:
+> >
+> > Pushed to drm-misc-next with the changelog fix, thanks.
+> > 
+> > Stephen:
+> > Now it should build fine again. Could you remove the BROKEN flag?
 > 
-> >> (while we only allow a single Offline_pages() call, it will be different
-> >> when we use the function in other context - especially,
-> >> alloc_contig_range() for some users)
-> >>
-> >> Can't we use down_write() here? So it's serialized and everybody has to
-> >> properly wait. (and we would not have to rely on an atomic_t)
-> > Sorry, I meant down_write only temporarily in this code path. Not
-> > keeping it locked in write when returning (I remember there is a way to
-> > downgrade).
+> Thanks for letting me know, but the fix has not appeared in any drm
+> tree included in linux-next yet ...
 > 
-> Hmm that temporary write lock would still block new callers until previous
-> finish with the downgraded-to-read lock.
-> 
-> But I guess something like this would work:
-> 
-> retry:
->   if (atomic_read(...) == 0) {
->     // zone_update... + drain
->     atomic_inc(...);
->   else if (atomic_inc_return == 1)
->     // atomic_cmpxchg from 0 to 1; if that fails, goto retry
-> 
-> Tricky, but races could only read to unnecessary duplicated updates + flushing
-> but nothing worse?
-> 
-> Or add another spinlock to cover this part instead of the temp write lock...
+> If it doesn't show up by the time I will merge the drm tree tomorrow, I
+> will apply this revert patch myself (instead of the patch marking the
+> driver BROKEN).
 
-Do you plan to post a new version or should I review this one?
+Yeah it should have been pushed to drm-misc-next-fixes per
 
+https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.html#where-do-i-apply-my-patch
+
+Paul, can you pls git cherry-pick -x this over to drm-misc-next-fixes?
+
+Thanks, Daniel
 -- 
-Michal Hocko
-SUSE Labs
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
