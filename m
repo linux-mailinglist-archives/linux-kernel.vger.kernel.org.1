@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C888283A2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319AF283990
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgJEPcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59026 "EHLO mail.kernel.org"
+        id S1727157AbgJEP1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:27:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727067AbgJEPbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:31:50 -0400
+        id S1727129AbgJEP1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:27:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AA1320637;
-        Mon,  5 Oct 2020 15:31:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D0CA2085B;
+        Mon,  5 Oct 2020 15:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911910;
-        bh=41COe5x7JjD1OwT5Ov3l1HjeqLrAse49svUyDHzocaU=;
+        s=default; t=1601911618;
+        bh=h/m2qR11Y6NkmkgN17ToEQjKeDpDBU0R/tT/O777toI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h45kjn5EZFxNw2J8UHxB7mRNSv4p+Xxzg69AIpir+K3m4603Zh14n3QYnFsYBD9yT
-         5JquhSYqnZdbWabrGkhhpj/YLNzDg/1uaeXszHaUZaaZykXcIFflkCPRSmbD8oS7l1
-         iKx898JBrkOxYhzXMdBxzJNRVYu+aB0lPHweTgvw=
+        b=i7ohJAlqWz3dUYSqjUQ2DGVOpKKH7INJaYhIfue5Sev3Z8qeKa1SPgLKf8ZepktZn
+         5RFDK09TtyjJLzlW9Fkpiktmu0MWTjYPyj74S+gy5XZUeXi5A0J031lVVUH36pnhmt
+         Yc3P25XqYW/s849LpJYVsTDzyQQOpKSSQHWX6A8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 26/85] mt76: mt7915: use ieee80211_free_txskb to free tx skbs
+        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 4.19 05/38] clk: socfpga: stratix10: fix the divider for the emac_ptp_free_clk
 Date:   Mon,  5 Oct 2020 17:26:22 +0200
-Message-Id: <20201005142115.992519492@linuxfoundation.org>
+Message-Id: <20201005142108.919299925@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
+In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
+References: <20201005142108.650363140@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-[ Upstream commit b4be5a53ebf478ffcfb4c98c0ccc4a8d922b9a02 ]
+commit b02cf0c4736c65c6667f396efaae6b5521e82abf upstream.
 
-Using dev_kfree_skb for tx skbs breaks AQL. This worked until now only
-by accident, because a mac80211 issue breaks AQL on drivers with firmware
-rate control that report the rate via ieee80211_tx_status_ext as struct
-rate_info.
+The fixed divider the emac_ptp_free_clk should be 2, not 4.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200812144943.91974-1-nbd@nbd.name
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 07afb8db7340 ("clk: socfpga: stratix10: add clock driver for
+Stratix10 platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20200831202657.8224-1-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/init.c | 8 ++++++--
- drivers/net/wireless/mediatek/mt76/mt7915/mac.c  | 2 +-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/clk/socfpga/clk-s10.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-index aadf56e80bae8..d7a3b05ab50c3 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
-@@ -691,8 +691,12 @@ void mt7915_unregister_device(struct mt7915_dev *dev)
- 	spin_lock_bh(&dev->token_lock);
- 	idr_for_each_entry(&dev->token, txwi, id) {
- 		mt7915_txp_skb_unmap(&dev->mt76, txwi);
--		if (txwi->skb)
--			dev_kfree_skb_any(txwi->skb);
-+		if (txwi->skb) {
-+			struct ieee80211_hw *hw;
-+
-+			hw = mt76_tx_status_get_hw(&dev->mt76, txwi->skb);
-+			ieee80211_free_txskb(hw, txwi->skb);
-+		}
- 		mt76_put_txwi(&dev->mt76, txwi);
- 	}
- 	spin_unlock_bh(&dev->token_lock);
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-index a264e304a3dfb..5800b2d1fb233 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
-@@ -844,7 +844,7 @@ mt7915_tx_complete_status(struct mt76_dev *mdev, struct sk_buff *skb,
- 	if (sta || !(info->flags & IEEE80211_TX_CTL_NO_ACK))
- 		mt7915_tx_status(sta, hw, info, NULL);
- 
--	dev_kfree_skb(skb);
-+	ieee80211_free_txskb(hw, skb);
- }
- 
- void mt7915_txp_skb_unmap(struct mt76_dev *dev,
--- 
-2.25.1
-
+--- a/drivers/clk/socfpga/clk-s10.c
++++ b/drivers/clk/socfpga/clk-s10.c
+@@ -107,7 +107,7 @@ static const struct stratix10_perip_cnt_
+ 	{ STRATIX10_EMAC_B_FREE_CLK, "emacb_free_clk", NULL, emacb_free_mux, ARRAY_SIZE(emacb_free_mux),
+ 	  0, 0, 2, 0xB0, 1},
+ 	{ STRATIX10_EMAC_PTP_FREE_CLK, "emac_ptp_free_clk", NULL, emac_ptp_free_mux,
+-	  ARRAY_SIZE(emac_ptp_free_mux), 0, 0, 4, 0xB0, 2},
++	  ARRAY_SIZE(emac_ptp_free_mux), 0, 0, 2, 0xB0, 2},
+ 	{ STRATIX10_GPIO_DB_FREE_CLK, "gpio_db_free_clk", NULL, gpio_db_free_mux,
+ 	  ARRAY_SIZE(gpio_db_free_mux), 0, 0, 0, 0xB0, 3},
+ 	{ STRATIX10_SDMMC_FREE_CLK, "sdmmc_free_clk", NULL, sdmmc_free_mux,
 
 
