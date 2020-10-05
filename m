@@ -2,132 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B0A2836C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911B72836C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgJENmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:42:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:47766 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725932AbgJENmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:42:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBBC4106F;
-        Mon,  5 Oct 2020 06:42:35 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BE8B43F70D;
-        Mon,  5 Oct 2020 06:42:33 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 14:42:30 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
-        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
-        hjl.tools@gmail.com, mpe@ellerman.id.au, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, libc-alpha@sourceware.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/4] x86/signal: Introduce helpers to get the maximum
- signal frame size
-Message-ID: <20201005134230.GS6642@arm.com>
-References: <20200929205746.6763-1-chang.seok.bae@intel.com>
- <20200929205746.6763-2-chang.seok.bae@intel.com>
+        id S1726299AbgJENmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgJENmw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:42:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E036BC0613CE;
+        Mon,  5 Oct 2020 06:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MTMw+L2i3D5BNjyZLWldGPszy57qRHHkoDvDaYGS+y8=; b=oG0sKyyX8Uqn2dwcktK1pP8YEt
+        wpGnAODMjjoAj9aDpQGxP2+zXo2u8EUVwww9iu7UxoHSaN2e2wNFZgRjPDYx8rSzwo/vrNRTQN7+m
+        C3sZ7vGuJCE3G7+1VGPhaRMnK+UW038pFq8SwX8KYSr501qGDiCZsApfZpX0Ba52T+qnGLqrcWkpk
+        x4rInPhj/EJ/bcs0ls/5bmtgNAYk+lNWa4H2B48z1waBPMv/c0q0gPQQWiFdHMorXuk9t/TyfJkJV
+        k/Y8LhTGZx0kN9GJcuELOfJotKbgCAsx9mkLAEcFiIX61vsaE5/KK4TmKgFFn07vlcDUKO1q9OITz
+        J4KVRCYg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPQlE-000301-N0; Mon, 05 Oct 2020 13:42:40 +0000
+Date:   Mon, 5 Oct 2020 14:42:40 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH V2 3/4] misc: vop: simply return the saved dma address
+ instead of virt_to_phys
+Message-ID: <20201005134240.GA11178@infradead.org>
+References: <20200929084425.24052-1-sherry.sun@nxp.com>
+ <20200929084425.24052-4-sherry.sun@nxp.com>
+ <20200929102643.GC7784@infradead.org>
+ <VI1PR04MB4960A4E7D6A72C2CDEAC47CE92320@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <20200929181156.GA7516@infradead.org>
+ <VI1PR04MB4960288477F1DA7AB56D4ECC92330@VI1PR04MB4960.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929205746.6763-2-chang.seok.bae@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <VI1PR04MB4960288477F1DA7AB56D4ECC92330@VI1PR04MB4960.eurprd04.prod.outlook.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:57:43PM -0700, Chang S. Bae wrote:
-> Signal frames do not have a fixed format and can vary in size when a number
-> of things change: support XSAVE features, 32 vs. 64-bit apps. Add the code
-> to support a runtime method for userspace to dynamically discover how large
-> a signal stack needs to be.
+On Wed, Sep 30, 2020 at 07:30:21AM +0000, Sherry Sun wrote:
+> There may be some misunderstandings here.
+> For ->get_dp_dma callback, it is used to get the device page dma address,
+> which is allocated by MIC layer instead of vop layer. 
+> For Intel mic, it still use kzalloc and dma_map_single apis, although we
+> recommended and we did use dma_alloc_coherent to get consistent device
+> page memory on our i.MX platform, but we didn't change the original implementation
+> method of Intel mic till now, as our main goal is to change the vop code to make it
+> more generic.
+
+Given how the memory is used everyone should use dma_alloc_coherent.
+Note that for x86 the ony difference is that dma_alloc_coherent also
+dips into the CMA pools where available, which eases allocator pressure,
+and that it properly deals with the AMD SEV memory encryption, which
+does't matter for Intel platforms.
+
+> Which is means that the device page may use different allocate methods for
+> different platform, and now it is transparent to the vop layer.
+> So I think here use ->get_dp_dma callback to get device page dma address
+> is the most simple and convenient way.
 > 
-> Introduce a new variable, max_frame_size, and helper functions for the
-> calculation to be used in a new user interface. Set max_frame_size to a
-> system-wide worst-case value, instead of storing multiple app-specific
-> values.
-> 
-> Locate the body of the helper function -- fpu__get_fpstate_sigframe_size()
-> in fpu/signal.c for its relevance.
-> 
-> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Cc: x86@kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  arch/x86/include/asm/fpu/signal.h |  2 ++
->  arch/x86/include/asm/sigframe.h   | 23 ++++++++++++++++
->  arch/x86/kernel/cpu/common.c      |  3 +++
->  arch/x86/kernel/fpu/signal.c      | 20 ++++++++++++++
->  arch/x86/kernel/signal.c          | 45 +++++++++++++++++++++++++++++++
->  5 files changed, 93 insertions(+)
+> We change to use dma_alloc_coherent in patch 1 to allocate vrings memory, as it is
+> the main job that the vop layer is responsible for.
+> So I still suggest to use ->get_dp or ->get_dp_dma callback for device page here, what do you think?
 
-[...]
-
-> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> index be0d7d4152ec..239a0b23a4b0 100644
-> --- a/arch/x86/kernel/signal.c
-> +++ b/arch/x86/kernel/signal.c
-> @@ -663,6 +663,51 @@ SYSCALL_DEFINE0(rt_sigreturn)
->  	return 0;
->  }
->  
-> +/*
-> + * The FP state frame contains an XSAVE buffer which must be 64-byte aligned.
-> + * If a signal frame starts at an unaligned address, extra space is required.
-> + * This is the max alignment padding, conservatively.
-> + */
-> +#define MAX_XSAVE_PADDING	63UL
-> +
-> +/*
-> + * The frame data is composed of the following areas and laid out as:
-> + *
-> + * -------------------------
-> + * | alignment padding     |
-> + * -------------------------
-> + * | (f)xsave frame        |
-> + * -------------------------
-> + * | fsave header          |
-> + * -------------------------
-> + * | siginfo + ucontext    |
-> + * -------------------------
-> + */
-> +
-> +/* max_frame_size tells userspace the worst case signal stack size. */
-> +static unsigned long __ro_after_init max_frame_size;
-> +
-> +void __init init_sigframe_size(void)
-> +{
-> +	/*
-> +	 * Use the largest of possible structure formats. This might
-> +	 * slightly oversize the frame for 64-bit apps.
-> +	 */
-> +
-> +	if (IS_ENABLED(CONFIG_X86_32) ||
-> +	    IS_ENABLED(CONFIG_IA32_EMULATION))
-> +		max_frame_size = max((unsigned long)SIZEOF_sigframe_ia32,
-> +				     (unsigned long)SIZEOF_rt_sigframe_ia32);
-> +
-> +	if (IS_ENABLED(CONFIG_X86_X32_ABI))
-> +		max_frame_size = max(max_frame_size, (unsigned long)SIZEOF_rt_sigframe_x32);
-> +
-> +	if (IS_ENABLED(CONFIG_X86_64))
-> +		max_frame_size = max(max_frame_size, (unsigned long)SIZEOF_rt_sigframe);
-> +
-> +	max_frame_size += fpu__get_fpstate_sigframe_size() + MAX_XSAVE_PADDING;
-
-For arm64, we round the worst-case padding up by one.
-
-I can't remember the full rationale for this, but it at least seemed a
-bit weird to report a size that is not a multiple of the alignment.
-
-I'm can't think of a clear argument as to why it really matters, though.
-
-[...]
-
-Cheers
----Dave
+As mentioned you need to move the code to mmap the buffers to the
+same layer as the one doing the allocation.  If that is taken care of
+we're fine, and I think a ->mmap callback might be the best way to
+archive that, but this is not code I know intimately.
