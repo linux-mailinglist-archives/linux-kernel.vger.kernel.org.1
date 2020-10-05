@@ -2,66 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D016F28341E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00F0283420
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgJEKhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:37:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34452 "EHLO mail.kernel.org"
+        id S1725937AbgJEKjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:39:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbgJEKhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:37:41 -0400
+        id S1725843AbgJEKjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:39:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3488F2078E;
-        Mon,  5 Oct 2020 10:37:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EAF62078D;
+        Mon,  5 Oct 2020 10:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601894260;
-        bh=YaDeC+L1wWm+9/9ZnDb7+J9I0W12Ne2LZepV/gq1oCo=;
+        s=default; t=1601894378;
+        bh=KJZFQ3Md+qoKeqSObh5+5y4ipzzhoZlMl/f3afY0fNM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NbKfhhD3gyQL4ivuwEZWBQDXe9KpvAPuBLH6OYOmkeOgZNmbrNLoQP7h9krjX2UHX
-         0n2WkU/8lA4JZVDBoT/n6ZtXS2IzQbJ4pWtEhuolVD6S5HJeuqX9z4+Djc9ChoiYEb
-         uBbRa3NmJoEACCdLRbMYZyf/MkFdkf5rqD72Eu+E=
-Date:   Mon, 5 Oct 2020 12:37:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?utf-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>
-Subject: Re: [GIT PULL v2] extcon next for v5.10
-Message-ID: <20201005103755.GA245520@kroah.com>
-References: <CGME20201005033115epcas1p212c497829985ba7f9d1e6a43bb73f74a@epcas1p2.samsung.com>
- <a9869e42-474d-a016-fa9c-c8d6d6cd3cc0@samsung.com>
+        b=h8f3dv1cfo8XbGELXuNsbAg1qu6K7owrpKbjyhDMpOAPTJSAH+F7fLm/kZI/lHWC6
+         yfJrJhCv8PqJHVfW5hqVjau2mPP8f3OJs+GfnC9FNCMwQP+CJCZCOpyDp5gHRXClMl
+         WH13RSqCKS+Onshj0p2Hw3/TXmmLZzarKPiuPohc=
+Date:   Mon, 5 Oct 2020 12:40:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201005104023.GB245520@kroah.com>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+ <20201001112449.GA2364834@kroah.com>
+ <20201005093016.GD425362@ulmo>
+ <20201005094530.GA154185@kroah.com>
+ <20201005101721.GL425362@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <a9869e42-474d-a016-fa9c-c8d6d6cd3cc0@samsung.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201005101721.GL425362@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 12:44:36PM +0900, Chanwoo Choi wrote:
-> Dear Greg,
+On Mon, Oct 05, 2020 at 12:17:21PM +0200, Thierry Reding wrote:
+> On Mon, Oct 05, 2020 at 11:45:30AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 05, 2020 at 11:30:16AM +0200, Thierry Reding wrote:
+> > > On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > > > > > Hello,
+> > > > > > 
+> > > > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > > > > Cc:.
+> > > > > > 
+> > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > > > thank you for your review!
+> > > > > > > 
+> > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > > > 
+> > > > > > > > > This adds a class to exported pwm devices.
+> > > > > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > > > > 
+> > > > > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > > > > accomplish you way.
+> > > > > > > 
+> > > > > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > > > > I use udev rules to adjust permissions.
+> > > > > > 
+> > > > > > Hmm, how do you trigger the export? Without being aware of all the
+> > > > > > details in the sysfs code I would expect that the exported stuff is
+> > > > > > available instantly once the write used to export the PWM is completed.
+> > > > > > So changing the permissions can be done directly after triggering the
+> > > > > > export in the same process.
+> > > > > 
+> > > > > The export is triggered through the userspace process itself. Why can it
+> > > > > do this ? Because there is another udev rule, that changes permissions
+> > > > > when a pwmchip appears.
+> > > > > Then I'd like to have the second udev rule, that changes permissions on
+> > > > > the freshly exported pwm. The userspace process can't do this.
+> > > > > You are right I could propably do everything from within udev: If a
+> > > > > pwmchip appears, export certain pwms and right away change their
+> > > > > permissions. It does not also not feel right. It'd require knowledge
+> > > > > from the userspace application to be mapped to udev.
+> > > > 
+> > > > The way the kernel code is now, yes, you will not have any way to
+> > > > trigger it by userspace as the kernel is creating a "raw" struct device
+> > > > that isn't assigned to anything.  That is what needs to be fixed here.
+> > > > 
+> > > > > > Out of interest: What do you use the pwm for? Isn't there a suitable
+> > > > > > kernel driver that can do the required stuff? Compared to the kernel-API
+> > > > > > the sysfs interface isn't atomic. Is this an annoyance?
+> > > > > 
+> > > > > Use-case is generating a voltage from the pwm. This voltage is used to
+> > > > > signal different states and does not change very often. This is
+> > > > > absolutely not annoying that this is not atomic. We just change the duty
+> > > > > cycle on the fly. Everything else is configured one time at startup.
+> > > > > I'd call what I need pwm-dac. I could not find a ready to use driver.
+> > > > > Maybe I could misuse some kernel driver for this. Maybe I could use
+> > > > > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+> > > > > there is even a userspace facing part for this, but this is not
+> > > > > devicetree ready.
+> > > > > ...and the worst, please don't blame me: The application is java, so
+> > > > > ioctl is a problem.
+> > > > 
+> > > > I thought java could do ioctls, otherwise how would it ever be able to
+> > > > talk to serial ports?
+> > > > 
+> > > > Anyway, this needs to be fixed in the kernel...
+> > > 
+> > > If atomicity was a problem, we could potentially add a mechanism to the
+> > > sysfs interface to enable that. I don't see a good way of doing that in
+> > > a single file, since that works against how sysfs is designed. But one
+> > > thing I could imagine is adding a file ("lock", or whatever you want to
+> > > call it) that you can use for atomic fencing:
+> > > 
+> > > 	$ echo 1 > lock # locks the hardware state
+> > > 	$ echo 100 > period
+> > > 	$ echo 50 > duty_cycle
+> > > 	$ echo 0 > lock # flushes state to hardware
+> > > 
+> > > But it sounds like that's not even a big issue.
+> > 
+> > That is exactly what configfs was designed for :)
 > 
-> This is extcon-next pull request for v5.10. I add detailed description of
-> this pull request on below. Please pull extcon with following updates.
+> Interesting... for some reason I had never thought about configfs in
+> this context. But it does indeed sound like it could solve this problem
+> in a better way.
 > 
-> Changes from v1:
-> - Fix the wrong commit id of patch.
+> My memory is a bit sketchy, but I think for USB device controllers this
+> works by exposing each controller in configfs and then configuring
+> things like endpoints within the controller's directory. So I wonder if
+> instead of requesting PWMs via sysfs, we should rather expose them via
+> configfs items.
 > 
-> Best Regards,
-> Chanwoo Choi
+> Something like:
 > 
+> 	# mkdir /configfs/7000a000.pwm/0
 > 
-> The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+> could then be the equivalent of exporting PWM channel 0 of the given PWM
+> chip in sysfs, except that now you get a configfs directory with
+> attributes that you can use to inspect and reconfigure the PWM channel
+> and ultimately apply the changes atomically.
 > 
->   Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git tags/extcon-next-for-5.10-v2
+> How does that work from a permissions point of view? How do we ensure
+> that people don't need root privileges to access these?
 
-Pulled and pushed out, thanks.
+To change things in configfs, yes, I'm pretty sure you need root access.
+But to read things, sysfs is fine.  I don't really know what you are
+wanting to do here, both create a device and change the options over
+time?
+
+thanks,
 
 greg k-h
