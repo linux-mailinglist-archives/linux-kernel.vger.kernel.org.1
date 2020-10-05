@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B68283A61
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1238F2839E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgJEPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34128 "EHLO mail.kernel.org"
+        id S1727618AbgJEP3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:29:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728116AbgJEPdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:33:51 -0400
+        id S1727560AbgJEP3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:29:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E680B206DD;
-        Mon,  5 Oct 2020 15:33:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CED02137B;
+        Mon,  5 Oct 2020 15:29:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601912030;
-        bh=uA21n8kTXWeX3eBanMnYhXu9Yi/6iQkvG/dYxZd7Krs=;
+        s=default; t=1601911757;
+        bh=VW7oyLa117MEhwsbhxJr47yJfKkS4dQAVPEAdzhonsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IHaCVdSLJaFtnzK8Wff7DfJxt/RWoptStb/DA3sxMIV+O/0hNxE4ZaJ3DnKD/QKPa
-         umPIN8kwlea4RW/ET7Rd38grRVVg583m7htbh5NqQ/ae2vOm3+GEcQz2f7ge6eCzWZ
-         esuR/9M2l7MbNuCYWKqt4xnrkj704pJmGOHLz9tQ=
+        b=cXBwnqDc+ot+bvn5fHx7XbHnsyBHq7G8xE514Dc93tEz//5qfqwXKWNM7LExcI/pm
+         Uq5VYQ+mgXsOujN40GxmFnes3RMwPwUjwx7CXDlny4fL/EAdQp98o6zPu/VrckWPTw
+         1CUBiIWLLcu1pfieQYaLDwv1l1mYYxkcQ7xNXj94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 43/85] io_uring: mark statx/files_update/epoll_ctl as non-SQPOLL
+Subject: [PATCH 5.4 27/57] mac80211: do not allow bigger VHT MPDUs than the hardware supports
 Date:   Mon,  5 Oct 2020 17:26:39 +0200
-Message-Id: <20201005142116.802782495@linuxfoundation.org>
+Message-Id: <20201005142111.110973817@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
+In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
+References: <20201005142109.796046410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 6ca56f845955e325033758f90a2cffe150f31bc8 ]
+[ Upstream commit 3bd5c7a28a7c3aba07a2d300d43f8e988809e147 ]
 
-These will naturally fail when attempted through SQPOLL, but either
-with -EFAULT or -EBADF. Make it explicit that these are not workable
-through SQPOLL and return -EINVAL, just like other ops that need to
-use ->files.
+Limit maximum VHT MPDU size by local capability.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20200917125031.45009-1-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/mac80211/vht.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 4d79c1763e733..ebc3586b18795 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -3318,7 +3318,7 @@ static int io_epoll_ctl_prep(struct io_kiocb *req,
- #if defined(CONFIG_EPOLL)
- 	if (sqe->ioprio || sqe->buf_index)
- 		return -EINVAL;
--	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
-+	if (unlikely(req->ctx->flags & (IORING_SETUP_IOPOLL | IORING_SETUP_SQPOLL)))
- 		return -EINVAL;
+diff --git a/net/mac80211/vht.c b/net/mac80211/vht.c
+index ccdcb9ad9ac72..aabc63dadf176 100644
+--- a/net/mac80211/vht.c
++++ b/net/mac80211/vht.c
+@@ -168,10 +168,7 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
+ 	/* take some capabilities as-is */
+ 	cap_info = le32_to_cpu(vht_cap_ie->vht_cap_info);
+ 	vht_cap->cap = cap_info;
+-	vht_cap->cap &= IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_3895 |
+-			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_7991 |
+-			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_11454 |
+-			IEEE80211_VHT_CAP_RXLDPC |
++	vht_cap->cap &= IEEE80211_VHT_CAP_RXLDPC |
+ 			IEEE80211_VHT_CAP_VHT_TXOP_PS |
+ 			IEEE80211_VHT_CAP_HTC_VHT |
+ 			IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK |
+@@ -180,6 +177,9 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
+ 			IEEE80211_VHT_CAP_RX_ANTENNA_PATTERN |
+ 			IEEE80211_VHT_CAP_TX_ANTENNA_PATTERN;
  
- 	req->epoll.epfd = READ_ONCE(sqe->fd);
-@@ -3435,7 +3435,7 @@ static int io_fadvise(struct io_kiocb *req, bool force_nonblock)
- 
- static int io_statx_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- {
--	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
-+	if (unlikely(req->ctx->flags & (IORING_SETUP_IOPOLL | IORING_SETUP_SQPOLL)))
- 		return -EINVAL;
- 	if (sqe->ioprio || sqe->buf_index)
- 		return -EINVAL;
-@@ -5042,6 +5042,8 @@ static int io_async_cancel(struct io_kiocb *req)
- static int io_files_update_prep(struct io_kiocb *req,
- 				const struct io_uring_sqe *sqe)
- {
-+	if (unlikely(req->ctx->flags & IORING_SETUP_SQPOLL))
-+		return -EINVAL;
- 	if (unlikely(req->flags & (REQ_F_FIXED_FILE | REQ_F_BUFFER_SELECT)))
- 		return -EINVAL;
- 	if (sqe->ioprio || sqe->rw_flags)
++	vht_cap->cap |= min_t(u32, cap_info & IEEE80211_VHT_CAP_MAX_MPDU_MASK,
++			      own_cap.cap & IEEE80211_VHT_CAP_MAX_MPDU_MASK);
++
+ 	/* and some based on our own capabilities */
+ 	switch (own_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) {
+ 	case IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ:
 -- 
 2.25.1
 
