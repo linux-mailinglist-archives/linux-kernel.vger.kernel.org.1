@@ -2,154 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B492838FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BADEE283906
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgJEPFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:05:37 -0400
-Received: from mail-mw2nam10on2083.outbound.protection.outlook.com ([40.107.94.83]:27872
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726398AbgJEPFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:05:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=blUSgO/VxfRCwg/MOEiDaVqUMqgrw+QmUj18MhDYawLrjMltv3k7X6F3rAXG4vwbIEHM9V5PJFo8GyL6mVBiH5Krc+jTdBUbfRHKkxVBs7JaURLfEnISa/DsVdUCZTEZMxKxMpvkRoZueQ5KJZHQyH95iisEV+fskC+ROPZtW1knyiCk957UFZJHTAyB/c+PQbj7X/2hrUhCOd2VqUOZjFa1r4snkwFe/XYfF3R76pd48EoAsq0O5k0JQLLojHt6hKOY5S53ki40/rJgYFf6W38zQW7AnEfXUdG0a04qMOoNraH0hkW7vY2pWC3ZQknEZ8y64dPd/5k3mL6bnmdmEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QZTK1CehlUDk5escz2GypxQ5KTFvmsr3a1gBTfU26OY=;
- b=nr1iK6b8RPaBjjH8rmvyleST6If0gbJP4QOxBH55wZid3yoAQpXzTEvN9LuqsROCg/Em7hQtCDnzuF8+zmJMzJHbRu+Gvvxv6/F2949kyBg2EENJcwdIYX7jRHhwFPEW+EyUZ4BFHHcT/iiQjTs59swmXVkr5cjnzGIL0lxN/YTtMsvWPwC+y+4Xtux4TNND5tQdWsbY0dpA9KVrtTozIvMx9uW5PSU4K3rXa9iPKnuE0dlLOOU/QHG/x35Rplf1ZjExFJ2vXgdePURMbzy7nq4aMihISpLHi0FzL8Xkf8FkICiOg/Zu9SI9ViAP+BwiVg8GrRhKyhtxGtHlbKGYpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1726627AbgJEPIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJEPIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:08:06 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C6FC0613CE;
+        Mon,  5 Oct 2020 08:08:06 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a5so2189759ljj.11;
+        Mon, 05 Oct 2020 08:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QZTK1CehlUDk5escz2GypxQ5KTFvmsr3a1gBTfU26OY=;
- b=QORPVmiEINP5flaUeS/JC7WDUyySWpJmxf5CBDFa6u4mtMcFIgwVjQ3LLR3HcfpYzTLW9KBAJsce0vilIHytaLQdIMSJiecXGdRTR0ErLeb9Maw7xJ9+PeAkClSrCY42dZpKDH6Ba0xxR18b4c3FQy6o8DpHAmXOylytZGZUSyw=
-Received: from SN1PR12CA0055.namprd12.prod.outlook.com (2603:10b6:802:20::26)
- by DM5PR02MB2636.namprd02.prod.outlook.com (2603:10b6:3:43::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Mon, 5 Oct
- 2020 15:05:34 +0000
-Received: from SN1NAM02FT026.eop-nam02.prod.protection.outlook.com
- (2603:10b6:802:20:cafe::58) by SN1PR12CA0055.outlook.office365.com
- (2603:10b6:802:20::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend
- Transport; Mon, 5 Oct 2020 15:05:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- SN1NAM02FT026.mail.protection.outlook.com (10.152.72.97) with Microsoft SMTP
- Server id 15.20.3433.39 via Frontend Transport; Mon, 5 Oct 2020 15:05:33
- +0000
-Received: from [149.199.38.66] (port=56212 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <anand.ashok.dumbre@xilinx.com>)
-        id 1kPS2u-0000wj-6t; Mon, 05 Oct 2020 08:05:00 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by smtp.xilinx.com with smtp (Exim 4.63)
-        (envelope-from <anand.ashok.dumbre@xilinx.com>)
-        id 1kPS3R-0006yz-Eh; Mon, 05 Oct 2020 08:05:33 -0700
-Received: from [172.19.2.102] (helo=xsjanandash50.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <anand.ashok.dumbre@xilinx.com>)
-        id 1kPS3J-0006wF-1T; Mon, 05 Oct 2020 08:05:25 -0700
-From:   Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net, michal.simek@xilinx.com, git@xilinx.com,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     anandash@xilinx.com,
-        Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-Subject: [LINUX PATCH v3] iio: core: Fix IIO_VAL_FRACTIONAL calculation for negative values
-Date:   Mon,  5 Oct 2020 08:05:16 -0700
-Message-Id: <1601910316-24111-1-git-send-email-anand.ashok.dumbre@xilinx.com>
-X-Mailer: git-send-email 2.7.4
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y/jbq/dvc0SeEAuNgs8PeopdIcqnz5xE9+lszm120Vg=;
+        b=K6/WmPyYCS3Rp8ku15cnJNHN00NAvg3pv5av7mmklhJfeeND9Gr57YIUr5oUbLr4i+
+         moeXbFdzQ5FDo2540XrC2ZpD3GlrHYo04HwFZ0GX/mz/V0FGv1iZrtRzRd+zBVdKWLev
+         OiIHRmxkBJ3Uu7/MrJGkQMyH0Gd3wMlKXVob4wzbZcgPPi2ttIeoMzhwIyuIkcMvzgrf
+         Lun1kRFhEIi0Tfoxa9SimQEu2pUqFWmF8xtcYXlBJikQY9GahZxMylUD4ZFKQixYGh9X
+         FNBzPAndi+Fp0F6Y9KVcYeOPfioAQ8E4dPMrRJMIoYfN+BijZ/vcRnEcoFpSCy4e4mDu
+         i5gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y/jbq/dvc0SeEAuNgs8PeopdIcqnz5xE9+lszm120Vg=;
+        b=Kkq9P/FxkCVc5EcTgObxtEHvN8agJ7gwuePZrkE4PPcZCemaABLX4soANduE95biit
+         hh6JqHLKmGJEM8RlfnRVZvmgqFpGp9VqB0pWvounCLib5tpfxA31YZUVVVIUt5BdfBst
+         CIQ0faQcXGN+1WlLv1c7wZcfoKDYAhl6W74+4PpYlnfxnyWJ63M2Q/OlSyfr6r4Fkfx/
+         3xnZT9EMlMM6Ppbe0RrkRo0hvAdpljiCyr4+YpB20yxiuPRx/6lfPlx0FJZ13sn0EPiT
+         6pnT6kBKeIgIvAYDiban9HET24IYYXqrfiEDh7My5iOy5vFRDX/pS5+SznyF+fq0Mcxw
+         L8Qw==
+X-Gm-Message-State: AOAM533RfsAJ7/xNxT6Nfja2bvm1gDJfcQ26rrpM1seUUPr1aX/TUtz7
+        /SbNefb/s5reQlwx1MGiPfA=
+X-Google-Smtp-Source: ABdhPJwJCWZY1Ta3clt2a8+QT8HNjjnHTD5+j6kZdK+JedNK3x/DxK2R5Lq8sgokrenP6Q/9uJLfsw==
+X-Received: by 2002:a2e:8702:: with SMTP id m2mr49631lji.49.1601910484580;
+        Mon, 05 Oct 2020 08:08:04 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id 18sm3305lfz.141.2020.10.05.08.08.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 08:08:03 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 5 Oct 2020 17:08:01 +0200
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20201005150801.GC17959@pc636>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+ <20200929220742.GB8768@pc636>
+ <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+ <20201001192626.GA29606@pc636>
+ <20201002071123.GB20872@dhcp22.suse.cz>
+ <20201002085014.GC3227@techsingularity.net>
+ <20201002090507.GB4555@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 5d65985b-8337-4837-7c25-08d869401bc6
-X-MS-TrafficTypeDiagnostic: DM5PR02MB2636:
-X-Microsoft-Antispam-PRVS: <DM5PR02MB2636BD3706F1346AAB22A656A90C0@DM5PR02MB2636.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0vAzDsiGfXp/1cBp1dcnN0MNasuf7YfbrPhijlP1UqgRG03JX2+a9y6J0hyXSzbqi+td7E1BU5XU/xbj3D67OEZHCpMRWv23zBJXrsXKXdZ3fDcGcLD3LOh7PohvMyIHYGb+PDXKQKtgrOacaImgRjJpHdOw+3RDERPy1l1Iw17fJaZ8W9ypXE3rrk4aLK+ig+LOWx+jkaUbvkb8bWq0cIs7AMtzEswRp5c8tE5IwQZgo6l58ZxbylwrivhPOAh2tAs8bxxRzLCMyP0oCcHJbaC1t7cx9TJQ4nGXItlRr9Bdprnp1MdVqVomE3mRU5N4C0QISN0TPWrkWy5CYTqDJNZp0OLqCrw+nORjtGAbr3S7QlyI7pLijezEAHd5+//L0omBJLpSRJoI3JfduiCMzA==
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(346002)(39860400002)(396003)(376002)(136003)(46966005)(82310400003)(26005)(8676002)(2906002)(82740400003)(9786002)(426003)(107886003)(36756003)(4326008)(7696005)(6666004)(336012)(8936002)(47076004)(2616005)(186003)(83380400001)(478600001)(316002)(81166007)(5660300002)(356005)(70206006)(70586007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2020 15:05:33.7651
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d65985b-8337-4837-7c25-08d869401bc6
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT026.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB2636
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002090507.GB4555@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes IIO_VAL_FRACTIONAL for case when the result is negative and
-exponent is 0.
+On Fri, Oct 02, 2020 at 11:05:07AM +0200, Michal Hocko wrote:
+> On Fri 02-10-20 09:50:14, Mel Gorman wrote:
+> > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
+> > > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
+> > > > > 
+> > > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
+> > > > > the allocator (different from what you posted in previous version) so that it
+> > > > > only looks at the flag after it tries to allocate from pcplist and finds out
+> > > > > it's empty. So, no inventing of new page allocator entry points or checks such
+> > > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
+> > > > > affect existing fast paths.
+> > > > >
+> > > > OK. Now i see. Please have a look below at the patch, so we fully understand
+> > > > each other. If that is something that is close to your view or not:
+> > > > 
+> > > > <snip>
+> > > > t a/include/linux/gfp.h b/include/linux/gfp.h
+> > > > index c603237e006c..7e613560a502 100644
+> > > > --- a/include/linux/gfp.h
+> > > > +++ b/include/linux/gfp.h
+> > > > @@ -39,8 +39,9 @@ struct vm_area_struct;
+> > > >  #define ___GFP_HARDWALL                0x100000u
+> > > >  #define ___GFP_THISNODE                0x200000u
+> > > >  #define ___GFP_ACCOUNT         0x400000u
+> > > > +#define ___GFP_NO_LOCKS                0x800000u
+> > > 
+> > > Even if a new gfp flag gains a sufficient traction and support I am
+> > > _strongly_ opposed against consuming another flag for that. Bit space is
+> > > limited. 
+> > 
+> > That is definitely true. I'm not happy with the GFP flag at all, the
+> > comment is at best a damage limiting move. It still would be better for
+> > a memory pool to be reserved and sized for critical allocations.
+> 
+> Completely agreed. The only existing usecase is so special cased that a
+> dedicated pool is not only easier to maintain but it should be also much
+> better tuned for the specific workload. Something not really feasible
+> with the allocator.
+> 
+> > > Besides that we certainly do not want to allow craziness like
+> > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
+> > 
+> > That would deserve to be taken to a dumpster and set on fire. The flag
+> > combination could be checked in the allocator but the allocator path fast
+> > paths are bad enough already.
+> 
+> If a new allocation/gfp mode is absolutely necessary then I believe that
+> the most reasoanble way forward would be
+> #define GFP_NO_LOCK	((__force gfp_t)0)
+> 
+Agree. Even though i see that some code should be adjusted for it. There are
+a few users of the __get_free_page(0); So, need to double check it:
 
-example: if the result is -0.75, tmp0 will be 0 and tmp1 = 75
-This causes the output to lose sign because of %d in snprintf
-which works for tmp0 <= -1.
+<snip>
+[    0.650351] BUG: kernel NULL pointer dereference, address: 0000000000000010
+[    0.651083] #PF: supervisor read access in kernel mode
+[    0.651639] #PF: error_code(0x0000) - not-present page
+[    0.652200] PGD 0 P4D 0
+[    0.652523] Oops: 0000 [#1] SMP NOPTI
+[    0.652668] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7-next-20200930+ #140
+[    0.652668] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+[    0.652668] RIP: 0010:__find_event_file+0x21/0x80
+<snip>
 
-Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-Reported-by: kernel test robot <lkp@intel.com> #error: uninitialized symbol tmp
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
+Apart of that. There is a post_alloc_hook(), that gets called from the prep_new_page().
+If "debug page alloc enabled", it maps a page for debug purposes invoking kernel_map_pages().
+__kernel_map_pages() is ARCH specific. For example, powerpc variant uses sleep-able locks
+what can be easily converted to raw variant. 
 
-Changes in v3:
-	Fixed a bug caught by kernel test robot and used correct variable
-
----
- drivers/iio/industrialio-core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index cdcd16f1..ffd5176 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -592,6 +592,7 @@ static ssize_t __iio_format_value(char *buf, size_t len, unsigned int type,
- {
- 	unsigned long long tmp;
- 	int tmp0, tmp1;
-+	s64 tmp2;
- 	bool scale_db = false;
- 
- 	switch (type) {
-@@ -614,10 +615,13 @@ static ssize_t __iio_format_value(char *buf, size_t len, unsigned int type,
- 		else
- 			return scnprintf(buf, len, "%d.%09u", vals[0], vals[1]);
- 	case IIO_VAL_FRACTIONAL:
--		tmp = div_s64((s64)vals[0] * 1000000000LL, vals[1]);
-+		tmp2 = div_s64((s64)vals[0] * 1000000000LL, vals[1]);
- 		tmp1 = vals[1];
--		tmp0 = (int)div_s64_rem(tmp, 1000000000, &tmp1);
--		return scnprintf(buf, len, "%d.%09u", tmp0, abs(tmp1));
-+		tmp0 = (int)div_s64_rem(tmp2, 1000000000, &tmp1);
-+		if ((tmp2 < 0) && (tmp0 == 0))
-+			return snprintf(buf, len, "-0.%09u", abs(tmp1));
-+		else
-+			return snprintf(buf, len, "%d.%09u", tmp0, abs(tmp1));
- 	case IIO_VAL_FRACTIONAL_LOG2:
- 		tmp = shift_right((s64)vals[0] * 1000000000LL, vals[1]);
- 		tmp0 = (int)div_s64_rem(tmp, 1000000000LL, &tmp1);
--- 
-2.7.4
-
+--
+Vlad Rezki
