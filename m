@@ -2,94 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9546C28392F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AFA283932
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgJEPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbgJEPLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:11:05 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2C2C0613CE;
-        Mon,  5 Oct 2020 08:11:04 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id c13so9018594oiy.6;
-        Mon, 05 Oct 2020 08:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RwW+3cgQRN9esWDY48Mrwamv0LGOoedzUjjGGELb9gw=;
-        b=rmMncILe7hEypTqUh7SZl4WTgcv0Rnfl62dFWpviSzScI5eQnjCq5qWK8aASjpMCH/
-         pIvyyrU1/Y3t+9S/+uhPNlRkn1HmeL4k5TuQ0t28t1ZDuBPuZcklIUA1OdyPUpv+Of5b
-         vAdAPdbk4G0EBui6CPf/jjYqj+ZVRQlVI5+4gov9bj0a04cVdaTgw2TnOc2M8HfGU3jW
-         ktBxfQAuwUg5u/57y740MJvL6LqardNYv/z3CJf4T60Dq/t8Ia6Hmhzn3HzDUm3Vtw3e
-         c4+FVoJgs0BvCjzhkPbqGr6d84k7K563NtL+hmbrNorUFsdvvZo/Fmp39reqmvV7u4bd
-         BCTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RwW+3cgQRN9esWDY48Mrwamv0LGOoedzUjjGGELb9gw=;
-        b=rOsZWmFCJmRu/r1IBJ58gNj5fgXgG2+gW2RLerOlnQlq2t5SnEWxT1/IhgQCQyA+yX
-         riKxjT4MgeZ82S2H5i4/X/KmM6S3dS5TPx3LGAbh3Xg0cPmKbpAf7nV0LLb6vbUTpYTE
-         b0I+4aKEIpkhdDNsH0JUG3Smrs5jO5TfgDDtTjtNqyCB+suPuWcrtTeYE6QnMAEbuZBu
-         8bPjtZz21Yqugh3p0onW8hwb+BFCviNFSctY4owYxzlYtmGM43vsPYfM+K1B1vGaUc9j
-         +1vx38X06pJ+opL/QFuKy9ig439POuu7W3e59xw243k41l6Hp0voGSRnFgW267iyYHOs
-         M23A==
-X-Gm-Message-State: AOAM5321xRZDXVEkjPc2+nMGkOhip8vUwh0il7zipYNVROBfaouWBuW7
-        Rujuwg8LmBPlbwoGh8Mqpes=
-X-Google-Smtp-Source: ABdhPJzxsNc/BZAute7amLsLZyrqTZQK32QsK0Ua7GECgwCRR2zZLNx+9d84Aal7Q80u83gdYAT+4A==
-X-Received: by 2002:aca:c485:: with SMTP id u127mr49637oif.92.1601910664371;
-        Mon, 05 Oct 2020 08:11:04 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s32sm2933260otb.68.2020.10.05.08.11.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Oct 2020 08:11:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 5 Oct 2020 08:11:02 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jdelvare@suse.com, corbet@lwn.net
-Subject: Re: [PATCH] docs: hwmon: (ltc2945): update datasheet link
-Message-ID: <20201005151102.GA44294@roeck-us.net>
-References: <20201005131226.1774081-1-alexandru.ardelean@analog.com>
+        id S1727123AbgJEPLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726513AbgJEPLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:11:45 -0400
+Received: from localhost (unknown [192.55.55.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C81D20774;
+        Mon,  5 Oct 2020 15:11:44 +0000 (UTC)
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     vkoul@kernel.org, bp@alien8.de, dan.j.williams@intel.com,
+        tony.luck@intel.com, ashok.raj@intel.com, kevin.tian@intel.com,
+        fenghua.yu@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/5] Add shared workqueue support for idxd driver
+Date:   Mon,  5 Oct 2020 08:11:21 -0700
+Message-Id: <20201005151126.657029-1-dave.jiang@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005131226.1774081-1-alexandru.ardelean@analog.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 04:12:26PM +0300, Alexandru Ardelean wrote:
-> Old one isn't working anymore. Update to the latest datasheet link.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+v7:
+- Add sign-off and review tag from Boris
+Boris:
+- Fixed up ENQCMDS patch
+Vinod:
+- Fix line formatting
+- Add comment for completion address compare
 
-Applied.
+v6:
+Boris:
+- Fixup MOBDIR64B inline asm input/output constraints
 
-Thanks,
-Guenter
+v5:
+Boris:
+- Fixup commit headers
+- Fixup var names for movdir64b()
+- Move enqcmds() to special_insns.h
+- Fix up comments for enqcmds()
+- Change enqcmds() to reflect instruction return. 0 as success, -EAGAIN for fail.
 
-> ---
->  Documentation/hwmon/ltc2945.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/hwmon/ltc2945.rst b/Documentation/hwmon/ltc2945.rst
-> index 20c884985367..8d65c141ce2b 100644
-> --- a/Documentation/hwmon/ltc2945.rst
-> +++ b/Documentation/hwmon/ltc2945.rst
-> @@ -11,7 +11,7 @@ Supported chips:
->  
->      Datasheet:
->  
-> -	http://cds.linear.com/docs/en/datasheet/2945fa.pdf
-> +	https://www.analog.com/media/en/technical-documentation/data-sheets/2945fb.pdf
->  
->  Author: Guenter Roeck <linux@roeck-us.net>
->  
+DavidL:
+- Fixup enqcmds() gas constraints
+
+v4:
+- Rebased against latest dmaengine/next tree
+- Split out enqcmd and pasid dependency.
+
+V3:
+- Rebased against latest dmaengine/next tree.
+- Updated API doc with new kernel version and dates.
+- Changed to allow driver to load without ENQCMD support.
+- Break out some patches that can be sent ahead of this series for inclusion.
+
+v2:
+- Dropped device feature enabling (GregKH)
+- Dropped PCI device feature enabling (Bjorn)
+	- https://members.pcisig.com/wg/PCI-SIG/document/14237
+- After some internal discussion, we have decided to hold off on the enabling of DMWR due to the
+  following reasons. 1. Most first gen hw will not have the feature bits. 2. First gen hw that
+  support the feature are all Root Complex integrated endpoints. 3. PCI devices that are not
+  RCiEP’s with this capability won’t surface for a few years so we can wait until we can test the
+  full code.
+- Dropped special ioremap (hch)
+- Added proper support for WQ flush (tony, dan)
+- Changed descriptor submission to use sbitmap_queue for blocking. (dan)
+
+Driver stage 1 postings for context: [1]
+
+The patch series has compilation and functional dependency on Fenghua's "Tag application
+address space for devices" patch series for the ENQCMD CPU command enumeration and the PASID MSR
+support. [2] 
+
+== Background ==
+A typical DMA device requires the driver to translate application buffers to hardware addresses,
+and a kernel-user transition to notify the hardware of new work. Shared Virtual Addressing (SVA)
+allows the processor and device to use the same virtual addresses without requiring software to
+translate between the address spaces. ENQCMD is a new instruction on Intel Platforms that allows
+user applications to directly notify hardware of new work, much like how doorbells are used in
+some hardware, but it carries a payload along with it. ENQCMDS is the supervisor version (ring0)
+of ENQCMD.
+
+== ENQCMDS ==
+Introduce enqcmds(), a helper funciton that copies an input payload to a 64B aligned
+destination and confirms whether the payload was accepted by the device or not.
+enqcmds() wraps the new ENQCMDS CPU instruction. The ENQCMDS is a ring 0 CPU instruction that
+performs similar to the ENQCMD instruction. Descriptor submission must use ENQCMD(S) for shared
+workqueues (swq) on an Intel DSA device. 
+
+== Shared WQ support ==
+Introduce shared workqueue (swq) support for the idxd driver. The current idxd driver contains
+dedicated workqueue (dwq) support only. A dwq accepts descriptors from a MOVDIR64B instruction.
+MOVDIR64B is a posted instruction on the PCIe bus, it does not wait for any response from the
+device. If the wq is full, submitted descriptors are dropped. A swq utilizes the ENQCMDS in
+ring 0, which is a non-posted instruction. The zero flag would be set to 1 if the device rejects
+the descriptor or if the wq is full. A swq can be shared between multiple users
+(kernel or userspace) due to not having to keep track of the wq full condition for submission.
+A swq requires PASID and can only run with SVA support. 
+
+== IDXD SVA support ==
+Add utilization of PASID to support Shared Virtual Addressing (SVA). With PASID support,
+the descriptors can be programmed with host virtual address (HVA) rather than IOVA.
+The hardware will work with the IOMMU in fulfilling page requests. With SVA support,
+a user app using the char device interface can now submit descriptors without having to pin the
+virtual memory range it wants to DMA in its own address space. 
+
+The series does not add SVA support for the dmaengine subsystem. That support is coming at a
+later time.
+
+[1]: https://lore.kernel.org/lkml/157965011794.73301.15960052071729101309.stgit@djiang5-desk3.ch.intel.com/
+[2]: https://lore.kernel.org/lkml/20200916080510.GA32552@8bytes.org/
+[3]: https://software.intel.com/en-us/articles/intel-sdm
+[4]: https://software.intel.com/en-us/download/intel-scalable-io-virtualization-technical-specification
+[5]: https://software.intel.com/en-us/download/intel-data-streaming-accelerator-preliminary-architecture-specification
+[6]: https://01.org/blogs/2019/introducing-intel-data-streaming-accelerator
+[7]: https://intel.github.io/idxd/
+[8]: https://github.com/intel/idxd-driver idxd-stage2
+
+Dave Jiang (5):
+  x86/asm: Carve out a generic movdir64b() helper for general usage
+  x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction
+  dmaengine: idxd: Add shared workqueue support
+  dmaengine: idxd: Clean up descriptors with fault error
+  dmaengine: idxd: Add ABI documentation for shared wq
+
+ .../ABI/stable/sysfs-driver-dma-idxd          |  14 ++
+ arch/x86/include/asm/io.h                     |  17 +-
+ arch/x86/include/asm/special_insns.h          |  64 ++++++++
+ drivers/dma/Kconfig                           |  10 ++
+ drivers/dma/idxd/cdev.c                       |  49 +++++-
+ drivers/dma/idxd/device.c                     |  91 ++++++++++-
+ drivers/dma/idxd/dma.c                        |   9 --
+ drivers/dma/idxd/idxd.h                       |  33 +++-
+ drivers/dma/idxd/init.c                       |  92 ++++++++---
+ drivers/dma/idxd/irq.c                        | 146 ++++++++++++++++--
+ drivers/dma/idxd/registers.h                  |  14 ++
+ drivers/dma/idxd/submit.c                     |  35 ++++-
+ drivers/dma/idxd/sysfs.c                      | 127 +++++++++++++++
+ 13 files changed, 631 insertions(+), 70 deletions(-)
+
+-- 
+2.26.2
+
