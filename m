@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132F0283994
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0561283AA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727225AbgJEP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:27:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51684 "EHLO mail.kernel.org"
+        id S1728423AbgJEPgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727206AbgJEP1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:27:16 -0400
+        id S1727220AbgJEPdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:33:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2D3720637;
-        Mon,  5 Oct 2020 15:27:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F41422085B;
+        Mon,  5 Oct 2020 15:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911634;
-        bh=anyxQxcrQLQQxS6ixibolxBz33XPbYUvG7IdvOH4pr4=;
+        s=default; t=1601912017;
+        bh=pkPIeQYNCAPWogUDMDIGyGTxm+WGDlVBkJ/vA3LhJ0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I4ms07IicMJIEcWyszLddjA9pbe1JZZsVG9bprgBU/DSYCL02UrNhp8EsWyRH54HX
-         xMDV3gMJoCwD4n2n7OPlCzzEsTbdXJ4Zs7OFi6apJZVocEMYVc2ZBK9UEWnMjMveZU
-         cik7eEBoWS57MsViHbh7WBfelpuRnirJEuq5s+W8=
+        b=pPFOE5dBSww8TsxhQybvWhDj/cye8+OfElO5eXCadoxmpshfJJ1Vfbabxs0kkcS2p
+         OFwyL0sG5VqB0qG4WNMkETUgZIeEDwueKTxQxZgLlq5NxHwdvwztqHA/Foos9Lszrc
+         UEe6uFxY1VR4Ki73RRdeE00db/gSGsBM2m3Y0NKw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 19/38] drivers/net/wan/hdlc: Set skb->protocol before transmitting
-Date:   Mon,  5 Oct 2020 17:26:36 +0200
-Message-Id: <20201005142109.601642891@linuxfoundation.org>
+Subject: [PATCH 5.8 41/85] tracing: Make the space reserved for the pid wider
+Date:   Mon,  5 Oct 2020 17:26:37 +0200
+Message-Id: <20201005142116.706181950@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
-References: <20201005142108.650363140@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,104 +44,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-[ Upstream commit 9fb030a70431a2a2a1b292dbf0b2f399cc072c16 ]
+[ Upstream commit 795d6379a47bcbb88bd95a69920e4acc52849f88 ]
 
-This patch sets skb->protocol before transmitting frames on the HDLC
-device, so that a user listening on the HDLC device with an AF_PACKET
-socket will see outgoing frames' sll_protocol field correctly set and
-consistent with that of incoming frames.
+For 64bit CONFIG_BASE_SMALL=0 systems PID_MAX_LIMIT is set by default to
+4194304. During boot the kernel sets a new value based on number of CPUs
+but no lower than 32768. It is 1024 per CPU so with 128 CPUs the default
+becomes 131072 which needs six digits.
+This value can be increased during run time but must not exceed the
+initial upper limit.
 
-1. Control frames in hdlc_cisco and hdlc_ppp
+Systemd sometime after v241 sets it to the upper limit during boot. The
+result is that when the pid exceeds five digits, the trace output is a
+little hard to read because it is no longer properly padded (same like
+on big iron with 98+ CPUs).
 
-When these drivers send control frames, skb->protocol is not set.
+Increase the pid padding to seven digits.
 
-This value should be set to htons(ETH_P_HDLC), because when receiving
-control frames, their skb->protocol is set to htons(ETH_P_HDLC).
+Link: https://lkml.kernel.org/r/20200904082331.dcdkrr3bkn3e4qlg@linutronix.de
 
-When receiving, hdlc_type_trans in hdlc.h is called, which then calls
-cisco_type_trans or ppp_type_trans. The skb->protocol of control frames
-is set to htons(ETH_P_HDLC) so that the control frames can be received
-by hdlc_rcv in hdlc.c, which calls cisco_rx or ppp_rx to process the
-control frames.
-
-2. hdlc_fr
-
-When this driver sends control frames, skb->protocol is set to internal
-values used in this driver.
-
-When this driver sends data frames (from upper stacked PVC devices),
-skb->protocol is the same as that of the user data packet being sent on
-the upper PVC device (for normal PVC devices), or is htons(ETH_P_802_3)
-(for Ethernet-emulating PVC devices).
-
-However, skb->protocol for both control frames and data frames should be
-set to htons(ETH_P_HDLC), because when receiving, all frames received on
-the HDLC device will have their skb->protocol set to htons(ETH_P_HDLC).
-
-When receiving, hdlc_type_trans in hdlc.h is called, and because this
-driver doesn't provide a type_trans function in struct hdlc_proto,
-all frames will have their skb->protocol set to htons(ETH_P_HDLC).
-The frames are then received by hdlc_rcv in hdlc.c, which calls fr_rx
-to process the frames (control frames are consumed and data frames
-are re-received on upper PVC devices).
-
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/hdlc_cisco.c | 1 +
- drivers/net/wan/hdlc_fr.c    | 3 +++
- drivers/net/wan/hdlc_ppp.c   | 1 +
- 3 files changed, 5 insertions(+)
+ kernel/trace/trace.c        | 38 ++++++++++++++++++-------------------
+ kernel/trace/trace_output.c | 12 ++++++------
+ 2 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/net/wan/hdlc_cisco.c b/drivers/net/wan/hdlc_cisco.c
-index c169a26e5359a..2c6e3fa6947a0 100644
---- a/drivers/net/wan/hdlc_cisco.c
-+++ b/drivers/net/wan/hdlc_cisco.c
-@@ -121,6 +121,7 @@ static void cisco_keepalive_send(struct net_device *dev, u32 type,
- 	skb_put(skb, sizeof(struct cisco_packet));
- 	skb->priority = TC_PRIO_CONTROL;
- 	skb->dev = dev;
-+	skb->protocol = htons(ETH_P_HDLC);
- 	skb_reset_network_header(skb);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 7dea52549eff3..68c0ff4bd02fa 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3745,14 +3745,14 @@ unsigned long trace_total_entries(struct trace_array *tr)
  
- 	dev_queue_xmit(skb);
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 67f89917277ce..03b5f5cce6f47 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -436,6 +436,8 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
- 			if (pvc->state.fecn) /* TX Congestion counter */
- 				dev->stats.tx_compressed++;
- 			skb->dev = pvc->frad;
-+			skb->protocol = htons(ETH_P_HDLC);
-+			skb_reset_network_header(skb);
- 			dev_queue_xmit(skb);
- 			return NETDEV_TX_OK;
- 		}
-@@ -558,6 +560,7 @@ static void fr_lmi_send(struct net_device *dev, int fullrep)
- 	skb_put(skb, i);
- 	skb->priority = TC_PRIO_CONTROL;
- 	skb->dev = dev;
-+	skb->protocol = htons(ETH_P_HDLC);
- 	skb_reset_network_header(skb);
- 
- 	dev_queue_xmit(skb);
-diff --git a/drivers/net/wan/hdlc_ppp.c b/drivers/net/wan/hdlc_ppp.c
-index 85844f26547dd..20d9b6585fba3 100644
---- a/drivers/net/wan/hdlc_ppp.c
-+++ b/drivers/net/wan/hdlc_ppp.c
-@@ -254,6 +254,7 @@ static void ppp_tx_cp(struct net_device *dev, u16 pid, u8 code,
- 
- 	skb->priority = TC_PRIO_CONTROL;
- 	skb->dev = dev;
-+	skb->protocol = htons(ETH_P_HDLC);
- 	skb_reset_network_header(skb);
- 	skb_queue_tail(&tx_queue, skb);
+ static void print_lat_help_header(struct seq_file *m)
+ {
+-	seq_puts(m, "#                  _------=> CPU#            \n"
+-		    "#                 / _-----=> irqs-off        \n"
+-		    "#                | / _----=> need-resched    \n"
+-		    "#                || / _---=> hardirq/softirq \n"
+-		    "#                ||| / _--=> preempt-depth   \n"
+-		    "#                |||| /     delay            \n"
+-		    "#  cmd     pid   ||||| time  |   caller      \n"
+-		    "#     \\   /      |||||  \\    |   /         \n");
++	seq_puts(m, "#                    _------=> CPU#            \n"
++		    "#                   / _-----=> irqs-off        \n"
++		    "#                  | / _----=> need-resched    \n"
++		    "#                  || / _---=> hardirq/softirq \n"
++		    "#                  ||| / _--=> preempt-depth   \n"
++		    "#                  |||| /     delay            \n"
++		    "#  cmd     pid     ||||| time  |   caller      \n"
++		    "#     \\   /        |||||  \\    |   /         \n");
  }
+ 
+ static void print_event_info(struct array_buffer *buf, struct seq_file *m)
+@@ -3773,26 +3773,26 @@ static void print_func_help_header(struct array_buffer *buf, struct seq_file *m,
+ 
+ 	print_event_info(buf, m);
+ 
+-	seq_printf(m, "#           TASK-PID   %s  CPU#   TIMESTAMP  FUNCTION\n", tgid ? "TGID     " : "");
+-	seq_printf(m, "#              | |     %s    |       |         |\n",	 tgid ? "  |      " : "");
++	seq_printf(m, "#           TASK-PID    %s CPU#     TIMESTAMP  FUNCTION\n", tgid ? "   TGID   " : "");
++	seq_printf(m, "#              | |      %s   |         |         |\n",      tgid ? "     |    " : "");
+ }
+ 
+ static void print_func_help_header_irq(struct array_buffer *buf, struct seq_file *m,
+ 				       unsigned int flags)
+ {
+ 	bool tgid = flags & TRACE_ITER_RECORD_TGID;
+-	const char *space = "          ";
+-	int prec = tgid ? 10 : 2;
++	const char *space = "            ";
++	int prec = tgid ? 12 : 2;
+ 
+ 	print_event_info(buf, m);
+ 
+-	seq_printf(m, "#                          %.*s  _-----=> irqs-off\n", prec, space);
+-	seq_printf(m, "#                          %.*s / _----=> need-resched\n", prec, space);
+-	seq_printf(m, "#                          %.*s| / _---=> hardirq/softirq\n", prec, space);
+-	seq_printf(m, "#                          %.*s|| / _--=> preempt-depth\n", prec, space);
+-	seq_printf(m, "#                          %.*s||| /     delay\n", prec, space);
+-	seq_printf(m, "#           TASK-PID %.*sCPU#  ||||    TIMESTAMP  FUNCTION\n", prec, "   TGID   ");
+-	seq_printf(m, "#              | |   %.*s  |   ||||       |         |\n", prec, "     |    ");
++	seq_printf(m, "#                            %.*s  _-----=> irqs-off\n", prec, space);
++	seq_printf(m, "#                            %.*s / _----=> need-resched\n", prec, space);
++	seq_printf(m, "#                            %.*s| / _---=> hardirq/softirq\n", prec, space);
++	seq_printf(m, "#                            %.*s|| / _--=> preempt-depth\n", prec, space);
++	seq_printf(m, "#                            %.*s||| /     delay\n", prec, space);
++	seq_printf(m, "#           TASK-PID  %.*s CPU#  ||||   TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
++	seq_printf(m, "#              | |    %.*s   |   ||||      |         |\n", prec, "       |    ");
+ }
+ 
+ void
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 73976de7f8cc8..a8d719263e1bc 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -497,7 +497,7 @@ lat_print_generic(struct trace_seq *s, struct trace_entry *entry, int cpu)
+ 
+ 	trace_find_cmdline(entry->pid, comm);
+ 
+-	trace_seq_printf(s, "%8.8s-%-5d %3d",
++	trace_seq_printf(s, "%8.8s-%-7d %3d",
+ 			 comm, entry->pid, cpu);
+ 
+ 	return trace_print_lat_fmt(s, entry);
+@@ -588,15 +588,15 @@ int trace_print_context(struct trace_iterator *iter)
+ 
+ 	trace_find_cmdline(entry->pid, comm);
+ 
+-	trace_seq_printf(s, "%16s-%-5d ", comm, entry->pid);
++	trace_seq_printf(s, "%16s-%-7d ", comm, entry->pid);
+ 
+ 	if (tr->trace_flags & TRACE_ITER_RECORD_TGID) {
+ 		unsigned int tgid = trace_find_tgid(entry->pid);
+ 
+ 		if (!tgid)
+-			trace_seq_printf(s, "(-----) ");
++			trace_seq_printf(s, "(-------) ");
+ 		else
+-			trace_seq_printf(s, "(%5d) ", tgid);
++			trace_seq_printf(s, "(%7d) ", tgid);
+ 	}
+ 
+ 	trace_seq_printf(s, "[%03d] ", iter->cpu);
+@@ -636,7 +636,7 @@ int trace_print_lat_context(struct trace_iterator *iter)
+ 		trace_find_cmdline(entry->pid, comm);
+ 
+ 		trace_seq_printf(
+-			s, "%16s %5d %3d %d %08x %08lx ",
++			s, "%16s %7d %3d %d %08x %08lx ",
+ 			comm, entry->pid, iter->cpu, entry->flags,
+ 			entry->preempt_count, iter->idx);
+ 	} else {
+@@ -917,7 +917,7 @@ static enum print_line_t trace_ctxwake_print(struct trace_iterator *iter,
+ 	S = task_index_to_char(field->prev_state);
+ 	trace_find_cmdline(field->next_pid, comm);
+ 	trace_seq_printf(&iter->seq,
+-			 " %5d:%3d:%c %s [%03d] %5d:%3d:%c %s\n",
++			 " %7d:%3d:%c %s [%03d] %7d:%3d:%c %s\n",
+ 			 field->prev_pid,
+ 			 field->prev_prio,
+ 			 S, delim,
 -- 
 2.25.1
 
