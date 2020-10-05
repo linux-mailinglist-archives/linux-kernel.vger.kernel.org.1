@@ -2,136 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC39283B93
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF5A283B96
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727656AbgJEPrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        id S1727991AbgJEPsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgJEPrr (ORCPT
+        with ESMTP id S1726057AbgJEPsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:47:47 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E6FC0613CE;
-        Mon,  5 Oct 2020 08:47:45 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id h24so6112051ejg.9;
-        Mon, 05 Oct 2020 08:47:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=uVzdx4iW64L/8P8eovtAWrQeLX5Ntc+hO2LaVKxCA1w=;
-        b=hbc5KDiN4sN5G4Gg2xtDlkggQYAeyH3Her6sik0q4Ic4/9XpzvHG7poli0zqObN2ay
-         um/mWzmsEXqD62RgeMKBN+9qFe8+gV0ydnGqHcDNVrHVbzjBaQu6svIS9T9w8ox3fBpv
-         mWGkXnMwtaXxHTKdYdJHsRFNnfZEzwoPiylodW8xFjUfgVzi/hmbIm3rK3GG2PMLhVSs
-         R/sazrclt3+XF5UyKvZn4+oNdlNMfh1OnQgHHdu6bjo0IV9hGWhAHmjzkgnCHJ8tHvrs
-         cbJB47VF+4I3qYLWQF3bp6XMaGnLnaVHaGOkzmvzppyiqqunT3w7sKtQiNmugGZkw0bP
-         dPIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uVzdx4iW64L/8P8eovtAWrQeLX5Ntc+hO2LaVKxCA1w=;
-        b=p0Lp+Eu+/fE7MxiN6h//p380Lt5fXqgoFXu6bx0oIC0stlzVTLmR8ROLt3pPEK18QT
-         DKqup1haTCH/7CxaIp3c4FoBUpJW4fg4RAjWJeAOxgyGVRqduXGO01LMAFKqYRfD1ltu
-         GceioyXB0Gxc8hZLj/omd5v47NkjvRfdE+Aeiq3WO+6xmIJxJCasbRLjSD8hLzxKjhWA
-         63O6iEbs3DMZHxJosjCzjWRv0lDhuIgZIze+wkwyAZDk644eVjTpZZOdYncEPBKCph/3
-         +TBPifbD5RQHKk4t7fEgknzaxdcAjEY83Uzxz2bX1yBruLuDUgAgOWz3zz6wzm+ARt9G
-         5ZhA==
-X-Gm-Message-State: AOAM530DSoy4R47kOHX4n13Xh51Mi/hZXMvawBZINBHJPm0cSkSK/X9N
-        2KHn/eLgrO/YZg80PK4bMl4=
-X-Google-Smtp-Source: ABdhPJxJ2YMuyZGMQSK47z00GJx06vbge++4EgwuyMPmupiJuuZvE0wwM+WhtQhaRuD0C8xDOiI4Hg==
-X-Received: by 2002:a17:906:5247:: with SMTP id y7mr292007ejm.503.1601912864439;
-        Mon, 05 Oct 2020 08:47:44 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id c8sm42753ejp.30.2020.10.05.08.47.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 08:47:43 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 17:47:42 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
-Message-ID: <20201005154742.GC628746@ulmo>
-References: <20201004133114.845230-1-pgwipeout@gmail.com>
+        Mon, 5 Oct 2020 11:48:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA609C0613CE;
+        Mon,  5 Oct 2020 08:48:32 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 15:48:28 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601912909;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=X1QsCQ/nqHzEMGRxGzS/ypcU7g5Cvcg1CMBrnKVfsLM=;
+        b=sOLa7XIW2nPphWs4j7UUWXLG+JslJABm1XIEGR00agB7EI7wRQNI5ln03URGQi/rkN6udE
+        K6oycyBPkulXLyo1xEBdK8nMb4JJ4OhnBZkMKlEzpbqD725sv39emuE5vonOoi8dqjd8Ek
+        d7KwDeAspllDUMb3ZgSre21SPRJmdeKw6HPF8p97h8eFX2nveFPmCchSRq6VBtRDwocbeU
+        4c+CB8hp7nW6CujpOC3BIHAF8Azt3SLREXntqg1y8Sl+tCZQ4iEI3CSPtHZebp9h7nPfPx
+        D2yPJJujzpMNwpq6VKNMghaLXnjLakKDI7bgOz/FvwMTqX8IaxgV4b2kO3o6JA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601912909;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=X1QsCQ/nqHzEMGRxGzS/ypcU7g5Cvcg1CMBrnKVfsLM=;
+        b=wmuLBO9LkwaN49i49FyK7JZyFq42hKty6E/QhTlLIBVjVqSckdQWgZ1aW4iu/ydgcmmklf
+        nJSwR3VGUjjIUyDQ==
+From:   "tip-bot2 for Jann Horn" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] objtool: Permit __kasan_check_{read,write} under UACCESS
+Cc:     Jann Horn <jannh@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="E/DnYTRukya0zdZ1"
-Content-Disposition: inline
-In-Reply-To: <20201004133114.845230-1-pgwipeout@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Message-ID: <160191290839.7002.472467128792746457.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the objtool/core branch of tip:
 
---E/DnYTRukya0zdZ1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     b0b8e56b82c06b3bb6e5fb66d0e9c9c3fd3ce555
+Gitweb:        https://git.kernel.org/tip/b0b8e56b82c06b3bb6e5fb66d0e9c9c3fd3=
+ce555
+Author:        Jann Horn <jannh@google.com>
+AuthorDate:    Tue, 29 Sep 2020 00:49:16 +02:00
+Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
+CommitterDate: Fri, 02 Oct 2020 09:28:08 -05:00
 
-On Sun, Oct 04, 2020 at 01:31:11PM +0000, Peter Geis wrote:
-> Good Day,
->=20
-> This series introduces upstream kernel support for the Ouya game console =
-device. Please review and apply. Thank you in advance.
->=20
-> Changelog:
-> v3: - Reorder aliases per Dmitry Osipenko's review.
->     - Add sdio clocks per Dmitry Osipenko's review.
->     - Add missing ti sleep bits per Dmitry Osipenko's review.
->     - Enable lp1 sleep mode.
->     - Fix bluetooth comment and add missing power supplies.
->=20
-> v2: - Update pmic and clock handles per Rob Herring's review.
->     - Add acks from Rob Herring to patch 2 and 3.
->=20
-> Peter Geis (3):
->   ARM: tegra: Add device-tree for Ouya
->   dt-bindings: Add vendor prefix for Ouya Inc.
->   dt-bindings: ARM: tegra: Add Ouya game console
->=20
->  .../devicetree/bindings/arm/tegra.yaml        |    3 +
->  .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
->  arch/arm/boot/dts/Makefile                    |    3 +-
->  arch/arm/boot/dts/tegra30-ouya.dts            | 4511 +++++++++++++++++
->  4 files changed, 4518 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
+objtool: Permit __kasan_check_{read,write} under UACCESS
 
-This looks good to me and I see that Dmitry is happy with it. I'll make
-a mental note to apply it after the merge window closes.
+Building linux-next with JUMP_LABEL=3Dn and KASAN=3Dy, I got this objtool
+warning:
 
-Thanks,
-Thierry
+arch/x86/lib/copy_mc.o: warning: objtool: copy_mc_to_user()+0x22: call to
+__kasan_check_read() with UACCESS enabled
 
---E/DnYTRukya0zdZ1
-Content-Type: application/pgp-signature; name="signature.asc"
+What happens here is that copy_mc_to_user() branches on a static key in a
+UACCESS region:
 
------BEGIN PGP SIGNATURE-----
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 __uaccess_begin();
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (static_branch_unlikely(&copy_mc_fragile_key))
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D copy_mc_fragi=
+le(to, from, len);
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D copy_mc_generic(to, from, len);
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 __uaccess_end();
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl97QB0ACgkQ3SOs138+
-s6EFEw/+K4KzjvNDPMR+5dTRN9MEJ4KjDsLvb06WkHnrDB6sopAoMMgGW8g/Jdf7
-TJZlUz0HcYnuAdwfETulI1PL5R2InsZL+cIyKy0o/naiUw6Y94SJhV/cufh2KkKK
-aUXsFJw/9OR6f7l/olzXYvRTmh2+Qv9xlo7RJdMZnqSYcp/ZfRYw+530f/20VySS
-06ib8XLpwLyeVWOlUv3+8CGg8YHaPAaXNlCpEkLULLd8ZYDCnJfRlVsN8G1bJxOY
-qxaZkKSReTggvajwvi6P/pAPtiGRaOJfGjVlGiPSzoIvgSBFQnsEZkolydg0FzqA
-1QOvPhjdW9HbiBtUGpEtFCiZySMBq/V/sEmKIreeZnlLkNSUTTirydJDOo8NsvNb
-6BDAIfO2REUEJ8gmk2VvplBg18VVr3muzuKYRFDFpIgSB8dILjjCL4+LrtslsEKQ
-UBuPceLCTTkwl6+ntzIV4ODtJfx2qRFTSVDZpRmemK1GdC6K+rIaQJqDViN/Vvyd
-6ooJ+KcxbhkBYcE1QGhiImwovoz8APsOJqq4SPE4pJdK61UPkAzGf2Vemszs+8pk
-wJikQzHqDn0JJPZO7xR6Vcp5fHeMTFqz1YtoFXh2lZmo0LsbwJ7TN70804YIF9Ax
-3VWwoFmTiJ21y39PxCZxEczrBap8jsPbT7EViYD5tMz8sKhfuJc=
-=cAxQ
------END PGP SIGNATURE-----
+and the !CONFIG_JUMP_LABEL version of static_branch_unlikely() uses
+static_key_enabled(), which uses static_key_count(), which uses
+atomic_read(), which calls instrument_atomic_read(), which uses
+kasan_check_read(), which is __kasan_check_read().
 
---E/DnYTRukya0zdZ1--
+Let's permit these KASAN helpers in UACCESS regions - static keys should
+probably work under UACCESS, I think.
+
+PeterZ adds:
+
+  It's not a matter of permitting, it's a matter of being safe and
+  correct. In this case it is, because it's a thin wrapper around
+  check_memory_region() which was already marked safe.
+
+  check_memory_region() is correct because the only thing it ends up
+  calling is kasa_report() and that is also marked safe because that is
+  annotated with user_access_save/restore() before it does anything else.
+
+  On top of that, all of KASAN is noinstr, so nothing in here will end up
+  in tracing and/or call schedule() before the user_access_save().
+
+Signed-off-by: Jann Horn <jannh@google.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/check.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 2df9f76..3d14134 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -583,6 +583,8 @@ static const char *uaccess_safe_builtin[] =3D {
+ 	"__asan_store4_noabort",
+ 	"__asan_store8_noabort",
+ 	"__asan_store16_noabort",
++	"__kasan_check_read",
++	"__kasan_check_write",
+ 	/* KASAN in-line */
+ 	"__asan_report_load_n_noabort",
+ 	"__asan_report_load1_noabort",
