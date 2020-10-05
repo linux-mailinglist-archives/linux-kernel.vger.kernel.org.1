@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43FA2833E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BE52833E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgJEKQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:16:44 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49936 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEKQn (ORCPT
+        id S1725994AbgJEKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:16:51 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:40039 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJEKQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:16:43 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095AGcYj102005;
-        Mon, 5 Oct 2020 05:16:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601892998;
-        bh=BIrAyC/UllJ2D7vPxFH2SxwI4Y1wK41La+DILzDaZXg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=i3Fi3UA4zcaZl2QMUO/HHF4fp7UWhw8/fZwhZxX9UXbiv4M6ifiJ79W2PjUjOs+74
-         bcXYZjQotAhH/8FmAJAn8HpqWyApLd6HCRtakxClDGRLa7z7vmIsbpqkbMNLzuuH5B
-         bw6xGHxa2SN3PGPO7JwEIld8TJfkd8LC8LOeTW6o=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095AGcug018599
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 5 Oct 2020 05:16:38 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 05:16:38 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 05:16:38 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095AGZrs103006;
-        Mon, 5 Oct 2020 05:16:35 -0500
-Subject: Re: [PATCH net-next 0/8] net: ethernet: ti: am65-cpsw: add multi port
- support in mac-only mode
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Murali Karicheri <m-karicheri2@ti.com>
-References: <20201001105258.2139-1-grygorii.strashko@ti.com>
- <20201001160847.3b5d91f1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <c758885c-6834-e689-2356-81291e4628e8@ti.com>
- <20201002160421.59363229@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201002160752.1166cffe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <c67c1bb3-b71e-848a-7c03-f68830605dee@ti.com>
-Date:   Mon, 5 Oct 2020 13:16:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Oct 2020 06:16:49 -0400
+X-Greylist: delayed 7303 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 06:16:48 EDT
+X-Originating-IP: 50.39.163.217
+Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3C0DD20009;
+        Mon,  5 Oct 2020 10:16:42 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 03:16:41 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201005101641.GA516771@localhost>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
+ <20201005081454.GA493107@localhost>
+ <20201005094601.GB4225@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20201002160752.1166cffe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005094601.GB4225@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 03/10/2020 02:07, Jakub Kicinski wrote:
-> On Fri, 2 Oct 2020 16:04:21 -0700 Jakub Kicinski wrote:
->> On Fri, 2 Oct 2020 12:56:43 +0300 Grygorii Strashko wrote:
->>> On 02/10/2020 02:08, Jakub Kicinski wrote:
->>>> On Thu, 1 Oct 2020 13:52:50 +0300 Grygorii Strashko wrote:
->>>>> This series adds multi-port support in mac-only mode (multi MAC mode) to TI
->>>>> AM65x CPSW driver in preparation for enabling support for multi-port devices,
->>>>> like Main CPSW0 on K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
->>>>>
->>>>> The multi MAC mode is implemented by configuring every enabled port in "mac-only"
->>>>> mode (all ingress packets are sent only to the Host port and egress packets
->>>>> directed to target Ext. Port) and creating separate net_device for
->>>>> every enabled Ext. port.
->>>>
->>>> Do I get it right that you select the mode based on platform? Can the
->>>> other mode still be supported on these platforms?
->>>>
->>>> Is this a transition to normal DSA mode where ports always have netdevs?
->>>
->>> The idea here is to start in multi mac mode by default, as we still
->>> have pretty high demand for this. Then, and we are working on it, the
->>> switchdev mode is going to be introduces (not DSA). The switch
->>> between modes will happen by using devlink option - the approach is
->>> similar to what was used for Sitara CPSW cpsw_new.c driver [1].
->>
->> What's unclear from the patches is whether the default configuration
->> for already supported platforms will change?
->>
->> All the patches sound like they are "in preparation for support of K3
->> J721E" etc. So this is just code restructuring with no user-visible
->> changes?
+On Mon, Oct 05, 2020 at 11:46:01AM +0200, Jan Kara wrote:
+> On Mon 05-10-20 01:14:54, Josh Triplett wrote:
+> > Ran into an ext4 regression when testing upgrades to 5.9-rc kernels:
+> > 
+> > Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
+> > ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
+> > with intentionally overlapping bitmap blocks.
+> > 
+> > On an always-read-only filesystem explicitly marked with
+> > EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
+> > point all the block and inode bitmaps to a single block of all 1s,
+> > because a read-only filesystem will never allocate or free any blocks or
+> > inodes.
+> > However, after that commit, the block validity check rejects such
+> > filesystems with -EUCLEAN and "failed to initialize system zone (-117)".
+> > This causes systems that previously worked correctly to fail when
+> > upgrading to v5.9-rc2 or later.
+> > 
+> > This was obviously a bugfix, and I'm not suggesting that it should be
+> > reverted; it looks like this effectively worked by accident before,
+> > because the block_validity check wasn't fully functional. However, this
+> > does break real systems, and I'd like to get some kind of regression fix
+> > in before 5.9 final if possible. I think it would suffice to make
+> > block_validity default to false if and only if
+> > EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS is set.
+> > 
+> > Does that seem like a reasonable fix?
 > 
-> Another way of putting the question perhaps would be - is num_ports
-> always 1 for existing platforms?
-> 
+> Well, but EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS is your internal feature
+> that's not present in current upstream kernel AFAICS.
 
-Yes. Sorry for confusion - all now supported K3 CPSW instances have 1 external port and
-these changes should not have affect on them.
+It isn't "my" feature; the value for
+EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS is defined in the headers in the
+e2fsprogs tree. The kernel currently does absolutely nothing with it,
+nor did it previously need to; it's just an RO_COMPAT feature which
+ensures that the kernel can only mount the filesystem read-only. The
+point is that an always-read-only filesystem will never change the block
+or inode bitmaps, so ensuring they don't overlap is unnecessary (and
+harmful).
 
--- 
-Best regards,
-grygorii
+I only added EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS to the header to
+generate the corresponding ext4_has_feature_shared_blocks function.
+
+I have filesystems that previous kernels mounted and worked with just
+fine, and new kernels reject. That seems like a regression to me. I'm
+suggesting the simplest possible way I can see to fix that regression.
+
+Another approach would be to default block_validity to false for any
+read-only filesystem mount (since it won't be written to), but that
+seemed like it'd be more invasive; I was going for a more minimal
+change.
