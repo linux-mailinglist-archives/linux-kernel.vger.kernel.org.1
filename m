@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBAF2833A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F59B2833AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgJEJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgJEJxz (ORCPT
+        id S1725947AbgJEJy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:54:28 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:33567 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725914AbgJEJy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:53:55 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40761C0613CE;
-        Mon,  5 Oct 2020 02:53:55 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id u21so11016048eja.2;
-        Mon, 05 Oct 2020 02:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tSNvIJ6n/8PydPpekJ3sBZyLSmyQXmedjUmwZXMurMo=;
-        b=WCC2gEffyxEhzVrQNJMtnmNTSoUUlpfjFkvf9eRqLzEJ9LA0ehw10XSgqvJx76A3ip
-         kUazxGYkWWM0N7bRnnWYWQlXKslfVFRf4wvmPEK2JSFJIEfYoHnv9wlqtT/5h8h1KDEj
-         qkxF1atxUk2xVIUzKvp0v+ORc4LYFEihJ+chWpuQtb3nFFQYZ8Lv1REbPLvp8jPlSM/o
-         JjTJyceLbPgYy3s3ae88L6ngca5cL88GCs6eBAVJ8+DatuXO6dQYoZkO8ksmKthOuA8k
-         d+wBWlESELfkIhwLFeIJYwRskd3V37LRuVyNmc5+OwBWpFN3r+vcYjH2eiMyniU4/PuM
-         hLcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tSNvIJ6n/8PydPpekJ3sBZyLSmyQXmedjUmwZXMurMo=;
-        b=ZJJacbcgznomMW0MRFdGKqv/HaDjTK4z7pFLMg0Os5YYZUS7/STY4X2Ap/ePUzV8ba
-         NVDF8iNUeMWM2ld5865HYRHCzJMh9xLZgfPIiN+IkDVjAP1Vq+JwGL+n7cQwvzKq8pNk
-         3hWZPleCWIFjhky6ych7PQCIm2GV2ab4mY7a+FFFyruz1//Ungwjc9r0eikUUCPbRu3W
-         YS8NSTJH4YSEpWE6a/d25YW6dHMKWGxPauSSDUBw+lkjwLINYGYkABA0gdyVRKB5c00/
-         +8y1r2Z7cHrR8OnEigNT5F6pbu89l0Pjre0lCOlbCqIxw0nC45Ju7GE9lSGxXQoFsY6L
-         btBA==
-X-Gm-Message-State: AOAM533sZnM2Y94oFScv5GLalLbNZyrkflMeBOU9b5PgY/u2nmd760Cm
-        2+arAxBR9/PpBxEoMd+mg/mUcxIBYnE=
-X-Google-Smtp-Source: ABdhPJxgzAOZ4Qeah+nCeFuiSWn88H4ILEdKN/5a6C7QNL1MKO0q6rEqKvyjihuNnGDqmUMjqS+F8g==
-X-Received: by 2002:a17:907:7215:: with SMTP id dr21mr14431042ejc.239.1601891633938;
-        Mon, 05 Oct 2020 02:53:53 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id x2sm8286307edr.65.2020.10.05.02.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:53:52 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:53:51 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-Message-ID: <20201005095351.GI425362@ulmo>
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
- <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
- <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
+        Mon, 5 Oct 2020 05:54:28 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 45C385C0134;
+        Mon,  5 Oct 2020 05:54:27 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 05:54:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=NEXXz0XWlTZiojHNQZwM3xMl3xD
+        6YBVV2lteJc7KS8E=; b=u6sqDfvorC1NsWeqC/FKPDc+tdazdKlqZ42RWHSDggf
+        MFGvfsf+YJIEycWcguOrFuM9c1+vDHdbvMnNXtRYyNQTM5Pyu6OyxI6aIs0a8any
+        3qPPhsdGFdYMebbSvd3qcNzyZ5t8tjTP+RKo1L1QqRD46qTGXDJlY2eobYuEt7jX
+        z8gGsBF4gV1s5pDTVYhdIyI9k//6VQ3EC6BvGNaTFQvx/Xlqqpi6Sy/SOOra0FfK
+        LGXrwg7Xeq6aAxZPKYB1g0lT31imCbdxKWX2/H/HBNkxJmXMuwanuFAjuFIlxOUy
+        hbZeOk3Sv7l8mQfJPKm47/kIqzG/N9KxHXPpZttZ2Kg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NEXXz0
+        XWlTZiojHNQZwM3xMl3xD6YBVV2lteJc7KS8E=; b=DLKEkhwqAtW1uS1zJza/qB
+        yly2MNJ1YOgyKGylqJoWhEAdGkH4N84FfUgXXiCrruVASa7ujx3m/rH74NrVpk62
+        9ITKSK8YDQ8cpaI+zVGjtSu3O5bbCVUrrjaeRNnz/SrqK06Cmudq/hNaO9fCd8aA
+        1myLpMHWatssBErRdIBsfhzR3v8DRjxM977V64Gq0WnJ2Byf0VErWBEiPjRSLj+a
+        pqICxm0Cc9Sm9ymVsijncDBDW76PPCkAKm1T5zP7hdws7ug4gUIF7OnXkbennZSa
+        YggNILkGEXe1uL/Ojlioy/fji2/YB7aLntiaIoC6vI4MgdK84PRyMFQdO5m9P6+Q
+        ==
+X-ME-Sender: <xms:U-16X7YH0JS0XGYRYC_83frwQhlvmqlvRngmf4SlgNEXgqeVG2FmZg>
+    <xme:U-16X6boPnuf_G-3Ksb1-UY70xG2OGVgQtM-mHI6N_kbS64wEPTSRI0t8NbK5Op7g
+    6mkdDsvAEVscwlZtew>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddvfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:U-16X9-KNmPv2EZ0NwFvO55SehWVzD5US_V_qgJdPZeJ-Yy0sZcHbA>
+    <xmx:U-16XxrndOufnx_s2_b1yqwIUK0OrBxXXuomO62-s2CYLlwZxuz9SA>
+    <xmx:U-16X2qGoxxK_IcGWM5yJ8zkC49WJZLWx65v3TOHEm20Pdy9qSkL7Q>
+    <xmx:U-16X2Loa2ao4oWTK1NMjCox0QyTeLesSve_F7vg6idv4PRidpuoXg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B5AB2306467E;
+        Mon,  5 Oct 2020 05:54:26 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 11:54:25 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/25] ASoC: sun8i-codec: Swap module clock/reset
+ dependencies
+Message-ID: <20201005095425.uqpd6fn3bmcqmj2u@gilmour.lan>
+References: <20201001021148.15852-1-samuel@sholland.org>
+ <20201001021148.15852-3-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FUFe+yI/t+r3nyH4"
+        protocol="application/pgp-signature"; boundary="ajk663v4iqcqgffc"
 Content-Disposition: inline
-In-Reply-To: <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201001021148.15852-3-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---FUFe+yI/t+r3nyH4
-Content-Type: text/plain; charset=utf-8
+--ajk663v4iqcqgffc
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 02, 2020 at 05:50:08PM +0300, Dmitry Osipenko wrote:
-> 02.10.2020 17:22, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>  static int tegra_smmu_of_xlate(struct device *dev,
-> >>  			       struct of_phandle_args *args)
-> >>  {
-> >> +	struct platform_device *iommu_pdev =3D of_find_device_by_node(args->=
-np);
-> >> +	struct tegra_mc *mc =3D platform_get_drvdata(iommu_pdev);
-> >>  	u32 id =3D args->args[0];
-> >> =20
-> >> +	of_node_put(args->np);
-> >> +
-> >> +	if (!mc || !mc->smmu)
-> >> +		return -EPROBE_DEFER;
-> > platform_get_drvdata(NULL) will crash.
-> >=20
+On Wed, Sep 30, 2020 at 09:11:25PM -0500, Samuel Holland wrote:
+> This matches the module power-up/down sequence from the vendor's driver.
 >=20
-> Actually, platform_get_drvdata(NULL) can't happen. I overlooked this.
+> While updating these widgets/routes, reorder them to match the register
+> and bit layout of the hardware. This puts them in the same place in the
+> widget and route arrays (previously they were at opposite ends), and it
+> makes it easier to track which parts of which registers are implemented.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 
-How so? It's technically possible for the iommus property to reference a
-device tree node for which no platform device will ever be created, in
-which case of_find_device_by_node() will return NULL. That's very
-unlikely and perhaps worth just crashing on to make sure it gets fixed
-immediately.
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Thierry
+Maxime
 
---FUFe+yI/t+r3nyH4
+--ajk663v4iqcqgffc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl967S8ACgkQ3SOs138+
-s6G50A/8CC2aziQWFWKu9/zGjy1UbL+zP8uXbPn3wZVQnWQ8kjRE5ip/HSI1QS+i
-sgafB0As25F0ajenDbidZFp0nJiZvFRlD3VQT6bj+5XwoxI7vA0Uzu5UiXLmxCXU
-CYA2NJZ/g6uCJ3ptk52YbG2gt1J49/GhgFuCPCaBxV2c8gIwo0eVs4daocjvK1mQ
-XqL7Nci3UcsY1oDgNnzzQAyUQ4ZEpEHdFzLUd9CSNZBxGDXA26d3J+RgJGXlnXbv
-eus6PtalK5okgodgvY60KLzyci/3Ph3k1aHJFNou0lmNxyJYW0PXTOVk5fn/wxY4
-E8rcGiUyNSmYxcZ9KVYr/EXhYW+ECM9drCGL1pM6InKeDtxa67vhOeW4RdbiGdzt
-/RjoUqPTUB4JYihBxpvkhUtYVZe4vtM+E3clPdKAqVig6pfZk5nacAPXj7KeJmNz
-2QNydAPLaBNiOclO7x1hneV9xHf0UBmp/Gp1P1OmaRe/eJ9bk8uymQVyG4QiX4MS
-dGPNMhW0lYgwy+a0K9omgh5RIInTaJpjIC5A9Z5N1um3sByGsk5HavPQHlZSqNjN
-CytLUR5MaSs0Zsfn/1OxszZtr1J/Kor3CC8Qxlv0pxQN1xSidAT7sWwL5ObEgHKt
-FoXOhaIeBvMp1DxmN6BHUDxA/p+Luf1GxGgZjsWIp4WUzw6XNNc=
-=0Ryz
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rtUQAKCRDj7w1vZxhR
+xUBXAP4pHOdiB4ixCet41wFB1s8FTReQl6H2FtLwlw4PVDJrLwD8Ckm37XYge5Iv
+yBhx2mCwvaPJqijjiVM8OsttbXY/AAI=
+=uAAt
 -----END PGP SIGNATURE-----
 
---FUFe+yI/t+r3nyH4--
+--ajk663v4iqcqgffc--
