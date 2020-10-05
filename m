@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CE2283D54
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA14283D55
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgJERcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:32:31 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54042 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgJERca (ORCPT
+        id S1728291AbgJERdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:33:07 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:35418 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726727AbgJERdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:32:30 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C4C771C0B76; Mon,  5 Oct 2020 19:32:27 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 19:32:27 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     ultracoolguy@tutanota.com
-Cc:     Alexander Dahl <post@lespocky.de>, Dmurphy <dmurphy@ti.com>,
-        Marek Behun <kabel@blackhole.sk>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux Leds <linux-leds@vger.kernel.org>
-Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
-Message-ID: <20201005173227.GA6431@duo.ucw.cz>
-References: <MIiYgay--3-2@tutanota.com>
- <20201005141334.36d9441a@blackhole.sk>
- <MIt2NiS--3-2@tutanota.com>
- <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com>
- <MItBqjy--3-2@tutanota.com>
- <966c3f39-1310-dd60-6f33-0d9464ed2ff1@ti.com>
- <MItOR9Z--3-2@tutanota.com>
- <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de>
- <MItjEho--3-2@tutanota.com>
+        Mon, 5 Oct 2020 13:33:07 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kPUM6-0000l1-SW; Mon, 05 Oct 2020 13:32:58 -0400
+Message-ID: <8b68bf5f6b041a75a62a1908214279a45722dda6.camel@surriel.com>
+Subject: Re: [PATCH 0/2] mm,swap: skip swap readahead for instant IO (like
+ zswap)
+From:   Rik van Riel <riel@surriel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@fb.com, niketa@fb.com, sjenning@redhat.com,
+        ddstreet@ieee.org, konrad.wilk@oracle.com, hannes@cmpxchg.org
+Date:   Mon, 05 Oct 2020 13:32:58 -0400
+In-Reply-To: <20200922101250.527d9e676fefbb4c8d0cd5b9@linux-foundation.org>
+References: <20200922020148.3261797-1-riel@surriel.com>
+         <20200922101250.527d9e676fefbb4c8d0cd5b9@linux-foundation.org>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-1HlrNNuV+v0YHd1dQ6AW"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-In-Reply-To: <MItjEho--3-2@tutanota.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+--=-1HlrNNuV+v0YHd1dQ6AW
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
-
-> Agh. I added the Signed-off-by in an earlier non-published version of the=
- commit, but forgot to add it back. But that doesn't really excuses me.
+On Tue, 2020-09-22 at 10:12 -0700, Andrew Morton wrote:
+> On Mon, 21 Sep 2020 22:01:46 -0400 Rik van Riel <riel@surriel.com>
+> wrote:
 >=20
-> I attached the (hopefully) final version of this patch.=A0 Pavel, I'll se=
-nd the struct rename separately after I submit this.=20
->
+> > Both with frontswap/zswap, and with some extremely fast IO devices,
+> > swap IO will be done before the "asynchronous" swap_readpage() call
+> > has returned.
+> >=20
+> > In that case, doing swap readahead only wastes memory, increases
+> > latency, and increases the chances of needing to evict something
+> > more
+> > useful from memory. In that case, just skip swap readahead.
+>=20
+> Any quantitative testing results?
 
-Thanks, I applied it with ... some tweaks. I hope I did not break it,
-and would not mind testing.
+I have test results with a real workload now.
 
-Best regards,
-								Pavel
-							=09
+Without this patch, enabling zswap results in about an=20
+8% increase in p99 request latency. With these patches,
+the latency penalty for enabling zswap is under 1%.
+
+Enabling zswap
+allows us to give the main workload a
+little more memory, since the spikes in memory demand
+caused by things like system management software no=20
+longer cause large latency issues.
 
 --=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+All Rights Reversed.
 
---RnlQjJ0d97Da+TV1
+--=-1HlrNNuV+v0YHd1dQ6AW
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3tYqwAKCRAw5/Bqldv6
-8mEcAKC6dPmboFy3vCmp1wUQGscDmLUoywCgkRW+rAF96cPV2rQ6MA0RQpUXisI=
-=GS5y
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl97WMoACgkQznnekoTE
+3oOuNAf/VvedH4o2JVSglsPQJhfZtcQGs3NKxtf4aeYMG6zaraNif96uDsLkPXg6
+FyglKUUold3TutubxTQCmlzaLg1Pzgd78Y5zjDrn1sUDgbADbIxBSYBrm9S092GE
+40JpStSZilhDIQmW/FL3GdIwiKgzrHZCRacKv0PWQiXZuWm15jLMPWX6RcnrGbQI
+ZKqGQ031JDlyvrUuHnOKvPAj1GkjLOcRbfv8HMbREGuExhUTMmEE5JB5t+GYYkzk
+0NV4kt2KWN0j2fV/h+qdXc04uVdljhb7I18ffoG4LV/lPUIRN47K+ljXwgkbVGPP
+H34Pi6YbUfgBwqEULfZfLxKW+BUUPw==
+=HycA
 -----END PGP SIGNATURE-----
 
---RnlQjJ0d97Da+TV1--
+--=-1HlrNNuV+v0YHd1dQ6AW--
+
