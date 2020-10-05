@@ -2,185 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBDE2838A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C142838A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgJEPAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:00:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:49822 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbgJEPA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:00:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFE17113E;
-        Mon,  5 Oct 2020 08:00:28 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5771D3F70D;
-        Mon,  5 Oct 2020 08:00:27 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 16:00:25 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
-Message-ID: <20201005150024.mchfdtd62rlkuh4s@e107158-lin.cambridge.arm.com>
-References: <20200930211723.3028059-1-robdclark@gmail.com>
- <20201002110105.e56qrvzoqfioi4hs@e107158-lin.cambridge.arm.com>
- <CAF6AEGvWMvZuy7CcGhzUSbwGtEkrNkzWHu_BN1cbdBJdZtvevA@mail.gmail.com>
+        id S1726686AbgJEPBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726337AbgJEPBG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:01:06 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770E7C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:01:04 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id kk9so5785820pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 08:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AwQgWzWi8pW4lGFBA/hNXn44tp/wqyyuzS23wCHudYY=;
+        b=hAHwiiCC0apGox5V3MaNpJ6GcRX5A0OUk7i3HfLE+C8KjaKKTVy/P/IA4tDtiRh9Zc
+         3iNvD2PYwpn/c0wO+7CGD0/4hC9S6ND2rPDZJGC3jsABHldNc8aZg+IWATL2qoCYxzcs
+         rfC6rCuQ2jlQEkVNyOR/4VAwpfrTsGq3d0Ox5KgP9pRUI0zaRSvMccqJ+/N9zo6ATpy5
+         3/l2oCcm0rJJ5ZaMwsVgig0mELBi25rEEIwpamTEUP8oS3aeSmOft09sArQhLRUnDGsD
+         kNFDM5LcuL8ePSFZ9NZpMC1TkTnNDDbI51rPy2oOpTaRPOSMpt6M4ZZrs2YWdVJw8adn
+         gGIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AwQgWzWi8pW4lGFBA/hNXn44tp/wqyyuzS23wCHudYY=;
+        b=NH7tYVcewODV1NY0uAyKKOMYTudtsDG7m4LHKA3QRfsR4dJVlvKRAgsd1QUCqCruiH
+         Jhr6f5aAHvVz6bOB50w2fyalo+rsc53xaXm4gP7Hu+1gL2ArTQ6AO4zJAPkFBurszkSl
+         CGbB9mP3YDIlIeBKAEl1bf4/6E6XerJEpCYV/3PZWjptg7in4ynH5n0XvBbl8tqh8On2
+         AO0dbLNM1QP2tNY4ZyDY5EVdGrOsvyX3GgbiOfbihKNOkePY6blB0IslD72wk0ZAhnwg
+         7qgmbBLNxYYe39epJy6gqeAjT0UFg/zQPpHUxxRstxnhqPRiL6r0mxYr28PtG8BPFDf6
+         XAKw==
+X-Gm-Message-State: AOAM532d0rtSVLd7fqocKFTVnHdt98R3bbd0Zj8F4DHR4GNhZ+io92lv
+        EjMnvJfY5t+3zJru/x+YqBFx4A==
+X-Google-Smtp-Source: ABdhPJy3LUQ3JCTsBXn9AQU01MEKNSmN2mgdKIpOoBvf8aESLBqoXITrHWbOLTTTIgwaaLejKrcr9g==
+X-Received: by 2002:a17:90a:a81:: with SMTP id 1mr267820pjw.174.1601910063866;
+        Mon, 05 Oct 2020 08:01:03 -0700 (PDT)
+Received: from localhost.localdomain (111-243-25-83.dynamic-ip.hinet.net. [111.243.25.83])
+        by smtp.gmail.com with ESMTPSA id c131sm227485pfc.46.2020.10.05.08.01.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Oct 2020 08:01:02 -0700 (PDT)
+From:   Chris Chiu <chiu@endlessos.org>
+X-Google-Original-From: Chris Chiu <chiu@endlessm.com>
+To:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Chiu <chiu@endlessos.org>
+Subject: [PATCH 1/3] rtlwifi: rtl8192se: remove duplicated legacy_httxpowerdiff
+Date:   Mon,  5 Oct 2020 23:00:48 +0800
+Message-Id: <20201005150048.4596-1-chiu@endlessm.com>
+X-Mailer: git-send-email 2.21.1 (Apple Git-122.3)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGvWMvZuy7CcGhzUSbwGtEkrNkzWHu_BN1cbdBJdZtvevA@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+CC Steve and Peter - they might be interested.
+From: Chris Chiu <chiu@endlessos.org>
 
-On 10/02/20 11:07, Rob Clark wrote:
-> On Fri, Oct 2, 2020 at 4:01 AM Qais Yousef <qais.yousef@arm.com> wrote:
-> >
-> > On 09/30/20 14:17, Rob Clark wrote:
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > The android userspace treats the display pipeline as a realtime problem.
-> > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > that I found.)
-> > >
-> > > But this presents a problem with using workqueues for non-blocking
-> > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > preempt the worker.  Which is not really the outcome you want.. once
-> > > the required fences are scheduled, you want to push the atomic commit
-> > > down to hw ASAP.
-> >
-> > For me thees 2 properties
-> >
-> >         1. Run ASAP
-> >         2. Finish the work un-interrupted
-> >
-> > Scream the workers need to be SCHED_FIFO by default. CFS can't give you these
-> > guarantees.
-> 
-> fwiw, commit_work does sleep/block for some time until fences are
-> signalled, but then once that happens we want it to run ASAP,
-> preempting lower priority SCHED_FIFO.
-> 
-> >
-> > IMO using sched_set_fifo() for these workers is the right thing.
-> >
-> 
-> Possibly, but we still have limited prioritization options (ie. not
-> enough) to set these from the kernel.  Giving userspace the control,
-> so it can pick sensible priorities for commit_work and vblank_work,
-> which fits in with the priorities of the other userspace threads seems
-> like the sensible thing.
+The legacy_httxpowerdiff in rtl8192se is pretty much the same as
+the legacy_ht_txpowerdiff for other chips. Use the same name to
+keep the consistency.
 
-The problem is that the kernel can run on all types of systems. It's impossible
-to pick one value that fits all. Userspace must manage these priorities, and
-you can still export the TID to help with that.
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+---
+ drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c | 2 +-
+ drivers/net/wireless/realtek/rtlwifi/rtl8192se/rf.c | 2 +-
+ drivers/net/wireless/realtek/rtlwifi/wifi.h         | 1 -
+ 3 files changed, 2 insertions(+), 3 deletions(-)
 
-But why do you need several priorities in your pipeline? I would have thought
-it should execute each stage sequentially and all tasks running at the same RT
-priority is fine.
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
+index 81313e0ca834..0cdcddfebca9 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
+@@ -1906,7 +1906,7 @@ static void _rtl92se_read_adapter_info(struct ieee80211_hw *hw)
+ 	 * index diff of legacy to HT OFDM rate. */
+ 	tempval = hwinfo[EEPROM_RFIND_POWERDIFF] & 0xff;
+ 	rtlefuse->eeprom_txpowerdiff = tempval;
+-	rtlefuse->legacy_httxpowerdiff =
++	rtlefuse->legacy_ht_txpowerdiff =
+ 		rtlefuse->txpwr_legacyhtdiff[RF90_PATH_A][0];
+ 
+ 	RTPRINT(rtlpriv, FINIT, INIT_TXPOWER,
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/rf.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/rf.c
+index a37855f57e76..54576566083c 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/rf.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/rf.c
+@@ -25,7 +25,7 @@ static void _rtl92s_get_powerbase(struct ieee80211_hw *hw, u8 *p_pwrlevel,
+ 
+ 	/* We only care about the path A for legacy. */
+ 	if (rtlefuse->eeprom_version < 2) {
+-		pwrbase0 = pwrlevel[0] + (rtlefuse->legacy_httxpowerdiff & 0xf);
++		pwrbase0 = pwrlevel[0] + (rtlefuse->legacy_ht_txpowerdiff & 0xf);
+ 	} else {
+ 		legacy_pwrdiff = rtlefuse->txpwr_legacyhtdiff
+ 						[RF90_PATH_A][chnl - 1];
+diff --git a/drivers/net/wireless/realtek/rtlwifi/wifi.h b/drivers/net/wireless/realtek/rtlwifi/wifi.h
+index 13421cf2d201..0a516c3c7cea 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/wifi.h
++++ b/drivers/net/wireless/realtek/rtlwifi/wifi.h
+@@ -1966,7 +1966,6 @@ struct rtl_efuse {
+ 
+ 	u8 txpwr_safetyflag;			/* Band edge enable flag */
+ 	u16 eeprom_txpowerdiff;
+-	u8 legacy_httxpowerdiff;	/* Legacy to HT rate power diff */
+ 	u8 antenna_txpwdiff[3];
+ 
+ 	u8 eeprom_regulatory;
+-- 
+2.20.1
 
-On SMP priorities matter once you've overcomitted the systems. You need to have
-more RT tasks running than CPUs for priorities to matter. It seems you have
-a high count of RT tasks in your system?
-
-I did some profiles on Android and found that being overcomitted is hard. But
-that was a while ago.
-
-> 
-> > >
-> > > But the decision of whether commit_work should be RT or not really
-> > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > pipeline, commit_work() should remain SCHED_NORMAL.
-> >
-> > I'm not sure I agree with this. I think it's better to characterize tasks based
-> > on their properties/requirements rather than what the rest of the userspace is
-> > using.
-> 
-> I mean, the issue is that userspace is already using a few different
-> rt priority levels for different SF threads.  We want commit_work to
-
-Why are they at different priorities? Different priority levels means that some
-of them have more urgent deadlines to meet and it's okay to steal execution
-time from lower priority tasks. Is this the case?
-
-RT planning and partitioning is not easy task for sure. You might want to
-consider using affinities too to get stronger guarantees for some tasks and
-prevent cross-talking.
-
-> run ASAP once fences are signalled, and vblank_work to run at a
-> slightly higher priority still.  But the correct choice for priorities
-> here depends on what userspace is using, it all needs to fit together
-> properly.
-
-By userspace here I think you mean none display pipeline related RT tasks that
-you need to coexit with and could still disrupt your pipeline?
-
-Using RT on Gerneral Purpose System is hard for sure. One of the major
-challenge is that there's no admin that has full view of the system to do
-proper RT planning.
-
-We need proper RT balancer daemon that helps partitioning the system for
-multiple RT apps on these systems..
-
-> 
-> >
-> > I do appreciate that maybe some of these tasks have varying requirements during
-> > their life time. e.g: they have RT property during specific critical section
-> > but otherwise are CFS tasks. I think the UI thread in Android behaves like
-> > that.
-> >
-> > It's worth IMO trying that approach I pointed out earlier to see if making RT
-> > try to pick an idle CPU rather than preempt CFS helps. Not sure if it'd be
-> > accepted but IMHO it's a better direction to consider and discuss.
-> 
-> The problem I was seeing was actually the opposite..  commit_work
-> becomes runnable (fences signalled) but doesn't get a chance to run
-> because a SCHED_FIFO SF thread is running.  (Maybe I misunderstood and
-> you're approach would help this case too?)
-
-Ah okay. Sorry I got it the wrong way around for some reason. I thought this
-task is preempting other CFS-based pipelined tasks.
-
-So your system seems to be overcomitted. Is SF short for SufraceFlinger? Under
-what scenarios do you have many SurfaceFlinger tasks? On Android I remember
-seeing they have priority of 1 or 2.
-
-sched_set_fifo() will use priority 50. If you set all your pipeline tasks
-to this priority, what happens?
-
-> 
-> > Or maybe you can wrap userspace pipeline critical section lock such that any
-> > task holding it will automatically be promoted to SCHED_FIFO and then demoted
-> > to CFS once it releases it.
-> 
-> The SCHED_DEADLINE + token passing approach that the lwn article
-> mentioned sounds interesting, if that eventually becomes possible.
-> But doesn't really help today..
-
-We were present in the room with Alessio when he gave that talk :-)
-
-You might have seen Valentin's talk in LPC where he's trying to get
-proxy-execution into shape. Which is a pre-requisite to enable using of
-SCHED_DEADLINE for these scenarios. IIRC it should allow all dependent tasks to
-run from the context of the deadline task during the display pipeline critical
-section.
-
-By the way, do you have issues with SoftIrqs delaying your RT tasks execution
-time?
-
-Thanks
-
---
-Qais Yousef
