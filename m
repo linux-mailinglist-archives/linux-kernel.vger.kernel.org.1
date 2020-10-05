@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F84328379F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A232837A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgJEOXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:23:52 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:50715 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726410AbgJEOXw (ORCPT
+        id S1726564AbgJEOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:25:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725903AbgJEOZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:23:52 -0400
-Received: (qmail 377763 invoked by uid 1000); 5 Oct 2020 10:23:51 -0400
-Date:   Mon, 5 Oct 2020 10:23:51 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Will Deacon <will@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201005142351.GB376584@rowland.harvard.edu>
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <20201004233146.GP29330@paulmck-ThinkPad-P72>
- <20201005023846.GA359428@rowland.harvard.edu>
- <20201005082002.GA23216@willie-the-truck>
- <20201005091247.GA23575@willie-the-truck>
+        Mon, 5 Oct 2020 10:25:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601907911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XyV5hB/0dQitvt3KevO7X3T92YrCjomOZnM1DMGfiBA=;
+        b=iq11V04vvP5dD5SQVluBgHGqHjogR5H2cBG0Yd8bpZqEu1lXvAJfO9zO6jy32Nzc8IeiTs
+        jKweP+7qwLICOM3IOhJanoBUhbNhXnsAhzpmcWpZaj+MYlV4XJSmA4LE4l+T5ijvSgveyT
+        ZzNeQI6vjKTc8GCGSwQ1hdUEuq7qcVg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-CH9R334rMsOsITQz4QhS3A-1; Mon, 05 Oct 2020 10:25:07 -0400
+X-MC-Unique: CH9R334rMsOsITQz4QhS3A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F2F085C708;
+        Mon,  5 Oct 2020 14:25:05 +0000 (UTC)
+Received: from treble (ovpn-119-43.rdu2.redhat.com [10.10.119.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 539B25C221;
+        Mon,  5 Oct 2020 14:24:15 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 09:23:53 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Matt Helsley <mhelsley@vmware.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Raphael Gault <raphael.gault@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] objtool: avoid ../ headers includes and name clashes
+Message-ID: <20201005142353.q5tcvw4vf4lgd37r@treble>
+References: <patch.git-cac1912eff37.your-ad-here.call-01601816519-ext-4857@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005091247.GA23575@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <patch.git-cac1912eff37.your-ad-here.call-01601816519-ext-4857@work.hours>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 10:12:48AM +0100, Will Deacon wrote:
-> On Mon, Oct 05, 2020 at 09:20:03AM +0100, Will Deacon wrote:
-> > On Sun, Oct 04, 2020 at 10:38:46PM -0400, Alan Stern wrote:
-> > > Considering the bug in herd7 pointed out by Akira, we should rewrite P1 as:
-> > > 
-> > > P1(int *x, int *y)
-> > > {
-> > > 	int r2;
-> > > 
-> > > 	r = READ_ONCE(*y);
-> > 
-> > (r2?)
-> > 
-> > > 	WRITE_ONCE(*x, r2);
-> > > }
-> > > 
-> > > Other than that, this is fine.
-> > 
-> > But yes, module the typo, I agree that this rewrite is much better than the
-> > proposal above. The definition of control dependencies on arm64 (per the Arm
-> > ARM [1]) isn't entirely clear that it provides order if the WRITE is
-> > executed on both paths of the branch, and I believe there are ongoing
-> > efforts to try to tighten that up. I'd rather keep _that_ topic separate
-> > from the "bug in herd" topic to avoid extra confusion.
+On Sun, Oct 04, 2020 at 03:05:42PM +0200, Vasily Gorbik wrote:
+> Doesn't this make it instantly obvious where are these files come from?
 > 
-> Ah, now I see that you're changing P1 here, not P0. So I'm now nervous
-> about claiming that this is a bug in herd without input from Jade or Luc,
-> as it does unfortunately tie into the definition of control dependencies
-> and it could be a deliberate choice.
+>  #include <objtool/warn.h>
+>  #include <arch/elf.h>
 
-I think you misunderstood.  The bug in herd7 affects the way it handles 
-P1, not P0.  With
+Indeed, this is a lot better!  If I'm not mistaken, this conflicts with
+your other series.  Would you mind rebasing this on top of the others?
 
-	r2 = READ_ONCE(*y);
-	WRITE_ONCE(*x, r2);
+-- 
+Josh
 
-herd7 generates a data dependency from the read to the write.  With
-
-	WRITE_ONCE(*x, READ_ONCE(*y));
-
-it doesn't generate any dependency, even though the code does exactly 
-the same thing as far as the memory model is concerned.  That's the bug 
-I was referring to.
-
-The failure to recognize the dependency in P0 should be considered a 
-combined limitation of the memory model and herd7.  It's not a simple 
-mistake that can be fixed by a small rewrite of herd7; rather it's a 
-deliberate choice we made based on herd7's inherent design.  We 
-explicitly said that control dependencies extend only to the code in the 
-branches of an "if" statement; anything beyond the end of the statement 
-is not considered to be dependent.
-
-Alan
