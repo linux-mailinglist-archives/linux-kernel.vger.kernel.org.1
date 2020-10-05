@@ -2,112 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D978C2833B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC1C2833B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgJEJ5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:57:22 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:50259 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725887AbgJEJ5W (ORCPT
+        id S1725984AbgJEJ57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgJEJ57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:57:22 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2E4035C011D;
-        Mon,  5 Oct 2020 05:57:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 05:57:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=jeiNWYte8XmCLmMRNCRlfoxJjvP
-        ZmkgA+c+vdcgDO8k=; b=ee6k2yLk+LyqQFCNR7n2ySYFmgbTiWzg/1WobbI2ep+
-        ySDdHMJrNFkrY0Jnmk1UsuridMyp0lO6Ni9yNxAYOjarhbn+jGbcaI39KVNYV7Eh
-        hbr8gd98odoo7bKDFAFAG8u6or0ygADt5xMu8p9zOqtdVw2GmBdHh9MrHzhzxCnv
-        PEuOVYOa5/khDKaogV2IiJgFqNa7lJ5LEACyk8xIDs+yu6f6O/KuM2ml6+zifZqQ
-        UXZ/BxvyBBj9ZKBYAzDg3Svua8V0PO4t+sqAPQmK6xLP0wt5zH5Zjq3/ttLCrD3F
-        K+wuwWh0PZJ5omDlDvw8dv6MtDdoCdfZdqiX9elgo6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jeiNWY
-        te8XmCLmMRNCRlfoxJjvPZmkgA+c+vdcgDO8k=; b=Jzj1oGX8BaQ38TxgfE3iY2
-        VepGaAr12WekXxuw0ieztCQGHv6LmDj3EEvRLeK8v+lNfPHyIN+ccUtlzenAvaNE
-        1QRXomf5i0wD6uqhQl0uvM7rdUTwkazQe7eRAo4/7V46vNO8n8rG+W5EmXHvgeWD
-        lJTpbmTG2kLcSryFXrkAc/U3M6lp4PJaMmD5blZZZDuTuu+GpQgkqJBWo++9Gobd
-        T/43l4OBI7iy6OtLvaMmNiySSKhO48iRJLgVr32uDrnjP9oBU6eOryVWjHqRhK79
-        QMjpY/AiPgag2adgx2sTe+5bQDOD7OfUtFb7eqVXx1Cz1TkXxbrVIbKdmWIiOaZA
-        ==
-X-ME-Sender: <xms:AO56X3YiP8oWXWBNNzH2fFPOz-m01jFBKr410357aRZ5fncUjlS95A>
-    <xme:AO56X2bMlTatmkvbufrbIQuuSwXtT0uKjnnYQgQXXAJk70jc_I5C4vRwA8441Z3m7
-    NvWF686Vxa8m_QS7DA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddvfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeefnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:AO56X58D1KxyK_RiWXekq1P28ReSfbvQd4Wibu1w7ZABg1T1JSZWxg>
-    <xmx:AO56X9rQ_Y5UUOKVEqQTzwg8aI05NLzj_WDY_f_GXXionkqqWgVNBQ>
-    <xmx:AO56XyqN8byaHVJBb1T4GZJgWpSiy2KZllBmC-LxV4MAxIMW7cZPEA>
-    <xmx:Ae56XyI8Q9iXvT4g1mOLxVJr6hi2ZoXISAykPVxgpCy-VWlvgmjO5w>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A4C1E3064610;
-        Mon,  5 Oct 2020 05:57:20 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 11:57:19 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/25] ASoC: sun8i-codec: Consistently name DAPM widgets
- and routes
-Message-ID: <20201005095719.7nkonjaeziyd4fld@gilmour.lan>
-References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-5-samuel@sholland.org>
+        Mon, 5 Oct 2020 05:57:59 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6525C0613CE;
+        Mon,  5 Oct 2020 02:57:58 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ce10so11013158ejc.5;
+        Mon, 05 Oct 2020 02:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=g7GU/AkNe3daV6icPj0oXO9lJvefNEYI/yjHaeqAgzE=;
+        b=gBUQ0LSt7aRNbGRSly36vsk68h5MeQHGUEn5PNiLM2tUNHqmKSTnY8ucIH9CGASvH9
+         rOJPQrzqJqSjm3vjFOrbslhgFs5YeoVz1zreVI5Gn6XBXNMw/d84OAP+qdX8kL/5r86P
+         7glbh+AwxUOSfftniDaU0W2qVJt5k9afxilwP9Vy1tLVYK/RQkv84fzXbQVBr5MHJcP1
+         dwD6ae8+OT4dchO1S0XKYhHRZLYJ9/gH4QQuuWa7PnLn9Xgc3BL298FJgx0vpPuMAIp6
+         vUWdisshy3dX91w/R534wVAH9qQmaRONx5nTE7PWr1p6CyyDHyGoPmcpaa+xkQj2n296
+         xiNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=g7GU/AkNe3daV6icPj0oXO9lJvefNEYI/yjHaeqAgzE=;
+        b=TXWIXNTve5F70zbxnEIElP/TO/fC889S3/UFVxn8IWsW5PsKseEZZ4DNk1wSKo59eB
+         buEDlhrIZyRdKGhq75nAPkcvNvIUKALk7LxjIuHJTqFBoVQaRmXbvJcIb3n4fazzRT68
+         ke1MvynGt/u4msegOEihmAfMHdibyqp8t9oHpJ0dd1ALHVHMeV2teLeM4L8EfL0pDWAI
+         hkv6NIRB3/qH6TJERaso2ETwCFoCTWltKPOcHdVxr+wZ8NDMskotQnQYp0+/szsAXJCY
+         KxjNEWgTDbNRSndvxX8OlfjTePxh2Qu7qf/VX9pVERA5ujzDbzCMMWwt/vrKTfjqtB4+
+         dV9g==
+X-Gm-Message-State: AOAM530dgE69OLngqH8lYI5RIw72lamdeG7jDl92ezeVOmMEJp2XQ4Zq
+        cGs4PHN8J+sEg0TDn3TNluTLTEaaAUU=
+X-Google-Smtp-Source: ABdhPJwE+3FLZlVeIjhlYl7qJ/LCobtIjgHrzHX4wuV+T11HeCElPqVpYQH4SuMwe2PbUJy/LNTACw==
+X-Received: by 2002:a17:906:8399:: with SMTP id p25mr14654502ejx.243.1601891877401;
+        Mon, 05 Oct 2020 02:57:57 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id q10sm5385858ejb.117.2020.10.05.02.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 02:57:56 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 11:57:54 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+Message-ID: <20201005095754.GJ425362@ulmo>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+ <5542b314-f414-1e83-8cf6-2bf22a41ae9c@gmail.com>
+ <20201002185828.GC29706@Asurada-Nvidia>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="veplexjr6kmshaoe"
+        protocol="application/pgp-signature"; boundary="fKov5AqTsvseSZ0Z"
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-5-samuel@sholland.org>
+In-Reply-To: <20201002185828.GC29706@Asurada-Nvidia>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---veplexjr6kmshaoe
-Content-Type: text/plain; charset=us-ascii
+--fKov5AqTsvseSZ0Z
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 09:11:27PM -0500, Samuel Holland wrote:
-> This cleans up the mixer widget names. The AIF1 AD0 Mixer names were
-> previously wrong -- they do not control the digital side of the ADC. The
-> DAC mixer widgets were not wrong, but they were verbose and did not
-> match the naming scheme of the other widgets.
+On Fri, Oct 02, 2020 at 11:58:29AM -0700, Nicolin Chen wrote:
+> On Fri, Oct 02, 2020 at 06:02:18PM +0300, Dmitry Osipenko wrote:
+> > 02.10.2020 09:08, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > >  static int tegra_smmu_of_xlate(struct device *dev,
+> > >  			       struct of_phandle_args *args)
+> > >  {
+> > > +	struct platform_device *iommu_pdev =3D of_find_device_by_node(args-=
+>np);
+> > > +	struct tegra_mc *mc =3D platform_get_drvdata(iommu_pdev);
+> > >  	u32 id =3D args->args[0];
+> > > =20
+> > > +	of_node_put(args->np);
+> >=20
+> > of_find_device_by_node() takes device reference and not the np
+> > reference. This is a bug, please remove of_node_put().
 >=20
-> The mixer controls are not renamed because they are exposed to
-> userspace.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Looks like so. Replacing it with put_device(&iommu_pdev->dev);
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Putting the put_device() here is wrong, though. You need to make sure
+you keep a reference to it as long as you keep accessing the data that
+is owned by it.
 
-Maxime
+Like I said earlier, this is a bit weird in this case because we're
+self-referencing, so iommu_pdev->dev is going to stay around as long as
+the SMMU is. However, it might be worth to properly track the lifetime
+anyway just so that the code can serve as a good example of how to do
+things.
 
---veplexjr6kmshaoe
+If you decide to go for the shortcut and not track this reference
+properly, then at least you need to add a comment as to why it is safe
+to do in this case. This ensures that readers are away of the
+circumstances and don't copy this bad code into a context where the
+circumstances are different.
+
+Thierry
+
+--fKov5AqTsvseSZ0Z
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rt/wAKCRDj7w1vZxhR
-xWniAQD5dzisALP1Tl/pOp1XFrNcyIPm590bbaTGMGrfaElJ0wEAmInRmA9Q9Ub6
-OLuQEDnFUgyCxQkMUSE4FCl+sAxDpwM=
-=oUY1
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl967iIACgkQ3SOs138+
+s6FMlQ/+PI2U3e9+14M09UT7Av+BBmD/Af5CKPGXxy5A3EG9pX97uPO6q6kt30/1
+5VnVWJnXCZESSl2ZFNwXcTOrSZ6Pre5QUH8LTM7TG+QcJH3bSn1wk7jZj6snYOto
+z9scPx+zNCqw1lyMbiEd+GkI5DVrrGM6qFH2wESur0ZNn4VUO//DWhOUH62uM1tc
+SuByO6o1fcf66jjb6AHwd79BaIXn6E7rKEdQpRFdTmFhZVxCae2fVeETtQ7IPhBL
+t4K5SBNjdv/2bD1GEKvOgt2ZufQGqkmB52cCW4FFvv+sSzi3nlv3c1W8hMWGgptA
+l/wCei1ZGNU0bwM/Vk+f+/LYjveIarkYsVmZOoamvcliCtnpmpkhznqJy2MJf5GV
+jqYQqzG8WyU0JW3vO6jqTz421YmNqajs82APyv7wHn5/Vq4oicDEh67RQvSqxzV5
+t1gnQaS19CsoB8TLDJE8VYUGnnZ5mxcNwE+P4dy65O21KmyzjJSkwmzSSfaGklG9
+6xLedqfYr2c1YkEiPjYrwpDuLa5ID7A9ohk8x4dkd2OCz/80f4QBnJNt7uv5la1N
+U91E6tJ2cLMkQdxP3RQatyYRlkZk/IQTwtQ9LwuQkAmB/PGb9HcfhGc7cPz2UPZA
+QQ8+ZwFqEJrHlmVudKnjX1HU+FRSvzu3ComceNZjbqXaEd+F9NU=
+=jGLH
 -----END PGP SIGNATURE-----
 
---veplexjr6kmshaoe--
+--fKov5AqTsvseSZ0Z--
