@@ -2,127 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DE52833A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1C82833A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgJEJvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEJvg (ORCPT
+        id S1726004AbgJEJxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:53:42 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:36569 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725930AbgJEJxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:51:36 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1A1C0613CE;
-        Mon,  5 Oct 2020 02:51:36 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id b12so8564008edz.11;
-        Mon, 05 Oct 2020 02:51:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xVMDpuwSWx9cJIlM4tDMXRAB/KMvl7kDIIAKzdiSpb0=;
-        b=ulY7zWOimlyfZyK6YnQOs4cmOYoADYddLaILjK5pufzyA382zlw9rdNAX+N/Pd7H1X
-         sfKQuvCMKDvRdReB3myjSx/7m9OcGYZKTJM8qbB5kWKcKsvbV3Q/OIdaUgUBVf6GPgrH
-         QZewG+v46kGHkOvRzctMTv1Qq0i3KqOo1dgLJql//ClV7OI06UJSBYqYaVbLzdumeRAo
-         luod2TT0oee/DTHpVwf6bKcUZpR7UtCKceoXtkZXSaB4fmtTsP8VpJSpqeC4kVSltyja
-         ANR9ooc77082cj4prqPq6KKkZWMYmWCiukGuaPOnevPY3oaAj/z547w6uBiobxnMq52c
-         Km+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xVMDpuwSWx9cJIlM4tDMXRAB/KMvl7kDIIAKzdiSpb0=;
-        b=WSMNL3IOKcFPKzsNhseaSiBaD/xj97gK4S+72K1dgn3DzBJNa6JSQesJeleey8VN9K
-         Glb/entdZju66YP8VQURkfoFxBnDl1FHYlulbyjR+zsBkLAxTJ+xxpwUznP5t1mFqQ4n
-         A7m9sgCkUDp3mFk0MOGSSphv75UOi93ZXwurDgqWJkLIxClxmM0PXjELh4H5ZCz36fHV
-         4KqxnKshsDCcH6Ba8x/yypRrIvfiOB32mx3e9vZSv3pgxq4MkpLVAHCFFBQuVEe422zB
-         m1dimwq3N49r3OjjR/oyaw44u7XjCEOtjuQCwF9lyToL5MO/WEqqZqWiUIsSbY3Gj4CF
-         U9DA==
-X-Gm-Message-State: AOAM533wh9zAeMpfm+WfUslrB5zieyYbye80HZCNPrXBjFcB0Pa1Ixra
-        qUo0enUQy0OYGdNMTknOrFU=
-X-Google-Smtp-Source: ABdhPJzBrcM6KDwh5g5wHr/FHftugh84YRErwAwekwNfMW9hAWTj3dDVrLQQ44bVLCxmS+IBaZaP3Q==
-X-Received: by 2002:a05:6402:b68:: with SMTP id cb8mr16580359edb.350.1601891494997;
-        Mon, 05 Oct 2020 02:51:34 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id k18sm7758003ejk.42.2020.10.05.02.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:51:33 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:51:32 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-Message-ID: <20201005095132.GH425362@ulmo>
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
- <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
+        Mon, 5 Oct 2020 05:53:41 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id BE5D75C00A8;
+        Mon,  5 Oct 2020 05:53:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 05:53:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=a3Kdh27qJh0L6hcJBNIfK8XDjWN
+        1U92ZxA5pBLTQkNQ=; b=RLVJ4IJRLOGpk+4jo7PUzRLm/3gU+V4Xxx6/IucSuD9
+        zqeTc3ftNPpBKSNzX2wpv3C8hOg1fC6DK5ptPMf1bODUIWoU4Puch/9rTNxl11bD
+        i6h3eIaX2WgdaVZPiIkYQCe/BDPakSBma85HkEXwpTVlvlXCqbWWl9p//y3ECsG5
+        jNN4BEwX6xn5CgomnpYPVO+LJfOGdH5G0QseQ0DtDWGovyfdVJrp7UfdttdC5ANf
+        uGrfwXaEENYUiKERnI02eYI/dGNoNV4U1wNqimwrZ3aJJNmWE4o3erz+VOkeiSkU
+        x/OiTvVRM/0X6s+FjnTsa1oH0Zn5zGpJ5q5EJMXaIuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=a3Kdh2
+        7qJh0L6hcJBNIfK8XDjWN1U92ZxA5pBLTQkNQ=; b=IfTt5C1EESiRAB5hH4okOj
+        LyXyyL+xSwHo/9Rf2OO7VlMIyuyBeWSDWOTA8kUC1dCBGSLj18NFycLmWzl6nIPu
+        PJs+xhCzNdCu5XCNL7YzhCPPWkzxTIv5I3AWobbU1KH1Gs+4azESwy1ozFBpEZK4
+        kWBaFegYKW/NSRo9ThrpgOMpkSbGLq8fmlGh2TJOHuJfTPejESghM4GAafWFZCLV
+        UulZHnffJs0ZqrSs/wUUj0lDEVjBbv2F8nHHNDoq3E4DzVlqSFE9dQxVYn9xkKQ9
+        VfGSJD3oaArY/YLg/5zCH5MFRVSSjfYW4AdLRxx00vM80C3WcKNXXxgLt7j/rPHw
+        ==
+X-ME-Sender: <xms:Iu16X8fIFhhZXtXT1g18RAqsFdOWuIdmZMeA0KSFc8VtXEapHUqP8g>
+    <xme:Iu16X-NigKuGwYkl2T7wEvc8T6NNq9H3H1Dy_pr8mmB-Om7usnljkm8vKpon3ovLe
+    mJvXJEx3KLv6CK_4f0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddvfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:Iu16X9hkJln9mreZ0CtghMaEIC0ib4qXENAa30kah66Mqeq-VZ7CFA>
+    <xmx:Iu16Xx9s9v8tfXYKzhDcU3N8n9bI8upZ7QcWenJNV5msNwZ9VgGc5A>
+    <xmx:Iu16X4un5ys88qxhXIXgpQUu8M3rWQb5RMhJMjt1i4m-xr9aeDZwMA>
+    <xmx:JO16X99rpG3kxR5j6COCt-nKwhCxeWEG7yT1eHOIvK9kZR-l72wEzQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 68B80328005A;
+        Mon,  5 Oct 2020 05:53:38 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 11:53:36 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/25] ASoC: sun8i-codec: Set up clock tree at probe time
+Message-ID: <20201005095336.wzvdfjg7tyipiblc@gilmour.lan>
+References: <20201001021148.15852-1-samuel@sholland.org>
+ <20201001021148.15852-2-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="a8sldprk+5E/pDEv"
+        protocol="application/pgp-signature"; boundary="bfbi64475avkiovi"
 Content-Disposition: inline
-In-Reply-To: <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201001021148.15852-2-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---a8sldprk+5E/pDEv
-Content-Type: text/plain; charset=utf-8
+--bfbi64475avkiovi
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 02, 2020 at 05:22:41PM +0300, Dmitry Osipenko wrote:
-> 02.10.2020 09:08, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >  static int tegra_smmu_of_xlate(struct device *dev,
-> >  			       struct of_phandle_args *args)
-> >  {
-> > +	struct platform_device *iommu_pdev =3D of_find_device_by_node(args->n=
-p);
-> > +	struct tegra_mc *mc =3D platform_get_drvdata(iommu_pdev);
-> >  	u32 id =3D args->args[0];
-> > =20
-> > +	of_node_put(args->np);
-> > +
-> > +	if (!mc || !mc->smmu)
-> > +		return -EPROBE_DEFER;
+On Wed, Sep 30, 2020 at 09:11:24PM -0500, Samuel Holland wrote:
+> The sun8i codec is effectively an on-die variant of the X-Powers AC100
+> codec. The AC100 can derive its clocks from either of two I2S master
+> clocks or an internal PLL. For the on-die variant, Allwinner replaced
+> the codec's own PLL with a connection to SoC's existing PLL_AUDIO, and
+> they connected both I2S MCLK inputs to the same source -- which happens
+> to be an integer divider from the same PLL_AUDIO.
 >=20
-> platform_get_drvdata(NULL) will crash.
+> So there's actually no clocking flexibility. To run SYSCLK at the
+> required rate, it must be run straight from the PLL. The only choice is
+> whether it goes through AIF1CLK or AIF2CLK. Since both run at the same
+> rate, the only effect of that choice is which field in SYS_SR_CTRL
+> (AIF1_FS or AIF2_FS) controls the system sample rate.
 >=20
-> > +	dev_iommu_priv_set(dev, mc->smmu);
+> Since AIFnCLK is required to bring up the corresponding DAI, and AIF1
+> (connected to the CPU) is used most often, let's use AIF1CLK as the
+> SYSCLK parent. That means we no longer need to set AIF2_FS.
 >=20
-> I think put_device(mc->dev) is missed here, doesn't it?
+> Since this clock tree never changes, we can program it from the
+> component probe function, instead of using DAPM widgets. The DAPM
+> widgets unnecessarily change clock parents when the codec goes in/out
+> of idle and the supply widgets are powered up/down.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 
-Yeah, I think we'd need that here, otherwise we'd be leaking a
-reference. Worse, even, mc->dev is the same device that owns the SMMU,
-so we're basically incrementing our own reference here and never
-releasing it. We also need that put_device(mc->dev) in the error case
-above because we already hold the reference there.
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Thierry
+Maxime
 
---a8sldprk+5E/pDEv
+--bfbi64475avkiovi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl967KQACgkQ3SOs138+
-s6EZ4w//XClEGoJOj1S9ALPjYnZ7yQN7pBPfwPv2qNVwYwkSXvNIRhLa4AfazRm5
-DCJCelfgkYONrrtuxyUSzatdpBNFuRFVKDUy3cBuZd/yXaDg83AXc3LWR99jKcNZ
-LWuszo33+o7JSwz2rlGBfOWG/pEIZ3ffkENDhsIFbuff0dyIpHcB6t4Bk9Oucaag
-cbQhJkfVYZXBbuz0qolfVkoxzbsYJ+HkWyYR6C2iFa46W4ed/uPAWj8y12nAJhMk
-rEazHONfPq5T2kup+r5rLMJgt+jCZ7ofsuR+PK7g5S6FIxyF4S3QTFmRvh7uFBSs
-JsmPElXPTcPFhM70fLvN/HkZjsGyJiLGfRHfcvuibqozGdTGY58ImpNFBrINRUGR
-AwralPobbGBG+ER7MctmIENYcAODTJLAldodbOcrx7wGWESwsdBg2Vp2Uzn9iI8X
-IGqtswrhSCZR2dJv6cykZwj6zFrpFWAuKAXZTGSO8qIxIV7QX1Y+CYm0nDg3iwek
-KEJJAtwuhgNQ/g15SBn9Sq8JqUPZ+0e5TCoO/YyyOalvisC2nWb3IJYsXy+24sz2
-lBpXygBpxuv+wQNRmU3cEWlwOgekaSuWXMoHGV0/i70llsuX5UWrO+rXVAReM9k6
-4NUFGUgNQGBNygabucLpAatMEcFal1rF72zXio8eFig0ooLWimA=
-=ny5U
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rtIAAKCRDj7w1vZxhR
+xc8eAP0bXlNFAgDQHOBfRxm3VEecjJXH/Mon6DpSnsh19/gbFQD/ef2AX40M1Qvg
+8TTnjRMLXcsvCsCCrfP2ndB5hx0jjgU=
+=i7U6
 -----END PGP SIGNATURE-----
 
---a8sldprk+5E/pDEv--
+--bfbi64475avkiovi--
