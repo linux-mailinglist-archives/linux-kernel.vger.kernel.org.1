@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4324C283D2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA1F283D33
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727239AbgJERRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:17:25 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:59698 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725973AbgJERRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:17:24 -0400
-X-UUID: 2a504c1d045b4dc1aa5c26d057c2e21c-20201006
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VecbbSPzO8pFOpEeHf5BylriZHlXVPRwNmcW3hbUEHQ=;
-        b=UDrCpQnBHIMHt/K8P2JbIBXFU+4q8tg1pf2wnNPxgqRGDFl4DnYl44eY9ZB3dNyfc7AV2G0TRZs7OhBsNdlsPreWvQT4xi8a3/rliO1Tq710+65cPnUOXCECXNMTKJQXSm7VlJsvtXel0dO/++wNLI+nyLLtX0XkQv4Arg2R9gQ=;
-X-UUID: 2a504c1d045b4dc1aa5c26d057c2e21c-20201006
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <phil.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 328509663; Tue, 06 Oct 2020 01:17:19 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 6 Oct 2020 01:17:17 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 6 Oct 2020 01:17:15 +0800
-Message-ID: <1601918237.17256.3.camel@mtksdccf07>
-Subject: Re: [PATCH] [PATCH] of_reserved_mem: Increase the number of
- reserved regions
-From:   Phil Chang <phil.chang@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Alix Wu <alix.wu@mediatek.com>,
-        YJ Chiang <yj.chiang@mediatek.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Joe Liu <joe.liu@mediatek.com>,
-        Frank Rowand <frowand.list@gmail.com>
-Date:   Tue, 6 Oct 2020 01:17:17 +0800
-In-Reply-To: <CAAOTY_8vCb-adkbpdmbTWLeOFt-+dHjr4HVonHX7XPkLkzy1yA@mail.gmail.com>
-References: <20201004055024.23542-1-phil.chang@mediatek.com>
-         <CAAOTY_8vCb-adkbpdmbTWLeOFt-+dHjr4HVonHX7XPkLkzy1yA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1727519AbgJERTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:19:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725973AbgJERTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:19:43 -0400
+Received: from gaia (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF9932078E;
+        Mon,  5 Oct 2020 17:19:39 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 18:19:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     will@kernel.org, james.morse@arm.com, tglx@linutronix.de,
+        mingo@redhat.com, dyoung@redhat.com, bhe@redhat.com,
+        corbet@lwn.net, John.P.donnelly@oracle.com,
+        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
+        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com
+Subject: Re: [PATCH v12 9/9] kdump: update Documentation about crashkernel
+Message-ID: <20201005171936.GD14576@gaia>
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
+ <20200907134745.25732-10-chenzhou10@huawei.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 1971EF7FADA804FD4DEB0317AF4ED35E219F726F439E90C354A0E8A7BE6052DD2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907134745.25732-10-chenzhou10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2h1bi1LdWFuZw0KDQpTb3JyeSBmb3IgdHlwby4gSW4gZmFjdCwgdGhlIGR0cyBvZiBuZXcg
-U29DIGlzIG5vdCB1cHN0cmVhbSB5ZXQuIEknbSBzbw0Kc29ycnkgZm9yIGNvdWxkbid0IHNob3cg
-dGhlIGRldGFpbCBub3cuDQoNCkhvdyBhYm91dCB0aGUgY29uZmlndXJhYmxlIE1BWF9SRVNFUlZF
-RF9SRUdJT05TIHNpemUgbGlrZSB0aGlzIHBhdGNoPw0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVs
-Lm9yZy9wYXRjaC8xMDY5MjEwMS8NCg0KIA0KT24gU3VuLCAyMDIwLTEwLTA0IGF0IDIxOjA1ICsw
-ODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0KPiBIaSwgUGhpbDoNCj4gDQo+IFBoaWwgQ2hhbmcg
-PHBoaWwuY2hhbmdAbWVkaWF0ZWsuY29tPiDmlrwgMjAyMOW5tDEw5pyINOaXpSDpgLHml6Ug5LiL
-5Y2IMTo1MeWvq+mBk++8mg0KPiA+DQo+ID4gQ2VydGFpbiBTb0NzIG5lZWQgdG8gc3VwcG9ydCBs
-YXJnZSBhbW91bnQgb2YgcmVzZXJ2ZWQgbWVtb3J5DQo+ID4gcmVnaW9ucywgZXNwZWNpYWxseSB0
-byBmb2xsb3cgdGhlIEdLSSBydWxlcyBmcm9tIEdvb2dsZS4NCj4gPiBJbiBNVEsgbmV3IFNvQyBy
-ZXF1aXJlcyBtb3JlIHRoYW4gNjggcmVnaW9ucyBvZiByZXNlcnZlZCBtZW1vcnkNCj4gPiBmb3Ig
-ZWFjaCBJUCdzIHVzYWdlLCBzdWNoIGFzIGxvYWQgZmlybXdhcmUgdG8gc3BlY2lmaWMgc2FwY2Us
-DQo+IA0KPiBzcGFjZQ0KPiANCj4gPiBzbyB0aGF0IG5lZWQgdG8gcmVzZXJ2ZSBtb3JlIHJlZ2lz
-aW9ucw0KPiANCj4gcmVnaW9ucy4NCj4gDQo+IEkgZ3Vlc3MgdGhpcyByZXF1aXJlbWVudCBpcyBm
-cm9tIE1lZGlhdGVrIFNvQywgYnV0IEkgZmluZCBiZWxvdyBkZXZpY2UNCj4gdHJlZSBhbmQganVz
-dCBmaW5kIG9uZSByZXNlcnZlZCBtZW1vcnkgcmVnaW9uLA0KPiANCj4gYXJjaC9hcm02NC9ib290
-L2R0cy9tZWRpYXRlay9tdDc2MjIuZHRzaQ0KPiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVr
-L210ODE3My5kdHNpDQo+IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4NTE2LmR0c2kN
-Cj4gDQo+IENvdWxkIHlvdSBzaG93IG1lIHRoZSA2OCByZWdpb25zPw0KPiANCj4gUmVnYXJkcywN
-Cj4gQ2h1bi1LdWFuZy4NCj4gDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBKb2UgTGl1IDxqb2Uu
-bGl1QG1lZGlhdGVrLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZSiBDaGlhbmcgPHlqLmNoaWFu
-Z0BtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWxpeCBXdSA8YWxpeC53dUBtZWRp
-YXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogUGhpbCBDaGFuZyA8cGhpbC5jaGFuZ0BtZWRp
-YXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMgfCAy
-ICstDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0K
-PiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMgYi9kcml2
-ZXJzL29mL29mX3Jlc2VydmVkX21lbS5jDQo+ID4gaW5kZXggNDZiOTM3MWM4YTMzLi41OTVmMDc0
-MWRjZWYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9vZi9vZl9yZXNlcnZlZF9tZW0uYw0KPiA+
-ICsrKyBiL2RyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMNCj4gPiBAQCAtMjIsNyArMjIsNyBA
-QA0KPiA+ICAjaW5jbHVkZSA8bGludXgvc2xhYi5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvbWVt
-YmxvY2suaD4NCj4gPg0KPiA+IC0jZGVmaW5lIE1BWF9SRVNFUlZFRF9SRUdJT05TICAgNjQNCj4g
-PiArI2RlZmluZSBNQVhfUkVTRVJWRURfUkVHSU9OUyAgIDEyOA0KPiA+ICBzdGF0aWMgc3RydWN0
-IHJlc2VydmVkX21lbSByZXNlcnZlZF9tZW1bTUFYX1JFU0VSVkVEX1JFR0lPTlNdOw0KPiA+ICBz
-dGF0aWMgaW50IHJlc2VydmVkX21lbV9jb3VudDsNCj4gPg0KPiA+IC0tDQo+ID4gMi4xOC4wDQo+
-ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiBM
-aW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZy
-YWRlYWQub3JnDQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tZWRpYXRlaw0KDQo=
+On Mon, Sep 07, 2020 at 09:47:45PM +0800, Chen Zhou wrote:
+> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> index 2da65fef2a1c..549611abc581 100644
+> --- a/Documentation/admin-guide/kdump/kdump.rst
+> +++ b/Documentation/admin-guide/kdump/kdump.rst
+[...]
+> @@ -316,8 +325,18 @@ Boot into System Kernel
+>     kernel will automatically locate the crash kernel image within the
+>     first 512MB of RAM if X is not given.
+>  
+> -   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
+> -   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
+> +   On arm64, use "crashkernel=X" to try low allocation in DMA zone, and
+> +   fall back to high allocation if it fails. And go for high allocation
+> +   directly if the required size is too large.
+> +   We can also use "crashkernel=X,high" to select a high region above
+> +   DMA zone, which also tries to allocate at least 256M low memory in
+> +   DMA zone automatically.
+> +   "crashkernel=Y,low" can be used to allocate specified size low memory
+> +   in DMA zone.
+> +   For non-RPi4 platforms, change DMA zone memtioned above to DMA32 zone.
 
+I don't think we should mention non-RPi4 explicitly here. I don't even
+understand what the suggestion is since the only way is to disable
+ZONE_DMA in the kernel config. I'd just stick to ZONE_DMA description
+here.
+
+> +   Use "crashkernel=Y@X" if you really have to reserve memory from
+> +   specified start address X. Note that the start address of the kernel,
+> +   X if explicitly specified, must be aligned to 2MiB (0x200000).
+>  
+>  Load the Dump-capture Kernel
+>  ============================
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a1068742a6df..f7df572d8f64 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -727,6 +727,10 @@
+>  			[KNL, X86-64] Select a region under 4G first, and
+>  			fall back to reserve region above 4G when '@offset'
+>  			hasn't been specified.
+> +			[KNL, arm64] Try low allocation in DMA zone, fall back
+> +			to high allocation if it fails when '@offset' hasn't been
+> +			specified. For non-RPi4 platforms, change DMA zone to
+> +			DMA32 zone.
+
+Same here, unclear what "change DMA zone to DMA32 zone" means.
+
+>  			See Documentation/admin-guide/kdump/kdump.rst for further details.
+>  
+>  	crashkernel=range1:size1[,range2:size2,...][@offset]
+> @@ -743,6 +747,8 @@
+>  			Otherwise memory region will be allocated below 4G, if
+>  			available.
+>  			It will be ignored if crashkernel=X is specified.
+> +			[KNL, arm64] range in high memory.
+> +			Allow kernel to allocate physical memory region from top.
+>  	crashkernel=size[KMG],low
+>  			[KNL, X86-64] range under 4G. When crashkernel=X,high
+>  			is passed, kernel could allocate physical memory region
+> @@ -751,13 +757,16 @@
+>  			requires at least 64M+32K low memory, also enough extra
+>  			low memory is needed to make sure DMA buffers for 32-bit
+>  			devices won't run out. Kernel would try to allocate at
+> -			at least 256M below 4G automatically.
+> +			least 256M below 4G automatically.
+>  			This one let user to specify own low range under 4G
+>  			for second kernel instead.
+>  			0: to disable low allocation.
+>  			It will be ignored when crashkernel=X,high is not used
+>  			or memory reserved is below 4G.
+> -
+> +			[KNL, arm64] range in low memory.
+> +			This one let user to specify a low range in DMA zone for
+> +			crash dump kernel. For non-RPi4 platforms, change DMA zone
+> +			to DMA32 zone.
+
+And again here.
+
+-- 
+Catalin
