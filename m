@@ -2,105 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5430283EF4
+	by mail.lfdr.de (Postfix) with ESMTP id 36F13283EF3
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729023AbgJESrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
+        id S1728919AbgJESrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgJESrV (ORCPT
+        with ESMTP id S1725940AbgJESrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:47:21 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C26AC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:47:21 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id l4so6171527ota.7
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:47:21 -0700 (PDT)
+        Mon, 5 Oct 2020 14:47:19 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48195C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:47:19 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id g7so10266716iov.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:47:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=atishpatra.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XQjx4ARCOaA2Q3w4kWrTamyGCaoXmzrJw6IcbfLdyk4=;
-        b=hbADtAEgbdwpvlYNo3faqt+P+U0ye7bUZqMOOg6MFw6APVUSBDhEB9pOLtDWotBoxj
-         h/ol56CXi/ZM09Su4P+xHHA8yoFXKO+yKouICKddLgjIwzY8qO9KUHWBFyAVpmrmbfw4
-         s6+sDUUDpCCrFrmS9fioCiVegCgTTzsBu8CEg/79jYVxQn701bHyJmURrjkZ8P+aEkWb
-         oWnobPquo/nwPxiOEmMebRPc+KBi7+F7O2aK9a5tVpNKw+yke5d0hIRVaET2pbzlO9os
-         1ppHKBytY+wmahSasdz/Jj/+YoIemLO76yY16My6Rx77tkDMyBvLwvsYMnKV0FzE/t1x
-         ZWMA==
+        bh=FY+LqDabhhgCzF/kHUiBASBrGmAFBGdYjQoHH5CUHuk=;
+        b=D8ti+2Pu9A3A7OT9eu5u8g809BBk1hASH2RdiLyOGvjrIfeX7mcLWCLc2RBZLm2PDg
+         KnQUmSkt41Tk+Km3Q92kCAsB5Nw+5z1uCG42UUt59OHSQ1ga51b3ESs6fegFK8mqig2G
+         8OD2rZzjxIO1M5dYgWyIhSBpB4O7EdeF656Qs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XQjx4ARCOaA2Q3w4kWrTamyGCaoXmzrJw6IcbfLdyk4=;
-        b=EyIVKbGE+js0ejE2A+DUfRZJ8jkl7PoE4KfSib+qK8w5KUeB4o9lVt5lg1FZkRZQH4
-         WDKXpSRjlmKQ4jEWJ+7vjZVgqtg8JECtYfYTw8K6On46y5V8j4CGDKgExCMdP0Azals2
-         6fsKmQZj8gZ/Si9o2fYwtFGpTNn+t8sZptWRP1UvlBjeep5nkaazWExqG4WtPuNFknlV
-         /s9cBgDRd5o7SE3stYmF1sNjOuqano4KAJp6/2eHCyWCUsR1ih7pPSlwPLu5fPe87/su
-         k0+2EJ9lya68/05E37z4Sis21kida0oZB/y0YbALs9u4NSjw2oAE/SXMjctyDnq+nML1
-         Fvcg==
-X-Gm-Message-State: AOAM533TlPCogKBCmP9tToibcQiD47d1wNkgJz4wDtqYIeEn//jfTBJf
-        buISncUJxPozty1jyBIPDSrRJY1ZwWLm+4z4RTD5IfjG46jRSQ==
-X-Google-Smtp-Source: ABdhPJyLCnElkhzehx+gGblvdGwyvr63QqKxsu4szbqFIma5EJahiU+IMo+92Sx6DaOFjnKvArimCbYKbikZz9YRX/w=
-X-Received: by 2002:a9d:4b18:: with SMTP id q24mr443856otf.265.1601923640321;
- Mon, 05 Oct 2020 11:47:20 -0700 (PDT)
+        bh=FY+LqDabhhgCzF/kHUiBASBrGmAFBGdYjQoHH5CUHuk=;
+        b=U6aT4gazJW3MWCH19vhN6QCylCESv0rXIfXtyAh/6YgDi6n2tqS6wu01z8k0GnKs34
+         Ghwl07D6Tmio9PEf3Y/gJO15AyZKNY1q2BOH1WffkYZWUM04BQcHetiuOVy6ndg0cw3q
+         MRCs//Mphg+YYMGgggRVSsFalAAgWQ9x9bCxwk2MW3T2ZSNLgzYLlEXkQlsPbFP7x5dU
+         CgJYceXbNIyYCpF3lUGJwLhNetArneB//6Fu2cEPbcLLGXun+gtWlU+Ouls7mwYE3pjD
+         KcbwKurSmiVa9mOUKXKLp4Lkpp2Dt7g9Ykepl8HMt0pB4YbVwbQ3CmWMA0M3MLet2uo8
+         xtzw==
+X-Gm-Message-State: AOAM53273GFvoUFcIyDBwDZCdj3WLiXmFuYjzij+vy7A9yv3/J64Tls3
+        qG4YKRJKyb9TbmnfJV1fncID04SdteJ3dmsxKUnpCVEvXQ4thgs=
+X-Google-Smtp-Source: ABdhPJwBWJVGjbpxIiKdfK3X5F9BKCLWk5LXkXrOV6AiTriAM780Wu2t637zT39lnDE4ZAH0aldf8qHoIsKQ3RUi+Pg=
+X-Received: by 2002:a5d:9842:: with SMTP id p2mr996172ios.113.1601923638595;
+ Mon, 05 Oct 2020 11:47:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201005173933.171074-1-dwaipayanray1@gmail.com> <14c9d8808feabe987e7fdac867d21ff88561011a.camel@perches.com>
-In-Reply-To: <14c9d8808feabe987e7fdac867d21ff88561011a.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Tue, 6 Oct 2020 00:16:58 +0530
-Message-ID: <CABJPP5D9d7egEMWbYJnp7STYyB9OeW3sWzcnyXvRTKFbUmXU4g@mail.gmail.com>
-Subject: Re: [PATCH v2] checkpatch: add new warnings to author signoff checks.
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <bug-209317-8243@https.bugzilla.kernel.org/> <bug-209317-8243-E6Z0ICootN@https.bugzilla.kernel.org/>
+ <20200928111341.7eaa98a8@oasis.local.home> <67278555f143564677878cc849155393a93c018a.camel@wdc.com>
+ <CAOnJCUJgzWkKixYyFCrqbNF2ONgB_RUOSTB9BhT5D0stnf=vUw@mail.gmail.com> <CANXhq0qzi2LjYekG0yk876znrpk7tMo+-zT6wR77nhy89rm2kQ@mail.gmail.com>
+In-Reply-To: <CANXhq0qzi2LjYekG0yk876znrpk7tMo+-zT6wR77nhy89rm2kQ@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 5 Oct 2020 11:47:07 -0700
+Message-ID: <CAOnJCULU7qy35vhiFcJKHFgbe+w5Gn2q_SskjjbjtM3X90uT_g@mail.gmail.com>
+Subject: Re: [Bug 209317] ftrace kernel self test failure on RISC-V on 5.8,
+ regression from 5.4.0
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Alan Kao <alankao@andestech.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "bugzilla-daemon@bugzilla.kernel.org" 
+        <bugzilla-daemon@bugzilla.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Atish Patra <Atish.Patra@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 11:53 PM Joe Perches <joe@perches.com> wrote:
+On Sun, Oct 4, 2020 at 11:08 PM Zong Li <zong.li@sifive.com> wrote:
 >
-> On Mon, 2020-10-05 at 23:09 +0530, Dwaipayan Ray wrote:
-> > The author signed-off-by checks are currently very vague.
-> > Cases like same name or same address are not handled separately.
-> []
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > +                                             if ($address1 =~ /(\S+)\+\S+(\@.*)/) {
-> > +                                                     $address1 = $1.$2;
+> Hi Atish,
 >
-> More common in this code is "$1" . "$2" not $1.$2
->
-> > @@ -6891,9 +6917,29 @@ sub process {
-> []
-> > +                     # 4 -> names match, addresses excuding mail extensions (subaddresses) match
->
-> excluding
->
-> perhaps "subaddress detail" instead of "mail extensions (subaddresses)"
->
-> And maybe add "from RFC 5233"
->
-> > +
-> > +                     my $sob_msg = "'From: $author' != 'Signed-off-by: $author_sob'";
-> > +
-> > +                     if ($authorsignoff == 0) {
-> > +                             WARN("NO_AUTHOR_SIGN_OFF",
-> > +                                  "Missing Signed-off-by: line by nominal patch author '$author'\n");
-> > +                     } elsif ($authorsignoff == 2) {
-> > +                             WARN("NO_AUTHOR_SIGN_OFF",
-> > +                                  "From:/Signed-off-by: email name mismatch:\n$sob_msg\n");
->
->
-> Still no need for a newline to separate the output message.
+> I can take out some time to take a look at it together, if anyone here
+> fixes it or has ideas, please share the information, thanks.
 >
 
-Thanks, I will fix these.
+Thanks. I observed this in case it helps.
 
-Are there any more changes needed? I shall try to wrap it
-in v3 then.
+Across kernels, the panic trace seems to point out the one of the
+first two functions after patching is corrupted.
+rcu_momentary_dyntick_idle or stop_machine_yield[1]
 
-Thanks,
-Dwaipayan.
+[1]https://elixir.bootlin.com/linux/v5.9-rc7/source/kernel/stop_machine.c#L213
+
+I am suspecting nop was not replaced with the correct auipc+jalr pair?
+
+> On Sun, Oct 4, 2020 at 1:33 AM Atish Patra <atishp@atishpatra.org> wrote:
+> >
+> > Hi Alan and Zong,
+> > I initially suspected ftrace is broken between v5.6 & v5.7 as Kolin pointed out.
+> > I couldn't find any reason how the HSM patch is related. Zong's ftrace
+> > patching code was also merged in that release.
+> > However, I was able to reproduce the issue in the older kernel(v5.4)
+> > as well on both Qemu & Unleashed hardware.
+> > Here are the steps:
+> >
+> > mount -t debugfs none /sys/kernel/debug/
+> > cd /sys/kernel/debug/tracing
+> > echo function_graph > current_tracer
+> > echo function > current_tracer
+> >
+> > It works for the first time with function_graph but writing any other
+> > tracer crashes immediately.
+> > Can you take a look to check if the bug is in ftrace infrastructure code ?
+> >
+> > On Mon, Sep 28, 2020 at 10:25 AM Atish Patra <Atish.Patra@wdc.com> wrote:
+> > >
+> > > On Mon, 2020-09-28 at 11:13 -0400, Steven Rostedt wrote:
+> > > > On Sat, 26 Sep 2020 22:02:35 +0000
+> > > > bugzilla-daemon@bugzilla.kernel.org wrote:
+> > > >
+> > > > > https://bugzilla.kernel.org/show_bug.cgi?id=209317
+> > > > >
+> > > > > --- Comment #4 from Colin Ian King (colin.king@canonical.com) ---
+> > > > > Issue still in 5.9-rc6
+> > > > >
+> > > >
+> > > > Atish,
+> > > >
+> > > > As the issues bisects down to your commit, care to take a look at
+> > > > this.
+> > > > (And take ownership of this bug)
+> > > >
+> > >
+> > > Yes. I am already looking into this. Colin informed me about the bug
+> > > over the weekend.
+> > >
+> > > I couldn't change the ownership as I am not part of the editbugs group.
+> > > I have sent an email to helpdesk@kernel.org for access.
+> > >
+> > > > -- Steve
+> > >
+> > > --
+> > > Regards,
+> > > Atish
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> >
+> >
+> > --
+> > Regards,
+> > Atish
+
+
+
+-- 
+Regards,
+Atish
