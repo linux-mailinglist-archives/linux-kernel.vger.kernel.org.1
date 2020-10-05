@@ -2,151 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A0828429F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9C52842A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgJEWnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 18:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
+        id S1726796AbgJEWsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 18:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgJEWnm (ORCPT
+        with ESMTP id S1725909AbgJEWsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:43:42 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78FBC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 15:43:42 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id c13so10485468oiy.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 15:43:42 -0700 (PDT)
+        Mon, 5 Oct 2020 18:48:21 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D85C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 15:48:21 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t12so9338280ilh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 15:48:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N7Zi+bmxFeTPGGj1PxB9/MLlYHFoog+nnJcFYtwo0O8=;
-        b=KVtqpLQoesSPzYMWv+7UD1tFkDy5yyjPi/++9DOuPkCf87SQu/2kTZ3idGVZKfPwCd
-         pibU61WH7YP7EEL4itAZdaANj+S6XlMqVnXbtEak6sUMU90UHCO+zSFAMUExqUb1YOcT
-         JXHEL9SJtjDQ6Ed3u1L2W1biaZ1QQkU7lcDcg=
+        bh=sX6Hxo8zbSqrVxxKpSXQc3U5v59mG8RdH/i1tZ3jiPA=;
+        b=YD+hAZWEqY/HCKuyHzyLhCb1kabb4sMChClpf33g3/NWLr6tQcnHqkUV7THOpeihTK
+         U6MdF0vXiO+KnuyYOpzEBUg/cVnzjWz+ZH1+5H8TZLYWc1wBGbDQbYifbVS62UtlrFM8
+         oz0hCRA+bh74SKhLdyCLc2KBHPaQCRJxpxVJrlBibmWUuGFYf1C3sHhPJcHlCdMuH0lw
+         yygrWmiBU0BONM2QMa6BesEBrh5xcnJHGNMao8YrH4TLzuNwOQssF3EuYiaLApGnREp/
+         o1/eK5eFd/MAHeKKSzDygLg7/taxtAP4/gGhbYLwCRwQq/ULEFVdUU46PZi9SbVHnbCT
+         1qng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N7Zi+bmxFeTPGGj1PxB9/MLlYHFoog+nnJcFYtwo0O8=;
-        b=H684LPG9oR2h3gvZN/w/DcduKfrNF7V0xfzROL8PeGy7t16gxLdv2L/8SmdpXrAmIa
-         TsAINx+B+6PuQhDf0Iv867AcFbQQ9KwK6/5xVloDtbzFxxmXooyoDeUPrJFz2S7hikat
-         4lR+FXawH1Sd3ruh5VQcohZz5+/hRolj17NtC03+C40tv5YqMX53lDFraPHBLK3lK4Q5
-         NtJmk4fuFJ+BCjk/ELgbpOZdZZYYDBzkM81Hj2JSzEQFnLrlqzUEJhQX/vlp2qHKFfFE
-         ssYWom2oNSSzaXRtb7Kt2/TbEE2PTuGnfog1W024jCJY5WYPjUts3PbXprhagBsg1BCh
-         AJag==
-X-Gm-Message-State: AOAM533KD5SPrpwGrvnV5O/5I0hSxhxqsF1QK8vAt5U3mHJBDiSwGlMy
-        i6nSXyWtfs8WLCtVUUTZS/umvqcEehsyms58mlFKAg==
-X-Google-Smtp-Source: ABdhPJyfoPYCOpkuTCOIXoCW2mDiwodpJmuvAJrKdJ2P/BzfZGqk4dj/BBdhzJ7DBqSgjSfRXX8X8v1vcNJVJjv0Yog=
-X-Received: by 2002:aca:52c4:: with SMTP id g187mr467717oib.101.1601937822236;
- Mon, 05 Oct 2020 15:43:42 -0700 (PDT)
+        bh=sX6Hxo8zbSqrVxxKpSXQc3U5v59mG8RdH/i1tZ3jiPA=;
+        b=mii7urPojlDMZxyetsQcdCShsFkfWFQgTMfQQCRfDBE+06PzApBCLp6t/9QWSkQYhM
+         IBwKYXCTxawv3aOzuWYUGaZjUw/CoDXFlojl2kUuVQ2/t3opNNpSlV5mqSMfb14rj91k
+         a+qHDjhhZZnKIJmm7PTgJwe51D7sukJyvBQh11Dlf2vBILseGNL3t9t2F5KKDAWI216Y
+         J1xGzrCLkP7Iqq5jrlnudV/Kley8ScAruZZ8n8eBEwunxzJ4yhQMnwNqj9XrOs1ujdht
+         wNxOrUN2fi0A4I6fEYeU2lOYME16OR+f/KkIJZa7W+vOf4mYgaZQ27k4SoOtvsty8MCr
+         GiYw==
+X-Gm-Message-State: AOAM533TkBkGdIC6PUHi0wERxsWvZ+PjprvoOJgZNY1saFmsEkPdEkEW
+        PZzYvNDhouCO8kE+PJcE1lF8eSuHYYxuij4h7OaVNw==
+X-Google-Smtp-Source: ABdhPJxXis+pI9mZPtgyd3zD7qrLvqeoS8zVEmRPGxXpMrtc3lqFsBVEqo+8sV9/F3wyVpww9gNM2W/DkU0/bOZIjaw=
+X-Received: by 2002:a92:1e07:: with SMTP id e7mr1212827ile.154.1601938100745;
+ Mon, 05 Oct 2020 15:48:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
- <20201002175303.390363-2-daniel.vetter@ffwll.ch> <20201002180603.GL9916@ziepe.ca>
- <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
- <20201002233118.GM9916@ziepe.ca> <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
- <20201004125059.GP9916@ziepe.ca> <CAKMK7uF0AfuYGsHzKXhF=k-mAW=Wx_APf9fY9M9ormnwypoxZA@mail.gmail.com>
- <20201005172854.GA5177@ziepe.ca> <CAKMK7uFzxWF7V=7vkeNC-8shsPZRgdz9fYTsn0ayENv2BpnFEg@mail.gmail.com>
- <20201005183704.GC5177@ziepe.ca> <CAKMK7uH97Yb2JFviG_ynGC1hbQ69h9hcyFVFd2PFYHCDzfBN6g@mail.gmail.com>
-In-Reply-To: <CAKMK7uH97Yb2JFviG_ynGC1hbQ69h9hcyFVFd2PFYHCDzfBN6g@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 6 Oct 2020 00:43:31 +0200
-Message-ID: <CAKMK7uHRxK3yNrvX=+n-XpSv7PDCz8w+mwof3pkUUJq3TpmiuQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-23-bgardon@google.com>
+ <a95cacdb-bc65-e11e-2114-b5c045b0eac5@redhat.com>
+In-Reply-To: <a95cacdb-bc65-e11e-2114-b5c045b0eac5@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 5 Oct 2020 15:48:09 -0700
+Message-ID: <CANgfPd83xGh_82OZEjHQO-+vX0kuCFQPwOTwSGYErd9whyjycw@mail.gmail.com>
+Subject: Re: [PATCH 22/22] kvm: mmu: Don't clear write flooding count for
+ direct roots
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 8:54 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+On Fri, Sep 25, 2020 at 6:25 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> On Mon, Oct 5, 2020 at 8:37 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On 25/09/20 23:23, Ben Gardon wrote:
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index 42dde27decd75..c07831b0c73e1 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -124,6 +124,18 @@ static struct kvm_mmu_page *find_tdp_mmu_root_with_role(
+> >       return NULL;
+> >  }
 > >
-> > On Mon, Oct 05, 2020 at 08:16:33PM +0200, Daniel Vetter wrote:
+> > +hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
+> > +                                 union kvm_mmu_page_role role)
+> > +{
+> > +     struct kvm_mmu_page *root;
+> > +
+> > +     root = find_tdp_mmu_root_with_role(kvm, role);
+> > +     if (root)
+> > +             return __pa(root->spt);
+> > +
+> > +     return INVALID_PAGE;
+> > +}
+> > +
+> >  static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
+> >                                                  int level)
+> >  {
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> > index cc0b7241975aa..2395ffa71bb05 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> > @@ -9,6 +9,8 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
+> >  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
 > >
-> > > > kvm is some similar hack added for P2P DMA, see commit
-> > > > add6a0cd1c5ba51b201e1361b05a5df817083618. It might be protected by notifiers..
-> > >
-> > > Yeah my thinking is that kvm (and I think also vfio, also seems to
-> > > have mmu notifier nearby) are ok because of the mmu notiifer. Assuming
-> > > that one works correctly.
+> >  bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
+> > +hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
+> > +                                 union kvm_mmu_page_role role);
+> >  hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+> >  void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa);
 > >
-> > vfio doesn't have a notifier, Alex was looking to add a vfio private
-> > scheme in the vma->private_data:
-> >
-> > https://lore.kernel.org/kvm/159017449210.18853.15037950701494323009.stgit@gimli.home/
-> >
-> > Guess it never happened.
 >
-> I was mislead by the mmu notifier in drivers/vfio/vfio.c. But looking
-> closer, that's only used by some drivers, I guess to make sure their
-> device pagetables are kept in sync with reality. And not to make sure
-> the vfio pfn view is kept in sync with reality.
+> Probably missing a piece since this code is not used and neither is the
+> new argument to is_root_usable.
 >
-> This could get real nasty I think.
->
-> > > > So, the answer really is that s390 and media need fixing, and this API
-> > > > should go away (or become kvm specific)
-> > >
-> > > I'm still not clear how you want fo fix this, since your vma->dma_buf
-> > > idea is kinda a decade long plan and so just not going to happen:
-> >
-> > Well, it doesn't mean we have to change every part of dma_buf to
-> > participate in this. Just the bits media cares about. Or maybe it is
-> > some higher level varient on top of dma_buf.
-> >
-> > Or don't use dma_buf for this, add a new object that just provides
-> > refcounts and P2P DMA connection for IO pfn ranges..
->
-> So good news is, I dug some layers deeper in v4l, and there's only 2
-> users which do actually handle pfn and don't immediately convert to a
-> pages array:
-> - videbuf-dma-contig.c. Luckily videobuf 1 is deprecated since
-> forever, so I think we might get away with either just breaking this,
-> or at least tainting kernels and hiding it behind a nasty Kconfig.
-> This only uses follow_pfn, which we need to keep anyway for vfio in
-> the unsafe variant :-/
-> - videbuf2-vmalloc.c Digging through history this was added to support
-> import of v4l buffers from drivers that needed contig memory. And way
-> back before CMA, that meant carveout memory not backed by struct page
-> *. That should now all have struct pages and be managed by CMA (since
-> videbuf2-dma-contig.c just uses dma_alloc_coherent underneath), so I
-> think we can just switch to pin_user_pages(FOLL_LONGTERM here too).
->
-> iow I think I can outright delete the frame vector stuff.
+> I'm a bit confused by is_root_usable since there should be only one PGD
+> for the TDP MMU (the one for the root_mmu).
 
-Ok this doesn't work, because dma_mmap always uses a remap_pfn_range,
-which is a VM_IO | VM_PFNMAP vma and so even if it's cma backed and
-not a carveout, we can't get the pages. Plus trying to move the cma
-pages out of cma for FOLL_LONGTERM would be kinda bad when they've
-been allocated as a contig block by dma_alloc_coherent :-)
+*facepalm* sorry about that. This commit used to be titled "Implement
+fast CR3 switching for the TDP MMU" but several refactors later most
+of it was not useful. The only change that should be part of this
+patch is the one to avoid clearing the write flooding counts. I must
+have failed to revert the other changes.
 
-So this idea of switching over to pup only is going to break zerocopy.
-I guess I'll need something else for this then.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>
+> Paolo
+>
