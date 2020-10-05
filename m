@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A446283946
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7059283949
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgJEPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbgJEPNP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:13:15 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6578AC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:13:15 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id a5so2207211ljj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 08:13:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N5mMMKQazRXBuiw69rKSWjFNeXQ7ni4k4qAPZ1XO+3g=;
-        b=uN9au7v6jFrynuxczUPp8JWygJ05kzcFUOGGGsLej2Q64usOPUEklYV3Jq84s9Y611
-         9ZQKrUABTdCwf/LNOgdp9G/BIzFOdf/raQ3EvGqDKJErsPYNrl9Rgj7LhctJl0rEQcMP
-         j64/BDeokIqiVOC8Uf5+Y2ERFkD3ysja9tolYDYmWKfGayONDYjIdKsL7nhDP4i6Nixi
-         vc55bAEGE+qMHqSN0O/UceRRIVBaXhMdPIufdTejG64EOu0/Myjvj8z8I9mC3ZS9Skao
-         iFg5B7owCs1q29kMNrEAnM5ks90Dcej7sLB+dQN2/4SjAC8nb8H2kyyLMCk/W9D0ZzmX
-         TAgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N5mMMKQazRXBuiw69rKSWjFNeXQ7ni4k4qAPZ1XO+3g=;
-        b=Y3Lw+jUzMuCnNaPjzmhSYo/Kh1sfO5dc5OXcks/oyKaNwDa4dbBxy+s9EbbGNtIi6h
-         fuOjchpoprydEM4H2nz6pNV4RJyUs8j2GxGUy01flWrqXnG2ftm+cy1/xQgtYBhQ+NeM
-         wDS4fX5etpjoPDTWi7cgtCfB4jrUNjPhK2WQOsiEeWmOcV8MTNRVAhHwmuVciOFj2ruw
-         sAOWBXjqcA4OPwgDJkttTs9eFOHax5E23z2dTqEqHgtkIPIm7TrCXKpPuDWhQeixultM
-         0QRADXHSLRbSHhhkbRmbHfNZFOGjJFABRc/MWlTeZ0/ft6egKC8FD22USR2oUtm/DgBz
-         TX0A==
-X-Gm-Message-State: AOAM530RB0m/6g9rwAvBViHgFCeDnAcWL9uOkEGJgkkP3YeBZ88jgAMP
-        Ie+sfjZButnNL3wsNWITcWN9R0H7vJrDlcwS6iFyJQ==
-X-Google-Smtp-Source: ABdhPJz6UYDVrlJ24vF9L5XVPqqmZT8So5ESBwUbAMJpb4LgG9A4EK9Po+XZyfaEwNRowqb9Wz8QmL89wMUq8s5I8ho=
-X-Received: by 2002:a2e:241a:: with SMTP id k26mr68125ljk.58.1601910793555;
- Mon, 05 Oct 2020 08:13:13 -0700 (PDT)
+        id S1726951AbgJEPNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:13:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726513AbgJEPNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:13:20 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01BE320774;
+        Mon,  5 Oct 2020 15:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601910799;
+        bh=nUstTbZFE441mCJQxfectIWPeG+24jEfaZ3swSN40oM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RrvOlwNQM47Bc4U7dPJ5LwWZPHDDjes+NAiPrfg+3Wf0ea1EDnUN7F/zUr5xNrPTB
+         8sOEHjI336aULMWTKNqVSnJVDXq8DCvUmdhngmZL1VU5LgdVEsXD55jbUTaEofeLgn
+         K+iJNgIvI/f3ayZNeCAWhbCH0rGYtptWhxrxjwT4=
+Date:   Mon, 5 Oct 2020 16:13:13 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201005151313.GA23892@willie-the-truck>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <20201004233146.GP29330@paulmck-ThinkPad-P72>
+ <20201005023846.GA359428@rowland.harvard.edu>
+ <20201005082002.GA23216@willie-the-truck>
+ <20201005091247.GA23575@willie-the-truck>
+ <20201005142351.GB376584@rowland.harvard.edu>
 MIME-Version: 1.0
-References: <20201002172559.4000748-1-guro@fb.com> <20201002172559.4000748-3-guro@fb.com>
-In-Reply-To: <20201002172559.4000748-3-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 5 Oct 2020 08:13:02 -0700
-Message-ID: <CALvZod5uFB0jysrTp6842Shx0rKmZfNfzyN1AzqEkOeAZ4gpWw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] mm: memcontrol/slab: use helpers to access slab
- page's memcg_data
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005142351.GB376584@rowland.harvard.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 10:26 AM Roman Gushchin <guro@fb.com> wrote:
->
-> To gather all direct accesses to struct page's memcg_data field
-> in one place, let's introduce 3 new helpers to use in the slab
-> accounting code:
->   struct obj_cgroup **page_objcgs(struct page *page);
->   struct obj_cgroup **page_objcgs_check(struct page *page);
->   bool set_page_objcgs(struct page *page, struct obj_cgroup **objcgs);
->
-> They are similar to the corresponding API for generic pages, except
-> that the setter can return false, indicating that the value has been
-> already set from a different thread.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+On Mon, Oct 05, 2020 at 10:23:51AM -0400, Alan Stern wrote:
+> On Mon, Oct 05, 2020 at 10:12:48AM +0100, Will Deacon wrote:
+> > On Mon, Oct 05, 2020 at 09:20:03AM +0100, Will Deacon wrote:
+> > > On Sun, Oct 04, 2020 at 10:38:46PM -0400, Alan Stern wrote:
+> > > > Considering the bug in herd7 pointed out by Akira, we should rewrite P1 as:
+> > > > 
+> > > > P1(int *x, int *y)
+> > > > {
+> > > > 	int r2;
+> > > > 
+> > > > 	r = READ_ONCE(*y);
+> > > 
+> > > (r2?)
+> > > 
+> > > > 	WRITE_ONCE(*x, r2);
+> > > > }
+> > > > 
+> > > > Other than that, this is fine.
+> > > 
+> > > But yes, module the typo, I agree that this rewrite is much better than the
+> > > proposal above. The definition of control dependencies on arm64 (per the Arm
+> > > ARM [1]) isn't entirely clear that it provides order if the WRITE is
+> > > executed on both paths of the branch, and I believe there are ongoing
+> > > efforts to try to tighten that up. I'd rather keep _that_ topic separate
+> > > from the "bug in herd" topic to avoid extra confusion.
+> > 
+> > Ah, now I see that you're changing P1 here, not P0. So I'm now nervous
+> > about claiming that this is a bug in herd without input from Jade or Luc,
+> > as it does unfortunately tie into the definition of control dependencies
+> > and it could be a deliberate choice.
+> 
+> I think you misunderstood.  The bug in herd7 affects the way it handles 
+> P1, not P0.  With
+> 
+> 	r2 = READ_ONCE(*y);
+> 	WRITE_ONCE(*x, r2);
+> 
+> herd7 generates a data dependency from the read to the write.  With
+> 
+> 	WRITE_ONCE(*x, READ_ONCE(*y));
+> 
+> it doesn't generate any dependency, even though the code does exactly 
+> the same thing as far as the memory model is concerned.  That's the bug 
+> I was referring to.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Thanks, that clears things up. There were lots of mentions of "control
+dependency" in the mail thread that threw me, because this bug is clearly
+about data dependencies!
+
+> The failure to recognize the dependency in P0 should be considered a 
+> combined limitation of the memory model and herd7.  It's not a simple 
+> mistake that can be fixed by a small rewrite of herd7; rather it's a 
+> deliberate choice we made based on herd7's inherent design.  We 
+> explicitly said that control dependencies extend only to the code in the 
+> branches of an "if" statement; anything beyond the end of the statement 
+> is not considered to be dependent.
+
+Interesting. How does this interact with loops that are conditionally broken
+out of, e.g.  a relaxed cmpxchg() loop or an smp_cond_load_relaxed() call
+prior to a WRITE_ONCE()?
+
+Will
