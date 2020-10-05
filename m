@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5564C28367A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED78828367F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJENZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:25:42 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:36225 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgJENZm (ORCPT
+        id S1725982AbgJEN20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:28:26 -0400
+Received: from sp1.canonet.ne.jp ([210.134.165.88]:51128 "EHLO
+        sp1.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgJEN20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:25:42 -0400
-Received: by mail-ot1-f68.google.com with SMTP id 60so8564019otw.3;
-        Mon, 05 Oct 2020 06:25:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VSm7gLjvoXVPW4MRbVep3VxyatFylcoxKzzruY+rFmA=;
-        b=InZFc1lYgCZygfhHYk2b4a3MLtsjfM/Kj6YzSOPfbBArMSXZ3yAV/CZ3yH87Amlj29
-         9frevE4Yn+Qmx5ldJq1EXqajAaHGNioDWg23yirns3JRk7jCse+ix9S//CwAj8kEFN+Q
-         /5nZfSaD8nkQrf+CuY9TabrfbOGHCYVpWBrU2PUYc4ewODK1Mk/lu9C5OzuTWJ0fww2r
-         8BR7fMBjWeoz11Z+cfB/SruBkKF+bS+ji+szgp9BFvrNMEDvVnAO90+xYle8Bqkbe8Bi
-         JBeJeKnCncCQExaR441NUNrQ/WrrKuF92R8EDnIyuqQ48sjzLtdX9LESwBb4Ifqlsip5
-         oYqA==
-X-Gm-Message-State: AOAM5329Fia7b/0RdgHWfoKbh+Me13zr47U03PnuHxHPq4VhGJAXCiku
-        Kb/pfhP1SbLgzNk4mvM2I6PyGuaobxnfXITkyj0=
-X-Google-Smtp-Source: ABdhPJzAhOvM/7gBRkLIamiQt5pp03piG1poAEdBabDBErML+QILbGXZKNRPjGnxftmzHcZgGjAR9Ak294uciO60TmU=
-X-Received: by 2002:a9d:734f:: with SMTP id l15mr5055320otk.260.1601904339903;
- Mon, 05 Oct 2020 06:25:39 -0700 (PDT)
+        Mon, 5 Oct 2020 09:28:26 -0400
+Received: from cmcheck1.canonet.ne.jp (unknown [172.21.160.141])
+        by sp1.canonet.ne.jp (Postfix) with ESMTP id E7AED1E04DA;
+        Mon,  5 Oct 2020 22:28:23 +0900 (JST)
+Received: from echeck1.canonet.ne.jp ([172.21.160.31])
+        by cmcheck1 with ESMTP
+        id PQXPkauNyrwkGPQXPkw9Lg; Mon, 05 Oct 2020 22:28:23 +0900
+X-CNT-CMCheck-Reason: "undefined", "v=2.2 cv=Q72i28+a c=1 sm=1 tr=0
+ cx=t_eml:g_jp p=Qc_-Gc98pncA:10 p=LCeEzJ_fp_Y1XAGGSI_h:22
+ a=pfbPvPf18X2prx6cd4zkIA==:117 a=xbyLVnzfAZw6kvha8NeemA==:17
+ a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10 a=afefHYAZSVUA:10
+ a=Qs83zKYSFMdweDPBNGQA:9 a=id4sslXUZ5pHY6gm:21 a=Vbc_3M2ReCI5aM_o:21
+ a=CjuIK1q_8ugA:10"
+X-CNT-CMCheck-Score: 100.00
+Received: from echeck1.canonet.ne.jp (localhost [127.0.0.1])
+        by esets.canonet.ne.jp (Postfix) with ESMTP id 2D9281C025E;
+        Mon,  5 Oct 2020 22:28:23 +0900 (JST)
+X-Virus-Scanner: This message was checked by ESET Mail Security
+        for Linux/BSD. For more information on ESET Mail Security,
+        please, visit our website: http://www.eset.com/.
+Received: from smtp1.canonet.ne.jp (smtp1.canonet.ne.jp [172.21.160.21])
+        by echeck1.canonet.ne.jp (Postfix) with ESMTP id EC1FB1C0257;
+        Mon,  5 Oct 2020 22:28:22 +0900 (JST)
+Received: from chikousha.co.jp (webmail.canonet.ne.jp [210.134.164.250])
+        by smtp1.canonet.ne.jp (Postfix) with ESMTPA id 10A4A15F964;
+        Mon,  5 Oct 2020 22:28:22 +0900 (JST)
 MIME-Version: 1.0
-References: <cover.1601884370.git.viresh.kumar@linaro.org>
-In-Reply-To: <cover.1601884370.git.viresh.kumar@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 5 Oct 2020 15:25:28 +0200
-Message-ID: <CAJZ5v0hLyF5G4QR=qQnmsnnjobmV0w62L2ZPLxjKA0dOtdcqkw@mail.gmail.com>
-Subject: Re: [PATCH V3 0/5] cpufreq: Record stats with fast-switching
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20201005132822.000047CB.0277@chikousha.co.jp>
+Date:   Mon, 05 Oct 2020 22:28:22 +0900
+From:   "Dawuda Usman" <info@chikousha.co.jp>
+To:     <dawudausm@gmail.com>
+Reply-To: <dawudausm@gmail.com>
+Subject: Greetings friend..
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+ORGANIZATION: Dawuda Usman
+X-MAILER: Active! mail
+X-EsetResult: clean, %VIRUSNAME%
+X-ESET-AS: R=SPAM;S=100;OP=CALC;TIME=1601904503;VERSION=7863;MC=1908559813;TRN=15;CRV=0;IPC=210.134.164.250;SP=0;SIPS=1;PI=5;F=0
+X-I-ESET-AS: RN=442;RNP=
+X-ESET-Antispam: SPAM
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 9:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> Hi,
->
-> We disabled recording cpufreq stats when fast switching was introduced
-> to the cpufreq core as the cpufreq stats required to take a spinlock and
-> that can't be allowed (for performance reasons) on scheduler's hot path.
->
-> Here is an attempt to get rid of the lock and bring back the support.
->
-> V2->V3:
-> - Use READ/WRITE_ONCE() for reset-time as well.
-> - Use unlikely for few conditionals in the hot path.
-> - Better changelogs.
-> - Rebase changes.
->
-> V1-V2:
-> - Use READ_ONCE/WRITE_ONCE instead of atomic in the first patch.
->
-> --
-> Viresh
->
-> Viresh Kumar (5):
->   cpufreq: stats: Defer stats update to
->     cpufreq_stats_record_transition()
->   cpufreq: stats: Remove locking
->   cpufreq: stats: Mark few conditionals with unlikely()
->   cpufreq: stats: Enable stats for fast-switch as well
->   cpufreq: Move traces and update to policy->cur to cpufreq core
->
->  drivers/cpufreq/cpufreq.c        | 11 ++++
->  drivers/cpufreq/cpufreq_stats.c  | 89 ++++++++++++++++++++------------
->  kernel/sched/cpufreq_schedutil.c | 12 +----
->  3 files changed, 69 insertions(+), 43 deletions(-)
->
-> --
+Dear Friend,
 
-The entire series applied as 5.10 material with some minor changelog
-edits in patch [1/5], thanks!
+I am Mr. Dawuda Usman working with the department of Audit and 
+accounting manager here in the Bank, There is this fund that was kept in 
+my custody years ago,please I need your assistance for the transferring 
+of this fund to your bank account
+for both of us benefit for life time investment and the amount is (US$4.
+5M DOLLARS).
+
+I have every inquiry details to make the bank believe you and release 
+the fund in within 5 banking working days with your full co-operation
+with me after success.
+
+Note/ 50% for you why 50% for me after success of the transfer to your
+bank account.
+
+Below information is what I need from you so will can be reaching each 
+other .
+
+1)Private telephone number...
+2)Age...
+3)Nationality...
+4)Occupation ...
+5)Full name ...
+
+Thanks.
+
+Mr. Dawuda Usman
+
+
+
