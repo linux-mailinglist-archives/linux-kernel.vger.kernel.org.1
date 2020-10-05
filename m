@@ -2,285 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B16282F14
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 05:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9338282F16
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 05:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgJEDcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 23:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgJEDcp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 23:32:45 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771A1C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 20:32:45 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id f37so3777892otf.12
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 20:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sf78nyT0NmBrjFhF/2XhwPPL+2uXLT33f/t1fNeaDec=;
-        b=gf6+m4YWcBDxmSk0HBWtr60eVrFKnlCIg1M+DUXpz8nlr/ohLVLU/207vqgDr+49g0
-         iS1TpFNq2LRcBUUHcHVmIv4gb0HxIG605sOJ9gyZ39vPIDLFdftlWCFnDj2iRVNrtbur
-         JpgPQEKniFedzMmyz3pNnLPa5hYrOoJ+mqvYU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sf78nyT0NmBrjFhF/2XhwPPL+2uXLT33f/t1fNeaDec=;
-        b=AhPc4tFpgqfU0+vxc17/DyveofM+T0F0ISjC3qpd2WQgfk0yWUtMPU4B+hpUpwyCb6
-         NPY749Kv0Y0u2Qk+UhVYwS6pfAh61CInS1ElM43T473ieJSZiuTQ2pWjN87CZVYtHzIr
-         MleagrlnYiMeKPGGXP84k83LOlI4xo8lIfieo5KL3sBdXfH5QCkQkTT/nCQo7lOARLko
-         PHDPE0ay8FgK9y1EVJOUmC/RPbbHiSeW+K70voMzAVGC1yWhoRkK6PHBuTciRbwuhedZ
-         pyW8XdQys1X7E2q5fFNp3TPzu1c96SgOR05A3AIcMlV/J1AOM/seYaMRXjxQwPcnvcu4
-         T4tg==
-X-Gm-Message-State: AOAM532yHYfmb0auNdP6FWTcsFU4t/yRM4e3YK6vsDCBId9NTuTX/Xxr
-        hVhcQBzpV6+mxKgWzX73DhHuGxcQKcUE7z4a
-X-Google-Smtp-Source: ABdhPJzan8iEXD8/pqr124x7E+yxrjee2u6OU/3f85k4Vcxvp/tpsnkxmQivFnJHG0SmQWsXI88iCQ==
-X-Received: by 2002:a05:6830:1319:: with SMTP id p25mr8565757otq.38.1601868764258;
-        Sun, 04 Oct 2020 20:32:44 -0700 (PDT)
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com. [209.85.210.41])
-        by smtp.gmail.com with ESMTPSA id 71sm2702971otm.81.2020.10.04.20.32.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Oct 2020 20:32:43 -0700 (PDT)
-Received: by mail-ot1-f41.google.com with SMTP id n61so7295592ota.10
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 20:32:43 -0700 (PDT)
-X-Received: by 2002:a9d:6445:: with SMTP id m5mr9828746otl.36.1601868762506;
- Sun, 04 Oct 2020 20:32:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201004122234.802044-1-acourbot@chromium.org>
-In-Reply-To: <20201004122234.802044-1-acourbot@chromium.org>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Mon, 5 Oct 2020 12:32:30 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MXbTRBBsqcKi-hUtw+pYTVrM2WXBBrEzeTyqqO=B3vuYw@mail.gmail.com>
-Message-ID: <CAPBb6MXbTRBBsqcKi-hUtw+pYTVrM2WXBBrEzeTyqqO=B3vuYw@mail.gmail.com>
-Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is disabled
-To:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725863AbgJEDls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 23:41:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725845AbgJEDls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 23:41:48 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6F92207F7;
+        Mon,  5 Oct 2020 03:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601869308;
+        bh=vgyk5ypX915tVD4vhCLypoGHnjjpPzUVAZJByu6lzog=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vG4Xni21hbDZBADEV2O44raKRMyUZ/+zn/tbA5aZeZ6Mu+qCjxIlWWR953RPOKD1D
+         PNPg+h4V7wyTCT54LDj60KW6X6bKqCZjv3cv0AX6ZMY9XabTxtbUQ2Cx0LIncByKDN
+         bmKrcAYJ/V1nbYwCpTV736nPdoraSGtvdj3uylqM=
+Date:   Mon, 5 Oct 2020 12:41:41 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/4] objtool: x86 instruction decoder and big
+ endian cross compiles
+Message-Id: <20201005124141.6a523ef633248a1eefd724d3@kernel.org>
+In-Reply-To: <20201002151841.4ojt45mtcpkylvdq@treble>
+References: <cover.thread-6ec90b.your-ad-here.call-01601502173-ext-7769@work.hours>
+        <patch-2.thread-6ec90b.git-f1af53789d02.your-ad-here.call-01601502173-ext-7769@work.hours>
+        <20201002151841.4ojt45mtcpkylvdq@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 4, 2020 at 9:22 PM Alexandre Courbot <acourbot@chromium.org> wrote:
->
-> The addition of MT8183 support added a dependency on the SCP remoteproc
-> module. However the initial patch used the "select" Kconfig directive,
-> which may result in the SCP module to not be compiled if remoteproc was
-> disabled. In such a case, mtk-vcodec would try to link against
-> non-existent SCP symbols. "select" was clearly misused here as explained
-> in kconfig-language.txt.
->
-> Replace this by a "depends" directive on at least one of the VPU and
-> SCP modules, to allow the driver to be compiled as long as one of these
-> is enabled, and adapt the code to support this new scenario.
->
-> Also adapt the Kconfig text to explain the extra requirements for MT8173
-> and MT8183.
->
-> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+On Fri, 2 Oct 2020 10:18:41 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-Forgot to send the changelog, so here it is:
+> On Thu, Oct 01, 2020 at 12:17:25AM +0200, Vasily Gorbik wrote:
+> > From: Martin Schwidefsky <schwidefsky@de.ibm.com>
+> > 
+> > Currently objtool seems to be the only tool from build tools needed
+> > which breaks x86 cross compilation on big endian systems. Make the x86
+> > instruction decoder of the objtool usable on big endian machines.
+> > 
+> > Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
+> > Co-developed-by: Vasily Gorbik <gor@linux.ibm.com>
+> > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> 
+> Since this changes the decoder (which is shared with the kernel), please
+> prefix the subject with "x86/insn:" instead of "objtool".
 
-Changes since v1:
-* Added Acked-by from Randy.
-* Fixed typo in Kconfig description.
+Thanks for pointing it.
 
-> ---
->  drivers/media/platform/Kconfig                | 10 +--
->  .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 72 ++++++++++++-------
->  2 files changed, 54 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index a3cb104956d5..98eb62e49ec2 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -253,14 +253,16 @@ config VIDEO_MEDIATEK_VCODEC
->         depends on MTK_IOMMU || COMPILE_TEST
->         depends on VIDEO_DEV && VIDEO_V4L2
->         depends on ARCH_MEDIATEK || COMPILE_TEST
-> +       depends on VIDEO_MEDIATEK_VPU || MTK_SCP
->         select VIDEOBUF2_DMA_CONTIG
->         select V4L2_MEM2MEM_DEV
-> -       select VIDEO_MEDIATEK_VPU
-> -       select MTK_SCP
->         help
->             Mediatek video codec driver provides HW capability to
-> -           encode and decode in a range of video formats
-> -           This driver rely on VPU driver to communicate with VPU.
-> +           encode and decode in a range of video formats on MT8173
-> +           and MT8183.
-> +
-> +           Note that support for MT8173 requires VIDEO_MEDIATEK_VPU to
-> +           also be selected. Support for MT8183 depends on MTK_SCP.
->
->             To compile this driver as modules, choose M here: the
->             modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
-> index 6c2a2568d844..23a80027a8fb 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
-> @@ -13,6 +13,7 @@ struct mtk_vcodec_fw_ops {
->                             mtk_vcodec_ipi_handler handler, const char *name, void *priv);
->         int (*ipi_send)(struct mtk_vcodec_fw *fw, int id, void *buf,
->                         unsigned int len, unsigned int wait);
-> +       void (*release)(struct mtk_vcodec_fw *fw);
->  };
->
->  struct mtk_vcodec_fw {
-> @@ -22,6 +23,8 @@ struct mtk_vcodec_fw {
->         struct mtk_scp *scp;
->  };
->
-> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU)
-> +
->  static int mtk_vcodec_vpu_load_firmware(struct mtk_vcodec_fw *fw)
->  {
->         return vpu_load_firmware(fw->pdev);
-> @@ -64,6 +67,27 @@ static int mtk_vcodec_vpu_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
->         return vpu_ipi_send(fw->pdev, id, buf, len);
->  }
->
-> +static void mtk_vcodec_vpu_release(struct mtk_vcodec_fw *fw)
-> +{
-> +       put_device(&fw->pdev->dev);
-> +}
-> +
-> +static void mtk_vcodec_vpu_reset_handler(void *priv)
-> +{
-> +       struct mtk_vcodec_dev *dev = priv;
-> +       struct mtk_vcodec_ctx *ctx;
-> +
-> +       mtk_v4l2_err("Watchdog timeout!!");
-> +
-> +       mutex_lock(&dev->dev_mutex);
-> +       list_for_each_entry(ctx, &dev->ctx_list, list) {
-> +               ctx->state = MTK_STATE_ABORT;
-> +               mtk_v4l2_debug(0, "[%d] Change to state MTK_STATE_ABORT",
-> +                              ctx->id);
-> +       }
-> +       mutex_unlock(&dev->dev_mutex);
-> +}
-> +
->  static const struct mtk_vcodec_fw_ops mtk_vcodec_vpu_msg = {
->         .load_firmware = mtk_vcodec_vpu_load_firmware,
->         .get_vdec_capa = mtk_vcodec_vpu_get_vdec_capa,
-> @@ -71,8 +95,13 @@ static const struct mtk_vcodec_fw_ops mtk_vcodec_vpu_msg = {
->         .map_dm_addr = mtk_vcodec_vpu_map_dm_addr,
->         .ipi_register = mtk_vcodec_vpu_set_ipi_register,
->         .ipi_send = mtk_vcodec_vpu_ipi_send,
-> +       .release = mtk_vcodec_vpu_release,
->  };
->
-> +#endif  /* IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU) */
-> +
-> +#if IS_ENABLED(CONFIG_MTK_SCP)
-> +
->  static int mtk_vcodec_scp_load_firmware(struct mtk_vcodec_fw *fw)
->  {
->         return rproc_boot(scp_get_rproc(fw->scp));
-> @@ -107,6 +136,11 @@ static int mtk_vcodec_scp_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
->         return scp_ipi_send(fw->scp, id, buf, len, wait);
->  }
->
-> +static void mtk_vcodec_scp_release(struct mtk_vcodec_fw *fw)
-> +{
-> +       scp_put(fw->scp);
-> +}
-> +
->  static const struct mtk_vcodec_fw_ops mtk_vcodec_rproc_msg = {
->         .load_firmware = mtk_vcodec_scp_load_firmware,
->         .get_vdec_capa = mtk_vcodec_scp_get_vdec_capa,
-> @@ -114,23 +148,10 @@ static const struct mtk_vcodec_fw_ops mtk_vcodec_rproc_msg = {
->         .map_dm_addr = mtk_vcodec_vpu_scp_dm_addr,
->         .ipi_register = mtk_vcodec_scp_set_ipi_register,
->         .ipi_send = mtk_vcodec_scp_ipi_send,
-> +       .release = mtk_vcodec_scp_release,
->  };
->
-> -static void mtk_vcodec_reset_handler(void *priv)
-> -{
-> -       struct mtk_vcodec_dev *dev = priv;
-> -       struct mtk_vcodec_ctx *ctx;
-> -
-> -       mtk_v4l2_err("Watchdog timeout!!");
-> -
-> -       mutex_lock(&dev->dev_mutex);
-> -       list_for_each_entry(ctx, &dev->ctx_list, list) {
-> -               ctx->state = MTK_STATE_ABORT;
-> -               mtk_v4l2_debug(0, "[%d] Change to state MTK_STATE_ABORT",
-> -                              ctx->id);
-> -       }
-> -       mutex_unlock(&dev->dev_mutex);
-> -}
-> +#endif  /* IS_ENABLED(CONFIG_MTK_SCP) */
->
->  struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
->                                            enum mtk_vcodec_fw_type type,
-> @@ -143,16 +164,22 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
->
->         switch (type) {
->         case VPU:
-> +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU)
->                 ops = &mtk_vcodec_vpu_msg;
->                 fw_pdev = vpu_get_plat_device(dev->plat_dev);
->                 if (!fw_pdev) {
->                         mtk_v4l2_err("firmware device is not ready");
->                         return ERR_PTR(-EINVAL);
->                 }
-> -               vpu_wdt_reg_handler(fw_pdev, mtk_vcodec_reset_handler,
-> +               vpu_wdt_reg_handler(fw_pdev, mtk_vcodec_vpu_reset_handler,
->                                     dev, rst_id);
->                 break;
-> +#else
-> +               mtk_v4l2_err("no VPU support in this kernel");
-> +               return ERR_PTR(-ENODEV);
-> +#endif
->         case SCP:
-> +#if IS_ENABLED(CONFIG_MTK_SCP)
->                 ops = &mtk_vcodec_rproc_msg;
->                 scp = scp_get(dev->plat_dev);
->                 if (!scp) {
-> @@ -160,6 +187,10 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
->                         return ERR_PTR(-EPROBE_DEFER);
->                 }
->                 break;
-> +#else
-> +               mtk_v4l2_err("no SCP support in this kernel");
-> +               return ERR_PTR(-ENODEV);
-> +#endif
->         default:
->                 mtk_v4l2_err("invalid vcodec fw type");
->                 return ERR_PTR(-EINVAL);
-> @@ -180,14 +211,7 @@ EXPORT_SYMBOL_GPL(mtk_vcodec_fw_select);
->
->  void mtk_vcodec_fw_release(struct mtk_vcodec_fw *fw)
->  {
-> -       switch (fw->type) {
-> -       case VPU:
-> -               put_device(&fw->pdev->dev);
-> -               break;
-> -       case SCP:
-> -               scp_put(fw->scp);
-> -               break;
-> -       }
-> +       fw->ops->release(fw);
->  }
->  EXPORT_SYMBOL_GPL(mtk_vcodec_fw_release);
->
-> --
-> 2.28.0.806.g8561365e88-goog
->
+> 
+> This patch is a bit ugly, but I don't necessarily have a better idea.
+> 
+> Masami?
+
+Yeah, agreed. Maybe we can split that part in different header, but
+that makes it more ugly. And code itself looks good to me.
+(I like insn_field_set() idea :) )
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+
+> -- 
+> Josh
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
