@@ -2,171 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B832832CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B4C2832D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbgJEJMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:12:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40771 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725943AbgJEJMN (ORCPT
+        id S1726032AbgJEJNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgJEJND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:12:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601889132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=NXwve0WxqZeoBW32EWOjz60HzfWSOgOTQAftpXofwqM=;
-        b=Vz8KQleqFOYNvn6hQ2AJdms3vAdVE/U0Mxxp8Z8TAXOM5CM+X6ml2VypAWvLN8aA1ZA3lc
-        JabO7yxnWq3K6NazVxvjZnzJ+LIECL69YhguASJqcOwWUIc8Sw1YrjnvyQOi06TzqnzYcr
-        oMim0zQrtq62EKlPMn2jFZiAZYJUkfw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-YxpvOLN6NPWKnYXBtXMdiw-1; Mon, 05 Oct 2020 05:12:08 -0400
-X-MC-Unique: YxpvOLN6NPWKnYXBtXMdiw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC8451084D94;
-        Mon,  5 Oct 2020 09:11:15 +0000 (UTC)
-Received: from [10.36.114.222] (ovpn-114-222.ams2.redhat.com [10.36.114.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F0E060BFA;
-        Mon,  5 Oct 2020 09:11:08 +0000 (UTC)
-Subject: Re: [PATCH v1 3/5] mm/page_alloc: always move pages to the tail of
- the freelist in unset_migratetype_isolate()
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20200928182110.7050-1-david@redhat.com>
- <20200928182110.7050-4-david@redhat.com>
- <20201002132404.GI4555@dhcp22.suse.cz>
- <df0c45bf-223f-1f0b-ce3d-f2b2e05626bd@redhat.com>
- <20201005065648.GO4555@dhcp22.suse.cz>
- <20201005082049.GI3227@techsingularity.net>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <d466322e-054c-9303-5eb3-833dce410651@redhat.com>
-Date:   Mon, 5 Oct 2020 11:11:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20201005082049.GI3227@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Mon, 5 Oct 2020 05:13:03 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A45C0613A8
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:13:03 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d6so6429751pfn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:13:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ogtuZFvmTG1HNJ4mpeUW7o3oDnuWDjMGFWxAfAyP1zo=;
+        b=pXBuoTsPuRad3vIUhnovelwcdfQU07Dv8Z+Qy++jDhwhdR0Emie8AuwmaT7EjATyD5
+         LWJXWDJX4zrMY4bLBJicioD/na0mCDYuq2dpjz78gJTkkhbAnc0A/SVV0NzAk4fqDYcQ
+         IYDhyezYAoB09Vfd5DndUUTKk+Oq4RxVgefyh+Xt3yYV5l8DzssfHTFxlg/8Ads2xP0d
+         PmUwHzb9HLUSGWdfcXu3hEhFqWRPHxTcgvkj69O9mERUIjTKu/ntyJjo5YyncEcHfMa8
+         T+t+XDrm5I3Rr72jXjfdcF/VGNw6ZH4eVTCOWu/sy14AoLNStskyKOGtqeqaT7HJc2eS
+         O31w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ogtuZFvmTG1HNJ4mpeUW7o3oDnuWDjMGFWxAfAyP1zo=;
+        b=lsImKmVImmdHBMcUmqXGHlDhJFooCzAgmXncJQJRDCIw8XSlJcN07QXogJn4RJ+PFT
+         SM0gCveTyznyfhn8Je8RRMJJ5Rdfg8dr+lhyC0HIjv9hcjGQblbVcv7KGpxYCYv68ySF
+         /05dRE9Bg6yP2R5ruftNqY0ExI/c62OKpjNSeyLsSxPnlCLzWeNhftKbaArePkYsNEBg
+         oMBgAL2bZZzP/sA9+b1Gqfr0CaP0O3GsX0GrwKOlB0k8z+p4edLE12aoGiOTbXna08B4
+         3eH+/mBkTryEMxziCCQqUk5WZxsllU5WhhJfNhoAImCihn1UZ0MxLdZZiI0kvhUeaAez
+         uyEw==
+X-Gm-Message-State: AOAM533fUxbBHmF/cNQfvXleHt602zqq/E/a/ulV8cYw7GkOOdLgynVG
+        8JuCRHeY0h2Ca5+WR3PeS0vM
+X-Google-Smtp-Source: ABdhPJxgjUAEMEy8du3ikSCR/tZO6938wCs3TDv/a9TCwUvzczACrPF5VLwM6m/cCdU0KV26Uh//bA==
+X-Received: by 2002:a63:c40a:: with SMTP id h10mr9314528pgd.210.1601889182847;
+        Mon, 05 Oct 2020 02:13:02 -0700 (PDT)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.googlemail.com with ESMTPSA id c7sm11255028pfj.84.2020.10.05.02.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 02:13:02 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org
+Cc:     svarbanov@mm-sol.com, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v3 0/5] Add PCIe support for SM8250 SoC
+Date:   Mon,  5 Oct 2020 14:42:31 +0530
+Message-Id: <20201005091236.31770-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.10.20 10:20, Mel Gorman wrote:
-> On Mon, Oct 05, 2020 at 08:56:48AM +0200, Michal Hocko wrote:
->> On Fri 02-10-20 17:20:09, David Hildenbrand wrote:
->>> On 02.10.20 15:24, Michal Hocko wrote:
->>>> On Mon 28-09-20 20:21:08, David Hildenbrand wrote:
->>>>> Page isolation doesn't actually touch the pages, it simply isolates
->>>>> pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
->>>>>
->>>>> We already place pages to the tail of the freelists when undoing
->>>>> isolation via __putback_isolated_page(), let's do it in any case
->>>>> (e.g., if order <= pageblock_order) and document the behavior.
->>>>>
->>>>> Add a "to_tail" parameter to move_freepages_block() but introduce a
->>>>> a new move_to_free_list_tail() - similar to add_to_free_list_tail().
->>>>>
->>>>> This change results in all pages getting onlined via online_pages() to
->>>>> be placed to the tail of the freelist.
->>>>
->>>> Is there anything preventing to do this unconditionally? Or in other
->>>> words is any of the existing callers of move_freepages_block benefiting
->>>> from adding to the head?
->>>
->>> 1. mm/page_isolation.c:set_migratetype_isolate()
->>>
->>> We move stuff to the MIGRATE_ISOLATE list, we don't care about the order
->>> there.
->>>
->>> 2. steal_suitable_fallback():
->>>
->>> I don't think we care too much about the order when already stealing
->>> pageblocks ... and the freelist is empty I guess?
->>>
->>> 3. reserve_highatomic_pageblock()/unreserve_highatomic_pageblock()
->>>
->>> Not sure if we really care.
->>
->> Honestly, I have no idea. I can imagine that some atomic high order
->> workloads (e.g. in net) might benefit from cache line hot pages but I am
->> not sure this is really observable.
-> 
-> The highatomic reserve is more concerned that about the allocation
-> succeeding than it is about cache hotness.
-> 
+Hello,
 
-Thanks Mel and Michal. I'll simplify this patch then - and if it turns
-out to be an actual problem, we can change that one instance, adding a
-proper comment.
+This series adds PCIe support for Qualcomm SM8250 SoC with relevant PHYs.
+There are 3 PCIe instances on this SoC each with different PHYs. The PCIe
+controller and PHYs are mostly comaptible with the ones found on SDM845
+SoC, hence the old drivers are modified to add the support.
 
-Thanks!
+This series has been tested on RB5 board with QCA6390 chipset connected
+onboard.
+
+NOTE: This series functionally depends on the following patch:
+https://lore.kernel.org/linux-arm-kernel/1599814203-14441-3-git-send-email-hayashi.kunihiko@socionext.com/
+
+I've dropped a similar patch in v2.
+
+Thanks,
+Mani
+
+Changes in v3:
+
+* Rebased on top of phy/next
+* Renamed ops_sm8250 to ops_1_9_0 to maintain uniformity
+
+Changes in v2:
+
+* Fixed the PHY and PCIe bindings
+* Introduced secondary table in PHY driver to abstract out the common configs.
+* Used a more generic way of configuring BDF to SID mapping
+* Dropped ATU change in favor of a patch spotted by Rob
+
+Manivannan Sadhasivam (5):
+  dt-bindings: phy: qcom,qmp: Add SM8250 PCIe PHY bindings
+  phy: qcom-qmp: Add SM8250 PCIe QMP PHYs
+  dt-bindings: pci: qcom: Document PCIe bindings for SM8250 SoC
+  PCI: qcom: Add SM8250 SoC support
+  PCI: qcom: Add support for configuring BDF to SID mapping for SM8250
+
+ .../devicetree/bindings/pci/qcom,pcie.txt     |   6 +-
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml |   6 +
+ drivers/pci/controller/dwc/Kconfig            |   1 +
+ drivers/pci/controller/dwc/pcie-qcom.c        | 149 ++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.c           | 281 +++++++++++++++++-
+ drivers/phy/qualcomm/phy-qcom-qmp.h           |  18 ++
+ 6 files changed, 455 insertions(+), 6 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
