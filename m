@@ -2,173 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF475283237
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3100728323A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgJEIi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:38:28 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:35969 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgJEIi0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:38:26 -0400
-Received: by mail-io1-f77.google.com with SMTP id q126so4331932iof.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:38:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=fnx1lacPr4RD2lq8lO1WM//67u3yl76a9A5fDLAfxDU=;
-        b=syQeW6Qz8/RIMaPQlZ3+eAHC5Y6kDgM7g0tw9BzBqqeTWojJHDOf0tQLNt/sRzvdag
-         tMia1aofPA76oVue2l0cm0TVKMI6ZK+L83WYIsuJMW7k0U+WzmtQFKo2LyXWR+vbWH0D
-         vIMGw703ONpYvcy/jBEi2WMmOc0vZ4lO8mBfY/Y240VWdVnB9CrhIXWeabNQCM+DSeqn
-         LFDqsXIGhc/Hh4XF1P3Psm5/mXwvup4Kgg1EelK4FcHjF/ScL0sAI0vYFvjiEVu5NtR5
-         dJcg22Fx2tYnCv333mrhnEYFcSGG9jKAtE8IFpC941kccmtnJKyybAzXFxKaRpQBJua9
-         q32Q==
-X-Gm-Message-State: AOAM533PTkyOH+9IW4dxzCx7x5KEP3quqXJwDbdBQ6SlNmHYWQ7CAni8
-        BAAd7es4SiK4m1FBz/Edxjh8HLx+T4iY00S5b0yrW6YKMWW+
-X-Google-Smtp-Source: ABdhPJwKtlc5jFzYGJ999aLM/DCVdDqPAtjjrIZox5y6DsCL1kX5LRtjjyTVED5nf5waWgQaCuV5CcwzmXPEnMCnGGrlEWOWghLM
+        id S1725925AbgJEIig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:38:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50392 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725905AbgJEIic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:38:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601887110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5xo6Xa1W7ONWSL2XGLeIExaC4CCmZ5F3gMyPo8v1BHo=;
+        b=Luk9DWsf1G+5BOsvllVIrtazh36xpVqdIyI6HG/fEaUO2Jb3w4E6F2AyIzyqjfcbzYn6pT
+        udqLfkeWncMlu4wdqM4wbfCJd0UD6AtQgQTFDPYuMc8SWPAy6H7eZVHisG/9xf56MxzPUi
+        LoH7hnWmtNwp29As8JGDtRqkZamvEwg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D2815AF34;
+        Mon,  5 Oct 2020 08:38:30 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 10:38:29 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        tj@kernel.org, akpm@linux-foundation.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Zqiang <qiang.zhang@windriver.com>
+Subject: Re: [RFC PATCH] kthread: do not modify running work
+Message-ID: <20201005083829.GA3673@alley>
+References: <20200926040426.11936-1-hdanton@sina.com>
+ <20201001095151.5640-1-hdanton@sina.com>
+ <20201002023412.2276-1-hdanton@sina.com>
+ <20201004021213.14572-1-hdanton@sina.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d986:: with SMTP id r6mr10957051iln.302.1601887103032;
- Mon, 05 Oct 2020 01:38:23 -0700 (PDT)
-Date:   Mon, 05 Oct 2020 01:38:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bf21d705b0e8674c@google.com>
-Subject: WARNING in __ieee80211_beacon_get
-From:   syzbot <syzbot+18c783c5cf6a781e3e2c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes.berg@intel.com,
-        johannes@sipsolutions.net, kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, ramonreisfontes@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004021213.14572-1-hdanton@sina.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun 2020-10-04 10:12:13, Hillf Danton wrote:
+> 
+> On Fri, 02 Oct 2020 10:32:32 Thomas Gleixner wrote:
+> > On Fri, Oct 02 2020 at 10:34, Hillf Danton wrote:
+> > > On Thu, 01 Oct 2020 15:59:38 +0200 Thomas Gleixner wrote:
+> > >> On Thu, Oct 01 2020 at 17:51, Hillf Danton wrote:
+> > >> Aside of that it's pretty irrelevant whether there is a user at the
+> > >> moment which reschedules work from the callback or not.
+> > >> 
+> > >> It's something which needs to work because its possible from regular
+> > >> work queues as well and makes a lot of sense.
+> > >
+> > > https://lore.kernel.org/lkml/87eemheay8.fsf@nanos.tec.linutronix.de/
+> > 
+> > That's a completely different thing, really. This adds new functionality
+> > without users and exports it.
+> > 
+> > kthread work is modeled after workqueue to address specific
+> > needs.
 
-syzbot found the following issue on:
+Exactly.
 
-HEAD commit:    456afe01 mptcp: ADD_ADDRs with echo bit are smaller
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16047c57900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6c5266df853ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a68fdf900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ef31eb900000
+> > delayed work can be rescheduled from the callback and all
+> > variants of timers support rearming the timer from the callback as well.
 
-The issue was bisected to:
+This might be a bit confusing here. The timer callback just moves
+the work to the list of works that are going to be proceed by the
+kthread. It neither runs the work nor rearms the timer.
 
-commit 7dfd8ac327301f302b03072066c66eb32578e940
-Author: Ramon Fontes <ramonreisfontes@gmail.com>
-Date:   Thu Oct 10 18:13:07 2019 +0000
-
-    mac80211_hwsim: add support for OCB
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13c463a3900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=102463a3900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17c463a3900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+18c783c5cf6a781e3e2c@syzkaller.appspotmail.com
-Fixes: 7dfd8ac32730 ("mac80211_hwsim: add support for OCB")
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6900 at net/mac80211/tx.c:4875 __ieee80211_beacon_get+0xb59/0x1aa0 net/mac80211/tx.c:4875
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 6900 Comm: syz-executor345 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:__ieee80211_beacon_get+0xb59/0x1aa0 net/mac80211/tx.c:4875
-Code: b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e fe 0c 00 00 41 83 4c 24 28 1a eb 0a e8 a7 15 9b f9 <0f> 0b 45 31 e4 e8 9d 15 9b f9 e8 e8 3e 5b 00 31 ff 89 c3 89 c6 e8
-RSP: 0018:ffffc90000da8b40 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff8880a96b5e18 RCX: ffffffff87db68e5
-RDX: ffff888091824540 RSI: ffffffff87db7209 RDI: 0000000000000005
-RBP: 000000000000000b R08: 0000000000000001 R09: ffffc90000da8c88
-R10: 0000000000000007 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8880872c0c80 R14: 0000000000000000 R15: ffffc90000da8c88
- ieee80211_beacon_get_tim+0x88/0x910 net/mac80211/tx.c:4939
- ieee80211_beacon_get include/net/mac80211.h:4909 [inline]
- mac80211_hwsim_beacon_tx+0x111/0x910 drivers/net/wireless/mac80211_hwsim.c:1729
- __iterate_interfaces+0x1e5/0x520 net/mac80211/util.c:792
- ieee80211_iterate_active_interfaces_atomic+0x8d/0x170 net/mac80211/util.c:828
- mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1782
- __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
- __hrtimer_run_queues+0x6a9/0xfc0 kernel/time/hrtimer.c:1588
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1605
- __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:__sanitizer_cov_trace_pc+0x30/0x60 kernel/kcov.c:197
-Code: fe 01 00 65 8b 05 c0 76 8b 7e a9 00 01 ff 00 48 8b 34 24 74 0f f6 c4 01 74 35 8b 82 4c 14 00 00 85 c0 74 2b 8b 82 28 14 00 00 <83> f8 02 75 20 48 8b 8a 30 14 00 00 8b 92 2c 14 00 00 48 8b 01 48
-RSP: 0018:ffffc900048072d8 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffff8880a96b4c00 RCX: ffffffff87dd0f8e
-RDX: ffff888091824540 RSI: ffffffff87dd0f61 RDI: ffff8880a96b5558
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff8880872c296f
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8880a7bbaa20 R14: dffffc0000000000 R15: 0000000000000000
- ieee80211_chanctx_radar_detect+0x1f1/0x3a0 net/mac80211/util.c:4266
- ieee80211_check_combinations+0x3b9/0x880 net/mac80211/util.c:4325
- ieee80211_check_concurrent_iface+0x45b/0x670 net/mac80211/iface.c:309
- ieee80211_runtime_change_iftype net/mac80211/iface.c:1672 [inline]
- ieee80211_if_change_type+0x288/0x620 net/mac80211/iface.c:1712
- ieee80211_change_iface+0x26/0x210 net/mac80211/cfg.c:157
- rdev_change_virtual_intf net/wireless/rdev-ops.h:69 [inline]
- cfg80211_change_iface+0x2ec/0xfe0 net/wireless/util.c:1032
- nl80211_set_interface+0x65c/0x8d0 net/wireless/nl80211.c:3789
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2489
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4423d9
-Code: e8 ac 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffcf9989098 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004423d9
-RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
-RBP: 000000306e616c77 R08: 0000002000000000 R09: 0000002000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080bde
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+But the timer can be set again by any parallel
+kthread_queue_delayed_work() or kthread_mod_delayed_work() call
+even the the timer callback is still running. Module that some code
+is serialized by the lock.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> What is the difference of invoking kthread_queue_delayed_work() from the
+> callback from kthread_mod_delayed_work()?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+kthread_queue_delayed_work() does nothing when the work is already
+queued. kthread_mod_delayed_work() removes the work from the queue
+if it is there and queue it again with the newly requested delay.
+
+
+> > So having a consistent behaviour accross all these facilities makes
+> > absolutely sense and I don't agree with your sentiment in the changelog
+> > at all.
+> > 
+> > Just because it does not make sense to you is not a justification for
+> > making stuff inconsistent. You still have not provided a technical
+> > reason why this change is needed.
+> 
+> Given the queue method, it is no win to modify delayed work from callback
+> in any case because "we are not adding interfaces just because we can."
+
+What about ipmi_kthread_worker_func()? It is delayed work that
+queues itself.
+
+
+> Nor does it help much in regard of a running work that is delayed two
+> minutes because for instance it is not clear that it is a one-off work
+> with resources released in the callback.
+
+This is up to the other API user to use the API the right way.
+
+As it has already been mentioned, kthread_worker() API should behave
+the same as work_queue API. It is needed for kthreads that have special
+needs, for example, real time priority. It should be easy to migrate
+between the two APIs. Different behavior would be just a call for
+problems.
+
+The dream is that all custom kthreads are converted into either
+the classic work_queues or kthread_worker API. People are really
+creative when doing the main loop and it is easy to do it wrong.
+It causes then problems, for example, with suspend/resume,
+livepatching.
+
+What is the motivation for this patch, please?
+Does it solve some real problem?
+
+Best Regards,
+Petr
