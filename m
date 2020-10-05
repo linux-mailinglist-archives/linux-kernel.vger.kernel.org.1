@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C76283BDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D05283BE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgJEQBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgJEQBL (ORCPT
+        id S1727324AbgJEQB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:01:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58002 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727204AbgJEQBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:01:11 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9553EC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:01:10 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h7so6573756wre.4
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 09:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F38mYIS/X8WyXHWOLkz8wuYqStbWhqnLSCK7WusSBkg=;
-        b=GK57Nxy/OTB2bIJciaPrbDjU2sHiyot+50pQ2m5FW7HuIwHGJhv3j2yy9HQYKMargZ
-         LOSnHsb3W0lqhzu46Zz2ljmS2ivy+eEYiqizC1IVLU4/FEAWpyW6T4O55G+z/pSBwDm/
-         K49lhz4Cg8Y5R04yvR84W0GYJ45F01wM6S9p/DMEwSOlnb1peLFlwL51ujSgMzOY4/6i
-         Ic4X/u3t9NZkAMMr9AXCDwFy359DRdr8slvGR9AOiQMTsA8TEIzdon5Afqyviv8OL3DI
-         UrID089P1T2Kj6UAZjIWXe5uxnWuq5smjmloM/nDyS+tDmK/T5WavOHy1VUUmpSxuDeN
-         2TdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F38mYIS/X8WyXHWOLkz8wuYqStbWhqnLSCK7WusSBkg=;
-        b=iG9YxD/usrQDBb+aaoEn8wg73FH7RAYur8K/1dY16X4Tps416Kgwv8k5vWay3efBZR
-         h/vjH0ivTG7nKnTnWH/cQVUJCiWAXK//kK8WpjppOVCnou0RE46tYedxCt7NwZ9llvld
-         6QatRr3HhkN4FclzmActWG1QLOqaJAXwQ1ifB0/l1HjnB1dO61B96X3YIozA3d1QKGXm
-         ZyneeNA2rKZTZJxGOZ73jrFQOqMWAvHUj9n3iudZF7oakVexlA49hcFEiNQ9VBCr53qp
-         BjlFcEPGlp9oDd13HdT6h+MoZ4sx0/2HdtfCI6nvfFQKR5BHl0ikXdxCb4UMF3DSmj1w
-         lqew==
-X-Gm-Message-State: AOAM530pPQaYx7WHP1FmYpGKl9RMMlGlbAz3hzlkFOkEttwnoicOddl5
-        qwq5wDsY95FC/jHOCC4ER12iEja/OtzaO7nvyFN1RQ==
-X-Google-Smtp-Source: ABdhPJxqK7BunDKr3q1TD4Lm3VUncdK+5sIvfkPRcNilb6WHgWFEJqYzsuqa09MZ/AYjykQNbq7vnfoSU2sjAJbERC0=
-X-Received: by 2002:adf:f101:: with SMTP id r1mr66271wro.314.1601913669054;
- Mon, 05 Oct 2020 09:01:09 -0700 (PDT)
+        Mon, 5 Oct 2020 12:01:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601913684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WzM75OJ7dMVOtSH9g1wN1IBCIBR91LOKcFE/xZZuN3E=;
+        b=PP+m1cjHHxMXtHQTM9HqWBX4DkKYpoRHX3ubPH63vJDQu93fotrwySi3ckmtaR9BCMqZo0
+        dn7OuK+Bk+9B9bR4e8vvOB3Zx2FmLoG2+KY0+WXi/OabFhbnlYicL7srHSBwnFXIQBUjpD
+        z/biTB21zBxAg/DKJsBeTy6UQ/GXRME=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-24-8PACy3Q2Nu-ACd69Gp7OEA-1; Mon, 05 Oct 2020 12:01:18 -0400
+X-MC-Unique: 8PACy3Q2Nu-ACd69Gp7OEA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4885C107ACF7;
+        Mon,  5 Oct 2020 16:01:16 +0000 (UTC)
+Received: from gondolin (ovpn-112-191.ams2.redhat.com [10.36.112.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DCCB60C84;
+        Mon,  5 Oct 2020 16:01:10 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 18:01:07 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        schnelle@linux.ibm.com, pmorel@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] vfio-pci/zdev: define the vfio_zdev header
+Message-ID: <20201005180107.5d027441.cohuck@redhat.com>
+In-Reply-To: <8a71af3b-f8fc-48b2-45c6-51222fd2455b@linux.ibm.com>
+References: <1601668844-5798-1-git-send-email-mjrosato@linux.ibm.com>
+        <1601668844-5798-4-git-send-email-mjrosato@linux.ibm.com>
+        <20201002154417.20c2a7ef@x1.home>
+        <8a71af3b-f8fc-48b2-45c6-51222fd2455b@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-2-elver@google.com>
- <20200929142411.GC53442@C02TD0UTHF1T.local> <CANpmjNNQGrpq+fBh4OypP9aK+-548vbCbKYiWQnSHESM0SLVzw@mail.gmail.com>
- <20200929150549.GE53442@C02TD0UTHF1T.local>
-In-Reply-To: <20200929150549.GE53442@C02TD0UTHF1T.local>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 5 Oct 2020 18:00:57 +0200
-Message-ID: <CAG_fn=WKEtVSRLASSZV1A9dnPGoaZM_DgJeH5Q1WcLcFBqH00g@mail.gmail.com>
-Subject: Re: [PATCH v3 01/10] mm: add Kernel Electric-Fence infrastructure
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 5:06 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Sep 29, 2020 at 04:51:29PM +0200, Marco Elver wrote:
-> > On Tue, 29 Sep 2020 at 16:24, Mark Rutland <mark.rutland@arm.com> wrote:
-> > [...]
-> > >
-> > > From other sub-threads it sounds like these addresses are not part of
-> > > the linear/direct map. Having kmalloc return addresses outside of the
-> > > linear map is going to break anything that relies on virt<->phys
-> > > conversions, and is liable to make DMA corrupt memory. There were
-> > > problems of that sort with VMAP_STACK, and this is why kvmalloc() is
-> > > separate from kmalloc().
-> > >
-> > > Have you tested with CONFIG_DEBUG_VIRTUAL? I'd expect that to scream.
-> > >
-> > > I strongly suspect this isn't going to be safe unless you always use an
-> > > in-place carevout from the linear map (which could be the linear alias
-> > > of a static carevout).
-> >
-> > That's an excellent point, thank you! Indeed, on arm64, a version with
-> > naive static-pool screams with CONFIG_DEBUG_VIRTUAL.
-> >
-> > We'll try to put together an arm64 version using a carveout as you suggest.
->
-> Great, thanks!
->
-> Just to be clear, the concerns for DMA and virt<->phys conversions also
-> apply to x86 (the x86 virt<->phys conversion behaviour is more forgiving
-> in the common case, but still has cases that can go wrong).
+On Mon, 5 Oct 2020 09:52:25 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
 
-To clarify, shouldn't kmalloc/kmem_cache allocations used with DMA be
-allocated with explicit GFP_DMA?
-If so, how practical would it be to just skip such allocations in
-KFENCE allocator?
+> On 10/2/20 5:44 PM, Alex Williamson wrote:
+
+> > Can you discuss why a region with embedded capability chain is a better
+> > solution than extending the VFIO_DEVICE_GET_INFO ioctl to support a
+> > capability chain and providing this info there?  This all appears to be
+> > read-only info, so what's the benefit of duplicating yet another  
+> 
+> It is indeed read-only info, and the device region was defined as such.
+> 
+> I would not necessarily be opposed to extending VFIO_DEVICE_GET_INFO 
+> with these defined as capabilities; I'd say a primary motivating factor 
+> to putting these in their own region was to avoid stuffing a bunch of 
+> s390-specific capabilities into a general-purpose ioctl response.
+
+Can't you make the zdev code register the capabilities? That would put
+them nicely into their own configurable part.
+
+> 
+> But if you're OK with that notion, I can give that a crack in v3.
+> 
+> > capability chain in a region?  It would also be possible to define four
+> > separate device specific regions, one for each of these capabilities
+> > rather than creating this chain.  It just seems like a strange approach  
+> 
+> I'm not sure if creating separate regions would be the right approach 
+> though; these are just the first 4.  There will definitely be additional 
+> capabilities in support of new zPCI features moving forward, I'm not 
+> sure how many regions we really want to end up with.  Some might be as 
+> small as a single field, which seems more in-line with capabilities vs 
+> an entire region.
+
+If we are expecting more of these in the future, going with GET_INFO
+capabilities when adding new ones seems like the best approach.
+
