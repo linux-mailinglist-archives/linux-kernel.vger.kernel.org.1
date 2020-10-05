@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5262831A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD622831A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgJEINc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:13:32 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:21606 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726017AbgJEINb (ORCPT
+        id S1726217AbgJEIOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgJEIOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:13:31 -0400
-X-IronPort-AV: E=Sophos;i="5.77,338,1596466800"; 
-   d="scan'208";a="58929006"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 05 Oct 2020 17:13:29 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id AF63840061A8;
-        Mon,  5 Oct 2020 17:13:26 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [RESEND PATCH v2 2/2] dt-bindings: can: rcar_can: Document r8a774e1 support
-Date:   Mon,  5 Oct 2020 09:13:19 +0100
-Message-Id: <20201005081319.29322-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005081319.29322-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20201005081319.29322-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Mon, 5 Oct 2020 04:14:31 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31AAC0613CE;
+        Mon,  5 Oct 2020 01:14:30 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y11so9768295lfl.5;
+        Mon, 05 Oct 2020 01:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j5XN9V3BvyveRl6mO6Y9d7mYUzGE03RcVJt79XhJ7IQ=;
+        b=KJF9tlE8rf+w1UQmusIv1x7UZEK1DkFtHevrVRo772QLFCCOk5Wcd3cpAMhbRW2oR2
+         jowUHm4Ktm8vyMkgH/I5glKWfEcIbqzoaluMw7LnzSFosIoUBD+Dzsj6ICKmeJ2Lck72
+         xILnA7r2Bwo0gIJg/bThuTorUqyRDXdb59CBQwBx/ORhomckfMbHTX5EBmk2+Wqxz4Ub
+         aUu9RhcGQYW5agpuVGc+Q9kx0KNqpleaw2YycJCUEVxtCJGRhlw4TufvTFwUxb7Zvr62
+         68AooIdDyRtFyQYIDKQLTd43GOaSzI0QNgHD1OGiIW9szRzL88BjQz3D9lzNXeE63rKs
+         1yVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j5XN9V3BvyveRl6mO6Y9d7mYUzGE03RcVJt79XhJ7IQ=;
+        b=ofIPpIHizje+w63zE6+tUcJEmZZtn3tjLPtbGIwnhoQvAGzRoZ1efB0reZ9zSGfJ3k
+         +1UPX8vTzipAOHNZYhCbztnJKS7+afVvxIEy4mwOdZtBHMuDPp6AED2OCUmjZmEVXaAG
+         RCeKrA8A81GWa4UDrqym/e1HUQrgyEsdmATYgpKijzFaxT02rPEuLqhDu6RulBWq4n+m
+         t2Cyhd2Cvd+VnakgFWleoqNPHKUzmmd1l1Oo9jWUwWJBpPxYdwZ3y21jj15wvzWjxhmb
+         rGWvWz4UOpvfeJViLWSiIPVT1Ywg7oxlzpEb8FAZfAl1tAvRCAxAgWDeOjrovrGkXK2G
+         9+7Q==
+X-Gm-Message-State: AOAM532Z1iV3aNCQblkeTF6/4uiQDfNiyN0c+F/+lI9JASzdviSSyXve
+        8qBGiEecIiFhm0XHX3Td7EnqlHabBcE=
+X-Google-Smtp-Source: ABdhPJzemIzFCplJkXyIIB0ijx9JVIz3iQi1oUYyAHp4PAE0N6jP7Kqk1pDCb29mXjAqgLfFHYGpZQ==
+X-Received: by 2002:a19:c355:: with SMTP id t82mr5617098lff.251.1601885668987;
+        Mon, 05 Oct 2020 01:14:28 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id q24sm2605472lfo.149.2020.10.05.01.14.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 01:14:28 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930203618.GC2110@Asurada-Nvidia>
+ <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
+ <20200930213244.GA10573@Asurada-Nvidia>
+ <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
+ <20201001012630.GA28240@Asurada-Nvidia>
+ <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
+ <20201001024850.GA28456@Asurada-Nvidia> <20201001102316.GF3919720@ulmo>
+ <20201001110425.GB1272@Asurada>
+ <b966844e-4289-3ff0-9512-852f8419a664@gmail.com>
+ <20201005071338.GA425362@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2b1a3ee6-d556-4172-3314-0c852d3c6916@gmail.com>
+Date:   Mon, 5 Oct 2020 11:14:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201005071338.GA425362@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document SoC specific bindings for RZ/G2H (R8A774E1) SoC.
+05.10.2020 10:13, Thierry Reding пишет:
+...
+> Have you also seen that sun50i-iommu does look up the SMMU from a
+> phandle using of_find_device_by_node()? So I think you've shown yourself
+> that even "modern" drivers avoid global pointers and look up via
+> phandle.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/net/can/rcar_can.txt | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I have no problem with the lookup by phandle and I'm all for it. It's
+now apparent to me that you completely missed my point, but that should
+be my fault that I haven't conveyed it properly from the start. I just
+wanted to avoid the incompatible DT changes which could break older DTs
++ I simply wanted to improve the older code without introducing new
+features, that's it.
 
-diff --git a/Documentation/devicetree/bindings/net/can/rcar_can.txt b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-index 85c6551b602a..21d6780874cc 100644
---- a/Documentation/devicetree/bindings/net/can/rcar_can.txt
-+++ b/Documentation/devicetree/bindings/net/can/rcar_can.txt
-@@ -9,6 +9,7 @@ Required properties:
- 	      "renesas,can-r8a774a1" if CAN controller is a part of R8A774A1 SoC.
- 	      "renesas,can-r8a774b1" if CAN controller is a part of R8A774B1 SoC.
- 	      "renesas,can-r8a774c0" if CAN controller is a part of R8A774C0 SoC.
-+	      "renesas,can-r8a774e1" if CAN controller is a part of R8A774E1 SoC.
- 	      "renesas,can-r8a7778" if CAN controller is a part of R8A7778 SoC.
- 	      "renesas,can-r8a7779" if CAN controller is a part of R8A7779 SoC.
- 	      "renesas,can-r8a7790" if CAN controller is a part of R8A7790 SoC.
-@@ -37,8 +38,8 @@ Required properties:
- - pinctrl-0: pin control group to be used for this controller.
- - pinctrl-names: must be "default".
- 
--Required properties for R8A774A1, R8A774B1, R8A774C0, R8A7795, R8A7796,
--R8A77965, R8A77990, and R8A77995:
-+Required properties for R8A774A1, R8A774B1, R8A774C0, R8A774E1, R8A7795,
-+R8A7796, R8A77965, R8A77990, and R8A77995:
- For the denoted SoCs, "clkp2" can be CANFD clock. This is a div6 clock and can
- be used by both CAN and CAN FD controller at the same time. It needs to be
- scaled to maximum frequency if any of these controllers use it. This is done
--- 
-2.17.1
-
+Anyways, after yours comments I started to look at how the interconnect
+patches could be improved and found new things, like that OPPs now
+support ICC and that EMC has a working EMC_STAT, I also discovered
+syscon and simple-mfd. This means that we won't need the global pointers
+at all neither for SMMU, nor for interconnect, nor for EMC drivers :)
