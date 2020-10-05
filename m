@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67319284282
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C8628428A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgJEW35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 18:29:57 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:57309 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgJEW35 (ORCPT
+        id S1727218AbgJEWcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 18:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727203AbgJEWcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:29:57 -0400
-X-Greylist: delayed 136059 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 18:29:56 EDT
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 0AA07240002;
-        Mon,  5 Oct 2020 22:29:53 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 00:29:53 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     a.zummo@towertech.it, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        len.brown@intel.com, pavel@ucw.cz,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-rtc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [Question] rtc wake behavior and sysfs
-Message-ID: <20201005222953.GD2804081@piout.net>
-References: <CAMdYzYrYdDYF_Y_TwQ65u=Ymu2_8Rs9KWm_TfXcaPGTwucT=jg@mail.gmail.com>
+        Mon, 5 Oct 2020 18:32:39 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EC7C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 15:32:39 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d6so232332plo.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 15:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8qMW+aSE29mfc0dpFg0kQzfT3L9pQ5NkimhwaHnFfZs=;
+        b=D1tSC+bumb62FgIGuo+8IB6KKGvW+KNTkWvAdSYY2bRIgEq9C6S+Z88icDO1jVROY5
+         n3yUAhc2SyGGCNaXTN6Wdf0jb9giw3GvZunM3yF7hSg2h8WjkjjigyBynFZKlcbw91VJ
+         umb88IgY2RRQJQ89lS+ajaXOsC/+8/NtDUE/Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8qMW+aSE29mfc0dpFg0kQzfT3L9pQ5NkimhwaHnFfZs=;
+        b=mM/lJfrgqGVa4rXAilVjwXk9rPjQpbdKVuCF7Vk2iX40q8R5wP9tin0pZE2a5PoUAD
+         XH0XEuoJZA4lPXq62gxfpZy3+Gy+DTed6nM7Otj7hiJce8A8RSxi/nG2jKe5ZZRLzLJg
+         s4fQyPzhnjcW6H1Usk3zJVVE6KOPm7/PaZSAtlnIEpwccQIYyDzkIklFlSewv0khMmor
+         GxNyeV5wjroc3TDqyvjaohqyA5SwTugFESTFONaU6/ttOf4sEDeuuuXOsYnk0/TS6wzx
+         5ucdkWq5GdqkcuF0qXCev75WFS8RxdzE9J0NxngeyAhspk7cf8WLpk+tVre3bZkz2hCu
+         FvKA==
+X-Gm-Message-State: AOAM530IM3Jd357nH168IxrocKBCuYE4bhfma7AeiEqQxkGeUwO6ONKT
+        S/8rKYx1YcJfgLKgTUOCUJmFkg==
+X-Google-Smtp-Source: ABdhPJwwpxHZjbDiRNiSwr9DTv3L1UTxRsObme+bs9Tfb+P06XarACrEbQKo1i6IJJSR6rcMe+2zFw==
+X-Received: by 2002:a17:90a:d905:: with SMTP id c5mr1521662pjv.24.1601937159034;
+        Mon, 05 Oct 2020 15:32:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k3sm940040pff.71.2020.10.05.15.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 15:32:38 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH resend] seccomp: Make duplicate listener detection non-racy
+Date:   Mon,  5 Oct 2020 15:30:54 -0700
+Message-Id: <160193704489.2698420.14892403272288554518.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201005014401.490175-1-jannh@google.com>
+References: <20201005014401.490175-1-jannh@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMdYzYrYdDYF_Y_TwQ65u=Ymu2_8Rs9KWm_TfXcaPGTwucT=jg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2020 09:13:08-0400, Peter Geis wrote:
-> Good Morning,
+On Mon, 5 Oct 2020 03:44:01 +0200, Jann Horn wrote:
+> Currently, init_listener() tries to prevent adding a filter with
+> SECCOMP_FILTER_FLAG_NEW_LISTENER if one of the existing filters already
+> has a listener. However, this check happens without holding any lock that
+> would prevent another thread from concurrently installing a new filter
+> (potentially with a listener) on top of the ones we already have.
 > 
-> While testing suspend to ram on the Ouya, I encountered an interesting
-> issue with the rtc-tps65910 driver.
-> Attempting to use rtc-wake on the default configuration returned:
-> rtcwake: /dev/rtc0 not enabled for wakeup events
-> This is due to:
-> eb5eba4ef722 drivers/rtc/rtc-tps65910.c: enable/disable wake in suspend/resume
-> This commit changed this driver's behavior to not enable wakeup by
-> default, but enables it when entering sleep mode.
-> This seems to be odd behavior to me.
-> Looking at a few other rtc drivers show they simply enable themselves
-> as wakeup sources by default.
+> Theoretically, this is also a data race: The plain load from
+> current->seccomp.filter can race with concurrent writes to the same
+> location.
 > 
-> I also found the sysfs entries are at /sys/devices/ ..
-> /tps65910-rtc/power but are missing at /sys/class/rtc/rtc0/power/
-> 
-> I have two questions.
->  - Should the sysfs wakeup entries be missing at /sys/class/rtc/rtc0/power/ ?
+> [...]
 
-I would be in /sys/class/rtc/rtc0/device/power
+Applied, thanks!
 
->  - Shouldn't a rtc be enabled as a wakeup source by default?
-> 
+I added the stable CC, but I'd agree: it's not so urgent that I need to
+get this into Linus's tree ahead of the regular merge window. :)
 
-The short answer is no, the reason being that not all RTCs are connected
-to an IRQ or a pin that can wakeup or start the platform. What should be
-done is enabling wakeup only when interrupts are available or the
-wakeup-source property is in the rtc device tree node.
+[1/1] seccomp: Make duplicate listener detection non-racy
+      https://git.kernel.org/kees/c/ed2d479d3335
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Kees Cook
+
