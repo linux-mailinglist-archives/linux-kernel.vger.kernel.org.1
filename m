@@ -2,167 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF5A2836B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486162836C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgJENj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgJENj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:39:28 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CD0420756;
-        Mon,  5 Oct 2020 13:39:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601905167;
-        bh=CKM1wiIeFzqvHmo0o+SIVvTlYWd5wGgfK9tUsLJKEWI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=daqmAbFNxPj/Sj6BaL6WyxNtCjQtE1j7egFu2nYTyIUjjP3v53bMT4MCmakcMkACm
-         x+QEf4FkSlYnEGwp7xXuqSm7TP8Iwu/6WJY5h42zPj57Xp/nUct9Vzb0lXlNVHgNFX
-         i1nfKAtvv4K8Dc1qIDXDRjdvfo8SyCXodd0YUUKw=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Julien Grall <julien@xen.org>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org
-Subject: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn correctly
-Date:   Mon,  5 Oct 2020 22:39:20 +0900
-Message-Id: <160190516028.40160.9733543991325671759.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S1726012AbgJENm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgJENm2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:42:28 -0400
+Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E1BC0613CE;
+        Mon,  5 Oct 2020 06:42:27 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp1.goneo.de (Postfix) with ESMTP id 263E223F06B;
+        Mon,  5 Oct 2020 15:42:26 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.985
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.985 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.085, BAYES_00=-1.9] autolearn=ham
+Received: from smtp1.goneo.de ([127.0.0.1])
+        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id KpSmZlKZ73U7; Mon,  5 Oct 2020 15:42:24 +0200 (CEST)
+Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
+        by smtp1.goneo.de (Postfix) with ESMTPSA id BD5F723F037;
+        Mon,  5 Oct 2020 15:42:23 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 15:42:19 +0200
+From:   Lars Poeschel <poeschel@lemonage.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201005134219.bvy7lsy4vguzevhk@lem-wkst-02.lemonage>
+References: <20201002123048.3073128-1-poeschel@lemonage.de>
+ <20201002124616.GB3348424@kroah.com>
+ <20201002130844.udikqwzspp6zlyhh@lem-wkst-02.lemonage>
+ <20201002133512.GB3386034@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002133512.GB3386034@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
-address conversion.
+On Fri, Oct 02, 2020 at 03:35:12PM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Oct 02, 2020 at 03:08:44PM +0200, Lars Poeschel wrote:
+> > On Fri, Oct 02, 2020 at 02:46:16PM +0200, Greg Kroah-Hartman wrote:
+> > > On Fri, Oct 02, 2020 at 02:30:47PM +0200, poeschel@lemonage.de wrote:
+> > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > 
+> > > > This adds a class to exported pwm devices.
+> > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > dev_uevent_filter function does filter-out devices without a bus or
+> > > > class.
+> > > > This was already addressed in commit
+> > > > commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
+> > > > but this did cause problems and the commit got reverted with
+> > > > commit c289d6625237 ("Revert "pwm: Set class for exported channels in
+> > > > sysfs"")
+> > > > Problem with the previous approach was, that there is a clash if we have
+> > > > multiple pwmchips:
+> > > > 	echo 0 > pwmchip0/export
+> > > > 	echo 0 > pwmchip1/export
+> > > > would both export /sys/class/pwm/pwm0 .
+> > > > 
+> > > > Now this patch changes the sysfs interface. We do include the pwmchip
+> > > > number into the pwm directory that gets exported.
+> > > > With the example above we get:
+> > > > 	/sys/class/pwm/pwm-0-0
+> > > > 	/sys/class/pwm/pwm-1-0
+> > > > We maintain ABI backward compatibility through symlinks.
+> > > > 	/sys/class/pwm/pwmchip0/pwm0
+> > > > 	/sys/class/pwm/pwmchip1/pwm0
+> > > > are now symbolic links to the new names.
+> > > > 
+> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+> > > > ---
+> > > >  drivers/pwm/sysfs.c | 57 +++++++++++++++++++++++++++++++++++++--------
+> > > >  1 file changed, 47 insertions(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
+> > > > index 449dbc0f49ed..c708da17a857 100644
+> > > > --- a/drivers/pwm/sysfs.c
+> > > > +++ b/drivers/pwm/sysfs.c
+> > > > @@ -240,8 +240,10 @@ static void pwm_export_release(struct device *child)
+> > > >  
+> > > >  static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
+> > > >  {
+> > > > +	struct pwm_chip *chip = dev_get_drvdata(parent);
+> > > >  	struct pwm_export *export;
+> > > >  	char *pwm_prop[2];
+> > > > +	char *link_name;
+> > > >  	int ret;
+> > > >  
+> > > >  	if (test_and_set_bit(PWMF_EXPORTED, &pwm->flags))
+> > > > @@ -256,25 +258,39 @@ static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
+> > > >  	export->pwm = pwm;
+> > > >  	mutex_init(&export->lock);
+> > > >  
+> > > > +	export->child.class = parent->class;
+> > > >  	export->child.release = pwm_export_release;
+> > > >  	export->child.parent = parent;
+> > > >  	export->child.devt = MKDEV(0, 0);
+> > > >  	export->child.groups = pwm_groups;
+> > > > -	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
+> > > > +	dev_set_name(&export->child, "pwm-%u-%u", chip->base, pwm->hwpwm);
+> > > >  
+> > > >  	ret = device_register(&export->child);
+> > > > -	if (ret) {
+> > > > -		clear_bit(PWMF_EXPORTED, &pwm->flags);
+> > > > -		put_device(&export->child);
+> > > > -		export = NULL;
+> > > > -		return ret;
+> > > > +	if (ret)
+> > > > +		goto error;
+> > > > +
+> > > > +	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
+> > > > +	if (link_name == NULL) {
+> > > > +		ret = -ENOMEM;
+> > > > +		goto dev_unregister;
+> > > >  	}
+> > > > -	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=pwm%u", pwm->hwpwm);
+> > > > +
+> > > > +	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=%s",
+> > > > +			export->child.kobj.name);
+> > > >  	pwm_prop[1] = NULL;
+> > > >  	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
+> > > 
+> > > Do you still need to do this by hand?  Why can't this uevent field
+> > > belong to the class and have it create this for you automatically when
+> > > the device is added?
+> > 
+> > I did not add this with my patch, it was there before and I wonder, what
+> > purpose it served, since the uevent was filtered because there was no
+> > class there.
+> > Now we have a class and now it works and this is what happens:
+> > 
+> > /sys/class/pwm# echo 0 > pwmchip1/export 
+> > KERNEL[2111.952725] add      /devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1/pwm-1-0 (pwm)
+> > ACTION=add
+> > DEVPATH=/devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1/pwm-1-0
+> > SEQNUM=1546
+> > SUBSYSTEM=pwm
+> > 
+> > KERNEL[2111.955155] change   /devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1 (pwm)
+> > ACTION=change
+> > DEVPATH=/devices/platform/ocp/48302000.epwmss/48302200.pwm/pwm/pwmchip1
+> > EXPORT=pwm-1-0
+> > SEQNUM=1547
+> > SUBSYSTEM=pwm
+> > 
+> > The first event is the event from device_register. It informs us that we
+> > now have a new pwm-1-0. Nice.
+> > The second is the event done here "by hand". It informs us, that
+> > pwmchip1 changed. It has a new export now. For me personally this is not
+> > needed, but also I don't think it is wrong.
+> > You decide!
+> 
+> If the uevent was being filtered out anyway, and never sent, then let's
+> just drop the thing as there is nothing to keep backwards compatible.
 
-In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-assumes the given virtual address is in contiguous kernel memory
-area, it can not convert the per-cpu memory if it is allocated on
-vmalloc area (depends on CONFIG_SMP).
+I had a sleepless night about this. I felt something is wrong with this.
+I investigated a bit:
+- for the kobject_uevent_env line git blame found this commit 552c02e3e7cfe
+  ("pwm: Send a uevent on the pwmchip device upon channel sysfs
+  (un)export")
+- the commit message explicitly mentions my use case! (udev event to
+  change permissions of exported pwm)
+- git log says the commit right before is this one: commit c289d6625237
+  ("Revert "pwm: Set class for exported channels in sysfs""). This is
+  the commit, that reverts the previous addition of the pwmchip class
+  right as is to the pwm. The one that had the sysfs name clash.
 
-Without this fix, the Dom0 kernel will fail to boot with following
-errors.
+I must have done something horribly wrong. I tried again and now I can
+get this udev change event. I don't know what I did wrong. The event is
+not filtered, because this is sent on behalf of the parent that had the
+class attached right from the start. This is my mistake. I am very sorry
+for the noise.
+I think best is now to keep everything as is, right ?
 
-[    0.466172] Xen: initializing cpu0
-[    0.469601] ------------[ cut here ]------------
-[    0.474295] WARNING: CPU: 0 PID: 1 at arch/arm64/xen/../../arm/xen/enlighten.c:153 xen_starting_cpu+0x160/0x180
-[    0.484435] Modules linked in:
-[    0.487565] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc4+ #4
-[    0.493895] Hardware name: Socionext Developer Box (DT)
-[    0.499194] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-[    0.504836] pc : xen_starting_cpu+0x160/0x180
-[    0.509263] lr : xen_starting_cpu+0xb0/0x180
-[    0.513599] sp : ffff8000116cbb60
-[    0.516984] x29: ffff8000116cbb60 x28: ffff80000abec000
-[    0.522366] x27: 0000000000000000 x26: 0000000000000000
-[    0.527754] x25: ffff80001156c000 x24: fffffdffbfcdb600
-[    0.533129] x23: 0000000000000000 x22: 0000000000000000
-[    0.538511] x21: ffff8000113a99c8 x20: ffff800010fe4f68
-[    0.543892] x19: ffff8000113a9988 x18: 0000000000000010
-[    0.549274] x17: 0000000094fe0f81 x16: 00000000deadbeef
-[    0.554655] x15: ffffffffffffffff x14: 0720072007200720
-[    0.560037] x13: 0720072007200720 x12: 0720072007200720
-[    0.565418] x11: 0720072007200720 x10: 0720072007200720
-[    0.570801] x9 : ffff8000100fbdc0 x8 : ffff800010715208
-[    0.576182] x7 : 0000000000000054 x6 : ffff00001b790f00
-[    0.581564] x5 : ffff800010bbf880 x4 : 0000000000000000
-[    0.586945] x3 : 0000000000000000 x2 : ffff80000abec000
-[    0.592327] x1 : 000000000000002f x0 : 0000800000000000
-[    0.597716] Call trace:
-[    0.600232]  xen_starting_cpu+0x160/0x180
-[    0.604309]  cpuhp_invoke_callback+0xac/0x640
-[    0.608736]  cpuhp_issue_call+0xf4/0x150
-[    0.612728]  __cpuhp_setup_state_cpuslocked+0x128/0x2c8
-[    0.618030]  __cpuhp_setup_state+0x84/0xf8
-[    0.622192]  xen_guest_init+0x324/0x364
-[    0.626097]  do_one_initcall+0x54/0x250
-[    0.630003]  kernel_init_freeable+0x12c/0x2c8
-[    0.634428]  kernel_init+0x1c/0x128
-[    0.637988]  ret_from_fork+0x10/0x18
-[    0.641635] ---[ end trace d95b5309a33f8b27 ]---
-[    0.646337] ------------[ cut here ]------------
-[    0.651005] kernel BUG at arch/arm64/xen/../../arm/xen/enlighten.c:158!
-[    0.657697] Internal error: Oops - BUG: 0 [#1] SMP
-[    0.662548] Modules linked in:
-[    0.665676] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.9.0-rc4+ #4
-[    0.673398] Hardware name: Socionext Developer Box (DT)
-[    0.678695] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-[    0.684338] pc : xen_starting_cpu+0x178/0x180
-[    0.688765] lr : xen_starting_cpu+0x144/0x180
-[    0.693188] sp : ffff8000116cbb60
-[    0.696573] x29: ffff8000116cbb60 x28: ffff80000abec000
-[    0.701955] x27: 0000000000000000 x26: 0000000000000000
-[    0.707344] x25: ffff80001156c000 x24: fffffdffbfcdb600
-[    0.712718] x23: 0000000000000000 x22: 0000000000000000
-[    0.718107] x21: ffff8000113a99c8 x20: ffff800010fe4f68
-[    0.723481] x19: ffff8000113a9988 x18: 0000000000000010
-[    0.728863] x17: 0000000094fe0f81 x16: 00000000deadbeef
-[    0.734245] x15: ffffffffffffffff x14: 0720072007200720
-[    0.739626] x13: 0720072007200720 x12: 0720072007200720
-[    0.745008] x11: 0720072007200720 x10: 0720072007200720
-[    0.750390] x9 : ffff8000100fbdc0 x8 : ffff800010715208
-[    0.755771] x7 : 0000000000000054 x6 : ffff00001b790f00
-[    0.761153] x5 : ffff800010bbf880 x4 : 0000000000000000
-[    0.766534] x3 : 0000000000000000 x2 : 00000000deadbeef
-[    0.771916] x1 : 00000000deadbeef x0 : ffffffffffffffea
-[    0.777304] Call trace:
-[    0.779819]  xen_starting_cpu+0x178/0x180
-[    0.783898]  cpuhp_invoke_callback+0xac/0x640
-[    0.788325]  cpuhp_issue_call+0xf4/0x150
-[    0.792317]  __cpuhp_setup_state_cpuslocked+0x128/0x2c8
-[    0.797619]  __cpuhp_setup_state+0x84/0xf8
-[    0.801779]  xen_guest_init+0x324/0x364
-[    0.805683]  do_one_initcall+0x54/0x250
-[    0.809590]  kernel_init_freeable+0x12c/0x2c8
-[    0.814016]  kernel_init+0x1c/0x128
-[    0.817583]  ret_from_fork+0x10/0x18
-[    0.821226] Code: d0006980 f9427c00 cb000300 17ffffea (d4210000)
-[    0.827415] ---[ end trace d95b5309a33f8b28 ]---
-[    0.832076] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[    0.839815] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-
-Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/arm/xen/enlighten.c |    2 +-
- include/xen/arm/page.h   |    3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-index e93145d72c26..a6ab3689b2f4 100644
---- a/arch/arm/xen/enlighten.c
-+++ b/arch/arm/xen/enlighten.c
-@@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
- 	pr_info("Xen: initializing cpu%d\n", cpu);
- 	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
- 
--	info.mfn = virt_to_gfn(vcpup);
-+	info.mfn = percpu_to_gfn(vcpup);
- 	info.offset = xen_offset_in_page(vcpup);
- 
- 	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
-diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
-index 39df751d0dc4..ac1b65470563 100644
---- a/include/xen/arm/page.h
-+++ b/include/xen/arm/page.h
-@@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
- 	})
- #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) << XEN_PAGE_SHIFT))
- 
-+#define percpu_to_gfn(v)	\
-+	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
-+
- /* Only used in PV code. But ARM guests are always HVM. */
- static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
- {
-
+Regards,
+Lars
