@@ -2,109 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FEE2833B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D4E2833BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgJEJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:58:00 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:43583 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725946AbgJEJ6A (ORCPT
+        id S1725982AbgJEKAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJEKAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:58:00 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id CB9F55C00E3;
-        Mon,  5 Oct 2020 05:57:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 05:57:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=j7Hb1wf+e5XjEJLlP3xxbR10RaE
-        /X6Xn+BPDC4KLb4A=; b=oDhWeNe+V1p85nICHNZPjUEgFbmHgTjAn1JqLfMnqbJ
-        Nb9gb/OjwZimkvQkOnIzq3VvLYQLImMGRvngcnp7gsfQrRBbDSjvPsLmoG9cxj2v
-        7MjFXd28Yg+sMmi+u4AtoIxKp8+YdcivdAFV/cV3fAdhWOGf+2gzx2a9jEsZRdso
-        C1GFXn2WwDuJ2dceq5R/osb2JQvMTtaklCy5LdG/EQTaOyKPO7bCsbcZt/x5dCGj
-        mkMTBe/Ym4pydFg4FwgJykU8ZBE46wOW3jVjxdPeM+ztOnXArLRcenZlKWOLp05V
-        meuJW9jwbnJPLjDmDLevKViNfmNlGHOLyazdcw472+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=j7Hb1w
-        f+e5XjEJLlP3xxbR10RaE/X6Xn+BPDC4KLb4A=; b=fu8+KmVyRjXapYgMzwSA2/
-        xOQOgz36o7cwei1LZ+5zCUAV7BuhLku2NlBR7/j6AL0162hJ6IJxs11d4qPQbwC7
-        aBivzEgsBgiRXIE0/G4gBF/aKARQeJEpO5RpksRwwwvkBNIPo3X51wZzIJPhJA3s
-        0DSayrLrDcoLFybFMix3i9mUJEZ/QNGNYo3HpgAeyNd/8d0wCnNwYPLnVERmjPgh
-        a1F3Mx92Q0k5MVRY/yzpuGILGL3YFe5bMjfXeaX9SpvJB1HcQWpMIfIn5CHZxp93
-        oxZGvGP8XfzBCroeKNVueExFEyFLk+xhPuZe796lSFbyCUSdvzQjEyJeB0cBSgag
-        ==
-X-ME-Sender: <xms:Ju56XzqDx-kQHhmGroWAiGAesDbZKCI5jnV8UHja5B21ulCSaRyMAg>
-    <xme:Ju56X9oXR1fgOiamlVxDDEjbDLC7RQqEPsxO_THphoNuxT9bqGITGGNyHebzV_6qK
-    omvXhF55fx-cPtT2vM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddvfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeegnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:Ju56XwNcCwlQmbJGX05FrHdpj3hq5NjMw4_JAxW5CRzOtEo9fzZBTw>
-    <xmx:Ju56X25LKMA0ODq_WoqbTnMvegB8GoWy7kxnTmc9ql9h8bJa-ZL9CA>
-    <xmx:Ju56Xy62mC7Omi7c8jFSCpkXGw1uc8MbN0OFeTP6zzCEVz-Yoj5Xtg>
-    <xmx:Ju56X5ZMbjixJ5dJRzvtHjedzE4JrL10FY3MeHZIAUyPTqHwkviiPw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 46FB03280063;
-        Mon,  5 Oct 2020 05:57:58 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 11:57:57 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/25] ASoC: sun8i-codec: Correct DAPM widget types
-Message-ID: <20201005095757.ddu77zku3qgvteqw@gilmour.lan>
-References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-6-samuel@sholland.org>
+        Mon, 5 Oct 2020 06:00:16 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB72C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 03:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BL9qfT/NSdfFJcSF1d1oFJL7/9iZjoCO0TgcUMANNRY=; b=QKdNo8GUWKAZlDsn8zITkCMZjo
+        ePXgAJ0Xjg+/Wrpz9mV160HNIMjP6AuygYrxAVvMNtzMKLdD+4pNIi3ZjRk4RCp0JcJ7FlfJEJaqQ
+        qxEJG2MJ75KRw1ZLNVR+0IWsd0eC5Wd6pkAxHdAXRASd/7XmwdToXcoLMX6Ckw0atXKG7CPBYKMRQ
+        LiJspLRshThe9lu8V7BvXPc94IGCyT2I4Fxb9KhDmQmdc1SJyAGkh4sfyAlphjF7MWj1MyQyQ3DiM
+        lugFFfkTs5KYmVo6jIBQpCzTkJm+2Axd8r/5qMZSOpk8je0OpmEQEXKdEOU7FmdUx5P9NbGNSKk1J
+        IG84EgIg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPNHm-0007Zk-Gq; Mon, 05 Oct 2020 10:00:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AA71A3011C6;
+        Mon,  5 Oct 2020 11:59:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6BF9629E88427; Mon,  5 Oct 2020 11:59:58 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 11:59:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, svens@linux.ibm.com
+Subject: [PATCH] lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu
+ variables"
+Message-ID: <20201005095958.GJ2651@hirez.programming.kicks-ass.net>
+References: <20200917131647.2b55ebb1@gandalf.local.home>
+ <20200930181323.GF2628@hirez.programming.kicks-ass.net>
+ <20201002135644.7903d0e5@gandalf.local.home>
+ <20201002181313.GM29142@worktop.programming.kicks-ass.net>
+ <20201005075206.GI2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wxerx6zzkh5xrucc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-6-samuel@sholland.org>
+In-Reply-To: <20201005075206.GI2651@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 05, 2020 at 09:52:06AM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 02, 2020 at 08:13:13PM +0200, Peter Zijlstra wrote:
+> > > checks within the irq disabling to get rid of the using cpu pointers within
+> > > preemptable code warnings
+> > 
+> > Ah, I think I lost a s/__this_cpu_read/raw_cpu_read/ somewhere. The
+> > thing is, if we're preemptible/migratable it will be 0 on both CPUs and
+> > it doesn't matter which 0 we read. If it is !0, IRQs will be disabled
+> > and we can't get migrated.
+> 
+> Aargh, this isn't in fact correct, and that means I have to revert:
+> 
+>   fddf9055a60d ("lockdep: Use raw_cpu_*() for per-cpu variables")
+> 
+> The trouble is that on a bunch of architectures we can read the other
+> CPUs variable from the new CPU, long after the old CPU has continued
+> executing things.
+> 
+> So this really needs to be this_cpu_read(). Luckily Sven has already
+> fixed s390, but let me go audit all the other archs.
 
---wxerx6zzkh5xrucc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+---
+Subject: lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Mon Oct 5 09:56:57 CEST 2020
 
-On Wed, Sep 30, 2020 at 09:11:28PM -0500, Samuel Holland wrote:
-> Whie the aif_in and aif_out widget types are handled exactly the same in
-> the core DAPM code, a future widget event hook will need the correct
-> widget type to derive the associated substream. Clean up the widget type
-> for that reason, and so these widgets will match newly-added widgets for
-> the other AIFs.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+The thinking in commit:
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+  fddf9055a60d ("lockdep: Use raw_cpu_*() for per-cpu variables")
 
-Maxime
+is flawed. While it is true that when we're migratable both CPUs will
+have a 0 value, it doesn't hold that when we do get migrated in the
+middle of a raw_cpu_op(), the old CPU will still have 0 by the time we
+get around to reading it on the new CPU.
 
---wxerx6zzkh5xrucc
-Content-Type: application/pgp-signature; name="signature.asc"
+Luckily, the reason for that commit (s390 using preempt_disable()
+instead of preempt_disable_notrace() in their percpu code), has since
+been fixed by commit:
 
------BEGIN PGP SIGNATURE-----
+  1196f12a2c96 ("s390: don't trace preemption in percpu macros")
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3ruJQAKCRDj7w1vZxhR
-xb0IAQDeWgRLx9mDjKVNJCLUkFj/IKyXKEUtH3jABqwczUj0QwEAy981d8ABWYw0
-6QNUDXOb/Ijb1sIGwFNv3ImMCOhd+g0=
-=OvNO
------END PGP SIGNATURE-----
+An audit of arch/*/include/asm/percpu*.h shows there are no other
+architectures affected by this particular issue.
 
---wxerx6zzkh5xrucc--
+Fixes: fddf9055a60d ("lockdep: Use raw_cpu_*() for per-cpu variables")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/linux/lockdep.h |   26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
+
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -537,19 +537,19 @@ do {									\
+ #define lock_map_release(l)			lock_release(l, _THIS_IP_)
+ 
+ #ifdef CONFIG_PROVE_LOCKING
+-# define might_lock(lock) 						\
++# define might_lock(lock)						\
+ do {									\
+ 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, 0, 0, 0, 1, NULL, _THIS_IP_);	\
+ 	lock_release(&(lock)->dep_map, _THIS_IP_);			\
+ } while (0)
+-# define might_lock_read(lock) 						\
++# define might_lock_read(lock)						\
+ do {									\
+ 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, 0, 0, 1, 1, NULL, _THIS_IP_);	\
+ 	lock_release(&(lock)->dep_map, _THIS_IP_);			\
+ } while (0)
+-# define might_lock_nested(lock, subclass) 				\
++# define might_lock_nested(lock, subclass)				\
+ do {									\
+ 	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
+ 	lock_acquire(&(lock)->dep_map, subclass, 0, 1, 1, NULL,		\
+@@ -561,29 +561,21 @@ DECLARE_PER_CPU(int, hardirqs_enabled);
+ DECLARE_PER_CPU(int, hardirq_context);
+ DECLARE_PER_CPU(unsigned int, lockdep_recursion);
+ 
+-/*
+- * The below lockdep_assert_*() macros use raw_cpu_read() to access the above
+- * per-cpu variables. This is required because this_cpu_read() will potentially
+- * call into preempt/irq-disable and that obviously isn't right. This is also
+- * correct because when IRQs are enabled, it doesn't matter if we accidentally
+- * read the value from our previous CPU.
+- */
+-
+-#define __lockdep_enabled	(debug_locks && !raw_cpu_read(lockdep_recursion))
++#define __lockdep_enabled	(debug_locks && !this_cpu_read(lockdep_recursion))
+ 
+ #define lockdep_assert_irqs_enabled()					\
+ do {									\
+-	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirqs_enabled)); \
++	WARN_ON_ONCE(__lockdep_enabled && !this_cpu_read(hardirqs_enabled)); \
+ } while (0)
+ 
+ #define lockdep_assert_irqs_disabled()					\
+ do {									\
+-	WARN_ON_ONCE(__lockdep_enabled && raw_cpu_read(hardirqs_enabled)); \
++	WARN_ON_ONCE(__lockdep_enabled && this_cpu_read(hardirqs_enabled)); \
+ } while (0)
+ 
+ #define lockdep_assert_in_irq()						\
+ do {									\
+-	WARN_ON_ONCE(__lockdep_enabled && !raw_cpu_read(hardirq_context)); \
++	WARN_ON_ONCE(__lockdep_enabled && !this_cpu_read(hardirq_context)); \
+ } while (0)
+ 
+ #define lockdep_assert_preemption_enabled()				\
+@@ -591,7 +583,7 @@ do {									\
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+ 		     __lockdep_enabled			&&		\
+ 		     (preempt_count() != 0		||		\
+-		      !raw_cpu_read(hardirqs_enabled)));		\
++		      !this_cpu_read(hardirqs_enabled)));		\
+ } while (0)
+ 
+ #define lockdep_assert_preemption_disabled()				\
+@@ -599,7 +591,7 @@ do {									\
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_COUNT)	&&		\
+ 		     __lockdep_enabled			&&		\
+ 		     (preempt_count() == 0		&&		\
+-		      raw_cpu_read(hardirqs_enabled)));			\
++		      this_cpu_read(hardirqs_enabled)));		\
+ } while (0)
+ 
+ #else
