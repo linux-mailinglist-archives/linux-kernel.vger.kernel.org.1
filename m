@@ -2,294 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282AD28335A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DBF283341
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgJEJck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgJEJci (ORCPT
+        id S1726074AbgJEJcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:32:03 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:46650 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgJEJcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:32:38 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A900CC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:32:38 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id l126so6476421pfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=EKDeQ+IosCKCy2VJYLI4jBwAgZsjG0uDvbjuAjcvB74=;
-        b=LSHVzIitOUNuiMhH/Z1zVVHIssPgiRlKh8Xmy0SSJDZgbbJKb32iUs0kwnCxzhbV8Y
-         OxyGg7r+kwCTvq30UyoZjNAEN9hQS/2DDCdfU1RJCNikitvlsQqT4KTH7nPvy4j26eoN
-         MzyzqN7OOTzIIRh0ICOud1sZFkZ9hXvazQTzorgd8F3qnZ83O1efuSXr2V1Wuj621dfJ
-         lsIWfsdzrCAyGxoAPzM3fci8OBvLVPY5c797qKKYQwUgb3Q4j+vDeFWDAqC2V8dp4k9C
-         g8oudm/Z9qkIp1d8PdXxWid/ySbXgCRStJhAo+hQgg0SwCnEVs5QoqYPLt9DjlHMZ7y2
-         Bbhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=EKDeQ+IosCKCy2VJYLI4jBwAgZsjG0uDvbjuAjcvB74=;
-        b=AnkVQiSEW1UiI9YKV0vIsbmK5UJFmLn11J2JkxnkvXy1MEdQFQAm/vYKcqns3TuREd
-         o4Tbha2l04AnoMLf01k0o2MnBUKGbifaS6UywgoPWjdhUwSyw1fX9IGw4/bPB5CsOtgl
-         WDDN2JYJHowkBe41ewqj06HcAXV8d2e3VHO08gPcO6uubWBkBAYMF105VLhnnVDwDLUb
-         u6Xj6M2JhtL/yca3K9V4flBr9YvP+A87AgvXjPg6e9V1NGBk3usoynpJUsg45jfHgsWw
-         sFNZo48qxpj/y2cA/KkwRIww8wYDlhF/Ky9vCsf8QcILGblGT3Z7hxgjH0XHuLeUgmGe
-         A/NA==
-X-Gm-Message-State: AOAM531h50iBLkYqAk8YxToTredbmkOwZ7sbC11k1YqN9WIKQiDAGRWc
-        mblD7LMNeP/mEzgxO9VOkvP5pB2ZEOfUCZA=
-X-Google-Smtp-Source: ABdhPJwZ64lOMWCTtda7JMZhcuWAv9qtW3jvGVmrfDJyxRlNSRj72fpF254Jlf81utB8Nk6w7DOdLg==
-X-Received: by 2002:a05:6a00:2d5:b029:152:197a:a23a with SMTP id b21-20020a056a0002d5b0290152197aa23amr16237233pft.66.1601890358121;
-        Mon, 05 Oct 2020 02:32:38 -0700 (PDT)
-Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id 124sm11298894pfd.132.2020.10.05.02.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:32:37 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org
-Cc:     svarbanov@mm-sol.com, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v4 5/5] PCI: qcom: Add support for configuring BDF to SID mapping for SM8250
-Date:   Mon,  5 Oct 2020 15:01:52 +0530
-Message-Id: <20201005093152.13489-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005093152.13489-1-manivannan.sadhasivam@linaro.org>
-References: <20201005093152.13489-1-manivannan.sadhasivam@linaro.org>
+        Mon, 5 Oct 2020 05:32:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1601890319; x=1604482319;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=1FWyO26EtRcjGFr49qBWhvPfN3oYaEOEA6/etTa35cc=;
+        b=IXH+CjX0vXv7ZfwdgrkFIwqhRGNyYjmw+69ZFt30AL26WSrW23Q7XHK+jfZEM202
+        VSO6Y+CpWPJu7oShj9DIekGZWAcgdvzhN19Q8NTJA008QUxb0md5zT7z4VabediA
+        r3q8o22bcYE1rDPjbbLC85WNXUe+efqJQyV8ciVmB2w=;
+X-AuditID: c39127d2-269ff70000001c25-8c-5f7ae80f711d
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 41.7A.07205.F08EA7F5; Mon,  5 Oct 2020 11:31:59 +0200 (CEST)
+Received: from [172.16.23.108] ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020100511315922-551541 ;
+          Mon, 5 Oct 2020 11:31:59 +0200 
+Subject: Re: [PATCH v2 1/5] media: mt9p031: Add support for 8 bit and 10 bit
+ formats
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Hemp <c.hemp@phytec.de>,
+        Jan Luebbe <jlu@pengutronix.de>
+References: <20200930105133.139981-1-s.riedmueller@phytec.de>
+ <20200930114231.GH5689@pendragon.ideasonboard.com>
+ <eacb7df5-bc68-3047-b893-4c1ba4975278@phytec.de>
+ <20201001235336.GI3722@pendragon.ideasonboard.com>
+From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
+Message-ID: <d372da06-301b-c51f-d164-444cb6e341a5@phytec.de>
+Date:   Mon, 5 Oct 2020 11:31:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201001235336.GI3722@pendragon.ideasonboard.com>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 05.10.2020 11:31:59,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 05.10.2020 11:31:59
+X-TNEFEvaluated: 1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOLMWRmVeSWpSXmKPExsWyRoCBS5f/RVW8wb6fohZf58xjteicuITd
+        4vKuOWwWPRu2slos2/SHyeLTlm9MDmwesztmsnpsWtXJ5jHvZKBH/18Dj8+b5AJYo7hsUlJz
+        MstSi/TtErgyzjV8YC1otKw4dkWxgfGJXhcjJ4eEgInEwav9rF2MXBxCAtsYJW4sXcAC4Zxm
+        lHjW/IKpi5GDQ1ggTGL3C0GQBhEBC4neRdMZQWqYBW4xSvy5sQ6qG8jp2n+GBaSKTcBJYvH5
+        DjYQm1fARmL6jH52EJtFQEVi58HZ7CBDRQUiJXbusIQoEZQ4OfMJC0iYU8Beom+1CshICYEr
+        jBIrL5xghLhUSOL04rPMIDazgJnEvM0PoWxxiVtP5jNB2NoSyxa+Zp7AKDQLydhZSFpmIWmZ
+        haRlASPLKkah3Mzk7NSizGy9gozKktRkvZTUTYzAyDg8Uf3SDsa+OR6HGJk4GA8xSnAwK4nw
+        6oVVxAvxpiRWVqUW5ccXleakFh9ilOZgURLn3cBbEiYkkJ5YkpqdmlqQWgSTZeLglGpgzDo2
+        5+zfJofKisIPUnZV3F258tc+dPcmqZW7X5+h6duXeu7jf4lzX3rnqVxsTj20dVI9V4J50sS7
+        dn/SxMMtc++rbDqYqz9VL+Dsiq1skTP/mP79GyLneOOr1HVb9dnNX7m+XeZyO8GqcHff70cW
+        T9Tfyl07+TKCrfX1E8ZMz4ofoseWLz48Q4mlOCPRUIu5qDgRAAiRaxl6AgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For SM8250, we need to write the BDF to SID mapping in PCIe controller
-register space for proper working. This is accomplished by extracting
-the BDF and SID values from "iommu-map" property in DT and writing those
-in the register address calculated from the hash value of BDF. In case
-of collisions, the index of the next entry will also be written.
+Hi Laurent,
 
-For the sake of it, let's introduce a "config_sid" callback and do it
-conditionally for SM8250.
+On 02.10.20 01:53, Laurent Pinchart wrote:
+> Hi Stefan,
+>=20
+> On Thu, Oct 01, 2020 at 11:07:00AM +0200, Stefan Riedm=C3=BCller wrote:
+>> On 30.09.20 13:42, Laurent Pinchart wrote:
+>>> On Wed, Sep 30, 2020 at 12:51:29PM +0200, Stefan Riedmueller wrote:
+>>>> From: Christian Hemp <c.hemp@phytec.de>
+>>>>
+>>>> Aside from 12 bit monochrome or color format the sensor implicitly
+>>>> supports 10 and 8 bit formats as well by simply dropping the
+>>>> corresponding LSBs.
+>>>
+>>> That's not how it should work though. If you set the format on
+>>> MEDIA=5FBUS=5FFMT=5FSGRBG8=5F1X8 through the pipeline for instance, you=
+ will end
+>>> up capturing the 8 LSB, not the 8 MSB.
+>>>
+>>> What's your use case for this ?
+>>
+>> I use this sensor in combination with an i.MX 6 and i.MX 6UL. When the
+>> sensor is connected with 12 bit (or 10 bit on the i.MX 6UL) and I set
+>> MEDIA=5FBUS=5FFMT=5FSGRBG8=5F1X8 through the pipeline the CSI interface =
+drops the
+>> unused 4 LSB (or 2 LSB on the i.MX 6UL) so I get the 8 MSB from my 12 bit
+>> sensor.
+>=20
+> Is that the PIXEL=5FBIT bit in CSI=5FCSICR1 for the i.MX6UL ? If so I thi=
+nk
+> this should be handled in the imx7-media-csi driver. You could set the
+> format to MEDIA=5FBUS=5FFMT=5FSGRBG10=5F1X10 on the sink pad of the CSI a=
+nd to
+> MEDIA=5FBUS=5FFMT=5FSGRBG8=5F1X8 on the source pad to configure this. I d=
+on't
+> think the sensor driver should be involved, otherwise we'd have to patch
+> all sensor drivers. From a sensor point of view, it outputs 12-bit
+> Bayer, not 8-bit.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Ah, I had it wrong. What you say makes total sense. I will take another loo=
+k=20
+at it and also try to work your suggestion from below in.
+
+Thanks,
+Stefan
+
+>=20
+> Now there's a caveat. When used with the i.MX6UL, I assume you connected
+> D[11:2] of the sensor to D[9:0] of the i.MX6UL, right ? The i.MX6UL
+> doesn't support 12-bit inputs, so it should accept
+> MEDIA=5FBUS=5FFMT=5FSGRBG12=5F1X12 on its sink pad. In this case, as D[1:=
+0] of
+> the sensor are left unconnected, I think you should set data-shift to 2
+> and bus-width to 10 in DT on the sensor side. The MT9P031 driver should
+> parse that, and output MEDIA=5FBUS=5FFMT=5FSGRBG10=5F1X10 instead of
+> MEDIA=5FBUS=5FFMT=5FSGRBG12=5F1X12 in that case.
+>=20
+>> Does this clarify things? Maybe the description in the commit message is=
+ not
+>> accurate enough or did I get something wrong?
+>>
+>>>> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+>>>> [jlu@pengutronix.de: simplified by dropping v4l2=5Fcolorspace handling]
+>>>> Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
+>>>> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+>>>> ---
+>>>> Changes in v2:
+>>>>    - Use unsigned int for num=5Ffmts and loop variable in find=5Fdataf=
+mt
+>>>>    - Remove superfluous const qualifier from find=5Fdatafmt
+>>>> ---
+>>>>    drivers/media/i2c/mt9p031.c | 50 +++++++++++++++++++++++++++++-----=
 ---
- drivers/pci/controller/dwc/Kconfig     |   1 +
- drivers/pci/controller/dwc/pcie-qcom.c | 138 +++++++++++++++++++++++++
- 2 files changed, 139 insertions(+)
-
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 044a3761c44f..3e9ccdc45ee1 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -169,6 +169,7 @@ config PCIE_QCOM
- 	depends on OF && (ARCH_QCOM || COMPILE_TEST)
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
-+	select CRC8
- 	help
- 	  Say Y here to enable PCIe controller support on Qualcomm SoCs. The
- 	  PCIe controller uses the DesignWare core plus Qualcomm-specific
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 3167ad66413d..5e1b88ffc23c 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/crc8.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
-@@ -57,6 +58,7 @@
- #define PCIE20_PARF_SID_OFFSET			0x234
- #define PCIE20_PARF_BDF_TRANSLATE_CFG		0x24C
- #define PCIE20_PARF_DEVICE_TYPE			0x1000
-+#define PCIE20_PARF_BDF_TO_SID_TABLE_N		0x2000
- 
- #define PCIE20_ELBI_SYS_CTRL			0x04
- #define PCIE20_ELBI_SYS_CTRL_LT_ENABLE		BIT(0)
-@@ -101,6 +103,9 @@
- 
- #define QCOM_PCIE_2_1_0_MAX_SUPPLY	3
- #define QCOM_PCIE_2_1_0_MAX_CLOCKS	5
-+
-+#define QCOM_PCIE_CRC8_POLYNOMIAL (BIT(2) | BIT(1) | BIT(0))
-+
- struct qcom_pcie_resources_2_1_0 {
- 	struct clk_bulk_data clks[QCOM_PCIE_2_1_0_MAX_CLOCKS];
- 	struct reset_control *pci_reset;
-@@ -183,6 +188,16 @@ struct qcom_pcie_ops {
- 	void (*deinit)(struct qcom_pcie *pcie);
- 	void (*post_deinit)(struct qcom_pcie *pcie);
- 	void (*ltssm_enable)(struct qcom_pcie *pcie);
-+	int (*config_sid)(struct qcom_pcie *pcie);
-+};
-+
-+/* sid info structure */
-+struct qcom_pcie_sid_info_t {
-+	u16 bdf;
-+	u8 pcie_sid;
-+	u8 hash;
-+	u32 smmu_sid;
-+	u32 value;
- };
- 
- struct qcom_pcie {
-@@ -193,6 +208,8 @@ struct qcom_pcie {
- 	struct phy *phy;
- 	struct gpio_desc *reset;
- 	const struct qcom_pcie_ops *ops;
-+	struct qcom_pcie_sid_info_t *sid_info;
-+	u32 sid_info_len;
- 	int gen;
- };
- 
-@@ -1257,6 +1274,120 @@ static int qcom_pcie_link_up(struct dw_pcie *pci)
- 	return !!(val & PCI_EXP_LNKSTA_DLLLA);
- }
- 
-+static int qcom_pcie_get_iommu_map(struct qcom_pcie *pcie)
-+{
-+	/* iommu map structure */
-+	struct {
-+		u32 bdf;
-+		u32 phandle;
-+		u32 smmu_sid;
-+		u32 smmu_sid_len;
-+	} *map;
-+	struct device *dev = pcie->pci->dev;
-+	int i, size = 0;
-+	u32 smmu_sid_base;
-+
-+	of_get_property(dev->of_node, "iommu-map", &size);
-+	if (!size)
-+		return 0;
-+
-+	map = kzalloc(size, GFP_KERNEL);
-+	if (!map)
-+		return -ENOMEM;
-+
-+	of_property_read_u32_array(dev->of_node,
-+		"iommu-map", (u32 *)map, size / sizeof(u32));
-+
-+	pcie->sid_info_len = size / (sizeof(*map));
-+	pcie->sid_info = devm_kcalloc(dev, pcie->sid_info_len,
-+				sizeof(*pcie->sid_info), GFP_KERNEL);
-+	if (!pcie->sid_info) {
-+		kfree(map);
-+		return -ENOMEM;
-+	}
-+
-+	/* Extract the SMMU SID base from the first entry of iommu-map */
-+	smmu_sid_base = map[0].smmu_sid;
-+	for (i = 0; i < pcie->sid_info_len; i++) {
-+		pcie->sid_info[i].bdf = map[i].bdf;
-+		pcie->sid_info[i].smmu_sid = map[i].smmu_sid;
-+		pcie->sid_info[i].pcie_sid =
-+				pcie->sid_info[i].smmu_sid - smmu_sid_base;
-+	}
-+
-+	kfree(map);
-+
-+	return 0;
-+}
-+
-+static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
-+{
-+	void __iomem *bdf_to_sid_base = pcie->parf +
-+		PCIE20_PARF_BDF_TO_SID_TABLE_N;
-+	u8 qcom_pcie_crc8_table[CRC8_TABLE_SIZE];
-+	int ret, i;
-+
-+	ret = qcom_pcie_get_iommu_map(pcie);
-+	if (ret)
-+		return ret;
-+
-+	if (!pcie->sid_info)
-+		return 0;
-+
-+	crc8_populate_msb(qcom_pcie_crc8_table, QCOM_PCIE_CRC8_POLYNOMIAL);
-+
-+	/* Registers need to be zero out first */
-+	memset_io(bdf_to_sid_base, 0, CRC8_TABLE_SIZE * sizeof(u32));
-+
-+	/* Initial setup for boot */
-+	for (i = 0; i < pcie->sid_info_len; i++) {
-+		struct qcom_pcie_sid_info_t *sid_info = &pcie->sid_info[i];
-+		u16 bdf_be = cpu_to_be16(sid_info->bdf);
-+		u32 val;
-+		u8 hash;
-+
-+		hash = crc8(qcom_pcie_crc8_table, (u8 *)&bdf_be, sizeof(bdf_be),
-+			0);
-+
-+		val = readl(bdf_to_sid_base + hash * sizeof(u32));
-+
-+		/* If there is a collision, look for next available entry */
-+		while (val) {
-+			u8 current_hash = hash++;
-+			u8 next_mask = 0xff;
-+
-+			/* If NEXT field is NULL then update it with next hash */
-+			if (!(val & next_mask)) {
-+				int j;
-+
-+				val |= (u32)hash;
-+				writel(val, bdf_to_sid_base +
-+					current_hash * sizeof(u32));
-+
-+				/* Look for sid_info of current hash and update it */
-+				for (j = 0; j < pcie->sid_info_len; j++) {
-+					if (pcie->sid_info[j].hash !=
-+						current_hash)
-+						continue;
-+
-+					pcie->sid_info[j].value = val;
-+					break;
-+				}
-+			}
-+
-+			val = readl(bdf_to_sid_base + hash * sizeof(u32));
-+		}
-+
-+		val = sid_info->bdf << 16 | sid_info->pcie_sid << 8 | 0;
-+		writel(val, bdf_to_sid_base + hash * sizeof(u32));
-+
-+		sid_info->hash = hash;
-+		sid_info->value = val;
-+	}
-+
-+	return 0;
-+}
-+
- static int qcom_pcie_host_init(struct pcie_port *pp)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-@@ -1290,6 +1421,12 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
- 	if (ret)
- 		goto err;
- 
-+	if (pcie->ops->config_sid) {
-+		ret = pcie->ops->config_sid(pcie);
-+		if (ret)
-+			goto err;
-+	}
-+
- 	return 0;
- err:
- 	qcom_ep_reset_assert(pcie);
-@@ -1367,6 +1504,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
- 	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
- 	.post_init = qcom_pcie_post_init_2_7_0,
- 	.post_deinit = qcom_pcie_post_deinit_2_7_0,
-+	.config_sid = qcom_pcie_config_sid_sm8250,
- };
- 
- static const struct dw_pcie_ops dw_pcie_ops = {
--- 
-2.17.1
-
+>>>>    1 file changed, 40 insertions(+), 10 deletions(-)
+>>>>
+>>>> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+>>>> index dc23b9ed510a..2e6671ef877c 100644
+>>>> --- a/drivers/media/i2c/mt9p031.c
+>>>> +++ b/drivers/media/i2c/mt9p031.c
+>>>> @@ -116,6 +116,18 @@ enum mt9p031=5Fmodel {
+>>>>    	MT9P031=5FMODEL=5FMONOCHROME,
+>>>>    };
+>>>>   =20
+>>>> +static const u32 mt9p031=5Fcolor=5Ffmts[] =3D {
+>>>> +	MEDIA=5FBUS=5FFMT=5FSGRBG8=5F1X8,
+>>>> +	MEDIA=5FBUS=5FFMT=5FSGRBG10=5F1X10,
+>>>> +	MEDIA=5FBUS=5FFMT=5FSGRBG12=5F1X12,
+>>>> +};
+>>>> +
+>>>> +static const u32 mt9p031=5Fmonochrome=5Ffmts[] =3D {
+>>>> +	MEDIA=5FBUS=5FFMT=5FY8=5F1X8,
+>>>> +	MEDIA=5FBUS=5FFMT=5FY10=5F1X10,
+>>>> +	MEDIA=5FBUS=5FFMT=5FY12=5F1X12,
+>>>> +};
+>>>> +
+>>>>    struct mt9p031 {
+>>>>    	struct v4l2=5Fsubdev subdev;
+>>>>    	struct media=5Fpad pad;
+>>>> @@ -138,6 +150,9 @@ struct mt9p031 {
+>>>>    	struct v4l2=5Fctrl *blc=5Fauto;
+>>>>    	struct v4l2=5Fctrl *blc=5Foffset;
+>>>>   =20
+>>>> +	const u32 *fmts;
+>>>> +	unsigned int num=5Ffmts;
+>>>> +
+>>>>    	/* Registers cache */
+>>>>    	u16 output=5Fcontrol;
+>>>>    	u16 mode2;
+>>>> @@ -148,6 +163,17 @@ static struct mt9p031 *to=5Fmt9p031(struct v4l2=
+=5Fsubdev *sd)
+>>>>    	return container=5Fof(sd, struct mt9p031, subdev);
+>>>>    }
+>>>>   =20
+>>>> +static u32 mt9p031=5Ffind=5Fdatafmt(struct mt9p031 *mt9p031, u32 code)
+>>>> +{
+>>>> +	unsigned int i;
+>>>> +
+>>>> +	for (i =3D 0; i < mt9p031->num=5Ffmts; i++)
+>>>> +		if (mt9p031->fmts[i] =3D=3D code)
+>>>> +			return mt9p031->fmts[i];
+>>>> +
+>>>> +	return mt9p031->fmts[mt9p031->num=5Ffmts-1];
+>>>> +}
+>>>> +
+>>>>    static int mt9p031=5Fread(struct i2c=5Fclient *client, u8 reg)
+>>>>    {
+>>>>    	return i2c=5Fsmbus=5Fread=5Fword=5Fswapped(client, reg);
+>>>> @@ -476,10 +502,11 @@ static int mt9p031=5Fenum=5Fmbus=5Fcode(struct v=
+4l2=5Fsubdev *subdev,
+>>>>    {
+>>>>    	struct mt9p031 *mt9p031 =3D to=5Fmt9p031(subdev);
+>>>>   =20
+>>>> -	if (code->pad || code->index)
+>>>> +	if (code->pad || code->index >=3D mt9p031->num=5Ffmts)
+>>>>    		return -EINVAL;
+>>>>   =20
+>>>> -	code->code =3D mt9p031->format.code;
+>>>> +	code->code =3D mt9p031->fmts[code->index];
+>>>> +
+>>>>    	return 0;
+>>>>    }
+>>>>   =20
+>>>> @@ -573,6 +600,8 @@ static int mt9p031=5Fset=5Fformat(struct v4l2=5Fsu=
+bdev *subdev,
+>>>>    	=5F=5Fformat->width =3D =5F=5Fcrop->width / hratio;
+>>>>    	=5F=5Fformat->height =3D =5F=5Fcrop->height / vratio;
+>>>>   =20
+>>>> +	=5F=5Fformat->code =3D mt9p031=5Ffind=5Fdatafmt(mt9p031, format->for=
+mat.code);
+>>>> +
+>>>>    	format->format =3D *=5F=5Fformat;
+>>>>   =20
+>>>>    	return 0;
+>>>> @@ -951,10 +980,7 @@ static int mt9p031=5Fopen(struct v4l2=5Fsubdev *s=
+ubdev, struct v4l2=5Fsubdev=5Ffh *fh)
+>>>>   =20
+>>>>    	format =3D v4l2=5Fsubdev=5Fget=5Ftry=5Fformat(subdev, fh->pad, 0);
+>>>>   =20
+>>>> -	if (mt9p031->model =3D=3D MT9P031=5FMODEL=5FMONOCHROME)
+>>>> -		format->code =3D MEDIA=5FBUS=5FFMT=5FY12=5F1X12;
+>>>> -	else
+>>>> -		format->code =3D MEDIA=5FBUS=5FFMT=5FSGRBG12=5F1X12;
+>>>> +	format->code =3D mt9p031=5Ffind=5Fdatafmt(mt9p031, 0);
+>>>>   =20
+>>>>    	format->width =3D MT9P031=5FWINDOW=5FWIDTH=5FDEF;
+>>>>    	format->height =3D MT9P031=5FWINDOW=5FHEIGHT=5FDEF;
+>>>> @@ -1121,10 +1147,14 @@ static int mt9p031=5Fprobe(struct i2c=5Fclient=
+ *client,
+>>>>    	mt9p031->crop.left =3D MT9P031=5FCOLUMN=5FSTART=5FDEF;
+>>>>    	mt9p031->crop.top =3D MT9P031=5FROW=5FSTART=5FDEF;
+>>>>   =20
+>>>> -	if (mt9p031->model =3D=3D MT9P031=5FMODEL=5FMONOCHROME)
+>>>> -		mt9p031->format.code =3D MEDIA=5FBUS=5FFMT=5FY12=5F1X12;
+>>>> -	else
+>>>> -		mt9p031->format.code =3D MEDIA=5FBUS=5FFMT=5FSGRBG12=5F1X12;
+>>>> +	if (mt9p031->model =3D=3D MT9P031=5FMODEL=5FMONOCHROME) {
+>>>> +		mt9p031->fmts =3D mt9p031=5Fmonochrome=5Ffmts;
+>>>> +		mt9p031->num=5Ffmts =3D ARRAY=5FSIZE(mt9p031=5Fmonochrome=5Ffmts);
+>>>> +	} else {
+>>>> +		mt9p031->fmts =3D mt9p031=5Fcolor=5Ffmts;
+>>>> +		mt9p031->num=5Ffmts =3D ARRAY=5FSIZE(mt9p031=5Fcolor=5Ffmts);
+>>>> +	}
+>>>> +	mt9p031->format.code =3D mt9p031=5Ffind=5Fdatafmt(mt9p031, 0);
+>>>>   =20
+>>>>    	mt9p031->format.width =3D MT9P031=5FWINDOW=5FWIDTH=5FDEF;
+>>>>    	mt9p031->format.height =3D MT9P031=5FWINDOW=5FHEIGHT=5FDEF;
+>=20
