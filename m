@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91277283718
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F90128371A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgJEN7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgJEN7A (ORCPT
+        id S1726348AbgJEN7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:59:19 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:46968 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgJEN7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:59:00 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F80C0613CE;
-        Mon,  5 Oct 2020 06:58:58 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u8so11005792lff.1;
-        Mon, 05 Oct 2020 06:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FSG++GcuwtXfFL0pAmi9VIOsmecZ/zHiEFdMrjrBjZ0=;
-        b=jq/1EENgpJztVgUbiHOlFewQRt85vb2x9X/5tTn6DHbAXnHybLY6oqIexnupDz1gaJ
-         g01snaS7Uhn1mfY8YL/GyEKAzRhvch6cPp40maquni4o2dzDk3P/hujBXIaRX6JJHrPN
-         8ZDsJ3+FMC5pzRwMwEEG01DpEMz/WZAUzIDhKncN6ABVuHaBLZRhm2HtXiJ2DjqmIa7H
-         TSXu7U6+QCA4ODIwvsYJ5rLRxpDOlVzQWxLhGVBO0jUOY3sz4l1YYq9CrfvmzDz9Dcie
-         MH06I13mMMKVJfgK7/mUvGtAIIiPKIMSygNxwwmoj42ss8rElH/8kNE4/GvPVDglSPZ0
-         S6uA==
+        Mon, 5 Oct 2020 09:59:18 -0400
+Received: by mail-oi1-f195.google.com with SMTP id u126so8754289oif.13;
+        Mon, 05 Oct 2020 06:59:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FSG++GcuwtXfFL0pAmi9VIOsmecZ/zHiEFdMrjrBjZ0=;
-        b=R61wspwn6vdLk3aQKtfm3Am/l7xEartIbzZShNVB/1P7KdTPf+6P1m0Q9OWBk4VCtj
-         usM83le4MNTOFVKIQgVnRrbNW4z/XvR3CwPbmuZNjXqDgf8WbngoiJS8H+2f/v3ALiWY
-         I34E5rxNGI8kTwb3Wg++AgSYmF20v7qHty04OjOh39r3CScvgM6XNspXvBMD4TLgQSlQ
-         DQR7VZ/tacwZTN+yQYKiAoTRTKOxEYUH8gILFCCByOtSmcl6ddFu9G7e3LllJ/YsX7W+
-         VXEh80DSRbpCOrKFgpRpz9NwI1SG79QfOKmQG3y5eTl62JWQMHxhYFOmoMK9ltYss/wI
-         7H9A==
-X-Gm-Message-State: AOAM5338zF/2zTpKMW0XJgftwIMM6bRyNSjefY5bmYcJp+ryN+GlxM2/
-        ymIUCX5l6J9lSWs4Q8X2DRo=
-X-Google-Smtp-Source: ABdhPJzX0Fq/hCeOCOFzQbhoFtQMbR7mUVdrmKjW8qHxJYKGuZza5OAMcXuLhDWlTnVDkaa6CE/WWA==
-X-Received: by 2002:a19:2302:: with SMTP id j2mr3422194lfj.78.1601906337230;
-        Mon, 05 Oct 2020 06:58:57 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id n2sm2653504lji.97.2020.10.05.06.58.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=r6JYKyeY4BtCnuSOeZu+oMqaX/WYd8ly12y0glDjlmA=;
+        b=nWS3cZN7HOHeOEGuTwfevJG+pFo2kGkw1oQSP6QRQLY1Z9/MlnA2hxIm8n/j60tjf5
+         oeoHm3Ipbv5K01EUMLfOQ9D/3IVucSUiY1cpLLFjWryz/vGgJ6LdIVGvUfTse36yJ0h9
+         zagI+kauiQKGdVnOakPG/Tf10eRMM2EIj+G6l/nNK/RVBrHmPvT1NA/Hr7bskRu36Q5i
+         2UQIQ3PTdYsZrVTg6UhL6aZpKNtePN99dByc9TlFrsp6P4trKQOpfil+R80fKY/92KDl
+         0jXmt8DRdMvIt1kR8pjN53TpAU5UBkSSgUwfxjH+7uuC4cfySDQvafOm3hnIjJEzl+zY
+         +/FA==
+X-Gm-Message-State: AOAM530q+Ub5WzkI/xohGvyADnNca5W8yUuLOW91yEXWLcsaL0Q3303y
+        Cur1jSzxjSEIHjSDKjwhHIDEm7LQLywR
+X-Google-Smtp-Source: ABdhPJwmZFooFtrhYHH5LpdnwFIThcHkHpCUBDQspUSg7d16eB/oE7GlnV3Mjgm1ErzqQKKckkouOA==
+X-Received: by 2002:aca:ba07:: with SMTP id k7mr9054689oif.159.1601906357388;
+        Mon, 05 Oct 2020 06:59:17 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 39sm824887otn.57.2020.10.05.06.59.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 06:58:56 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 5 Oct 2020 15:58:54 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201005135854.GA17959@pc636>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
+        Mon, 05 Oct 2020 06:59:16 -0700 (PDT)
+Received: (nullmailer pid 92964 invoked by uid 1000);
+        Mon, 05 Oct 2020 13:59:15 -0000
+Date:   Mon, 5 Oct 2020 08:59:15 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        devicetree@vger.kernel.org, jim.cromie@gmail.com,
+        linux-samsung-soc@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: net: Add bindings for AX88796C SPI
+ Ethernet Adapter
+Message-ID: <20201005135915.GA92530@bogus>
+References: <20201002192210.19967-1-l.stelmach@samsung.com>
+ <CGME20201002192215eucas1p2c1d2baebfe2a9caa11d88175a2899fea@eucas1p2.samsung.com>
+ <20201002192210.19967-2-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201002071123.GB20872@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201002192210.19967-2-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
-> On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
-> > > 
-> > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > > the allocator (different from what you posted in previous version) so that it
-> > > only looks at the flag after it tries to allocate from pcplist and finds out
-> > > it's empty. So, no inventing of new page allocator entry points or checks such
-> > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > > affect existing fast paths.
-> > >
-> > OK. Now i see. Please have a look below at the patch, so we fully understand
-> > each other. If that is something that is close to your view or not:
-> > 
-> > <snip>
-> > t a/include/linux/gfp.h b/include/linux/gfp.h
-> > index c603237e006c..7e613560a502 100644
-> > --- a/include/linux/gfp.h
-> > +++ b/include/linux/gfp.h
-> > @@ -39,8 +39,9 @@ struct vm_area_struct;
-> >  #define ___GFP_HARDWALL                0x100000u
-> >  #define ___GFP_THISNODE                0x200000u
-> >  #define ___GFP_ACCOUNT         0x400000u
-> > +#define ___GFP_NO_LOCKS                0x800000u
+On Fri, 02 Oct 2020 21:22:07 +0200, Łukasz Stelmach wrote:
+> Add bindings for AX88796C SPI Ethernet Adapter.
 > 
-> Even if a new gfp flag gains a sufficient traction and support I am
-> _strongly_ opposed against consuming another flag for that. Bit space is
-> limited.
->
-That is a valid point.
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+>  .../bindings/net/asix,ax88796c-spi.yaml       | 76 +++++++++++++++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+>  2 files changed, 78 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
+> 
 
->
-> Besides that we certainly do not want to allow craziness like
-> __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
->
-Obviously not. And it seems that the way of implementing of the
-NO_LOCK logic would be easier(less code changes) and better if
-it was defined like below(what you proposed later in this thread):
 
--#define __GFP_NO_LOCKS ((__force gfp_t)___GFP_NO_LOCKS)
-+#define __GFP_NO_LOCKS ((__force gfp_t) 0)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-That could imply that calling the page allocator with zero
-argument would apply a further limitation - that is lock free.
+Error: Documentation/devicetree/bindings/net/asix,ax88796c-spi.example.dts:23.29-30 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/net/asix,ax88796c-spi.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1366: dt_binding_check] Error 2
 
---
-Vlad Rezki
+
+See https://patchwork.ozlabs.org/patch/1376051
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
