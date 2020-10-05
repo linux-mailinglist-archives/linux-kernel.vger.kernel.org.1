@@ -2,176 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDE42841B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EC72841CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgJEUzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgJEUzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:55:47 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85923C0613CE;
-        Mon,  5 Oct 2020 13:55:47 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 33so10975967edq.13;
-        Mon, 05 Oct 2020 13:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0KXseeCMswEw3SWrnakm1K0mYIfL4kZcpHfxRqoIgMU=;
-        b=mxo4Uqz/xXzKk4/Fkf0UViItLoD13jZ8008e89DxyPjzmRn2rRC97te/QxnnH6MYQs
-         74CmOqNAXt5oIO7BEI0y0nFKWoVZzopqE4gBDzGIcOxs3MSRYQZHR/svrVf4FUt+kRFz
-         kz+5kwBgUtT5Oa+YOvnqscet9UOU5QyVNLFT90JtfKVZQ5a8fDm6QtXwfhXtPEzbqNnD
-         Z2uh7jiJp8AbuRu7//hZWB0RUoTvCRp/afCD43jqAeAO5pMvuKLfevwhNI8V9KOPopId
-         aX1OZtJzrWzJcovthrKLWxuAHcnVXn73x2waj63hrb0i7RjnK0i8+v81c+/DY1c/747+
-         50Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0KXseeCMswEw3SWrnakm1K0mYIfL4kZcpHfxRqoIgMU=;
-        b=b/FrBJh5Rj6un0hpSePoU+llZN71luBnOq2wW5ej61IwSS6ZsQ9NXc8rRYWlHFp35H
-         orRF7x6oXP0K+3RnEAtL8RO1amkhsuCdtRVKApndXn5RwVNgZcUQKUeSl0cFcVAX+/aX
-         2pS6ebgfKnJdAvjpVUKU5Zqa/qoxsfTZHyQvpVVg21bYmQek9IlJsB2aaMCT6g0pbDPj
-         lyu5pqUjoTdD8FaWvTF+ay96579ImTe5sV/g2DrnwUHL73CErvnb3UUQyc6BAeHL4xY5
-         VMrP+X97Y4LrdnRSVpIU4RUiiO3uDGfhPv7FT3omAqeICbfRNWQGvwhcYCiCGaz7JXd4
-         NJ6w==
-X-Gm-Message-State: AOAM532zfzy0KknJd1Df3f3zHefhRpWOehIaVDr3IOb/7vi9o8l/Yyn1
-        MFXrGv/6IPnKqLF6e+rmmAs=
-X-Google-Smtp-Source: ABdhPJxCjPWgWcxBrUDWsu/CF1riX44RkMXepHp2zPBD+VlQ07H+wBfAgVuRNsNhM6GZfkCAdGNKjA==
-X-Received: by 2002:aa7:d7ce:: with SMTP id e14mr1737919eds.258.1601931346140;
-        Mon, 05 Oct 2020 13:55:46 -0700 (PDT)
-Received: from skbuf ([188.26.229.171])
-        by smtp.gmail.com with ESMTPSA id w21sm554233ejo.70.2020.10.05.13.55.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 13:55:45 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 23:55:44 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        id S1729013AbgJEUz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:55:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbgJEUzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 16:55:49 -0400
+Received: from earth.universe (dyndsl-095-033-158-146.ewe-ip-backbone.de [95.33.158.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8DB5207EA;
+        Mon,  5 Oct 2020 20:55:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601931347;
+        bh=RauhoP+lY6PB4M6PjyFmPFjt0my1MIgv0r1A7kpjI2k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HkOPmEqswDfagOwa/8h6eYeJ28nUpx4kzUzMEiO5C2WpZ/JyxwPsMpOCvfalXuv/N
+         SHdwGJl0wavO+zZoAFWHwvQtMiirhu1+TeuQnuYzBjE+S+5qOuOKtkPXd2EjrwLySS
+         ddJlXztUaG/j988mXtEhLvSqV8GY7zi9RJGnOy4s=
+Received: by earth.universe (Postfix, from userid 1000)
+        id B9D193C0C87; Mon,  5 Oct 2020 22:55:45 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 22:55:45 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
         Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
         Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] net: dsa: microchip: fix race condition
-Message-ID: <20201005205544.7ddl4xzxhfas6nya@skbuf>
-References: <20201005160829.5607-1-ceggers@arri.de>
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 4/4] dt-bindings: Explicitly allow additional properties
+ in common schemas
+Message-ID: <20201005205545.sqvohrh7jpt7w63w@earth.universe>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-5-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7db5qni5yh4rtlce"
 Content-Disposition: inline
-In-Reply-To: <20201005160829.5607-1-ceggers@arri.de>
+In-Reply-To: <20201005183830.486085-5-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
 
-On Mon, Oct 05, 2020 at 06:08:29PM +0200, Christian Eggers wrote:
-> Between queuing the delayed work and finishing the setup of the dsa
-> ports, the process may sleep in request_module() and the queued work may
-> be executed prior the initialization of the DSA ports is finished. In
-              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-              "prior to the switch net devices being registered", maybe?
-> ksz_mib_read_work(), a NULL dereference will happen within
-> netof_carrier_ok(dp->slave).
-> 
-> Not queuing the delayed work in ksz_init_mib_timer() make things even
-                                                       ~~~~
-                                                       makes
-> worse because the work will now be queued for immediate execution
-> (instead of 2000 ms) in ksz_mac_link_down() via
-> dsa_port_link_register_of().
-> 
-> Solution:
-> 1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
-> 2. Only queue delayed work in ksz_mac_link_down() if init is completed.
-> 3. Queue work once in ksz_switch_register(), after dsa_register_switch()
-> has completed.
-> 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Cc: stable@vger.kernel.org
+--7db5qni5yh4rtlce
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For patches sent to the networking tree you should:
-git format-patch --subject-prefix=
-(a) "PATCH net-next" if it's a new feature (not applicable now)
-(b) "PATCH net" if it's a bug fix (such is the case here)
+Hi,
 
-Plus you should not Cc the stable mailing list, since David Miller deals
-with sending patches to stable himself as long as you make sure to send
-to his "net" tree as opposed to "net-next".
-
-Read this for more details
-https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html
-
+On Mon, Oct 05, 2020 at 01:38:30PM -0500, Rob Herring wrote:
+> In order to add meta-schema checks for additional/unevaluatedProperties
+> being present, all schema need to make this explicit. As common/shared
+> schema are included by other schemas, they should always allow for
+> additionalProperties.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
-> Call tree:
+>  [...]
+>  .../devicetree/bindings/power/supply/power-supply.yaml       | 2 ++
+>  [...]
 
-Please include the call path in the commit message, it is relevant that
-request_module() is being called by phy_device_create(), and something
-which you did not say in the verbal commit description.
+Acked-by: Sebastian Reichel <sre@kernel.org>
 
-FYI, you haven't even addressed the root cause of the problem, which is
-ksz_mib_read_work sticking its nose where it's not supposed to:
+-- Sebastian
 
-		/* Only read MIB counters when the port is told to do.
-		 * If not, read only dropped counters when link is not up.
-		 */
-		if (!p->read) {
-			const struct dsa_port *dp = dsa_to_port(dev->ds, i);
+--7db5qni5yh4rtlce
+Content-Type: application/pgp-signature; name="signature.asc"
 
-			if (!netif_carrier_ok(dp->slave))
-				mib->cnt_ptr = dev->reg_mib_cnt;
-		}
+-----BEGIN PGP SIGNATURE-----
 
-This is simply Not Ok.
-Not only the dp->slave is on purpose registered outside of the driver's
-control (as you came to find out yourself), but not even all ports are
-user ports. For example, the CPU port doesn't have a valid struct
-net_device *slave pointer. You are just lucky that it's defined like
-this:
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl97iEsACgkQ2O7X88g7
++pr9vg//fpVYpKsaZc4pw203Kmzwve+W4z3OPaQS7g1Y93QHWykKxFYpCgOrbmA7
+Ikwy3xwBLfMhPIUs8KZDsiaLVkKTi9XJifhEKiG4Uz772vFOZqAPgskcT6Sx4+iN
+4lqd7WmgV3hGelDss8qw6dQ1FY0/MHuMXvoDeNHTvqi0ZhttRrQmOEO6spkWL1io
+39Au/Pxbh2dK06Y7Y0qoKlqCKxnL4fWlUjFqJkJI+d4LjK/XYvukOTPmAhEYfP2H
+tZ38WZd/3SxwQD+Nh6ZJCfKC54D00G54g+fkxhaiypSSgI1IPWfIsrqPfPnVMowq
+wI2fo/C10LMZ1kqUi/LCW+OET8aePRkYjUMWZ2GBNRY9MJCJH/WkOPy7PaKHrOfU
+EdJx9OH7guvFWaEJGhClazwYS6QkM8CEKy7Nd5nJTeQOBEg/p2Lb2etNPNq34nju
+o9euArIjrnqbHK5X9Ijyvhaqw3bxsVPmPkOGUayDMB44UtwHNFqIosmboJnkJ6bt
+BGS1zVnJs2sdLMqMZcCwfHGoX00rThZgvCACDas7fVEdsZgtaEnCW8aySbWCKPdY
+1gtR+xdosJheKba+kMxfhmR0nm62rAmJvS9XOZaBY+cveye5NtC3kvk+Al5ixucd
+jYmH3Iudn+0hC44ZPGUl49YUa5cwsX8NZlyh8ItyWm/x+WiVyb8=
+=9y9P
+-----END PGP SIGNATURE-----
 
-struct dsa_port {
-	/* A CPU port is physically connected to a master device.
-	 * A user port exposed to userspace has a slave device.
-	 */
-	union {
-		struct net_device *master;
-		struct net_device *slave;
-	};
-
-so the code is in fact checking the status of the master interface's link.
-But DSA doesn't assume that the *master and *slave pointers are under a
-union. That can change any day, and when it changes, the KSZ driver will
-break.
-
-My personal feeling is that this driver hides a landmine beneath every
-line of code, and it isn't getting better.
-Sure, you should absolutely add the call stack to the commit message,
-but how many people are going to git blame so they can see it. The code
-needs to be obviously correct.
-
-Things like needing to check dev->mib_read_interval as an indication
-whether the race between ksz_mac_link_down and ksz_switch_register is
-over are exactly the type of things that make it not fun to follow.
-
-If reading MIB counters for ports that are down is such a "waste of time"
-as per commit 7c6ff470aa867f53b8522a3a5c84c36ac7a20090, then how about
-scheduling the delayed work from .phylink_mac_link_up, and canceling it
-from .phylink_mac_link_down? Either that, or set a boolean variable to
-struct ksz_port p->link_up, to true or false respectively from the
-phylink callbacks, and using that as an indication whether to read the
-MIB counters or not, instead of accessing the potentially invalid
-dp->slave pointer? Would that work?
-
-Sorry for rambling. I realize that there aren't probably a lot of things
-you can do better to fix this problem for stable, but maybe you could
-take some time and clean it up a little bit?
-
-Thanks,
--Vladimir
+--7db5qni5yh4rtlce--
