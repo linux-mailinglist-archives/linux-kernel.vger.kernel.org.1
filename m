@@ -2,108 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45554283FC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681D7283FC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729444AbgJETg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 15:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729302AbgJETg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 15:36:59 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57D2F208C3;
-        Mon,  5 Oct 2020 19:36:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601926618;
-        bh=vreY1y62/ItgoHOJ39jEJGGc3di0cHUuXUf77P7UR1w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S+9CifhFTwQLlw+6zIJ9ah8Z/6N/m341dhtALdQOvNKiRh0NqMZRe2a+eFAq9ykxm
-         oKaoMYWUT21eE5jdZgPAtIWeCuiKlSv9mopIwmVEyO6a9okjX9CrZm3OipQP9x0TZ4
-         xWhltWEP/Ta37jIywC0h0YXDh8dNUciQEGbabPGw=
-Received: by mail-oi1-f179.google.com with SMTP id l85so9897630oih.10;
-        Mon, 05 Oct 2020 12:36:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531YWB3blrqy0JH6Cx/Bur8en8lD2pPZ2AIGzH9JViyUm4HMc+qK
-        53yqImM1SetbSNy6sGn3AUdeIND/wU7BQyUCOw==
-X-Google-Smtp-Source: ABdhPJz240L0hq+6F8XKH9jRgQJVciEISdxexf5/3GhR8YRDq3mAALJWx+vwopo1kJq2T637u6DxmRyHxDXEwJqE/UA=
-X-Received: by 2002:a54:4f89:: with SMTP id g9mr598009oiy.106.1601926617529;
- Mon, 05 Oct 2020 12:36:57 -0700 (PDT)
+        id S1729453AbgJEThk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 15:37:40 -0400
+Received: from smtprelay0088.hostedemail.com ([216.40.44.88]:58328 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729302AbgJEThk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 15:37:40 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 1CF3B182CF669;
+        Mon,  5 Oct 2020 19:37:39 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1566:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3873:4321:5007:7576:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:30003:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: cord20_3611d99271c0
+X-Filterd-Recvd-Size: 1291
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  5 Oct 2020 19:37:37 +0000 (UTC)
+Message-ID: <1d8396cb33b33c3d0107ba701b7e597041dfdbc2.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add new warnings to author signoff
+ checks.
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org
+Date:   Mon, 05 Oct 2020 12:37:35 -0700
+In-Reply-To: <20201005192409.192317-1-dwaipayanray1@gmail.com>
+References: <20201005192409.192317-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200930124915.GA1826870@google.com> <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
- <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
- <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
- <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
- <20201002183633.GA296334@rowland.harvard.edu> <CAL_JsqKHFA5RWz1SRLkR2JXydURL2pA+4C0+C+4SrJR_h4M0dw@mail.gmail.com>
- <20201003124142.GA318272@rowland.harvard.edu> <20201005160655.GA4135817@google.com>
- <20201005161527.GI376584@rowland.harvard.edu> <20201005191812.GB4135817@google.com>
-In-Reply-To: <20201005191812.GB4135817@google.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 5 Oct 2020 14:36:45 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+-kcDoFjp7a9ESa78Ar-ObLapXfuzn-WFNT-8rro_bJQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+-kcDoFjp7a9ESa78Ar-ObLapXfuzn-WFNT-8rro_bJQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete onboard
- USB hubs
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Doug Anderson <dianders@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 2:18 PM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> On Mon, Oct 05, 2020 at 12:15:27PM -0400, Alan Stern wrote:
-> > On Mon, Oct 05, 2020 at 09:06:55AM -0700, Matthias Kaehlcke wrote:
-> > > On Sat, Oct 03, 2020 at 08:41:42AM -0400, Alan Stern wrote:
-> > > > The decision to enable the power regulator at system startup would be
-> > > > kernel policy, not a part of the DT description.  But there ought to be
-> > > > a standard way of recognizing which resource requirements of this sort
-> > > > should be handled at startup.  Then there could be a special module (in
-> > > > the driver model core? -- that doesn't really seem appropriate) which
-> > > > would search through the whole DT database for resources of this kind
-> > > > and enable them.
-> > >
-> > > This might work for some cases that only have a single resource or multiple
-> > > resources but no timing/sequencing requirements. For the more complex cases
-> > > it would probably end up in something similar to the pwrseq series
-> > > (https://lore.kernel.org/patchwork/project/lkml/list/?series=314989&state=%2A&archive=both),
-> > > which was nack-ed by Rafael, Rob also expressed he didn't want to go
-> > > down that road.
-> > >
-> > > It seems to me that initialization of the resources needs to be done by
-> > > the/a driver for the device, which knows about the sequencing requirements.
-> > > Potentially this could be done in a pre-probe function that you brought up
-> > > earlier.
-> >
-> > One of the important points of my suggestion was that the resource init
-> > should be done _outside_ of the device's driver, precisely because the
-> > driver module might not even be loaded until the resources are set up
-> > and the device is discovered.
-> >
-> > The conclusion is that we need to have code that is aware of some
-> > detailed needs of a specific device but is not part of the device's
-> > driver.  I'm not sure what the best way to implement this would be.
->
-> Wouldn't it be possible to load the module when the DT specifies that
-> the device exists? For USB the kernel would need the VID/PID to identify
-> the module, these could be extracted from the compatible string.
+On Tue, 2020-10-06 at 00:54 +0530, Dwaipayan Ray wrote:
+> The author signed-off-by checks are currently very vague.
+> Cases like same name or same address are not handled separately.
 
-You don't even have to do that. Just add the MODULE_DEVICE_TABLE with
-the compatible strings and module loading will just work once you walk
-the USB bus in DT. Though probably you'd still need the VID/PID to
-create the device.
+When you run tests for this, how many mismatches are
+caused by name formatting changes like:
 
-Rob
+From: "Developer, J. Random" <jrd@bigcorp.com>
+...
+Signed-off-by: "J. Random Developer" <jrd@bigcorp.com>?
+
+Should these differences generate a warning?
+
