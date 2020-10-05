@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE8128313C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2201028313E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbgJEH61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgJEH61 (ORCPT
+        id S1725916AbgJEH7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:59:08 -0400
+Received: from outbound-smtp17.blacknight.com ([46.22.139.234]:59983 "EHLO
+        outbound-smtp17.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725885AbgJEH7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:58:27 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9E6C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 00:58:25 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id g10so3052823pfc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:58:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wt1eY5ySQ7zeKuyklJDHkBCjNeSzu8NHJjYLWLeX8sY=;
-        b=swvOXot1YbYCGNxcWiToQ+75e2uZCnTPbIHfKBFlaufFP1FoE5tGqi4hYg2/x6recG
-         2qKx+Y4U8lh6eYiuS2Hjf+5m5NuzN+nDj0Tt1zIK/qTdZa9U5FoCB5KMcoVdeLUTyHlW
-         BJ/xME7KZdjZ1GlBTR5R59QEv2aud3qyzwi6Vz2nHab+G+wrIQo0LlKBVpVIaUVZw8CT
-         Ju7O2SrML+bEN0jPB4LkviL476tmAVxdXOMiibdjG6649K89qzHDM/uTvQm1lqY4m5/k
-         SRahPw7ERiw8qksATVagKm3rck4u8q7BIMCFYAts3wQearQUP3Ltl5sbyr7aVdHeeGCu
-         A9SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wt1eY5ySQ7zeKuyklJDHkBCjNeSzu8NHJjYLWLeX8sY=;
-        b=bVvwabONSrAzSKJh/0uLslbEOhyuL64lowJFo9TiR2hq0xTXQdvr+50qCrSh3k4iL1
-         4LaezEATsyng8iLh+8ZKeBqSu9pZeEoiZYMzzpNPvMRrR/l5eEhN7Ujw4LTISqOLt02f
-         xbGYwJqbXjEc2EJSLgr51BAEPx899ENbR+wY4xdPJ4Amz016HJlK3PipH6zOAHiykfXw
-         nl5laqZKm9F18bC4vUwuStWyNPn67ExJJds0dlAlrCmGrUhH1dpFGo3FEG5cIw2ATUpL
-         ab55UtoGAiu5Szv5cInH0uFQ55UynIVdh9NifHFzQFNXbrtzkz3m9DcwFoGjl4H66SAv
-         Jn9g==
-X-Gm-Message-State: AOAM532S8oKf3car7spJpxJJUM3f6RTU1QKsCL+YrjHH+WXHmVPw8LBb
-        bgCmTzfGPJYMsKFqpZYWVIopUQ==
-X-Google-Smtp-Source: ABdhPJwBcFs5doqrGh/r9Eqn6hv6BOLwBEiNp0Xq+5FMT3S3EADoPW6HdBXGFiV6qCitdHKCC1LIoA==
-X-Received: by 2002:a62:545:0:b029:142:2501:35db with SMTP id 66-20020a6205450000b0290142250135dbmr15763183pff.59.1601884705073;
-        Mon, 05 Oct 2020 00:58:25 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id c185sm11436315pfb.123.2020.10.05.00.58.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Oct 2020 00:58:23 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 13:28:22 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Puhov <peter.puhov@linaro.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>
-Subject: Re: [RFC 0/3] cpufreq: cppc: Add support for frequency invariance
-Message-ID: <20201005075822.6odp2ulk6wopcwtn@vireshk-i7>
-References: <cover.1594289009.git.viresh.kumar@linaro.org>
- <20200709124349.GA15342@arm.com>
- <20200710030032.3yq3lqqybhy5m744@vireshk-i7>
- <CAKfTPtBpOdRSV0gb2CoC8J9GnuPiqZ+MbQLLc6NdSmjJhb0cgA@mail.gmail.com>
- <20200825095629.GA15469@arm.com>
- <20200827075149.ixunmyi3m6ygtehu@vireshk-i7>
- <20200827112740.GA9923@arm.com>
+        Mon, 5 Oct 2020 03:59:08 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp17.blacknight.com (Postfix) with ESMTPS id 728741C5113
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:59:06 +0100 (IST)
+Received: (qmail 27315 invoked from network); 5 Oct 2020 07:59:06 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Oct 2020 07:59:06 -0000
+Date:   Mon, 5 Oct 2020 08:59:03 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+Subject: Re: [PATCH] mm/vmscan: drop unneeded assignment in kswapd()
+Message-ID: <20201005075903.GH3227@techsingularity.net>
+References: <20201004125827.17679-1-lukas.bulwahn@gmail.com>
+ <20201004192437.GF3227@techsingularity.net>
+ <alpine.DEB.2.21.2010050831010.6202@felia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20200827112740.GA9923@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <alpine.DEB.2.21.2010050831010.6202@felia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-08-20, 12:27, Ionela Voinescu wrote:
-> I am in the middle of unifying AMU counter and cpufreq invariance through
-> something like this, so if you like the idea and you don't think I'm
-> stepping too much on your toes with this, I can consider the usecase in
-> my (what should be) generic support. So in the end this might end up
-> being just a matter of adding a new invariance source (CPPC counters).
+On Mon, Oct 05, 2020 at 08:58:53AM +0200, Lukas Bulwahn wrote:
+> 
+> 
+> On Sun, 4 Oct 2020, Mel Gorman wrote:
+> 
+> > On Sun, Oct 04, 2020 at 02:58:27PM +0200, Lukas Bulwahn wrote:
+> > > The refactoring to kswapd() in commit e716f2eb24de ("mm, vmscan: prevent
+> > > kswapd sleeping prematurely due to mismatched classzone_idx") turned an
+> > > assignment to reclaim_order into a dead store, as in all further paths,
+> > > reclaim_order will be assigned again before it is used.
+> > > 
+> > > make clang-analyzer on x86_64 tinyconfig caught my attention with:
+> > > 
+> > >   mm/vmscan.c: warning: Although the value stored to 'reclaim_order' is
+> > >   used in the enclosing expression, the value is never actually read from
+> > >   'reclaim_order' [clang-analyzer-deadcode.DeadStores]
+> > > 
+> > > Compilers will detect this unneeded assignment and optimize this anyway.
+> > > So, the resulting binary is identical before and after this change.
+> > > 
+> > > Simplify the code and remove unneeded assignment to make clang-analyzer
+> > > happy.
+> > > 
+> > > No functional change. No change in binary code.
+> > > 
+> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > 
+> > I'm not really keen on this. With the patch, reclaim_order can be passed
+> > uninitialised to kswapd_try_to_sleep. While a sufficiently smart
+> > compiler might be able to optimise how reclaim_order is used, it's not
+> > guaranteed either. Similarly, a change in kswapd_try_to_sleep and its
+> > called functions could rely on reclaim_order being a valid value and
+> > then introduce a subtle bug.
+> >
+> 
+> Just for my own understanding:
+> 
+> How would you see reclaim_order being passed unitialised to 
+> kswapd_try_to_sleep?
+> 
+> From kswapd() entry, any path must reach the line
+> 
+>   alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
+> 
+> before kswap_try_to_sleep(...).
+> 
 
-Any update on this ?
+Bah, I misread the patch because I'm an idiot.
+
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
 -- 
-viresh
+Mel Gorman
+SUSE Labs
