@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1A4283A49
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819A22839AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgJEPdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:33:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60864 "EHLO mail.kernel.org"
+        id S1726721AbgJEP2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:28:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728089AbgJEPdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:33:01 -0400
+        id S1726567AbgJEP16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:27:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B42272074F;
-        Mon,  5 Oct 2020 15:33:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56AFA208B6;
+        Mon,  5 Oct 2020 15:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911981;
-        bh=x764alEhEO1Asq4Qrf+goutq6CwlR1s9JC8/Bkn4Wj0=;
+        s=default; t=1601911677;
+        bh=Jjp1I3Ea/Svb85qKj3NhUAL/+7B7LLIit3yKbWsdiMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TG+XhRS+1Vw5CPitwjieJFdvfOzUXUJsqXoGXOQXutKKFRXbrH5m7MDRQjvzR7iim
-         B1sDPTtk55mfwOgx04tLNMr0goM9FQiVSmbUg1j+JCVXJEu3mc2V5Ft90m2aD1Tr33
-         LUpKP2KidabBhFBJ6K5ZeTzfFKidoi0IjHp4liBE=
+        b=wL+4XGk2yES2iRcFmfhk9mmmFMKrXc+3av5Nw22KOblNzujqk3+cS0Er87rSE8DPp
+         EKUTWZE4Nz50kAOE1dvQBeWznJnoqWr3h6iI1ApJgwTyqcCZD3sAQsK0ID39BnWjHh
+         IAkXtYpWLHlpPiXlanF2cS18opXNo898z3+0+bXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 55/85] pNFS/flexfiles: Ensure we initialise the mirror bsizes correctly on read
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 4.19 34/38] epoll: do not insert into poll queues until all sanity checks are done
 Date:   Mon,  5 Oct 2020 17:26:51 +0200
-Message-Id: <20201005142117.377710196@linuxfoundation.org>
+Message-Id: <20201005142110.322501594@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
+In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
+References: <20201005142108.650363140@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +41,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit ee15c7b53e52fb04583f734461244c4dcca828fa ]
+commit f8d4f44df056c5b504b0d49683fb7279218fd207 upstream.
 
-While it is true that reading from an unmirrored source always uses
-index 0, that is no longer true for mirrored sources when we fail over.
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 563c53e73b8b ("NFS: Fix flexfiles read failover")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/flexfilelayout/flexfilelayout.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ fs/eventpoll.c |   37 ++++++++++++++++++-------------------
+ 1 file changed, 18 insertions(+), 19 deletions(-)
 
-diff --git a/fs/nfs/flexfilelayout/flexfilelayout.c b/fs/nfs/flexfilelayout/flexfilelayout.c
-index 048272d60a165..f9348ed1bcdad 100644
---- a/fs/nfs/flexfilelayout/flexfilelayout.c
-+++ b/fs/nfs/flexfilelayout/flexfilelayout.c
-@@ -838,6 +838,7 @@ ff_layout_pg_init_read(struct nfs_pageio_descriptor *pgio,
- 	struct nfs4_ff_layout_mirror *mirror;
- 	struct nfs4_pnfs_ds *ds;
- 	int ds_idx;
-+	u32 i;
- 
- retry:
- 	ff_layout_pg_check_layout(pgio, req);
-@@ -864,14 +865,14 @@ ff_layout_pg_init_read(struct nfs_pageio_descriptor *pgio,
- 		goto retry;
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1450,6 +1450,22 @@ static int ep_insert(struct eventpoll *e
+ 		RCU_INIT_POINTER(epi->ws, NULL);
  	}
  
--	mirror = FF_LAYOUT_COMP(pgio->pg_lseg, ds_idx);
-+	for (i = 0; i < pgio->pg_mirror_count; i++) {
-+		mirror = FF_LAYOUT_COMP(pgio->pg_lseg, i);
-+		pgm = &pgio->pg_mirrors[i];
-+		pgm->pg_bsize = mirror->mirror_ds->ds_versions[0].rsize;
-+	}
++	/* Add the current item to the list of active epoll hook for this file */
++	spin_lock(&tfile->f_lock);
++	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
++	spin_unlock(&tfile->f_lock);
++
++	/*
++	 * Add the current item to the RB tree. All RB tree operations are
++	 * protected by "mtx", and ep_insert() is called with "mtx" held.
++	 */
++	ep_rbtree_insert(ep, epi);
++
++	/* now check if we've created too many backpaths */
++	error = -EINVAL;
++	if (full_check && reverse_path_check())
++		goto error_remove_epi;
++
+ 	/* Initialize the poll table using the queue callback */
+ 	epq.epi = epi;
+ 	init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
+@@ -1472,22 +1488,6 @@ static int ep_insert(struct eventpoll *e
+ 	if (epi->nwait < 0)
+ 		goto error_unregister;
  
- 	pgio->pg_mirror_idx = ds_idx;
- 
--	/* read always uses only one mirror - idx 0 for pgio layer */
--	pgm = &pgio->pg_mirrors[0];
--	pgm->pg_bsize = mirror->mirror_ds->ds_versions[0].rsize;
+-	/* Add the current item to the list of active epoll hook for this file */
+-	spin_lock(&tfile->f_lock);
+-	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
+-	spin_unlock(&tfile->f_lock);
 -
- 	if (NFS_SERVER(pgio->pg_inode)->flags &
- 			(NFS_MOUNT_SOFT|NFS_MOUNT_SOFTERR))
- 		pgio->pg_maxretrans = io_maxretrans;
--- 
-2.25.1
-
+-	/*
+-	 * Add the current item to the RB tree. All RB tree operations are
+-	 * protected by "mtx", and ep_insert() is called with "mtx" held.
+-	 */
+-	ep_rbtree_insert(ep, epi);
+-
+-	/* now check if we've created too many backpaths */
+-	error = -EINVAL;
+-	if (full_check && reverse_path_check())
+-		goto error_remove_epi;
+-
+ 	/* We have to drop the new item inside our item list to keep track of it */
+ 	spin_lock_irq(&ep->wq.lock);
+ 
+@@ -1516,6 +1516,8 @@ static int ep_insert(struct eventpoll *e
+ 
+ 	return 0;
+ 
++error_unregister:
++	ep_unregister_pollwait(ep, epi);
+ error_remove_epi:
+ 	spin_lock(&tfile->f_lock);
+ 	list_del_rcu(&epi->fllink);
+@@ -1523,9 +1525,6 @@ error_remove_epi:
+ 
+ 	rb_erase_cached(&epi->rbn, &ep->rbr);
+ 
+-error_unregister:
+-	ep_unregister_pollwait(ep, epi);
+-
+ 	/*
+ 	 * We need to do this because an event could have been arrived on some
+ 	 * allocated wait queue. Note that we don't care about the ep->ovflist
 
 
