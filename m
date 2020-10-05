@@ -2,190 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7917C2835B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B4928358A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgJEMTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:19:34 -0400
-Received: from mail-proxyout-mua-31.websupport.eu ([37.9.172.181]:50195 "EHLO
-        mail-proxyout-mua-31.websupport.eu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgJEMTd (ORCPT
+        id S1726754AbgJEMOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:14:03 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11468 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgJEMOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:19:33 -0400
-X-Greylist: delayed 354 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 08:19:33 EDT
-Received: from in-2.websupport.sk (unknown [10.10.2.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail-proxyout-mua-31.websupport.eu (Postfix) with ESMTPS id 9EF8ABDF16;
-        Mon,  5 Oct 2020 14:13:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackhole.sk;
-        s=mail; t=1601900016;
-        bh=ytu0xIhTGqY6sjIKclFPHA8DEdRdtPDGKVsmJYqwltc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=Xn9p8eZGiK9Tu8w/BjWhWcfmpMbeV8MU1etSFSvLZiSL6+5Iez3sACMQMoRqJD1/9
-         NSUoTMa+9WSEt8Ticx3U/EBxTGEqAg8P8wcHUHZvo54vfyx/PM7ACTvvBMHH8pSv/9
-         O6z9Ht5EWJUZptCjwIgmd40baEQJhZ3e/bwQqgBE=
-Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kabel@blackhole.sk)
-        by in-2.websupport.sk (Postfix) with ESMTPSA id 4C4fdX1kHsz40Xkq;
-        Mon,  5 Oct 2020 14:13:36 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 14:13:34 +0200
-From:   Marek Behun <kabel@blackhole.sk>
-To:     ultracoolguy@tutanota.com
-Cc:     Pavel <pavel@ucw.cz>, Dmurphy <dmurphy@ti.com>,
-        Linux Leds <linux-leds@vger.kernel.org>,
-        Trivial <trivial@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
-Message-ID: <20201005141334.36d9441a@blackhole.sk>
-In-Reply-To: <MIiYgay--3-2@tutanota.com>
-References: <MIiYgay--3-2@tutanota.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 5 Oct 2020 08:14:00 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7b0dfb0000>; Mon, 05 Oct 2020 05:13:47 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
+ 2020 12:13:57 +0000
+Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Mon, 5 Oct 2020 12:13:54 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
+        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
+        <sagar.tv@gmail.com>
+Subject: [PATCH] PCI: dwc: Use ATU regions to map memory regions
+Date:   Mon, 5 Oct 2020 17:43:51 +0530
+Message-ID: <20201005121351.32516-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Out-Rspamd-Queue-Id: 4C4fdX1kHsz40Xkq
-Authentication-Results: in-2.websupport.sk;
-        auth=pass smtp.auth=kabel@blackhole.sk smtp.mailfrom=kabel@blackhole.sk
-X-Out-Rspamd-Server: mail-antispam-4
-X-Out-Spamd-Result: default: False [-3.10 / 24.00];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:2852, ipnet:78.128.128.0/17, country:CZ];
-         MID_RHS_MATCH_FROM(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601900027; bh=lO0HDidGPFmx2vLsOELT1TeoB3G4Z1UJtWvQEooKw0I=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=GGkZrBNLSmOW+03MCLY8tXh3aZb9z8hZ07GMerAMYTtxlfTMVhHd3LGfNhb6JtPl4
+         cELYMGusL9vhU9IGiUhyhN00qysgcFylO0wngNrzFqrOhDCCY47J5Suc+cLCs3C1KM
+         XW5EQjtlPaiULrdusTS7P5LXti7DjhgtQwCLH3csM/gZypy+wjM/eMW8j7si4uOo/C
+         H8tziZ7qndyAyViPM0Pnhst1m7NrsAZQO2koWSAXDSIgc2XlEEfkKy5Ts5k+VNyxzw
+         7FF8l2wvBu1Ar4hI4caJOAAEhfSZ9dTg1q9/sjdLPkDWoEZilAX1R8+vcQEAsQmpth
+         YmnY1HwtydhyQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 3 Oct 2020 15:02:51 +0200 (CEST)
-ultracoolguy@tutanota.com wrote:
+Use ATU region-3 and region-0 to setup mapping for prefetchable and
+non-prefetchable memory regions respectively only if their respective CPU
+and bus addresses are different.
 
-> From 0dfd5ab647ccbc585c543d702b44d20f0e3fe436 Mon Sep 17 00:00:00 2001
-> From: Ultracoolguy <ultracoolguy@tutanota.com>
-> Date: Fri, 2 Oct 2020 18:27:00 -0400
-> Subject: [PATCH] leds:lm3697:Fix out-of-bound access
-> 
-> If both led banks aren't used in device tree,
-> an out-of-bounds condition in lm3697_init occurs
-> because of the for loop assuming that all the banks are used.
-> Fix it by adding a variable that contains the number of used banks.
-> 
-> Signed-off-by: Ultracoolguy <ultracoolguy@tutanota.com>
-> ---
->  drivers/leds/leds-lm3697.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/leds/leds-lm3697.c b/drivers/leds/leds-lm3697.c
-> index 024983088d59..a4ec2b6077e6 100644
-> --- a/drivers/leds/leds-lm3697.c
-> +++ b/drivers/leds/leds-lm3697.c
-> @@ -56,7 +56,7 @@ struct lm3697_led {
->  	struct ti_lmu_bank lmu_data;
->  	int control_bank;
->  	int enabled;
-> -	int num_leds;
-> +	int num_led_strings;
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+ .../pci/controller/dwc/pcie-designware-host.c | 44 ++++++++++++++++---
+ drivers/pci/controller/dwc/pcie-designware.c  | 12 ++---
+ drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
+ 3 files changed, 48 insertions(+), 12 deletions(-)
 
-OK, I looked at the datasheet for this controlled. The controlled can
-control 3 LED strings, each having several LEDs connected in series.
-But only 2 different brightnesses can be set (control bank), so for each
-string there is a register setting which control bank should control it.
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index 317ff512f8df..cefde8e813e9 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -515,9 +515,40 @@ static struct pci_ops dw_pcie_ops = {
+ 	.write = pci_generic_config_write,
+ };
+ 
++static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
++				  struct resource_entry *win)
++{
++	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
++
++	if (win->res->flags & IORESOURCE_PREFETCH && pci->num_viewport >= 4 &&
++	    win->offset) {
++		dw_pcie_prog_outbound_atu(pci,
++					  PCIE_ATU_REGION_INDEX3,
++					  PCIE_ATU_TYPE_MEM,
++					  win->res->start,
++					  win->res->start - win->offset,
++					  resource_size(win->res));
++	} else if (win->res->flags & IORESOURCE_PREFETCH &&
++		   pci->num_viewport < 4) {
++		dev_warn(pci->dev,
++			 "Insufficient ATU regions to map Prefetchable memory\n");
++	} else if (win->offset) {
++		if (upper_32_bits(resource_size(win->res)))
++			dev_warn(pci->dev,
++				 "Memory resource size exceeds max for 32 bits\n");
++		dw_pcie_prog_outbound_atu(pci,
++					  PCIE_ATU_REGION_INDEX0,
++					  PCIE_ATU_TYPE_MEM,
++					  win->res->start,
++					  win->res->start - win->offset,
++					  resource_size(win->res));
++	}
++}
++
+ void dw_pcie_setup_rc(struct pcie_port *pp)
+ {
+ 	u32 val, ctrl, num_ctrls;
++	struct resource_entry *win;
+ 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+ 
+ 	/*
+@@ -572,13 +603,14 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+ 	 * ATU, so we should not program the ATU here.
+ 	 */
+ 	if (pp->bridge->child_ops == &dw_child_pcie_ops) {
+-		struct resource_entry *entry =
+-			resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
++		resource_list_for_each_entry(win, &pp->bridge->windows) {
++			switch (resource_type(win->res)) {
++			case IORESOURCE_MEM:
++				dw_pcie_setup_mem_atu(pp, win);
++				break;
++			}
++		}
+ 
+-		dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
+-					  PCIE_ATU_TYPE_MEM, entry->res->start,
+-					  entry->res->start - entry->offset,
+-					  resource_size(entry->res));
+ 		if (pci->num_viewport > 2)
+ 			dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
+ 						  PCIE_ATU_TYPE_IO, pp->io_base,
+diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+index 3c1f17c78241..6033689abb15 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -227,7 +227,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 					     int index, int type,
+ 					     u64 cpu_addr, u64 pci_addr,
+-					     u32 size)
++					     u64 size)
+ {
+ 	u32 retries, val;
+ 	u64 limit_addr = cpu_addr + size - 1;
+@@ -244,8 +244,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 				 lower_32_bits(pci_addr));
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+ 				 upper_32_bits(pci_addr));
+-	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
+-				 type | PCIE_ATU_FUNC_NUM(func_no));
++	val = type | PCIE_ATU_FUNC_NUM(func_no);
++	val = upper_32_bits(size - 1) ?
++		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
++	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
+ 				 PCIE_ATU_ENABLE);
+ 
+@@ -266,7 +268,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 
+ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+ 					int index, int type, u64 cpu_addr,
+-					u64 pci_addr, u32 size)
++					u64 pci_addr, u64 size)
+ {
+ 	u32 retries, val;
+ 
+@@ -310,7 +312,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+ }
+ 
+ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
+-			       u64 cpu_addr, u64 pci_addr, u32 size)
++			       u64 cpu_addr, u64 pci_addr, u64 size)
+ {
+ 	__dw_pcie_prog_outbound_atu(pci, 0, index, type,
+ 				    cpu_addr, pci_addr, size);
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index 97c7063b9e89..b81a1813cf9e 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -80,10 +80,12 @@
+ #define PCIE_ATU_VIEWPORT		0x900
+ #define PCIE_ATU_REGION_INBOUND		BIT(31)
+ #define PCIE_ATU_REGION_OUTBOUND	0
++#define PCIE_ATU_REGION_INDEX3		0x3
+ #define PCIE_ATU_REGION_INDEX2		0x2
+ #define PCIE_ATU_REGION_INDEX1		0x1
+ #define PCIE_ATU_REGION_INDEX0		0x0
+ #define PCIE_ATU_CR1			0x904
++#define PCIE_ATU_INCREASE_REGION_SIZE	BIT(13)
+ #define PCIE_ATU_TYPE_MEM		0x0
+ #define PCIE_ATU_TYPE_IO		0x2
+ #define PCIE_ATU_TYPE_CFG0		0x4
+@@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
+ int dw_pcie_wait_for_link(struct dw_pcie *pci);
+ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
+ 			       int type, u64 cpu_addr, u64 pci_addr,
+-			       u32 size);
++			       u64 size);
+ void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 				  int type, u64 cpu_addr, u64 pci_addr,
+ 				  u32 size);
+-- 
+2.17.1
 
-The Control Bank is set via the `reg` DT property (reg=0 means
-Control Bank A, reg=1 means Control Bank B). The `led-sources`
-property defines which strings should be controlled by each bank.
-
-So I think this variable name should stay num_leds (as in number of leds
-in this control bank).
-The structure though should be renamed:
-  struct lm3697_led  ->  struct lm3697_bank.
-
->  };
-> 
->  /**
-> @@ -78,6 +78,7 @@ struct lm3697 {
->  	struct mutex lock;
-> 
->  	int bank_cfg;
-> +	int num_leds;
-
-This should be named num_banks.
-
-> 
->  	struct lm3697_led leds[];
-
-This variable should be named banks, i.e.:
-  struct lm3697_bank banks[];
-
->  };
-> @@ -180,7 +181,7 @@ static int lm3697_init(struct lm3697 *priv)
->  	if (ret)
->  		dev_err(&priv->client->dev, "Cannot write OUTPUT config\n");
-> 
-> -	for (i = 0; i < LM3697_MAX_CONTROL_BANKS; i++) {
-> +	for (i = 0; i < priv->num_leds; i++) {
-
-Ultracoolguy is correct that this for cycle should not iterate
-LM3697_MAX_CONTROL_BANKS. Instead, the count check in lm3697_probe should be changed from
-
-  if (!count)
-to
-  if (!count || count > LM3697_MAX_CONTROL_BANKS)
-
-(the error message should also be changed, or maybe dropped, and the
-error code changed from -ENODEV to -EINVAL, if we use || operator).
-
->  		led = &priv->leds[i];
->  		ret = ti_lmu_common_set_ramp(&led->lmu_data);
->  		if (ret)
-> @@ -244,22 +245,22 @@ static int lm3697_probe_dt(struct lm3697 *priv)
->  		led->lmu_data.lsb_brightness_reg = LM3697_CTRL_A_BRT_LSB +
->  						   led->control_bank * 2;
-> 
-> -		led->num_leds = fwnode_property_count_u32(child, "led-sources");
-> -		if (led->num_leds > LM3697_MAX_LED_STRINGS) {
-> +		led->num_led_strings = fwnode_property_count_u32(child, "led-sources");
-> +		if (led->num_led_strings > LM3697_MAX_LED_STRINGS) {
->  			dev_err(&priv->client->dev, "Too many LED strings defined\n");
->  			continue;
->  		}
-> 
->  		ret = fwnode_property_read_u32_array(child, "led-sources",
->  						    led->hvled_strings,
-> -						    led->num_leds);
-> +						    led->num_led_strings);
->  		if (ret) {
->  			dev_err(&priv->client->dev, "led-sources property missing\n");
->  			fwnode_handle_put(child);
->  			goto child_out;
->  		}
-> 
-> -		for (j = 0; j < led->num_leds; j++)
-> +		for (j = 0; j < led->num_led_strings; j++)
->  			priv->bank_cfg |=
->  				(led->control_bank << led->hvled_strings[j]);
-> 
-> @@ -317,6 +318,8 @@ static int lm3697_probe(struct i2c_client *client,
->  	if (!led)
->  		return -ENOMEM;
-> 
-> +	led->num_leds = count;
-> +
->  	mutex_init(&led->lock);
->  	i2c_set_clientdata(client, led);
-> 
-> --
-> 2.28.0
-> 
-
-Marek
