@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415D3283D36
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CBB283D38
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbgJERVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725973AbgJERVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:21:05 -0400
-Received: from gaia (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5ADD2078E;
-        Mon,  5 Oct 2020 17:21:00 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 18:20:58 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     chenzhou <chenzhou10@huawei.com>
-Cc:     Baoquan He <bhe@redhat.com>, will@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, dyoung@redhat.com,
-        corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
-        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com, rppt@linux.ibm.com
-Subject: Re: [PATCH v12 3/9] x86: kdump: use macro CRASH_ADDR_LOW_MAX in
- functions reserve_crashkernel[_low]()
-Message-ID: <20201005172057.GE14576@gaia>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
- <20200907134745.25732-4-chenzhou10@huawei.com>
- <20200918072526.GD25604@MiWiFi-R3L-srv>
- <fa6634dd-4438-4e5d-f350-fc19d5fa7d97@huawei.com>
- <14e22d92-1601-fc1c-a1c8-e3936d63db42@huawei.com>
+        id S1727688AbgJERW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725973AbgJERW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:22:59 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6E2C0613CE;
+        Mon,  5 Oct 2020 10:22:59 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id d20so5073954iop.10;
+        Mon, 05 Oct 2020 10:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XZRtmjOYtpHBNM212M1ledQJfVr2VJ6yoQhIQ7bVB48=;
+        b=mSQ0LPOdKz+shB3s5abRAYiD5DnDSzpIlTrwvdRl7MnB8VCF7z2zA9KPvBQWREFuAr
+         V9kXgG0wkGqKWlZPidtmFb4s3FrzHaF1v37saUwVNUY0CpFizPwhr48RYSGN9yPbgOOc
+         lj+AVg78qiKD5b5AO9VVnfTBxoJvl55OtCLf5W7zEQP3mH4IjomQ2+I5m3nYrQYNOa2S
+         q30+lzGInEFb9Ry+JS5viBs0z2WfHK0E/komTAMpLuIdXcgNp5+Go30LREQN+/+OEzVz
+         ySSAwhF4p9hW4tpmX2fMjX8Lui2FWcNM2pmu51hse+8iNlPH+bx1cHHWczLBgSmvhu+8
+         V9nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XZRtmjOYtpHBNM212M1ledQJfVr2VJ6yoQhIQ7bVB48=;
+        b=hSDjCScmuc85PGVrEmeGREEZYK02DRE554yZb3WI4T0F6+c1mx91ZacI0OTRwj9pZp
+         dgOOjjBlpSkZOdKPW5bn0SKx+yZ0mTQUaG8Zhbp55u5yvyJoe/CIm+RPyqwjUAse/MbO
+         P/f6uH5RtnLeFk9dxpOT1SjMEkTkemhetQ2k7VTkMtyGDFoU/36f1FzgPofyQ5I5UJAa
+         F1eJuImRUqNOD4GuVPnMByJTw9lW/FmYaTGaMPZkWKffyFQaOXkp0L71ftjt3DGGwFqD
+         lWmaK5QvY3+oRvUNiK/6BoVjkuVCeW7BkvcOY8/ZO6ObzJ9Of2MdSWdYILkeyg/Fq55O
+         3XVA==
+X-Gm-Message-State: AOAM532YBBjL774JBrZ+Rh4LN6DzdVl0GP+XxebAS2u5EgrPTcxxxl0R
+        cQj2nxM1Iabc6OHfNVFoHAXLVE82bsHmsVeTyOo=
+X-Google-Smtp-Source: ABdhPJwRyJHnDxbqKob8p9WvPedYD68n+ADV/ljcburJhGIsDf8uD0j8l8VlS7MozBS4CeaqS7iPmdQcHhun29P88UE=
+X-Received: by 2002:a05:6638:3a6:: with SMTP id z6mr865054jap.93.1601918578650;
+ Mon, 05 Oct 2020 10:22:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14e22d92-1601-fc1c-a1c8-e3936d63db42@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
+ <20201005170227.11340-1-alexander.mikhalitsyn@virtuozzo.com>
+ <83d78791-b650-c8d5-e18a-327d065d53d7@infradead.org> <20201005201222.d1f42917d060a5f7138b6446@virtuozzo.com>
+In-Reply-To: <20201005201222.d1f42917d060a5f7138b6446@virtuozzo.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 5 Oct 2020 20:22:47 +0300
+Message-ID: <CAOQ4uxiGq40XLhjx_Nz1ymGj967QsMAj_PvuSKH1_4dX=dRMXA@mail.gmail.com>
+Subject: Re: [RFC PATCH] overlayfs: add OVL_IOC_GETINFOFD ioctl that opens ovlinfofd
+To:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Andrei Vagin <avagin@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        David Howells <dhowells@redhat.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 05:06:37PM +0800, chenzhou wrote:
-> On 2020/9/18 16:59, chenzhou wrote:
-> > On 2020/9/18 15:25, Baoquan He wrote:
-> >> On 09/07/20 at 09:47pm, Chen Zhou wrote:
-> >>> To make the functions reserve_crashkernel[_low]() as generic,
-> >>> replace some hard-coded numbers with macro CRASH_ADDR_LOW_MAX.
-> >>>
-> >>> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> >>> ---
-> >>>  arch/x86/kernel/setup.c | 11 ++++++-----
-> >>>  1 file changed, 6 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> >>> index d7fd90c52dae..71a6a6e7ca5b 100644
-> >>> --- a/arch/x86/kernel/setup.c
-> >>> +++ b/arch/x86/kernel/setup.c
-> >>> @@ -430,7 +430,7 @@ static int __init reserve_crashkernel_low(void)
-> >>>  	unsigned long total_low_mem;
-> >>>  	int ret;
-> >>>  
-> >>> -	total_low_mem = memblock_mem_size(1UL << (32 - PAGE_SHIFT));
-> >>> +	total_low_mem = memblock_mem_size(CRASH_ADDR_LOW_MAX >> PAGE_SHIFT);
-> >> Just note that the replacement has been done in another patch from Mike
-> >> Rapoport, partially. He seems to have done reserve_crashkernel_low()
-> >> part, there's one left in reserve_crashkernel(), you might want to check
-> >> that. 
-> >>
-> >> Mike's patch which is from a patchset has been merged into Andrew's next
-> >> tree.
-> >>
-> >> commit 6e50f7672ffa362e9bd4bc0c0d2524ed872828c5
-> >> Author: Mike Rapoport <rppt@linux.ibm.com>
-> >> Date:   Wed Aug 26 15:22:32 2020 +1000
-> >>
-> >>     x86/setup: simplify reserve_crashkernel()
-> As Baoquan said, some functions have been changed in the next tree,
-> if i need to rebase on top of the next tree.
+On Mon, Oct 5, 2020 at 8:13 PM Alexander Mikhalitsyn
+<alexander.mikhalitsyn@virtuozzo.com> wrote:
+>
+> On Mon, 5 Oct 2020 10:08:42 -0700
+> Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> > On 10/5/20 10:02 AM, Alexander Mikhalitsyn wrote:
+> > >  #define    OVL_IOC_GETLWRFHNDLSNUM                 _IO('o', 1)
+> > >  // DISCUSS: what if MAX_HANDLE_SZ will change?
+> > >  #define    OVL_IOC_GETLWRFHNDL                     _IOR('o', 2, struct ovl_mnt_opt_fh)
+> > >  #define    OVL_IOC_GETUPPRFHNDL                    _IOR('o', 3, struct ovl_mnt_opt_fh)
+> > >  #define    OVL_IOC_GETWRKFHNDL                     _IOR('o', 4, struct ovl_mnt_opt_fh)
+> > > +#define    OVL_IOC_GETINFOFD                       _IO('o', 5)
+> >
+> > Hi,
+> >
+> > Quoting (repeating) from
+> > https://lore.kernel.org/lkml/9cd0e9d1-f124-3f2d-86e6-e6e96a1ccb1e@infradead.org/:
+> >
+> > This needs to have Documentation/userspace-api/ioctl/ioctl-number.rst
+> > updated also.
+> >
+> > ...
+> >
+> > Are you waiting until it's past RFC stage?
+> >
+> > thanks.
+> > --
+> > ~Randy
+> >
+>
+> Hi,
+>
+> thank you! I will prepare this change too when we
+> decide which ioctls to add. ;)
+>
 
-Please rebase at 5.10-rc1 when the x86 change will probably be in and
-aim to queue this series for 5.11.
+Or... don't do ioctls and avoid the ABI headaches.
+If you are going to expose a seqfile I think it would be much prefered
+to do a /sys/fs/overlay/instance/<device minor>/layes file.
 
-Thanks.
+But that's just my opinion.
 
--- 
-Catalin
+Thanks,
+Amir.
