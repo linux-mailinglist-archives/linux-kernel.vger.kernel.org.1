@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70512283A0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB33283AD3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgJEPax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:30:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56444 "EHLO mail.kernel.org"
+        id S1728537AbgJEPhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727729AbgJEPaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:30:08 -0400
+        id S1727067AbgJEPcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:32:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C3D420874;
-        Mon,  5 Oct 2020 15:30:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94CEC207BC;
+        Mon,  5 Oct 2020 15:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911807;
-        bh=qPYWIyVdrjyoSIbS7VuHFKq3PlreSVhO+6fYCOjymSA=;
+        s=default; t=1601911923;
+        bh=OU6c3u+NfqWTixuEJ5jige+WjXRgeOTj/SKNJQI2Miw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fqhrzea/PZU68PWn9TYLUDZlZ7IsTkhZlK2IcKNg3rCcfsM6jUfGCe2oo64d4q+Np
-         RAtPSIw2ADKpc1UjI0UxJq1w9bo1oV6PT0O5TJvVw5k2SkG1YPIjzet6ECuDCziS8s
-         LF6YayKCpH+x4CwNhjjYn0kzzr48KxQOhJkatl+M=
+        b=joCWyx9+oIIzUu0WqN1VlbBZ7mpf3pfRQ9d8oMGGmlvbdj0fB70gLFSHz0dKRXtOy
+         Hrr7wr0GtlLGbC/PIw8SBpDdtW9AFha6QcO0Ujf7EtDLt/VCATkbuScC193fGYTSuL
+         jbfEtcnaQuaaaN3X5VwhMyqZskmTZaiVw4YhQxjE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jean Delvare <jdelvare@suse.de>,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 15/57] drm/amdgpu: restore proper ref count in amdgpu_display_crtc_set_config
+        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 31/85] hv_netvsc: Cache the current data path to avoid duplicate call and message
 Date:   Mon,  5 Oct 2020 17:26:27 +0200
-Message-Id: <20201005142110.531455949@linuxfoundation.org>
+Message-Id: <20201005142116.234428283@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean Delvare <jdelvare@suse.de>
+From: Dexuan Cui <decui@microsoft.com>
 
-commit a39d0d7bdf8c21ac7645c02e9676b5cb2b804c31 upstream.
+[ Upstream commit da26658c3d7005aa67a706dceff7b2807b59e123 ]
 
-A recent attempt to fix a ref count leak in
-amdgpu_display_crtc_set_config() turned out to be doing too much and
-"fixed" an intended decrease as if it were a leak. Undo that part to
-restore the proper balance. This is the very nature of this function
-to increase or decrease the power reference count depending on the
-situation.
+The previous change "hv_netvsc: Switch the data path at the right time
+during hibernation" adds the call of netvsc_vf_changed() upon
+NETDEV_CHANGE, so it's necessary to avoid the duplicate call and message
+when the VF is brought UP or DOWN.
 
-Consequences of this bug is that the power reference would
-eventually get down to 0 while the display was still in use,
-resulting in that display switching off unexpectedly.
-
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Fixes: e008fa6fb415 ("drm/amdgpu: fix ref count leak in amdgpu_display_crtc_set_config")
-Cc: stable@vger.kernel.org
-Cc: Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/hyperv/hyperv_net.h |  3 +++
+ drivers/net/hyperv/netvsc_drv.c | 21 ++++++++++++++++++++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-@@ -297,7 +297,7 @@ int amdgpu_display_crtc_set_config(struc
- 	   take the current one */
- 	if (active && !adev->have_disp_power_ref) {
- 		adev->have_disp_power_ref = true;
--		goto out;
-+		return ret;
- 	}
- 	/* if we have no active crtcs, then drop the power ref
- 	   we got before */
+diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
+index abda736e7c7dc..a4d2dd2637e26 100644
+--- a/drivers/net/hyperv/hyperv_net.h
++++ b/drivers/net/hyperv/hyperv_net.h
+@@ -973,6 +973,9 @@ struct net_device_context {
+ 	/* Serial number of the VF to team with */
+ 	u32 vf_serial;
+ 
++	/* Is the current data path through the VF NIC? */
++	bool  data_path_is_vf;
++
+ 	/* Used to temporarily save the config info across hibernation */
+ 	struct netvsc_device_info *saved_netvsc_dev_info;
+ };
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index a2db5ef3b62a2..3b0dc1f0ef212 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2323,7 +2323,16 @@ static int netvsc_register_vf(struct net_device *vf_netdev)
+ 	return NOTIFY_OK;
+ }
+ 
+-/* VF up/down change detected, schedule to change data path */
++/* Change the data path when VF UP/DOWN/CHANGE are detected.
++ *
++ * Typically a UP or DOWN event is followed by a CHANGE event, so
++ * net_device_ctx->data_path_is_vf is used to cache the current data path
++ * to avoid the duplicate call of netvsc_switch_datapath() and the duplicate
++ * message.
++ *
++ * During hibernation, if a VF NIC driver (e.g. mlx5) preserves the network
++ * interface, there is only the CHANGE event and no UP or DOWN event.
++ */
+ static int netvsc_vf_changed(struct net_device *vf_netdev)
+ {
+ 	struct net_device_context *net_device_ctx;
+@@ -2340,6 +2349,10 @@ static int netvsc_vf_changed(struct net_device *vf_netdev)
+ 	if (!netvsc_dev)
+ 		return NOTIFY_DONE;
+ 
++	if (net_device_ctx->data_path_is_vf == vf_is_up)
++		return NOTIFY_OK;
++	net_device_ctx->data_path_is_vf = vf_is_up;
++
+ 	netvsc_switch_datapath(ndev, vf_is_up);
+ 	netdev_info(ndev, "Data path switched %s VF: %s\n",
+ 		    vf_is_up ? "to" : "from", vf_netdev->name);
+@@ -2581,6 +2594,12 @@ static int netvsc_resume(struct hv_device *dev)
+ 	rtnl_lock();
+ 
+ 	net_device_ctx = netdev_priv(net);
++
++	/* Reset the data path to the netvsc NIC before re-opening the vmbus
++	 * channel. Later netvsc_netdev_event() will switch the data path to
++	 * the VF upon the UP or CHANGE event.
++	 */
++	net_device_ctx->data_path_is_vf = false;
+ 	device_info = net_device_ctx->saved_netvsc_dev_info;
+ 
+ 	ret = netvsc_attach(net, device_info);
+-- 
+2.25.1
+
 
 
