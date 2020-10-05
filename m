@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B94283B6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56209283ACF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbgJEPmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:42:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53068 "EHLO mail.kernel.org"
+        id S1728520AbgJEPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727358AbgJEP2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:28:15 -0400
+        id S1727959AbgJEPcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:32:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 894AE20B80;
-        Mon,  5 Oct 2020 15:28:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86D3F20637;
+        Mon,  5 Oct 2020 15:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911694;
-        bh=aG/CJqiG4nCBlZZDJKQ3M8yHTRFsux5hGoAoMhfycEg=;
+        s=default; t=1601911928;
+        bh=jCAJpA4MoOkk1Y3avzyE2lD63xoo8nkUKvGvEriN85g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=adHnfMMcyIb7B/RUx9NVJiq3pA6OkFE6JJaaGKJxZwnH/nvEgYthmTgnNL1E0h86j
-         DFqg82j5/9K0UqTrLn3zO4nT9aU1Uh436a1TNItzGb/Ken9LN2fRJwq4y/VoqtrYnp
-         X1DT1blMeMd6MZJQrEQ5TKAvubY8xBLil9kfyn5w=
+        b=JJxMEkxqN1JX9Ah9537/3VYJcuMVQT9eneBNuqOT9Ke0E9mKGrXN3tGhUFVKUid1w
+         masmeXdOKkvyq8cEVTbtKM0/1eAvnZkO0u8EV6dM9OqqH1B+UBzP2maXPM75FJxX7Y
+         hAO+djselMVZMVR9n0mEfQr6vFwH3tJ0eyY/0boM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul McKenney <paulmck@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 11/38] ftrace: Move RCU is watching check after recursion check
-Date:   Mon,  5 Oct 2020 17:26:28 +0200
-Message-Id: <20201005142109.214888208@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Olympia Giannou <olympia.giannou@leica-geosystems.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 33/85] rndis_host: increase sleep time in the query-response loop
+Date:   Mon,  5 Oct 2020 17:26:29 +0200
+Message-Id: <20201005142116.328402151@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
-References: <20201005142108.650363140@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Olympia Giannou <ogiannou@gmail.com>
 
-commit b40341fad6cc2daa195f8090fd3348f18fff640a upstream.
+[ Upstream commit 4202c9fdf03d79dedaa94b2c4cf574f25793d669 ]
 
-The first thing that the ftrace function callback helper functions should do
-is to check for recursion. Peter Zijlstra found that when
-"rcu_is_watching()" had its notrace removed, it caused perf function tracing
-to crash. This is because the call of rcu_is_watching() is tested before
-function recursion is checked and and if it is traced, it will cause an
-infinite recursion loop.
+Some WinCE devices face connectivity issues via the NDIS interface. They
+fail to register, resulting in -110 timeout errors and failures during the
+probe procedure.
 
-rcu_is_watching() should still stay notrace, but to prevent this should
-never had crashed in the first place. The recursion prevention must be the
-first thing done in callback functions.
+In this kind of WinCE devices, the Windows-side ndis driver needs quite
+more time to be loaded and configured, so that the linux rndis host queries
+to them fail to be responded correctly on time.
 
-Link: https://lore.kernel.org/r/20200929112541.GM2628@hirez.programming.kicks-ass.net
+More specifically, when INIT is called on the WinCE side - no other
+requests can be served by the Client and this results in a failed QUERY
+afterwards.
 
-Cc: stable@vger.kernel.org
-Cc: Paul McKenney <paulmck@kernel.org>
-Fixes: c68c0fa293417 ("ftrace: Have ftrace_ops_get_func() handle RCU and PER_CPU flags too")
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reported-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The increase of the waiting time on the side of the linux rndis host in
+the command-response loop leaves the INIT process to complete and respond
+to a QUERY, which comes afterwards. The WinCE devices with this special
+"feature" in their ndis driver are satisfied by this fix.
 
+Signed-off-by: Olympia Giannou <olympia.giannou@leica-geosystems.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ftrace.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/usb/rndis_host.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6370,16 +6370,14 @@ static void ftrace_ops_assist_func(unsig
- {
- 	int bit;
- 
--	if ((op->flags & FTRACE_OPS_FL_RCU) && !rcu_is_watching())
--		return;
--
- 	bit = trace_test_and_set_recursion(TRACE_LIST_START, TRACE_LIST_MAX);
- 	if (bit < 0)
- 		return;
- 
- 	preempt_disable_notrace();
- 
--	op->func(ip, parent_ip, op, regs);
-+	if (!(op->flags & FTRACE_OPS_FL_RCU) || rcu_is_watching())
-+		op->func(ip, parent_ip, op, regs);
- 
- 	preempt_enable_notrace();
- 	trace_clear_recursion(bit);
+diff --git a/drivers/net/usb/rndis_host.c b/drivers/net/usb/rndis_host.c
+index bd9c07888ebb4..6fa7a009a24a4 100644
+--- a/drivers/net/usb/rndis_host.c
++++ b/drivers/net/usb/rndis_host.c
+@@ -201,7 +201,7 @@ int rndis_command(struct usbnet *dev, struct rndis_msg_hdr *buf, int buflen)
+ 			dev_dbg(&info->control->dev,
+ 				"rndis response error, code %d\n", retval);
+ 		}
+-		msleep(20);
++		msleep(40);
+ 	}
+ 	dev_dbg(&info->control->dev, "rndis response timeout\n");
+ 	return -ETIMEDOUT;
+-- 
+2.25.1
+
 
 
