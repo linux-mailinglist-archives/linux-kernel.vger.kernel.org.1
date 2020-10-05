@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A42E2834E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02252834EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgJEL0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:26:52 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:53287 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725914AbgJEL0t (ORCPT
+        id S1725967AbgJEL2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgJEL2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:26:49 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id EA4585C0118;
-        Mon,  5 Oct 2020 07:26:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 07:26:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=sBOBUzyry7tYkPBem/JiXq0flCB
-        BUkJGq1lznWBIxu0=; b=F3YcXrnnuT+l174MQvZwJHkDX8LCUZLYo660Rybnzyo
-        WSXm5wWZJrRkuAJ7MB52WlY5WtVDwfUY5D5fUQpbXffinWwG9Y/U4p94PXbcJzyy
-        P97PR0wVOuDjcqACdqQLOy8zUC/X2zTkXa9qiWo4lKQWTa68phGZ6GX2rLssu1jl
-        EloIiBzFzSLe4bIDFy7qWb+NXk0iqllSoxwJWDGNQKYSbGmdTlTYl/C+htnepaul
-        MqHNURP0Tqk6Z6vHMs5fdo/QIIYCaLRizrpd/NdM0E/ai75OiABe+tgJhCbl4r4U
-        Hy8sUXG0//G8pEEg7cCyEKh63URRLWYDQ2FtVdMttcQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sBOBUz
-        yry7tYkPBem/JiXq0flCBBUkJGq1lznWBIxu0=; b=R1Wl3QsyddKgMFQmUuj9Gj
-        o6qTPnyMHy7tA7KnrUTQQQx8Dc/kYXmYAVxqCNsR7wPBDXVK7SzVKF7bMAcLl7wx
-        5Upn8udtr/RlppDjHdag7+Rou4qWl/mUJg819Kpe7T1p/hXgJ/CvmLNlWG7H3o0c
-        R6xHpnwPyhwg5gqFhmC5+RYPEcIEYngC8BehEPZvb3HevMGlk/QiDyqkIAlAay5V
-        Nz+Pyil2YfX/hKFyjT6SJgbvBEhhnHEzoohZNVuOwwlq8u/MvGs/csniugSgpqzL
-        AX+lQC2tcAiBkuh0cSg1Z6sX/kEGnVFinf4jI7O5MgipSNU+Q3lWzYQNSE+GZjxQ
-        ==
-X-ME-Sender: <xms:9wJ7X87vnfrG7-QnqcQcjA4-UpVu0ZfcLAnU7jw0CXKzzl8zHIbMpQ>
-    <xme:9wJ7X95KkJhX-AMe5-qOXoGGCzl35DjWnDFq25AEkpzRM6IbW6TY0lp-tFvfBv6WO
-    Dg2we44z6fwHAwj4Dg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:9wJ7X7esuxj_HK2ONAbOCPrvUDg_Fzr4BCNmeO59Gwemj0akurFp8g>
-    <xmx:9wJ7XxJgrFT1b_BJZyYunsaOiGntvidoIcyMZTAElg-wL9_DXa4cRw>
-    <xmx:9wJ7XwLYkFTYi1uiuKHeSvXCVFPZ3eXaEhA10hk_b0eojyRX68LHAA>
-    <xmx:9wJ7X5pIOvzDJNI7bM7baVAio7sxmfpfaWnQ5ckgbrOPlaO_x_1Pzg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 79ABA3064674;
-        Mon,  5 Oct 2020 07:26:47 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 13:26:46 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/25] ASoC: sun8i-codec: Program format before clock
- inversion
-Message-ID: <20201005112646.jhktikxgubfatbh6@gilmour.lan>
-References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-11-samuel@sholland.org>
+        Mon, 5 Oct 2020 07:28:00 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F11C0613CE;
+        Mon,  5 Oct 2020 04:27:59 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id cq12so5135196edb.2;
+        Mon, 05 Oct 2020 04:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BwDv5MO5rrSYkKheEXBgLNjSxoaATzOrKSREX7JeQTI=;
+        b=X+C2jta0WQ9dZQw5812WDSv70h9NVY0sRx7xWT46oiplXSXuvD2wSjpPhF60Ptg94a
+         qFAj+dXHZdEIJ5FVs9oJx0u+SAJz2R4A1AKlWomFFvT0z8rKHzFQn9LKO7I3N6PD92YB
+         hPFxuYXeqpB5tNa9bNjgdiQiltjPrwy0fKWpTKr0i8sFRT2ETbYZCtKgIRTTx/ogfflQ
+         Lt5/XxosLqxQ0JHl3Svnel5fXpHcFNZlMid/kEleq4EUDpNuO022+gVpJmE3xmtyB5bp
+         xpJpe2+Y4SITqpPVjpIqIOHIWCE7GqjEy79jlQ/pkF3SnSu26TJanuvKoXD4r+l7XWTw
+         j86w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BwDv5MO5rrSYkKheEXBgLNjSxoaATzOrKSREX7JeQTI=;
+        b=WU4L5BypK6AVMs+f6ySbEj2vFB8FBN+767lVnPTAVDomliB/YO0RbyFg5+hpSlfCCj
+         zZS2EhU0NnXbNhAspT7ENdWssHgKEClJYbpNnq1mZ7BR1LIVdr4DRMX0uHKE4VT9n9Sg
+         zBnH9tUokWSMScNUNXywEt4jIvLTroz38zcMGED43+SbZMVrwP/Sc4cf4V+thwgeXNCw
+         XbWCWOIczS9LqCFo5TWV1nt1/ClCJ2ELbwdPys/eX6OezaxnV2FfivQb5ODUIjExTwFb
+         X4XXoAAzf/rJdPgtA73aEGGD780aknVdIQKLFCvLZcHFeMuMVJ7fup216ZB2ydWO4CVQ
+         LwTA==
+X-Gm-Message-State: AOAM530rx0VMy6CZzKo2SMGG8AMUBbUweMcIwxPVLLt0llxMc3afaCEo
+        s+qR1zCfzzZLl0+nLosxRHQ=
+X-Google-Smtp-Source: ABdhPJz5507FXVIk1muIosCNNyJhsPzeIhVOPxQ+P7bub8nPqPbUcU4RWmwX2UnDZKuxz4tslEfUig==
+X-Received: by 2002:a50:d987:: with SMTP id w7mr16581456edj.113.1601897278474;
+        Mon, 05 Oct 2020 04:27:58 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id rs18sm1407764ejb.69.2020.10.05.04.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 04:27:57 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 13:27:55 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Venkat Reddy Talla <vreddytalla@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Subject: Re: [PATCH 2/3] soc/tegra: pmc: Allow optional irq parent callbacks
+Message-ID: <20201005112755.GS425362@ulmo>
+References: <20201005111443.1390096-1-maz@kernel.org>
+ <20201005111443.1390096-3-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="i2twgdz2xu3icbbo"
+        protocol="application/pgp-signature"; boundary="qZLIv6EoKi7YuaSc"
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-11-samuel@sholland.org>
+In-Reply-To: <20201005111443.1390096-3-maz@kernel.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---i2twgdz2xu3icbbo
+--qZLIv6EoKi7YuaSc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 09:11:33PM -0500, Samuel Holland wrote:
-> The LRCK inversion bit has a different meaning in DSP mode: it selects
-> between DSP A and DSP B formats. To support this, we need to know if
-> the selected format is a DSP format. One easy way to do this is to set
-> the format field before the inversion fields.
+On Mon, Oct 05, 2020 at 12:14:42PM +0100, Marc Zyngier wrote:
+> Make the PMC driver resistent to variable depth interrupt hierarchy,
+> which we are about to introduce. The irq_chip structure is now
+> allocated statically, providing the indirection for the couple of
+> callbacks that are SoC-specific.
 >=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/soc/tegra/pmc.c | 65 ++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 54 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+> index d332e5d9abac..9960f7c18431 100644
+> --- a/drivers/soc/tegra/pmc.c
+> +++ b/drivers/soc/tegra/pmc.c
+> @@ -439,7 +439,6 @@ struct tegra_pmc {
+>  	struct pinctrl_dev *pctl_dev;
+> =20
+>  	struct irq_domain *domain;
+> -	struct irq_chip irq;
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+Did you have any particular reason for pulling this out of the struct
+tegra_pmc and making it a global variable?
 
-Maxime
+Thierry
 
---i2twgdz2xu3icbbo
+--qZLIv6EoKi7YuaSc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sC9QAKCRDj7w1vZxhR
-xbwaAP430fSwoZJnaZEplR6DENxrtAyPlBtLiIfrXb+MHbkipgD/Y4ZRoJd+LZwr
-BS0p+bWn2tQusQMQC7pRYKP5TRTvvAg=
-=2dMT
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl97AzsACgkQ3SOs138+
+s6HyRg/9FiLC5m3jijFJBXlhg/2WP/TpTbwEdwYRsZsQ01I3rFItcby8jghFz5Nv
+arFqRmVYZmcpe3Rjs0oLyzuoVQ9F4eXhwnexo/NkKUWXAtflHL7H2faAD3Dv/4SV
+Noe6am/4uzOxpb0gkxMwk8U4M7qa7vgDlK3keF8LcANUAnd2Xp5wuaNdj7BH1XGV
+m/3SquQsaTIkNzu/DHKZ0Lptn/dxXl+R1wgl8BkvBiDp95zlEokufVRo+9a6Irk8
+ACOg/7V8XT4G82JSkodws4qdZbPFvWN7uI+OrjkWJQAeoFzHVf4nq2EZHvwqf3JL
+gLZ2WnS5eeNZaMll8xWQ+3OnqF+bR5mAhDA/8Xisss3jFczdQifWJsrUFo+b3L2/
+6qCLqLSMnbeKAEGi34a8J6S/c+op8iqxlfeM7IHMBSxZtUUFeZLumk4gxGY8rrBG
+VVFgThicqcM3rXVxF42BB/7z/pp5X3hjGfQUF1wXEYkmv0lMRRs91LPdhML51DPU
+jGnzl+1V+thcZvebAtFuaI/SvTNv01ClchnD4aHrqHjyJQQwzkndxGDK8WFoN/ss
+wm4TlFERPioedUyVLEBn+uXEVm57BPFVDkPp6gUT3xL8nbHE8F7QhR7+r/dbJ2a7
+NuZutGpBrmufbRsVPTAohdVAYepd553C/fs80epcPlg4zsRDt1c=
+=m80y
 -----END PGP SIGNATURE-----
 
---i2twgdz2xu3icbbo--
+--qZLIv6EoKi7YuaSc--
