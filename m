@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4615B2835D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE392835CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgJEM2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S1726499AbgJEM1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgJEM1u (ORCPT
+        with ESMTP id S1726258AbgJEM1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:27:50 -0400
+        Mon, 5 Oct 2020 08:27:49 -0400
 Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82ACFC0613AE
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A0EC0613AD
         for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:27:48 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id 6A85B23F40C;
+        by smtp2.goneo.de (Postfix) with ESMTP id 0D2C823F6DA;
         Mon,  5 Oct 2020 14:27:47 +0200 (CEST)
 X-Virus-Scanned: by goneo
 X-Spam-Flag: NO
-X-Spam-Score: -2.978
+X-Spam-Score: -2.979
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.978 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.078, BAYES_00=-1.9] autolearn=ham
+X-Spam-Status: No, score=-2.979 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.079, BAYES_00=-1.9] autolearn=ham
 Received: from smtp2.goneo.de ([127.0.0.1])
         by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id gwZTk3BkiyYf; Mon,  5 Oct 2020 14:27:45 +0200 (CEST)
+        with ESMTP id 8Lspv6aMua16; Mon,  5 Oct 2020 14:27:45 +0200 (CEST)
 Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp2.goneo.de (Postfix) with ESMTPA id E5F4523F474;
-        Mon,  5 Oct 2020 14:27:44 +0200 (CEST)
+        by smtp2.goneo.de (Postfix) with ESMTPA id A9C1123F6E9;
+        Mon,  5 Oct 2020 14:27:45 +0200 (CEST)
 From:   poeschel@lemonage.de
 To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
         linux-kernel@vger.kernel.org (open list)
 Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH v4 03/32] auxdisplay: Move hwidth and bwidth to struct hd44780_common
-Date:   Mon,  5 Oct 2020 14:27:03 +0200
-Message-Id: <20201005122732.3429347-4-poeschel@lemonage.de>
+Subject: [PATCH v4 04/32] auxdisplay: Move ifwidth to struct hd44780_common
+Date:   Mon,  5 Oct 2020 14:27:04 +0200
+Message-Id: <20201005122732.3429347-5-poeschel@lemonage.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005122732.3429347-1-poeschel@lemonage.de>
 References: <20201005122732.3429347-1-poeschel@lemonage.de>
@@ -50,468 +48,129 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lars Poeschel <poeschel@lemonage.de>
 
-hwidth is for the hardware buffer size and bwidth is for the buffer
-width of one single line. This is specific to the hd44780 displays and
-so it is moved out from charlcd to struct hd44780_common.
+Move struct charlcd member ifwidth to our new struct hd44780_common.
+ifwidth is hd44780 device specific and is used by two drivers at the
+moment, so we move it to a common place, where both can use this.
 
 Reviewed-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
 ---
- drivers/auxdisplay/charlcd.c        | 40 ++++++++++++-------------
- drivers/auxdisplay/charlcd.h        |  6 ++--
- drivers/auxdisplay/hd44780.c        | 24 +++++++++------
- drivers/auxdisplay/hd44780_common.c |  3 +-
- drivers/auxdisplay/hd44780_common.h |  5 ++++
- drivers/auxdisplay/panel.c          | 45 +++++++++++++++--------------
- 6 files changed, 67 insertions(+), 56 deletions(-)
+ drivers/auxdisplay/charlcd.c        | 12 ++++++------
+ drivers/auxdisplay/charlcd.h        |  1 -
+ drivers/auxdisplay/hd44780.c        |  2 +-
+ drivers/auxdisplay/hd44780_common.c |  1 +
+ drivers/auxdisplay/hd44780_common.h |  1 +
+ 5 files changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index 8aaee0fea9ab..02392336d7d3 100644
+index 02392336d7d3..59e0a815bf3d 100644
 --- a/drivers/auxdisplay/charlcd.c
 +++ b/drivers/auxdisplay/charlcd.c
-@@ -21,9 +21,7 @@
- #include <generated/utsrelease.h>
- 
- #include "charlcd.h"
--
--#define DEFAULT_LCD_BWIDTH      40
--#define DEFAULT_LCD_HWIDTH      64
-+#include "hd44780_common.h"
- 
- /* Keep the backlight on this many seconds for each flash */
- #define LCD_BL_TEMPO_PERIOD	4
-@@ -151,18 +149,19 @@ EXPORT_SYMBOL_GPL(charlcd_poke);
- static void charlcd_gotoxy(struct charlcd *lcd)
+@@ -223,9 +223,10 @@ static int charlcd_init_display(struct charlcd *lcd)
  {
+ 	void (*write_cmd_raw)(struct charlcd *lcd, int cmd);
  	struct charlcd_priv *priv = charlcd_to_priv(lcd);
 +	struct hd44780_common *hdc = lcd->drvdata;
- 	unsigned int addr;
+ 	u8 init;
  
- 	/*
- 	 * we force the cursor to stay at the end of the
- 	 * line if it wants to go farther
+-	if (lcd->ifwidth != 4 && lcd->ifwidth != 8)
++	if (hdc->ifwidth != 4 && hdc->ifwidth != 8)
+ 		return -EINVAL;
+ 
+ 	priv->flags = ((lcd->height > 1) ? LCD_FLAG_N : 0) | LCD_FLAG_D |
+@@ -238,7 +239,7 @@ static int charlcd_init_display(struct charlcd *lcd)
+ 	 * the LCD is in 8-bit mode afterwards
  	 */
--	addr = priv->addr.x < lcd->bwidth ? priv->addr.x & (lcd->hwidth - 1)
--					  : lcd->bwidth - 1;
-+	addr = priv->addr.x < hdc->bwidth ? priv->addr.x & (hdc->hwidth - 1)
-+					  : hdc->bwidth - 1;
- 	if (priv->addr.y & 1)
--		addr += lcd->hwidth;
-+		addr += hdc->hwidth;
- 	if (priv->addr.y & 2)
--		addr += lcd->bwidth;
-+		addr += hdc->bwidth;
- 	lcd->ops->write_cmd(lcd, LCD_CMD_SET_DDRAM_ADDR | addr);
- }
+ 	init = LCD_CMD_FUNCTION_SET | LCD_CMD_DATA_LEN_8BITS;
+-	if (lcd->ifwidth == 4) {
++	if (hdc->ifwidth == 4) {
+ 		init >>= 4;
+ 		write_cmd_raw = lcd->ops->write_cmd_raw4;
+ 	} else {
+@@ -251,7 +252,7 @@ static int charlcd_init_display(struct charlcd *lcd)
+ 	write_cmd_raw(lcd, init);
+ 	long_sleep(10);
  
-@@ -178,21 +177,23 @@ static void charlcd_home(struct charlcd *lcd)
- static void charlcd_print(struct charlcd *lcd, char c)
- {
- 	struct charlcd_priv *priv = charlcd_to_priv(lcd);
-+	struct hd44780_common *hdc = lcd->drvdata;
- 
--	if (priv->addr.x < lcd->bwidth) {
-+	if (priv->addr.x < hdc->bwidth) {
- 		if (lcd->char_conv)
- 			c = lcd->char_conv[(unsigned char)c];
- 		lcd->ops->write_data(lcd, c);
- 		priv->addr.x++;
- 
- 		/* prevents the cursor from wrapping onto the next line */
--		if (priv->addr.x == lcd->bwidth)
-+		if (priv->addr.x == hdc->bwidth)
- 			charlcd_gotoxy(lcd);
- 	}
- }
- 
- static void charlcd_clear_fast(struct charlcd *lcd)
- {
-+	struct hd44780_common *hdc = lcd->drvdata;
- 	int pos;
- 
- 	charlcd_home(lcd);
-@@ -200,7 +201,7 @@ static void charlcd_clear_fast(struct charlcd *lcd)
- 	if (lcd->ops->clear_fast)
- 		lcd->ops->clear_fast(lcd);
- 	else
--		for (pos = 0; pos < min(2, lcd->height) * lcd->hwidth; pos++)
-+		for (pos = 0; pos < min(2, lcd->height) * hdc->hwidth; pos++)
- 			lcd->ops->write_data(lcd, ' ');
- 
- 	charlcd_home(lcd);
-@@ -348,6 +349,7 @@ static bool parse_xy(const char *s, unsigned long *x, unsigned long *y)
- static inline int handle_lcd_special_code(struct charlcd *lcd)
- {
- 	struct charlcd_priv *priv = charlcd_to_priv(lcd);
-+	struct hd44780_common *hdc = lcd->drvdata;
- 
- 	/* LCD special codes */
- 
-@@ -413,7 +415,7 @@ static inline int handle_lcd_special_code(struct charlcd *lcd)
- 	case 'l':	/* Shift Cursor Left */
- 		if (priv->addr.x > 0) {
- 			/* back one char if not at end of line */
--			if (priv->addr.x < lcd->bwidth)
-+			if (priv->addr.x < hdc->bwidth)
- 				lcd->ops->write_cmd(lcd, LCD_CMD_SHIFT);
- 			priv->addr.x--;
- 		}
-@@ -422,7 +424,7 @@ static inline int handle_lcd_special_code(struct charlcd *lcd)
- 	case 'r':	/* shift cursor right */
- 		if (priv->addr.x < lcd->width) {
- 			/* allow the cursor to pass the end of the line */
--			if (priv->addr.x < (lcd->bwidth - 1))
-+			if (priv->addr.x < (hdc->bwidth - 1))
- 				lcd->ops->write_cmd(lcd,
- 					LCD_CMD_SHIFT | LCD_CMD_SHIFT_RIGHT);
- 			priv->addr.x++;
-@@ -442,7 +444,7 @@ static inline int handle_lcd_special_code(struct charlcd *lcd)
- 	case 'k': {	/* kill end of line */
- 		int x;
- 
--		for (x = priv->addr.x; x < lcd->bwidth; x++)
-+		for (x = priv->addr.x; x < hdc->bwidth; x++)
- 			lcd->ops->write_data(lcd, ' ');
- 
- 		/* restore cursor position */
-@@ -554,6 +556,7 @@ static inline int handle_lcd_special_code(struct charlcd *lcd)
- static void charlcd_write_char(struct charlcd *lcd, char c)
- {
- 	struct charlcd_priv *priv = charlcd_to_priv(lcd);
-+	struct hd44780_common *hdc = lcd->drvdata;
- 
- 	/* first, we'll test if we're in escape mode */
- 	if ((c != '\n') && priv->esc_seq.len >= 0) {
-@@ -577,7 +580,7 @@ static void charlcd_write_char(struct charlcd *lcd, char c)
- 				 * check if we're not at the
- 				 * end of the line
- 				 */
--				if (priv->addr.x < lcd->bwidth)
-+				if (priv->addr.x < hdc->bwidth)
- 					/* back one char */
- 					lcd->ops->write_cmd(lcd, LCD_CMD_SHIFT);
- 				priv->addr.x--;
-@@ -596,7 +599,7 @@ static void charlcd_write_char(struct charlcd *lcd, char c)
- 			 * flush the remainder of the current line and
- 			 * go to the beginning of the next line
- 			 */
--			for (; priv->addr.x < lcd->bwidth; priv->addr.x++)
-+			for (; priv->addr.x < hdc->bwidth; priv->addr.x++)
- 				lcd->ops->write_data(lcd, ' ');
- 			priv->addr.x = 0;
- 			priv->addr.y = (priv->addr.y + 1) % lcd->height;
-@@ -779,12 +782,12 @@ static int charlcd_init(struct charlcd *lcd)
- 	return 0;
- }
- 
--struct charlcd *charlcd_alloc(unsigned int drvdata_size)
-+struct charlcd *charlcd_alloc(void)
- {
- 	struct charlcd_priv *priv;
- 	struct charlcd *lcd;
- 
--	priv = kzalloc(sizeof(*priv) + drvdata_size, GFP_KERNEL);
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return NULL;
- 
-@@ -792,9 +795,6 @@ struct charlcd *charlcd_alloc(unsigned int drvdata_size)
+-	if (lcd->ifwidth == 4) {
++	if (hdc->ifwidth == 4) {
+ 		/* Switch to 4-bit mode, 1 line, small fonts */
+ 		lcd->ops->write_cmd_raw4(lcd, LCD_CMD_FUNCTION_SET >> 4);
+ 		long_sleep(10);
+@@ -260,7 +261,7 @@ static int charlcd_init_display(struct charlcd *lcd)
+ 	/* set font height and lines number */
+ 	lcd->ops->write_cmd(lcd,
+ 		LCD_CMD_FUNCTION_SET |
+-		((lcd->ifwidth == 8) ? LCD_CMD_DATA_LEN_8BITS : 0) |
++		((hdc->ifwidth == 8) ? LCD_CMD_DATA_LEN_8BITS : 0) |
+ 		((priv->flags & LCD_FLAG_F) ? LCD_CMD_FONT_5X10_DOTS : 0) |
+ 		((priv->flags & LCD_FLAG_N) ? LCD_CMD_TWO_LINES : 0));
+ 	long_sleep(10);
+@@ -543,7 +544,7 @@ static inline int handle_lcd_special_code(struct charlcd *lcd)
+ 	else if ((oldflags ^ priv->flags) & (LCD_FLAG_F | LCD_FLAG_N))
+ 		lcd->ops->write_cmd(lcd,
+ 			LCD_CMD_FUNCTION_SET |
+-			((lcd->ifwidth == 8) ? LCD_CMD_DATA_LEN_8BITS : 0) |
++			((hdc->ifwidth == 8) ? LCD_CMD_DATA_LEN_8BITS : 0) |
+ 			((priv->flags & LCD_FLAG_F) ? LCD_CMD_FONT_5X10_DOTS : 0) |
+ 			((priv->flags & LCD_FLAG_N) ? LCD_CMD_TWO_LINES : 0));
+ 	/* check whether L flag was changed */
+@@ -794,7 +795,6 @@ struct charlcd *charlcd_alloc(void)
+ 	priv->esc_seq.len = -1;
  
  	lcd = &priv->lcd;
- 	lcd->ifwidth = 8;
--	lcd->bwidth = DEFAULT_LCD_BWIDTH;
--	lcd->hwidth = DEFAULT_LCD_HWIDTH;
--	lcd->drvdata = priv->drvdata;
+-	lcd->ifwidth = 8;
  
  	return lcd;
  }
 diff --git a/drivers/auxdisplay/charlcd.h b/drivers/auxdisplay/charlcd.h
-index c66f038e5d2b..2a12d07705a3 100644
+index 2a12d07705a3..5dce9dd36562 100644
 --- a/drivers/auxdisplay/charlcd.h
 +++ b/drivers/auxdisplay/charlcd.h
-@@ -21,10 +21,8 @@ struct charlcd {
- 	int ifwidth;			/* 4-bit or 8-bit (default) */
+@@ -18,7 +18,6 @@ struct charlcd {
+ 	const struct charlcd_ops *ops;
+ 	const unsigned char *char_conv;	/* Optional */
+ 
+-	int ifwidth;			/* 4-bit or 8-bit (default) */
  	int height;
  	int width;
--	int bwidth;			/* Default set by charlcd_alloc() */
--	int hwidth;			/* Default set by charlcd_alloc() */
  
--	void *drvdata;			/* Set by charlcd_alloc() */
-+	void *drvdata;
- };
- 
- struct charlcd_ops {
-@@ -38,7 +36,7 @@ struct charlcd_ops {
- 	void (*backlight)(struct charlcd *lcd, enum charlcd_onoff on);
- };
- 
--struct charlcd *charlcd_alloc(unsigned int drvdata_size);
-+struct charlcd *charlcd_alloc(void);
- void charlcd_free(struct charlcd *lcd);
- 
- int charlcd_register(struct charlcd *lcd);
 diff --git a/drivers/auxdisplay/hd44780.c b/drivers/auxdisplay/hd44780.c
-index 271dba9cd108..0603af8f2336 100644
+index 0603af8f2336..f6786239c36f 100644
 --- a/drivers/auxdisplay/hd44780.c
 +++ b/drivers/auxdisplay/hd44780.c
-@@ -40,7 +40,8 @@ struct hd44780 {
- 
- static void hd44780_backlight(struct charlcd *lcd, enum charlcd_onoff on)
- {
--	struct hd44780 *hd = lcd->drvdata;
-+	struct hd44780_common *hdc = lcd->drvdata;
-+	struct hd44780 *hd = hdc->hd44780;
- 
- 	if (hd->pins[PIN_CTRL_BL])
- 		gpiod_set_value_cansleep(hd->pins[PIN_CTRL_BL], on);
-@@ -104,7 +105,8 @@ static void hd44780_write_gpio4(struct hd44780 *hd, u8 val, unsigned int rs)
- /* Send a command to the LCD panel in 8 bit GPIO mode */
- static void hd44780_write_cmd_gpio8(struct charlcd *lcd, int cmd)
- {
--	struct hd44780 *hd = lcd->drvdata;
-+	struct hd44780_common *hdc = lcd->drvdata;
-+	struct hd44780 *hd = hdc->hd44780;
- 
- 	hd44780_write_gpio8(hd, cmd, 0);
- 
-@@ -115,7 +117,8 @@ static void hd44780_write_cmd_gpio8(struct charlcd *lcd, int cmd)
- /* Send data to the LCD panel in 8 bit GPIO mode */
- static void hd44780_write_data_gpio8(struct charlcd *lcd, int data)
- {
--	struct hd44780 *hd = lcd->drvdata;
-+	struct hd44780_common *hdc = lcd->drvdata;
-+	struct hd44780 *hd = hdc->hd44780;
- 
- 	hd44780_write_gpio8(hd, data, 1);
- 
-@@ -132,7 +135,8 @@ static const struct charlcd_ops hd44780_ops_gpio8 = {
- /* Send a command to the LCD panel in 4 bit GPIO mode */
- static void hd44780_write_cmd_gpio4(struct charlcd *lcd, int cmd)
- {
--	struct hd44780 *hd = lcd->drvdata;
-+	struct hd44780_common *hdc = lcd->drvdata;
-+	struct hd44780 *hd = hdc->hd44780;
- 
- 	hd44780_write_gpio4(hd, cmd, 0);
- 
-@@ -144,7 +148,8 @@ static void hd44780_write_cmd_gpio4(struct charlcd *lcd, int cmd)
- static void hd44780_write_cmd_raw_gpio4(struct charlcd *lcd, int cmd)
- {
- 	DECLARE_BITMAP(values, 6); /* for DATA[4-7], RS, RW */
--	struct hd44780 *hd = lcd->drvdata;
-+	struct hd44780_common *hdc = lcd->drvdata;
-+	struct hd44780 *hd = hdc->hd44780;
- 	unsigned int n;
- 
- 	/* Command nibble + RS, RW */
-@@ -160,7 +165,8 @@ static void hd44780_write_cmd_raw_gpio4(struct charlcd *lcd, int cmd)
- /* Send data to the LCD panel in 4 bit GPIO mode */
- static void hd44780_write_data_gpio4(struct charlcd *lcd, int data)
- {
--	struct hd44780 *hd = lcd->drvdata;
-+	struct hd44780_common *hdc = lcd->drvdata;
-+	struct hd44780 *hd = hdc->hd44780;
- 
- 	hd44780_write_gpio4(hd, data, 1);
- 
-@@ -204,7 +210,7 @@ static int hd44780_probe(struct platform_device *pdev)
- 	if (!hdc)
- 		return -ENOMEM;
- 
--	lcd = charlcd_alloc(sizeof(struct hd44780));
-+	lcd = charlcd_alloc();
- 	if (!lcd)
- 		goto fail1;
- 
-@@ -264,10 +270,10 @@ static int hd44780_probe(struct platform_device *pdev)
- 	 * usually equal to the display width
- 	 */
- 	if (lcd->height > 2)
--		lcd->bwidth = lcd->width;
-+		hdc->bwidth = lcd->width;
- 
+@@ -275,7 +275,7 @@ static int hd44780_probe(struct platform_device *pdev)
  	/* Optional properties */
--	device_property_read_u32(dev, "internal-buffer-width", &lcd->bwidth);
-+	device_property_read_u32(dev, "internal-buffer-width", &hdc->bwidth);
+ 	device_property_read_u32(dev, "internal-buffer-width", &hdc->bwidth);
  
- 	lcd->ifwidth = ifwidth;
+-	lcd->ifwidth = ifwidth;
++	hdc->ifwidth = ifwidth;
  	lcd->ops = ifwidth == 8 ? &hd44780_ops_gpio8 : &hd44780_ops_gpio4;
+ 
+ 	ret = charlcd_register(lcd);
 diff --git a/drivers/auxdisplay/hd44780_common.c b/drivers/auxdisplay/hd44780_common.c
-index 073f47397f7d..34e6d292fde8 100644
+index 34e6d292fde8..285073a00302 100644
 --- a/drivers/auxdisplay/hd44780_common.c
 +++ b/drivers/auxdisplay/hd44780_common.c
-@@ -12,10 +12,11 @@ struct hd44780_common *hd44780_common_alloc(void)
+@@ -12,6 +12,7 @@ struct hd44780_common *hd44780_common_alloc(void)
  	if (!hd)
  		return NULL;
  
-+	hd->bwidth = DEFAULT_LCD_BWIDTH;
-+	hd->hwidth = DEFAULT_LCD_HWIDTH;
++	hd->ifwidth = 8;
+ 	hd->bwidth = DEFAULT_LCD_BWIDTH;
+ 	hd->hwidth = DEFAULT_LCD_HWIDTH;
  	return hd;
- 
- }
- EXPORT_SYMBOL_GPL(hd44780_common_alloc);
- 
- MODULE_LICENSE("GPL");
--
 diff --git a/drivers/auxdisplay/hd44780_common.h b/drivers/auxdisplay/hd44780_common.h
-index 767bbda91744..3ff47d2c5691 100644
+index 3ff47d2c5691..1100e0a32394 100644
 --- a/drivers/auxdisplay/hd44780_common.h
 +++ b/drivers/auxdisplay/hd44780_common.h
-@@ -1,6 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
+@@ -4,6 +4,7 @@
+ #define DEFAULT_LCD_HWIDTH      64
  
-+#define DEFAULT_LCD_BWIDTH      40
-+#define DEFAULT_LCD_HWIDTH      64
-+
  struct hd44780_common {
-+	int bwidth;			/* Default set by hd44780_alloc() */
-+	int hwidth;			/* Default set by hd44780_alloc() */
++	int ifwidth;			/* 4-bit or 8-bit (default) */
+ 	int bwidth;			/* Default set by hd44780_alloc() */
+ 	int hwidth;			/* Default set by hd44780_alloc() */
  	void *hd44780;
- };
- 
-diff --git a/drivers/auxdisplay/panel.c b/drivers/auxdisplay/panel.c
-index c3a60e190a7a..cec6b729d668 100644
---- a/drivers/auxdisplay/panel.c
-+++ b/drivers/auxdisplay/panel.c
-@@ -299,8 +299,6 @@ static unsigned char lcd_bits[LCD_PORTS][LCD_BITS][BIT_STATES];
- #define DEFAULT_LCD_TYPE        LCD_TYPE_OLD
- #define DEFAULT_LCD_HEIGHT      2
- #define DEFAULT_LCD_WIDTH       40
--#define DEFAULT_LCD_BWIDTH      40
--#define DEFAULT_LCD_HWIDTH      64
- #define DEFAULT_LCD_CHARSET     LCD_CHARSET_NORMAL
- #define DEFAULT_LCD_PROTO       LCD_PROTO_PARALLEL
- 
-@@ -813,10 +811,11 @@ static void lcd_write_data_tilcd(struct charlcd *charlcd, int data)
- /* fills the display with spaces and resets X/Y */
- static void lcd_clear_fast_s(struct charlcd *charlcd)
- {
-+	struct hd44780_common *hdc = charlcd->drvdata;
- 	int pos;
- 
- 	spin_lock_irq(&pprt_lock);
--	for (pos = 0; pos < charlcd->height * charlcd->hwidth; pos++) {
-+	for (pos = 0; pos < charlcd->height * hdc->hwidth; pos++) {
- 		lcd_send_serial(0x5F);	/* R/W=W, RS=1 */
- 		lcd_send_serial(' ' & 0x0F);
- 		lcd_send_serial((' ' >> 4) & 0x0F);
-@@ -829,10 +828,11 @@ static void lcd_clear_fast_s(struct charlcd *charlcd)
- /* fills the display with spaces and resets X/Y */
- static void lcd_clear_fast_p8(struct charlcd *charlcd)
- {
-+	struct hd44780_common *hdc = charlcd->drvdata;
- 	int pos;
- 
- 	spin_lock_irq(&pprt_lock);
--	for (pos = 0; pos < charlcd->height * charlcd->hwidth; pos++) {
-+	for (pos = 0; pos < charlcd->height * hdc->hwidth; pos++) {
- 		/* present the data to the data port */
- 		w_dtr(pprt, ' ');
- 
-@@ -859,10 +859,11 @@ static void lcd_clear_fast_p8(struct charlcd *charlcd)
- /* fills the display with spaces and resets X/Y */
- static void lcd_clear_fast_tilcd(struct charlcd *charlcd)
- {
-+	struct hd44780_common *hdc = charlcd->drvdata;
- 	int pos;
- 
- 	spin_lock_irq(&pprt_lock);
--	for (pos = 0; pos < charlcd->height * charlcd->hwidth; pos++) {
-+	for (pos = 0; pos < charlcd->height * hdc->hwidth; pos++) {
- 		/* present the data to the data port */
- 		w_dtr(pprt, ' ');
- 		udelay(60);
-@@ -902,7 +903,7 @@ static void lcd_init(void)
- 	if (!hdc)
- 		return;
- 
--	charlcd = charlcd_alloc(0);
-+	charlcd = charlcd_alloc();
- 	if (!charlcd) {
- 		kfree(hdc);
- 		return;
-@@ -917,8 +918,8 @@ static void lcd_init(void)
- 	 */
- 	charlcd->height = lcd_height;
- 	charlcd->width = lcd_width;
--	charlcd->bwidth = lcd_bwidth;
--	charlcd->hwidth = lcd_hwidth;
-+	hdc->bwidth = lcd_bwidth;
-+	hdc->hwidth = lcd_hwidth;
- 
- 	switch (selected_lcd_type) {
- 	case LCD_TYPE_OLD:
-@@ -929,8 +930,8 @@ static void lcd_init(void)
- 		lcd.pins.rs = PIN_AUTOLF;
- 
- 		charlcd->width = 40;
--		charlcd->bwidth = 40;
--		charlcd->hwidth = 64;
-+		hdc->bwidth = 40;
-+		hdc->hwidth = 64;
- 		charlcd->height = 2;
- 		break;
- 	case LCD_TYPE_KS0074:
-@@ -942,8 +943,8 @@ static void lcd_init(void)
- 		lcd.pins.da = PIN_D0;
- 
- 		charlcd->width = 16;
--		charlcd->bwidth = 40;
--		charlcd->hwidth = 16;
-+		hdc->bwidth = 40;
-+		hdc->hwidth = 16;
- 		charlcd->height = 2;
- 		break;
- 	case LCD_TYPE_NEXCOM:
-@@ -955,8 +956,8 @@ static void lcd_init(void)
- 		lcd.pins.rw = PIN_INITP;
- 
- 		charlcd->width = 16;
--		charlcd->bwidth = 40;
--		charlcd->hwidth = 64;
-+		hdc->bwidth = 40;
-+		hdc->hwidth = 64;
- 		charlcd->height = 2;
- 		break;
- 	case LCD_TYPE_CUSTOM:
-@@ -974,8 +975,8 @@ static void lcd_init(void)
- 		lcd.pins.rs = PIN_SELECP;
- 
- 		charlcd->width = 16;
--		charlcd->bwidth = 40;
--		charlcd->hwidth = 64;
-+		hdc->bwidth = 40;
-+		hdc->hwidth = 64;
- 		charlcd->height = 2;
- 		break;
- 	}
-@@ -986,9 +987,9 @@ static void lcd_init(void)
- 	if (lcd_width != NOT_SET)
- 		charlcd->width = lcd_width;
- 	if (lcd_bwidth != NOT_SET)
--		charlcd->bwidth = lcd_bwidth;
-+		hdc->bwidth = lcd_bwidth;
- 	if (lcd_hwidth != NOT_SET)
--		charlcd->hwidth = lcd_hwidth;
-+		hdc->hwidth = lcd_hwidth;
- 	if (lcd_charset != NOT_SET)
- 		lcd.charset = lcd_charset;
- 	if (lcd_proto != NOT_SET)
-@@ -1009,10 +1010,10 @@ static void lcd_init(void)
- 	/* this is used to catch wrong and default values */
- 	if (charlcd->width <= 0)
- 		charlcd->width = DEFAULT_LCD_WIDTH;
--	if (charlcd->bwidth <= 0)
--		charlcd->bwidth = DEFAULT_LCD_BWIDTH;
--	if (charlcd->hwidth <= 0)
--		charlcd->hwidth = DEFAULT_LCD_HWIDTH;
-+	if (hdc->bwidth <= 0)
-+		hdc->bwidth = DEFAULT_LCD_BWIDTH;
-+	if (hdc->hwidth <= 0)
-+		hdc->hwidth = DEFAULT_LCD_HWIDTH;
- 	if (charlcd->height <= 0)
- 		charlcd->height = DEFAULT_LCD_HEIGHT;
- 
 -- 
 2.28.0
 
