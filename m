@@ -2,97 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0AD283F12
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E609283F15
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729211AbgJESyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:54:15 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8685 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728944AbgJESyP (ORCPT
+        id S1729219AbgJESy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728944AbgJESy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:54:15 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7b6b6b000f>; Mon, 05 Oct 2020 11:52:27 -0700
-Received: from [10.24.37.103] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
- 2020 18:54:04 +0000
-Subject: Re: [Patch 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rjw@rjwysocki.net>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <linux-pm@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <ksitaraman@nvidia.com>,
-        <bbasu@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
- <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
- <20201005045414.fmntm7ejad7zxcrv@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-Message-ID: <2c0daaa5-4aec-925d-c1e3-0f15fb93cc20@nvidia.com>
-Date:   Tue, 6 Oct 2020 00:24:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Mon, 5 Oct 2020 14:54:28 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98109C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:54:27 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id d28so3405161ote.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:54:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=riuDo1IoXfibXlfR95ykbMPthEQRl10/UIOttc6DAlc=;
+        b=OPEUVmyk+vRCYMZLowcoJCe66KrXHU7rFzOGuwvpAWzjQt85t26GeiBNJSVlLLjdvw
+         IPvkPM1oH6EvZKjVxvy+zdz/tX3xjNAE+ZPS2bki4mizwYxgbHlbrh2rQasAL+fFyYAY
+         b+JjR1NWVmVC0VwtGmMDFoA2fjzgOz0Zifv98=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=riuDo1IoXfibXlfR95ykbMPthEQRl10/UIOttc6DAlc=;
+        b=hh3okiQYk8vdGVDYns42Pol1DEJOhmpi72iDF27e/WxCmwoz5FYnm0rDHGjSUf3/sO
+         ZvkAprBtUko2Plf98QUHBQI37XaOIBYqYwjoXYTFj1FTCEaGZq5QgDm+FE8m8Jspyk1G
+         iq2lxpMX9iFnT/KdRrZkLMvDuB/XQnUxfGP5fO0kBPbxJjYLMc6bXPApbhtDAXgHgzIK
+         zIsu2FRkaxUa6mUGHeP8zhKLkJfMzdB2ALh6SHhSc3MtuZTygONW82mALBrERlCC3Uxl
+         W13qnurpCdJn3L1J1KlAwndgkBPLu+GkCfFJO4BNJfkQrn67ANveW9CKltxxQ45bjVzH
+         ZE8w==
+X-Gm-Message-State: AOAM530JSm5apxwKG5IWVHUJdzfg4eLKe6+3kHwFQ9E8AcYyuvGJ4Tdc
+        yu3WHNYQ6V8J5BHdSjZdlQAJasGE7tc0po2tDJNC0A==
+X-Google-Smtp-Source: ABdhPJy2iw+CknXeuJOFUrqB9oxUe8+tYDJ+itV1cU93c0kTfuWKEYCQyo751DNTn5DqrD42UQCpOE2tQNA/FTrVskw=
+X-Received: by 2002:a05:6830:1647:: with SMTP id h7mr493595otr.281.1601924066976;
+ Mon, 05 Oct 2020 11:54:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201005045414.fmntm7ejad7zxcrv@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601923947; bh=WteRUhNn8LS7dvObuGW8ZJoWxg2jRgT1UeuqiBiT9uA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=mCNV9SDaMi0yln6EhW1QjxwYlU0taJo/6nPTN/JTBcXiGbez94uBt/wPFWylPa3k7
-         e6gX/XlAIil5qmyr8HO0VfRsWv8e9pQzMiXDSDSueXbzFBrtTcABPHkLqmD47/spPD
-         w6SWVQ7Yudf5paxJVW8OzDus1DksuheH5xhsP4i3EyVzZdamPJMgk967DdkIB588Rq
-         Xz69yrH0qJzN3uHHQatIkQJs2PUw/ytAVoxuE8RNS60wTp+q0s3UzXMCeapPih9ETu
-         nucCFEKb5AcbpYbW/kC/070QYfI0aiuKdsW60uzmAaGCdCxsrPaLIXzSkESo1eGQUI
-         BnoQ5zqrIcbhw==
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+ <20201002175303.390363-2-daniel.vetter@ffwll.ch> <20201002180603.GL9916@ziepe.ca>
+ <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
+ <20201002233118.GM9916@ziepe.ca> <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
+ <20201004125059.GP9916@ziepe.ca> <CAKMK7uF0AfuYGsHzKXhF=k-mAW=Wx_APf9fY9M9ormnwypoxZA@mail.gmail.com>
+ <20201005172854.GA5177@ziepe.ca> <CAKMK7uFzxWF7V=7vkeNC-8shsPZRgdz9fYTsn0ayENv2BpnFEg@mail.gmail.com>
+ <20201005183704.GC5177@ziepe.ca>
+In-Reply-To: <20201005183704.GC5177@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon, 5 Oct 2020 20:54:15 +0200
+Message-ID: <CAKMK7uH97Yb2JFviG_ynGC1hbQ69h9hcyFVFd2PFYHCDzfBN6g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 5, 2020 at 8:37 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Mon, Oct 05, 2020 at 08:16:33PM +0200, Daniel Vetter wrote:
+>
+> > > kvm is some similar hack added for P2P DMA, see commit
+> > > add6a0cd1c5ba51b201e1361b05a5df817083618. It might be protected by notifiers..
+> >
+> > Yeah my thinking is that kvm (and I think also vfio, also seems to
+> > have mmu notifier nearby) are ok because of the mmu notiifer. Assuming
+> > that one works correctly.
+>
+> vfio doesn't have a notifier, Alex was looking to add a vfio private
+> scheme in the vma->private_data:
+>
+> https://lore.kernel.org/kvm/159017449210.18853.15037950701494323009.stgit@gimli.home/
+>
+> Guess it never happened.
 
->> Warning coming during boot because the boot freq set by bootloader
->> gets filtered out due to big freq steps while creating freq_table.
->> Fixing this by setting closest ndiv value from freq_table.
->> Warning:
->>    cpufreq: cpufreq_online: CPU0: Running at unlisted freq
->>    cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
->>
->> Also, added change in init to wait till current frequency becomes
->> equal or near to the previously requested frequency. This is done
->> because it takes some time to restore the previous frequency while
->> turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
-> 
-> So you are trying to figure if the frequency is listed in freq-table or not,
-> otherwise setting the frequency to a value you think is appropriate. Right ?
-During boot, want to set the frequency from freq_table which is closest 
-to the one set by bootloader.
-During resume from suspend-to-idle, want to restore the frequency which 
-was set on non-boot cores before they were hotplug powered off.
+I was mislead by the mmu notifier in drivers/vfio/vfio.c. But looking
+closer, that's only used by some drivers, I guess to make sure their
+device pagetables are kept in sync with reality. And not to make sure
+the vfio pfn view is kept in sync with reality.
 
-> 
-> This is what the cpufreq core already does when it printed these boot time
-> messages. Do we really need to add this much code in here ?
-We want to avoid the warning messages.
+This could get real nasty I think.
 
-> 
-> If you really don't want to see the warning, how about fixing it the way cpufreq
-> core does ? i.e. with this call:
-> 
-> ret = __cpufreq_driver_target(policy, policy->cur - 1, CPUFREQ_RELATION_L);
-> 
-The cpufreq core change will help in bootup case but not during the case 
-of resume.
-In this change, reading the previously stored value and restoring it 
-will also fix the warning message during resume.
+> > > So, the answer really is that s390 and media need fixing, and this API
+> > > should go away (or become kvm specific)
+> >
+> > I'm still not clear how you want fo fix this, since your vma->dma_buf
+> > idea is kinda a decade long plan and so just not going to happen:
+>
+> Well, it doesn't mean we have to change every part of dma_buf to
+> participate in this. Just the bits media cares about. Or maybe it is
+> some higher level varient on top of dma_buf.
+>
+> Or don't use dma_buf for this, add a new object that just provides
+> refcounts and P2P DMA connection for IO pfn ranges..
 
+So good news is, I dug some layers deeper in v4l, and there's only 2
+users which do actually handle pfn and don't immediately convert to a
+pages array:
+- videbuf-dma-contig.c. Luckily videobuf 1 is deprecated since
+forever, so I think we might get away with either just breaking this,
+or at least tainting kernels and hiding it behind a nasty Kconfig.
+This only uses follow_pfn, which we need to keep anyway for vfio in
+the unsafe variant :-/
+- videbuf2-vmalloc.c Digging through history this was added to support
+import of v4l buffers from drivers that needed contig memory. And way
+back before CMA, that meant carveout memory not backed by struct page
+*. That should now all have struct pages and be managed by CMA (since
+videbuf2-dma-contig.c just uses dma_alloc_coherent underneath), so I
+think we can just switch to pin_user_pages(FOLL_LONGTERM here too).
 
-> --
-> viresh
-> 
+iow I think I can outright delete the frame vector stuff.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
