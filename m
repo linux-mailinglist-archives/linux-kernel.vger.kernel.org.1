@@ -2,119 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA982830C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316572830C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725931AbgJEHUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:20:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53384 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbgJEHUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:20:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601882412;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vApl6nXikrRUzYKlMP3kusxzGltUkIK633aGyjdosYg=;
-        b=tvmDLQLfHw/qpS+VI+hrrbB0pRaF4IL1Rud2cY6czfRucQjMhyGZZVv/byN4tYQXpkMP0n
-        jLcUnv0uSpmStgmWK+cLFmrRiGnPsCLbMjs4D7ISEp1PX7gnYblN+52VVsJqJFKwBVf87O
-        gwsAal6wk7N7rTP0eB3rPlg/8KHqhDg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 65092AF37;
-        Mon,  5 Oct 2020 07:20:12 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 09:20:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     pintu@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm/util.c: Add error logs for commitment overflow
-Message-ID: <20201005072011.GP4555@dhcp22.suse.cz>
-References: <1601639861-32171-1-git-send-email-pintu@codeaurora.org>
- <20201002121726.GF4555@dhcp22.suse.cz>
- <adaf346febe6bb6fbdcedb8709e35bcb@codeaurora.org>
+        id S1725960AbgJEHUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:20:20 -0400
+Received: from mail-io1-f77.google.com ([209.85.166.77]:55118 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbgJEHUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 03:20:19 -0400
+Received: by mail-io1-f77.google.com with SMTP id f6so4220258ion.21
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:20:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=kzMGDAH+V64bIGovKN39nOfSz9YJKwgFw2a9Jzw6lbo=;
+        b=gZl9pPPJEe4iKkb1cnpXucBLutiEAW2zQFsz7Mu+X3zdqPBuDxEOhUVHbIHIC60gct
+         et/XXpEwWTUPCl2j5yleqzHDBs8zxjeVZWuMom3mtGQvTER+YXhhHmO5KCjp18LgyIvk
+         QkUzEHfVty5hLrIsekpP9UzdCe12Jz/3EWUiUEf0XaN1iIL05QS4eE6mKIQhUwOslMOd
+         oMvgg3X784stqR5BGmZXKk/J8zZyQkRULIhDWP9aDjCUZSmgtQpH7RV1I1QIbHaKoyrp
+         XwU1QV+hskybhvjFHJuhi8Po7EugyAhzZSzHGfB68ql3W24pQYeA+1kRUciEUppnAaIi
+         jG8g==
+X-Gm-Message-State: AOAM530yCwfcaEvMEhB/mqlE9qN+JWR31ZCfslmFQwGkBMeLSos1ChNh
+        ZeOsInOdTa7cvV/oC36fsCTZEs54vrsCniRc73JpdTtATl/P
+X-Google-Smtp-Source: ABdhPJzHc7LVZOCZAe7g5aj4GBJ7rRwimuX126H26qnDxJRMqenI7HGdF5mcdb3iRGA9LvHkbRA9iwL0CesW9xIpX3Fobe/vf572
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adaf346febe6bb6fbdcedb8709e35bcb@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a5e:9e49:: with SMTP id j9mr2604544ioq.107.1601882416032;
+ Mon, 05 Oct 2020 00:20:16 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 00:20:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000061316205b0e750fc@google.com>
+Subject: INFO: task can't die in nbd_ioctl
+From:   syzbot <syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02-10-20 21:53:37, pintu@codeaurora.org wrote:
-> On 2020-10-02 17:47, Michal Hocko wrote:
-> 
-> > > __vm_enough_memory: commitment overflow: ppid:150, pid:164,
-> > > pages:62451
-> > > fork failed[count:0]: Cannot allocate memory
-> > 
-> > While I understand that fork failing due to overrcomit heuristic is non
-> > intuitive and I have seen people scratching heads due to this in the
-> > past I am not convinced this is a right approach to tackle the problem.
-> 
-> Dear Michal,
-> First, thank you so much for your review and comments.
-> I totally agree with you.
-> 
-> > First off, referencing pids is not really going to help much if process
-> > is short lived.
-> 
-> Yes, I agree with you.
-> But I think this is most important mainly for short lived processes itself.
-> Because, when this situation occurs, no one knows who could be the culprit.
+Hello,
 
-Pid will not tell you much for those processes, right?
+syzbot found the following issue on:
 
-> However, user keeps dumping "ps" or "top" in background to reproduce once
-> again.
+HEAD commit:    de69ee6d Add linux-next specific files for 20200930
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d04f17900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4919771fba5919e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=69a90a5e8f6b59086b2a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-I do not think this would be an effective way to catch the problem.
-Especially with _once reporting. My experience with these reports is
-that a reporter notices a malfunctioning (usually more complex)
-workload. In some cases ENOMEM from fork is reported into the log by the
-userspace.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-For others it is strace -f that tells us that fork is failing and a
-test with OVERCOMMIT_ALWAYS usually confirms the theory that this is
-the culprit. But a rule of thumb is that it is almost always overcommit
-to blame. Why? An undocumented secret is that ENOMEM resulting from an
-actual memory allocation in the fork/clone path is close to impossible
-because kernel does all it can to satisfy them (an even invokes OOM
-killer). There are exceptions (e.g. like high order allocation) but
-those should be very rare in that path.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com
 
-> At this time, we can easily match the pid, process-name (at least in most
-> cases).
+INFO: task syz-executor.0:4417 can't die for more than 143 seconds.
+task:syz-executor.0  state:D stack:28472 pid: 4417 ppid:  6852 flags:0x10004004
+Call Trace:
+ context_switch kernel/sched/core.c:3777 [inline]
+ __schedule+0xec5/0x2200 kernel/sched/core.c:4526
+ schedule+0xcf/0x270 kernel/sched/core.c:4604
+ schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1855
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ flush_workqueue+0x3ff/0x13e0 kernel/workqueue.c:2832
+ nbd_start_device_ioctl drivers/block/nbd.c:1331 [inline]
+ __nbd_ioctl drivers/block/nbd.c:1408 [inline]
+ nbd_ioctl+0x76d/0xbe0 drivers/block/nbd.c:1448
+ __blkdev_driver_ioctl block/ioctl.c:228 [inline]
+ blkdev_ioctl+0x2a7/0x7f0 block/ioctl.c:623
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1866
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45dd99
+Code: Bad RIP value.
+RSP: 002b:00007f39f37eac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000012e80 RCX: 000000000045dd99
+RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000004
+RBP: 000000000118bf58 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007fff8753a28f R14: 00007f39f37eb9c0 R15: 000000000118bf2c
+INFO: task syz-executor.0:4417 blocked for more than 144 seconds.
+      Not tainted 5.9.0-rc7-next-20200930-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:28472 pid: 4417 ppid:  6852 flags:0x10004004
+Call Trace:
+ context_switch kernel/sched/core.c:3777 [inline]
+ __schedule+0xec5/0x2200 kernel/sched/core.c:4526
+ schedule+0xcf/0x270 kernel/sched/core.c:4604
+ schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1855
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ flush_workqueue+0x3ff/0x13e0 kernel/workqueue.c:2832
+ nbd_start_device_ioctl drivers/block/nbd.c:1331 [inline]
+ __nbd_ioctl drivers/block/nbd.c:1408 [inline]
+ nbd_ioctl+0x76d/0xbe0 drivers/block/nbd.c:1448
+ __blkdev_driver_ioctl block/ioctl.c:228 [inline]
+ blkdev_ioctl+0x2a7/0x7f0 block/ioctl.c:623
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1866
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45dd99
+Code: Bad RIP value.
+RSP: 002b:00007f39f37eac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000012e80 RCX: 000000000045dd99
+RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000004
+RBP: 000000000118bf58 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007fff8753a28f R14: 00007f39f37eb9c0 R15: 000000000118bf2c
 
-Maybe our definitions of short lived processes differ but in my book
-those are pretty hard to catch in flight.
+Showing all locks held in the system:
+1 lock held by khungtaskd/1178:
+ #0: ffffffff8a553d00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6221
+1 lock held by in:imklog/6557:
+ #0: ffff8880a0a526b0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+2 locks held by kworker/u5:2/6867:
+ #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2240
+ #1: ffffc900017b7da8 ((work_completion)(&args->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2244
 
-> > Secondly, __vm_enough_memory is about any address space
-> > allocation. Why would you be interested in parent when doing mmap?
-> > 
-> 
-> Yes agree, we can remove ppid from here.
-> I thought it might be useful at least in case of fork (or short lived
-> process).
+=============================================
 
-I suspect you have missed my point here. Let me clarify a bit more.
-__vm_enough_memory is called from much more places than fork.
-Essentially any mmap, brk etc are going though this. This is where
-parent pid certainly doesn't make any sense. In fork this is a different
-case because your forked process pid on its own doesn't make much sense
-as it is going to die very quickly anyway. This is when parent is likely
-a more important information.
+NMI backtrace for cpu 0
+CPU: 0 PID: 1178 Comm: khungtaskd Not tainted 5.9.0-rc7-next-20200930-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+ watchdog+0xd89/0xf30 kernel/hung_task.c:339
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 6835 Comm: syz-fuzzer Not tainted 5.9.0-rc7-next-20200930-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0033:0x415b7a
+Code: 89 ac 24 c8 00 00 00 48 8d ac 24 c8 00 00 00 48 8b 94 24 e0 00 00 00 48 83 fa 08 0f 84 4d 09 00 00 48 8b 1d 98 4a 5a 01 84 03 <90> 48 8b b4 24 d8 00 00 00 48 bf 00 00 00 00 00 80 00 00 48 8d 04
+RSP: 002b:000000c026e52b98 EFLAGS: 00000246
+RAX: 000000c026e52c18 RBX: 00007f1f2ef8f000 RCX: 000000c000083980
+RDX: 0000000000000030 RSI: 0000000000000000 RDI: 0000000000000030
+RBP: 000000c026e52c60 R08: 00000000008f7880 R09: 0000000000203000
+R10: 000000c011bb4cf0 R11: 0000000000000001 R12: ffffffffffffffff
+R13: 0000000000000046 R14: 0000000000000045 R15: 00000000000000aa
+FS:  0000000001992df0 GS:  0000000000000000
 
-That being said the content really depends on the specific path and that
-suggestes that you are trying to log at a wrong layer.
 
-Another question is whether we really need a logging done by the kernel.
-Ratelimiting would be tricky to get right and we do not want to allow an
-easy way to swamp logs either.
-As already mentioned ENOMEM usually means overcommit failure. Maybe we
-want to be more explicit this in the man page?
--- 
-Michal Hocko
-SUSE Labs
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
