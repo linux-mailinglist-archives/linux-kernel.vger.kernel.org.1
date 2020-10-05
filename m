@@ -2,81 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F216528348D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7571428348E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgJELBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
+        id S1726548AbgJELBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJELBl (ORCPT
+        with ESMTP id S1725973AbgJELBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:01:41 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75342C0613CE;
+        Mon, 5 Oct 2020 07:01:42 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7600C0613A7;
         Mon,  5 Oct 2020 04:01:41 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id q123so6638859pfb.0;
-        Mon, 05 Oct 2020 04:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Osp4/+N3+YZvrvl/ejBqgXdbKyrkqPFZQidK9cO7Oxk=;
-        b=WRoSNdtTfzjD/kqjh2kjdQRbaWr1jP83/UEn/n7nSlnuTQXql8dU7ugZLB8t6zIxnJ
-         u1rJdAkbDi5c9UmyqH3I28xE2fIzPrGV7SAanUo+fuTacJ8zpOw0AQ+i3J6ID6OFkr1c
-         SF8FUJEz7hoNsKRgmrzDDLUzTi25wcl3ySCI60uxabclopNKT4IyfccJQmYnV0vvM13u
-         loQ2ToM1skwI51AGxPdp7tW6JWbr6DtrEwUU5Quvfi+mBCtdwa7H0jgSilLrmN17/arP
-         CyFSU1vYICnLdzByooF/qScorreRu+3S/6CD4LAlBEZpxdZhCgAuhtP3qMNz58tvt1w9
-         hhYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Osp4/+N3+YZvrvl/ejBqgXdbKyrkqPFZQidK9cO7Oxk=;
-        b=juv+pX1pfPN6HyUnxOneKvkFjakd8IWEqbzy9TtmlSKtFI/zgJ8UWhvxqO9rM6LWiq
-         6+zJ/PF8Oz3sWv/kjxcQtMA1lRHHGnjbQz/STEtO2l0/YEDbnFXF/XFROlN9Q/OtYDG9
-         L1OTFTJJ697GNdW1TpQllecKLqpGVOBjBuWHXyYGD7uawLFurYkDLe2EvFxGopYRTBXL
-         FsluxvILN+6NzWnZ+YhLdRrnB1KXK05StCZeCgMhC15tIcxezkv1o1tfM+rSH2jQQnRx
-         T5lZsnj1bxG+4k0Y6go08fZbP8EpzfToIqI1P7cB8M5T/YUtJShdAMXiFlrwtPwRh8I9
-         U+ng==
-X-Gm-Message-State: AOAM533SbdDTA4qhyZWQDOKW7mZCTNot3GmOqPsD6pZT9mIJlIKzlGyd
-        4qoERxQuuDub8K9A7T5HQIrQb6h8VvjfzY61RkQ=
-X-Google-Smtp-Source: ABdhPJz2Lk4AX/H7xWbbASg5PnJoWtyb/7CQTWRwMIHfK3DIxev5eh7y7nPHHLMH5fbem6VCDX8J8IvbE/n3tjGKEak=
-X-Received: by 2002:aa7:9201:0:b029:13e:d13d:a10c with SMTP id
- 1-20020aa792010000b029013ed13da10cmr7228230pfo.40.1601895700982; Mon, 05 Oct
- 2020 04:01:40 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4C4d2X0Sj2zKmfS;
+        Mon,  5 Oct 2020 13:01:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :references:in-reply-to:message-id:subject:subject:from:from
+        :date:date:received; s=mail20150812; t=1601895696; bh=o3HxPvGqld
+        CRgVtM4Sy6fX5yWv5raTGaR2SS3W63W+Q=; b=qp78uueXsZ/g9OoB56feIrn50D
+        Q/AgySvgcTE447pi1TBYF1+yiwtX5aJHBhvm1W4xHK+TM3IRa1GKHXXR/XW/xchs
+        a3HtylztP14OgjLXtpCM9ADbjgiA2YvPSsiefGqaPnuAy73evyEAXQJaZ1NQEtbm
+        OsYhGXj68CngpPRdP7yfYUwma5a+U/IpuNAnqGwZc2bQCj5fUhJqG7haKumautEY
+        c8VahOF+f6WUOd5xVh5U0YbHPywbcAMF/eXE35GCExX1AUpQQyP/CpCXC/jDiNRt
+        H+9GcX/CZPVWN++8L0q1CtOR9NrHjoAYdl2qtxdfa1gNssIUy9db/1EBouIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1601895698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kWnCdaMX4m6FP+4F2JIZtLXjwih40j5+zMm1qnrssO8=;
+        b=Lh1fHDwDcB+U5pnRK0QJy+X6Ru+c9ELt/a/frBGfs+b7qHaZxPtYD/s2fAozSdqECdvyxX
+        JOtjkvaAqOS+ElQ0z+QpXCqkUcZ2H5k2pHLXIlfiPg6eEwsyTEgk6ktDx+DbjjB/ASJT45
+        mbmezoHFG9baMPHsZucL2W6MUcF/c+vlWNspwtlL2soK0BsTigAq6YRKsfHKHZtuHXP2kU
+        4u5T5h8wajNr0SvaUDoEAUljCMk1Vhirst2qgqSxmQlo2coUxgnAvTGLe0L9Divvnb7hS2
+        2z4O2dghTK1yzoqu5AhA+vGoidQsFtZP1oqxqbq8tBtFh67ve7s8pZHXbqsG4g==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id 7vyDWm21A5AE; Mon,  5 Oct 2020 13:01:36 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 13:01:34 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        =?ISO-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
+Message-ID: <20201005130134.459b4de9@monster.powergraphx.local>
+In-Reply-To: <20201005082045.GL5141@localhost>
+References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
+        <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
+        <20201005082045.GL5141@localhost>
 MIME-Version: 1.0
-References: <20201005070329.21055-1-warthog618@gmail.com> <20201005070329.21055-6-warthog618@gmail.com>
-In-Reply-To: <20201005070329.21055-6-warthog618@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 5 Oct 2020 14:01:22 +0300
-Message-ID: <CAHp75VdJ7zqPtWXKp3cUqPw3ZT7K0Dxzf7NYK+Zk9ZBhAPqG4g@mail.gmail.com>
-Subject: Re: [PATCH 5/5] gpio: uapi: clarify the meaning of 'empty' char arrays
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -5.91 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 1F8E3171C
+X-Rspamd-UID: 888c58
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 10:07 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> Clarify that a char array containing a string is considered 'empty' if
-> the first character is the null terminator. The remaining characters
-> are not relevant to this determination.
+On Mon, 5 Oct 2020 10:20:45 +0200
+Johan Hovold <johan@kernel.org> wrote:
 
->   * @label: a functional name for this GPIO chip, such as a product
-> - * number, may be empty
-> + * number, may be empty (i.e. label[0] == '\0')
+> On Sat, Oct 03, 2020 at 11:40:29AM +0200, Wilken Gottwalt wrote:
+> > Add usb ids of the Cellient MPL200 card.
+> > 
+> > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+> > ---
+> >  drivers/usb/serial/option.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+> > index 0c6f160a214a..a65e620b2277 100644
+> > --- a/drivers/usb/serial/option.c
+> > +++ b/drivers/usb/serial/option.c
+> > @@ -528,6 +528,7 @@ static void option_instat_callback(struct urb *urb);
+> >  /* Cellient products */
+> >  #define CELLIENT_VENDOR_ID			0x2692
+> >  #define CELLIENT_PRODUCT_MEN200			0x9005
+> > +#define CELLIENT_PRODUCT_MPL200			0x9025
+> >  
+> >  /* Hyundai Petatel Inc. products */
+> >  #define PETATEL_VENDOR_ID			0x1ff4
+> > @@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
+> >  	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff,
+> > 0x02, 0x01) }, { USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2,
+> > 0xff, 0x00, 0x00) }, { USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MEN200) },
+> > +	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
+> > +	  .driver_info = RSVD(1) | RSVD(4) },
+> 
+> Would you mind posting the output of "lsusb -v" for this device?
 
-I would rather put it like
-"...may be empty string (i.e. label == "")"
+I would like to, but unfortunately I lost access to this really rare hardware
+about a month ago. It is a Qualcomm device (0x05c6:0x9025) with a slightly
+modified firmware to rebrand it as a Cellient product with a different vendor
+id. How to proceed here, if I have no access to it anymore? Drop it?
 
-And so on for the rest.
+> >  	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600A) },
+> >  	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600E) },
+> >  	{ USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, TPLINK_PRODUCT_LTE, 0xff, 0x00,
+> > 0x00) },	/* TP-Link LTE Module */
+> 
+> Johan
 
--- 
-With Best Regards,
-Andy Shevchenko
+greetings,
+Will
