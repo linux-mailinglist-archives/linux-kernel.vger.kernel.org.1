@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0299F2841A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3BA2841AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729360AbgJEUtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgJEUtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:49:46 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92518C0613CE;
-        Mon,  5 Oct 2020 13:49:46 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPXQT-00CaNG-Lb; Mon, 05 Oct 2020 20:49:41 +0000
-Date:   Mon, 5 Oct 2020 21:49:41 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [RFC PATCH 27/27] epoll: take epitem list out of struct file
-Message-ID: <20201005204941.GT3421308@ZenIV.linux.org.uk>
-References: <20201004023608.GM3421308@ZenIV.linux.org.uk>
- <20201004023929.2740074-1-viro@ZenIV.linux.org.uk>
- <20201004023929.2740074-27-viro@ZenIV.linux.org.uk>
- <b56d7eff12d3e85f4fcca11d70b8dbb29da25a3f.camel@redhat.com>
+        id S1725969AbgJEUxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:53:02 -0400
+Received: from sauhun.de ([88.99.104.3]:52328 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725845AbgJEUxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 16:53:02 -0400
+Received: from localhost (p54b33598.dip0.t-ipconnect.de [84.179.53.152])
+        by pokefinder.org (Postfix) with ESMTPSA id 1D8E62C08AE;
+        Mon,  5 Oct 2020 22:52:59 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 22:52:58 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 00/32] Improvements for Tegra I2C driver
+Message-ID: <20201005205258.GB1397@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200929221915.10979-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i9LlY+UWpKt15+FH"
 Content-Disposition: inline
-In-Reply-To: <b56d7eff12d3e85f4fcca11d70b8dbb29da25a3f.camel@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20200929221915.10979-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 04:37:18PM -0400, Qian Cai wrote:
-> On Sun, 2020-10-04 at 03:39 +0100, Al Viro wrote:
-> >  /*
-> >   * Must be called with "mtx" held.
-> >   */
-> > @@ -1367,19 +1454,21 @@ static int ep_insert(struct eventpoll *ep, const
-> > struct epoll_event *event,
-> >  	epi->event = *event;
-> >  	epi->next = EP_UNACTIVE_PTR;
-> >  
-> > -	atomic_long_inc(&ep->user->epoll_watches);
-> > -
-> >  	if (tep)
-> >  		mutex_lock(&tep->mtx);
-> >  	/* Add the current item to the list of active epoll hook for this file
-> > */
-> > -	spin_lock(&tfile->f_lock);
-> > -	hlist_add_head_rcu(&epi->fllink, &tfile->f_ep_links);
-> > -	spin_unlock(&tfile->f_lock);
-> > -	if (full_check && !tep) {
-> > -		get_file(tfile);
-> > -		list_add(&tfile->f_tfile_llink, &tfile_check_list);
-> > +	if (unlikely(attach_epitem(tfile, epi) < 0)) {
-> > +		kmem_cache_free(epi_cache, epi);
-> > +		if (tep)
-> > +			mutex_lock(&tep->mtx);
-> 
-> Shouldn't this be mutex_unlock() instead?
 
-It should.  Fixed and force-pushed...
+--i9LlY+UWpKt15+FH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > +		return -ENOMEM;
-> >  	}
-> >  
-> 
+On Wed, Sep 30, 2020 at 01:18:43AM +0300, Dmitry Osipenko wrote:
+> Hello!
+>=20
+> This series performs refactoring of the Tegra I2C driver code and hardens
+> the atomic-transfer mode.
+
+Applied to for-next, thanks to everyone! Please send incremental patches
+=66rom now on. Also, there is this unreviewed series:
+
+http://patchwork.ozlabs.org/project/linux-i2c/list/?series=3D191802
+
+Is it obsolete by now?
+
+
+--i9LlY+UWpKt15+FH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl97h6oACgkQFA3kzBSg
+KbY0HA/+NdA/QNyneG0/JryMokkjx1IQtTCzlc7EZ8kmSRY/9yw75uPM9BP5xwCk
+uNIKjR05V1GE5PzoTMjoQ9sHKM1ES3rU6hpoqbuPl//ihdhvyhFUO8FN8aVqCJtV
+GE7jvWxqLSnjVU7TG+EMlSQu7zIL1PGzrBdCn4AITxAS6XW6oNseyNGnXi/YyJhd
+828ILM2YRZXSaiR9YuMhuCQaBlJMcXB5oQ7xbkdlQat+KjnB9jmgj16oHyafH1mF
+kN4N/8f2Qnc9EL4vaGaY+ktp/vTqPcqjDtBo4VDpdkQXVwQdi5JfqMQVk5SmT9Q0
+K4Wnw6cHf+UspgvyABsWn5ofg0gaZOHMoE5gBQGY5FpGh/9XJ73WN2Q0Ub1+zQQy
+jTNfzbPIQxvP/YknQ5eDUBmgVGwN5xdQ4odT05AVBE/VGilfVcYgXsIdtQ/ZGeG+
+l3oKS0jZzaUEjsgQzpm5WoHftrQpaVstFEJwT5vxdSZubaqGQ72bxlEvQX/iFkZv
+iruiHVdC5KdZxlG+J2iMmqiG0qBMKxa7LX3TAr3XrywpttJtSe8tL8DFX5I1T0x1
+VrrJ3510F5NQnK/jLicdlQ0+lLPspRI7w2Ocq078Fuc/VZldmZ7qNpFuXdbGOxv1
+q4hV+VeVu5FcFtClwxjQRzt/1Su1jDiKBZQHQDEBBJVYIDfTVP4=
+=Vvdi
+-----END PGP SIGNATURE-----
+
+--i9LlY+UWpKt15+FH--
