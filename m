@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F382834F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2080B2834F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgJEL3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:29:22 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:40714 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgJEL3V (ORCPT
+        id S1726074AbgJEL35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgJEL34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:29:21 -0400
-Received: by mail-oi1-f195.google.com with SMTP id m128so8359164oig.7;
-        Mon, 05 Oct 2020 04:29:21 -0700 (PDT)
+        Mon, 5 Oct 2020 07:29:56 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F9DC0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 04:29:56 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id z26so8348635oih.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 04:29:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ggA5atN6eXRjeLo7yvkHNomWP+hkWtIfIwIhYjP1RoY=;
+        b=lfmbCeTLipcxNCXRSk9JM5iW0S48sRevkAiNTwMwzzjWmxq60GoNTNWIfkAnenaOB5
+         DrvEfTr38jJPy93c3xrCyUT/aZr87z4leJZVuLUje7BWTJkUcXvcjHbsO/AUlcR4SbF/
+         yDgDCBbxYo3HAZjc4V8xzdnZq1f4t5Z1W9PLw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=x6lFl31eFcV62mdRSrgqi2jVtVPOBQr2Cb4J+E02tlE=;
-        b=jrcwWR5MA8Feq0FiFnGUs/a88kUFrJUhHgXCpDDkBcZw0rOrXKiUrD0TBvtc2H8VXV
-         NKNzZurOkbfpNz8pIXMdTcEGURKn+uDqge5OaLjP8kYfmL/4hRUGga9zXjLwh/G6UL4a
-         UXe+nzRCnrNO1w2Qw53T/ktHDsmwVWoFlk9+922XFKvJcsqiyBtPEbgoLRSMVRu1NecF
-         LqP7hdNzwsmsWH5F6s31sdapAqVxe9GU0lxOGaElMvYoaned4tKC8SU2i7AkJrIs3e0g
-         pC2aeU1oQ0ljMGoNvXnePD5UgjKhXxn4iOIq4YT6w/K1t0N5sXfrR68WePvTE0E4bt7R
-         +DEQ==
-X-Gm-Message-State: AOAM532XuUTekUkt/zqM6Xn/+eA3dngBYy4/kNltbwxaTdEb02ilaCk2
-        5PIWPqG7memUd9fAvfbMfb/VBKmJE1tV/uKACJD0y/kV
-X-Google-Smtp-Source: ABdhPJy5oSVbn/jgSCcVTW/SgVTLyIBbPb9dm+QZNnpgcfqTsHrmEjvS2hF2S6R94ZvtzUnNvj2TPHwTAOJdxQnL4r0=
-X-Received: by 2002:aca:5c84:: with SMTP id q126mr5556700oib.71.1601897360718;
- Mon, 05 Oct 2020 04:29:20 -0700 (PDT)
+        bh=ggA5atN6eXRjeLo7yvkHNomWP+hkWtIfIwIhYjP1RoY=;
+        b=QHFn3wa10S/cqBKV0zeGyAOiV0sc/LdFTwdE/m+kVERIsphzDh0mC3oojxChkXEnVl
+         I4PEPLInU0o29UF1AaZgIDlv40Vc0KCe4ITKEwDOU0Bi2/E/H5L/QSlYYZWGez21Gp8Q
+         SSMSoaKZWkrmWSzD3E206TBJ6uBtVKWVLLmxv6glGTru2m/umZS1wj6wzFPrXPIwItMa
+         r0wE55wLtZhZu7lgquLRZQONyrFS+j1WDid1dlWfU1lQ3HnmKZoe6PU/hq9IMz8teRbA
+         0C9iXYMwiaIaMpfdgEzbXokdGDQ9DT0Jz/9jFVDzdhy1q6umeEquEORMZs/0OklpXdI/
+         oCrg==
+X-Gm-Message-State: AOAM530JzEIDfnXLnied7bhSJzkep3A0GBfpc7Glo7B++PhG6ocyA5Tk
+        ufLEwG9bGZqyNzlqS8y3HlFD1SkWGy4WnwZv
+X-Google-Smtp-Source: ABdhPJyOweuRaQD0BcQIOUZerAJwfHXkaaVyNj7OMhOBx5cetMJ/iuaRtYrPYZ6yRJCWYHWw5NRs/Q==
+X-Received: by 2002:aca:dc04:: with SMTP id t4mr7661686oig.84.1601897393841;
+        Mon, 05 Oct 2020 04:29:53 -0700 (PDT)
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com. [209.85.210.42])
+        by smtp.gmail.com with ESMTPSA id n185sm2191296oia.28.2020.10.05.04.29.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 04:29:52 -0700 (PDT)
+Received: by mail-ot1-f42.google.com with SMTP id m13so8220150otl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 04:29:52 -0700 (PDT)
+X-Received: by 2002:a9d:6445:: with SMTP id m5mr11285660otl.36.1601897392041;
+ Mon, 05 Oct 2020 04:29:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201005051125.GA3245495@dtor-ws>
-In-Reply-To: <20201005051125.GA3245495@dtor-ws>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 5 Oct 2020 13:29:05 +0200
-Message-ID: <CAJZ5v0jTXNYwLcUcaOHk89WVxWCZEZJhMUd94KBdsTK41Eo-5g@mail.gmail.com>
-Subject: Re: [PATCH] ACPI / button: fix handling lid state changes when input
- device closed
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201004122234.802044-1-acourbot@chromium.org> <20201005084852.GD26842@paasikivi.fi.intel.com>
+In-Reply-To: <20201005084852.GD26842@paasikivi.fi.intel.com>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Mon, 5 Oct 2020 20:29:40 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MXujfdLaMhcW4vj2U_Ev-H74Fu-a6D1HEyhyrQ3huV8vw@mail.gmail.com>
+Message-ID: <CAPBb6MXujfdLaMhcW4vj2U_Ev-H74Fu-a6D1HEyhyrQ3huV8vw@mail.gmail.com>
+Subject: Re: [PATCH v2] media: mtk-vcodec: fix builds when remoteproc is disabled
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 7:11 AM <dmitry.torokhov@gmail.com> wrote:
+On Mon, Oct 5, 2020 at 5:49 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
 >
-> The original intent of 84d3f6b76447 was to delay evaluating lid state until
-> all drivers have been loaded, with input device being opened from userspace
-> serving as a signal for this condition. Let's ensure that state updates
-> happen even if userspace closed (or in the future inhibited) input device.
+> Hi Alexandre,
 >
-> Note that if we go through suspend/resume cycle we assume the system has
-> been fully initialized even if LID input device has not been opened yet.
+> On Sun, Oct 04, 2020 at 09:22:34PM +0900, Alexandre Courbot wrote:
+> > The addition of MT8183 support added a dependency on the SCP remoteproc
+> > module. However the initial patch used the "select" Kconfig directive,
+> > which may result in the SCP module to not be compiled if remoteproc was
+> > disabled. In such a case, mtk-vcodec would try to link against
+> > non-existent SCP symbols. "select" was clearly misused here as explained
+> > in kconfig-language.txt.
+> >
+> > Replace this by a "depends" directive on at least one of the VPU and
+> > SCP modules, to allow the driver to be compiled as long as one of these
+> > is enabled, and adapt the code to support this new scenario.
+> >
+> > Also adapt the Kconfig text to explain the extra requirements for MT8173
+> > and MT8183.
+> >
+> > Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 >
-> This has a side-effect of fixing access to input->users outside of
-> input->mutex protections by the way of eliminating said accesses and using
-> driver private flag.
+> Thanks for the patch!
 >
-> Fixes: 84d3f6b76447 ("ACPI / button: Delay acpi_lid_initialize_state() until first user space open")
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/acpi/button.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
-> index 78cfc70cb320..b8dd51d8f96d 100644
-> --- a/drivers/acpi/button.c
-> +++ b/drivers/acpi/button.c
-> @@ -154,6 +154,7 @@ struct acpi_button {
->         int last_state;
->         ktime_t last_time;
->         bool suspended;
-> +       bool lid_state_initialized;
->  };
->
->  static struct acpi_device *lid_device;
-> @@ -384,6 +385,8 @@ static int acpi_lid_update_state(struct acpi_device *device,
->
->  static void acpi_lid_initialize_state(struct acpi_device *device)
->  {
-> +       struct acpi_button *button = acpi_driver_data(device);
-> +
->         switch (lid_init_state) {
->         case ACPI_BUTTON_LID_INIT_OPEN:
->                 (void)acpi_lid_notify_state(device, 1);
-> @@ -395,13 +398,14 @@ static void acpi_lid_initialize_state(struct acpi_device *device)
->         default:
->                 break;
->         }
-> +
-> +       button->lid_state_initialized = true;
->  }
->
->  static void acpi_button_notify(struct acpi_device *device, u32 event)
->  {
->         struct acpi_button *button = acpi_driver_data(device);
->         struct input_dev *input;
-> -       int users;
->
->         switch (event) {
->         case ACPI_FIXED_HARDWARE_EVENT:
-> @@ -410,10 +414,7 @@ static void acpi_button_notify(struct acpi_device *device, u32 event)
->         case ACPI_BUTTON_NOTIFY_STATUS:
->                 input = button->input;
->                 if (button->type == ACPI_BUTTON_TYPE_LID) {
-> -                       mutex_lock(&button->input->mutex);
-> -                       users = button->input->users;
-> -                       mutex_unlock(&button->input->mutex);
-> -                       if (users)
-> +                       if (button->lid_state_initialized)
->                                 acpi_lid_update_state(device, true);
->                 } else {
->                         int keycode;
-> @@ -458,7 +459,7 @@ static int acpi_button_resume(struct device *dev)
->         struct acpi_button *button = acpi_driver_data(device);
->
->         button->suspended = false;
-> -       if (button->type == ACPI_BUTTON_TYPE_LID && button->input->users) {
-> +       if (button->type == ACPI_BUTTON_TYPE_LID) {
->                 button->last_state = !!acpi_lid_evaluate_state(device);
->                 button->last_time = ktime_get();
->                 acpi_lid_initialize_state(device);
-> --
+> Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-Applied as 5.10 material with the R-by from Hans, thanks!
+Thanks!
+
+>
+> I wonder if this driver suffers from similar object lifetime management
+> issues than V4L2 and MC do, albeit not related to either. Say, what happens
+> if you unbind the other device while mtk-vcodec is in use?
+
+That's a question that maybe the driver maintainers can answer, but
+from my experience during development I have been able to unload one
+of the two mtk-vcodec-* modules while keeping the other one active.
