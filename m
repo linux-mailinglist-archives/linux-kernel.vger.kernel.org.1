@@ -2,127 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C3A283FCC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0BC283EEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbgJETlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 15:41:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19752 "EHLO mga17.intel.com"
+        id S1728680AbgJESpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:45:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:53468 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729302AbgJETlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 15:41:13 -0400
-IronPort-SDR: Bdw+cKsjTJ//04f6oh3Zxhgc3NQT9tb006m0ZwF7n152IAfu36hBoiNhk5O9q3DJ5F160QPfg0
- ZQ3O4ZJiEfrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="143832465"
+        id S1725940AbgJESpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 14:45:18 -0400
+IronPort-SDR: 3FSZuNeWLE69Oj/NonUN39167rJ+Db7PVeOia6VtIR7AZxYdapNZH/DW2pPbFLHkXxQPV1fyXB
+ HnAtbkRqlqQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="143228411"
 X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
-   d="scan'208";a="143832465"
+   d="scan'208";a="143228411"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP; 05 Oct 2020 12:26:06 -0700
-IronPort-SDR: lxF6D25Y207qlLNXScXhxkLPsDRbK1kc/MVlkM2tgjHEmEqB9WNJ8MI7ZEXXSbfyiX3amIf/dz
- tc0QX9Ic3oBg==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 11:45:10 -0700
+IronPort-SDR: E6pQ9YDI43zkKwK8oS0eoACx4mVqkzMEAalzHvSyvUD1wuPoyXtTbVSvzXE55meb2TUd8mVs0Q
+ dOtLAfd3R2ag==
 X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
-   d="scan'208";a="517163416"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 11:43:35 -0700
-Date:   Mon, 5 Oct 2020 11:43:20 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alexander Graf <graf@amazon.com>, kvm list <kvm@vger.kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 6/8] KVM: x86: VMX: Prevent MSR passthrough when MSR
- access is denied
-Message-ID: <20201005184320.GA15803@linux.intel.com>
-References: <20200925143422.21718-1-graf@amazon.com>
- <20200925143422.21718-7-graf@amazon.com>
- <20201002011139.GA5473@xz-x1>
+   d="scan'208";a="310164830"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.255.65.178]) ([10.255.65.178])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 11:45:09 -0700
+Subject: Re: [PATCH net-next 03/16] devlink: Add devlink reload limit option
+To:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-4-git-send-email-moshe@mellanox.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <150136a2-f391-b588-3d6e-d97cd11e4cf2@intel.com>
+Date:   Mon, 5 Oct 2020 11:45:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002011139.GA5473@xz-x1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1601560759-11030-4-git-send-email-moshe@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 09:11:39PM -0400, Peter Xu wrote:
-> Hi,
-> 
-> I reported in the v13 cover letter of kvm dirty ring series that this patch
-> seems to have been broken.  Today I tried to reproduce with a simplest vm, and
-> after a closer look...
-> 
-> On Fri, Sep 25, 2020 at 04:34:20PM +0200, Alexander Graf wrote:
-> > @@ -3764,15 +3859,14 @@ static u8 vmx_msr_bitmap_mode(struct kvm_vcpu *vcpu)
-> >  	return mode;
-> >  }
-> >  
-> > -static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu,
-> > -					 unsigned long *msr_bitmap, u8 mode)
-> > +static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
-> >  {
-> >  	int msr;
-> >  
-> > -	for (msr = 0x800; msr <= 0x8ff; msr += BITS_PER_LONG) {
-> > -		unsigned word = msr / BITS_PER_LONG;
-> > -		msr_bitmap[word] = (mode & MSR_BITMAP_MODE_X2APIC_APICV) ? 0 : ~0;
-> > -		msr_bitmap[word + (0x800 / sizeof(long))] = ~0;
-> > +	for (msr = 0x800; msr <= 0x8ff; msr++) {
-> > +		bool intercepted = !!(mode & MSR_BITMAP_MODE_X2APIC_APICV);
-> > +
-> > +		vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_RW, intercepted);
 
-Yeah, this is busted.
 
-> >  	}
-> >  
-> >  	if (mode & MSR_BITMAP_MODE_X2APIC) {
+On 10/1/2020 6:59 AM, Moshe Shemesh wrote:
+> Add reload limit to demand restrictions on reload actions.
+> Reload limits supported:
+> no_reset: No reset allowed, no down time allowed, no link flap and no
+>           configuration is lost.
 > 
-> ... I think we may want below change to be squashed:
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index d160aad59697..7d3f2815b04d 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -3781,9 +3781,10 @@ static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
->         int msr;
->  
->         for (msr = 0x800; msr <= 0x8ff; msr++) {
-> -               bool intercepted = !!(mode & MSR_BITMAP_MODE_X2APIC_APICV);
-> +               bool apicv = mode & MSR_BITMAP_MODE_X2APIC_APICV;
->  
-> -               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_RW, intercepted);
-> +               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_R, !apicv);
-> +               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_W, true);
+> By default reload limit is unspecified and so no constrains on reload
+> actions are required.
 
-I would prefer a full revert of sorts.  Allowing userspace to intercept reads
-to x2APIC MSRs when APICV is fully enabled for the guest simply can't work.
-The LAPIC and thus virtual APIC is in-kernel and cannot be directly accessed
-by userspace.  I doubt it actually affects real world performance, but
-resetting each MSR one-by-one bugs me.
+Nit: I think the spelling for the noun here would be "constraints"? Same
+for a comment in the header file.
 
-Intercepting writes to TPR, EOI and SELF_IPI are somewhat plausible, but I
-just don't see how intercepting reads when APICV is active is a sane setup.
+> 
+> Some combinations of action and limit are invalid. For example, driver
+> can not reinitialize its entities without any downtime.
+> 
 
-I'll send a patch and we can go from there.
+Good to see that checked in the core code.
 
->         }
->  
->         if (mode & MSR_BITMAP_MODE_X2APIC) {
+> The no_reset reload limit will have usecase in this patchset to
+> implement restricted fw_activate on mlx5.
 > 
-> This fixes my problem the same as having this patch reverted.
-> 
-> -- 
-> Peter Xu
-> 
+> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+> ---
+
+Other than the spelling hit and things pointed out by others, this looks
+good to me.
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
