@@ -2,67 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FAB2837EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114622837F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgJEOhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:37:55 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:43994 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgJEOhz (ORCPT
+        id S1726439AbgJEOiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgJEOiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:37:55 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095EbTRp105709;
-        Mon, 5 Oct 2020 09:37:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601908649;
-        bh=p4FfZj0mn0or8Tgyw7W0xtaw4CxhBFYM5wKOOcC+2y4=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=vHjE6qtMOSWGxM6ElcmHv8bZc6NmAn4t0uIkidxW934MRLScpUO0wrcnXkFH0W85s
-         cAwpR68Uz6hJnNPcJpI9bFqGUPIPOoN17Fomke0ddVebGIFccJax1HRfCpfGRK5gK6
-         VfPkwzQEHh2tmvRhWokTmYq+Nf7k0I4WXlQcLGnY=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095EbTUT105569
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 5 Oct 2020 09:37:29 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 09:37:28 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 09:37:28 -0500
-Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095EbQvg080431;
-        Mon, 5 Oct 2020 09:37:27 -0500
-Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <ultracoolguy@tutanota.com>, Marek Behun <kabel@blackhole.sk>
-CC:     Pavel <pavel@ucw.cz>, Linux Leds <linux-leds@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-References: <MIiYgay--3-2@tutanota.com> <20201005141334.36d9441a@blackhole.sk>
- <MIt2NiS--3-2@tutanota.com> <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com>
-Message-ID: <fb065309-e58c-134b-d19a-5c1a5daf24ac@ti.com>
-Date:   Mon, 5 Oct 2020 09:37:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Oct 2020 10:38:10 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C713BC0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:38:09 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id g3so9707019qtq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jGjcwRAoiqcduLL2bxQ4mHoOvaw+GK5le8AMRCfmziw=;
+        b=Bmw2n+ZEzJQaKE0lF5o7u1Lny3AaHHJ1s/MBbnlqcsehpjY15tpnjoS32mD482jU+8
+         GqOGgIv5kVYk/89W/E4oaUfgOT7R1AxCmW1IB36WtIvZxuHdbUwphs4F5otG5l4NMVKh
+         ctvXvL01VhWc29V2l6tVKaiiczQVgnQWDQ4Gk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jGjcwRAoiqcduLL2bxQ4mHoOvaw+GK5le8AMRCfmziw=;
+        b=UmJSJ3Wb0xG52KcTrnF/ot3sYSvCy/a6s07qMuZpZT/AXxfErpT61BXDpk0dfgXHEM
+         dUEGVboowDm5qu9PE2d0tAnQy0YRTs7n6+acdCPA7n13cGIi1tq8jMqMz3D7s67ub6D4
+         zvgZDBRdNB8JlDPTV6CZso38HSZG9DZJk6Xfv0bV2F7cRTx8rjPG/ZiR0xkB02tJ6D6z
+         X7G6pxSjEi17lFdEwWCiuFwtu66hMQkbLxZ7fGODsMzxDOIMcrwJsEAIWTnHqbpCD+fM
+         mezJXGCBobgGqIneaPFef585J7oy2WSHjE3rlIr0kceRVm/ybJjAK5wxQEv53tRn4QO8
+         7DEw==
+X-Gm-Message-State: AOAM530qXT3lWhWlVZ0g60toUWztpYeOK19a+/XkfWu1hAfBGIgiAqih
+        Jv+Hl+2VZfBbkFpOMallYlC0GRBoLWtg+w==
+X-Google-Smtp-Source: ABdhPJwlsLhBT0dRBWHT+f4KE7q+zVHQeWZVqYsZai7MVOu1pu+fWrvddx8Y+xXI+Z25jCQFeGPMDw==
+X-Received: by 2002:ac8:5d0d:: with SMTP id f13mr117396qtx.87.1601908688715;
+        Mon, 05 Oct 2020 07:38:08 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id n7sm463339qtp.93.2020.10.05.07.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:38:08 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 10:38:07 -0400
+From:   joel@joelfernandes.org
+To:     linux-kernel@vger.kernel.org
+Cc:     neeraju@codeaurora.org, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2] rcu/tree: nocb: Avoid raising softirq when there are
+ ready to execute CBs
+Message-ID: <20201005143807.GA524504@google.com>
+References: <20201005021132.146534-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-In-Reply-To: <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005021132.146534-1-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All
+On Sun, Oct 04, 2020 at 10:11:32PM -0400, Joel Fernandes (Google) wrote:
+> During testing, I see it is possible that rcu_pending() returns 1 when
+> offloaded callbacks are ready to execute thus raising the RCU softirq.
+> 
+> However, softirq does not execute offloaded callbacks. They are executed in a
+> kthread which is awakened independent of the softirq.
+> 
+> This commit therefore avoids raising the softirq in the first place. That's
+> probably a good thing considering that the purpose of callback offloading is to
+> reduce softirq activity.
+> 
+> Passed 30 minute tests of TREE01 through TREE09 each.
+> 
+> On TREE08, I notice that there is atmost 150us from when the softirq was
+> NOT raised when ready cbs were present, to when the ready callbacks were
+> invoked by the rcuop thread. This also further confirms that there is no
+> need to raise the softirq for ready cbs in the first place.
 
-On 10/5/20 9:33 AM, Dan Murphy wrote:
-> Marek
->
-Sorry not Marek but Gabriel I misread the "To" field
+Hi Paul,
+You had asked me about whether removing this softirq invocation indirectly
+slows down grace period progression.
 
-Dan
+This morning, I ran rcutorture.fwd_progress on TREE08 and I don't see any
+difference in number of grace periods with/without this patch. Just want to
+let you know.
+
+Thanks,
+
+ - Joel
+
+> 
+> Cc: neeraju@codeaurora.org
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> ---
+> 
+> v1->v2: Also cleaned up another test of the nocb configuration macro.
+> 
+>  kernel/rcu/tree.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index f78ee759af9c..2b1e1b21db92 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3652,13 +3652,13 @@ static int rcu_pending(int user)
+>  		return 1;
+>  
+>  	/* Does this CPU have callbacks ready to invoke? */
+> -	if (rcu_segcblist_ready_cbs(&rdp->cblist))
+> +	if (!rcu_segcblist_is_offloaded(&rdp->cblist) &&
+> +	    rcu_segcblist_ready_cbs(&rdp->cblist))
+>  		return 1;
+>  
+>  	/* Has RCU gone idle with this CPU needing another grace period? */
+>  	if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
+> -	    (!IS_ENABLED(CONFIG_RCU_NOCB_CPU) ||
+> -	     !rcu_segcblist_is_offloaded(&rdp->cblist)) &&
+> +	    (!rcu_segcblist_is_offloaded(&rdp->cblist)) &&
+>  	    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+>  		return 1;
+>  
+> -- 
+> 2.28.0.806.g8561365e88-goog
