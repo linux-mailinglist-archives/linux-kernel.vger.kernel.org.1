@@ -2,151 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F13283EF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9889E283EF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgJESrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
+        id S1729046AbgJESre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgJESrT (ORCPT
+        with ESMTP id S1725940AbgJESrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:47:19 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48195C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:47:19 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id g7so10266716iov.13
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:47:19 -0700 (PDT)
+        Mon, 5 Oct 2020 14:47:33 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070CEC0613CE;
+        Mon,  5 Oct 2020 11:47:32 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k6so10321971ior.2;
+        Mon, 05 Oct 2020 11:47:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FY+LqDabhhgCzF/kHUiBASBrGmAFBGdYjQoHH5CUHuk=;
-        b=D8ti+2Pu9A3A7OT9eu5u8g809BBk1hASH2RdiLyOGvjrIfeX7mcLWCLc2RBZLm2PDg
-         KnQUmSkt41Tk+Km3Q92kCAsB5Nw+5z1uCG42UUt59OHSQ1ga51b3ESs6fegFK8mqig2G
-         8OD2rZzjxIO1M5dYgWyIhSBpB4O7EdeF656Qs=
+         :cc:content-transfer-encoding;
+        bh=7YqpccAzej+b2o9pV1jLHqIPTc1Lt2s9q8QE3tuN/+k=;
+        b=RxpOVSwA92ftH6anX1m0xntTLg7wgJLJhZKkvwCVzt6FfUfp2p7oR4481IM5i4Gv7h
+         QRP5FYAl8B1OX2XfeMSGGco1arDbpAH8LFtSDgFGx9v9IAAZIP/6RlsNX/8h2eWt1u0q
+         xEY6uHmB6h6e5qlNjGZqCWkr5qUqedLa6Hbbfx3TbKQVlSClrF2pdSn/jeK+J/hzeVnu
+         eJu/4poF9V9UpwPg+vd7ZJhTsr3MCwLl5o2pkJG48blLnvQAe0gPkPZ2sQJn2HoQ4pFt
+         4siEh+zrLg+J60wa0dlBXfzTthlLkQkoJyc97WoHKF0TDAlNdil/9789kkQzfyQII5ko
+         48nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FY+LqDabhhgCzF/kHUiBASBrGmAFBGdYjQoHH5CUHuk=;
-        b=U6aT4gazJW3MWCH19vhN6QCylCESv0rXIfXtyAh/6YgDi6n2tqS6wu01z8k0GnKs34
-         Ghwl07D6Tmio9PEf3Y/gJO15AyZKNY1q2BOH1WffkYZWUM04BQcHetiuOVy6ndg0cw3q
-         MRCs//Mphg+YYMGgggRVSsFalAAgWQ9x9bCxwk2MW3T2ZSNLgzYLlEXkQlsPbFP7x5dU
-         CgJYceXbNIyYCpF3lUGJwLhNetArneB//6Fu2cEPbcLLGXun+gtWlU+Ouls7mwYE3pjD
-         KcbwKurSmiVa9mOUKXKLp4Lkpp2Dt7g9Ykepl8HMt0pB4YbVwbQ3CmWMA0M3MLet2uo8
-         xtzw==
-X-Gm-Message-State: AOAM53273GFvoUFcIyDBwDZCdj3WLiXmFuYjzij+vy7A9yv3/J64Tls3
-        qG4YKRJKyb9TbmnfJV1fncID04SdteJ3dmsxKUnpCVEvXQ4thgs=
-X-Google-Smtp-Source: ABdhPJwBWJVGjbpxIiKdfK3X5F9BKCLWk5LXkXrOV6AiTriAM780Wu2t637zT39lnDE4ZAH0aldf8qHoIsKQ3RUi+Pg=
-X-Received: by 2002:a5d:9842:: with SMTP id p2mr996172ios.113.1601923638595;
- Mon, 05 Oct 2020 11:47:18 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7YqpccAzej+b2o9pV1jLHqIPTc1Lt2s9q8QE3tuN/+k=;
+        b=rOXTRB0VbIX5Y5W+eiItJ+WwkbgLS+ko1aWaNq/AfZgTcoChoUYxewLd7Dbg74wPcI
+         wNkpG/GrfQHSxSzEDeMc03Xrlk7iEAVxStEV+RN3dIrZyQ962zhntngq83/BCg43dYmQ
+         7cfxwy4GrnOaA7ZJMhKR5ajfkBy3iPIIxZ3ULlL3BWK795H7h4EWTvcLGEF4jBeKcYYi
+         5yLIB9Ct723R7GzVUfHKek5l/9J3o3LG8brIYSO2D6r7yLb/qoV+/F964qTwg5wQ3Bv/
+         Zctmb4yyq1GjQK1XZef1maxE3xZ12M1CB1pAIzxSrfoEGj7sFCxmGFjOTNZFPSoGZ39D
+         CW3w==
+X-Gm-Message-State: AOAM533ELbPauaPphq+uTIrI0S/chiF/8qwgSpSYxBmG4uI02Iw5gWWM
+        c+EBl1JUU+Ji5ImTXCSo1gHsNQInvxPtwbYSCig=
+X-Google-Smtp-Source: ABdhPJzQ1nxounHVLsdGpt/BvM5ERYe1427Wv3ndDU3Z74ZOZ/2XcDkuCjVlvPILBBV0tSx9TsZ3BmsqAi2J2Mmcrh4=
+X-Received: by 2002:a05:6638:f8d:: with SMTP id h13mr1269158jal.120.1601923651211;
+ Mon, 05 Oct 2020 11:47:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <bug-209317-8243@https.bugzilla.kernel.org/> <bug-209317-8243-E6Z0ICootN@https.bugzilla.kernel.org/>
- <20200928111341.7eaa98a8@oasis.local.home> <67278555f143564677878cc849155393a93c018a.camel@wdc.com>
- <CAOnJCUJgzWkKixYyFCrqbNF2ONgB_RUOSTB9BhT5D0stnf=vUw@mail.gmail.com> <CANXhq0qzi2LjYekG0yk876znrpk7tMo+-zT6wR77nhy89rm2kQ@mail.gmail.com>
-In-Reply-To: <CANXhq0qzi2LjYekG0yk876znrpk7tMo+-zT6wR77nhy89rm2kQ@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 5 Oct 2020 11:47:07 -0700
-Message-ID: <CAOnJCULU7qy35vhiFcJKHFgbe+w5Gn2q_SskjjbjtM3X90uT_g@mail.gmail.com>
-Subject: Re: [Bug 209317] ftrace kernel self test failure on RISC-V on 5.8,
- regression from 5.4.0
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Alan Kao <alankao@andestech.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "bugzilla-daemon@bugzilla.kernel.org" 
-        <bugzilla-daemon@bugzilla.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Atish Patra <Atish.Patra@wdc.com>
+References: <20201003092001.405238-1-peron.clem@gmail.com> <20201005092145.wdu4m4pwxydv76ou@gilmour.lan>
+In-Reply-To: <20201005092145.wdu4m4pwxydv76ou@gilmour.lan>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Mon, 5 Oct 2020 20:47:19 +0200
+Message-ID: <CAJiuCcfydz4GS3fUTampBLkDC4f6xVWmRpSRJ55TiDStdRCFmA@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: allwinner: h6: add eMMC voltage property
+ for Beelink GS1
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 4, 2020 at 11:08 PM Zong Li <zong.li@sifive.com> wrote:
+Hi Maxime,
+
+
+On Mon, 5 Oct 2020 at 11:21, Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> Hi Atish,
+> Hi Cl=C3=A9ment,
 >
-> I can take out some time to take a look at it together, if anyone here
-> fixes it or has ideas, please share the information, thanks.
+> On Sat, Oct 03, 2020 at 11:20:01AM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> > Sunxi MMC driver can't distinguish at runtime what's the I/O voltage
+> > for HS200 mode.
 >
-
-Thanks. I observed this in case it helps.
-
-Across kernels, the panic trace seems to point out the one of the
-first two functions after patching is corrupted.
-rcu_momentary_dyntick_idle or stop_machine_yield[1]
-
-[1]https://elixir.bootlin.com/linux/v5.9-rc7/source/kernel/stop_machine.c#L213
-
-I am suspecting nop was not replaced with the correct auipc+jalr pair?
-
-> On Sun, Oct 4, 2020 at 1:33 AM Atish Patra <atishp@atishpatra.org> wrote:
+> Unfortunately, that's not true (or at least, that's not related to your p=
+atch).
+>
+> > Add a property in the device-tree to notify MMC core about this
+> > configuration.
 > >
-> > Hi Alan and Zong,
-> > I initially suspected ftrace is broken between v5.6 & v5.7 as Kolin pointed out.
-> > I couldn't find any reason how the HSM patch is related. Zong's ftrace
-> > patching code was also merged in that release.
-> > However, I was able to reproduce the issue in the older kernel(v5.4)
-> > as well on both Qemu & Unleashed hardware.
-> > Here are the steps:
+> > Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 =
+board")
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> > mount -t debugfs none /sys/kernel/debug/
-> > cd /sys/kernel/debug/tracing
-> > echo function_graph > current_tracer
-> > echo function > current_tracer
-> >
-> > It works for the first time with function_graph but writing any other
-> > tracer crashes immediately.
-> > Can you take a look to check if the bug is in ftrace infrastructure code ?
-> >
-> > On Mon, Sep 28, 2020 at 10:25 AM Atish Patra <Atish.Patra@wdc.com> wrote:
-> > >
-> > > On Mon, 2020-09-28 at 11:13 -0400, Steven Rostedt wrote:
-> > > > On Sat, 26 Sep 2020 22:02:35 +0000
-> > > > bugzilla-daemon@bugzilla.kernel.org wrote:
-> > > >
-> > > > > https://bugzilla.kernel.org/show_bug.cgi?id=209317
-> > > > >
-> > > > > --- Comment #4 from Colin Ian King (colin.king@canonical.com) ---
-> > > > > Issue still in 5.9-rc6
-> > > > >
-> > > >
-> > > > Atish,
-> > > >
-> > > > As the issues bisects down to your commit, care to take a look at
-> > > > this.
-> > > > (And take ownership of this bug)
-> > > >
-> > >
-> > > Yes. I am already looking into this. Colin informed me about the bug
-> > > over the weekend.
-> > >
-> > > I couldn't change the ownership as I am not part of the editbugs group.
-> > > I have sent an email to helpdesk@kernel.org for access.
-> > >
-> > > > -- Steve
-> > >
-> > > --
-> > > Regards,
-> > > Atish
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/=
+arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > index 049c21718846..3f20d2c9bbbb 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > @@ -145,6 +145,7 @@ &mmc2 {
+> >       vqmmc-supply =3D <&reg_bldo2>;
+> >       non-removable;
+> >       cap-mmc-hw-reset;
+> > +     mmc-hs200-1_8v;
+> >       bus-width =3D <8>;
+> >       status =3D "okay";
+> >  };
+>
+> I'm not really sure what you're trying to fix here, but as far as MMC
+> goes, eMMC's can support io voltage of 3.3, 1.8 and 1.2V. Modes up until
+> HS DDR (50MHz in DDR) will use an IO voltage of 3.3V, higher speed modes
+> (HS200 and HS400) supporting 1.8V and 1.2V.
+
+Some users report that the eMMC is not working properly on their
+Beelink GS1 boards.
+
+>
+> The mmc-hs200-1_8v property states that the MMC controller supports the
+> HS200 mode at 1.8V. Now, I can only assume that since BLDO2 is set up at
+> 1.8V then otherwise, the MMC core will rightfully decide to use the
+> highest supported mode. In this case, since the driver sets it, it would
+> be HS-DDR at 3.3V, which won't work with that fixed regulator.
+>
+> I can only assume that enabling HS200 at 1.8V only fixes the issue you
+> have because otherwise it would use HS-DDR at 3.3V, ie not actually
+> fixing the issue but sweeping it under the rug.
+>
+> Trying to add mmc-ddr-1_8v would be a good idea
+
+Thanks for the explanation, this is indeed the correct one.
+So It looks like the SDIO controller has an issue on some boards when
+using HS-DDR mode.
+
+Is this patch acceptable with the proper commit log?
+
+It looks like the same issue is happening on A64 Pinebook board.
+
+Thanks
+Clement
 
 
-
--- 
-Regards,
-Atish
+>
+> Maxime
