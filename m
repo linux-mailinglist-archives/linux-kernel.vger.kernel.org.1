@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9582837F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020FE2837F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgJEOi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:38:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46842 "EHLO mail.kernel.org"
+        id S1726536AbgJEOiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:38:54 -0400
+Received: from w1.tutanota.de ([81.3.6.162]:47612 "EHLO w1.tutanota.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbgJEOi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:38:27 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3720020776;
-        Mon,  5 Oct 2020 14:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601908707;
-        bh=qrpsw39g2HYMqSB+6zkRrrlQVSk8tcTuR+W4i5vTgiU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=yCseW3CGhvBD1u87duDf4tOl/uBzHVb2eh2lLEi20G9+2nmUBe069o/Pe48dOc+Cr
-         TvCl+L76nwScIzXqYdtVOG2Wb56Ww92oEwSxQkvMfkWmjW6M2UUngpgELG7qcWj0o6
-         cCoXV8T/G/CPb6phUgcN1rGn1do0LHbUwCTFtfow=
-Received: by mail-ot1-f53.google.com with SMTP id i12so2989670ota.5;
-        Mon, 05 Oct 2020 07:38:27 -0700 (PDT)
-X-Gm-Message-State: AOAM530fgUS/XqNw54GFDzYAnms59p47NiD5v8USdrFRPeHvhdRyMju6
-        g3ZXb2V+vikyZCbxr0/c5Ze13/gAHL1NNNABbA==
-X-Google-Smtp-Source: ABdhPJxgzGZnVxNKnaUW4PGBqPAxCXhLxf/zBWeYtpXei81FHb/CaZ0SrtW1AZcxDxTzUg+Sq6ioaWDXnTPhY5ZUsRY=
-X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr12169390otp.129.1601908706622;
- Mon, 05 Oct 2020 07:38:26 -0700 (PDT)
+        id S1725936AbgJEOix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:38:53 -0400
+Received: from w3.tutanota.de (unknown [192.168.1.164])
+        by w1.tutanota.de (Postfix) with ESMTP id 82E6AFA03D3;
+        Mon,  5 Oct 2020 14:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1601908731;
+        s=s1; d=tutanota.com;
+        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
+        bh=FBKOPUvAuNm6fEt8T8JRj0ijtvKSx3emCy80YIZxL4w=;
+        b=XLVhftzC02EhPKFUeKpYUnyTb8lrbkW3ZznHmPCt3sv+wTh4Z6rxV6zhk1EKeEoC
+        hR3OfrRD/2TbbtlVuwYn33iVy2HK9E//yzAqMpXjz6KfipJ026KiYMWVluGCdLc4mmY
+        GHugccq2kWoAGX6PxqoGT92l/ASIqhFKc361S8QfTaaoQjBWWlc4ALR0Nj64d26ufYt
+        8C53xWgkKSg5SS/YpLRynLdNEApl+Dj0gEIdWHg6G1O78s6C/4AAwqURwplJ3hYokKP
+        YTo5yx3Dn8w5Wv5YGpi2T3qT9pnV/KwqkUhKW4L6dY3AWvIc9IKY9wWg3HNvUYMTLBJ
+        7XAcGw73qg==
+Date:   Mon, 5 Oct 2020 16:38:51 +0200 (CEST)
+From:   ultracoolguy@tutanota.com
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     Marek Behun <kabel@blackhole.sk>, Pavel <pavel@ucw.cz>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Linux Leds <linux-leds@vger.kernel.org>
+Message-ID: <MItBqjy--3-2@tutanota.com>
+In-Reply-To: <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com>
+References: <MIiYgay--3-2@tutanota.com> <20201005141334.36d9441a@blackhole.sk> <MIt2NiS--3-2@tutanota.com> <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com>
+Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
 MIME-Version: 1.0
-References: <20201001145738.17326-1-alban.bedel@aerq.com> <20201001145738.17326-3-alban.bedel@aerq.com>
- <9c164930-ffec-415e-caf7-4eb8c2e57576@roeck-us.net>
-In-Reply-To: <9c164930-ffec-415e-caf7-4eb8c2e57576@roeck-us.net>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 5 Oct 2020 09:38:14 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJa82AYJQHfxNweJBzL7rLq5Tnzr7fW87SeifwtWkAWCA@mail.gmail.com>
-Message-ID: <CAL_JsqJa82AYJQHfxNweJBzL7rLq5Tnzr7fW87SeifwtWkAWCA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: hwmon: Add the +vs supply to the lm75 bindings
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Alban Bedel <alban.bedel@aerq.com>,
-        Linux HWMON List <linux-hwmon@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 1:08 PM Guenter Roeck <linux@roeck-us.net> wrote:
+I understand. So I should leave it like it was and do the rename in another patch? 
+
+Oct 5, 2020, 14:33 by dmurphy@ti.com:
+
+> Marek
 >
-> Hi,
+> On 10/5/20 8:57 AM, ultracoolguy@tutanota.com wrote:
 >
-> On 10/1/20 7:57 AM, Alban Bedel wrote:
-> > Some boards might have a regulator that control the +VS supply, add it
-> > to the bindings.
-> >
-> > Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
+>> I agree with you.
+>>
+>> Attached patch with changes.
+>>
 >
-> I have nothing in my records, and nothing in patchwork, that suggests
-> that Rob gave this patch an Acked-by:. Please point me to the respective
-> e-mail.
+> Nack to the patch.
+>
+> The subject says it does one thing but you also unnecessarily changed the name of the structure.
+>
+> Renaming the structure does not fix the underlying issue
+>
+> Dan
+>
 
-I did on v2.
-
-> Patch 1/3 is also missing an Acked-by: or Reviewed-by: from a DT
-> maintainer.
-
-In my queue.
-
-Rob
