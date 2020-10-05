@@ -2,102 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEEC283194
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9A12831A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgJEINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEINI (ORCPT
+        id S1726070AbgJEIOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:14:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57851 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbgJEIOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:13:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC2FC0613A8
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 01:13:08 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s12so8427450wrw.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:13:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4j4QvxQFPIdjM0NymHg9aDCccSJMx3lPNQ3ZZsRnW9c=;
-        b=lOBcNVcbkKoNhgnYx2j3l/8/rE1EovMe0uiEZoQ3F3dBUYXZn1FRWR0+sD9F31Sdxn
-         wgGbBYdiv3YOJT0OrzMBN+7iN71myGFfaDWdq8WcJE6RRZ40jkQFPTlnTClarl+i+eVr
-         80nH6zYU/mPYfHx44fEn2fHOqDGt9eUiVHMWmUV3LJLJm+Lry0UUlOSZPJ2XeydzvK9e
-         SKdPBcU8jWbnaNUGfwBPqejrTVx1GGA0HtAilj3c9zmlkMfheaNSunMB0SF46FA2cPLp
-         SkaMQ+wClu9c78EsJXC9Jsva+Cs/BiRV57lTf1EvcQJhg+lF6Ja6XNlnFGT0XezhOZhI
-         0eTA==
+        Mon, 5 Oct 2020 04:14:30 -0400
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1kPLdb-0001HB-Cp
+        for linux-kernel@vger.kernel.org; Mon, 05 Oct 2020 08:14:27 +0000
+Received: by mail-wr1-f71.google.com with SMTP id f11so1495617wro.15
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:14:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4j4QvxQFPIdjM0NymHg9aDCccSJMx3lPNQ3ZZsRnW9c=;
-        b=buHPKjPq08DJc1GaONp9KP0rPSvYVhnmrnMUEt4oUdZrjykKWoQ4pogt8Heb9Eitwb
-         88pxn/MBNwa2m0gEYW8RXqdw+8kqLCwxb3+NNIVn5NZ1J60xZVujj+Tnp7RarXuuBYM5
-         RxBUFJ06XwUT6q+2ztWbf+9r+6lYKiZOMzGmObV7evKvWtuzeyu5TxwFICFXMz/XTNmg
-         zrr8iElFdZc7a9cwmIqO+K2EHeb7cOPpgnO1BghqBqzzjlJ008UlCDbFRxjtEEaWFGjk
-         PRmY6d64Q3D6QnMjCtCK2qBVQbowA0ay5/VCIB9UqGEVZGTzU2Qf49c3XvwaX7PVJvN3
-         3a/g==
-X-Gm-Message-State: AOAM533TWCvrj7y1vGvV/JQMJAXDudkqYKOZNqPucyjPGmEAeQM5gu/B
-        3ze6DQJ7q3cTcjXpXUeBSRRXhw==
-X-Google-Smtp-Source: ABdhPJzcn3WGwQ6Bxl5YytCol9Xo+JbY5VHHuchADF6kmbtqN8Zjz20jZ4GTcwvZM4G/vSHHCWsqww==
-X-Received: by 2002:a5d:4a49:: with SMTP id v9mr11023195wrs.153.1601885586773;
-        Mon, 05 Oct 2020 01:13:06 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id d30sm4972548wrc.19.2020.10.05.01.13.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=04NfvqcE293cqSxzmzA7UDEenFQaTMOEO1JaCZLQgms=;
+        b=is6iBcPhM7GsS8QaxAfJD55vDlDu+xVmcxI5MhOCtRwoRF4YRjL1QB/cn3sUn8NIa7
+         LBK+b29lfGU5NxnZh+bWEV8U7v3FvK52GIw/zT/nc9B8PdWW4DK4sntrH24eIXgqV8hl
+         G+nXuUt5mHc8+qsVNCeLVDe+496DSrPkaXZhwWXh+zj0j3LZqHtpU/ZKKzegPP2tn5ye
+         bBpdVBDFve+sV/AkjE4qyxoFNiP1UpF1uAuNaBkcz6kRiO2esyiEyomkQAkYrPMM1/q9
+         TiyPreY20X6/KmscTUkPYWZUw/pmZDlP+7q1WmZ1MbeoU1OJb/Kl6FaN3KGK9X1tb8mV
+         etiw==
+X-Gm-Message-State: AOAM530+0PpKktgzrHXq88tbwEuZ0JasbCElyljpNcEL159qDPpP9snb
+        CKnSfYRfN1qZaWRk4YXQ5wlsCo3d/getI0gTku6DgohbpCAmpljQW5dlVUeMJPA9P+kX2hTJddW
+        jVsPsU7OgD/o7IEMHugUQAhHyC6hUWSm08dJ/PIUyEA==
+X-Received: by 2002:adf:c3c2:: with SMTP id d2mr1763596wrg.191.1601885666768;
+        Mon, 05 Oct 2020 01:14:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/vSx89vE5EQY/p7M5JNzqT6l1/+ZcZKgMzOZLy7zCPdPEe+yrwl2TQ5atBaon8TgjIaK/tQ==
+X-Received: by 2002:adf:c3c2:: with SMTP id d2mr1763556wrg.191.1601885666376;
+        Mon, 05 Oct 2020 01:14:26 -0700 (PDT)
+Received: from xps-13-7390.homenet.telecomitalia.it (host-79-36-133-218.retail.telecomitalia.it. [79.36.133.218])
+        by smtp.gmail.com with ESMTPSA id a15sm13168855wrn.3.2020.10.05.01.14.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 01:13:06 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 09:13:04 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: mfd: rohm,bd71837-pmic: Add common
- properties
-Message-ID: <20201005081304.GV6148@dell>
-References: <20200917193754.542-1-krzk@kernel.org>
- <20201002161334.GC4542@kozik-lap>
+        Mon, 05 Oct 2020 01:14:25 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luigi Semenzato <semenzato@google.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH RFC v2] Opportunistic memory reclaim
+Date:   Mon,  5 Oct 2020 10:13:11 +0200
+Message-Id: <20201005081313.732745-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002161334.GC4542@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Oct 2020, Krzysztof Kozlowski wrote:
+## Overview
 
-> On Thu, Sep 17, 2020 at 09:37:54PM +0200, Krzysztof Kozlowski wrote:
-> > Add common properties appearing in DTSes (clock-names,
-> > clock-output-names) with the common values (actually used in DTSes) to
-> > fix dtbs_check warnings like:
-> > 
-> >   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml:
-> >     pmic@4b: 'clock-names', 'clock-output-names', do not match any of the regexes: 'pinctrl-[0-9]+'
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > 
-> > ---
-> > 
-> > Changes since v1:
-> > 1. Define the names, as used in existing DTS files.
-> > ---
-> >  .../devicetree/bindings/mfd/rohm,bd71837-pmic.yaml          | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> 
-> Dear Lee,
-> 
-> Could you take it via MFD tree? There is a review from Rob and ack from
-> author (Matti).
+Opportunistic memory reclaim aims to introduce a new interface that
+allows user-space to trigger an artificial memory pressure condition and
+force the kernel to reclaim memory (dropping page cache pages, swapping
+out anonymous memory, etc.).
 
-I don't usually take patches this late in the cycle.
+### Motivation
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Reclaiming memory in advance to prepare the system to be more responsive
+when needed.
+
+### Use cases
+
+ - Reduce system memory footprint
+ - Speed up hibernation time
+ - Speed up VM migration time
+ - Prioritize responsiveness of foreground applications vs background
+   applications
+ - Prepare the system to be more responsiveness during large allocation
+   bursts
+
+## Interface
+
+This feature is provided by adding a new file to each memcg:
+memory.swap.reclaim.
+
+Writing a number to this file forces a memcg to reclaim memory up to
+that number of bytes ("max" means as much memory as possible). Reading
+from the this file returns the amount of bytes reclaimed in the last
+opportunistic memory reclaim attempt.
+
+Memory reclaim can be interrupted sending a signal to the process that
+is writing to memory.swap.reclaim (i.e., to set a timeout for the whole
+memory reclaim run).
+
+## Example usage
+
+This feature has been successfully used to improve hibernation time of
+cloud computing instances.
+
+Certain cloud providers allow to run "spot instances": low-priority
+instances that run when there are spare resources available and can be
+stopped at any time to prioritize other more privileged instances [2].
+
+Hibernation can be used to stop these low-priority instances nicely,
+rather than losing state when the instance is shut down. Being able to
+quickly stop low-priority instances can be critical to provide a better
+quality of service in the overall cloud infrastructure [1].
+
+The main bottleneck of hibernation is represented by the I/O generated
+to write all the main memory (hibernation image) to a persistent
+storage.
+
+Opportunistic memory reclaimed can be used to reduce the size of the
+hibernation image in advance, for example if the system is idle for a
+certain amount of time, so if an hibernation request happens, the kernel
+has already saved most of the memory to the swap device (caches have
+been dropped, etc.) and hibernation can complete quickly.
+
+## Testing and results
+
+Here is a simple test case to show the effectiveness of this feature.
+
+Environment:
+```
+   - VM (kvm):
+     8GB of RAM
+     disk speed: 100 MB/s
+     8GB swap file on ext4 (/swapfile)
+```
+
+Test case:
+```
+  - allocate 85% of memory
+  - wait for 60s almost in idle
+  - hibernate and resume the system (measuring the time)
+```
+
+Result:
+  - average of 10 runs tested with `/sys/power/image_size=default` and
+    `/sys/power/image_size=0`:
+```
+                                 5.9-vanilla   5.9-mm_reclaim
+                                 -----------   --------------
+  [hibernate] image_size=default      49.07s            3.40s
+     [resume] image_size=default      18.35s            7.13s
+
+  [hibernate] image_size=0            71.55s            4.72s
+     [resume] image_size=0             7.49s            7.41s
+```
+
+NOTE #1: in the `5.9-mm_reclaim` case a simple user-space daemon detects
+when the system is idle for a certain amount of time and triggers the
+opportunistic memory reclaim.
+
+NOTE #2: `/sys/power/image_size=0` can be used with `5.9-vanilla` to
+speed up resume time (because it shrinks even more the hibernation
+image) at the cost of increasing hibernation time; with `5.9-mm_reclaim`
+performance are pretty much identical in both cases, because the
+hibernation image is already reduced to the minimum when the hibernation
+request happens.
+
+## Conclusion
+
+Being able to trigger memory reclaim from user-space allows to prepare
+the system in advance to be more responsive when needed.
+
+This feature has been used with positive test results to speed up
+hibernation time of cloud computing instances, but it can also provide
+benefits to other use cases, for example:
+
+ - prioritize responsiveness of foreground applications vs background
+   applications
+
+ - improve system responsiveness during large allocation bursts
+   (preparing system by reclaiming memory in advance, e.g. using some
+   idle cycles)
+
+ - reduce overall system memory footprint (especially in VM / cloud
+   computing environments)
+
+## See also
+
+ - [1] https://lwn.net/Articles/821158/
+ - [2] https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-interruptions.html
+ - [3] user-space tools/scripts: https://github.com/arighi/opportunistic-memory-reclaim
+ - [4] previous version: https://lore.kernel.org/lkml/20200601160636.148346-1-andrea.righi@canonical.com/
+
+## Changes in v2:
+ - move ABI from hibernation to memcg (since this feature can be used
+   also in other contexts and it's not hibernation-specific)
+ - drop memory release functionality (to re-load swapped out pages,
+   since it ended being not very useful)
+ - added the possibility to show the number of memory reclaimed in the
+   last attempt (per-memcg)
+
+----------------------------------------------------------------
+Andrea Righi (2):
+      mm: memcontrol: make shrink_all_memory() memcg aware
+      mm: memcontrol: introduce opportunistic memory reclaim
+
+ Documentation/admin-guide/cgroup-v2.rst | 18 ++++++++++
+ include/linux/memcontrol.h              |  4 +++
+ include/linux/swap.h                    |  9 ++++-
+ mm/memcontrol.c                         | 59 +++++++++++++++++++++++++++++++++
+ mm/vmscan.c                             |  6 ++--
+ 5 files changed, 92 insertions(+), 4 deletions(-)
+
