@@ -2,143 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBE928314E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF988283165
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbgJEICT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:02:19 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:29121 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgJEICT (ORCPT
+        id S1725966AbgJEIE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgJEIEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:02:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1601884938; x=1633420938;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=pyywNvKOl/x10C36lzECI2nLI+lplecjIFMK8CjJNso=;
-  b=gSsfEQ+FAbs/RQfgIzQbquTi/1UXqpbhu9TrJ8voi1ZOzVRvtbapcsRn
-   CsTI/dUfvgb/eMRVPFi5Ie/lpJZd9LjoIylHKXHUmh0COduGswBbddRUH
-   ebSVnUh3PgPelARI0A776nlDHjSQ+BlZ94pMr/eJQvhllK/NPyD7rLlQ/
-   wXTlbpY5pLr7RR7H2CgDybWRGX5j8pYzGZ4tNN3u2ephnVW4LFupYrx7e
-   74iaTCua+Pud5784CuXMKLs9RlvGch9+DqMTtrPAlgH9TGV00+Mhd4KTB
-   KxWDbzcq02LWAKBso1swKPRSSansTv8nNj5GX5LMFR5Tg/dcsdNEDyFOD
-   Q==;
-IronPort-SDR: NSb/6KHDyI+yj2Tafaq9naGu+7ocR+oK96VEZWDePRzM/eEtp6V7RhzyExAp30hzkX085cF/6O
- jWdttcpr4dl5iH5/tADqr1V/iJSOo4ZjvxU3/BPECg4IIGkSH/IDhmPPR/xFS+OyMsDBAD6oW+
- 6QuUEu6ueZuL3CAqTNwDFbtkPFSe2TDTlMgIM3XU15RyY62QE8qruU0AV7Ix894HpHqqNF9K/t
- Ru44L+9UadkeEvC9dM1J4mz1odMalvi8gm3xyf5AG2SWV/P321Ndr8BFMQlCv7vzlT4MEeQdBX
- H/Y=
-X-IronPort-AV: E=Sophos;i="5.77,338,1596470400"; 
-   d="scan'208";a="258847172"
-Received: from mail-dm6nam08lp2048.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.48])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Oct 2020 16:02:16 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LzjgtOhfUBDPuo8WK1VIdjIEKWfJRk0N7arJnMIalgWm72jATuJjXdfGRj7wuswEu0TXVIv6LxqyLxIDg3b9n9A7QoijOcrtSldYdXTjXCSUQmuihLRiRbrseqrIF7DVJu/UB8ZqaOP+kIsCWr21DeQ0MX8eMFpxRH6sL3PT7jv9FGijxWoaqDovHykO4iPtNtriLKw8mEjn0QbxV+yN8gR5YiUNj8B2rdB8GdJGxeNULbVe/TuSn7sigERsCbUyR8ivlRdOooy086COTCIb8n6PINFZpNaa3UCHKqTQQieezwIjSJOZIIYt0ukLSxfQ1k1rDYC/RfoaGvZvuLrJ8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bw5VwNAEsRWt/HI4NzGOTxQi2D/LRoQrFE1KpbZhKCU=;
- b=AaO7wtpO8XtKzHc5njrYUB2iDWbp6+Z07ipeRi28bs8teEmrWi5xkzPil+QUUXIjgz8MMYjxq7fvkxeODcheeLzA1NF8qmHb2BcV9hx8jXgvilJtAIkcXNIiM519ytQ0E2N6XyYF1+eWrTxWSqp9IzzVr9kGg0HsNbYxxqQspfmK0iq2q12vMZprdxwEUMMLVBA++9OKdB2WUhot4BIERZrkLZSWjZ57TDai/tglYmq0ZVeGNhdGs0V4vv5hGWF5khNydYwLGeaF80omMZhpk+jluCRBcc0Dp1J5kAw6Jn9mwXR/MFYuOzKF8O5afsTUg6CJwEB6MrbE4LPJScZNKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Mon, 5 Oct 2020 04:04:55 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9811DC0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 01:04:53 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g12so2978623wrp.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:04:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bw5VwNAEsRWt/HI4NzGOTxQi2D/LRoQrFE1KpbZhKCU=;
- b=CXMjnyePbUujqL/oAv/qeAnQnLh4mU4YTwxICzWiuWPkmsYEJsQGzF4qBL8KOYssmE2/Xj6SB7YJUx/wM0RwvOnoNSPbaMQX1ym7tbCV8Re6q1teNPgzi61cBugnqobZc3Xs8sTM7VJhIqTPqZ29kdTV7HM9F2GS7WbI8hS1kP0=
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
- by BYAPR04MB4438.namprd04.prod.outlook.com (2603:10b6:a02:fe::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Mon, 5 Oct
- 2020 08:02:13 +0000
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::5567:207e:4c1b:3ce1]) by BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::5567:207e:4c1b:3ce1%8]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
- 08:02:13 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Subject: RE: [PATCH 1/2] scsi: ufs: Add DeepSleep feature
-Thread-Topic: [PATCH 1/2] scsi: ufs: Add DeepSleep feature
-Thread-Index: AQHWmLlX/36ef3l9WEy26/6zpaIUz6mIpxKw
-Date:   Mon, 5 Oct 2020 08:02:13 +0000
-Message-ID: <BY5PR04MB67054C67CCA53AB5FC5CBCFAFC0C0@BY5PR04MB6705.namprd04.prod.outlook.com>
-References: <20201002124043.25394-1-adrian.hunter@intel.com>
- <20201002124043.25394-2-adrian.hunter@intel.com>
-In-Reply-To: <20201002124043.25394-2-adrian.hunter@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ec2c6479-62d6-496f-2dde-08d86904f83b
-x-ms-traffictypediagnostic: BYAPR04MB4438:
-x-microsoft-antispam-prvs: <BYAPR04MB4438A150BD5149DEADC50606FC0C0@BYAPR04MB4438.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6p/N6vIfFVnYzFDUeJLSRcYorsDeTWf8Jropnjs5XwTR4GyHvltVntnxHfvRsX2yshXO08OqXsNLpJLVdtS/QvC4CFUiwHDQSZo1NJk/fv9p0AoMjFYVt/3+F1K78Emckr2N1NgcsiP4jofbj93a15+Pwlia+Fee8NfP29pbp4qp5kog50nPEk4SYdwGD4I/toLY2pK0K3b2zjP5SfxeVBcvk0GbHzdJ4D6TR2U2u08byOOYQs3KdcerTb6gjanL2x/slJvoSbqfYU/ishZileWksGnd/BAwd2XxSMEWV2B+Kro7Ah/JV2T0bbeP/g9KpQgZx/1LLm/agga5yBmz1w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39860400002)(376002)(346002)(9686003)(76116006)(4326008)(2906002)(71200400001)(33656002)(8936002)(8676002)(186003)(110136005)(54906003)(6506007)(5660300002)(26005)(7696005)(52536014)(478600001)(55016002)(66946007)(66446008)(64756008)(66556008)(66476007)(316002)(86362001)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 8HOH0+vKtGe7HLz9s87MNUea1PP4CAGR7AMbbyzUSgasVfaKQUgN9HrTEmi1WRSwySqQCegwmJfzSElqn7Py3oHBJQ1npzDx6NtWdefNsPa/IygEUzgaPFQTUBKHN9oXHAFr1mnP1YGjmleVwMcFc0jPOa65KdSFdgKg4AQcFsQY4gh/vxTS8LnPynSup9k5XP51hxEDdftGdAnTeUJXW6EtEsDQ2FZTMVkFytsbQJkfZL/gdheVNNgFtEksHRzpAfa/JOGIbhwMldHPJywe7c2mY6yCH/XZ4Sok6CEjykIM0ky5TDQSImCnxaXUJ9AV+nqIWSoyaqPzZ2vR8DO1N2RFkdlTxFAYc8GK6SkemBjCvlaVqRls6litRJFwcyGfZurQ8UR63Bjlk31Bgil1D2fapdb3+0Wc1djpkqXk38vEqWYdPe4Q8QBSKceZqW891WCZYe8QtD4yX4rpHuJhhXm7vJ90Q9E959t2PKO3RL/uYPFPn1pY359Xp1ohPuXF+UD0ueUThxaTmHTZQiOexvuqWReKXSmR84Kt6uJbq/rrHLesw9YgPt90NsQv7f/S7JPzaOGgYlZ5SvGXTLI/zYz0N3nDHiesGeMYXuzaOqa4S+jB+TyynjeBxDlxIGTa0CSWil1yaae4qL+qjM9Pug==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=IeiNTBeAySgxF765tOCATEDwXLrm3RiAjoTBQHN6wK0=;
+        b=QT2sz2z2T2ObbOF9cBuqPj/xMs2V2JkpGaC1yQPewHnLjCK6KfpJxnFBd52Yg4AGmP
+         VJxRGRPxaRQLhLWf/cJj+4TFWIvc5S6rpMyihLW8guAo+UvNRqZKoELqvBpOePuA/Etp
+         z293SdQf8ZGebrwCEz1gY7IlvwFjzz13UZb9UEwJiawxT5K21aKdmv/U8ZWx8aU8cdsz
+         g1EJ2lezQTBEJzLkUS6vaHwbRc5HEANA2MQBDDgPE/harsOdRDrcIYwSmq3urQxn7+oQ
+         VI6XlJwzca0RWlRBNRLXanZ5iKvZaicHTe2BxzY/5qO5xvvbJ/G2d1fmd5VfFwE503zT
+         3Stw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IeiNTBeAySgxF765tOCATEDwXLrm3RiAjoTBQHN6wK0=;
+        b=meDU0V3hFPFB4XfycXoH/LMcyf33lf2YBrtLPpkN3NS1p1z5gW4xIDAAEAeYyF5PTY
+         sbyMiU/yOPLPfvzHjVDWaZrjYaUbGhkz215EMlc22zXNuwvT5yohiZNPHslvdPJl0lTW
+         vp8T3Ap5PhHXixy6rc8FtvhsaKpXqmQs0s/Y8nrx0nKrBhd62WTXwQ+sv1WhMF7/p0Q7
+         FVrrx5BQSC67O6JCldjUMLg69UQjgeaHnPKc9Nv25OcxMkEp+Fe9H5HYgmm6HcqxIBhl
+         KK2Qrj8lXF6XnNZsLXNBIAtotn0S607QpARSQNrN3jO6GvkITqKoeScFSzxXBnjOOunJ
+         32zg==
+X-Gm-Message-State: AOAM530EsqPHK39SjL9vZs6PNVIv+F3yvwdlmKoRmUqAzYHrABcAJwg0
+        bt4lz3e7dlEH2xQrRCOKMyj8MA==
+X-Google-Smtp-Source: ABdhPJxB5n46P+iT3QRjzewwc6VgfO5oWkwQMA51B+oAEZSgUCF8P3GFXLcjkKteouHQRqUkrIZvVQ==
+X-Received: by 2002:adf:f10e:: with SMTP id r14mr9419051wro.337.1601885092289;
+        Mon, 05 Oct 2020 01:04:52 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id x2sm11899009wrl.13.2020.10.05.01.04.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 01:04:51 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 09:04:48 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-spi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Another round of adding missing
+ 'additionalProperties'
+Message-ID: <20201005080448.GT6148@dell>
+References: <20201002234143.3570746-1-robh@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec2c6479-62d6-496f-2dde-08d86904f83b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2020 08:02:13.7422
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: T4RN9SSMYyqMGLNRkyu/B8C8qJ3EygFT4twKXWpaFcMMOYybHxOET0u0rGzmgFQ+Zk+syFsKVU5386XIk9XFDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4438
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI,
+On Fri, 02 Oct 2020, Rob Herring wrote:
 
-> Drivers that wish to support DeepSleep need to set a new capability flag
-> UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
->  ->device_reset() callback.
-I would expect that this capability controls sending SSU 4, but it only con=
-trols the sysfs entry?
+> Another round of wack-a-mole. The json-schema default is additional
+> unknown properties are allowed, but for DT all properties should be
+> defined.
+> 
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Baolin Wang <baolin.wang7@gmail.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-spi@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-hwmon@vger.kernel.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: openipmi-developer@lists.sourceforge.net
+> Cc: linux-leds@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-rockchip@lists.infradead.org
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-pci@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: linux-serial@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> 
+> I'll take this thru the DT tree.
 
->=20
-> It is assumed that UFS devices with wspecversion >=3D 0x310 support
-> DeepSleep.
->=20
-> The UFS specification says to set the IMMED (immediate) flag for the
-> Start/Stop Unit command when entering DeepSleep. However some UFS
-> devices object to that, which is addressed in a subsequent patch.
-After failing to understand what the proper behavior should be with respect=
- of the IMMED bit,
-Although I read the applicable section few time, I gave up and consult our =
-system guy,
-Which is our jedec representative.  This is his answer:
-"...
-In order to avoid uncertainty - the host need to set IMMED bit to '0' (this=
- is explicitly specified by the standard).
-The device responds only after it switches to Pre-DeepSleep state. The host=
- then switch to H8 and this would trigger the device to transition to DeepS=
-leep state.
-..."
+[...]
 
-So maybe the 2nd patch isn't really needed.=20
-Thanks,
-Avri
+>  .../bindings/mfd/gateworks-gsc.yaml           |  2 ++
+>  .../bindings/mfd/xylon,logicvc.yaml           | 14 +++++++++++--
+
+Acked-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
