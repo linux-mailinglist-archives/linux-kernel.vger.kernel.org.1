@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19F3283135
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D44283129
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726031AbgJEH4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbgJEH4s (ORCPT
+        id S1725901AbgJEH4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:56:10 -0400
+Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:39731 "EHLO
+        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725880AbgJEH4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:56:48 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459A7C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 00:56:48 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id n136so337999pfd.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:56:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=V24nFqUoLW4E3Th0MpyhsidyzVGENaV4KzeBs2bcktI=;
-        b=IJH3N+4VTgKq/7yzzSibeAML3izyYdLrGuWTH3WTmV9f4KVaPgK8ma8n0pyl32oisR
-         LMGx6FLS0wyiX4qm6cTxKwT1cEmZ6cyrhq2RrzcEfeg6ylmpwHzID2PoVLqdoMYO2OPW
-         twbGV0dEeluBWu14lxxj9WinZIhNq6UsYMtnjb3+H7hAV5f+Xi/bkdqIgawWvQIhYERz
-         sYTz1v8O1C1CbfV1FpUHhV1EzKttxLFjbybYVklM+p2jC8SxsrYSpI7X1ckPlnEaxxxi
-         VbO2ogMSk//2i8lbwjBh4DQ+O9AQ0KcvXUy7I2RPyUDipux0iz0UX+PicwXWzxaYdyhu
-         BK+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=V24nFqUoLW4E3Th0MpyhsidyzVGENaV4KzeBs2bcktI=;
-        b=oPjSAFRQ/xppR7owP1DKgl7b8oMOISujMlLfLb2k6VR57Ex4hSWbTOfxw+Q6VfYeBi
-         F9yKRZRzRnVOcwjrFmKQKQaMhR9Ylzmd8oTImEIrKRIp5YW9GXst1K+9hcZdVMJoYl34
-         U6CYRlEEPulL20NaXD6KWzWR5ku1BQDf/jYnYMZYLvzymzZ7/A9nZ8blA77r1rdmTVyJ
-         nMLMQDTkohrOByFQEKhETaeYxFYf9dX+drq5oicFq821owMBv3Ob2b3Uuj3YfHmfaipE
-         re1jxxc0zCFOxQghou2cnqGFj0ubeX5Jlnam2N4JWsSsjKG1/JYlWlAou0nS3aVa3upN
-         n7/A==
-X-Gm-Message-State: AOAM531bspy9tMh0Qt/4DNLLd8p80RDxyOu65e/re9HIgTQ9pVLGkaxB
-        TnxsLcDLA2H1oei2sZL9ZBqoAw==
-X-Google-Smtp-Source: ABdhPJzEDI0+5SGijxUigKS4MKnFVsdoYLdCe5Hmr2YYhueCd/nXgFjF0qwlFmKyHaC0U8qepooiWQ==
-X-Received: by 2002:a65:60d0:: with SMTP id r16mr13871777pgv.348.1601884607804;
-        Mon, 05 Oct 2020 00:56:47 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id z20sm9480873pjq.1.2020.10.05.00.56.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Oct 2020 00:56:47 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
-Cc:     linux-pm@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        cristian.marussi@arm.com, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 5/5] cpufreq: Move traces and update to policy->cur to cpufreq core
-Date:   Mon,  5 Oct 2020 13:26:05 +0530
-Message-Id: <b4d80430c640fceaf871d90a1ec39277a4de34e8.1601884370.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1601884370.git.viresh.kumar@linaro.org>
-References: <cover.1601884370.git.viresh.kumar@linaro.org>
+        Mon, 5 Oct 2020 03:56:10 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id 8D114FB68F
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:56:08 +0100 (IST)
+Received: (qmail 16739 invoked from network); 5 Oct 2020 07:56:08 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Oct 2020 07:56:08 -0000
+Date:   Mon, 5 Oct 2020 08:56:07 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+Subject: Re: [PATCH] mm/vmscan: drop unneeded assignment in kswapd()
+Message-ID: <20201005075606.GG3227@techsingularity.net>
+References: <20201004125827.17679-1-lukas.bulwahn@gmail.com>
+ <20201004192437.GF3227@techsingularity.net>
+ <alpine.DEB.2.21.2010050831010.6202@felia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2010050831010.6202@felia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpufreq core handles the updates to policy->cur and recording of
-cpufreq trace events for all the governors except schedutil's fast
-switch case.
+On Mon, Oct 05, 2020 at 08:58:53AM +0200, Lukas Bulwahn wrote:
+> 
+> 
+> On Sun, 4 Oct 2020, Mel Gorman wrote:
+> 
+> > On Sun, Oct 04, 2020 at 02:58:27PM +0200, Lukas Bulwahn wrote:
+> > > The refactoring to kswapd() in commit e716f2eb24de ("mm, vmscan: prevent
+> > > kswapd sleeping prematurely due to mismatched classzone_idx") turned an
+> > > assignment to reclaim_order into a dead store, as in all further paths,
+> > > reclaim_order will be assigned again before it is used.
+> > > 
+> > > make clang-analyzer on x86_64 tinyconfig caught my attention with:
+> > > 
+> > >   mm/vmscan.c: warning: Although the value stored to 'reclaim_order' is
+> > >   used in the enclosing expression, the value is never actually read from
+> > >   'reclaim_order' [clang-analyzer-deadcode.DeadStores]
+> > > 
+> > > Compilers will detect this unneeded assignment and optimize this anyway.
+> > > So, the resulting binary is identical before and after this change.
+> > > 
+> > > Simplify the code and remove unneeded assignment to make clang-analyzer
+> > > happy.
+> > > 
+> > > No functional change. No change in binary code.
+> > > 
+> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > 
+> > I'm not really keen on this. With the patch, reclaim_order can be passed
+> > uninitialised to kswapd_try_to_sleep. While a sufficiently smart
+> > compiler might be able to optimise how reclaim_order is used, it's not
+> > guaranteed either. Similarly, a change in kswapd_try_to_sleep and its
+> > called functions could rely on reclaim_order being a valid value and
+> > then introduce a subtle bug.
+> >
+> 
+> Just for my own understanding:
+> 
+> How would you see reclaim_order being passed unitialised to 
+> kswapd_try_to_sleep?
+> 
+> From kswapd() entry, any path must reach the line
+> 
+>   alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
+> 
+> before kswap_try_to_sleep(...).
+> 
 
-Move that as well to cpufreq core for consistency and readability.
+After your patch, the code is
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/cpufreq.c        |  7 +++++++
- kernel/sched/cpufreq_schedutil.c | 12 +-----------
- 2 files changed, 8 insertions(+), 11 deletions(-)
+	unsigned int alloc_order, reclaim_order;
+	...
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 2d0e2e464b14..db00693a586a 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -2068,6 +2068,7 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
- 					unsigned int target_freq)
- {
- 	unsigned int freq;
-+	int cpu;
- 
- 	target_freq = clamp_val(target_freq, policy->min, policy->max);
- 	freq = cpufreq_driver->fast_switch(policy, target_freq);
-@@ -2075,10 +2076,16 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
- 	if (!freq)
- 		return 0;
- 
-+	policy->cur = freq;
- 	arch_set_freq_scale(policy->related_cpus, freq,
- 			    policy->cpuinfo.max_freq);
- 	cpufreq_stats_record_transition(policy, freq);
- 
-+	if (trace_cpu_frequency_enabled()) {
-+		for_each_cpu(cpu, policy->cpus)
-+			trace_cpu_frequency(freq, cpu);
-+	}
-+
- 	return freq;
- }
- EXPORT_SYMBOL_GPL(cpufreq_driver_fast_switch);
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index e39008242cf4..28f6d1ad608b 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -115,21 +115,11 @@ static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
- 			      unsigned int next_freq)
- {
- 	struct cpufreq_policy *policy = sg_policy->policy;
--	int cpu;
- 
- 	if (!sugov_update_next_freq(sg_policy, time, next_freq))
- 		return;
- 
--	next_freq = cpufreq_driver_fast_switch(policy, next_freq);
--	if (!next_freq)
--		return;
--
--	policy->cur = next_freq;
--
--	if (trace_cpu_frequency_enabled()) {
--		for_each_cpu(cpu, policy->cpus)
--			trace_cpu_frequency(next_freq, cpu);
--	}
-+	cpufreq_driver_fast_switch(policy, next_freq);
- }
- 
- static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
+	for ( ; ; ) {
+                alloc_order = READ_ONCE(pgdat->kswapd_order);
+                highest_zoneidx = kswapd_highest_zoneidx(pgdat,
+                                                        highest_zoneidx);
+
+kswapd_try_sleep:
+                kswapd_try_to_sleep(pgdat, alloc_order, reclaim_order,
+                                        highest_zoneidx);
+	...
+		reclaim_order = balance_pgdat(pgdat, alloc_order,
+                                                highest_zoneidx);
+
+reclaim_order is declared, not initialised at the start of the loop and
+passed into kswapd_try_to_sleep. There is a sequence where it is not used
+so it does not matter but it depends on the compiler figuring that out.
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+Mel Gorman
+SUSE Labs
