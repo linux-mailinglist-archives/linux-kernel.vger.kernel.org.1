@@ -2,89 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED78828367F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E337C283680
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725982AbgJEN20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:28:26 -0400
-Received: from sp1.canonet.ne.jp ([210.134.165.88]:51128 "EHLO
-        sp1.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgJEN20 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:28:26 -0400
-Received: from cmcheck1.canonet.ne.jp (unknown [172.21.160.141])
-        by sp1.canonet.ne.jp (Postfix) with ESMTP id E7AED1E04DA;
-        Mon,  5 Oct 2020 22:28:23 +0900 (JST)
-Received: from echeck1.canonet.ne.jp ([172.21.160.31])
-        by cmcheck1 with ESMTP
-        id PQXPkauNyrwkGPQXPkw9Lg; Mon, 05 Oct 2020 22:28:23 +0900
-X-CNT-CMCheck-Reason: "undefined", "v=2.2 cv=Q72i28+a c=1 sm=1 tr=0
- cx=t_eml:g_jp p=Qc_-Gc98pncA:10 p=LCeEzJ_fp_Y1XAGGSI_h:22
- a=pfbPvPf18X2prx6cd4zkIA==:117 a=xbyLVnzfAZw6kvha8NeemA==:17
- a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10 a=afefHYAZSVUA:10
- a=Qs83zKYSFMdweDPBNGQA:9 a=id4sslXUZ5pHY6gm:21 a=Vbc_3M2ReCI5aM_o:21
- a=CjuIK1q_8ugA:10"
-X-CNT-CMCheck-Score: 100.00
-Received: from echeck1.canonet.ne.jp (localhost [127.0.0.1])
-        by esets.canonet.ne.jp (Postfix) with ESMTP id 2D9281C025E;
-        Mon,  5 Oct 2020 22:28:23 +0900 (JST)
-X-Virus-Scanner: This message was checked by ESET Mail Security
-        for Linux/BSD. For more information on ESET Mail Security,
-        please, visit our website: http://www.eset.com/.
-Received: from smtp1.canonet.ne.jp (smtp1.canonet.ne.jp [172.21.160.21])
-        by echeck1.canonet.ne.jp (Postfix) with ESMTP id EC1FB1C0257;
-        Mon,  5 Oct 2020 22:28:22 +0900 (JST)
-Received: from chikousha.co.jp (webmail.canonet.ne.jp [210.134.164.250])
-        by smtp1.canonet.ne.jp (Postfix) with ESMTPA id 10A4A15F964;
-        Mon,  5 Oct 2020 22:28:22 +0900 (JST)
+        id S1726018AbgJEN2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:28:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50568 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725914AbgJEN2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:28:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601904513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IPqPNbDqClbP8EksYsOoKg3cRZhaMTz9vJe273I/bK0=;
+        b=krA5UWKlDkZ8d6gQzz6GVnSDlOTpq8O4pe01xbORAvttEp0Gzw71JSEInos1S4atPTME/n
+        9Y0tAZeKgGDZ+xA6yFopD4TuC79/IY3EgltPVyucHOz7CTngy7EFAGNe/hQLrvZ+CXWO7F
+        SDn0q2jTm7UQh+npH5kFG/M490rvevU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 70346ACD8;
+        Mon,  5 Oct 2020 13:28:33 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 15:28:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH 6/9] mm, page_alloc: cache pageset high and batch in
+ struct zone
+Message-ID: <20201005132830.GB4555@dhcp22.suse.cz>
+References: <20200922143712.12048-1-vbabka@suse.cz>
+ <20200922143712.12048-7-vbabka@suse.cz>
 MIME-Version: 1.0
-Message-ID: <20201005132822.000047CB.0277@chikousha.co.jp>
-Date:   Mon, 05 Oct 2020 22:28:22 +0900
-From:   "Dawuda Usman" <info@chikousha.co.jp>
-To:     <dawudausm@gmail.com>
-Reply-To: <dawudausm@gmail.com>
-Subject: Greetings friend..
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-ORGANIZATION: Dawuda Usman
-X-MAILER: Active! mail
-X-EsetResult: clean, %VIRUSNAME%
-X-ESET-AS: R=SPAM;S=100;OP=CALC;TIME=1601904503;VERSION=7863;MC=1908559813;TRN=15;CRV=0;IPC=210.134.164.250;SP=0;SIPS=1;PI=5;F=0
-X-I-ESET-AS: RN=442;RNP=
-X-ESET-Antispam: SPAM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922143712.12048-7-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Tue 22-09-20 16:37:09, Vlastimil Babka wrote:
+> All per-cpu pagesets for a zone use the same high and batch values, that are
+> duplicated there just for performance (locality) reasons. This patch adds the
+> same variables also to struct zone as a shared copy.
+> 
+> This will be useful later for making possible to disable pcplists temporarily
+> by setting high value to 0, while remembering the values for restoring them
+> later. But we can also immediately benefit from not updating pagesets of all
+> possible cpus in case the newly recalculated values (after sysctl change or
+> memory online/offline) are actually unchanged from the previous ones.
 
-I am Mr. Dawuda Usman working with the department of Audit and 
-accounting manager here in the Bank, There is this fund that was kept in 
-my custody years ago,please I need your assistance for the transferring 
-of this fund to your bank account
-for both of us benefit for life time investment and the amount is (US$4.
-5M DOLLARS).
+Advantage of this patch is not really clear from it in isolation. Maybe
+merge it with the patch which uses the duplicated state.
 
-I have every inquiry details to make the bank believe you and release 
-the fund in within 5 banking working days with your full co-operation
-with me after success.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  include/linux/mmzone.h |  6 ++++++
+>  mm/page_alloc.c        | 16 ++++++++++++++--
+>  2 files changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 90721f3156bc..7ad3f14dbe88 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -470,6 +470,12 @@ struct zone {
+>  #endif
+>  	struct pglist_data	*zone_pgdat;
+>  	struct per_cpu_pageset __percpu *pageset;
+> +	/*
+> +	 * the high and batch values are copied to individual pagesets for
+> +	 * faster access
+> +	 */
+> +	int pageset_high;
+> +	int pageset_batch;
+>  
+>  #ifndef CONFIG_SPARSEMEM
+>  	/*
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index de3b48bda45c..901907799bdc 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5824,6 +5824,8 @@ static void build_zonelists(pg_data_t *pgdat)
+>   * Other parts of the kernel may not check if the zone is available.
+>   */
+>  static void pageset_init(struct per_cpu_pageset *p);
+> +#define BOOT_PAGESET_HIGH	0
+> +#define BOOT_PAGESET_BATCH	1
+>  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
+>  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
+>  
+> @@ -6213,8 +6215,8 @@ static void pageset_init(struct per_cpu_pageset *p)
+>  	 * need to be as careful as pageset_update() as nobody can access the
+>  	 * pageset yet.
+>  	 */
+> -	pcp->high = 0;
+> -	pcp->batch = 1;
+> +	pcp->high = BOOT_PAGESET_HIGH;
+> +	pcp->batch = BOOT_PAGESET_BATCH;
+>  }
+>  
+>  /*
+> @@ -6238,6 +6240,14 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
+>  		new_batch = max(1UL, 1 * new_batch);
+>  	}
+>  
+> +	if (zone->pageset_high != new_high ||
+> +	    zone->pageset_batch != new_batch) {
+> +		zone->pageset_high = new_high;
+> +		zone->pageset_batch = new_batch;
+> +	} else {
+> +		return;
+> +	}
+> +
+>  	for_each_possible_cpu(cpu) {
+>  		p = per_cpu_ptr(zone->pageset, cpu);
+>  		pageset_update(&p->pcp, new_high, new_batch);
+> @@ -6300,6 +6310,8 @@ static __meminit void zone_pcp_init(struct zone *zone)
+>  	 * offset of a (static) per cpu variable into the per cpu area.
+>  	 */
+>  	zone->pageset = &boot_pageset;
+> +	zone->pageset_high = BOOT_PAGESET_HIGH;
+> +	zone->pageset_batch = BOOT_PAGESET_BATCH;
+>  
+>  	if (populated_zone(zone))
+>  		printk(KERN_DEBUG "  %s zone: %lu pages, LIFO batch:%u\n",
+> -- 
+> 2.28.0
 
-Note/ 50% for you why 50% for me after success of the transfer to your
-bank account.
-
-Below information is what I need from you so will can be reaching each 
-other .
-
-1)Private telephone number...
-2)Age...
-3)Nationality...
-4)Occupation ...
-5)Full name ...
-
-Thanks.
-
-Mr. Dawuda Usman
-
-
-
+-- 
+Michal Hocko
+SUSE Labs
