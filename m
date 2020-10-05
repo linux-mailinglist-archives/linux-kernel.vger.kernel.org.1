@@ -2,80 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B913F282E79
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 02:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865EB282E8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 02:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgJEAS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 20:18:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32814 "EHLO mail.kernel.org"
+        id S1725923AbgJEA1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 20:27:52 -0400
+Received: from mga14.intel.com ([192.55.52.115]:53964 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgJEAS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 20:18:57 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2C55206B6;
-        Mon,  5 Oct 2020 00:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601857136;
-        bh=0PRbYKqOJWD7i8Tsch9Sw20KniYBGQmRVsBXM4bljJ8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SsS0uTOZ30Z5RUulBZ72nJTsbLZbrSL+vci59Wk/Ht4Z0Shk8QjPrYk7fkiWkFGuY
-         O+5OXulMlOBBuuQZe/vANH6A/LTiRzV7qE2L6AU2ifXp/riwZhPjM9WiQknm71lm4k
-         OOKfou8pHvXTDlFNTMF/cn25s/46N/to9mVbIw4I=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 74A4035225F2; Sun,  4 Oct 2020 17:18:56 -0700 (PDT)
-Date:   Sun, 4 Oct 2020 17:18:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, kim.phillips@amd.com
-Subject: Re: [PATCH] rcu,ftrace: Fix ftrace recursion
-Message-ID: <20201005001856.GT29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200929113340.GN2628@hirez.programming.kicks-ass.net>
- <20200929103620.06762622@gandalf.local.home>
- <20200929144105.GU29330@paulmck-ThinkPad-P72>
- <20200929105416.757c47f0@gandalf.local.home>
- <20200929165640.GV29330@paulmck-ThinkPad-P72>
- <20200929130449.12c474a5@gandalf.local.home>
+        id S1725836AbgJEA1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 20:27:51 -0400
+IronPort-SDR: UZhr41qS1peOPl92DobqGrsBYS2Iazd4y83Zvg7hrhOJCvO5l5/MBDtyiYF+JUGD6ugzBTWlix
+ YXpa+YBgnNcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="162553486"
+X-IronPort-AV: E=Sophos;i="5.77,337,1596524400"; 
+   d="scan'208";a="162553486"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 17:27:26 -0700
+IronPort-SDR: HHKDxYsBN2JMo14719Gg0KrFAvnwVPj5mUEIRD+UvUgrueJtpjyjrFJW5db5JLd2YeSM8CA2dX
+ X4RjEQDCcqbw==
+X-IronPort-AV: E=Sophos;i="5.77,337,1596524400"; 
+   d="scan'208";a="295931133"
+Received: from avahldie-mobl.amr.corp.intel.com (HELO localhost) ([10.249.32.74])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 17:27:22 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        stable@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        David Howells <dhowells@redhat.com>,
+        Kent Yoder <key@linux.vnet.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        David Safford <safford@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org (open list:KEYS-TRUSTED),
+        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/3] KEYS: trusted: Fix incorrect handling of tpm_get_random()
+Date:   Mon,  5 Oct 2020 03:26:57 +0300
+Message-Id: <20201005002659.81588-2-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201005002659.81588-1-jarkko.sakkinen@linux.intel.com>
+References: <20201005002659.81588-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929130449.12c474a5@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:04:49PM -0400, Steven Rostedt wrote:
-> On Tue, 29 Sep 2020 09:56:40 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > > Well, I think we should actually apply both, but the comment needs to be
-> > > updated, as it will no longer be outside recursion. And the comment is
-> > > wrong now as well, as its only outside recursion protection for the
-> > > assist_func(). 
-> > > 
-> > > But it does prevent it from being always called for perf.
-> > > 
-> > >  * Make notrace because it can be called by the internal functions of
-> > >  * ftrace, and making this notrace removes unnecessary recursion calls.  
-> > 
-> > Fair enough.  ;-)
-> > 
-> > If I don't hear otherwise by late today (Tuesday), Pacific Time, I will
-> > update the comment and pull it into -rcu.  If you guys have some other
-> > route to mainline in mind, you have my Reviewed-by.  Either way, just
-> > let me know.
-> 
-> I'm currently testing the recursion fix and will push that to Linus when
-> done. But you can take the comment update through your tree.
-> 
-> Peter, are you OK if Paul changes your comment to what I suggested?
+When tpm_get_random() was introduced, it defined the following API for the
+return value:
 
-Hearing no objections, I have queued the patch with the comment updated
-as suggested by Steven.  Thank you all!
+1. A positive value tells how many bytes of random data was generated.
+2. A negative value on error.
 
-							Thanx, Paul
+However, in the call sites the API was used incorrectly, i.e. as it would
+only return negative values and otherwise zero. Returning he positive read
+counts to the user space does not make any possible sense.
+
+Fix this by returning -EIO when tpm_get_random() returns a positive value.
+
+Fixes: 41ab999c80f1 ("tpm: Move tpm_get_random api into the TPM device driver")
+Cc: stable@vger.kernel.org
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Kent Yoder <key@linux.vnet.ibm.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ security/keys/trusted-keys/trusted_tpm1.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
+index b9fe02e5f84f..c7b1701cdac5 100644
+--- a/security/keys/trusted-keys/trusted_tpm1.c
++++ b/security/keys/trusted-keys/trusted_tpm1.c
+@@ -403,9 +403,12 @@ static int osap(struct tpm_buf *tb, struct osapsess *s,
+ 	int ret;
+ 
+ 	ret = tpm_get_random(chip, ononce, TPM_NONCE_SIZE);
+-	if (ret != TPM_NONCE_SIZE)
++	if (ret < 0)
+ 		return ret;
+ 
++	if (ret != TPM_NONCE_SIZE)
++		return -EIO;
++
+ 	tpm_buf_reset(tb, TPM_TAG_RQU_COMMAND, TPM_ORD_OSAP);
+ 	tpm_buf_append_u16(tb, type);
+ 	tpm_buf_append_u32(tb, handle);
+@@ -496,8 +499,12 @@ static int tpm_seal(struct tpm_buf *tb, uint16_t keytype,
+ 		goto out;
+ 
+ 	ret = tpm_get_random(chip, td->nonceodd, TPM_NONCE_SIZE);
++	if (ret < 0)
++		return ret;
++
+ 	if (ret != TPM_NONCE_SIZE)
+-		goto out;
++		return -EIO;
++
+ 	ordinal = htonl(TPM_ORD_SEAL);
+ 	datsize = htonl(datalen);
+ 	pcrsize = htonl(pcrinfosize);
+@@ -601,9 +608,12 @@ static int tpm_unseal(struct tpm_buf *tb,
+ 
+ 	ordinal = htonl(TPM_ORD_UNSEAL);
+ 	ret = tpm_get_random(chip, nonceodd, TPM_NONCE_SIZE);
++	if (ret < 0)
++		return ret;
++
+ 	if (ret != TPM_NONCE_SIZE) {
+ 		pr_info("trusted_key: tpm_get_random failed (%d)\n", ret);
+-		return ret;
++		return -EIO;
+ 	}
+ 	ret = TSS_authhmac(authdata1, keyauth, TPM_NONCE_SIZE,
+ 			   enonce1, nonceodd, cont, sizeof(uint32_t),
+@@ -1013,8 +1023,12 @@ static int trusted_instantiate(struct key *key,
+ 	case Opt_new:
+ 		key_len = payload->key_len;
+ 		ret = tpm_get_random(chip, payload->key, key_len);
++		if (ret < 0)
++			goto out;
++
+ 		if (ret != key_len) {
+ 			pr_info("trusted_key: key_create failed (%d)\n", ret);
++			ret = -EIO;
+ 			goto out;
+ 		}
+ 		if (tpm2)
+-- 
+2.25.1
+
