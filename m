@@ -2,272 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8FA283385
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6147B28338B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726032AbgJEJmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:42:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
+        id S1725935AbgJEJop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:44:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgJEJmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:42:01 -0400
+        id S1725887AbgJEJop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:44:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C276A20796;
-        Mon,  5 Oct 2020 09:41:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55DC120796;
+        Mon,  5 Oct 2020 09:44:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601890920;
-        bh=KOf5TC9k5uct+kmBvXnOAdn5lDSOSfLzFgI/SdGie+g=;
+        s=default; t=1601891084;
+        bh=wfqrqp3sXIqeXVfkVgb2TdRQFL89GTzWa+PkHd4D2VM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YJQgCR+Z323M2j68V32QggNeeh+d5VgpmrZZQnpOEK3hD8adRVC3wKtVg5xPzmi5A
-         i2gbP174ToQ8R5exW1LRuiC9jXnYOGETza2QQnqThaYYpFdMwEDJ5JbpSD1FExrdDQ
-         F7d9nOV5GQUXoCZylC2cORfxCt1FyRmy+J1Gp1XQ=
-Date:   Mon, 5 Oct 2020 11:42:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201005094246.GB151835@kroah.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
- <20201004143246.GA3561@linux.intel.com>
+        b=tPhXU6Tv5i7qW4ymK6OJYboa8PsW2JucaFp9UpPSIvMVcNQZBjCuBPNI2eIL1MtoG
+         ijoqujUIfM4IiNL9hpIToeWXxePL8/7/AIKFkNxX7eDtv0/TkPoX9MeF25vd2oAiyD
+         vkEvJ51cdoax8xrkPsjYXsu4ra7FeBuk66EOmVKM=
+Date:   Mon, 5 Oct 2020 11:45:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201005094530.GA154185@kroah.com>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+ <20201001112449.GA2364834@kroah.com>
+ <20201005093016.GD425362@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201004143246.GA3561@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201005093016.GD425362@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 05:32:46PM +0300, Jarkko Sakkinen wrote:
-> On Sat, Oct 03, 2020 at 04:39:25PM +0200, Greg KH wrote:
-> > On Sat, Oct 03, 2020 at 07:50:46AM +0300, Jarkko Sakkinen wrote:
-> > > Intel Software Guard eXtensions (SGX) is a set of CPU instructions that can
-> > > be used by applications to set aside private regions of code and data. The
-> > > code outside the SGX hosted software entity is prevented from accessing the
-> > > memory inside the enclave by the CPU. We call these entities enclaves.
+On Mon, Oct 05, 2020 at 11:30:16AM +0200, Thierry Reding wrote:
+> On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > > > Hello,
+> > > > 
+> > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > > Cc:.
+> > > > 
+> > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > thank you for your review!
+> > > > > 
+> > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > 
+> > > > > > > This adds a class to exported pwm devices.
+> > > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > > 
+> > > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > > accomplish you way.
+> > > > > 
+> > > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > > I use udev rules to adjust permissions.
+> > > > 
+> > > > Hmm, how do you trigger the export? Without being aware of all the
+> > > > details in the sysfs code I would expect that the exported stuff is
+> > > > available instantly once the write used to export the PWM is completed.
+> > > > So changing the permissions can be done directly after triggering the
+> > > > export in the same process.
 > > > 
-> > > Add a driver that provides an ioctl API to construct and run enclaves.
-> > > Enclaves are constructed from pages residing in reserved physical memory
-> > > areas. The contents of these pages can only be accessed when they are
-> > > mapped as part of an enclave, by a hardware thread running inside the
-> > > enclave.
-> > > 
-> > > The starting state of an enclave consists of a fixed measured set of
-> > > pages that are copied to the EPC during the construction process by
-> > > using the opcode ENCLS leaf functions and Software Enclave Control
-> > > Structure (SECS) that defines the enclave properties.
-> > > 
-> > > Enclaves are constructed by using ENCLS leaf functions ECREATE, EADD and
-> > > EINIT. ECREATE initializes SECS, EADD copies pages from system memory to
-> > > the EPC and EINIT checks a given signed measurement and moves the enclave
-> > > into a state ready for execution.
-> > > 
-> > > An initialized enclave can only be accessed through special Thread Control
-> > > Structure (TCS) pages by using ENCLU (ring-3 only) leaf EENTER.  This leaf
-> > > function converts a thread into enclave mode and continues the execution in
-> > > the offset defined by the TCS provided to EENTER. An enclave is exited
-> > > through syscall, exception, interrupts or by explicitly calling another
-> > > ENCLU leaf EEXIT.
-> > > 
-> > > The mmap() permissions are capped by the contained enclave page
-> > > permissions. The mapped areas must also be populated, i.e. each page
-> > > address must contain a page. This logic is implemented in
-> > > sgx_encl_may_map().
-> > > 
-> > > Cc: linux-security-module@vger.kernel.org
-> > > Cc: linux-mm@kvack.org
-> > > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > Cc: Matthew Wilcox <willy@infradead.org>
-> > > Acked-by: Jethro Beekman <jethro@fortanix.com>
-> > > Tested-by: Jethro Beekman <jethro@fortanix.com>
-> > > Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
-> > > Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
-> > > Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
-> > > Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
-> > > Tested-by: Seth Moore <sethmo@google.com>
-> > > Tested-by: Darren Kenny <darren.kenny@oracle.com>
-> > > Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-> > > Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > > Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
-> > > Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
-> > > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > > ---
-> > >  arch/x86/kernel/cpu/sgx/Makefile |   2 +
-> > >  arch/x86/kernel/cpu/sgx/driver.c | 173 ++++++++++++++++
-> > >  arch/x86/kernel/cpu/sgx/driver.h |  29 +++
-> > >  arch/x86/kernel/cpu/sgx/encl.c   | 331 +++++++++++++++++++++++++++++++
-> > >  arch/x86/kernel/cpu/sgx/encl.h   |  85 ++++++++
-> > >  arch/x86/kernel/cpu/sgx/main.c   |  11 +
-> > >  6 files changed, 631 insertions(+)
-> > >  create mode 100644 arch/x86/kernel/cpu/sgx/driver.c
-> > >  create mode 100644 arch/x86/kernel/cpu/sgx/driver.h
-> > >  create mode 100644 arch/x86/kernel/cpu/sgx/encl.c
-> > >  create mode 100644 arch/x86/kernel/cpu/sgx/encl.h
-> > > 
-> > > diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
-> > > index 79510ce01b3b..3fc451120735 100644
-> > > --- a/arch/x86/kernel/cpu/sgx/Makefile
-> > > +++ b/arch/x86/kernel/cpu/sgx/Makefile
-> > > @@ -1,2 +1,4 @@
-> > >  obj-y += \
-> > > +	driver.o \
-> > > +	encl.o \
-> > >  	main.o
-> > > diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
-> > > new file mode 100644
-> > > index 000000000000..f54da5f19c2b
-> > > --- /dev/null
-> > > +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> > > @@ -0,0 +1,173 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> > > The export is triggered through the userspace process itself. Why can it
+> > > do this ? Because there is another udev rule, that changes permissions
+> > > when a pwmchip appears.
+> > > Then I'd like to have the second udev rule, that changes permissions on
+> > > the freshly exported pwm. The userspace process can't do this.
+> > > You are right I could propably do everything from within udev: If a
+> > > pwmchip appears, export certain pwms and right away change their
+> > > permissions. It does not also not feel right. It'd require knowledge
+> > > from the userspace application to be mapped to udev.
 > > 
-> > You use gpl-only header files in this file, so how in the world can it
-> > be bsd-3 licensed?
+> > The way the kernel code is now, yes, you will not have any way to
+> > trigger it by userspace as the kernel is creating a "raw" struct device
+> > that isn't assigned to anything.  That is what needs to be fixed here.
 > > 
-> > Please get your legal department to agree with this, after you explain
-> > to them how you are mixing gpl2-only code in with this file.
+> > > > Out of interest: What do you use the pwm for? Isn't there a suitable
+> > > > kernel driver that can do the required stuff? Compared to the kernel-API
+> > > > the sysfs interface isn't atomic. Is this an annoyance?
+> > > 
+> > > Use-case is generating a voltage from the pwm. This voltage is used to
+> > > signal different states and does not change very often. This is
+> > > absolutely not annoying that this is not atomic. We just change the duty
+> > > cycle on the fly. Everything else is configured one time at startup.
+> > > I'd call what I need pwm-dac. I could not find a ready to use driver.
+> > > Maybe I could misuse some kernel driver for this. Maybe I could use
+> > > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+> > > there is even a userspace facing part for this, but this is not
+> > > devicetree ready.
+> > > ...and the worst, please don't blame me: The application is java, so
+> > > ioctl is a problem.
+> > 
+> > I thought java could do ioctls, otherwise how would it ever be able to
+> > talk to serial ports?
+> > 
+> > Anyway, this needs to be fixed in the kernel...
 > 
-> I'll do what I already stated that I will do. Should I do something
-> more?
-
-This was written before your previous response.
-
-> > > +	mutex_lock(&encl->lock);
-> > > +	atomic_or(SGX_ENCL_DEAD, &encl->flags);
-> > 
-> > So you set a flag that this is dead, and then instantly delete it?  Why
-> > does that matter?  I see you check for this flag elsewhere, but as you
-> > are just about to delete this structure, how can this be an issue?
+> If atomicity was a problem, we could potentially add a mechanism to the
+> sysfs interface to enable that. I don't see a good way of doing that in
+> a single file, since that works against how sysfs is designed. But one
+> thing I could imagine is adding a file ("lock", or whatever you want to
+> call it) that you can use for atomic fencing:
 > 
-> It matters because ksgxswapd (sgx_reclaimer_*) might be processing it.
-
-I don't see that happening in this patch, did I miss it?
-
-> It will use the flag to skip the operations that it would do to a victim
-> page, when the enclave is still alive.
-
-Again, why are you adding flags when the patch does not use them?
-Please put new functionality in the specific patch that uses it.
-
-And can you really rely on this?  How did sgx_reclaimer_* (whatever that
-is), get the reference on this object in the first place?  Again, I
-don't see that happening at all in here, and at a quick glance in the
-other patches I don't see it there either.  What am I missing?
-
-> > > +	mutex_unlock(&encl->lock);
-> > > +
-> > > +	kref_put(&encl->refcount, sgx_encl_release);
-> > 
-> > Don't you need to hold the lock across the put?  If not, what is
-> > serializing this?
-> > 
-> > But an even larger comment, why is this reference count needed at all?
-> > 
-> > You never grab it except at init time, and you free it at close time.
-> > Why not rely on the reference counting that the vfs ensures you?
+> 	$ echo 1 > lock # locks the hardware state
+> 	$ echo 100 > period
+> 	$ echo 50 > duty_cycle
+> 	$ echo 0 > lock # flushes state to hardware
 > 
-> Because ksgxswapd needs the alive enclave instance while it is in the
-> process of swapping a victim page. The reason for this is the
-> hierarchical nature of the enclave pages.
-> 
-> As an example, a write operation to main memory, EWB (SDM vol 3D 40-79)
+> But it sounds like that's not even a big issue.
 
-What is that referencing?
-
-> needs to access SGX Enclave Control Structure (SECS) page, which is
-> contains global data for an enclave, like the unswapped child count.
-
-Ok, but how did it get access to this structure in the first place, like
-I ask above?
-
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int sgx_mmap(struct file *file, struct vm_area_struct *vma)
-> > > +{
-> > > +	struct sgx_encl *encl = file->private_data;
-> > > +	int ret;
-> > > +
-> > > +	ret = sgx_encl_may_map(encl, vma->vm_start, vma->vm_end, vma->vm_flags);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = sgx_encl_mm_add(encl, vma->vm_mm);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	vma->vm_ops = &sgx_vm_ops;
-> > > +	vma->vm_flags |= VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP | VM_IO;
-> > > +	vma->vm_private_data = encl;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static unsigned long sgx_get_unmapped_area(struct file *file,
-> > > +					   unsigned long addr,
-> > > +					   unsigned long len,
-> > > +					   unsigned long pgoff,
-> > > +					   unsigned long flags)
-> > > +{
-> > > +	if ((flags & MAP_TYPE) == MAP_PRIVATE)
-> > > +		return -EINVAL;
-> > > +
-> > > +	if (flags & MAP_FIXED)
-> > > +		return addr;
-> > > +
-> > > +	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
-> > > +}
-> > > +
-> > > +static const struct file_operations sgx_encl_fops = {
-> > > +	.owner			= THIS_MODULE,
-> > > +	.open			= sgx_open,
-> > > +	.release		= sgx_release,
-> > > +	.mmap			= sgx_mmap,
-> > > +	.get_unmapped_area	= sgx_get_unmapped_area,
-> > > +};
-> > > +
-> > > +static struct miscdevice sgx_dev_enclave = {
-> > > +	.minor = MISC_DYNAMIC_MINOR,
-> > > +	.name = "enclave",
-> > > +	.nodename = "sgx/enclave",
-> > 
-> > A subdir for a single device node?  Ok, odd, but why not just
-> > "sgx_enclave"?  How "special" is this device node?
-> 
-> There is a patch that adds "sgx/provision".
-
-What number in this series?
-
-> Either works for me. Should I flatten them to "sgx_enclave" and
-> "sgx_provision", or keep them as they are?
-
-Having 2 char nodes in a subdir is better than one, I will give you
-that.  But none is even better, don't you think?
+That is exactly what configfs was designed for :)
 
 thanks,
 
