@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C962839D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA882283983
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgJEP2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:28:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53860 "EHLO mail.kernel.org"
+        id S1727102AbgJEP0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727445AbgJEP2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:28:47 -0400
+        id S1725960AbgJEP0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:26:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2136120637;
-        Mon,  5 Oct 2020 15:28:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3B1F20774;
+        Mon,  5 Oct 2020 15:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911726;
-        bh=h/m2qR11Y6NkmkgN17ToEQjKeDpDBU0R/tT/O777toI=;
+        s=default; t=1601911610;
+        bh=xBiTZET1LZJ5RMPwOKvlVkJen6iPOk4eHfa4i09/E4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fTtS23FtCK7wfdiDlMDL4155xwdCWTINIXGL5X3p6+bpXRhKiUzOaY3AHYgfYL0OF
-         eJybMATYBZhJK52PAfLzQLxh7O0aDCQTtjOP3T77ZB/jiK+cAiCPLeI/mzxrwMZYPM
-         pl+BPMkEK1VA/Wgw3gcTvHP62bt5F/PW/YKFW/xI=
+        b=PE/OcGM4vUBEvniMycO7Z/jRmFV4ro3aWH/knsFYxNYwXcO+yG934Q3dE6vUuvn6K
+         7Ypm4k8d71KB86box7V1j7bAlw51SlHos3dmfe7GTeesjwy6U179yeS14iHMmoTm3E
+         7tGs5yTD51TsZX5mSlzzq3T+pgqrDL+Z4gKmjdGI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.4 07/57] clk: socfpga: stratix10: fix the divider for the emac_ptp_free_clk
+        stable@vger.kernel.org,
+        Ilja Van Sprundel <ivansprundel@ioactive.com>,
+        Brooke Basile <brookebasile@gmail.com>,
+        stable <stable@kernel.org>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH 4.19 02/38] USB: gadget: f_ncm: Fix NDP16 datagram validation
 Date:   Mon,  5 Oct 2020 17:26:19 +0200
-Message-Id: <20201005142110.164317264@linuxfoundation.org>
+Message-Id: <20201005142108.771915994@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
+References: <20201005142108.650363140@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +45,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-commit b02cf0c4736c65c6667f396efaae6b5521e82abf upstream.
+commit 2b405533c2560d7878199c57d95a39151351df72 upstream.
 
-The fixed divider the emac_ptp_free_clk should be 2, not 4.
+commit 2b74b0a04d3e ("USB: gadget: f_ncm: add bounds checks to ncm_unwrap_ntb()")
+adds important bounds checking however it unfortunately also introduces  a
+bug with respect to section 3.3.1 of the NCM specification.
 
-Fixes: 07afb8db7340 ("clk: socfpga: stratix10: add clock driver for
-Stratix10 platform")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lore.kernel.org/r/20200831202657.8224-1-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+wDatagramIndex[1] : "Byte index, in little endian, of the second datagram
+described by this NDP16. If zero, then this marks the end of the sequence
+of datagrams in this NDP16."
+
+wDatagramLength[1]: "Byte length, in little endian, of the second datagram
+described by this NDP16. If zero, then this marks the end of the sequence
+of datagrams in this NDP16."
+
+wDatagramIndex[1] and wDatagramLength[1] respectively then may be zero but
+that does not mean we should throw away the data referenced by
+wDatagramIndex[0] and wDatagramLength[0] as is currently the case.
+
+Breaking the loop on (index2 == 0 || dg_len2 == 0) should come at the end
+as was previously the case and checks for index2 and dg_len2 should be
+removed since zero is valid.
+
+I'm not sure how much testing the above patch received but for me right now
+after enumeration ping doesn't work. Reverting the commit restores ping,
+scp, etc.
+
+The extra validation associated with wDatagramIndex[0] and
+wDatagramLength[0] appears to be valid so, this change removes the incorrect
+restriction on wDatagramIndex[1] and wDatagramLength[1] restoring data
+processing between host and device.
+
+Fixes: 2b74b0a04d3e ("USB: gadget: f_ncm: add bounds checks to ncm_unwrap_ntb()")
+Cc: Ilja Van Sprundel <ivansprundel@ioactive.com>
+Cc: Brooke Basile <brookebasile@gmail.com>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Link: https://lore.kernel.org/r/20200920170158.1217068-1-bryan.odonoghue@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clk/socfpga/clk-s10.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_ncm.c |   30 ++----------------------------
+ 1 file changed, 2 insertions(+), 28 deletions(-)
 
---- a/drivers/clk/socfpga/clk-s10.c
-+++ b/drivers/clk/socfpga/clk-s10.c
-@@ -107,7 +107,7 @@ static const struct stratix10_perip_cnt_
- 	{ STRATIX10_EMAC_B_FREE_CLK, "emacb_free_clk", NULL, emacb_free_mux, ARRAY_SIZE(emacb_free_mux),
- 	  0, 0, 2, 0xB0, 1},
- 	{ STRATIX10_EMAC_PTP_FREE_CLK, "emac_ptp_free_clk", NULL, emac_ptp_free_mux,
--	  ARRAY_SIZE(emac_ptp_free_mux), 0, 0, 4, 0xB0, 2},
-+	  ARRAY_SIZE(emac_ptp_free_mux), 0, 0, 2, 0xB0, 2},
- 	{ STRATIX10_GPIO_DB_FREE_CLK, "gpio_db_free_clk", NULL, gpio_db_free_mux,
- 	  ARRAY_SIZE(gpio_db_free_mux), 0, 0, 0, 0xB0, 3},
- 	{ STRATIX10_SDMMC_FREE_CLK, "sdmmc_free_clk", NULL, sdmmc_free_mux,
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1192,7 +1192,6 @@ static int ncm_unwrap_ntb(struct gether
+ 	const struct ndp_parser_opts *opts = ncm->parser_opts;
+ 	unsigned	crc_len = ncm->is_crc ? sizeof(uint32_t) : 0;
+ 	int		dgram_counter;
+-	bool		ndp_after_header;
+ 
+ 	/* dwSignature */
+ 	if (get_unaligned_le32(tmp) != opts->nth_sign) {
+@@ -1219,7 +1218,6 @@ static int ncm_unwrap_ntb(struct gether
+ 	}
+ 
+ 	ndp_index = get_ncm(&tmp, opts->ndp_index);
+-	ndp_after_header = false;
+ 
+ 	/* Run through all the NDP's in the NTB */
+ 	do {
+@@ -1235,8 +1233,6 @@ static int ncm_unwrap_ntb(struct gether
+ 			     ndp_index);
+ 			goto err;
+ 		}
+-		if (ndp_index == opts->nth_size)
+-			ndp_after_header = true;
+ 
+ 		/*
+ 		 * walk through NDP
+@@ -1315,37 +1311,13 @@ static int ncm_unwrap_ntb(struct gether
+ 			index2 = get_ncm(&tmp, opts->dgram_item_len);
+ 			dg_len2 = get_ncm(&tmp, opts->dgram_item_len);
+ 
+-			if (index2 == 0 || dg_len2 == 0)
+-				break;
+-
+ 			/* wDatagramIndex[1] */
+-			if (ndp_after_header) {
+-				if (index2 < opts->nth_size + opts->ndp_size) {
+-					INFO(port->func.config->cdev,
+-					     "Bad index: %#X\n", index2);
+-					goto err;
+-				}
+-			} else {
+-				if (index2 < opts->nth_size + opts->dpe_size) {
+-					INFO(port->func.config->cdev,
+-					     "Bad index: %#X\n", index2);
+-					goto err;
+-				}
+-			}
+ 			if (index2 > block_len - opts->dpe_size) {
+ 				INFO(port->func.config->cdev,
+ 				     "Bad index: %#X\n", index2);
+ 				goto err;
+ 			}
+ 
+-			/* wDatagramLength[1] */
+-			if ((dg_len2 < 14 + crc_len) ||
+-					(dg_len2 > frame_max)) {
+-				INFO(port->func.config->cdev,
+-				     "Bad dgram length: %#X\n", dg_len);
+-				goto err;
+-			}
+-
+ 			/*
+ 			 * Copy the data into a new skb.
+ 			 * This ensures the truesize is correct
+@@ -1362,6 +1334,8 @@ static int ncm_unwrap_ntb(struct gether
+ 			ndp_len -= 2 * (opts->dgram_item_len * 2);
+ 
+ 			dgram_counter++;
++			if (index2 == 0 || dg_len2 == 0)
++				break;
+ 		} while (ndp_len > 2 * (opts->dgram_item_len * 2));
+ 	} while (ndp_index);
+ 
 
 
