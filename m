@@ -2,106 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8F4283C76
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CD5283C71
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgJEQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:28:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46659 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728857AbgJEQ2l (ORCPT
+        id S1726638AbgJEQ2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727149AbgJEQ2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:28:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601915320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tU8DTXGRfuZJtH+Jchkjus4Q0juje0A4w+blb1fUA1c=;
-        b=Hv7dcaG0d73TlpfTzxjtwq4guviRPEPoSswf5qF/gZrTf2TOwEwoYaCm8OSy758BDo3Tjs
-        S83ZTDWxQKRgjH/1GNmeiVrDkxMadt2Yun4s5ICYd17YpFHRSeCN6q2Ds1M1rCKJF0C0Pb
-        dzq9VSDbjHNxk5QM9m1Z9H752ufx0GI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-jmUA64K-Pw-tRVEgtNLdXA-1; Mon, 05 Oct 2020 12:28:36 -0400
-X-MC-Unique: jmUA64K-Pw-tRVEgtNLdXA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7503B1029D30;
-        Mon,  5 Oct 2020 16:28:16 +0000 (UTC)
-Received: from gondolin (ovpn-112-191.ams2.redhat.com [10.36.112.191])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E95FF78AB4;
-        Mon,  5 Oct 2020 16:28:13 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 18:28:11 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        schnelle@linux.ibm.com, pmorel@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] vfio-pci/zdev: define the vfio_zdev header
-Message-ID: <20201005182811.6c17ed6b.cohuck@redhat.com>
-In-Reply-To: <e0688173-8c5a-1797-8398-235c5e406bc1@linux.ibm.com>
-References: <1601668844-5798-1-git-send-email-mjrosato@linux.ibm.com>
-        <1601668844-5798-4-git-send-email-mjrosato@linux.ibm.com>
-        <20201002154417.20c2a7ef@x1.home>
-        <8a71af3b-f8fc-48b2-45c6-51222fd2455b@linux.ibm.com>
-        <20201005180107.5d027441.cohuck@redhat.com>
-        <e0688173-8c5a-1797-8398-235c5e406bc1@linux.ibm.com>
-Organization: Red Hat GmbH
+        Mon, 5 Oct 2020 12:28:34 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AD7C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:28:33 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g12so4869902wrp.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 09:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZGNtZtKC58WwebCl34IYEZEH2JsNx+Rejy2Yrrez4sg=;
+        b=OT76/h1DFe0VgoE5kperEelPd606TDS56ne5m5hd6qUklbj98ppbAtZ5MpcpatKlr+
+         sUEwFTs073U6hmthZc1sXT8W2oOw21T1xKbRUk6cfoKczUZ4y7C8DAGr9m5xcBQiHUXj
+         6ymMwlqyOGSR5F7jgHgssjZkDYezPmZWQ0UVbUt5uAtZbEuOfAnOtRQLDt0roFrwT1ff
+         ukhjYk+PqDQHduZory/ldVI5m+VRXjBg94f3QP79pmXg3FKiOCN7gKpBZPK9IqxImEyA
+         uAyTLq6k5o0NWgHmeOOgbkDjdwPDSDNGVHnubv5gfnix823Iw56ssx/aMZwKSKO+ZlOF
+         q/6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZGNtZtKC58WwebCl34IYEZEH2JsNx+Rejy2Yrrez4sg=;
+        b=LPtqlMSl0pS79+PoD4j/42ZJ3m1JFWyQ6EyXeLsjHteQ1lq500cq3BQtWBqYcYjCI4
+         I/K9HwpPOov4einjZmUnpcfSvOXNYqQw9LBHwRxG5vmhlBNyJVPANBkNg4jFvkjCxkJf
+         ir15wrKnVMQPaAho52H1D6flykJ0PngK9eR/dJ+msqXDlk9PtYBEkMjAsROgO94DNB6q
+         HmE6aIXcVkXC3tk914w8wOSG4rNxqniEgtVWNVIoORp0+mMYt7vl3klG63ThhjmlFtHa
+         Whlgd7h4XMbaNAA2OHO6ZqJi8kSR7geQ0Y3P/SEFNCvg3yZg9slhKvUjJWIEUIpYOIpI
+         xYuw==
+X-Gm-Message-State: AOAM531VTBk+fIw+nASmSgHw2DEaVX8b/Uo/CR6rb8aAUBUfip4KVhHJ
+        KGzDkGSgcs97Kbrvwv2UWvC1BrNxTsgz+Jh5hCmGbA==
+X-Google-Smtp-Source: ABdhPJyULSJW9LKoA08d3J784qG+0dIntnNLusxjsK3rHgzHa69PfvGCahhkWufZN8NvGkjHVTepQ/LY2gxz2Qz4FX0=
+X-Received: by 2002:a5d:5583:: with SMTP id i3mr179749wrv.119.1601915312163;
+ Mon, 05 Oct 2020 09:28:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200507140819.126960-1-irogers@google.com> <20200507140819.126960-24-irogers@google.com>
+ <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com> <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
+ <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
+In-Reply-To: <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 5 Oct 2020 09:28:20 -0700
+Message-ID: <CAP-5=fXwQZVDxJM4LmEvsKW9h0HYP6t3F0EZfy0+hwAzDmBgGA@mail.gmail.com>
+Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
+ 23/23] perf metricgroup: remove duped metric group events)
+To:     John Garry <john.garry@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 12:16:10 -0400
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-
-> On 10/5/20 12:01 PM, Cornelia Huck wrote:
-> > On Mon, 5 Oct 2020 09:52:25 -0400
-> > Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-> >   
-> >> On 10/2/20 5:44 PM, Alex Williamson wrote:  
-> >   
-> >>> Can you discuss why a region with embedded capability chain is a better
-> >>> solution than extending the VFIO_DEVICE_GET_INFO ioctl to support a
-> >>> capability chain and providing this info there?  This all appears to be
-> >>> read-only info, so what's the benefit of duplicating yet another  
+On Mon, Oct 5, 2020 at 3:06 AM John Garry <john.garry@huawei.com> wrote:
+>
+> On 02/10/2020 21:46, Ian Rogers wrote:
+> > On Fri, Oct 2, 2020 at 5:00 AM John Garry <john.garry@huawei.com> wrote:
 > >>
-> >> It is indeed read-only info, and the device region was defined as such.
+> >> On 07/05/2020 15:08, Ian Rogers wrote:
 > >>
-> >> I would not necessarily be opposed to extending VFIO_DEVICE_GET_INFO
-> >> with these defined as capabilities; I'd say a primary motivating factor
-> >> to putting these in their own region was to avoid stuffing a bunch of
-> >> s390-specific capabilities into a general-purpose ioctl response.  
-> > 
-> > Can't you make the zdev code register the capabilities? That would put
-> > them nicely into their own configurable part.
-> >   
-> 
-> I can still keep the code that adds these capabilities in the zdev .c 
-> file, thus meaning they will only be added for s390 zpci devices -- but 
-> the actual definition of them should probably instead be in vfio.h, no? 
-> (maybe that's what you mean, but let's lay it out just in case)
-> 
-> The capability IDs would be shared with any other potential user of 
-> VFIO_DEVICE_GET_INFO (I guess there is precedent for this already, 
-> nvlink2 does this for vfio_region_info, see 
-> VFIO_REGION_INFO_CAP_NVLINK2_SSATGT as an example).
-> 
-> Today, ZPCI would be the only users of VFIO_DEVICE_GET_INFO capability 
-> chains.  Tomorrow, some other type might use them too.  Unless we want 
-> to put a stake in the ground that says there will never be a case for a 
-> capability that all devices share on VFIO_DEVICE_GET_INFO, I think we 
-> should keep the IDs unique and define the capabilities in vfio.h but do 
-> the corresponding add_capability() calls from a zdev-specific file.
+> >> Hi Ian,
+> >>
+> >> I was wondering if you ever tested commit 2440689d62e9 ("perf
+> >> metricgroup: Remove duped metric group events") for when we have a
+> >> metric which aliases multiple instances of the same uncore PMU in the
+> >> system?
+> >
+> > Sorry for this, I hadn't tested such a metric and wasn't aware of how
+> > the aliasing worked. I sent a fix for this issue here:
+> > https://lore.kernel.org/lkml/20200917201807.4090224-1-irogers@google.com/
+> > Could you see if this addresses the issue for you? I don't see the
+> > change in Arnaldo's trees yet.
+>
+> Unfortunately this does not seem to fix my issue.
+>
+> So for that patch, you say you fix metric expression for DRAM_BW_Use,
+> which is:
+>
+> {
+>   "BriefDescription": "Average external Memory Bandwidth Use for reads
+> and writes [GB / sec]",
+>   "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ +
+> uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
+>   "MetricGroup": "Memory_BW",
+> "MetricName": "DRAM_BW_Use"
+> },
+>
+> But this metric expression does not include any alias events; rather I
+> think it is just cas_count_write + cas_count_read event count for PMU
+> uncore_imc / duration_time.
+>
+> When I say alias, I mean - as an example, we have event:
+>
+>      {
+>          "BriefDescription": "write requests to memory controller.
+> Derived from unc_m_cas_count.wr",
+>          "Counter": "0,1,2,3",
+>          "EventCode": "0x4",
+>          "EventName": "LLC_MISSES.MEM_WRITE",
+>          "PerPkg": "1",
+>          "ScaleUnit": "64Bytes",
+>          "UMask": "0xC",
+>          "Unit": "iMC"
+>      },
+>
+> And then reference LLC_MISSES.MEM_WRITE in a metric expression:
+>
+> "MetricExpr": "LLC_MISSES.MEM_WRITE / duration_time",
+>
+> This is what seems to be broken for when the alias matches > 1 PMU.
+>
+> Please check this.
 
-Agreed. We should have enough space for multiple users, and I do not
-consider reserving the IDs cluttering.
+Happy to check. Can you provide a reproduction? Looking on broadwell
+this metric doesn't exist.
 
+Thanks,
+Ian
+
+> Thanks,
+> John
+>
+> >
+> > Thanks,
+> > Ian
+> >
+> >> I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an
+> >> issue where find_evsel_group() fails for the uncore metrics under the
+> >> condition mentioned above.
+> >>
+> >> Unfortunately I don't have an x86 machine to which this test applies.
+> >> However, as an experiment, I added a test metric to my broadwell JSON:
+> >>
+> >> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> >> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> >> index 8cdc7c13dc2a..fc6d9adf996a 100644
+> >> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> >> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> >> @@ -348,5 +348,11 @@
+> >>           "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
+> >>           "MetricGroup": "Power",
+> >>           "MetricName": "C7_Pkg_Residency"
+> >> +    },
+> >> +    {
+> >> +        "BriefDescription": "test metric",
+> >> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE *
+> >> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
+> >> +        "MetricGroup": "Test",
+> >> +        "MetricName": "test_metric_inc"
+> >>       }
+> >> ]
+> >>
+> >>
+> >> And get this:
+> >>
+> >> john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M
+> >> test_metric_inc sleep 1
+> >> Using CPUID GenuineIntel-6-3D-4
+> >> metric expr unc_cbo_xsnp_response.miss_xcore *
+> >> unc_cbo_xsnp_response.miss_eviction for test_metric_inc
+> >> found event unc_cbo_xsnp_response.miss_eviction
+> >> found event unc_cbo_xsnp_response.miss_xcore
+> >> adding
+> >> {unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
+> >> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
+> >> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
+> >> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
+> >> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
+> >> Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore *
+> >> unc_cbo_xsnp_response.miss_eviction
+> >> task-clock: 688876 688876 688876
+> >> context-switches: 2 688876 688876
+> >> cpu-migrations: 0 688876 688876
+> >> page-faults: 69 688876 688876
+> >> cycles: 2101719 695690 695690
+> >> instructions: 1180534 695690 695690
+> >> branches: 249450 695690 695690
+> >> branch-misses: 10815 695690 695690
+> >>
+> >> Performance counter stats for 'sleep 1':
+> >>
+> >>                0.69 msec task-clock                #    0.001 CPUs
+> >> utilized
+> >>                   2      context-switches          #    0.003 M/sec
+> >>
+> >>                   0      cpu-migrations            #    0.000 K/sec
+> >>
+> >>                  69      page-faults               #    0.100 M/sec
+> >>
+> >>           2,101,719      cycles                    #    3.051 GHz
+> >>
+> >>           1,180,534      instructions              #    0.56  insn per
+> >> cycle
+> >>             249,450      branches                  #  362.112 M/sec
+> >>
+> >>              10,815      branch-misses             #    4.34% of all
+> >> branches
+> >>
+> >>         1.001177693 seconds time elapsed
+> >>
+> >>         0.001149000 seconds user
+> >>         0.000000000 seconds sys
+> >>
+> >>
+> >> john@localhost:~/linux/tools/perf>
+> >>
+> >>
+> >> Any idea what is going wrong here, before I have to dive in? The issue
+> >> seems to be this named commit.
+> >>
+> >> Thanks,
+> >> John
+> >>
+> >>> A metric group contains multiple metrics. These metrics may use the same
+> >>> events. If metrics use separate events then it leads to more
+> >>> multiplexing and overall metric counts fail to sum to 100%.
+> >>> Modify how metrics are associated with events so that if the events in
+> >>> an earlier group satisfy the current metric, the same events are used.
+> >>> A record of used events is kept and at the end of processing unnecessary
+> >>> events are eliminated.
+> >>>
+> >>> Before:
+> > .
+> >
+>
