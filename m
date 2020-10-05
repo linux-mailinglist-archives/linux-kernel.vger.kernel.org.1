@@ -2,128 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39B4283564
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA62283569
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgJEMIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:08:43 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38796 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgJEMIn (ORCPT
+        id S1725994AbgJEMMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgJEMMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:08:43 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095C8cPm047241;
-        Mon, 5 Oct 2020 07:08:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601899718;
-        bh=IYQh6NvcLHwQvpyUYx1AlXSUCurApS4nkon46rVr804=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=y2iAnCHIptattDu4Hk2vIuqHYDv1XkdWync2f+Zd8Up4WMZKgsgIWe6js+1pMdTzQ
-         6l/GzK65c0ADBbn+KQbVYzbKH+z87Dht23riT3tlR8TBL4t3SuAZrF1oyLdx+rnc5y
-         +gCd+IEwCJfCNWkQPIFW2ceI25PMnlekrUAf6tmg=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095C8csV007784
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 5 Oct 2020 07:08:38 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 07:08:38 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 07:08:38 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095C8bMb051913;
-        Mon, 5 Oct 2020 07:08:38 -0500
-Date:   Mon, 5 Oct 2020 07:08:37 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-CC:     <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j7200-main: Add McASP nodes
-Message-ID: <20201005120837.75cwdmcpvzbvayq7@kinfolk>
-References: <20201005074850.11247-1-peter.ujfalusi@ti.com>
- <20201005115805.d6yhykn7oc6x2tbu@charm>
- <5a9ed7d3-fcfd-edbf-fc34-112a7e55aa1c@ti.com>
+        Mon, 5 Oct 2020 08:12:19 -0400
+Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97A4C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:12:18 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.goneo.de (Postfix) with ESMTP id 74EBC23F8B9;
+        Mon,  5 Oct 2020 14:12:17 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.996
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.996 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.096, BAYES_00=-1.9] autolearn=ham
+Received: from smtp2.goneo.de ([127.0.0.1])
+        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UNJ50ltrtRyG; Mon,  5 Oct 2020 14:12:16 +0200 (CEST)
+Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
+        by smtp2.goneo.de (Postfix) with ESMTPA id C1D5623F823;
+        Mon,  5 Oct 2020 14:12:15 +0200 (CEST)
+From:   poeschel@lemonage.de
+To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lars Poeschel <poeschel@lemonage.de>
+Subject: [PATCH v3 00/32] Make charlcd device independent
+Date:   Mon,  5 Oct 2020 14:11:28 +0200
+Message-Id: <20201005121200.3427363-1-poeschel@lemonage.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <5a9ed7d3-fcfd-edbf-fc34-112a7e55aa1c@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:02-20201005, Peter Ujfalusi wrote:
-> 
-> 
-> On 05/10/2020 14.58, Nishanth Menon wrote:
-> > On 10:48-20201005, Peter Ujfalusi wrote:
-> >> Add the nodes for McASP 0-2 and keep them disabled because several
-> >> required properties are not present as they are board specific.
-> >>
-> >> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> >> ---
-> >>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 57 +++++++++++++++++++++++
-> >>  1 file changed, 57 insertions(+)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> >> index 72d6496e88dd..cc6c2a81887a 100644
-> >> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> >> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> >> @@ -446,4 +446,61 @@ usb0: usb@6000000 {
-> >>  			dr_mode = "otg";
-> >>  		};
-> >>  	};
-> >> +x
-> >> +	mcasp0: mcasp@02b00000 {
-> >> +		compatible = "ti,am33xx-mcasp-audio";
-> >> +		reg = <0x0 0x02b00000 0x0 0x2000>,
-> >> +			<0x0 0x02b08000 0x0 0x1000>;
-> >> +		reg-names = "mpu","dat";
-> >> +		interrupts = <GIC_SPI 544 IRQ_TYPE_LEVEL_HIGH>,
-> >> +				<GIC_SPI 545 IRQ_TYPE_LEVEL_HIGH>;
-> >> +		interrupt-names = "tx", "rx";
-> >> +
-> >> +		dmas = <&main_udmap 0xc400>, <&main_udmap 0x4400>;
-> >> +		dma-names = "tx", "rx";
-> >> +
-> >> +		clocks = <&k3_clks 174 40>;
-> >> +		clock-names = "fck";
-> >> +		power-domains = <&k3_pds 174 TI_SCI_PD_EXCLUSIVE>;
-> >> +
-> >> +		status = "disabled";
-> > 
-> > I see that there is inconsistent usage of "disabled" in our SoC.dts
-> > 
-> > Our generic rule has been set them to disabled in board.dtsi
-> > McASP and DSS for existing SoC dts do not follow this.. which is a tad
-> > confusing.. (considering that not even all uarts come out on every board
-> > and every uart needs pinmux to function..)
-> 
-> "keep them disabled because several required properties are not present
-> as they are board specific."
-> 
-> In board file the enabled mcasp must be updated with options that is
-> required for operation. Without those option the McASP can not be
-> initialized.
-> 
-> I think we have been revisiting the very same discussion every time we
-> have a new SoC with McASP...
-> 
+From: Lars Poeschel <poeschel@lemonage.de>
 
-Yep.. This doe'snt really follow the rest of the SoC definition. [1]
-came to mind. The McASP discussion is a variation in the debate of the
-same. I'd argue Serdes, or for that matter any IP that has a link to
-outside-the-SoC world has the same discussion point.
+This tries to make charlcd device independent. At the moment hd44780
+device specific code is contained deep in charlcd. This moves this out
+into a hd44780_common module, where the two hd44780 drivers we have at
+the moment (hd44780 and panel) can use this from. The goal is that at
+the end other drivers can use the charlcd interface.
+I add one such driver at the end with the last patch.
+I submitted this already some time ago, where the wish was so split
+this into smaller chunks what I try to do with this new patchset.
+Most of the patches pick one specific function in charlcd and move the
+device specific code into hd44780_common.
 
-[1] https://patchwork.kernel.org/patch/9304575/
+As a note to patch 30:
+This might slightly change behaviour.
+On hd44780 displays with one or two lines the previous implementation
+did still write characters to the buffer of the display even if they are
+currently not visible. The shift_display command could be used so set
+the "viewing window" to a new position in the buffer and then you could
+see the characters previously written.
+This described behaviour does not work for hd44780 displays with more
+than two display lines. There simply is not enough buffer.
+So the behaviour was a bit inconsistens across different displays.
+The new behaviour is to stop writing character at the end of a visible
+line, even if there would be room in the buffer. This allows us to have
+an easy implementation, that should behave equal on all supported
+displays. This is not hd44780 hardware dependents anymore.
+
+Link: https://lore.kernel.org/lkml/20191016082430.5955-1-poeschel@lemonage.de/
+Link: https://lore.kernel.org/lkml/CANiq72kS-u_Xd_m+2CQVh-JCncPf1XNXrXAZ=4z+mze8fwv2kw@mail.gmail.com/
+
+Lars Poeschel (32):
+  auxdisplay: Use an enum for charlcd  backlight on/off ops
+  auxdisplay: Introduce hd44780_common.[ch]
+  auxdisplay: Move hwidth and bwidth to struct hd44780_common
+  auxdisplay: Move ifwidth to struct hd44780_common
+  auxdisplay: Move write_data pointer to hd44780_common
+  auxdisplay: Move write_cmd pointers to hd44780 drivers
+  auxdisplay: Move addr out of charlcd_priv
+  auxdisplay: hd44780_common_print
+  auxdisplay: provide hd44780_common_gotoxy
+  auxdisplay: add home to charlcd_ops
+  auxdisplay: Move clear_display to hd44780_common
+  auxdisplay: make charlcd_backlight visible to hd44780_common
+  auxdisplay: Make use of enum for backlight on / off
+  auxdisplay: Move init_display to hd44780_common
+  auxdisplay: implement hd44780_common_shift_cursor
+  auxdisplay: Implement hd44780_common_display_shift
+  auxdisplay: Implement a hd44780_common_display
+  auxdisplay: Implement hd44780_common_cursor
+  auxdisplay: Implement hd44780_common_blink
+  auxdisplay: cleanup unnecessary hd44780 code in charlcd
+  auxdisplay: Implement hd44780_common_fontsize
+  auxdisplay: Implement hd44780_common_lines
+  auxdisplay: Remove unnecessary hd44780 from charlcd
+  auxdisplay: Move char redefine code to hd44780_common
+  auxdisplay: Call charlcd_backlight in place
+  auxdisplay: hd44780_common: Reduce clear_display timeout
+  auxdisplay: hd44780: Remove clear_fast
+  auxdisplay: charlcd: replace last device specific stuff
+  auxdisplay: Change gotoxy calling interface
+  auxdisplay: charlcd: Do not print chars at end of line
+  auxdisplay: lcd2s DT binding doc
+  auxdisplay: add a driver for lcd2s character display
+
+ .../bindings/auxdisplay/modtronix,lcd2s.yaml  |  58 +++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/auxdisplay/Kconfig                    |  31 ++
+ drivers/auxdisplay/Makefile                   |   2 +
+ drivers/auxdisplay/charlcd.c                  | 412 +++++-------------
+ drivers/auxdisplay/charlcd.h                  |  86 +++-
+ drivers/auxdisplay/hd44780.c                  | 120 +++--
+ drivers/auxdisplay/hd44780_common.c           | 368 ++++++++++++++++
+ drivers/auxdisplay/hd44780_common.h           |  34 ++
+ drivers/auxdisplay/lcd2s.c                    | 409 +++++++++++++++++
+ drivers/auxdisplay/panel.c                    | 180 ++++----
+ 11 files changed, 1252 insertions(+), 450 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
+ create mode 100644 drivers/auxdisplay/hd44780_common.c
+ create mode 100644 drivers/auxdisplay/hd44780_common.h
+ create mode 100644 drivers/auxdisplay/lcd2s.c
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.28.0
+
