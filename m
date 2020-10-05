@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FFC283C3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5EB283C42
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728525AbgJEQRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgJEQRh (ORCPT
+        id S1728316AbgJEQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:18:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23529 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726935AbgJEQSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:17:37 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB9BC0613CE;
-        Mon,  5 Oct 2020 09:17:37 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 5 Oct 2020 12:18:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601914733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/YC9NAs5VgH1MipX2+476O9V7RcdOHJuBy83f1Doo/8=;
+        b=F22KnIDk9SHRV/5jFwiZtGVZe5YOOOuBSVAoeIONjnXYaok1slERNo6ujOU2XedlP1JuBF
+        j0t7OXdBFrej8WQSvLOFGqoPztg1+wPdIyf98hYiUZnxG0PcCgRIGGKf/bp1aDbbg7QQWu
+        k8XVqSKEL+E9MEjzyCu7FeGV1jrFpYw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-NGsTwhBHOOmyWu4T17yihw-1; Mon, 05 Oct 2020 12:18:47 -0400
+X-MC-Unique: NGsTwhBHOOmyWu4T17yihw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 291832E4;
-        Mon,  5 Oct 2020 16:17:37 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 10:17:36 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scripts: kernel-doc: allow passing desired Sphinx C
- domain dialect
-Message-ID: <20201005101736.7adf4f46@lwn.net>
-In-Reply-To: <ee1f16453ad40eae2603adfde5f6dda3ab1befc7.1601798520.git.mchehab+huawei@kernel.org>
-References: <ee1f16453ad40eae2603adfde5f6dda3ab1befc7.1601798520.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 570A810BBEC7;
+        Mon,  5 Oct 2020 16:18:46 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-196.rdu2.redhat.com [10.10.116.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 42AB710001B3;
+        Mon,  5 Oct 2020 16:18:44 +0000 (UTC)
+Subject: [PATCH net 0/6] rxrpc: Miscellaneous fixes
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Marc Dionne <marc.dionne@auristor.com>, dhowells@redhat.com,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Mon, 05 Oct 2020 17:18:44 +0100
+Message-ID: <160191472433.3050642.12600839710302704718.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  4 Oct 2020 10:02:03 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> When kernel-doc is called via kerneldoc.py, there's no need to
-> auto-detect the Sphinx version, as the Sphinx module already
-> knows it. So, add an optional parameter to allow changing the
-> Sphinx dialect.
-> 
-> As kernel-doc can also be manually called, keep the auto-detection
-> logic if the parameter was not specified. On such case, emit
-> a warning if sphinx-build can't be found at PATH.
-> 
-> Suggested-by: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/sphinx/kerneldoc.py |  5 ++++
->  scripts/kernel-doc                | 40 ++++++++++++++++++++++++-------
->  2 files changed, 37 insertions(+), 8 deletions(-)
+Here are some miscellaneous rxrpc fixes:
 
-So I'm glad to see this.  Still not fully sold on the autodetection, but if
-we don't actually use it, maybe I can live with it :)
+ (1) Fix the xdr encoding of the contents read from an rxrpc key.
 
-One little nit:
+ (2) Fix a BUG() for a unsupported encoding type.
 
-> diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
-> index 233f610539f0..e9857ab904f1 100644
-> --- a/Documentation/sphinx/kerneldoc.py
-> +++ b/Documentation/sphinx/kerneldoc.py
-> +    } elsif ($cmd eq "sphinx-version") {
-> +	my $ver_string = shift @ARGV;
-> +	if ($ver_string =~ m/^(\d+)\.(\d+)\.(\d+)/) {
-> +	    $sphinx_major = $1;
-> +	    $sphinx_minor = $2;
-> +	    $sphinx_patch = $3;
-> +	} else {
-> +	    die "Sphinx version should be at major.minor.patch format\n";
-> +	}
+ (3) Fix missing _bh lock annotations.
 
-Can we allow just major.minor, with patch defaulting to zero?  People
-passing this by hand may not want to look up their patch version every
-time, and I doubt it will ever matter...
+ (4) Fix acceptance handling for an incoming call where the incoming call
+     is encrypted.
 
-Thanks,
+ (5) The server token keyring isn't network namespaced - it belongs to the
+     server, so there's no need.  Namespacing it means that request_key()
+     fails to find it.
 
-jon
+ (6) Fix a leak of the server keyring.
+
+The patches are tagged here:
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+	rxrpc-fixes-20201005.txt
+
+and can also be found on the following branch:
+
+	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=rxrpc-fixes
+
+David
+---
+David Howells (5):
+      rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()
+      rxrpc: Fix some missing _bh annotations on locking conn->state_lock
+      rxrpc: Fix accept on a connection that need securing
+      rxrpc: The server keyring isn't network-namespaced
+      rxrpc: Fix server keyring leak
+
+Marc Dionne (1):
+      rxrpc: Fix rxkad token xdr encoding
+
+
+ include/uapi/linux/rxrpc.h |   2 +-
+ net/rxrpc/ar-internal.h    |   7 +-
+ net/rxrpc/call_accept.c    | 263 ++++++-------------------------------
+ net/rxrpc/call_object.c    |   5 +-
+ net/rxrpc/conn_event.c     |   8 +-
+ net/rxrpc/key.c            |   8 +-
+ net/rxrpc/recvmsg.c        |  36 +----
+ net/rxrpc/sendmsg.c        |  15 +--
+ 8 files changed, 56 insertions(+), 288 deletions(-)
+
+
