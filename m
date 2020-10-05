@@ -2,164 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269AE283171
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64DB283175
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgJEIFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:05:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725925AbgJEIFS (ORCPT
+        id S1726003AbgJEIFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:05:47 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:53618 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgJEIFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:05:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601885116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=omoN2w562gbkLHMzpyAYqKG3VTaG4dOpjflmkpwJeZU=;
-        b=ew5MDZx07ETjxRXYrK5+kJxwKHAHP8xo9sVGbq5dixXNuGtBQI8hJFABnQwnE3YzOnTl6z
-        /ku427bsLZyxE5fLkrCQGuTrF07sQ/LyrfUb5GwLNmv+y3xOOde5ljCQtjaFg4KvkM9LqO
-        oKmi+UCyur5gVnbLv37W0KdsPzqefGE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-247-JcTVuthSNEKWE6TZHf6n_A-1; Mon, 05 Oct 2020 04:05:12 -0400
-X-MC-Unique: JcTVuthSNEKWE6TZHf6n_A-1
-Received: by mail-ej1-f70.google.com with SMTP id x22so950246ejs.17
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:05:12 -0700 (PDT)
+        Mon, 5 Oct 2020 04:05:46 -0400
+Received: by mail-wm1-f66.google.com with SMTP id f21so2311520wml.3;
+        Mon, 05 Oct 2020 01:05:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=omoN2w562gbkLHMzpyAYqKG3VTaG4dOpjflmkpwJeZU=;
-        b=Nhz0Ru8eJYzgt0H9RpDO/Ou2+Unws03zskObUBN6Z+iUWSzuO8JLAFGYbELm00t+LS
-         mwzVPOyVfdlO/KKa4x/hK0dM52P3xVx8yY4xSnvcZBr/yvVPlD93+uQGCnFTw1VfAPDW
-         3REkWXc13XZCw3P+QPPcve6R1wI206MqescQhBnk4o6OeOiDEWUgjW2tfKvW+5bti0iM
-         GM001r3wi69V8aHAgLfEnQEMz/ATBI2qb/UGsdi5ST87QecvB9ocOzzc2XqIG28B9F10
-         LD+VRybiBjyD/iJC7idY1LEcQV5hTLl65U+pYKvo5Xdx3tRspwX1NSR/pk8BgklTgYmv
-         sgXA==
-X-Gm-Message-State: AOAM532MeKtJBt9f2UJAfsCkROhChYoA7JjedBRsIi77bP7dSyegg1GC
-        D7Y0r7nSzuk0SI5RyRioyOWblKdl2PX9R7Phg90KL2OXDWwWVa3wT1mE7qQ5q9q0KwwAUORhouc
-        DxUR0oPnm7AIw2A4FcxzXu7N+
-X-Received: by 2002:a17:906:1b58:: with SMTP id p24mr15090563ejg.77.1601885111379;
-        Mon, 05 Oct 2020 01:05:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxaFv2T3kRxY3SbEuDPDKZR9R5ktA4K4cUG+4kIMuvBHB6/Ao6gOSK6T490FAeQ02BbdFszqg==
-X-Received: by 2002:a17:906:1b58:: with SMTP id p24mr15090537ejg.77.1601885111130;
-        Mon, 05 Oct 2020 01:05:11 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id q27sm7345874ejd.74.2020.10.05.01.05.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 01:05:10 -0700 (PDT)
-Subject: Re: [PATCH] ACPI / button: fix handling lid state changes when input
- device closed
-To:     dmitry.torokhov@gmail.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201005051125.GA3245495@dtor-ws>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e7f1d478-b668-7274-2a21-f0e6609db4ef@redhat.com>
-Date:   Mon, 5 Oct 2020 10:05:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=epaOtiR7tFx4/XOOg9iXSMt8xfS4r3yEvrrCUOibwn8=;
+        b=bWmcQTR/zFK58sPVE+7DRSXnwxmbYrCde8z3owfsnE+yPmVm84mw2e9hdu0Yw0oXne
+         dIaMu6FQf2c1x0sT4ZD4H/k/5YBoThbAdJbIjQRPXH4Q/eEnM98rMIeCD4otYztt3k6G
+         /77hH/UQ37wsD4P3UA2zLmEXbtZtGBM2Jxv/Rf2hFRVEFA5O5nC99i0nx1/PldIDWHX6
+         nMACE1zC65axOUvHtuW7YZ3W6PnwGJGvp5YfTA6Fkf2h9ZUt1K2QyE/An+nSF23bmUKS
+         CuOSG+52nwBBeBkM5V8RGn/MZV9qaQmuhWgGhs3sSx4NHJBYlkN66VPFAVtipp8IIx3z
+         EwgQ==
+X-Gm-Message-State: AOAM531/4v2XnJwkfm1tzhbN3yW+ZpYcAfo+LOwF8CJ0fGtc5Y+kjgN+
+        Q4HNYB+ZrGbZ0irpEWir3V4=
+X-Google-Smtp-Source: ABdhPJxQiC77o6IdaUGbmW18uKR5W+lznFvVF0rPnHifJ2GCzGskfXFyZq/guojTAJI0eU35JbvMoA==
+X-Received: by 2002:a7b:cf04:: with SMTP id l4mr6794958wmg.137.1601885144602;
+        Mon, 05 Oct 2020 01:05:44 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id u188sm7538987wmu.0.2020.10.05.01.05.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 05 Oct 2020 01:05:43 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 10:05:41 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Message-ID: <20201005080541.GA7135@kozik-lap>
+References: <20201002152305.4963-1-ceggers@arri.de>
+ <20201002152305.4963-2-ceggers@arri.de>
 MIME-Version: 1.0
-In-Reply-To: <20201005051125.GA3245495@dtor-ws>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201002152305.4963-2-ceggers@arri.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/5/20 7:11 AM, dmitry.torokhov@gmail.com wrote:
-> The original intent of 84d3f6b76447 was to delay evaluating lid state until
-> all drivers have been loaded, with input device being opened from userspace
-> serving as a signal for this condition. Let's ensure that state updates
-> happen even if userspace closed (or in the future inhibited) input device.
+On Fri, Oct 02, 2020 at 05:23:03PM +0200, Christian Eggers wrote:
+> According to the "VFxxx Controller Reference Manual" (and the comment
+> block starting at line 97), Vybrid requires writing a one for clearing
+> an interrupt flag. Syncing the method for clearing I2SR_IIF in
+> i2c_imx_isr().
 > 
-> Note that if we go through suspend/resume cycle we assume the system has
-> been fully initialized even if LID input device has not been opened yet.
-> 
-> This has a side-effect of fixing access to input->users outside of
-> input->mutex protections by the way of eliminating said accesses and using
-> driver private flag.
-> 
-> Fixes: 84d3f6b76447 ("ACPI / button: Delay acpi_lid_initialize_state() until first user space open")
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
-Patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Cc: stable@vger.kernel.org
 > ---
->   drivers/acpi/button.c | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
-> index 78cfc70cb320..b8dd51d8f96d 100644
-> --- a/drivers/acpi/button.c
-> +++ b/drivers/acpi/button.c
-> @@ -154,6 +154,7 @@ struct acpi_button {
->   	int last_state;
->   	ktime_t last_time;
->   	bool suspended;
-> +	bool lid_state_initialized;
->   };
->   
->   static struct acpi_device *lid_device;
-> @@ -384,6 +385,8 @@ static int acpi_lid_update_state(struct acpi_device *device,
->   
->   static void acpi_lid_initialize_state(struct acpi_device *device)
->   {
-> +	struct acpi_button *button = acpi_driver_data(device);
-> +
->   	switch (lid_init_state) {
->   	case ACPI_BUTTON_LID_INIT_OPEN:
->   		(void)acpi_lid_notify_state(device, 1);
-> @@ -395,13 +398,14 @@ static void acpi_lid_initialize_state(struct acpi_device *device)
->   	default:
->   		break;
->   	}
-> +
-> +	button->lid_state_initialized = true;
->   }
->   
->   static void acpi_button_notify(struct acpi_device *device, u32 event)
->   {
->   	struct acpi_button *button = acpi_driver_data(device);
->   	struct input_dev *input;
-> -	int users;
->   
->   	switch (event) {
->   	case ACPI_FIXED_HARDWARE_EVENT:
-> @@ -410,10 +414,7 @@ static void acpi_button_notify(struct acpi_device *device, u32 event)
->   	case ACPI_BUTTON_NOTIFY_STATUS:
->   		input = button->input;
->   		if (button->type == ACPI_BUTTON_TYPE_LID) {
-> -			mutex_lock(&button->input->mutex);
-> -			users = button->input->users;
-> -			mutex_unlock(&button->input->mutex);
-> -			if (users)
-> +			if (button->lid_state_initialized)
->   				acpi_lid_update_state(device, true);
->   		} else {
->   			int keycode;
-> @@ -458,7 +459,7 @@ static int acpi_button_resume(struct device *dev)
->   	struct acpi_button *button = acpi_driver_data(device);
->   
->   	button->suspended = false;
-> -	if (button->type == ACPI_BUTTON_TYPE_LID && button->input->users) {
-> +	if (button->type == ACPI_BUTTON_TYPE_LID) {
->   		button->last_state = !!acpi_lid_evaluate_state(device);
->   		button->last_time = ktime_get();
->   		acpi_lid_initialize_state(device);
-> 
+>  drivers/i2c/busses/i2c-imx.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+
+
+Tested (not extensively) on Vybrid VF500 (Toradex VF50):
+Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+The I2C on Vybrid VF500 still works fine. I did not test this actual
+condition (arbitration) but only a regular I2C driver (BQ27xxx fuel
+gauge).
+
+Best regards,
+Krzysztof
 
