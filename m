@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ACE283CCE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB19283CD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgJEQtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbgJEQtv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:49:51 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF96C0613CE;
-        Mon,  5 Oct 2020 09:49:51 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h7so6758572wre.4;
-        Mon, 05 Oct 2020 09:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cmy513aiCAKF5upvIJrZZZX0KF0VJYYwzL6n+RYf11I=;
-        b=hr1n1nmFEEAdc+6X9eVIA7H6F4OuL0MJx7a0AXWZNvly8e9U9Bv3F3yI4GcfxAuWa0
-         UkVOm2+8LGlyBofMkEifpRTcmKH5ESdbbeeTNdvJpoUEjWFASW3o5endWzeqz3Tz110C
-         DWdYmVIKTkQLGMETSNrsFm9s1vp73pgjDyr+SPplVrJTrLoXF1pMv9jJD2mVLxkeOU39
-         0i89EAGMWh8YrEK10YO4D2kV2kthuq1keUtJLukivFIs2kVrSXZrW1ZWU+va3mU+Wpdh
-         IPl0VnfcjMrF8Q6bowVw/Za5dLBbscDV4JCOZ9lJSVrnSih4AD+6Ho1VdqwITThcqMSn
-         C4qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cmy513aiCAKF5upvIJrZZZX0KF0VJYYwzL6n+RYf11I=;
-        b=PH8ArViOxTppevnSXaBqcbSqPzOp66IR2QPwP6bmw8Z95RtGkG3fIq6Uau3I+w2gES
-         e6PvW0ek7fugil+3G8coZLgvSXe4W2RmgNhAsW9iVye+/7mYqjT8FBFLe0D8V7g8/j/t
-         HKUHPn9s0bIkXnOFnHs20axT7NcwA8U6W9um6dVVN9zxBFJd+aXtozwMgrYViX8Hpylw
-         yttUXE254IYH3ULJCsrirAQYJc7BGPyMpW2mVgbd6NuTH6SBam+8bPCiIhY7HfxPw010
-         VkES2QTgVw8ceJ5k2lLo/+poJmY5iJhGRJMxZgnBHj3YJEjKCf19uc2GFAO3ioJxVBho
-         VKlA==
-X-Gm-Message-State: AOAM532Kz7K2P9k4G3gRDariY+UAGsvoL/GV/1ekVPNPqHrv4yeSyuGZ
-        UskcdD32MXwLVsyeGG6l5Z9RUYfyABl2EmA0HfQgMsO304ww0w==
-X-Google-Smtp-Source: ABdhPJzTfFXUedYJkqNhnmDc2V1Hm1A4czYej5pOfm13kmGDdChZ59bZUbBhEi7CGyWZfe2PEzwOqMAIZZj0XsghJWo=
-X-Received: by 2002:a5d:4bcf:: with SMTP id l15mr348661wrt.132.1601916589672;
- Mon, 05 Oct 2020 09:49:49 -0700 (PDT)
+        id S1728236AbgJEQxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgJEQxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:53:10 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BDA1207BC;
+        Mon,  5 Oct 2020 16:53:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601916790;
+        bh=p/E99tTjql4QstxaT4SSl5drfyNj4h+kQn/1L+FU6Hg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gBC/IzIeywxmI9gsb/JTsx+zOOUJIooFw3wfYC06TBiHzICVtnlgNaAv/yO1EfA51
+         zVseZLj5T0M70hmLa6qq17YAe111X+Q9rT1NlLPW8KVTi2SkXaQsGts5rIE+F43U3z
+         nybuOkwnpLc2tf4yEu29xxvUOBIsDUDyDKfTSVTQ=
+Date:   Mon, 5 Oct 2020 17:52:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Julia Lawall <julia.lawall@inria.fr>, tools@linux.kernel.org,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+Message-ID: <20201005165206.GA2440@sirena.org.uk>
+References: <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
+ <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
+ <20200929113745.GB4799@sirena.org.uk>
+ <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
+ <20201001110150.GA6715@sirena.org.uk>
+ <f44d19ad596f261c0287c9ab18c45161003efb43.camel@perches.com>
+ <20201003191501.o56tqq63d2buq5ox@chatter.i7.local>
+ <alpine.DEB.2.22.394.2010032118420.2741@hadrien>
+ <20201003193137.z2bpwzlz5a66kkex@chatter.i7.local>
+ <9ab43333596f08abbbbbf1fa8cdf1ded4b65af2a.camel@perches.com>
 MIME-Version: 1.0
-References: <20201004192152.3298573-1-robdclark@gmail.com> <20201005092419.15608-1-hdanton@sina.com>
- <20201005140203.GS438822@phenom.ffwll.local>
-In-Reply-To: <20201005140203.GS438822@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 5 Oct 2020 09:49:37 -0700
-Message-ID: <CAF6AEGveqvvv9MfBMAr34y9664fPouGjwPrK=v9OLVXv4dHzxg@mail.gmail.com>
-Subject: Re: [PATCH 13/14] drm/msm: Drop struct_mutex in shrinker path
-To:     Hillf Danton <hdanton@sina.com>, Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Disposition: inline
+In-Reply-To: <9ab43333596f08abbbbbf1fa8cdf1ded4b65af2a.camel@perches.com>
+X-Cookie: God is real, unless declared integer.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 7:02 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Mon, Oct 05, 2020 at 05:24:19PM +0800, Hillf Danton wrote:
-> >
-> > On Sun,  4 Oct 2020 12:21:45
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > Now that the inactive_list is protected by mm_lock, and everything
-> > > else on per-obj basis is protected by obj->lock, we no longer depend
-> > > on struct_mutex.
-> > >
-> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > ---
-> > >  drivers/gpu/drm/msm/msm_gem.c          |  1 -
-> > >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 54 --------------------------
-> > >  2 files changed, 55 deletions(-)
-> > >
-> > [...]
-> >
-> > > @@ -71,13 +33,8 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
-> > >  {
-> > >     struct msm_drm_private *priv =
-> > >             container_of(shrinker, struct msm_drm_private, shrinker);
-> > > -   struct drm_device *dev = priv->dev;
-> > >     struct msm_gem_object *msm_obj;
-> > >     unsigned long freed = 0;
-> > > -   bool unlock;
-> > > -
-> > > -   if (!msm_gem_shrinker_lock(dev, &unlock))
-> > > -           return SHRINK_STOP;
-> > >
-> > >     mutex_lock(&priv->mm_lock);
-> >
-> > Better if the change in behavior is documented that SHRINK_STOP will
-> > no longer be needed.
->
-> btw I read through this and noticed you have your own obj lock, plus
-> mutex_lock_nested. I strongly recommend to just cut over to dma_resv_lock
-> for all object lock needs (soc drivers have been terrible with this
-> unfortuntaly), and in the shrinker just use dma_resv_trylock instead of
-> trying to play clever games outsmarting lockdep.
->
-> I recently wrote an entire blog length rant on why I think
-> mutex_lock_nested is too dangerous to be useful:
->
-> https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
->
-> Not anything about this here, just general comment. The problem extends to
-> shmem helpers and all that also having their own locks for everything.
 
-the shrinker lock class has existed for a while.. and is based on the
-idea that anything in the get-pages/vmap path cannot happen on a
-WONTNEED bo.. although perhaps there should be a few more 'if
-(WARN_ON(obj->madv != WILLNEED)) return -EBUSY'..
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-replacing obj->lock with dma_resv lock, might be a nice cleanup.. but
-I think it will be a bit churny..
+On Sat, Oct 03, 2020 at 12:43:13PM -0700, Joe Perches wrote:
+> On Sat, 2020-10-03 at 15:31 -0400, Konstantin Ryabitsev wrote:
 
-BR,
--R
+> > I'm worried that this can get unwieldy for series of 50 patches where 4=
+9=20
+> > got applied. Would the following be better:
 
-> -Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+=2E..
+
+> > A subset of these patches was applied to
+> >=20
+> >   https://...
+> >=20
+> > Thanks!
+> >=20
+> > [5/18] regmap: debugfs:
+> >        commit:
+
+It's definitely an improvement but TBH I'm not sure how much it's going
+to help those struggling to parse the current messages.
+
+> > I think this is a better solution than potentially flooding everyone=20
+> > with 49 emails.
+
+I would tend to prefer cutting down on mail volume but I don't think
+there's any way to keep everyone happy with this stuff.
+
+> I think it would be better to reply individually as
+> the likelihood that the maintainer skips just a few
+> patches of a large series is relatively low.
+
+It's not at all unusual for driver updates to both add new DT bindings
+(either for entirely new drivers or new properties/compatibles for
+existing drivers) and also have DTS file updates using those bindings,
+these go via separate trees.
+
+--sdtB3X0nJg68CQEu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl97TzUACgkQJNaLcl1U
+h9DI9Qf/dhOghwYGEqexRQ644ACI4w9j7rH7Z4qsTYl+rdj06q5wrcOFnyypjB/j
+N/Qx3llsTbG0UagMLyGeuFi5bzhxALnrvmrbv8cBPI0/3jS2D7u22cD5m6toS+Tp
+f08tgo7VkjfkB3QCZn9A7XGAPq3bEvoaCvFalxqGt0FPUw5kVGrboVa1dgJCzRL/
+CtWXDQfG9vy5ZVs0cY+s+O9yvAbrZJyMPaKkeoa7dwnqzOQz1Ga4ADtUZsUWyieK
+wuCO/HNGdf77CmSbOuG6BMrWi5SGoEtRmVO+w5NmYO1yOfnooSih3uWDR4H01xVg
+3zFgbOHRZMIwAEzTfTqRA4vzPMXRQQ==
+=wwYC
+-----END PGP SIGNATURE-----
+
+--sdtB3X0nJg68CQEu--
