@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A392838FA
+	by mail.lfdr.de (Postfix) with ESMTP id 18D042838F8
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgJEPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        id S1727088AbgJEPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727051AbgJEPEr (ORCPT
+        with ESMTP id S1727068AbgJEPEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:04:47 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEED4C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:04:47 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y13so9478579iow.4
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 08:04:47 -0700 (PDT)
+        Mon, 5 Oct 2020 11:04:53 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E19C0613AD
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:04:51 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id u6so9461957iow.9
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 08:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nckRBTGeDDjcz+ETZlQhgF2+vU8phSO5Wlot907KKh8=;
-        b=NI0qHIG+x+V105yV6CIY8r8q2789zfyV4oFmCNEh9maLUBvgR9B3ZKhXJ41Q70Zt5e
-         Zjv/7gVzToXI9DKvjXunWz33dtTwPPzeGhJVk03x5aQjQwuTNCMxCAfVJnenWUHtYYWI
-         7UfbwmZFCdvhv+X7Wlm7lmv4DD/K5m+OufvFqlhezwuKosX4myrihrIDqcskwuIMOOB1
-         0oIbQZNXRR5EtiULeLUkVQ2GfxXthOQDjMU4YuarwiE8l5JzUxjG9yVm4dYR0KohCcAj
-         9OQ3L8fOfErn1UnnWBkSjEFa/o+1oxHN+77xdMHn/MdVzcsZSvJD2logAcm6oxii/wk2
-         /Iyw==
+        bh=Ii95YAmxsR+HgUSEM40q9HyLP82YkIrTtWRY6tj6XKA=;
+        b=nAIDX9/BdTq6VeJCKeMZcBw7nGz2yhGVdsicoPdXtbanu/guAngS7qgLAVBz6l6vkr
+         sYmEwWx5JYOfO8GYgjyY0RcoYEXfAJpFcqd4mPPoy6710wWwD/xsFCgYJAYEeQH7gfM3
+         CL0v+6I8sofRV4d065ioHpXqrXWMk8BTey8hOVQ7dLFl8kbNjyyZPa02VbqQiEfzdfoq
+         pvVi36rPFRhXLlmVKulsj6woHUhGg/RVVfXxRgBeSgQla6OMdFvCZ4c1gFtS61WLt+Lf
+         KIu8GsDyzg5JhxSMfDhs8rPhcmVYH559zodEUXitSlMWqooyZpZJ9U8XMI5Mj8BrrQbo
+         Zukg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nckRBTGeDDjcz+ETZlQhgF2+vU8phSO5Wlot907KKh8=;
-        b=tPWB4yT3wgDrSONSyaRKtSClRr5gXVBKVn0JBY+29IQgHRSeZrTjohZODAmsb5invt
-         8W59tMeIF+GOVEelTSsc/87X9lp7z38aSOnWEE8CHZRAC2WUxmI1zwEFLHlH5epm3Tki
-         KUKWZ2zKvdIUJQn4i83zk1Y1KzlV/w5yi07d1Og8Gdcv5LhkpARuirh88QBoXZRF7b5S
-         E966Uur57L6844SWU9EKNKI9T9ox6rdkrFIWgTVdNdZKJKUy6C0+h5+UCzkkYf5hqw5N
-         1di5cL/MG12iYZk7BpvqKX7tidztkIvgO0Yr/aAkPi5QcraQX3OviI16W6gWwkb4Is7t
-         rmMg==
-X-Gm-Message-State: AOAM5317mUzZR+zaGwoTyBchvS645EThos0Ff5wDae1tJUXnNnFARgp4
-        OQYr0d+oorHRLeSBXtSJj/LqXhZTT6epcw==
-X-Google-Smtp-Source: ABdhPJwJkJ1C1akV4PeShn9PnVfu2A8L8gSmo4iJvYHZcyTzMT7bsKDXHcAOFE1szHMNz7ChGvuRqw==
-X-Received: by 2002:a5e:d606:: with SMTP id w6mr200118iom.67.1601910286760;
-        Mon, 05 Oct 2020 08:04:46 -0700 (PDT)
+        bh=Ii95YAmxsR+HgUSEM40q9HyLP82YkIrTtWRY6tj6XKA=;
+        b=k3l5cGpMwUqSXRCFRxL0Wh619cCBxatz5F4gKGlL9rUaskoIZZOdvVty0TIXhvzDeA
+         mv+jVuGG7ZuZ9IzI+KGhn5QywYMQxFidV2rVJqwOoRyxHWoGmp9wt75RFfRGOSDaqX6F
+         sMgV8iKkMVcMfJ9wZB0kkl3lhGasbwEgJtFWWRtOqVZrYDpbFEW7oNSdcjy600fU2T1e
+         jNfb9h/ybY9M8JX+KgJGTkiMnkC6djW9Zzesw2c34CjWtulIe9wYVroPPLG8An2CoY9l
+         l+XmkO+gUiFW0HGR/wO+hvUwLBWpKvZnl3vQtA4uJYbvRX9Pi9ZHUpM25pn/lQudi2En
+         osHg==
+X-Gm-Message-State: AOAM533HeccONdrhr6Ljo+TPKvH678PXzjMsZ4UfglIHV6DeTK925l30
+        k8ciAG8nvlVek0qRMfpst5LHFpTs9A4BGQ==
+X-Google-Smtp-Source: ABdhPJy7/TJEUjF2NrxpmbDLU9aJ/Ak31e+0juJNyKzsYMCKQTUt5Vus6jdA0/UnyfWcwE7HiYIgqQ==
+X-Received: by 2002:a5d:96c1:: with SMTP id r1mr182313iol.147.1601910287866;
+        Mon, 05 Oct 2020 08:04:47 -0700 (PDT)
 Received: from p1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id 15sm33140ilz.66.2020.10.05.08.04.45
+        by smtp.gmail.com with ESMTPSA id 15sm33140ilz.66.2020.10.05.08.04.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 08:04:46 -0700 (PDT)
+        Mon, 05 Oct 2020 08:04:47 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
 To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
 Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 3/6] kernel: split syscall restart from signal handling
-Date:   Mon,  5 Oct 2020 09:04:35 -0600
-Message-Id: <20201005150438.6628-4-axboe@kernel.dk>
+Subject: [PATCH 4/6] kernel: add support for TIF_NOTIFY_SIGNAL
+Date:   Mon,  5 Oct 2020 09:04:36 -0600
+Message-Id: <20201005150438.6628-5-axboe@kernel.dk>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005150438.6628-1-axboe@kernel.dk>
 References: <20201005150438.6628-1-axboe@kernel.dk>
@@ -64,142 +64,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the restart syscall logic into a separate generic entry helper,
-and handle that part separately from signal checking and delivery.
-
-This is in preparation for being able to do syscall restarting
-independently from handling signals.
+This adds TIF_NOTIFY_SIGNAL handling in the generic code, which if set,
+will return true if signal_pending() is used in a wait loop. That causes
+an exit of the loop so that notify_signal tracehooks can be run. If the
+wait loop is currently inside a system call, the system call is restarted
+once task_work has been processed.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- arch/x86/kernel/signal.c     | 32 ++++++++++++++++++--------------
- include/linux/entry-common.h | 14 ++++++++++++--
- kernel/entry/common.c        | 11 ++++++++---
- 3 files changed, 38 insertions(+), 19 deletions(-)
+ include/linux/entry-common.h |  6 +++++-
+ include/linux/entry-kvm.h    |  4 ++--
+ include/linux/sched/signal.h | 19 +++++++++++++++++--
+ include/linux/tracehook.h    | 27 +++++++++++++++++++++++++++
+ kernel/entry/common.c        |  5 ++++-
+ kernel/entry/kvm.c           |  3 +++
+ 6 files changed, 58 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index be0d7d4152ec..5dc1eeaf0866 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -799,21 +799,8 @@ static inline unsigned long get_nr_restart_syscall(const struct pt_regs *regs)
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index ccfcc4769925..0929385b9d8d 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -37,6 +37,10 @@
+ # define _TIF_UPROBE			(0)
  #endif
+ 
++#ifndef _TIF_NOTIFY_SIGNAL
++# define _TIF_NOTIFY_SIGNAL		(0)
++#endif
++
+ /*
+  * TIF flags handled in syscall_enter_from_usermode()
+  */
+@@ -69,7 +73,7 @@
+ 
+ #define EXIT_TO_USER_MODE_WORK						\
+ 	(_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_UPROBE |		\
+-	 _TIF_NEED_RESCHED | _TIF_PATCH_PENDING |			\
++	 _TIF_NEED_RESCHED | _TIF_PATCH_PENDING | _TIF_NOTIFY_SIGNAL |	\
+ 	 ARCH_EXIT_TO_USER_MODE_WORK)
+ 
+ /**
+diff --git a/include/linux/entry-kvm.h b/include/linux/entry-kvm.h
+index 0cef17afb41a..9b93f8584ff7 100644
+--- a/include/linux/entry-kvm.h
++++ b/include/linux/entry-kvm.h
+@@ -11,8 +11,8 @@
+ # define ARCH_XFER_TO_GUEST_MODE_WORK	(0)
+ #endif
+ 
+-#define XFER_TO_GUEST_MODE_WORK					\
+-	(_TIF_NEED_RESCHED | _TIF_SIGPENDING |			\
++#define XFER_TO_GUEST_MODE_WORK						\
++	(_TIF_NEED_RESCHED | _TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL |	\
+ 	 _TIF_NOTIFY_RESUME | ARCH_XFER_TO_GUEST_MODE_WORK)
+ 
+ struct kvm_vcpu;
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index e6f34d8fbf4d..3117ff205a14 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -360,6 +360,15 @@ static inline int task_sigpending(struct task_struct *p)
+ 
+ static inline int signal_pending(struct task_struct *p)
+ {
++#ifdef TIF_NOTIFY_SIGNAL
++	/*
++	 * TIF_NOTIFY_SIGNAL isn't really a signal, but it requires the same
++	 * behavior in terms of ensuring that we break out of wait loops
++	 * so that notify signal callbacks can be processed.
++	 */
++	if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
++		return 1;
++#endif
+ 	return task_sigpending(p);
  }
  
--/*
-- * Note that 'init' is a special process: it doesn't get signals it doesn't
-- * want to handle. Thus you cannot kill init even with a SIGKILL even by
-- * mistake.
-- */
--void arch_do_signal(struct pt_regs *regs)
-+void arch_restart_syscall(struct pt_regs *regs)
+@@ -506,10 +515,16 @@ extern int set_user_sigmask(const sigset_t __user *umask, size_t sigsetsize);
+ 
+ static inline void restore_saved_sigmask_unless(bool interrupted)
  {
--	struct ksignal ksig;
--
--	if (get_signal(&ksig)) {
--		/* Whee! Actually deliver the signal.  */
--		handle_signal(&ksig, regs);
--		return;
--	}
--
- 	/* Did we come from a system call? */
- 	if (syscall_get_nr(current, regs) >= 0) {
- 		/* Restart the system call - no handlers present */
-@@ -831,12 +818,29 @@ void arch_do_signal(struct pt_regs *regs)
- 			break;
- 		}
- 	}
+-	if (interrupted)
++	if (interrupted) {
++#ifdef TIF_NOTIFY_SIGNAL
++		WARN_ON(!test_thread_flag(TIF_SIGPENDING) &&
++			!test_thread_flag(TIF_NOTIFY_SIGNAL));
++#else
+ 		WARN_ON(!test_thread_flag(TIF_SIGPENDING));
+-	else
++#endif
++	} else {
+ 		restore_saved_sigmask();
++	}
+ }
+ 
+ static inline sigset_t *sigmask_to_save(void)
+diff --git a/include/linux/tracehook.h b/include/linux/tracehook.h
+index b480e1a07ed8..bec952f51439 100644
+--- a/include/linux/tracehook.h
++++ b/include/linux/tracehook.h
+@@ -198,4 +198,31 @@ static inline void tracehook_notify_resume(struct pt_regs *regs)
+ 	blkcg_maybe_throttle_current();
+ }
+ 
++/*
++ * called by exit_to_user_mode_loop() if ti_work & _TIF_NOTIFY_SIGNAL. This
++ * is currently used by TWA_SIGNAL based task_work, which requires breaking
++ * wait loops to ensure that task_work is noticed and run.
++ */
++static inline void tracehook_notify_signal(void)
++{
++#ifdef TIF_NOTIFY_SIGNAL
++	clear_thread_flag(TIF_NOTIFY_SIGNAL);
++	smp_mb__after_atomic();
++	if (current->task_works)
++		task_work_run();
++#endif
 +}
 +
 +/*
-+ * Note that 'init' is a special process: it doesn't get signals it doesn't
-+ * want to handle. Thus you cannot kill init even with a SIGKILL even by
-+ * mistake.
++ * Called when we have work to process from exit_to_user_mode_loop()
 + */
-+bool arch_do_signal(struct pt_regs *regs)
++static inline void set_notify_signal(struct task_struct *task)
 +{
-+	struct ksignal ksig;
++#ifdef TIF_NOTIFY_SIGNAL
++	if (!test_and_set_tsk_thread_flag(task, TIF_NOTIFY_SIGNAL) &&
++	    !wake_up_state(task, TASK_INTERRUPTIBLE))
++		kick_process(task);
++#endif
++}
 +
-+	if (get_signal(&ksig)) {
-+		/* Whee! Actually deliver the signal.  */
-+		handle_signal(&ksig, regs);
-+		return true;
-+	}
- 
- 	/*
- 	 * If there's no signal to deliver, we just put the saved sigmask
- 	 * back.
- 	 */
- 	restore_saved_sigmask();
-+	return false;
- }
- 
- void signal_fault(struct pt_regs *regs, void __user *frame, char *where)
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index 159c7476b11b..ccfcc4769925 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -262,9 +262,19 @@ static __always_inline void arch_exit_to_user_mode(void) { }
-  * arch_do_signal -  Architecture specific signal delivery function
-  * @regs:	Pointer to currents pt_regs
-  *
-- * Invoked from exit_to_user_mode_loop().
-+ * Invoked from exit_to_user_mode_loop(). Returns true if a signal was
-+ * handled.
-  */
--void arch_do_signal(struct pt_regs *regs);
-+bool arch_do_signal(struct pt_regs *regs);
-+
-+/**
-+ * arch_restart_syscall -  Architecture specific syscall restarting
-+ * @regs:	Pointer to currents pt_regs
-+ *
-+ * Invoked from exit_to_user_mode_loop(), if we need to restart the current
-+ * system call.
-+ */
-+void arch_restart_syscall(struct pt_regs *regs);
- 
- /**
-  * arch_syscall_exit_tracehook - Wrapper around tracehook_report_syscall_exit()
+ #endif	/* <linux/tracehook.h> */
 diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index d20ab4ac7183..0c0cc3cf3eba 100644
+index 0c0cc3cf3eba..6cf9f4fa0f6e 100644
 --- a/kernel/entry/common.c
 +++ b/kernel/entry/common.c
-@@ -135,11 +135,13 @@ static __always_inline void exit_to_user_mode(void)
- }
- 
- /* Workaround to allow gradual conversion of architecture code */
--void __weak arch_do_signal(struct pt_regs *regs) { }
-+bool __weak arch_do_signal(struct pt_regs *regs) { return true; }
- 
+@@ -140,7 +140,7 @@ bool __weak arch_do_signal(struct pt_regs *regs) { return true; }
  static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
  					    unsigned long ti_work)
  {
-+	bool restart_sys = ti_work & _TIF_SIGPENDING;
-+
+-	bool restart_sys = ti_work & _TIF_SIGPENDING;
++	bool restart_sys = ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL);
+ 
  	/*
  	 * Before returning to user space ensure that all pending work
- 	 * items have been completed.
-@@ -157,8 +159,8 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+@@ -159,6 +159,9 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
  		if (ti_work & _TIF_PATCH_PENDING)
  			klp_update_patch_state(current);
  
--		if (ti_work & _TIF_SIGPENDING)
--			arch_do_signal(regs);
-+		if ((ti_work & _TIF_SIGPENDING) && arch_do_signal(regs))
-+			restart_sys = false;
- 
- 		if (ti_work & _TIF_NOTIFY_RESUME) {
- 			tracehook_notify_resume(regs);
-@@ -177,6 +179,9 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 		ti_work = READ_ONCE(current_thread_info()->flags);
- 	}
- 
-+	if (restart_sys)
-+		arch_restart_syscall(regs);
++		if (ti_work & _TIF_NOTIFY_SIGNAL)
++			tracehook_notify_signal();
 +
- 	/* Return the latest work state for arch_exit_to_user_mode() */
- 	return ti_work;
- }
+ 		if ((ti_work & _TIF_SIGPENDING) && arch_do_signal(regs))
+ 			restart_sys = false;
+ 
+diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
+index b6678a5e3cf6..49972ee99aff 100644
+--- a/kernel/entry/kvm.c
++++ b/kernel/entry/kvm.c
+@@ -8,6 +8,9 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu, unsigned long ti_work)
+ 	do {
+ 		int ret;
+ 
++		if (ti_work & _TIF_NOTIFY_SIGNAL)
++			tracehook_notify_signal();
++
+ 		if (ti_work & _TIF_SIGPENDING) {
+ 			kvm_handle_signal_exit(vcpu);
+ 			return -EINTR;
 -- 
 2.28.0
 
