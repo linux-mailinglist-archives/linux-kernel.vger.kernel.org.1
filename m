@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5107D283A44
+	by mail.lfdr.de (Postfix) with ESMTP id C00D0283A45
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgJEPc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60620 "EHLO mail.kernel.org"
+        id S1728087AbgJEPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727274AbgJEPcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:32:50 -0400
+        id S1728072AbgJEPcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:32:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD3A520637;
-        Mon,  5 Oct 2020 15:32:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 427412085B;
+        Mon,  5 Oct 2020 15:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911970;
-        bh=SGm/yOGi3OSdrORXp8uDfkfFxQDDuDhXa6bWhXtsXgU=;
+        s=default; t=1601911972;
+        bh=Ru7/vpo8GarfJRXJYCkNWopOS6nnw3qYPy3r2b2lhbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fyMdBsre76AYbPxd5QH00uV3OEqWOrVhVIyFQ93d/05281YvweiYcvTY6pghoVvoZ
-         J234+nJw9AJhafbAQruyW/EVdRK/CXyCMoLYUFzuEcnBOrcNNEVGviqttsi+MMLprc
-         Z61av5vA1F4EgrzvRGO/lnl11PxcMYS4NnT1hYnI=
+        b=U+6yhQRbHOqwSGOggB+kp2T8u3Dm3RuzQ2sXFZQhhca5Ff9BszlJ9dXlfa5pZLQrS
+         znR+MkECDh+3LdZtNk05cK8tayEnRZ+Tdnv1H/CNTJOIiQZVP3RYWeHMVuM/v5R3GC
+         YOl/z7OFLzlb/k2OJPMJzsCB11fXxLZDZw4weqT8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 51/85] phy: ti: am654: Fix a leak in serdes_am654_probe()
-Date:   Mon,  5 Oct 2020 17:26:47 +0200
-Message-Id: <20201005142117.189882166@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 52/85] pinctrl: mvebu: Fix i2c sda definition for 98DX3236
+Date:   Mon,  5 Oct 2020 17:26:48 +0200
+Message-Id: <20201005142117.238215517@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
 References: <20201005142114.732094228@linuxfoundation.org>
@@ -42,39 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-[ Upstream commit 850280156f6421a404f2351bee07a0e7bedfd4c6 ]
+[ Upstream commit 63c3212e7a37d68c89a13bdaebce869f4e064e67 ]
 
-If devm_phy_create() fails then we need to call of_clk_del_provider(node)
-to undo the call to of_clk_add_provider().
+Per the datasheet the i2c functions use MPP_Sel=0x1. They are documented
+as using MPP_Sel=0x4 as well but mixing 0x1 and 0x4 is clearly wrong. On
+the board tested 0x4 resulted in a non-functioning i2c bus so stick with
+0x1 which works.
 
-Fixes: 71e2f5c5c224 ("phy: ti: Add a new SERDES driver for TI's AM654x SoC")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200905124648.GA183976@mwanda
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: d7ae8f8dee7f ("pinctrl: mvebu: pinctrl driver for 98DX3236 SoC")
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20200907211712.9697-2-chris.packham@alliedtelesis.co.nz
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/ti/phy-am654-serdes.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pinctrl/mvebu/pinctrl-armada-xp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/phy/ti/phy-am654-serdes.c b/drivers/phy/ti/phy-am654-serdes.c
-index a174b3c3f010f..819c49af169ac 100644
---- a/drivers/phy/ti/phy-am654-serdes.c
-+++ b/drivers/phy/ti/phy-am654-serdes.c
-@@ -725,8 +725,10 @@ static int serdes_am654_probe(struct platform_device *pdev)
- 	pm_runtime_enable(dev);
- 
- 	phy = devm_phy_create(dev, NULL, &ops);
--	if (IS_ERR(phy))
--		return PTR_ERR(phy);
-+	if (IS_ERR(phy)) {
-+		ret = PTR_ERR(phy);
-+		goto clk_err;
-+	}
- 
- 	phy_set_drvdata(phy, am654_phy);
- 	phy_provider = devm_of_phy_provider_register(dev, serdes_am654_xlate);
+diff --git a/drivers/pinctrl/mvebu/pinctrl-armada-xp.c b/drivers/pinctrl/mvebu/pinctrl-armada-xp.c
+index a767a05fa3a0d..48e2a6c56a83b 100644
+--- a/drivers/pinctrl/mvebu/pinctrl-armada-xp.c
++++ b/drivers/pinctrl/mvebu/pinctrl-armada-xp.c
+@@ -414,7 +414,7 @@ static struct mvebu_mpp_mode mv98dx3236_mpp_modes[] = {
+ 		 MPP_VAR_FUNCTION(0x1, "i2c0", "sck",        V_98DX3236_PLUS)),
+ 	MPP_MODE(15,
+ 		 MPP_VAR_FUNCTION(0x0, "gpio", NULL,         V_98DX3236_PLUS),
+-		 MPP_VAR_FUNCTION(0x4, "i2c0", "sda",        V_98DX3236_PLUS)),
++		 MPP_VAR_FUNCTION(0x1, "i2c0", "sda",        V_98DX3236_PLUS)),
+ 	MPP_MODE(16,
+ 		 MPP_VAR_FUNCTION(0x0, "gpo", NULL,          V_98DX3236_PLUS),
+ 		 MPP_VAR_FUNCTION(0x4, "dev", "oe",          V_98DX3236_PLUS)),
 -- 
 2.25.1
 
