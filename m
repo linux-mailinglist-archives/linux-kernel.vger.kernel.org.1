@@ -2,262 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44630283D22
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5799D283D24
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgJEROb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:14:31 -0400
-Received: from w1.tutanota.de ([81.3.6.162]:47720 "EHLO w1.tutanota.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbgJEROb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:14:31 -0400
-Received: from w3.tutanota.de (unknown [192.168.1.164])
-        by w1.tutanota.de (Postfix) with ESMTP id 0D8BAFA02E7;
-        Mon,  5 Oct 2020 17:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1601918067;
-        s=s1; d=tutanota.com;
-        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-        bh=Q+8UJj6iWyEn30IEyKWHDpp3PbbRpxBMLgnnRwI9wNk=;
-        b=p0z0n6v9Zd9nRHgh5+VwK4sxkAUxeNn8dZV4zty28aA0ohQW1ERzuSQ7oa+utnLn
-        cFC5Xo8h+hRePs1cTHN9wxUrgVMNFdk3X22i5Bz06tZj/hhrkPpPoigTB1ErYlTuTlX
-        77R0WJcRE7eMHAb6plk70TQnAKfqS8f57UoCCujdiZL2vgyEck65CQQW8mISKKcfwjz
-        uLyhVl4RmYEFLDyzEHTuskS28Dpznwe4HzXtpuosVmQF/lPY7ZUt6jtDVBHk9HWpgu8
-        ZN30cLTpcWZajgHZhmBT/luW5EGxernSwawLqlMfzFAUK0I5/ofWTwCbEjdBW7KjcCP
-        hkVom/7/VA==
-Date:   Mon, 5 Oct 2020 19:14:27 +0200 (CEST)
-From:   ultracoolguy@tutanota.com
-To:     Alexander Dahl <post@lespocky.de>, Pavel <pavel@ucw.cz>
-Cc:     Dmurphy <dmurphy@ti.com>, Marek Behun <kabel@blackhole.sk>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux Leds <linux-leds@vger.kernel.org>
-Message-ID: <MItjEho--3-2@tutanota.com>
-In-Reply-To: <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de>
-References: <MIiYgay--3-2@tutanota.com> <20201005141334.36d9441a@blackhole.sk> <MIt2NiS--3-2@tutanota.com> <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com> <MItBqjy--3-2@tutanota.com> <966c3f39-1310-dd60-6f33-0d9464ed2ff1@ti.com> <MItOR9Z--3-2@tutanota.com> <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de>
-Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
+        id S1728193AbgJEROr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727344AbgJEROq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:14:46 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64412C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:14:46 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t18so1070472ilo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LH4HLYCvANgOu28hyUJsPrZS3FtxlNqZenjGShu6i3M=;
+        b=Nsz6vjB4YNeOuA8rlM+cnNlM41tHyrHptBH7E54oAL5LTQ2wQHIAoX5QzUgFsrAn1o
+         7+0RRStSJejV1xx7LNi6ax50hU7N0J3BWdqwh/pshWSvMolQQrp8lqUhR1d1Y9KLmqnk
+         2U5d50WnWNXTXuaT0L6UM7lx5+UMLoyDdRWs6Se5JaTvJIV8Yak7cDjEpJ6eMiaoHagu
+         iPfCkW0YA+7cfmPlztEAlJ8KCcpU2ntbCayznh7a746qZULpmi93ZyAGLDThJU+mqm44
+         jbupf2glWYatQWwmhfq9gRubIcugXhPWRx6eMpjUxFjbRyOyrIhYMGeAhRzyva/zn2Ip
+         S0UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LH4HLYCvANgOu28hyUJsPrZS3FtxlNqZenjGShu6i3M=;
+        b=kMKqaS8o2GVKncxhejUnJgea1s2iEsdh2VcppJLfBz9c7jC26UEilic/hUp77X4iGY
+         tIFEwFrw0xZR6SusHnkZtYctULXCdwp4ardiJgnMi1tVS4ZKRRirl7s3dYHqB9H7MMF2
+         ZcCl3DI6nUqeJHamGdtI5MJoPHUZXW4WTo9tLPSz49mdirKyWX7+LEhBotR6QXYwajgI
+         E3NCucJCni8vBR2epxFavbxeNarayGj+GPXwf4+GGpF/9PHN13jFa0sqyIlRk3pEa14K
+         dqzG+lavJktzxJuDnIhJurEw3sVqWYvM29IQPQPDTQzTXLssRKjMY2icqNrgHMJqzn93
+         4asw==
+X-Gm-Message-State: AOAM530GzBbllgFyxIsN1mSlrFFLV521Xw0CoMl14I+5dH1DKFYVsF7b
+        Wo2o19vJs96dJmFwOQ625yFvuYuYb48lGhI6tm3oYg==
+X-Google-Smtp-Source: ABdhPJyMs4E0zbdNzw5x6P/5OcoWZCN+MNgzV2yAJf40F/IPPZ3fzWp9Vu8SW8fLgk4WOVfExl1eJOHr+F2ZQtdM4Hs=
+X-Received: by 2002:a92:1e07:: with SMTP id e7mr302036ile.154.1601918085308;
+ Mon, 05 Oct 2020 10:14:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-        boundary="----=_Part_62822_1037468345.1601918068039"
+References: <cover.1601770305.git.joe@perches.com> <ed95eef4f10fc1317b66936c05bc7dd8f943a6d5.1601770305.git.joe@perches.com>
+In-Reply-To: <ed95eef4f10fc1317b66936c05bc7dd8f943a6d5.1601770305.git.joe@perches.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 5 Oct 2020 10:14:34 -0700
+Message-ID: <CANgfPd8_Crt0VO3phV7ec55ghSLiJzmzTypNvnZAYq=uJL8r8Q@mail.gmail.com>
+Subject: Re: [PATCH 2/4] kvm x86/mmu: Make struct kernel_param_ops definitions const
+To:     Joe Perches <joe@perches.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------=_Part_62822_1037468345.1601918068039
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Agh. I added the Signed-off-by in an earlier non-published version of the c=
-ommit, but forgot to add it back. But that doesn't really excuses me.
-
-I attached the (hopefully) final version of this patch.=C2=A0 Pavel, I'll s=
-end the struct rename separately after I submit this.=20
-
-Oct 5, 2020, 16:48 by post@lespocky.de:
-
-> Hei hei,
+On Sat, Oct 3, 2020 at 5:18 PM Joe Perches <joe@perches.com> wrote:
 >
-> On Mon, Oct 05, 2020 at 05:35:38PM +0200, ultracoolguy@tutanota.com wrote=
-:
+> These should be const, so make it so.
 >
->> Well, the major benefit I see is that it makes the driver slightly
->> more readable. However I'm fine with whatever you guys decide.
->>
->> I'll attach the patch with the struct renaming removed just in case.
->>
+> Signed-off-by: Joe Perches <joe@perches.com>
+
+Reviewed-by: Ben Gardon <bgardon@google.com>
+
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Note: your patch, especially the commit message, still needs a
-> Signed-off-by line.  Please read [1] (again?) and resend.
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 71aa3da2a0b7..6500dd681750 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -64,12 +64,12 @@ static uint __read_mostly nx_huge_pages_recovery_ratio = 60;
+>  static int set_nx_huge_pages(const char *val, const struct kernel_param *kp);
+>  static int set_nx_huge_pages_recovery_ratio(const char *val, const struct kernel_param *kp);
 >
-> Greets
-> Alex
+> -static struct kernel_param_ops nx_huge_pages_ops = {
+> +static const struct kernel_param_ops nx_huge_pages_ops = {
+>         .set = set_nx_huge_pages,
+>         .get = param_get_bool,
+>  };
 >
-> [1] https://www.kernel.org/doc/html/latest/process/submitting-patches.htm=
-l
+> -static struct kernel_param_ops nx_huge_pages_recovery_ratio_ops = {
+> +static const struct kernel_param_ops nx_huge_pages_recovery_ratio_ops = {
+>         .set = set_nx_huge_pages_recovery_ratio,
+>         .get = param_get_uint,
+>  };
+> --
+> 2.26.0
 >
->> Oct 5, 2020, 14:41 by dmurphy@ti.com:
->>
->> > Gabriel
->> >
->> > On 10/5/20 9:38 AM, ultracoolguy@tutanota.com wrote:
->> >
->> >> I understand. So I should leave it like it was and do the rename in a=
-nother patch?
->> >>
->> >
->> > You should do the fix in one patch and leave the structure name alone.
->> >
->> > The structure naming if fine and has no benefit and actually will make=
- it more difficult for others to backport future fixes.
->> >
->> > Unless Pavel finds benefit in accepting the structure rename.
->> >
->> > Dan
->> >
->>
->> >From ee004d26bb2f91491141aa06f5518cc411711ff0 Mon Sep 17 00:00:00 2001
->> From: Ultracoolguy <ultracoolguy@tutanota.com>
->> Date: Fri, 2 Oct 2020 18:27:00 -0400
->> Subject: [PATCH] leds:lm3697:Fix out-of-bound access
->>
->> If both led banks aren't used in device tree,
->> an out-of-bounds condition in lm3697_init occurs
->> because of the for loop assuming that all the banks are used.
->> Fix it by adding a variable that contains the number of used banks.
->> ---
->> drivers/leds/leds-lm3697.c | 18 ++++++++++--------
->> 1 file changed, 10 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/leds/leds-lm3697.c b/drivers/leds/leds-lm3697.c
->> index 024983088d59..bd53450050b2 100644
->> --- a/drivers/leds/leds-lm3697.c
->> +++ b/drivers/leds/leds-lm3697.c
->> @@ -78,8 +78,9 @@ struct lm3697 {
->> struct mutex lock;
->>
->> int bank_cfg;
->> +=09int num_banks;
->>
->> -=09struct lm3697_led leds[];
->> +=09struct lm3697_led banks[];
->> };
->>
->> static const struct reg_default lm3697_reg_defs[] =3D {
->> @@ -180,8 +181,8 @@ static int lm3697_init(struct lm3697 *priv)
->> if (ret)
->> dev_err(&priv->client->dev, "Cannot write OUTPUT config\n");
->>
->> -=09for (i =3D 0; i < LM3697_MAX_CONTROL_BANKS; i++) {
->> -=09=09led =3D &priv->leds[i];
->> +=09for (i =3D 0; i < priv->num_banks; i++) {
->> +=09=09led =3D &priv->banks[i];
->> ret =3D ti_lmu_common_set_ramp(&led->lmu_data);
->> if (ret)
->> dev_err(&priv->client->dev, "Setting the ramp rate failed\n");
->> @@ -228,7 +229,7 @@ static int lm3697_probe_dt(struct lm3697 *priv)
->> goto child_out;
->> }
->>
->> -=09=09led =3D &priv->leds[i];
->> +=09=09led =3D &priv->banks[i];
->>
->> ret =3D ti_lmu_common_get_brt_res(&priv->client->dev,
->> child, &led->lmu_data);
->> @@ -307,16 +308,17 @@ static int lm3697_probe(struct i2c_client *client,
->> int ret;
->>
->> count =3D device_get_child_node_count(&client->dev);
->> -=09if (!count) {
->> -=09=09dev_err(&client->dev, "LEDs are not defined in device tree!");
->> -=09=09return -ENODEV;
->> +=09if (!count || count > LM3697_MAX_CONTROL_BANKS) {
->> +=09=09return -EINVAL;
->> }
->>
->> -=09led =3D devm_kzalloc(&client->dev, struct_size(led, leds, count),
->> +=09led =3D devm_kzalloc(&client->dev, struct_size(led, banks, count),
->> GFP_KERNEL);
->> if (!led)
->> return -ENOMEM;
->>
->> +=09led->num_banks =3D count;
->> +
->> mutex_init(&led->lock);
->> i2c_set_clientdata(client, led);
->>
->> --=20
->> 2.28.0
->>
->
->
-> --=20
-> /"\ ASCII RIBBON | =C2=BBWith the first link, the chain is forged. The fi=
-rst
-> \ / CAMPAIGN     | speech censured, the first thought forbidden, the
-> X  AGAINST      | first freedom denied, chains us all irrevocably.=C2=AB
-> / \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
->
-
-
-------=_Part_62822_1037468345.1601918068039
-Content-Type: text/x-patch; charset=us-ascii; 
-	name=0001-leds-lm3697-Fix-out-of-bound-access.patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; 
-	filename=0001-leds-lm3697-Fix-out-of-bound-access.patch
-
-From 146c98f0a0227fc3e11ffe6e66f0f7cf8aaebc69 Mon Sep 17 00:00:00 2001
-From: Gabriel David <ultracoolguy@tutanota.com>
-Date: Fri, 2 Oct 2020 18:27:00 -0400
-Subject: [PATCH] leds:lm3697:Fix out-of-bound access
-
-If both led banks aren't used in device tree,
-an out-of-bounds condition in lm3697_init occurs
-because of the for loop assuming that all the banks are used.
-Fix it by adding a variable that contains the number of used banks.
-
-Signed-off-by: Gabriel David <ultracoolguy@tutanota.com>
----
- drivers/leds/leds-lm3697.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/leds/leds-lm3697.c b/drivers/leds/leds-lm3697.c
-index 024983088d59..a3c44b4c9072 100644
---- a/drivers/leds/leds-lm3697.c
-+++ b/drivers/leds/leds-lm3697.c
-@@ -78,8 +78,9 @@ struct lm3697 {
- 	struct mutex lock;
-
- 	int bank_cfg;
-+	int num_banks;
-
--	struct lm3697_led leds[];
-+	struct lm3697_led banks[];
- };
-
- static const struct reg_default lm3697_reg_defs[] = {
-@@ -180,8 +181,8 @@ static int lm3697_init(struct lm3697 *priv)
- 	if (ret)
- 		dev_err(&priv->client->dev, "Cannot write OUTPUT config\n");
-
--	for (i = 0; i < LM3697_MAX_CONTROL_BANKS; i++) {
--		led = &priv->leds[i];
-+	for (i = 0; i < priv->num_banks; i++) {
-+		led = &priv->banks[i];
- 		ret = ti_lmu_common_set_ramp(&led->lmu_data);
- 		if (ret)
- 			dev_err(&priv->client->dev, "Setting the ramp rate failed\n");
-@@ -228,7 +229,7 @@ static int lm3697_probe_dt(struct lm3697 *priv)
- 			goto child_out;
- 		}
-
--		led = &priv->leds[i];
-+		led = &priv->banks[i];
-
- 		ret = ti_lmu_common_get_brt_res(&priv->client->dev,
- 						child, &led->lmu_data);
-@@ -307,16 +308,16 @@ static int lm3697_probe(struct i2c_client *client,
- 	int ret;
-
- 	count = device_get_child_node_count(&client->dev);
--	if (!count) {
--		dev_err(&client->dev, "LEDs are not defined in device tree!");
--		return -ENODEV;
--	}
-+	if (!count || count > LM3697_MAX_CONTROL_BANKS)
-+		return -EINVAL;
-
--	led = devm_kzalloc(&client->dev, struct_size(led, leds, count),
-+	led = devm_kzalloc(&client->dev, struct_size(led, banks, count),
- 			   GFP_KERNEL);
- 	if (!led)
- 		return -ENOMEM;
-
-+	led->num_banks = count;
-+
- 	mutex_init(&led->lock);
- 	i2c_set_clientdata(client, led);
-
---
-2.28.0
-
-
-------=_Part_62822_1037468345.1601918068039--
