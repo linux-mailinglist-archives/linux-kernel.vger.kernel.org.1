@@ -2,136 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A422831C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AE62831C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgJEIUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50586 "EHLO mail.kernel.org"
+        id S1726138AbgJEIUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:20:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgJEIUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:20:09 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1725885AbgJEIUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:20:22 -0400
+Received: from pali.im (pali.im [31.31.79.79])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D7142075A;
-        Mon,  5 Oct 2020 08:20:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E83EA2075A;
+        Mon,  5 Oct 2020 08:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601886009;
-        bh=a6m4Vgw8XbmSh9LXZ+VfNeL4cVShtjQyaGRZrfHilhc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1u9JuD93Gti/Wj9WmMCkK1I5DynXywWoeymlZnmS3QtvSYAOHKp77ZAR+Lvx1TEqI
-         CFA+5p2rl3Mo5KfjljtwtcnEnFHYFndesdQK8ElTumaeDnHL7noZFb0Qy1AsH3qohB
-         UNciyCmUIkp4yzcFA2p0/pX2YGkzrg7niKNvGeVE=
-Date:   Mon, 5 Oct 2020 09:20:03 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201005082002.GA23216@willie-the-truck>
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <20201004233146.GP29330@paulmck-ThinkPad-P72>
- <20201005023846.GA359428@rowland.harvard.edu>
+        s=default; t=1601886021;
+        bh=k+cn2MVadKtAEfTX4w1xKEndDAizAPhubuZsEg16NKA=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=b2mxDKapGiFurhQjsp4HEfPs36HSRoFnBpwIkksZFf7oGoqHFfZwDmAeyDz66PMy5
+         vtXa8G3wT/xClHEI77HGa5MbaoN9TdiCX63VoeDnTWmqHFuK2W+C7j2BIZdJKPLFo5
+         ki1pYznY6gijxc82EWP3dG1CZgPqk84tAeUBZHsE=
+Received: by pali.im (Postfix)
+        id 62647A07; Mon,  5 Oct 2020 10:20:18 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 10:20:18 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
+Message-ID: <20201005082018.rowqpfifyyrilxma@pali>
+References: <20200716110423.xtfyb3n6tn5ixedh@pali>
+ <20200814080824.dg57kmbimyf3ushe@pali>
+ <20200909112850.hbtgkvwqy2rlixst@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005023846.GA359428@rowland.harvard.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200909112850.hbtgkvwqy2rlixst@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 10:38:46PM -0400, Alan Stern wrote:
-> On Sun, Oct 04, 2020 at 04:31:46PM -0700, Paul E. McKenney wrote:
-> > Nice simple example!  How about like this?
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit c964f404eabe4d8ce294e59dda713d8c19d340cf
-> > Author: Alan Stern <stern@rowland.harvard.edu>
-> > Date:   Sun Oct 4 16:27:03 2020 -0700
-> > 
-> >     manual/kernel: Add a litmus test with a hidden dependency
-> >     
-> >     This commit adds a litmus test that has a data dependency that can be
-> >     hidden by control flow.  In this test, both the taken and the not-taken
-> >     branches of an "if" statement must be accounted for in order to properly
-> >     analyze the litmus test.  But herd7 looks only at individual executions
-> >     in isolation, so fails to see the dependency.
-> >     
-> >     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
-> > new file mode 100644
-> > index 0000000..6baecf9
-> > --- /dev/null
-> > +++ b/manual/kernel/crypto-control-data.litmus
-> > @@ -0,0 +1,31 @@
-> > +C crypto-control-data
-> > +(*
-> > + * LB plus crypto-control-data plus data
-> > + *
-> > + * Result: Sometimes
-> > + *
-> > + * This is an example of OOTA and we would like it to be forbidden.
-> > + * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
-> > + * control-dependent on the preceding READ_ONCE.  But the dependencies are
-> > + * hidden by the form of the conditional control construct, hence the 
-> > + * name "crypto-control-data".  The memory model doesn't recognize them.
-> > + *)
-> > +
-> > +{}
-> > +
-> > +P0(int *x, int *y)
-> > +{
-> > +	int r1;
-> > +
-> > +	r1 = 1;
-> > +	if (READ_ONCE(*x) == 0)
-> > +		r1 = 0;
-> > +	WRITE_ONCE(*y, r1);
-> > +}
-> > +
-> > +P1(int *x, int *y)
-> > +{
-> > +	WRITE_ONCE(*x, READ_ONCE(*y));
-> > +}
-> > +
-> > +exists (0:r1=1)
+PING?
+
+On Wednesday 09 September 2020 13:28:50 Pali Rohár wrote:
+> Hello! I'm adding more people to loop.
 > 
-> Considering the bug in herd7 pointed out by Akira, we should rewrite P1 as:
+> Can somebody look at these race conditions and my patch?
 > 
-> P1(int *x, int *y)
-> {
-> 	int r2;
-> 
-> 	r = READ_ONCE(*y);
-
-(r2?)
-
-> 	WRITE_ONCE(*x, r2);
-> }
-> 
-> Other than that, this is fine.
-
-But yes, module the typo, I agree that this rewrite is much better than the
-proposal above. The definition of control dependencies on arm64 (per the Arm
-ARM [1]) isn't entirely clear that it provides order if the WRITE is
-executed on both paths of the branch, and I believe there are ongoing
-efforts to try to tighten that up. I'd rather keep _that_ topic separate
-from the "bug in herd" topic to avoid extra confusion.
-
-Will
-
-[1] https://developer.arm.com/documentation/ddi0487/fc/
+> On Friday 14 August 2020 10:08:24 Pali Rohár wrote:
+> > Hello! I would like to remind this issue which I reported month ago.
+> > 
+> > On Thursday 16 July 2020 13:04:23 Pali Rohár wrote:
+> > > Hello Bjorn!
+> > > 
+> > > I see following error message in dmesg which looks like a race condition:
+> > > 
+> > > sysfs: cannot create duplicate filename '/devices/platform/soc/d0070000.pcie/pci0000:00/0000:00:00.0/config'
+> > > 
+> > > I looked at it deeper and found out that in PCI subsystem code is race
+> > > condition between pci_bus_add_device() and pci_sysfs_init() calls. Both
+> > > of these functions calls pci_create_sysfs_dev_files() and calling this
+> > > function more times for same pci device throws above error message.
+> > > 
+> > > There can be two different race conditions:
+> > > 
+> > > 1. pci_bus_add_device() called pcibios_bus_add_device() or
+> > > pci_fixup_device() but have not called pci_create_sysfs_dev_files() yet.
+> > > Meanwhile pci_sysfs_init() is running and pci_create_sysfs_dev_files()
+> > > was called for newly registered device. In this case function
+> > > pci_create_sysfs_dev_files() is called two times, ones from
+> > > pci_bus_add_device() and once from pci_sysfs_init().
+> > > 
+> > > 2. pci_sysfs_init() is called. It first sets sysfs_initialized to 1
+> > > which unblock calling pci_create_sysfs_dev_files(). Then another bus
+> > > registers new PCI device and calls pci_bus_add_device() which calls
+> > > pci_create_sysfs_dev_files() and registers sysfs files. Function
+> > > pci_sysfs_init() continues execution and calls function
+> > > pci_create_sysfs_dev_files() also for this newly registered device. So
+> > > pci_create_sysfs_dev_files() is again called two times.
+> > > 
+> > > 
+> > > I workaround both race conditions I created following hack patch. After
+> > > applying it I'm not getting that 'sysfs: cannot create duplicate filename'
+> > > error message anymore.
+> > > 
+> > > Can you look at it how to fix both race conditions in proper way?
+> > 
+> > Is this workaround diff enough? Or are you going to prepare something better?
+> > 
+> > Please let me know if I should send this diff as regular patch.
+> > 
+> > > 
+> > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> > > index 8e40b3e6da77..691be2258c4e 100644
+> > > --- a/drivers/pci/bus.c
+> > > +++ b/drivers/pci/bus.c
+> > > @@ -316,7 +316,7 @@ void pci_bus_add_device(struct pci_dev *dev)
+> > >  	 */
+> > >  	pcibios_bus_add_device(dev);
+> > >  	pci_fixup_device(pci_fixup_final, dev);
+> > > -	pci_create_sysfs_dev_files(dev);
+> > > +	pci_create_sysfs_dev_files(dev, false);
+> > >  	pci_proc_attach_device(dev);
+> > >  	pci_bridge_d3_update(dev);
+> > >  
+> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > > index 6d78df981d41..b0c4852a51dd 100644
+> > > --- a/drivers/pci/pci-sysfs.c
+> > > +++ b/drivers/pci/pci-sysfs.c
+> > > @@ -1328,13 +1328,13 @@ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
+> > >  	return retval;
+> > >  }
+> > >  
+> > > -int __must_check pci_create_sysfs_dev_files(struct pci_dev *pdev)
+> > > +int __must_check pci_create_sysfs_dev_files(struct pci_dev *pdev, bool sysfs_initializing)
+> > >  {
+> > >  	int retval;
+> > >  	int rom_size;
+> > >  	struct bin_attribute *attr;
+> > >  
+> > > -	if (!sysfs_initialized)
+> > > +	if (!sysfs_initializing && !sysfs_initialized)
+> > >  		return -EACCES;
+> > >  
+> > >  	if (pdev->cfg_size > PCI_CFG_SPACE_SIZE)
+> > > @@ -1437,18 +1437,21 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pdev)
+> > >  static int __init pci_sysfs_init(void)
+> > >  {
+> > >  	struct pci_dev *pdev = NULL;
+> > > -	int retval;
+> > > +	int retval = 0;
+> > >  
+> > > -	sysfs_initialized = 1;
+> > >  	for_each_pci_dev(pdev) {
+> > > -		retval = pci_create_sysfs_dev_files(pdev);
+> > > +		if (!pci_dev_is_added(pdev))
+> > > +			continue;
+> > > +		retval = pci_create_sysfs_dev_files(pdev, true);
+> > >  		if (retval) {
+> > >  			pci_dev_put(pdev);
+> > > -			return retval;
+> > > +			goto out;
+> > >  		}
+> > >  	}
+> > >  
+> > > -	return 0;
+> > > +out:
+> > > +	sysfs_initialized = 1;
+> > > +	return retval;
+> > >  }
+> > >  late_initcall(pci_sysfs_init);
+> > >  
+> > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > > index 6d3f75867106..304294c7171e 100644
+> > > --- a/drivers/pci/pci.h
+> > > +++ b/drivers/pci/pci.h
+> > > @@ -19,7 +19,7 @@ bool pcie_cap_has_rtctl(const struct pci_dev *dev);
+> > >  
+> > >  /* Functions internal to the PCI core code */
+> > >  
+> > > -int pci_create_sysfs_dev_files(struct pci_dev *pdev);
+> > > +int pci_create_sysfs_dev_files(struct pci_dev *pdev, bool sysfs_initializing);
+> > >  void pci_remove_sysfs_dev_files(struct pci_dev *pdev);
+> > >  #if !defined(CONFIG_DMI) && !defined(CONFIG_ACPI)
+> > >  static inline void pci_create_firmware_label_files(struct pci_dev *pdev)
+> > > 
