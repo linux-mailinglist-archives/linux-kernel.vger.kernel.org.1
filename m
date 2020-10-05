@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A407528353B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604FB283542
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgJEL7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:59:37 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:58431 "EHLO
+        id S1725967AbgJEMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:01:07 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:48893 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgJEL7h (ORCPT
+        by vger.kernel.org with ESMTP id S1725891AbgJEMBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:59:37 -0400
+        Mon, 5 Oct 2020 08:01:06 -0400
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 75EEF5C016C;
-        Mon,  5 Oct 2020 07:59:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 07:59:36 -0400
+        by mailout.nyi.internal (Postfix) with ESMTP id 3349F5C0003;
+        Mon,  5 Oct 2020 08:01:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 08:01:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Q897tT8ubWR5jUvQHUMctBSuXaQ
-        szl7lev1kFoxWyhQ=; b=nBJWnvAoK//RQnwLHXVaamj0TZD9axahq1PvmX5oHKr
-        M36gVJsCWqz41mlvuiyrdahIa6RIFu+rjqnS6Q4IeOuxJ9YSWT1LFtJvy1oJzVXC
-        4TQlUB5coV3gndmt1zAyPiy4mnhyyLhtmNLEevKcBtJLxDaKfxtOnrcTBPuMbTwG
-        53DnvBE13EsTHpDdiyYGQ3fqc8u/iVG2p++1T8Ebq0joiltou73sV+occKfYNWtS
-        p/1ChINJUiGupAN+Ok7heLIARXM6p7Lju2Hors3NB/q+m0SYDwSpk7zHbyaPUrkc
-        g1lwZjBF/SMump/EdW64S3WsOPDocsy9AAic1RkJf+Q==
+        :content-type:in-reply-to; s=fm1; bh=yClYW72mCVb7r8vezxG52GbXOQY
+        kiKyQUgHWZrqdOgc=; b=pZhpYsC9wGMgMbPIIN9yPgjDfQuLZffjUJyPF8v0NVd
+        vhHD+2BhnPX4a1+gdoI4zqRVl4Zr8cG3xTSmHY6ecVlZCSVDzOkTtzUY084fI6/i
+        kfYcMn8CdfxiPIg27zY89jauzcMaNlyeDpwG5yxrwsk1oPixJ1Sqogmm4BA7JReI
+        99Stb0IFHZhnaD8vXYCklHeeCKxfk9xJHqS90fcMFuqIVQqjqbaQIVvNE/g5JXW+
+        d1+WtOdQ9sRr6yBij/MkozLVG4dzE+w6Z2oW8h9lQFTVbnbRyhNxzS2eiI7go+GN
+        yvzh4cAszxmBb4ce/0TJkbDgr/VhXpv14a6k+pwVC7Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Q897tT
-        8ubWR5jUvQHUMctBSuXaQszl7lev1kFoxWyhQ=; b=VbgmYZDeg7gS6JS4KpsvwT
-        wPGqZio8PmRNgsW1zCx2NfX4lK3GIw0IQBIHvPpHlWN52Ts50XOs+Xkdf94QUVXT
-        cmoRVVCyQWA5LG4dZkfHSeJuhq8YOHfMlP0CTCr4bO2D7VN7s268A7jQ0Tz9PZyo
-        Rt4pAZh7Xv1mA5I4nZXTsXeIIpQJCusZFAd9mJZbGCDbedWjQRtcxcPzmV0bF60w
-        9YmaAD4s3lN0SSDlf9UVCUD5Z6VMEY7TzdrF1wy+x6k1nIjJ37DB0IV1h3u3pfUq
-        mFz9HighppAr+gC6d10h9eI6mcjKfRipdclX7cdVccyBErqPThF1L16z9SOkVhzQ
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=yClYW7
+        2mCVb7r8vezxG52GbXOQYkiKyQUgHWZrqdOgc=; b=lTDgPjX81/mJHePBssDdOr
+        SmzhOa/rJi2RrtFoJ700e7ofmIOoB5C9LqUk0UaACP4cKzCiR8IDk9XaGZOsLQJH
+        h8NUzYSY30OJsBpdgyYXUJEhegt1ouQAld49pJ79gdUCBNSIf+lq1l1d+pZGE8ke
+        pypQIU7Rdg1d9XeEVy9ZpGOts8u5sAOmOk7hnODGlPJPBqnOJhCQOxsyEJ40riCG
+        tkW+oHGG/IWuPTZxqLtBqHKprqeb20KmpE0LfKJtLyCmQkVR9hW1JENTYeyeunxQ
+        laeF4SxGR8BzP6JtT+CCwYdcELe34Cfixl7kkbLMpa5OcAlCumi0Sk8Q/aIjwwmg
         ==
-X-ME-Sender: <xms:qAp7X7qvBgwkEkBzGgVCocJ4wXxLqun9B-Xz4I0_vS6Ger5FJauK_Q>
-    <xme:qAp7X1oKKLSNKuejN2ppXJWs1t3XzgQGwCOooQG5QoBTMwwFxFONnNAdQYQF0xYDd
-    od0-8kX7x68psTytv8>
+X-ME-Sender: <xms:_wp7XzKh1Shab2R4fPfceQdpS4G-Gx-BKYPwMN9VW-3CdRLLBb6ukA>
+    <xme:_wp7X3Kq1o8x0OhcCs1OVvgHHa03_-zADMP8GCwwfXUcv-Unaefluwd9vwWVWbpUY
+    r9bMDIZ8LlC3JMMB7k>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdeglecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
     ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
     gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvnecurf
     grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:qAp7X4OcsTxnXkJ_gzAGsMXQdtRt1DJnL9z_hZX9Yz4ILOK2KvLcog>
-    <xmx:qAp7X-7B5JETdLWROqkH20YfQNtdsAMp0DbWK5cUZjI6x0LtMBXYXA>
-    <xmx:qAp7X64qTgzGUFCZG58FkLzn5LUSS21LTjyg7Sda5VfE3vVsTwIBSA>
-    <xmx:qAp7XxbfcHH6sNNMZuSMnuEZGqNdulTb9aQIW544eq2QD-4nW9muiw>
+X-ME-Proxy: <xmx:_wp7X7tWARBYIOrVuCnCcskAOnkYrqWkhhmC-A5h2TDLGBt0O7y3QA>
+    <xmx:_wp7X8ZbxWcv5Yjkl06K0ei_274FN4Cci4pTBFOxh4HQG99ZbYok2A>
+    <xmx:_wp7X6a7RwrH39INMpE26ubu15JjFmNtEV1XifBXfxS6q0K95Yq2Pg>
+    <xmx:AQt7Xy615yAuVzZ07iG5TjZK1EBEAUBA54Im6pk2aByFR7N4pJf6Pw>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EB4433064610;
-        Mon,  5 Oct 2020 07:59:35 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 13:59:34 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id DE751328005D;
+        Mon,  5 Oct 2020 08:01:02 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 14:01:01 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Samuel Holland <samuel@sholland.org>
 Cc:     Mark Brown <broonie@kernel.org>,
@@ -64,46 +64,117 @@ Cc:     Mark Brown <broonie@kernel.org>,
         Takashi Iwai <tiwai@suse.com>,
         Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 19/25] ASoC: sun8i-codec: Constrain to compatible sample
- rates
-Message-ID: <20201005115934.srtcf5f74kfc4rol@gilmour.lan>
+Subject: Re: [PATCH 20/25] ASoC: sun8i-codec: Protect the clock rate while
+ streams are open
+Message-ID: <20201005120101.igzzwosnq6bzbua6@gilmour.lan>
 References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-20-samuel@sholland.org>
+ <20201001021148.15852-21-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="svg53ayom7l4t3od"
+        protocol="application/pgp-signature"; boundary="xow6snhlx3rrb7vu"
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-20-samuel@sholland.org>
+In-Reply-To: <20201001021148.15852-21-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---svg53ayom7l4t3od
+--xow6snhlx3rrb7vu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 09:11:42PM -0500, Samuel Holland wrote:
-> While another stream is active, only allow userspace to use sample rates
-> that are compatible with the current SYSCLK frequency. This ensures the
-> actual sample rate will always match what is given in hw_params.
+On Wed, Sep 30, 2020 at 09:11:43PM -0500, Samuel Holland wrote:
+> The codec's clock input is shared among all AIFs, and shared with other
+> audio-related hardware in the SoC, including I2S and SPDIF controllers.
+> To ensure sample rates selected by userspace or by codec2codec DAI links
+> are maintained, the clock rate must be protected while it is in use.
 >=20
 > Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  sound/soc/sunxi/sun8i-codec.c | 25 ++++++++++++++++++++++---
+>  1 file changed, 22 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+> index 501af64d43a0..86065bee7cd3 100644
+> --- a/sound/soc/sunxi/sun8i-codec.c
+> +++ b/sound/soc/sunxi/sun8i-codec.c
+> @@ -416,27 +416,32 @@ static int sun8i_codec_get_lrck_div_order(unsigned =
+int slots,
+>  	unsigned int div =3D slots * slot_width;
+> =20
+>  	if (div < 16 || div > 256)
+>  		return -EINVAL;
+> =20
+>  	return order_base_2(div);
+>  }
+> =20
+> +static unsigned int sun8i_codec_get_sysclk_rate(unsigned int sample_rate)
+> +{
+> +	return sample_rate % 4000 ? 22579200 : 24576000;
+> +}
+> +
+>  static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+>  				 struct snd_pcm_hw_params *params,
+>  				 struct snd_soc_dai *dai)
+>  {
+>  	struct sun8i_codec *scodec =3D snd_soc_dai_get_drvdata(dai);
+>  	struct sun8i_codec_aif *aif =3D &scodec->aifs[dai->id];
+>  	unsigned int sample_rate =3D params_rate(params);
+>  	unsigned int slots =3D aif->slots ?: params_channels(params);
+>  	unsigned int slot_width =3D aif->slot_width ?: params_width(params);
+> -	unsigned int sysclk_rate =3D clk_get_rate(scodec->clk_module);
+> -	int lrck_div_order, word_size;
+> +	unsigned int sysclk_rate =3D sun8i_codec_get_sysclk_rate(sample_rate);
+> +	int lrck_div_order, ret, word_size;
+>  	u8 bclk_div;
+> =20
+>  	/* word size */
+>  	switch (params_width(params)) {
+>  	case 8:
+>  		word_size =3D 0x0;
+>  		break;
+>  	case 16:
+> @@ -466,17 +471,30 @@ static int sun8i_codec_hw_params(struct snd_pcm_sub=
+stream *substream,
+>  			   (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
+> =20
+>  	/* BCLK divider (SYSCLK/BCLK ratio) */
+>  	bclk_div =3D sun8i_codec_get_bclk_div(sysclk_rate, lrck_div_order, samp=
+le_rate);
+>  	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+>  			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+>  			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
+> =20
+> -	if (!aif->open_streams) {
+> +	/* SYSCLK rate */
+> +	if (aif->open_streams) {
+> +		ret =3D clk_set_rate(scodec->clk_module, sysclk_rate);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		ret =3D clk_set_rate_exclusive(scodec->clk_module, sysclk_rate);
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+It's not really clear to me why we wouldn't want to always protect the
+clock rate here?
+
+> +		if (ret =3D=3D -EBUSY)
+> +			dev_err(dai->dev, "%s: clock is busy! Sample rate %u Hz "
+> +				"conflicts with other audio streams.\n",
+
+This string creates a checkpatch warning.
 
 Maxime
 
---svg53ayom7l4t3od
+--xow6snhlx3rrb7vu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sKpgAKCRDj7w1vZxhR
-xd9pAQC/j8ToJOZuhDga2Xzm9h4rkaQuXqqemTxlrn3E4pb0LQEAreN/HZlgti9b
-CM2uL2AYaJty/gHyCrfWkzutUz57CQI=
-=CK7x
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sK/QAKCRDj7w1vZxhR
+xVLkAP4hIB2awoa9XnA3qw/e876lz55xD9JGfuLEcPapPmg7dwD9FAHKATibgz9D
+69JXf5hJVoPQViTTUTiAEbh6FWdAYg4=
+=BDeK
 -----END PGP SIGNATURE-----
 
---svg53ayom7l4t3od--
+--xow6snhlx3rrb7vu--
