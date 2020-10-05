@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE80283A09
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DF1283A52
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgJEPab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:30:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56834 "EHLO mail.kernel.org"
+        id S1728146AbgJEPdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:33:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727746AbgJEPaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:30:24 -0400
+        id S1728138AbgJEPdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:33:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37D4920637;
-        Mon,  5 Oct 2020 15:30:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CB662074F;
+        Mon,  5 Oct 2020 15:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911823;
-        bh=loSTzaIyy/eWX7bIjRiRN78CodfkLCAmYrOJDPV4Vro=;
+        s=default; t=1601911999;
+        bh=BONNBo2JyBdILyR+6gX6qgsZ5kBuGeRHvAegC07Hxe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EC41C8R9YJoF0XRDRjlDGfDJ4uZ1sNUQxHhGbbmjFmbUDXIhVP8Bm2j6Ura16KWpz
-         hzgx6DnXVmLeM46c/8AHvuh+xTzrfJ0DTchYCiTgVt+86EPSpb0cYTCFkPohm5qFm5
-         /8upkN/xrqk/mu1kGURwRj+diSBhrwMktJNVosYM=
+        b=1VHNWTk2Ul9CwDibGmYMKfD7rYFsceEWtDTeGFoUcnJWDVu2vF2G+LUHnyXFY96ot
+         vbqXT+Z8oayCYQdhx/ECcAWe7XyBoSWYrfoTthqpy9edeZbDD41HLDUVttXB/AH7rO
+         427sbEwZA66qsRSCbqmDfVorwmJwpnOkEN/w1WEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Huang <vincent.huang@tw.synaptics.com>,
-        Harry Cutts <hcutts@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 44/57] Input: trackpoint - enable Synaptics trackpoints
-Date:   Mon,  5 Oct 2020 17:26:56 +0200
-Message-Id: <20201005142111.922933010@linuxfoundation.org>
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 61/85] iommu/exynos: add missing put_device() call in exynos_iommu_of_xlate()
+Date:   Mon,  5 Oct 2020 17:26:57 +0200
+Message-Id: <20201005142117.663482767@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Huang <vincent.huang@tw.synaptics.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 996d585b079ad494a30cac10e08585bcd5345125 ]
+[ Upstream commit 1a26044954a6d1f4d375d5e62392446af663be7a ]
 
-Add Synaptics IDs in trackpoint_start_protocol() to mark them as valid.
+if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
-Fixes: 6c77545af100 ("Input: trackpoint - add new trackpoint variant IDs")
-Reviewed-by: Harry Cutts <hcutts@chromium.org>
-Tested-by: Harry Cutts <hcutts@chromium.org>
-Link: https://lore.kernel.org/r/20200924053013.1056953-1-vincent.huang@tw.synaptics.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: aa759fd376fb ("iommu/exynos: Add callback for initializing devices from device tree")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Link: https://lore.kernel.org/r/20200918011335.909141-1-yukuai3@huawei.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/trackpoint.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iommu/exynos-iommu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/mouse/trackpoint.c b/drivers/input/mouse/trackpoint.c
-index 854d5e7587241..ef2fa0905208d 100644
---- a/drivers/input/mouse/trackpoint.c
-+++ b/drivers/input/mouse/trackpoint.c
-@@ -282,6 +282,8 @@ static int trackpoint_start_protocol(struct psmouse *psmouse,
- 	case TP_VARIANT_ALPS:
- 	case TP_VARIANT_ELAN:
- 	case TP_VARIANT_NXP:
-+	case TP_VARIANT_JYT_SYNAPTICS:
-+	case TP_VARIANT_SYNAPTICS:
- 		if (variant_id)
- 			*variant_id = param[0];
- 		if (firmware_id)
+diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
+index 60c8a56e4a3f8..89f628da148ac 100644
+--- a/drivers/iommu/exynos-iommu.c
++++ b/drivers/iommu/exynos-iommu.c
+@@ -1295,13 +1295,17 @@ static int exynos_iommu_of_xlate(struct device *dev,
+ 		return -ENODEV;
+ 
+ 	data = platform_get_drvdata(sysmmu);
+-	if (!data)
++	if (!data) {
++		put_device(&sysmmu->dev);
+ 		return -ENODEV;
++	}
+ 
+ 	if (!owner) {
+ 		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
+-		if (!owner)
++		if (!owner) {
++			put_device(&sysmmu->dev);
+ 			return -ENOMEM;
++		}
+ 
+ 		INIT_LIST_HEAD(&owner->controllers);
+ 		mutex_init(&owner->rpm_lock);
 -- 
 2.25.1
 
