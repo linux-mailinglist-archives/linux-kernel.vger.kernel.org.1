@@ -2,169 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5B6283054
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4375283058
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725857AbgJEGYE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Oct 2020 02:24:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55322 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbgJEGYE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:24:04 -0400
-Received: from mail-pg1-f198.google.com ([209.85.215.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kPJuj-0002lr-AY
-        for linux-kernel@vger.kernel.org; Mon, 05 Oct 2020 06:24:01 +0000
-Received: by mail-pg1-f198.google.com with SMTP id c21so1252121pgi.21
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 23:24:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=On9/o/TdMtEJnMs6mNj8Zxe3/XpxeHUB6X2k3tQLabY=;
-        b=R5jiK8e3QZzu4aBlCKKfORjEE73mjoxiPp4xAQXzThqlAr4Q/1Hie6aLvToew1zXHj
-         T3ppraQ6bjYtGWC22AW2NlPeuyAm72Nb2zLYxtdc4zHrzdrSOT+bbxog2RTgyqUuSBnO
-         sVmRZbyaEHfnmGb/Zt6hXtWBTFdumU4HpeaGHc59hd/nHIEcX1Vm0vHKbKlIbWrDSufM
-         P7e1OLXhZwa6J30mKGjV2kgXrBCU8WgaCB8ZHSm0rbU/qEHQis/uXdzXpz6jh68DvepH
-         SRrq2mA8PDS4hvaSyOKo+o91Hc8T5NBcWIFZrZlG6SEDyyNgt1lji1V7diIxF+Uip8YV
-         ycoQ==
-X-Gm-Message-State: AOAM530641jkR+4FnQX7LR1kr0ompPSqGnW+OGwHZ66krPubLUyw05Vt
-        t2PvA9Xa3+BLoQFQyZ2AG+YmnhmCG4RAMKNT8AEvPB+biBP+r0lxL3zbFOatt0fJ/rteJUaaTy7
-        xGqcg6zhmRq2jsto55Ty1hWX23LVlwggzdVv6wRuWHQ==
-X-Received: by 2002:a62:1410:0:b029:13e:d13d:a129 with SMTP id 16-20020a6214100000b029013ed13da129mr15524201pfu.17.1601879039865;
-        Sun, 04 Oct 2020 23:23:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwj86RHXCI8tLUf5xVY+qSZRCtIeIlhl7QK6o6CLyjeCqdInuvdVQhRQHa/EguNW+tUS0aZJQ==
-X-Received: by 2002:a62:1410:0:b029:13e:d13d:a129 with SMTP id 16-20020a6214100000b029013ed13da129mr15524146pfu.17.1601879039461;
-        Sun, 04 Oct 2020 23:23:59 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id z23sm10891534pfj.177.2020.10.04.23.23.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 04 Oct 2020 23:23:58 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [Intel-wired-lan] [PATCH v4] e1000e: Increase polling timeout on
- MDIC ready bit
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <adb2f604-8c98-8799-6ed1-b8889b8cd0f6@intel.com>
-Date:   Mon, 5 Oct 2020 14:23:55 +0800
-Cc:     "Neftin, Sasha" <sasha.neftin@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <D37AEA82-9BA5-4CE0-8859-F8E7054895B3@canonical.com>
-References: <20200924164542.19906-1-kai.heng.feng@canonical.com>
- <20200928083658.8567-1-kai.heng.feng@canonical.com>
- <469c71d5-93ac-e6c7-f85c-342b0df78a45@intel.com>
- <30761C6B-28B8-4464-8615-55EF3E090E07@canonical.com>
- <345fffcd-e9f1-5881-fba1-d7313876e943@intel.com>
- <3DA721C5-F656-4085-9113-A0407CDF90FB@canonical.com>
- <adb2f604-8c98-8799-6ed1-b8889b8cd0f6@intel.com>
-To:     Vitaly Lifshits <vitaly.lifshits@intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S1725902AbgJEGY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 02:24:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbgJEGY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 02:24:58 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6E6C207EA;
+        Mon,  5 Oct 2020 06:24:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601879097;
+        bh=Yrr7GNWUAVWaaz1jIc/uXs8U/IEt8VrM/dIArGoeqEE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ThJc1ZmtFFTxYDdNdNd+qvSTOF09HxfMQO8wyxvIf3O/jNqXFBOknbeaXhDwLlWAs
+         PrdZrskYzZZoD3C1yFpNziMtzwMXM8CWgS2UJsNIFlZq4Gs/IBNJnAl5IpT1GVcSz7
+         FfpjLECmQYssfScz4NDLWjzumgZ8IcsQuQBSbbac=
+Received: by mail-oo1-f54.google.com with SMTP id b12so1963023oop.13;
+        Sun, 04 Oct 2020 23:24:57 -0700 (PDT)
+X-Gm-Message-State: AOAM53123GvanQ29Bce+sClk1yAQAIKz/SECzV4FJMN+7Z/kHElaRCtN
+        2iyxLcAwjwFtTXgDjQlTl3ur6wDACse/I5RyORc=
+X-Google-Smtp-Source: ABdhPJzwJdZHBBVYKQctaaNGjxR/8GlzP9k3E5YR5UECckChEgp4tsYN+VVHxlTisKvVtVRgs7r5+77Nd5DZOWBgB5I=
+X-Received: by 2002:a4a:c3ca:: with SMTP id e10mr4325783ooq.41.1601879097030;
+ Sun, 04 Oct 2020 23:24:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200930065617.934638-1-palmerdabbelt@google.com>
+ <20201002064905.GA27115@infradead.org> <5692716.lOV4Wx5bFT@positron.chronox.de>
+ <CAMj1kXEnOh4MBiVVgkhd4P81eRPCVi3+y6JcD58jL45-eh324A@mail.gmail.com> <20201005061918.GB1856@infradead.org>
+In-Reply-To: <20201005061918.GB1856@infradead.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 5 Oct 2020 08:24:46 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
+Message-ID: <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
+Subject: Re: [PATCH] crypto: jitterentropy - bind statically into kernel
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Stephan M??ller" <smueller@chronox.de>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        kernel test robot <lkp@intel.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vitaly,
+On Mon, 5 Oct 2020 at 08:19, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Sun, Oct 04, 2020 at 11:16:10PM +0200, Ard Biesheuvel wrote:
+> > On Sun, 4 Oct 2020 at 20:48, Stephan M??ller <smueller@chronox.de> wrote:
+> > >
+> > > The RISC-V architecture is about to implement the callback
+> > > random_get_entropy with a function that is not exported to modules.
+> >
+> > Why is that? Wouldn't it be better to export the symbol instead?
+>
+> get_cycles is a low-level time keeping detail that really should not
+> be exported, and at least for RISC-V this would be the only modular
+> user.  Once that is sorted out I'll audit other common architectures
+> to drop the export, as it isn't something that should be used in ramdom
+> driver code.
 
-> On Sep 30, 2020, at 14:54, Vitaly Lifshits <vitaly.lifshits@intel.com> wrote:
-> 
-> On 9/29/2020 18:08, Kai-Heng Feng wrote:
-> 
-> Hello Kai-Heng,
->>> On Sep 29, 2020, at 21:46, Neftin, Sasha <sasha.neftin@intel.com> wrote:
->>> 
->>> Hello Kai-Heng,
->>> On 9/29/2020 16:31, Kai-Heng Feng wrote:
->>>> Hi Sasha,
->>>>> On Sep 29, 2020, at 21:08, Neftin, Sasha <sasha.neftin@intel.com> wrote:
->>>>> 
->>>>> On 9/28/2020 11:36, Kai-Heng Feng wrote:
->>>>>> We are seeing the following error after S3 resume:
->>>>>> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>>>> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
->>>>>> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>>>> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
->>>>>> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>>>> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
->>>>>> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
->>>>>> ...
->>>>>> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
->>>>>> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
->>>>>> increase polling iteration can resolve the issue.
->>>>>> This patch only papers over the symptom, as we don't really know the
->>>>>> root cause of the issue. The most possible culprit is Intel ME, which
->>>>>> may do its own things that conflict with software.
->>>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>>>> ---
->>>>>> v4:
->>>>>>  - States that this patch just papers over the symptom.
->>>>>> v3:
->>>>>>  - Moving delay to end of loop doesn't save anytime, move it back.
->>>>>>  - Point out this is quitely likely caused by Intel ME.
->>>>>> v2:
->>>>>>  - Increase polling iteration instead of powering down the phy.
->>>>>>  drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
->>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>> diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
->>>>>> index e11c877595fb..e6d4acd90937 100644
->>>>>> --- a/drivers/net/ethernet/intel/e1000e/phy.c
->>>>>> +++ b/drivers/net/ethernet/intel/e1000e/phy.c
->>>>>> @@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
->>>>>>  	 * Increasing the time out as testing showed failures with
->>>>>>  	 * the lower time out
->>>>>>  	 */
->>>>>> -	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
->>>>>> +	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
->>>>> As we discussed (many threads) - AMT/ME systems not supported on Linux as properly. I do not think increasing polling iteration will solve the problem. Rather mask it.
->>>> I am aware of the status quo of no proper support on Intel ME.
->>>>> I prefer you check option to disable ME vi BIOS on your system.
->>>> We can't ask user to change the BIOS to accommodate Linux. So before a proper solution comes out, masking the problem is good enough for me.
->>>> Until then, I'll carry it as a downstream distro patch.
->>> What will you do with system that even after increasing polling time will run into HW error?
->> Hope we finally have proper ME support under Linux?
->> Kai-Heng
->>>> Kai-Heng
->>>>>>  		udelay(50);
->>>>>>  		mdic = er32(MDIC);
->>>>>>  		if (mdic & E1000_MDIC_READY)
->>>>> Thanks,
->>>>> Sasha
->>> Thanks,
->>> Sasha
-> 
-> On which device ID/platform do you see the issue?
+Fair enough.
 
-HP Z4 G4 Workstation,
-00:1f.6 Ethernet controller [0200]: Intel Corporation Ethernet Connection (2) I219-LM [8086:15b7]
+But this means we should fix the jitterentropy driver rather than
+sidestepping the issue by only allowing it to be built in a way where
+we don't happen to notice that the symbol in question is not meant for
+general consumption.
 
-> What is the Firmware version on your platform?
-
-BIOS version: P61 v02.59
-
-
-> What is the ME firmware version that you have?
-
-ME version: 11.11.50.1422
-ME mode: AMT disable
-
-Kai-Heng
-
-> 
-> I am asking these questions, since I know there is supposed to be a fix in the firmware to many issues that are related to ME and device interoperability.
-> 
-> Thanks,
-> 
-> Vitaly
-
+If jitterentropy is a special case, we could put a alternate
+non-'static inline' version of random_get_entropy() in the core
+kernel, and only export it if JITTER_ENTROPY is built as a module in
+the first place. But I'd prefer it if jitterentropy switches to an API
+that is suitable for driver consumption.
