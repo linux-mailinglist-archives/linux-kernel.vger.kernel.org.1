@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1928E2832D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41DD2832DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgJEJMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        id S1726075AbgJEJNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEJMg (ORCPT
+        with ESMTP id S1725934AbgJEJNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:12:36 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109A0C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:12:36 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e2so7974718wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:12:35 -0700 (PDT)
+        Mon, 5 Oct 2020 05:13:07 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D96C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:13:07 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so5672821pju.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:13:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6izeXoM0ljycw7P6ToTrkE6R0CPiIFhMYIDr3ZU/XTM=;
-        b=r1eIBi6u4R71qNHnmPX4aS2VLe5lgH3XD7b5Ynk9QA7M3YPjhHnIqPH4vEPNXpIsxo
-         zIChZz3b4hna6vx27bsLcZmlQx9u3YsJv4VGLjbWzGUWs6Zqe8SrU5I+Qi5eNmaz++jr
-         /YyXlXf4Ump2vV7N+7heoG7hvFiKX0HptCED5j/f3enDSecIcTP/hFBE3zP889FJxzFE
-         TaSA7COljVn5lHAkymJeokTAoNjQ98/wtLd+3ev7A7AKCyJAwpgsMXCeweXfJUYQuQMA
-         uBYPnTQU/A+uyblCRfhmgDXVotNB++7l9mKHrV0nqwck8y5Ua0BUYPmLYL/rvCr9IuWb
-         PSYQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=ZdgKLe65/5ZTL18bHaqdAUbi1xJI+QzTIn6dSNFRMgI=;
+        b=f2t7lvS24tVVJqV0MihUDCs6DheTIibTnFv4yiwHRgZ+a3IhrmApWH1UjwOtYmo+Zq
+         iJyenEUida+a/FcajZHjmLQIRuLWIIoW4uACNRRgjS9xZc5vxBR3GupWrlFC7729Mdn/
+         J1kO2rfmLixioBgWpaUBMquHHI9kXU5LoI9GT3RLeN+6dSpWrWI7w694ptfftLKggSn3
+         CsFxaK7A52rBH8lLlWeeSoptqZqGLERyX8SNhrDZovlcCCJen6IKBNKbXSlgCL7C2UQR
+         P9Da6vLSe3QfpEDRZgZX2HeguPL1EiG5xkuIOROilkD/X0ti364DlsXmLbjOYH85NZaQ
+         O9FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6izeXoM0ljycw7P6ToTrkE6R0CPiIFhMYIDr3ZU/XTM=;
-        b=aZKnIGN+Oy+NYYrFkLfF1bmLe03EA+j7zD5J0N2h6Tfz77Nv+ivN4o1e+EdU8Kr5/U
-         EgbIrGanbgwpoTheYxxQL05XZOUSL/cufHkPjCqGqD5rNo/8rKKMEHLKEP0d+zyPub+1
-         x3z4dHNEAaeshIKg3TsPcSYG9lOVEDYQTgsog3LNQD03TnVjsVOA6xNnwCmDiS2ZqgUd
-         8oZgO/41DklY7HpKLmrzRHMptrR/jLHJyxCpsrTS65qVK8U97L4OL1buh1c9ws10P+XU
-         M0wWUTxJaI+81+9KRmZsFX7GUrB/t0uL/9cg8yEYVNgB+MxMJeOefbozHAdKenNwMe6Q
-         K/+w==
-X-Gm-Message-State: AOAM531kkgk56AfXknR4aUNT0G9mM2UAlH657MATcXkXMYu1GQ0ZsCSL
-        wBwXy0L9KgX5kh7PunqL26fyjdGFHdu6Og==
-X-Google-Smtp-Source: ABdhPJz93/t0WL86Acn9stDrA0eTBzE1JCCCjWQysCBKgFc95AMBSul4CGySEyxsKvINZiaFPzLmTg==
-X-Received: by 2002:a1c:e48b:: with SMTP id b133mr15590497wmh.0.1601889154497;
-        Mon, 05 Oct 2020 02:12:34 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id x2sm12153651wrl.13.2020.10.05.02.12.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Oct 2020 02:12:33 -0700 (PDT)
-Subject: Re: [PATCH 3/3] nvmem: qfprom: Don't touch certain fuses
-To:     Evan Green <evgreen@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200929205807.2360405-1-evgreen@chromium.org>
- <20200929135741.3.I1bb1b0e94be3b792804e08831d6a55481e162d63@changeid>
- <8f467220-3ac8-c8fc-33fe-8d86904571fe@linaro.org>
- <CAE=gft5FoWpscS_9CfuCNSZxsq_CUu_AShQ=tLiW=NGL8YG5tQ@mail.gmail.com>
- <d79de840-25cc-0e8e-15e6-3cc2fda2e38b@linaro.org>
- <CAE=gft4eDRBSuAQmiZQs3LegVyERWAJSmvmHKEY1N=z5HSViJQ@mail.gmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <14b62a74-4b4f-42b9-6043-ab8445a3f627@linaro.org>
-Date:   Mon, 5 Oct 2020 10:12:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAE=gft4eDRBSuAQmiZQs3LegVyERWAJSmvmHKEY1N=z5HSViJQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=ZdgKLe65/5ZTL18bHaqdAUbi1xJI+QzTIn6dSNFRMgI=;
+        b=VJBqD33rKEpv3NKBRn+ABxVcRwnmBLXiG84lEA9FYOPERcNcNBkWYgs+I6tYmIBkKx
+         Faf/cMi9Qidk1dVSR1SA4toujpNMrDrCMy53o79i4z2UW3IFlwlqtAplgOvLefOST/J8
+         7SFR7RNBX4iI+axmW6TCNb6YsHLYHMizM94G1i2MQ6I4dmKkCwi/muoYKC9GoxMe7c3j
+         BfGPgiQzwLCmv8LQmi+cFoNdPwstcPaWf89pTYN9AYiBsouUb+TsZ8B0MQntUSI1ECEI
+         cZwywyU1dirO62UMdRurisZ3EZCAp4K6FsApQ77iom5S/Ey2dhZg7ktghAu4Yn5z49gr
+         mW3Q==
+X-Gm-Message-State: AOAM531uFbbo8l+fv5rsbj9LulyccJkF0Pex/7YUypGvImlVwBpWI9oA
+        r6ET3AYfgHSFc4EUlaFM76tn
+X-Google-Smtp-Source: ABdhPJzcTUOR6tchxr55/BxMSt6DwR7qE9UW+un6FEMV2klT6SlE1ubT8J+7qr+yWq5KmhRsSeUy9A==
+X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr15596914pjb.93.1601889187120;
+        Mon, 05 Oct 2020 02:13:07 -0700 (PDT)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.googlemail.com with ESMTPSA id c7sm11255028pfj.84.2020.10.05.02.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 02:13:06 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org
+Cc:     svarbanov@mm-sol.com, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v3 1/5] dt-bindings: phy: qcom,qmp: Add SM8250 PCIe PHY bindings
+Date:   Mon,  5 Oct 2020 14:42:32 +0530
+Message-Id: <20201005091236.31770-2-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201005091236.31770-1-manivannan.sadhasivam@linaro.org>
+References: <20201005091236.31770-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add the below three PCIe PHYs found in SM8250 to the QMP binding:
 
+QMP GEN3x1 PHY - 1 lane
+QMP GEN3x2 PHY - 2 lanes
+QMP Modem PHY - 2 lanes
 
-On 01/10/2020 22:49, Evan Green wrote:
-> Oh no, I realized this isn't nearly as beautiful when I try to move it
-> into the core. The low level read/write interface between the nvmem
-> core and the driver is a range. So to move this into the core I'd have
-> to implement all the overlap computation logic to potentially break up
-> a read into several small reads in cases where there are many little
-> keepout ranges. It was much simpler when I could just check each byte
-> offset individually, and because I was doing it in this one
-> rarely-used driver I could make that performance tradeoff without much
-> penalty.
-> 
-> I could do all range/overlap handling if you want, but it'll be a
-> bigger change, and I worry my driver would be the only one to end up
-> using it. What do you think?
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-I still think this should go in to core. core should be able to avoid 
-checking by the presence of any restricted range, so it should not be a 
-overhead for other non-users. regmap has similar feature we can take 
-some inspiration from that code!!
+diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+index 185cdea9cf81..ec05db374645 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+@@ -31,6 +31,9 @@ properties:
+       - qcom,sdm845-qmp-usb3-uni-phy
+       - qcom,sm8150-qmp-ufs-phy
+       - qcom,sm8250-qmp-ufs-phy
++      - qcom,sm8250-qmp-gen3x1-pcie-phy
++      - qcom,sm8250-qmp-gen3x2-pcie-phy
++      - qcom,sm8250-qmp-modem-pcie-phy
+ 
+   reg:
+     items:
+@@ -259,6 +262,9 @@ allOf:
+             enum:
+               - qcom,sdm845-qhp-pcie-phy
+               - qcom,sdm845-qmp-pcie-phy
++              - qcom,sm8250-qmp-gen3x1-pcie-phy
++              - qcom,sm8250-qmp-gen3x2-pcie-phy
++              - qcom,sm8250-qmp-modem-pcie-phy
+     then:
+       properties:
+         clocks:
+-- 
+2.17.1
 
-
---srini
-
-
-> -Evan
