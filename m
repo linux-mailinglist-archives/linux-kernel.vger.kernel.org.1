@@ -2,123 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543BF283731
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76985283735
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbgJEOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
+        id S1726096AbgJEOCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgJEOCE (ORCPT
+        with ESMTP id S1726444AbgJEOCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:02:04 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2809BC0613CE;
-        Mon,  5 Oct 2020 07:02:04 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 184so2347408lfd.6;
-        Mon, 05 Oct 2020 07:02:04 -0700 (PDT)
+        Mon, 5 Oct 2020 10:02:12 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4284CC0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:02:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id v12so8918381wmh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:02:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=X/w3CEZ9lodjlQSct4mip6uwJZ2zGkN0UfUIv/VK97Q=;
-        b=sEoyV/al+Rf3T8SXz6/2wHQ/oV7dBin9RovrWz0nHD2V6hhFwxVbYDTdwoBGlPwhjg
-         iErhE+s88QqAEkJ25gPTkKpLqDpGXzcSkjkSF+ktNhG3muw0uzqM+WN32ZMZJ+qEE9il
-         kVL9SXhCGbm9dLUOkiH/pXP4igo6smVOMj5dhbRRnrTH0oxIgV/Mkcr1UWnfotMNdJeP
-         YZ5CAEYT3bCo60te+2Hj8cxTFa+aye2sAdUhCtSE6Q0Heazk4zFs1NqPfGmEOenjxueN
-         9WF6u1Npl1IzQBhkrVN/sEnwyQOCzCo/GVdGq4oLkifxAmWxKHf6Jr+1u86/+9Vfu+Ny
-         44uQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kw0jH99mH65cgbBf0cAKvt7u45o+bI69PtoRz7plT9I=;
+        b=LKbavLR8ZdTnQm7tlmWwgndIQwhen8v8O8x1psZ+HIE2wmAD24D+bXj5NwsJAvyS/R
+         MQkiaMJ/+ob1zWMVtrd+sEWT6BKvZocdCnxbzPsmOqi3r39+dbuF1VEaGtZJZGoHTneV
+         0F4uvulqQGo0uTF43vmMZxaBExbJ8UbT6Sb9k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X/w3CEZ9lodjlQSct4mip6uwJZ2zGkN0UfUIv/VK97Q=;
-        b=rGXur0j+IFbdobq9hkuhICB5ZugtrVV+pWwx0Fk45eBxrtVruACpn5RmtdyqKLV7Dg
-         YjGeBMqwEg1lWZxGCzh/jJwNwF7uvUg7mV6E9KAfyXiNuTxZyHnkDPe1pzWfdRXKucQn
-         VFTjv2pFjdylpDhNY7XjOp5k+cIuQ/5meoSXdyxD7IGqFL5V2NZMoECZSABMI+7wOi6U
-         im1F/2AoiKpqf73i4LpDGAbD9aCp23EDY7aJx36cLzMejXFPRZkF3Xc3i4tf2RPAHpbN
-         GSJyGl0L6/t9PC8s5RtGVRySf0mGBGPfzZq+Htbj+PDeHszavCLPW48ZxhynBT6l9H0g
-         g+rw==
-X-Gm-Message-State: AOAM533PumkW5pFHZ6Hthh7swtQXf5BKrCitPAWay0C4AzaUlIxUjv9A
-        3iaz4IFYDvD0IkoxwSFJVpKVeQQU2z8=
-X-Google-Smtp-Source: ABdhPJzUzoij0wOhojrrQPR0ksGCPMNd0wMZDNgXMEiEgucIAuF9OTkcpjE8MHKO2jkCY/L0PYie8g==
-X-Received: by 2002:a19:8488:: with SMTP id g130mr178362lfd.424.1601906522326;
-        Mon, 05 Oct 2020 07:02:02 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id d6sm471414lja.63.2020.10.05.07.02.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 07:02:01 -0700 (PDT)
-Subject: Re: [PATCH v3 1/3] ARM: tegra: Add device-tree for Ouya
-To:     Peter Geis <pgwipeout@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201004133114.845230-1-pgwipeout@gmail.com>
- <20201004133114.845230-2-pgwipeout@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b3b99578-73c8-17e1-81ff-4b3fdf1b58f3@gmail.com>
-Date:   Mon, 5 Oct 2020 17:02:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Kw0jH99mH65cgbBf0cAKvt7u45o+bI69PtoRz7plT9I=;
+        b=KyLnZGJjNucofJTkFFPX9rHlCMYExUlsGEq1mnNRL9FQDJX20LlKYWzO1g+xAtrUR7
+         i6bolX1RtPKLqnbKTeEAWvkuUw2orjATTVTfQOVYh4Wkkra+LYMGrUmYt7vWJbluoTkv
+         yIyaWrzPtEOw0mixXZGtT69p96rMrCnV4/myZFVQxY8qYH+qmAzd0OXaQKS/wbuo7zCc
+         vGoBWhowk9KybaSClvqLI5OgqW+mlVO9AnDd4CpHy+X5WJgDR5anq66jRmOPoINMW92X
+         48kMdlquw9CgX6FYi4LnrVRRmaIW07tIEv/3BnjJry2Ick/5uyKHImpi9LnHBPBKsDTz
+         ktkg==
+X-Gm-Message-State: AOAM533usaRnhQaSaalwIJDRCuEvmOiI9yC2gWQM2XI2C6Qu61pZVkl3
+        jrIo/LE8sf4o1kNjlqxZipQquA==
+X-Google-Smtp-Source: ABdhPJxaKvPpL0rwdLNrB+ck47hYngpJ9D4J1RqIbGrDU+BZnsh9AH/S/PSgGf1teantMnWe2hZn8w==
+X-Received: by 2002:a1c:2905:: with SMTP id p5mr17734071wmp.187.1601906526822;
+        Mon, 05 Oct 2020 07:02:06 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t15sm78967wrp.20.2020.10.05.07.02.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:02:05 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 16:02:03 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/14] drm/msm: Drop struct_mutex in shrinker path
+Message-ID: <20201005140203.GS438822@phenom.ffwll.local>
+Mail-Followup-To: Hillf Danton <hdanton@sina.com>,
+        Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201004192152.3298573-1-robdclark@gmail.com>
+ <20201005092419.15608-1-hdanton@sina.com>
 MIME-Version: 1.0
-In-Reply-To: <20201004133114.845230-2-pgwipeout@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005092419.15608-1-hdanton@sina.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.10.2020 16:31, Peter Geis пишет:
-> +	thermal-zones {
-> +		cpu_thermal: cpu-thermal {
-> +			polling-delay = <5000>;
-> +			polling-delay-passive = <5000>;
-> +
-> +			thermal-sensors = <&cpu_temp 1>;
-> +
-> +			trips {
-> +				cpu_alert0: cpu-alert0 {
-> +					temperature = <50000>;
-> +					hysteresis = <10000>;
+On Mon, Oct 05, 2020 at 05:24:19PM +0800, Hillf Danton wrote:
+> 
+> On Sun,  4 Oct 2020 12:21:45
+> > From: Rob Clark <robdclark@chromium.org>
+> > 
+> > Now that the inactive_list is protected by mm_lock, and everything
+> > else on per-obj basis is protected by obj->lock, we no longer depend
+> > on struct_mutex.
+> > 
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/msm/msm_gem.c          |  1 -
+> >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 54 --------------------------
+> >  2 files changed, 55 deletions(-)
+> > 
+> [...]
+> 
+> > @@ -71,13 +33,8 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+> >  {
+> >  	struct msm_drm_private *priv =
+> >  		container_of(shrinker, struct msm_drm_private, shrinker);
+> > -	struct drm_device *dev = priv->dev;
+> >  	struct msm_gem_object *msm_obj;
+> >  	unsigned long freed = 0;
+> > -	bool unlock;
+> > -
+> > -	if (!msm_gem_shrinker_lock(dev, &unlock))
+> > -		return SHRINK_STOP;
+> >  
+> >  	mutex_lock(&priv->mm_lock);
+> 
+> Better if the change in behavior is documented that SHRINK_STOP will
+> no longer be needed.
 
-Hello, Peter!
+btw I read through this and noticed you have your own obj lock, plus
+mutex_lock_nested. I strongly recommend to just cut over to dma_resv_lock
+for all object lock needs (soc drivers have been terrible with this
+unfortuntaly), and in the shrinker just use dma_resv_trylock instead of
+trying to play clever games outsmarting lockdep.
 
-A day ago I was tuning thermal zones for Nexus 7 because found that the
-current variant is a bit too unpractical. In particular temperature
-hysteresis should be small, otherwise cpufreq could get throttled
-enormously to the point that device becomes unusable. This is an
-active-cooling zone, but it looks to me that hysteresis is a bit too
-high and should make Ouya much noisier than it could be.
+I recently wrote an entire blog length rant on why I think
+mutex_lock_nested is too dangerous to be useful:
 
-I suggest to try to set hysteresis to 0.2C here, i.e. hysteresis = <200>.
+https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
 
-I also suggest to bump the temperature threshold to 55C in order to
-ignore temporal temperature spikes because CPU temp should be about 40C
-during idle and then it may raise quickly for a brief moments during
-average usage.
-
-> +					type = "active";
-> +				};
-> +				cpu_alert1: cpu-alert1 {
-> +					temperature = <70000>;
-> +					hysteresis = <5000>;
-> +					type = "passive";
-> +				};
-
-And here to 0.2C as well.
-
-> +				cpu_crit: cpu-crit {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-
-The critical zone perhaps should be fine as-is.
+Not anything about this here, just general comment. The problem extends to
+shmem helpers and all that also having their own locks for everything.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
