@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A5528365D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493AC283624
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgJENN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:13:59 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8563 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgJENN5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:13:57 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7b17230009>; Mon, 05 Oct 2020 05:52:51 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
- 2020 12:52:19 +0000
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.46) by
- HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 5 Oct 2020 12:52:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kmrmUsweSAW8gcuAO0J+mpgbG21Cxo424386h8BnLy5ApOnTGVpyFvyJj02OFtYgAS46MVV0HyFl0CHrai2b1ple38kZgLifJrtjAX6vvMWM5DwH0EuJgPprCmvvUPow0jcawMBDp7mQgMoqpFRzULm2Q+H/Q0IQLta6DzhZKJRi3Z4Pd1GRFxLyf67s+QqOoVVYSD39BjCv+sQz+C+vYCv8h6XkMXJMCDJ0C0Djeo7I2PuXKeEH5xXn26LE66huouNrfLtZrp8rF3BVDi8WgL301hBVdRU9robf4rbcO0LI77nocxxIZSkKQaLPRYJOGwyJAbxthl77UwXHvm8F8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yFpAt8G4kj4BWnNGLXnm/qbINihrY4F8VSzhDRBz/6A=;
- b=P+JHj/uJ1A97f5t2pXIc8Ap9fmj9vVwSlSALX+kw/cBCzkb7MNFamf+2LLkXElWvHKu2MuFr5V3/96yFYzylmN5K/iHrG/XFJZUscgHLQemaMplZ3Kb2vb3uMShww2XN8FqYNkoEQQ3k9aunYjsrpVmTqL57rx08pBwtkyLD/IP0xDo/BpGBj82Dl1eek0Mf1vX3r4JLrXXqrWvWKi8NdbFS4C3/N025dzwbUEIzCm+sUHvrJsQOqe+Hf+VRNhjceM9LNIyCCG+MTS0AbyWGSCwzaj4whSK+E/rIAig5on0HpnShhXYFzes/wCBuV1m7zziKqpPCYMWmKXfwRAm6VA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4340.namprd12.prod.outlook.com (2603:10b6:5:2a8::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Mon, 5 Oct
- 2020 12:52:18 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
- 12:52:18 +0000
-Date:   Mon, 5 Oct 2020 09:52:16 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jann Horn <jannh@google.com>
-CC:     Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        "Richard Weinberger" <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        <linux-um@lists.infradead.org>, John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside
- lock of live mm
-Message-ID: <20201005125216.GV816047@nvidia.com>
-References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
- <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
- <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com>
- <CAG48ez2LdreJtHcZBL=t010PghjVECcsat2e2kzgakDvR0ue5w@mail.gmail.com>
- <CANN689H6fQkSXL8U0M-MoSrw8b8cQFMDaTRKr2v8oacZJ_FhKA@mail.gmail.com>
- <CAG48ez0LuG9nULaBF_3ofE--u=TBgbxVdACthpb8wtJhADO02w@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0LuG9nULaBF_3ofE--u=TBgbxVdACthpb8wtJhADO02w@mail.gmail.com>
-X-ClientProxiedBy: MN2PR16CA0064.namprd16.prod.outlook.com
- (2603:10b6:208:234::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726719AbgJENDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:03:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36716 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgJENDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:03:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601902369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ns5ZwFCdhDQq4nuYCyyIwqB39q09F/YpJPjZ7uWOQmY=;
+        b=EDNTZtVlRR9rydSnWsBPBEsy9+JwwzprOyNvfSZbCe1SyXZ8VlxTvHFinU4FWOO501B9o7
+        Gv6AuREmjDmsxD6vP90QvMQ9bzlZxBJFlt6g1zYyRwdr0p3Oys4PvXdZti26k7ffY+6Ga1
+        4fdeizJ2gsnSAz3DO9aooUaw9MS2+m8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B235ADBE;
+        Mon,  5 Oct 2020 12:52:49 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 14:52:47 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH 2/9] mm, page_alloc: calculate pageset high and batch
+ once per zone
+Message-ID: <20201005125247.GX4555@dhcp22.suse.cz>
+References: <20200922143712.12048-1-vbabka@suse.cz>
+ <20200922143712.12048-3-vbabka@suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0064.namprd16.prod.outlook.com (2603:10b6:208:234::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.37 via Frontend Transport; Mon, 5 Oct 2020 12:52:18 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kPPyS-007cWz-3n; Mon, 05 Oct 2020 09:52:16 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601902371; bh=yFpAt8G4kj4BWnNGLXnm/qbINihrY4F8VSzhDRBz/6A=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=i8J+K6GhYXSmZ+B3n3u7T6kWRWAkweQeQ9/IZEUAQgZAvlrBuO6fTi01KWWMNYqXN
-         qUaqUqTiIlk9l5cw4YFuwQjGlqm1oLI0T7I/bjbLGlEnKSMrz9+3iqbsj5GhXowNIQ
-         pDNjpLkMY2kkisn2AjadS2GyuPQrVSBkMQApD7M63jZDVVLOM/o2C4/uai/cdn9EDa
-         V15IqCW652gLr4m2t9BBpbkdavfFdiiXprRenWgh+uvj++oXmXAzHUsVFOJUjEMcax
-         csYGpeZxNuu6Avwk8WjFduxqikz3HiVBbMzS0KGR4bwkuKlVqX86wnRFyXU3EJPLWd
-         c2HTpOv3dn0AA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922143712.12048-3-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 03:30:43AM +0200, Jann Horn wrote:
-> But another place where lockdep asserts should be added is find_vma();
-> there are currently several architectures that sometimes improperly
-> call that with no lock held:
+On Tue 22-09-20 16:37:05, Vlastimil Babka wrote:
+> We currently call pageset_set_high_and_batch() for each possible cpu, which
+> repeats the same calculations of high and batch values.
+> 
+> Instead call the function just once per zone, and make it apply the calculated
+> values to all per-cpu pagesets of the zone.
+> 
+> This also allows removing the zone_pageset_init() and __zone_pcp_update()
+> wrappers.
+> 
+> No functional change.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Yes, I've seen several cases of this mis-use in drivers too
+I like this. One question below
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Jason
+> ---
+>  mm/page_alloc.c | 42 ++++++++++++++++++------------------------
+>  1 file changed, 18 insertions(+), 24 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index a163c5e561f2..26069c8d1b19 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6219,13 +6219,14 @@ static void setup_pageset(struct per_cpu_pageset *p)
+>  }
+>  
+>  /*
+> - * Calculate and set new high and batch values for given per-cpu pageset of a
+> + * Calculate and set new high and batch values for all per-cpu pagesets of a
+>   * zone, based on the zone's size and the percpu_pagelist_fraction sysctl.
+>   */
+> -static void pageset_set_high_and_batch(struct zone *zone,
+> -				       struct per_cpu_pageset *p)
+> +static void zone_set_pageset_high_and_batch(struct zone *zone)
+>  {
+>  	unsigned long new_high, new_batch;
+> +	struct per_cpu_pageset *p;
+> +	int cpu;
+>  
+>  	if (percpu_pagelist_fraction) {
+>  		new_high = zone_managed_pages(zone) / percpu_pagelist_fraction;
+> @@ -6237,23 +6238,25 @@ static void pageset_set_high_and_batch(struct zone *zone,
+>  		new_high = 6 * new_batch;
+>  		new_batch = max(1UL, 1 * new_batch);
+>  	}
+> -	pageset_update(&p->pcp, new_high, new_batch);
+> -}
+> -
+> -static void __meminit zone_pageset_init(struct zone *zone, int cpu)
+> -{
+> -	struct per_cpu_pageset *pcp = per_cpu_ptr(zone->pageset, cpu);
+>  
+> -	pageset_init(pcp);
+> -	pageset_set_high_and_batch(zone, pcp);
+> +	for_each_possible_cpu(cpu) {
+> +		p = per_cpu_ptr(zone->pageset, cpu);
+> +		pageset_update(&p->pcp, new_high, new_batch);
+> +	}
+>  }
+>  
+>  void __meminit setup_zone_pageset(struct zone *zone)
+>  {
+> +	struct per_cpu_pageset *p;
+>  	int cpu;
+> +
+>  	zone->pageset = alloc_percpu(struct per_cpu_pageset);
+> -	for_each_possible_cpu(cpu)
+> -		zone_pageset_init(zone, cpu);
+> +	for_each_possible_cpu(cpu) {
+> +		p = per_cpu_ptr(zone->pageset, cpu);
+> +		pageset_init(p);
+> +	}
+> +
+> +	zone_set_pageset_high_and_batch(zone);
+
+I hope I am not misreading the diff but it seems that setup_zone_pageset
+is calling pageset_init which is then done again by
+zone_set_pageset_high_and_batch as a part of pageset_update
+
+-- 
+Michal Hocko
+SUSE Labs
