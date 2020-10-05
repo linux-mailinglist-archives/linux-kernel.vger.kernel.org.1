@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A4F283DE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45BE283DEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbgJER6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:58:05 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:43412 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgJER6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:58:04 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7b5ea90000>; Tue, 06 Oct 2020 01:58:01 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
- 2020 17:57:51 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 5 Oct 2020 17:57:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WV+MR56hCTqldtnB/qkM1rmV0oR6xkrGreGU1JGwnz/xcTWvMRZYV9PP2jgH2WbENGpAjymFIpSqfGU82lb+nRdY+hK9aGpS9MD9280hz6k1kxm8rf6CI6N49bsa+ybL+aQRGdHG4w0nddtndqRRDnmE62+auUoxi044buOzMRwzD1RgfH75mYyVx+tnNG7ImbKVkU1fcdVhZBjkarPSmLQFMGyk9scgkF4W/a+eIl8X8W7iu2kyqMLox1XbGWljtOPWvX7R2xJQ/hfRxtUkTd2uqT78eEZ56eWw+10hZgSqAb0AZD+JMu300TJF6aepSNjplfw+LuhT8PHZ40j0NA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rApgK6OSfcWBhmL5nkaxy8ldgngDjPhb7Ki5j5tm6Ro=;
- b=aBMLYWg66d1/c5GK4oB5+etRbCzsNys8TGyqyPJZgQbNxtZUEXUEqZKaQ2lgrJqnr4WpKd5BZcgOt10utpteEJYCSmCVucwDRRDt0OK0UJ2UTQKZ6dlGJ28v4JgJvN8wXguEdcKs8tjbNrMeD//QoVJW79B9u7aApntNyb6zJ1Wfb67l5lrHdZaLslpdwLGd+sOsV8fUWkXl1kdILfB8OCC/DXhz0pz8EpbEoFOesLQB/5HbmPkjFZR2LRDIWBxQBC7scUS5YrRukK5Er6CwJ/9orNGH5+7B7fsbKLOhqD6Z9IHcA4aF5k9u1r2CsVOLzhkc1UgJHcXgMnH8W5QcVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3403.namprd12.prod.outlook.com (2603:10b6:5:11d::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Mon, 5 Oct
- 2020 17:57:48 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
- 17:57:48 +0000
-Date:   Mon, 5 Oct 2020 14:57:46 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jan Kara <jack@suse.cz>
-CC:     andrew Morton <akpm@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>, <linux-mm@kvack.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
-        Mel Gorman <mgorman@suse.de>, <stable@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        <linux-media@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Message-ID: <20201005175746.GA4734@nvidia.com>
-References: <0-v1-447bb60c11dd+174-frame_vec_fix_jgg@nvidia.com>
- <20201005175308.GI4225@quack2.suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201005175308.GI4225@quack2.suse.cz>
-X-ClientProxiedBy: BL0PR02CA0111.namprd02.prod.outlook.com
- (2603:10b6:208:35::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727149AbgJER6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgJER6s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:58:48 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D96C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:58:47 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 77so11986445lfj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VQapKerqEPOfWjuVkuWjhpBPHOAY0WMdQww5oZQ+egs=;
+        b=OXKb2fbfDYHdc1AbGUIMBgMPVh7d7kxEbrnogtA7tkBCFR9wFHBTnbowM3BhSEljnh
+         UEswPIgw4X463SChT4PQxD9A/LlhUfYNQWfSbDf+C8TBTKfDBnzK13OEqez3jPckrVjv
+         qUxSB2BhkFOZGyy2nFmMHm6nnRfP1HV8q//vo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VQapKerqEPOfWjuVkuWjhpBPHOAY0WMdQww5oZQ+egs=;
+        b=nuYMzq9Z7mPdzUrwcC3aUtplF1ah4mohHdtRnFVYWPs2OlJOJdica6z7Uhsvt65SHv
+         UojetVV/QCPicZZwZ1PIVf8OIjUZh/eP5EaFt6WqsBGt/SGZpWjfFGaET+lrrOBodtGX
+         GIDjpYPTkjsT4NxHtgeI1wtZ2Fwxe4hTkGKCbfAol7KRTVqcEg62Mv172p2ovgxS/tve
+         R0RpE0j+PNNzlitFSxVD9akjGfrFvquAhDP8sQCNRU2usn9Zs56cg+XuFtya0Z+ekIQB
+         4m8EL4vi/fXxkclozFFcuJOOP2VUKMOcxPXzbeunnJojep6qEl9G2xBgWMZtDGnenFbB
+         juTQ==
+X-Gm-Message-State: AOAM532MRw2OAXFcPyz7jy8LfDnRK6t+TBnKgF3m5yJ3agiPjuGxbdoS
+        Xm70gYWi9nAYNXYeZUJtpSlEvdekw8ruXg==
+X-Google-Smtp-Source: ABdhPJze70cMISp+udAGf5/0jzlWKdJEFDdPsi+OfCJEFPrQFh30Ax0Wq2HFzyy4mTi6LmlHPTUcMQ==
+X-Received: by 2002:ac2:42d8:: with SMTP id n24mr191369lfl.502.1601920725283;
+        Mon, 05 Oct 2020 10:58:45 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id u23sm125934lfq.173.2020.10.05.10.58.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 10:58:44 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id y11so11956623lfl.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:58:43 -0700 (PDT)
+X-Received: by 2002:a19:414b:: with SMTP id o72mr224618lfa.23.1601920723274;
+ Mon, 05 Oct 2020 10:58:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0111.namprd02.prod.outlook.com (2603:10b6:208:35::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Mon, 5 Oct 2020 17:57:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kPUk6-0004PD-El; Mon, 05 Oct 2020 14:57:46 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601920681; bh=rApgK6OSfcWBhmL5nkaxy8ldgngDjPhb7Ki5j5tm6Ro=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=q5gxLa9H3D83FDQXakAWmCG044dYGXmWabRqcGyccimGL8UwDhSOFCiEakEoqCdmz
-         xw36EdOyI5QKakIyIxc4gCBOn0cWzeoP0cKd3pr6yYgBgun5UJtX5zZVc2dTD3jS7q
-         CrMhR9il9rIcxrksoQnHzoJaS0blTBsXKoQqNvKNDB/jLZmXEpNB6JKJ2o3m4455CG
-         lM/J3x5ZP/5RyouwTpQnj9iuSNKz640cRqLlI2pK4L9rSD59jsMU+xZlSq/bjm6IwC
-         Nl2xfLSY3tDxnQEUw89qPIEl4aLAFe9HWv9iWT7hrYWdEz5KYP1TZfySKl+6jCc2HQ
-         91M5J7bW4oEDw==
+References: <20201004131931.29782-1-trix@redhat.com>
+In-Reply-To: <20201004131931.29782-1-trix@redhat.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Mon, 5 Oct 2020 10:58:31 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXOrr7k73mOizNGxPxXQ=bHEMUbTtCnoEusj2vRAaRPufA@mail.gmail.com>
+Message-ID: <CA+ASDXOrr7k73mOizNGxPxXQ=bHEMUbTtCnoEusj2vRAaRPufA@mail.gmail.com>
+Subject: Re: [PATCH] wireless: mwifiex: fix double free
+To:     trix@redhat.com
+Cc:     amit karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        ndesaulniers@google.com, linville@tuxdriver.com,
+        Nishant Sarmukadam <nishants@marvell.com>, rramesh@marvell.com,
+        bzhao@marvell.com, Frank Huang <frankh@marvell.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 07:53:08PM +0200, Jan Kara wrote:
-> On Mon 05-10-20 14:38:54, Jason Gunthorpe wrote:
-> > When get_vaddr_frames() does its hacky follow_pfn() loop it should never
-> > be allowed to extract a struct page from a normal VMA. This could allow a
-> > serious use-after-free problem on any kernel memory.
-> > 
-> > Restrict this to only work on VMA's with one of VM_IO | VM_PFNMAP
-> > set. This limits the use-after-free problem to only IO memory, which while
-> > still serious, is an improvement.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 8025e5ddf9c1 ("[media] mm: Provide new get_vaddr_frames() helper")
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> >  mm/frame_vector.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-> > index 10f82d5643b6de..26cb20544b6c37 100644
-> > +++ b/mm/frame_vector.c
-> > @@ -99,6 +99,10 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
-> >  		if (ret >= nr_frames || start < vma->vm_end)
-> >  			break;
-> >  		vma = find_vma_intersection(mm, start, start + 1);
-> > +		if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
-> > +			ret = -EINVAL;
-> > +			goto out;
-> > +		}
-> >  	} while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
-> 
-> Hum, I fail to see how this helps. If vma has no VM_IO or VM_PFNMAP flag,
-> we'd exit the loop (to out: label) anyway due to the loop termination
-> condition and why not return the frames we already have? Furthermore
-> find_vma_intersection() can return NULL which would oops in your check
-> then. What am I missing?
+On Sun, Oct 4, 2020 at 6:19 AM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> clang static analysis reports this problem:
+>
+> sdio.c:2403:3: warning: Attempt to free released memory
+>         kfree(card->mpa_rx.buf);
+>         ^~~~~~~~~~~~~~~~~~~~~~~
 
-Oh, nothing, you are right. It just didn't read naturally because
-hitting the wrong kind of VMA should be an error condition :\
+That's some interesting static analysis for a compiler.
 
-Sorry again,
-Jason
+> When mwifiex_init_sdio() fails in its first call to
+> mwifiex_alloc_sdio_mpa_buffer, it falls back to calling it
+> again.  If the second alloc of mpa_tx.buf fails, the error
+> handler will try to free the old, previously freed mpa_rx.buf.
+> Reviewing the code, it looks like a second double free would
+> happen with mwifiex_cleanup_sdio().
+>
+> So set both pointers to NULL when they are freed.
+>
+> Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+
+For whatever it's worth:
+
+Reviewed-by: Brian Norris <briannorris@chromium.org>
