@@ -2,84 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244B9283205
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1522831FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgJEI3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgJEI3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:29:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E145C0613CE;
-        Mon,  5 Oct 2020 01:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kqzUKtK8GOb7bW4H3n/BFL1qICkSEHQYXjLgPEjS2CE=; b=Glk+6xlfldc5C47KvhK2HtCy16
-        5q1YyA1feL1tcE7Hzba/dTGO/FxmAE2DI74IF+5jWJiiOO59aBZnRDlV8g2D9Y1FO2655hlVoQw5b
-        3GWKGKcU1hQ4yqZqVolk105sJMA7jG5Fdi4BlYPhG0Kr3jv/YiyWiew4liHZYYCmLZunB1ODmTkQF
-        IOK8DIAj9Pm4aePKRQdja4x/zTMTQjpl/3A5dva1fvbte/Aq8HFsnf3FTcSkp15MwLhCYSABHhomg
-        r7fZkCLM89YznfPZ18GTqcE0XfvGjyoNVeQXzrX3oY6JROSZ6DYKlPxTAJzThg6XXVp3SuiT4Omre
-        MlopKnsA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPLru-0008Kj-3d; Mon, 05 Oct 2020 08:29:14 +0000
-Date:   Mon, 5 Oct 2020 09:29:14 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
- cache maintenance
-Message-ID: <20201005082914.GA31702@infradead.org>
-References: <20201001002709.21361-1-jonathan@marek.ca>
- <20201001002709.21361-3-jonathan@marek.ca>
- <20201002075321.GA7547@infradead.org>
- <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
+        id S1725943AbgJEI2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:28:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725880AbgJEI2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:28:49 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DBF520776;
+        Mon,  5 Oct 2020 08:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601886529;
+        bh=jCtswKiG459H2C8CPf5ZmeX+FMSWF0/Phzu2cqrkLTM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=stauSqrp7dBUXk1Y7D+05A3YuE0VA5eGvHYqu9N9lN+ZD+y0pFuyBgn36rHY3Gynz
+         qgVprU1GUPIyEoH3Zf+ttW6Ryw4OhgAul0EQzkA6xyzv639R1lw1nVbQ7lJhhgpkEY
+         p8HisDzW4i5NtphO683Gui6/pA6Q+tZAX6k8Duik=
+Date:   Mon, 5 Oct 2020 10:29:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bastien Nocera <hadess@hadess.net>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Sathish Narsimman <sathish.narasimman@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
+ whitelist"
+Message-ID: <20201005082935.GA2448@kroah.com>
+References: <20201003135449.GA2691@kroah.com>
+ <A1C95238-CBCB-4FD4-B46D-A62AED0C77E5@holtmann.org>
+ <20201003160713.GA1512229@kroah.com>
+ <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
+ <20201004105124.GA2429@kroah.com>
+ <04e0af8618f95a4483f5a72ba90d4f8b1d9094bd.camel@hadess.net>
+ <20201004131844.GA185109@kroah.com>
+ <457d516913ebf5b73d2b250516f3d9e9c59fdfe9.camel@hadess.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="pf9I7BMVVzbSWLtt"
 Content-Disposition: inline
-In-Reply-To: <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <457d516913ebf5b73d2b250516f3d9e9c59fdfe9.camel@hadess.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 08:46:35AM -0400, Jonathan Marek wrote:
-> > > +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
-> > > +		size_t range_start, size_t range_end)
-> > > +{
-> > > +	struct msm_gem_object *msm_obj = to_msm_bo(obj);
-> > > +
-> > > +	/* TODO: sync only the required range, and don't invalidate on clean */
-> > > +
-> > > +	if (flags & MSM_GEM_SYNC_CACHE_CLEAN)
-> > > +		sync_for_device(msm_obj);
-> > > +
-> > > +	if (flags & MSM_GEM_SYNC_CACHE_INVALIDATE)
-> > > +		sync_for_cpu(msm_obj);
+
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+
+On Sun, Oct 04, 2020 at 03:23:18PM +0200, Bastien Nocera wrote:
+> On Sun, 2020-10-04 at 15:18 +0200, Greg Kroah-Hartman wrote:
+> > On Sun, Oct 04, 2020 at 02:17:06PM +0200, Bastien Nocera wrote:
+> > > On Sun, 2020-10-04 at 12:51 +0200, Greg Kroah-Hartman wrote:
+> > > > On Sat, Oct 03, 2020 at 08:33:18PM +0200, Marcel Holtmann wrote:
+> > > > > Hi Greg,
+> > > > > 
+> > > > > > > > This reverts commit
+> > > > > > > > 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2
+> > > > > > > > as it
+> > > > > > > > breaks all bluetooth connections on my machine.
+> > > > > > > > 
+> > > > > > > > Cc: Marcel Holtmann <marcel@holtmann.org>
+> > > > > > > > Cc: Sathish Narsimman <sathish.narasimman@intel.com>
+> > > > > > > > Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list
+> > > > > > > > when
+> > > > > > > > updating whitelist")
+> > > > > > > > Signed-off-by: Greg Kroah-Hartman
+> > > > > > > > <gregkh@linuxfoundation.org>
+> > > > > > > > ---
+> > > > > > > > net/bluetooth/hci_request.c | 41 ++----------------------
+> > > > > > > > ----
+> > > > > > > > ---------
+> > > > > > > > 1 file changed, 2 insertions(+), 39 deletions(-)
+> > > > > > > > 
+> > > > > > > > This has been bugging me for since 5.9-rc1, when all
+> > > > > > > > bluetooth devices
+> > > > > > > > stopped working on my desktop system.  I finally got the
+> > > > > > > > time
+> > > > > > > > to do
+> > > > > > > > bisection today, and it came down to this patch. 
+> > > > > > > > Reverting
+> > > > > > > > it on top of
+> > > > > > > > 5.9-rc7 restored bluetooth devices and now my input
+> > > > > > > > devices
+> > > > > > > > properly
+> > > > > > > > work.
+> > > > > > > > 
+> > > > > > > > As it's almost 5.9-final, any chance this can be merged
+> > > > > > > > now
+> > > > > > > > to fix the
+> > > > > > > > issue?
+> > > > > > > 
+> > > > > > > can you be specific what breaks since our guys and I also
+> > > > > > > think
+> > > > > > > the
+> > > > > > > ChromeOS guys have been testing these series of patches
+> > > > > > > heavily.
+> > > > > > 
+> > > > > > My bluetooth trackball does not connect at all.  With this
+> > > > > > reverted, it
+> > > > > > all "just works".
+> > > > > > 
+> > > > > > Same I think for a Bluetooth headset, can check that again if
+> > > > > > you
+> > > > > > really
+> > > > > > need me to, but the trackball is reliable here.
+> > > > > > 
+> > > > > > > When you run btmon does it indicate any errors?
+> > > > > > 
+> > > > > > How do I run it and where are the errors displayed?
+> > > > > 
+> > > > > you can do btmon -w trace.log and just let it run like tcdpump.
+> > > > 
+> > > > Ok, attached.
+> > > > 
+> > > > The device is not connecting, and then I open the gnome bluetooth
+> > > > dialog
+> > > > and it scans for devices in the area, but does not connect to my
+> > > > existing devices at all.
+> > > > 
+> > > > Any ideas?
+> > > 
+> > > Use bluetoothctl instead, the Bluetooth Settings from GNOME also
+> > > run a
+> > > discovery the whole time the panel is opened, and this breaks a
+> > > fair
+> > > number of poor quality adapters. This is worked-around in the most
+> > > recent version, but using bluetoothctl is a better debugging option
+> > > in
+> > > all cases.
 > > 
-> > And make to these ones as well.  They are complete abuses of the DMA
-> > API, and while we had to live with that for now to not cause regressions
-> > they absoutely must not be exposed in a userspace ABI like this.
-> > 
+> > Ok, but how do I use that tool?  How do I shut down the gnome
+> > bluetooth
+> > stuff?
 > 
-> How do you propose that cached non-coherent memory be implemented? It is a
-> useful feature for userspace.
+> You close the settings window...
+> 
+> > I need newbie steps here please for what to run and what to show you.
+> 
+> bluetoothctl connect "bluetooth address"
+> eg.
+> bluetoothctl connect "12:34:56:78:90"
 
-If the driver is using the DMA API you need to use dma_alloc_noncoherent
-and friends as of 5.10 (see the iommu list for the discussion).
+Ok, here that is on a clean 5.9-rc8 release:
 
-If you use the raw IOMMU API (which I think the msm drm driver does) you
-need to work with the maintainers to implement a cache synchronization
-API that is not tied to the DMA API.
+$ bluetoothctl connect F1:85:91:79:73:70
+Attempting to connect to F1:85:91:79:73:70
+Failed to connect: org.bluez.Error.Failed
+
+I've attached the trace log from that effort.
+
+I'll go try Marcel's proposed patch now as well...
+
+thanks,
+
+greg k-h
+
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="trace.log"
+Content-Transfer-Encoding: quoted-printable
+
+btsnoop=00=00=00=00=01=00=00=07=D1=00=00=00!=00=00=00!=FF=FF=00=0C=00=00=00=
+=00=00=E2=8E=9BM#=3D=CALinux version 5.9.0-rc8 (x86_64)=00=00=00=00!=00=00=
+=00!=FF=FF=00=0C=00=00=00=00=00=E2=8E=9BM#=3D=CCBluetooth subsystem version=
+ 2.22=00=00=00=00=10=00=00=00=10=00=00=00=00=00=00=00=00=00=E2=8E=9BM#=3D=
+=CD=00=01pe=F6=85=E0Phci0=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=08=
+=00=00=00=00=00=E2=8E=9BM#=3D=CD=00=00=00=08=00=00=00=08=00=00=00
+=00=00=00=00=00=E2=8E=9BM#=3D=CEpe=F6=85=E0P=02=00=00=00=00=1E=00=00=00=1E=
+=FF=FF=00=0E=00=00=00=00=00=E2=8E=9BM#=3D=CE=01=00=00=00=02=00=01=12=00=01=
+=00=00=00=10bluetoothd=00=00=00=00=00=00=00=00=00	=00=00=00	=00=00=00=02=00=
+=00=00=00=00=E2=8E=9BN=12=13=FCB =06=00=00=00=00=00=00=00=00=00=06=00=00=00=
+=06=00=00=00=03=00=00=00=00=00=E2=8E=9BN=13=DDg=0E=04=02B =00=00=00=00=0B=
+=00=00=00=0B=00=00=00=02=00=00=00=00=00=E2=8E=9BN=13=DD=8CA =08=00=01=01=00=
+`=00`=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=9BN=13=ED=
+t=0E=04=01A =00=00=00=00	=00=00=00	=00=00=00=02=00=00=00=00=00=E2=8E=9BN=13=
+=ED=A1B =06=01=01=00=00=00=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=
+=00=00=E2=8E=9BN=13=FD=19=0E=04=02B =00=00=00=00	=00=00=00	=00=00=00=02=00=
+=00=00=00=00=E2=8E=9BP=85.)B =06=00=00=00=00=00=00=00=00=00=06=00=00=00=06=
+=00=00=00=03=00=00=00=00=00=E2=8E=9BP=87 =B0=0E=04=02B =00=00=00=00=0B=00=
+=00=00=0B=00=00=00=02=00=00=00=00=00=E2=8E=9BP=87 =FFA =08=00=01=01=00`=000=
+=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=9BP=87,N=0E=04=
+=01A =00=00=00=00	=00=00=00	=00=00=00=02=00=00=00=00=00=E2=8E=9BP=87,=8FB =
+=06=01=01=00=00=00=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=
+=8E=9BP=87:`=0E=04=02B =00
+--pf9I7BMVVzbSWLtt--
