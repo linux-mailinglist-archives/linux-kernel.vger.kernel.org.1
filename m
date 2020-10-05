@@ -2,194 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48702832A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034D12832FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgJEI4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:56:19 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:42408 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgJEI4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:56:18 -0400
-Received: by mail-il1-f206.google.com with SMTP id 18so6754024ilt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:56:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Amwp1aqa7bTc2xanzlXXNgO7NgBXnd0zxzTo/kSRKZ4=;
-        b=Xsg/actd4yDtZvnL7wkHWK/TrDvpF0drBoGl9KRFbJqcGHqbmxq2OiuR/e08iOnaIg
-         +X5V/0Hl/vaO3+mLTeFuIyW0NOUtbcawbbM+cz83xPZWe9M3TggLiEnY+pBxVZ3mkUxa
-         +iTpPdJ3Q2RGYGoZVGAWrPWK+l31Pow1YJWXY5mFmAdXzZC9MZlNLio15WFtiYlD3Qy3
-         YlCo2ISGMULf4LD7lzVmG1vPoFCMiHAmhPHWqApq8NXZRohUeJOEGNXqTk/X6xcVPStQ
-         CYH7taHS2SA1069eOaRt1EB6zKsnc3C6dNw1eAmq2INjYwtZRjKpmSu7exIVkmMHboqp
-         gpzQ==
-X-Gm-Message-State: AOAM533rzLeF5MwY7QOy33d7vkdjvlQH5xkV0h1x/+Drwdk8x317xoW2
-        HXb3NkVSTLK8L5R9blzfhcT9qr2Mc+MscffgFebEiWt3fRgO
-X-Google-Smtp-Source: ABdhPJz3JXucT/swRsk+KIgFBhBuEK/6ZIeOJpjrlErbuuvYmaYmsTK0T6RYtV+OwHha6Wy2dAHmV1TceajiSoT4jt4LsTh/NmKg
+        id S1725995AbgJEJQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:16:26 -0400
+Received: from mail-eopbgr680054.outbound.protection.outlook.com ([40.107.68.54]:63998
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725891AbgJEJQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:16:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ErR+hzTbhVfsPwPC5l7xcK0WhpfCf+AjwDuZIp0ridc0NM37Ok/hnjrl18jk7NnWvV22kpioy+jr/GxhUtA5bZbXYRfBjMhsosKz+d3WkYqvrJP2jN/YDvL9fp9QjLWHobOkYmtun+Kp+eUbMUy2XynR2z58VwFE22CxgI5S8Nz40zGDshlq+NHHxxY2nlRn16v1YNS4YtJDYDS8R9zvZSx5z1LGNW5iq/Zo7SafOVDYnsRHd3YTTaf9X3iRp7kzCaPKBSboXTO7qEMU9BjgHt8lzqkQjGhyXYpZSmV2eKBVKYjkPA4qMbHpv4IkHyAImagrIU7XRdZm/1Sc0tDwsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XEPfIZpaoOPBJOy+x6w9JF5nh5k0AGs+Z4AhvgdBQLc=;
+ b=nUz6xn5sTaKHQpC0RRckBIvkF9QKFRE3ogyTV82zjgA/GK5yvVpwR17H4EYrB2O3FALdG2EUMV5prPQFMfobtwHYRmRLYZOK3An/+GXRfe++mfebhzc+85rURub9COJMK90XJe62Qb6XioSTzqt9DJdbkF+GaE2rnC1/R6+9qmgf4LhWb7y5Gg5GpFnpSxsqiyNUDowO+lw9rUhPKJ14v0unEY0qXPLWlD67WYj9dkNybP0tErvLnYp9P944QSK+F0X1LUkoCWuEyIJf/OtO4XtJHvRYUmiRYm1kavyIsV4mv9+G67sHsB1NFODolV6FBike1ALW9/sz7N+P3CzKfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XEPfIZpaoOPBJOy+x6w9JF5nh5k0AGs+Z4AhvgdBQLc=;
+ b=M7ghYFMBD40ZR4eisO08iwov5R1ae+OGzd1ypikgm+U48vvTsGY5BKJXxeWdr725Kyd/9kb1CIUvcrWJn57J8CqCorLJWR7ypUFIi6mWzBR0Y+6fQ/Eh3oURkVyZwyT49vQctFKhVdbcjZfSURu1FzLHcvHB9zsNKfO3IxNsNi0=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
+ by DS7PR03MB5560.namprd03.prod.outlook.com (2603:10b6:5:2d0::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Mon, 5 Oct
+ 2020 09:16:22 +0000
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
+ 09:16:22 +0000
+Date:   Mon, 5 Oct 2020 16:56:57 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH dwc-next 0/3] PCI: dwc: remove useless dw_pcie_ops
+Message-ID: <20201005165657.0fd31b10@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [124.74.246.114]
+X-ClientProxiedBy: TYAPR01CA0070.jpnprd01.prod.outlook.com
+ (2603:1096:404:2b::34) To DM6PR03MB4555.namprd03.prod.outlook.com
+ (2603:10b6:5:102::17)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:46:: with SMTP id i6mr9221812ilr.74.1601888177519;
- Mon, 05 Oct 2020 01:56:17 -0700 (PDT)
-Date:   Mon, 05 Oct 2020 01:56:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ca835605b0e8a723@google.com>
-Subject: KASAN: use-after-free Read in idr_for_each (2)
-From:   syzbot <syzbot+12056a09a0311d758e60@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TYAPR01CA0070.jpnprd01.prod.outlook.com (2603:1096:404:2b::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Mon, 5 Oct 2020 09:16:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d9296379-d199-428d-fc04-08d8690f53be
+X-MS-TrafficTypeDiagnostic: DS7PR03MB5560:
+X-Microsoft-Antispam-PRVS: <DS7PR03MB5560063A8CFDFE4EEBD036CCED0C0@DS7PR03MB5560.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:644;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Nx+x/nJdE2mzKa4MeNTcU4PyHmz9N0m1NQvaJzP5gcEaMurQOcfwMjL1HIfucU0iMxO7bqzeKfnl7jbL5+P7ziyePpjUx5gk+txHBHA0ioQKTHoa2sCw4ZKG8MExFP3maEGmgj1JMXtgV6OSZeVc+GGMBRRRH8jIrZWcPjvpZGFDGp6ce6OR9+sDJzTGH8DMFQO5ELy+3SrDB1/Pk/uhBRrTCCnjZAo/UGSmW+UidgWHn4CpWCsGzhG3SH4n5pyAnEfaGzNEPzRD0ft28ymk4mKTbezsnbiYi+68Zby06QXGDIgYTx93Ho7WM24Eu2ZdTl/z4AwMn9cpb9aGPtIOJXhPNhN1oLqJPW3Dhhq/mf3aF0EPvvyZG8yjbKM3glZ7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39850400004)(396003)(346002)(376002)(136003)(2906002)(8936002)(9686003)(16526019)(66946007)(66556008)(66476007)(186003)(26005)(8676002)(7416002)(55016002)(83380400001)(4744005)(1076003)(5660300002)(6666004)(478600001)(52116002)(7696005)(316002)(110136005)(6506007)(4326008)(956004)(86362001)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Zrqi1vu5HPXYVA0DkLno1ivWmcOvIGmhKsDyk2fGVi8YulKRzhVNtA03MIUu7SwptajGiFpEVMJr7H6WTOO0wjsdZDAkO9HCLaxqiw/kaKjPnhim8B8GUtZ5nxy/+GCpnINyPMpjffwA2rUR+crxNdbd9S06j5FECaeT5OTj4vR2VcpSklzhMaRadtb/qtLnK2+qKUdA0HmsdA7evNXgEOv1IuGovZtbrNY3FRtJtLq1zfnrW6ViPN60HhD0KALD8eSwg6rEgoETxWAWD9QhFi4F9OruoB+YIzPuSScbHs3POij6/sVMwrDVqhKVRVZzHg9WL/vO2DYHuP+/UA3HppUrALxk5hsPF8A2rXVdO3zGBwIOJP5kNgEom2Z5NiS+px7c9suS7hnERAvLeXmg4FU30CNwTAmpNE1spHWDyJYmPjU05tX/UqLH9pdbYxo+SU5eFWeIetxLUM8hscsX6e22pGomthVK8BlXCz/iZL5f8FxPSodESHDomctLNDG7yb0Gh/y41Tj7GJDDxOxl3ahQOMFMXWbOyEwFvaEmTi2ycAU/le/7pT8rbbs/NStaZeQmVbnVq+jvGvp7op8jXOomQPz5JkSAIv1tL77TIgw4+UHUeLVYdXKfiVOpeZ0V8/Axk9EVcoSwWhO95l610g==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9296379-d199-428d-fc04-08d8690f53be
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2020 09:16:22.5485
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NkNXXQfV4dWz4cc7KQFSbPpSMcwZuPzLVHhtXaBfLKOAYz8p4JBYWTTRHZ1/qWT5pOm9D1J5lyK3GH12WEN1nw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR03MB5560
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Some designware based device driver especially host only driver may
+work well with the default read_dbi/write_dbi/link_up implementation
+in pcie-designware.c, thus remove the assumption to simplify those
+drivers.
 
-syzbot found the following issue on:
+Jisheng Zhang (3):
+  PCI: dwc: Don't assume the ops in dw_pcie always exists
+  PCI: dwc: al: Remove useless dw_pcie_ops
+  PCI: dwc: imx6: Remove useless dw_pcie_ops
 
-HEAD commit:    472e5b05 pipe: remove pipe_wait() and fix wakeup race with..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ae0d47900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=12056a09a0311d758e60
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
+ drivers/pci/controller/dwc/pci-imx6.c           |  5 -----
+ drivers/pci/controller/dwc/pcie-al.c            |  4 ----
+ drivers/pci/controller/dwc/pcie-designware-ep.c |  8 +++-----
+ drivers/pci/controller/dwc/pcie-designware.c    | 14 +++++++-------
+ 4 files changed, 10 insertions(+), 21 deletions(-)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+-- 
+2.28.0
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+12056a09a0311d758e60@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in radix_tree_next_slot include/linux/radix-tree.h:421 [inline]
-BUG: KASAN: use-after-free in idr_for_each+0x206/0x220 lib/idr.c:202
-Read of size 8 at addr ffff88804eb9cb30 by task kworker/u4:8/13668
-
-CPU: 1 PID: 13668 Comm: kworker/u4:8 Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- radix_tree_next_slot include/linux/radix-tree.h:421 [inline]
- idr_for_each+0x206/0x220 lib/idr.c:202
- io_destroy_buffers fs/io_uring.c:7889 [inline]
- io_ring_ctx_free fs/io_uring.c:7904 [inline]
- io_ring_exit_work+0x363/0x6d0 fs/io_uring.c:7979
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Allocated by task 17016:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:518 [inline]
- slab_alloc mm/slab.c:3316 [inline]
- kmem_cache_alloc+0x13a/0x3f0 mm/slab.c:3486
- radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:275
- idr_get_free+0x4c5/0x940 lib/radix-tree.c:1505
- idr_alloc_u32+0x170/0x2d0 lib/idr.c:46
- idr_alloc+0xc2/0x130 lib/idr.c:87
- io_provide_buffers fs/io_uring.c:3768 [inline]
- io_issue_sqe+0x48d2/0x5c50 fs/io_uring.c:5906
- __io_queue_sqe+0x280/0x1160 fs/io_uring.c:6178
- io_queue_sqe+0x692/0xfa0 fs/io_uring.c:6257
- io_submit_sqe fs/io_uring.c:6327 [inline]
- io_submit_sqes+0x1759/0x23f0 fs/io_uring.c:6521
- __do_sys_io_uring_enter+0xeac/0x1bd0 fs/io_uring.c:8349
- do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
- __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-Freed by task 16:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3422 [inline]
- kmem_cache_free.part.0+0x74/0x1e0 mm/slab.c:3697
- rcu_do_batch kernel/rcu/tree.c:2430 [inline]
- rcu_core+0x5ca/0x1130 kernel/rcu/tree.c:2658
- __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
-
-Last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0x82/0xb0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2896 [inline]
- call_rcu+0x15e/0x7c0 kernel/rcu/tree.c:2970
- radix_tree_node_free lib/radix-tree.c:309 [inline]
- delete_node+0x591/0x8c0 lib/radix-tree.c:572
- __radix_tree_delete+0x190/0x370 lib/radix-tree.c:1378
- radix_tree_delete_item+0xe7/0x230 lib/radix-tree.c:1429
- __io_remove_buffers fs/io_uring.c:3666 [inline]
- __io_remove_buffers fs/io_uring.c:3645 [inline]
- __io_destroy_buffers+0x161/0x200 fs/io_uring.c:7883
- idr_for_each+0x113/0x220 lib/idr.c:208
- io_destroy_buffers fs/io_uring.c:7889 [inline]
- io_ring_ctx_free fs/io_uring.c:7904 [inline]
- io_ring_exit_work+0x363/0x6d0 fs/io_uring.c:7979
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Second to last call_rcu():
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0x82/0xb0 mm/kasan/generic.c:346
- __call_rcu kernel/rcu/tree.c:2896 [inline]
- call_rcu+0x15e/0x7c0 kernel/rcu/tree.c:2970
- radix_tree_node_free lib/radix-tree.c:309 [inline]
- radix_tree_shrink lib/radix-tree.c:535 [inline]
- delete_node+0x37a/0x8c0 lib/radix-tree.c:553
- __radix_tree_delete+0x190/0x370 lib/radix-tree.c:1378
- radix_tree_delete_item+0xe7/0x230 lib/radix-tree.c:1429
- free_pid+0xa1/0x260 kernel/pid.c:151
- __change_pid+0x1c7/0x2d0 kernel/pid.c:352
- __unhash_process kernel/exit.c:77 [inline]
- __exit_signal kernel/exit.c:147 [inline]
- release_task+0xd29/0x14d0 kernel/exit.c:198
- wait_task_zombie kernel/exit.c:1088 [inline]
- wait_consider_task+0x2fd2/0x3b70 kernel/exit.c:1315
- do_wait_thread kernel/exit.c:1378 [inline]
- do_wait+0x376/0xa00 kernel/exit.c:1449
- kernel_wait4+0x14c/0x260 kernel/exit.c:1621
- do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
- __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-The buggy address belongs to the object at ffff88804eb9cb00
- which belongs to the cache radix_tree_node of size 576
-The buggy address is located 48 bytes inside of
- 576-byte region [ffff88804eb9cb00, ffff88804eb9cd40)
-The buggy address belongs to the page:
-page:00000000a35d3b6e refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88804eb9cffb pfn:0x4eb9c
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea00013ab388 ffffea0002927748 ffff8880aa06f000
-raw: ffff88804eb9cffb ffff88804eb9c000 0000000100000005 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88804eb9ca00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804eb9ca80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88804eb9cb00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff88804eb9cb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88804eb9cc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
