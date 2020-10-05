@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1238F2839E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF477283A68
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbgJEP3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:29:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55082 "EHLO mail.kernel.org"
+        id S1727461AbgJEPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:34:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727560AbgJEP3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:29:18 -0400
+        id S1728210AbgJEPdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:33:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CED02137B;
-        Mon,  5 Oct 2020 15:29:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D107207BC;
+        Mon,  5 Oct 2020 15:33:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911757;
-        bh=VW7oyLa117MEhwsbhxJr47yJfKkS4dQAVPEAdzhonsk=;
+        s=default; t=1601912033;
+        bh=gnFsBKMWFbEWtrezR3gQjFqKb7oCLp1fI/Myh8q4kV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cXBwnqDc+ot+bvn5fHx7XbHnsyBHq7G8xE514Dc93tEz//5qfqwXKWNM7LExcI/pm
-         Uq5VYQ+mgXsOujN40GxmFnes3RMwPwUjwx7CXDlny4fL/EAdQp98o6zPu/VrckWPTw
-         1CUBiIWLLcu1pfieQYaLDwv1l1mYYxkcQ7xNXj94=
+        b=yGhfidbldlG5ytfoBFPx06SsH/JPTqexrt3v0LtTaVtmv4xKUVuKwexeg8crZId9B
+         w296axZFlZ5i5gvxlmei0hi7K3Gjv4TeqHyKnLiooJF4JxR9AF1QO9hSeoUNeazy4C
+         9vJL0F3Pp9gf1k9JVffLUuakbo0qlWEG4fgM3d+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 27/57] mac80211: do not allow bigger VHT MPDUs than the hardware supports
-Date:   Mon,  5 Oct 2020 17:26:39 +0200
-Message-Id: <20201005142111.110973817@linuxfoundation.org>
+Subject: [PATCH 5.8 44/85] cpuidle: psci: Fix suspicious RCU usage
+Date:   Mon,  5 Oct 2020 17:26:40 +0200
+Message-Id: <20201005142116.844451153@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-[ Upstream commit 3bd5c7a28a7c3aba07a2d300d43f8e988809e147 ]
+[ Upstream commit 36050d8984ab743f9990a2eb97a0062fdc3d7bbd ]
 
-Limit maximum VHT MPDU size by local capability.
+The commit eb1f00237aca ("lockdep,trace: Expose tracepoints"), started to
+expose us for tracepoints. This lead to the following RCU splat on an ARM64
+Qcom board.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20200917125031.45009-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+[    5.529634] WARNING: suspicious RCU usage
+[    5.537307] sdhci-pltfm: SDHCI platform and OF driver helper
+[    5.541092] 5.9.0-rc3 #86 Not tainted
+[    5.541098] -----------------------------
+[    5.541105] ../include/trace/events/lock.h:37 suspicious rcu_dereference_check() usage!
+[    5.541110]
+[    5.541110] other info that might help us debug this:
+[    5.541110]
+[    5.541116]
+[    5.541116] rcu_scheduler_active = 2, debug_locks = 1
+[    5.541122] RCU used illegally from extended quiescent state!
+[    5.541129] no locks held by swapper/0/0.
+[    5.541134]
+[    5.541134] stack backtrace:
+[    5.541143] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc3 #86
+[    5.541149] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    5.541157] Call trace:
+[    5.568185] sdhci_msm 7864900.sdhci: Got CD GPIO
+[    5.574186]  dump_backtrace+0x0/0x1c8
+[    5.574206]  show_stack+0x14/0x20
+[    5.574229]  dump_stack+0xe8/0x154
+[    5.574250]  lockdep_rcu_suspicious+0xd4/0xf8
+[    5.574269]  lock_acquire+0x3f0/0x460
+[    5.574292]  _raw_spin_lock_irqsave+0x80/0xb0
+[    5.574314]  __pm_runtime_suspend+0x4c/0x188
+[    5.574341]  psci_enter_domain_idle_state+0x40/0xa0
+[    5.574362]  cpuidle_enter_state+0xc0/0x610
+[    5.646487]  cpuidle_enter+0x38/0x50
+[    5.650651]  call_cpuidle+0x18/0x40
+[    5.654467]  do_idle+0x228/0x278
+[    5.657678]  cpu_startup_entry+0x24/0x70
+[    5.661153]  rest_init+0x1a4/0x278
+[    5.665061]  arch_call_rest_init+0xc/0x14
+[    5.668272]  start_kernel+0x508/0x540
+
+Following the path in pm_runtime_put_sync_suspend() from
+psci_enter_domain_idle_state(), it seems like we end up using the RCU.
+Therefore, let's simply silence the splat by informing the RCU about it
+with RCU_NONIDLE.
+
+Note that, this is a temporary solution. Instead we should strive to avoid
+using RCU_NONIDLE (and similar), but rather push rcu_idle_enter|exit()
+further down, closer to the arch specific code. However, as the CPU PM
+notifiers are also using the RCU, additional rework is needed.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/vht.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/cpuidle/cpuidle-psci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/vht.c b/net/mac80211/vht.c
-index ccdcb9ad9ac72..aabc63dadf176 100644
---- a/net/mac80211/vht.c
-+++ b/net/mac80211/vht.c
-@@ -168,10 +168,7 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
- 	/* take some capabilities as-is */
- 	cap_info = le32_to_cpu(vht_cap_ie->vht_cap_info);
- 	vht_cap->cap = cap_info;
--	vht_cap->cap &= IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_3895 |
--			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_7991 |
--			IEEE80211_VHT_CAP_MAX_MPDU_LENGTH_11454 |
--			IEEE80211_VHT_CAP_RXLDPC |
-+	vht_cap->cap &= IEEE80211_VHT_CAP_RXLDPC |
- 			IEEE80211_VHT_CAP_VHT_TXOP_PS |
- 			IEEE80211_VHT_CAP_HTC_VHT |
- 			IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK |
-@@ -180,6 +177,9 @@ ieee80211_vht_cap_ie_to_sta_vht_cap(struct ieee80211_sub_if_data *sdata,
- 			IEEE80211_VHT_CAP_RX_ANTENNA_PATTERN |
- 			IEEE80211_VHT_CAP_TX_ANTENNA_PATTERN;
+diff --git a/drivers/cpuidle/cpuidle-psci.c b/drivers/cpuidle/cpuidle-psci.c
+index 3806f911b61c0..915172e3ec906 100644
+--- a/drivers/cpuidle/cpuidle-psci.c
++++ b/drivers/cpuidle/cpuidle-psci.c
+@@ -64,7 +64,7 @@ static int psci_enter_domain_idle_state(struct cpuidle_device *dev,
+ 		return -1;
  
-+	vht_cap->cap |= min_t(u32, cap_info & IEEE80211_VHT_CAP_MAX_MPDU_MASK,
-+			      own_cap.cap & IEEE80211_VHT_CAP_MAX_MPDU_MASK);
-+
- 	/* and some based on our own capabilities */
- 	switch (own_cap.cap & IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_MASK) {
- 	case IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ:
+ 	/* Do runtime PM to manage a hierarchical CPU toplogy. */
+-	pm_runtime_put_sync_suspend(pd_dev);
++	RCU_NONIDLE(pm_runtime_put_sync_suspend(pd_dev));
+ 
+ 	state = psci_get_domain_state();
+ 	if (!state)
+@@ -72,7 +72,7 @@ static int psci_enter_domain_idle_state(struct cpuidle_device *dev,
+ 
+ 	ret = psci_cpu_suspend_enter(state) ? -1 : idx;
+ 
+-	pm_runtime_get_sync(pd_dev);
++	RCU_NONIDLE(pm_runtime_get_sync(pd_dev));
+ 
+ 	cpu_pm_exit();
+ 
 -- 
 2.25.1
 
