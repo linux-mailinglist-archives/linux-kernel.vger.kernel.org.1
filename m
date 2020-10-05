@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0949283715
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91277283718
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgJEN6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:58:40 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:38839 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgJEN6k (ORCPT
+        id S1726258AbgJEN7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725963AbgJEN7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:58:40 -0400
-Received: by mail-ot1-f66.google.com with SMTP id i12so2845961ota.5;
-        Mon, 05 Oct 2020 06:58:39 -0700 (PDT)
+        Mon, 5 Oct 2020 09:59:00 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F80C0613CE;
+        Mon,  5 Oct 2020 06:58:58 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id u8so11005792lff.1;
+        Mon, 05 Oct 2020 06:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FSG++GcuwtXfFL0pAmi9VIOsmecZ/zHiEFdMrjrBjZ0=;
+        b=jq/1EENgpJztVgUbiHOlFewQRt85vb2x9X/5tTn6DHbAXnHybLY6oqIexnupDz1gaJ
+         g01snaS7Uhn1mfY8YL/GyEKAzRhvch6cPp40maquni4o2dzDk3P/hujBXIaRX6JJHrPN
+         8ZDsJ3+FMC5pzRwMwEEG01DpEMz/WZAUzIDhKncN6ABVuHaBLZRhm2HtXiJ2DjqmIa7H
+         TSXu7U6+QCA4ODIwvsYJ5rLRxpDOlVzQWxLhGVBO0jUOY3sz4l1YYq9CrfvmzDz9Dcie
+         MH06I13mMMKVJfgK7/mUvGtAIIiPKIMSygNxwwmoj42ss8rElH/8kNE4/GvPVDglSPZ0
+         S6uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LDinh5A/F+3x/5aBFTjkVAl5Osn8OcStGMlGEuBkhrI=;
-        b=l5iwyeuRyB9D8vBDHkdU5QCHvZzw+CRsZVe7d9kq5pvZJDC+q3bgBpiFq499bO3/vN
-         8LuhKQbtflTgqqBPgsDsz7Rid4gAG6KJ6yJwYCTZFqR6uCFOjPMIAfuufq1BASILMGQd
-         hqqWE7sV2YDtZmnjbgGoZ7jMJa3DhFDYU0eYVYaYWaKhG5hso2yIUb1/wZLvyaPZnxlt
-         tCmiTysC4nd4xant/fZfkusfsjF6SOOXuDIdIeD0Y+LLZENRn9jUhDY6zE4vtV+3/dWt
-         /E/SZLCTfApv4VLonfojIiKzQ/hINQFz+Juzb9guCMTzU4DUyxrCvC45DpLOMLhlFoPS
-         I1uw==
-X-Gm-Message-State: AOAM532CK/Qt6yKptM3U8OWR+xoH/9MW3STHpjIjOLpKhTB0EqRjEAol
-        rTvbBmw+cgN+iyxTyYYaeg==
-X-Google-Smtp-Source: ABdhPJzTLpZWIBBWPALDH9jxT7TTMOQOXFRvepavcl5fhlDBEKDYp0A0x8+S7fx6Z2AavSBKCoJLCg==
-X-Received: by 2002:a05:6830:1091:: with SMTP id y17mr3045674oto.160.1601906319138;
-        Mon, 05 Oct 2020 06:58:39 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t2sm2099386oie.26.2020.10.05.06.58.37
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FSG++GcuwtXfFL0pAmi9VIOsmecZ/zHiEFdMrjrBjZ0=;
+        b=R61wspwn6vdLk3aQKtfm3Am/l7xEartIbzZShNVB/1P7KdTPf+6P1m0Q9OWBk4VCtj
+         usM83le4MNTOFVKIQgVnRrbNW4z/XvR3CwPbmuZNjXqDgf8WbngoiJS8H+2f/v3ALiWY
+         I34E5rxNGI8kTwb3Wg++AgSYmF20v7qHty04OjOh39r3CScvgM6XNspXvBMD4TLgQSlQ
+         DQR7VZ/tacwZTN+yQYKiAoTRTKOxEYUH8gILFCCByOtSmcl6ddFu9G7e3LllJ/YsX7W+
+         VXEh80DSRbpCOrKFgpRpz9NwI1SG79QfOKmQG3y5eTl62JWQMHxhYFOmoMK9ltYss/wI
+         7H9A==
+X-Gm-Message-State: AOAM5338zF/2zTpKMW0XJgftwIMM6bRyNSjefY5bmYcJp+ryN+GlxM2/
+        ymIUCX5l6J9lSWs4Q8X2DRo=
+X-Google-Smtp-Source: ABdhPJzX0Fq/hCeOCOFzQbhoFtQMbR7mUVdrmKjW8qHxJYKGuZza5OAMcXuLhDWlTnVDkaa6CE/WWA==
+X-Received: by 2002:a19:2302:: with SMTP id j2mr3422194lfj.78.1601906337230;
+        Mon, 05 Oct 2020 06:58:57 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id n2sm2653504lji.97.2020.10.05.06.58.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 06:58:38 -0700 (PDT)
-Received: (nullmailer pid 92014 invoked by uid 1000);
-        Mon, 05 Oct 2020 13:58:37 -0000
-Date:   Mon, 5 Oct 2020 08:58:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org, daniel.lezcano@linaro.org,
-        mka@chromium.org, robh+dt@kernel.org, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, rnayak@codeaurora.org,
-        rjw@rjwysocki.net, qperret@google.com, amitk@kernel.org,
-        corbet@lwn.net, Dietmar.Eggemann@arm.com
-Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
- with abstract scale
-Message-ID: <20201005135837.GA91584@bogus>
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <20201002114426.31277-4-lukasz.luba@arm.com>
+        Mon, 05 Oct 2020 06:58:56 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 5 Oct 2020 15:58:54 +0200
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20201005135854.GA17959@pc636>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+ <20200929220742.GB8768@pc636>
+ <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+ <20201001192626.GA29606@pc636>
+ <20201002071123.GB20872@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002114426.31277-4-lukasz.luba@arm.com>
+In-Reply-To: <20201002071123.GB20872@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Oct 2020 12:44:26 +0100, Lukasz Luba wrote:
-> Update the documentation for the binding 'sustainable-power' and allow
-> to provide values in an abstract scale. It is required when the cooling
-> devices use an abstract scale for their power values.
+On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
+> On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
+> > > 
+> > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
+> > > the allocator (different from what you posted in previous version) so that it
+> > > only looks at the flag after it tries to allocate from pcplist and finds out
+> > > it's empty. So, no inventing of new page allocator entry points or checks such
+> > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
+> > > affect existing fast paths.
+> > >
+> > OK. Now i see. Please have a look below at the patch, so we fully understand
+> > each other. If that is something that is close to your view or not:
+> > 
+> > <snip>
+> > t a/include/linux/gfp.h b/include/linux/gfp.h
+> > index c603237e006c..7e613560a502 100644
+> > --- a/include/linux/gfp.h
+> > +++ b/include/linux/gfp.h
+> > @@ -39,8 +39,9 @@ struct vm_area_struct;
+> >  #define ___GFP_HARDWALL                0x100000u
+> >  #define ___GFP_THISNODE                0x200000u
+> >  #define ___GFP_ACCOUNT         0x400000u
+> > +#define ___GFP_NO_LOCKS                0x800000u
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
+> Even if a new gfp flag gains a sufficient traction and support I am
+> _strongly_ opposed against consuming another flag for that. Bit space is
+> limited.
+>
+That is a valid point.
 
+>
+> Besides that we certainly do not want to allow craziness like
+> __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
+>
+Obviously not. And it seems that the way of implementing of the
+NO_LOCK logic would be easier(less code changes) and better if
+it was defined like below(what you proposed later in this thread):
 
-My bot found errors running 'make dt_binding_check' on your patch:
+-#define __GFP_NO_LOCKS ((__force gfp_t)___GFP_NO_LOCKS)
++#define __GFP_NO_LOCKS ((__force gfp_t) 0)
 
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a plain scalar
-  in "<unicode string>", line 102, column 11
-found a tab character that violates indentation
-  in "<unicode string>", line 103, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:18: Documentation/devicetree/bindings/thermal/thermal-zones.example.dts] Error 1
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/thermal/thermal-zones.example.dts'
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/thermal/thermal-zones.yaml:  while scanning a plain scalar
-  in "<unicode string>", line 102, column 11
-found a tab character that violates indentation
-  in "<unicode string>", line 103, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/thermal-zones.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-make: *** [Makefile:1366: dt_binding_check] Error 2
+That could imply that calling the page allocator with zero
+argument would apply a further limitation - that is lock free.
 
-
-See https://patchwork.ozlabs.org/patch/1375670
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+--
+Vlad Rezki
