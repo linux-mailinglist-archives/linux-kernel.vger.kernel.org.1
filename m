@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EB4283958
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB22283959
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgJEPQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:16:00 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:59540 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726784AbgJEPQA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:16:00 -0400
-From:   Luc Maranget <luc.maranget@inria.fr>
-X-IronPort-AV: E=Sophos;i="5.77,338,1596492000"; 
-   d="scan'208";a="471039281"
-Received: from yquem.paris.inria.fr (HELO yquem.inria.fr) ([128.93.101.33])
-  by mail2-relais-roc.national.inria.fr with ESMTP; 05 Oct 2020 17:15:57 +0200
-Received: by yquem.inria.fr (Postfix, from userid 18041)
-        id D9085E1E95; Mon,  5 Oct 2020 17:15:57 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 17:15:57 +0200
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Akira Yokosawa <akiyks@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Bug in herd7 [Was: Re: Litmus test for question from Al Viro]
-Message-ID: <20201005151557.4bcxumreoekgwmsa@yquem.inria.fr>
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <045c643f-6a70-dfdf-2b1e-f369a667f709@gmail.com>
- <20201003171338.GA323226@rowland.harvard.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201003171338.GA323226@rowland.harvard.edu>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        id S1726948AbgJEPQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726573AbgJEPQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:16:06 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.194])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C85C2078A;
+        Mon,  5 Oct 2020 15:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601910965;
+        bh=h+mjNR7Ih9SPH2szRZ48s6Wbw1Tsxse8uOiktaYvNf0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1Qu/wPSrap3vLZR0kC6AuI6UwX0VM4DuLJhiXzpnWpmZsyVvCLDnyZ55S/ZHkNEyR
+         2nsU+8fJhSsWBgrais7UMkNZSYriMRzKJ1DxRvgG24HxKirBVMRNcr/cR5wdTvC9ma
+         yR+0wiAQ2VUDgugJC7R7IiEtIRVWHtYUohAjaqfk=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/2] media: i2c: imx258: add HDR control
+Date:   Mon,  5 Oct 2020 17:15:58 +0200
+Message-Id: <20201005151559.12003-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sun, Oct 04, 2020 at 12:16:31AM +0900, Akira Yokosawa wrote:
-> > Hi Alan,
-> > 
-> > Just a minor nit in the litmus test.
-> > 
-> > On Sat, 3 Oct 2020 09:22:12 -0400, Alan Stern wrote:
-> > > To expand on my statement about the LKMM's weakness regarding control 
-> > > constructs, here is a litmus test to illustrate the issue.  You might 
-> > > want to add this to one of the archives.
-> > > 
-> > > Alan
-> > > 
-> > > C crypto-control-data
-> > > (*
-> > >  * LB plus crypto-control-data plus data
-> > >  *
-> > >  * Expected result: allowed
-> > >  *
-> > >  * This is an example of OOTA and we would like it to be forbidden.
-> > >  * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
-> > >  * control-dependent on the preceding READ_ONCE.  But the dependencies are
-> > >  * hidden by the form of the conditional control construct, hence the 
-> > >  * name "crypto-control-data".  The memory model doesn't recognize them.
-> > >  *)
-> > > 
-> > > {}
-> > > 
-> > > P0(int *x, int *y)
-> > > {
-> > > 	int r1;
-> > > 
-> > > 	r1 = 1;
-> > > 	if (READ_ONCE(*x) == 0)
-> > > 		r1 = 0;
-> > > 	WRITE_ONCE(*y, r1);
-> > > }
-> > > 
-> > > P1(int *x, int *y)
-> > > {
-> > > 	WRITE_ONCE(*x, READ_ONCE(*y));
-> > 
-> > Looks like this one-liner doesn't provide data-dependency of y -> x on herd7.
-> 
-> You're right.  This is definitely a bug in herd7.
-> 
-> Luc, were you aware of this?
+The IMX258 supports High Dynamic Range with 5 levels of low/high
+exposure ratio.  Add a V4L2 control for HDR (WIDE_DYNAMIC_RANGE).
 
-Hi Alan,
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/media/i2c/imx258.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-No I was not aware of it. Now I am, the bug is normally fixed in the master branch of herd git deposit.
-<https://github.com/herd/herdtools7/commit/0f3f8188a326d5816a82fb9970fcd209a2678859>
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index 7bedbfe5c4d6..aedf8e7c6165 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -61,6 +61,15 @@
+ #define IMX258_DGTL_GAIN_DEFAULT	1024
+ #define IMX258_DGTL_GAIN_STEP		1
+ 
++/* HDR control */
++#define IMX258_REG_HDR			0x0220
++#define IMX258_HDR_ON			BIT(0)
++#define IMX258_REG_HDR_RATIO		0x0222
++#define IMX258_HDR_RATIO_MIN		0
++#define IMX258_HDR_RATIO_MAX		5
++#define IMX258_HDR_RATIO_STEP		1
++#define IMX258_HDR_RATIO_DEFAULT	0x0
++
+ /* Test Pattern Control */
+ #define IMX258_REG_TEST_PATTERN		0x0600
+ 
+@@ -777,6 +786,22 @@ static int imx258_set_ctrl(struct v4l2_ctrl *ctrl)
+ 				!ctrl->val ? REG_CONFIG_MIRROR_FLIP :
+ 				REG_CONFIG_FLIP_TEST_PATTERN);
+ 		break;
++	case V4L2_CID_WIDE_DYNAMIC_RANGE:
++		if (!ctrl->val) {
++			ret = imx258_write_reg(imx258, IMX258_REG_HDR,
++					       IMX258_REG_VALUE_08BIT,
++					       IMX258_HDR_RATIO_MIN);
++		} else {
++			ret = imx258_write_reg(imx258, IMX258_REG_HDR,
++					       IMX258_REG_VALUE_08BIT,
++					       IMX258_HDR_ON);
++			if (ret)
++				break;
++			ret = imx258_write_reg(imx258, IMX258_REG_HDR_RATIO,
++					       IMX258_REG_VALUE_08BIT,
++					       BIT(IMX258_HDR_RATIO_MAX));
++		}
++		break;
+ 	default:
+ 		dev_info(&client->dev,
+ 			 "ctrl(id:0x%x,val:0x%x) is not handled\n",
+@@ -1193,6 +1218,9 @@ static int imx258_init_controls(struct imx258 *imx258)
+ 				IMX258_DGTL_GAIN_STEP,
+ 				IMX258_DGTL_GAIN_DEFAULT);
+ 
++	v4l2_ctrl_new_std(ctrl_hdlr, &imx258_ctrl_ops, V4L2_CID_WIDE_DYNAMIC_RANGE,
++				0, 1, 1, IMX258_HDR_RATIO_DEFAULT);
++
+ 	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &imx258_ctrl_ops,
+ 				V4L2_CID_TEST_PATTERN,
+ 				ARRAY_SIZE(imx258_test_pattern_menu) - 1,
+-- 
+2.17.1
 
-Thanks for the report.
-
---Luc
