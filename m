@@ -2,181 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4B1283CEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DEC283CF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727710AbgJEQ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgJEQ5B (ORCPT
+        id S1727738AbgJEQ7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:59:30 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:35665 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbgJEQ73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:57:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6528C0613CE;
-        Mon,  5 Oct 2020 09:57:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=48svzprtCtBeLxZUOMJ4cbXcIutSXC9w6o9yaeAk50k=; b=iWTCFntwCLL8/a77EO9Ham7WER
-        /v09FwH8m65Cm7f7V9zH1XsZICAX4Zr8V/gfyQf452KXVw9qhBPoDJvSCt+9lFw8EKPgph6n53U3h
-        2lVn18LbsXGQq/B2X1MRmI6QgRehi0okhVIYtocng/lXKldOaUc6wNhINVtDt1Et7sSGUM0BDQU+Y
-        M7jhOXl3YWrsYtMLhlXvcgMzVMQRePzybDW/fD8Sl41tPp0cwSZQjhHLXIWRqixlInAhJwPnxBXPr
-        bjzdg1nxkf87nmMDxi0mTkhXWdXH4vR3ozsU8wyf7I/PuefCVBnkC44MycsgJFa+NwZz8Hjp2g14/
-        a2MRbyug==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPTnC-0007qG-1K; Mon, 05 Oct 2020 16:56:54 +0000
-Date:   Mon, 5 Oct 2020 17:56:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, kvm-ppc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH v3 0/2] mm: remove extra ZONE_DEVICE struct page
- refcount
-Message-ID: <20201005165653.GN20115@casper.infradead.org>
-References: <20201001181715.17416-1-rcampbell@nvidia.com>
+        Mon, 5 Oct 2020 12:59:29 -0400
+Received: by mail-ej1-f67.google.com with SMTP id u21so13077480eja.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 09:59:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=9xdFXdrMJn7e4RT0XELuQJR5xwLkLE02GAd02MCi5hg=;
+        b=XR300pT2O0ev70NukXxSMsfAG5hKC1u7T0i2zxKMzpbHGqZo5sFn2NCbg2WrdyuYvi
+         mbHegcdXQpDXz3itvBWNnkdAM8hvAvK2HvPgrc/vWcBib11M5ytoa+t8mZpY32XStj+t
+         n2obt64K4GStZV54MOf5qkNW7lRvLAa4KMwucdPJQQWAB1QN1Qss8uG5A+N0tPCdUPzS
+         UT8Mcy9zvn/w9aIWkXbVElpo4T0kutRbrVZr8HDvXB7oCqdk6kwpp4oJ2YRHE6NAw8C6
+         4McMftFP/1tnQ4g8Q3iJnfEWCAHz8f/NRxseDS9yNCvIYwTRAhyHLSdW1wCHyX3GfYm8
+         Fqww==
+X-Gm-Message-State: AOAM533vPWNEd8aiNIS4mWLHqQVUMzTpizWN6pAyqeRysMfA0xjwB0BO
+        EgpwvjYVK0G3+evHd/xM7+w=
+X-Google-Smtp-Source: ABdhPJzuMuHWwURAOEzsGEOe3utNQreoflFTlZr+gen8TuQEDbd1QOzdm/vuD3J/Wl5bmF9e0AYVfQ==
+X-Received: by 2002:a17:906:22d8:: with SMTP id q24mr605502eja.479.1601917166686;
+        Mon, 05 Oct 2020 09:59:26 -0700 (PDT)
+Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
+        by smtp.gmail.com with ESMTPSA id 12sm274022edw.50.2020.10.05.09.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 09:59:25 -0700 (PDT)
+References: <20200928082643.133257-1-hsiang023167@gmail.com>
+ <8272de8d-9868-d419-e2bb-d5e2c0614b63@arm.com>
+ <20201002053812.GA176142@ubuntu>
+ <57e6b3d3-22cd-0533-cfe7-e689c7983fcc@arm.com>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     Yun Hsiang <hsiang023167@gmail.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
+Subject: Re: [PATCH 1/1] sched/uclamp: release per-task uclamp control if
+ user set to default value
+In-reply-to: <57e6b3d3-22cd-0533-cfe7-e689c7983fcc@arm.com>
+Message-ID: <87o8lg7gpi.derkling@matbug.net>
+Date:   Mon, 05 Oct 2020 18:58:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001181715.17416-1-rcampbell@nvidia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:17:13AM -0700, Ralph Campbell wrote:
-> This is still an RFC because after looking at the pmem/dax code some
-> more, I realized that the ZONE_DEVICE struct pages are being inserted
-> into the process' page tables with vmf_insert_mixed() and a zero
-> refcount on the ZONE_DEVICE struct page. This is sort of OK because
-> insert_pfn() increments the reference count on the pgmap which is what
-> prevents memunmap_pages() from freeing the struct pages and it doesn't
-> check for a non-zero struct page reference count.
-> But, any calls to get_page() will hit the VM_BUG_ON_PAGE() that
-> checks for a reference count == 0.
 
-And presumably get_user_pages() would call get_page()?  Or is that gated
-off somewhere?
+Hi Yun, Dietmar,
 
-Looking at this from a design standpoint instead of getting into the
-code, I would say that a struct page which cannot be referenced from
-anywhere should have a reference count of 0.  As soon as it can be
-found by something, it should have a positive refcount.
+On Mon, Oct 05, 2020 at 14:38:18 +0200, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote...
 
-For DAX, I think that means it should have its refcount raised to
-1 immediately before a DAX entry for it is put in the page cache.
-It should have its refcount decreased when its DAX entry is removed from
-the page cache.
+> + Patrick Bellasi <patrick.bellasi@matbug.net>
+> + Qais Yousef <qais.yousef@arm.com>
+>
+> On 02.10.20 07:38, Yun Hsiang wrote:
+>> On Wed, Sep 30, 2020 at 03:12:51PM +0200, Dietmar Eggemann wrote:
+>
+> [...]
+>
+>>> On 28/09/2020 10:26, Yun Hsiang wrote:
+>>>> If the user wants to release the util clamp and let cgroup to control it,
+>>>> we need a method to reset.
+>>>>
+>>>> So if the user set the task uclamp to the default value (0 for UCLAMP_MIN
+>>>> and 1024 for UCLAMP_MAX), reset the user_defined flag to release control.
+>>>>
+>>>> Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
+>>>
+>>> could you explain with a little bit more detail why you would need this
+>>> feature?
+>>>
+>>> Currently we assume that once the per-task uclamp (user-defined) values
+>>> are set, you could only change the effective uclamp values of this task
+>>> by (1) moving it into another taskgroup or (2) changing the system
+>>> default uclamp values.
+>>>
+>> 
+>> Assume a module that controls group (such as top-app in android) uclamp and
+>> task A in the group.
+>> Once task A set uclamp, it will not be affected by the group setting.
 
-That should ensure that we can't put a 0-ref DAX page in the page tables,
-and thus it can't be found by get_user_pages().
+That's not true, and Dietmar example here after is correct.
 
-> // mmap() an ext4 file that is mounted -o dax.
-> ext4_dax_fault()
->   ext4_dax_huge_fault()
->     dax_iomap_fault(&ext4_iomap_ops)
->       dax_iomap_pte_fault()
->         ops->iomap_begin() // ext4_iomap_begin()
->           ext4_map_blocks()
->           ext4_set_iomap()
->         dax_iomap_pfn()
->         dax_insert_entry()
->         vmf_insert_mixed(pfn)
->           __vm_insert_mixed()
->             if (!IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) &&
->                 !pfn_t_devmap(pfn) && pfn_t_valid(pfn))
->               insert_page()
->                 get_page(page) // XXX would trigger VM_BUG_ON_PAGE()
->                 page_add_file_rmap()
->                 set_pte_at()
->             else
->               insert_pfn()
->                 pte_mkdevmap()
->                 set_pte_at()
-> 
-> Should pmem set the page reference count to one before inserting the
-> pfn into the page tables (and decrement when removing devmap PTEs)?
-> What about MEMORY_DEVICE_GENERIC and MEMORY_DEVICE_PCI_P2PDMA use cases?
-> Where should they icrement/decrement the page reference count?
-> I don't know enough about how these are used to really know what to
-> do at this point. If people want me to continue to work on this series,
-> I will need some guidance.
-> 
-> ---
-> 
-> Matthew Wilcox, Ira Weiny, and others have complained that ZONE_DEVICE
-> struct page reference counting is ugly because they are "free" when the
-> reference count is one instead of zero. This leads to explicit checks
-> for ZONE_DEVICE pages in places like put_page(), GUP, THP splitting, and
-> page migration which have to adjust the expected reference count when
-> determining if the page is isolated or idle. This is my attempt to make
-> ZONE_DEVICE pages be free when the reference count is zero and removing
-> the special cases.
-> 
-> I'm only sending this out as a RFC since I'm not that familiar with the
-> DAX, PMEM, XEN, and other uses of ZONE_DEVICE struct pages allocated
-> with devm_memremap_pages() or memremap_pages() but my best reading of
-> the code looks like it might be OK. I could use help testing these
-> configurations.
-> I have been able to successfully run xfstests on ext4 with the memmap
-> kernel boot option to simulate pmem.
-> 
-> Changes in v3:
-> Rebase to linux-mm 5.9.0-rc7-mm1.
-> Added a check for page_free() as suggested by Christoph Hellwig.
-> Added a helper for dax_wait_page() as suggested by Christoph Hellwig.
-> 
-> Changes in v2:
-> One of the big changes in v2 is that devm_memremap_pages() and
-> memremap_pages() now return the struct pages' reference count set to
-> zero instead of one. Normally, get_page() will VM_BUG_ON_PAGE() if
-> page->_refcount is zero. I didn't see any such warnings running the
-> xfstests with dax/pmem but I'm not clear how the zero to one reference
-> count is handled.
-> 
-> Other changes in v2:
-> Rebased to Linux-5.9.0-rc6 to include pmem fixes.
-> I added patch 1 to introduce a page refcount helper for ext4 and xfs as
-> suggested by Christoph Hellwig.
-> I also applied Christoph Hellwig's other suggested changes for removing
-> the devmap_managed_key, etc.
-> 
-> Ralph Campbell (2):
->   ext4/xfs: add page refcount helper
->   mm: remove extra ZONE_DEVICE struct page refcount
-> 
->  arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 +-
->  drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 +-
->  fs/dax.c                               |  8 +--
->  fs/ext4/inode.c                        |  5 +-
->  fs/xfs/xfs_file.c                      |  4 +-
->  include/linux/dax.h                    | 10 +++
->  include/linux/memremap.h               |  7 ++-
->  include/linux/mm.h                     | 44 --------------
->  lib/test_hmm.c                         |  2 +-
->  mm/gup.c                               | 44 --------------
->  mm/internal.h                          |  8 +++
->  mm/memremap.c                          | 84 +++++++-------------------
->  mm/migrate.c                           |  5 --
->  mm/page_alloc.c                        |  3 +
->  mm/swap.c                              | 44 ++------------
->  15 files changed, 63 insertions(+), 209 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
-> 
+We call it uclamp since the values are clamps, which are always
+aggregate somehow at different levels. IOW, a task has never a full free
+choice of the final effective value.
+
+> This depends on the uclamp values of A and /TG (the task group).
+>
+> Both uclamp values are max aggregated (max aggregation between
+> system-wide, taskgroup and task values for UCLAMP_MIN and UCLAMP_MAX).
+>
+> (1) system-wide: /proc/sys/kernel/sched_util_clamp_[min,max]
+>
+> (2) taskgroup (hierarchy): /sys/fs/cgroup/cpu/TG/cpu.uclamp.[min,max]
+>
+> (3) task A:
+>
+> Example: [uclamp_min, uclamp_max]
+>
+> (1)  [1024, 1024]
+>
+> (2)  [25.00 (256), 75.00 (768)]
+>
+> (3a) [128, 512] : both values are not affected by /TG
+>
+> (3b) [384, 896] : both values are affected by /TG
+>
+>
+>> If task A doesn't want to control itself anymore,
+
+To be precise, in this case we should say: "if a task don't want to give
+up anymore".
+
+Indeed, the base idea is that a task can always and only
+"ask for less". What it really gets (effective value) is the minimum
+among its request, what the group allows and the system wide value on
+top, i.e ref [4,5]:
+
+   eff_value = MIN(system-wide, MIN(tg, task))
+
+
+>> it can not go back to the initial state to let the module(group) control.
+>
+> In case A changes its values e.g. from 3a to 3b it will go back to be
+> controlled by /TG again (like it was when it had no user defined
+> values).
+
+True, however it's also true that strictly speaking once a task has
+defined a per-task value, we will always aggregate/clamp that value wrt
+to TG and SystemWide value.
+
+>> But the other tasks in the group will be affected by the group.
+
+This is not clear to me.
+
+All tasks in a group will be treated independently. All the tasks are
+subject to the same _individual_ aggregation/clamping policy.
+
+> Yes, in case they have no user defined values or have values greater
+> than the one of /TG.
+>
+>> The policy might be
+>> 1) if the task wants to control it's uclamp, use task uclamp value
+
+Again, worth to stress, a task has _never_ full control of it's clamp.
+Precisely, a task has the freedom to always ask less than what it's
+enforced at TG/System level.
+
+IOW, task-specific uclamp values support only a "nice" policy, where a
+task can only give up something. Either be _less_ boosted or _more_
+capped, which in both cases corresponds to asking for _less_ CPU
+bandwidth.
+
+>> (but under group uclamp constraint)
+>
+> That would be example 3a.
+>
+>> 2) if the task doesn't want to control it's uclamp, use group uclamp value.
+>
+> That would be example 3b.
+>
+>> If the policy is proper, we need a reset method for per-task uclamp.
+>> 
+>>>> ---
+>>>>  kernel/sched/core.c | 7 +++++--
+>>>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>>>> index 9a2fbf98fd6f..fa63d70d783a 100644
+>>>> --- a/kernel/sched/core.c
+>>>> +++ b/kernel/sched/core.c
+>>>> @@ -1187,6 +1187,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
+>>>>  				  const struct sched_attr *attr)
+>>>>  {
+>>>>  	enum uclamp_id clamp_id;
+>>>> +	bool user_defined;
+>>>>  
+>>>>  	/*
+>>>>  	 * On scheduling class change, reset to default clamps for tasks
+>>>> @@ -1210,14 +1211,16 @@ static void __setscheduler_uclamp(struct task_struct *p,
+>>>>  	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+>>>>  		return;
+>>>>  
+>>>> +	user_defined = attr->sched_util_min == 0 ? false : true;
+>
+> In case we would need a way to reset user defined values, using 0 and
+> 1024 for this is problematic because both are valid uclamp values.
+> But I'm pretty sure you can avoid this by using the max aggregation
+> between A and /TG to turn task uclamp values on or off.
+> This is obviously also true when A moves from /TG into another taskgroup
+> with appropriate uclamp values.
+>
+> [...]
+
+All the above considered, I think there is still an argument for what
+Yun is asking.
+
+It's true that in principle, for example, a task can just set its
+util_min=1024 to always get the maximum boost value allowed by its
+current TG. However, that would probably not work very well if the task
+is then moved to the root group, where by default we allow 1024.
+
+It's a sort of corner case, true, but it's there. :)
+
+If we want to fix this case, thus allowing a task to "get back"
+its original state with user_define=false, however we should NOT
+play with the clamp values and confusing their semantic.
+
+A possible alternative would be to add in a new possible value for
+sched_attr::sched_flags [1] to be used via sched_setparam() syscall,
+e.g. a SCHED_FLAG_UTIL_CLAMP_RESET flag similar to [2].
+Such a flag can be consumed in __setscheduler_uclamp() [3] to reset the
+user defined status.
+
+Best,
+Patrick
+
+
+[1] https://elixir.bootlin.com/linux/v5.9-rc8/source/include/uapi/linux/sched/types.h#L104
+[2] https://elixir.bootlin.com/linux/v5.9-rc8/source/include/uapi/linux/sched.h#L133
+[3] https://elixir.bootlin.com/linux/v5.9-rc8/source/kernel/sched/core.c#L1445
+[4] https://elixir.bootlin.com/linux/v5.9-rc8/source/kernel/sched/core.c#L1108
+[5] https://elixir.bootlin.com/linux/v5.9-rc8/source/kernel/sched/core.c#L1086
+
