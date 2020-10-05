@@ -2,62 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056F6282FEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 06:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8639D282FE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 06:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgJEE4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 00:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725267AbgJEE4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 00:56:23 -0400
-Received: from localhost (unknown [171.61.67.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDCEE2080C;
-        Mon,  5 Oct 2020 04:51:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601873472;
-        bh=Z/SwT7c4Ve1srrsUK9mb3041zwltNCWOLNkG6scitrs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cQL2XHhkne8ckjnANwCRPDemlSUxko1OQThKFGgqUfRtZzaoOBwCSrwiLpIqxG6t0
-         IOdmRDdwsJumfHC9nwk8eNnXL5NhRLfG9aYPrLvT/GVRLQc1WRecxKUieJgdb5Fbc1
-         T+yxjX3GG7Wn81V/7YZU7MZHK9wMgvzarD148p2I=
-Date:   Mon, 5 Oct 2020 10:21:08 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Fix 'reg' size issues in zynqmp examples
-Message-ID: <20201005045108.GL2968@vkoul-mobl>
-References: <20200928155953.2819930-1-robh@kernel.org>
+        id S1725872AbgJEEyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 00:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbgJEEyT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 00:54:19 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63481C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 21:54:18 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id i3so4775727pjz.4
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 21:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wuaS5eoV+4nKA4VFTKBSqLfD9xKQazApFVRKGy/0lFI=;
+        b=l5zJxdYME3oq92mSrDYLm0d0cCxlAMOfFeEdnzoaIogFaG3LCq0FidCwSStVutLvyx
+         0wv96FjK586m5ycfowTJS8JHcNKOIj85DI18zCUfDKwcxnbEJZVTtF4FTJFjDGTXus8l
+         YXQWrqgzelB5W0jNefaUuShjIwPewvlrYgXSaqp7bsM3/DqdCi8KMLtM0nopUiGlBlGe
+         m6y0i7ZHvckJxDBDEbCXSSflghzhBCIiFRpC9GGZ8o+VfSqmtbumc5SHclxAk/RA7mNm
+         9DMJxniiTVDg76zGYXQqvD40l923tkcyRUcrtB3DUlHsbWjO92CGL8l1A0TxipSv6fDb
+         L1NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wuaS5eoV+4nKA4VFTKBSqLfD9xKQazApFVRKGy/0lFI=;
+        b=bIneVfLWLEpLTNtSc3HFdQXW4aZ+EpgQMGSxlebSj0AC2wo6VJOdGnq9ieIPKq7K4P
+         3QXyDTOytTZtMhyvIhC1UhipStW+2FEovEDHtbPNTvEkdNkNYIgKJy+hdI4QhSJ6Zr58
+         gok3Fo/31pQQMu0NGBC6qNwJd91pvqzmFgLJ1M4sessNj0XK4M83XtBKTPtvlYjCiuJj
+         LHmSk9b1GZT55zGy8h5kz8863Ydlzd7sEOF/9gV8emdSCIVikBq5wtKhRcdDYzAW6ebe
+         RaPL+f6S3kccALSiWesoAed/ZGQQt6w0+WoP9Kc1jJEKlFX83HEnx3l2mn3TIdGigA8I
+         1nag==
+X-Gm-Message-State: AOAM530CBcEEm8Wem0YWGPy00bfsIW4Na7zexmOKpF8bqhyFlX1wCqeN
+        uHrWKWmHQOfarrxGAOZVpjeLdg==
+X-Google-Smtp-Source: ABdhPJw+IAPREkiT644OHOYPN0WVvdn6QTaP4XckNLU7A8dFCB0SkJqIEdtw04oWZuqUFMNvTI/UIA==
+X-Received: by 2002:a17:90a:528a:: with SMTP id w10mr14695733pjh.107.1601873657786;
+        Sun, 04 Oct 2020 21:54:17 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id n7sm10536512pfq.114.2020.10.04.21.54.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 04 Oct 2020 21:54:16 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 10:24:14 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sumit Gupta <sumitg@nvidia.com>
+Cc:     rjw@rjwysocki.net, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ksitaraman@nvidia.com, bbasu@nvidia.com
+Subject: Re: [Patch 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
+Message-ID: <20201005045414.fmntm7ejad7zxcrv@vireshk-i7>
+References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
+ <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200928155953.2819930-1-robh@kernel.org>
+In-Reply-To: <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-09-20, 10:59, Rob Herring wrote:
-> The default sizes in examples for 'reg' are 1 cell each. Fix the
-> incorrect sizes in zynqmp examples:
+On 16-09-20, 22:41, Sumit Gupta wrote:
+> Warning coming during boot because the boot freq set by bootloader
+> gets filtered out due to big freq steps while creating freq_table.
+> Fixing this by setting closest ndiv value from freq_table.
+> Warning:
+>   cpufreq: cpufreq_online: CPU0: Running at unlisted freq
+>   cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
 > 
-> Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp-dpdma.example.dt.yaml: example-0: dma-controller@fd4c0000:reg:0: [0, 4249616384, 0, 4096] is too long
-> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:0: [0, 4249485312, 0, 4096] is too long
-> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:1: [0, 4249526272, 0, 4096] is too long
-> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:2: [0, 4249530368, 0, 4096] is too long
-> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.example.dt.yaml: example-0: display@fd4a0000:reg:3: [0, 4249534464, 0, 4096] is too long
-> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+> Also, added change in init to wait till current frequency becomes
+> equal or near to the previously requested frequency. This is done
+> because it takes some time to restore the previous frequency while
+> turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
 
-Applied, thanks
+So you are trying to figure if the frequency is listed in freq-table or not,
+otherwise setting the frequency to a value you think is appropriate. Right ?
+
+This is what the cpufreq core already does when it printed these boot time
+messages. Do we really need to add this much code in here ?
+
+If you really don't want to see the warning, how about fixing it the way cpufreq
+core does ? i.e. with this call:
+
+ret = __cpufreq_driver_target(policy, policy->cur - 1, CPUFREQ_RELATION_L);
 
 -- 
-~Vinod
+viresh
