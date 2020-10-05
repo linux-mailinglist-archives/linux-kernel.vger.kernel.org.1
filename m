@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FF2283970
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865C8283977
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgJEPXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgJEPXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:23:31 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485FDC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:23:31 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id 133so4780673ljj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 08:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oisuTyH2B16KCT9bIXRJo+RBIlK68EwI60DD8PxYDQQ=;
-        b=G9UhbmoRoEgmnDPaJWizfTZK5Qgp65885ntQAgGiZ0fze6Z6iS+sa6sNGGrBDI7lXl
-         if8yesDWamsRuEddljPSsGZRny5GqcAwBwn9Sjpgkv0baAZtBtN1tQqH3CQQ1ito0P1L
-         ZRkQMUK3t0I31LDWSZYdYLS9KDjbjwmyYg99lfpaEskjlFpnyBs1zV8rr1koxr0+g4eC
-         1Xql4lJ3r+UPyhh2KLYaItYNf0WvOSHNrPmMDREbTbcUMxmo+0u1bGT4//tcJ6EmprsC
-         Tv/g8hgkyElNKVQ2Pw4coxs6OxqGbS7QypV2vPacz2xUjMSqx48Kh3uYgAqA9aRG1/fN
-         6jJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oisuTyH2B16KCT9bIXRJo+RBIlK68EwI60DD8PxYDQQ=;
-        b=D77DluPjmmWUtCBXjgjujVys9K5CrlPKJ9FNuFcuHj89pEt6P84z6z7LlKenLmpION
-         b5lIdqrd8lKkcwwEgp1bNkaCW9ZxgD5HfzaS4rCDD3c6Qi9G7+35qanS7fdMPVCP5QUL
-         g/klovER7jTVKxsAcXQfXqKmLE5YXMIGqkW7HROL+Be8KYRDP8Dw/YKt4KxUzHGeFL6j
-         vB6r6EAgCqJqmO6ugW9Y11YKUkThWRO7Brya48TPVHKyssIjDfkorPpGvieU74LETGej
-         zND2H8jFPVAPWU4MopKAHFmT3hQh+lXPmvY8s0nVsqIswhR69AOfPC/RULAYyPW2pezp
-         jHqA==
-X-Gm-Message-State: AOAM531OgD4AubHgc4G1Kfa+QfoHbf4Grff3UoVP/aqPqnZTSAb1hTtC
-        4tsLwyPptWGFKJRMpZ4o0MreAOr/UeI0KRapx7o=
-X-Google-Smtp-Source: ABdhPJwxvtjpnMJdyyFmg58WrNHXy9efsb6Rh5cm2bo3+IIkQeXPwy59RgQl2HySFVV+ZRnY6JK8teLvAWQKLpN/gaY=
-X-Received: by 2002:a05:651c:95:: with SMTP id 21mr62666ljq.307.1601911409758;
- Mon, 05 Oct 2020 08:23:29 -0700 (PDT)
+        id S1727025AbgJEPZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:25:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726891AbgJEPZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:25:37 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C7AE207BC;
+        Mon,  5 Oct 2020 15:25:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601911537;
+        bh=/0vJ0HMwCSkrTpW5w34rc3yXEgUT3MBnMmLGptxX8uM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qy98+eb/pll06WRY9c4Hdk9tjpntJ5pyAruG18eik5s0/fQE1SlJMSZvfQsdpUPpk
+         0BZSMPkAh3tXs21TzpDU7l8N6VqBiCGPOo17y4Q1JRvtEUq2RgVZhCJjYiJpuPq5+O
+         q6tCRQnpcbbxDs3TVukuSm+tWILbREc8hd2aZPWE=
+Date:   Mon, 5 Oct 2020 16:24:33 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/4] spi: spi-mtk-nor: use dma_alloc_coherent() for
+ bounce buffer
+Message-ID: <20201005152433.GA48857@sirena.org.uk>
+References: <20200929073755.3741416-1-ikjn@chromium.org>
+ <20200929153320.v4.2.I06cb65401ab5ad63ea30c4788d26633928d80f38@changeid>
 MIME-Version: 1.0
-References: <20200920113808.22223-1-vichy.kuo@gmail.com> <20200920113808.22223-2-vichy.kuo@gmail.com>
- <CAOVJa8F+NZQM4H=1Y683g7DTZQ2z1YSH0pKRCVcN+JmQfEi81g@mail.gmail.com>
- <20201002134532.GA3419175@kroah.com> <CAOVJa8HZCmy0s-H7rPVTgi6X1uYZ82YjdPHe3-a4=D+qLgi7Uw@mail.gmail.com>
- <20201004164745.GA196660@kroah.com>
-In-Reply-To: <20201004164745.GA196660@kroah.com>
-From:   pierre kuo <vichy.kuo@gmail.com>
-Date:   Mon, 5 Oct 2020 23:23:18 +0800
-Message-ID: <CAOVJa8G+RMYvV6hU1cuJStRBM=7BbA7s1sXZavKs9OhHY8kaZw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] driver core: platform: provide devm_platform_iounremap_resource
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Disposition: inline
+In-Reply-To: <20200929153320.v4.2.I06cb65401ab5ad63ea30c4788d26633928d80f38@changeid>
+X-Cookie: Check here if tax deductible.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Greg:
-> Why are you adding new functions but not actually calling them anywhere?
 
-Below patch introduce a single helper, devm_platform_ioremap_resource,
-which combines
-platform_get_resource() and devm_ioremap_resource(). But there is no
-single helper to release
-those resources in driver removing stage.
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-https://lore.kernel.org/lkml/20190215152507.31066-2-brgl@bgdev.pl/
+On Tue, Sep 29, 2020 at 03:37:53PM +0800, Ikjoon Jang wrote:
+> Use dma_alloc_coherent() for bounce buffer instead of kmalloc() to
+> make sure the bounce buffer to be allocated within its DMAable range.
 
-That means driver owner still need to call below (*) and (**) for
-releasing resource.
-Therefore, this patch adds a single release helper that can be paired with
-devm_platform_ioremap_resource.
+This doesn't apply against current code, please check and resend.
 
-Appreciate ur kind help,
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-foo_probe(pdev)
-{
-    iomem = devm_platform_ioremap_resource(pdev, 0);
-    ....
-}
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl97OrAACgkQJNaLcl1U
+h9AT1wf9ESrZU04ckhFQ4aOa5o4YIQYd+068sqPdWJvoXIuVHFya+smMWADlWXXo
+jRD77fQGo8++5zgtAv3JYvJ86yal8Y9vrg3ZCZmn6Jh4pJTMQx7pJkLABTffTU+T
+7FTBAo5l1uZLrxr2BsR4ZKrkmANWBpVAtjscoz5zm5goUYTuDDspW7MzKoHEgjP+
+0BBEzpKvRYA3Ixn0KX9KCtX2U6emSR+nIGOht9TjD3+XFBCSW7OSBlwsLDq7DH5I
+3+xFFzP2qHz+fE2pfYjpiIAFJrDVGD8vSi83HtU6/9NxDTzUfAVT3SIPZUdSKDXg
+X4F4jfG1IUlJnb59tQOD7o/Bwib1Pg==
+=AQQn
+-----END PGP SIGNATURE-----
 
-foo_remove(pdev)
-{
-    devm_iounmap(iomem);   (*)
-    devm_release_mem_region(dev, res->start, size); (**)
-   ........................
-}
+--mP3DRpeJDSE+ciuQ--
