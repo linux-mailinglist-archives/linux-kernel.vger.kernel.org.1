@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E873728399E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57EC283A92
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgJEP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:27:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52050 "EHLO mail.kernel.org"
+        id S1728383AbgJEPfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:35:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726617AbgJEP1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:27:30 -0400
+        id S1728215AbgJEPd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:33:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E2B32085B;
-        Mon,  5 Oct 2020 15:27:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56ECD208C7;
+        Mon,  5 Oct 2020 15:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911648;
-        bh=jfLBYbdY1SLNUipv4DnCbxxC/l5eo78v1tHEIe+RQ/8=;
+        s=default; t=1601912037;
+        bh=4H/fR5q1JoOOjC4z3zPdkX31ixnSBx8yrYjHOz3qP/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kYwqJcjhuBheSN2tTrzLAfY82QIoos5xkX+CBztnuJ0ArtgAoU2HpUbpNa7YbH5P9
-         zoUpzsf7PAIs+Sau71XkudJHjuJV+enGrEWMCiM//e3gClYHU5DkDLbJ+SeUF2TPQV
-         EBzwlvzYcK7QwMhSbvOqJ9R8pVJEY+PxIzkhGmNs=
+        b=P3km1637zFgs7QBmZwWSQ5XQYdi+RLckNVmZ5CMmaWw0FK7zxAFp3bjRm2rUmivjV
+         BpVbZ8SyE2X0Hx4GFohKmEPiISGm7dDHV0pdQJxyAC1z/NXD1IJHwrzg93lDuKD+WT
+         y3C6by6KKPhqdwVVkTc+GgNTGjYhaiELukoexaKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 24/38] pinctrl: mvebu: Fix i2c sda definition for 98DX3236
-Date:   Mon,  5 Oct 2020 17:26:41 +0200
-Message-Id: <20201005142109.832685224@linuxfoundation.org>
+Subject: [PATCH 5.8 46/85] net: dsa: felix: fix some key offsets for IP4_TCP_UDP VCAP IS2 entries
+Date:   Mon,  5 Oct 2020 17:26:42 +0200
+Message-Id: <20201005142116.942841246@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
-References: <20201005142108.650363140@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
 
-[ Upstream commit 63c3212e7a37d68c89a13bdaebce869f4e064e67 ]
+[ Upstream commit 8b9e03cd08250c60409099c791e858157838d9eb ]
 
-Per the datasheet the i2c functions use MPP_Sel=0x1. They are documented
-as using MPP_Sel=0x4 as well but mixing 0x1 and 0x4 is clearly wrong. On
-the board tested 0x4 resulted in a non-functioning i2c bus so stick with
-0x1 which works.
+Some of the IS2 IP4_TCP_UDP keys are not correct, like L4_DPORT,
+L4_SPORT and other L4 keys. This prevents offloaded tc-flower rules from
+matching on src_port and dst_port for TCP and UDP packets.
 
-Fixes: d7ae8f8dee7f ("pinctrl: mvebu: pinctrl driver for 98DX3236 SoC")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20200907211712.9697-2-chris.packham@alliedtelesis.co.nz
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/mvebu/pinctrl-armada-xp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/ocelot/felix_vsc9959.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pinctrl/mvebu/pinctrl-armada-xp.c b/drivers/pinctrl/mvebu/pinctrl-armada-xp.c
-index 43231fd065a18..1a9450ef932b5 100644
---- a/drivers/pinctrl/mvebu/pinctrl-armada-xp.c
-+++ b/drivers/pinctrl/mvebu/pinctrl-armada-xp.c
-@@ -418,7 +418,7 @@ static struct mvebu_mpp_mode mv98dx3236_mpp_modes[] = {
- 		 MPP_VAR_FUNCTION(0x1, "i2c0", "sck",        V_98DX3236_PLUS)),
- 	MPP_MODE(15,
- 		 MPP_VAR_FUNCTION(0x0, "gpio", NULL,         V_98DX3236_PLUS),
--		 MPP_VAR_FUNCTION(0x4, "i2c0", "sda",        V_98DX3236_PLUS)),
-+		 MPP_VAR_FUNCTION(0x1, "i2c0", "sda",        V_98DX3236_PLUS)),
- 	MPP_MODE(16,
- 		 MPP_VAR_FUNCTION(0x0, "gpo", NULL,          V_98DX3236_PLUS),
- 		 MPP_VAR_FUNCTION(0x4, "dev", "oe",          V_98DX3236_PLUS)),
+diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
+index 1dd9e348152d7..7c167a394b762 100644
+--- a/drivers/net/dsa/ocelot/felix_vsc9959.c
++++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
+@@ -607,17 +607,17 @@ struct vcap_field vsc9959_vcap_is2_keys[] = {
+ 	[VCAP_IS2_HK_DIP_EQ_SIP]		= {118,   1},
+ 	/* IP4_TCP_UDP (TYPE=100) */
+ 	[VCAP_IS2_HK_TCP]			= {119,   1},
+-	[VCAP_IS2_HK_L4_SPORT]			= {120,  16},
+-	[VCAP_IS2_HK_L4_DPORT]			= {136,  16},
++	[VCAP_IS2_HK_L4_DPORT]			= {120,  16},
++	[VCAP_IS2_HK_L4_SPORT]			= {136,  16},
+ 	[VCAP_IS2_HK_L4_RNG]			= {152,   8},
+ 	[VCAP_IS2_HK_L4_SPORT_EQ_DPORT]		= {160,   1},
+ 	[VCAP_IS2_HK_L4_SEQUENCE_EQ0]		= {161,   1},
+-	[VCAP_IS2_HK_L4_URG]			= {162,   1},
+-	[VCAP_IS2_HK_L4_ACK]			= {163,   1},
+-	[VCAP_IS2_HK_L4_PSH]			= {164,   1},
+-	[VCAP_IS2_HK_L4_RST]			= {165,   1},
+-	[VCAP_IS2_HK_L4_SYN]			= {166,   1},
+-	[VCAP_IS2_HK_L4_FIN]			= {167,   1},
++	[VCAP_IS2_HK_L4_FIN]			= {162,   1},
++	[VCAP_IS2_HK_L4_SYN]			= {163,   1},
++	[VCAP_IS2_HK_L4_RST]			= {164,   1},
++	[VCAP_IS2_HK_L4_PSH]			= {165,   1},
++	[VCAP_IS2_HK_L4_ACK]			= {166,   1},
++	[VCAP_IS2_HK_L4_URG]			= {167,   1},
+ 	[VCAP_IS2_HK_L4_1588_DOM]		= {168,   8},
+ 	[VCAP_IS2_HK_L4_1588_VER]		= {176,   4},
+ 	/* IP4_OTHER (TYPE=101) */
 -- 
 2.25.1
 
