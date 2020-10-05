@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98794283404
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EA3283407
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbgJEKfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:35:43 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2956 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725843AbgJEKfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:35:43 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 966FAD6551D65A98996D;
-        Mon,  5 Oct 2020 11:35:41 +0100 (IST)
-Received: from localhost (10.52.124.175) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 5 Oct 2020
- 11:35:41 +0100
-Date:   Mon, 5 Oct 2020 11:33:57 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <robin.murphy@arm.com>
-Subject: Re: [PATCH v3 14/14] iommu/amd: Adopt IO page table framework
-Message-ID: <20201005103357.000062d9@Huawei.com>
-In-Reply-To: <20201004014549.16065-15-suravee.suthikulpanit@amd.com>
-References: <20201004014549.16065-1-suravee.suthikulpanit@amd.com>
-        <20201004014549.16065-15-suravee.suthikulpanit@amd.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1725974AbgJEKg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgJEKg6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:36:58 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254A7C0613CE;
+        Mon,  5 Oct 2020 03:36:58 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b12so10212470lfp.9;
+        Mon, 05 Oct 2020 03:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kXGxjrOECHo9Yx49QGExKC9VMrc3WpIW0kWli+WP6Wc=;
+        b=fHgpEcUk5a1h/ZYcayz+n0HgwtBBcLPVDH60MdlYmQ6q1uhKixndlzQykidqHB5mtc
+         t7XUXd/3M0YfRU8TRKSXnGeHzqymcHGdb1kkyPyhdnpxwVjek93PKmlERJT4spxrSsML
+         e+biqMhblP2vDC8cAxpMc8nsz/z6v3bi/eewYMM0Bc9Ny6ftNgynxoM/naeY49qKQVz1
+         Ktlp94D90cRnpS1+z4iSVuSzTxrglQg71Jp4A2mFLyYW2yW7RPnvt9B1pXqGm/eRAGfD
+         FhPkYwF9oFyvg4CFrmcpjP+1PK+iQI5FUhTSr7Jy25Czo1auDwZR79F2nQqqL8ZHr1wV
+         jHwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kXGxjrOECHo9Yx49QGExKC9VMrc3WpIW0kWli+WP6Wc=;
+        b=bRxfZ3FYMyPF1P+c2K1O0WjjrPwBt2V0T6khUj3u5jHLLXBCKq6EfdIbdqGGUbfuas
+         gFrn1d3gtYGcJFRKSLrfAD70hxIxhl2gpn7qlsAEDM/k7fRzsWzrCQtgnDBzCH+ZIns2
+         kAJ5i5rBquzpEVv7wCHpZHVavrgliHvX3LT9pK2J+4k+4m0FrvaQXbjaB4HRw4vgBsGb
+         sYSgg2fcg72wde12PGuE9q3zPnzrs3iUZekkhHxE3xZwj+63qosOFS6XMI/D2kR8fRWy
+         vGb0mgtU1i1na7plz+RQHjUzLHIBRUBd/nCBHXOPqyQRFESz2yM26PNRgUtBILQwusGR
+         mTzg==
+X-Gm-Message-State: AOAM531J+MtmjqdPjAtJirg5txRLVgb8VTvUZPz6aauRecUBkmIcSVfZ
+        UbQAB3rI/jSKj0xCVNmXdPUBmmwCxRk=
+X-Google-Smtp-Source: ABdhPJyJ9IH5yjJ1w3bo8h3abEOag+7Bnq7V9LkS3PO1PNhlyJ50gniAAz1mop6Ok01XMQ2/IMImiw==
+X-Received: by 2002:a19:7e0d:: with SMTP id z13mr5049605lfc.455.1601894216462;
+        Mon, 05 Oct 2020 03:36:56 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id i18sm2561967lfo.243.2020.10.05.03.36.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 03:36:55 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+ <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
+ <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
+ <20201005095351.GI425362@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ae48aaaf-fe10-6de4-06bb-2afbde799168@gmail.com>
+Date:   Mon, 5 Oct 2020 13:36:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.175]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201005095351.GI425362@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 4 Oct 2020 01:45:49 +0000
-Suravee Suthikulpanit <suravee.suthikulpanit@amd.com> wrote:
-
-> Switch to using IO page table framework for AMD IOMMU v1 page table.
+05.10.2020 12:53, Thierry Reding пишет:
+> On Fri, Oct 02, 2020 at 05:50:08PM +0300, Dmitry Osipenko wrote:
+>> 02.10.2020 17:22, Dmitry Osipenko пишет:
+>>>>  static int tegra_smmu_of_xlate(struct device *dev,
+>>>>  			       struct of_phandle_args *args)
+>>>>  {
+>>>> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
+>>>> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
+>>>>  	u32 id = args->args[0];
+>>>>  
+>>>> +	of_node_put(args->np);
+>>>> +
+>>>> +	if (!mc || !mc->smmu)
+>>>> +		return -EPROBE_DEFER;
+>>> platform_get_drvdata(NULL) will crash.
+>>>
+>>
+>> Actually, platform_get_drvdata(NULL) can't happen. I overlooked this.
 > 
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> How so? It's technically possible for the iommus property to reference a
+> device tree node for which no platform device will ever be created, in
+> which case of_find_device_by_node() will return NULL. That's very
+> unlikely and perhaps worth just crashing on to make sure it gets fixed
+> immediately.
 
-One minor thing inline.
-
-
-> ---
->  drivers/iommu/amd/iommu.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index 77f44b927ae7..6f8316206fb8 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -32,6 +32,7 @@
->  #include <linux/irqdomain.h>
->  #include <linux/percpu.h>
->  #include <linux/iova.h>
-> +#include <linux/io-pgtable.h>
->  #include <asm/irq_remapping.h>
->  #include <asm/io_apic.h>
->  #include <asm/apic.h>
-> @@ -1573,6 +1574,22 @@ static int pdev_iommuv2_enable(struct pci_dev *pdev)
->  	return ret;
->  }
->  
-> +struct io_pgtable_ops *
-> +amd_iommu_setup_io_pgtable_ops(struct iommu_dev_data *dev_data,
-> +			       struct protection_domain *domain)
-> +{
-> +	struct amd_iommu *iommu = amd_iommu_rlookup_table[dev_data->devid];
-> +
-> +	domain->iop.pgtbl_cfg = (struct io_pgtable_cfg) {
-> +		.pgsize_bitmap	= AMD_IOMMU_PGSIZES,
-> +		.ias		= IOMMU_IN_ADDR_BIT_SIZE,
-> +		.oas		= IOMMU_OUT_ADDR_BIT_SIZE,
-> +		.iommu_dev	= &iommu->dev->dev,
-> +	};
-> +
-> +	return alloc_io_pgtable_ops(AMD_IOMMU_V1, &domain->iop.pgtbl_cfg, domain);
-> +}
-> +
->  /*
->   * If a device is not yet associated with a domain, this function makes the
->   * device visible in the domain
-> @@ -1580,6 +1597,7 @@ static int pdev_iommuv2_enable(struct pci_dev *pdev)
->  static int attach_device(struct device *dev,
->  			 struct protection_domain *domain)
->  {
-> +	struct io_pgtable_ops *pgtbl_ops;
->  	struct iommu_dev_data *dev_data;
->  	struct pci_dev *pdev;
->  	unsigned long flags;
-> @@ -1623,6 +1641,12 @@ static int attach_device(struct device *dev,
->  skip_ats_check:
->  	ret = 0;
->  
-> +	pgtbl_ops = amd_iommu_setup_io_pgtable_ops(dev_data, domain);
-> +	if (!pgtbl_ops) {
-
-Perhaps cleaner to not store in a local variable if you aren't going to use it?
-
-	if (!amd_iommu_setup_io_pgtable_ops(dev_data, domain)) {
-
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
->  	do_attach(dev_data, domain);
->  
->  	/*
-> @@ -1958,6 +1982,8 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
->  	if (domain->dev_cnt > 0)
->  		cleanup_domain(domain);
->  
-> +	free_io_pgtable_ops(&domain->iop.iop.ops);
-> +
->  	BUG_ON(domain->dev_cnt != 0);
->  
->  	if (!dom)
-
-
+The tegra_smmu_ops are registered from the SMMU driver itself and MC
+driver sets platform data before SMMU is initialized, hence device is
+guaranteed to exist and mc can't be NULL.
