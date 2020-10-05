@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E5D2830A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BAA2830B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgJEHNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:13:39 -0400
+        id S1726131AbgJEHOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:14:01 -0400
 Received: from mga07.intel.com ([134.134.136.100]:10318 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725907AbgJEHNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:13:38 -0400
-IronPort-SDR: 50VTpTMovMNxbb68Vse6upuLt5keY80QjmqzCuGGsHdEQgKkCoVhDnUt1XyN/ZlzW7Tu+XTzAF
- LhYvJ+BECTJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="227479256"
+        id S1725870AbgJEHNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 03:13:40 -0400
+IronPort-SDR: NUtZdXmjko/PnGTIQg6cqf1PU2Jnz05ced9F/dN0u0Xu2Xy/7Sx9OtR+lwsKWUrTlWRGfMBivr
+ lzgh870hhNtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="227479261"
 X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="227479256"
+   d="scan'208";a="227479261"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 00:13:35 -0700
-IronPort-SDR: ALAxdpZ2lk2a7hk11JblBXmJZW0mfBGUbml1HO5cfVM9tJcmj9p6FsW0aUgF4eTdwJqEujHfmG
- hkesVGibureA==
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 00:13:37 -0700
+IronPort-SDR: Tyc42IA/WWF7rQYGtYSTF0KxyyXhHtvFawmWxJD/2Fk/UHs3q6GCkqkwOx/XoOyb6umRFeCUs+
+ qGy2xA3/BkKg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="309718080"
+   d="scan'208";a="309718084"
 Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 05 Oct 2020 00:13:33 -0700
+  by orsmga003.jf.intel.com with ESMTP; 05 Oct 2020 00:13:35 -0700
 From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org,
         Tingwei Zhang <tingwei@codeaurora.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Subject: [PATCH 2/8] tracing: Add flag to control different traces
-Date:   Mon,  5 Oct 2020 10:13:13 +0300
-Message-Id: <20201005071319.78508-3-alexander.shishkin@linux.intel.com>
+Subject: [PATCH 3/8] tracing: Add trace_export support for event trace
+Date:   Mon,  5 Oct 2020 10:13:14 +0300
+Message-Id: <20201005071319.78508-4-alexander.shishkin@linux.intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005071319.78508-1-alexander.shishkin@linux.intel.com>
 References: <20201005071319.78508-1-alexander.shishkin@linux.intel.com>
@@ -47,139 +47,316 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tingwei Zhang <tingwei@codeaurora.org>
 
-More traces like event trace or trace marker will be supported.
-Add flag for difference traces, so that they can be controlled
-separately. Move current function trace to it's own flag
-instead of global ftrace enable flag.
+Only function traces can be exported to other destinations currently.
+This patch exports event trace as well. Move trace export related
+function to the beginning of file so other trace can call
+trace_process_export() to export.
 
 Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
 Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 ---
- include/linux/trace.h |  5 +++++
- kernel/trace/trace.c  | 36 +++++++++++++++++++-----------------
- 2 files changed, 24 insertions(+), 17 deletions(-)
+ include/linux/trace.h |   1 +
+ kernel/trace/trace.c  | 259 ++++++++++++++++++++++--------------------
+ 2 files changed, 135 insertions(+), 125 deletions(-)
 
 diff --git a/include/linux/trace.h b/include/linux/trace.h
-index 36d255d66f88..c115a5d2269f 100644
+index c115a5d2269f..86033d214972 100644
 --- a/include/linux/trace.h
 +++ b/include/linux/trace.h
-@@ -3,6 +3,9 @@
- #define _LINUX_TRACE_H
- 
+@@ -5,6 +5,7 @@
  #ifdef CONFIG_TRACING
-+
-+#define TRACE_EXPORT_FUNCTION	BIT(0)
-+
+ 
+ #define TRACE_EXPORT_FUNCTION	BIT(0)
++#define TRACE_EXPORT_EVENT	BIT(1)
+ 
  /*
   * The trace export - an export of Ftrace output. The trace_export
-  * can process traces and export them to a registered destination as
-@@ -15,10 +18,12 @@
-  * next		- pointer to the next trace_export
-  * write	- copy traces which have been delt with ->commit() to
-  *		  the destination
-+ * flags	- which ftrace to be exported
-  */
- struct trace_export {
- 	struct trace_export __rcu	*next;
- 	void (*write)(struct trace_export *, const void *, unsigned int);
-+	int flags;
- };
- 
- int register_ftrace_export(struct trace_export *export);
 diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index f40d850ebabc..3ca121ad8728 100644
+index 3ca121ad8728..a40ee413123c 100644
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -2744,33 +2744,37 @@ trace_buffer_unlock_commit_nostack(struct trace_buffer *buffer,
+@@ -251,6 +251,138 @@ unsigned long long ns2usecs(u64 nsec)
+ 	return nsec;
+ }
  
- static void
- trace_process_export(struct trace_export *export,
--	       struct ring_buffer_event *event)
++static void
++trace_process_export(struct trace_export *export,
 +	       struct ring_buffer_event *event, int flag)
- {
- 	struct trace_entry *entry;
- 	unsigned int size = 0;
- 
--	entry = ring_buffer_event_data(event);
--	size = ring_buffer_event_length(event);
--	export->write(export, entry, size);
++{
++	struct trace_entry *entry;
++	unsigned int size = 0;
++
 +	if (export->flags & flag) {
 +		entry = ring_buffer_event_data(event);
 +		size = ring_buffer_event_length(event);
 +		export->write(export, entry, size);
 +	}
- }
- 
- static DEFINE_MUTEX(ftrace_export_lock);
- 
- static struct trace_export __rcu *ftrace_exports_list __read_mostly;
- 
--static DEFINE_STATIC_KEY_FALSE(ftrace_exports_enabled);
++}
++
++static DEFINE_MUTEX(ftrace_export_lock);
++
++static struct trace_export __rcu *ftrace_exports_list __read_mostly;
++
 +static DEFINE_STATIC_KEY_FALSE(trace_function_exports_enabled);
- 
--static inline void ftrace_exports_enable(void)
++static DEFINE_STATIC_KEY_FALSE(trace_event_exports_enabled);
++
 +static inline void ftrace_exports_enable(struct trace_export *export)
- {
--	static_branch_enable(&ftrace_exports_enabled);
++{
 +	if (export->flags & TRACE_EXPORT_FUNCTION)
 +		static_branch_inc(&trace_function_exports_enabled);
- }
- 
--static inline void ftrace_exports_disable(void)
++
++	if (export->flags & TRACE_EXPORT_EVENT)
++		static_branch_inc(&trace_event_exports_enabled);
++}
++
 +static inline void ftrace_exports_disable(struct trace_export *export)
- {
--	static_branch_disable(&ftrace_exports_enabled);
++{
 +	if (export->flags & TRACE_EXPORT_FUNCTION)
 +		static_branch_dec(&trace_function_exports_enabled);
- }
- 
--static void ftrace_exports(struct ring_buffer_event *event)
++
++	if (export->flags & TRACE_EXPORT_EVENT)
++		static_branch_dec(&trace_event_exports_enabled);
++}
++
 +static void ftrace_exports(struct ring_buffer_event *event, int flag)
- {
- 	struct trace_export *export;
- 
-@@ -2778,7 +2782,7 @@ static void ftrace_exports(struct ring_buffer_event *event)
- 
- 	export = rcu_dereference_raw_check(ftrace_exports_list);
- 	while (export) {
--		trace_process_export(export, event);
++{
++	struct trace_export *export;
++
++	preempt_disable_notrace();
++
++	export = rcu_dereference_raw_check(ftrace_exports_list);
++	while (export) {
 +		trace_process_export(export, event, flag);
- 		export = rcu_dereference_raw_check(export->next);
- 	}
- 
-@@ -2818,8 +2822,7 @@ rm_trace_export(struct trace_export **list, struct trace_export *export)
- static inline void
- add_ftrace_export(struct trace_export **list, struct trace_export *export)
- {
--	if (*list == NULL)
--		ftrace_exports_enable();
++		export = rcu_dereference_raw_check(export->next);
++	}
++
++	preempt_enable_notrace();
++}
++
++static inline void
++add_trace_export(struct trace_export **list, struct trace_export *export)
++{
++	rcu_assign_pointer(export->next, *list);
++	/*
++	 * We are entering export into the list but another
++	 * CPU might be walking that list. We need to make sure
++	 * the export->next pointer is valid before another CPU sees
++	 * the export pointer included into the list.
++	 */
++	rcu_assign_pointer(*list, export);
++}
++
++static inline int
++rm_trace_export(struct trace_export **list, struct trace_export *export)
++{
++	struct trace_export **p;
++
++	for (p = list; *p != NULL; p = &(*p)->next)
++		if (*p == export)
++			break;
++
++	if (*p != export)
++		return -1;
++
++	rcu_assign_pointer(*p, (*p)->next);
++
++	return 0;
++}
++
++static inline void
++add_ftrace_export(struct trace_export **list, struct trace_export *export)
++{
 +	ftrace_exports_enable(export);
- 
- 	add_trace_export(list, export);
- }
-@@ -2830,8 +2833,7 @@ rm_ftrace_export(struct trace_export **list, struct trace_export *export)
- 	int ret;
- 
- 	ret = rm_trace_export(list, export);
--	if (*list == NULL)
--		ftrace_exports_disable();
++
++	add_trace_export(list, export);
++}
++
++static inline int
++rm_ftrace_export(struct trace_export **list, struct trace_export *export)
++{
++	int ret;
++
++	ret = rm_trace_export(list, export);
 +	ftrace_exports_disable(export);
++
++	return ret;
++}
++
++int register_ftrace_export(struct trace_export *export)
++{
++	if (WARN_ON_ONCE(!export->write))
++		return -1;
++
++	mutex_lock(&ftrace_export_lock);
++
++	add_ftrace_export(&ftrace_exports_list, export);
++
++	mutex_unlock(&ftrace_export_lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(register_ftrace_export);
++
++int unregister_ftrace_export(struct trace_export *export)
++{
++	int ret;
++
++	mutex_lock(&ftrace_export_lock);
++
++	ret = rm_ftrace_export(&ftrace_exports_list, export);
++
++	mutex_unlock(&ftrace_export_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(unregister_ftrace_export);
++
+ /* trace_flags holds trace_options default values */
+ #define TRACE_DEFAULT_FLAGS						\
+ 	(FUNCTION_DEFAULT_FLAGS |					\
+@@ -2699,6 +2831,8 @@ void trace_event_buffer_commit(struct trace_event_buffer *fbuffer)
+ 	if (static_key_false(&tracepoint_printk_key.key))
+ 		output_printk(fbuffer);
  
- 	return ret;
++	if (static_branch_unlikely(&trace_event_exports_enabled))
++		ftrace_exports(fbuffer->event, TRACE_EXPORT_EVENT);
+ 	event_trigger_unlock_commit_regs(fbuffer->trace_file, fbuffer->buffer,
+ 				    fbuffer->event, fbuffer->entry,
+ 				    fbuffer->flags, fbuffer->pc, fbuffer->regs);
+@@ -2742,131 +2876,6 @@ trace_buffer_unlock_commit_nostack(struct trace_buffer *buffer,
+ 	__buffer_unlock_commit(buffer, event);
  }
-@@ -2884,8 +2886,8 @@ trace_function(struct trace_array *tr,
- 	entry->parent_ip		= parent_ip;
  
- 	if (!call_filter_check_discard(call, entry, buffer, event)) {
--		if (static_branch_unlikely(&ftrace_exports_enabled))
--			ftrace_exports(event);
-+		if (static_branch_unlikely(&trace_function_exports_enabled))
-+			ftrace_exports(event, TRACE_EXPORT_FUNCTION);
- 		__buffer_unlock_commit(buffer, event);
- 	}
- }
+-static void
+-trace_process_export(struct trace_export *export,
+-	       struct ring_buffer_event *event, int flag)
+-{
+-	struct trace_entry *entry;
+-	unsigned int size = 0;
+-
+-	if (export->flags & flag) {
+-		entry = ring_buffer_event_data(event);
+-		size = ring_buffer_event_length(event);
+-		export->write(export, entry, size);
+-	}
+-}
+-
+-static DEFINE_MUTEX(ftrace_export_lock);
+-
+-static struct trace_export __rcu *ftrace_exports_list __read_mostly;
+-
+-static DEFINE_STATIC_KEY_FALSE(trace_function_exports_enabled);
+-
+-static inline void ftrace_exports_enable(struct trace_export *export)
+-{
+-	if (export->flags & TRACE_EXPORT_FUNCTION)
+-		static_branch_inc(&trace_function_exports_enabled);
+-}
+-
+-static inline void ftrace_exports_disable(struct trace_export *export)
+-{
+-	if (export->flags & TRACE_EXPORT_FUNCTION)
+-		static_branch_dec(&trace_function_exports_enabled);
+-}
+-
+-static void ftrace_exports(struct ring_buffer_event *event, int flag)
+-{
+-	struct trace_export *export;
+-
+-	preempt_disable_notrace();
+-
+-	export = rcu_dereference_raw_check(ftrace_exports_list);
+-	while (export) {
+-		trace_process_export(export, event, flag);
+-		export = rcu_dereference_raw_check(export->next);
+-	}
+-
+-	preempt_enable_notrace();
+-}
+-
+-static inline void
+-add_trace_export(struct trace_export **list, struct trace_export *export)
+-{
+-	rcu_assign_pointer(export->next, *list);
+-	/*
+-	 * We are entering export into the list but another
+-	 * CPU might be walking that list. We need to make sure
+-	 * the export->next pointer is valid before another CPU sees
+-	 * the export pointer included into the list.
+-	 */
+-	rcu_assign_pointer(*list, export);
+-}
+-
+-static inline int
+-rm_trace_export(struct trace_export **list, struct trace_export *export)
+-{
+-	struct trace_export **p;
+-
+-	for (p = list; *p != NULL; p = &(*p)->next)
+-		if (*p == export)
+-			break;
+-
+-	if (*p != export)
+-		return -1;
+-
+-	rcu_assign_pointer(*p, (*p)->next);
+-
+-	return 0;
+-}
+-
+-static inline void
+-add_ftrace_export(struct trace_export **list, struct trace_export *export)
+-{
+-	ftrace_exports_enable(export);
+-
+-	add_trace_export(list, export);
+-}
+-
+-static inline int
+-rm_ftrace_export(struct trace_export **list, struct trace_export *export)
+-{
+-	int ret;
+-
+-	ret = rm_trace_export(list, export);
+-	ftrace_exports_disable(export);
+-
+-	return ret;
+-}
+-
+-int register_ftrace_export(struct trace_export *export)
+-{
+-	if (WARN_ON_ONCE(!export->write))
+-		return -1;
+-
+-	mutex_lock(&ftrace_export_lock);
+-
+-	add_ftrace_export(&ftrace_exports_list, export);
+-
+-	mutex_unlock(&ftrace_export_lock);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(register_ftrace_export);
+-
+-int unregister_ftrace_export(struct trace_export *export)
+-{
+-	int ret;
+-
+-	mutex_lock(&ftrace_export_lock);
+-
+-	ret = rm_ftrace_export(&ftrace_exports_list, export);
+-
+-	mutex_unlock(&ftrace_export_lock);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(unregister_ftrace_export);
+-
+ void
+ trace_function(struct trace_array *tr,
+ 	       unsigned long ip, unsigned long parent_ip, unsigned long flags,
 -- 
 2.28.0
 
