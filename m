@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59467283A0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535A7283A9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgJEPah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:30:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56912 "EHLO mail.kernel.org"
+        id S1728397AbgJEPfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:35:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727764AbgJEPa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:30:27 -0400
+        id S1727695AbgJEPdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:33:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE9E220637;
-        Mon,  5 Oct 2020 15:30:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93B2A208C7;
+        Mon,  5 Oct 2020 15:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911826;
-        bh=pVLhw7rbKHNqkrFfSEGlR055tsd2zEIAiNY+yfzBifw=;
+        s=default; t=1601912025;
+        bh=jKqINKOnh2VFQ2GLMWE5bNupakZfRmWizmycKI9kb5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QHafvJ5zkah82LfzyhVUWSFIxsalB4vnsEnR5QBFej53TsLEyI8mnlgBQW/W/JwWI
-         mUJyBKUP47v4rOxdwnnCMlu1ZI840hvgrBKDrVJmODiTrfF2VxbOaxTaeUakMQMaRW
-         Et3FZdi3DywxFTgY/BEDf8Hq+KaTQXChv94y1XFg=
+        b=Q5A6V/xvj9+n8W+db/KxRd7QAyLkwIYm/KqjN4MQW8p1gpFPkdsopoR28KAoetuWM
+         TM9HRYbr2QIGg1blChSiBLjLkhhTLPr1zq4HzCtchzNE+ouKnHKzdL7g2SgX3k8+BE
+         1/5xtkG7emKTNOxytxUscSqsMVnE59vzw3JHfAIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.4 53/57] epoll: do not insert into poll queues until all sanity checks are done
-Date:   Mon,  5 Oct 2020 17:27:05 +0200
-Message-Id: <20201005142112.350059875@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 70/85] scripts/dtc: only append to HOST_EXTRACFLAGS instead of overwriting
+Date:   Mon,  5 Oct 2020 17:27:06 +0200
+Message-Id: <20201005142118.099357462@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,83 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit f8d4f44df056c5b504b0d49683fb7279218fd207 upstream.
+[ Upstream commit efe84d408bf41975db8506d3a1cc02e794e2309c ]
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When building with
 
+	$ HOST_EXTRACFLAGS=-g make
+
+the expectation is that host tools are built with debug informations.
+This however doesn't happen if the Makefile assigns a new value to the
+HOST_EXTRACFLAGS instead of appending to it. So use += instead of := for
+the first assignment.
+
+Fixes: e3fd9b5384f3 ("scripts/dtc: consolidate include path options in Makefile")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/eventpoll.c |   37 ++++++++++++++++++-------------------
- 1 file changed, 18 insertions(+), 19 deletions(-)
+ scripts/dtc/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1527,6 +1527,22 @@ static int ep_insert(struct eventpoll *e
- 		RCU_INIT_POINTER(epi->ws, NULL);
- 	}
+diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
+index 0b44917f981c7..d4129e0275e4a 100644
+--- a/scripts/dtc/Makefile
++++ b/scripts/dtc/Makefile
+@@ -10,7 +10,7 @@ dtc-objs	:= dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
+ dtc-objs	+= dtc-lexer.lex.o dtc-parser.tab.o
  
-+	/* Add the current item to the list of active epoll hook for this file */
-+	spin_lock(&tfile->f_lock);
-+	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
-+	spin_unlock(&tfile->f_lock);
-+
-+	/*
-+	 * Add the current item to the RB tree. All RB tree operations are
-+	 * protected by "mtx", and ep_insert() is called with "mtx" held.
-+	 */
-+	ep_rbtree_insert(ep, epi);
-+
-+	/* now check if we've created too many backpaths */
-+	error = -EINVAL;
-+	if (full_check && reverse_path_check())
-+		goto error_remove_epi;
-+
- 	/* Initialize the poll table using the queue callback */
- 	epq.epi = epi;
- 	init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
-@@ -1549,22 +1565,6 @@ static int ep_insert(struct eventpoll *e
- 	if (epi->nwait < 0)
- 		goto error_unregister;
+ # Source files need to get at the userspace version of libfdt_env.h to compile
+-HOST_EXTRACFLAGS := -I $(srctree)/$(src)/libfdt
++HOST_EXTRACFLAGS += -I $(srctree)/$(src)/libfdt
  
--	/* Add the current item to the list of active epoll hook for this file */
--	spin_lock(&tfile->f_lock);
--	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
--	spin_unlock(&tfile->f_lock);
--
--	/*
--	 * Add the current item to the RB tree. All RB tree operations are
--	 * protected by "mtx", and ep_insert() is called with "mtx" held.
--	 */
--	ep_rbtree_insert(ep, epi);
--
--	/* now check if we've created too many backpaths */
--	error = -EINVAL;
--	if (full_check && reverse_path_check())
--		goto error_remove_epi;
--
- 	/* We have to drop the new item inside our item list to keep track of it */
- 	write_lock_irq(&ep->lock);
- 
-@@ -1593,6 +1593,8 @@ static int ep_insert(struct eventpoll *e
- 
- 	return 0;
- 
-+error_unregister:
-+	ep_unregister_pollwait(ep, epi);
- error_remove_epi:
- 	spin_lock(&tfile->f_lock);
- 	list_del_rcu(&epi->fllink);
-@@ -1600,9 +1602,6 @@ error_remove_epi:
- 
- 	rb_erase_cached(&epi->rbn, &ep->rbr);
- 
--error_unregister:
--	ep_unregister_pollwait(ep, epi);
--
- 	/*
- 	 * We need to do this because an event could have been arrived on some
- 	 * allocated wait queue. Note that we don't care about the ep->ovflist
+ ifeq ($(shell pkg-config --exists yaml-0.1 2>/dev/null && echo yes),)
+ ifneq ($(CHECK_DT_BINDING)$(CHECK_DTBS),)
+-- 
+2.25.1
+
 
 
