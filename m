@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FAA283B4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39AD283A3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728794AbgJEPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:40:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54664 "EHLO mail.kernel.org"
+        id S1728058AbgJEPco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:32:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727521AbgJEP3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:29:07 -0400
+        id S1728046AbgJEPck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:32:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CDA621481;
-        Mon,  5 Oct 2020 15:29:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B57E020B80;
+        Mon,  5 Oct 2020 15:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911747;
-        bh=KnfAmQCDLWxrgUP4TjvPtfODWHnIpaoEfhe3KY3zoWc=;
+        s=default; t=1601911960;
+        bh=Teh2OF51j5GQpR2E2cre2gfVUdcI0zZAKAiH2EDcWUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pddKAzbG2mzUjJJQtdJHOAYkGSAdfQfBDrNShX6CdQZLfv2M4iulQwqn14Hv7Bw/Y
-         Kn9xysfoRGvvU8WEX7DydQ8Pdx6CVBSlJGqh/LhEJ2AfSX4CfnAGHTXvy8mtNNqGeV
-         qrMhpfuqQv+y1FRh+EXJRPIREz4BVReTFcNIurh4=
+        b=qX2E3dWrDdSs8Xd+pU6yo2MrTrWrX//pF2srReexCjwubkbhx6YB7XUa+Jjam9DoX
+         M+Gtvk04r5dHJKRnL1xqVkNCrREU6lOGQ2cZKaruBoz5Icy0BxmtMjzOXR1dubv/JV
+         bOmew232973vr4gGUsW8mtOuaXnMR/3t2u5yL98E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        stable@vger.kernel.org, Aloka Dixit <alokad@codeaurora.org>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 23/57] fuse: fix the ->direct_IO() treatment of iov_iter
+Subject: [PATCH 5.8 39/85] mac80211: Fix radiotap header channel flag for 6GHz band
 Date:   Mon,  5 Oct 2020 17:26:35 +0200
-Message-Id: <20201005142110.910869859@linuxfoundation.org>
+Message-Id: <20201005142116.611543754@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,90 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Aloka Dixit <alokad@codeaurora.org>
 
-[ Upstream commit 933a3752babcf6513117d5773d2b70782d6ad149 ]
+[ Upstream commit 412a84b5714af56f3eb648bba155107b5edddfdf ]
 
-the callers rely upon having any iov_iter_truncate() done inside
-->direct_IO() countered by iov_iter_reexpand().
+Radiotap header field 'Channel flags' has '2 GHz spectrum' set to
+'true' for 6GHz packet.
+Change it to 5GHz as there isn't a separate option available for 6GHz.
 
-Reported-by: Qian Cai <cai@redhat.com>
-Tested-by: Qian Cai <cai@redhat.com>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Aloka Dixit <alokad@codeaurora.org>
+Link: https://lore.kernel.org/r/010101747ab7b703-1d7c9851-1594-43bf-81f7-f79ce7a67cc6-000000@us-west-2.amazonses.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/file.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ net/mac80211/rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index f8d8a8e34b808..ab4fc1255aca8 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -3074,11 +3074,10 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	ssize_t ret = 0;
- 	struct file *file = iocb->ki_filp;
- 	struct fuse_file *ff = file->private_data;
--	bool async_dio = ff->fc->async_dio;
- 	loff_t pos = 0;
- 	struct inode *inode;
- 	loff_t i_size;
--	size_t count = iov_iter_count(iter);
-+	size_t count = iov_iter_count(iter), shortened = 0;
- 	loff_t offset = iocb->ki_pos;
- 	struct fuse_io_priv *io;
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index 5c5af4b5fc080..f2c3ac648fc08 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -451,7 +451,8 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 	else if (status->bw == RATE_INFO_BW_5)
+ 		channel_flags |= IEEE80211_CHAN_QUARTER;
  
-@@ -3086,17 +3085,9 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	inode = file->f_mapping->host;
- 	i_size = i_size_read(inode);
- 
--	if ((iov_iter_rw(iter) == READ) && (offset > i_size))
-+	if ((iov_iter_rw(iter) == READ) && (offset >= i_size))
- 		return 0;
- 
--	/* optimization for short read */
--	if (async_dio && iov_iter_rw(iter) != WRITE && offset + count > i_size) {
--		if (offset >= i_size)
--			return 0;
--		iov_iter_truncate(iter, fuse_round_up(ff->fc, i_size - offset));
--		count = iov_iter_count(iter);
--	}
--
- 	io = kmalloc(sizeof(struct fuse_io_priv), GFP_KERNEL);
- 	if (!io)
- 		return -ENOMEM;
-@@ -3112,15 +3103,22 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	 * By default, we want to optimize all I/Os with async request
- 	 * submission to the client filesystem if supported.
- 	 */
--	io->async = async_dio;
-+	io->async = ff->fc->async_dio;
- 	io->iocb = iocb;
- 	io->blocking = is_sync_kiocb(iocb);
- 
-+	/* optimization for short read */
-+	if (io->async && !io->write && offset + count > i_size) {
-+		iov_iter_truncate(iter, fuse_round_up(ff->fc, i_size - offset));
-+		shortened = count - iov_iter_count(iter);
-+		count -= shortened;
-+	}
-+
- 	/*
- 	 * We cannot asynchronously extend the size of a file.
- 	 * In such case the aio will behave exactly like sync io.
- 	 */
--	if ((offset + count > i_size) && iov_iter_rw(iter) == WRITE)
-+	if ((offset + count > i_size) && io->write)
- 		io->blocking = true;
- 
- 	if (io->async && io->blocking) {
-@@ -3138,6 +3136,7 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	} else {
- 		ret = __fuse_direct_read(io, iter, &pos);
- 	}
-+	iov_iter_reexpand(iter, iov_iter_count(iter) + shortened);
- 
- 	if (io->async) {
- 		bool blocking = io->blocking;
+-	if (status->band == NL80211_BAND_5GHZ)
++	if (status->band == NL80211_BAND_5GHZ ||
++	    status->band == NL80211_BAND_6GHZ)
+ 		channel_flags |= IEEE80211_CHAN_OFDM | IEEE80211_CHAN_5GHZ;
+ 	else if (status->encoding != RX_ENC_LEGACY)
+ 		channel_flags |= IEEE80211_CHAN_DYN | IEEE80211_CHAN_2GHZ;
 -- 
 2.25.1
 
