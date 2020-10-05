@@ -2,90 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C8628428A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156F5284288
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbgJEWcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 18:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
+        id S1727199AbgJEWbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 18:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727203AbgJEWcj (ORCPT
+        with ESMTP id S1725934AbgJEWbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:32:39 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EC7C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 15:32:39 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d6so232332plo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 15:32:39 -0700 (PDT)
+        Mon, 5 Oct 2020 18:31:23 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D958EC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 15:31:21 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id n61so10305215ota.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 15:31:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8qMW+aSE29mfc0dpFg0kQzfT3L9pQ5NkimhwaHnFfZs=;
-        b=D1tSC+bumb62FgIGuo+8IB6KKGvW+KNTkWvAdSYY2bRIgEq9C6S+Z88icDO1jVROY5
-         n3yUAhc2SyGGCNaXTN6Wdf0jb9giw3GvZunM3yF7hSg2h8WjkjjigyBynFZKlcbw91VJ
-         umb88IgY2RRQJQ89lS+ajaXOsC/+8/NtDUE/Q=
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aGJPhjJnGizWZ9cjlMtyvbh4s8GPun/neUKltdZk0Y0=;
+        b=E3BNLEwO4blu18AA9bBYPMj6KdaoOIvVuhzzTlO9SdwVRmMA2I1sF+4TC6R5gMuF/t
+         70UA+qS/l9JVHRzuN/wPuWxJDfn8ax9yN4TA4/WDU/sxhXEIIfAvbsb9CcVOnvYEU0T2
+         kHU/ZnYKgFMx6M0TDPusm2djOUMgcutEgfWz0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8qMW+aSE29mfc0dpFg0kQzfT3L9pQ5NkimhwaHnFfZs=;
-        b=mM/lJfrgqGVa4rXAilVjwXk9rPjQpbdKVuCF7Vk2iX40q8R5wP9tin0pZE2a5PoUAD
-         XH0XEuoJZA4lPXq62gxfpZy3+Gy+DTed6nM7Otj7hiJce8A8RSxi/nG2jKe5ZZRLzLJg
-         s4fQyPzhnjcW6H1Usk3zJVVE6KOPm7/PaZSAtlnIEpwccQIYyDzkIklFlSewv0khMmor
-         GxNyeV5wjroc3TDqyvjaohqyA5SwTugFESTFONaU6/ttOf4sEDeuuuXOsYnk0/TS6wzx
-         5ucdkWq5GdqkcuF0qXCev75WFS8RxdzE9J0NxngeyAhspk7cf8WLpk+tVre3bZkz2hCu
-         FvKA==
-X-Gm-Message-State: AOAM530IM3Jd357nH168IxrocKBCuYE4bhfma7AeiEqQxkGeUwO6ONKT
-        S/8rKYx1YcJfgLKgTUOCUJmFkg==
-X-Google-Smtp-Source: ABdhPJwwpxHZjbDiRNiSwr9DTv3L1UTxRsObme+bs9Tfb+P06XarACrEbQKo1i6IJJSR6rcMe+2zFw==
-X-Received: by 2002:a17:90a:d905:: with SMTP id c5mr1521662pjv.24.1601937159034;
-        Mon, 05 Oct 2020 15:32:39 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k3sm940040pff.71.2020.10.05.15.32.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 15:32:38 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH resend] seccomp: Make duplicate listener detection non-racy
-Date:   Mon,  5 Oct 2020 15:30:54 -0700
-Message-Id: <160193704489.2698420.14892403272288554518.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201005014401.490175-1-jannh@google.com>
-References: <20201005014401.490175-1-jannh@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aGJPhjJnGizWZ9cjlMtyvbh4s8GPun/neUKltdZk0Y0=;
+        b=X5gEEEfF+cmV1zgivsKx3Jrv1COakGQhjrSYQnr+9Zd6n2qqlh2Onvnnt7rThcmQVi
+         60NtlG2wRebbm+bgFf52SrP6eltPFjcBCdxgLbvyWMJ1m/ZOgpUMNdybqc25+HOe4Oim
+         9LlImcDO967e6Kj3HFC4IL+C1YQy3CyWWxAM84Q8qEUb76wJMWfTzV/8AUHki5eM17qA
+         IHw4T0787HaeqU9hB4Mz0datoepQhh/jj4+VkrDYQICuicWtHzsiVYg5Y2gaDHnT/BVI
+         0RT88SXeesrSrYp7IMatiu59w/A2ft8+8/qZfB8NeONYeqmRfSje4zLUZnZeXV93bf1J
+         jCiA==
+X-Gm-Message-State: AOAM5307rTzxeSMsv7r7yro/TsnA/opW+X2k2Q326BTt2HRfuNaZ5SGv
+        CtWRdxTJ7JaYK+IhHMnTu6v+jSdUlG0xOgj+JLhZmw==
+X-Google-Smtp-Source: ABdhPJxnWbeNqcHTXdnaARCv/Zto+89buyW7FSld30l4eYbHTDn36gLjIFSYQDd9gbmM8YZlwLxRaLcHDFyluEPHV0o=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr967660otj.303.1601937081198;
+ Mon, 05 Oct 2020 15:31:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200930165212.GA8833@lst.de> <20201004141758.1013317-1-paul@crapouillou.net>
+ <20201004195921.GA556605@ravnborg.org> <ZE1PHQ.WGCBAFO9R38I3@crapouillou.net>
+ <20201005230150.5637fa42@canb.auug.org.au> <20201005140534.GT438822@phenom.ffwll.local>
+ <B3HQHQ.7DOFKW9A9TEX1@crapouillou.net>
+In-Reply-To: <B3HQHQ.7DOFKW9A9TEX1@crapouillou.net>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 6 Oct 2020 00:31:10 +0200
+Message-ID: <CAKMK7uEB7xHgnSpnT=Hd3Cw2+uwkimF=4uQuw3NOYz1DsnMY7g@mail.gmail.com>
+Subject: Re: [PATCH] Revert "gpu/drm: ingenic: Add option to mmap GEM buffers cached"
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, od@zcrc.me,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 03:44:01 +0200, Jann Horn wrote:
-> Currently, init_listener() tries to prevent adding a filter with
-> SECCOMP_FILTER_FLAG_NEW_LISTENER if one of the existing filters already
-> has a listener. However, this check happens without holding any lock that
-> would prevent another thread from concurrently installing a new filter
-> (potentially with a listener) on top of the ones we already have.
-> 
-> Theoretically, this is also a data race: The plain load from
-> current->seccomp.filter can race with concurrent writes to the same
-> location.
-> 
-> [...]
+On Mon, Oct 5, 2020 at 4:47 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Hi,
+>
+> Le lun. 5 oct. 2020 =C3=A0 16:05, Daniel Vetter <daniel@ffwll.ch> a =C3=
+=A9crit :
+> > On Mon, Oct 05, 2020 at 11:01:50PM +1100, Stephen Rothwell wrote:
+> >>  Hi Paul,
+> >>
+> >>  On Sun, 04 Oct 2020 22:11:23 +0200 Paul Cercueil
+> >> <paul@crapouillou.net> wrote:
+> >>  >
+> >>  > Pushed to drm-misc-next with the changelog fix, thanks.
+> >>  >
+> >>  > Stephen:
+> >>  > Now it should build fine again. Could you remove the BROKEN flag?
+> >>
+> >>  Thanks for letting me know, but the fix has not appeared in any drm
+> >>  tree included in linux-next yet ...
+> >>
+> >>  If it doesn't show up by the time I will merge the drm tree
+> >> tomorrow, I
+> >>  will apply this revert patch myself (instead of the patch marking
+> >> the
+> >>  driver BROKEN).
+> >
+> > Yeah it should have been pushed to drm-misc-next-fixes per
+> >
+> > https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.h=
+tml#where-do-i-apply-my-patch
+> >
+> > Paul, can you pls git cherry-pick -x this over to drm-misc-next-fixes?
+>
+> I had a few commits on top of it in drm-misc-next, so the revert
+> doesn't apply cleanly in drm-misc-next-fixes... I can revert it there,
+> but then we'd have a different revert commit in drm-misc-next and
+> drm-misc-next-next.
+>
+> Sorry for the mess. What should I do?
 
-Applied, thanks!
+Hm not sure why, but the reply I thought I've typed didn't seem to
+have gone out.
 
-I added the stable CC, but I'd agree: it's not so urgent that I need to
-get this into Linus's tree ahead of the regular merge window. :)
+Cherry pick up, fix up conflict and then fix up the conflict when
+rebuilding drm-tip. Please tell drm-misc maintainers, they probably
+want to do a backmerge once the drm-next merge window pull is merged
+in Linus tree.
 
-[1/1] seccomp: Make duplicate listener detection non-racy
-      https://git.kernel.org/kees/c/ed2d479d3335
-
--- 
-Kees Cook
-
+If we don't fix this up then the drm-next pull goes nowhere.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
