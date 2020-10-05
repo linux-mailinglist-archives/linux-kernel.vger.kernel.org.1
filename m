@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD622831A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF2B2831B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgJEIOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgJEIOb (ORCPT
+        id S1726330AbgJEIPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:15:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35285 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725912AbgJEIPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:14:31 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31AAC0613CE;
-        Mon,  5 Oct 2020 01:14:30 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id y11so9768295lfl.5;
-        Mon, 05 Oct 2020 01:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=j5XN9V3BvyveRl6mO6Y9d7mYUzGE03RcVJt79XhJ7IQ=;
-        b=KJF9tlE8rf+w1UQmusIv1x7UZEK1DkFtHevrVRo772QLFCCOk5Wcd3cpAMhbRW2oR2
-         jowUHm4Ktm8vyMkgH/I5glKWfEcIbqzoaluMw7LnzSFosIoUBD+Dzsj6ICKmeJ2Lck72
-         xILnA7r2Bwo0gIJg/bThuTorUqyRDXdb59CBQwBx/ORhomckfMbHTX5EBmk2+Wqxz4Ub
-         aUu9RhcGQYW5agpuVGc+Q9kx0KNqpleaw2YycJCUEVxtCJGRhlw4TufvTFwUxb7Zvr62
-         68AooIdDyRtFyQYIDKQLTd43GOaSzI0QNgHD1OGiIW9szRzL88BjQz3D9lzNXeE63rKs
-         1yVg==
+        Mon, 5 Oct 2020 04:15:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601885700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B6lNrMe5XIl6lEOV3Lj/S2j+VM2ldGX0PGcIs1GVXTw=;
+        b=OuYMlXkexH6fg1oTZ4chgPL/VWOQ8mc6s/ZKWEOluvFDFfedJ6yu69HCmgtErP0pkEZj1h
+        WnYOY302jh5URdcnCYoBsguAR9JP52VV6j0DvNAEZB0hhRmtET2Zjrw+POuqJVHneteceK
+        49xGe8VaY4NPHXMao0cYqrudV9U8ykE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331--JC6WnBYNu-3Z1EW5480GQ-1; Mon, 05 Oct 2020 04:14:56 -0400
+X-MC-Unique: -JC6WnBYNu-3Z1EW5480GQ-1
+Received: by mail-wr1-f72.google.com with SMTP id v5so3716143wrr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:14:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j5XN9V3BvyveRl6mO6Y9d7mYUzGE03RcVJt79XhJ7IQ=;
-        b=ofIPpIHizje+w63zE6+tUcJEmZZtn3tjLPtbGIwnhoQvAGzRoZ1efB0reZ9zSGfJ3k
-         +1UPX8vTzipAOHNZYhCbztnJKS7+afVvxIEy4mwOdZtBHMuDPp6AED2OCUmjZmEVXaAG
-         RCeKrA8A81GWa4UDrqym/e1HUQrgyEsdmATYgpKijzFaxT02rPEuLqhDu6RulBWq4n+m
-         t2Cyhd2Cvd+VnakgFWleoqNPHKUzmmd1l1Oo9jWUwWJBpPxYdwZ3y21jj15wvzWjxhmb
-         rGWvWz4UOpvfeJViLWSiIPVT1Ywg7oxlzpEb8FAZfAl1tAvRCAxAgWDeOjrovrGkXK2G
-         9+7Q==
-X-Gm-Message-State: AOAM532Z1iV3aNCQblkeTF6/4uiQDfNiyN0c+F/+lI9JASzdviSSyXve
-        8qBGiEecIiFhm0XHX3Td7EnqlHabBcE=
-X-Google-Smtp-Source: ABdhPJzemIzFCplJkXyIIB0ijx9JVIz3iQi1oUYyAHp4PAE0N6jP7Kqk1pDCb29mXjAqgLfFHYGpZQ==
-X-Received: by 2002:a19:c355:: with SMTP id t82mr5617098lff.251.1601885668987;
-        Mon, 05 Oct 2020 01:14:28 -0700 (PDT)
-Received: from [192.168.2.145] ([109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id q24sm2605472lfo.149.2020.10.05.01.14.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 01:14:28 -0700 (PDT)
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930203618.GC2110@Asurada-Nvidia>
- <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
- <20200930213244.GA10573@Asurada-Nvidia>
- <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
- <20201001012630.GA28240@Asurada-Nvidia>
- <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
- <20201001024850.GA28456@Asurada-Nvidia> <20201001102316.GF3919720@ulmo>
- <20201001110425.GB1272@Asurada>
- <b966844e-4289-3ff0-9512-852f8419a664@gmail.com>
- <20201005071338.GA425362@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <2b1a3ee6-d556-4172-3314-0c852d3c6916@gmail.com>
-Date:   Mon, 5 Oct 2020 11:14:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B6lNrMe5XIl6lEOV3Lj/S2j+VM2ldGX0PGcIs1GVXTw=;
+        b=QYnVKL+QD+i9NsHbQDx/pEKnJsIR60UrNVUJacDNR9yf7+g9zIh/s84I6whmdkWX6b
+         VDNABKYW7FgJVVtBjiqTEEKnylr5dS8CrNDXTY80veyp1WK43DGuPQXVZQAJx+m8tyVR
+         0oyTzQIHQqD0DtRdpF6DsnMQ8NdqocyIEjodXBpeCbgS2B58qnvKA20HGW2TNAMFqp5L
+         zQOGkTuCzORyeVMJliqoravo5kKV0DomA/d4ZxVkL17MxEvYKXg4dDNkITQL4xs0n2yx
+         +W5PY2eSmGHAPfBk4eiDwSNr1Zi3nbAGcMoiRKWI1G1grtIMZ+sB92259BGa/JgKaUpe
+         +5pw==
+X-Gm-Message-State: AOAM530e3Rjtd3D/blTQ7DTgyrWmtRG7XyE+vd21JLH2WxUzYkagyCJG
+        7IXMvUzv/Q65taRHTgTx01ZZPtFqNgjkUtizHtgkZssNxBgEMP5XbvS6Jx5iKP0j1Xi/3/9590O
+        sakSqOD30UlAvL4uVfL8AR0Fo
+X-Received: by 2002:a7b:ce14:: with SMTP id m20mr9382887wmc.20.1601885695029;
+        Mon, 05 Oct 2020 01:14:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvz7EHfy5fpOe7PQay4vPBa9F9RamX3+z5N24Tz9fgtOKTv+efxHsevRh8TdGnUR09VyUhLA==
+X-Received: by 2002:a7b:ce14:: with SMTP id m20mr9382853wmc.20.1601885694696;
+        Mon, 05 Oct 2020 01:14:54 -0700 (PDT)
+Received: from steredhat (host-79-27-201-176.retail.telecomitalia.it. [79.27.201.176])
+        by smtp.gmail.com with ESMTPSA id l4sm13109798wrc.14.2020.10.05.01.14.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 01:14:54 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 10:14:51 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Kieran Bingham <kbingham@kernel.org>, linux-kernel@vger.kernel.org,
+        qemu-devel@nongnu.org
+Subject: Re: scripts/gdb: issues when loading modules after lx-symbols
+Message-ID: <20201005081451.ajtm6rctimrg5frr@steredhat>
+References: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
+ <9e247182-2cc3-9fac-e12e-9743ef24ec43@siemens.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005071338.GA425362@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e247182-2cc3-9fac-e12e-9743ef24ec43@siemens.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.10.2020 10:13, Thierry Reding пишет:
-...
-> Have you also seen that sun50i-iommu does look up the SMMU from a
-> phandle using of_find_device_by_node()? So I think you've shown yourself
-> that even "modern" drivers avoid global pointers and look up via
-> phandle.
+On Sun, Oct 04, 2020 at 08:52:37PM +0200, Jan Kiszka wrote:
+> On 01.10.20 16:31, Stefano Garzarella wrote:
+> > Hi,
+> > I had some issues with gdb scripts and kernel modules in Linux 5.9-rc7.
+> > 
+> > If the modules are already loaded, and I do 'lx-symbols', all work fine.
+> > But, if I load a kernel module after 'lx-symbols', I had this issue:
+> > 
+> > [ 5093.393940] invalid opcode: 0000 [#1] SMP PTI
+> > [ 5093.395134] CPU: 0 PID: 576 Comm: modprobe Not tainted 5.9.0-rc7-ste-00010-gf0b671d9608d-dirty #2
+> > [ 5093.397566] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+> > [ 5093.400761] RIP: 0010:do_init_module+0x1/0x270
+> > [ 5093.402553] Code: ff ff e9 cf fe ff ff 0f 0b 49 c7 c4 f2 ff ff ff e9 c1 fe ff ff e8 5f b2 65 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 cc <1f> 44 00 00 55 ba 10 00 00 00 be c0 0c 00 00 48 89 e5 41 56 41 55
+> > [ 5093.409505] RSP: 0018:ffffc90000563d18 EFLAGS: 00010246
+> > [ 5093.412056] RAX: 0000000000000000 RBX: ffffffffc010a0c0 RCX: 0000000000004ee3
+> > [ 5093.414472] RDX: 0000000000004ee2 RSI: ffffea0001efe188 RDI: ffffffffc010a0c0
+> > [ 5093.416349] RBP: ffffc90000563e50 R08: 0000000000000000 R09: 0000000000000002
+> > [ 5093.418044] R10: 0000000000000096 R11: 00000000000008a4 R12: ffff88807a0d1280
+> > [ 5093.424721] R13: ffffffffc010a110 R14: ffff88807a0d1300 R15: ffffc90000563e70
+> > [ 5093.427138] FS:  00007f018f632740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+> > [ 5093.430037] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 5093.432279] CR2: 000055fbe282b239 CR3: 000000007922a006 CR4: 0000000000170ef0
+> > [ 5093.435096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [ 5093.436765] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [ 5093.439689] Call Trace:
+> > [ 5093.440954]  ? load_module+0x24b6/0x27d0
+> > [ 5093.443212]  ? __kernel_read+0xd6/0x150
+> > [ 5093.445140]  __do_sys_finit_module+0xd3/0xf0
+> > [ 5093.446877]  __x64_sys_finit_module+0x1a/0x20
+> > [ 5093.449098]  do_syscall_64+0x38/0x50
+> > [ 5093.450877]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > [ 5093.456153] RIP: 0033:0x7f018f75c43d
+> > [ 5093.457728] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 6a 0c 00 f7 d8 64 89 01 48
+> > [ 5093.466349] RSP: 002b:00007ffd7f080368 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> > [ 5093.470613] RAX: ffffffffffffffda RBX: 0000557e5c96f9c0 RCX: 00007f018f75c43d
+> > [ 5093.474747] RDX: 0000000000000000 RSI: 0000557e5c964288 RDI: 0000000000000003
+> > [ 5093.478049] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
+> > [ 5093.481298] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
+> > [ 5093.483725] R13: 0000557e5c964288 R14: 0000557e5c96f950 R15: 0000557e5c9775c0
+> > [ 5093.485778] Modules linked in: virtio_vdpa(+) vdpa sunrpc kvm_intel kvm irqbypass virtio_blk virtio_rng rng_core [last unloaded: virtio_vdpa]
+> > [ 5093.488695] ---[ end trace 23712ecebc11f53c ]---
+> > 
+> > Guest kernel: Linux 5.9-rc7
+> > gdb: GNU gdb (GDB) Fedora 9.1-6.fc32
+> > I tried with QEMU 4.2.1 and the latest master branch: same issue.
+> > 
+> > 
+> > I did some digging, and skipping the gdb 'add-symbol-file' command in symbol.py
+> > avoid the issue, but of course I don't have the symbols loaded:
+> > 
+> >     diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+> >     index 1be9763cf8bb..eadfaa4d4907 100644
+> >     --- a/scripts/gdb/linux/symbols.py
+> >     +++ b/scripts/gdb/linux/symbols.py
+> >     @@ -129,7 +129,7 @@ lx-symbols command."""
+> >                      filename=module_file,
+> >                      addr=module_addr,
+> >                      sections=self._section_arguments(module))
+> >     -            gdb.execute(cmdline, to_string=True)
+> >     +            #gdb.execute(cmdline, to_string=True)
+> >                  if module_name not in self.loaded_modules:
+> >                      self.loaded_modules.append(module_name)
+> >              else:
+> > 
+> > I tried several modules and this happens every time after '(gdb) lx-symbols'.
+> > 
+> > Do you have any hints?
+> > 
+> I assume you are debugging a kernel inside QEMU/KVM, right?
 
-I have no problem with the lookup by phandle and I'm all for it. It's
-now apparent to me that you completely missed my point, but that should
-be my fault that I haven't conveyed it properly from the start. I just
-wanted to avoid the incompatible DT changes which could break older DTs
-+ I simply wanted to improve the older code without introducing new
-features, that's it.
+Right!
 
-Anyways, after yours comments I started to look at how the interconnect
-patches could be improved and found new things, like that OPPs now
-support ICC and that EMC has a working EMC_STAT, I also discovered
-syscon and simple-mfd. This means that we won't need the global pointers
-at all neither for SMMU, nor for interconnect, nor for EMC drivers :)
+>                                                             Does it work
+> without -enable-kvm?
+
+Yes, disabling kvm it works.
+
+> 
+> Debugging guests in KVM mode at least was unstable for a long time. I
+> avoided setting soft-BPs - which is what the script does for the sake of
+> tracking modules loading -, falling back to hw-BPs, as I had no time to
+> debug that further. /Maybe/ that's the issue here.
+
+Thanks for the suggestion, I'll try to have a look.
+
+Stefano
+
