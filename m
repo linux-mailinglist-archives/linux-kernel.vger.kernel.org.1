@@ -2,66 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EF8283554
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED3F283557
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgJEMD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:03:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:45410 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJEMD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:03:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 70D7D106F;
-        Mon,  5 Oct 2020 05:03:28 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B9D53F70D;
-        Mon,  5 Oct 2020 05:03:27 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 13:03:22 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-pci@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yue Wang <yue.wang@amlogic.com>
-Subject: Re: [PATCH] pci: meson: build as module by default
-Message-ID: <20201005120322.GA13539@e121166-lin.cambridge.arm.com>
-References: <20200918181251.32423-1-khilman@baylibre.com>
- <20200928163440.GA16986@e121166-lin.cambridge.arm.com>
- <7h362wmpco.fsf@baylibre.com>
+        id S1725974AbgJEMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:05:07 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56223 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJEMFF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:05:05 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 736D15C0047;
+        Mon,  5 Oct 2020 08:05:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 08:05:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=ceqX2QpXI5OJuZPMqJLEXKTNKi2
+        PVA6JiKGqpDE5BKQ=; b=RL88DFuYqDEjqbPNwdf2xj4LL90cjlUHTvrgNYnAJJY
+        695BucPtG3smkOaFgWfmGzzHTFfF7llISwKjYC2ZoThuyWoflqu6/HhP550v+PlE
+        AFukexl/h9sGq0ue9S2psDRXu1NrZhnCMp/Ig+iQJrEAeCMc1T+eVpGfBY8vpNUh
+        Ad9axjSOuHNy6DoDHhGhB9iTcicaxaX15JZst5wXgzdWZpNo+ZeZq+Xo9psFAKan
+        U+JN3B0B71XFDXykrF5M+D6ldDrqTuCk7NMuOJECEvp+XvNJqZ+cI6mF9ejVXNLP
+        r9/vAQd8WlVhVi5T/D9AfBjNNjdDFaGy5GnievBdCfw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ceqX2Q
+        pXI5OJuZPMqJLEXKTNKi2PVA6JiKGqpDE5BKQ=; b=m/byJFVmz3FIpYzWHkQlD1
+        UXuNWwLbdXN3atiLFd2h/Xgjpbwtr9y8LxfKDPgG33AKsSaokXXs4ospHtd34RZQ
+        a3J84kOSZqRhqyVCspxAdZFVB/glkhhhEDL6okaziOIxHnfhOU7MdMcBq2l42wLT
+        YOj9rj9mYtDUyEOUTrACBtYVMWBP6+dWQpgBhrrXHe8h3gE87uP1eSIxWF1uW4+F
+        NNK2QVKqBTJPHENDZqErxMjJgjCxSfhJqdTi32p4CT680ZK5FAG4jatt4NKQzqCJ
+        R5sOkNqxki76LpOUlnIKAsaSGR5O+zUiEYajLixHCYVpiIwppvyaKWMCd+TDMGVA
+        ==
+X-ME-Sender: <xms:7Qt7X7GZ0aYvVmBdGYaMBwOhFBg8qycgU4FvGUKhu63fP6mONZBuTg>
+    <xme:7Qt7X4WSdcyk6ZNE8pgb-EIkuuJT-Gy7zOm9YmjrsKw9VXEBIW_Z4qeMNMMg__bUS
+    DbrN7Za8qDM3vsHvdA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdeglecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:7Qt7X9I4rw_6u3wR-LdZJdqOz8SeuI2q3Un0nA6lB6M36eGLs9GAUg>
+    <xmx:7Qt7X5FJI92M-4dlHTj5Z6khCJtTy-HGp9cuauUw5KD6XwIAhu8UvQ>
+    <xmx:7Qt7XxVdDqjA5CcLobf60xVe8_pioDunPQ47roPNZKU1jWz1i3K4lg>
+    <xmx:7wt7XwHIrAtZy6kXRh8YfSxP3OwkzzTNTB0L2vC1ewD2qvFsBw4Osw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4FDB13280064;
+        Mon,  5 Oct 2020 08:05:01 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 14:04:59 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 23/25] ASoC: sun8i-codec: Generalize AIF clock control
+Message-ID: <20201005120459.5w5ligbconuwnzdv@gilmour.lan>
+References: <20201001021148.15852-1-samuel@sholland.org>
+ <20201001021148.15852-24-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="oqqsmll44wyrlom6"
 Content-Disposition: inline
-In-Reply-To: <7h362wmpco.fsf@baylibre.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201001021148.15852-24-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 11:53:27AM -0700, Kevin Hilman wrote:
-> Hi Lorenzo,
-> 
-> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> writes:
-> 
-> > On Fri, Sep 18, 2020 at 11:12:51AM -0700, Kevin Hilman wrote:
-> >> Enable pci-meson to build as a module whenever ARCH_MESON is enabled.
-> >> 
-> >> Cc: Yue Wang <yue.wang@amlogic.com>
-> >> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-> >> ---
-> >> Tested on Khadas VIM3 and Khadas VIM3 using NVMe SSD devices.
-> >> 
-> >>  drivers/pci/controller/dwc/Kconfig     | 3 ++-
-> >>  drivers/pci/controller/dwc/pci-meson.c | 8 +++++++-
-> >>  2 files changed, 9 insertions(+), 2 deletions(-)
-> >
-> > Applied to pci/meson, thanks.
-> 
-> Rob pointed out that the MODULE_LICENCE wasn't the same as the SPDX
-> header.  Could you squash the update below before submitting?
 
-Hi Kevin,
+--oqqsmll44wyrlom6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-done thanks.
+Hi,
 
-Lorenzo
+On Wed, Sep 30, 2020 at 09:11:46PM -0500, Samuel Holland wrote:
+> The AIF clock control register has the same layout for all three AIFs.
+> The only difference between them is that AIF3 is missing some fields. We
+> can reuse the same register field definitions for all three registers,
+> and use the DAI ID to select the correct register address.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  sound/soc/sunxi/sun8i-codec.c | 64 +++++++++++++++++++----------------
+>  1 file changed, 34 insertions(+), 30 deletions(-)
+>=20
+> diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+> index 032a3f714dbb..1c34502ac47a 100644
+> --- a/sound/soc/sunxi/sun8i-codec.c
+> +++ b/sound/soc/sunxi/sun8i-codec.c
+> @@ -37,23 +37,23 @@
+>  #define SUN8I_MOD_CLK_ENA_DAC				2
+>  #define SUN8I_MOD_RST_CTL				0x014
+>  #define SUN8I_MOD_RST_CTL_AIF1				15
+>  #define SUN8I_MOD_RST_CTL_ADC				3
+>  #define SUN8I_MOD_RST_CTL_DAC				2
+>  #define SUN8I_SYS_SR_CTRL				0x018
+>  #define SUN8I_SYS_SR_CTRL_AIF1_FS			12
+>  #define SUN8I_SYS_SR_CTRL_AIF2_FS			8
+> -#define SUN8I_AIF1CLK_CTRL				0x040
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD		15
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV			13
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
+> +#define SUN8I_AIF_CLK_CTRL(n)				(0x040 * (1 + (n)))
+> +#define SUN8I_AIF_CLK_CTRL_MSTR_MOD			15
+> +#define SUN8I_AIF_CLK_CTRL_CLK_INV			13
+> +#define SUN8I_AIF_CLK_CTRL_BCLK_DIV			9
+> +#define SUN8I_AIF_CLK_CTRL_LRCK_DIV			6
+> +#define SUN8I_AIF_CLK_CTRL_WORD_SIZ			4
+> +#define SUN8I_AIF_CLK_CTRL_DATA_FMT			2
+>  #define SUN8I_AIF1_ADCDAT_CTRL				0x044
+>  #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA		15
+>  #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA		14
+>  #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_SRC		10
+>  #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_SRC		8
+>  #define SUN8I_AIF1_DACDAT_CTRL				0x048
+>  #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
+>  #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA		14
+> @@ -83,21 +83,21 @@
+>  #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_AIF1DA1R		10
+>  #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_AIF2DACR		9
+>  #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_ADCR		8
+> =20
+>  #define SUN8I_SYSCLK_CTL_AIF1CLK_SRC_MASK	GENMASK(9, 8)
+>  #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_MASK	GENMASK(5, 4)
+>  #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
+>  #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK	GENMASK(14, 13)
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
+> -#define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
+> +#define SUN8I_AIF_CLK_CTRL_CLK_INV_MASK		GENMASK(14, 13)
+> +#define SUN8I_AIF_CLK_CTRL_BCLK_DIV_MASK	GENMASK(12, 9)
+> +#define SUN8I_AIF_CLK_CTRL_LRCK_DIV_MASK	GENMASK(8, 6)
+> +#define SUN8I_AIF_CLK_CTRL_WORD_SIZ_MASK	GENMASK(5, 4)
+> +#define SUN8I_AIF_CLK_CTRL_DATA_FMT_MASK	GENMASK(3, 2)
+> =20
+>  #define SUN8I_CODEC_PASSTHROUGH_SAMPLE_RATE 48000
+> =20
+>  #define SUN8I_CODEC_PCM_FORMATS	(SNDRV_PCM_FMTBIT_S8     |\
+>  				 SNDRV_PCM_FMTBIT_S16_LE |\
+>  				 SNDRV_PCM_FMTBIT_S20_LE |\
+>  				 SNDRV_PCM_FMTBIT_S24_LE |\
+>  				 SNDRV_PCM_FMTBIT_S20_3LE|\
+> @@ -223,32 +223,34 @@ static int sun8i_codec_update_sample_rate(struct su=
+n8i_codec *scodec)
+>  			   hw_rate << SUN8I_SYS_SR_CTRL_AIF1_FS);
+> =20
+>  	return 0;
+>  }
+> =20
+>  static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>  {
+>  	struct sun8i_codec *scodec =3D snd_soc_dai_get_drvdata(dai);
+> +	u32 reg =3D SUN8I_AIF_CLK_CTRL(dai->id);
+>  	u32 format, invert, value;
+> =20
+>  	/* clock masters */
+>  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+>  	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
+>  		value =3D 0x1;
+>  		break;
+>  	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
+>  		value =3D 0x0;
+>  		break;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> -	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+> -			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD),
+> -			   value << SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD);
+> +
+> +	regmap_update_bits(scodec->regmap, reg,
+> +			   BIT(SUN8I_AIF_CLK_CTRL_MSTR_MOD),
+> +			   value << SUN8I_AIF_CLK_CTRL_MSTR_MOD);
+
+I guess it would be more readable without the intermediate variable to
+store the register.
+
+With that fixed,
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Maxime
+
+--oqqsmll44wyrlom6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sL6wAKCRDj7w1vZxhR
+xc13AQDILHpg1NNhu17lZIh3sEVfmLue87aC4dlRyGqbLXw9lQEAmBDTxQHers8E
+fadhxI3JTG2VxfNl+xXhnN7rqM9WcwI=
+=jDR3
+-----END PGP SIGNATURE-----
+
+--oqqsmll44wyrlom6--
