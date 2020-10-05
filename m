@@ -2,265 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4CF284239
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 23:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9D028419F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgJEVkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 17:40:33 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:54528 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726693AbgJEVkc (ORCPT
+        id S1729199AbgJEUoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgJEUoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:40:32 -0400
-Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095KbUj8025772;
-        Mon, 5 Oct 2020 20:40:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=giUhAAgI7ZUHt+rPRD6NxZm9fg9PhI5283AmV7erpA4=;
- b=R4oLXMwUxXgzFYsBsywK82DcOuPuIzujsrAdCQ3T10+kjHxfefXtjRqIfmewkEmYiuXN
- JEGJuAKuFTAOj7D0hoBva4ef/tIT4NqsnIKiQpVCjqy42NTt0Kh5AieYWwgHGgGCF9XL
- 8xwZYmsLJFa6TLE35GsqItRL0xwuZfM8f8PZ6YrWVQogAshMVTNAb9mxmpqzLXaMRs0J
- 58mDIy/vBABpAxdd1JXVBuVNnBM6NOcblr/wadnIUvtzi/vm+gwL6UU1lVZFr+XmCt6i
- m4Z2IIb0VHcfn9XrugL81KwBBJYWv7mg638/EqDZNzICU+FKQqUgEaeNELfGKOiSgN2D AQ== 
-Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33y315dy9k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 20:40:11 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g9t5009.houston.hpe.com (Postfix) with ESMTP id DE4F551;
-        Mon,  5 Oct 2020 20:40:10 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id A86CD4A;
-        Mon,  5 Oct 2020 20:40:09 +0000 (UTC)
-From:   Mike Travis <mike.travis@hpe.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH v4 13/13] x86/platform/uv: Update Copyrights to conform to HPE standards
-Date:   Mon,  5 Oct 2020 15:39:29 -0500
-Message-Id: <20201005203929.148656-14-mike.travis@hpe.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201005203929.148656-1-mike.travis@hpe.com>
-References: <20201005203929.148656-1-mike.travis@hpe.com>
+        Mon, 5 Oct 2020 16:44:23 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766E0C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 13:44:23 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id n61so9995901ota.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 13:44:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i+a+onhnw5zyB3us1wI7DEbzeIgfstqEDNNlUgwfzAs=;
+        b=KosbtFW5QSv368/xZbHD/8mJiLgmkIx7Mv5QznpfN9xqaMYO4OM4i7lUgxBCD6D4v5
+         WmWe7YHNnti+6Yp3JVDoHwOaWXH2a9x+r9N55PnZF1zfReTFjQ0dKBrJCFXSLnkHGvzM
+         9zgkhP2Cpsn2QZJjCDio0V3Li1x/WU4UPLmNI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i+a+onhnw5zyB3us1wI7DEbzeIgfstqEDNNlUgwfzAs=;
+        b=Lu2Zh4ksocIBjwcGiuECrvh2cWmnHu0U2VelKuW14eUsLSjvXL3o0/r6Ie3oPJi/19
+         rP6OBC94yiVU2DaDKC0IkpsQF1REfoky8Tgw2oCXaxh4UXomsiV7w9zGoiAUinrNuTUH
+         q8X4/aeiEfOhIuB45hUHFovTEoadKlZk4C0DQ9X3tbMnjUjAcqr4x7StCNbfeNYhASyK
+         fRICEQ+r53o+9aUsdmQSI7Y+fDcIKVfG1+vyorh2aCFS4e2a7HskNv/CpfyhLsT3S0UL
+         dmlMYmxylQ/zRcPXXRCjPPJclTbp5QYbKAK/9ZFW3eHlctLfXQNsbwZChr1KRKDjGj6j
+         ETyQ==
+X-Gm-Message-State: AOAM532gBmScWs4PvWag8fuzk5B+FgGahxLddebiE3hvMBPGTJUOudo1
+        ntPRPaR0y1Tdr7UqjDJM46ZspQ==
+X-Google-Smtp-Source: ABdhPJzy5iU3wH7kPqTGaJbPbc+1Alw03U6xfQy9cQQn617uy8ppWkmJUPmDPNWEb/PRIjO1b04qLA==
+X-Received: by 2002:a05:6830:17d8:: with SMTP id p24mr807078ota.111.1601930662637;
+        Mon, 05 Oct 2020 13:44:22 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l23sm229649otk.79.2020.10.05.13.44.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 13:44:21 -0700 (PDT)
+Subject: Re: KASAN: null-ptr-deref Write in event_handler
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <000000000000810a4405b0ece316@google.com>
+ <CAAeHK+xWQp87S=bF2RfUjcudGaLVjk3yKLL-bxRzVM=YNRtzRA@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <2947473d-76cd-a663-049a-4d51a97e2a3e@linuxfoundation.org>
+Date:   Mon, 5 Oct 2020 14:44:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-05_15:2020-10-05,2020-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=752
- impostorscore=0 malwarescore=0 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010050144
+In-Reply-To: <CAAeHK+xWQp87S=bF2RfUjcudGaLVjk3yKLL-bxRzVM=YNRtzRA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Copyrights to those files that have been updated for UV5 changes.
+On 10/5/20 8:04 AM, Andrey Konovalov wrote:
+> On Mon, Oct 5, 2020 at 3:59 PM syzbot
+> <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com> wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=15781d8f900000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=bf1a360e305ee719e364
+>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1364f367900000
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com
+>>
+>> vhci_hcd: stop threads
+>> vhci_hcd: release socket
+>> vhci_hcd: disconnect device
+>> ==================================================================
+>> BUG: KASAN: null-ptr-deref in instrument_atomic_write include/linux/instrumented.h:71 [inline]
+>> BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+>> BUG: KASAN: null-ptr-deref in refcount_add include/linux/refcount.h:201 [inline]
+>> BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:241 [inline]
+>> BUG: KASAN: null-ptr-deref in get_task_struct include/linux/sched/task.h:104 [inline]
+>> BUG: KASAN: null-ptr-deref in kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+>> Write of size 4 at addr 000000000000001c by task kworker/u4:5/2519
+>>
+>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Not tainted 5.9.0-rc7-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> Workqueue: usbip_event event_handler
+>> Call Trace:
+>>   __dump_stack lib/dump_stack.c:77 [inline]
+>>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>>   __kasan_report mm/kasan/report.c:517 [inline]
+>>   kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
+>>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
+>>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+>>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
+>>   atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+>>   refcount_add include/linux/refcount.h:201 [inline]
+>>   refcount_inc include/linux/refcount.h:241 [inline]
+>>   get_task_struct include/linux/sched/task.h:104 [inline]
+>>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+>>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
+>>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
+>>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>> ==================================================================
+>> Kernel panic - not syncing: panic_on_warn set ...
+>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Tainted: G    B             5.9.0-rc7-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> Workqueue: usbip_event event_handler
+>> Call Trace:
+>>   __dump_stack lib/dump_stack.c:77 [inline]
+>>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>>   panic+0x382/0x7fb kernel/panic.c:231
+>>   end_report+0x4d/0x53 mm/kasan/report.c:104
+>>   __kasan_report mm/kasan/report.c:520 [inline]
+>>   kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
+>>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
+>>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+>>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
+>>   atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+>>   refcount_add include/linux/refcount.h:201 [inline]
+>>   refcount_inc include/linux/refcount.h:241 [inline]
+>>   get_task_struct include/linux/sched/task.h:104 [inline]
+>>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+>>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
+>>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
+>>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>> Kernel Offset: disabled
+>> Rebooting in 86400 seconds..
+> 
+> Hi Valentina and Shuah,
+> 
+> There appears to be a race condition in the USB/IP vhci_hcd shutdown
+> procedure. It happens quite often during fuzzing with syzkaller, and
+> prevents us from going deeper into the USB/IP code.
+> 
+> Could you advise us what would be the best fix for this?
+> 
 
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
----
- arch/x86/include/asm/uv/bios.h      | 1 +
- arch/x86/include/asm/uv/uv_hub.h    | 1 +
- arch/x86/include/asm/uv/uv_mmrs.h   | 1 +
- arch/x86/kernel/apic/x2apic_uv_x.c  | 1 +
- arch/x86/platform/uv/bios_uv.c      | 1 +
- arch/x86/platform/uv/uv_nmi.c       | 1 +
- arch/x86/platform/uv/uv_time.c      | 1 +
- drivers/misc/sgi-gru/grufile.c      | 1 +
- drivers/misc/sgi-xp/xp.h            | 1 +
- drivers/misc/sgi-xp/xp_main.c       | 1 +
- drivers/misc/sgi-xp/xp_uv.c         | 1 +
- drivers/misc/sgi-xp/xpc_main.c      | 1 +
- drivers/misc/sgi-xp/xpc_partition.c | 1 +
- drivers/misc/sgi-xp/xpnet.c         | 1 +
- 14 files changed, 14 insertions(+)
+Hi Andrey,
 
-diff --git a/arch/x86/include/asm/uv/bios.h b/arch/x86/include/asm/uv/bios.h
-index 97ac595ebc6a..08b3d810dfba 100644
---- a/arch/x86/include/asm/uv/bios.h
-+++ b/arch/x86/include/asm/uv/bios.h
-@@ -5,6 +5,7 @@
- /*
-  * UV BIOS layer definitions.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-  * Copyright (c) Russ Anderson <rja@sgi.com>
-  */
-diff --git a/arch/x86/include/asm/uv/uv_hub.h b/arch/x86/include/asm/uv/uv_hub.h
-index 610bda21a8d9..5002f52be332 100644
---- a/arch/x86/include/asm/uv/uv_hub.h
-+++ b/arch/x86/include/asm/uv/uv_hub.h
-@@ -5,6 +5,7 @@
-  *
-  * SGI UV architectural definitions
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2014 Silicon Graphics, Inc. All rights reserved.
-  */
- 
-diff --git a/arch/x86/include/asm/uv/uv_mmrs.h b/arch/x86/include/asm/uv/uv_mmrs.h
-index 06ea2d1aaa3e..57fa67373262 100644
---- a/arch/x86/include/asm/uv/uv_mmrs.h
-+++ b/arch/x86/include/asm/uv/uv_mmrs.h
-@@ -5,6 +5,7 @@
-  *
-  * HPE UV MMR definitions
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2016 Silicon Graphics, Inc. All rights reserved.
-  */
- 
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 9ab4ac4d3ec0..1813176f1483 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -5,6 +5,7 @@
-  *
-  * SGI UV APIC functions (note: not an Intel compatible APIC)
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2014 Silicon Graphics, Inc. All rights reserved.
-  */
- #include <linux/crash_dump.h>
-diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
-index b148b4c8c2ec..54511eaccf4d 100644
---- a/arch/x86/platform/uv/bios_uv.c
-+++ b/arch/x86/platform/uv/bios_uv.c
-@@ -2,6 +2,7 @@
- /*
-  * BIOS run time interface routines.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-  * Copyright (c) Russ Anderson <rja@sgi.com>
-  */
-diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-index eac26feb0461..0f5cbcf0da63 100644
---- a/arch/x86/platform/uv/uv_nmi.c
-+++ b/arch/x86/platform/uv/uv_nmi.c
-@@ -2,6 +2,7 @@
- /*
-  * SGI NMI support routines
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-  * Copyright (c) Mike Travis
-  */
-diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
-index e94436ba3022..a39e0f394c0e 100644
---- a/arch/x86/platform/uv/uv_time.c
-+++ b/arch/x86/platform/uv/uv_time.c
-@@ -2,6 +2,7 @@
- /*
-  * SGI RTC clock/timer routines.
-  *
-+ *  (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  *  Copyright (c) 2009-2013 Silicon Graphics, Inc.  All Rights Reserved.
-  *  Copyright (c) Dimitri Sivanich
-  */
-diff --git a/drivers/misc/sgi-gru/grufile.c b/drivers/misc/sgi-gru/grufile.c
-index 18aa8c877bf8..7ffcfc0bb587 100644
---- a/drivers/misc/sgi-gru/grufile.c
-+++ b/drivers/misc/sgi-gru/grufile.c
-@@ -7,6 +7,7 @@
-  * This file supports the user system call for file open, close, mmap, etc.
-  * This also incudes the driver initialization code.
-  *
-+ *  (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xp.h b/drivers/misc/sgi-xp/xp.h
-index 0af267baf031..7d839d844847 100644
---- a/drivers/misc/sgi-xp/xp.h
-+++ b/drivers/misc/sgi-xp/xp.h
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2004-2008 Silicon Graphics, Inc. All rights reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xp_main.c b/drivers/misc/sgi-xp/xp_main.c
-index 33558555820d..049c9aef0559 100644
---- a/drivers/misc/sgi-xp/xp_main.c
-+++ b/drivers/misc/sgi-xp/xp_main.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2004-2008 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xp_uv.c b/drivers/misc/sgi-xp/xp_uv.c
-index 118aef64518d..d28ffb1c7ade 100644
---- a/drivers/misc/sgi-xp/xp_uv.c
-+++ b/drivers/misc/sgi-xp/xp_uv.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2008 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xpc_main.c b/drivers/misc/sgi-xp/xpc_main.c
-index f533ded72941..5a8097e717ae 100644
---- a/drivers/misc/sgi-xp/xpc_main.c
-+++ b/drivers/misc/sgi-xp/xpc_main.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2004-2009 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xpc_partition.c b/drivers/misc/sgi-xp/xpc_partition.c
-index c21d48fd65cd..615aa731053b 100644
---- a/drivers/misc/sgi-xp/xpc_partition.c
-+++ b/drivers/misc/sgi-xp/xpc_partition.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2004-2008 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xpnet.c b/drivers/misc/sgi-xp/xpnet.c
-index fc5cd83f21f2..d19d2ab848cf 100644
---- a/drivers/misc/sgi-xp/xpnet.c
-+++ b/drivers/misc/sgi-xp/xpnet.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 1999-2009 Silicon Graphics, Inc. All rights reserved.
-  */
- 
--- 
-2.21.0
+Reading the comments for this routine, looks like there is an assumption
+that context begins cleanup and race conditions aren't considered.
+
+The right fix is holding vhci->lock and vdev->priv_lock to protect
+critical sections in this routine. I will send a patch for this.
+
+thanks,
+-- Shuah
+
 
