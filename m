@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F90128371A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A9428371D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgJEN7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:59:19 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:46968 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgJEN7S (ORCPT
+        id S1726396AbgJEN71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:59:27 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:43549 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgJEN7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:59:18 -0400
-Received: by mail-oi1-f195.google.com with SMTP id u126so8754289oif.13;
-        Mon, 05 Oct 2020 06:59:17 -0700 (PDT)
+        Mon, 5 Oct 2020 09:59:20 -0400
+Received: by mail-io1-f79.google.com with SMTP id x13so4882507iom.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 06:59:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=r6JYKyeY4BtCnuSOeZu+oMqaX/WYd8ly12y0glDjlmA=;
-        b=nWS3cZN7HOHeOEGuTwfevJG+pFo2kGkw1oQSP6QRQLY1Z9/MlnA2hxIm8n/j60tjf5
-         oeoHm3Ipbv5K01EUMLfOQ9D/3IVucSUiY1cpLLFjWryz/vGgJ6LdIVGvUfTse36yJ0h9
-         zagI+kauiQKGdVnOakPG/Tf10eRMM2EIj+G6l/nNK/RVBrHmPvT1NA/Hr7bskRu36Q5i
-         2UQIQ3PTdYsZrVTg6UhL6aZpKNtePN99dByc9TlFrsp6P4trKQOpfil+R80fKY/92KDl
-         0jXmt8DRdMvIt1kR8pjN53TpAU5UBkSSgUwfxjH+7uuC4cfySDQvafOm3hnIjJEzl+zY
-         +/FA==
-X-Gm-Message-State: AOAM530q+Ub5WzkI/xohGvyADnNca5W8yUuLOW91yEXWLcsaL0Q3303y
-        Cur1jSzxjSEIHjSDKjwhHIDEm7LQLywR
-X-Google-Smtp-Source: ABdhPJwmZFooFtrhYHH5LpdnwFIThcHkHpCUBDQspUSg7d16eB/oE7GlnV3Mjgm1ErzqQKKckkouOA==
-X-Received: by 2002:aca:ba07:: with SMTP id k7mr9054689oif.159.1601906357388;
-        Mon, 05 Oct 2020 06:59:17 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 39sm824887otn.57.2020.10.05.06.59.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 06:59:16 -0700 (PDT)
-Received: (nullmailer pid 92964 invoked by uid 1000);
-        Mon, 05 Oct 2020 13:59:15 -0000
-Date:   Mon, 5 Oct 2020 08:59:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        devicetree@vger.kernel.org, jim.cromie@gmail.com,
-        linux-samsung-soc@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: net: Add bindings for AX88796C SPI
- Ethernet Adapter
-Message-ID: <20201005135915.GA92530@bogus>
-References: <20201002192210.19967-1-l.stelmach@samsung.com>
- <CGME20201002192215eucas1p2c1d2baebfe2a9caa11d88175a2899fea@eucas1p2.samsung.com>
- <20201002192210.19967-2-l.stelmach@samsung.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HjhcdI/QTm+zFD0fq5JEdhxBWDToFnhpbtIYaOozvDw=;
+        b=mZ40pUcu+u18Vu0FT3RRujY5ndfsr0DcC0E3CB59aS7ptBX22cY0KoT5dquYjmkMsO
+         Z0/UDj77G1PY10l6DPxQ6hynoyfIv84i4JAQ0mly9JHeAQmJBti2baX62SesgHrUrCwT
+         1PAdqHQ/JdqsVcuELo8cZpWN5EnUlk6r5hnxgY5QgKkGhPURWbpR5gfTPU+dED+Luele
+         iRtD2GK2yup6hI+Ps/EoqnfJ6s79ErVPIoczBhIoopEYy3jEfHyGkvbLm+Iz8YgSx/VB
+         /sspfinwoMdn4qETuP/D8ZhmNTY5UDp+hddd5oICbPdlvjJqe0W1AHzAX6mlVFUCGxKh
+         cBtQ==
+X-Gm-Message-State: AOAM532xfh2XwbKcRFM0Gzk8VOmr3OSNPUWHuG6ln2waH77m8jWNUDgG
+        9ORSwdaApCVxaGaNxqrElXXQkv4A68azK9jIPWa4vkJGQquT
+X-Google-Smtp-Source: ABdhPJxa1D+r9nJhKHMCIIocqjqBPXJ59f2NWe7MIkUbyJzSf5ZkxgQ3JlrZx8iYPEr0vh/G6acC6uTf12AgNT2nrC72JcUsjWNh
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002192210.19967-2-l.stelmach@samsung.com>
+X-Received: by 2002:a6b:d80d:: with SMTP id y13mr8011221iob.15.1601906359205;
+ Mon, 05 Oct 2020 06:59:19 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 06:59:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000810a4405b0ece316@google.com>
+Subject: KASAN: null-ptr-deref Write in event_handler
+From:   syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, shuah@kernel.org,
+        syzkaller-bugs@googlegroups.com, valentina.manea.m@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Oct 2020 21:22:07 +0200, Łukasz Stelmach wrote:
-> Add bindings for AX88796C SPI Ethernet Adapter.
-> 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  .../bindings/net/asix,ax88796c-spi.yaml       | 76 +++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
->  2 files changed, 78 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
-> 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15781d8f900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+dashboard link: https://syzkaller.appspot.com/bug?extid=bf1a360e305ee719e364
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1364f367900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com
+
+vhci_hcd: stop threads
+vhci_hcd: release socket
+vhci_hcd: disconnect device
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_write include/linux/instrumented.h:71 [inline]
+BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: null-ptr-deref in refcount_add include/linux/refcount.h:201 [inline]
+BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:241 [inline]
+BUG: KASAN: null-ptr-deref in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: null-ptr-deref in kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+Write of size 4 at addr 000000000000001c by task kworker/u4:5/2519
+
+CPU: 1 PID: 2519 Comm: kworker/u4:5 Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usbip_event event_handler
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ __kasan_report mm/kasan/report.c:517 [inline]
+ kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ instrument_atomic_write include/linux/instrumented.h:71 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ refcount_add include/linux/refcount.h:201 [inline]
+ refcount_inc include/linux/refcount.h:241 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+ vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
+ event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+==================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 2519 Comm: kworker/u4:5 Tainted: G    B             5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usbip_event event_handler
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ end_report+0x4d/0x53 mm/kasan/report.c:104
+ __kasan_report mm/kasan/report.c:520 [inline]
+ kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ instrument_atomic_write include/linux/instrumented.h:71 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ refcount_add include/linux/refcount.h:201 [inline]
+ refcount_inc include/linux/refcount.h:241 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+ vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
+ event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
-My bot found errors running 'make dt_binding_check' on your patch:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Error: Documentation/devicetree/bindings/net/asix,ax88796c-spi.example.dts:23.29-30 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/net/asix,ax88796c-spi.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1366: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1376051
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
