@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C312831B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454C02831BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725967AbgJEIQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:16:46 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55265 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgJEIQp (ORCPT
+        id S1725963AbgJEISa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:18:30 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:41681 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbgJEISa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:16:45 -0400
-Received: by mail-wm1-f65.google.com with SMTP id p15so3132612wmi.4;
-        Mon, 05 Oct 2020 01:16:43 -0700 (PDT)
+        Mon, 5 Oct 2020 04:18:30 -0400
+Received: by mail-lf1-f68.google.com with SMTP id d24so5802261lfa.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:18:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=so3Q2iStLANQzUsWPJtNOkoc+zx5z4LsFtN/g7RdwuA=;
-        b=Yb1QZxxkooLudEnk8XN6HPSfmEsrM9EL59bf2/392ELo2GDinoakbX9PgcBJjbI5st
-         xxr3lcdNiWhjHtghgEAjwQmyfe3aCWtaJM+mMO4K3BX3d6Z5eaU5jx0W8ZR8/jvSffEd
-         XnjVHyd0XkQ6BUR6kMQvm394XVa1oQbQCWldRigxltOR4n5chjMbPaFzW3poN+YQpiaJ
-         qU4j9kmCxMjyaz0O4K/i0PK9lNDkjHuVRackFUekA/AQ2oiGGdHe1dAI+vWkIFpy0FZR
-         /Z97mF9MMchmOqxVu0nsqhsnao2HzD+O/X+RlxAnuBman4qgU7I0qp0nadjm2MSRR6r6
-         J8+A==
-X-Gm-Message-State: AOAM533YN76uQDYP+/GNqwOsIgQGnJlbpTONyxXdszuZTbsU6iH3/uBT
-        /ajAyb3efunjvk5Se8ndjTw=
-X-Google-Smtp-Source: ABdhPJy1FDIel9WhtFJmJd9CyAQEOlK6fIY5XuLZ0pflqjU2ZvCyXQDazBGV4roSAtjoCmXu+DoPFw==
-X-Received: by 2002:a1c:4b0f:: with SMTP id y15mr16442283wma.165.1601885803104;
-        Mon, 05 Oct 2020 01:16:43 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id c130sm873401wma.17.2020.10.05.01.16.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Oct 2020 01:16:41 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 10:16:39 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] i2c: imx: Don't generate STOP condition if
- arbitration has been lost
-Message-ID: <20201005081639.GA7431@kozik-lap>
-References: <20201002152305.4963-1-ceggers@arri.de>
- <20201002152305.4963-4-ceggers@arri.de>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=019mbCAGw5RcsNW52lHoJTRc3hUMhMKuBdXHk5f3UlQ=;
+        b=BMuEvM1qLQTp+jHIniiqJtYkk7I9PeYdW8QI1XMs9HIyM05eAQQoWhi6r9igl34aiF
+         ClBgvBs4tnYJy1Y2xkTQfn2snrO6WNS1fi8dWJxror/RVy97SZOEHQXYdipAc5QEMMJk
+         cJIQ4+ZS4EpmAMUTa0YYDToVtDOkdX5kAszj+XbGi/+HOlzX5E54XCmAWn35CcJO6Fqr
+         emrhD1442i6W+nlr3JRstkcKF9VW1atWWMaqp7AyfEGrNVglIRCnBSK2ho7hfGsqyaME
+         2xNHPuzthhgiiNzMdlc1tNn5Uup9MklMeCvw+lDCg5S6SAwX1eJCcJTWUsDRUEpc1Z0m
+         49/A==
+X-Gm-Message-State: AOAM532PkjLsjmesjqwnfsmR+JtIRiVEXkrgMy40J7m2xiTXheUKxt1Y
+        NYrs9c9W8da8yfAkYlMFjUxtqqO/btv3LA==
+X-Google-Smtp-Source: ABdhPJyOK5668vARfdxtZ9bPIQha4JOMjltkq/Z6j0luQi4ZhTTYGiGxfhOjQN3WyJ+vQ0XqbOrxaw==
+X-Received: by 2002:a19:cc8f:: with SMTP id c137mr5144980lfg.476.1601885906508;
+        Mon, 05 Oct 2020 01:18:26 -0700 (PDT)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id t12sm2719110lfk.26.2020.10.05.01.18.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 01:18:25 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 11:18:19 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
+Subject: [PATCH 1/2] dt_bindings: bd9576: fix regulator binfdings dt node
+ names
+Message-ID: <3d92de2085f0c074929861a2f791bf4070920e83.1601885841.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002152305.4963-4-ceggers@arri.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 05:23:05PM +0200, Christian Eggers wrote:
-> If arbitration is lost, the master automatically changes to slave mode.
-> I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
-> by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
-> 
-> So calling i2c_imx_bus_busy() is not required and would busy-wait until
-> timeout.
-> 
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Cc: stable@vger.kernel.org # Requires trivial backporting, simple remove
->                            # the 3rd argument from the calls to
->                            # i2c_imx_bus_busy().
-> ---
->  drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
+Add regulator- prefix to allowed regulator node names. Prefix is expected
+by the driver and the actual binding yaml description.
 
-Tested (not extensively) on Vybrid VF500 (Toradex VF50):
-Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ .../devicetree/bindings/regulator/rohm,bd9576-regulator.yaml   | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The I2C on Vybrid VF500 still works fine (also bigger transfers). I did
-not test this actual condition (arbitration) but only a regular I2C
-driver (BQ27xxx fuel gauge). Obviously this only proves that regular
-operation is not broken...
+diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
+index 6df077b0db86..b6515a0cee62 100644
+--- a/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
+@@ -17,7 +17,8 @@ description: |
+   on the device tree.
+ 
+   The valid names for BD9576 regulator nodes are
+-  vd50, vd18, vdddr, vd10, voutl1, vouts1
++  regulator-vd50, regulator-vd18, regulator-vdddr, regulator-vd10,
++  regulator-voutl1, regulator-vouts1
+ 
+ patternProperties:
+   "regulator-.+":
 
-Best regards,
-Krzysztof
+base-commit: 3015c5d019879e2ef82d002506ee5d9f182f0105
+-- 
+2.21.0
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
