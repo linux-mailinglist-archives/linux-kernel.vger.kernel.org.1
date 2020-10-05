@@ -2,111 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C021B283854
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4275E283875
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgJEOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52604 "EHLO mail.kernel.org"
+        id S1727001AbgJEOrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:47:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:49404 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726654AbgJEOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:45:27 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10E622100A;
-        Mon,  5 Oct 2020 14:45:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601909122;
-        bh=9jf8/2pMdLGUD/SuF7vDmhqV2XjIPuHv9JsZXVZ+gzo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uyNjSHjNJxnl/0RLVq0jbpA0xwDK8OrleTUPValTLDndmB4OABnbw/H6YCyzB0wEg
-         bfVFX0okbOwGJzlepmw/+Ka5jGlG6O772uTILww4xiqf5/StTQy4ViNTzVQOdge+z9
-         tplzLPmyPsL8dRLUZ2gVt6eP0sTByVC4Lcvrvpgo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 5.4 4/4] iommu/vt-d: Fix lockdep splat in iommu_flush_dev_iotlb()
-Date:   Mon,  5 Oct 2020 10:45:17 -0400
-Message-Id: <20201005144517.2527627-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201005144517.2527627-1-sashal@kernel.org>
-References: <20201005144517.2527627-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1726934AbgJEOq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:46:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75E561474;
+        Mon,  5 Oct 2020 07:46:55 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 890873F70D;
+        Mon,  5 Oct 2020 07:46:53 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        egranata@google.com, jbhayana@google.com,
+        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, cristian.marussi@arm.com
+Subject: [PATCH 5/6] firmware: arm_scmi: add SCMIv3.0 Sensor configuration support
+Date:   Mon,  5 Oct 2020 15:45:17 +0100
+Message-Id: <20201005144518.31832-6-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201005144518.31832-1-cristian.marussi@arm.com>
+References: <20201005144518.31832-1-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+Add SCMIv3.0 Sensor support for CONFIG_GET/CONFIG_SET commands.
 
-[ Upstream commit 1a3f2fd7fc4e8f24510830e265de2ffb8e3300d2 ]
-
-Lock(&iommu->lock) without disabling irq causes lockdep warnings.
-
-[   12.703950] ========================================================
-[   12.703962] WARNING: possible irq lock inversion dependency detected
-[   12.703975] 5.9.0-rc6+ #659 Not tainted
-[   12.703983] --------------------------------------------------------
-[   12.703995] systemd-udevd/284 just changed the state of lock:
-[   12.704007] ffffffffbd6ff4d8 (device_domain_lock){..-.}-{2:2}, at:
-               iommu_flush_dev_iotlb.part.57+0x2e/0x90
-[   12.704031] but this lock took another, SOFTIRQ-unsafe lock in the past:
-[   12.704043]  (&iommu->lock){+.+.}-{2:2}
-[   12.704045]
-
-               and interrupts could create inverse lock ordering between
-               them.
-
-[   12.704073]
-               other info that might help us debug this:
-[   12.704085]  Possible interrupt unsafe locking scenario:
-
-[   12.704097]        CPU0                    CPU1
-[   12.704106]        ----                    ----
-[   12.704115]   lock(&iommu->lock);
-[   12.704123]                                local_irq_disable();
-[   12.704134]                                lock(device_domain_lock);
-[   12.704146]                                lock(&iommu->lock);
-[   12.704158]   <Interrupt>
-[   12.704164]     lock(device_domain_lock);
-[   12.704174]
-                *** DEADLOCK ***
-
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20200927062428.13713-1-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/iommu/intel-iommu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/firmware/arm_scmi/sensors.c | 75 +++++++++++++++++++++++++++++
+ include/linux/scmi_protocol.h       | 37 ++++++++++++++
+ 2 files changed, 112 insertions(+)
 
-diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
-index 2ffec65df3889..1147626f0d253 100644
---- a/drivers/iommu/intel-iommu.c
-+++ b/drivers/iommu/intel-iommu.c
-@@ -2560,14 +2560,14 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
- 		}
+diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+index cbdcc37fc975..38e65e1042ec 100644
+--- a/drivers/firmware/arm_scmi/sensors.c
++++ b/drivers/firmware/arm_scmi/sensors.c
+@@ -22,6 +22,8 @@ enum scmi_sensor_protocol_cmd {
+ 	SENSOR_READING_GET = 0x6,
+ 	SENSOR_AXIS_DESCRIPTION_GET = 0x7,
+ 	SENSOR_LIST_UPDATE_INTERVALS = 0x8,
++	SENSOR_CONFIG_GET = 0x9,
++	SENSOR_CONFIG_SET = 0xA,
+ };
  
- 		/* Setup the PASID entry for requests without PASID: */
--		spin_lock(&iommu->lock);
-+		spin_lock_irqsave(&iommu->lock, flags);
- 		if (hw_pass_through && domain_type_is_si(domain))
- 			ret = intel_pasid_setup_pass_through(iommu, domain,
- 					dev, PASID_RID2PASID);
- 		else
- 			ret = intel_pasid_setup_second_level(iommu, domain,
- 					dev, PASID_RID2PASID);
--		spin_unlock(&iommu->lock);
-+		spin_unlock_irqrestore(&iommu->lock, flags);
- 		if (ret) {
- 			dev_err(dev, "Setup RID2PASID failed\n");
- 			dmar_remove_one_dev_info(dev);
+ struct scmi_msg_resp_sensor_attributes {
+@@ -150,6 +152,19 @@ struct scmi_msg_set_sensor_trip_point {
+ 	__le32 value_high;
+ };
+ 
++struct scmi_msg_sensor_config_get {
++	__le32 id;
++};
++
++struct scmi_resp_sensor_config_get {
++	__le32 sensor_config;
++};
++
++struct scmi_msg_sensor_config_set {
++	__le32 id;
++	__le32 sensor_config;
++};
++
+ struct scmi_msg_sensor_reading_get {
+ 	__le32 id;
+ 	__le32 flags;
+@@ -577,6 +592,64 @@ scmi_sensor_trip_point_config(const struct scmi_handle *handle, u32 sensor_id,
+ 	return ret;
+ }
+ 
++static int scmi_sensor_config_get(const struct scmi_handle *handle,
++				  u32 sensor_id, u32 *sensor_config)
++{
++	int ret;
++	struct scmi_xfer *t;
++	struct scmi_msg_sensor_config_get *msg;
++	struct scmi_resp_sensor_config_get *resp;
++
++	ret = scmi_xfer_get_init(handle, SENSOR_CONFIG_GET,
++				 SCMI_PROTOCOL_SENSOR, sizeof(*msg),
++				 sizeof(*resp), &t);
++	if (ret)
++		return ret;
++
++	msg = t->tx.buf;
++	msg->id = cpu_to_le32(sensor_id);
++	ret = scmi_do_xfer(handle, t);
++	if (!ret) {
++		struct sensors_info *si = handle->sensor_priv;
++		struct scmi_sensor_info *s = si->sensors + sensor_id;
++
++		resp = t->rx.buf;
++		*sensor_config = le32_to_cpu(resp->sensor_config);
++		s->sensor_config = *sensor_config;
++	}
++
++	scmi_xfer_put(handle, t);
++	return ret;
++}
++
++static int scmi_sensor_config_set(const struct scmi_handle *handle,
++				  u32 sensor_id, u32 sensor_config)
++{
++	int ret;
++	struct scmi_xfer *t;
++	struct scmi_msg_sensor_config_set *msg;
++
++	ret = scmi_xfer_get_init(handle, SENSOR_CONFIG_SET,
++				 SCMI_PROTOCOL_SENSOR, sizeof(*msg), 0, &t);
++	if (ret)
++		return ret;
++
++	msg = t->tx.buf;
++	msg->id = cpu_to_le32(sensor_id);
++	msg->sensor_config = cpu_to_le32(sensor_config);
++
++	ret = scmi_do_xfer(handle, t);
++	if (!ret) {
++		struct sensors_info *si = handle->sensor_priv;
++		struct scmi_sensor_info *s = si->sensors + sensor_id;
++
++		s->sensor_config = sensor_config;
++	}
++
++	scmi_xfer_put(handle, t);
++	return ret;
++}
++
+ /**
+  * scmi_sensor_reading_get  - Read scalar sensor value
+  * @handle: Platform handle
+@@ -735,6 +808,8 @@ static const struct scmi_sensor_ops sensor_ops = {
+ 	.trip_point_config = scmi_sensor_trip_point_config,
+ 	.reading_get = scmi_sensor_reading_get,
+ 	.reading_get_timestamped = scmi_sensor_reading_get_timestamped,
++	.config_get = scmi_sensor_config_get,
++	.config_set = scmi_sensor_config_set,
+ };
+ 
+ static int scmi_sensor_set_notify_enabled(const struct scmi_handle *handle,
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 24d5b7ebf508..6f39ffa638b7 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -282,7 +282,38 @@ struct scmi_sensor_info {
+ 	unsigned int num_axis;
+ 	struct scmi_sensor_axis_info *axis;
+ 	struct scmi_sensor_intervals_info intervals;
++	unsigned int sensor_config;
++#define SCMI_SENS_CFG_UPDATE_SECS_MASK		GENMASK(31, 16)
++#define SCMI_SENS_CFG_GET_UPDATE_SECS(x)				\
++	FIELD_GET(SCMI_SENS_CFG_UPDATE_SECS_MASK, (x))
++
++#define SCMI_SENS_CFG_UPDATE_EXP_MASK		GENMASK(15, 11)
++#define SCMI_SENS_CFG_GET_UPDATE_EXP(x)					\
++	({								\
++		int __signed_exp =					\
++			FIELD_GET(SCMI_SENS_CFG_UPDATE_EXP_MASK, (x));	\
++									\
++		if (__signed_exp & BIT(4))				\
++			__signed_exp |= GENMASK(31, 5);			\
++		__signed_exp;						\
++	})
++
++#define SCMI_SENS_CFG_ROUND_MASK		GENMASK(10, 9)
++#define SCMI_SENS_CFG_ROUND_AUTO		2
++#define SCMI_SENS_CFG_ROUND_UP			1
++#define SCMI_SENS_CFG_ROUND_DOWN		0
++
++#define SCMI_SENS_CFG_TSTAMP_ENABLED_MASK	BIT(1)
++#define SCMI_SENS_CFG_TSTAMP_ENABLE		1
++#define SCMI_SENS_CFG_TSTAMP_DISABLE		0
++#define SCMI_SENS_CFG_IS_TSTAMP_ENABLED(x)				\
++	FIELD_GET(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK, (x))
++
++#define SCMI_SENS_CFG_SENSOR_ENABLED_MASK	BIT(0)
++#define SCMI_SENS_CFG_SENSOR_ENABLE		1
++#define SCMI_SENS_CFG_SENSOR_DISABLE		0
+ 	char name[SCMI_MAX_STR_SIZE];
++#define SCMI_SENS_CFG_IS_ENABLED(x)		FIELD_GET(BIT(0), (x))
+ 	bool extended_scalar_attrs;
+ 	unsigned int sensor_power;
+ 	unsigned int resolution;
+@@ -406,6 +437,8 @@ enum scmi_sensor_class {
+  *			     Supports multi-axis sensors for sensors which
+  *			     supports it and if the @reading array size of
+  *			     @count entry equals the sensor num_axis
++ * @config_get: Get sensor current configuration
++ * @config_set: Set sensor current configuration
+  */
+ struct scmi_sensor_ops {
+ 	int (*count_get)(const struct scmi_handle *handle);
+@@ -418,6 +451,10 @@ struct scmi_sensor_ops {
+ 	int (*reading_get_timestamped)(const struct scmi_handle *handle,
+ 				       u32 sensor_id, u8 count,
+ 				       struct scmi_sensor_reading *readings);
++	int (*config_get)(const struct scmi_handle *handle,
++			  u32 sensor_id, u32 *sensor_config);
++	int (*config_set)(const struct scmi_handle *handle,
++			  u32 sensor_id, u32 sensor_config);
+ };
+ 
+ /**
 -- 
-2.25.1
+2.17.1
 
