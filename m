@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B619283327
+	by mail.lfdr.de (Postfix) with ESMTP id 001E728332A
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbgJEJ1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:27:55 -0400
-Received: from mga03.intel.com ([134.134.136.65]:53116 "EHLO mga03.intel.com"
+        id S1726006AbgJEJ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:27:59 -0400
+Received: from mga14.intel.com ([192.55.52.115]:49369 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJEJ1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:27:54 -0400
-IronPort-SDR: tllKcpAyux/2IverV7CmtDJKhrp0CwajQOTOovyj4sTvcBn2RVL8nvj32CB1yj+9pMDyySip2V
- KS38pTRk1pHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="163468592"
+        id S1725891AbgJEJ16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:27:58 -0400
+IronPort-SDR: akNKcT7QJys2VA+2TACMjl+cmsyRmZNO0S6lXbxRfM3CXT4CePIT77BUthkEjE66mlbCS/mj5f
+ I4/TkpuX0t2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="162604314"
 X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="163468592"
+   d="scan'208";a="162604314"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 02:27:51 -0700
-IronPort-SDR: nxJLfi3SMBzrnw1ffB+5VA/Jr74ND9wQBQIPZeAN4WBzX1QKcrfs86CheK7Qaw6MGuvH3C0NOs
- NS+98dfCuXRw==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 02:27:57 -0700
+IronPort-SDR: eHTNDvwFIzelenK/JFFL4YCumRWlGnewsBQPYQy84pmNK6pUusKkEFWrL25L/yG9gNo5HKnIHy
+ /6bUOeGiYghw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="340820755"
+   d="scan'208";a="296035874"
 Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Oct 2020 02:27:48 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 05 Oct 2020 02:27:54 -0700
 From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
 To:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
         linux-hwmon@vger.kernel.org, robh+dt@kernel.org
@@ -34,70 +34,107 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         andriy.shevchenko@intel.com, songjun.Wu@intel.com,
         cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
         rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Subject: [PATCH v5 0/2] Add hwmon driver for Moortec PVT controller
-Date:   Mon,  5 Oct 2020 17:27:44 +0800
-Message-Id: <cover.1601889876.git.rahul.tanwar@linux.intel.com>
+Subject: [PATCH v5 1/2] Add DT bindings schema for PVT controller
+Date:   Mon,  5 Oct 2020 17:27:45 +0800
+Message-Id: <b540b49ca47d75c5f716f8a4e4eed0664a1116bf.1601889876.git.rahul.tanwar@linux.intel.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <cover.1601889876.git.rahul.tanwar@linux.intel.com>
+References: <cover.1601889876.git.rahul.tanwar@linux.intel.com>
+In-Reply-To: <cover.1601889876.git.rahul.tanwar@linux.intel.com>
+References: <cover.1601889876.git.rahul.tanwar@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch 1 adds DT bindings schema in YAML format.
-Patch 2 adds driver for MR75203 PVT controller.
+PVT controller (MR75203) is used to configure & control
+Moortec embedded analog IP which contains temprature sensor(TS),
+voltage monitor(VM) & process detector(PD) modules.
 
-v5:
-- Add bits.h header.
-- Use memset32() instead of using loop.
-- Address other code quality related review concerns.
-- Add Reviewed-by tags.
+Add DT bindings schema for PVT controller.
 
-v4:
-- Fix a spelling mistake in comments.
-- Add return value error checking for all regmap_reads/writes.
-- Remove unnecessary else statement and a validation check.
-
-v3:
-- Resolve make dt_binding_check errors.
-- Add vendor prefix and type reference for one property in yaml schema.
-- Update new property name in the driver.
-
-v2:
-- Address below review concerns from Andy Shevchenko
- * Add more info in comments for clamp_val usage for clk sys cycles.
- * Add mod_devicetable.h & property.h and remove of.h
- * Remove unnecessary additional mutex lock from driver. Rely on regmap's
-   internal lock.
- * Use units in timeout macros.
- * Use HZ_PER_MHZ instead of direct values.
- * Use devm_platform_ioremap_resource_byname() instead of separate calls.
- * Use device property read API instead of OF API.
-- Address below review concerns from Guenter Roeck
- * Improve commit message - add hardware monitoring driver.
- * Remove unnecessary platform_set_drvdata. Instead add driver data in
-   function args at one place where it is used. Fix a issue related to it.
- * Remove unnecessary NULL assignment.
-- Address below review concerns from Philipp Zabel
- * Switch to devm_reset_control_get_exclusive().
- * Move reset_deassert at the last after clk_enable in probe.
-- Resolve make dt_binding_check error.
-- Add MODULE_LICENSE
-
-v1:
-- Initial version.
-
-
-Rahul Tanwar (2):
-  Add DT bindings schema for PVT controller
-  Add hardware monitoring driver for Moortec MR75203 PVT controller
-
- .../devicetree/bindings/hwmon/moortec,mr75203.yaml |  71 +++
- drivers/hwmon/Kconfig                              |  10 +
- drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/mr75203.c                            | 656 +++++++++++++++++++++
- 4 files changed, 738 insertions(+)
+Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+---
+ .../devicetree/bindings/hwmon/moortec,mr75203.yaml | 71 ++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/hwmon/moortec,mr75203.yaml
- create mode 100644 drivers/hwmon/mr75203.c
 
+diff --git a/Documentation/devicetree/bindings/hwmon/moortec,mr75203.yaml b/Documentation/devicetree/bindings/hwmon/moortec,mr75203.yaml
+new file mode 100644
+index 000000000000..6f3e3c01f717
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/moortec,mr75203.yaml
+@@ -0,0 +1,71 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/moortec,mr75203.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Moortec Semiconductor MR75203 PVT Controller bindings
++
++maintainers:
++  - Rahul Tanwar <rtanwar@maxlinear.com>
++
++properties:
++  compatible:
++    const: moortec,mr75203
++
++  reg:
++    items:
++      - description: PVT common registers
++      - description: PVT temprature sensor registers
++      - description: PVT process detector registers
++      - description: PVT voltage monitor registers
++
++  reg-names:
++    items:
++      - const: common
++      - const: ts
++      - const: pd
++      - const: vm
++
++  intel,vm-map:
++    description:
++      PVT controller has 5 VM (voltage monitor) sensors.
++      vm-map defines CPU core to VM instance mapping. A
++      value of 0xff means that VM sensor is unused.
++    $ref: /schemas/types.yaml#definitions/uint8-array
++    maxItems: 5
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  "#thermal-sensor-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - intel,vm-map
++  - clocks
++  - resets
++  - "#thermal-sensor-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    pvt: pvt@e0680000 {
++        compatible = "moortec,mr75203";
++        reg = <0xe0680000 0x80>,
++              <0xe0680080 0x180>,
++              <0xe0680200 0x200>,
++              <0xe0680400 0xc00>;
++        reg-names = "common", "ts", "pd", "vm";
++        intel,vm-map = [03 01 04 ff ff];
++        clocks = <&osc0>;
++        resets = <&rcu0 0x40 7>;
++        #thermal-sensor-cells = <1>;
++    };
 -- 
 2.11.0
 
