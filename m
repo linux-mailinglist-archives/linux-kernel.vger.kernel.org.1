@@ -2,83 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA71283D57
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E6B283D5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgJERdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:33:18 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53196 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbgJERdS (ORCPT
+        id S1727814AbgJERff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgJERff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:33:18 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 095HXFUn041529;
-        Mon, 5 Oct 2020 12:33:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601919195;
-        bh=6ETL33FBIngVUOzEHYnY66O2QOkqaMTE7Ld41zHA9VM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=d47Zo6Ofqi2KI9vdg/kNBJGF16iMi1jSlRw5VI9eXWwZZWMtQJ0dz5GxRagZsqFd4
-         8A6AO7Hx86K+9R8OoMg6/mDs/RpYr/GzQ/mQ0kQWA6v4HXOMXLVpUu1a9GqlM0IzaR
-         dmJ1Q9f5Qq5iv3gxdTa8hwN68SW4ABDZpoZ2E1N0=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 095HXF8d024532
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 5 Oct 2020 12:33:15 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 12:33:14 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 12:33:14 -0500
-Received: from [10.250.79.43] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 095HXEmo008422;
-        Mon, 5 Oct 2020 12:33:14 -0500
-Subject: Re: [EXTERNAL] Re: [PATCH v5 2/2] power: supply: bq256xx: Introduce
- the BQ256XX charger driver
-To:     Sebastian Reichel <sre@kernel.org>
-CC:     <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dmurphy@ti.com>
-References: <20201001214034.5925-1-r-rivera-matos@ti.com>
- <20201001214034.5925-3-r-rivera-matos@ti.com>
- <20201003105448.eqeyfpr7dugsp4in@earth.universe>
-From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Message-ID: <8ff0ba7b-d310-f7e3-bfcb-3bb2079344d2@ti.com>
-Date:   Mon, 5 Oct 2020 12:33:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Oct 2020 13:35:35 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD25EC0613A8
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:35:33 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id s7so6959666qkh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dKlbhuywYV4trrm533av5g+rTKLjmfZBMKtZHffEpfg=;
+        b=Ogo60Itj+Op78dH8jXVJTtV1hFSvseMGAPGjIPJsWqBdL7wrA/UqdSqhsRz6b6AZDM
+         I9lloFYxDZt04k/RrwXKkkLdJMtxhJtNbj12+kE6LDkefxEQsCuRyrXoqt5kaQaq6WYb
+         TAJSecm4UNC7SEcfUU6PY9R+QlVJxVh8DUZlIM8VVCjCl2LyiL/ccw9cwG5QMQ2xTI44
+         Tsx7MrXatCC9vxW+HHqRf4BEp5WLpvB6gW+CUVpFiZvvvlnoDb5wXthNwJdpMlarLbeU
+         y3GuwL2OQtzoT2TdhVV09xynxfFdakx3hgKX1AnIaRavPLMbXV35KK2VeBNdbDGcrEVO
+         zBrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dKlbhuywYV4trrm533av5g+rTKLjmfZBMKtZHffEpfg=;
+        b=FuC+Q7Xsu2kiYrV+6FnWVR6ggHIrev9SLIK5jDIpEgTC50mt/u1dIWMgx/EpFMBwTj
+         au/W3jrrwuPL+3snb2Fb59oV4eIw7M2IrqKKi8TMbqHJJ7B6PQxWf8/Ranr1vtS6Glh9
+         zS7hBneUx/jkCBNa13NUDv2xt0ESM8vOkPgDLkoeCFuAX1GGLShdAQyx+wIG3quahyW6
+         7OR+ha7OUbbAR6iWqSXI6TB8AqeT7uFgsNFuRB+76jQY+zsOUR8STB9qIqwAfl4qaKEc
+         E248MZ9jXx2DdupC/VOIipB/x0FGA6idO6wmROLWUwVdp92ExFEZpRCh8Plgy5/KlmAC
+         iADA==
+X-Gm-Message-State: AOAM532ccOZbQAn2TaniVrVaWxaMVzDd7NZeoQIsPaT+MkH+Ig+AJlwM
+        d6icBXqMAm2xCqbmBp6Wu+mSOQ==
+X-Google-Smtp-Source: ABdhPJxqFhDsb/GS5ATRJ1dE6t/BFvds0ofvMeomDoUgmoopjs8lj4GVNFEIhuceI6nxBgwZWdG7Tg==
+X-Received: by 2002:a37:9e87:: with SMTP id h129mr1161317qke.276.1601919332852;
+        Mon, 05 Oct 2020 10:35:32 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id c13sm320627qtq.5.2020.10.05.10.35.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 10:35:32 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kPUOZ-00020z-L7; Mon, 05 Oct 2020 14:35:31 -0300
+Date:   Mon, 5 Oct 2020 14:35:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+Message-ID: <20201005173531.GB5177@ziepe.ca>
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+ <20201002175303.390363-2-daniel.vetter@ffwll.ch>
+ <cb56763e-4fda-a783-03ae-7f749ec55981@nvidia.com>
+ <CAKMK7uGzZ2dBe040vP1BJmQ7cuhj_OQHL0ncyz5XyUcb=bPjmg@mail.gmail.com>
+ <f5130c7f-eebe-7b21-62b8-68f08212b106@nvidia.com>
+ <20201003232441.GO9916@ziepe.ca>
+ <CAKMK7uFjGDiWMD+KeEFziY-nqWy_FtCpn0rekb70yVLaxzJHjA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201003105448.eqeyfpr7dugsp4in@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uFjGDiWMD+KeEFziY-nqWy_FtCpn0rekb70yVLaxzJHjA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian,
+On Sun, Oct 04, 2020 at 01:20:31PM +0200, Daniel Vetter wrote:
 
-On 10/3/20 5:54 AM, Sebastian Reichel wrote:
-> Hi Ricardo,
->
-> On Thu, Oct 01, 2020 at 04:40:34PM -0500, Ricardo Rivera-Matos wrote:
->> The BQ256XX family of devices are highly integrated buck chargers
->> for single cell batteries.
->>
->> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
->>
->> v5 - adds power_supply_put_battery_info() and devm_add_action_or_reset() calls
->> ---
-> changes look good, but you are still missing
-> usb_unregister_notifier() calls on drival removal.
-ACK, I will add a driver removal function and make the appropriate 
-usb_unregister_notifier() calls.
->
-> -- Sebastian
-Ricardo
+> Yeah I think that works. I tried understanding gup.c code a bit more,
+> and it looks like FOLL_LONGTERM only works for the pup_fast variant
+> right now? All others seem to have this comment that it's somehow
+> incompatible with FAULT_FLAG_ALLOW_RETRY and daxfs. But grepping
+> around for that didn't show up anything, at least not nearby dax code.
+> For my understanding of all this, what's the hiccup there?
 
+IIRC it needs the VMA and various other flows can't return the vma
+list becuse they unlock the mmap_sem will running
+
+> For plans, I only started this for a bit of my own learning, but I
+> think I'll respin with the following changes:
+> - convert exynos and habanalabs to pin_user_pages_fast directly,
+> instead of going through this frame-vector detour
+
++1
+
+Jason
