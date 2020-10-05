@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F621283736
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC912838BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgJEOCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:02:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgJEOCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:02:12 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEA832078A;
-        Mon,  5 Oct 2020 14:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601906530;
-        bh=AM25riSnMqgF+lZR32u1pWyqgPFCPFU4xdB0Cfbce1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XNVecaIcejIPLG8lqB4D+cJDXWgR0UuLjf63QynZlVENvrX75VnWoYPcssugTY9Sw
-         fuA080XkQx7No2hWF+dTtcQJifonv2h7Gew6wWmzAsqAur1O7HaI4EyNrkmpbSstSS
-         2WZd0L9KMnapbYMSuPWPIWOKJnJxKHGX72EDVCrA=
-Date:   Mon, 5 Oct 2020 16:02:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Doug Berger <opendmb@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Pavel Tatashin <pasha.tatashin@oracle.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michal Hocko <mhocko@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        zhaoyang <huangzhaoyang@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Baoquan He <bhe@redhat.com>
-Subject: Re: RFC: backport of commit a32c1c61212d
-Message-ID: <20201005140254.GC1506031@kroah.com>
-References: <bd960a80-c953-ad11-cdfd-1e48ffdce443@gmail.com>
- <20200901140018.GD397411@kroah.com>
- <4eb51ae0-427d-5359-2439-b38dc0d3b2e5@gmail.com>
- <98f2309c-e674-c3fc-0c13-0bf85f123f8c@gmail.com>
- <62fef535-199b-9b62-c206-c92d2d929be3@gmail.com>
+        id S1726589AbgJEPDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:03:19 -0400
+Received: from www1102.sakura.ne.jp ([219.94.129.142]:21191 "EHLO
+        www1102.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgJEPDT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:03:19 -0400
+X-Greylist: delayed 3583 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 11:03:18 EDT
+Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
+        by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 095E3Kbe031802;
+        Mon, 5 Oct 2020 23:03:20 +0900 (JST)
+        (envelope-from katsuhiro@katsuster.net)
+Received: from www1102.sakura.ne.jp (219.94.129.142)
+ by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
+ Mon, 05 Oct 2020 23:03:20 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
+Received: from localhost.localdomain (80.57.232.153.ap.dti.ne.jp [153.232.57.80])
+        (authenticated bits=0)
+        by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 095E3Dnx031782
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Mon, 5 Oct 2020 23:03:20 +0900 (JST)
+        (envelope-from katsuhiro@katsuster.net)
+From:   Katsuhiro Suzuki <katsuhiro@katsuster.net>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Subject: [PATCH v3] arm64: dts: rockchip: add SPDIF node for rk3399-rockpro64
+Date:   Mon,  5 Oct 2020 23:03:11 +0900
+Message-Id: <20201005140311.2507530-1-katsuhiro@katsuster.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62fef535-199b-9b62-c206-c92d2d929be3@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 10:09:37AM -0700, Doug Berger wrote:
-> On 9/1/2020 9:36 AM, Florian Fainelli wrote:
-> > 
-> > 
-> > On 9/1/2020 9:06 AM, Doug Berger wrote:
-> >> On 9/1/2020 7:00 AM, Greg Kroah-Hartman wrote:
-> > 
-> > [snip]
-> > 
-> >> [snip]
-> >>
-> >> My best guess at this point is to submit patches to the affected stable
-> >> branches like the one in my RFC and reference a32c1c61212d as the
-> >> upstream commit. This would be confusing to anyone that tried to compare
-> >> the submitted patch with the upstream patch since they
-> >> wouldn't look at all alike, but the fixes and upstream tags would define
-> >> the affected range in Linus' tree.
-> >>
-> >> I would appreciate any guidance on how best to handle this kind of
-> >> situation.
-> > 
-> > You could submit various patches with [PATCH stable x.y] in the subject
-> > to indicate they are targeting a specific stable branch, copy
-> > stable@vger.kernel.org as well as all recipients in this email and see
-> > if that works.
-> > 
-> > Not sure if there is a more documented process than that.
-> Yes, that is what I had in mind based on the "Option 3" for patch
-> submission. The sticking point is this requirement:
-> "You must note the upstream commit ID in the changelog of your submission"
-> 
-> My best guess is to use a32c1c61212d, but that could easily cause
-> confusion in this case. My hope is that now I can reference this
-> discussion to provide additional clarity.
+This patch adds 'disabled' SPDIF sound node and related settings
+of SPDIF for rk3399-rockpro64.
 
-I'm still totally confused, is there any specific commits that you wish
-to see backported to any specific stable kernel trees?  If so, what are
-they?
+RockPro64 has output pins for SPDIF Tx. But RK3399 does not have
+enough DMA channel for enabling SPDIF tx. Current settings are:
 
-thanks,
+  - I2S0     (Req num 0, 1): Enabled : Output to 40pins header CON40
+  - I2S1     (Req num 2, 3): Enabled : Output to ES8316 on board
+  - I2S2     (Req num 4, 5): Enabled : Output to internal HDMI core
+  - SPDIF Tx (Req num 7)   : Disabled: Output to connector J10
 
-greg k-h
+If users want to enable ALL sound I/Os, we need 7 DMA channels for
+it. But unfortunately, RK3399 has only 6 DMA channels. So users have
+to choose from the following:
+
+  - Disable one of I2S (Ex. I2S0) and enable SPDIF tx
+  - Keep enable I2S0/1/2 and disable SPDIF tx
+
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+
+---
+
+Changes in v3:
+  - Refine commit description why adding disabled node
+
+Changes in v2:
+  - Remove redundant status property
+---
+ .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+index 6e553ff47534..58097245994a 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+@@ -76,6 +76,23 @@ sound {
+ 		dais = <&i2s1_p0>;
+ 	};
+ 
++	sound-dit {
++		compatible = "audio-graph-card";
++		label = "rockchip,rk3399";
++		dais = <&spdif_p0>;
++	};
++
++	spdif-dit {
++		compatible = "linux,spdif-dit";
++		#sound-dai-cells = <0>;
++
++		port {
++			dit_p0_0: endpoint {
++				remote-endpoint = <&spdif_p0_0>;
++			};
++		};
++	};
++
+ 	vcc12v_dcin: vcc12v-dcin {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc12v_dcin";
+@@ -698,6 +715,16 @@ &sdhci {
+ 	status = "okay";
+ };
+ 
++&spdif {
++	pinctrl-0 = <&spdif_bus_1>;
++
++	spdif_p0: port {
++		spdif_p0_0: endpoint {
++			remote-endpoint = <&dit_p0_0>;
++		};
++	};
++};
++
+ &spi1 {
+ 	status = "okay";
+ 
+-- 
+2.28.0
+
