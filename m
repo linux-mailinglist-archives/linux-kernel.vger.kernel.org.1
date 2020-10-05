@@ -2,114 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F0C283C2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6F7283C31
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgJEQPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:15:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:52240 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727224AbgJEQPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:15:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6756911D4;
-        Mon,  5 Oct 2020 09:15:02 -0700 (PDT)
-Received: from [10.57.49.124] (unknown [10.57.49.124])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B8A63F66B;
-        Mon,  5 Oct 2020 09:14:58 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
- with abstract scale
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org, daniel.lezcano@linaro.org,
-        mka@chromium.org, robh+dt@kernel.org, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, rnayak@codeaurora.org,
-        rjw@rjwysocki.net, qperret@google.com, amitk@kernel.org,
-        corbet@lwn.net, Dietmar.Eggemann@arm.com
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <20201002114426.31277-4-lukasz.luba@arm.com> <20201005135837.GA91584@bogus>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <e27273cc-81d7-65fb-b99a-ecebc3efe74c@arm.com>
-Date:   Mon, 5 Oct 2020 17:14:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728409AbgJEQP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:15:28 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57549 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727224AbgJEQP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:15:28 -0400
+Received: (qmail 382715 invoked by uid 1000); 5 Oct 2020 12:15:27 -0400
+Date:   Mon, 5 Oct 2020 12:15:27 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201005161527.GI376584@rowland.harvard.edu>
+References: <20200930013229.GB194665@rowland.harvard.edu>
+ <20200930124915.GA1826870@google.com>
+ <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+ <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
+ <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
+ <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
+ <20201002183633.GA296334@rowland.harvard.edu>
+ <CAL_JsqKHFA5RWz1SRLkR2JXydURL2pA+4C0+C+4SrJR_h4M0dw@mail.gmail.com>
+ <20201003124142.GA318272@rowland.harvard.edu>
+ <20201005160655.GA4135817@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005135837.GA91584@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005160655.GA4135817@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Mon, Oct 05, 2020 at 09:06:55AM -0700, Matthias Kaehlcke wrote:
+> On Sat, Oct 03, 2020 at 08:41:42AM -0400, Alan Stern wrote:
+> > The decision to enable the power regulator at system startup would be 
+> > kernel policy, not a part of the DT description.  But there ought to be 
+> > a standard way of recognizing which resource requirements of this sort 
+> > should be handled at startup.  Then there could be a special module (in 
+> > the driver model core? -- that doesn't really seem appropriate) which 
+> > would search through the whole DT database for resources of this kind 
+> > and enable them.
+> 
+> This might work for some cases that only have a single resource or multiple
+> resources but no timing/sequencing requirements. For the more complex cases
+> it would probably end up in something similar to the pwrseq series
+> (https://lore.kernel.org/patchwork/project/lkml/list/?series=314989&state=%2A&archive=both),
+> which was nack-ed by Rafael, Rob also expressed he didn't want to go
+> down that road.
+> 
+> It seems to me that initialization of the resources needs to be done by
+> the/a driver for the device, which knows about the sequencing requirements.
+> Potentially this could be done in a pre-probe function that you brought up
+> earlier.
 
-On 10/5/20 2:58 PM, Rob Herring wrote:
-> On Fri, 02 Oct 2020 12:44:26 +0100, Lukasz Luba wrote:
->> Update the documentation for the binding 'sustainable-power' and allow
->> to provide values in an abstract scale. It is required when the cooling
->> devices use an abstract scale for their power values.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
->>   1 file changed, 9 insertions(+), 4 deletions(-)
->>
-> 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> Traceback (most recent call last):
->    File "/usr/local/bin/dt-extract-example", line 45, in <module>
->      binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
->    File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
->      return constructor.get_single_data()
->    File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
->      node = self.composer.get_single_node()
->    File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
->    File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
->    File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
->    File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
->    File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
->    File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
->    File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
->    File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
->    File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
->    File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
->    File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
->    File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
->    File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
->    File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-> ruamel.yaml.scanner.ScannerError: while scanning a plain scalar
->    in "<unicode string>", line 102, column 11
-> found a tab character that violates indentation
->    in "<unicode string>", line 103, column 1
-> make[1]: *** [Documentation/devicetree/bindings/Makefile:18: Documentation/devicetree/bindings/thermal/thermal-zones.example.dts] Error 1
-> make[1]: *** Deleting file 'Documentation/devicetree/bindings/thermal/thermal-zones.example.dts'
-> make[1]: *** Waiting for unfinished jobs....
-> ./Documentation/devicetree/bindings/thermal/thermal-zones.yaml:  while scanning a plain scalar
->    in "<unicode string>", line 102, column 11
-> found a tab character that violates indentation
->    in "<unicode string>", line 103, column 1
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/thermal/thermal-zones.yaml: ignoring, error parsing file
-> warning: no schema found in file: ./Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> make: *** [Makefile:1366: dt_binding_check] Error 2
-> 
-> 
-> See https://patchwork.ozlabs.org/patch/1375670
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure dt-schema is up to date:
-> 
-> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-> 
-> Please check and re-submit.
-> 
+One of the important points of my suggestion was that the resource init 
+should be done _outside_ of the device's driver, precisely because the 
+driver module might not even be loaded until the resources are set up 
+and the device is discovered.
 
-My apologies, I have put tabs instead of spaces in there.
-I have run this command and now it passed.
+The conclusion is that we need to have code that is aware of some 
+detailed needs of a specific device but is not part of the device's 
+driver.  I'm not sure what the best way to implement this would be.
 
-I will resend the patch 3/3.
-
-Regards,
-Lukasz
+Alan Stern
