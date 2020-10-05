@@ -2,155 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF2B2831B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721C82831D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgJEIPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:15:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35285 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbgJEIPC (ORCPT
+        id S1725967AbgJEIWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:22:50 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:57780 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJEIWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:15:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601885700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B6lNrMe5XIl6lEOV3Lj/S2j+VM2ldGX0PGcIs1GVXTw=;
-        b=OuYMlXkexH6fg1oTZ4chgPL/VWOQ8mc6s/ZKWEOluvFDFfedJ6yu69HCmgtErP0pkEZj1h
-        WnYOY302jh5URdcnCYoBsguAR9JP52VV6j0DvNAEZB0hhRmtET2Zjrw+POuqJVHneteceK
-        49xGe8VaY4NPHXMao0cYqrudV9U8ykE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331--JC6WnBYNu-3Z1EW5480GQ-1; Mon, 05 Oct 2020 04:14:56 -0400
-X-MC-Unique: -JC6WnBYNu-3Z1EW5480GQ-1
-Received: by mail-wr1-f72.google.com with SMTP id v5so3716143wrr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:14:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B6lNrMe5XIl6lEOV3Lj/S2j+VM2ldGX0PGcIs1GVXTw=;
-        b=QYnVKL+QD+i9NsHbQDx/pEKnJsIR60UrNVUJacDNR9yf7+g9zIh/s84I6whmdkWX6b
-         VDNABKYW7FgJVVtBjiqTEEKnylr5dS8CrNDXTY80veyp1WK43DGuPQXVZQAJx+m8tyVR
-         0oyTzQIHQqD0DtRdpF6DsnMQ8NdqocyIEjodXBpeCbgS2B58qnvKA20HGW2TNAMFqp5L
-         zQOGkTuCzORyeVMJliqoravo5kKV0DomA/d4ZxVkL17MxEvYKXg4dDNkITQL4xs0n2yx
-         +W5PY2eSmGHAPfBk4eiDwSNr1Zi3nbAGcMoiRKWI1G1grtIMZ+sB92259BGa/JgKaUpe
-         +5pw==
-X-Gm-Message-State: AOAM530e3Rjtd3D/blTQ7DTgyrWmtRG7XyE+vd21JLH2WxUzYkagyCJG
-        7IXMvUzv/Q65taRHTgTx01ZZPtFqNgjkUtizHtgkZssNxBgEMP5XbvS6Jx5iKP0j1Xi/3/9590O
-        sakSqOD30UlAvL4uVfL8AR0Fo
-X-Received: by 2002:a7b:ce14:: with SMTP id m20mr9382887wmc.20.1601885695029;
-        Mon, 05 Oct 2020 01:14:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvz7EHfy5fpOe7PQay4vPBa9F9RamX3+z5N24Tz9fgtOKTv+efxHsevRh8TdGnUR09VyUhLA==
-X-Received: by 2002:a7b:ce14:: with SMTP id m20mr9382853wmc.20.1601885694696;
-        Mon, 05 Oct 2020 01:14:54 -0700 (PDT)
-Received: from steredhat (host-79-27-201-176.retail.telecomitalia.it. [79.27.201.176])
-        by smtp.gmail.com with ESMTPSA id l4sm13109798wrc.14.2020.10.05.01.14.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 01:14:54 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 10:14:51 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Kieran Bingham <kbingham@kernel.org>, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org
-Subject: Re: scripts/gdb: issues when loading modules after lx-symbols
-Message-ID: <20201005081451.ajtm6rctimrg5frr@steredhat>
-References: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
- <9e247182-2cc3-9fac-e12e-9743ef24ec43@siemens.com>
+        Mon, 5 Oct 2020 04:22:48 -0400
+Received: from relay7-d.mail.gandi.net (unknown [217.70.183.200])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 3FC4B3B02D9;
+        Mon,  5 Oct 2020 08:15:25 +0000 (UTC)
+X-Originating-IP: 50.39.163.217
+Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id EB8B020012;
+        Mon,  5 Oct 2020 08:14:58 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 01:14:54 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201005081454.GA493107@localhost>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9e247182-2cc3-9fac-e12e-9743ef24ec43@siemens.com>
+In-Reply-To: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 08:52:37PM +0200, Jan Kiszka wrote:
-> On 01.10.20 16:31, Stefano Garzarella wrote:
-> > Hi,
-> > I had some issues with gdb scripts and kernel modules in Linux 5.9-rc7.
-> > 
-> > If the modules are already loaded, and I do 'lx-symbols', all work fine.
-> > But, if I load a kernel module after 'lx-symbols', I had this issue:
-> > 
-> > [ 5093.393940] invalid opcode: 0000 [#1] SMP PTI
-> > [ 5093.395134] CPU: 0 PID: 576 Comm: modprobe Not tainted 5.9.0-rc7-ste-00010-gf0b671d9608d-dirty #2
-> > [ 5093.397566] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-> > [ 5093.400761] RIP: 0010:do_init_module+0x1/0x270
-> > [ 5093.402553] Code: ff ff e9 cf fe ff ff 0f 0b 49 c7 c4 f2 ff ff ff e9 c1 fe ff ff e8 5f b2 65 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 cc <1f> 44 00 00 55 ba 10 00 00 00 be c0 0c 00 00 48 89 e5 41 56 41 55
-> > [ 5093.409505] RSP: 0018:ffffc90000563d18 EFLAGS: 00010246
-> > [ 5093.412056] RAX: 0000000000000000 RBX: ffffffffc010a0c0 RCX: 0000000000004ee3
-> > [ 5093.414472] RDX: 0000000000004ee2 RSI: ffffea0001efe188 RDI: ffffffffc010a0c0
-> > [ 5093.416349] RBP: ffffc90000563e50 R08: 0000000000000000 R09: 0000000000000002
-> > [ 5093.418044] R10: 0000000000000096 R11: 00000000000008a4 R12: ffff88807a0d1280
-> > [ 5093.424721] R13: ffffffffc010a110 R14: ffff88807a0d1300 R15: ffffc90000563e70
-> > [ 5093.427138] FS:  00007f018f632740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> > [ 5093.430037] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 5093.432279] CR2: 000055fbe282b239 CR3: 000000007922a006 CR4: 0000000000170ef0
-> > [ 5093.435096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [ 5093.436765] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [ 5093.439689] Call Trace:
-> > [ 5093.440954]  ? load_module+0x24b6/0x27d0
-> > [ 5093.443212]  ? __kernel_read+0xd6/0x150
-> > [ 5093.445140]  __do_sys_finit_module+0xd3/0xf0
-> > [ 5093.446877]  __x64_sys_finit_module+0x1a/0x20
-> > [ 5093.449098]  do_syscall_64+0x38/0x50
-> > [ 5093.450877]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > [ 5093.456153] RIP: 0033:0x7f018f75c43d
-> > [ 5093.457728] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 6a 0c 00 f7 d8 64 89 01 48
-> > [ 5093.466349] RSP: 002b:00007ffd7f080368 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> > [ 5093.470613] RAX: ffffffffffffffda RBX: 0000557e5c96f9c0 RCX: 00007f018f75c43d
-> > [ 5093.474747] RDX: 0000000000000000 RSI: 0000557e5c964288 RDI: 0000000000000003
-> > [ 5093.478049] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-> > [ 5093.481298] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
-> > [ 5093.483725] R13: 0000557e5c964288 R14: 0000557e5c96f950 R15: 0000557e5c9775c0
-> > [ 5093.485778] Modules linked in: virtio_vdpa(+) vdpa sunrpc kvm_intel kvm irqbypass virtio_blk virtio_rng rng_core [last unloaded: virtio_vdpa]
-> > [ 5093.488695] ---[ end trace 23712ecebc11f53c ]---
-> > 
-> > Guest kernel: Linux 5.9-rc7
-> > gdb: GNU gdb (GDB) Fedora 9.1-6.fc32
-> > I tried with QEMU 4.2.1 and the latest master branch: same issue.
-> > 
-> > 
-> > I did some digging, and skipping the gdb 'add-symbol-file' command in symbol.py
-> > avoid the issue, but of course I don't have the symbols loaded:
-> > 
-> >     diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-> >     index 1be9763cf8bb..eadfaa4d4907 100644
-> >     --- a/scripts/gdb/linux/symbols.py
-> >     +++ b/scripts/gdb/linux/symbols.py
-> >     @@ -129,7 +129,7 @@ lx-symbols command."""
-> >                      filename=module_file,
-> >                      addr=module_addr,
-> >                      sections=self._section_arguments(module))
-> >     -            gdb.execute(cmdline, to_string=True)
-> >     +            #gdb.execute(cmdline, to_string=True)
-> >                  if module_name not in self.loaded_modules:
-> >                      self.loaded_modules.append(module_name)
-> >              else:
-> > 
-> > I tried several modules and this happens every time after '(gdb) lx-symbols'.
-> > 
-> > Do you have any hints?
-> > 
-> I assume you are debugging a kernel inside QEMU/KVM, right?
+Ran into an ext4 regression when testing upgrades to 5.9-rc kernels:
 
-Right!
+Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
+ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
+with intentionally overlapping bitmap blocks.
 
->                                                             Does it work
-> without -enable-kvm?
+On an always-read-only filesystem explicitly marked with
+EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
+point all the block and inode bitmaps to a single block of all 1s,
+because a read-only filesystem will never allocate or free any blocks or
+inodes.
 
-Yes, disabling kvm it works.
+However, after that commit, the block validity check rejects such
+filesystems with -EUCLEAN and "failed to initialize system zone (-117)".
+This causes systems that previously worked correctly to fail when
+upgrading to v5.9-rc2 or later.
 
-> 
-> Debugging guests in KVM mode at least was unstable for a long time. I
-> avoided setting soft-BPs - which is what the script does for the sake of
-> tracking modules loading -, falling back to hw-BPs, as I had no time to
-> debug that further. /Maybe/ that's the issue here.
+This was obviously a bugfix, and I'm not suggesting that it should be
+reverted; it looks like this effectively worked by accident before,
+because the block_validity check wasn't fully functional. However, this
+does break real systems, and I'd like to get some kind of regression fix
+in before 5.9 final if possible. I think it would suffice to make
+block_validity default to false if and only if
+EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS is set.
 
-Thanks for the suggestion, I'll try to have a look.
+Does that seem like a reasonable fix?
 
-Stefano
+Here's a quick sketch of a patch, which I've tested and confirmed to
+work:
 
+----- 8< -----
+Subject: [PATCH] Fix ext4 regression in v5.9-rc2 on ro fs with overlapped bitmaps
+
+Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
+ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
+with intentionally overlapping bitmap blocks.
+
+On an always-read-only filesystem explicitly marked with
+EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
+point all the block and inode bitmaps to a single block of all 1s,
+because a read-only filesystem will never allocate or free any blocks or
+inodes.
+
+However, after that commit, the block validity check rejects such
+filesystems with -EUCLEAN and "failed to initialize system zone (-117)".
+This causes systems that previously worked correctly to fail when
+upgrading to v5.9-rc2 or later.
+
+Fix this by defaulting block_validity to off when
+EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS is set.
+
+Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+Fixes: e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in ext4_setup_system_zone()")
+---
+ fs/ext4/ext4.h  | 2 ++
+ fs/ext4/super.c | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 523e00d7b392..7874028fa864 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1834,6 +1834,7 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
+ #define EXT4_FEATURE_RO_COMPAT_METADATA_CSUM	0x0400
+ #define EXT4_FEATURE_RO_COMPAT_READONLY		0x1000
+ #define EXT4_FEATURE_RO_COMPAT_PROJECT		0x2000
++#define EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS	0x4000
+ #define EXT4_FEATURE_RO_COMPAT_VERITY		0x8000
+ 
+ #define EXT4_FEATURE_INCOMPAT_COMPRESSION	0x0001
+@@ -1930,6 +1931,7 @@ EXT4_FEATURE_RO_COMPAT_FUNCS(bigalloc,		BIGALLOC)
+ EXT4_FEATURE_RO_COMPAT_FUNCS(metadata_csum,	METADATA_CSUM)
+ EXT4_FEATURE_RO_COMPAT_FUNCS(readonly,		READONLY)
+ EXT4_FEATURE_RO_COMPAT_FUNCS(project,		PROJECT)
++EXT4_FEATURE_RO_COMPAT_FUNCS(shared_blocks,	SHARED_BLOCKS)
+ EXT4_FEATURE_RO_COMPAT_FUNCS(verity,		VERITY)
+ 
+ EXT4_FEATURE_INCOMPAT_FUNCS(compression,	COMPRESSION)
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index ea425b49b345..f57a7e966e44 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3954,7 +3954,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	else
+ 		set_opt(sb, ERRORS_RO);
+ 	/* block_validity enabled by default; disable with noblock_validity */
+-	set_opt(sb, BLOCK_VALIDITY);
++	if (!ext4_has_feature_shared_blocks(sb))
++		set_opt(sb, BLOCK_VALIDITY);
+ 	if (def_mount_opts & EXT4_DEFM_DISCARD)
+ 		set_opt(sb, DISCARD);
+ 
