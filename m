@@ -2,101 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41280282EFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 04:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A814282F02
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 05:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgJEC53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 22:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgJEC53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 22:57:29 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED161C061787
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 19:57:28 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x22so5808840pfo.12
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 19:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OGtLendMkx3eeiJ6VgZEb6Gt3GGRj2yTJFPvPu5CLd4=;
-        b=RaF15Fd9rYMAFtanTSuiLem9OplLh2MzO6PBjm+lngJx9STARKCibEd3b0xHsunTvN
-         7kiUTbR2+wm8WuBfQQO0XldpTAfbxT0hTaAQeAESh0fziqtK7T9vf4nwlgsOSi2UA8zb
-         9kKQF2KzC/o+KXmnclK6xjAISy50b9I5axX18=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OGtLendMkx3eeiJ6VgZEb6Gt3GGRj2yTJFPvPu5CLd4=;
-        b=K05wT0H2oYAQjX0qCzAVfdV67ov2QfFOFMgNK0ikRqj//at++UBLDXst3jNjYH72xQ
-         2hRY6l4nk/gZ+z18j9LLquVHN8y2tXZ6Ehf4rVXE3PyXffKw/XqjGcz+KGURAw2lEOnv
-         a+SV21EuwnfmuOkvJOnznenctoKLuqVmlrDFzav2/v0aghjL5V6LQ8058MLGK5zrGypd
-         xuufLQVcyCP94a72GnlBUvTGwybloYfaGlbbf+RzmoRWzinFb8WZkjgfjcswMiFoGFoD
-         /kY+ZCq7lTXxi6EGbiciO4h0pEKpkP2QaOM8//JBmYcXEFphxtVfi7h1YE2Hmc7MCCX/
-         Wahw==
-X-Gm-Message-State: AOAM532QPuWWUS29dm7zhbqNT02rymq2qUhd8JbiXFeXCoKXqMxyrn3l
-        rWMQDbIjoV0C/drxxOig6O7VFEcGhAPfKejN
-X-Google-Smtp-Source: ABdhPJzYZsOniKAdLpOGV0sZrQgSDI//LpzB3EcBLlQs0cCuAinuv387ORUReuh/aVhXmGOCp/qyJw==
-X-Received: by 2002:a62:2985:0:b029:142:2501:34d6 with SMTP id p127-20020a6229850000b0290142250134d6mr14273789pfp.47.1601866648452;
-        Sun, 04 Oct 2020 19:57:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g126sm9476727pfb.32.2020.10.04.19.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 19:57:27 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] vmlinux.lds.h: Keep .ctors.* with .ctors
-Date:   Sun,  4 Oct 2020 19:57:20 -0700
-Message-Id: <20201005025720.2599682-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        id S1725861AbgJEDGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 23:06:31 -0400
+Received: from mga02.intel.com ([134.134.136.20]:7648 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725841AbgJEDGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 23:06:30 -0400
+IronPort-SDR: k2SRoR5uFlmEoJ86Kk7TgAX/XFvuKuxCu2K6HbE/I+yTsBQmokFl4o0TF+RctFHUQLY6naNm1O
+ ej6dEgwbV5Sw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="150949056"
+X-IronPort-AV: E=Sophos;i="5.77,337,1596524400"; 
+   d="scan'208";a="150949056"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 20:06:29 -0700
+IronPort-SDR: 5NaMJ8KMuA5SAX+NZz4ygdetZ7eGAwZ6u7txBeQp4rS5Yiye3bU7BjuORBvq4iQfrKatMh8qVf
+ 78Ud5EQMsiJg==
+X-IronPort-AV: E=Sophos;i="5.77,337,1596524400"; 
+   d="scan'208";a="523209843"
+Received: from sidorovd-mobl1.ccr.corp.intel.com (HELO localhost) ([10.252.48.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 20:06:21 -0700
+Date:   Mon, 5 Oct 2020 06:06:19 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201005030619.GA126283@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003195440.GD20115@casper.infradead.org>
+ <20201004215049.GA43926@linux.intel.com>
+ <20201004222750.GI20115@casper.infradead.org>
+ <20201004234153.GA49415@linux.intel.com>
+ <20201005013053.GJ20115@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005013053.GJ20115@casper.infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Under some circumstances, the compiler generates .ctors.* sections. This
-is seen doing a cross compile of x86_64 from a powerpc64el host:
+On Mon, Oct 05, 2020 at 02:30:53AM +0100, Matthew Wilcox wrote:
+> > In my Geminilake NUC the maximum size of the address space is 64GB for
+> > an enclave, and it is not fixed but can grow in microarchitectures
+> > beyond that.
+> > 
+> > That means that in (*artificial*) worst case the locks would be kept for
+> > 64*1024*1024*1024/4096 = 16777216 iterations.
+> 
+> Oh, there's support for that on the XArray API too.
+> 
+>         xas_lock_irq(&xas);
+>         xas_for_each_marked(&xas, page, end, PAGECACHE_TAG_DIRTY) {
+>                 xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
+>                 if (++tagged % XA_CHECK_SCHED)
+>                         continue;
+> 
+>                 xas_pause(&xas);
+>                 xas_unlock_irq(&xas);
+>                 cond_resched();
+>                 xas_lock_irq(&xas);
+>         }
+>         xas_unlock_irq(&xas);
 
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/trace_clock.o' being
-placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ftrace.o' being
-placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ring_buffer.o' being
-placed in section `.ctors.65435'
+Assuming we can iterate the array without encl->lock, I think this
+would translate to:
 
-Include these orphans along with the regular .ctors section.
+/*
+ * Not taking encl->lock because:
+ * 1. page attributes are not written.
+ * 2. the only page attribute read is set before it is put to the array
+ *    and stays constant throughout the enclave life-cycle.
+ */
+xas_lock(&xas);
+xas_for_each_marked(&xas, page, idx_end) {
+	if (++tagged % XA_CHECK_SCHED)
+		continue;
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 83109d5d5fba ("x86/build: Warn on orphan section placement")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v2: brown paper bag version: fix whitespace for proper backslash alignment
----
- include/asm-generic/vmlinux.lds.h | 1 +
- 1 file changed, 1 insertion(+)
+	xas_pause(&xas);
+	xas_unlock(&xas);
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 5430febd34be..b83c00c63997 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -684,6 +684,7 @@
- #ifdef CONFIG_CONSTRUCTORS
- #define KERNEL_CTORS()	. = ALIGN(8);			   \
- 			__ctors_start = .;		   \
-+			KEEP(*(SORT(.ctors.*)))		   \
- 			KEEP(*(.ctors))			   \
- 			KEEP(*(SORT(.init_array.*)))	   \
- 			KEEP(*(.init_array))		   \
--- 
-2.25.1
+	/*
+	 * Attributes are not protected by the xa_lock, so I'm assuming
+	 * that this is the legit place for the check.
+	 */
+	if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+		return -EACCES;
 
+	cond_resched();
+ 	xas_lock(&xas);
+}
+xas_unlock(&xas);
+
+Obviously, we cannot use this pattern by taking the encl->lock inside
+the loop (ABBA and encl->lock is a mutex).
+
+Let's enumerate:
+
+A. sgx_encl_add_page(): uses xa_insert() and xa_erase().
+B. sgx_encl_load_page(): uses xa_load().
+C. sgx_encl_may_map(): is broken (for the moment).
+
+A and B implicitly the lock and if a page exist at all we only access
+a pure constant.
+
+Also, since the open file keeps the instance alive, nobody is going
+to pull carpet under our feet.
+
+OK, I've just concluded tha we don't need to take encl->lock in this
+case. Great.
+
+/Jarkko
