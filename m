@@ -2,200 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5A7283D41
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CA7283D42
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgJER2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:28:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725815AbgJER2I (ORCPT
+        id S1727974AbgJER25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgJER24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:28:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601918886;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=lSWHQWzEWi59CuzC1QSviMVku4FeVT7YUGL5LuM7qH8=;
-        b=FCYbIhIbh2wtMz4LlMY2UTsfA+3i3UU3L13aPP/3qJJxIqvOt4HtrIjjerrPBhBjskctcP
-        UqIxlKubK4LfVJldCtGjvGxmwAWm/a7xz61GclrMyAVHrkJNf4y9jEro4dTbX3fOicgjRc
-        RYPsni12vynnMIETWpoAzu74SbKBmtM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-twRPEbUuOLeO25Kg6HvyBA-1; Mon, 05 Oct 2020 13:28:02 -0400
-X-MC-Unique: twRPEbUuOLeO25Kg6HvyBA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C219E85B686;
-        Mon,  5 Oct 2020 17:27:52 +0000 (UTC)
-Received: from [10.36.112.79] (ovpn-112-79.ams2.redhat.com [10.36.112.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 753F778800;
-        Mon,  5 Oct 2020 17:27:48 +0000 (UTC)
-Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
-To:     Roman Gushchin <guro@fb.com>, Zi Yan <ziy@nvidia.com>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
+        Mon, 5 Oct 2020 13:28:56 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FE6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:28:56 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id e7so10253647qtj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y/b5RyjaEhoxKk2eHP6c3b/AJHv4kgCuakgmCNKfzEo=;
+        b=otikT+4/1kDYRtQPc90pOcUt7CIquAj9yJbI9pGWzLjMgQp15bOu4C8rrRiUvNdnOM
+         aKRgzlI7WytYj3mQeUdETfT2+hzXbe5sJLyntWHbz6yFOLgh0JBERO8IenWVpfWdziWs
+         WCSUErfHWn/N+MdyHji8NEKT89KXjwOzmhehS1HW+4Q+imTf6kNnTLNjWgptms/pujrQ
+         Cs4qofDbviM645imWY6iIc+WskHXh8ZHWNjxAeoh8PP9ubuzeqeWDGwds2B4Zvokpocd
+         kBbjdsyPXICjJaDBzJyAwYhCl0nOW5eOiHuj+ykvdUWUFa45JKkh5b+vj9GDXv+um/B1
+         H5zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y/b5RyjaEhoxKk2eHP6c3b/AJHv4kgCuakgmCNKfzEo=;
+        b=Pcl4LQJN9jzNPk4jChH7dDwuqNXasya61471SAdi1R/rvv7I+wbqWwq0z/9Lu7mFN3
+         Yi3sX88qQJXHdhdC7gwQ0LzJEkeFUfVbfM6oi5EYiDUo8P2Gg5IdmWM3ihbwo8bZ5smT
+         eaOwqeDvMrO5Sgvp4mngUppcbDa7We6JcHCDIJBLmCWPx6GeW/pNatlcWCB8dCaDZBp5
+         f9ETxfmp1R7DWvOMgZ2Bc93G/S0rAHhgBtySfMUkxkl2mnnKD6loknYlTj5iw3O4ukO5
+         ztirPMeISTRcYgc7q5vOMwsPl7Q4BIeiiSMHfKLVi/GQ3s+sHU7I+4tQzet3I0k7NgiA
+         2f1A==
+X-Gm-Message-State: AOAM533E/wLx+3a6mlipSFtWdDr/NhwPECFTuXBaHfRZ7R4a/Ld8GZOM
+        7fYdar/f112nRtyYD5X1GpFLPQ==
+X-Google-Smtp-Source: ABdhPJzLYTVlvik+5HWAkt3kwllBS/QK3mi+3CPtiiTll37dAN3y7eDgBNRLLSEhFG2/0i8k53ngjA==
+X-Received: by 2002:aed:24c9:: with SMTP id u9mr939696qtc.292.1601918935717;
+        Mon, 05 Oct 2020 10:28:55 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id t2sm279676qti.25.2020.10.05.10.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 10:28:55 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kPUIA-0001gW-6L; Mon, 05 Oct 2020 14:28:54 -0300
+Date:   Mon, 5 Oct 2020 14:28:54 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>,
-        linux-kernel@vger.kernel.org
-References: <20200928175428.4110504-1-zi.yan@sent.com>
- <20200930115505.GT2277@dhcp22.suse.cz>
- <73394A41-16D8-431C-9E48-B14D44F045F8@nvidia.com>
- <20201002073205.GC20872@dhcp22.suse.cz>
- <9a7600e2-044a-50ca-acde-bf647932c751@redhat.com>
- <20201002081023.GA4555@dhcp22.suse.cz>
- <645b35a5-970d-dcfe-2b4a-04ebd4444756@redhat.com>
- <F3606096-EF9F-4F69-89DC-287095B649DC@nvidia.com>
- <20201005171632.GB2990415@carbon.DHCP.thefacebook.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <bb654219-8df6-60a7-3cf5-f886ef5ca565@redhat.com>
-Date:   Mon, 5 Oct 2020 19:27:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+Message-ID: <20201005172854.GA5177@ziepe.ca>
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+ <20201002175303.390363-2-daniel.vetter@ffwll.ch>
+ <20201002180603.GL9916@ziepe.ca>
+ <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
+ <20201002233118.GM9916@ziepe.ca>
+ <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
+ <20201004125059.GP9916@ziepe.ca>
+ <CAKMK7uF0AfuYGsHzKXhF=k-mAW=Wx_APf9fY9M9ormnwypoxZA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005171632.GB2990415@carbon.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uF0AfuYGsHzKXhF=k-mAW=Wx_APf9fY9M9ormnwypoxZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.10.20 19:16, Roman Gushchin wrote:
-> On Mon, Oct 05, 2020 at 11:03:56AM -0400, Zi Yan wrote:
->> On 2 Oct 2020, at 4:30, David Hildenbrand wrote:
->>
->>> On 02.10.20 10:10, Michal Hocko wrote:
->>>> On Fri 02-10-20 09:50:02, David Hildenbrand wrote:
->>>>>>>> - huge page sizes controllable by the userspace?
->>>>>>>
->>>>>>> It might be good to allow advanced users to choose the page sizes, so they
->>>>>>> have better control of their applications.
->>>>>>
->>>>>> Could you elaborate more? Those advanced users can use hugetlb, right?
->>>>>> They get a very good control over page size and pool preallocation etc.
->>>>>> So they can get what they need - assuming there is enough memory.
->>>>>>
->>>>>
->>>>> I am still not convinced that 1G THP (TGP :) ) are really what we want
->>>>> to support. I can understand that there are some use cases that might
->>>>> benefit from it, especially:
->>>>
->>>> Well, I would say that internal support for larger huge pages (e.g. 1GB)
->>>> that can transparently split under memory pressure is a useful
->>>> funtionality. I cannot really judge how complex that would be
->>>
->>> Right, but that's then something different than serving (scarce,
->>> unmovable) gigantic pages from CMA / reserved hugetlbfs pool. Nothing
->>> wrong about *real* THP support, meaning, e.g., grouping consecutive
->>> pages and converting them back and forth on demand. (E.g., 1GB ->
->>> multiple 2MB -> multiple single pages), for example, when having to
->>> migrate such a gigantic page. But that's very different from our
->>> existing gigantic page code as far as I can tell.
->>
->> Serving 1GB PUD THPs from CMA is a compromise, since we do not want to
->> bump MAX_ORDER to 20 to enable 1GB page allocation in buddy allocator,
->> which needs section size increase. In addition, unmoveable pages cannot
->> be allocated in CMA, so allocating 1GB pages has much higher chance from
->> it than from ZONE_NORMAL.
+On Sun, Oct 04, 2020 at 06:09:29PM +0200, Daniel Vetter wrote:
+> On Sun, Oct 4, 2020 at 2:51 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Sat, Oct 03, 2020 at 11:40:22AM +0200, Daniel Vetter wrote:
+> >
+> > > > That leaves the only interesting places as vb2_dc_get_userptr() and
+> > > > vb2_vmalloc_get_userptr() which both completely fail to follow the
+> > > > REQUIRED behavior in the function's comment about checking PTEs. It
+> > > > just DMA maps them. Badly broken.
+> > > >
+> > > > Guessing this hackery is for some embedded P2P DMA transfer?
+> > >
+> > > Yeah, see also the follow_pfn trickery in
+> > > videobuf_dma_contig_user_get(), I think this is fully intentional and
+> > > userspace abi we can't break :-/
+> >
+> > We don't need to break uABI, it just needs to work properly in the
+> > kernel:
+> >
+> >   vma = find_vma_intersection()
+> >   dma_buf = dma_buf_get_from_vma(vma)
+> >   sg = dma_buf_p2p_dma_map(dma_buf)
+> >   [.. do dma ..]
+> >   dma_buf_unmap(sg)
+> >   dma_buf_put(dma_buf)
+> >
+> > It is as we discussed before, dma buf needs to be discoverable from a
+> > VMA, at least for users doing this kind of stuff.
 > 
-> s/higher chances/non-zero chances
+> I'm not a big fan of magic behaviour like this, there's more to
+> dma-buf buffer sharing than just "how do I get at the backing
+> storage". Thus far we've done everything rather explicitly. Plus with
+> exynos and habanalabs converted there's only v4l left over, and that
+> has a proper dma-buf import path already.
 
-Well, the longer the system runs (and consumes a significant amount of
-available main memory), the less likely it is.
+Well, any VA approach like this has to access some backing refcount
+via the VMA. Not really any way to avoid something like that
 
+> > A VM flag doesn't help - we need to introduce some kind of lifetime,
+> > and that has to be derived from the VMA. It needs data not just a flag
 > 
-> Currently we have nothing that prevents the fragmentation of the memory
-> with unmovable pages on the 1GB scale. It means that in a common case
-> it's highly unlikely to find a continuous GB without any unmovable page.
-> As now CMA seems to be the only working option.
-> 
+> I don't want to make it work, I just want to make it fail. Rough idea
+> I have in mind is to add a follow_pfn_longterm, for all callers which
+> aren't either synchronized through mmap_sem or an mmu_notifier. 
 
-And I completely dislike the use of CMA in this context (for example,
-allocating via CMA and freeing via the buddy by patching CMA when
-splitting up PUDs ...).
+follow_pfn() doesn't work outside the pagetable locks or mmu notifier
+protection. Can't be fixed.
 
-> However it seems there are other use cases for the allocation of continuous
-> 1GB pages: e.g. secretfd ( https://lwn.net/Articles/831628/ ), where using
-> 1GB pages can reduce the fragmentation of the direct mapping.
+We only have a few users:
 
-Yes, see RFC v1 where I already cced Mike.
+arch/s390/pci/pci_mmio.c:       ret = follow_pfn(vma, user_addr, pfn);
+drivers/media/v4l2-core/videobuf-dma-contig.c:          ret = follow_pfn(vma, user_address, &this_pfn);
+drivers/vfio/vfio_iommu_type1.c:        ret = follow_pfn(vma, vaddr, pfn);
+drivers/vfio/vfio_iommu_type1.c:                ret = follow_pfn(vma, vaddr, pfn);
+mm/frame_vector.c:                      err = follow_pfn(vma, start, &nums[ret]);
+virt/kvm/kvm_main.c:    r = follow_pfn(vma, addr, &pfn);
+virt/kvm/kvm_main.c:            r = follow_pfn(vma, addr, &pfn);
 
-> 
-> So I wonder if we need a new mechanism to avoid fragmentation on 1GB/PUD scale.
-> E.g. something like a second level of pageblocks. That would allow to group
-> all unmovable memory in few 1GB blocks and have more 1GB regions available for
-> gigantic THPs and other use cases. I'm looking now into how it can be done.
+VFIO is broken like media, but I saw patches fixing the vfio cases
+using the VMA and a vfio specific refcount.
 
-Anything bigger than sections is somewhat problematic: you have to track
-that data somewhere. It cannot be the section (in contrast to pageblocks)
+media & frame_vector we are talking about here.
 
-> If anybody has any ideas here, I'll appreciate a lot.
+kvm is some similar hack added for P2P DMA, see commit
+add6a0cd1c5ba51b201e1361b05a5df817083618. It might be protected by notifiers..
 
-I already brought up the idea of ZONE_PREFER_MOVABLE (see RFC v1). That
-somewhat mimics what CMA does (when sized reasonably), works well with
-memory hot(un)plug, and is immune to misconfiguration. Within such a
-zone, we can try to optimize the placement of larger blocks.
+s390 looks broken too, needs to hold the page table locks.
 
--- 
-Thanks,
+So, the answer really is that s390 and media need fixing, and this API
+should go away (or become kvm specific)
 
-David / dhildenb
+> If this really breaks anyone's use-case we can add a tainting kernel
+> option which re-enables this (we've done something similar for
+> phys_addr_t based buffer sharing in fbdev, entirely unfixable since
+> the other driver has to just blindly trust that what userspace
+> passes around is legit). This here isn't unfixable, but if v4l
+> people want to keep it without a big "security hole here" sticker,
+> they should do the work, not me :-)
 
+This seems fairly reasonable..
+
+So after frame_vec is purged and we have the one caller in media, move
+all this stuff to media and taint the kernel if it goes down the
+follow_pfn path
+
+Jason
