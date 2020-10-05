@@ -2,243 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379B52833DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6694F2833DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgJEKLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:11:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24069 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725988AbgJEKLQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:11:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601892675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R50DKcPPsbQU/Khitb+DgQc6yH+QZT9+1roxeW7CMA8=;
-        b=HTDYMCrChU3Y5plUgiMlVPwzNsE5bqW4W+Uye8MQ0PYLnDK8Gbl00c/htDSwmj91EFlqI/
-        kkZHbfekFDoKQQoHvNPs+4AV9co9uYALyl+Owf70E/W/Zt7VOFB9KQ+Ob0k1vMsPmWGVUc
-        DDJVsIqlYKBHRVsdxUKJM8QcqeHJ6UQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-UhZxklQUOF2Wn8ZFXGYXmQ-1; Mon, 05 Oct 2020 06:11:13 -0400
-X-MC-Unique: UhZxklQUOF2Wn8ZFXGYXmQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5902480365A;
-        Mon,  5 Oct 2020 10:11:12 +0000 (UTC)
-Received: from starship (unknown [10.35.206.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D46255C1BD;
-        Mon,  5 Oct 2020 10:11:09 +0000 (UTC)
-Message-ID: <a99c92d1ed04744d0829b79ff2286348fac8a420.camel@redhat.com>
-Subject: Re: [PATCH 2/3] KVM: x86: allocate vcpu->arch.cpuid_entries
- dynamically
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Wei Huang <whuang2@amd.com>, linux-kernel@vger.kernel.org
-Date:   Mon, 05 Oct 2020 13:11:08 +0300
-In-Reply-To: <20201001130541.1398392-3-vkuznets@redhat.com>
-References: <20201001130541.1398392-1-vkuznets@redhat.com>
-         <20201001130541.1398392-3-vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1725932AbgJEKPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:15:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:43256 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725887AbgJEKPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:15:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F90D113E;
+        Mon,  5 Oct 2020 03:15:49 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E1C83F66B;
+        Mon,  5 Oct 2020 03:15:46 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 11:15:44 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Al Grant <Al.Grant@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        Wei Li <liwei391@huawei.com>
+Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
+Message-ID: <20201005101541.GQ6642@arm.com>
+References: <20200922101225.183554-1-andre.przywara@arm.com>
+ <20200922101225.183554-6-andre.przywara@arm.com>
+ <20200928132114.GF6642@arm.com>
+ <8efd63eb-5ae7-0f9a-6c37-ef5e68af4e6c@arm.com>
+ <20200928144755.GI6642@arm.com>
+ <20200929021902.GA16749@leoy-ThinkPad-X240s>
+ <20200930103409.GP6642@arm.com>
+ <20200930110453.GB9968@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930110453.GB9968@leoy-ThinkPad-X240s>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-01 at 15:05 +0200, Vitaly Kuznetsov wrote:
-> The current limit for guest CPUID leaves (KVM_MAX_CPUID_ENTRIES, 80)
-> is reported to be insufficient but before we bump it let's switch to
-> allocating vcpu->arch.cpuid_entries[] array dynamically. Currently,
-> 'struct kvm_cpuid_entry2' is 40 bytes so vcpu->arch.cpuid_entries is
-> 3200 bytes which accounts for 1/4 of the whole 'struct kvm_vcpu_arch'
-> but having it pre-allocated (for all vCPUs which we also pre-allocate)
-> gives us no real benefits.
-> 
-> Another plus of the dynamic allocation is that we now do kvm_check_cpuid()
-> check before we assign anything to vcpu->arch.cpuid_nent/cpuid_entries so
-> no changes are made in case the check fails.
-> 
-> Opportunistically remove unneeded 'out' labels from
-> kvm_vcpu_ioctl_set_cpuid()/kvm_vcpu_ioctl_set_cpuid2() and return
-> directly whenever possible.
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  2 +-
->  arch/x86/kvm/cpuid.c            | 89 +++++++++++++++++++--------------
->  arch/x86/kvm/x86.c              |  1 +
->  3 files changed, 53 insertions(+), 39 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index d0f77235da92..7d259e21ea04 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -637,7 +637,7 @@ struct kvm_vcpu_arch {
->  	int halt_request; /* real mode on Intel only */
->  
->  	int cpuid_nent;
-> -	struct kvm_cpuid_entry2 cpuid_entries[KVM_MAX_CPUID_ENTRIES];
-> +	struct kvm_cpuid_entry2 *cpuid_entries;
->  
->  	int maxphyaddr;
->  	int max_tdp_level;
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 529348ddedc1..3fe20c4da0a6 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -210,46 +210,53 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
->  			     struct kvm_cpuid_entry __user *entries)
->  {
->  	int r, i;
-> -	struct kvm_cpuid_entry *cpuid_entries = NULL;
-> +	struct kvm_cpuid_entry *e = NULL;
-> +	struct kvm_cpuid_entry2 *e2 = NULL;
->  
-> -	r = -E2BIG;
->  	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
-> -		goto out;
-> +		return -E2BIG;
-> +
->  	if (cpuid->nent) {
-> -		cpuid_entries = vmemdup_user(entries,
-> -					     array_size(sizeof(struct kvm_cpuid_entry),
-> -							cpuid->nent));
-> -		if (IS_ERR(cpuid_entries)) {
-> -			r = PTR_ERR(cpuid_entries);
-> -			goto out;
-> +		e = vmemdup_user(entries, array_size(sizeof(*e), cpuid->nent));
-> +		if (IS_ERR(e))
-> +			return PTR_ERR(e);
-> +
-> +		e2 = kvmalloc_array(cpuid->nent, sizeof(*e2), GFP_KERNEL_ACCOUNT);
-> +		if (!e2) {
-> +			r = -ENOMEM;
-> +			goto out_free_cpuid;
->  		}
->  	}
->  	for (i = 0; i < cpuid->nent; i++) {
-> -		vcpu->arch.cpuid_entries[i].function = cpuid_entries[i].function;
-> -		vcpu->arch.cpuid_entries[i].eax = cpuid_entries[i].eax;
-> -		vcpu->arch.cpuid_entries[i].ebx = cpuid_entries[i].ebx;
-> -		vcpu->arch.cpuid_entries[i].ecx = cpuid_entries[i].ecx;
-> -		vcpu->arch.cpuid_entries[i].edx = cpuid_entries[i].edx;
-> -		vcpu->arch.cpuid_entries[i].index = 0;
-> -		vcpu->arch.cpuid_entries[i].flags = 0;
-> -		vcpu->arch.cpuid_entries[i].padding[0] = 0;
-> -		vcpu->arch.cpuid_entries[i].padding[1] = 0;
-> -		vcpu->arch.cpuid_entries[i].padding[2] = 0;
-> +		e2[i].function = e[i].function;
-> +		e2[i].eax = e[i].eax;
-> +		e2[i].ebx = e[i].ebx;
-> +		e2[i].ecx = e[i].ecx;
-> +		e2[i].edx = e[i].edx;
-> +		e2[i].index = 0;
-> +		e2[i].flags = 0;
-> +		e2[i].padding[0] = 0;
-> +		e2[i].padding[1] = 0;
-> +		e2[i].padding[2] = 0;
->  	}
-> -	vcpu->arch.cpuid_nent = cpuid->nent;
-> -	r = kvm_check_cpuid(vcpu->arch.cpuid_entries, cpuid->nent);
-> +
-> +	r = kvm_check_cpuid(e2, cpuid->nent);
->  	if (r) {
-> -		vcpu->arch.cpuid_nent = 0;
-> -		kvfree(cpuid_entries);
-> -		goto out;
-> +		kvfree(e2);
-> +		goto out_free_cpuid;
->  	}
->  
-> +	kvfree(vcpu->arch.cpuid_entries);
-> +	vcpu->arch.cpuid_entries = e2;
-> +	vcpu->arch.cpuid_nent = cpuid->nent;
-> +
->  	cpuid_fix_nx_cap(vcpu);
->  	kvm_update_cpuid_runtime(vcpu);
->  	kvm_vcpu_after_set_cpuid(vcpu);
->  
-> -	kvfree(cpuid_entries);
-> -out:
-> +out_free_cpuid:
-> +	kvfree(e);
-> +
->  	return r;
->  }
->  
-> @@ -257,26 +264,32 @@ int kvm_vcpu_ioctl_set_cpuid2(struct kvm_vcpu *vcpu,
->  			      struct kvm_cpuid2 *cpuid,
->  			      struct kvm_cpuid_entry2 __user *entries)
->  {
-> +	struct kvm_cpuid_entry2 *e2 = NULL;
->  	int r;
->  
-> -	r = -E2BIG;
->  	if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
-> -		goto out;
-> -	r = -EFAULT;
-> -	if (copy_from_user(&vcpu->arch.cpuid_entries, entries,
-> -			   cpuid->nent * sizeof(struct kvm_cpuid_entry2)))
-> -		goto out;
-> -	vcpu->arch.cpuid_nent = cpuid->nent;
-> -	r = kvm_check_cpuid(vcpu->arch.cpuid_entries, cpuid->nent);
-> +		return -E2BIG;
-> +
-> +	if (cpuid->nent) {
-> +		e2 = vmemdup_user(entries, array_size(sizeof(*e2), cpuid->nent));
-> +		if (IS_ERR(e2))
-> +			return PTR_ERR(e2);
-> +	}
-> +
-> +	r = kvm_check_cpuid(e2, cpuid->nent);
->  	if (r) {
-> -		vcpu->arch.cpuid_nent = 0;
-> -		goto out;
-> +		kvfree(e2);
-> +		return r;
->  	}
->  
-> +	kvfree(vcpu->arch.cpuid_entries);
-> +	vcpu->arch.cpuid_entries = e2;
-> +	vcpu->arch.cpuid_nent = cpuid->nent;
-> +
->  	kvm_update_cpuid_runtime(vcpu);
->  	kvm_vcpu_after_set_cpuid(vcpu);
-> -out:
-> -	return r;
-> +
-> +	return 0;
->  }
->  
->  int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c4015a43cc8a..f8ed1bde18af 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9877,6 +9877,7 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
->  	kvm_mmu_destroy(vcpu);
->  	srcu_read_unlock(&vcpu->kvm->srcu, idx);
->  	free_page((unsigned long)vcpu->arch.pio_data);
-> +	kvfree(vcpu->arch.cpuid_entries);
->  	if (!lapic_in_kernel(vcpu))
->  		static_key_slow_dec(&kvm_no_apic_vcpu);
->  }
+On Wed, Sep 30, 2020 at 07:04:53PM +0800, Leo Yan wrote:
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+[...]
 
-Best regards,
-	Maxim Levitsky
+> > > > > >> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > > > >> index a033f34846a6..f0c369259554 100644
+> > > > > >> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > > > >> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > > > >> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+> > > > > >>  	}
+> > > > > >>  	case ARM_SPE_OP_TYPE:
+> > > > > >>  		switch (idx) {
+> > > > > >> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+> > > > > >> +		case 0: {
+> > > > > >> +			size_t blen = buf_len;
+> > > > > >> +
+> > > > > >> +			if ((payload & 0x89) == 0x08) {
+> > > > > >> +				ret = snprintf(buf, buf_len, "SVE");
+> > > > > >> +				buf += ret;
+> > > > > >> +				blen -= ret;
+> > > > > > 
+> > > > > > (Nit: can ret be < 0 ?  I've never been 100% clear on this myself for
+> > > > > > the s*printf() family -- if this assumption is widespread in perf tool
+> > > > > > a lready that I guess just go with the flow.)
+> > > > > 
+> > > > > Yeah, some parts of the code in here check for -1, actually, but doing
+> > > > > this on every call to snprintf would push this current code over the
+> > > > > edge - and I cowardly avoided a refactoring ;-)
+> > > > > 
+> > > > > Please note that his is perf userland, and also we are printing constant
+> > > > > strings here.
+> > > > > Although admittedly this starts to sounds like an excuse now ...
+> > > > > 
+> > > > > > I wonder if this snprintf+increment+decrement sequence could be wrapped
+> > > > > > up as a helper, rather than having to be repeated all over the place.
+> > > > > 
+> > > > > Yes, I was hoping nobody would notice ;-)
+> > > > 
+> > > > It's probably not worth losing sleep over.
+> > > > 
+> > > > snprintf(3) says, under NOTES:
+> > > > 
+> > > > 	Until glibc 2.0.6, they would return -1 when the output was
+> > > > 	truncated.
+> > > > 
+> > > > which is probably ancient enough history that we don't care.  C11 does
+> > > > say that a negative return value can happen "if an encoding error
+> > > > occurred".  _Probably_ not a problem if perf tool never calls
+> > > > setlocale(), but ...
+> > > 
+> > > I have one patch which tried to fix the snprintf+increment sequence
+> > > [1], to be honest, the change seems urgly for me.  I agree it's better
+> > > to use a helper to wrap up.
+> > > 
+> > > [1] https://lore.kernel.org/patchwork/patch/1288410/
+> > 
+> > Sure, putting explicit checks all over the place makes a lot of noise in
+> > the code.
+> > 
+> > I was wondering whether something along the following lines would work:
+> > 
+> > 	/* ... */
+> > 
+> > 	if (payload & SVE_EVT_PKT_GEN_EXCEPTION)
+> > 		buf_appendf_err(&buf, &buf_len, &ret, " EXCEPTION-GEN");
+> > 	if (payload & SVE_EVT_PKT_ARCH_RETIRED)
+> > 		buf_appendf_err(&buf, &buf_len, &ret, " RETIRED");
+> > 	if (payload & SVE_EVT_PKT_L1D_ACCESS)
+> > 		buf_appendf_err(&buf, &buf_len, &ret, " L1D-ACCESS");
+> > 
+> > 	/* ... */
+> > 
+> > 	if (ret)
+> > 		return ret;
+> > 
+> > [...]
+> 
+> I have sent out the patch v2 [1] and Cc'ed you; I used a similiar API
+> definition with your suggestion:
+> 
+>   static int arm_spe_pkt_snprintf(char **buf_p, size_t *blen,
+>  				  const char *fmt, ...)
+> 
+> Only a difference is when return from arm_spe_pkt_snprintf(), will check
+> the return value and directly bail out when detect failure.  Your input
+> will be considered for next spin.
+> 
+> > Best to keep such refactoring independent of this series though.
+> 
+> Yeah, the patch set [2] is quite heavy; after get some reviewing,
+> maybe need to consider to split into 2 or even 3 small patch sets.
+> 
+> Thanks a lot for your suggestions!
+>
+> Leo
 
+No problem, your approach seems reasonable to me.
+
+Cheers
+---Dave
+
+> [1] https://lore.kernel.org/patchwork/patch/1314603/
+> [2] https://lore.kernel.org/patchwork/cover/1314599/
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
