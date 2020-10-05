@@ -2,66 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62AC28395A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36606283960
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbgJEPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726959AbgJEPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:16:08 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DFE3208C7;
-        Mon,  5 Oct 2020 15:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601910967;
-        bh=T0FiFYCJs43k19BYlB81hToSe3v+FKbC7usG6h45kKY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vTQFUnXe5M/uazzQJidKdDX/fW+UdoiLCjOAHYgmpd8pdb+MS4DEBKbpb0RZN25RA
-         VguAA36k6K3+rRgvRUaysL1aPxL9j+KdOiZCDeqELYeynVcaVTVrCwm8ANB6yfgsv9
-         MIunsolZU60Qk1Dc7NUEhn2H1mjztuMATNIgL8Os=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/2] media: i2c: imx258: validate rotation only if it is provided
-Date:   Mon,  5 Oct 2020 17:15:59 +0200
-Message-Id: <20201005151559.12003-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005151559.12003-1-krzk@kernel.org>
-References: <20201005151559.12003-1-krzk@kernel.org>
+        id S1727041AbgJEPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:16:40 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:55631 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726617AbgJEPQk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:16:40 -0400
+Received: (qmail 379940 invoked by uid 1000); 5 Oct 2020 11:16:39 -0400
+Date:   Mon, 5 Oct 2020 11:16:39 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Will Deacon <will@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201005151639.GE376584@rowland.harvard.edu>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <20201004233146.GP29330@paulmck-ThinkPad-P72>
+ <20201005023846.GA359428@rowland.harvard.edu>
+ <20201005082002.GA23216@willie-the-truck>
+ <20201005091247.GA23575@willie-the-truck>
+ <20201005142351.GB376584@rowland.harvard.edu>
+ <20201005151313.GA23892@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005151313.GA23892@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sensor supports rotation by 180 degrees however the value of
-"rotation" property should be validated only if it exists.  If
-"rotation" is missing, do not fail the probe:
+On Mon, Oct 05, 2020 at 04:13:13PM +0100, Will Deacon wrote:
+> > The failure to recognize the dependency in P0 should be considered a 
+> > combined limitation of the memory model and herd7.  It's not a simple 
+> > mistake that can be fixed by a small rewrite of herd7; rather it's a 
+> > deliberate choice we made based on herd7's inherent design.  We 
+> > explicitly said that control dependencies extend only to the code in the 
+> > branches of an "if" statement; anything beyond the end of the statement 
+> > is not considered to be dependent.
+> 
+> Interesting. How does this interact with loops that are conditionally broken
+> out of, e.g.  a relaxed cmpxchg() loop or an smp_cond_load_relaxed() call
+> prior to a WRITE_ONCE()?
 
-    imx258: probe of 3-001a failed with error -22
+Heh --  We finesse this issue by not supporting loops at all!  :-)
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/media/i2c/imx258.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index aedf8e7c6165..c52932e5b881 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -1284,7 +1284,7 @@ static int imx258_probe(struct i2c_client *client)
- 	 * supports a single pixel order right now.
- 	 */
- 	ret = device_property_read_u32(&client->dev, "rotation", &val);
--	if (ret || val != 180)
-+	if (!ret && val != 180)
- 		return -EINVAL;
- 
- 	/* Initialize subdev */
--- 
-2.17.1
-
+Alan
