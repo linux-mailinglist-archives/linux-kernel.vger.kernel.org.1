@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7350283D5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C6D283D5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgJERgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727344AbgJERgW (ORCPT
+        id S1728336AbgJERgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:36:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47834 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727344AbgJERgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:36:22 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C1DC0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 10:36:22 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y14so4152645pfp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 10:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tGneaUPSfmwmZclVabdMQtlpK5P/Q67PdE+cZq4zgcM=;
-        b=GBwOGDWDRut7KhZTbQ6/Yi5l7rHvibdoTP1rWlTv094qtnCKgxidxIjLDZIspampjB
-         dEWxjaqxkI2E/pLxBwkz5mNnUeWikWSVhEc0F4xiw4LQqc0VI+I/Gpd4Kw0BxlVF7DvU
-         sCs3d4yP1p+CFlSyF9mp7MdSst1cLCLOTL++2rVcqvUzrV6Qqb3lrSTYJ1tpzX6QbWqf
-         LlxpmqrhyBE54li2VPtdndcbISMNFKzaemvvZkv8UnyrU86L3/cXE6fMebI+Bb0oaqvY
-         iMjhvjfAnZDS7s06AEcd/aUI/xi+GG8yG7ggyZ2pIr3MbiSjAuXsVuF/5jGVm+q8wydN
-         XmvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tGneaUPSfmwmZclVabdMQtlpK5P/Q67PdE+cZq4zgcM=;
-        b=HhJqWs+ERsgyyBO+ic1gZdA81Bg5d03SxbLOoS0zFxDD35Ch4kPnu/rKuEqrYmpoHl
-         Mh+kcgeRvqlOJlZ+RVa/++gtYdiQbm8LKhMeU+3oRDS2GeuhSjd/zThh79VVCASaPV31
-         CNyninv2SRiwPm7W1x05d3KqjIrCeYJqFK0hyL9EbBCdQipcV52pWhga5CXAze4Q5ROs
-         3iJg6GFQUkErHgk+X6sd4BFmqe+7t7LqEj2BIyspG1kGqPVysG3MNr+rOKI0MqCmmecO
-         75T8eMcarHs8q9x1jMozFQAUBUxhgft3AF4IBME7kZWRDzm1tXBppqCyElFecnmAC0lc
-         G9ug==
-X-Gm-Message-State: AOAM532sOczllwxFs3f0SJIvnNRaLfBLfPpvJnRLVpgr1IalFRVYgdz0
-        hveksKfWOV3ZkhxWVpapCVE6gXwDet1qw9AIxkkOYg==
-X-Google-Smtp-Source: ABdhPJxn56caBLZKbrVaopjudCJE86MNDFRX0mqIhB6Pn1QzmCP8YlqsezxHYWQwvGujFEdbYWR/mgySkQY/MAL1pbA=
-X-Received: by 2002:a65:6858:: with SMTP id q24mr596445pgt.10.1601919381716;
- Mon, 05 Oct 2020 10:36:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201005025720.2599682-1-keescook@chromium.org>
-In-Reply-To: <20201005025720.2599682-1-keescook@chromium.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 5 Oct 2020 10:36:11 -0700
-Message-ID: <CAKwvOdnVJW0wDuMvgfKUE248gbDTT1CYmDY=hczaFNQ_39OfjA@mail.gmail.com>
-Subject: Re: [PATCH v2] vmlinux.lds.h: Keep .ctors.* with .ctors
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        Mon, 5 Oct 2020 13:36:36 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1kPUPT-0002Z5-LX; Mon, 05 Oct 2020 17:36:27 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 089435FEE7; Mon,  5 Oct 2020 10:36:26 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 015479FB5C;
+        Mon,  5 Oct 2020 10:36:25 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     David Miller <davem@davemloft.net>,
+        Stephen Hemminger <stephen@networkplumber.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Content-Type: text/plain; charset="UTF-8"
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 6/6] bonding: make Kconfig toggle to disable legacy interfaces
+In-reply-to: <CAKfmpSd9NaBFhBsS=3zS5R5LeaVzguZjkwuvxSLYNT-Hwvj5Zw@mail.gmail.com>
+References: <20201002174001.3012643-7-jarod@redhat.com> <20201002121317.474c95f0@hermes.local> <CAKfmpSc3-j2GtQtdskEb8BQvB6q_zJPcZc2GhG8t+M3yFxS4MQ@mail.gmail.com> <20201002.155718.1670574240166749204.davem@davemloft.net> <CAKfmpSd9NaBFhBsS=3zS5R5LeaVzguZjkwuvxSLYNT-Hwvj5Zw@mail.gmail.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Sat, 03 Oct 2020 15:48:26 -0400."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <15655.1601919385.1@famine>
+Date:   Mon, 05 Oct 2020 10:36:25 -0700
+Message-ID: <15656.1601919385@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 4, 2020 at 7:57 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Under some circumstances, the compiler generates .ctors.* sections. This
-> is seen doing a cross compile of x86_64 from a powerpc64el host:
->
-> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/trace_clock.o' being
-> placed in section `.ctors.65435'
-> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ftrace.o' being
-> placed in section `.ctors.65435'
-> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ring_buffer.o' being
-> placed in section `.ctors.65435'
->
-> Include these orphans along with the regular .ctors section.
+Jarod Wilson <jarod@redhat.com> wrote:
 
-It's very curious to see different behavior based on whether one is
-targeting x86_64 via native compilation vs cross compilation.
-
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
-
+>On Fri, Oct 2, 2020 at 6:57 PM David Miller <davem@davemloft.net> wrote:
+>>
+>> From: Jarod Wilson <jarod@redhat.com>
+>> Date: Fri, 2 Oct 2020 16:23:46 -0400
+>>
+>> > I'd had a bit of feedback that people would rather see both, and be
+>> > able to toggle off the old ones, rather than only having one or the
+>> > other, depending on the toggle, so I thought I'd give this a try. I
+>> > kind of liked the one or the other route, but I see the problems with
+>> > that too.
+>>
+>> Please keep everything for the entire deprecation period, unconditionally.
 >
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Fixes: 83109d5d5fba ("x86/build: Warn on orphan section placement")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v2: brown paper bag version: fix whitespace for proper backslash alignment
-> ---
->  include/asm-generic/vmlinux.lds.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 5430febd34be..b83c00c63997 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -684,6 +684,7 @@
->  #ifdef CONFIG_CONSTRUCTORS
->  #define KERNEL_CTORS() . = ALIGN(8);                      \
->                         __ctors_start = .;                 \
-> +                       KEEP(*(SORT(.ctors.*)))            \
->                         KEEP(*(.ctors))                    \
->                         KEEP(*(SORT(.init_array.*)))       \
->                         KEEP(*(.init_array))               \
-> --
-> 2.25.1
->
+>Okay, so 100% drop the Kconfig flag patch, but duplicate sysfs
+>interface names are acceptable, correct? Then what about the procfs
+>file having duplicate Slave and Port lines? Just leave them all as
+>Slave?
 
+	My preference is to not alter the existing sysfs / proc behavior
+at all, and instead create a netlink / iproute UAPI that becomes the
+"preferred" UAPI going forward.  Any new functionality would only be
+added to netlink as incentive to switch.
 
--- 
-Thanks,
-~Nick Desaulniers
+	I don't see the value in adding duplicate fields, as userspace
+code that parses them will not be portable if it only checks for the new
+field name.  Then, down the road, deleting the old names will break the
+userspace code that was never updated (which will likely be most of it).
+
+	I would rather see a single clean break from proc and sysfs to
+netlink in one step than a piecemeal addition and removal from the
+existing UAPI.  That makes for a much clearer flag day event for end
+users.  By this I mean leave proc / sysfs as-is today, and then after a
+suitable deprecation period, remove it wholesale (rather than a compile
+time option).
+
+	-J
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
