@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1030F283122
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204CF283125
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgJEHxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:53:36 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34282 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgJEHxg (ORCPT
+        id S1725934AbgJEHyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:54:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56800 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgJEHyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:53:36 -0400
-Received: by mail-ot1-f68.google.com with SMTP id d28so1487153ote.1;
-        Mon, 05 Oct 2020 00:53:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ufois23g/mxCxfWP4cgLmm6PEOAY+7dY4/+DMcUR2+w=;
-        b=FA7Ev8Pq4/JRrznF1mtUsa3V8Pi0KFA4yNTByRXII5M5DjZR37dnSHAgbHlbVswb6I
-         NgdXlxer+f6QJDOcMwhMhjBgqZ46VZse4WUhjfrDbMWK8oBYihKwsIG2k6vGkR+Apmp0
-         2lFWooYxYbtbS2k1oOP8RkJeLSVPBmow0CCxQ4NlVTaalv6xUnqdOfWvj+YUY24oZ5gz
-         9eFCzj8R9hSv/yZ2r3uN5j9Q7cqMq4DxuhS8hnz8RBPFTi0ugxUlmjAwkL4MGpU0toU4
-         AUvYPKy34kZY0LP7MIWuF/49xqzrjjGKA77jyx6JUcaYE0Jhb8yuDkolq4xrio4o0Ea2
-         CauQ==
-X-Gm-Message-State: AOAM531eXcLYuXyzYOpF1nSKUC+Hl25FHXZJGTT+foME1bx1er2N3QIe
-        TL1bvxTF1zTH+hWLfyVQeHVLSxQ0ZfVu1Uj4mm/Ndbhm
-X-Google-Smtp-Source: ABdhPJwUMXeRAmZD+uY78qToNvcWn90EF6i7ZUcRJ+D3EO5sQQQnaD1A+zraaFQREFNFC7RNbTYDhVfHoH8AhHh+DSw=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr11079631otb.250.1601884415195;
- Mon, 05 Oct 2020 00:53:35 -0700 (PDT)
+        Mon, 5 Oct 2020 03:54:00 -0400
+Date:   Mon, 05 Oct 2020 07:53:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601884438;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9JrlK+rR8v4IwCjI2MWMAnNL4REFxgA/+kUXTxSm2qI=;
+        b=SyapVYX8zwsekqMygVaMstSg3QpfWgfWZ1eexd25LexaLJZS3tiV28kansjWNxulJzv4jw
+        hByjT+7zCocKZtx6VdIuQMKO9XN0HIH6dtChAscUd7CR9gxesi10tD+XXcP62HYP/ek6Hs
+        nx8Ew0U/CXSzfuKAu3oy6pAy2b4YkXn0Y+cZdnYhrOGsg82wBcYsiPHYrChAcZUFiH3FyG
+        0mKleQR8Wy3/mL1knocKCOjWN+NBiWv4hcbLkrmdJMzNpx1m3PUujR4RKYkyuFshN8oepz
+        R58sLC8EPb2cFl8w81+CdsShfaNDOkWIctLrITNEoSJ3lDww9vtkA1as/wuLEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601884438;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9JrlK+rR8v4IwCjI2MWMAnNL4REFxgA/+kUXTxSm2qI=;
+        b=jRsARHLx1ChYdbx+TPtgNablRtJdhDQcj7yIe1XVmE2iXnpcBT9OZZ+XD251Gjl8uPenop
+        rUU2sApS3pr0swDw==
+From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] x86/events/amd/iommu: Fix sizeof mismatch
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201001113900.58889-1-colin.king@canonical.com>
+References: <20201001113900.58889-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20201002163945.7885-1-krzk@kernel.org>
-In-Reply-To: <20201002163945.7885-1-krzk@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 5 Oct 2020 09:53:24 +0200
-Message-ID: <CAMuHMdX5dW_UJbDektyFPMeS-go0g+UmAA1ji=AK3-k+HX_dNw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3] arm64: dts: renesas: align GPIO hog names with dtschema
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160188443750.7002.16043563500088423723.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 6:39 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> The convention for node names is to use hyphens, not underscores.
-> dtschema for pca95xx expects GPIO hogs to end with 'hog' suffix.
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  .../boot/dts/renesas/r8a77951-salvator-xs.dts      |  2 +-
->  .../boot/dts/renesas/r8a77965-salvator-xs.dts      |  2 +-
->  arch/arm64/boot/dts/renesas/ulcb-kf.dtsi           | 14 +++++++-------
->  3 files changed, 9 insertions(+), 9 deletions(-)
->
-> The dt-schema changes were applied.
+The following commit has been merged into the perf/core branch of tip:
 
-Thanks for notifying me!
+Commit-ID:     59d5396a4666195f89a67e118e9e627ddd6f53a1
+Gitweb:        https://git.kernel.org/tip/59d5396a4666195f89a67e118e9e627ddd6f53a1
+Author:        Colin Ian King <colin.king@canonical.com>
+AuthorDate:    Thu, 01 Oct 2020 12:39:00 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Sat, 03 Oct 2020 16:30:56 +02:00
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.11.
+x86/events/amd/iommu: Fix sizeof mismatch
 
-Gr{oetje,eeting}s,
+An incorrect sizeof is being used, struct attribute ** is not correct,
+it should be struct attribute *. Note that since ** is the same size as
+* this is not causing any issues.  Improve this fix by using sizeof(*attrs)
+as this allows us to not even reference the type of the pointer.
 
-                        Geert
+Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
+Fixes: 51686546304f ("x86/events/amd/iommu: Fix sysfs perf attribute groups")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201001113900.58889-1-colin.king@canonical.com
+---
+ arch/x86/events/amd/iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/x86/events/amd/iommu.c b/arch/x86/events/amd/iommu.c
+index fb61620..be50ef8 100644
+--- a/arch/x86/events/amd/iommu.c
++++ b/arch/x86/events/amd/iommu.c
+@@ -379,7 +379,7 @@ static __init int _init_events_attrs(void)
+ 	while (amd_iommu_v2_event_descs[i].attr.attr.name)
+ 		i++;
+ 
+-	attrs = kcalloc(i + 1, sizeof(struct attribute **), GFP_KERNEL);
++	attrs = kcalloc(i + 1, sizeof(*attrs), GFP_KERNEL);
+ 	if (!attrs)
+ 		return -ENOMEM;
+ 
