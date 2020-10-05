@@ -2,103 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9502828307C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD1128307F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgJEG4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 02:56:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36870 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725869AbgJEG4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:56:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601881010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UNEm7Tn9UNlLqhlrULq94v99iXKf+1bbfGtGmTKX+7I=;
-        b=S66gtJ8axc/8vLsDG0Y3zJ3DfLtemEkgIHkSLUIWIDdOmJTl5ozJHZlvC9eijR1y/3zccB
-        UdINSjYVIGbyFe6FVLK6h+OkKKunrDQK6t3reRK6hhZJGiR0LMbXvjHxmXk9olvfWeq9+p
-        FIB95YWX0cll+IESTIBsni+toXRKRnQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 93222B224;
-        Mon,  5 Oct 2020 06:56:50 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 08:56:48 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v1 3/5] mm/page_alloc: always move pages to the tail of
- the freelist in unset_migratetype_isolate()
-Message-ID: <20201005065648.GO4555@dhcp22.suse.cz>
-References: <20200928182110.7050-1-david@redhat.com>
- <20200928182110.7050-4-david@redhat.com>
- <20201002132404.GI4555@dhcp22.suse.cz>
- <df0c45bf-223f-1f0b-ce3d-f2b2e05626bd@redhat.com>
+        id S1725911AbgJEG65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 02:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725869AbgJEG65 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 02:58:57 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0F0C0613CE;
+        Sun,  4 Oct 2020 23:58:56 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id j2so8062443eds.9;
+        Sun, 04 Oct 2020 23:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=gRVfMn1y3J1C+vGuMZF2LipjcOOXpjH1BPs85qkeY9I=;
+        b=mJKhyuUpK1czGMhr3NIrmOT1aqCSpfTCVHRLKrrKneUrmoSvr9uQMBqETyYeNoea+U
+         IeK0JjiPdhyJxJetWUGZ5zAqvuNnkEP584WnevYsaklihWJVxY+3h9kS7nHTHc+P8PHp
+         vYxA/ZSzphHvZwIQzVLyMypYaWBL2sVQdIP2Ugd1nZSflP8DnoqvJ/s20hjdy5Yt94L4
+         Sh/jrVpidiEAS4OPFTM1SfwILy75ZxYh+W6Xo/dCTS/rqLAKv6EmJ+lTedfOJ7gBnVaR
+         D+l2Yr5RUEpVAoAGnLy0UhmFRK6lVzXqZS4X3740EQAKkVn6Q+yNzH5OcVje6JdQHbEr
+         A7bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=gRVfMn1y3J1C+vGuMZF2LipjcOOXpjH1BPs85qkeY9I=;
+        b=c4rV2e/jwenD7Bg+BAzsYTINNooD0JRv9vjs1FhRjtxoi++KWbjIwLmTE9p3A6fTVn
+         8NatEH5XkEIa/cPD1lRXXwcKpKJaEr9wZ6SlWZ026UyPwAJxC34OgrWzBjUim/ODRjFR
+         3H6PM9v0e9YR8sMXDdGvGusvTQK9jNSGmFcJQP+DUYXISSLAaE5+IlcYJD7tXLVn6D+0
+         dNh7A8GqtfBrmMCR1Zv22IJ17PiANLfuCHeozJ0zMrOVcpwel+7TaK3g+IZw9GcTgSh5
+         gpzcdrWQ6YQQfl1s0nVKB/3F8MgcHpBIPX/wNcTo6aQkHAw7lRjIyEwe5P12NQslFh15
+         r42w==
+X-Gm-Message-State: AOAM5336f1gn8uiegfwokYFYr7y/d/Fht+y8ba0SPQpnSxHzaICn2oth
+        aPPP8EIb5U5Vq1USY4j31zI=
+X-Google-Smtp-Source: ABdhPJzoG44HkP0BJW9eFlGS3ah1NuoR/b/9sdRFfTA7f/mr7xp3yJ8sldhhlKCyJmpnepeMNEGJkQ==
+X-Received: by 2002:aa7:d690:: with SMTP id d16mr7880545edr.301.1601881135466;
+        Sun, 04 Oct 2020 23:58:55 -0700 (PDT)
+Received: from felia ([2001:16b8:2dcc:7300:fc41:427:81ae:8ef0])
+        by smtp.gmail.com with ESMTPSA id a13sm200597edx.53.2020.10.04.23.58.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Oct 2020 23:58:54 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Mon, 5 Oct 2020 08:58:53 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Mel Gorman <mgorman@techsingularity.net>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
+Subject: Re: [PATCH] mm/vmscan: drop unneeded assignment in kswapd()
+In-Reply-To: <20201004192437.GF3227@techsingularity.net>
+Message-ID: <alpine.DEB.2.21.2010050831010.6202@felia>
+References: <20201004125827.17679-1-lukas.bulwahn@gmail.com> <20201004192437.GF3227@techsingularity.net>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df0c45bf-223f-1f0b-ce3d-f2b2e05626bd@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02-10-20 17:20:09, David Hildenbrand wrote:
-> On 02.10.20 15:24, Michal Hocko wrote:
-> > On Mon 28-09-20 20:21:08, David Hildenbrand wrote:
-> >> Page isolation doesn't actually touch the pages, it simply isolates
-> >> pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
-> >>
-> >> We already place pages to the tail of the freelists when undoing
-> >> isolation via __putback_isolated_page(), let's do it in any case
-> >> (e.g., if order <= pageblock_order) and document the behavior.
-> >>
-> >> Add a "to_tail" parameter to move_freepages_block() but introduce a
-> >> a new move_to_free_list_tail() - similar to add_to_free_list_tail().
-> >>
-> >> This change results in all pages getting onlined via online_pages() to
-> >> be placed to the tail of the freelist.
+
+
+On Sun, 4 Oct 2020, Mel Gorman wrote:
+
+> On Sun, Oct 04, 2020 at 02:58:27PM +0200, Lukas Bulwahn wrote:
+> > The refactoring to kswapd() in commit e716f2eb24de ("mm, vmscan: prevent
+> > kswapd sleeping prematurely due to mismatched classzone_idx") turned an
+> > assignment to reclaim_order into a dead store, as in all further paths,
+> > reclaim_order will be assigned again before it is used.
 > > 
-> > Is there anything preventing to do this unconditionally? Or in other
-> > words is any of the existing callers of move_freepages_block benefiting
-> > from adding to the head?
+> > make clang-analyzer on x86_64 tinyconfig caught my attention with:
+> > 
+> >   mm/vmscan.c: warning: Although the value stored to 'reclaim_order' is
+> >   used in the enclosing expression, the value is never actually read from
+> >   'reclaim_order' [clang-analyzer-deadcode.DeadStores]
+> > 
+> > Compilers will detect this unneeded assignment and optimize this anyway.
+> > So, the resulting binary is identical before and after this change.
+> > 
+> > Simplify the code and remove unneeded assignment to make clang-analyzer
+> > happy.
+> > 
+> > No functional change. No change in binary code.
+> > 
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > 
-> 1. mm/page_isolation.c:set_migratetype_isolate()
-> 
-> We move stuff to the MIGRATE_ISOLATE list, we don't care about the order
-> there.
-> 
-> 2. steal_suitable_fallback():
-> 
-> I don't think we care too much about the order when already stealing
-> pageblocks ... and the freelist is empty I guess?
-> 
-> 3. reserve_highatomic_pageblock()/unreserve_highatomic_pageblock()
-> 
-> Not sure if we really care.
+> I'm not really keen on this. With the patch, reclaim_order can be passed
+> uninitialised to kswapd_try_to_sleep. While a sufficiently smart
+> compiler might be able to optimise how reclaim_order is used, it's not
+> guaranteed either. Similarly, a change in kswapd_try_to_sleep and its
+> called functions could rely on reclaim_order being a valid value and
+> then introduce a subtle bug.
+>
 
-Honestly, I have no idea. I can imagine that some atomic high order
-workloads (e.g. in net) might benefit from cache line hot pages but I am
-not sure this is really observable. If yes it would likely be better to
-have this documented than relying on wild guess. If we do not have any
-evidence then I would vote for simplicity first and go with
-unconditional add_to_tail which would simply your patch a bit.
+Just for my own understanding:
 
-Maybe Vlastimil or Mel would have a better picture.
+How would you see reclaim_order being passed unitialised to 
+kswapd_try_to_sleep?
 
--- 
-Michal Hocko
-SUSE Labs
+From kswapd() entry, any path must reach the line
+
+  alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
+
+before kswap_try_to_sleep(...).
+
+Then it reads back the order into alloc_order and reclaim_order
+and resets pgdat->kswapd to 0.
+I argue that the second store to reclaim_order is not used.
+
+Path kthread_should_stop() is true:
+Then, it either exits and does not use those temporary values, 
+reclaim_order and alloc_order, at all.
+
+Path try_to_freeze() is true:
+It goes back to the beginning of the loop and repeats reading alloc_order 
+and reclaim_order after the reset to 0, and then passes that to 
+kswapd_try_to_sleep(...). Previous reclaim_order is not used.
+
+So, the previous store to alloc_order and reclaim_order is lost.
+(Is that intentional?) 
+
+Path try_to_freeze() is false:
+We call trace_mm_vmscan_kswapd_wake with alloc_order but not with 
+reclaim_order. reclaim_order is set by the return of balance_pgdat(...);
+So, the previous reclaim_order is again not used.
+
+The diff in the patch might be a bit small, but we are looking at the 
+second assignment after kswapd_try_to_sleep(...), not the first assignment 
+that just looks the same.
+
+
+Lukas
+
+
