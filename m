@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5664028387C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B688A28386C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgJEOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:47:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:49368 "EHLO foss.arm.com"
+        id S1726070AbgJEOqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726960AbgJEOqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:46:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72559143B;
-        Mon,  5 Oct 2020 07:46:51 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0C2E3F70D;
-        Mon,  5 Oct 2020 07:46:49 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        egranata@google.com, jbhayana@google.com,
-        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com, cristian.marussi@arm.com
-Subject: [PATCH 3/6] hwmon: scmi: update hwmon internal scale data type
-Date:   Mon,  5 Oct 2020 15:45:15 +0100
-Message-Id: <20201005144518.31832-4-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005144518.31832-1-cristian.marussi@arm.com>
-References: <20201005144518.31832-1-cristian.marussi@arm.com>
+        id S1726650AbgJEOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:45:27 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 071B42137B;
+        Mon,  5 Oct 2020 14:45:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601909121;
+        bh=bmW6TavF5t18pyWbvSlHlMYSsFkzlNgIPbx8MmuyRms=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZfM6XgiLV53fZa0Vnxct94wW/6hz6YS7W43R2cu7bPIXzbo4Xb6qyzG3sXu6lHm/p
+         BRWfKyOf4r4/eWWij6dSExrPtH5YYMlGWl0Zc7XeZv7rzrkwppez8hZ8PxXIstHGNr
+         XFzgYrMfThalMa7arxPVUY+x3E3QQ0ENbIqhmMkE=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Sasha Levin <sashal@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 3/4] ep_create_wakeup_source(): dentry name can change under you...
+Date:   Mon,  5 Oct 2020 10:45:16 -0400
+Message-Id: <20201005144517.2527627-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201005144517.2527627-1-sashal@kernel.org>
+References: <20201005144517.2527627-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use an int to calculate scale values inside scmi_hwmon_scale() to match
-the updated scale data type in struct scmi_sensor_info.
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+[ Upstream commit 3701cb59d892b88d569427586f01491552f377b1 ]
+
+or get freed, for that matter, if it's a long (separately stored)
+name.
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/scmi-hwmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/eventpoll.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
-index d421e691318b..e190abc5749a 100644
---- a/drivers/hwmon/scmi-hwmon.c
-+++ b/drivers/hwmon/scmi-hwmon.c
-@@ -30,7 +30,7 @@ static inline u64 __pow10(u8 x)
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index f70df53666ed1..1c9f1486e5cf9 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1455,7 +1455,7 @@ static int reverse_path_check(void)
  
- static int scmi_hwmon_scale(const struct scmi_sensor_info *sensor, u64 *value)
+ static int ep_create_wakeup_source(struct epitem *epi)
  {
--	s8 scale = sensor->scale;
-+	int scale = sensor->scale;
- 	u64 f;
+-	const char *name;
++	struct name_snapshot n;
+ 	struct wakeup_source *ws;
  
- 	switch (sensor->type) {
+ 	if (!epi->ep->ws) {
+@@ -1464,8 +1464,9 @@ static int ep_create_wakeup_source(struct epitem *epi)
+ 			return -ENOMEM;
+ 	}
+ 
+-	name = epi->ffd.file->f_path.dentry->d_name.name;
+-	ws = wakeup_source_register(NULL, name);
++	take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
++	ws = wakeup_source_register(NULL, n.name.name);
++	release_dentry_name_snapshot(&n);
+ 
+ 	if (!ws)
+ 		return -ENOMEM;
 -- 
-2.17.1
+2.25.1
 
