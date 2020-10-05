@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791072834AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEC62834B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgJELJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:09:17 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:34937 "EHLO rere.qmqm.pl"
+        id S1726015AbgJELNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJELJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:09:14 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4C4dCB6nDXz6D;
-        Mon,  5 Oct 2020 13:09:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1601896151; bh=29wYbsPytcZ/IhNwUazul/bDu8+y5OSG3sJTGkf3ZyQ=;
+        id S1725843AbgJELNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:13:41 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEAB3206CB;
+        Mon,  5 Oct 2020 11:13:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601896419;
+        bh=rV6FZ5HcH0jsFcGRFxfWXDBV0w4UyK4mdxTIfWVbAuk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NiiFVbnNDhA2ihwlqCEJGp++fMbrcDcboJtUDl2cwQoFIYlpm9rwd9MCNzthDOECP
-         5GoVOGOsUxT0L2YHwf1ZbtuFPIKRc367UTSIZVMISHEME+/iDpaCTlxLwYxyRFyV80
-         /VY1SBsJOUIb3B0OHN95SST5/+TZvi3adakzDB38q6VSAQvwBMMx+zzgwsvEGNFO/W
-         2X7Ny2gcIRdYr5ektFZm968NEkCBpeFi/z2jkRq1dUFQTS7H2DSPdBrFS/3IWmcUdg
-         pb2EAJ3PUiJ1vYav7dvB7HG8BssFhzZbS3933jGhDBjV7hFki9Anu6GzCKj9G8uDqs
-         KLOl3Pj7WlC5A==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Mon, 5 Oct 2020 13:09:08 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     dmitry.torokhov@gmail.com
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: exynos: do not rely on 'users' counter in ISR
-Message-ID: <20201005110908.GA3243@qmqm.qmqm.pl>
-References: <20201005052420.GA3262631@dtor-ws>
+        b=e3PCs6WDdBiAnytTs+N4EjM6gonnqp6DbF58e5GsDCW9EWXmUxSEbhj7FlYAApAkQ
+         3t55bi4HaWLs/NQgL43PPKS9oDiHoxamY7b324sKGbU04EQAio24J75ZBrgXmp6VfZ
+         2nbG2H+KeI6RfQL+uTx+jL0QFLgHG/vW0bmayfpw=
+Date:   Mon, 5 Oct 2020 13:14:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v3 7/7] usb: cdc-acm: add quirk to blacklist ETAS ES58X
+ devices
+Message-ID: <20201005111424.GA361897@kroah.com>
+References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
+ <20201002154219.4887-1-mailhol.vincent@wanadoo.fr>
+ <20201002154219.4887-8-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201005052420.GA3262631@dtor-ws>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201002154219.4887-8-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 10:24:20PM -0700, dmitry.torokhov@gmail.com wrote:
-> The order in which 'users' counter is decremented vs calling drivers'
-> close() method is implementation specific, and we should not rely on
-> it. Let's introduce driver private flag and use it to signal ISR
-> to exit when device is being closed.
+On Sat, Oct 03, 2020 at 12:41:51AM +0900, Vincent Mailhol wrote:
+> The ES58X devices has a CDC ACM interface (used for debug
+> purpose). During probing, the device is thus recognized as USB Modem
+> (CDC ACM), preventing the etas-es58x module to load:
+>   usbcore: registered new interface driver etas_es58x
+>   usb 1-1.1: new full-speed USB device number 14 using xhci_hcd
+>   usb 1-1.1: New USB device found, idVendor=108c, idProduct=0159, bcdDevice= 1.00
+>   usb 1-1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+>   usb 1-1.1: Product: ES581.4
+>   usb 1-1.1: Manufacturer: ETAS GmbH
+>   usb 1-1.1: SerialNumber: 2204355
+>   cdc_acm 1-1.1:1.0: No union descriptor, testing for castrated device
+>   cdc_acm 1-1.1:1.0: ttyACM0: USB ACM device
 > 
-> This has a side-effect of fixing issue of accessing inut->users
-> outside of input->mutex protection.
+> Thus, these have been added to the ignore list in
+> drivers/usb/class/cdc-acm.c
 > 
-> Reported-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/iio/adc/exynos_adc.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
-> index 22131a677445..7eb2a5df6e98 100644
-> --- a/drivers/iio/adc/exynos_adc.c
-> +++ b/drivers/iio/adc/exynos_adc.c
-> @@ -135,6 +135,8 @@ struct exynos_adc {
->  	u32			value;
->  	unsigned int            version;
->  
-> +	bool			ts_enabled;
-> +
->  	bool			read_ts;
->  	u32			ts_x;
->  	u32			ts_y;
-> @@ -633,7 +635,7 @@ static irqreturn_t exynos_ts_isr(int irq, void *dev_id)
->  	bool pressed;
->  	int ret;
->  
-> -	while (info->input->users) {
-> +	while (info->ts_enabled) {
->  		ret = exynos_read_s3c64xx_ts(dev, &x, &y);
->  		if (ret == -ETIMEDOUT)
->  			break;
-> @@ -712,6 +714,8 @@ static int exynos_adc_ts_open(struct input_dev *dev)
->  {
->  	struct exynos_adc *info = input_get_drvdata(dev);
->  
-> +	info->ts_enabled = true;
-> +	mb();
->  	enable_irq(info->tsirq);
->  
->  	return 0;
-> @@ -721,6 +725,8 @@ static void exynos_adc_ts_close(struct input_dev *dev)
->  {
->  	struct exynos_adc *info = input_get_drvdata(dev);
->  
-> +	info->ts_enabled = false;
-> +	mb();
->  	disable_irq(info->tsirq);
+> N.B. Future firmware release of the ES58X will remove the CDC-ACM
+> interface.
 
-This should be WRITE_ONCE paired with READ_ONCE in the ISR.
+I'll queue this up now, as it's needed no matter what the status of the
+other patches in this series.
 
-But is the check really needed? I see that this is to break waiting for
-a touch release event, so I would assume this shouldn't wait forever
-(unless the hardware is buggy) and breaking the loop will desync touch
-state (I would guess this would be noticable by next user).
+thanks,
 
-Best Regards,
-Micha³ Miros³aw
+greg k-h
