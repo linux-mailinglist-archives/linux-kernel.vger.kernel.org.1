@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D34228316F
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269AE283171
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725982AbgJEIFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgJEIFB (ORCPT
+        id S1725995AbgJEIFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:05:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725925AbgJEIFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:05:01 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323A2C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 01:05:01 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dt13so1174580ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yzyDdyQdfmfcye8jOjz2zOKzbZtAhYoUBBiOMnzMJnI=;
-        b=QpmDh47ZptXqOyxcRB6BNAqIbj4BVSK0Y0RQxnzKYZu+apEMXpEc2bXAgmPZhsg+OE
-         Esnifd2MF89xHGo7SemEDbMaDaejPNBeXcg5Z71FEdsLi36tkCsTCbvHCDKw6ftkeG0P
-         +dNlaF0UVpmOJCvGnNGrXmJULkg86EsdK/g46t9QgFj1M6IBQ3+h6/+mi4llS2mG/f1z
-         ctKVI61TKoYctsdvd4iUxZF6HIqcO8Hw0MFime9hOicWL2/QKb2wCASKw7nZEIGGnHm5
-         ZzFP2yp+xC92GsMNXKLpVVyDR/JFM8OE99hIQGLp83/IuOd5qcIGH3bhFVmjcYZzOGxy
-         EvYw==
+        Mon, 5 Oct 2020 04:05:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601885116;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=omoN2w562gbkLHMzpyAYqKG3VTaG4dOpjflmkpwJeZU=;
+        b=ew5MDZx07ETjxRXYrK5+kJxwKHAHP8xo9sVGbq5dixXNuGtBQI8hJFABnQwnE3YzOnTl6z
+        /ku427bsLZyxE5fLkrCQGuTrF07sQ/LyrfUb5GwLNmv+y3xOOde5ljCQtjaFg4KvkM9LqO
+        oKmi+UCyur5gVnbLv37W0KdsPzqefGE=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-JcTVuthSNEKWE6TZHf6n_A-1; Mon, 05 Oct 2020 04:05:12 -0400
+X-MC-Unique: JcTVuthSNEKWE6TZHf6n_A-1
+Received: by mail-ej1-f70.google.com with SMTP id x22so950246ejs.17
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:05:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yzyDdyQdfmfcye8jOjz2zOKzbZtAhYoUBBiOMnzMJnI=;
-        b=MMhn3bNgo3cuzYYImo8w3znSyyFs4hasDOBRDLn8ck2lnzYuh/eLqilQI3QpAc9zrv
-         nOJ3iYKFofxjDJF9tZO0GHWLURsqf6XCZqid+t+ExJ6oRaY9wtrf+XRa0f1nMIE0VTYv
-         fwkWM2OKNwmZTuLIP8FxcENO3wKKyEdcVgP7GWjVX8J/gimJdZ66XtbZPV3PHNufbuRr
-         r8/pPQK8V52G2Xo0YZlUlfdNXiCD7PhpJQ+nXy9IMa1jZ4C5jRwvcbd4JB23PUb0itSa
-         M3Ch3so33E51lW0IBjuA7EoRBIEgtjP6QA9kjLCVcXcy/obIojUThg94BGFJ+Z7IbBvx
-         dkRg==
-X-Gm-Message-State: AOAM532lAT90/cf9DkEHIHIjPZkcfyd2dzv93X6WEYGMIoCfCk39WqkD
-        cSx4zotgWYLyTLaYkKAMX6A=
-X-Google-Smtp-Source: ABdhPJzcuBEaPS8c7LdvWvuxsE/k2aAozTjGmanmxaw3IbLNcn6v1mRRTSLlByU9OO/o2AqTb3zKgQ==
-X-Received: by 2002:a17:906:118f:: with SMTP id n15mr8653433eja.394.1601885099874;
-        Mon, 05 Oct 2020 01:04:59 -0700 (PDT)
-Received: from gmail.com (563B83F3.dsl.pool.telekom.hu. [86.59.131.243])
-        by smtp.gmail.com with ESMTPSA id t16sm7467954eje.39.2020.10.05.01.04.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 01:04:58 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 5 Oct 2020 10:04:56 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rik van Riel <riel@surriel.com>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com, aubrey.li@linux.intel.com,
-        yu.c.chen@intel.com
-Subject: Re: [sched/fair] fcf0553db6: netperf.Throughput_Mbps -30.8%
- regression
-Message-ID: <20201005080456.GA3521702@gmail.com>
-References: <20201004132716.GS393@shao2-debian>
- <20201004162108.GC3165@suse.de>
- <20201005065101.GE2628@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=omoN2w562gbkLHMzpyAYqKG3VTaG4dOpjflmkpwJeZU=;
+        b=Nhz0Ru8eJYzgt0H9RpDO/Ou2+Unws03zskObUBN6Z+iUWSzuO8JLAFGYbELm00t+LS
+         mwzVPOyVfdlO/KKa4x/hK0dM52P3xVx8yY4xSnvcZBr/yvVPlD93+uQGCnFTw1VfAPDW
+         3REkWXc13XZCw3P+QPPcve6R1wI206MqescQhBnk4o6OeOiDEWUgjW2tfKvW+5bti0iM
+         GM001r3wi69V8aHAgLfEnQEMz/ATBI2qb/UGsdi5ST87QecvB9ocOzzc2XqIG28B9F10
+         LD+VRybiBjyD/iJC7idY1LEcQV5hTLl65U+pYKvo5Xdx3tRspwX1NSR/pk8BgklTgYmv
+         sgXA==
+X-Gm-Message-State: AOAM532MeKtJBt9f2UJAfsCkROhChYoA7JjedBRsIi77bP7dSyegg1GC
+        D7Y0r7nSzuk0SI5RyRioyOWblKdl2PX9R7Phg90KL2OXDWwWVa3wT1mE7qQ5q9q0KwwAUORhouc
+        DxUR0oPnm7AIw2A4FcxzXu7N+
+X-Received: by 2002:a17:906:1b58:: with SMTP id p24mr15090563ejg.77.1601885111379;
+        Mon, 05 Oct 2020 01:05:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaFv2T3kRxY3SbEuDPDKZR9R5ktA4K4cUG+4kIMuvBHB6/Ao6gOSK6T490FAeQ02BbdFszqg==
+X-Received: by 2002:a17:906:1b58:: with SMTP id p24mr15090537ejg.77.1601885111130;
+        Mon, 05 Oct 2020 01:05:11 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id q27sm7345874ejd.74.2020.10.05.01.05.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 01:05:10 -0700 (PDT)
+Subject: Re: [PATCH] ACPI / button: fix handling lid state changes when input
+ device closed
+To:     dmitry.torokhov@gmail.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201005051125.GA3245495@dtor-ws>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e7f1d478-b668-7274-2a21-f0e6609db4ef@redhat.com>
+Date:   Mon, 5 Oct 2020 10:05:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005065101.GE2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201005051125.GA3245495@dtor-ws>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Sun, Oct 04, 2020 at 05:21:08PM +0100, Mel Gorman wrote:
-> > On Sun, Oct 04, 2020 at 09:27:16PM +0800, kernel test robot wrote:
-> > > Greeting,
-> > > 
-> > > FYI, we noticed a -30.8% regression of netperf.Throughput_Mbps due to commit:
-> > > 
-> > > 
-> > > commit: fcf0553db6f4c79387864f6e4ab4a891601f395e ("sched/fair: Remove meaningless imbalance calculation")
-> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > > 
-> > 
-> > This commit was the start of a series that made large changes to load
-> > balancing.  The series was not bisect-safe and has since been reconciled
-> > with the NUMA balancing. Any workload with a potential load balancing
-> > problem has to be checked against the latest kernel to see if the problem
-> > persists there. If it does, then tip/sched/core should be checked or
-> > 5.10-rc1 when it comes out as tip has a few more LB changes pending.
+On 10/5/20 7:11 AM, dmitry.torokhov@gmail.com wrote:
+> The original intent of 84d3f6b76447 was to delay evaluating lid state until
+> all drivers have been loaded, with input device being opened from userspace
+> serving as a signal for this condition. Let's ensure that state updates
+> happen even if userspace closed (or in the future inhibited) input device.
 > 
-> What Mel said ;-)
+> Note that if we go through suspend/resume cycle we assume the system has
+> been fully initialized even if LID input device has not been opened yet.
+> 
+> This has a side-effect of fixing access to input->users outside of
+> input->mutex protections by the way of eliminating said accesses and using
+> driver private flag.
+> 
+> Fixes: 84d3f6b76447 ("ACPI / button: Delay acpi_lid_initialize_state() until first user space open")
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Basically it would be nice to test either the following commit directly 
-(which is the latest relevant sched/core commit):
+Patch looks good to me:
 
-   233e7aca4c8a: ("sched/fair: Use dst group while checking imbalance for NUMA balancer")
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Or a -next version that includes these commits.
+Regards,
 
-Thanks,
+Hans
 
-	Ingo
+
+> ---
+>   drivers/acpi/button.c | 13 +++++++------
+>   1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+> index 78cfc70cb320..b8dd51d8f96d 100644
+> --- a/drivers/acpi/button.c
+> +++ b/drivers/acpi/button.c
+> @@ -154,6 +154,7 @@ struct acpi_button {
+>   	int last_state;
+>   	ktime_t last_time;
+>   	bool suspended;
+> +	bool lid_state_initialized;
+>   };
+>   
+>   static struct acpi_device *lid_device;
+> @@ -384,6 +385,8 @@ static int acpi_lid_update_state(struct acpi_device *device,
+>   
+>   static void acpi_lid_initialize_state(struct acpi_device *device)
+>   {
+> +	struct acpi_button *button = acpi_driver_data(device);
+> +
+>   	switch (lid_init_state) {
+>   	case ACPI_BUTTON_LID_INIT_OPEN:
+>   		(void)acpi_lid_notify_state(device, 1);
+> @@ -395,13 +398,14 @@ static void acpi_lid_initialize_state(struct acpi_device *device)
+>   	default:
+>   		break;
+>   	}
+> +
+> +	button->lid_state_initialized = true;
+>   }
+>   
+>   static void acpi_button_notify(struct acpi_device *device, u32 event)
+>   {
+>   	struct acpi_button *button = acpi_driver_data(device);
+>   	struct input_dev *input;
+> -	int users;
+>   
+>   	switch (event) {
+>   	case ACPI_FIXED_HARDWARE_EVENT:
+> @@ -410,10 +414,7 @@ static void acpi_button_notify(struct acpi_device *device, u32 event)
+>   	case ACPI_BUTTON_NOTIFY_STATUS:
+>   		input = button->input;
+>   		if (button->type == ACPI_BUTTON_TYPE_LID) {
+> -			mutex_lock(&button->input->mutex);
+> -			users = button->input->users;
+> -			mutex_unlock(&button->input->mutex);
+> -			if (users)
+> +			if (button->lid_state_initialized)
+>   				acpi_lid_update_state(device, true);
+>   		} else {
+>   			int keycode;
+> @@ -458,7 +459,7 @@ static int acpi_button_resume(struct device *dev)
+>   	struct acpi_button *button = acpi_driver_data(device);
+>   
+>   	button->suspended = false;
+> -	if (button->type == ACPI_BUTTON_TYPE_LID && button->input->users) {
+> +	if (button->type == ACPI_BUTTON_TYPE_LID) {
+>   		button->last_state = !!acpi_lid_evaluate_state(device);
+>   		button->last_time = ktime_get();
+>   		acpi_lid_initialize_state(device);
+> 
+
