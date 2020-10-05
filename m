@@ -2,389 +2,927 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683B92830F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827C32830FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbgJEHg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgJEHgV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:36:21 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0DCC0613A9
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 00:36:20 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id e7so5623268pfh.14
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=dHnXF1W/20PFevqIJQyFZ/AoVLSu39bdQ59fV9E+wl8=;
-        b=E5pc8PA5GYGj/I440mjbYVNg36emzQMnO+hi7qYN4H7GqJnYVHd3vHIelRNpOL6eMv
-         tzuxw0/nPDAETVoxt6eZBwD5qBwSLsXfrxPAQgkg88dEnhKX3Q9sFmg/D5CIdREpp+Te
-         SWGF34Yd4MfU5njKKa80akqUVvygeLoXzspfinE1I7MNi9xv1B7i+YvdIl3Z4OvfCwmB
-         EvHpvfAeCGjQuoWQxIW+34RXQrQr0LpJGz/ck5yt4EI4QrC1pglSSUvFmG7iT9G0Q4TW
-         ob8i9FEA29nXx0Nja3rITF7QIujNEBsSdbLQnqDPGYleolUiBe9QLmms/dQDdiu4CGSI
-         1Ezw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=dHnXF1W/20PFevqIJQyFZ/AoVLSu39bdQ59fV9E+wl8=;
-        b=rOwEzWL7/ky0EejL8VVlsjtpvUNKKaS62JCcYcwLBwLnKLfLpby09AdykrUe8v3LUg
-         6Z/RX1xAWtGBcz6FI7vqwlZ56LbE7YXOPPyw3cEP7sacsH2NnmD7r+44FNCAvu1YBgEA
-         Hj2yKCjNunf8EKzGGPPAOnLJpdGXZ7PRrc9NdXdZzJ+6Yd5CyhMR6+HhzuFebekNnLlZ
-         3rkpbkui1s0g5+YfRdLfOxWdHsrP4IFpRJqqlU1yUmCTfzHpHS/czVjETb01NxenXfoH
-         zUIXPh5vmM8PRP37m5SdwMJp8WpWcKcW0Rdp4Z+Bbmec50ZxLmaa8X7WxF4G+j04iPOk
-         AnAA==
-X-Gm-Message-State: AOAM532iKWRaLpDrii04LJ6DlA1jBTSbQnc6dj4TMUvFUaaQFn1XJzHQ
-        U0Jhkt1Z4Y/oiqF0QveL2mJi1hGISU8=
-X-Google-Smtp-Source: ABdhPJxAbpf4N5rScmCx/y+iXragYL3MvKrQA/i8m/yLj2PrWyfMuN7hYU6zLGJn4YKr2zV7v+TlzTn9wpY=
-Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
-X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
- (user=satyat job=sendgmr) by 2002:aa7:83d9:0:b029:138:b217:f347 with SMTP id
- j25-20020aa783d90000b0290138b217f347mr6813449pfn.0.1601883379697; Mon, 05 Oct
- 2020 00:36:19 -0700 (PDT)
-Date:   Mon,  5 Oct 2020 07:36:06 +0000
-In-Reply-To: <20201005073606.1949772-1-satyat@google.com>
-Message-Id: <20201005073606.1949772-4-satyat@google.com>
-Mime-Version: 1.0
-References: <20201005073606.1949772-1-satyat@google.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-Subject: [PATCH 3/3] f2fs: Add metadata encryption support
-From:   Satya Tangirala <satyat@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Satya Tangirala <satyat@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725902AbgJEHiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:38:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:31852 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725870AbgJEHiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 03:38:22 -0400
+IronPort-SDR: KeSPQjgw9N4sC49j6IYS/MWg2Oh0QuJZ0PvrrQRjxOlYWbHcPYqDhw22TgBxheKieSZhBvayUu
+ 0OBONyppio1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="151131557"
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="151131557"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 00:38:14 -0700
+IronPort-SDR: SaRQIvRCNZBWjvtE9MvtAC4clGkFGjHweIrC7qk8qK2oXDttqeuvR0rTNqQrWUXYkvFTjpZwyQ
+ MJbH/kLlGO8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="459385405"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP; 05 Oct 2020 00:38:14 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 5 Oct 2020 00:38:13 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 5 Oct 2020 00:38:13 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 5 Oct 2020 00:38:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bdoel7d5dieQ9YBBanmPKqlgFjfPDzCF9KnYbgjJr4qn+7eFxOXufpaswWPs9UMSDyELUYjLpeFISks4en5bhdnRLqcY+9Z+HcGAOJwEy0wtVt/ko3uLz+ZfsklG3SMTOXCM4V08UlnDwQdmAxvdERR4d+u0qtYis5uTOCx68j7Xcc82Op5TBezGAQJmHA2otulZpBflEeytDX3KeedOns6uv+z9Gc2h/nTivFUc5Twbjll9RqleujvuY7UGwRm6yXFJGHQa10V+dC++Q5DQnlcbgcpgG/OrukaFEro3Cwf9pLWDcY/O9UO0UZj+iqXOuSa89L03O/3SVS3nQ3hPmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UYOx9ubnWuVKA3iXoIb6Rpqy43mmaVQNTiMS8UvmnxA=;
+ b=n4gHProd4y1FPiHzNnpDC41g5rHlwTmVmpRNyesMw6IMANf6djnWfxHQcFCWhK5bqV+0G1mO00qwf0YZVoTkO87cqKpH6ZzUYW+NecYds777l46C626SLx9aIHNMXycn4vvLKNLEQGPnjoPsxAIWELIND1BQ/ZrP+UhoQdBMRUyB5GcqOJcQudgX4gW6XJPwZmVyJRD5hZXtpI/QhM3v3+9mdKRsch/HAM7V338hgNNeXjAvzY+cGT8n0RbvpfeQZ4tsQsn1WJxM0h2z5ldU4rWcaOxKjvWAa8xStBgOvOGYBM+BUEBRgSt1DbM5z+MDfYrpx4gsNr8JJ+hGF0hurg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UYOx9ubnWuVKA3iXoIb6Rpqy43mmaVQNTiMS8UvmnxA=;
+ b=cmd/jHhWdMq050kaC7hhlgH9Y3lNY1Jbp7mPPtLy0lhV7RaVavb4YfvM20IIn8mxSZ2G0BT6t8+rTiWh2lClPhNwg6hnLJsDfMJsb+O0Ljih6PVyHxvwKEwAMrt23wY8vAszXa4ZwnDjApmcazjHUqaJl6DBLDhaArjvO5yNjzY=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM6PR11MB3180.namprd11.prod.outlook.com (2603:10b6:5:9::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3433.32; Mon, 5 Oct 2020 07:38:02 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::8daf:2295:b5df:2c7e]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::8daf:2295:b5df:2c7e%3]) with mapi id 15.20.3433.043; Mon, 5 Oct 2020
+ 07:38:02 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     "Weight, Russell H" <russell.h.weight@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: RE: [PATCH v2 1/7] fpga: sec-mgr: intel fpga security manager class
+ driver
+Thread-Topic: [PATCH v2 1/7] fpga: sec-mgr: intel fpga security manager class
+ driver
+Thread-Index: AQHWmQyjgR1pLBSE7kmBJcXWBP2gwqmImoqA
+Date:   Mon, 5 Oct 2020 07:38:02 +0000
+Message-ID: <DM6PR11MB3819C847F595DD614ACD8AAF850C0@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <20201002223701.1317-1-russell.h.weight@intel.com>
+ <20201002223701.1317-2-russell.h.weight@intel.com>
+In-Reply-To: <20201002223701.1317-2-russell.h.weight@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.215]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 77b540fe-4505-4cc4-8f11-08d869019754
+x-ms-traffictypediagnostic: DM6PR11MB3180:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB3180F8272D5C4C197A50B884850C0@DM6PR11MB3180.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:525;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N7lX+pnZi9LsNWMSGEo16EYmHN3DrsaE6/uzkqkHCBsm3HyOTCl7OL5esXNoV7IML3Nahr6L4Hb+q4LD53DKH8RMPlAUyJXMtpYFWMeU/isbPQD+9uNTTMZubEyJUp6C260x1Pm2EhkZh8+b+1Hb8CNZY1zhDxvsIzvHNg+xZVx4wuyhvhh4EYx6DOW1InpuKkmtckEIEOgNS/9pj3a7vV5aWMVkaxNfrh4/aZCvNA3E/Bi917BCfa35TrAYxLb/DaQFgSKaeZg066r70L9JXEJ8FXORW4zu01fhXQ8bdCUgKuNTvd6DVt5pVAbU2N+nDk0urXWafHBGUPgks37LPg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(136003)(39860400002)(55016002)(15650500001)(478600001)(186003)(86362001)(30864003)(76116006)(33656002)(52536014)(7696005)(66946007)(66446008)(64756008)(66556008)(66476007)(5660300002)(107886003)(9686003)(83380400001)(8936002)(6506007)(8676002)(4326008)(110136005)(26005)(54906003)(2906002)(316002)(71200400001)(559001)(579004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: dsQV7/NdF5opVPcRwn0aB7uPbGQ9TFddbCIEHy1iNDrxTp7Yteeh0CF3Je0N5jbYeKfDZHSDo49SBqhXClRNANXsUMKUkQWO7oGi7ieEKFkiQYVCCpxuLRsj9ckzjkXr4Jr4rw8fC1E3bzmmSD9/9I/dmw9wRLZbz83/+FLA0oaMPMzeEJCaM0CwO767M0fH9j73Zrm1TavhCVpl6Od9EmlsCk5R8IY79ly9ob726vscAVVADVea6JyGOPikcF0RBr53baL00irjhqfwBwwUNJWYMgbFvTa+QzqCllsKCSB6AQhX77wF5Vnu9zhV5GFd+m1CeSzdSBJZviJPYKzubvI3CfMW9YGMHWPiZrC8dFairVC6XoI74a3yPfClPcAHVcmNezC3Tj7VUKnGZVFkt1CeUPUBwJyw0RSRtVVv+zGlpzG0vpNaKBaDGgyfwqtR03s4cx1md5U3gSaa5JARWC8Zu/mImnEeP9Ksg9ZfiCpgl5v6VGXqGpe1pB6JZgr7CSyJQAI1ZEsJ83rPR3URhlXQV07LwW2gTcLF6MdmzGQcWC0oXR/OiHLqnj8nbrS2y8qmIbOgp61oZz6Ruc1mlKv49YI8zPrLnDbAGXkSv/XBgAErZ5tdGJ7n1KbgNWDQgA55vXabgFwb2EnR5fmVlw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77b540fe-4505-4cc4-8f11-08d869019754
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2020 07:38:02.6211
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Wht23SYe+BmsaCl52nHDSY8mLzZfPH9Y67VkLwwgi6M+RZLI89fGQSIMPnRexLie6yv+NqGF9QMRBpYjUGaWZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3180
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wire up metadata encryption support with the fscrypt metadata crypt
-additions.
+> Subject: [PATCH v2 1/7] fpga: sec-mgr: intel fpga security manager class
+> driver
+>=20
+> Create the Intel Security Manager class driver. The security
+> manager provides interfaces to manage secure updates for the
+> FPGA and BMC images that are stored in FLASH. The driver can
+> also be used to update root entry hashes and to cancel code
+> signing keys.
+>=20
+> This patch creates the class driver and provides sysfs
+> interfaces for displaying root entry hashes, canceled code
+> signing keys and flash counts.
+>=20
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ---
+> v2:
+>   - Bumped documentation dates and versions
+>   - Added Documentation/fpga/ifpga-sec-mgr.rst
+>   - Removed references to bmc_flash_count & smbus_flash_count (not
+> supported)
+>   - Split ifpga_sec_mgr_register() into create() and register() functions
+>   - Added devm_ifpga_sec_mgr_create()
+>   - Removed typedefs for imgr ops
+> ---
+>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     |  67 +++
+>  Documentation/fpga/ifpga-sec-mgr.rst          |  50 ++
+>  Documentation/fpga/index.rst                  |   1 +
+>  MAINTAINERS                                   |   9 +
+>  drivers/fpga/Kconfig                          |   9 +
+>  drivers/fpga/Makefile                         |   3 +
+>  drivers/fpga/ifpga-sec-mgr.c                  | 432 ++++++++++++++++++
+>  include/linux/fpga/ifpga-sec-mgr.h            |  81 ++++
+>  8 files changed, 652 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>  create mode 100644 Documentation/fpga/ifpga-sec-mgr.rst
+>  create mode 100644 drivers/fpga/ifpga-sec-mgr.c
+>  create mode 100644 include/linux/fpga/ifpga-sec-mgr.h
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+> b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+> new file mode 100644
+> index 000000000000..707958971bcb
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+> @@ -0,0 +1,67 @@
+> +What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/name
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Name of low level fpga security manager driver.
+> +
+> +What:
+> 	/sys/class/ifpga_sec_mgr/ifpga_secX/security/sr_root_entry_hash
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns the root entry hash for the static
+> +		region if one is programmed, else it returns the
+> +		string: "hash not programmed".  This file is only
+> +		visible if the underlying device supports it.
+> +		Format: "0x%x".
+> +
+> +What:
+> 	/sys/class/ifpga_sec_mgr/ifpga_secX/security/pr_root_entry_hash
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns the root entry hash for the partial
+> +		reconfiguration region if one is programmed, else it
+> +		returns the string: "hash not programmed".  This file
+> +		is only visible if the underlying device supports it.
+> +		Format: "0x%x".
+> +
+> +What:
+> 	/sys/class/ifpga_sec_mgr/ifpga_secX/security/bmc_root_entry_hash
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns the root entry hash for the BMC image
+> +		if one is programmed, else it returns the string:
+> +		"hash not programmed".  This file is only visible if the
+> +		underlying device supports it.
+> +		Format: "0x%x".
+> +
+> +What:
+> 	/sys/class/ifpga_sec_mgr/ifpga_secX/security/sr_canceled_csks
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns a list of indices for canceled code
+> +		signing keys for the static region. The standard bitmap
+> +		list format is used (e.g. "1,2-6,9").
+> +
+> +What:
+> 	/sys/class/ifpga_sec_mgr/ifpga_secX/security/pr_canceled_csks
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns a list of indices for canceled code
+> +		signing keys for the partial reconfiguration region. The
+> +		standard bitmap list format is used (e.g. "1,2-6,9").
+> +
+> +What:
+> 	/sys/class/ifpga_sec_mgr/ifpga_secX/security/bmc_canceled_csks
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns a list of indices for canceled code
+> +		signing keys for the BMC.  The standard bitmap list format
+> +		is used (e.g. "1,2-6,9").
+> +
+> +What:
+> 	/sys/class/ifpga_sec_mgr/ifpga_secX/security/user_flash_count
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns number of times the user image for the
+> +		static region has been flashed.
+> +		Format: "%u".
+> diff --git a/Documentation/fpga/ifpga-sec-mgr.rst
+> b/Documentation/fpga/ifpga-sec-mgr.rst
+> new file mode 100644
+> index 000000000000..02f3f65b182b
+> --- /dev/null
+> +++ b/Documentation/fpga/ifpga-sec-mgr.rst
+> @@ -0,0 +1,50 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +Intel FPGA Security Manager Class Driver
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The Intel FPGA Security Manager class driver provides a common
+> +API for user-space tools to manage updates for secure Intel FPGA
+> +devices. Device drivers that instantiate the Intel Security
+> +Manager class driver will interact with a HW secure update
+> +engine in order to transfer new FPGA and BMC images to FLASH so
+> +that they will be automatically loaded when the FPGA card reboots.
+> +
+> +A significant difference between the FPGA Manager and the Intel FPGA
+> +Security Manager is that the FPGA Manager does a live update (Partial
+> +Reconfiguration) to a device, whereas the Intel FPGA Security Manager
+> +updates the FLASH images for the Static Region and the BMC so that
+> +they will be loaded the next time the FPGA card boots. Security is
+> +enforced by hardware and firmware. The security manager interacts
+> +with the firmware to initiate an update, pass in the necessary data,
+> +and collect status on the update.
+> +
+> +In addition to managing secure updates of the FPGA and BMC images,
+> +the Intel FPGA Security Manager update process may also used to
+> +program root entry hashes and cancellation keys for the FPGA static
+> +region, the FPGA partial reconfiguration region, and the BMC.
+> +
+> +Secure updates make use of the request_firmware framework, which
+> +requires that image files are accessible under /lib/firmware. A request
+> +for a secure update returns immediately, while the update itself
+> +proceeds in the context of a kernel worker thread. Sysfs files provide
+> +a means for monitoring the progress of a secure update and for
+> +retrieving error information in the event of a failure.
+> +
+> +Sysfs Attributes
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The API consists of two groups of sysfs attributes as described below.
+> +
+> +1. Files in the *security* sub-directory can be used to read security
+> +   information including: Root Entry Hashes (REH), Cancelled Code
+> +   Signing Keys (CSK), and the flash update count for FPGA images.
+> +
+> +2. Files in the *update* sub-directory can be used to instantiate and
+> +   monitor a secure update.
+> +
+> +
+> +See `<../ABI/testing/sysfs-class-ifpga-sec-mgr>`__ for a full
+> +description of the sysfs attributes for the Intel FPGA Security
+> +Manager.
+> diff --git a/Documentation/fpga/index.rst b/Documentation/fpga/index.rst
+> index f80f95667ca2..ba9c6b1917bd 100644
+> --- a/Documentation/fpga/index.rst
+> +++ b/Documentation/fpga/index.rst
+> @@ -8,6 +8,7 @@ fpga
+>      :maxdepth: 1
+>=20
+>      dfl
+> +    ifpga-sec-mgr
+>=20
+>  .. only::  subproject and html
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6d1175bf8529..5ffc0e02d741 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6858,6 +6858,15 @@ F:	Documentation/fpga/
+>  F:	drivers/fpga/
+>  F:	include/linux/fpga/
+>=20
+> +INTEL FPGA SECURITY MANAGER DRIVERS
+> +M:	Russ Weight <russell.h.weight@intel.com>
+> +L:	linux-fpga@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+> +F:	Documentation/fpga/ifpga-sec-mgr.rst
+> +F:	drivers/fpga/ifpga-sec-mgr.c
+> +F:	include/linux/fpga/ifpga-sec-mgr.h
+> +
+>  FPU EMULATOR
+>  M:	Bill Metzenthen <billm@melbpc.org.au>
+>  S:	Maintained
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 7cd5a29fc437..bf566a625be7 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -215,4 +215,13 @@ config FPGA_MGR_ZYNQMP_FPGA
+>  	  to configure the programmable logic(PL) through PS
+>  	  on ZynqMP SoC.
+>=20
+> +config IFPGA_SEC_MGR
+> +	tristate "Intel Security Manager for FPGA"
+> +	help
+> +	  The Intel Security Manager class driver presents a common
+> +	  user API for managing secure updates for Intel FPGA
+> +	  devices, including flash images for the FPGA static
+> +	  region and for the BMC. Select this option to enable
+> +	  updates for secure FPGA devices.
+> +
+>  endif # FPGA
+> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> index d8e21dfc6778..2e1d29c3d915 100644
+> --- a/drivers/fpga/Makefile
+> +++ b/drivers/fpga/Makefile
+> @@ -21,6 +21,9 @@ obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+=3D
+> zynqmp-fpga.o
+>  obj-$(CONFIG_ALTERA_PR_IP_CORE)         +=3D altera-pr-ip-core.o
+>  obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    +=3D altera-pr-ip-core-plat.o
+>=20
+> +# Intel FPGA Security Manager Framework
+> +obj-$(CONFIG_IFPGA_SEC_MGR)		+=3D ifpga-sec-mgr.o
+> +
+>  # FPGA Bridge Drivers
+>  obj-$(CONFIG_FPGA_BRIDGE)		+=3D fpga-bridge.o
+>  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+=3D altera-hps2fpga.o altera-
+> fpga2sdram.o
+> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
+> new file mode 100644
+> index 000000000000..f1caa4602ab3
+> --- /dev/null
+> +++ b/drivers/fpga/ifpga-sec-mgr.c
+> @@ -0,0 +1,432 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Intel Security Manager for FPGA
+> + *
+> + * Copyright (C) 2019-2020 Intel Corporation, Inc.
+> + */
+> +
+> +#include <linux/fpga/ifpga-sec-mgr.h>
+> +#include <linux/idr.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/vmalloc.h>
+> +
+> +static DEFINE_IDA(ifpga_sec_mgr_ida);
+> +static struct class *ifpga_sec_mgr_class;
+> +
+> +#define to_sec_mgr(d) container_of(d, struct ifpga_sec_mgr, dev)
+> +
+> +static ssize_t
+> +show_canceled_csk(struct ifpga_sec_mgr *imgr,
+> +		  int (*get_csk)(struct ifpga_sec_mgr *imgr,
+> +				 unsigned long *csk_map, unsigned int nbits),
+> +		  int (*get_csk_nbits)(struct ifpga_sec_mgr *imgr),
+> +		  char *buf)
+> +{
+> +	unsigned long *csk_map =3D NULL;
+> +	unsigned int nbits;
+> +	int ret;
+> +
+> +	ret =3D get_csk_nbits(imgr);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	nbits =3D (unsigned int)ret;
+> +	csk_map =3D vmalloc(sizeof(unsigned long) * BITS_TO_LONGS(nbits));
+> +	if (!csk_map)
+> +		return -ENOMEM;
+> +
+> +	ret =3D get_csk(imgr, csk_map, nbits);
+> +	if (ret)
+> +		goto vfree_exit;
+> +
+> +	ret =3D bitmap_print_to_pagebuf(1, buf, csk_map, nbits);
+> +
+> +vfree_exit:
+> +	vfree(csk_map);
+> +	return ret;
+> +}
+> +
+> +static ssize_t
+> +show_root_entry_hash(struct ifpga_sec_mgr *imgr,
+> +		     int (*get_reh)(struct ifpga_sec_mgr *imgr, u8 *hash,
+> +				    unsigned int size),
+> +		     int (*get_reh_size)(struct ifpga_sec_mgr *imgr),
+> +		     char *buf)
+> +{
+> +	int size, i, cnt, ret;
+> +	u8 *hash;
+> +
+> +	ret =3D get_reh_size(imgr);
+> +	if (ret < 0)
+> +		return ret;
+> +	else if (!ret)
+> +		return sprintf(buf, "hash not programmed\n");
+> +
+> +	size =3D ret;
+> +	hash =3D vmalloc(size);
+> +	if (!hash)
+> +		return -ENOMEM;
+> +
+> +	ret =3D get_reh(imgr, hash, size);
+> +	if (ret)
+> +		goto vfree_exit;
+> +
+> +	cnt =3D sprintf(buf, "0x");
+> +	for (i =3D 0; i < size; i++)
+> +		cnt +=3D sprintf(buf + cnt, "%02x", hash[i]);
+> +	cnt +=3D sprintf(buf + cnt, "\n");
+> +
+> +vfree_exit:
+> +	vfree(hash);
+> +	return ret ? : cnt;
+> +}
+> +
+> +#define DEVICE_ATTR_SEC_CSK(_name) \
+> +static ssize_t _name##_canceled_csks_show(struct device *dev, \
+> +					  struct device_attribute *attr, \
+> +					  char *buf) \
+> +{ \
+> +	struct ifpga_sec_mgr *imgr =3D to_sec_mgr(dev); \
+> +	return show_canceled_csk(imgr, \
+> +	       imgr->iops->_name##_canceled_csks, \
+> +	       imgr->iops->_name##_canceled_csk_nbits, buf); \
+> +} \
+> +static DEVICE_ATTR_RO(_name##_canceled_csks)
+> +
+> +#define DEVICE_ATTR_SEC_ROOT_ENTRY_HASH(_name) \
+> +static ssize_t _name##_root_entry_hash_show(struct device *dev, \
+> +				     struct device_attribute *attr, \
+> +				     char *buf) \
+> +{ \
+> +	struct ifpga_sec_mgr *imgr =3D to_sec_mgr(dev); \
+> +	return show_root_entry_hash(imgr, \
+> +	       imgr->iops->_name##_root_entry_hash, \
+> +	       imgr->iops->_name##_reh_size, buf); \
+> +} \
+> +static DEVICE_ATTR_RO(_name##_root_entry_hash)
+> +
+> +static ssize_t user_flash_count_show(struct device *dev,
+> +				     struct device_attribute *attr, char *buf)
+> +{
+> +	struct ifpga_sec_mgr *imgr =3D to_sec_mgr(dev);
+> +
+> +	int cnt =3D imgr->iops->user_flash_count(imgr);
+> +	return cnt < 0 ? cnt : sprintf(buf, "%u\n", cnt);
+> +}
+> +static DEVICE_ATTR_RO(user_flash_count);
+> +
+> +DEVICE_ATTR_SEC_ROOT_ENTRY_HASH(sr);
+> +DEVICE_ATTR_SEC_ROOT_ENTRY_HASH(pr);
+> +DEVICE_ATTR_SEC_ROOT_ENTRY_HASH(bmc);
+> +DEVICE_ATTR_SEC_CSK(sr);
+> +DEVICE_ATTR_SEC_CSK(pr);
+> +DEVICE_ATTR_SEC_CSK(bmc);
+> +
+> +static struct attribute *sec_mgr_security_attrs[] =3D {
+> +	&dev_attr_user_flash_count.attr,
+> +	&dev_attr_bmc_root_entry_hash.attr,
+> +	&dev_attr_sr_root_entry_hash.attr,
+> +	&dev_attr_pr_root_entry_hash.attr,
+> +	&dev_attr_sr_canceled_csks.attr,
+> +	&dev_attr_pr_canceled_csks.attr,
+> +	&dev_attr_bmc_canceled_csks.attr,
+> +	NULL,
+> +};
+> +
+> +#define check_attr(attribute, _name) \
+> +	((attribute) =3D=3D &dev_attr_##_name.attr && imgr->iops->_name)
+> +
+> +static umode_t sec_mgr_visible(struct kobject *kobj,
+> +			       struct attribute *attr, int n)
+> +{
+> +	struct ifpga_sec_mgr *imgr =3D to_sec_mgr(kobj_to_dev(kobj));
+> +
+> +	/*
+> +	 * Only display optional sysfs attributes if a
+> +	 * corresponding handler is provided
+> +	 */
+> +	if (check_attr(attr, user_flash_count) ||
+> +	    check_attr(attr, bmc_root_entry_hash) ||
+> +	    check_attr(attr, sr_root_entry_hash) ||
+> +	    check_attr(attr, pr_root_entry_hash) ||
+> +	    check_attr(attr, sr_canceled_csks) ||
+> +	    check_attr(attr, pr_canceled_csks) ||
+> +	    check_attr(attr, bmc_canceled_csks))
+> +		return attr->mode;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct attribute_group sec_mgr_security_attr_group =3D {
+> +	.name =3D "security",
+> +	.attrs =3D sec_mgr_security_attrs,
+> +	.is_visible =3D sec_mgr_visible,
+> +};
+> +
+> +static ssize_t name_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	struct ifpga_sec_mgr *imgr =3D to_sec_mgr(dev);
+> +
+> +	return sprintf(buf, "%s\n", imgr->name);
+> +}
+> +static DEVICE_ATTR_RO(name);
+> +
+> +static struct attribute *sec_mgr_attrs[] =3D {
+> +	&dev_attr_name.attr,
+> +	NULL,
+> +};
+> +
+> +static struct attribute_group sec_mgr_attr_group =3D {
+> +	.attrs =3D sec_mgr_attrs,
+> +};
+> +
+> +static const struct attribute_group *ifpga_sec_mgr_attr_groups[] =3D {
+> +	&sec_mgr_attr_group,
+> +	&sec_mgr_security_attr_group,
+> +	NULL,
+> +};
+> +
+> +static bool check_sysfs_handler(struct device *dev,
+> +				void *sysfs_handler, void *size_handler,
+> +				const char *sysfs_handler_name,
+> +				const char *size_handler_name)
+> +{
+> +	/*
+> +	 * sysfs_handler and size_handler must either both be
+> +	 * defined or both be NULL.
+> +	 */
+> +	if (sysfs_handler) {
+> +		if (!size_handler) {
+> +			dev_err(dev, "%s registered without %s\n",
+> +				sysfs_handler_name, size_handler_name);
+> +			return false;
+> +		}
+> +	} else if (size_handler) {
+> +		dev_err(dev, "%s registered without %s\n",
+> +			size_handler_name, sysfs_handler_name);
+> +		return false;
+> +	}
 
-Introduces a new mount option for metadata encryption -
-metadata_crypt_key=%s. The argument to this option is the key descriptor of
-the metadata encryption key in hex. This key descriptor will be looked up
-in the logon keyring with the "fscrypt:" prefix.
+Optional:
 
-E.g. one might pass "-o metadata_crypt_key=ababcdcdefef0101" as the f2fs
-mount option to the kernel, when the logon keyring has a key with the
-descriptor "fscrypt:ababcdcdefef0101".
+	If (sysfs_handler && !size_handler) {
 
-Right now, the superblock of the filesystem is itself not encrypted. F2FS
-reads the superblock using sb_bread, which uses the bd_inode of the block
-device as the address space for any data it reads from the block device -
-the data read under the bd_inode address space must be what is physically
-present on disk (i.e. if the superblock is encrypted, then the ciphertext
-of the superblock must be present in the page cache in the bd_inode's
-address space), but f2fs requires that the superblock is decrypted by
-blk-crypto, which would put the decrypted page contents into the page cache
-instead. We could make f2fs read the superblock by submitting bios directly
-with a separate address space, but we choose to just not encrypt the
-superblock for now.
+	} else if (!sysfs_handler && size_handler) {
+=09
+	}
 
-Not encrypting the superblock allows us to store the encryption algorithm
-used for metadata encryption within the superblock itself, which simplifies
-a few things. The userspace tools will store the encryption algorithm in
-the superblock when formatting the FS.
+> +	return true;
+> +}
+> +
+> +#define check_reh_handler(_dev, _iops, _name) \
+> +	check_sysfs_handler(_dev, (_iops)->_name##_root_entry_hash, \
+> +			    (_iops)->_name##_reh_size, \
+> +			    __stringify(_name##_root_entry_hash), \
+> +			    __stringify(_name##_reh_size))
+> +
+> +#define check_csk_handler(_dev, _iops, _name) \
+> +	check_sysfs_handler(_dev, (_iops)->_name##_canceled_csks, \
+> +			    (_iops)->_name##_canceled_csk_nbits, \
+> +			    __stringify(_name##_canceled_csks), \
+> +			    __stringify(_name##_canceled_csk_nbits))
+> +
+> +/**
+> + * ifpga_sec_mgr_create - create and initialize an Intel FPGA
+> + *			  security manager struct
+> + *
+> + * @dev:  Intel fpga security manager device from pdev
+> + * @name: ifpga security manager name
+> + * @iops: pointer to a structure of ifpga callback functions
+> + * @priv: ifpga security manager private data
+> + *
+> + * The caller of this function is responsible for freeing the struct
+> + * with ifpg_sec_mgr_free(). Using devm_ifpga_sec_mgr_create() instead
+> + * is recommended.
+> + *
+> + * Return: pointer to struct ifpga_sec_mgr or NULL
+> + */
+> +struct ifpga_sec_mgr *
+> +ifpga_sec_mgr_create(struct device *dev, const char *name,
+> +		     const struct ifpga_sec_mgr_ops *iops, void *priv)
+> +{
+> +	struct ifpga_sec_mgr *imgr;
+> +	int id, ret;
+> +
+> +	if (!check_reh_handler(dev, iops, bmc) ||
+> +	    !check_reh_handler(dev, iops, sr) ||
+> +	    !check_reh_handler(dev, iops, pr) ||
+> +	    !check_csk_handler(dev, iops, bmc) ||
+> +	    !check_csk_handler(dev, iops, sr) ||
+> +	    !check_csk_handler(dev, iops, pr)) {
+> +		return NULL;
+> +	}
+> +
+> +	if (!name || !strlen(name)) {
+> +		dev_err(dev, "Attempt to register with no name!\n");
+> +		return NULL;
+> +	}
+> +
+> +	imgr =3D kzalloc(sizeof(*imgr), GFP_KERNEL);
+> +	if (!imgr)
+> +		return NULL;
+> +
+> +	id =3D ida_simple_get(&ifpga_sec_mgr_ida, 0, 0, GFP_KERNEL);
+> +	if (id < 0)
+> +		goto error_kfree;
+> +
+> +	mutex_init(&imgr->lock);
+> +
+> +	imgr->name =3D name;
+> +	imgr->priv =3D priv;
+> +	imgr->iops =3D iops;
+> +
+> +	device_initialize(&imgr->dev);
+> +	imgr->dev.class =3D ifpga_sec_mgr_class;
+> +	imgr->dev.parent =3D dev;
+> +	imgr->dev.id =3D id;
+> +
+> +	ret =3D dev_set_name(&imgr->dev, "ifpga_sec%d", id);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to set device name: ifpga_sec%d\n", id);
+> +		goto error_device;
+> +	}
+> +
+> +	return imgr;
+> +
+> +error_device:
+> +	ida_simple_remove(&ifpga_sec_mgr_ida, id);
+> +
+> +error_kfree:
+> +	kfree(imgr);
+> +
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(ifpga_sec_mgr_create);
+> +
+> +/**
+> + * ifpga_sec_mgr_free - free an Intel FPGA security manager created
+> + *			with ifpga_sec_mgr_create()
+> + *
+> + * @imgr:	Intel FPGA security manager structure
+> + */
+> +void ifpga_sec_mgr_free(struct ifpga_sec_mgr *imgr)
+> +{
+> +	ida_simple_remove(&ifpga_sec_mgr_ida, imgr->dev.id);
+> +	kfree(imgr);
+> +}
+> +EXPORT_SYMBOL_GPL(ifpga_sec_mgr_free);
+> +
+> +static void devm_ifpga_sec_mgr_release(struct device *dev, void *res)
+> +{
+> +	struct ifpga_sec_mgr *imgr =3D *(struct ifpga_sec_mgr **)res;
+> +
+> +	ifpga_sec_mgr_free(imgr);
+> +}
+> +
+> +/**
+> + * devm_ifpga_sec_mgr_create - create and initialize an Intel FPGA
+> + *			       security manager struct
+> + *
+> + * @dev:  Intel fpga security manager device from pdev
+> + * @name: ifpga security manager name
+> + * @iops: pointer to a structure of ifpga callback functions
+> + * @priv: ifpga security manager private data
+> + *
+> + * This function is intended for use in a Intel FPGA Security manager
+> + * driver's probe function.  After the security manager driver creates
+> + * the ifpga_sec_mgr struct with devm_fpga_mgr_create(), it should
+> + * register it with ifpga_sec_mgr_register().  The security manager
+> + * driver's remove function should call ifpga_sec_mgr_unregister().
+> + * The ifpga_sec_mgr struct allocated with this function will be freed
+> + * automatically on driver detach.  This includes the case of a probe
+> + * function returning error before calling fpga_mgr_register(), the
+> + * struct will still get cleaned up.
+> + *
+> + * Return: pointer to struct ifpga_sec_mgr or NULL
+> + */
+> +struct ifpga_sec_mgr *
+> +devm_ifpga_sec_mgr_create(struct device *dev, const char *name,
+> +			  const struct ifpga_sec_mgr_ops *iops, void *priv)
+> +{
+> +	struct ifpga_sec_mgr **ptr, *imgr;
+> +
+> +	ptr =3D devres_alloc(devm_ifpga_sec_mgr_release, sizeof(*ptr),
+> GFP_KERNEL);
+> +	if (!ptr)
+> +		return NULL;
+> +
+> +	imgr =3D ifpga_sec_mgr_create(dev, name, iops, priv);
+> +	if (!imgr) {
+> +		devres_free(ptr);
+> +	} else {
+> +		*ptr =3D imgr;
+> +		devres_add(dev, ptr);
+> +	}
+> +
+> +	return imgr;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_ifpga_sec_mgr_create);
+> +
+> +/**
+> + * ifpga_sec_mgr_register - register an Intel FPGA security manager
+> + *
+> + * @imgr: Intel fpga security manager struct
+> + *
+> + * Return: 0 on success, negative error code otherwise.
+> + */
+> +int ifpga_sec_mgr_register(struct ifpga_sec_mgr *imgr)
+> +{
+> +	int ret;
+> +
+> +	ret =3D device_add(&imgr->dev);
+> +	if (ret)
+> +		goto error_device;
+> +
+> +	dev_info(&imgr->dev, "%s registered\n", imgr->name);
+> +
+> +	return 0;
+> +
+> +error_device:
+> +	ida_simple_remove(&ifpga_sec_mgr_ida, imgr->dev.id);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(ifpga_sec_mgr_register);
+> +
+> +/**
+> + * ifpga_sec_mgr_unregister - unregister an Intel FPGA security manager
+> + *
+> + * @mgr: fpga manager struct
+> + *
+> + * This function is intended for use in an Intel FPGA security manager
+> + * driver's remove() function.
+> + */
+> +void ifpga_sec_mgr_unregister(struct ifpga_sec_mgr *imgr)
+> +{
+> +	dev_info(&imgr->dev, "%s %s\n", __func__, imgr->name);
+> +
+> +	device_unregister(&imgr->dev);
+> +}
+> +EXPORT_SYMBOL_GPL(ifpga_sec_mgr_unregister);
+> +
+> +static void ifpga_sec_mgr_dev_release(struct device *dev)
+> +{
+> +}
+> +
+> +static int __init ifpga_sec_mgr_class_init(void)
+> +{
+> +	pr_info("Intel FPGA Security Manager\n");
+> +
+> +	ifpga_sec_mgr_class =3D class_create(THIS_MODULE, "ifpga_sec_mgr");
+> +	if (IS_ERR(ifpga_sec_mgr_class))
+> +		return PTR_ERR(ifpga_sec_mgr_class);
+> +
+> +	ifpga_sec_mgr_class->dev_groups =3D ifpga_sec_mgr_attr_groups;
+> +	ifpga_sec_mgr_class->dev_release =3D ifpga_sec_mgr_dev_release;
+> +
+> +	return 0;
+> +}
+> +
+> +static void __exit ifpga_sec_mgr_class_exit(void)
+> +{
+> +	class_destroy(ifpga_sec_mgr_class);
+> +	ida_destroy(&ifpga_sec_mgr_ida);
+> +}
+> +
+> +MODULE_DESCRIPTION("Intel FPGA Security Manager Driver");
+> +MODULE_LICENSE("GPL v2");
+> +
+> +subsys_initcall(ifpga_sec_mgr_class_init);
+> +module_exit(ifpga_sec_mgr_class_exit)
+> diff --git a/include/linux/fpga/ifpga-sec-mgr.h b/include/linux/fpga/ifpg=
+a-
+> sec-mgr.h
+> new file mode 100644
+> index 000000000000..ded62090e9b9
+> --- /dev/null
+> +++ b/include/linux/fpga/ifpga-sec-mgr.h
+> @@ -0,0 +1,81 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Header file for Intel FPGA Security Manager
+> + *
+> + * Copyright (C) 2019-2020 Intel Corporation, Inc.
+> + */
+> +#ifndef _LINUX_IFPGA_SEC_MGR_H
+> +#define _LINUX_IFPGA_SEC_MGR_H
+> +
+> +#include <linux/device.h>
+> +#include <linux/mutex.h>
+> +#include <linux/types.h>
+> +
+> +struct ifpga_sec_mgr;
+> +
+> +/**
+> + * struct ifpga_sec_mgr_ops - device specific operations
+> + * @user_flash_count:	    Optional: Return sysfs string output for
+> FPGA
+> + *			    image flash count
+> + * @sr_root_entry_hash:	    Optional: Return sysfs string output for
+> static
+> + *			    region root entry hash
+> + * @pr_root_entry_hash:	    Optional: Return sysfs string output for
+> partial
+> + *			    reconfiguration root entry hash
+> + * @bmc_root_entry_hash:    Optional: Return sysfs string output for BMC
+> + *			    root entry hash
+> + * @sr_canceled_csks:	    Optional: Return sysfs string output for stati=
+c
+> + *			    region canceled keys
+> + * @pr_canceled_csks:	    Optional: Return sysfs string output for
+> partial
+> + *			    reconfiguration canceled keys
+> + * @bmc_canceled_csks:	    Optional: Return sysfs string output for
+> bmc
+> + *			    canceled keys
+> + * @bmc_canceled_csk_nbits: Optional: Return BMC canceled csk vector bit
+> count
+> + * @sr_canceled_csk_nbits:  Optional: Return SR canceled csk vector bit
+> count
+> + * @pr_canceled_csk_nbits:  Optional: Return PR canceled csk vector bit
+> count
+> + * @bmc_reh_size:	    Optional: Return byte size for BMC root entry hash
+> + * @sr_reh_size:	    Optional: Return byte size for SR root entry hash
+> + * @pr_reh_size:	    Optional: Return byte size for PR root entry hash
+> + */
+> +struct ifpga_sec_mgr_ops {
+> +	int (*user_flash_count)(struct ifpga_sec_mgr *imgr);
+> +	int (*bmc_root_entry_hash)(struct ifpga_sec_mgr *imgr, u8 *hash,
+> +				   unsigned int size);
+> +	int (*sr_root_entry_hash)(struct ifpga_sec_mgr *imgr, u8 *hash,
+> +				  unsigned int size);
+> +	int (*pr_root_entry_hash)(struct ifpga_sec_mgr *imgr, u8 *hash,
+> +				  unsigned int size);
+> +	int (*bmc_canceled_csks)(struct ifpga_sec_mgr *imgr,
+> +				 unsigned long *csk_map, unsigned int nbits);
+> +	int (*sr_canceled_csks)(struct ifpga_sec_mgr *imgr,
+> +				unsigned long *csk_map, unsigned int nbits);
+> +	int (*pr_canceled_csks)(struct ifpga_sec_mgr *imgr,
+> +				unsigned long *csk_map, unsigned int nbits);
+> +	int (*bmc_reh_size)(struct ifpga_sec_mgr *imgr);
+> +	int (*sr_reh_size)(struct ifpga_sec_mgr *imgr);
+> +	int (*pr_reh_size)(struct ifpga_sec_mgr *imgr);
+> +	int (*bmc_canceled_csk_nbits)(struct ifpga_sec_mgr *imgr);
+> +	int (*sr_canceled_csk_nbits)(struct ifpga_sec_mgr *imgr);
+> +	int (*pr_canceled_csk_nbits)(struct ifpga_sec_mgr *imgr);
 
-Direct I/O with metadata encryption is also not supported for now.
-Attempts to do direct I/O on a metadata encrypted F2FS filesystem will fall
-back to using buffered I/O (just as attempts to do direct I/O on fscrypt
-encrypted files also fall back to buffered I/O).
+I am thinking that if these callbacks for size are really needed or not.
+If these size values are not changed dynamically, which requires no
+recalculation, then these size values can be stored in ifpga sec mgr
+data structure directly. I think the checking logic could be simpler too.
+Do you think if it is possible?
 
-Signed-off-by: Satya Tangirala <satyat@google.com>
----
- Documentation/filesystems/f2fs.rst | 12 ++++++
- fs/f2fs/data.c                     | 24 +++++++----
- fs/f2fs/f2fs.h                     |  2 +
- fs/f2fs/super.c                    | 67 ++++++++++++++++++++++++++++--
- include/linux/f2fs_fs.h            |  3 +-
- 5 files changed, 95 insertions(+), 13 deletions(-)
+Thanks
+Hao
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index ec8d99703ecb..94a294874707 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -266,6 +266,18 @@ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
- 			 inline encryption hardware. The on-disk format is
- 			 unaffected. For more details, see
- 			 Documentation/block/inline-encryption.rst.
-+metadata_crypt_key=%s	 Specify the metadata encryption key for the filesystem.
-+			 The argument to this option is the key descriptor of
-+			 the metadata encryption key in hex. This key descriptor
-+			 will be looked up in the logon keyring with the
-+			 "fscrypt:" prefix. So e.g. one might pass "-o
-+			 metadata_crypt_key=ababcdcdefef0101" as the f2fs mount
-+			 option to the kernel, when the logon keyring has a key
-+			 with the descriptor "fscrypt:ababcdcdefef0101".
-+			 When an F2FS filesystem has metadata encryption enabled,
-+			 all blocks in the FS other than the superblock are
-+			 encrypted with the metadata encryption key. The
-+			 superblock itself is stored in plaintext.
- ======================== ============================================================
- 
- Debugfs Entries
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 73683e58a08d..1b65313b57c8 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -460,8 +460,8 @@ static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
- 	return bio;
- }
- 
--static void f2fs_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
--				  pgoff_t first_idx,
-+static void f2fs_set_bio_crypt_ctx(struct bio *bio, block_t blk_addr,
-+				  const struct inode *inode, pgoff_t first_idx,
- 				  const struct f2fs_io_info *fio,
- 				  gfp_t gfp_mask)
- {
-@@ -469,8 +469,13 @@ static void f2fs_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
- 	 * The f2fs garbage collector sets ->encrypted_page when it wants to
- 	 * read/write raw data without encryption.
- 	 */
--	if (!fio || !fio->encrypted_page)
--		fscrypt_set_bio_crypt_ctx(bio, inode, first_idx, gfp_mask);
-+	if (!fio || !fio->encrypted_page) {
-+		if (fscrypt_needs_contents_encryption(inode))
-+			fscrypt_set_bio_crypt_ctx(bio, inode, first_idx, gfp_mask);
-+		else
-+			fscrypt_metadata_crypt_bio(bio, blk_addr, inode->i_sb,
-+						   gfp_mask);
-+	}
- }
- 
- static bool f2fs_crypt_mergeable_bio(struct bio *bio, const struct inode *inode,
-@@ -712,7 +717,7 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
- 	/* Allocate a new bio */
- 	bio = __bio_alloc(fio, 1);
- 
--	f2fs_set_bio_crypt_ctx(bio, fio->page->mapping->host,
-+	f2fs_set_bio_crypt_ctx(bio, fio->new_blkaddr, fio->page->mapping->host,
- 			       fio->page->index, fio, GFP_NOIO);
- 
- 	if (bio_add_page(bio, page, PAGE_SIZE, 0) < PAGE_SIZE) {
-@@ -918,7 +923,8 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
- 	if (!bio) {
- 		bio = __bio_alloc(fio, BIO_MAX_PAGES);
- 		__attach_io_flag(fio);
--		f2fs_set_bio_crypt_ctx(bio, fio->page->mapping->host,
-+		f2fs_set_bio_crypt_ctx(bio, fio->new_blkaddr,
-+				       fio->page->mapping->host,
- 				       fio->page->index, fio, GFP_NOIO);
- 		bio_set_op_attrs(bio, fio->op, fio->op_flags);
- 
-@@ -992,7 +998,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 			goto skip;
- 		}
- 		io->bio = __bio_alloc(fio, BIO_MAX_PAGES);
--		f2fs_set_bio_crypt_ctx(io->bio, fio->page->mapping->host,
-+		f2fs_set_bio_crypt_ctx(io->bio, fio->new_blkaddr,
-+				       fio->page->mapping->host,
- 				       bio_page->index, fio, GFP_NOIO);
- 		io->fio = *fio;
- 	}
-@@ -1039,9 +1046,8 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
- 	if (!bio)
- 		return ERR_PTR(-ENOMEM);
- 
--	f2fs_set_bio_crypt_ctx(bio, inode, first_idx, NULL, GFP_NOFS);
--
- 	f2fs_target_device(sbi, blkaddr, bio);
-+	f2fs_set_bio_crypt_ctx(bio, blkaddr, inode, first_idx, NULL, GFP_NOFS);
- 	bio->bi_end_io = f2fs_read_end_io;
- 	bio_set_op_attrs(bio, REQ_OP_READ, op_flag);
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index d9e52a7f3702..8c5626a6f684 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4095,6 +4095,8 @@ static inline bool f2fs_force_buffered_io(struct inode *inode,
- 
- 	if (f2fs_post_read_required(inode))
- 		return true;
-+	if (fscrypt_metadata_crypted(sbi->sb))
-+		return true;
- 	if (f2fs_is_multi_device(sbi))
- 		return true;
- 	/*
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 9a6d375cbe4b..1c14c823a4e9 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -146,6 +146,7 @@ enum {
- 	Opt_compress_algorithm,
- 	Opt_compress_log_size,
- 	Opt_compress_extension,
-+	Opt_metadata_crypt_key,
- 	Opt_err,
- };
- 
-@@ -213,6 +214,7 @@ static match_table_t f2fs_tokens = {
- 	{Opt_compress_algorithm, "compress_algorithm=%s"},
- 	{Opt_compress_log_size, "compress_log_size=%u"},
- 	{Opt_compress_extension, "compress_extension=%s"},
-+	{Opt_metadata_crypt_key, "metadata_crypt_key=%s"},
- 	{Opt_err, NULL},
- };
- 
-@@ -465,6 +467,10 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	unsigned char (*ext)[F2FS_EXTENSION_LEN];
- 	int ext_cnt;
-+#endif
-+#ifdef CONFIG_FS_ENCRYPTION_METADATA
-+	char *key_desc_hex = NULL;
-+	int metadata_crypt_alg = le32_to_cpu(sbi->raw_super->metadata_crypt_alg);
- #endif
- 	char *p, *name;
- 	int arg = 0;
-@@ -937,6 +943,35 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		case Opt_compress_extension:
- 			f2fs_info(sbi, "compression options not supported");
- 			break;
-+#endif
-+#ifdef CONFIG_FS_ENCRYPTION_METADATA
-+		case Opt_metadata_crypt_key:
-+			if (!metadata_crypt_alg) {
-+				f2fs_err(sbi, "Filesystem doesn't have metadata encryption enabled, but a metadata encryption key was provided");
-+				return -EINVAL;
-+			}
-+			if (is_remount) {
-+				f2fs_warn(sbi, "Ignoring metadata crypt key specified for remount");
-+				break;
-+			}
-+
-+			if (fscrypt_metadata_crypted(sb)) {
-+				f2fs_err(sbi, "Multiple metadata crypt key options specified");
-+				return -EINVAL;
-+			}
-+
-+			key_desc_hex = match_strdup(&args[0]);
-+			if (!key_desc_hex)
-+				return -ENOMEM;
-+
-+			if (fscrypt_setup_metadata_encryption(sb, key_desc_hex,
-+							metadata_crypt_alg)) {
-+				f2fs_err(sbi, "Could not setup metadata encryption");
-+				kfree(key_desc_hex);
-+				return -EINVAL;
-+			}
-+			kfree(key_desc_hex);
-+			break;
- #endif
- 		default:
- 			f2fs_err(sbi, "Unrecognized mount option \"%s\" or missing value",
-@@ -964,6 +999,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		return -EINVAL;
- 	}
- #endif
-+#ifdef CONFIG_FS_ENCRYPTION_METADATA
-+	if (metadata_crypt_alg &&
-+	    !fscrypt_metadata_crypted(sb)) {
-+		f2fs_err(sbi, "Filesystem has metadata encryption. Please provide metadata encryption key to mount filesystem");
-+		return -EINVAL;
-+	}
-+#endif
- 
- 	if (F2FS_IO_SIZE_BITS(sbi) && !f2fs_lfs_mode(sbi)) {
- 		f2fs_err(sbi, "Should set mode=lfs with %uKB-sized IO",
-@@ -1249,6 +1291,8 @@ static void f2fs_put_super(struct super_block *sb)
- 	iput(sbi->meta_inode);
- 	sbi->meta_inode = NULL;
- 
-+	fscrypt_free_metadata_encryption(sb);
-+
- 	/*
- 	 * iput() can update stat information, if f2fs_write_checkpoint()
- 	 * above failed with error.
-@@ -2504,6 +2548,9 @@ static int f2fs_get_num_devices(struct super_block *sb)
- {
- 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
- 
-+	if (!sbi)
-+		return 0;
-+
- 	if (f2fs_is_multi_device(sbi))
- 		return sbi->s_ndevs;
- 	return 1;
-@@ -2873,6 +2920,13 @@ static int sanity_check_raw_super(struct f2fs_sb_info *sbi,
- 		return -EFSCORRUPTED;
- 	}
- 
-+	/* Check if FS has metadata encryption if kernel doesn't support it */
-+#ifndef CONFIG_FS_ENCRYPTION_METADATA
-+	if (raw_super->metadata_crypt_alg) {
-+		f2fs_err(sbi, "Filesystem has metadata encryption but kernel support for it wasn't enabled");
-+		return -EINVAL;
-+	}
-+#endif
- 	/* check CP/SIT/NAT/SSA/MAIN_AREA area boundary */
- 	if (sanity_check_area_boundary(sbi, bh))
- 		return -EFSCORRUPTED;
-@@ -3464,6 +3518,9 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto free_sb_buf;
- 	}
- 
-+#ifdef CONFIG_FS_ENCRYPTION
-+	sb->s_cop = &f2fs_cryptops;
-+#endif
- 	err = parse_options(sb, options, false);
- 	if (err)
- 		goto free_options;
-@@ -3491,9 +3548,6 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- #endif
- 
- 	sb->s_op = &f2fs_sops;
--#ifdef CONFIG_FS_ENCRYPTION
--	sb->s_cop = &f2fs_cryptops;
--#endif
- #ifdef CONFIG_FS_VERITY
- 	sb->s_vop = &f2fs_verityops;
- #endif
-@@ -3602,6 +3656,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto free_devices;
- 	}
- 
-+	err = fscrypt_metadata_crypt_prepare_all_devices(sb);
-+	if (err) {
-+		f2fs_err(sbi, "Failed to initialize metadata crypt on all devices");
-+		goto free_devices;
-+	}
-+
- 	err = f2fs_init_post_read_wq(sbi);
- 	if (err) {
- 		f2fs_err(sbi, "Failed to initialize post read workqueue");
-@@ -3864,6 +3924,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 	utf8_unload(sbi->s_encoding);
- #endif
- free_options:
-+	fscrypt_free_metadata_encryption(sb);
- #ifdef CONFIG_QUOTA
- 	for (i = 0; i < MAXQUOTAS; i++)
- 		kfree(F2FS_OPTION(sbi).s_qf_names[i]);
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index 3c383ddd92dd..34cf0031dc8a 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -118,7 +118,8 @@ struct f2fs_super_block {
- 	__u8 hot_ext_count;		/* # of hot file extension */
- 	__le16  s_encoding;		/* Filename charset encoding */
- 	__le16  s_encoding_flags;	/* Filename charset encoding flags */
--	__u8 reserved[306];		/* valid reserved region */
-+	__le32	metadata_crypt_alg;	/* The metadata encryption algorithm (FSCRYPT_MODE_*) */
-+	__u8 reserved[302];		/* valid reserved region */
- 	__le32 crc;			/* checksum of superblock */
- } __packed;
- 
--- 
-2.28.0.806.g8561365e88-goog
+> +};
+> +
+> +struct ifpga_sec_mgr {
+> +	const char *name;
+> +	struct device dev;
+> +	const struct ifpga_sec_mgr_ops *iops;
+> +	struct mutex lock;		/* protect data structure contents */
+> +	void *priv;
+> +};
+> +
+> +struct ifpga_sec_mgr *
+> +ifpga_sec_mgr_create(struct device *dev, const char *name,
+> +		     const struct ifpga_sec_mgr_ops *iops, void *priv);
+> +
+> +struct ifpga_sec_mgr *
+> +devm_ifpga_sec_mgr_create(struct device *dev, const char *name,
+> +			  const struct ifpga_sec_mgr_ops *iops, void *priv);
+> +
+> +int ifpga_sec_mgr_register(struct ifpga_sec_mgr *imgr);
+> +void ifpga_sec_mgr_unregister(struct ifpga_sec_mgr *imgr);
+> +void ifpga_sec_mgr_free(struct ifpga_sec_mgr *imgr);
+> +
+> +#endif
+> --
+> 2.17.1
 
