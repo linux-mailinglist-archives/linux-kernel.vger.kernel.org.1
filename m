@@ -2,179 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316572830C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6BE2830C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgJEHUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:20:20 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:55118 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725875AbgJEHUT (ORCPT
+        id S1725907AbgJEHU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:20:56 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:55088 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725891AbgJEHU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:20:19 -0400
-Received: by mail-io1-f77.google.com with SMTP id f6so4220258ion.21
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:20:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=kzMGDAH+V64bIGovKN39nOfSz9YJKwgFw2a9Jzw6lbo=;
-        b=gZl9pPPJEe4iKkb1cnpXucBLutiEAW2zQFsz7Mu+X3zdqPBuDxEOhUVHbIHIC60gct
-         et/XXpEwWTUPCl2j5yleqzHDBs8zxjeVZWuMom3mtGQvTER+YXhhHmO5KCjp18LgyIvk
-         QkUzEHfVty5hLrIsekpP9UzdCe12Jz/3EWUiUEf0XaN1iIL05QS4eE6mKIQhUwOslMOd
-         oMvgg3X784stqR5BGmZXKk/J8zZyQkRULIhDWP9aDjCUZSmgtQpH7RV1I1QIbHaKoyrp
-         XwU1QV+hskybhvjFHJuhi8Po7EugyAhzZSzHGfB68ql3W24pQYeA+1kRUciEUppnAaIi
-         jG8g==
-X-Gm-Message-State: AOAM530yCwfcaEvMEhB/mqlE9qN+JWR31ZCfslmFQwGkBMeLSos1ChNh
-        ZeOsInOdTa7cvV/oC36fsCTZEs54vrsCniRc73JpdTtATl/P
-X-Google-Smtp-Source: ABdhPJzHc7LVZOCZAe7g5aj4GBJ7rRwimuX126H26qnDxJRMqenI7HGdF5mcdb3iRGA9LvHkbRA9iwL0CesW9xIpX3Fobe/vf572
-MIME-Version: 1.0
-X-Received: by 2002:a5e:9e49:: with SMTP id j9mr2604544ioq.107.1601882416032;
- Mon, 05 Oct 2020 00:20:16 -0700 (PDT)
-Date:   Mon, 05 Oct 2020 00:20:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000061316205b0e750fc@google.com>
-Subject: INFO: task can't die in nbd_ioctl
-From:   syzbot <syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        syzkaller-bugs@googlegroups.com
+        Mon, 5 Oct 2020 03:20:56 -0400
+X-UUID: d911ef3a93b44619816314289bc9ae34-20201005
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7EnrdO3x7asX9gTBacmmrzjObvtt04/zORNX+OpwJXg=;
+        b=jc6flCCH9zmnOil4U8qr3ODs5lxQ8OBSH+4DPbecZ1wNMWvpx79Z+IxBhOQOfbtnclJDhWb78DN71ZOw2P5p5CmCWWeSr2hOg4k/qkz1Gn6iQeKiv3pGm85pqDf72y86gHS3WlIjESTFqkDscvgfxeVXd/JHzyPadIWcMRZkbic=;
+X-UUID: d911ef3a93b44619816314289bc9ae34-20201005
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1810721124; Mon, 05 Oct 2020 15:20:51 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 5 Oct 2020 15:20:49 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 5 Oct 2020 15:20:48 +0800
+Message-ID: <1601882449.15742.4.camel@mtkswgap22>
+Subject: Re: [PATCH v7 2/2] soc: mediatek: add mt6779 devapc driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Date:   Mon, 5 Oct 2020 15:20:49 +0800
+In-Reply-To: <CAAOTY_-KTs6-5ZpzAWs0Yn-R3AJc8tRhDyKbp8bx60EJtfu-_Q@mail.gmail.com>
+References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
+         <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
+         <CAAOTY_-KTs6-5ZpzAWs0Yn-R3AJc8tRhDyKbp8bx60EJtfu-_Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 1231EE9725B1C9C9F42046DE7BAF97293F3EDAC9A16F4C5A7FAF9C62563B81552000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+SGkgQ2h1bi1LdWFuZywNCg0KT24gU2F0LCAyMDIwLTEwLTAzIGF0IDAwOjI0ICswODAwLCBDaHVu
+LUt1YW5nIEh1IHdyb3RlOg0KPiBIaSwgTmVhbDoNCj4gDQo+IE5lYWwgTGl1IDxuZWFsLmxpdUBt
+ZWRpYXRlay5jb20+IOaWvCAyMDIw5bm0OOaciDI35pelIOmAseWbmyDkuIrljYgxMTowN+Wvq+mB
+k++8mg0KPiA+DQo+ID4gTWVkaWFUZWsgYnVzIGZhYnJpYyBwcm92aWRlcyBUcnVzdFpvbmUgc2Vj
+dXJpdHkgc3VwcG9ydCBhbmQgZGF0YQ0KPiA+IHByb3RlY3Rpb24gdG8gcHJldmVudCBzbGF2ZXMg
+ZnJvbSBiZWluZyBhY2Nlc3NlZCBieSB1bmV4cGVjdGVkDQo+ID4gbWFzdGVycy4NCj4gPiBUaGUg
+c2VjdXJpdHkgdmlvbGF0aW9uIGlzIGxvZ2dlZCBhbmQgc2VudCB0byB0aGUgcHJvY2Vzc29yIGZv
+cg0KPiA+IGZ1cnRoZXIgYW5hbHlzaXMgb3IgY291bnRlcm1lYXN1cmVzLg0KPiA+DQo+ID4gQW55
+IG9jY3VycmVuY2Ugb2Ygc2VjdXJpdHkgdmlvbGF0aW9uIHdvdWxkIHJhaXNlIGFuIGludGVycnVw
+dCwgYW5kDQo+ID4gaXQgd2lsbCBiZSBoYW5kbGVkIGJ5IG10ay1kZXZhcGMgZHJpdmVyLiBUaGUg
+dmlvbGF0aW9uDQo+ID4gaW5mb3JtYXRpb24gaXMgcHJpbnRlZCBpbiBvcmRlciB0byBmaW5kIHRo
+ZSBtdXJkZXJlci4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IE5lYWwgTGl1IDxuZWFsLmxpdUBt
+ZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL0tjb25maWcg
+ICAgICB8ICAgIDkgKysNCj4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvTWFrZWZpbGUgICAgIHwg
+ICAgMSArDQo+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1kZXZhcGMuYyB8ICAzMDUgKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAzIGZpbGVzIGNoYW5nZWQs
+IDMxNSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9t
+ZWRpYXRlay9tdGstZGV2YXBjLmMNCj4gPg0KPiANCj4gW3NuaXBdDQo+IA0KPiA+ICsNCj4gPiAr
+c3RhdGljIGludCBtdGtfZGV2YXBjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
+DQo+ID4gK3sNCj4gPiArICAgICAgIHN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZSA9IHBkZXYtPmRl
+di5vZl9ub2RlOw0KPiA+ICsgICAgICAgc3RydWN0IG10a19kZXZhcGNfY29udGV4dCAqY3R4Ow0K
+PiA+ICsgICAgICAgdTMyIGRldmFwY19pcnE7DQo+ID4gKyAgICAgICBpbnQgcmV0Ow0KPiA+ICsN
+Cj4gPiArICAgICAgIGlmIChJU19FUlIobm9kZSkpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVy
+biAtRU5PREVWOw0KPiA+ICsNCj4gPiArICAgICAgIGN0eCA9IGRldm1fa3phbGxvYygmcGRldi0+
+ZGV2LCBzaXplb2YoKmN0eCksIEdGUF9LRVJORUwpOw0KPiA+ICsgICAgICAgaWYgKCFjdHgpDQo+
+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAtRU5PTUVNOw0KPiA+ICsNCj4gPiArICAgICAgIGN0
+eC0+ZGF0YSA9IG9mX2RldmljZV9nZXRfbWF0Y2hfZGF0YSgmcGRldi0+ZGV2KTsNCj4gPiArICAg
+ICAgIGN0eC0+ZGV2ID0gJnBkZXYtPmRldjsNCj4gPiArDQo+ID4gKyAgICAgICBjdHgtPmluZnJh
+X2Jhc2UgPSBvZl9pb21hcChub2RlLCAwKTsNCj4gPiArICAgICAgIGlmICghY3R4LT5pbmZyYV9i
+YXNlKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPiArDQo+ID4gKyAg
+ICAgICBkZXZhcGNfaXJxID0gaXJxX29mX3BhcnNlX2FuZF9tYXAobm9kZSwgMCk7DQo+ID4gKyAg
+ICAgICBpZiAoIWRldmFwY19pcnEpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFM
+Ow0KPiA+ICsNCj4gPiArICAgICAgIGN0eC0+aW5mcmFfY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2
+LT5kZXYsICJkZXZhcGMtaW5mcmEtY2xvY2siKTsNCj4gPiArICAgICAgIGlmIChJU19FUlIoY3R4
+LT5pbmZyYV9jbGspKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPiAr
+DQo+ID4gKyAgICAgICBpZiAoY2xrX3ByZXBhcmVfZW5hYmxlKGN0eC0+aW5mcmFfY2xrKSkNCj4g
+PiArICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+IA0KPiBXaGF0IHdvdWxkIGhhcHBl
+biBpZiB5b3UgZG8gbm90IGVuYWJsZSB0aGlzIGNsb2NrPyBJIHRoaW5rIHRoaXMNCj4gaGFyZHdh
+cmUgaXMgYWxyZWFkeSBpbml0aWFsaXplZCBpbiB0cnVzdCB6b25lLg0KPiANCj4gUmVnYXJkcywN
+Cj4gQ2h1bi1LdWFuZy4NCg0KSXQgY2Fubm90IGhhbmRsZSB2aW9sYXRpb24gaWYgdGhlIGNsb2Nr
+IGlzIGRpc2FibGVkLg0KVGhpcyBwYXJ0cyBvZiBoYXJkd2FyZSBpcyBub3QgaW5pdGlhbGl6ZWQg
+aW4gVHJ1c3Rab25lLg0KDQpUaGUgYW5vdGhlciBwYXJ0cyBvZiBoYXJkd2FyZSBpcyBpbml0aWFs
+aXplZCBpbiBUcnVzdFpvbmUgd2hpY2ggaXMNCnJlc3BvbnNpYmxlIGZvciBwZXJtaXNzaW9uIGNv
+bnRyb2wuIEkgdGhpbmsgdGhhdCBpcyB0aGUgcGFydCB3aGF0IHlvdQ0KaW50ZW5kIHRvIGV4cHJl
+c3MuDQoNCi1OZWFsDQoNCj4gDQo+ID4gKw0KPiA+ICsgICAgICAgcmV0ID0gZGV2bV9yZXF1ZXN0
+X2lycSgmcGRldi0+ZGV2LCBkZXZhcGNfaXJxLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAoaXJxX2hhbmRsZXJfdClkZXZhcGNfdmlvbGF0aW9uX2lycSwNCj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgSVJRRl9UUklHR0VSX05PTkUsICJkZXZhcGMiLCBjdHgp
+Ow0KPiA+ICsgICAgICAgaWYgKHJldCkgew0KPiA+ICsgICAgICAgICAgICAgICBjbGtfZGlzYWJs
+ZV91bnByZXBhcmUoY3R4LT5pbmZyYV9jbGspOw0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4g
+cmV0Ow0KPiA+ICsgICAgICAgfQ0KPiA+ICsNCj4gPiArICAgICAgIHBsYXRmb3JtX3NldF9kcnZk
+YXRhKHBkZXYsIGN0eCk7DQo+ID4gKw0KPiA+ICsgICAgICAgc3RhcnRfZGV2YXBjKGN0eCk7DQo+
+ID4gKw0KPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQoNCg==
 
-syzbot found the following issue on:
-
-HEAD commit:    de69ee6d Add linux-next specific files for 20200930
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d04f17900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4919771fba5919e5
-dashboard link: https://syzkaller.appspot.com/bug?extid=69a90a5e8f6b59086b2a
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+69a90a5e8f6b59086b2a@syzkaller.appspotmail.com
-
-INFO: task syz-executor.0:4417 can't die for more than 143 seconds.
-task:syz-executor.0  state:D stack:28472 pid: 4417 ppid:  6852 flags:0x10004004
-Call Trace:
- context_switch kernel/sched/core.c:3777 [inline]
- __schedule+0xec5/0x2200 kernel/sched/core.c:4526
- schedule+0xcf/0x270 kernel/sched/core.c:4604
- schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1855
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
- flush_workqueue+0x3ff/0x13e0 kernel/workqueue.c:2832
- nbd_start_device_ioctl drivers/block/nbd.c:1331 [inline]
- __nbd_ioctl drivers/block/nbd.c:1408 [inline]
- nbd_ioctl+0x76d/0xbe0 drivers/block/nbd.c:1448
- __blkdev_driver_ioctl block/ioctl.c:228 [inline]
- blkdev_ioctl+0x2a7/0x7f0 block/ioctl.c:623
- block_ioctl+0xf9/0x140 fs/block_dev.c:1866
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45dd99
-Code: Bad RIP value.
-RSP: 002b:00007f39f37eac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000012e80 RCX: 000000000045dd99
-RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000004
-RBP: 000000000118bf58 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007fff8753a28f R14: 00007f39f37eb9c0 R15: 000000000118bf2c
-INFO: task syz-executor.0:4417 blocked for more than 144 seconds.
-      Not tainted 5.9.0-rc7-next-20200930-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:28472 pid: 4417 ppid:  6852 flags:0x10004004
-Call Trace:
- context_switch kernel/sched/core.c:3777 [inline]
- __schedule+0xec5/0x2200 kernel/sched/core.c:4526
- schedule+0xcf/0x270 kernel/sched/core.c:4604
- schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1855
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
- flush_workqueue+0x3ff/0x13e0 kernel/workqueue.c:2832
- nbd_start_device_ioctl drivers/block/nbd.c:1331 [inline]
- __nbd_ioctl drivers/block/nbd.c:1408 [inline]
- nbd_ioctl+0x76d/0xbe0 drivers/block/nbd.c:1448
- __blkdev_driver_ioctl block/ioctl.c:228 [inline]
- blkdev_ioctl+0x2a7/0x7f0 block/ioctl.c:623
- block_ioctl+0xf9/0x140 fs/block_dev.c:1866
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45dd99
-Code: Bad RIP value.
-RSP: 002b:00007f39f37eac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000012e80 RCX: 000000000045dd99
-RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000004
-RBP: 000000000118bf58 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007fff8753a28f R14: 00007f39f37eb9c0 R15: 000000000118bf2c
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1178:
- #0: ffffffff8a553d00 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6221
-1 lock held by in:imklog/6557:
- #0: ffff8880a0a526b0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-2 locks held by kworker/u5:2/6867:
- #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888093c7f138 ((wq_completion)knbd0-recv){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2240
- #1: ffffc900017b7da8 ((work_completion)(&args->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2244
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1178 Comm: khungtaskd Not tainted 5.9.0-rc7-next-20200930-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
- watchdog+0xd89/0xf30 kernel/hung_task.c:339
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 6835 Comm: syz-fuzzer Not tainted 5.9.0-rc7-next-20200930-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0033:0x415b7a
-Code: 89 ac 24 c8 00 00 00 48 8d ac 24 c8 00 00 00 48 8b 94 24 e0 00 00 00 48 83 fa 08 0f 84 4d 09 00 00 48 8b 1d 98 4a 5a 01 84 03 <90> 48 8b b4 24 d8 00 00 00 48 bf 00 00 00 00 00 80 00 00 48 8d 04
-RSP: 002b:000000c026e52b98 EFLAGS: 00000246
-RAX: 000000c026e52c18 RBX: 00007f1f2ef8f000 RCX: 000000c000083980
-RDX: 0000000000000030 RSI: 0000000000000000 RDI: 0000000000000030
-RBP: 000000c026e52c60 R08: 00000000008f7880 R09: 0000000000203000
-R10: 000000c011bb4cf0 R11: 0000000000000001 R12: ffffffffffffffff
-R13: 0000000000000046 R14: 0000000000000045 R15: 00000000000000aa
-FS:  0000000001992df0 GS:  0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
