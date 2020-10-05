@@ -2,102 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB9E283855
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6915E28385C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgJEOqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726834AbgJEOqP (ORCPT
+        id S1726884AbgJEOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:46:30 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:43594 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726860AbgJEOqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:46:15 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BF6C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:46:14 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id dn5so9646488edb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bJDWLFQK3NHbczue04Ad/oGIga5mw5RnC9F1EX3+XdE=;
-        b=hl2motqvUtv+mvTksLda5r+AFkPsIl17oAkAoCpovuZwVAOmI4uF6k4X0hrbeu5UIV
-         4L63H25KQUKF8MNUkLWt/WneZgSx81pfLMMNxbhsI9ViwK7Q3zswPYsHmCMJd7yWREPt
-         5ZNnY8RT6kVH5ja7Img8nnNnLSz+y+pOeFYeo=
+        Mon, 5 Oct 2020 10:46:21 -0400
+Received: by mail-oi1-f195.google.com with SMTP id l85so8932709oih.10;
+        Mon, 05 Oct 2020 07:46:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bJDWLFQK3NHbczue04Ad/oGIga5mw5RnC9F1EX3+XdE=;
-        b=RA+kzuARX0I9nSIcHkYNfioBEmhbEZoiIomvpNd3q2e7kM/5mNAh3zwou/7on+LVWy
-         hv6IhhrxdzS0++C6eY7hMDXrKnppqdnGZTODq7QcIMGEPJSNDyhKy5ExxWESyOaoitw+
-         tHzlhEJn8lhn/XQSEUZrY2OvAsHPWdWOwh6GaVIHI04XB5m4cZ0n1eo30GR0DeU7K1YZ
-         P6cngtRf3HFldYpwnI/GnrOaG8S1mAVw69bmyDajG/z/k5MKJV8GypIx1oeRJ+RwQZx5
-         xXs4792VkPx75z+ZlGdQ/a7rEAn8TQmXpVjanUsg7UhmF/P+zxTdbKbh+DQBq103dEE4
-         WA7w==
-X-Gm-Message-State: AOAM531eMxrmRpHbj3b7FUiIT8m0VrKwMSckdOv3378SoElPMO6Dq/Jd
-        AkvJpk1/FpQ5SdNGBsGs0wj9GQ==
-X-Google-Smtp-Source: ABdhPJx3qUGwmmpBOZFS45fQE04+dVbMCBwt75MdVDrLzDmAkcFM+DYTDIcRGfMI2aS/KZIlZn93kw==
-X-Received: by 2002:aa7:dd49:: with SMTP id o9mr16283240edw.331.1601909173219;
-        Mon, 05 Oct 2020 07:46:13 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:b1f1])
-        by smtp.gmail.com with ESMTPSA id a5sm36220edl.6.2020.10.05.07.46.12
+         :mime-version:content-disposition:in-reply-to;
+        bh=eg4ZUBIlL2zrsvoubzdptXm9kzivS1YXmcuLTutRd2A=;
+        b=PLXV8eI9YaZf265cz9NVQWeHRMlYoHNgUM9YIbg0FZchR2wrdVYou/vsjX/sFuHk1J
+         6P25jaUGMnaj+3P+Uac9hFfKwtjHPmOXgo9g5hmpODnLNNJXkPv6/3HDAyLQG2WVHT/a
+         jKFQxNY+sBkP8XsnJw4mBDvn+wZgA3rBasBvpOU/XKV8F7DzLUJyoGTP339tusR1kG47
+         nV8YZNP0VD0pio0IFhnpKbbyq9vpeG/2Y2yAExt5LCx/Gki1Z70v9H2kxJoTw4Dx4r1V
+         TPaGF/oRoF1WQpGQ+F8LBDAxG1kCxn3ooz08kOoKfPRih+8tzmCtm31gVOHwR+ke/i9H
+         xdDw==
+X-Gm-Message-State: AOAM532yGW8MoacUKOXhHDgUrluZkuCJynti+vBm+/Ko2NoksHwzaHNy
+        0gENM6FxC0YvloxzI+NNjw==
+X-Google-Smtp-Source: ABdhPJzyCvlLjfu9dD2qxiBtg/5pGVvph6AzDdpf6U6YH3RzWGnFt+bxUcfQOWcZLl6t+JYivvisdQ==
+X-Received: by 2002:a05:6808:a9a:: with SMTP id q26mr8541339oij.87.1601909179754;
+        Mon, 05 Oct 2020 07:46:19 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z8sm10575oic.11.2020.10.05.07.46.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 07:46:12 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 15:46:12 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luigi Semenzato <semenzato@google.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH RFC v2] Opportunistic memory reclaim
-Message-ID: <20201005144612.GB108347@chrisdown.name>
-References: <20201005081313.732745-1-andrea.righi@canonical.com>
- <20201005112555.GA108347@chrisdown.name>
- <20201005135130.GA850459@xps-13-7390>
+        Mon, 05 Oct 2020 07:46:19 -0700 (PDT)
+Received: (nullmailer pid 161117 invoked by uid 1000);
+        Mon, 05 Oct 2020 14:46:18 -0000
+Date:   Mon, 5 Oct 2020 09:46:18 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v9 03/15] dt-bindings: usb: Maxim type-c controller
+ device tree binding document
+Message-ID: <20201005144618.GA154206@bogus>
+References: <20200929024004.244992-1-badhri@google.com>
+ <20200929024004.244992-4-badhri@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005135130.GA850459@xps-13-7390>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20200929024004.244992-4-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrea Righi writes:
->senpai is focused at estimating the ideal memory requirements without
->affecting performance. And this covers the use case about reducing
->memory footprint.
->
->In my specific use-case (hibernation) I would let the system use as much
->memory as possible if it's doing any activity (reclaiming memory only
->when the kernel decides that it needs to reclaim memory) and apply a
->more aggressive memory reclaiming policy when the system is mostly idle.
+On Mon, Sep 28, 2020 at 07:39:52PM -0700, Badhri Jagan Sridharan wrote:
+> Add device tree binding document for Maxim TCPCI based Type-C chip driver
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+> Changes since v1:
+> - Changing patch version to v6 to fix version number confusion.
+> 
+> Changes since v6:
+> - Migrated to yaml format.
+> 
+> Changes since v7:
+> - Rebase on usb-next
+> 
+> Changes since v8:
+> - Fix errors from make dt_binding_check as suggested by
+>   Rob Herring.
+> ---
+>  .../devicetree/bindings/usb/maxim,tcpci.yaml  | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> new file mode 100644
+> index 000000000000..f4b5f1a09b98
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/usb/maxim,tcpci.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Maxim TCPCI Type-C PD controller DT bindings
+> +
+> +maintainers:
+> +  - Badhri Jagan Sridharan <badhri@google.com>
+> +
+> +description: Maxim TCPCI Type-C PD controller
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - maxim,tcpci
 
- From this description, I don't see any reason why it needs to be implemented in 
-kernel space. All of that information is available to userspace, and all of the 
-knobs are there.
+Is there a datasheet for this? Searching for 'tcpci' doesn't really come 
+up with anything other than this patch. Only chip I found is MAX77958. 
+Bindings are for specific h/w devices.
 
-As it is I'm afraid of the "only when the system is mostly idle" comment, 
-because it's usually after such periods that applications need to do large 
-retrievals, and now they're going to be in slowpath (eg. periodic jobs).
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  connector:
+> +    type: object
+> +    $ref: ../connector/usb-connector.yaml#
+> +    description:
+> +      Properties for usb c connector.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
 
-Such tradeoffs for a specific situation might be fine in userspace as a 
-distribution maintainer, but codifying them in the kernel seems premature to 
-me, especially for a knob which we will have to maintain forever onwards.
+additionalProperties: false
 
->I could probably implement this behavior adjusting memory.high
->dynamically, like senpai, but I'm worried about potential sudden large
->allocations that may require to respond faster at increasing
->memory.high. I think the user-space triggered memory reclaim approach is
->a safer solution from this perspective.
-
-Have you seen Shakeel's recent "per-memcg reclaim interface" patches? I suspect 
-they may help you there.
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/usb/pd.h>
+> +    i2c0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        maxtcpc@25 {
+> +            compatible = "maxim,tcpc";
+> +            reg = <0x25>;
+> +            interrupt-parent = <&gpa8>;
+> +            interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +            connector {
+> +                compatible = "usb-c-connector";
+> +                label = "USB-C";
+> +                data-role = "dual";
+> +                power-role = "dual";
+> +                try-power-role = "sink";
+> +                self-powered;
+> +                op-sink-microwatt = <2600000>;
+> +                source-pdos = <PDO_FIXED(5000, 900,
+> +                                         PDO_FIXED_SUSPEND |
+> +                                         PDO_FIXED_USB_COMM |
+> +                                         PDO_FIXED_DATA_SWAP |
+> +                                         PDO_FIXED_DUAL_ROLE)>;
+> +                sink-pdos = <PDO_FIXED(5000, 3000,
+> +                                       PDO_FIXED_USB_COMM |
+> +                                       PDO_FIXED_DATA_SWAP |
+> +                                       PDO_FIXED_DUAL_ROLE)
+> +                                       PDO_FIXED(9000, 2000, 0)>;
+> +            };
+> +        };
+> +    };
+> +...
+> -- 
+> 2.28.0.709.gb0816b6eb0-goog
+> 
