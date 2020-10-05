@@ -2,236 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB73283F2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684D9283F32
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729252AbgJES6h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Oct 2020 14:58:37 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:44173 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728082AbgJES6g (ORCPT
+        id S1729223AbgJETAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 15:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727247AbgJETAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:58:36 -0400
-Received: from marcel-macbook.fritz.box (p4fefc7f4.dip0.t-ipconnect.de [79.239.199.244])
-        by mail.holtmann.org (Postfix) with ESMTPSA id BEA8DCED29;
-        Mon,  5 Oct 2020 21:05:34 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
- whitelist"
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201005180208.GA2739@kroah.com>
-Date:   Mon, 5 Oct 2020 20:58:33 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Sathish Narsimman <sathish.narasimman@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <D577711C-4AF5-4E82-8A17-E766B64E15A9@holtmann.org>
-References: <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
- <20201004105124.GA2429@kroah.com>
- <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
- <20201005083624.GA2442@kroah.com>
- <220D3B4E-D73E-43AD-8FF8-887D1A628235@holtmann.org>
- <20201005124018.GA800868@kroah.com>
- <824BC92C-5035-4B80-80E7-298508E4ADD7@holtmann.org>
- <20201005161149.GA2378402@kroah.com>
- <0C92E812-BF43-46A6-A069-3F7F3278FBB4@holtmann.org>
- <20201005173835.GB2388217@kroah.com> <20201005180208.GA2739@kroah.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        Mon, 5 Oct 2020 15:00:01 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F54C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 12:00:01 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id u126so9751253oif.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 12:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bgyVeWM2KFwaEKtxvi0k5vnLHgxboX9dQWrAwhLZ6sM=;
+        b=Ky1b95z9ctxi5Up6vlAjc2Sxv+MR7UCALpWjrjeUBeeemtaEGwZe9ejzUJSjnqtClo
+         ReUuS+LFV7Pk5Bhi9vXooH6kJAtdsj5SAxpT4b1SzN5FmVmWgnVZZ+gmZiGkbBF/xvdc
+         LbxZkShlVJragtp+g5FcfCbiM65I7so+1l5boJRu6oBARjnlFR2MwpIQaLXEsO8SsQfv
+         j39YatgwTx9rnBMhn+MZSrM82o5/g1sAniUNwPFHZ/5upL26RXXMGgSklQnyM9vGF9tc
+         fDxyE2Oc/XlaPyAd4iSslCujS84buEYweStGARsnJMW56Mcgdn721RtOuSFuvo/A0maq
+         Inmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bgyVeWM2KFwaEKtxvi0k5vnLHgxboX9dQWrAwhLZ6sM=;
+        b=rbrCbi3uPWmUYkV0TMzq/cQsULikGayYHW1L6hof/ifODuNOykQ7qy/ovC1uE0B8n1
+         IyshAunF13vixgeY9uck5OkAIOd34XVnYH26NROMs9WZNRObyLLonGyzP0KyeelKoQ1M
+         DBaZe9b52vBjZGZYQJOWDTAaqDZ2nkXo/YOt/f+ivvbBnytZ/jVXUOYFmwEQ3UXgx2jv
+         vIHBI45hEODqkMiLmScqzgfR7pIai6T/yBND6ND9wi5jj59PpBEaaG0X5HcOjD/5+isI
+         oj/oavtMFLnqTLOv6OB+Z47o4OT8b8WLiPtAaMBPSz9b1e1F5cl6VZoWP9PV8q+FFsRe
+         DVMw==
+X-Gm-Message-State: AOAM533yjdwU7Ppq7vj+/QajaaC7dpyKRgHsXFlbd6AK/4CAeP+dQl8D
+        BXXNpeS9FN+5g28gT9PmLxLJUDHIyeavISD+AJ0YhQ==
+X-Google-Smtp-Source: ABdhPJyzVuth4CKP/Ne+wOuwyABlhcWUIOPRj8t4qy87nTBlOmB6Th6J+bzOAcqymPkEx9q7xzjLSwJPeD+YCnkxBi4=
+X-Received: by 2002:a54:468f:: with SMTP id k15mr488388oic.121.1601924400739;
+ Mon, 05 Oct 2020 12:00:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-2-elver@google.com>
+ <CAG48ez3+_K6YXoXgKBkB8AMeSQj++Mxi5u2OT--B+mJgE7Cyfg@mail.gmail.com>
+ <CAG48ez1MQks2na23g_q4=ADrjMYjRjiw+9k_Wp9hwGovFzZ01A@mail.gmail.com>
+ <CACT4Y+a3hLF1ph1fw7xVz1bQDNKL8W0s6pXe7aKm9wTNrJH3=w@mail.gmail.com> <CAG48ez1RYbpMFbGFB6=9Y3vVCGrMgLS3LbDdxzBfmxH6Kxddmw@mail.gmail.com>
+In-Reply-To: <CAG48ez1RYbpMFbGFB6=9Y3vVCGrMgLS3LbDdxzBfmxH6Kxddmw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 5 Oct 2020 20:59:49 +0200
+Message-ID: <CANpmjNPZxvWXTnJvkuwUifM5EjPetKxTJ7ectbw_7JFoBLB4EA@mail.gmail.com>
+Subject: Re: [PATCH v4 01/11] mm: add Kernel Electric-Fence infrastructure
+To:     Jann Horn <jannh@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>, SeongJae Park <sjpark@amazon.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, 2 Oct 2020 at 20:28, Jann Horn <jannh@google.com> wrote:
+[...]
+> > >
+> > > Do you have performance numbers or a description of why you believe
+> > > that this part of kfence is exceptionally performance-sensitive? If
+> > > not, it might be a good idea to remove this optimization, at least for
+> > > the initial version of this code. (And even if the optimization is
+> > > worthwhile, it might be a better idea to go for the generic version
+> > > immediately.)
+> >
+> > This check is very hot, it happens on every free. For every freed
+> > object we need to understand if it belongs to KFENCE or not.
+>
+> Ah, so the path you care about does not dereference __kfence_pool, it
+> just compares it to the supplied pointer?
+>
+>
+> First off: The way you've written is_kfence_address(), GCC 10.2 at -O3
+> seems to generate *utterly* *terrible* code (and the newest clang
+> release isn't any better); something like this:
+>
+> kfree_inefficient:
+>   mov rax, QWORD PTR __kfence_pool[rip]
+>   cmp rax, rdi
+>   jbe .L4
+> .L2:
+>   jmp kfree_not_kfence
+> .L4:
+>   add rax, 0x200000
+>   cmp rax, rdi
+>   jbe .L2
+>   jmp kfree_kfence
+>
+> So pointers to the left of the region and pointers to the right of the
+> region will take different branches, and so if you have a mix of
+> objects on both sides of the kfence region, you'll get tons of branch
+> mispredictions for no good reason. You'll want to rewrite that check
+> as "unlikely(ptr - base <= SIZE)" instead of "unlikely(ptr >= base &&
+> ptr < base + SIZE" unless you know that all the objects will be on one
+> side. This would also reduce the performance impact of loading
+> __kfence_pool from the data section, because the branch prediction can
+> then speculate the branch that depends on the load properly and
+> doesn't have to go roll back everything that happened when the object
+> turns out to be on the opposite side of the kfence memory region - the
+> latency of the load will hopefully become almost irrelevant.
 
->>>>>>>>>>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
->>>>>>>>>>>>>> breaks all bluetooth connections on my machine.
->>>>>>>>>>>>>> 
->>>>>>>>>>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
->>>>>>>>>>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
->>>>>>>>>>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
->>>>>>>>>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>>>>>>>>>>> ---
->>>>>>>>>>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
->>>>>>>>>>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
->>>>>>>>>>>>>> 
->>>>>>>>>>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
->>>>>>>>>>>>>> stopped working on my desktop system.  I finally got the time to do
->>>>>>>>>>>>>> bisection today, and it came down to this patch.  Reverting it on top of
->>>>>>>>>>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
->>>>>>>>>>>>>> work.
->>>>>>>>>>>>>> 
->>>>>>>>>>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
->>>>>>>>>>>>>> issue?
->>>>>>>>>>>>> 
->>>>>>>>>>>>> can you be specific what breaks since our guys and I also think the
->>>>>>>>>>>>> ChromeOS guys have been testing these series of patches heavily.
->>>>>>>>>>>> 
->>>>>>>>>>>> My bluetooth trackball does not connect at all.  With this reverted, it
->>>>>>>>>>>> all "just works".
->>>>>>>>>>>> 
->>>>>>>>>>>> Same I think for a Bluetooth headset, can check that again if you really
->>>>>>>>>>>> need me to, but the trackball is reliable here.
->>>>>>>>>>>> 
->>>>>>>>>>>>> When you run btmon does it indicate any errors?
->>>>>>>>>>>> 
->>>>>>>>>>>> How do I run it and where are the errors displayed?
->>>>>>>>>>> 
->>>>>>>>>>> you can do btmon -w trace.log and just let it run like tcdpump.
->>>>>>>>>> 
->>>>>>>>>> Ok, attached.
->>>>>>>>>> 
->>>>>>>>>> The device is not connecting, and then I open the gnome bluetooth dialog
->>>>>>>>>> and it scans for devices in the area, but does not connect to my
->>>>>>>>>> existing devices at all.
->>>>>>>>>> 
->>>>>>>>>> Any ideas?
->>>>>>>>> 
->>>>>>>>> the trace file is from -rc7 or from -rc7 with this patch reverted?
->>>>>>>>> 
->>>>>>>>> I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
->>>>>>>>> 
->>>>>>>>> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
->>>>>>>>> index e0269192f2e5..94c0daa9f28d 100644
->>>>>>>>> --- a/net/bluetooth/hci_request.c
->>>>>>>>> +++ b/net/bluetooth/hci_request.c
->>>>>>>>> @@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
->>>>>>>>>             return -1;
->>>>>>>>> 
->>>>>>>>>     /* White list can not be used with RPAs */
->>>>>>>>> -       if (!allow_rpa && !use_ll_privacy(hdev) &&
->>>>>>>>> +       if (!allow_rpa &&
->>>>>>>>>         hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
->>>>>>>>>             return -1;
->>>>>>>>>     }
->>>>>>>>> @@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
->>>>>>>>>             }
->>>>>>>>> 
->>>>>>>>>             /* White list can not be used with RPAs */
->>>>>>>>> -               if (!allow_rpa && !use_ll_privacy(hdev) &&
->>>>>>>>> +               if (!allow_rpa &&
->>>>>>>>>                 hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
->>>>>>>>>                     return 0x00;
->>>>>>>>>             }
->>>>>>>>> 
->>>>>>>>> 
->>>>>>>>> If you just do the above, does thing work for you again?
->>>>>>>> 
->>>>>>>> Corrupted white-space issues aside, yes, it works!
->>>>>>> 
->>>>>>> I just pasted it from a different terminal ;)
->>>>>>> 
->>>>>>>> I am running 5.9-rc8 with just this change on it and my tracball works
->>>>>>>> just fine.
->>>>>>>> 
->>>>>>>>> My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
->>>>>>>> 
->>>>>>>> How would one go about enabling such a hardware feature if they wanted
->>>>>>>> to?  :)
->>>>>>> 
->>>>>>> I need to understand what is going wrong for you. I have a suspicion,
->>>>>>> but first I need to understand what kind of device you have. I hope
->>>>>>> the trace file is enough.
->>>>>> 
->>>>>> If you need any other information, just let me know, this is a USB
->>>>>> Bluetooth controller from Intel:
->>>>>> 
->>>>>> 	$ lsusb | grep Blue
->>>>>> 	Bus 009 Device 002: ID 8087:0029 Intel Corp. AX200 Bluetooth
->>>>>> 
->>>>>> And the output of usb-devices for it:
->>>>>> 	T:  Bus=09 Lev=01 Prnt=01 Port=04 Cnt=01 Dev#=  2 Spd=12  MxCh= 0
->>>>>> 	D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
->>>>>> 	P:  Vendor=8087 ProdID=0029 Rev=00.01
->>>>>> 	C:  #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
->>>>>> 	I:  If#=0x0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>>>>> 	I:  If#=0x1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
->>>>> 
->>>>> I already figured out that it is one of our controllers. The trace file gives it away.
->>>>> 
->>>>> So my suspicion is that the device you want to connect to uses RPA (aka random addresses). And we added support for resolving them in the firmware. Your hardware does support that, but the host side is not fully utilizing it and thus your device is filtered out.
->>>> 
->>>> Dude, get an email client that line-wraps :)
->>>> 
->>>>> If I am not mistaken, then the use_ll_privacy() check in these two specific places need to be replaced with LL Privacy Enabled check. And then the allow_rpa condition will do its job as expected.
->>>>> 
->>>>> We can confirm this if you send me a trace with the patch applied.
->>>> 
->>>> Want me to disconnect the device and then reconnect it using
->>>> bluetootctl?  I'll go do that now...
->>>> 
->>>> Ok, it's attached, I did:
->>>> 
->>>> $ bluetoothctl disconnect F1:85:91:79:73:70
->>>> Attempting to disconnect from F1:85:91:79:73:70
->>>> [CHG] Device F1:85:91:79:73:70 ServicesResolved: no
->>>> Successful disconnected
->>>> 
->>>> And then the gnome bluetooth daemon (or whatever it has) reconnected it
->>>> automatically, so you can see the connection happen, and some movements
->>>> in the log.
->>>> 
->>>> If there's anything else you need, just let me know.
->>> 
->>> so the trace file indicates that you are using static addresses and not RPAs. Now I am confused.
->>> 
->>> What is the content of /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys?
->> 
->> f1:85:91:79:73:70 (type 1) f02567096e8537e5dac1cadf548fa750 00:00:00:00:00:00
-> 
-> I rebooted, and the same value was there.
-> 
->>> The only way I can explain this if you have an entry in that file, but the device is not using it.
->>> 
->>> If you have btmgmt (from bluez.git) you can try "./tools/btmgmt irks” to clear that list and try again.
->> 
->> Ok, I did that, and reconnected, this is still with the kernel that has
->> the patch.  Want me to reboot to a "clean" 5.9-rc8?
-> 
-> I rebooted into a clean 5.9-rc8 and the device does not connect.
-> 
-> So I did the following to trace this:
-> 
-> $ sudo btmgmt irks
-> Identity Resolving Keys successfully loaded
-> $ sudo cat /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys
-> $ bluetoothctl connect F1:85:91:79:73:70
-> Attempting to connect to F1:85:91:79:73:70
-> Failed to connect: org.bluez.Error.Failed
-> 
-> and ran another btmon session to see this, it is attached.
+Good point, implemented that. (It's "ptr - base < SIZE" I take it.)
 
-this is confusing and makes no sense :(
+> So in x86 intel assembly (assuming that we want to ensure that we only
+> do a single branch on the object type), the straightforward and
+> non-terrible version would be:
+>
+>
+> kfree_unoptimized:
+>   mov rax, rdi
+>   sub rax, QWORD PTR __kfence_pool[rip]
+>   cmp rax, 0x200000
+>   jbe 1f
+>   /* non-kfence case goes here */
+> 1:
+>   /* kfence case goes here */
+>
+>
+> while the version you want is:
+>
+>
+> kfree_static:
+>   mov rax, rdi
+>   sub rax, OFFSET FLAT:__kfence_pool
+>   cmp rax, 0x200000
+>   jbe 1f
+>   jmp kfree_not_kfence
+> 1:
+>   jmp kfree_kfence
+>
+>
+> If we instead use something like
+>
+> #define STATIC_VARIABLE_LOAD(variable) \
+> ({ \
+>   typeof(variable) value; \
+>   BUILD_BUG_ON(sizeof(variable) != sizeof(unsigned long)); \
+>   asm( \
+>     ".pushsection .static_variable_users\n\t" \
+>     ".long "  #variable " - .\n\t" \
+>     ".long 123f - .\n\t" /* offset to end of constant */ \
+>     ".popsection\n\t" \
+>     "movabs $0x0123456789abcdef, %0" \
+>     "123:\n\t" \
+>     :"=r"(value) \
+>   ); \
+>   value; \
+> })
+> static __always_inline bool is_kfence_address(const void *addr)
+> {
+>   return unlikely((char*)addr - STATIC_VARIABLE_LOAD(__kfence_pool) <
+> KFENCE_POOL_SIZE);
+> }
+>
+> to locate the pool (which could again be normally allocated with
+> alloc_pages()), we'd get code like this, which is like the previous
+> except that we need an extra "movabs" because x86's "sub" can only use
+> immediates up to 32 bits:
+>
+> kfree_hotpatchable_bigreloc:
+>   mov rax, rdi
+>   movabs rdx, 0x0123456789abcdef
+>   sub rax, rdx
+>   cmp rax, 0x200000
+>   jbe .1f
+>   jmp kfree_not_kfence
+> 1:
+>   jmp kfree_kfence
+>
+> The arch-specific part of this could probably be packaged up pretty
+> nicely into a generic interface. If it actually turns out to have a
+> performance benefit, that is.
 
-What is the content of debug/bluetooth/hci0/whitelist and
-debug/bluetooth/hci0/device_list?
+Something like this would certainly be nice, but we'll do the due
+diligence and see if it's even worth it.
 
-The only way I can explain this is that somehow the whitelist filter doesn’t
-get programmed correctly and thus the scan will not find your device. Why
-this points to use_ll_privacy() is totally unclear to me.
+> If that one extra "movabs" is actually a problem, it would
+> *theoretically* be possible to get rid of that by using module_alloc()
+> to allocate virtual memory to which offsets from kernel text are 32
+> bits, and using special-cased inline asm, but we probably shouldn't do
+> that, because as Mark pointed out, we'd then risk getting extremely
+> infrequent extra bugs when drivers use phys_to_virt() on allocations
+> that were done through kfence. Adding new, extremely infrequent and
+> sporadically occurring bugs to the kernel seems like the exact
+> opposite of the goal of KFENCE. :P
+>
+> Overall my expectation would be that the MOVABS version should
+> probably at worst be something like one cycle slower - it adds 5
+> instruction bytes (and we pay 1 cycle in the frontend per 16 bytes of
+> instructions, I think?) and 1 backend cycle (for the MOVABS - Agner
+> Fog's tables seem to say that at least on Skylake, MOVABS is 1 cycle).
+> But that backend cycle shouldn't even be on the critical path (and it
+> has a wider choice of ports than e.g. a load, and I think typical
+> kernel code isn't exactly highly parallelizable, so we can probably
+> schedule on a port that would've been free otherwise?), and I think
+> typical kernel code should be fairly light on the backend, so with the
+> MOVABS version, compared to the version with __kfence_pool in the data
+> section, we probably overall just pay a fraction of a cycle in
+> execution cost? I'm not a professional performance engineer, but this
+> sounds to me like the MOVABS version should probably perform roughly
+> as well as your version.
+>
+> Anyway, I guess this is all pretty vague without actually having
+> concrete benchmark results. :P
+>
+> See <https://godbolt.org/z/Kev9dc> for examples of actual code
+> generation for different options of writing this check.
 
-Btw. reboots won’t help since bluetoothd will restore from settings. You
-need to go into the files in /var/lib/bluetooth/ and look for an entry of
-IdentityResolvingKey for your device and remove it and then restart
-bluetoothd.
+Thanks for the analysis!  There is also some (11 year old) prior art,
+that seems to never have made it into the kernel:
+https://lore.kernel.org/lkml/20090924132626.485545323@polymtl.ca/
 
-You can run btmon and will even show you what bluetoothd loads during start.
+Maybe we need to understand why that never made it.
 
-Can you try to do systemctl stop bluetooth, then start btmon and then
-systemctl start bluetooth. It should reprogram the controller and I could
-see the complete trace on how it sets up your hardware.
+But I think, even if we drop the static pool, a first version of
+KFENCE should not depend on it.
 
-If this really breaks for your, it should have been broken for weeks for
-everybody. So this is the part that is confusing to me. And my original
-suspicion turned out to be wrong.
-
-Regards
-
-Marcel
-
+Thanks,
+-- Marco
