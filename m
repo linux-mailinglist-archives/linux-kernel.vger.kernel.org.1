@@ -2,156 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604692836A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BC62836A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgJENfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:35:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31525 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725914AbgJENfW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:35:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601904920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PTyrTW/rfYTR/tFQvyZHwiAowe5Cs00kgxEdQai11UE=;
-        b=iu1LUe35kF94lOjDLbY4tJiYiUsJmtR4ganLnLzxxCOGF38xiQcJ/DxDsr//aJ/pqVdRkJ
-        6om2yhlk/q0N7ENnx+CoSjnst5JSPqyg5huyW5ztuemi10ETMYuKqGH/KWsTGF1z9K5OSR
-        nya+QcoxLCstXGOrMyIz1yDsu+6NCoo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-YgYiAY_1OSSrsEVotbWR2w-1; Mon, 05 Oct 2020 09:35:18 -0400
-X-MC-Unique: YgYiAY_1OSSrsEVotbWR2w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726143AbgJENfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:35:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725936AbgJENfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:35:31 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD0D364145;
-        Mon,  5 Oct 2020 13:35:16 +0000 (UTC)
-Received: from ovpn-115-41.ams2.redhat.com (ovpn-115-41.ams2.redhat.com [10.36.115.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 200D11002382;
-        Mon,  5 Oct 2020 13:35:14 +0000 (UTC)
-Message-ID: <117b43d337e07c7491bee735cfce3ecc703d3f81.camel@redhat.com>
-Subject: Re: [PATCH RESEND] hv: clocksource: Add notrace attribute to
- read_hv_sched_clock_*() functions
-From:   Mohammed Gamal <mgamal@redhat.com>
-To:     linux-hyperv@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        vkuznets@redhat.com, Tianyu.Lan@microsoft.com, kys@microsoft.com,
-        haiyangz@microsoft.com, wei.liu@kernel.org
-Date:   Mon, 05 Oct 2020 15:35:13 +0200
-In-Reply-To: <20201005114744.1149630-1-mgamal@redhat.com>
-References: <20201005114744.1149630-1-mgamal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        by mail.kernel.org (Postfix) with ESMTPSA id 638E720756;
+        Mon,  5 Oct 2020 13:35:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601904930;
+        bh=QxMXAQ+yCvEEn6dM1e6qBOXZBOw7fFkONowEA4VtgVg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1e/t/aI+colfpTAM8N4qwcH90Q+7vo/lnXUhRI0VM+bn23OgQZ+t/oKuHAsSnG1qu
+         YyAUr+6XSImnKCL1x33tLJgt0i7mNX766dwnc2juex09x6SpP86/i4+6d465pn+1h5
+         jxJ+fZr9U8VynzflBIHAaY9HYeNjE+YI0MDW3/qc=
+Received: by pali.im (Postfix)
+        id 1D75EA07; Mon,  5 Oct 2020 15:35:28 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andre Heider <a.heider@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: marvell: espressobin: Update link to V7 schematic
+Date:   Mon,  5 Oct 2020 15:35:13 +0200
+Message-Id: <20201005133513.8649-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200925084306.16309-1-pali@kernel.org>
+References: <20200925084306.16309-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-05 at 13:47 +0200, Mohammed Gamal wrote:
-> When selecting function_graph tracer with the command:
->  # echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> 
-> The kernel crashes with the following stack trace:
-> 
-> [69703.122389] BUG: stack guard page was hit at 000000001056545c
-> (stack is 00000000fa3f8fed..0000000005d39503)
-> [69703.122403] kernel stack overflow (double-fault): 0000 [#1] SMP
-> PTI
-> [69703.122413] CPU: 0 PID: 16982 Comm: bash Kdump: loaded Not tainted
-> 4.18.0-236.el8.x86_64 #1
-> [69703.122420] Hardware name: Microsoft Corporation Virtual
-> Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
-> [69703.122433] RIP: 0010repare_ftrace_return+0xa/0x110
-> [69703.122458] Code: 05 00 0f 0b 48 c7 c7 10 ca 69 ae 0f b6 f0 e8 4b
-> 52 0c 00 31 c0 eb ca 66 0f 1f 84 00 00 00 00 00 55 48 89 e5 41 56 41
-> 55 41 54 <53> 48 83 ec 18 65 48 8b 04 25 28 00 00 00 48 89 45 d8 31
-> c0 48 85
-> [69703.122467] RSP: 0018:ffffbd6d01118000 EFLAGS: 00010086
-> [69703.122476] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-> 0000000000000003
-> [69703.122484] RDX: 0000000000000000 RSI: ffffbd6d011180d8 RDI:
-> ffffffffadce7550
-> [69703.122491] RBP: ffffbd6d01118018 R08: 0000000000000000 R09:
-> ffff9d4b09266000
-> [69703.122498] R10: ffff9d4b0fc04540 R11: ffff9d4b0fc20a00 R12:
-> ffff9d4b6e42aa90
-> [69703.122506] R13: ffff9d4b0fc20ab8 R14: 00000000000003e8 R15:
-> ffffbd6d0111837c
-> [69703.122514] FS:  00007fd5f2588740(0000) GS:ffff9d4b6e400000(0000)
-> knlGS:0000000000000000
-> [69703.122521] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [69703.122528] CR2: ffffbd6d01117ff8 CR3: 00000000565d8001 CR4:
-> 00000000003606f0
-> [69703.122538] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [69703.122545] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> [69703.122552] Call Trace:
-> [69703.122568]  ftrace_graph_caller+0x6b/0xa0
-> [69703.122589]  ? read_hv_sched_clock_tsc+0x5/0x20
-> [69703.122599]  read_hv_sched_clock_tsc+0x5/0x20
-> [69703.122611]  sched_clock+0x5/0x10
-> [69703.122621]  sched_clock_local+0x12/0x80
-> [69703.122631]  sched_clock_cpu+0x8c/0xb0
-> [69703.122644]  trace_clock_global+0x21/0x90
-> [69703.122655]  ring_buffer_lock_reserve+0x100/0x3c0
-> [69703.122671]  trace_buffer_lock_reserve+0x16/0x50
-> [69703.122683]  __trace_graph_entry+0x28/0x90
-> [69703.122695]  trace_graph_entry+0xfd/0x1a0
-> [69703.122705]  ? read_hv_clock_tsc_cs+0x10/0x10
-> [69703.122714]  ? sched_clock+0x5/0x10
-> [69703.122723]  prepare_ftrace_return+0x99/0x110
-> [69703.122734]  ? read_hv_clock_tsc_cs+0x10/0x10
-> [69703.122743]  ? sched_clock+0x5/0x10
-> [...]
-> 
-> Setting the notrace attribute for read_hv_sched_clock_msr() and
-> read_hv_sched_clock_tsc() fixes it
-> 
-> Fixes: bd00cd52d5be ("clocksource/drivers/hyperv: Add Hyper-V
-> specific
-> sched clock function")
-> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
-> ---
->  drivers/clocksource/hyperv_timer.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clocksource/hyperv_timer.c
-> b/drivers/clocksource/hyperv_timer.c
-> index 09aa44cb8a91d..ba04cb381cd3f 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -341,7 +341,7 @@ static u64 notrace read_hv_clock_tsc_cs(struct
-> clocksource *arg)
->  	return read_hv_clock_tsc();
->  }
->  
-> -static u64 read_hv_sched_clock_tsc(void)
-> +static u64 notrace read_hv_sched_clock_tsc(void)
->  {
->  	return (read_hv_clock_tsc() - hv_sched_clock_offset) *
->  		(NSEC_PER_SEC / HV_CLOCK_HZ);
-> @@ -404,7 +404,7 @@ static u64 notrace read_hv_clock_msr_cs(struct
-> clocksource *arg)
->  	return read_hv_clock_msr();
->  }
->  
-> -static u64 read_hv_sched_clock_msr(void)
-> +static u64 notrace read_hv_sched_clock_msr(void)
->  {
->  	return (read_hv_clock_msr() - hv_sched_clock_offset) *
->  		(NSEC_PER_SEC / HV_CLOCK_HZ);
+Up-to-date version of V7 schematic is on new URL linked from official
+tech-spec webpage http://espressobin.net/tech-spec/
 
-Please ignore the patch. Somehow I missed Wei's reply on it. It's
-already applied to hyperv-next.
+Signed-off-by: Pali Rohár <pali@kernel.org>
 
-Thanks
+---
+Changes in V2:
+* Added commit description
+---
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts | 2 +-
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+index e225dce64b9e..4775a7eda481 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+@@ -8,7 +8,7 @@
+  *
+  */
+ /*
+- * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
++ * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
+  */
+ 
+ /dts-v1/;
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+index 44dbe9a21cc7..c47a93978386 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+@@ -8,7 +8,7 @@
+  *
+  */
+ /*
+- * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
++ * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
+  */
+ 
+ /dts-v1/;
+-- 
+2.20.1
 
