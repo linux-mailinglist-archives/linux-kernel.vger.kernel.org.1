@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CC82837D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676BB2837DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgJEOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgJEO34 (ORCPT
+        id S1726128AbgJEOb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:31:29 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:43707 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725936AbgJEOb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:29:56 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D639C0613CE;
-        Mon,  5 Oct 2020 07:29:56 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id s205so7604069lja.7;
-        Mon, 05 Oct 2020 07:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eTnn/kYDZ2BMoYt3lOwT6li62X6H6HZqtaJOYKGMGl0=;
-        b=Iqz8PRRwA1HefiIetdTAflRL7/PFZahvL5Cpex3hvr5Ls5x3d77NrOz/bDJyKbQpre
-         EHS32TtbLrg3b99ldQTfqIns0hV2MnzN0gBrU7Q/F8wvOfEU4cjDCqHOI5EISYSzMc+O
-         a0o3ZqGAMUpYJNf7iGAj+WB7WuKQZyS0RZDWZE4orWXOdooyzATVjXoUua59xJ48hscL
-         b2g2J6DiGjuw3QeSbkcztrx4KupcJppVSPwJamVBogYl9axd76d6Wh4j4S6pM1Y8094Y
-         +lxZxA8vCKF2Gm/DPh/rR0i9EToBAHReEDJsEcoLobwyOoeh8uZT6taV2dBgdnouMdsK
-         D1/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eTnn/kYDZ2BMoYt3lOwT6li62X6H6HZqtaJOYKGMGl0=;
-        b=ALlN/COp9pZMFeuOw2v3MnzJpAF6yRqnsuDOOZsUNitCuBji7vywvjEkshI2LeRNRu
-         0LatWpFJZsynPA5IALEwHNm37WsEkz1a4ZRWjrCvf/HPyFLWS5I+r8vqYG9mQf2epG8/
-         Cf4WwLCVJ91Wbor0HtcHFhOcji0DyXKrz7Nz0Y+5YNnk6nh8WP4jxoLy8w6t5NREZ//A
-         lsynZgzTkXgWXvqWzYEVs+UVwg5pd269Td4TCinm5sM+CJKHVIvXqfdNHvuWQHKbbKVI
-         S9Jf9TW9BF81O3iUJH9jKo0y2r6sztF4c/sIyPA0tq6Ch2OAzr8RopYtPJAxGEuJi6B5
-         3Xkw==
-X-Gm-Message-State: AOAM53288UyZ4J/UufbnLBV1+1OSfPgjr6sxNWbmoiubFjHnKswVHu/l
-        uHQWVwxmHQ1S32mTgBQsabiOslOphL4=
-X-Google-Smtp-Source: ABdhPJyJZhlMtE0jvoYtCzDL1pzsEU40Hbiyqw6qIX3RWmgHX5RBdfQJaJpngRhXFO454KmyTwgSWQ==
-X-Received: by 2002:a2e:9dc7:: with SMTP id x7mr5139056ljj.447.1601908194605;
-        Mon, 05 Oct 2020 07:29:54 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id q22sm860990lfm.51.2020.10.05.07.29.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 07:29:54 -0700 (PDT)
-Subject: Re: [PATCH v3 1/3] ARM: tegra: Add device-tree for Ouya
-To:     Peter Geis <pgwipeout@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201004133114.845230-1-pgwipeout@gmail.com>
- <20201004133114.845230-2-pgwipeout@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e7662043-7f8c-4df1-df5c-bef34983c0d9@gmail.com>
-Date:   Mon, 5 Oct 2020 17:29:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 5 Oct 2020 10:31:29 -0400
+Received: (qmail 378125 invoked by uid 1000); 5 Oct 2020 10:31:28 -0400
+Date:   Mon, 5 Oct 2020 10:31:28 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+9b802f11efb574105ec5@syzkaller.appspotmail.com>
+Cc:     andreyknvl@google.com, eli.billauer@gmail.com,
+        gregkh@linuxfoundation.org, gustavoars@kernel.org,
+        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, oneukum@suse.com,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.de
+Subject: Re: WARNING in handle_bug/usb_submit_urb
+Message-ID: <20201005143128.GD376584@rowland.harvard.edu>
+References: <000000000000fefa4f05b0ea5fcd@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201004133114.845230-2-pgwipeout@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000fefa4f05b0ea5fcd@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.10.2020 16:31, Peter Geis пишет:
-> The Ouya was the sole device produced by Ouya Inc in 2013.
-> It was a game console originally running Android 5 on top of Linux 3.1.10.
+On Mon, Oct 05, 2020 at 03:59:22AM -0700, syzbot wrote:
+> Hello,
 > 
-> This patch adds the device tree supporting the Ouya.
-> It has been tested on the original variant with Samsung ram.
+> syzbot found the following issue on:
 > 
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> ---
+> HEAD commit:    168ae5a7 Merge 5.9-rc8 into usb-next
+> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12bec877900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5429f3643ebc37a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=9b802f11efb574105ec5
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120aa50b900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134fa5c0500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+9b802f11efb574105ec5@syzkaller.appspotmail.com
+> 
+> usb 1-1: Manufacturer: syz
+> usb 1-1: SerialNumber: syz
+> usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
+> usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+> WARNING: CPU: 1 PID: 21 at drivers/usb/core/urb.c:493 usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 21 Comm: kworker/1:1 Not tainted 5.9.0-rc8-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events request_firmware_work_func
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x16e lib/dump_stack.c:118
+>  panic+0x2cb/0x702 kernel/panic.c:231
+>  __warn.cold+0x20/0x44 kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  handle_bug+0x41/0x80 arch/x86/kernel/traps.c:234
+>  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> RIP: 0010:usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
+> Code: 84 04 03 00 00 e8 3e 98 c6 fd 4c 89 ef e8 66 b6 12 ff 41 89 d8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 20 b3 5d 86 e8 d0 ba 9a fd <0f> 0b e9 c6 f8 ff ff e8 12 98 c6 fd 48 81 c5 40 06 00 00 e9 f2 f7
+> RSP: 0018:ffff8881da33f808 EFLAGS: 00010286
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Andrey, what happened here?  Where's the rest of the stack trace?
+
+Alan Stern
