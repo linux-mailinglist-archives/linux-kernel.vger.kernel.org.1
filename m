@@ -2,156 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADEE283906
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E63283909
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgJEPIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
+        id S1726673AbgJEPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJEPIG (ORCPT
+        with ESMTP id S1725970AbgJEPIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:08:06 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C6FC0613CE;
-        Mon,  5 Oct 2020 08:08:06 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id a5so2189759ljj.11;
-        Mon, 05 Oct 2020 08:08:06 -0700 (PDT)
+        Mon, 5 Oct 2020 11:08:23 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059FAC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:08:23 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a200so2277206pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 08:08:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=y/jbq/dvc0SeEAuNgs8PeopdIcqnz5xE9+lszm120Vg=;
-        b=K6/WmPyYCS3Rp8ku15cnJNHN00NAvg3pv5av7mmklhJfeeND9Gr57YIUr5oUbLr4i+
-         moeXbFdzQ5FDo2540XrC2ZpD3GlrHYo04HwFZ0GX/mz/V0FGv1iZrtRzRd+zBVdKWLev
-         OiIHRmxkBJ3Uu7/MrJGkQMyH0Gd3wMlKXVob4wzbZcgPPi2ttIeoMzhwIyuIkcMvzgrf
-         Lun1kRFhEIi0Tfoxa9SimQEu2pUqFWmF8xtcYXlBJikQY9GahZxMylUD4ZFKQixYGh9X
-         FNBzPAndi+Fp0F6Y9KVcYeOPfioAQ8E4dPMrRJMIoYfN+BijZ/vcRnEcoFpSCy4e4mDu
-         i5gg==
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=1S/FkXYTFn2oVLi29cIaAZFlPFb57vgrFD3svNFFhFE=;
+        b=NwHhgJZg6oIyqBZiAJHMCgsRAKWrCLIrSD/1NL2vxuXuH2+LWyo00AH7v4AEnJdvGk
+         fEoQodjkLw/LRrBW/+ptXC/s0GhTuHD84NsuoCDpCMul9ffo/WIc+h63rtncD6XQSD5J
+         TZATynjHjKIQCY00zPcVLUkqZfV0GukjQFbs8SSG0IzhIS68CglsZoeqX+6K/p82t68U
+         BCYzp4BX9O9cs5shPRqRHkwiMzAjXq8Z2dVcpRZ66B+Dx4Lu/ooo0dHSW5On9b5HIxdC
+         +rKL8DyUzKUUkbbE9RSsG5u/jRKDw8c1swue5mZ0srtRR/kg8ZS1GSsWqL4s4zEJBNZD
+         sMyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=y/jbq/dvc0SeEAuNgs8PeopdIcqnz5xE9+lszm120Vg=;
-        b=Kkq9P/FxkCVc5EcTgObxtEHvN8agJ7gwuePZrkE4PPcZCemaABLX4soANduE95biit
-         hh6JqHLKmGJEM8RlfnRVZvmgqFpGp9VqB0pWvounCLib5tpfxA31YZUVVVIUt5BdfBst
-         CIQ0faQcXGN+1WlLv1c7wZcfoKDYAhl6W74+4PpYlnfxnyWJ63M2Q/OlSyfr6r4Fkfx/
-         3xnZT9EMlMM6Ppbe0RrkRo0hvAdpljiCyr4+YpB20yxiuPRx/6lfPlx0FJZ13sn0EPiT
-         6pnT6kBKeIgIvAYDiban9HET24IYYXqrfiEDh7My5iOy5vFRDX/pS5+SznyF+fq0Mcxw
-         L8Qw==
-X-Gm-Message-State: AOAM533RfsAJ7/xNxT6Nfja2bvm1gDJfcQ26rrpM1seUUPr1aX/TUtz7
-        /SbNefb/s5reQlwx1MGiPfA=
-X-Google-Smtp-Source: ABdhPJwJCWZY1Ta3clt2a8+QT8HNjjnHTD5+j6kZdK+JedNK3x/DxK2R5Lq8sgokrenP6Q/9uJLfsw==
-X-Received: by 2002:a2e:8702:: with SMTP id m2mr49631lji.49.1601910484580;
-        Mon, 05 Oct 2020 08:08:04 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id 18sm3305lfz.141.2020.10.05.08.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 08:08:03 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 5 Oct 2020 17:08:01 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201005150801.GC17959@pc636>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
- <20201002090507.GB4555@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=1S/FkXYTFn2oVLi29cIaAZFlPFb57vgrFD3svNFFhFE=;
+        b=gzNxU3GBBMqyPIA6GatiiIwc+YrmQfl3RTDbSPFPcCZt56ucwXLDDNPf9hWVFRqt8Z
+         +AB4e13ZENYu2hlVorF2Gkko9tDbt4uLbz2pj0PbP7QJuJ2CkKgrPMVSsxCQX0C8RZDR
+         88hpAriX+CnoAmlP4Ji3zFVYAQdGY8mCh6EiEFP6m92B472P4j68iEBWtjbawr9Q9fda
+         ZT+TrpdsLXrD0WNLPRG/SitrFTJm+JqFg56AReQ39nPV6FBxI9mXRQxKUOrvpmGIFdxj
+         Fn+ubWR2mLO6CgFMwVvBYLG4AU6Gi4pHuscNAUPqjeTrPSIhbZiw0zFVju2oa+hSpO0J
+         BwrQ==
+X-Gm-Message-State: AOAM532yqGDsHC2ZIfoCSf6w9SimwPk2734SK+Liy0NZ5dWy0mlff1ov
+        RFK7nc3WzTLeyRM2BXh00wHtXyEd2mQZ1ETUhmpkGg==
+X-Google-Smtp-Source: ABdhPJyHnO9QHIoG0zf/drGaDwjFyllVTYoa9Xo8ie4XOoCP9wjijxD4g1PK0MIzaT/mBobIZoLiNKs/EbUW9TvasVI=
+X-Received: by 2002:a63:d56:: with SMTP id 22mr15491292pgn.286.1601910502282;
+ Mon, 05 Oct 2020 08:08:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002090507.GB4555@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 5 Oct 2020 17:08:11 +0200
+Message-ID: <CAAeHK+wb4k-LGTjK9F5YbJNviF_+yU+wE_=Vpo9Rn7KFN8vG6Q@mail.gmail.com>
+Subject: Is usb_hcd_giveback_urb() allowed in task context?
+To:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 11:05:07AM +0200, Michal Hocko wrote:
-> On Fri 02-10-20 09:50:14, Mel Gorman wrote:
-> > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
-> > > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
-> > > > > 
-> > > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > > > > the allocator (different from what you posted in previous version) so that it
-> > > > > only looks at the flag after it tries to allocate from pcplist and finds out
-> > > > > it's empty. So, no inventing of new page allocator entry points or checks such
-> > > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > > > > affect existing fast paths.
-> > > > >
-> > > > OK. Now i see. Please have a look below at the patch, so we fully understand
-> > > > each other. If that is something that is close to your view or not:
-> > > > 
-> > > > <snip>
-> > > > t a/include/linux/gfp.h b/include/linux/gfp.h
-> > > > index c603237e006c..7e613560a502 100644
-> > > > --- a/include/linux/gfp.h
-> > > > +++ b/include/linux/gfp.h
-> > > > @@ -39,8 +39,9 @@ struct vm_area_struct;
-> > > >  #define ___GFP_HARDWALL                0x100000u
-> > > >  #define ___GFP_THISNODE                0x200000u
-> > > >  #define ___GFP_ACCOUNT         0x400000u
-> > > > +#define ___GFP_NO_LOCKS                0x800000u
-> > > 
-> > > Even if a new gfp flag gains a sufficient traction and support I am
-> > > _strongly_ opposed against consuming another flag for that. Bit space is
-> > > limited. 
-> > 
-> > That is definitely true. I'm not happy with the GFP flag at all, the
-> > comment is at best a damage limiting move. It still would be better for
-> > a memory pool to be reserved and sized for critical allocations.
-> 
-> Completely agreed. The only existing usecase is so special cased that a
-> dedicated pool is not only easier to maintain but it should be also much
-> better tuned for the specific workload. Something not really feasible
-> with the allocator.
-> 
-> > > Besides that we certainly do not want to allow craziness like
-> > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
-> > 
-> > That would deserve to be taken to a dumpster and set on fire. The flag
-> > combination could be checked in the allocator but the allocator path fast
-> > paths are bad enough already.
-> 
-> If a new allocation/gfp mode is absolutely necessary then I believe that
-> the most reasoanble way forward would be
-> #define GFP_NO_LOCK	((__force gfp_t)0)
-> 
-Agree. Even though i see that some code should be adjusted for it. There are
-a few users of the __get_free_page(0); So, need to double check it:
+Dear USB and USB/IP maintainers,
 
-<snip>
-[    0.650351] BUG: kernel NULL pointer dereference, address: 0000000000000010
-[    0.651083] #PF: supervisor read access in kernel mode
-[    0.651639] #PF: error_code(0x0000) - not-present page
-[    0.652200] PGD 0 P4D 0
-[    0.652523] Oops: 0000 [#1] SMP NOPTI
-[    0.652668] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7-next-20200930+ #140
-[    0.652668] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-[    0.652668] RIP: 0010:__find_event_file+0x21/0x80
-<snip>
+While fuzzing the USB/IP stack with syzkaller we've stumbled upon an issue.
 
-Apart of that. There is a post_alloc_hook(), that gets called from the prep_new_page().
-If "debug page alloc enabled", it maps a page for debug purposes invoking kernel_map_pages().
-__kernel_map_pages() is ARCH specific. For example, powerpc variant uses sleep-able locks
-what can be easily converted to raw variant. 
+Currently kcov (the subsystem that is used for coverage collection)
+USB-related callbacks assume that usb_hcd_giveback_urb() can only be
+called from interrupt context, as indicated by the comment before the
+function definition. In the USB/IP code, however, it's called from the
+task context (see the stack trace below).
 
---
-Vlad Rezki
+Is this something that is allowed and we need to fix kcov? Or is this
+a bug in USB/IP?
+
+Thank you!
+
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 57 at kernel/kcov.c:834
+kcov_remote_start+0xa7/0x400 kernel/kcov.c:834
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 2 PID: 57 Comm: kworker/2:1 Not tainted 5.9.0-rc7+ #45
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x14b/0x19d lib/dump_stack.c:118
+ panic+0x319/0x765 kernel/panic.c:231
+ __warn.cold+0x2f/0x2f kernel/panic.c:600
+ report_bug+0x273/0x300 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:kcov_remote_start+0xa7/0x400 kernel/kcov.c:834
+Code: 84 26 03 00 00 fa 66 0f 1f 44 00 00 65 8b 05 50 13 93 7e a9 00
+01 ff 00 41 8b 94 24 50 0a 00 00 75 1a 81 e2 ff ff ff bf 74 12 <0f> 0b
+48 83 3d 17 c4 26 08 00 0f 85 62 01 00 00 0f 0b 65 8b 05 20
+RSP: 0018:ffffc9000030f600 EFLAGS: 00010002
+RAX: 0000000080000000 RBX: 0100000000000003 RCX: ffffc90014cd1000
+RDX: 0000000000000002 RSI: ffffffff85199fcc RDI: 0100000000000003
+RBP: 0000000000000282 R08: ffff88806d594640 R09: fffff52000061eca
+R10: 0000000000000003 R11: fffff52000061ec9 R12: ffff88806d594640
+R13: 0000000000000000 R14: 0100000000000003 R15: 0000000000000000
+ kcov_remote_start_usb include/linux/kcov.h:52 [inline]
+ __usb_hcd_giveback_urb+0x284/0x4b0 drivers/usb/core/hcd.c:1649
+ usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
+ vhci_urb_enqueue.cold+0x37f/0x4c5 drivers/usb/usbip/vhci_hcd.c:801
+ usb_hcd_submit_urb+0x2b1/0x20d0 drivers/usb/core/hcd.c:1547
+ usb_submit_urb+0x6e5/0x13b0 drivers/usb/core/urb.c:570
+ usb_start_wait_urb+0x10f/0x2c0 drivers/usb/core/message.c:58
+ usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+ usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
+ hub_set_address drivers/usb/core/hub.c:4472 [inline]
+ hub_port_init+0x23f6/0x2d20 drivers/usb/core/hub.c:4748
+ hub_port_connect drivers/usb/core/hub.c:5140 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
+ port_event drivers/usb/core/hub.c:5494 [inline]
+ hub_event+0x1cc9/0x38d0 drivers/usb/core/hub.c:5576
+ process_one_work+0x7b6/0x1190 kernel/workqueue.c:2269
+ worker_thread+0x94/0xdc0 kernel/workqueue.c:2415
+ kthread+0x372/0x450 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 1 seconds..
