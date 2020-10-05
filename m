@@ -2,268 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37B5283DEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466FF283DF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727195AbgJESBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53320 "EHLO mail.kernel.org"
+        id S1727283AbgJESCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:02:51 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:54408 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725940AbgJESBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:01:24 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726894AbgJESCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 14:02:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601920969; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ld9Fueldp78QECrk1tT6tf3UhOcfsqkKomFN6EN3Tjg=;
+ b=qJ5wlcqgdhDmK7lDj4tPE4/AsCH5TXcsog0NGljvRz6G/EF69cQvKWgmigmjNz7h5WaF/Cut
+ +AnJx57DGEut0nyXXOyN9JXzrN+TlQObzfpOh8lBg+LqIGgrpi4FvB/MWuV6bIWIQC4qHj4a
+ Kd5hOC8IN2I7gqSHfDUzan0zgUE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f7b5fa3aad2c3cd1c8412ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 18:02:11
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 28E93C433F1; Mon,  5 Oct 2020 18:02:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8DF3207EA;
-        Mon,  5 Oct 2020 18:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601920883;
-        bh=SvfOHrgq/Gu/7vm6La5YQZsdWKuhmYGTUvYOQkZth7E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V7ozeGlNj2Jh16fPvS1nnoICpZhkVOQvbjX4LzNt/NW4RZRFOWuaMxdLi/G8F1Vbx
-         +gKwonw4VOwO0KsSwrhzkMwuZ61w5aGKR2+wRZINTWgLutCmXwJ17eoypQzDHGctFL
-         75hU1fNjNtDhB1zHNqaOdzCLT4n5La/37aw8Fwk8=
-Date:   Mon, 5 Oct 2020 20:02:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Sathish Narsimman <sathish.narasimman@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
- whitelist"
-Message-ID: <20201005180208.GA2739@kroah.com>
-References: <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
- <20201004105124.GA2429@kroah.com>
- <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
- <20201005083624.GA2442@kroah.com>
- <220D3B4E-D73E-43AD-8FF8-887D1A628235@holtmann.org>
- <20201005124018.GA800868@kroah.com>
- <824BC92C-5035-4B80-80E7-298508E4ADD7@holtmann.org>
- <20201005161149.GA2378402@kroah.com>
- <0C92E812-BF43-46A6-A069-3F7F3278FBB4@holtmann.org>
- <20201005173835.GB2388217@kroah.com>
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47ACAC433C8;
+        Mon,  5 Oct 2020 18:02:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="VS++wcV0S1rZb1Fb"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201005173835.GB2388217@kroah.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 05 Oct 2020 11:02:10 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: fixes wrong connection state caused by
+ failure of link train
+In-Reply-To: <160169114309.310579.5033839844955785761@swboyd.mtv.corp.google.com>
+References: <20201002220919.17245-1-khsieh@codeaurora.org>
+ <160169114309.310579.5033839844955785761@swboyd.mtv.corp.google.com>
+Message-ID: <0de13a805820e4d73b8f906682386845@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-On Mon, Oct 05, 2020 at 07:38:35PM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 05, 2020 at 07:14:44PM +0200, Marcel Holtmann wrote:
-> > Hi Greg,
-> > 
-> > >>>>>>>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
-> > >>>>>>>>>>> breaks all bluetooth connections on my machine.
-> > >>>>>>>>>>> 
-> > >>>>>>>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
-> > >>>>>>>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
-> > >>>>>>>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
-> > >>>>>>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > >>>>>>>>>>> ---
-> > >>>>>>>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
-> > >>>>>>>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
-> > >>>>>>>>>>> 
-> > >>>>>>>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
-> > >>>>>>>>>>> stopped working on my desktop system.  I finally got the time to do
-> > >>>>>>>>>>> bisection today, and it came down to this patch.  Reverting it on top of
-> > >>>>>>>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
-> > >>>>>>>>>>> work.
-> > >>>>>>>>>>> 
-> > >>>>>>>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
-> > >>>>>>>>>>> issue?
-> > >>>>>>>>>> 
-> > >>>>>>>>>> can you be specific what breaks since our guys and I also think the
-> > >>>>>>>>>> ChromeOS guys have been testing these series of patches heavily.
-> > >>>>>>>>> 
-> > >>>>>>>>> My bluetooth trackball does not connect at all.  With this reverted, it
-> > >>>>>>>>> all "just works".
-> > >>>>>>>>> 
-> > >>>>>>>>> Same I think for a Bluetooth headset, can check that again if you really
-> > >>>>>>>>> need me to, but the trackball is reliable here.
-> > >>>>>>>>> 
-> > >>>>>>>>>> When you run btmon does it indicate any errors?
-> > >>>>>>>>> 
-> > >>>>>>>>> How do I run it and where are the errors displayed?
-> > >>>>>>>> 
-> > >>>>>>>> you can do btmon -w trace.log and just let it run like tcdpump.
-> > >>>>>>> 
-> > >>>>>>> Ok, attached.
-> > >>>>>>> 
-> > >>>>>>> The device is not connecting, and then I open the gnome bluetooth dialog
-> > >>>>>>> and it scans for devices in the area, but does not connect to my
-> > >>>>>>> existing devices at all.
-> > >>>>>>> 
-> > >>>>>>> Any ideas?
-> > >>>>>> 
-> > >>>>>> the trace file is from -rc7 or from -rc7 with this patch reverted?
-> > >>>>>> 
-> > >>>>>> I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
-> > >>>>>> 
-> > >>>>>> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-> > >>>>>> index e0269192f2e5..94c0daa9f28d 100644
-> > >>>>>> --- a/net/bluetooth/hci_request.c
-> > >>>>>> +++ b/net/bluetooth/hci_request.c
-> > >>>>>> @@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
-> > >>>>>>              return -1;
-> > >>>>>> 
-> > >>>>>>      /* White list can not be used with RPAs */
-> > >>>>>> -       if (!allow_rpa && !use_ll_privacy(hdev) &&
-> > >>>>>> +       if (!allow_rpa &&
-> > >>>>>>          hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
-> > >>>>>>              return -1;
-> > >>>>>>      }
-> > >>>>>> @@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
-> > >>>>>>              }
-> > >>>>>> 
-> > >>>>>>              /* White list can not be used with RPAs */
-> > >>>>>> -               if (!allow_rpa && !use_ll_privacy(hdev) &&
-> > >>>>>> +               if (!allow_rpa &&
-> > >>>>>>                  hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
-> > >>>>>>                      return 0x00;
-> > >>>>>>              }
-> > >>>>>> 
-> > >>>>>> 
-> > >>>>>> If you just do the above, does thing work for you again?
-> > >>>>> 
-> > >>>>> Corrupted white-space issues aside, yes, it works!
-> > >>>> 
-> > >>>> I just pasted it from a different terminal ;)
-> > >>>> 
-> > >>>>> I am running 5.9-rc8 with just this change on it and my tracball works
-> > >>>>> just fine.
-> > >>>>> 
-> > >>>>>> My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
-> > >>>>> 
-> > >>>>> How would one go about enabling such a hardware feature if they wanted
-> > >>>>> to?  :)
-> > >>>> 
-> > >>>> I need to understand what is going wrong for you. I have a suspicion,
-> > >>>> but first I need to understand what kind of device you have. I hope
-> > >>>> the trace file is enough.
-> > >>> 
-> > >>> If you need any other information, just let me know, this is a USB
-> > >>> Bluetooth controller from Intel:
-> > >>> 
-> > >>> 	$ lsusb | grep Blue
-> > >>> 	Bus 009 Device 002: ID 8087:0029 Intel Corp. AX200 Bluetooth
-> > >>> 
-> > >>> And the output of usb-devices for it:
-> > >>> 	T:  Bus=09 Lev=01 Prnt=01 Port=04 Cnt=01 Dev#=  2 Spd=12  MxCh= 0
-> > >>> 	D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-> > >>> 	P:  Vendor=8087 ProdID=0029 Rev=00.01
-> > >>> 	C:  #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-> > >>> 	I:  If#=0x0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> > >>> 	I:  If#=0x1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> > >> 
-> > >> I already figured out that it is one of our controllers. The trace file gives it away.
-> > >> 
-> > >> So my suspicion is that the device you want to connect to uses RPA (aka random addresses). And we added support for resolving them in the firmware. Your hardware does support that, but the host side is not fully utilizing it and thus your device is filtered out.
-> > > 
-> > > Dude, get an email client that line-wraps :)
-> > > 
-> > >> If I am not mistaken, then the use_ll_privacy() check in these two specific places need to be replaced with LL Privacy Enabled check. And then the allow_rpa condition will do its job as expected.
-> > >> 
-> > >> We can confirm this if you send me a trace with the patch applied.
-> > > 
-> > > Want me to disconnect the device and then reconnect it using
-> > > bluetootctl?  I'll go do that now...
-> > > 
-> > > Ok, it's attached, I did:
-> > > 
-> > > $ bluetoothctl disconnect F1:85:91:79:73:70
-> > > Attempting to disconnect from F1:85:91:79:73:70
-> > > [CHG] Device F1:85:91:79:73:70 ServicesResolved: no
-> > > Successful disconnected
-> > > 
-> > > And then the gnome bluetooth daemon (or whatever it has) reconnected it
-> > > automatically, so you can see the connection happen, and some movements
-> > > in the log.
-> > > 
-> > > If there's anything else you need, just let me know.
-> > 
-> > so the trace file indicates that you are using static addresses and not RPAs. Now I am confused.
-> > 
-> > What is the content of /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys?
+On 2020-10-02 19:12, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2020-10-02 15:09:19)
+>> Connection state is set incorrectly happen at either failure of link 
+>> train
+>> or cable plugged in while suspended. This patch fixes these problems.
+>> This patch also replace ST_SUSPEND_PENDING with ST_DISPLAY_OFF.
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 > 
-> f1:85:91:79:73:70 (type 1) f02567096e8537e5dac1cadf548fa750 00:00:00:00:00:00
-
-I rebooted, and the same value was there.
-
-> > The only way I can explain this if you have an entry in that file, but the device is not using it.
-> > 
-> > If you have btmgmt (from bluez.git) you can try "./tools/btmgmt irks” to clear that list and try again.
+> Any Fixes: tag?
 > 
-> Ok, I did that, and reconnected, this is still with the kernel that has
-> the patch.  Want me to reboot to a "clean" 5.9-rc8?
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_display.c | 52 
+>> ++++++++++++++---------------
+>>  drivers/gpu/drm/msm/dp/dp_panel.c   |  5 +++
+>>  2 files changed, 31 insertions(+), 26 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index 431dff9de797..898c6cc1643a 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -340,8 +340,6 @@ static int dp_display_process_hpd_high(struct 
+>> dp_display_private *dp)
+>>         }
+>> 
+>>         dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
+>> -
+>> -
+>>  end:
+>>         return rc;
+>>  }
+> 
+> Not sure we need this hunk
+> 
+>> @@ -1186,19 +1180,19 @@ static int dp_pm_resume(struct device *dev)
+>> 
+>>         dp = container_of(dp_display, struct dp_display_private, 
+>> dp_display);
+>> 
+>> +       /* start from dis connection state */
+> 
+> disconnection? Or disconnected state?
+> 
+>> +       atomic_set(&dp->hpd_state, ST_DISCONNECTED);
+>> +
+>>         dp_display_host_init(dp);
+>> 
+>>         dp_catalog_ctrl_hpd_config(dp->catalog);
+>> 
+>>         status = dp_catalog_hpd_get_state_status(dp->catalog);
+>> 
+>> -       if (status) {
+>> +       if (status)
+>>                 dp->dp_display.is_connected = true;
+>> -       } else {
+>> +       else
+>>                 dp->dp_display.is_connected = false;
+>> -               /* make sure next resume host_init be called */
+>> -               dp->core_initialized = false;
+>> -       }
+>> 
+>>         return 0;
+>>  }
+>> @@ -1214,6 +1208,9 @@ static int dp_pm_suspend(struct device *dev)
+>>         if (dp_display->power_on == true)
+>>                 dp_display_disable(dp, 0);
+>> 
+>> +       /* host_init will be called at pm_resume */
+>> +       dp->core_initialized = false;
+>> +
+>>         atomic_set(&dp->hpd_state, ST_SUSPENDED);
+>> 
+>>         return 0;
+>> @@ -1343,6 +1340,9 @@ int msm_dp_display_enable(struct msm_dp *dp, 
+>> struct drm_encoder *encoder)
+>> 
+>>         mutex_lock(&dp_display->event_mutex);
+>> 
+>> +       /* delete sentinel checking */
+> 
+> Stop sentinel checking?
+> 
+>> +       dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
+>> +
+>>         rc = dp_display_set_mode(dp, &dp_display->dp_mode);
+>>         if (rc) {
+>>                 DRM_ERROR("Failed to perform a mode set, rc=%d\n", 
+>> rc);
+>> @@ -1368,9 +1368,8 @@ int msm_dp_display_enable(struct msm_dp *dp, 
+>> struct drm_encoder *encoder)
+>>                 dp_display_unprepare(dp);
+>>         }
+>> 
+>> -       dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
+>> -
+>> -       if (state == ST_SUSPEND_PENDING)
+>> +       /* manual kick off plug event to train link */
+>> +       if (state == ST_DISPLAY_OFF)
+>>                 dp_add_event(dp_display, EV_IRQ_HPD_INT, 0, 0);
+>> 
+>>         /* completed connection */
+>> @@ -1402,20 +1401,21 @@ int msm_dp_display_disable(struct msm_dp *dp, 
+>> struct drm_encoder *encoder)
+>> 
+>>         mutex_lock(&dp_display->event_mutex);
+>> 
+>> +       /* delete sentinel checking */
+> 
+> Stop sentinel checking?
+> 
+>> +       dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+>> +
+>>         dp_display_disable(dp_display, 0);
+>> 
+>>         rc = dp_display_unprepare(dp);
+>>         if (rc)
+>>                 DRM_ERROR("DP display unprepare failed, rc=%d\n", rc);
+>> 
+>> -       dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+>> -
+>>         state =  atomic_read(&dp_display->hpd_state);
+>>         if (state == ST_DISCONNECT_PENDING) {
+> 
+> I don't understand the atomic nature of this hpd_state variable. Why is
+> it an atomic variable? Is taking a spinlock bad? What is to prevent the
+> atomic read here to not be interrupted and then this if condition check
+> be invalid because the variable has been updated somewhere else?
+hpd_state variable updated by multiple threads. however it was protected 
+by mutex.
+in theory, it should also work as u32. since it was declared as atomic 
+from beginning
+and it does not cause any negative effects, can we keep it as it is?
 
-I rebooted into a clean 5.9-rc8 and the device does not connect.
-
-So I did the following to trace this:
-
-$ sudo btmgmt irks
-Identity Resolving Keys successfully loaded
-$ sudo cat /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys
-$ bluetoothctl connect F1:85:91:79:73:70
-Attempting to connect to F1:85:91:79:73:70
-Failed to connect: org.bluez.Error.Failed
-
-and ran another btmon session to see this, it is attached.
-
-thanks,
-
-greg k-h
-
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="trace.log"
-Content-Transfer-Encoding: quoted-printable
-
-btsnoop=00=00=00=00=01=00=00=07=D1=00=00=00!=00=00=00!=FF=FF=00=0C=00=00=00=
-=00=00=E2=8E=A3L=07=A5=EFLinux version 5.9.0-rc8 (x86_64)=00=00=00=00!=00=
-=00=00!=FF=FF=00=0C=00=00=00=00=00=E2=8E=A3L=07=A5=F2Bluetooth subsystem ve=
-rsion 2.22=00=00=00=00=10=00=00=00=10=00=00=00=00=00=00=00=00=00=E2=8E=A3L=
-=07=A5=F3=00=01pe=F6=85=E0Phci0=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=08=00=00=00=00=00=E2=8E=A3L=07=A5=F4=00=00=00=08=00=00=00=08=00=00=00
-=00=00=00=00=00=E2=8E=A3L=07=A5=F4pe=F6=85=E0P=02=00=00=00=00=1E=00=00=00=
-=1E=FF=FF=00=0E=00=00=00=00=00=E2=8E=A3L=07=A5=F6=01=00=00=00=02=00=01=12=
-=00=01=00=00=00=10bluetoothd=00=00=00=00=00=00=00=00=00=1E=00=00=00=1E=FF=
-=FF=00=0E=00=00=00=00=00=E2=8E=A3L@=0Ff=02=00=00=00=02=00=01=12=00=01=00=00=
-=00=10btmgmt=00=00=00=00=00=00=00=00=00=00=00=00=00=08=00=00=00=08=00=00=00=
-=10=00=00=00=00=00=E2=8E=A3L@=0F=8E=02=00=00=000=00=00=00=00=00=00	=00=00=
-=00	=00=00=00=11=00=00=00=00=00=E2=8E=A3L@=0F=92=02=00=00=00=01=000=00=00=
-=00=00=00=04=00=00=00=04=FF=FF=00=0F=00=00=00=00=00=E2=8E=A3L@=0F=A8=02=00=
-=00=00=00=00=00	=00=00=00	=00=00=00=02=00=00=00=00=00=E2=8E=A3L{=E9=DDB =06=
-=00=00=00=00=00=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=
-=A3L~=02r=0E=04=02B =00=00=00=00=0B=00=00=00=0B=00=00=00=02=00=00=00=00=00=
-=E2=8E=A3L~=03'A =08=00=01=01=00`=000=00=00=00=00=06=00=00=00=06=00=00=00=
-=03=00=00=00=00=00=E2=8E=A3L~=0D=CC=0E=04=01A =00=00=00=00	=00=00=00	=00=00=
-=00=02=00=00=00=00=00=E2=8E=A3L~=0E=16B =06=01=01=00=00=00=00=00=00=00=06=
-=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A3L~=1BD=0E=04=02B =00=00=00=
-=00	=00=00=00	=00=00=00=02=00=00=00=00=00=E2=8E=A3M=16=CC=81B =06=00=00=00=
-=00=00=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A3M=18=
-=ACU=0E=04=02B =00=00=00=00=0B=00=00=00=0B=00=00=00=02=00=00=00=00=00=E2=8E=
-=A3M=18=AC=85A =08=00=01=01=00`=00`=00=00=00=00=06=00=00=00=06=00=00=00=03=
-=00=00=00=00=00=E2=8E=A3M=18=B8=08=0E=04=01A =00=00=00=00	=00=00=00	=00=00=
-=00=02=00=00=00=00=00=E2=8E=A3M=18=B8,B =06=01=01=00=00=00=00=00=00=00=06=
-=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A3M=18=C7=A8=0E=04=02B =00=00=
-=00=00	=00=00=00	=00=00=00=02=00=00=00=00=00=E2=8E=A3O=89=922B =06=00=00=00=
-=00=00=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A3O=8B=
-=928=0E=04=02B =00=00=00=00=0B=00=00=00=0B=00=00=00=02=00=00=00=00=00=E2=8E=
-=A3O=8B=92=E7A =08=00=01=01=00`=000=00=00=00=00=06=00=00=00=06=00=00=00=03=
-=00=00=00=00=00=E2=8E=A3O=8B=9B=BB=0E=04=01A =00=00=00=00	=00=00=00	=00=00=
-=00=02=00=00=00=00=00=E2=8E=A3O=8B=9B=DFB =06=01=01=00=00=00=00=00=00=00=06=
-=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=A3O=8B=AB\=0E=04=02B =00
---VS++wcV0S1rZb1Fb--
+>>                 /* completed disconnection */
+>>                 atomic_set(&dp_display->hpd_state, ST_DISCONNECTED);
+>>         } else {
+>> -               atomic_set(&dp_display->hpd_state, 
+>> ST_SUSPEND_PENDING);
+>> +               atomic_set(&dp_display->hpd_state, ST_DISPLAY_OFF);
