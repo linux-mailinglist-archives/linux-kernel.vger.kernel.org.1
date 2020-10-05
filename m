@@ -2,70 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530DA2833F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DF92833D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbgJEKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:22:43 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:21254 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJEKWm (ORCPT
+        id S1725937AbgJEKKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:10:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29501 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725843AbgJEKKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:22:42 -0400
-X-Greylist: delayed 362 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 06:22:42 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1601893361;
-        s=strato-dkim-0002; d=aepfle.de;
-        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=KC64h9Wjos6xET3WvOm4lJYRQC6864ZNKSLmRbyaOD0=;
-        b=gWCJmJyB/yV1bi7Dr86XfLy9uAWJusnR1VreJCCtVWwE/xfCIOdzL0suaWBfCBq+Ne
-        QRr82lgQ2v6Z1pJl28gWZAhvVdr4NR8uRQTHiLLJ0xeQPD5aSOIuxdtXGBHcGokNXmTg
-        gD6+51eWes4CcNmKl0PFqR/Zo+3DscF2qNJM4bbx3WZoXunlWFG47cF88gafUcwMuhmx
-        6kj+ztey2X6qd38o6aiz6u9ySlq2ne2KcqwReZBEmOfuuM9AUslDwwU6AVqNU2sacr5c
-        MGYwPZ9jiykLAnjzIKpvy+Ykw6LjDyMUz9Od4rgZUbIGvS4Gxdh87d1trzKslX/dnYY/
-        MptQ==
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS3G5Jjw=="
-X-RZG-CLASS-ID: mo00
-Received: from sender
-        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
-        with ESMTPSA id e003b5w95AAeAb5
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 5 Oct 2020 12:10:40 +0200 (CEST)
-From:   Olaf Hering <olaf@aepfle.de>
-To:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Olaf Hering <olaf@aepfle.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH v1] kbuild: enforce -Werror=return-type
-Date:   Mon,  5 Oct 2020 12:10:26 +0200
-Message-Id: <20201005101026.21951-1-olaf@aepfle.de>
-X-Mailer: git-send-email 2.26.2
+        Mon, 5 Oct 2020 06:10:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601892643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dm0igQAQvI7XslKb8JHZiAODfgUY1aNHN2/XyeedTYs=;
+        b=Ic2jgW+joKI5p3wDES5qV3QHLX4RBx5ZKMMBz9JYtXDYJdSZ8bdWdV1u2quEcqDQop6LJW
+        +cZBuZD8XIve54CGlqq9VuQPopG0ebKsugmQME8QNNJLsrB+uOC9q8M/AbTYjs/Ksosx8B
+        1KCBfUeFy3kHjyEHfOHOX5hpXrOYbSU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-YquK7uNwP4-fBQl7nLeGUA-1; Mon, 05 Oct 2020 06:10:39 -0400
+X-MC-Unique: YquK7uNwP4-fBQl7nLeGUA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5EFAC800E23;
+        Mon,  5 Oct 2020 10:10:38 +0000 (UTC)
+Received: from starship (unknown [10.35.206.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 745A31045EB3;
+        Mon,  5 Oct 2020 10:10:34 +0000 (UTC)
+Message-ID: <e08f5bd788888c7957893eb43c0d78118213f0d4.camel@redhat.com>
+Subject: Re: [PATCH 3/3] KVM: x86: bump KVM_MAX_CPUID_ENTRIES
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Wei Huang <whuang2@amd.com>, linux-kernel@vger.kernel.org
+Date:   Mon, 05 Oct 2020 13:10:33 +0300
+In-Reply-To: <20201001130541.1398392-4-vkuznets@redhat.com>
+References: <20201001130541.1398392-1-vkuznets@redhat.com>
+         <20201001130541.1398392-4-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Catch errors which at least gcc tolerates by default:
- warning: 'return' with no value, in function returning non-void [-Wreturn-type]
+On Thu, 2020-10-01 at 15:05 +0200, Vitaly Kuznetsov wrote:
+> As vcpu->arch.cpuid_entries is now allocated dynamically, the only
+> remaining use for KVM_MAX_CPUID_ENTRIES is to check KVM_SET_CPUID/
+> KVM_SET_CPUID2 input for sanity. Since it was reported that the
+> current limit (80) is insufficient for some CPUs, bump
+> KVM_MAX_CPUID_ENTRIES and use an arbitrary value '256' as the new
+> limit.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 7d259e21ea04..f6d6df64e63a 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -133,7 +133,7 @@ static inline gfn_t gfn_to_index(gfn_t gfn, gfn_t base_gfn, int level)
+>  #define KVM_NUM_MMU_PAGES (1 << KVM_MMU_HASH_SHIFT)
+>  #define KVM_MIN_FREE_MMU_PAGES 5
+>  #define KVM_REFILL_PAGES 25
+> -#define KVM_MAX_CPUID_ENTRIES 80
+> +#define KVM_MAX_CPUID_ENTRIES 256
+>  #define KVM_NR_FIXED_MTRR_REGION 88
+>  #define KVM_NR_VAR_MTRR 8
+>  
 
-Signed-off-by: Olaf Hering <olaf@aepfle.de>
----
- Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-diff --git a/Makefile b/Makefile
-index f84d7e4ca0be..7b2e63e7be18 100644
---- a/Makefile
-+++ b/Makefile
-@@ -942,6 +942,9 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=date-time)
- # enforce correct pointer usage
- KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
- 
-+# enforce correct return type
-+KBUILD_CFLAGS   += $(call cc-option,-Werror=return-type)
-+
- # Require designated initializers for all marked structures
- KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
- 
+Best regards,
+	Maxim Levitsky
+
