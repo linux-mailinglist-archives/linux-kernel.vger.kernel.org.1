@@ -2,78 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676BB2837DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BA62837DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgJEOb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:31:29 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:43707 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725936AbgJEOb3 (ORCPT
+        id S1726335AbgJEObo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:31:44 -0400
+Received: from mxout04.lancloud.ru ([89.108.124.63]:52068 "EHLO
+        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgJEObo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:31:29 -0400
-Received: (qmail 378125 invoked by uid 1000); 5 Oct 2020 10:31:28 -0400
-Date:   Mon, 5 Oct 2020 10:31:28 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+9b802f11efb574105ec5@syzkaller.appspotmail.com>
-Cc:     andreyknvl@google.com, eli.billauer@gmail.com,
-        gregkh@linuxfoundation.org, gustavoars@kernel.org,
-        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, oneukum@suse.com,
-        syzkaller-bugs@googlegroups.com, tiwai@suse.de
-Subject: Re: WARNING in handle_bug/usb_submit_urb
-Message-ID: <20201005143128.GD376584@rowland.harvard.edu>
-References: <000000000000fefa4f05b0ea5fcd@google.com>
+        Mon, 5 Oct 2020 10:31:44 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 95CDE2153C1B
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Date:   Mon, 5 Oct 2020 17:31:36 +0300
+From:   Elvira Khabirova <e.khabirova@omprussia.ru>
+To:     <op-tee@lists.trustedfirmware.org>
+CC:     <jens.wiklander@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <k.karasev@omprussia.ru>, <s.shtylyov@omprussia.ru>,
+        <vesa.jaaskelainen@vaisala.com>
+Subject: [PATCH v3] tee: add support for application-based session login
+ methods
+Message-ID: <20201005173136.6c220768@akathisia>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000fefa4f05b0ea5fcd@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.255.69.56]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1903.lancloud.ru (fd00:f066::73)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 03:59:22AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    168ae5a7 Merge 5.9-rc8 into usb-next
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12bec877900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5429f3643ebc37a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9b802f11efb574105ec5
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120aa50b900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134fa5c0500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+9b802f11efb574105ec5@syzkaller.appspotmail.com
-> 
-> usb 1-1: Manufacturer: syz
-> usb 1-1: SerialNumber: syz
-> usb 1-1: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
-> usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
-> ------------[ cut here ]------------
-> usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-> WARNING: CPU: 1 PID: 21 at drivers/usb/core/urb.c:493 usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 1 PID: 21 Comm: kworker/1:1 Not tainted 5.9.0-rc8-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events request_firmware_work_func
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x107/0x16e lib/dump_stack.c:118
->  panic+0x2cb/0x702 kernel/panic.c:231
->  __warn.cold+0x20/0x44 kernel/panic.c:600
->  report_bug+0x1bd/0x210 lib/bug.c:198
->  handle_bug+0x41/0x80 arch/x86/kernel/traps.c:234
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> RIP: 0010:usb_submit_urb+0xce2/0x14e0 drivers/usb/core/urb.c:493
-> Code: 84 04 03 00 00 e8 3e 98 c6 fd 4c 89 ef e8 66 b6 12 ff 41 89 d8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 20 b3 5d 86 e8 d0 ba 9a fd <0f> 0b e9 c6 f8 ff ff e8 12 98 c6 fd 48 81 c5 40 06 00 00 e9 f2 f7
-> RSP: 0018:ffff8881da33f808 EFLAGS: 00010286
+GP TEE Client API in addition to login methods already supported
+in the kernel also defines several application-based methods:
+TEEC_LOGIN_APPLICATION, TEEC_LOGIN_USER_APPLICATION, and
+TEEC_LOGIN_GROUP_APPLICATION.
 
-Andrey, what happened here?  Where's the rest of the stack trace?
+It specifies credentials generated for TEEC_LOGIN_APPLICATION as only
+depending on the identity of the program, being persistent within one
+implementation, across multiple invocations of the application
+and across power cycles, enabling them to be used to disambiguate
+persistent storage. The exact nature is REE-specific.
 
-Alan Stern
+As the exact method of generating application identifier strings may
+vary between vendors, setups and installations, add two suggested
+methods and an exact framework for vendors to extend upon.
+
+Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
+---
+Jens, do you have any advice on finding more reviewers for this?
+
+Changes in v3:
+- Remove free_app_id() and replace it with calls to kfree().
+
+Changes in v2:
+- Rename some functions and variables to make them shorter.
+- Include linux/security.h unconditionally.
+- Restructure error handling in tee_session_calc_client_uuid().
+
+ drivers/tee/Kconfig    |  29 ++++++++++
+ drivers/tee/tee_core.c | 126 ++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 147 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
+index e99d840c2511..4cd6e0d2aad5 100644
+--- a/drivers/tee/Kconfig
++++ b/drivers/tee/Kconfig
+@@ -11,6 +11,35 @@ config TEE
+ 	  This implements a generic interface towards a Trusted Execution
+ 	  Environment (TEE).
+ 
++choice
++	prompt "Application ID for client UUID"
++	depends on TEE
++	default TEE_APPID_PATH
++	help
++	  This option allows to choose which method will be used to generate
++	  application identifiers for client UUID generation when login methods
++	  TEE_LOGIN_APPLICATION, TEE_LOGIN_USER_APPLICATION
++	  and TEE_LOGIN_GROUP_APPLICATION are used.
++	  Please be mindful of the security of each method in your particular
++	  installation.
++
++	config TEE_APPID_PATH
++		bool "Path-based application ID"
++		help
++		  Use the executable's path as an application ID.
++
++	config TEE_APPID_SECURITY
++		bool "Security extended attribute based application ID"
++		help
++		  Use the executable's security extended attribute as an application ID.
++endchoice
++
++config TEE_APPID_SECURITY_XATTR
++	string "Security extended attribute to use for application ID"
++	depends on TEE_APPID_SECURITY
++	help
++	  Attribute to be used as an application ID (with the security prefix removed).
++
+ if TEE
+ 
+ menu "TEE drivers"
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 64637e09a095..3626ce0d9bd7 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -7,9 +7,12 @@
+ 
+ #include <linux/cdev.h>
+ #include <linux/cred.h>
++#include <linux/file.h>
+ #include <linux/fs.h>
+ #include <linux/idr.h>
++#include <linux/mm.h>
+ #include <linux/module.h>
++#include <linux/security.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
+ #include <linux/uaccess.h>
+@@ -21,7 +24,7 @@
+ 
+ #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
+ 
+-#define TEE_UUID_NS_NAME_SIZE	128
++#define TEE_UUID_NS_NAME_SIZE	PATH_MAX
+ 
+ /*
+  * TEE Client UUID name space identifier (UUIDv4)
+@@ -125,6 +128,65 @@ static int tee_release(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_TEE_APPID_SECURITY
++static const char *get_app_id(void **data)
++{
++	struct file *exe_file;
++	const char *name = CONFIG_TEE_APPID_SECURITY_XATTR;
++	int len;
++
++	exe_file = get_mm_exe_file(current->mm);
++	if (!exe_file)
++		return ERR_PTR(-ENOENT);
++
++	if (!exe_file->f_inode) {
++		fput(exe_file);
++		return ERR_PTR(-ENOENT);
++	}
++
++	/*
++	 * An identifier string for the binary. Depends on the implementation.
++	 * Could be, for example, a string containing the application vendor ID,
++	 * or the binary's signature, or its hash and a timestamp.
++	 */
++	len = security_inode_getsecurity(exe_file->f_inode, name, data, true);
++	if (len < 0)
++		return ERR_PTR(len);
++
++	fput(exe_file);
++
++	return *data;
++}
++#endif /* CONFIG_TEE_APPID_SECURITY */
++
++#ifdef CONFIG_TEE_APPID_PATH
++static const char *get_app_id(void **data)
++{
++	struct file *exe_file;
++	char *path;
++
++	*data = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
++	if (!*data)
++		return ERR_PTR(-ENOMEM);
++
++	exe_file = get_mm_exe_file(current->mm);
++	if (!exe_file) {
++		kfree(*data);
++		return ERR_PTR(-ENOENT);
++	}
++
++	path = file_path(exe_file, *data, TEE_UUID_NS_NAME_SIZE);
++	if (IS_ERR(path)) {
++		kfree(*data);
++		return path;
++	}
++
++	fput(exe_file);
++
++	return path;
++}
++#endif /* CONFIG_TEE_APPID_PATH */
++
+ /**
+  * uuid_v5() - Calculate UUIDv5
+  * @uuid: Resulting UUID
+@@ -197,6 +259,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 	gid_t ns_grp = (gid_t)-1;
+ 	kgid_t grp = INVALID_GID;
+ 	char *name = NULL;
++	void *app_id_data = NULL;
++	const char *app_id = NULL;
+ 	int name_len;
+ 	int rc;
+ 
+@@ -217,6 +281,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 	 * For TEEC_LOGIN_GROUP:
+ 	 * gid=<gid>
+ 	 *
++	 * For TEEC_LOGIN_APPLICATION:
++	 * app=<application id>
++	 *
++	 * For TEEC_LOGIN_USER_APPLICATION:
++	 * uid=<uid>:app=<application id>
++	 *
++	 * For TEEC_LOGIN_GROUP_APPLICATION:
++	 * gid=<gid>:app=<application id>
+ 	 */
+ 
+ 	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
+@@ -227,10 +299,6 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 	case TEE_IOCTL_LOGIN_USER:
+ 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
+ 				    current_euid().val);
+-		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+-			rc = -E2BIG;
+-			goto out_free_name;
+-		}
+ 		break;
+ 
+ 	case TEE_IOCTL_LOGIN_GROUP:
+@@ -243,10 +311,49 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 
+ 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x",
+ 				    grp.val);
+-		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+-			rc = -E2BIG;
++		break;
++
++	case TEE_IOCTL_LOGIN_APPLICATION:
++		app_id = get_app_id(&app_id_data);
++		if (IS_ERR(app_id)) {
++			rc = PTR_ERR(app_id);
++			goto out_free_name;
++		}
++
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
++				    app_id);
++		kfree(app_id_data);
++		break;
++
++	case TEE_IOCTL_LOGIN_USER_APPLICATION:
++		app_id = get_app_id(&app_id_data);
++		if (IS_ERR(app_id)) {
++			rc = PTR_ERR(app_id);
+ 			goto out_free_name;
+ 		}
++
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
++				    current_euid().val, app_id);
++		kfree(app_id_data);
++		break;
++
++	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
++		memcpy(&ns_grp, connection_data, sizeof(gid_t));
++		grp = make_kgid(current_user_ns(), ns_grp);
++		if (!gid_valid(grp) || !in_egroup_p(grp)) {
++			rc = -EPERM;
++			goto out_free_name;
++		}
++
++		app_id = get_app_id(&app_id_data);
++		if (IS_ERR(app_id)) {
++			rc = PTR_ERR(app_id);
++			goto out_free_name;
++		}
++
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
++				    grp.val, app_id);
++		kfree(app_id_data);
+ 		break;
+ 
+ 	default:
+@@ -254,7 +361,10 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 		goto out_free_name;
+ 	}
+ 
+-	rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
++	if (name_len < TEE_UUID_NS_NAME_SIZE)
++		rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
++	else
++		rc = -E2BIG;
+ out_free_name:
+ 	kfree(name);
+ 
+-- 
+2.28.0
+
