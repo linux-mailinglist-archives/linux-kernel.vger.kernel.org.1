@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F25283240
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAE3283244
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgJEIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:40:18 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43705 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725880AbgJEIkS (ORCPT
+        id S1725940AbgJEIlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgJEIlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:40:18 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2058358028D;
-        Mon,  5 Oct 2020 04:40:17 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 04:40:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=TP+YDmeLPT4LYJGRAaDqcHNdlZQ
-        KtqTvNfpsMAMS4CQ=; b=Z+rHeB220VuirrOyCQDgK/LoVlcZ6b95vwcwoYsdp/2
-        grsDkChi+u+3WZqTppRq3GQLgtOgo/7xPOiiUCWK+HJb9RlnG2mTjmew1ARLnUuU
-        HwcMhDeZJO3bgbIij5rX2sIMZ+pbE87CfQTj/QxhLZtCj3vRld+n6VpMTlIPJbOK
-        7o2EWq4v0eFMC8elqU2JYuqTmhuxWb0Z67Zg5tv+4Op647ZYsDxJx6PgeDoyvl2q
-        /yS3L+5mR2GooasnddVzG/D3QgoGWeFZ3yxDMkojXfh2lEmU83MnWJ1hIciU2tQV
-        x1KqI73W3dEdEQ/a27W9tAq0WSB42POklTR27jkN1Fw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TP+YDm
-        eLPT4LYJGRAaDqcHNdlZQKtqTvNfpsMAMS4CQ=; b=M82nzWEoEQvxdYfOdMqZlu
-        xN4lvZ70N1UcF6yoUwvXwG1wG0x5Km0axhYV/mwCI7mGaH03no4TysgIh+U03P+1
-        +tDM38gu4uRHk0vLo83e9GRYruY6P/havXGZkCsrY37DeLq//oJoFtp5bVpwFlrO
-        ZUAgwf2yWRprng0sz76wF28QuWtf4egD+tbYjIiilWGFpgzQyW1/b5osJT1Pv2zz
-        kXk4WXgCmo9+IUfCQVbQ6ox8ae2h4A6dQN8YqAG0dn37uSbE2fz9CnjDO1T+OyW/
-        hScpsXpACmQEnn6XjJ4oUBMZ+l/+exeeVCZGlYuYelaOdfa4/WZ8RxflwQW+DWgw
-        ==
-X-ME-Sender: <xms:79t6X1SxatzoAeg6XUQsD3w1TUkBPphOEZfPWD2YJqglK55nKlVhEw>
-    <xme:79t6X-wUJU6yCtdwA5tas6Gnjwk96COOpIg2NYAJ0-3hUE4qW3-UZls_ZrHbx8ao7
-    51wRiWi2-wSTTT75Bg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddtkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:79t6X61Ihn82ejYMDMF1UMoaYXDSuOc-joH5PVN1NPastwT9JegY5g>
-    <xmx:79t6X9DL1ztmD654-sNP8SMt-HOvECPQK0_TSPDyfvzKiJHd5qSbNQ>
-    <xmx:79t6X-hrAtyRRvymEaTkS23wZ-4iv9s3cVQrD0rDCTqwWUu45eIkpg>
-    <xmx:8dt6X-74fpOHJB-sg4Wcl5A56NWIAR4QD7s0bmWZ9SCDRUn100cd9g>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7472F3280063;
-        Mon,  5 Oct 2020 04:40:15 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 10:40:13 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Guido =?utf-8?Q?G=C3=BAnther?= <agx@sigxcpu.org>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>
-Subject: Re: [PATCH] dt-bindings: display: Add dsi-controller.yaml in DSI
- controller schemas
-Message-ID: <20201005084013.loixl65nnvf4jl6f@gilmour.lan>
-References: <20201002225924.3513700-1-robh@kernel.org>
+        Mon, 5 Oct 2020 04:41:12 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B26C0613CE;
+        Mon,  5 Oct 2020 01:41:12 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id r127so5309732lff.12;
+        Mon, 05 Oct 2020 01:41:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MsKeV687zvpIWY1pcnq1tlTAUwQK7/R0c1Aynnt5TJY=;
+        b=Wty8ziIf2Hrfe42+YlSSl5tktChzWE81QKDiBkuM2/nvcPuSIgj/g4GcTm2gZlJQft
+         gAU+UxeVlIIiUyaE5F/WkWKPHKj57QSHLHEYN8ccyfoUU/7tWI3OTj/thyo8Ssex6prj
+         QvtlPc90Xobpn9PiaBe1S54+WCTyUgEeNxVMiI0SMbt22g1eWTTZ6C0feE2fNm8JNr6v
+         CyX1CZryMdzDeHR3qTinKTcyHPpizkimjQSapeJg9DjFRkqNt83tq0GGxm4aiZvd+3q8
+         Zu8eQufSA2e5uTGqk30ztBKzgKUe5J+Lfx6OzWjJ0+mTmvQmFuU1U6ApQuRuYtATguiM
+         udzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MsKeV687zvpIWY1pcnq1tlTAUwQK7/R0c1Aynnt5TJY=;
+        b=Xr3Eh6vogW/rGxMi8p9ab2eAfeYhgHZqUTi1a/0t5KjoWOOJdsVmVHhiFonsx7PY1k
+         AxlCWFcr75zhK7UkUiL/RtAq8DdNiv5K0QnMR3h4iocZ5ml9QTW+fgfBV8DJ1DZHTPNO
+         aNxUlFgSeEBGQLPZ4+cJlezglxHs+Ub3/yT1+tbi22KsTV19hS6CXdkLXaThzpt52CMV
+         mwMAnvGVaxWwWDlMsnbRrUahlOGLctaEQKU12GdfOI8sshs19KK4Ti/SBGlmjO6ftYx8
+         WHW1Ea6oeZqXQ9S06Z6iipZdlR7JGGYUjJtqs8kmsJuddMZman21Nc0kMXHvCNkKSTsw
+         RL8A==
+X-Gm-Message-State: AOAM532jfxQ7rJhRptqT0clwRo+cExl6D90RijnxtvuNe/ZJCls8Jrj2
+        EeoxuXHytQ3iSc9aPK0ilAoem4wCJFM=
+X-Google-Smtp-Source: ABdhPJztHJe7GZ/49WkyTe9DZT5/nQIc2yWZLW43qLuyMt3TK3Y2/RBL6rSEmnYHZWfZLludzWTIMg==
+X-Received: by 2002:a19:2291:: with SMTP id i139mr4992120lfi.387.1601887270291;
+        Mon, 05 Oct 2020 01:41:10 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id o24sm2455776ljj.49.2020.10.05.01.41.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 01:41:09 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20201003065947.18671-1-nicoleotsuka@gmail.com>
+ <20201003065947.18671-3-nicoleotsuka@gmail.com>
+ <4a5a5b1c-080a-327a-1e2f-dc087948e1a1@gmail.com>
+ <20201004215731.GA21420@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <689c3d90-e05c-d36a-bf37-0bec100040f5@gmail.com>
+Date:   Mon, 5 Oct 2020 11:41:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="i7kn4kgfo2uw7qjo"
-Content-Disposition: inline
-In-Reply-To: <20201002225924.3513700-1-robh@kernel.org>
+In-Reply-To: <20201004215731.GA21420@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+05.10.2020 00:57, Nicolin Chen пишет:
+> On Sat, Oct 03, 2020 at 05:06:42PM +0300, Dmitry Osipenko wrote:
+>> 03.10.2020 09:59, Nicolin Chen пишет:
+>>>  static int tegra_smmu_of_xlate(struct device *dev,
+>>>  			       struct of_phandle_args *args)
+>>>  {
+>>> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
+>>> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
+>>>  	u32 id = args->args[0];
+>>>  
+>>> +	put_device(&iommu_pdev->dev);
+>>> +
+>>> +	if (!mc || !mc->smmu)
+>>> +		return -EPROBE_DEFER;
+>>
+>> I'm not very excited by seeing code in the patches that can't be
+>> explained by the patch authors and will appreciate if you could provide
+>> a detailed explanation about why this NULL checking is needed because I
+>> think it is unneeded, especially given that other IOMMU drivers don't
+>> have such check.
+> 
+> This function could be called from of_iommu_configure(), which is
+> a part of other driver's probe(). So I think it's safer to have a
+> check. Yet, given mc driver is added to the "arch_initcall" stage,
+> you are probably right that there's no really need at this moment
+> because all clients should be called after mc/smmu are inited. So
+> I'll resend a v6, if that makes you happy.
 
---i7kn4kgfo2uw7qjo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I wanted to get the explanation :) I'm very curious why it's actually
+needed because I'm not 100% sure whether it's not needed at all.
 
-On Fri, Oct 02, 2020 at 05:59:24PM -0500, Rob Herring wrote:
-> Some DSI controllers are missing a reference to the recently added
-> dsi-controller.yaml schema. Add it and we can drop the duplicate parts.
->=20
-> Cc: Maxime Ripard <mripard@kernel.org>
+I'd assume that the only possible problem could be if some device is
+created in parallel with the MC probing and there is no locking that
+could prevent this in the drivers core. It's not apparent to me whether
+this situation could happen at all in practice.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+The MC is created early and at that time everything is sequential, so
+it's indeed should be safe to remove the check.
 
-Thanks!
-Maxime
+>> I'm asking this question second time now, please don't ignore review
+>> comments next time.
+> 
+> I think I missed your reply or misunderstood it.
+> 
 
---i7kn4kgfo2uw7qjo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rb7QAKCRDj7w1vZxhR
-xTXCAP4vKIeUVcYrqfw55zeSps3KKtkhsNvW+sK9F9gjf7jBxQD/UMFRpPlAiasU
-MZTKaNAUJFV3UdU3iJE6ZjtiyfEQxgQ=
-=+3oG
------END PGP SIGNATURE-----
-
---i7kn4kgfo2uw7qjo--
+Okay!
