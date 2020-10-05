@@ -2,182 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D27283D30
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4324C283D2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727494AbgJERR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:17:28 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44478 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725973AbgJERR1 (ORCPT
+        id S1727239AbgJERRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:17:25 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59698 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725973AbgJERRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:17:27 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095HGvgj019407;
-        Mon, 5 Oct 2020 10:17:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=cKZ9+2uiIz/IhrPcGSamkohTa5LBuZH9bxzOfQU5n4I=;
- b=nL8a2UJ4aGl0/l1poaOrnJhTPioQmqT1W0iFGgy3ZdDUlity/t2q+hV3mfKombq0H6NL
- ri++rxLIIXGbidjdvnUa/Hw7LOsaRNuQ80JNMdplc3CLK5rU1ogektsLXPO/u4yD8JA2
- 0eZYSVwhfVCAOgAP6t/7oZoCa374nLPnHPg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33y8t9nnqp-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 05 Oct 2020 10:17:03 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 5 Oct 2020 10:16:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JihrO/nbu4SRjNwLbf+rKV7/Bjm0ecF1ss7DXvpLSQ/LbGzt0cAicxfD9OAYsk+pw5E0PNMwmeYACUPnctyeZlod6yDfPzCEVdDMpae63eIkaxQ2G/smdL/SnyhkzBKPCHE6vmyxFJZVV/TSRZ0gd1xuzUqV2EPTSJwU/jIxOSeBJr9tMHGN6ALT5BRJXCiBUQn0rDh89aeemU8WJV74GataiVK24zjIqoECVE7StpiLrpK/Z2+g2cal2UeiI7iBgw+oYpUtXIeIGVF9kl6KO0JILuf11ep4PQXyf+SnSm1GlH988xs5i1hDpMx+YrOV+6LhBUKTd+hsEfBAlY8f1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cKZ9+2uiIz/IhrPcGSamkohTa5LBuZH9bxzOfQU5n4I=;
- b=aOg2wMKdPoEqmoVmUm/Bgpnotsb8zGiB1ZYzemLWmk0FjFJbX4GpQQq5wsA3RvkT76WjCAJy91HY5uK18kiylRaPMO3qd22xk7a0CsH08AZyGvaxgZsUj2Ru7IgADmCZBjo2dTcLIgQGuwhq2AeiKGyaZ+cmtJUuHwEZ7jVXAYEKFX6J+/f0UtaRHheHcoIxksrUPqeiYxgJ8APMAGlW40is0RmUM78YSExM8g150lKatXbZRMfvD8rSnqJHGB5hrp10n7su+3yNMIRLtstrZKwJkkF9rUc5i/de16AVWJ2oE5biuJ+185mLwYkimmUnVg3/fCveJwuazVj33k2JXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cKZ9+2uiIz/IhrPcGSamkohTa5LBuZH9bxzOfQU5n4I=;
- b=MWtm7yZa/yO936jTsVp2vI1R4Ujpu1WVBZI7KknMpX3xO0ZfjFD4XmY7itfuUkahLkg/RRERrEjm67Rdbdt7Z5X/NKUrFb1NHMSkG20GtH/DuCLftUabqgIoBoMvVLavIZF2LLU5rm47Co7HXF7W8f2ZQ+mhsqgWrONIEKypBcI=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14) by SN6PR15MB2400.namprd15.prod.outlook.com
- (2603:10b6:805:24::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Mon, 5 Oct
- 2020 17:16:38 +0000
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::e1a8:24c:73df:fe9a]) by SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::e1a8:24c:73df:fe9a%7]) with mapi id 15.20.3433.043; Mon, 5 Oct 2020
- 17:16:38 +0000
-Date:   Mon, 5 Oct 2020 10:16:32 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Zi Yan <ziy@nvidia.com>
-CC:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, <linux-mm@kvack.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
-Message-ID: <20201005171632.GB2990415@carbon.DHCP.thefacebook.com>
-References: <20200928175428.4110504-1-zi.yan@sent.com>
- <20200930115505.GT2277@dhcp22.suse.cz>
- <73394A41-16D8-431C-9E48-B14D44F045F8@nvidia.com>
- <20201002073205.GC20872@dhcp22.suse.cz>
- <9a7600e2-044a-50ca-acde-bf647932c751@redhat.com>
- <20201002081023.GA4555@dhcp22.suse.cz>
- <645b35a5-970d-dcfe-2b4a-04ebd4444756@redhat.com>
- <F3606096-EF9F-4F69-89DC-287095B649DC@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F3606096-EF9F-4F69-89DC-287095B649DC@nvidia.com>
-X-Originating-IP: [2620:10d:c090:400::5:e6f7]
-X-ClientProxiedBy: MWHPR10CA0059.namprd10.prod.outlook.com
- (2603:10b6:300:2c::21) To SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14)
+        Mon, 5 Oct 2020 13:17:24 -0400
+X-UUID: 2a504c1d045b4dc1aa5c26d057c2e21c-20201006
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VecbbSPzO8pFOpEeHf5BylriZHlXVPRwNmcW3hbUEHQ=;
+        b=UDrCpQnBHIMHt/K8P2JbIBXFU+4q8tg1pf2wnNPxgqRGDFl4DnYl44eY9ZB3dNyfc7AV2G0TRZs7OhBsNdlsPreWvQT4xi8a3/rliO1Tq710+65cPnUOXCECXNMTKJQXSm7VlJsvtXel0dO/++wNLI+nyLLtX0XkQv4Arg2R9gQ=;
+X-UUID: 2a504c1d045b4dc1aa5c26d057c2e21c-20201006
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <phil.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 328509663; Tue, 06 Oct 2020 01:17:19 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 6 Oct 2020 01:17:17 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 6 Oct 2020 01:17:15 +0800
+Message-ID: <1601918237.17256.3.camel@mtksdccf07>
+Subject: Re: [PATCH] [PATCH] of_reserved_mem: Increase the number of
+ reserved regions
+From:   Phil Chang <phil.chang@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Alix Wu <alix.wu@mediatek.com>,
+        YJ Chiang <yj.chiang@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joe Liu <joe.liu@mediatek.com>,
+        Frank Rowand <frowand.list@gmail.com>
+Date:   Tue, 6 Oct 2020 01:17:17 +0800
+In-Reply-To: <CAAOTY_8vCb-adkbpdmbTWLeOFt-+dHjr4HVonHX7XPkLkzy1yA@mail.gmail.com>
+References: <20201004055024.23542-1-phil.chang@mediatek.com>
+         <CAAOTY_8vCb-adkbpdmbTWLeOFt-+dHjr4HVonHX7XPkLkzy1yA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:e6f7) by MWHPR10CA0059.namprd10.prod.outlook.com (2603:10b6:300:2c::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Mon, 5 Oct 2020 17:16:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 05bb7303-2cd1-46b9-13d0-08d869526b88
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2400:
-X-Microsoft-Antispam-PRVS: <SN6PR15MB2400099F8F7CA830CAADBAE5BE0C0@SN6PR15MB2400.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hs9UVNrix84fBZvgORW+6BjqinJMC+R96sXkoaB+Clnlxs2TJlW8MBfXWuAQussouS0f7N0674RNh1j4yGUqeyCkul6XGHZk612cgxxkpDDzzv2X4gEYKa1OgqzhlJdGBv16TFA+sgudfP4rfVxDC1QYOJCvIWDaa0elpZTInqWXjKRJtVetMqN7MpyWc/G3wgyYA4MLXDUF54xDwX3YIlC3cmLsmmG0iIXcuOr/iAm7NXN50K4W6kuMLAfkxbYggUISbIutdAWhGxoixvHq73yqWwUCsKIN16IPkQYaHCeJFNrx2BmQ6cIC56D7JlmUOt+xlEbLLNJAqFWaSrWBbpv/9oShpN84NPzyRbCzxhsnSsRASaMx5eUOCih5kvFaqLUQIeHtC21GeSKiz1NU/Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(396003)(136003)(39860400002)(83080400001)(966005)(83380400001)(55016002)(66946007)(52116002)(186003)(4326008)(7696005)(16526019)(6916009)(478600001)(2906002)(53546011)(6506007)(316002)(33656002)(5660300002)(6666004)(8676002)(1076003)(66476007)(66556008)(54906003)(8936002)(86362001)(9686003)(7416002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: noylwfaJ740k9n3e7hunHKfKKz3XVQuBoVsF0I+1DKtCqDxGUrcsmVMqd69WjpVPtpUiBN0MPrD1oMH4ZO/pqtI89wrc3y0ViUBV6Dc+z2ezR9KIuOvfkWE/7Kd/YOvSKEfZX0K4Tt4HWpBXifRU+9hQOYs5H8l+331NXvvQJwO+2rEHy8WMOGOnGx0vQR+UxnumoBF6V6nDEzjUC/+nx4WQL2Xn40QlGTH3mlJqDpmGTBMEKZkgGmbhviYD6Xa8YpfWrt97o673iOrdA4GMJF4ZRkABtOV3EChb4w08JOk383Cxq26QP/IQJTjd0qqftUsafm8yHiJu62IKjZQLiB3+t5jVQ0Y/PNmCT6xk36K8hq8t3Rnczgg1OSQ3OZhaT4MrmtOHz/7Q+cfmoVC4ExVV0CxgyrG9YnkI1QlAa91VUasiyZF+KxzApW9OtK3RoYPph1jQLski6HbNFl3Lz2HmtD2VXi+LG9feu1JDbS2dhfRKNpN3RYHrtSZrqGhWAOes3CvQfq87nFBtwwDpT0JS9Zeclf14P3MJrH7BElAVsW0C0OV+neHIzCiDaKoL4TQewMhSH+MjtLL5Ko4QXT8CUmLyH1HseImUmV/4WiAmmyvso58hKxIcQRpnN/ItVal5kZfOXqnB0OuFDVCVXFYm1XymFRW1uRV7B8BAtN4=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05bb7303-2cd1-46b9-13d0-08d869526b88
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2020 17:16:38.7238
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AtglNM1bI3kgZMFfNZINoO1GItF6wTF0DEppiZZH16ROSTGGgYzlVe56+5FkR2Vg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2400
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-05_12:2020-10-05,2020-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 impostorscore=0 phishscore=0 mlxscore=0
- adultscore=0 mlxlogscore=888 bulkscore=0 suspectscore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010050128
-X-FB-Internal: deliver
+X-TM-SNTS-SMTP: 1971EF7FADA804FD4DEB0317AF4ED35E219F726F439E90C354A0E8A7BE6052DD2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:03:56AM -0400, Zi Yan wrote:
-> On 2 Oct 2020, at 4:30, David Hildenbrand wrote:
-> 
-> > On 02.10.20 10:10, Michal Hocko wrote:
-> >> On Fri 02-10-20 09:50:02, David Hildenbrand wrote:
-> >>>>>> - huge page sizes controllable by the userspace?
-> >>>>>
-> >>>>> It might be good to allow advanced users to choose the page sizes, so they
-> >>>>> have better control of their applications.
-> >>>>
-> >>>> Could you elaborate more? Those advanced users can use hugetlb, right?
-> >>>> They get a very good control over page size and pool preallocation etc.
-> >>>> So they can get what they need - assuming there is enough memory.
-> >>>>
-> >>>
-> >>> I am still not convinced that 1G THP (TGP :) ) are really what we want
-> >>> to support. I can understand that there are some use cases that might
-> >>> benefit from it, especially:
-> >>
-> >> Well, I would say that internal support for larger huge pages (e.g. 1GB)
-> >> that can transparently split under memory pressure is a useful
-> >> funtionality. I cannot really judge how complex that would be
-> >
-> > Right, but that's then something different than serving (scarce,
-> > unmovable) gigantic pages from CMA / reserved hugetlbfs pool. Nothing
-> > wrong about *real* THP support, meaning, e.g., grouping consecutive
-> > pages and converting them back and forth on demand. (E.g., 1GB ->
-> > multiple 2MB -> multiple single pages), for example, when having to
-> > migrate such a gigantic page. But that's very different from our
-> > existing gigantic page code as far as I can tell.
-> 
-> Serving 1GB PUD THPs from CMA is a compromise, since we do not want to
-> bump MAX_ORDER to 20 to enable 1GB page allocation in buddy allocator,
-> which needs section size increase. In addition, unmoveable pages cannot
-> be allocated in CMA, so allocating 1GB pages has much higher chance from
-> it than from ZONE_NORMAL.
+SGkgQ2h1bi1LdWFuZw0KDQpTb3JyeSBmb3IgdHlwby4gSW4gZmFjdCwgdGhlIGR0cyBvZiBuZXcg
+U29DIGlzIG5vdCB1cHN0cmVhbSB5ZXQuIEknbSBzbw0Kc29ycnkgZm9yIGNvdWxkbid0IHNob3cg
+dGhlIGRldGFpbCBub3cuDQoNCkhvdyBhYm91dCB0aGUgY29uZmlndXJhYmxlIE1BWF9SRVNFUlZF
+RF9SRUdJT05TIHNpemUgbGlrZSB0aGlzIHBhdGNoPw0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVs
+Lm9yZy9wYXRjaC8xMDY5MjEwMS8NCg0KIA0KT24gU3VuLCAyMDIwLTEwLTA0IGF0IDIxOjA1ICsw
+ODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0KPiBIaSwgUGhpbDoNCj4gDQo+IFBoaWwgQ2hhbmcg
+PHBoaWwuY2hhbmdAbWVkaWF0ZWsuY29tPiDmlrwgMjAyMOW5tDEw5pyINOaXpSDpgLHml6Ug5LiL
+5Y2IMTo1MeWvq+mBk++8mg0KPiA+DQo+ID4gQ2VydGFpbiBTb0NzIG5lZWQgdG8gc3VwcG9ydCBs
+YXJnZSBhbW91bnQgb2YgcmVzZXJ2ZWQgbWVtb3J5DQo+ID4gcmVnaW9ucywgZXNwZWNpYWxseSB0
+byBmb2xsb3cgdGhlIEdLSSBydWxlcyBmcm9tIEdvb2dsZS4NCj4gPiBJbiBNVEsgbmV3IFNvQyBy
+ZXF1aXJlcyBtb3JlIHRoYW4gNjggcmVnaW9ucyBvZiByZXNlcnZlZCBtZW1vcnkNCj4gPiBmb3Ig
+ZWFjaCBJUCdzIHVzYWdlLCBzdWNoIGFzIGxvYWQgZmlybXdhcmUgdG8gc3BlY2lmaWMgc2FwY2Us
+DQo+IA0KPiBzcGFjZQ0KPiANCj4gPiBzbyB0aGF0IG5lZWQgdG8gcmVzZXJ2ZSBtb3JlIHJlZ2lz
+aW9ucw0KPiANCj4gcmVnaW9ucy4NCj4gDQo+IEkgZ3Vlc3MgdGhpcyByZXF1aXJlbWVudCBpcyBm
+cm9tIE1lZGlhdGVrIFNvQywgYnV0IEkgZmluZCBiZWxvdyBkZXZpY2UNCj4gdHJlZSBhbmQganVz
+dCBmaW5kIG9uZSByZXNlcnZlZCBtZW1vcnkgcmVnaW9uLA0KPiANCj4gYXJjaC9hcm02NC9ib290
+L2R0cy9tZWRpYXRlay9tdDc2MjIuZHRzaQ0KPiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVr
+L210ODE3My5kdHNpDQo+IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4NTE2LmR0c2kN
+Cj4gDQo+IENvdWxkIHlvdSBzaG93IG1lIHRoZSA2OCByZWdpb25zPw0KPiANCj4gUmVnYXJkcywN
+Cj4gQ2h1bi1LdWFuZy4NCj4gDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBKb2UgTGl1IDxqb2Uu
+bGl1QG1lZGlhdGVrLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZSiBDaGlhbmcgPHlqLmNoaWFu
+Z0BtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWxpeCBXdSA8YWxpeC53dUBtZWRp
+YXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogUGhpbCBDaGFuZyA8cGhpbC5jaGFuZ0BtZWRp
+YXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMgfCAy
+ICstDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0K
+PiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMgYi9kcml2
+ZXJzL29mL29mX3Jlc2VydmVkX21lbS5jDQo+ID4gaW5kZXggNDZiOTM3MWM4YTMzLi41OTVmMDc0
+MWRjZWYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9vZi9vZl9yZXNlcnZlZF9tZW0uYw0KPiA+
+ICsrKyBiL2RyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMNCj4gPiBAQCAtMjIsNyArMjIsNyBA
+QA0KPiA+ICAjaW5jbHVkZSA8bGludXgvc2xhYi5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvbWVt
+YmxvY2suaD4NCj4gPg0KPiA+IC0jZGVmaW5lIE1BWF9SRVNFUlZFRF9SRUdJT05TICAgNjQNCj4g
+PiArI2RlZmluZSBNQVhfUkVTRVJWRURfUkVHSU9OUyAgIDEyOA0KPiA+ICBzdGF0aWMgc3RydWN0
+IHJlc2VydmVkX21lbSByZXNlcnZlZF9tZW1bTUFYX1JFU0VSVkVEX1JFR0lPTlNdOw0KPiA+ICBz
+dGF0aWMgaW50IHJlc2VydmVkX21lbV9jb3VudDsNCj4gPg0KPiA+IC0tDQo+ID4gMi4xOC4wDQo+
+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiBM
+aW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZy
+YWRlYWQub3JnDQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tZWRpYXRlaw0KDQo=
 
-s/higher chances/non-zero chances
-
-Currently we have nothing that prevents the fragmentation of the memory
-with unmovable pages on the 1GB scale. It means that in a common case
-it's highly unlikely to find a continuous GB without any unmovable page.
-As now CMA seems to be the only working option.
-
-However it seems there are other use cases for the allocation of continuous
-1GB pages: e.g. secretfd ( https://lwn.net/Articles/831628/ ), where using
-1GB pages can reduce the fragmentation of the direct mapping.
-
-So I wonder if we need a new mechanism to avoid fragmentation on 1GB/PUD scale.
-E.g. something like a second level of pageblocks. That would allow to group
-all unmovable memory in few 1GB blocks and have more 1GB regions available for
-gigantic THPs and other use cases. I'm looking now into how it can be done.
-If anybody has any ideas here, I'll appreciate a lot.
-
-Thanks!
