@@ -2,147 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E178F283C59
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B288D283C5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbgJEQU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:20:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41670 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726638AbgJEQUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:20:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E14F0AD2C;
-        Mon,  5 Oct 2020 16:20:53 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B30DC1E12F3; Mon,  5 Oct 2020 18:20:53 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 18:20:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201005162053.GG4225@quack2.suse.cz>
-References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
- <20201005081454.GA493107@localhost>
+        id S1727855AbgJEQWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727149AbgJEQWu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:22:50 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C7EC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:22:50 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id A0498261076
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        kernel test robot <lkp@intel.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] drm/mediatek: mtk_dpi: Fix unused variable 'mtk_dpi_encoder_funcs'
+Date:   Mon,  5 Oct 2020 18:22:41 +0200
+Message-Id: <20201005162241.172912-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005081454.GA493107@localhost>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 05-10-20 01:14:54, Josh Triplett wrote:
-> Ran into an ext4 regression when testing upgrades to 5.9-rc kernels:
-> 
-> Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
-> ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
-> with intentionally overlapping bitmap blocks.
-> 
-> On an always-read-only filesystem explicitly marked with
-> EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
-> point all the block and inode bitmaps to a single block of all 1s,
-> because a read-only filesystem will never allocate or free any blocks or
-> inodes.
-> 
-> However, after that commit, the block validity check rejects such
-> filesystems with -EUCLEAN and "failed to initialize system zone (-117)".
-> This causes systems that previously worked correctly to fail when
-> upgrading to v5.9-rc2 or later.
-> 
-> This was obviously a bugfix, and I'm not suggesting that it should be
-> reverted; it looks like this effectively worked by accident before,
-> because the block_validity check wasn't fully functional. However, this
-> does break real systems, and I'd like to get some kind of regression fix
-> in before 5.9 final if possible. I think it would suffice to make
-> block_validity default to false if and only if
-> EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS is set.
-> 
-> Does that seem like a reasonable fix?
-> 
-> Here's a quick sketch of a patch, which I've tested and confirmed to
-> work:
-> 
-> ----- 8< -----
-> Subject: [PATCH] Fix ext4 regression in v5.9-rc2 on ro fs with overlapped bitmaps
-> 
-> Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
-> ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
-> with intentionally overlapping bitmap blocks.
-> 
-> On an always-read-only filesystem explicitly marked with
-> EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
-> point all the block and inode bitmaps to a single block of all 1s,
-> because a read-only filesystem will never allocate or free any blocks or
-> inodes.
-> 
-> However, after that commit, the block validity check rejects such
-> filesystems with -EUCLEAN and "failed to initialize system zone (-117)".
-> This causes systems that previously worked correctly to fail when
-> upgrading to v5.9-rc2 or later.
-> 
-> Fix this by defaulting block_validity to off when
-> EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS is set.
-> 
-> Signed-off-by: Josh Triplett <josh@joshtriplett.org>
-> Fixes: e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in ext4_setup_system_zone()")
+Commit f89c696e7f63 ("drm/mediatek: mtk_dpi: Convert to bridge driver")
+introduced the following build warning with W=1
 
-The patch looks fine to me. Thanks for fixing this and for educating me
-about the feature :) You can add:
+ drivers/gpu/drm/mediatek/mtk_dpi.c:530:39: warning: unused variable 'mtk_dpi_encoder_funcs' [-Wunused-const-variable]
+ static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+This struct is and the 'mtk_dpi_encoder_destroy()' are not needed
+anymore, so remove them.
 
-								Honza
+Fixes: f89c696e7f63 ("drm/mediatek: mtk_dpi: Convert to bridge driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 
+ drivers/gpu/drm/mediatek/mtk_dpi.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-> ---
->  fs/ext4/ext4.h  | 2 ++
->  fs/ext4/super.c | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 523e00d7b392..7874028fa864 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1834,6 +1834,7 @@ static inline bool ext4_verity_in_progress(struct inode *inode)
->  #define EXT4_FEATURE_RO_COMPAT_METADATA_CSUM	0x0400
->  #define EXT4_FEATURE_RO_COMPAT_READONLY		0x1000
->  #define EXT4_FEATURE_RO_COMPAT_PROJECT		0x2000
-> +#define EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS	0x4000
->  #define EXT4_FEATURE_RO_COMPAT_VERITY		0x8000
->  
->  #define EXT4_FEATURE_INCOMPAT_COMPRESSION	0x0001
-> @@ -1930,6 +1931,7 @@ EXT4_FEATURE_RO_COMPAT_FUNCS(bigalloc,		BIGALLOC)
->  EXT4_FEATURE_RO_COMPAT_FUNCS(metadata_csum,	METADATA_CSUM)
->  EXT4_FEATURE_RO_COMPAT_FUNCS(readonly,		READONLY)
->  EXT4_FEATURE_RO_COMPAT_FUNCS(project,		PROJECT)
-> +EXT4_FEATURE_RO_COMPAT_FUNCS(shared_blocks,	SHARED_BLOCKS)
->  EXT4_FEATURE_RO_COMPAT_FUNCS(verity,		VERITY)
->  
->  EXT4_FEATURE_INCOMPAT_FUNCS(compression,	COMPRESSION)
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index ea425b49b345..f57a7e966e44 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3954,7 +3954,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  	else
->  		set_opt(sb, ERRORS_RO);
->  	/* block_validity enabled by default; disable with noblock_validity */
-> -	set_opt(sb, BLOCK_VALIDITY);
-> +	if (!ext4_has_feature_shared_blocks(sb))
-> +		set_opt(sb, BLOCK_VALIDITY);
->  	if (def_mount_opts & EXT4_DEFM_DISCARD)
->  		set_opt(sb, DISCARD);
->  
-> 
+diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
+index 589ef33a1780..2609d917e3f9 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dpi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+@@ -522,15 +522,6 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
+ 	return 0;
+ }
+ 
+-static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
+-{
+-	drm_encoder_cleanup(encoder);
+-}
+-
+-static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
+-	.destroy = mtk_dpi_encoder_destroy,
+-};
+-
+ static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
+ 				 enum drm_bridge_attach_flags flags)
+ {
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.28.0
+
