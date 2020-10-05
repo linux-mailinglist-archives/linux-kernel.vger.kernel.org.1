@@ -2,236 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF7E2841A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08512841A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729226AbgJEUpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726935AbgJEUpW (ORCPT
+        id S1729330AbgJEUtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:49:25 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:53377 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgJEUtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:45:22 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732BCC0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 13:45:22 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id n136so1757144pfd.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 13:45:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VMCvM/lVmSD+WoCXLV03EzHmNxDtsAkuJmb4ll+kKtw=;
-        b=AIKmxUEZMVDxIcg4HDZZ+EWVJoorsD2ZAvAuSzmr2xiBCxBBInJKEqNLtgwRijVi1o
-         NQDA1gGYhDFfByHmbEUT7KdTnwM+WC56xrdpnNaNeWxehBLmen+AolAiZtMbKSJKJDDL
-         YCTrr8HUyH4yokR8Q6GoVT47D0p276zMrnMCY=
+        Mon, 5 Oct 2020 16:49:24 -0400
+Received: by mail-il1-f208.google.com with SMTP id v5so8391488ilj.20
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 13:49:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VMCvM/lVmSD+WoCXLV03EzHmNxDtsAkuJmb4ll+kKtw=;
-        b=m27FmcKQT3Iiscij02moI8MBgBTLfGG0QtE6rLSRIIoi4fB2up6cE0nWn1MB0hvnPn
-         CbNbRuYC4UoXLttxWFxO1R5U/Q6i4vzIA4NWyCeCuJ724hJ1Pnqr8/fo/UYH+k6Y7nV0
-         WPSCuuSh7HJNmrQNR9ul+X0r59EhdVuSdFTiWMl/fcT69OyicHUfBFhIW9twebqBMfpP
-         PH3+bh30+LXANOh+HfRaKjS3ZRzApDKJ/tV2P8zk/pWHo+mfaBeG/Wzl+WTSf2fbdgPr
-         10h8QaChgKRyfbFQQrisVOzMLFEROFbvWKJTPNQ3Qe7JQp6yI67zPUxryZKndfEZdqmL
-         ztsw==
-X-Gm-Message-State: AOAM533ycyvoqxsilBbJmwxkMTL1fNKmKjJTT3+XMWdMd/NaqE94GcFD
-        WhSbHNXD7FiwU1UMWU9X+JWNFw==
-X-Google-Smtp-Source: ABdhPJxGnRw0v6Z5EdICY7GvvnOsRaK8GQdlmuTPfJGHKAxCOIZBLjUIdSH/e7cTEU/ZnbdVPz/c/w==
-X-Received: by 2002:aa7:9522:0:b029:142:2501:3986 with SMTP id c2-20020aa795220000b029014225013986mr1325575pfp.75.1601930721886;
-        Mon, 05 Oct 2020 13:45:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s4sm800489pfu.107.2020.10.05.13.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 13:45:21 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: splice: Adjust for handler fallback removal
-Date:   Mon,  5 Oct 2020 13:45:17 -0700
-Message-Id: <20201005204517.2652730-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=4gS6tQ16mTAvNSH6terYY+v6JKkK5KLz9dMkwlTRuGg=;
+        b=iGW3yXrou3Ys1EqP780v5OH3oHYr5V1y1DW1jLnbvCfmrJaXKQtXXrbNoOAglF3r72
+         5Z7xFdukR9lSp983xyXIGBZLFdHzc6vMZ5Ow1FEYDW7jyeJyIYQoZ2g6P8CaT3JN43He
+         fi72kfl6nZd3CDCk/CrgvSt9W/k1JLIodFGoTRwmUOtYqY8qlwnFBBaa8Z10A+e3VRhC
+         lUT/xPF/tjOb3RkAvC4xBhWUivnbO6nv/K67sRNC+fzRGTfPZzSGh/D2UD1B6HFpIAWA
+         2hfamhU6bSEnhfzkVyrXMtdSC4ExX/T9/7pQOzCCqErNTA72D1pN6IPf/zJYlE5d090W
+         Y9PA==
+X-Gm-Message-State: AOAM533EfOLbD53ERsG9xGtPKgSZJY1IshmIxebPljIouuMAPglQRswv
+        dH1Oza3TodixyzP6Kiti/2ssTrI5tnCVkqKAHL44N4OuaHEU
+X-Google-Smtp-Source: ABdhPJz9QzCL7G9kCnlHQEaESrWjvNy1Nad43ymz5O0eIPHd8In6KVd7G8A9QoZn9M3eRBYUzw9y/sEsEQ1cHyG1YFsFnbo9+OUx
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:b00e:: with SMTP id x14mr1064103ilh.4.1601930963821;
+ Mon, 05 Oct 2020 13:49:23 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 13:49:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000dacf905b0f29e75@google.com>
+Subject: KASAN: invalid-free in put_files_struct
+From:   syzbot <syzbot+9cee17fa4a973a9e60f2@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some pseudo-filesystems do not have an explicit splice fops since adding
-commit 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops"),
-and now will reject attempts to use splice() in those filesystem paths.
+Hello,
 
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Link: https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
-Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
-Signed-off-by: Kees Cook <keescook@chromium.org>
+syzbot found the following issue on:
+
+HEAD commit:    fcadab74 Merge tag 'drm-fixes-2020-10-01-1' of git://anong..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d14513900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+dashboard link: https://syzkaller.appspot.com/bug?extid=9cee17fa4a973a9e60f2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9cee17fa4a973a9e60f2@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: double-free or invalid-free in put_files_struct fs/file.c:434 [inline]
+BUG: KASAN: double-free or invalid-free in put_files_struct+0x2c8/0x350 fs/file.c:426
+
+CPU: 0 PID: 27522 Comm: syz-executor.0 Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:477
+ __kasan_slab_free+0x107/0x120 mm/kasan/common.c:401
+ __cache_free mm/slab.c:3422 [inline]
+ kmem_cache_free.part.0+0x74/0x1e0 mm/slab.c:3697
+ put_files_struct fs/file.c:434 [inline]
+ put_files_struct+0x2c8/0x350 fs/file.c:426
+ exit_files+0x7e/0xa0 fs/file.c:458
+ do_exit+0xb43/0x29f0 kernel/exit.c:801
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+ __do_fast_syscall_32+0x6c/0x90 arch/x86/entry/common.c:138
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f41549
+Code: Bad RIP value.
+RSP: 002b:00000000f553b0cc EFLAGS: 00000296 ORIG_RAX: 0000000000000171
+RAX: 0000000000090fc0 RBX: 0000000000000004 RCX: 0000000020f6f000
+RDX: 00000000fffffea7 RSI: 0000000020000004 RDI: 0000000020b63fe4
+RBP: 000000000000001c R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 30131:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:518 [inline]
+ slab_alloc mm/slab.c:3316 [inline]
+ kmem_cache_alloc+0x13a/0x3f0 mm/slab.c:3486
+ dup_fd+0x89/0xc90 fs/file.c:293
+ copy_files kernel/fork.c:1461 [inline]
+ copy_process+0x1d99/0x6940 kernel/fork.c:2058
+ _do_fork+0xe8/0xb10 kernel/fork.c:2429
+ __do_sys_clone3+0x1dd/0x320 kernel/fork.c:2704
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+The buggy address belongs to the object at ffff88805c9a00c0
+ which belongs to the cache files_cache of size 832
+The buggy address is located 192 bytes to the left of
+ 832-byte region [ffff88805c9a00c0, ffff88805c9a0400)
+The buggy address belongs to the page:
+page:00000000953999c6 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88805c9a0840 pfn:0x5c9a0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea0002669748 ffffea0002a460c8 ffff88821bc47500
+raw: ffff88805c9a0840 ffff88805c9a00c0 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88805c99ff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88805c99ff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88805c9a0000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                   ^
+ ffff88805c9a0080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88805c9a0100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
 ---
- .../selftests/splice/short_splice_read.sh     | 119 ++++++++++++++----
- 1 file changed, 98 insertions(+), 21 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/splice/short_splice_read.sh b/tools/testing/selftests/splice/short_splice_read.sh
-index 7810d3589d9a..22b6c8910b18 100755
---- a/tools/testing/selftests/splice/short_splice_read.sh
-+++ b/tools/testing/selftests/splice/short_splice_read.sh
-@@ -1,21 +1,87 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
-+#
-+# Test for mishandling of splice() on pseudofilesystems, which should catch
-+# bugs like 11990a5bd7e5 ("module: Correctly truncate sysfs sections output")
-+#
-+# Since splice fallback was removed as part of the set_fs() rework, many of these
-+# tests expect to fail now. See https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
- set -e
- 
-+DIR=$(dirname "$0")
-+
- ret=0
- 
-+expect_success()
-+{
-+	title="$1"
-+	shift
-+
-+	echo "" >&2
-+	echo "$title ..." >&2
-+
-+	set +e
-+	"$@"
-+	rc=$?
-+	set -e
-+
-+	case "$rc" in
-+	0)
-+		echo "ok: $title succeeded" >&2
-+		;;
-+	1)
-+		echo "FAIL: $title should work" >&2
-+		ret=$(( ret + 1 ))
-+		;;
-+	*)
-+		echo "FAIL: something else went wrong" >&2
-+		ret=$(( ret + 1 ))
-+		;;
-+	esac
-+}
-+
-+expect_failure()
-+{
-+	title="$1"
-+	shift
-+
-+	echo "" >&2
-+	echo "$title ..." >&2
-+
-+	set +e
-+	"$@"
-+	rc=$?
-+	set -e
-+
-+	case "$rc" in
-+	0)
-+		echo "FAIL: $title unexpectedly worked" >&2
-+		ret=$(( ret + 1 ))
-+		;;
-+	1)
-+		echo "ok: $title correctly failed" >&2
-+		;;
-+	*)
-+		echo "FAIL: something else went wrong" >&2
-+		ret=$(( ret + 1 ))
-+		;;
-+	esac
-+}
-+
- do_splice()
- {
- 	filename="$1"
- 	bytes="$2"
- 	expected="$3"
-+	report="$4"
- 
--	out=$(./splice_read "$filename" "$bytes" | cat)
-+	out=$("$DIR"/splice_read "$filename" "$bytes" | cat)
- 	if [ "$out" = "$expected" ] ; then
--		echo "ok: $filename $bytes"
-+		echo "      matched $report" >&2
-+		return 0
- 	else
--		echo "FAIL: $filename $bytes"
--		ret=1
-+		echo "      no match: '$out' vs $report" >&2
-+		return 1
- 	fi
- }
- 
-@@ -23,34 +89,45 @@ test_splice()
- {
- 	filename="$1"
- 
-+	echo "  checking $filename ..." >&2
-+
- 	full=$(cat "$filename")
-+	rc=$?
-+	if [ $rc -ne 0 ] ; then
-+		return 2
-+	fi
-+
- 	two=$(echo "$full" | grep -m1 . | cut -c-2)
- 
- 	# Make sure full splice has the same contents as a standard read.
--	do_splice "$filename" 4096 "$full"
-+	echo "    splicing 4096 bytes ..." >&2
-+	if ! do_splice "$filename" 4096 "$full" "full read" ; then
-+		return 1
-+	fi
- 
- 	# Make sure a partial splice see the first two characters.
--	do_splice "$filename" 2 "$two"
-+	echo "    splicing 2 bytes ..." >&2
-+	if ! do_splice "$filename" 2 "$two" "'$two'" ; then
-+		return 1
-+	fi
-+
-+	return 0
- }
- 
--# proc_single_open(), seq_read()
--test_splice /proc/$$/limits
--# special open, seq_read()
--test_splice /proc/$$/comm
-+### /proc/$pid/ has no splice interface; these should all fail.
-+expect_failure "proc_single_open(), seq_read() splice" test_splice /proc/$$/limits
-+expect_failure "special open(), seq_read() splice" test_splice /proc/$$/comm
- 
--# proc_handler, proc_dointvec_minmax
--test_splice /proc/sys/fs/nr_open
--# proc_handler, proc_dostring
--test_splice /proc/sys/kernel/modprobe
--# proc_handler, special read
--test_splice /proc/sys/kernel/version
-+### /proc/sys/ has a splice interface; these should all succeed.
-+expect_success "proc_handler: proc_dointvec_minmax() splice" test_splice /proc/sys/fs/nr_open
-+expect_success "proc_handler: proc_dostring() splice" test_splice /proc/sys/kernel/modprobe
-+expect_success "proc_handler: special read splice" test_splice /proc/sys/kernel/version
- 
-+### /sys/ has no splice interface; these should all fail.
- if ! [ -d /sys/module/test_module/sections ] ; then
--	modprobe test_module
-+	expect_success "test_module kernel module load" modprobe test_module
- fi
--# kernfs, attr
--test_splice /sys/module/test_module/coresize
--# kernfs, binattr
--test_splice /sys/module/test_module/sections/.init.text
-+expect_failure "kernfs attr splice" test_splice /sys/module/test_module/coresize
-+expect_failure "kernfs binattr splice" test_splice /sys/module/test_module/sections/.init.text
- 
- exit $ret
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
