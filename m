@@ -2,138 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CFA28355E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247F7283561
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJEMHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S1726128AbgJEMHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgJEMHa (ORCPT
+        with ESMTP id S1725930AbgJEMHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:07:30 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9ABC0613CE;
-        Mon,  5 Oct 2020 05:07:29 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4C4fVS3Tt8zKm5Q;
-        Mon,  5 Oct 2020 14:07:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :references:in-reply-to:message-id:subject:subject:from:from
-        :date:date:received; s=mail20150812; t=1601899645; bh=uW44uYPrhB
-        Ak9bdc1yCwjJpGoZBR7+lNRqJgmDKEtuQ=; b=g/g/Egz1LWJ8/l/+iPloHI1gWt
-        YWjY4ZCxMZ7f35deW9qVtVKgv/B66cw68Jw54rZQ8bBh0QXeGifK6C/MELPrEq5H
-        49mfdl63pk8naBbXlDmp44LFsT68ChZ+k8qeJjW3xnnRf8votgc2eXZTE0Vi4MHD
-        394mywM4dvYPW6SRMEbOiPE2J8EFk5pDcPytI6++as3Qjah0Ow8oPuHOnIH/8wzB
-        IDy44OJIlSDFwCfL2Pyw6j64NqwrwzmDh8NqlgSAuu1VXhc2rBa7YhmbvJCcqMLt
-        B0nkF+YReEI8ewXx8fI1oVJNp2P1+M+d9r6uinM07X+L80IvpNQYZMAylcAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1601899646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RYy9CaSjXdLF8peC9exJg+yhvC7heRaR3PJTeXb8sjM=;
-        b=C5C1Bq/J8CI8e8FJNy+sV0Uy1CWdz8LhfEpw8jyMV61mWBXGdJuOqMykgE/7FGlMc2hwMU
-        vVU7HD/pjvXxEwYRNw1scd8eSfY2jIbI1PoZR97xf3NuaVY8EpxinXCBQQjFbsYMA0lrq1
-        NSJgOeA86gboKG9hhU3zuCts755QjDs3glpLLcIVdFeNt0FguAmvpfPfMCxSLYHUxw0ZUg
-        0ESYKXY0sXlsDwo2LsAN+gMY6osYgOwrPHZCWoUvOOScF52+qJQYYybzNEkqhYGv4tDPWp
-        ECUA6PjvceY26kc/zYH6DcZp9f8k/t8gLTHlRsYV2WBiVzBuC0FOu7EbvgKLcQ==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id VqJVNEQz4qN1; Mon,  5 Oct 2020 14:07:25 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 14:07:23 +0200
-From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-To:     Lars Melin <larsm17@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-        =?ISO-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <20201005140723.56f6c434@monster.powergraphx.local>
-In-Reply-To: <5222246c-08d7-dcf8-248d-c1fefc72c46f@gmail.com>
-References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
-        <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
-        <20201005082045.GL5141@localhost>
-        <20201005130134.459b4de9@monster.powergraphx.local>
-        <20201005110638.GP5141@localhost>
-        <5222246c-08d7-dcf8-248d-c1fefc72c46f@gmail.com>
+        Mon, 5 Oct 2020 08:07:38 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80335C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:07:36 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 184so1881655lfd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 05:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fYR1Nmn/SpWkgpyX+uei+ZKAH5DyVucsvO+KSbfsU+A=;
+        b=JzPQYsYeztLvHWehT5mOujyQmFO+RKC98pQTTUK86iCZTx0iwmgGXMmFoC+WdHDwSI
+         hHMTgbULsnIx2OKc/BGWAowEQBDGjHiWwcGCP9M6VrOzh+WZLQGiOfgWN8IDaL+Kow1p
+         yJL5ygNjJ4GvVfUBSCERc7bnzQoX8/7BiyWYg82zKH63X1QZjX1Gevr1u6mJG2iqub+w
+         ENn3DtTGrbqS13bl0YQcoMonrD2ljqPdT8WQgQ7FHhan6U6V/xiyd9jsIMBCAZnlAnJp
+         JaEh/tzXEXoo4P/BgJOaaJmtNMV7HmU6fPH5auX2RPa4GyzsRaRxPVvb/NY2jNXpINoe
+         EbSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fYR1Nmn/SpWkgpyX+uei+ZKAH5DyVucsvO+KSbfsU+A=;
+        b=Q1QZymi6urCOiujoLaRBu5FVTnYemJwrgSii7wOx/2rOcL2/sm35yw4iUwLoj+6ADC
+         VSTdv93NP7ZUECcyAmYr9V5+FY+cR6BdSkL5uBEjD3zqvs9Po+cuc9QDyrB0BgjH6YwW
+         eWzENPOfo5QRsPb7f7XfSG4rdlkAoBQczdULpY7RKneR+7iQgeNNIZ+dyYthpFA/5rx5
+         c8uM1+J3FOT0FmlyAE7u++m0Ml7oXRbrDpGoj0gYg2+YVx5se4E1HB8ZbPdwZy3eOkdj
+         jZDQgjb+ljHwZqLGVW9pet5/7qgc70FIPS7jx+UYALngEkuGk0cisagl+YI6MdGAzT5g
+         BB9Q==
+X-Gm-Message-State: AOAM53105lEr2VLtMsopMWwZZ1Kp3z/WpmGoDoXWgbMXZd2kY+9RrG8M
+        b1ELLboW7CkzhjWmTafQ8y5/6A==
+X-Google-Smtp-Source: ABdhPJzo4PTRFoa6ALXvF1Wbiv/N8HVQluFWZRMTGVTg0gR7ClpeuW2hai2T2NHeK1tm7ybpD2BlfQ==
+X-Received: by 2002:ac2:5a44:: with SMTP id r4mr3685000lfn.159.1601899654951;
+        Mon, 05 Oct 2020 05:07:34 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id p18sm543265ljn.127.2020.10.05.05.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 05:07:34 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 18CD6103B11; Mon,  5 Oct 2020 15:07:35 +0300 (+03)
+Date:   Mon, 5 Oct 2020 15:07:35 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] mm: Remove src/dst mm parameter in copy_page_range()
+Message-ID: <20201005120735.hx55z63vlmgr5jhy@box>
+References: <20201002192647.7161-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -5.98 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 8B9A91824
-X-Rspamd-UID: 543473
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002192647.7161-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 18:36:36 +0700
-Lars Melin <larsm17@gmail.com> wrote:
+On Fri, Oct 02, 2020 at 03:26:47PM -0400, Peter Xu wrote:
+> Both of the mm pointers are not needed after commit 7a4830c380f3 ("mm/fork:
+> Pass new vma pointer into copy_page_range()").
+> 
+> Jason Gunthorpe also reported that the ordering of copy_page_range() is odd.
+> Since working at it, reorder the parameters to be logical, by (1) always put
+> the dst_* fields to be before src_* fields, and (2) keep the same type of
+> parameters together.
+> 
+> CC: Jason Gunthorpe <jgg@ziepe.ca>
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> Reported-by: Kirill A. Shutemov <kirill@shutemov.name>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 
-> On 10/5/2020 18:06, Johan Hovold wrote:
-> > On Mon, Oct 05, 2020 at 01:01:34PM +0200, Wilken Gottwalt wrote:
-> >> On Mon, 5 Oct 2020 10:20:45 +0200
-> >> Johan Hovold <johan@kernel.org> wrote:
-> >>
-> >>> On Sat, Oct 03, 2020 at 11:40:29AM +0200, Wilken Gottwalt wrote:
-> >>>> Add usb ids of the Cellient MPL200 card.
-> >>>>
-> >>>> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> >>>> ---
-> > 
-> >>>> @@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
-> >>>>   	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2,
-> >>>> 0xff, 0x02, 0x01) }, { USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID,
-> >>>> MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x00, 0x00) }, { USB_DEVICE(CELLIENT_VENDOR_ID,
-> >>>> CELLIENT_PRODUCT_MEN200) },
-> >>>> +	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
-> >>>> +	  .driver_info = RSVD(1) | RSVD(4) },
-> >>>
-> >>> Would you mind posting the output of "lsusb -v" for this device?
-> >>
-> >> I would like to, but unfortunately I lost access to this really rare hardware
-> >> about a month ago. It is a Qualcomm device (0x05c6:0x9025) with a slightly
-> >> modified firmware to rebrand it as a Cellient product with a different vendor
-> >> id. How to proceed here, if I have no access to it anymore? Drop it?
-> > 
-> > No, that's ok, I've applied the patch now. It's just that in case we
-> > ever need to revisit the handling of quirky devices, it has proven
-> > useful to have a record the descriptors.
-> > 
-> > Do you remember the interface layout and why you blacklisted interface
-> > 1?
-> > 
-> > Johan
-> > 
-> 
-> It is very likely that Cellient has replaced the VID with their own and 
-> kept the PID, it is something other mfgrs has done when buying modules 
-> from Qualcomm's series of devices with predefined composition.
-> 
-> The MS Windows driver for 05c6:9025 describes the interfaces as:
-> 
-> MI_00 Qualcomm HS-USB Diagnostics 9025
-> MI_01 Android Composite ADB Interface
-> MI_02 Qualcomm HS-USB Android Modem 9025
-> MI_03 Qualcomm HS-USB NMEA 9025
-> MI_04 Qualcomm Wireless HS-USB Ethernet Adapter 9025
-> MI_05 USB Mass Storage Device
-> 
-> where the net interface is for QMI/RMNET.
-> It fully matches the blacklisting Wilken has done for 2692:9025
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Does your device have a GPS connector? Mine had not and I'm not sure
-if the description of MI_01 is actually correct. I remember looking at
-this port and seeing bogus NMEA data.
-
-greetings,
-Will
+-- 
+ Kirill A. Shutemov
