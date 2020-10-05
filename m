@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BFD283DC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90677283DCE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 19:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgJERxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 13:53:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47786 "EHLO mx2.suse.de"
+        id S1728435AbgJERyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 13:54:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbgJERxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 13:53:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EAA9ADDF;
-        Mon,  5 Oct 2020 17:53:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4D3281E12F3; Mon,  5 Oct 2020 19:53:08 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 19:53:08 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     andrew Morton <akpm@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>, linux-mm@kvack.org,
-        Hans Verkuil <hans.verkuil@cisco.com>, Jan Kara <jack@suse.cz>,
-        Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
-        Mel Gorman <mgorman@suse.de>, stable@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Message-ID: <20201005175308.GI4225@quack2.suse.cz>
-References: <0-v1-447bb60c11dd+174-frame_vec_fix_jgg@nvidia.com>
+        id S1727901AbgJERyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:54:53 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05F34207BC;
+        Mon,  5 Oct 2020 17:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601920493;
+        bh=VCiW3dcVnJ9y8q1OkZqogcxkqkpP/n24rMjf80efbJM=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=UqXAPg5VeIwEKjcazvYt39IGVvbdXeFcre6MDtbS0LC/FB/LnmtcRYIPdAj0ZrptE
+         dEozWDSkvha6ExelpFU7XGPGUTI6bbxEF67GuALuJuYBgXiDFoSRQv03AsiCFecAVA
+         DeDD1YrWTFo+JLvpRvN6c1PdDFExcUGFxA46vTF8=
+Date:   Mon, 05 Oct 2020 18:53:50 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc:     nicolas.ferre@microchip.com, tiwai@suse.com, lgirdwood@gmail.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com
+In-Reply-To: <20201004094505.1041898-1-codrin.ciubotariu@microchip.com>
+References: <20201004094505.1041898-1-codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH] ASoC: mchp-spdifrx: convert to devm_platform_get_and_ioremap_resource
+Message-Id: <160192043040.23051.5178430968539357804.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0-v1-447bb60c11dd+174-frame_vec_fix_jgg@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 05-10-20 14:38:54, Jason Gunthorpe wrote:
-> When get_vaddr_frames() does its hacky follow_pfn() loop it should never
-> be allowed to extract a struct page from a normal VMA. This could allow a
-> serious use-after-free problem on any kernel memory.
-> 
-> Restrict this to only work on VMA's with one of VM_IO | VM_PFNMAP
-> set. This limits the use-after-free problem to only IO memory, which while
-> still serious, is an improvement.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 8025e5ddf9c1 ("[media] mm: Provide new get_vaddr_frames() helper")
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  mm/frame_vector.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-> index 10f82d5643b6de..26cb20544b6c37 100644
-> --- a/mm/frame_vector.c
-> +++ b/mm/frame_vector.c
-> @@ -99,6 +99,10 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
->  		if (ret >= nr_frames || start < vma->vm_end)
->  			break;
->  		vma = find_vma_intersection(mm, start, start + 1);
-> +		if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
-> +			ret = -EINVAL;
-> +			goto out;
-> +		}
->  	} while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
+On Sun, 4 Oct 2020 12:45:05 +0300, Codrin Ciubotariu wrote:
+> Use the helper function that wraps the calls to platform_get_resource()
+> and devm_ioremap_resource() together.
 
-Hum, I fail to see how this helps. If vma has no VM_IO or VM_PFNMAP flag,
-we'd exit the loop (to out: label) anyway due to the loop termination
-condition and why not return the frames we already have? Furthermore
-find_vma_intersection() can return NULL which would oops in your check
-then. What am I missing?
+Applied to
 
-								Honza
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
->  out:
->  	if (locked)
-> -- 
-> 2.28.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks!
+
+[1/1] ASoC: mchp-spdifrx: convert to devm_platform_get_and_ioremap_resource
+      commit: 8031b93efa8d393b7e38fa66b836ac157a2f354d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
