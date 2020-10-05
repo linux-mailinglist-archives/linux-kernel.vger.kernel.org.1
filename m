@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA83283EF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5430283EF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgJESq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:46:59 -0400
-Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:58712 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725940AbgJESq7 (ORCPT
+        id S1729023AbgJESrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgJESrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:46:59 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 27638121A;
-        Mon,  5 Oct 2020 18:46:58 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3871:3872:3874:4321:5007:6120:6742:10004:10400:10471:10848:11232:11658:11914:12297:12740:12760:12895:13019:13069:13255:13311:13357:13439:14659:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sense91_3616e57271c0
-X-Filterd-Recvd-Size: 2564
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  5 Oct 2020 18:46:55 +0000 (UTC)
-Message-ID: <64ccf7f562b753572b123d747c43222eb99378f8.camel@perches.com>
-Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
- __section(foo) to __section("foo")
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Date:   Mon, 05 Oct 2020 11:46:54 -0700
-In-Reply-To: <CAKwvOdmW4ZSo0yz9ZUjFhjzzDkNAghKYk_hxn9tvrKLBgCXx-A@mail.gmail.com>
-References: <20200929192549.501516-1-ndesaulniers@google.com>
-         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
-         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
-         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
-         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
-         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
-         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
-         <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
-         <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
-         <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
-         <20201001193937.GM28786@gate.crashing.org>
-         <61445711991c2d6eb7c8fb05bed2814458e2593b.camel@perches.com>
-         <CAKwvOdmW4ZSo0yz9ZUjFhjzzDkNAghKYk_hxn9tvrKLBgCXx-A@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 5 Oct 2020 14:47:21 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C26AC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:47:21 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id l4so6171527ota.7
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XQjx4ARCOaA2Q3w4kWrTamyGCaoXmzrJw6IcbfLdyk4=;
+        b=hbADtAEgbdwpvlYNo3faqt+P+U0ye7bUZqMOOg6MFw6APVUSBDhEB9pOLtDWotBoxj
+         h/ol56CXi/ZM09Su4P+xHHA8yoFXKO+yKouICKddLgjIwzY8qO9KUHWBFyAVpmrmbfw4
+         s6+sDUUDpCCrFrmS9fioCiVegCgTTzsBu8CEg/79jYVxQn701bHyJmURrjkZ8P+aEkWb
+         oWnobPquo/nwPxiOEmMebRPc+KBi7+F7O2aK9a5tVpNKw+yke5d0hIRVaET2pbzlO9os
+         1ppHKBytY+wmahSasdz/Jj/+YoIemLO76yY16My6Rx77tkDMyBvLwvsYMnKV0FzE/t1x
+         ZWMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XQjx4ARCOaA2Q3w4kWrTamyGCaoXmzrJw6IcbfLdyk4=;
+        b=EyIVKbGE+js0ejE2A+DUfRZJ8jkl7PoE4KfSib+qK8w5KUeB4o9lVt5lg1FZkRZQH4
+         WDKXpSRjlmKQ4jEWJ+7vjZVgqtg8JECtYfYTw8K6On46y5V8j4CGDKgExCMdP0Azals2
+         6fsKmQZj8gZ/Si9o2fYwtFGpTNn+t8sZptWRP1UvlBjeep5nkaazWExqG4WtPuNFknlV
+         /s9cBgDRd5o7SE3stYmF1sNjOuqano4KAJp6/2eHCyWCUsR1ih7pPSlwPLu5fPe87/su
+         k0+2EJ9lya68/05E37z4Sis21kida0oZB/y0YbALs9u4NSjw2oAE/SXMjctyDnq+nML1
+         Fvcg==
+X-Gm-Message-State: AOAM533TlPCogKBCmP9tToibcQiD47d1wNkgJz4wDtqYIeEn//jfTBJf
+        buISncUJxPozty1jyBIPDSrRJY1ZwWLm+4z4RTD5IfjG46jRSQ==
+X-Google-Smtp-Source: ABdhPJyLCnElkhzehx+gGblvdGwyvr63QqKxsu4szbqFIma5EJahiU+IMo+92Sx6DaOFjnKvArimCbYKbikZz9YRX/w=
+X-Received: by 2002:a9d:4b18:: with SMTP id q24mr443856otf.265.1601923640321;
+ Mon, 05 Oct 2020 11:47:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201005173933.171074-1-dwaipayanray1@gmail.com> <14c9d8808feabe987e7fdac867d21ff88561011a.camel@perches.com>
+In-Reply-To: <14c9d8808feabe987e7fdac867d21ff88561011a.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Tue, 6 Oct 2020 00:16:58 +0530
+Message-ID: <CABJPP5D9d7egEMWbYJnp7STYyB9OeW3sWzcnyXvRTKFbUmXU4g@mail.gmail.com>
+Subject: Re: [PATCH v2] checkpatch: add new warnings to author signoff checks.
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-05 at 11:36 -0700, Nick Desaulniers wrote:
-> I don't think there's anything wrong with manually including it and adding `-I
-> <path>` (capital i) if needed.
+On Mon, Oct 5, 2020 at 11:53 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-10-05 at 23:09 +0530, Dwaipayan Ray wrote:
+> > The author signed-off-by checks are currently very vague.
+> > Cases like same name or same address are not handled separately.
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > +                                             if ($address1 =~ /(\S+)\+\S+(\@.*)/) {
+> > +                                                     $address1 = $1.$2;
+>
+> More common in this code is "$1" . "$2" not $1.$2
+>
+> > @@ -6891,9 +6917,29 @@ sub process {
+> []
+> > +                     # 4 -> names match, addresses excuding mail extensions (subaddresses) match
+>
+> excluding
+>
+> perhaps "subaddress detail" instead of "mail extensions (subaddresses)"
+>
+> And maybe add "from RFC 5233"
+>
+> > +
+> > +                     my $sob_msg = "'From: $author' != 'Signed-off-by: $author_sob'";
+> > +
+> > +                     if ($authorsignoff == 0) {
+> > +                             WARN("NO_AUTHOR_SIGN_OFF",
+> > +                                  "Missing Signed-off-by: line by nominal patch author '$author'\n");
+> > +                     } elsif ($authorsignoff == 2) {
+> > +                             WARN("NO_AUTHOR_SIGN_OFF",
+> > +                                  "From:/Signed-off-by: email name mismatch:\n$sob_msg\n");
+>
+>
+> Still no need for a newline to separate the output message.
+>
 
-All of this is secondary to the actual change to use
-quoted __section("foo") rather than __section(foo)
+Thanks, I will fix these.
 
-I'd rather get that done first and then figure out if
-additional changes could be done later.
+Are there any more changes needed? I shall try to wrap it
+in v3 then.
 
-
-
+Thanks,
+Dwaipayan.
