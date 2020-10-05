@@ -2,51 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A672830BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEBB2830BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 09:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgJEHQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 03:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
+        id S1725870AbgJEHQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 03:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgJEHQf (ORCPT
+        with ESMTP id S1725903AbgJEHQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:16:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677BAC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 00:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4pRfIBoFn6hHSzgiN2brmNHTigG7lI3F4/ydGWaV9vI=; b=UoMDKdE05ZIMXq/pidYBN6sljx
-        /Z/spj4eLaN90pHUkMmU6fp8aqHJ+6CU91mF3sToqKxfMoJP+S6Ckv7ephss6m47yHHuZ/rqd+jxo
-        uzlCSMmPxFZIDq0VrcvgSRFykI4l2xLYLnl7nbXM/a9tv3n8wOjlHXicdVof27RDRm5Usg723XP3F
-        xNuQoUZqu5ajgfuonejAsz4DOpaQrl4OrgTgOANncDfEKmKXByqkSCAjp3uem/RjtM34ZppbqMcXg
-        io2U6PcmfaSlGfWxihxBcNW309xZ3/WlAVJr6SJVxHfFxCu/AdCHH7Nj3H0SLTbq0SptK7HO1Ka5N
-        oX50Ml2Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPKjY-0003w6-FV; Mon, 05 Oct 2020 07:16:32 +0000
-Date:   Mon, 5 Oct 2020 08:16:32 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.9
-Message-ID: <20201005071632.GA14204@infradead.org>
-References: <mhng-c32d6fbf-32dd-45ed-90f1-ffbb7e455aaa@palmerdabbelt-glaptop1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-c32d6fbf-32dd-45ed-90f1-ffbb7e455aaa@palmerdabbelt-glaptop1>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Mon, 5 Oct 2020 03:16:51 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0ABC0613A6
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 00:16:51 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id g10so2981591pfc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 00:16:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=zMRkSrhSzgEABYu+gvHkrLf9ryTfEsMiBWXi614gWOk=;
+        b=GWpF9vB6UjD8VKuoTaOq9gZf4RYzvhP9hZ1NPrK/M5P2Inxz8ifqVj3QN7rcofzKBz
+         oSLMKQB1/g2KjdZqTtIIiqhBQmLp+ECJElISgetQUKG0omj7ixHAULSMA9hY/ZOUZ1CY
+         EAlw3S/rzrjx8tizz50piI3An0KHshwGH/bJfogOZ1odIJoqKPYEvkRvR3TKtwMg+ZhA
+         YsVqnWmmgpzb0TScTK4t4SLWZCRohddHX5UKj1n2bzswgaxqU0cM8rknArtu515AoM5d
+         o33GOWdOtYCdKpvZSF84kFcDQT05xiZk5/Hhochd3oRRqR8Jb/YLH6dN2uydAmOjWcH7
+         1UAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zMRkSrhSzgEABYu+gvHkrLf9ryTfEsMiBWXi614gWOk=;
+        b=ebhbPgcO63yqa9jEShj0DiOTBKtHC04g480HcDixvtXoZniCXYAzDFzYAkisZ1SMmr
+         arVv2wCNKCxFGMmJ2mmxhgCduMOtQyzreOeHOzY1iYDJQOldtmyMX27utP6TH4v+WNxn
+         jaGv4Ch61ICu7+M7vBak4F3aISmAQ+SJvhihZY4tA51c/NlINrqmZ4nv69vzE56xG+Md
+         IOOuhuHOZoygdzzAM6dRCnnFblQJVuwXH9Eg2yDJqB+FywBwnxFKCAcBsS4JA35zxtsO
+         LJA+AvL3XEz4teVlfRNkAWA1TTT9DMVkahYrn1qUbVorIcE+DiedDZMJrf/WmXrnMS0v
+         7bBg==
+X-Gm-Message-State: AOAM532XKY4s3VjbKBn90DBN7YJyKu0IWCKEtJpl6uO4676NmRmZ49HP
+        8M1UMniQTnJu40YZWp8HmT+K
+X-Google-Smtp-Source: ABdhPJxL0Ytg7U0s8xd4ChdvlwFALokXgr05eRcF2bNNMOlxH78kBpyLhwNlTPAmxtuNNZ3TXH0llQ==
+X-Received: by 2002:a63:4945:: with SMTP id y5mr13123680pgk.181.1601882211024;
+        Mon, 05 Oct 2020 00:16:51 -0700 (PDT)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.googlemail.com with ESMTPSA id v10sm9606869pjf.34.2020.10.05.00.16.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 00:16:50 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dianders@chromium.org,
+        elder@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v3] net: qrtr: ns: Fix the incorrect usage of rcu_read_lock()
+Date:   Mon,  5 Oct 2020 12:46:42 +0530
+Message-Id: <20201005071642.9621-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 09:07:27AM -0700, Palmer Dabbelt wrote:
-> * The addition of a symbol export for clint_time_val, which has been inlined
->   into some timex functions and can be used by drivers.
+The rcu_read_lock() is not supposed to lock the kernel_sendmsg() API
+since it has the lock_sock() in qrtr_sendmsg() which will sleep. Hence,
+fix it by excluding the locking for kernel_sendmsg().
 
-Err, haven't we just agreed on that this is a bad idea and jitterentropy
-should not call get_cycles()?
+While at it, let's also use radix_tree_deref_retry() to confirm the
+validity of the pointer returned by radix_tree_deref_slot() and use
+radix_tree_iter_resume() to resume iterating the tree properly before
+releasing the lock as suggested by Doug.
+
+Fixes: a7809ff90ce6 ("net: qrtr: ns: Protect radix_tree_deref_slot() using rcu read locks")
+Reported-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Tested-by: Douglas Anderson <dianders@chromium.org>
+Tested-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+
+Changes in v3:
+
+* Collected reviews from Doug and addressed couple of nitpicks
+
+Changes in v2:
+
+* Used radix_tree_deref_retry() and radix_tree_iter_resume() as
+suggested by Doug.
+
+ net/qrtr/ns.c | 76 +++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 64 insertions(+), 12 deletions(-)
+
+diff --git a/net/qrtr/ns.c b/net/qrtr/ns.c
+index 934999b56d60..b8559c882431 100644
+--- a/net/qrtr/ns.c
++++ b/net/qrtr/ns.c
+@@ -193,7 +193,7 @@ static int announce_servers(struct sockaddr_qrtr *sq)
+ 	struct qrtr_server *srv;
+ 	struct qrtr_node *node;
+ 	void __rcu **slot;
+-	int ret = 0;
++	int ret;
+ 
+ 	node = node_get(qrtr_ns.local_node);
+ 	if (!node)
+@@ -203,18 +203,27 @@ static int announce_servers(struct sockaddr_qrtr *sq)
+ 	/* Announce the list of servers registered in this node */
+ 	radix_tree_for_each_slot(slot, &node->servers, &iter, 0) {
+ 		srv = radix_tree_deref_slot(slot);
++		if (!srv)
++			continue;
++		if (radix_tree_deref_retry(srv)) {
++			slot = radix_tree_iter_retry(&iter);
++			continue;
++		}
++		slot = radix_tree_iter_resume(slot, &iter);
++		rcu_read_unlock();
+ 
+ 		ret = service_announce_new(sq, srv);
+ 		if (ret < 0) {
+ 			pr_err("failed to announce new service\n");
+-			goto err_out;
++			return ret;
+ 		}
++
++		rcu_read_lock();
+ 	}
+ 
+-err_out:
+ 	rcu_read_unlock();
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static struct qrtr_server *server_add(unsigned int service,
+@@ -339,7 +348,7 @@ static int ctrl_cmd_bye(struct sockaddr_qrtr *from)
+ 	struct qrtr_node *node;
+ 	void __rcu **slot;
+ 	struct kvec iv;
+-	int ret = 0;
++	int ret;
+ 
+ 	iv.iov_base = &pkt;
+ 	iv.iov_len = sizeof(pkt);
+@@ -352,7 +361,16 @@ static int ctrl_cmd_bye(struct sockaddr_qrtr *from)
+ 	/* Advertise removal of this client to all servers of remote node */
+ 	radix_tree_for_each_slot(slot, &node->servers, &iter, 0) {
+ 		srv = radix_tree_deref_slot(slot);
++		if (!srv)
++			continue;
++		if (radix_tree_deref_retry(srv)) {
++			slot = radix_tree_iter_retry(&iter);
++			continue;
++		}
++		slot = radix_tree_iter_resume(slot, &iter);
++		rcu_read_unlock();
+ 		server_del(node, srv->port);
++		rcu_read_lock();
+ 	}
+ 	rcu_read_unlock();
+ 
+@@ -368,6 +386,14 @@ static int ctrl_cmd_bye(struct sockaddr_qrtr *from)
+ 	rcu_read_lock();
+ 	radix_tree_for_each_slot(slot, &local_node->servers, &iter, 0) {
+ 		srv = radix_tree_deref_slot(slot);
++		if (!srv)
++			continue;
++		if (radix_tree_deref_retry(srv)) {
++			slot = radix_tree_iter_retry(&iter);
++			continue;
++		}
++		slot = radix_tree_iter_resume(slot, &iter);
++		rcu_read_unlock();
+ 
+ 		sq.sq_family = AF_QIPCRTR;
+ 		sq.sq_node = srv->node;
+@@ -379,14 +405,14 @@ static int ctrl_cmd_bye(struct sockaddr_qrtr *from)
+ 		ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
+ 		if (ret < 0) {
+ 			pr_err("failed to send bye cmd\n");
+-			goto err_out;
++			return ret;
+ 		}
++		rcu_read_lock();
+ 	}
+ 
+-err_out:
+ 	rcu_read_unlock();
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int ctrl_cmd_del_client(struct sockaddr_qrtr *from,
+@@ -404,7 +430,7 @@ static int ctrl_cmd_del_client(struct sockaddr_qrtr *from,
+ 	struct list_head *li;
+ 	void __rcu **slot;
+ 	struct kvec iv;
+-	int ret = 0;
++	int ret;
+ 
+ 	iv.iov_base = &pkt;
+ 	iv.iov_len = sizeof(pkt);
+@@ -447,6 +473,14 @@ static int ctrl_cmd_del_client(struct sockaddr_qrtr *from,
+ 	rcu_read_lock();
+ 	radix_tree_for_each_slot(slot, &local_node->servers, &iter, 0) {
+ 		srv = radix_tree_deref_slot(slot);
++		if (!srv)
++			continue;
++		if (radix_tree_deref_retry(srv)) {
++			slot = radix_tree_iter_retry(&iter);
++			continue;
++		}
++		slot = radix_tree_iter_resume(slot, &iter);
++		rcu_read_unlock();
+ 
+ 		sq.sq_family = AF_QIPCRTR;
+ 		sq.sq_node = srv->node;
+@@ -458,14 +492,14 @@ static int ctrl_cmd_del_client(struct sockaddr_qrtr *from,
+ 		ret = kernel_sendmsg(qrtr_ns.sock, &msg, &iv, 1, sizeof(pkt));
+ 		if (ret < 0) {
+ 			pr_err("failed to send del client cmd\n");
+-			goto err_out;
++			return ret;
+ 		}
++		rcu_read_lock();
+ 	}
+ 
+-err_out:
+ 	rcu_read_unlock();
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int ctrl_cmd_new_server(struct sockaddr_qrtr *from,
+@@ -571,16 +605,34 @@ static int ctrl_cmd_new_lookup(struct sockaddr_qrtr *from,
+ 	rcu_read_lock();
+ 	radix_tree_for_each_slot(node_slot, &nodes, &node_iter, 0) {
+ 		node = radix_tree_deref_slot(node_slot);
++		if (!node)
++			continue;
++		if (radix_tree_deref_retry(node)) {
++			node_slot = radix_tree_iter_retry(&node_iter);
++			continue;
++		}
++		node_slot = radix_tree_iter_resume(node_slot, &node_iter);
+ 
+ 		radix_tree_for_each_slot(srv_slot, &node->servers,
+ 					 &srv_iter, 0) {
+ 			struct qrtr_server *srv;
+ 
+ 			srv = radix_tree_deref_slot(srv_slot);
++			if (!srv)
++				continue;
++			if (radix_tree_deref_retry(srv)) {
++				srv_slot = radix_tree_iter_retry(&srv_iter);
++				continue;
++			}
++
+ 			if (!server_match(srv, &filter))
+ 				continue;
+ 
++			srv_slot = radix_tree_iter_resume(srv_slot, &srv_iter);
++
++			rcu_read_unlock();
+ 			lookup_notify(from, srv, true);
++			rcu_read_lock();
+ 		}
+ 	}
+ 	rcu_read_unlock();
+-- 
+2.17.1
+
