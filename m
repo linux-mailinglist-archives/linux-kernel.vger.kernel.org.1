@@ -2,160 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76500283EB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A073D283EE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbgJESjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729037AbgJESiz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:38:55 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F29C0613CE;
-        Mon,  5 Oct 2020 11:38:54 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id z5so8736669ilq.5;
-        Mon, 05 Oct 2020 11:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=0mINoVvksqZpxSeoRlADJj7+XdiIIyUQzvACsexYEQw=;
-        b=kn7nn+XTmlJZO2v/2j2Tmy3jIlpyrrrrWPx33DO4lmrqZgUYwdb/a8sNtoyfvDz1OO
-         3UwPs7RxAscCE7pOVghC/bMTs1mp3PvDxShLNbA86FvVaW66U0plTCvNNadhsMUBxB0W
-         KUPTDJLXJA5u//2V5nuseGGrKIdKR3tX1gFOunlYu0o0G+GkH8LZExt0l98aNuma63Qm
-         WUHlA45vMTCAFJPax9yGhxpR8yJJcNQcLE080w0Xbo49IsaLBYBhCaACXbQweFmYZ3pY
-         xNhUYhGalRo4rTCEtW31kbyfHsFnfAmQ6zYTqgqnlWuEHWJWegOa+Oda/L2jHCtTy6zV
-         mQlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=0mINoVvksqZpxSeoRlADJj7+XdiIIyUQzvACsexYEQw=;
-        b=gWlab85g/W4k4ExCSPZ4tfTu2KWtZxU9ROyX9GNO5C1ygUESbGAeBlC7Lg70ahPYQv
-         t6VHS3T3HDZbyWDzaFLIYBeCqSf4+xAdhPv+D2TuUwlfbJYhqQdbmIiwT2rm6vkDlLIx
-         joZaly6K7iUiof1dd5HGqg7+C3TEt3SSo/R8jzH/GHCidKNm1jCvfbziYThl6HhW2/iJ
-         HyXOMm9JI/A5xNWLGn6c1x8Aji1BqmVbIesamytPH4if7BWOZQMYXJr7gWXlAdHRbXwo
-         phMRTNl5DXUvgXcTUmNNjmXWLaw1oRhtSJNIHsgJ+uZ2+W4tgrzD0CaDmykoebmOBciJ
-         m6Mw==
-X-Gm-Message-State: AOAM532eOpk70Za6PvyUL+qhmRl0/TAulFfjCkyd3NNey/uqQ1UZj/8X
-        hVH+917f68X64/uRWZuxIZ8GK/jYNXQMb+y0c+M=
-X-Google-Smtp-Source: ABdhPJxsJaSwN+Zw1d8zq5bm/klf9+WTqk9WtOme4Gz17IP9G/ILoYs0zpxV55VFQLFrfZkF0Y40fUFxE+mvwjz0l1Y=
-X-Received: by 2002:a92:6a0a:: with SMTP id f10mr599827ilc.186.1601923133931;
- Mon, 05 Oct 2020 11:38:53 -0700 (PDT)
+        id S1729176AbgJESjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:39:55 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36096 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728361AbgJESjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 14:39:47 -0400
+IronPort-SDR: gSNmcYB5C3cDTzBcLvHH8U6FRAQ4LXL3mQtS3e9D8bfCzsujc20S15h6u8XiyXgx2kcS0w1v/9
+ Ec1nquDqq2Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="151132420"
+X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
+   d="scan'208";a="151132420"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 11:39:36 -0700
+IronPort-SDR: ib32QZLkaSeTUwpHWrPlfiVHb76oMasOB0NozT9SS6fn1suNQH7+spXpkFIJFVivIIdVe/Ssw/
+ l4de97buw8ZQ==
+X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
+   d="scan'208";a="310158080"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.255.65.178]) ([10.255.65.178])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 11:39:35 -0700
+Subject: Re: [PATCH net-next 02/16] devlink: Add reload action option to
+ devlink reload command
+To:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-3-git-send-email-moshe@mellanox.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <4e4e389c-704f-84f9-e69c-57ce5e9e2df7@intel.com>
+Date:   Mon, 5 Oct 2020 11:39:32 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
- <20200929192549.501516-1-ndesaulniers@google.com> <20200930204044.GZ29330@paulmck-ThinkPad-P72>
- <CAKwvOd=nabONrWyYFK7Y06TrKBOyHHfNUiiy69VJQ2NtCpbp5Q@mail.gmail.com>
- <20201002205130.GK29330@paulmck-ThinkPad-P72> <CAKwvOdkPMSwQneMLFNg3ihM5zHorFy+uGvzAL7y70+hu_1q24w@mail.gmail.com>
-In-Reply-To: <CAKwvOdkPMSwQneMLFNg3ihM5zHorFy+uGvzAL7y70+hu_1q24w@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 5 Oct 2020 20:38:42 +0200
-Message-ID: <CA+icZUW_z5nJ1c69JS7Nm1QknF+CH+sPkhF4g2+L=d=H-vxVgw@mail.gmail.com>
-Subject: Re: [PATCH v2] srcu: avoid escaped section names
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1601560759-11030-3-git-send-email-moshe@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 8:29 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Fri, Oct 2, 2020 at 1:51 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 01:55:48PM -0700, Nick Desaulniers wrote:
-> > > On Wed, Sep 30, 2020 at 1:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Tue, Sep 29, 2020 at 12:25:49PM -0700, Nick Desaulniers wrote:
-> > > > > The stringification operator, `#`, in the preprocessor escapes strings.
-> > > > > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> > > > > they treat section names that contain \".
-> > > > >
-> > > > > The portable solution is to not use a string literal with the
-> > > > > preprocessor stringification operator.
-> > > > >
-> > > > > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> > > > > Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-> > > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > >
-> > > > I am guessing that this needs to go up with other patches.  If so:
-> > > >
-> > > > Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >
-> > > > If not, let me know and I will queue it.
-> > >
-> > > I could have bundled them up as a series.  I think you can pick it up,
-> > > and I'll owe you a beer?
-> >
-> > It is queued, thank you!
-> >
-> > When does it need to hit mainline?  (Your default is the v5.11 merge
-> > window, that is, the one following the upcoming merge window.)
->
-> No rush, this patch wasn't blocking any known issue, just a cleanup
-> while I was in the neighborhood.  100 years ago, I was an Eagle scout.
-> Pretty sure there was a motto about "leaving things better than you
-> found them."  Thanks for help resolving the merge conflict reported in
-> -next related to it.
->
 
-Wasn't there a problem with your "Fixes:" tag (Fixes: *drop word
-"commit"* commit_hashid ("...")?
 
-- Sedat -
+On 10/1/2020 6:59 AM, Moshe Shemesh wrote:
+> Add devlink reload action to allow the user to request a specific reload
+> action. The action parameter is optional, if not specified then devlink
+> driver re-init action is used (backward compatible).
+> Note that when required to do firmware activation some drivers may need
+> to reload the driver. On the other hand some drivers may need to reset
+> the firmware to reinitialize the driver entities. Therefore, the devlink
+> reload command returns the actions which were actually performed.
+> Reload actions supported are:
+> driver_reinit: driver entities re-initialization, applying devlink-param
+>                and devlink-resource values.
+> fw_activate: firmware activate.
+> 
+> command examples:
+> $devlink dev reload pci/0000:82:00.0 action driver_reinit
+> reload_actions_performed:
+>   driver_reinit
+> 
+> $devlink dev reload pci/0000:82:00.0 action fw_activate
+> reload_actions_performed:
+>   driver_reinit fw_activate
+> 
+> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
 
-> >
-> >
-> >                                                         Thanx, Paul
-> >
-> > > > > ---
-> > > > > Changes V1->V2:
-> > > > > * drop unrelated Kconfig changes accidentally committed in v1.
-> > > > >
-> > > > >  include/linux/srcutree.h | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> > > > > index 9cfcc8a756ae..9de652f4e1bd 100644
-> > > > > --- a/include/linux/srcutree.h
-> > > > > +++ b/include/linux/srcutree.h
-> > > > > @@ -124,7 +124,7 @@ struct srcu_struct {
-> > > > >  # define __DEFINE_SRCU(name, is_static)                                      \
-> > > > >       is_static struct srcu_struct name;                              \
-> > > > >       struct srcu_struct * const __srcu_struct_##name                 \
-> > > > > -             __section("___srcu_struct_ptrs") = &name
-> > > > > +             __section(___srcu_struct_ptrs) = &name
-> > > > >  #else
-> > > > >  # define __DEFINE_SRCU(name, is_static)                                      \
-> > > > >       static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);      \
-> > > > > --
-> > > > > 2.28.0.709.gb0816b6eb0-goog
-> > > > >
-> > >
-> > >
-> > >
-> > > --
-> > > Thanks,
-> > > ~Nick Desaulniers
->
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdkPMSwQneMLFNg3ihM5zHorFy%2BuGvzAL7y70%2Bhu_1q24w%40mail.gmail.com.
+Looks straight forward.
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+
+> ---
+> RFCv5 -> v1:
+> - Rename supported_reload_actions to reload_actions.
+> - Rename devlink_nl_reload_actions_performed_fill() to
+> devlink_nl_reload_actions_performed_snd() and add genlmsg_reply() to it
+> - Actions_performed sent to user space as a mask
+> - Driver can initialize actions_performed before done as devlink ignores
+> in case of failure
+> - Use nla_poilcy range validation and remove the range check in
+> devlink_nl_cmd_reload
+> RFCv4 -> RFCv5:
+> - Always pass actions_performed to unload_up() instead of checking in
+>   each driver
+> - Verify returned actions_performed includes the requested action
+> - Changed  devlink_reload_actions_verify(devlink) to get ops
+> - Changed  devlink_reload_actions_verify() to return bool and rename to
+>   devlink_reload_actions_valid()
+> -  Only generate the reply if request uses new attributes
+> RFCv3 -> RFCv4:
+> - Removed fw_activate_no_reset as an action (next patch adds limit
+>   levels instead).
+> - Renamed actions_done to actions_performed
+> RFCv2 -> RFCv3:
+> - Replace fw_live_patch action by fw_activate_no_reset
+> - Devlink reload returns the actions done over netlink reply
+> RFCv1 -> RFCv2:
+> - Instead of reload levels driver,fw_reset,fw_live_patch have reload
+>   actions driver_reinit,fw_activate,fw_live_patch
+> - Remove driver default level, the action driver_reinit is the default
+>   action for all drivers
+> ---
+>  drivers/net/ethernet/mellanox/mlx4/main.c     |   7 +-
+>  .../net/ethernet/mellanox/mlx5/core/devlink.c |   7 +-
+>  drivers/net/ethernet/mellanox/mlxsw/core.c    |  11 +-
+>  drivers/net/netdevsim/dev.c                   |   8 +-
+>  include/net/devlink.h                         |   7 +-
+>  include/uapi/linux/devlink.h                  |  18 ++++
+>  net/core/devlink.c                            | 101 ++++++++++++++++--
+>  7 files changed, 139 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+> index 70cf24ba71e4..a44d8b733db3 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+> @@ -3946,6 +3946,7 @@ static int mlx4_restart_one_up(struct pci_dev *pdev, bool reload,
+>  			       struct devlink *devlink);
+>  
+>  static int mlx4_devlink_reload_down(struct devlink *devlink, bool netns_change,
+> +				    enum devlink_reload_action action,
+>  				    struct netlink_ext_ack *extack)
+>  {
+
+I might have opted to convert reload_down to take a structure of
+parameters, given that we're about to add 2 parameters. Not really that
+significant either way.
