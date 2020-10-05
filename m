@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFAA283324
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7A2283320
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgJEJ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:26:06 -0400
-Received: from mailout12.rmx.de ([94.199.88.78]:56290 "EHLO mailout12.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJEJ0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:26:06 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1725931AbgJEJZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJEJZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:25:49 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA56C0613CE;
+        Mon,  5 Oct 2020 02:25:49 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mailout12.rmx.de (Postfix) with ESMTPS id 4C4Zw961JPzRp7N;
-        Mon,  5 Oct 2020 11:26:01 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4C4Zvn14HCz2TTL1;
-        Mon,  5 Oct 2020 11:25:41 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.143) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 5 Oct
- 2020 11:25:13 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] i2c: imx: Check for I2SR_IAL after every byte
-Date:   Mon, 5 Oct 2020 11:25:13 +0200
-Message-ID: <3765943.G7FBkpUTMe@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201005080725.GB7135@kozik-lap>
-References: <20201002152305.4963-1-ceggers@arri.de> <20201002152305.4963-3-ceggers@arri.de> <20201005080725.GB7135@kozik-lap>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C4Zvr57dPz9sSn;
+        Mon,  5 Oct 2020 20:25:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601889945;
+        bh=nBtq0iMdoADKekhuB0pTLrmsjxA9ckU9vz1iB8xF9bA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=t+rH66vXJ9F7eqYFb3eRQFFOO2vESmuXZjb8iDy1Nn6wl7coeLDstj7IpbWyuX2Sh
+         0Kq4DJ82+hGRIg+g9nYrur59m3z5T4wAYAIQzo4XO6ANXlPniFhOPaSf1edQPaZAEt
+         Ee4f2c9r25ubyE+O9aCcg/frqSJ2hPetFn7Izl/Z8yIIVnruLPFLDZLSnNyIjU5I9n
+         UuxsQPAW4Fw2Z3FEC1OapAXSDa2wB8mnvp/vPA6m4iQy26TRft/LdwzcM2RkgyrRp2
+         lnqLBItf3N03WTQFuYZupcWivQmOe/pU2Ums6fpzNUxutTj0M8McMPPRQjjjjgIAxP
+         IsVa7StRHS3GQ==
+Date:   Mon, 5 Oct 2020 20:25:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kevin Hilman <khilman@baylibre.com>,
+        Carlo Caione <carlo@caione.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: linux-next: Signed-off-by missing for commit in the amlogic tree
+Message-ID: <20201005202543.5cb4a828@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.143]
-X-RMX-ID: 20201005-112545-4C4Zvn14HCz2TTL1-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: multipart/signed; boundary="Sig_/D/_GefiEZ9RfQrRP0j1FAFr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, 5 October 2020, 10:07:25 CEST, Krzysztof Kozlowski wrote:
-> The I2C on Vybrid VF500 still works fine. I did not test this actual
-> condition (arbitration) but only a regular I2C driver (BQ27xxx fuel
-> gauge). Obviously this only proves that regular operation is not
-> broken...
-thank you very much for testing on Vybrid.
+--Sig_/D/_GefiEZ9RfQrRP0j1FAFr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Alternatively if you have a specific testing procedure (reproduction of
-> a problem), please share.
+Hi all,
 
-The IAL errors happen due to noise on our I2C bus. We have our power supply 
-connected via I2C. The hardware designers wanted to make sure that no
-high currents flow through the ground pins of the I2C interface. So they added 
-a series resistor (30 Ohm) in the GND line between the power supply and the 
-i.MX board.
+Commits
 
-If you have an I2C device on an external PCB, adding some small series 
-resistance in the GND line may cause IAL errors. On the other hand, if 
-everything else works fine, also handling if IAL should work on Vybrid.
+  b3cf5ff01d47 ("arm64: dts: meson-axg-s400: enable USB OTG")
+  628c9c809f84 ("arm64: dts: meson-axg: add USB nodes")
 
-> Best regards,
-> Krzysztof
-Best regards
-Christian
+are missing a Signed-off-by from their committers.
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/D/_GefiEZ9RfQrRP0j1FAFr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl965pcACgkQAVBC80lX
+0GxEawf+PF4XaUrJ7H7UInSSo+cUNdknPyfkcl/gL6zdxyCFYdVB2W8BcjfRGe/M
+qCt4ngB8c0+LtiXIZ+Uda6aq7cVHN7yNZ/s85RCNA2aR4krYExJekcTNXK7v70Wo
+DLrPWDU/iy09jLSnQ6cZw7DU8g+RrdVNvETsTIrhQyRpCTv/0YcTO1s1rXDePtef
+ueKTE2khmWTyou+PySO0HfDxX+RuW1sNaFriouwnmZUfeEUwXnUaHVl6hOp6axgq
+Gb/v/qk+1jj6CUYIGwcjwWc+Lsqkr1oHbB0F8mvdbgwM4vyjIad1Xx3kPNIYpe2H
++udk0OCQROLqUJlibzTzTTspvew51Q==
+=ByWF
+-----END PGP SIGNATURE-----
+
+--Sig_/D/_GefiEZ9RfQrRP0j1FAFr--
