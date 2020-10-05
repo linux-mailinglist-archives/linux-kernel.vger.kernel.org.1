@@ -2,200 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B4928358A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E37283594
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgJEMOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:14:03 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11468 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbgJEMOA (ORCPT
+        id S1726812AbgJEMOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:14:34 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:43893 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726786AbgJEMOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:14:00 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7b0dfb0000>; Mon, 05 Oct 2020 05:13:47 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
- 2020 12:13:57 +0000
-Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Mon, 5 Oct 2020 12:13:54 +0000
-From:   Vidya Sagar <vidyas@nvidia.com>
-To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
-        <treding@nvidia.com>, <jonathanh@nvidia.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
-        <sagar.tv@gmail.com>
-Subject: [PATCH] PCI: dwc: Use ATU regions to map memory regions
-Date:   Mon, 5 Oct 2020 17:43:51 +0530
-Message-ID: <20201005121351.32516-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-X-NVConfidentiality: public
+        Mon, 5 Oct 2020 08:14:23 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 620BE5800F5;
+        Mon,  5 Oct 2020 08:14:21 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 08:14:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=wNkwTYhnWei++a07J8jTnePakPC
+        Iw1wKzuJo1C46iZw=; b=sXdHqQz/rm3FvPJP/lBkipN1PxCYolAmHOI1x9fZShr
+        rcN1wDhUOC190H6pHTQnl7ApmvOPRuq3dNqoWyvPvl+7fBuyJdW0+fpIfDwpt7Nq
+        SO74RbfWX0zpxdC4TtEzjkpqwxyTzdNh5lIv69Wh1Ljl3vGeKJkR7OHVaNZ5J/uM
+        kGxY/iCy4EbRBuVTcgG8Ehaa+oGrXrQ5TSD26Jq8k8dPNZn3Rye7AFRfRhBszIIQ
+        p8flfbMNdZuzE12AwaI1qeN6ea3q/mx4atP2R4MLGRIf74FVyudUeSVFwcFsj/cU
+        ztlvF8mIqKF0+dqKNheNdK7RVY/+XY9Rdg6iIpxsmXg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=wNkwTY
+        hnWei++a07J8jTnePakPCIw1wKzuJo1C46iZw=; b=ARSeklQ41yU2dCmTtw3uS1
+        3eeqWBDJUhJpZV7zS3lCIIai1CkCsRBc7HhqQBMWc/5+petF5vAVDoqCOYxC4TJw
+        LDSfpXXUXo8x21iEcGyYfTLCc+MJZn8ntDMwlEAx8o6Tv9c/oC4GJldQnVVd2cUS
+        9bNZtS1iA5Bi2/mkwwNweooJCV1YMWUl/9xbApZXPBYgQdJWv+fTtR1KaF/z80B3
+        A2kn/U5bsoYZO6O//KnKeJ04i7MNf49oxadSDgHAOR0hvwTfZdEsitndNjuyrMNO
+        0pb0uTY1K8EQhy8wgChqvWu87e4e928M0LRmPWAyo4jPz0rQ04vimcOg1z72qHXQ
+        ==
+X-ME-Sender: <xms:HQ57X3R8fK2vnrflBGkGEJ3TnJEXb2se0tUOQJIQIKjPd1qV0AOzHw>
+    <xme:HQ57X4xRt1Bao1L8Ru7vq9KgsMZ9oy7Nz1hrnr6V0a4i5aQ_xpYMHkCUl3iNJ_al_
+    ifSVlTInMRGaaXVsl0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdehudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:HQ57X83YwZ19cfHepFWG_HYd8QDvZ-uI4DBtwqbfbbLLK3nWypIzYw>
+    <xmx:HQ57X3DpMDywoWGJQwOEeNtX29HeQMuiY3ZuAzP08zr_VTt9fAmc8Q>
+    <xmx:HQ57XwjJESIlwvMPu21Jab-YT7TPyFw9Xw_j9ckDJMPhzFJ_o8Di1A>
+    <xmx:HQ57X_oZt-3VG5Ukj89zfHCm9oHofysFgI-kCPgluv9znhSeo51yoA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B405B3064686;
+        Mon,  5 Oct 2020 08:14:20 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 14:14:19 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v6 03/14] ASoC: sun4i-i2s: Change get_sr() and get_wss()
+ to be more explicit
+Message-ID: <20201005121419.mum4g5utdesvyg7a@gilmour.lan>
+References: <20201003141950.455829-1-peron.clem@gmail.com>
+ <20201003141950.455829-4-peron.clem@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601900027; bh=lO0HDidGPFmx2vLsOELT1TeoB3G4Z1UJtWvQEooKw0I=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
-         MIME-Version:Content-Type;
-        b=GGkZrBNLSmOW+03MCLY8tXh3aZb9z8hZ07GMerAMYTtxlfTMVhHd3LGfNhb6JtPl4
-         cELYMGusL9vhU9IGiUhyhN00qysgcFylO0wngNrzFqrOhDCCY47J5Suc+cLCs3C1KM
-         XW5EQjtlPaiULrdusTS7P5LXti7DjhgtQwCLH3csM/gZypy+wjM/eMW8j7si4uOo/C
-         H8tziZ7qndyAyViPM0Pnhst1m7NrsAZQO2koWSAXDSIgc2XlEEfkKy5Ts5k+VNyxzw
-         7FF8l2wvBu1Ar4hI4caJOAAEhfSZ9dTg1q9/sjdLPkDWoEZilAX1R8+vcQEAsQmpth
-         YmnY1HwtydhyQ==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="f3324tpftog7wx7u"
+Content-Disposition: inline
+In-Reply-To: <20201003141950.455829-4-peron.clem@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use ATU region-3 and region-0 to setup mapping for prefetchable and
-non-prefetchable memory regions respectively only if their respective CPU
-and bus addresses are different.
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
- .../pci/controller/dwc/pcie-designware-host.c | 44 ++++++++++++++++---
- drivers/pci/controller/dwc/pcie-designware.c  | 12 ++---
- drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
- 3 files changed, 48 insertions(+), 12 deletions(-)
+--f3324tpftog7wx7u
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 317ff512f8df..cefde8e813e9 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -515,9 +515,40 @@ static struct pci_ops dw_pcie_ops = {
- 	.write = pci_generic_config_write,
- };
- 
-+static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
-+				  struct resource_entry *win)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+
-+	if (win->res->flags & IORESOURCE_PREFETCH && pci->num_viewport >= 4 &&
-+	    win->offset) {
-+		dw_pcie_prog_outbound_atu(pci,
-+					  PCIE_ATU_REGION_INDEX3,
-+					  PCIE_ATU_TYPE_MEM,
-+					  win->res->start,
-+					  win->res->start - win->offset,
-+					  resource_size(win->res));
-+	} else if (win->res->flags & IORESOURCE_PREFETCH &&
-+		   pci->num_viewport < 4) {
-+		dev_warn(pci->dev,
-+			 "Insufficient ATU regions to map Prefetchable memory\n");
-+	} else if (win->offset) {
-+		if (upper_32_bits(resource_size(win->res)))
-+			dev_warn(pci->dev,
-+				 "Memory resource size exceeds max for 32 bits\n");
-+		dw_pcie_prog_outbound_atu(pci,
-+					  PCIE_ATU_REGION_INDEX0,
-+					  PCIE_ATU_TYPE_MEM,
-+					  win->res->start,
-+					  win->res->start - win->offset,
-+					  resource_size(win->res));
-+	}
-+}
-+
- void dw_pcie_setup_rc(struct pcie_port *pp)
- {
- 	u32 val, ctrl, num_ctrls;
-+	struct resource_entry *win;
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 
- 	/*
-@@ -572,13 +603,14 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
- 	 * ATU, so we should not program the ATU here.
- 	 */
- 	if (pp->bridge->child_ops == &dw_child_pcie_ops) {
--		struct resource_entry *entry =
--			resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-+		resource_list_for_each_entry(win, &pp->bridge->windows) {
-+			switch (resource_type(win->res)) {
-+			case IORESOURCE_MEM:
-+				dw_pcie_setup_mem_atu(pp, win);
-+				break;
-+			}
-+		}
- 
--		dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
--					  PCIE_ATU_TYPE_MEM, entry->res->start,
--					  entry->res->start - entry->offset,
--					  resource_size(entry->res));
- 		if (pci->num_viewport > 2)
- 			dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
- 						  PCIE_ATU_TYPE_IO, pp->io_base,
-diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-index 3c1f17c78241..6033689abb15 100644
---- a/drivers/pci/controller/dwc/pcie-designware.c
-+++ b/drivers/pci/controller/dwc/pcie-designware.c
-@@ -227,7 +227,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
- static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
- 					     int index, int type,
- 					     u64 cpu_addr, u64 pci_addr,
--					     u32 size)
-+					     u64 size)
- {
- 	u32 retries, val;
- 	u64 limit_addr = cpu_addr + size - 1;
-@@ -244,8 +244,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
- 				 lower_32_bits(pci_addr));
- 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
- 				 upper_32_bits(pci_addr));
--	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
--				 type | PCIE_ATU_FUNC_NUM(func_no));
-+	val = type | PCIE_ATU_FUNC_NUM(func_no);
-+	val = upper_32_bits(size - 1) ?
-+		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
-+	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
- 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
- 				 PCIE_ATU_ENABLE);
- 
-@@ -266,7 +268,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
- 
- static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
- 					int index, int type, u64 cpu_addr,
--					u64 pci_addr, u32 size)
-+					u64 pci_addr, u64 size)
- {
- 	u32 retries, val;
- 
-@@ -310,7 +312,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
- }
- 
- void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
--			       u64 cpu_addr, u64 pci_addr, u32 size)
-+			       u64 cpu_addr, u64 pci_addr, u64 size)
- {
- 	__dw_pcie_prog_outbound_atu(pci, 0, index, type,
- 				    cpu_addr, pci_addr, size);
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index 97c7063b9e89..b81a1813cf9e 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -80,10 +80,12 @@
- #define PCIE_ATU_VIEWPORT		0x900
- #define PCIE_ATU_REGION_INBOUND		BIT(31)
- #define PCIE_ATU_REGION_OUTBOUND	0
-+#define PCIE_ATU_REGION_INDEX3		0x3
- #define PCIE_ATU_REGION_INDEX2		0x2
- #define PCIE_ATU_REGION_INDEX1		0x1
- #define PCIE_ATU_REGION_INDEX0		0x0
- #define PCIE_ATU_CR1			0x904
-+#define PCIE_ATU_INCREASE_REGION_SIZE	BIT(13)
- #define PCIE_ATU_TYPE_MEM		0x0
- #define PCIE_ATU_TYPE_IO		0x2
- #define PCIE_ATU_TYPE_CFG0		0x4
-@@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
- int dw_pcie_wait_for_link(struct dw_pcie *pci);
- void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
- 			       int type, u64 cpu_addr, u64 pci_addr,
--			       u32 size);
-+			       u64 size);
- void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
- 				  int type, u64 cpu_addr, u64 pci_addr,
- 				  u32 size);
--- 
-2.17.1
+On Sat, Oct 03, 2020 at 04:19:39PM +0200, Cl=E9ment P=E9ron wrote:
+> We are actually using a complex formula to just return a bunch of
+> simple values. Also this formula is wrong for sun4i when calling
+> get_wss() the function return 4 instead of 3.
+>=20
+> Replace this with a simpler switch case.
+>=20
+> Also drop the i2s params which is unused and return a simple int as
+> returning an error code could be out of range for an s8 and there is
+> no optim to return a s8 here.
+>=20
+> Fixes: 619c15f7fac9 ("ASoC: sun4i-i2s: Change SR and WSS computation")
+> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+> ---
+>  sound/soc/sunxi/sun4i-i2s.c | 69 +++++++++++++++++++++++--------------
+>  1 file changed, 44 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index 1f577dbc20a6..8e497fb3de09 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -175,8 +175,8 @@ struct sun4i_i2s_quirks {
+>  	unsigned int			num_mclk_dividers;
+> =20
+>  	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
+> -	s8	(*get_sr)(const struct sun4i_i2s *, int);
+> -	s8	(*get_wss)(const struct sun4i_i2s *, int);
+> +	int	(*get_sr)(unsigned int width);
+> +	int	(*get_wss)(unsigned int width);
+>  	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
+>  				unsigned int channels,	unsigned int slots,
+>  				unsigned int slot_width);
+> @@ -381,37 +381,56 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_da=
+i *dai,
+>  	return 0;
+>  }
+> =20
+> -static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
+> +static int sun4i_i2s_get_sr(unsigned int width)
+>  {
+> -	if (width < 16 || width > 24)
+> -		return -EINVAL;
+> -
+> -	if (width % 4)
+> -		return -EINVAL;
+> +	switch (width) {
+> +	case 16:
+> +		return 0x0;
+> +	case 20:
+> +		return 0x1;
+> +	case 24:
+> +		return 0x2;
+> +	}
+> =20
+> -	return (width - 16) / 4;
+> +	return -EINVAL;
+>  }
+> =20
+> -static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
+> +static int sun4i_i2s_get_wss(unsigned int width)
+>  {
+> -	if (width < 16 || width > 32)
+> -		return -EINVAL;
+> -
+> -	if (width % 4)
+> -		return -EINVAL;
+> +	switch (width) {
+> +	case 16:
+> +		return 0x0;
+> +	case 20:
+> +		return 0x1;
+> +	case 24:
+> +		return 0x2;
+> +	case 32:
+> +		return 0x3;
+> +	}
 
+Like I said in the previous version, I'm not really sure why we need to
+use the hexadecimal representation here?
+
+Maxime
+
+--f3324tpftog7wx7u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sOGwAKCRDj7w1vZxhR
+xbKFAQCPBrnvMNeZ6dpV8po4HqA+JN6qoi3GPyWWMvl49iOTjAD+JoJULUd+x5nO
+eXN6HpYzM2lj/96qCwXbPjMCXLl9OQs=
+=6Hqk
+-----END PGP SIGNATURE-----
+
+--f3324tpftog7wx7u--
