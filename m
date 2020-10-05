@@ -2,294 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5E32832EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5062832D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgJEJNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgJEJNZ (ORCPT
+        id S1725984AbgJEJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:12:51 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7436 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgJEJMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:13:25 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8AAC0613A8
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:13:24 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id x2so5203575pjk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=EKDeQ+IosCKCy2VJYLI4jBwAgZsjG0uDvbjuAjcvB74=;
-        b=Bocwz5RlQH0Q8FKgI6mWJNOx1FCV3yZgu1JaL9+Ek8whhO7O/zi+Dkc8krnhyt9ni6
-         crrakXjJqrisIKNJOB9isOrgHv4EXQiWU1UveZxuoM2SdGkrZZVArBzq7DL7UlQuDCgF
-         eUP1W8iDu4n9e7OIfxmsVxu9Lc8vlxYwc2Z7yQkTo0+0p/iXPD0AO23auVsMO8hKYdux
-         4ytSeS3TfKQOnYb/N/SbwN/8hLrKzG9WFveuni8wp7d2NrOhPM0j+PfcO776N5HTnxOa
-         0riqbTX0yGz6rYRakqGfSc1hcx71qdMVQw0rgJiCDqFfm/J3VwWB8CkH2w5rtSfHwvsr
-         Eqog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=EKDeQ+IosCKCy2VJYLI4jBwAgZsjG0uDvbjuAjcvB74=;
-        b=rzHvSMJ2/VvWTP3j/0mb8WtYYbMV+62FU6rNDDJ9WIcRZpYm+fpo3VlV/kW8M+mJjV
-         MNZ700n52Yd7SuYqULqO/ornEewtfZpgkFmPWFMO77NkuzPEvFeIWYPogbnWlBpedEMl
-         3pX0lD4gE+IwbBEV4AjeM4SVrsQ7iMSj8abq05o0YQOnO0nJ9ZzeL8JY0I2K4fkxNdml
-         GLZ+i5D4jl6VhbQpw1BTNoaybSBOmcWMbEgRAefuRI8QlhBp53YZG/fngWPzgrGRP8VB
-         2NBZKI8HP51EBMMf82Jyw7ZFp7RT8O3QHU7CngldXW9zDswAYiWHq5SY59ZPA2GzJKOK
-         oNxQ==
-X-Gm-Message-State: AOAM5310s4YjmWi5Et4YlEhtCNfdgwg4ISD4f8kUv2zrTHrPGNLrEXTW
-        BrU5xSf85a1h7BkwDqv7vqNg
-X-Google-Smtp-Source: ABdhPJw3WxzYU2Kjj5vnXdqTlXnm3MLJiHX0HnK0BTNLINtxDyiNdJbfdb/FyV4/DMI67m/xG9LqeQ==
-X-Received: by 2002:a17:90a:520b:: with SMTP id v11mr16444620pjh.54.1601889204223;
-        Mon, 05 Oct 2020 02:13:24 -0700 (PDT)
-Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id c7sm11255028pfj.84.2020.10.05.02.13.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:13:23 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org
-Cc:     svarbanov@mm-sol.com, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 5/5] PCI: qcom: Add support for configuring BDF to SID mapping for SM8250
-Date:   Mon,  5 Oct 2020 14:42:36 +0530
-Message-Id: <20201005091236.31770-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005091236.31770-1-manivannan.sadhasivam@linaro.org>
-References: <20201005091236.31770-1-manivannan.sadhasivam@linaro.org>
+        Mon, 5 Oct 2020 05:12:51 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7ae35c0000>; Mon, 05 Oct 2020 02:11:56 -0700
+Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
+ 2020 09:12:46 +0000
+Subject: Re: [Patch 1/2] cpufreq: tegra194: get consistent cpuinfo_cur_freq
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     Sumit Gupta <sumitg@nvidia.com>, <rjw@rjwysocki.net>,
+        <thierry.reding@gmail.com>, <linux-pm@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <ksitaraman@nvidia.com>,
+        <bbasu@nvidia.com>
+References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
+ <1600276277-7290-2-git-send-email-sumitg@nvidia.com>
+ <81d2517d-6581-b491-c509-832fd1c0321e@nvidia.com>
+ <20201005043433.hvyjmzafazg46kvv@vireshk-i7>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <207633bf-492b-02e6-b6df-55958ba53d0e@nvidia.com>
+Date:   Mon, 5 Oct 2020 10:12:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201005043433.hvyjmzafazg46kvv@vireshk-i7>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601889116; bh=MveBJCi0RfdnSMnFnZgS4ThVsWVBIHvXAj9diy4ezLQ=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=rHKK1rARjLzZYz0S0hyqJOYImD3ttsp4Eror7pFSGOS+w9MNqVXF8BY70Al8wszMr
+         Z0QSeKK/+covJCCRKHz5xzz6kM1obsRPO+Cukt/eXsz4Wn2rAXU3kFXqvKbli97Ugo
+         y2x4FSCa6/gNm+lreWEI/FEqQNp5Bd+PSKGajKNXfplnTu18etpOmqfCg06KYCLmD1
+         0MqyAn8qTglAhkSDPaZDaA1neKIBjzBfCoO1Sar+11j8c4jhXKUWtpmy4ztbdf4dFH
+         rfthXmzDMsoX4CWR+7tLrBesjf0qIjk1WF5QmqLpPBqn9Zas1n4xhKQljVZmEiMwbZ
+         brWijM2nwD3kA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For SM8250, we need to write the BDF to SID mapping in PCIe controller
-register space for proper working. This is accomplished by extracting
-the BDF and SID values from "iommu-map" property in DT and writing those
-in the register address calculated from the hash value of BDF. In case
-of collisions, the index of the next entry will also be written.
 
-For the sake of it, let's introduce a "config_sid" callback and do it
-conditionally for SM8250.
+On 05/10/2020 05:34, Viresh Kumar wrote:
+> On 17-09-20, 09:36, Jon Hunter wrote:
+>> Viresh, ideally we need to include this fix for v5.9. Do you need Sumit
+>> to resend with the Fixes tag or are you happy to add?
+> 
+> I understand that this fixes a patch which got merged recently, but I am not
+> sure if anything is broken badly right now, i.e. will make the hardware work
+> incorrectly.
+> 
+> Do we really need to get these in 5.9 ? As these are significant changes and may
+> cause more bugs. Won't getting them in 5.9-stable and 5.10-rc1 be enough ?
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/dwc/Kconfig     |   1 +
- drivers/pci/controller/dwc/pcie-qcom.c | 138 +++++++++++++++++++++++++
- 2 files changed, 139 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 044a3761c44f..3e9ccdc45ee1 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -169,6 +169,7 @@ config PCIE_QCOM
- 	depends on OF && (ARCH_QCOM || COMPILE_TEST)
- 	depends on PCI_MSI_IRQ_DOMAIN
- 	select PCIE_DW_HOST
-+	select CRC8
- 	help
- 	  Say Y here to enable PCIe controller support on Qualcomm SoCs. The
- 	  PCIe controller uses the DesignWare core plus Qualcomm-specific
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 3167ad66413d..5e1b88ffc23c 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/crc8.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
-@@ -57,6 +58,7 @@
- #define PCIE20_PARF_SID_OFFSET			0x234
- #define PCIE20_PARF_BDF_TRANSLATE_CFG		0x24C
- #define PCIE20_PARF_DEVICE_TYPE			0x1000
-+#define PCIE20_PARF_BDF_TO_SID_TABLE_N		0x2000
- 
- #define PCIE20_ELBI_SYS_CTRL			0x04
- #define PCIE20_ELBI_SYS_CTRL_LT_ENABLE		BIT(0)
-@@ -101,6 +103,9 @@
- 
- #define QCOM_PCIE_2_1_0_MAX_SUPPLY	3
- #define QCOM_PCIE_2_1_0_MAX_CLOCKS	5
-+
-+#define QCOM_PCIE_CRC8_POLYNOMIAL (BIT(2) | BIT(1) | BIT(0))
-+
- struct qcom_pcie_resources_2_1_0 {
- 	struct clk_bulk_data clks[QCOM_PCIE_2_1_0_MAX_CLOCKS];
- 	struct reset_control *pci_reset;
-@@ -183,6 +188,16 @@ struct qcom_pcie_ops {
- 	void (*deinit)(struct qcom_pcie *pcie);
- 	void (*post_deinit)(struct qcom_pcie *pcie);
- 	void (*ltssm_enable)(struct qcom_pcie *pcie);
-+	int (*config_sid)(struct qcom_pcie *pcie);
-+};
-+
-+/* sid info structure */
-+struct qcom_pcie_sid_info_t {
-+	u16 bdf;
-+	u8 pcie_sid;
-+	u8 hash;
-+	u32 smmu_sid;
-+	u32 value;
- };
- 
- struct qcom_pcie {
-@@ -193,6 +208,8 @@ struct qcom_pcie {
- 	struct phy *phy;
- 	struct gpio_desc *reset;
- 	const struct qcom_pcie_ops *ops;
-+	struct qcom_pcie_sid_info_t *sid_info;
-+	u32 sid_info_len;
- 	int gen;
- };
- 
-@@ -1257,6 +1274,120 @@ static int qcom_pcie_link_up(struct dw_pcie *pci)
- 	return !!(val & PCI_EXP_LNKSTA_DLLLA);
- }
- 
-+static int qcom_pcie_get_iommu_map(struct qcom_pcie *pcie)
-+{
-+	/* iommu map structure */
-+	struct {
-+		u32 bdf;
-+		u32 phandle;
-+		u32 smmu_sid;
-+		u32 smmu_sid_len;
-+	} *map;
-+	struct device *dev = pcie->pci->dev;
-+	int i, size = 0;
-+	u32 smmu_sid_base;
-+
-+	of_get_property(dev->of_node, "iommu-map", &size);
-+	if (!size)
-+		return 0;
-+
-+	map = kzalloc(size, GFP_KERNEL);
-+	if (!map)
-+		return -ENOMEM;
-+
-+	of_property_read_u32_array(dev->of_node,
-+		"iommu-map", (u32 *)map, size / sizeof(u32));
-+
-+	pcie->sid_info_len = size / (sizeof(*map));
-+	pcie->sid_info = devm_kcalloc(dev, pcie->sid_info_len,
-+				sizeof(*pcie->sid_info), GFP_KERNEL);
-+	if (!pcie->sid_info) {
-+		kfree(map);
-+		return -ENOMEM;
-+	}
-+
-+	/* Extract the SMMU SID base from the first entry of iommu-map */
-+	smmu_sid_base = map[0].smmu_sid;
-+	for (i = 0; i < pcie->sid_info_len; i++) {
-+		pcie->sid_info[i].bdf = map[i].bdf;
-+		pcie->sid_info[i].smmu_sid = map[i].smmu_sid;
-+		pcie->sid_info[i].pcie_sid =
-+				pcie->sid_info[i].smmu_sid - smmu_sid_base;
-+	}
-+
-+	kfree(map);
-+
-+	return 0;
-+}
-+
-+static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
-+{
-+	void __iomem *bdf_to_sid_base = pcie->parf +
-+		PCIE20_PARF_BDF_TO_SID_TABLE_N;
-+	u8 qcom_pcie_crc8_table[CRC8_TABLE_SIZE];
-+	int ret, i;
-+
-+	ret = qcom_pcie_get_iommu_map(pcie);
-+	if (ret)
-+		return ret;
-+
-+	if (!pcie->sid_info)
-+		return 0;
-+
-+	crc8_populate_msb(qcom_pcie_crc8_table, QCOM_PCIE_CRC8_POLYNOMIAL);
-+
-+	/* Registers need to be zero out first */
-+	memset_io(bdf_to_sid_base, 0, CRC8_TABLE_SIZE * sizeof(u32));
-+
-+	/* Initial setup for boot */
-+	for (i = 0; i < pcie->sid_info_len; i++) {
-+		struct qcom_pcie_sid_info_t *sid_info = &pcie->sid_info[i];
-+		u16 bdf_be = cpu_to_be16(sid_info->bdf);
-+		u32 val;
-+		u8 hash;
-+
-+		hash = crc8(qcom_pcie_crc8_table, (u8 *)&bdf_be, sizeof(bdf_be),
-+			0);
-+
-+		val = readl(bdf_to_sid_base + hash * sizeof(u32));
-+
-+		/* If there is a collision, look for next available entry */
-+		while (val) {
-+			u8 current_hash = hash++;
-+			u8 next_mask = 0xff;
-+
-+			/* If NEXT field is NULL then update it with next hash */
-+			if (!(val & next_mask)) {
-+				int j;
-+
-+				val |= (u32)hash;
-+				writel(val, bdf_to_sid_base +
-+					current_hash * sizeof(u32));
-+
-+				/* Look for sid_info of current hash and update it */
-+				for (j = 0; j < pcie->sid_info_len; j++) {
-+					if (pcie->sid_info[j].hash !=
-+						current_hash)
-+						continue;
-+
-+					pcie->sid_info[j].value = val;
-+					break;
-+				}
-+			}
-+
-+			val = readl(bdf_to_sid_base + hash * sizeof(u32));
-+		}
-+
-+		val = sid_info->bdf << 16 | sid_info->pcie_sid << 8 | 0;
-+		writel(val, bdf_to_sid_base + hash * sizeof(u32));
-+
-+		sid_info->hash = hash;
-+		sid_info->value = val;
-+	}
-+
-+	return 0;
-+}
-+
- static int qcom_pcie_host_init(struct pcie_port *pp)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-@@ -1290,6 +1421,12 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
- 	if (ret)
- 		goto err;
- 
-+	if (pcie->ops->config_sid) {
-+		ret = pcie->ops->config_sid(pcie);
-+		if (ret)
-+			goto err;
-+	}
-+
- 	return 0;
- err:
- 	qcom_ep_reset_assert(pcie);
-@@ -1367,6 +1504,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
- 	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
- 	.post_init = qcom_pcie_post_init_2_7_0,
- 	.post_deinit = qcom_pcie_post_deinit_2_7_0,
-+	.config_sid = qcom_pcie_config_sid_sm8250,
- };
- 
- static const struct dw_pcie_ops dw_pcie_ops = {
+Yes we want these in v5.9 ideally but yes we could merge to 5.9-stable
+once accepted into the mainline. 		
+
+Jon
+
 -- 
-2.17.1
-
+nvpublic
