@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160E328349D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6FE2834A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgJELGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:06:47 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:40361 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJELGr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:06:47 -0400
-Received: by mail-lf1-f66.google.com with SMTP id a9so942606lfc.7;
-        Mon, 05 Oct 2020 04:06:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C0dTs41OrVTZ/P3AA4ZGUtSfP+cxizWeFj5N633TtGU=;
-        b=MRj7/Kz0pN3IxSfMzwCesa0lCbX/3Qzl92i/G74YfAjrYTinK9i/dxpnJ64Q1C9d17
-         4zMAof/YsrJP3alKFefv9KaDZWT6se/xw/OeSsX17h+XFXZy6CzYCXDYUS1lT8tjfDOC
-         xG+/zrHcnq8yR/x0Eba3EZT0TUUt4uW+n0GFcj0pUWAyzRJHQSKStoKjyYUvC2QRIbAl
-         zYf9+UbUipjUmTnUoa/1id4z+qJRkB81sd9Mc1xZF8+PVSaHNHiHTzv+pE/T3f7Rk9gx
-         t6nVo6TuK9ibFJ7LgvblB3wjhZxU//lb/MD7ZInpXuU+6AtreOHBcIHY+b+iOfevUXAB
-         Y6aw==
-X-Gm-Message-State: AOAM531xDiY2Ao6R66O4lTAXsR9QHIlKYYB6KkaWouGTbamw5EW+5PCh
-        Iz4N/iAnBYHC1b3fPkQPz/M=
-X-Google-Smtp-Source: ABdhPJx9G9aqy1qlXknI5yEktHc6rcJv5HV+UYF/KiP7CyF7kqiPPQPhCtUL6V1N2Baa5momlM8J8A==
-X-Received: by 2002:ac2:4c31:: with SMTP id u17mr5089372lfq.1.1601896002590;
-        Mon, 05 Oct 2020 04:06:42 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id c1sm2583968ljd.105.2020.10.05.04.06.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 04:06:41 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kPOKE-0005gb-P8; Mon, 05 Oct 2020 13:06:38 +0200
-Date:   Mon, 5 Oct 2020 13:06:38 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <20201005110638.GP5141@localhost>
-References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
- <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
- <20201005082045.GL5141@localhost>
- <20201005130134.459b4de9@monster.powergraphx.local>
+        id S1726078AbgJELHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:07:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:22140 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725914AbgJELH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:07:26 -0400
+IronPort-SDR: Hl5Q02DD5lngTsL/Rv0fYnPGIyTMd9mah+hfhnH/QWFFrWmHhaShliafZvyOPVfMYHWE17XMk7
+ socz/5/Bto7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="164225480"
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="164225480"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 04:07:24 -0700
+IronPort-SDR: MbbapK5I+cnXEdDPbNqLEG1OtYLKK524tJ9A1r6870P9S2FrhFm4IFBjSrSiFF/gXkEnzqNDlJ
+ 05PAFJJZ74YA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
+   d="scan'208";a="516688856"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by fmsmga005.fm.intel.com with ESMTP; 05 Oct 2020 04:07:21 -0700
+Subject: Re: [PATCH 1/2] scsi: ufs: Add DeepSleep feature
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+References: <20201002124043.25394-1-adrian.hunter@intel.com>
+ <20201002124043.25394-2-adrian.hunter@intel.com>
+ <BY5PR04MB67054C67CCA53AB5FC5CBCFAFC0C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+ <a3cd3d32-0dcf-ebaf-d6fe-e8f21539dff1@intel.com>
+ <BY5PR04MB6705E5FFEDED858772890DDBFC0C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <af91f0a5-1378-cbf4-b1d8-097b2d94decf@intel.com>
+Date:   Mon, 5 Oct 2020 14:06:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005130134.459b4de9@monster.powergraphx.local>
+In-Reply-To: <BY5PR04MB6705E5FFEDED858772890DDBFC0C0@BY5PR04MB6705.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 01:01:34PM +0200, Wilken Gottwalt wrote:
-> On Mon, 5 Oct 2020 10:20:45 +0200
-> Johan Hovold <johan@kernel.org> wrote:
-> 
-> > On Sat, Oct 03, 2020 at 11:40:29AM +0200, Wilken Gottwalt wrote:
-> > > Add usb ids of the Cellient MPL200 card.
-> > > 
-> > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> > > ---
+On 5/10/20 12:51 pm, Avri Altman wrote:
+>>
+>>
+>> On 5/10/20 11:02 am, Avri Altman wrote:
+>>> HI,
+>>>
+>>>> Drivers that wish to support DeepSleep need to set a new capability flag
+>>>> UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
+>>>>  ->device_reset() callback.
+>>> I would expect that this capability controls sending SSU 4, but it only controls
+>> the sysfs entry?
+>>
+>> The sysfs entry is the only way to request DeepSleep.
+> Some chipset vendors use their own modules, or even the device tree
+> to set their default rpm_lvl / spm_lvl.
 
-> > > @@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
-> > >  	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff,
-> > > 0x02, 0x01) }, { USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2,
-> > > 0xff, 0x00, 0x00) }, { USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MEN200) },
-> > > +	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
-> > > +	  .driver_info = RSVD(1) | RSVD(4) },
-> > 
-> > Would you mind posting the output of "lsusb -v" for this device?
-> 
-> I would like to, but unfortunately I lost access to this really rare hardware
-> about a month ago. It is a Qualcomm device (0x05c6:0x9025) with a slightly
-> modified firmware to rebrand it as a Cellient product with a different vendor
-> id. How to proceed here, if I have no access to it anymore? Drop it?
-
-No, that's ok, I've applied the patch now. It's just that in case we
-ever need to revisit the handling of quirky devices, it has proven
-useful to have a record the descriptors.
-
-Do you remember the interface layout and why you blacklisted interface
-1?
-
-Johan
+I would not expect them to set it wrongly but what are you suggesting?
