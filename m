@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044CF2833D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530DA2833F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgJEKHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgJEKHg (ORCPT
+        id S1725954AbgJEKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:22:43 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:21254 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJEKWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:07:36 -0400
-Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35176C0613CE;
-        Mon,  5 Oct 2020 03:07:36 -0700 (PDT)
-Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
-        (authenticated bits=0)
-        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 095A7Eld017632
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Mon, 5 Oct 2020 12:07:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1601892435; bh=PqmCIbdmGhzQjUN7EiP+m0+p7uGY3mf6YJwZ9pKQlyY=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=M8CCDT0uuaWsIR4WtnFhfSmKkCp0+1fGkT7oNM0BUlkg+BNSA8Xbdoquqo2DGm6wq
-         +zA4nLazFyPe8I6Cslr90X/Srm7AjF/hmfBMNyHn4jkF7PllyPi13zMnzulD69SHV3
-         hN+A1E7AfVGpBSmicYtxITfv4ltzyQNtdRjKXIJM=
-Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
-        (envelope-from <bjorn@mork.no>)
-        id 1kPNOi-000oZA-E0; Mon, 05 Oct 2020 12:07:12 +0200
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 1/2] usb: serial: qmi_wwan: add Cellient MPL200 card
-Organization: m
-References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
-        <4688927cbf36fe0027340ea5e0c3aaf1445ba256.1601715478.git.wilken.gottwalt@mailbox.org>
-        <87d01yovq5.fsf@miraculix.mork.no>
-        <20201004203042.093ac473@monster.powergraphx.local>
-Date:   Mon, 05 Oct 2020 12:07:12 +0200
-In-Reply-To: <20201004203042.093ac473@monster.powergraphx.local> (Wilken
-        Gottwalt's message of "Sun, 4 Oct 2020 20:30:42 +0200")
-Message-ID: <87eemdnfzj.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Mon, 5 Oct 2020 06:22:42 -0400
+X-Greylist: delayed 362 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 06:22:42 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1601893361;
+        s=strato-dkim-0002; d=aepfle.de;
+        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=KC64h9Wjos6xET3WvOm4lJYRQC6864ZNKSLmRbyaOD0=;
+        b=gWCJmJyB/yV1bi7Dr86XfLy9uAWJusnR1VreJCCtVWwE/xfCIOdzL0suaWBfCBq+Ne
+        QRr82lgQ2v6Z1pJl28gWZAhvVdr4NR8uRQTHiLLJ0xeQPD5aSOIuxdtXGBHcGokNXmTg
+        gD6+51eWes4CcNmKl0PFqR/Zo+3DscF2qNJM4bbx3WZoXunlWFG47cF88gafUcwMuhmx
+        6kj+ztey2X6qd38o6aiz6u9ySlq2ne2KcqwReZBEmOfuuM9AUslDwwU6AVqNU2sacr5c
+        MGYwPZ9jiykLAnjzIKpvy+Ykw6LjDyMUz9Od4rgZUbIGvS4Gxdh87d1trzKslX/dnYY/
+        MptQ==
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS3G5Jjw=="
+X-RZG-CLASS-ID: mo00
+Received: from sender
+        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
+        with ESMTPSA id e003b5w95AAeAb5
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 5 Oct 2020 12:10:40 +0200 (CEST)
+From:   Olaf Hering <olaf@aepfle.de>
+To:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Olaf Hering <olaf@aepfle.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: [PATCH v1] kbuild: enforce -Werror=return-type
+Date:   Mon,  5 Oct 2020 12:10:26 +0200
+Message-Id: <20201005101026.21951-1-olaf@aepfle.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.102.4 at canardo
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wilken Gottwalt <wilken.gottwalt@mailbox.org> writes:
+Catch errors which at least gcc tolerates by default:
+ warning: 'return' with no value, in function returning non-void [-Wreturn-type]
 
-> Oh sorry, looks like I got it mixed up a bit. It was my first attempt to =
-submit
-> a patch set. Which is the best way to resubmit an update if the other par=
-t of
-> the patch set gets accepted? The documentation about re-/submitting patch=
- sets
-> is a bit thin.
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+---
+ Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I see that Johan already has answered this.  Just wanted to add that you
-don't need to worry about doing anything wrong.  It was not my intention
-to scare you :-) Fixing up and resending patches is a natural part of
-the patch submission process.  Don't be afraid to resubmit.  The worst
-that can happen is that you'll be asked to fix up something else.
-That's not a problem.
-
-The most important part is to make it clear that a resubmission replaces
-an earlier version of the same patch.  This should be visible in the
-subject.  E.g by using a revision number inside the brackes, like
-
-  [PATCH v2] net: qmi_wwan: add Cellient MPL200 card
-
-This tells us that the patch is a revised "v2" of an earlier patch, and
-that it replaces "v1".  Patches without an explicit revision will then
-be assumed to be "v1".
-
-If you are sending a series, then the whole series should usually be
-resubmitted with the new revsion number.  Even patches without any
-changes. The cover letter should then also summarize the changes for
-each revisions.  But as Johan said: The USB serial and net patches go
-through different trees and are therefore best handled as standalone
-patches, even if they deal with the same USB composite device.=20
-
-
-Bj=C3=B8rn
+diff --git a/Makefile b/Makefile
+index f84d7e4ca0be..7b2e63e7be18 100644
+--- a/Makefile
++++ b/Makefile
+@@ -942,6 +942,9 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=date-time)
+ # enforce correct pointer usage
+ KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
+ 
++# enforce correct return type
++KBUILD_CFLAGS   += $(call cc-option,-Werror=return-type)
++
+ # Require designated initializers for all marked structures
+ KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
+ 
