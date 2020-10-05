@@ -2,130 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954B9283797
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969D12837A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgJEOWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:22:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46122 "EHLO mx2.suse.de"
+        id S1726560AbgJEOYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:24:16 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:26704 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgJEOWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:22:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B877B50C;
-        Mon,  5 Oct 2020 14:22:47 +0000 (UTC)
-Subject: Re: [PATCH 9/9] mm, page_alloc: optionally disable pcplists during
- page isolation
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-10-vbabka@suse.cz>
- <10cdae53-c64b-e371-1b83-01d1af7a131e@redhat.com>
- <e0ab17e9-6c05-cf32-9e2d-efbf011860a2@redhat.com>
- <2ce92f9a-eaa2-45b2-207c-46a79d6a2bde@suse.cz>
- <20201005140531.GE4555@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <5ea97462-7924-e106-c486-2a0164ea27fb@suse.cz>
-Date:   Mon, 5 Oct 2020 16:22:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726057AbgJEOYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:24:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601907853; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=j+q6qQHi3OFDDwad/nySobttr3Dg5t06eOfbu86u5fQ=; b=QLd1bvUtKTUhlY9YnQAyL14iVN5CtJtUMY/mjUprpG6ZvjDlAUT9zA2XvfKE4/gJoK8CuiGf
+ HUYUWORfbBQROPePKfW8V5W5njWAPL4FuRcVAuy2pz3Ixd/Yrfkp78JL+s3K5PtyBsDF5Fa2
+ x5JWNOWMdm/4AOvtyIqBeX4IQd0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f7b2c6206d81bc48dbd961b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 14:23:30
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ABC47C433FF; Mon,  5 Oct 2020 14:23:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A55C4C433C8;
+        Mon,  5 Oct 2020 14:23:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A55C4C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 5 Oct 2020 08:23:25 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+Subject: Re: [Freedreno] [PATCH 06/14] drm/msm: Protect ring->submits with
+ it's own lock
+Message-ID: <20201005142325.GE4204@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+References: <20201004192152.3298573-1-robdclark@gmail.com>
+ <20201004192152.3298573-7-robdclark@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005140531.GE4555@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004192152.3298573-7-robdclark@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 4:05 PM, Michal Hocko wrote:
-> On Fri 25-09-20 13:10:05, Vlastimil Babka wrote:
->> On 9/25/20 12:54 PM, David Hildenbrand wrote:
->>
->> Hmm that temporary write lock would still block new callers until previous
->> finish with the downgraded-to-read lock.
->>
->> But I guess something like this would work:
->>
->> retry:
->>   if (atomic_read(...) == 0) {
->>     // zone_update... + drain
->>     atomic_inc(...);
->>   else if (atomic_inc_return == 1)
->>     // atomic_cmpxchg from 0 to 1; if that fails, goto retry
->>
->> Tricky, but races could only read to unnecessary duplicated updates + flushing
->> but nothing worse?
->>
->> Or add another spinlock to cover this part instead of the temp write lock...
+On Sun, Oct 04, 2020 at 12:21:38PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Do you plan to post a new version or should I review this one?
+> One less place to rely on dev->struct_mutex.
+> 
 
-I will, hopefully this week, but you could comment on other details and
-overall approach meanwhile? I don't think it will change significantly.
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/msm_gem_submit.c |  2 ++
+>  drivers/gpu/drm/msm/msm_gpu.c        | 37 ++++++++++++++++++++++------
+>  drivers/gpu/drm/msm/msm_ringbuffer.c |  1 +
+>  drivers/gpu/drm/msm/msm_ringbuffer.h |  6 +++++
+>  4 files changed, 39 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index aa5c60a7132d..e1d1f005b3d4 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -63,7 +63,9 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
+>  void msm_gem_submit_free(struct msm_gem_submit *submit)
+>  {
+>  	dma_fence_put(submit->fence);
+> +	spin_lock(&submit->ring->submit_lock);
+>  	list_del(&submit->node);
+> +	spin_unlock(&submit->ring->submit_lock);
+>  	put_pid(submit->pid);
+>  	msm_submitqueue_put(submit->queue);
+>  
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+> index ca8c95b32c8b..8d1e254f964a 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+> @@ -270,6 +270,7 @@ static void update_fences(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>  {
+>  	struct msm_gem_submit *submit;
+>  
+> +	spin_lock(&ring->submit_lock);
+>  	list_for_each_entry(submit, &ring->submits, node) {
+>  		if (submit->seqno > fence)
+>  			break;
+> @@ -277,6 +278,7 @@ static void update_fences(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>  		msm_update_fence(submit->ring->fctx,
+>  			submit->fence->seqno);
+>  	}
+> +	spin_unlock(&ring->submit_lock);
+>  }
+>  
+>  #ifdef CONFIG_DEV_COREDUMP
+> @@ -430,11 +432,14 @@ find_submit(struct msm_ringbuffer *ring, uint32_t fence)
+>  {
+>  	struct msm_gem_submit *submit;
+>  
+> -	WARN_ON(!mutex_is_locked(&ring->gpu->dev->struct_mutex));
+> -
+> -	list_for_each_entry(submit, &ring->submits, node)
+> -		if (submit->seqno == fence)
+> +	spin_lock(&ring->submit_lock);
+> +	list_for_each_entry(submit, &ring->submits, node) {
+> +		if (submit->seqno == fence) {
+> +			spin_unlock(&ring->submit_lock);
+>  			return submit;
+> +		}
+> +	}
+> +	spin_unlock(&ring->submit_lock);
+>  
+>  	return NULL;
+>  }
+> @@ -523,8 +528,10 @@ static void recover_worker(struct work_struct *work)
+>  		for (i = 0; i < gpu->nr_rings; i++) {
+>  			struct msm_ringbuffer *ring = gpu->rb[i];
+>  
+> +			spin_lock(&ring->submit_lock);
+>  			list_for_each_entry(submit, &ring->submits, node)
+>  				gpu->funcs->submit(gpu, submit);
+> +			spin_unlock(&ring->submit_lock);
+>  		}
+>  	}
+>  
+> @@ -711,7 +718,6 @@ static void retire_submit(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>  static void retire_submits(struct msm_gpu *gpu)
+>  {
+>  	struct drm_device *dev = gpu->dev;
+> -	struct msm_gem_submit *submit, *tmp;
+>  	int i;
+>  
+>  	WARN_ON(!mutex_is_locked(&dev->struct_mutex));
+> @@ -720,9 +726,24 @@ static void retire_submits(struct msm_gpu *gpu)
+>  	for (i = 0; i < gpu->nr_rings; i++) {
+>  		struct msm_ringbuffer *ring = gpu->rb[i];
+>  
+> -		list_for_each_entry_safe(submit, tmp, &ring->submits, node) {
+> -			if (dma_fence_is_signaled(submit->fence))
+> +		while (true) {
+> +			struct msm_gem_submit *submit = NULL;
+> +
+> +			spin_lock(&ring->submit_lock);
+> +			submit = list_first_entry_or_null(&ring->submits,
+> +					struct msm_gem_submit, node);
+> +			spin_unlock(&ring->submit_lock);
+> +
+> +			/*
+> +			 * If no submit, we are done.  If submit->fence hasn't
+> +			 * been signalled, then later submits are not signalled
+> +			 * either, so we are also done.
+> +			 */
+> +			if (submit && dma_fence_is_signaled(submit->fence)) {
+>  				retire_submit(gpu, ring, submit);
+> +			} else {
+> +				break;
+> +			}
+>  		}
+>  	}
+>  }
+> @@ -765,7 +786,9 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>  
+>  	submit->seqno = ++ring->seqno;
+>  
+> +	spin_lock(&ring->submit_lock);
+>  	list_add_tail(&submit->node, &ring->submits);
+> +	spin_unlock(&ring->submit_lock);
+>  
+>  	msm_rd_dump_submit(priv->rd, submit, NULL);
+>  
+> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> index 1b6958e908dc..4d2a2a4abef8 100644
+> --- a/drivers/gpu/drm/msm/msm_ringbuffer.c
+> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> @@ -46,6 +46,7 @@ struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
+>  	ring->memptrs_iova = memptrs_iova;
+>  
+>  	INIT_LIST_HEAD(&ring->submits);
+> +	spin_lock_init(&ring->submit_lock);
+>  	spin_lock_init(&ring->preempt_lock);
+>  
+>  	snprintf(name, sizeof(name), "gpu-ring-%d", ring->id);
+> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.h b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> index 4956d1bc5d0e..fe55d4a1aa16 100644
+> --- a/drivers/gpu/drm/msm/msm_ringbuffer.h
+> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> @@ -39,7 +39,13 @@ struct msm_ringbuffer {
+>  	int id;
+>  	struct drm_gem_object *bo;
+>  	uint32_t *start, *end, *cur, *next;
+> +
+> +	/*
+> +	 * List of in-flight submits on this ring.  Protected by submit_lock.
+> +	 */
+>  	struct list_head submits;
+> +	spinlock_t submit_lock;
+> +
+>  	uint64_t iova;
+>  	uint32_t seqno;
+>  	uint32_t hangcheck_fence;
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
