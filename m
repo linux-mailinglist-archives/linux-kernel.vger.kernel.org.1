@@ -2,192 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBD3283A66
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7679C283A6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgJEPeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:34:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46298 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728200AbgJEPdw (ORCPT
+        id S1728264AbgJEPeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:34:19 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12708 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727146AbgJEPeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:33:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601912030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e+DWRUpbiQiXpTtH8uZPEzj9HagzEEg6X4PpDi9a9tQ=;
-        b=Vodd8cNzGNnp+XQOW33rhHjtQJlfss2jnN8MWqmdw/xz7FLFYgKiziI5Vp8U0xQsj8p4JR
-        Cif6v+ytEEnecdtEOU+B8laTF9BqcbXvDSZw34g3QZ0zngPuJFTueFE1DUaDzePLNiF4tJ
-        GViHVLcCJd+khyXawd9o3G9IMwKZ2WI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-l9Te37T8O5yKpmloldOQfQ-1; Mon, 05 Oct 2020 11:33:45 -0400
-X-MC-Unique: l9Te37T8O5yKpmloldOQfQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B14AED58AD;
-        Mon,  5 Oct 2020 15:33:19 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-167.rdu2.redhat.com [10.10.114.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 521CE9CBA;
-        Mon,  5 Oct 2020 15:33:19 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id CAFB7220AD7; Mon,  5 Oct 2020 11:33:18 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 11:33:18 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>, vkuznets@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-Message-ID: <20201005153318.GA4302@redhat.com>
-References: <20200720211359.GF502563@redhat.com>
- <20200929043700.GL31514@linux.intel.com>
- <20201001215508.GD3522@redhat.com>
- <20201001223320.GI7474@linux.intel.com>
- <20201002153854.GC3119@redhat.com>
- <20201002183036.GB24460@linux.intel.com>
- <20201002192734.GD3119@redhat.com>
- <20201002194517.GD24460@linux.intel.com>
- <20201002200214.GB10232@redhat.com>
- <20201002211314.GE24460@linux.intel.com>
+        Mon, 5 Oct 2020 11:34:11 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7b3cbb0001>; Mon, 05 Oct 2020 08:33:15 -0700
+Received: from [10.2.161.39] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 5 Oct
+ 2020 15:34:05 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     David Hildenbrand <david@redhat.com>, Roman Gushchin <guro@fb.com>
+CC:     Michal Hocko <mhocko@suse.com>, <linux-mm@kvack.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Mike Kravetz" <mike.kravetz@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
+Date:   Mon, 5 Oct 2020 11:34:02 -0400
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <021D3552-4C75-4B82-BDE5-AFA6E0315051@nvidia.com>
+In-Reply-To: <9a7600e2-044a-50ca-acde-bf647932c751@redhat.com>
+References: <20200928175428.4110504-1-zi.yan@sent.com>
+ <20200930115505.GT2277@dhcp22.suse.cz>
+ <73394A41-16D8-431C-9E48-B14D44F045F8@nvidia.com>
+ <20201002073205.GC20872@dhcp22.suse.cz>
+ <9a7600e2-044a-50ca-acde-bf647932c751@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002211314.GE24460@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed;
+        boundary="=_MailMate_CB2033C2-8117-4BDB-80EB-32CE4307F2DF_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601911995; bh=qrftAgQVD/EzCC4R77V5PF2fGyxxv3FP2bn6MURc4qQ=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=TVIIgN0C8SohqhJ6ZOhUs7rcHeGFu4PVYUn64nhS+O1oaHwXZzJi6ilmLjq4YowjE
+         0YGnp1WobEmE+SmpHAbyXbHrXXphTtkq7CmWJqe+Wc6pSLLrXWz8hbXIPUHBXAB9Ya
+         4wt5peElV2zf1ka5VUEDZfvFZIXykT1H7IEpXdhI6HTZkU5T2apFjws0ly2ne2mzHG
+         4hnCFrTAosMid1HlboaW1lMWFxSxDi2py2vmhcNAuMcnzwmyWJy2IfD+cayMy2wi/2
+         CsDCxadljpbMS+GvEL445UkzIFxAqtEBBRMsxPYETnyVxgK1aPt9z0vERZ+ZGi7kAA
+         zAnvZJ4Ez1fZQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 02:13:14PM -0700, Sean Christopherson wrote:
-> On Fri, Oct 02, 2020 at 04:02:14PM -0400, Vivek Goyal wrote:
-> > On Fri, Oct 02, 2020 at 12:45:18PM -0700, Sean Christopherson wrote:
-> > > On Fri, Oct 02, 2020 at 03:27:34PM -0400, Vivek Goyal wrote:
-> > > > On Fri, Oct 02, 2020 at 11:30:37AM -0700, Sean Christopherson wrote:
-> > > > > On Fri, Oct 02, 2020 at 11:38:54AM -0400, Vivek Goyal wrote:
-> > > > > I don't think it's necessary to provide userspace with the register state of
-> > > > > the guest task that hit the bad page.  Other than debugging, I don't see how
-> > > > > userspace can do anything useful which such information.
-> > > > 
-> > > > I think debugging is the whole point so that user can figure out which
-> > > > access by guest task resulted in bad memory access. I would think this
-> > > > will be important piece of information.
-> > > 
-> > > But isn't this failure due to a truncation in the host?  Why would we care
-> > > about debugging the guest?  It hasn't done anything wrong, has it?  Or am I
-> > > misunderstanding the original problem statement.
-> > 
-> > I think you understood problem statement right. If guest has right
-> > context, it just gives additional information who tried to access
-> > the missing memory page. 
-> 
-> Yes, but it's not actionable, e.g. QEMU can't do anything differently given
-> a guest RIP.  It's useful information for hands-on debug, but the information
-> can be easily collected through other means when doing hands-on debug.
+--=_MailMate_CB2033C2-8117-4BDB-80EB-32CE4307F2DF_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Sean,
+On 2 Oct 2020, at 3:50, David Hildenbrand wrote:
 
-I tried my patch and truncated file on host before guest did memcpy().
-After truncation guest process tried memcpy() on truncated region and
-kvm exited to user space with -EFAULT. I see following on serial console.
+>>>> - huge page sizes controllable by the userspace?
+>>>
+>>> It might be good to allow advanced users to choose the page sizes, so=
+ they
+>>> have better control of their applications.
+>>
+>> Could you elaborate more? Those advanced users can use hugetlb, right?=
 
-I am assuming qemu is printing the state of vcpu.
+>> They get a very good control over page size and pool preallocation etc=
+=2E
+>> So they can get what they need - assuming there is enough memory.
+>>
+>
+> I am still not convinced that 1G THP (TGP :) ) are really what we want
+> to support. I can understand that there are some use cases that might
+> benefit from it, especially:
+>
+> "I want a lot of memory, give me memory in any granularity you have, I
+> absolutely don't care - but of course, more TGP might be good for
+> performance." Say, you want a 5GB region, but only have a single 1GB
+> hugepage lying around. hugetlbfs allocation will fail.
+>
+>
+> But then, do we really want to optimize for such (very special?) use
+> cases via " 58 files changed, 2396 insertions(+), 460 deletions(-)" ?
 
-************************************************************
-error: kvm run failed Bad address
-RAX=00007fff6e7a9750 RBX=0000000000000000 RCX=00007f513927e000 RDX=000000000000a
-RSI=00007f513927e000 RDI=00007fff6e7a9750 RBP=00007fff6e7a97b0 RSP=00007fff6e7a8
-R8 =0000000000000000 R9 =0000000000000031 R10=00007fff6e7a957c R11=0000000000006
-R12=0000000000401140 R13=0000000000000000 R14=0000000000000000 R15=0000000000000
-RIP=00007f51391e0547 RFL=00010202 [-------] CPL=3 II=0 A20=1 SMM=0 HLT=0
-ES =0000 0000000000000000 ffffffff 00c00000
-CS =0033 0000000000000000 ffffffff 00a0fb00 DPL=3 CS64 [-RA]
-SS =002b 0000000000000000 ffffffff 00c0f300 DPL=3 DS   [-WA]
-DS =0000 0000000000000000 ffffffff 00c00000
-FS =0000 00007f5139246540 ffffffff 00c00000
-GS =0000 0000000000000000 ffffffff 00c00000
-LDT=0000 0000000000000000 00000000 00000000
-TR =0040 fffffe00003a6000 00004087 00008b00 DPL=0 TSS64-busy
-GDT=     fffffe00003a4000 0000007f
-IDT=     fffffe0000000000 00000fff
-CR0=80050033 CR2=00007f513927e004 CR3=000000102b5eb805 CR4=00770ee0
-DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=000000000000
-DR6=00000000fffe0ff0 DR7=0000000000000400
-EFER=0000000000000d01
-Code=fa 6f 06 c5 fa 6f 4c 16 f0 c5 fa 7f 07 c5 fa 7f 4c 17 f0 c3 <48> 8b 4c 16 3
-*****************************************************************
+I am planning to further refactor my code to reduce the size and make
+it more general to support any size of THPs. As Matthew=E2=80=99s patchse=
+t[1]
+is removing kernel=E2=80=99s THP size assumption, it might be a good time=
+ to
+make THP support more general.
 
-I also changed my test program to print source and destination address
-for memcpy.
+>
+> I think gigantic pages are a sparse resource. Only selected application=
+s
+> *really* depend on them and benefit from them. Let these special
+> applications handle it explicitly.
+>
+> Can we have a summary of use cases that would really benefit from this
+> change?
 
-dst=0x0x7fff6e7a9750 src=0x0x7f513927e000
+For large machine learning applications, 1GB pages give good performance =
+boost[2].
+NVIDIA DGX A100 box now has 1TB memory, which means 1GB pages are not
+that sparse in GPU-equipped infrastructure[3].
 
-Here dst matches RDI and src matches RSI. This trace also tells me
-CPL=3 so a user space access triggered this.
+In addition, @Roman Gushchin should be able to provide a more concrete
+story from his side.
 
-Now I have few questions.
 
-- If we exit to user space asynchronously (using kvm request), what debug
-  information is in there which tells user which address is bad. I admit
-  that even above trace does not seem to be telling me directly which
-  address (HVA?) is bad.
+[1] https://lore.kernel.org/linux-mm/20200908195539.25896-1-willy@infrade=
+ad.org/
+[2] http://learningsys.org/neurips19/assets/papers/18_CameraReadySubmissi=
+on_MLSys_NeurIPS_2019.pdf
+[3] https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/nvidia=
+-dgx-a100-datasheet.pdf
 
-  But if I take a crash dump of guest, using above information I should
-  be able to get to GPA which is problematic. And looking at /proc/iomem
-  it should also tell which device this memory region is in.
+=E2=80=94
+Best Regards,
+Yan Zi
 
-  Also using this crash dump one should be able to walk through virtiofs data
-  structures and figure out which file and what offset with-in file does
-  it belong to. Now one can look at filesystem on host and see file got
-  truncated and it will become obvious it can't be faulted in. And then
-  one can continue to debug that how did we arrive here.
+--=_MailMate_CB2033C2-8117-4BDB-80EB-32CE4307F2DF_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
 
-But if we don't exit to user space synchronously, Only relevant
-information we seem to have is -EFAULT. Apart from that, how does one
-figure out what address is bad, or who tried to access it. Or which
-file/offset does it belong to etc.
+-----BEGIN PGP SIGNATURE-----
 
-I agree that problem is not necessarily in guest code. But by exiting
-synchronously, it gives enough information that one can use crash
-dump to get to bottom of the issue. If we exit to user space
-asynchronously, all this information will be lost and it might make
-it very hard to figure out (if not impossible), what's going on.
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl97POoPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKUWUP/2iZhl7ezUaDgRc+j+lqT7NpBCUZkK0NBn2T
+hjQRrzPp5DjejW3Bmv3WUm9wuZD2NID4UE0KswpmqYLJEp5kkFrscL01GCwYFxcD
+d1o+jgnD9xQMgx/E92sPpyO27rq1370M785T3ytV9KFQ2Thwngt1jn9RbSbwExc5
+8SasCDzLyuHow0i5KGk7MtDkU4+UgF3vWHwELKFePUhe+MXRX73/kRjRWXUKcKZO
+jgXUo7FqxOPvBsvgOumkc/Ych7YUzUqeVAZ/jNsDbbaP9RBP+WVVeVIG1GV1YqP5
+Dj67yKwfilslxHrj6SkKB2h82s/b5f2vreov88q8Y8Y+I6wfpyMOP+SdL2/bWXja
+0ttqa3wxp+d680YxLzZvLZYYv5z+SMo4W2EUtqK1igl67qJ3ZuHnKHb+a9SVJYJJ
+D+2PhVLQc4xGJ2dhMqgeTCaFql28OenoKC+QIvxSdf0fa8rOa+apT2l1H9ITIFXq
+c55Cz8pLY0XLDeF7hqwQPNT/7xAkBXYxWLqv9ViOHHa4BQjTdqFG85d7IvJsZOVn
+4evzocWd3ArrvQrJCJGNd7JW0p9SOFQRB7vtOE6Zea+M+vfFx0saQtfv7NC2gLvH
+dtXZ0K+6JtNvINAmD7PgTzhiAoVWS579ce83sh9y1trpX/APW+4H2vCZhLPNPot7
+Ti3y9wSW
+=1T4B
+-----END PGP SIGNATURE-----
 
->  
-> > > > > To fully handle the situation, the guest needs to remove the bad page from
-> > > > > its memory pool.  Once the page is offlined, the guest kernel's error
-> > > > > handling will kick in when a task accesses the bad page (or nothing ever
-> > > > > touches the bad page again and everyone is happy).
-> > > > 
-> > > > This is not really a case of bad page as such. It is more of a page
-> > > > gone missing/trucated. And no new user can map it. We just need to
-> > > > worry about existing users who already have it mapped.
-> > > 
-> > > What do you mean by "no new user can map it"?  Are you talking about guest
-> > > tasks or host tasks?  If guest tasks, how would the guest know the page is
-> > > missing and thus prevent mapping the non-existent page?
-> > 
-> > If a new task wants mmap(), it will send a request to virtiofsd/qemu
-> > on host. If file has been truncated, then mapping beyond file size
-> > will fail and process will get error.  So they will not be able to
-> > map a page which has been truncated.
-> 
-> Ah.  Is there anything that prevents the notification side of things from
-> being handled purely within the virtiofs layer?  E.g. host notifies the guest
-> that a file got truncated, virtiofs driver in the guest invokes a kernel API
-> to remove the page(s).
-
-virtiofsd notifications can help a bit but not in all cases. For example,
-If file got truncated and guest kernel accesses it immidiately after that,
-(before notification arrives), it will hang and notification will not
-be able to do much.
-
-So while notification might be nice to have, but we still will need some
-sort of error reporting from kvm.
-
-Thanks
-Vivek
-
+--=_MailMate_CB2033C2-8117-4BDB-80EB-32CE4307F2DF_=--
