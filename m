@@ -2,189 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0AF283660
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5144D283662
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgJENOI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Oct 2020 09:14:08 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:45233 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726123AbgJENOH (ORCPT
+        id S1726362AbgJENPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:15:25 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:34844 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgJENPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:14:07 -0400
-X-Originating-IP: 90.65.92.90
-Received: from localhost (lfbn-lyo-1-1913-90.w90-65.abo.wanadoo.fr [90.65.92.90])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 94BB01BF218;
-        Mon,  5 Oct 2020 13:14:04 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
-        Andre Heider <a.heider@gmail.com>
-Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: De-duplicate eMMC definitions
-In-Reply-To: <20201002121352.ms6s3675tzzv77i2@pali>
-References: <20200925085043.16389-1-pali@kernel.org> <a02747f7-8c9d-d445-fac3-afefe3a8ff4e@gmail.com> <20201002121352.ms6s3675tzzv77i2@pali>
-Date:   Mon, 05 Oct 2020 15:14:04 +0200
-Message-ID: <87mu10erxf.fsf@BL-laptop>
+        Mon, 5 Oct 2020 09:15:24 -0400
+Received: by mail-lf1-f65.google.com with SMTP id w11so10835736lfn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 06:15:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7cBoMJtsS2QIM7l/tvd/09+d4HrK6HDbi11UZa2qXqw=;
+        b=Hc/jL+s5quRzYlOnXKTr+hRTDJcvzOV4IL+Z1U7CXXhpV5PWSCDA2cM4Uum9ZYL6gI
+         2Zbtyc3em5SFhZ4ajMkw6YI/NQ3CfMl5lSUTKeOzJBKckw5kvibBQlaO3ZQBRkcRK2RR
+         uwjhT4LEpQtB3L0OdLJ19EnDnH1njHbfCjIEsWc4kJreyaZOvCajXJlnN8REXSAdPFw+
+         3ZdeOCBzzEGNIQz6mwOYC9AgVoggko5UfPLs9jRB6av8HAlNb/t9U4Knuv8IFukN1dtT
+         6R1ArZpEJjPvtmsDxhFUtS3EFJgLKF3E2U3VTnH2XpqkWIZ7P4bdM3lOFodjUDyqjpCA
+         As6g==
+X-Gm-Message-State: AOAM533rm/QgFGBHaUOcmWYtxCJbFScIW1hgaZL64nN19X5hHpciQl/+
+        ud2dtlY26B7zZTk1AGRor74e4NR/i3QdMQ==
+X-Google-Smtp-Source: ABdhPJw75XL7IWZVDGgSwJ3XQpEnyGDn21uVnz0xzeIO3+LhxeUoVuGgGr4cptX8JD+kPOqalyKWiA==
+X-Received: by 2002:ac2:4281:: with SMTP id m1mr2598791lfh.574.1601903721805;
+        Mon, 05 Oct 2020 06:15:21 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id 136sm116115lfi.176.2020.10.05.06.15.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 06:15:21 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id z19so10839255lfr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 06:15:21 -0700 (PDT)
+X-Received: by 2002:a05:6512:370b:: with SMTP id z11mr5248254lfr.571.1601903720884;
+ Mon, 05 Oct 2020 06:15:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <20201001021148.15852-1-samuel@sholland.org> <20201001021148.15852-21-samuel@sholland.org>
+ <20201005120101.igzzwosnq6bzbua6@gilmour.lan>
+In-Reply-To: <20201005120101.igzzwosnq6bzbua6@gilmour.lan>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 5 Oct 2020 21:15:10 +0800
+X-Gmail-Original-Message-ID: <CAGb2v67hsAfBJVjuhCQ-_ihnP3XRPeMEVik5j1ViCTmgt_JDWg@mail.gmail.com>
+Message-ID: <CAGb2v67hsAfBJVjuhCQ-_ihnP3XRPeMEVik5j1ViCTmgt_JDWg@mail.gmail.com>
+Subject: Re: [PATCH 20/25] ASoC: sun8i-codec: Protect the clock rate while
+ streams are open
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ondrej Jirman <megous@megous.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
-
-> On Sunday 27 September 2020 08:40:41 Andre Heider wrote:
->> On 25/09/2020 10:50, Pali Rohár wrote:
->> > eMMC definitions in files armada-3720-espressobin-emmc.dts and
->> > armada-3720-espressobin-v7-emmc.dts is same. So move it into common
->> > armada-3720-espressobin.dtsi file with status "disabled".
->> > 
->> > This change simplifies eMMC variants of DTS files for Espressobin.
->> > 
->> > Signed-off-by: Pali Rohár <pali@kernel.org>
->> 
->> Reviewed-by: Andre Heider <a.heider@gmail.com>
->> Tested-by: Andre Heider <a.heider@gmail.com>
->> 
->> > ---
->> > Compiled DTB files armada-3720-espressobin-emmc.dtb and
->> > armada-3720-espressobin-v7-emmc.dtb are identical as without applying
->> > this patch.
->> > 
->> > Files armada-3720-espressobin.dtb and armada-3720-espressobin-v7.dtb
->> > are slightly different compared to version without this patch.
->> > 
->> > Main change is that numering in all "phandle" nodes is shifted and
->> > "sdhci0" node contains more attributes, but node is disabled.
->> > 
->> > 
->> > Andre, could you test this change on Espressobin (without eMMC) if
->> > everything is OK and there is no issue?
->> 
->> Look good to me, the node appears with status=disabled and everything seems
->> to work as before.
+On Mon, Oct 5, 2020 at 8:01 PM Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> Great!
+> On Wed, Sep 30, 2020 at 09:11:43PM -0500, Samuel Holland wrote:
+> > The codec's clock input is shared among all AIFs, and shared with other
+> > audio-related hardware in the SoC, including I2S and SPDIF controllers.
+> > To ensure sample rates selected by userspace or by codec2codec DAI links
+> > are maintained, the clock rate must be protected while it is in use.
+> >
+> > Signed-off-by: Samuel Holland <samuel@sholland.org>
+> > ---
+> >  sound/soc/sunxi/sun8i-codec.c | 25 ++++++++++++++++++++++---
+> >  1 file changed, 22 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+> > index 501af64d43a0..86065bee7cd3 100644
+> > --- a/sound/soc/sunxi/sun8i-codec.c
+> > +++ b/sound/soc/sunxi/sun8i-codec.c
+> > @@ -416,27 +416,32 @@ static int sun8i_codec_get_lrck_div_order(unsigned int slots,
+> >       unsigned int div = slots * slot_width;
+> >
+> >       if (div < 16 || div > 256)
+> >               return -EINVAL;
+> >
+> >       return order_base_2(div);
+> >  }
+> >
+> > +static unsigned int sun8i_codec_get_sysclk_rate(unsigned int sample_rate)
+> > +{
+> > +     return sample_rate % 4000 ? 22579200 : 24576000;
+> > +}
+> > +
+> >  static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+> >                                struct snd_pcm_hw_params *params,
+> >                                struct snd_soc_dai *dai)
+> >  {
+> >       struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
+> >       struct sun8i_codec_aif *aif = &scodec->aifs[dai->id];
+> >       unsigned int sample_rate = params_rate(params);
+> >       unsigned int slots = aif->slots ?: params_channels(params);
+> >       unsigned int slot_width = aif->slot_width ?: params_width(params);
+> > -     unsigned int sysclk_rate = clk_get_rate(scodec->clk_module);
+> > -     int lrck_div_order, word_size;
+> > +     unsigned int sysclk_rate = sun8i_codec_get_sysclk_rate(sample_rate);
+> > +     int lrck_div_order, ret, word_size;
+> >       u8 bclk_div;
+> >
+> >       /* word size */
+> >       switch (params_width(params)) {
+> >       case 8:
+> >               word_size = 0x0;
+> >               break;
+> >       case 16:
+> > @@ -466,17 +471,30 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+> >                          (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
+> >
+> >       /* BCLK divider (SYSCLK/BCLK ratio) */
+> >       bclk_div = sun8i_codec_get_bclk_div(sysclk_rate, lrck_div_order, sample_rate);
+> >       regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+> >                          SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+> >                          bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
+> >
+> > -     if (!aif->open_streams) {
+> > +     /* SYSCLK rate */
+> > +     if (aif->open_streams) {
+> > +             ret = clk_set_rate(scodec->clk_module, sysclk_rate);
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +     } else {
+> > +             ret = clk_set_rate_exclusive(scodec->clk_module, sysclk_rate);
 >
-> Gregory, would do you think about including this patch into next queue
-> too?
+> It's not really clear to me why we wouldn't want to always protect the
+> clock rate here?
 
+I believe the intention is to allow a window, i.e. when no audio
+blocks are running,
+when it is possible to switch between sample rate families?
 
-I've applied on mvebu/dt64, however I am not sure I will be able to make
-it merged for 5.10, but I will try.
+ChenYu
 
-Thanks,
-
-Gregory
-
-
+> > +             if (ret == -EBUSY)
+> > +                     dev_err(dai->dev, "%s: clock is busy! Sample rate %u Hz "
+> > +                             "conflicts with other audio streams.\n",
 >
->> > 
->> > ---
->> >   .../marvell/armada-3720-espressobin-emmc.dts  | 18 --------------
->> >   .../armada-3720-espressobin-v7-emmc.dts       | 18 --------------
->> >   .../dts/marvell/armada-3720-espressobin.dtsi  | 24 +++++++++++++++++++
->> >   3 files changed, 24 insertions(+), 36 deletions(-)
->> > 
->> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-emmc.dts
->> > index ec72a11ed80f..5c4d8f379704 100644
->> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-emmc.dts
->> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-emmc.dts
->> > @@ -21,24 +21,6 @@
->> >   		     "marvell,armada3720", "marvell,armada3710";
->> >   };
->> > -/* U11 */
->> >   &sdhci0 {
->> > -	non-removable;
->> > -	bus-width = <8>;
->> > -	mmc-ddr-1_8v;
->> > -	mmc-hs400-1_8v;
->> > -	marvell,xenon-emmc;
->> > -	marvell,xenon-tun-count = <9>;
->> > -	marvell,pad-type = "fixed-1-8v";
->> > -
->> > -	pinctrl-names = "default";
->> > -	pinctrl-0 = <&mmc_pins>;
->> >   	status = "okay";
->> > -
->> > -	#address-cells = <1>;
->> > -	#size-cells = <0>;
->> > -	mmccard: mmccard@0 {
->> > -		compatible = "mmc-card";
->> > -		reg = <0>;
->> > -	};
->> >   };
->> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
->> > index 6062a7df7342..4775a7eda481 100644
->> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
->> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
->> > @@ -36,24 +36,6 @@
->> >   	label = "wan";
->> >   };
->> > -/* U11 */
->> >   &sdhci0 {
->> > -	non-removable;
->> > -	bus-width = <8>;
->> > -	mmc-ddr-1_8v;
->> > -	mmc-hs400-1_8v;
->> > -	marvell,xenon-emmc;
->> > -	marvell,xenon-tun-count = <9>;
->> > -	marvell,pad-type = "fixed-1-8v";
->> > -
->> > -	pinctrl-names = "default";
->> > -	pinctrl-0 = <&mmc_pins>;
->> >   	status = "okay";
->> > -
->> > -	#address-cells = <1>;
->> > -	#size-cells = <0>;
->> > -	mmccard: mmccard@0 {
->> > -		compatible = "mmc-card";
->> > -		reg = <0>;
->> > -	};
->> >   };
->> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
->> > index 3169a820558f..8a1c678bea5f 100644
->> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
->> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
->> > @@ -58,6 +58,30 @@
->> >   	phy-names = "sata-phy";
->> >   };
->> > +/* U11 */
->> > +&sdhci0 {
->> > +	/* Main DTS file for Espressobin is without eMMC */
->> > +	status = "disabled";
->> > +
->> > +	non-removable;
->> > +	bus-width = <8>;
->> > +	mmc-ddr-1_8v;
->> > +	mmc-hs400-1_8v;
->> > +	marvell,xenon-emmc;
->> > +	marvell,xenon-tun-count = <9>;
->> > +	marvell,pad-type = "fixed-1-8v";
->> > +
->> > +	pinctrl-names = "default";
->> > +	pinctrl-0 = <&mmc_pins>;
->> > +
->> > +	#address-cells = <1>;
->> > +	#size-cells = <0>;
->> > +	mmccard: mmccard@0 {
->> > +		compatible = "mmc-card";
->> > +		reg = <0>;
->> > +	};
->> > +};
->> > +
->> >   /* J1 */
->> >   &sdhci1 {
->> >   	wp-inverted;
->> > 
->> 
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+> This string creates a checkpatch warning.
+>
+> Maxime
