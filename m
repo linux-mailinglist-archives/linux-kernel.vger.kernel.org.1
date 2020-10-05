@@ -2,99 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2636283C89
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B34A283C8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgJEQbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbgJEQbA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:31:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BAAC0613CE;
-        Mon,  5 Oct 2020 09:31:00 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id q123so7286876pfb.0;
-        Mon, 05 Oct 2020 09:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R9YlX6EHFx6XpkeTPJP/qBg1UOWza/IdabqBeotO5BA=;
-        b=u8zTk1rmTsRmGbyzlaYoVkYKtZd+igHJXOUsykswC3bdFY8/rbDimGh3bLfkS1ewv6
-         mlN+e/5rCfetbOo8SxyH+Jz5TEdadGodn0ILXwgCuyATw6qyrq1IGw79ea3LEligM5uT
-         vTWs4Ix6J5xThuJuqxDuYtaLK1fkVuPl9sOreeLCylkopGJCYm4oy/VuNg2awlZmjHrQ
-         JLfcyVJOnYndBN5JFC8xikI6RpL7QBFAKHBCKq2mIAyCuRAQDGj3+gE3lYUUwC+ccLw6
-         6xaaYyjNYRB4c2qwIJx4MsCC9hUHdPxwkxsuW17d6GwWuLVnYQHDKZRKYubBIn7qfnsz
-         9qsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R9YlX6EHFx6XpkeTPJP/qBg1UOWza/IdabqBeotO5BA=;
-        b=f8BEK7E74y8mMrJrWKz0nEGuOEwzL/4x29YLxoLRv/P+g3rXAF18be5uDb+pEKonj5
-         Cn4+eHH+5eWSCXLrj85q6L4r+EszlD9hpWshubF1ZLK7cKjn3nkLW2nc5eOw7V3nK3m4
-         cvpLE8bISFMblzU6M5wLSqXbnUPJpZgkSz1YgnOdM0BVRJ1x8mt9YwbaPIxbO9/pCRiu
-         V32cZPuT9YIY5RdG2nzoftyUasbFX2OKis46s3QjN/e2P2I7MSucG+gTuWDJsyY1Jc9r
-         rPkdpKCSnwU/jKAk5ZQVbGIIdM+drRJPUwMVrf7JD89/8yGpuDCbAkOg0/RUJ79kn3Hs
-         a6Yw==
-X-Gm-Message-State: AOAM532lRcqMUD8NbiS/R1LkzNoJT/jECJFwMoXSIK3chcMSs+0kJ5dh
-        t2kT0u1Nq5Zlg0CTqlZ4VPQMRxfRrt8=
-X-Google-Smtp-Source: ABdhPJwtP8TfulOrJ+s3ziVm6XlYCok8wFQ2nXsItJxyU8EoSSr//2OZwhtZL/HpAqvDACzcsxLz+Q==
-X-Received: by 2002:a63:4951:: with SMTP id y17mr237392pgk.375.1601915460010;
-        Mon, 05 Oct 2020 09:31:00 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([72.164.175.30])
-        by smtp.googlemail.com with ESMTPSA id h31sm110056pgh.71.2020.10.05.09.30.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 09:30:58 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/3] l3mdev icmp error route lookup fixes
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200925200452.2080-1-mathieu.desnoyers@efficios.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <fd970150-f214-63a3-953c-769fa2787bc0@gmail.com>
-Date:   Mon, 5 Oct 2020 09:30:58 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        id S1727913AbgJEQbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:31:41 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:34512 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726991AbgJEQbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 12:31:40 -0400
+Received: from zn.tnic (p200300ec2f07d500f39533324043f5fb.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d500:f395:3332:4043:f5fb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8CC081EC02FC;
+        Mon,  5 Oct 2020 18:31:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601915499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=nzw4PA3rfl7jzqHX81ye9k74DOdKxMo6vzCUsJL4yag=;
+        b=rvs86EE6OXiwWfkAh3cYGJfp6SzXzhsI92FUhKv5334PHeBJK+bwCtMFkJdRDl8WRStCOG
+        +DmzLcFwTe+Aig4PiXC5EgG5X8xoO+UuHLPoJ/HzSiYPExF9w4E28e+XFRmhqczYQcpLbY
+        FLdeSvNnyNGs4lxekZdV/5TKLq4oRuM=
+Date:   Mon, 5 Oct 2020 18:31:30 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Youquan Song <youquan.song@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] x86/mce: Decode a kernel instruction to determine
+ if it is copying from user
+Message-ID: <20201005163130.GD21151@zn.tnic>
+References: <20200921113144.GD5901@zn.tnic>
+ <20200930232611.15355-1-tony.luck@intel.com>
+ <20200930232611.15355-8-tony.luck@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200925200452.2080-1-mathieu.desnoyers@efficios.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200930232611.15355-8-tony.luck@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 1:04 PM, Mathieu Desnoyers wrote:
-> Hi,
-> 
-> Here is an updated series of fixes for ipv4 and ipv6 which which ensure
-> the route lookup is performed on the right routing table in VRF
-> configurations when sending TTL expired icmp errors (useful for
-> traceroute).
-> 
-> It includes tests for both ipv4 and ipv6.
-> 
-> These fixes address specifically address the code paths involved in
-> sending TTL expired icmp errors. As detailed in the individual commit
-> messages, those fixes do not address similar icmp errors related to
-> network namespaces and unreachable / fragmentation needed messages,
-> which appear to use different code paths.
-> 
-> The main changes since the last round are updates to the selftests.
-> 
+On Wed, Sep 30, 2020 at 04:26:11PM -0700, Tony Luck wrote:
+> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> index 9713825e6745..60bacf6e0501 100644
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -1236,14 +1236,19 @@ static void kill_me_maybe(struct callback_head *cb)
+>  	if (!p->mce_ripv)
+>  		flags |= MF_MUST_KILL;
+>  
+> -	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags)) {
+> +	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
+> +	    !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
+>  		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
+>  		sync_core();
+>  		return;
+>  	}
+>  
+> -	pr_err("Memory error not recovered");
+> -	kill_me_now(cb);
+> +	if (p->mce_vaddr != (void __user *)~0ul) {
 
-This looks fine to me. I noticed the IPv6 large packet test case is
-failing; the fib6 tracepoint is showing the loopback as the iif which is
-wrong:
+As previously pointed out, pls test against -1L even if it is the
+same value so that it is obvious this is the error value coming from
+insn_get_addr_ref().
 
-ping6  8488 [004]   502.015817: fib6:fib6_table_lookup: table 255 oif 0
-iif 1 proto 58 ::/0 -> 2001:db8:16:1::1/0 tos 0 scope 0 flags 0 ==> dev
-lo gw :: err -113
+> +		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
+> +	} else {
+> +		pr_err("Memory error not recovered");
+> +		kill_me_now(cb);
+> +	}
+>  }
+>  
+>  /*
+> diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+> index 8517cbf7b184..6e8b38cf52d9 100644
+> --- a/arch/x86/kernel/cpu/mce/severity.c
+> +++ b/arch/x86/kernel/cpu/mce/severity.c
+> @@ -10,6 +10,9 @@
+>  #include <linux/init.h>
+>  #include <linux/debugfs.h>
+>  #include <asm/mce.h>
+> +#include <asm/traps.h>
+> +#include <asm/insn.h>
+> +#include <asm/insn-eval.h>
+>  #include <linux/uaccess.h>
+>  
+>  #include "internal.h"
+> @@ -198,6 +201,45 @@ static struct severity {
+>  #define mc_recoverable(mcg) (((mcg) & (MCG_STATUS_RIPV|MCG_STATUS_EIPV)) == \
+>  				(MCG_STATUS_RIPV|MCG_STATUS_EIPV))
+>  
+> +static bool is_copy_from_user(struct pt_regs *regs)
+> +{
+> +	u8 insn_buf[MAX_INSN_SIZE];
+> +	struct insn insn;
+> +	unsigned long addr;
+> +
+> +	if (copy_from_kernel_nofault(insn_buf, (void *)regs->ip, MAX_INSN_SIZE))
+> +		return false;
+> +
+> +	kernel_insn_init(&insn, insn_buf, MAX_INSN_SIZE);
+> +	insn_get_opcode(&insn);
+> +	if (!insn.opcode.got)
+> +		return false;
+> +
+> +	switch (insn.opcode.value) {
+> +	/* MOV mem,reg */
+> +	case 0x8A: case 0x8B:
+> +	/* MOVZ mem,reg */
+> +	case 0xB60F: case 0xB70F:
+> +		insn_get_modrm(&insn);
+> +		insn_get_sib(&insn);
 
-I will dig into it later this week.
+You need to test here:
+
+		insn->modrm.got = 1;
+
+and
+		insn->sib.got = 1;
+
+I know, this is weird - those functions should return an error value
+instead of being void and I've asked Masami in the past but no reply.
+
+Who knows, one fine day I might convert the crap to do that instead.
+
+> +		addr = (unsigned long)insn_get_addr_ref(&insn, regs);
+> +		break;
+> +	/* REP MOVS */
+> +	case 0xA4: case 0xA5:
+> +		addr = regs->si;
+> +		break;
+> +	default:
+> +		return false;
+> +	}
+> +
+> +	if (fault_in_kernel_space(addr))
+> +		return false;
+> +
+> +	current->mce_vaddr = (void __user *)addr;
+> +
+> +	return true;
+> +}
+> +
+>  /*
+>   * If mcgstatus indicated that ip/cs on the stack were
+>   * no good, then "m->cs" will be zero and we will have
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
