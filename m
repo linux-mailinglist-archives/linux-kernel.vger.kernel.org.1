@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF3028411E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B582028417C
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 22:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbgJEUf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 16:35:58 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:38967 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgJEUf4 (ORCPT
+        id S1729587AbgJEUh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 16:37:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52876 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727247AbgJEUh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 16:35:56 -0400
-Received: by mail-wm1-f68.google.com with SMTP id d3so840440wma.4;
-        Mon, 05 Oct 2020 13:35:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Q5iceblLTPLNAqCbEFyOg5x/SMGcxOoUyYeFBZajQxA=;
-        b=foDi3ukWfhIXBNcp5QQtGEV3cKtFKMW8Y6/7/sAVChxavwzYQE+/8au8hxHm31C0Wp
-         IMJaglp2LFmFZHeHSJ3p6JbYVMsQ1k8eoyyHjo3Ypd3ntATlB5udFYtjJOFadp+CIb8z
-         hkQiCLEpHjQYqsP59nsqGMa49WWOvSpklE89ap7ksjEJpUl3u177OGylMZ5mGs4a+LSP
-         Bhfyt5v9IFBbfxNZnHxMLICSQuz/qoN1+qACij3jFGIgDGQmBAl2QCfhOwwnk2ofVKRD
-         F8CNq5/Ji41fLjBfvY5uaiij1Xwb17Dn8PqPNK0cCj0kPVGUK/iVAo4BbSLtPD8+70zo
-         TZbA==
-X-Gm-Message-State: AOAM530cU4ZqYIFpZe9WbA5WEtjq97IESAwGzVqtJ5ClhXDYFTN0pyKb
-        /BnMfxs3eXrdtKTjsL/gEH8=
-X-Google-Smtp-Source: ABdhPJybS6GmuQGaGKAgw2oZTDndQ8lnfNHzVvN45dT21OuWH7lzG5fHAPseKBE0Hl5nmJW71d+taQ==
-X-Received: by 2002:a1c:2d94:: with SMTP id t142mr1128839wmt.74.1601930150569;
-        Mon, 05 Oct 2020 13:35:50 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id j134sm985707wmj.7.2020.10.05.13.35.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Oct 2020 13:35:49 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 22:35:44 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Richard Weinberger <richard@nod.at>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 4/4] dt-bindings: Explicitly allow additional properties
- in common schemas
-Message-ID: <20201005203544.GD23742@kozik-lap>
-References: <20201005183830.486085-1-robh@kernel.org>
- <20201005183830.486085-5-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201005183830.486085-5-robh@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Mon, 5 Oct 2020 16:37:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601930246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7nUZF53moaE0jZmZ5l3IQLMteMr+7qZSYgEgvocHM68=;
+        b=T6hWEF0CocSP6/7i2HY4BJfDjNJVsZ7lsU/S52If0yGSbfDYct15SI0VfhgHkiEAWH9hlT
+        nMS4gO3RzQ9qWG7j5kSstY7itlFlV16vQo6yKVBkqA/q8qgvUk0BSoUR+YJIm1r0d3DXMe
+        BHQd/6WULHvuS21Im99yuSTQv2so610=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-i1Bmh4B7MzGC0GSNKOjgoA-1; Mon, 05 Oct 2020 16:37:23 -0400
+X-MC-Unique: i1Bmh4B7MzGC0GSNKOjgoA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7547B107AFA9;
+        Mon,  5 Oct 2020 20:37:19 +0000 (UTC)
+Received: from ovpn-114-87.rdu2.redhat.com (ovpn-114-87.rdu2.redhat.com [10.10.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C7A9A10013C0;
+        Mon,  5 Oct 2020 20:37:18 +0000 (UTC)
+Message-ID: <b56d7eff12d3e85f4fcca11d70b8dbb29da25a3f.camel@redhat.com>
+Subject: Re: [RFC PATCH 27/27] epoll: take epitem list out of struct file
+From:   Qian Cai <cai@redhat.com>
+To:     Al Viro <viro@ZenIV.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>
+Date:   Mon, 05 Oct 2020 16:37:18 -0400
+In-Reply-To: <20201004023929.2740074-27-viro@ZenIV.linux.org.uk>
+References: <20201004023608.GM3421308@ZenIV.linux.org.uk>
+         <20201004023929.2740074-1-viro@ZenIV.linux.org.uk>
+         <20201004023929.2740074-27-viro@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 01:38:30PM -0500, Rob Herring wrote:
-> In order to add meta-schema checks for additional/unevaluatedProperties
-> being present, all schema need to make this explicit. As common/shared
-> schema are included by other schemas, they should always allow for
-> additionalProperties.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+On Sun, 2020-10-04 at 03:39 +0100, Al Viro wrote:
+>  /*
+>   * Must be called with "mtx" held.
+>   */
+> @@ -1367,19 +1454,21 @@ static int ep_insert(struct eventpoll *ep, const
+> struct epoll_event *event,
+>  	epi->event = *event;
+>  	epi->next = EP_UNACTIVE_PTR;
+>  
+> -	atomic_long_inc(&ep->user->epoll_watches);
+> -
+>  	if (tep)
+>  		mutex_lock(&tep->mtx);
+>  	/* Add the current item to the list of active epoll hook for this file
+> */
+> -	spin_lock(&tfile->f_lock);
+> -	hlist_add_head_rcu(&epi->fllink, &tfile->f_ep_links);
+> -	spin_unlock(&tfile->f_lock);
+> -	if (full_check && !tep) {
+> -		get_file(tfile);
+> -		list_add(&tfile->f_tfile_llink, &tfile_check_list);
+> +	if (unlikely(attach_epitem(tfile, epi) < 0)) {
+> +		kmem_cache_free(epi_cache, epi);
+> +		if (tep)
+> +			mutex_lock(&tep->mtx);
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Shouldn't this be mutex_unlock() instead?
 
-Best regards,
-Krzysztof
+> +		return -ENOMEM;
+>  	}
+>  
+
