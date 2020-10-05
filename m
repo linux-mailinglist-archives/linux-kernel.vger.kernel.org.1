@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156F5284288
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9292428428E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 00:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgJEWbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 18:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgJEWbX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:31:23 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D958EC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 15:31:21 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id n61so10305215ota.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 15:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aGJPhjJnGizWZ9cjlMtyvbh4s8GPun/neUKltdZk0Y0=;
-        b=E3BNLEwO4blu18AA9bBYPMj6KdaoOIvVuhzzTlO9SdwVRmMA2I1sF+4TC6R5gMuF/t
-         70UA+qS/l9JVHRzuN/wPuWxJDfn8ax9yN4TA4/WDU/sxhXEIIfAvbsb9CcVOnvYEU0T2
-         kHU/ZnYKgFMx6M0TDPusm2djOUMgcutEgfWz0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aGJPhjJnGizWZ9cjlMtyvbh4s8GPun/neUKltdZk0Y0=;
-        b=X5gEEEfF+cmV1zgivsKx3Jrv1COakGQhjrSYQnr+9Zd6n2qqlh2Onvnnt7rThcmQVi
-         60NtlG2wRebbm+bgFf52SrP6eltPFjcBCdxgLbvyWMJ1m/ZOgpUMNdybqc25+HOe4Oim
-         9LlImcDO967e6Kj3HFC4IL+C1YQy3CyWWxAM84Q8qEUb76wJMWfTzV/8AUHki5eM17qA
-         IHw4T0787HaeqU9hB4Mz0datoepQhh/jj4+VkrDYQICuicWtHzsiVYg5Y2gaDHnT/BVI
-         0RT88SXeesrSrYp7IMatiu59w/A2ft8+8/qZfB8NeONYeqmRfSje4zLUZnZeXV93bf1J
-         jCiA==
-X-Gm-Message-State: AOAM5307rTzxeSMsv7r7yro/TsnA/opW+X2k2Q326BTt2HRfuNaZ5SGv
-        CtWRdxTJ7JaYK+IhHMnTu6v+jSdUlG0xOgj+JLhZmw==
-X-Google-Smtp-Source: ABdhPJxnWbeNqcHTXdnaARCv/Zto+89buyW7FSld30l4eYbHTDn36gLjIFSYQDd9gbmM8YZlwLxRaLcHDFyluEPHV0o=
-X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr967660otj.303.1601937081198;
- Mon, 05 Oct 2020 15:31:21 -0700 (PDT)
+        id S1727227AbgJEWgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 18:36:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725917AbgJEWgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 18:36:37 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D02B2078A;
+        Mon,  5 Oct 2020 22:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601937397;
+        bh=TKL2MsscyE/vIAfUltMtJXP6uFHSkqzpM4DPoVgZ1Tw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=zDlMHnRqW36LuoFxud7eaHvZumJlikFASkuU8WD3CCiGHGy2eNkDGzi9gV9xYQLVN
+         BL0e8uFjmLNklLV5OkcXVhp6Gz6Cj6YSZbLzFldclDzBYe78vrrjjTzrxmIGBmlgsY
+         35XeRlJ84TbKfygbL7ovaaXZfSuiPnxmfHqHXagI=
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>
+Subject: [PATCH 1/4] scsi: ufs: atomic update for clkgating_enable
+Date:   Mon,  5 Oct 2020 15:36:32 -0700
+Message-Id: <20201005223635.2922805-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
 MIME-Version: 1.0
-References: <20200930165212.GA8833@lst.de> <20201004141758.1013317-1-paul@crapouillou.net>
- <20201004195921.GA556605@ravnborg.org> <ZE1PHQ.WGCBAFO9R38I3@crapouillou.net>
- <20201005230150.5637fa42@canb.auug.org.au> <20201005140534.GT438822@phenom.ffwll.local>
- <B3HQHQ.7DOFKW9A9TEX1@crapouillou.net>
-In-Reply-To: <B3HQHQ.7DOFKW9A9TEX1@crapouillou.net>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 6 Oct 2020 00:31:10 +0200
-Message-ID: <CAKMK7uEB7xHgnSpnT=Hd3Cw2+uwkimF=4uQuw3NOYz1DsnMY7g@mail.gmail.com>
-Subject: Re: [PATCH] Revert "gpu/drm: ingenic: Add option to mmap GEM buffers cached"
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, od@zcrc.me,
-        Dave Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 4:47 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Hi,
->
-> Le lun. 5 oct. 2020 =C3=A0 16:05, Daniel Vetter <daniel@ffwll.ch> a =C3=
-=A9crit :
-> > On Mon, Oct 05, 2020 at 11:01:50PM +1100, Stephen Rothwell wrote:
-> >>  Hi Paul,
-> >>
-> >>  On Sun, 04 Oct 2020 22:11:23 +0200 Paul Cercueil
-> >> <paul@crapouillou.net> wrote:
-> >>  >
-> >>  > Pushed to drm-misc-next with the changelog fix, thanks.
-> >>  >
-> >>  > Stephen:
-> >>  > Now it should build fine again. Could you remove the BROKEN flag?
-> >>
-> >>  Thanks for letting me know, but the fix has not appeared in any drm
-> >>  tree included in linux-next yet ...
-> >>
-> >>  If it doesn't show up by the time I will merge the drm tree
-> >> tomorrow, I
-> >>  will apply this revert patch myself (instead of the patch marking
-> >> the
-> >>  driver BROKEN).
-> >
-> > Yeah it should have been pushed to drm-misc-next-fixes per
-> >
-> > https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.h=
-tml#where-do-i-apply-my-patch
-> >
-> > Paul, can you pls git cherry-pick -x this over to drm-misc-next-fixes?
->
-> I had a few commits on top of it in drm-misc-next, so the revert
-> doesn't apply cleanly in drm-misc-next-fixes... I can revert it there,
-> but then we'd have a different revert commit in drm-misc-next and
-> drm-misc-next-next.
->
-> Sorry for the mess. What should I do?
+From: Jaegeuk Kim <jaegeuk@google.com>
 
-Hm not sure why, but the reply I thought I've typed didn't seem to
-have gone out.
+When giving a stress test which enables/disables clkgating, we hit device
+timeout sometimes. This patch avoids subtle racy condition to address it.
 
-Cherry pick up, fix up conflict and then fix up the conflict when
-rebuilding drm-tip. Please tell drm-misc maintainers, they probably
-want to do a backmerge once the drm-next merge window pull is merged
-in Linus tree.
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Avri Altman <avri.altman@wdc.com>
+Cc: Can Guo <cang@codeaurora.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-If we don't fix this up then the drm-next pull goes nowhere.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 1d157ff58d817..d929c3d1e58cc 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1791,19 +1791,19 @@ static ssize_t ufshcd_clkgate_enable_store(struct device *dev,
+ 		return -EINVAL;
+ 
+ 	value = !!value;
++
++	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	if (value == hba->clk_gating.is_enabled)
+ 		goto out;
+ 
+-	if (value) {
+-		ufshcd_release(hba);
+-	} else {
+-		spin_lock_irqsave(hba->host->host_lock, flags);
++	if (value)
++		hba->clk_gating.active_reqs--;
++	else
+ 		hba->clk_gating.active_reqs++;
+-		spin_unlock_irqrestore(hba->host->host_lock, flags);
+-	}
+ 
+ 	hba->clk_gating.is_enabled = value;
+ out:
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 	return count;
+ }
+ 
+-- 
+2.28.0.806.g8561365e88-goog
+
