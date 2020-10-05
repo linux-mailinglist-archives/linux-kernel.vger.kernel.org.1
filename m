@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49200283506
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0328350A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgJELeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:34:18 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:37249 "EHLO
+        id S1726012AbgJELev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:34:51 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:40047 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725843AbgJELeS (ORCPT
+        by vger.kernel.org with ESMTP id S1725843AbgJELev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:34:18 -0400
+        Mon, 5 Oct 2020 07:34:51 -0400
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id CD02E5C012B;
-        Mon,  5 Oct 2020 07:34:16 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 07:34:16 -0400
+        by mailout.nyi.internal (Postfix) with ESMTP id 26F275C0118;
+        Mon,  5 Oct 2020 07:34:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 07:34:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=9iIjp37/XhLE+k5I1qJsgVwVqmw
-        ywet6IjVcigOxNS0=; b=M9X+L1pmIK++lhVSejPaypeMI9cyxCGoyaAfU7Lvgl6
-        oXNOr+IJsTnRMltDQ5KxcR0CRefq4tZRq5XrdKN98pIoSFiSSXoRHENZAz31crRh
-        anut5oPPVqPUAN7ZdXqkAKhGOpD5GYGUFMvxb/N6PVCIgLo47oYAXQI3CDln153o
-        4zzA1TgORP88QtvruTCWIpHXkHgS7ShMRQNBuFn1jLwqSk6mKNQvKOEW4i62yjpT
-        KTRypUhlq5FkJg4cFVLnoYLVPWQuZLpw616JcuF+yX1/ZrexN6xHsOp48FdZQ2OM
-        8DZ5eb4ecu2eHWjtCdPqlgYieibdS7SH+5QkuPE4knw==
+        :content-type:in-reply-to; s=fm1; bh=ifyO2YZqYLdft9YmvXovOZ4UH+M
+        lmzTcMafQ82WJ5Fc=; b=sDt7exSIpv1iOp18EMCKRgVkYIH25NOOg7+8zY5/zOc
+        0bs0JGtb68EXcKQ01jHG0qv6FmGfk3Sk6PIQPbmkzJEb6KVJI8YJ8cpYtXvWGfIi
+        9X7b+M1WJVrDeFc0WKtXcFVRgjC6gxBfZFkewFWp2o/xLzRDGHhTMY+NNEWmrsZt
+        DB4GQJ07vRpdOlD6nW8g1CyzIn0yExvolOtbQdjmtQnW9cPs2XMnZYR4OB4UoQTE
+        aifYJWbFr72jdC1D+Hi3TRHBCJrJvVzn9vL0tQ6vzfbsqZMwyw+QFulthYh/2e2j
+        Ze1Eu0Px1/PfliZ4SZWveiIr7mb54Y7IgHUuOl/LYpA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9iIjp3
-        7/XhLE+k5I1qJsgVwVqmwywet6IjVcigOxNS0=; b=rI+DRxbrK6+Dnexg5ebja4
-        MfuwzeW2CygVksd9JZ+WV3HU6ILmw9tvHi4rxhAa2gayLxt/6VCvSN/3M0K0yIaF
-        /BnAvMqfXhFnbAWdiTMj62CNZslC7955Gh6n0apwi75GwCYNGiHTZpBfxV4pTxoj
-        clsKXZhaaOgEaXu70U6w8Ou9/SMRt/jqeP1z19FRcKE6dfvVFFtlcUe7ufOoyCV/
-        AJYc4xP6SXoWzW2hBLHSFniFDzHi9gctkzaywuPHbkONPfffyCZAHWUtBZp1mjOH
-        jEEJClwhA+/X9AOpIw5pn6Nq1Y1s6+5mZlBo4XJcfOxGQV7zxHfxH/+nD8fCNQIQ
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ifyO2Y
+        ZqYLdft9YmvXovOZ4UH+MlmzTcMafQ82WJ5Fc=; b=T5Q/l2AgLEz5SkUe7GsL7D
+        Hll1HhaJz6VrSa1JcKdkaxEJswCghi1Io+oBMjg9JYmVJID1mPhbJC8CesefEnWZ
+        F7VD62IngxgI5aCztdlQnphmC4MrF1eFOwoo9CcMP/xcowydY7Y+w6puRfq2HpIG
+        /Terwq9llJkLhlX0BOarw2osEX+zYIf7UIyVWqrguPshr7QM/uZZ/2d+tbiwzWiO
+        tonIacAXEo8ca+T4S0ybmeexRlNXMCKuD+clpCARToZFaj5n5jP2/BddsWiJo70S
+        FYzl2lHj9lGxQwl+MHGMka9H334cT7eFPr5wvaXPvFTRC/HHG/Ceg7v6SihdcRnA
         ==
-X-ME-Sender: <xms:twR7XyS2H1BZm5vgAcOs8fwrXtllH5hIkVuam35ePKQH0lynmnVjaA>
-    <xme:twR7X3wBSwS9tqnPIaf5ZLWxaCoXWUkknWLr-9OSIwx4t_o4gnoqiEZ3em_eX5diT
-    1IoCHIkZYNvc0ubMj8>
+X-ME-Sender: <xms:2QR7X26yNSOBV7PSwqB9tJWZWHBnNAKH5TRSq72JXigPHTxjdZT1CA>
+    <xme:2QR7X_7oiWXYv_2QavIAtfW8grrrQKxpU_d9-WuC0b2dWy1DeCj-pzwl3kE-lYYbt
+    IOsLRV6KscV8HTckqU>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdegfecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
     ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
     gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
     grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:twR7X_1h9RSBJRF7mJc3CHhwIG4Yt4P2z28nsTMVcCm2D2POXz1nhQ>
-    <xmx:twR7X-Byo2JIim8pub52T6pPHBAT3CWC4WoaP1EAaHzMwQejItV4Gg>
-    <xmx:twR7X7jtkDsm12PE9DBgDMK6buMgYVPMKgA6KmSsMc19xSx2Ot27RQ>
-    <xmx:uAR7X7jip8syoh_MOTaf0N85NYdYdLmsc8z0kTC5lNVgXL4hyt4Spg>
+X-ME-Proxy: <xmx:2QR7X1fAlCjlgaxpZd1mU0HLG0eFPYhc-kzXh9Lxfp3MEpUIRBggIQ>
+    <xmx:2QR7XzJ7O_O2w9Pg99DXmauIgojCEwCCkpOW9FMFzGuGXId6gj1Oxg>
+    <xmx:2QR7X6IkXiu1GpEY6pWbvQsQ-g9w0lqQ-wHqv_JNEaE3muqojm4l7A>
+    <xmx:2gR7X7quV6HfJdgxtOyXBIpy2aUG1tJ-BVGmDAi6bMrH3gSeaen_Zw>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 04A4C3064687;
-        Mon,  5 Oct 2020 07:34:14 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 13:34:13 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id A8DDC328005E;
+        Mon,  5 Oct 2020 07:34:49 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 13:34:48 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Samuel Holland <samuel@sholland.org>
 Cc:     Mark Brown <broonie@kernel.org>,
@@ -64,35 +64,29 @@ Cc:     Mark Brown <broonie@kernel.org>,
         Takashi Iwai <tiwai@suse.com>,
         Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/25] ASoC: sun8i-codec: Correct the BCLK divisor
- calculation
-Message-ID: <20201005113413.5f6gcval7hs7t3jr@gilmour.lan>
+Subject: Re: [PATCH 15/25] ASoC: sun8i-codec: Support the TDM slot binding
+Message-ID: <20201005113448.4v3llw57q2eucmj4@gilmour.lan>
 References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-15-samuel@sholland.org>
+ <20201001021148.15852-16-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xhjd3ry3gdnm7vqm"
+        protocol="application/pgp-signature"; boundary="z4w6bfh7n4zwz26m"
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-15-samuel@sholland.org>
+In-Reply-To: <20201001021148.15852-16-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---xhjd3ry3gdnm7vqm
+--z4w6bfh7n4zwz26m
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 09:11:37PM -0500, Samuel Holland wrote:
-> Previously, the BCLK divisor calculation assumed a power-of-two slot
-> width and exactly two slots. In order to support the TDM slot binding
-> and 20/24-bit word sizes, those assumptions must be removed.
->=20
-> Due to hardware limitations, the BCLK/LRCK ratio is not as simple as
-> "slot_width * slots". However, the correct value is already calculated
-> elsewhere in this function, since it must also be programmed into the
-> hardware. Reuse that value to calculate the correct SYSCLK/BCLK divisor.
+On Wed, Sep 30, 2020 at 09:11:38PM -0500, Samuel Holland wrote:
+> Now that BCLK and LRCK rate calculations can handle any
+> hardware-supported slot width and number of slots, enable
+> support for overriding these parameters from the device tree.
 >=20
 > Signed-off-by: Samuel Holland <samuel@sholland.org>
 
@@ -100,15 +94,15 @@ Acked-by: Maxime Ripard <mripard@kernel.org>
 
 Maxime
 
---xhjd3ry3gdnm7vqm
+--z4w6bfh7n4zwz26m
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sEtQAKCRDj7w1vZxhR
-xfxfAP0esmwfQCVq01Q98p9I/iUqCg9zaDuw6iXkxrg0ErmHoAD9E+T4urVQ6q4x
-a5FysRZMNc4J+LMqT6SWbTtm1gjZLQ8=
-=ONxU
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sE2AAKCRDj7w1vZxhR
+xYTIAP4xF3dpNPqtQmWgzulksPMnq3M+hJMpVypcETqDyTo4GQEAoKZ82DgAudDt
+EfED7ceftvG9034QICEpQOhxpKNaZQ4=
+=+Iyx
 -----END PGP SIGNATURE-----
 
---xhjd3ry3gdnm7vqm--
+--z4w6bfh7n4zwz26m--
