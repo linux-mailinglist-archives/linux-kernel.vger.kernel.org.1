@@ -2,149 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE8128391B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AF8283898
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgJEPKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S1726590AbgJEO7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbgJEPKI (ORCPT
+        with ESMTP id S1726562AbgJEO7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:10:08 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91F5C0613AB
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:10:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=IjuE47JNwAqdmeGJ9n7G5r/lEe4gPS0RRx14k6uLMxI=; b=y4zQ51aApI8gXfyNiikJIJEyus
-        sQl671r5aWI+g8pf/kN7FRJu2ri61HipuMObhKGFtUj5K6SYID8KxMOBD3viYsiWB4Z9cF6oJFnWC
-        rppeaFDTlEpetUsy6U7LFcs8dZnJGKK/JLgqbbOiTn0zN8GY4p2XxCxNdf8M+n8BPBAyvVeMb52vJ
-        SlPU2XnwuZ1lnFWmK2tdQ4vtk9eoIXiF/qvnCjZOl5jWb0+1wdBmEvBFTDrkJLSmngr9fJR0FxvB5
-        8uN+GxJB+K2zS8JZJg+zyD74UU0Xc8bpVGVN9d2at19wpOQuuZrOTTlA/Caw2Z98keyMW00LoyvdY
-        ukKpKo0A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPS7X-0008Q8-2B; Mon, 05 Oct 2020 15:09:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7D186307943;
-        Mon,  5 Oct 2020 17:09:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0A74D29A897C2; Mon,  5 Oct 2020 17:09:43 +0200 (CEST)
-Message-ID: <20201005150922.674215724@infradead.org>
-User-Agent: quilt/0.66
-Date:   Mon, 05 Oct 2020 16:57:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
-        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
-Subject: [PATCH -v2 17/17] sched: Add migrate_disable() tracepoints
-References: <20201005145717.346020688@infradead.org>
+        Mon, 5 Oct 2020 10:59:24 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8258C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 07:59:23 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id de3so1617860qvb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RT0ma1EUakIzUMYHMs6mAe4vLDvK12cOAN+Y7MwGXfk=;
+        b=B9OJw1YX9ajKEgG2ZKYbqsIYA1hwymQvhH6ShC9QsEQFp8VVEdYzqPKjw83OandrR/
+         Ziwhh45leCFbegeu2+saSiPSP4diJGDchgw14+zNrusKHY3t3NIbPxSodYM1WW13uZyL
+         G8uYKZd6grR+pRLL2zY8mcn1aHDP+x38Lx7c+feUzm3cgw0akljm4ATYFEHz/Stsgdd+
+         cXVeaPQOh1UxMl9o7+ITFNfiw9rZjpuiW3TqZWdiu/2XxhVpjwur8k0KeAPDrBv7aeIp
+         uC2FY9F0eI4/oWn1Iu7I29gFNQ9vgSV3eHxekuhX/BCr/gMM1OWyg2VgesHLKCGh0lQS
+         mWVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RT0ma1EUakIzUMYHMs6mAe4vLDvK12cOAN+Y7MwGXfk=;
+        b=sZWLwOx/hji4tN9MxeBh+VTrhU2I5w2iyOWsgqL45WtU4EQ54FedHIzuMS4OjNhASM
+         2n4M+BfFEj7Rc9p+nhKNjeprFljYUyQ/niX5/odMIGwD3yQNAoiBDcxacbRljqdiXToT
+         HwDpPvYzAeXrUpoAacY7Ax2lkSNC+mUdjh2CKuedLXPpXdOHnnw9LAY/rQwht/7u1hs5
+         cwNQ7JGYUSAvGi6aHWROraEV0zHnRfbGc5qpP9miv7OLZ3lqwQPTIzV/UKve9Q/yBmR4
+         1MgD/pwu6YCtpo8YcQ0YCuwpjnMlicgccza+B9dfenWMvng/WqTKJVkuOc36rt3xwBXF
+         C1WQ==
+X-Gm-Message-State: AOAM530m7zCJfBCrf46M8ChWKlMaInMDg7wVHQeafMEjPACQx/junKIr
+        PDNlLw+R5z8hMRRy7NLV5yNGEQ==
+X-Google-Smtp-Source: ABdhPJyNbXVslMrpzIjiy8waMqYvFIS9jqQ7LFXxftd6fApSEGpz/R9+9D/RQRc1mvSJnkDm08178A==
+X-Received: by 2002:a0c:c407:: with SMTP id r7mr122718qvi.36.1601909963083;
+        Mon, 05 Oct 2020 07:59:23 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4c18])
+        by smtp.gmail.com with ESMTPSA id l30sm3288637qta.73.2020.10.05.07.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:59:21 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 10:57:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 3/4] mm: introduce page memcg flags
+Message-ID: <20201005145749.GA3390@cmpxchg.org>
+References: <20201002172559.4000748-1-guro@fb.com>
+ <20201002172559.4000748-4-guro@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002172559.4000748-4-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XXX write a tracer:
+On Fri, Oct 02, 2020 at 10:25:58AM -0700, Roman Gushchin wrote:
+> The lowest bit in page->memcg_data is used to distinguish between
+> struct memory_cgroup pointer and a pointer to a objcgs array.
+> All checks and modifications of this bit are open-coded.
+> 
+> Let's formalize it using page memcg flags, defined in enum
+> page_memcg_data_flags.
+> 
+> Additional flags might be added later.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
- - 'migirate_disable() -> migrate_enable()' time in task_sched_runtime()
- - 'migrate_pull -> sched-in' time in task_sched_runtime()
-
-The first will give worst case for the second, which is the actual
-interference experienced by the task to due migration constraints of
-migrate_disable().
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/trace/events/sched.h |   12 ++++++++++++
- kernel/sched/core.c          |    4 ++++
- kernel/sched/deadline.c      |    1 +
- kernel/sched/rt.c            |    8 +++++++-
- 4 files changed, 24 insertions(+), 1 deletion(-)
-
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -646,6 +646,18 @@ DECLARE_TRACE(sched_update_nr_running_tp
- 	TP_PROTO(struct rq *rq, int change),
- 	TP_ARGS(rq, change));
- 
-+DECLARE_TRACE(sched_migrate_disable_tp,
-+	      TP_PROTO(struct task_struct *p),
-+	      TP_ARGS(p));
-+
-+DECLARE_TRACE(sched_migrate_enable_tp,
-+	      TP_PROTO(struct task_struct *p),
-+	      TP_ARGS(p));
-+
-+DECLARE_TRACE(sched_migrate_pull_tp,
-+	      TP_PROTO(struct task_struct *p),
-+	      TP_ARGS(p));
-+
- #endif /* _TRACE_SCHED_H */
- 
- /* This part must be outside protection */
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1732,6 +1732,8 @@ void migrate_disable(void)
- 		return;
- 	}
- 
-+	trace_sched_migrate_disable_tp(p);
-+
- 	preempt_disable();
- 	this_rq()->nr_pinned++;
- 	p->migration_disabled = 1;
-@@ -1764,6 +1766,8 @@ void migrate_enable(void)
- 	p->migration_disabled = 0;
- 	this_rq()->nr_pinned--;
- 	preempt_enable();
-+
-+	trace_sched_migrate_enable_tp(p);
- }
- EXPORT_SYMBOL_GPL(migrate_enable);
- 
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2245,6 +2245,7 @@ static void pull_dl_task(struct rq *this
- 				goto skip;
- 
- 			if (is_migration_disabled(p)) {
-+				trace_sched_migrate_pull_tp(p);
- 				push_task = get_push_task(src_rq);
- 			} else {
- 				deactivate_task(src_rq, p, 0);
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1877,7 +1877,12 @@ static int push_rt_task(struct rq *rq, b
- 		struct task_struct *push_task = NULL;
- 		int cpu;
- 
--		if (!pull || rq->push_busy)
-+		if (!pull)
-+			return 0;
-+
-+		trace_sched_migrate_pull_tp(next_task);
-+
-+		if (rq->push_busy)
- 			return 0;
- 
- 		cpu = find_lowest_rq(rq->curr);
-@@ -2223,6 +2228,7 @@ static void pull_rt_task(struct rq *this
- 				goto skip;
- 
- 			if (is_migration_disabled(p)) {
-+				trace_sched_migrate_pull_tp(p);
- 				push_task = get_push_task(src_rq);
- 			} else {
- 				deactivate_task(src_rq, p, 0);
-
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
