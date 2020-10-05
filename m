@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067D1283A06
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF2E283AC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgJEPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56798 "EHLO mail.kernel.org"
+        id S1728150AbgJEPhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:37:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727159AbgJEPaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:30:21 -0400
+        id S1727472AbgJEPcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:32:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0220B20B80;
-        Mon,  5 Oct 2020 15:30:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B725820637;
+        Mon,  5 Oct 2020 15:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911815;
-        bh=4cOnDL084QNcZBUqFADt3BSsfxvJdhmNTQZseo5pD9s=;
+        s=default; t=1601911935;
+        bh=v8mPSQ00nISryPrevDPI2jzk6QquExntIyYdIQwnEm8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWfCiO6iJepNy8Py5Wv5bBc9ZiEuLBAuVz4WfbNNiA5Knuix+ryW3AxcRoVZvSwqA
-         bxJuif8KBi08j+WZyB2DuXroDnebLHjcVo6Ya6EsqwUQKEs7622KnRTC5G+GAZqE6v
-         y5dWMdcBytf6QSTjbt5vKqAk6khYgNKHIp67sgds=
+        b=JdwnoWQyPsQKxpGwZXYf/szKW3wUH33PGYjyDDHnX2zP6cGbHiYxw3qWR/vkgcrMg
+         f1nkFWkyDXkNz1mT2t/aZHXke/FuExDcJEJjDSTw+Ow2ibg0tRG7TyKY7wep6l7aBm
+         975u8+QtzNIqHbYx7FGfDeIxqu5gRndmFj8v1clM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Xie He <xie.he.0141@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 18/57] drivers/net/wan/hdlc_fr: Add needed_headroom for PVC devices
-Date:   Mon,  5 Oct 2020 17:26:30 +0200
-Message-Id: <20201005142110.677172239@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 35/85] nvme-core: get/put ctrl and transport module in nvme_dev_open/release()
+Date:   Mon,  5 Oct 2020 17:26:31 +0200
+Message-Id: <20201005142116.428369829@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +43,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-[ Upstream commit 44a049c42681de71c783d75cd6e56b4e339488b0 ]
+[ Upstream commit 52a3974feb1a3eec25d8836d37a508b67b0a9cd0 ]
 
-PVC devices are virtual devices in this driver stacked on top of the
-actual HDLC device. They are the devices normal users would use.
-PVC devices have two types: normal PVC devices and Ethernet-emulating
-PVC devices.
+Get and put the reference to the ctrl in the nvme_dev_open() and
+nvme_dev_release() before and after module get/put for ctrl in char
+device file operations.
 
-When transmitting data with PVC devices, the ndo_start_xmit function
-will prepend a header of 4 or 10 bytes. Currently this driver requests
-this headroom to be reserved for normal PVC devices by setting their
-hard_header_len to 10. However, this does not work when these devices
-are used with AF_PACKET/RAW sockets. Also, this driver does not request
-this headroom for Ethernet-emulating PVC devices (but deals with this
-problem by reallocating the skb when needed, which is not optimal).
+Introduce char_dev relase function, get/put the controller and module
+which allows us to fix the potential Oops which can be easily reproduced
+with a passthru ctrl (although the problem also exists with pure user
+access):
 
-This patch replaces hard_header_len with needed_headroom, and set
-needed_headroom for Ethernet-emulating PVC devices, too. This makes
-the driver to request headroom for all PVC devices in all cases.
+Entering kdb (current=0xffff8887f8290000, pid 3128) on processor 30 Oops: (null)
+due to oops @ 0xffffffffa01019ad
+CPU: 30 PID: 3128 Comm: bash Tainted: G        W  OE     5.8.0-rc4nvme-5.9+ #35
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.4
+RIP: 0010:nvme_free_ctrl+0x234/0x285 [nvme_core]
+Code: 57 10 a0 e8 73 bf 02 e1 ba 3d 11 00 00 48 c7 c6 98 33 10 a0 48 c7 c7 1d 57 10 a0 e8 5b bf 02 e1 8
+RSP: 0018:ffffc90001d63de0 EFLAGS: 00010246
+RAX: ffffffffa05c0440 RBX: ffff8888119e45a0 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff8888177e9550 RDI: ffff8888119e43b0
+RBP: ffff8887d4768000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: ffffc90001d63c90 R12: ffff8888119e43b0
+R13: ffff8888119e5108 R14: dead000000000100 R15: ffff8888119e5108
+FS:  00007f1ef27b0740(0000) GS:ffff888817600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffa05c0470 CR3: 00000007f6bee000 CR4: 00000000003406e0
+Call Trace:
+ device_release+0x27/0x80
+ kobject_put+0x98/0x170
+ nvmet_passthru_ctrl_disable+0x4a/0x70 [nvmet]
+ nvmet_passthru_enable_store+0x4c/0x90 [nvmet]
+ configfs_write_file+0xe6/0x150
+ vfs_write+0xba/0x1e0
+ ksys_write+0x5f/0xe0
+ do_syscall_64+0x52/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f1ef1eb2840
+Code: Bad RIP value.
+RSP: 002b:00007fffdbff0eb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f1ef1eb2840
+RDX: 0000000000000002 RSI: 00007f1ef27d2000 RDI: 0000000000000001
+RBP: 00007f1ef27d2000 R08: 000000000000000a R09: 00007f1ef27b0740
+R10: 0000000000000001 R11: 0000000000000246 R12: 00007f1ef2186400
+R13: 0000000000000002 R14: 0000000000000001 R15: 0000000000000000
 
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+With this patch fix we take the module ref count in nvme_dev_open() and
+release that ref count in newly introduced nvme_dev_release().
+
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/hdlc_fr.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 9acad651ea1f6..12b35404cd8e7 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -1041,7 +1041,7 @@ static void pvc_setup(struct net_device *dev)
- {
- 	dev->type = ARPHRD_DLCI;
- 	dev->flags = IFF_POINTOPOINT;
--	dev->hard_header_len = 10;
-+	dev->hard_header_len = 0;
- 	dev->addr_len = 2;
- 	netif_keep_dst(dev);
- }
-@@ -1093,6 +1093,7 @@ static int fr_add_pvc(struct net_device *frad, unsigned int dlci, int type)
- 	dev->mtu = HDLC_MAX_MTU;
- 	dev->min_mtu = 68;
- 	dev->max_mtu = HDLC_MAX_MTU;
-+	dev->needed_headroom = 10;
- 	dev->priv_flags |= IFF_NO_QUEUE;
- 	dev->ml_priv = pvc;
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index f2556f0ea20dc..69165a8f7c1f0 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -3060,10 +3060,24 @@ static int nvme_dev_open(struct inode *inode, struct file *file)
+ 		return -EWOULDBLOCK;
+ 	}
  
++	nvme_get_ctrl(ctrl);
++	if (!try_module_get(ctrl->ops->module))
++		return -EINVAL;
++
+ 	file->private_data = ctrl;
+ 	return 0;
+ }
+ 
++static int nvme_dev_release(struct inode *inode, struct file *file)
++{
++	struct nvme_ctrl *ctrl =
++		container_of(inode->i_cdev, struct nvme_ctrl, cdev);
++
++	module_put(ctrl->ops->module);
++	nvme_put_ctrl(ctrl);
++	return 0;
++}
++
+ static int nvme_dev_user_cmd(struct nvme_ctrl *ctrl, void __user *argp)
+ {
+ 	struct nvme_ns *ns;
+@@ -3126,6 +3140,7 @@ static long nvme_dev_ioctl(struct file *file, unsigned int cmd,
+ static const struct file_operations nvme_dev_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= nvme_dev_open,
++	.release	= nvme_dev_release,
+ 	.unlocked_ioctl	= nvme_dev_ioctl,
+ 	.compat_ioctl	= compat_ptr_ioctl,
+ };
 -- 
 2.25.1
 
