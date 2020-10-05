@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D05283BE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E70283BE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbgJEQB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:01:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58002 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727204AbgJEQBZ (ORCPT
+        id S1727393AbgJEQDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbgJEQDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:01:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601913684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WzM75OJ7dMVOtSH9g1wN1IBCIBR91LOKcFE/xZZuN3E=;
-        b=PP+m1cjHHxMXtHQTM9HqWBX4DkKYpoRHX3ubPH63vJDQu93fotrwySi3ckmtaR9BCMqZo0
-        dn7OuK+Bk+9B9bR4e8vvOB3Zx2FmLoG2+KY0+WXi/OabFhbnlYicL7srHSBwnFXIQBUjpD
-        z/biTB21zBxAg/DKJsBeTy6UQ/GXRME=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-8PACy3Q2Nu-ACd69Gp7OEA-1; Mon, 05 Oct 2020 12:01:18 -0400
-X-MC-Unique: 8PACy3Q2Nu-ACd69Gp7OEA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4885C107ACF7;
-        Mon,  5 Oct 2020 16:01:16 +0000 (UTC)
-Received: from gondolin (ovpn-112-191.ams2.redhat.com [10.36.112.191])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DCCB60C84;
-        Mon,  5 Oct 2020 16:01:10 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 18:01:07 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        schnelle@linux.ibm.com, pmorel@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] vfio-pci/zdev: define the vfio_zdev header
-Message-ID: <20201005180107.5d027441.cohuck@redhat.com>
-In-Reply-To: <8a71af3b-f8fc-48b2-45c6-51222fd2455b@linux.ibm.com>
-References: <1601668844-5798-1-git-send-email-mjrosato@linux.ibm.com>
-        <1601668844-5798-4-git-send-email-mjrosato@linux.ibm.com>
-        <20201002154417.20c2a7ef@x1.home>
-        <8a71af3b-f8fc-48b2-45c6-51222fd2455b@linux.ibm.com>
-Organization: Red Hat GmbH
+        Mon, 5 Oct 2020 12:03:31 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38483C0613CE;
+        Mon,  5 Oct 2020 09:03:31 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id lw21so8768920ejb.6;
+        Mon, 05 Oct 2020 09:03:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=42Qi3VO7NRTej5cplCYyboZcnsHY1nA6NBWFFEr6V6o=;
+        b=C5ImITkHcQClAxKYORGt+pq3Ng8N5cfnsM4CFI3hNOLqKZmEY52SnJTkETILT1MCFF
+         osg+spGp/3H/KRzN7huMtDCZ6OyAZorEepwrytDB465uZXMbgSkHiNf6T5gxUJdpN34s
+         SKJNCKWfcOm9qS1KpN0WLbg3/CDk2yNttFT+1/PWKuQOJwD0kt7MExTIEB8DDomqlSw0
+         0WBZI+Zpx3SDzyHJO9XK/q5+kbMmuGvCumEx+Qfu5Px/GQsJNoax9Cdz+N7jhbDn+oQF
+         4QNaGyIzPOUrBmFcFECmf/g2AOMcp3931kgpUefQLmLCmfJ83hzUZf6mOFCvWD54qf3G
+         G38g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=42Qi3VO7NRTej5cplCYyboZcnsHY1nA6NBWFFEr6V6o=;
+        b=Gte5azU3/tNnjbAnwYC6ImzgVDUQKOYqP+RKxz697JNcxJZseqqkACYg+m41CughkA
+         eP7nAU2yhLEyKLOhEwjN+RVOnalG+ZESf+7BhPpyTJEOqleA2BAmQTNFy6DpYrW8vf/f
+         OXaPMy2NoyxVSvvltY2IROXnuq9T8nUnMogjFmyn+RM2I0gqxF7ed01QDIf8i0bI6Nny
+         KPy6OozFT5/MA0lB4oWYRYfZpeyjos/fmgpgKg4DB2svN+YLP43NAKd6Io9MwFCW0zxC
+         FQsTCQO7sNy7F+jl50sshGz2QoFY+ywtwC/23bJ8c1dGxfyQfLn12ExyckhLhnoXOv3I
+         e9Dw==
+X-Gm-Message-State: AOAM530QegbSzdtfo0yChZEeVNj9I0+oKyQxTqw6XWZ8MYkbS5lYa7D0
+        XAbf9EvCEHOa+yFFKK8Bi3OB3nsnIIA=
+X-Google-Smtp-Source: ABdhPJzdii5+nDaWOuWdn9Kli3u/1DCwnzQ+KVpyDo7YOFh6TIv0d0/kJJjPLQ5kenNavIEdT+bULA==
+X-Received: by 2002:a17:907:40bb:: with SMTP id nu19mr417461ejb.246.1601913809416;
+        Mon, 05 Oct 2020 09:03:29 -0700 (PDT)
+Received: from xws.fritz.box (pd9e5a952.dip0.t-ipconnect.de. [217.229.169.82])
+        by smtp.gmail.com with ESMTPSA id y3sm51788ejk.92.2020.10.05.09.03.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 09:03:28 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     platform-driver-x86@vger.kernel.org
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        =?UTF-8?q?Bla=C5=BE=20Hrastnik?= <blaz@mxxn.io>,
+        Stephen Just <stephenjust@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Subject: [PATCH v2 0/5] platform/surface: Create a platform subdirectory for Microsoft Surface devices
+Date:   Mon,  5 Oct 2020 18:03:02 +0200
+Message-Id: <20201005160307.39201-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 09:52:25 -0400
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+As has come up in the discussion around
 
-> On 10/2/20 5:44 PM, Alex Williamson wrote:
+  [RFC PATCH] Add support for Microsoft Surface System Aggregator Module
 
-> > Can you discuss why a region with embedded capability chain is a better
-> > solution than extending the VFIO_DEVICE_GET_INFO ioctl to support a
-> > capability chain and providing this info there?  This all appears to be
-> > read-only info, so what's the benefit of duplicating yet another  
-> 
-> It is indeed read-only info, and the device region was defined as such.
-> 
-> I would not necessarily be opposed to extending VFIO_DEVICE_GET_INFO 
-> with these defined as capabilities; I'd say a primary motivating factor 
-> to putting these in their own region was to avoid stuffing a bunch of 
-> s390-specific capabilities into a general-purpose ioctl response.
+it may make sense to add a Microsoft Surface specific platform
+subdirectory. Andy has suggested drivers/platform/surface for that.
+This series follows said suggestion and creates that subdirectory, as
+well as moves Microsoft Surface related drivers over to it and updates
+their MAINTAINERS entries (if available) accordingly.
 
-Can't you make the zdev code register the capabilities? That would put
-them nicely into their own configurable part.
+This series does not modify any existing driver code, symbols, or help
+text.
 
-> 
-> But if you're OK with that notion, I can give that a crack in v3.
-> 
-> > capability chain in a region?  It would also be possible to define four
-> > separate device specific regions, one for each of these capabilities
-> > rather than creating this chain.  It just seems like a strange approach  
-> 
-> I'm not sure if creating separate regions would be the right approach 
-> though; these are just the first 4.  There will definitely be additional 
-> capabilities in support of new zPCI features moving forward, I'm not 
-> sure how many regions we really want to end up with.  Some might be as 
-> small as a single field, which seems more in-line with capabilities vs 
-> an entire region.
+Thanks,
+Max
 
-If we are expecting more of these in the future, going with GET_INFO
-capabilities when adding new ones seems like the best approach.
+Link to discussion:
+  https://lore.kernel.org/lkml/CAHp75Vfp86h38Rd-VEgER7ASADdmz5ymAkuHvD0Q6WPDqZBqHw@mail.gmail.com/
+
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Changes in v2:
+ - Rebase onto linux-platform-drivers-x86/for-next to incorporate
+   changes in Maintainer file.
+
+For more details regarding changes, refer to the individual patches.
+
+Maximilian Luz (5):
+  platform: Add Surface platform directory
+  platform/surface: Move Surface 3 WMI driver to platform/surface
+  platform/surface: Move Surface 3 Button driver to platform/surface
+  platform/surface: Move Surface 3 Power OpRegion driver to
+    platform/surface
+  platform/surface: Move Surface Pro 3 Button driver to platform/surface
+
+ MAINTAINERS                                   |  3 +-
+ drivers/platform/Kconfig                      |  2 +
+ drivers/platform/Makefile                     |  1 +
+ drivers/platform/surface/Kconfig              | 49 +++++++++++++++++++
+ drivers/platform/surface/Makefile             | 10 ++++
+ .../platform/{x86 => surface}/surface3-wmi.c  |  0
+ .../{x86 => surface}/surface3_button.c        |  0
+ .../{x86 => surface}/surface3_power.c         |  0
+ .../{x86 => surface}/surfacepro3_button.c     |  0
+ drivers/platform/x86/Kconfig                  | 31 ------------
+ drivers/platform/x86/Makefile                 |  6 ---
+ 11 files changed, 64 insertions(+), 38 deletions(-)
+ create mode 100644 drivers/platform/surface/Kconfig
+ create mode 100644 drivers/platform/surface/Makefile
+ rename drivers/platform/{x86 => surface}/surface3-wmi.c (100%)
+ rename drivers/platform/{x86 => surface}/surface3_button.c (100%)
+ rename drivers/platform/{x86 => surface}/surface3_power.c (100%)
+ rename drivers/platform/{x86 => surface}/surfacepro3_button.c (100%)
+
+-- 
+2.28.0
 
