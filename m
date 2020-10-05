@@ -2,239 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C08D283338
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2703928333B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJEJaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:30:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20811 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725981AbgJEJaD (ORCPT
+        id S1726000AbgJEJaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725910AbgJEJaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:30:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601890201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0swMm/JUHqj2ZF7vtD6A+buWAmQs/pWaJVFCZFFP3vI=;
-        b=D3VgSQfUfit7q5o2mwA3jV7kpAruVnQn4xHcVvzmDDUbebIccqT+/A79DmYqk3AmpnWl7H
-        b9BkcIQbLcAXz9xG1SljSprJtqb/I1m4MfbLLnpJlF4Zj8emnSlIuapGUefS1G3/vN6Ge1
-        mBJFl4+U/ZvwNbOQRDQbZSkv38AUqcc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576-tXy4K2qLNf290fIKIZ6qaw-1; Mon, 05 Oct 2020 05:29:58 -0400
-X-MC-Unique: tXy4K2qLNf290fIKIZ6qaw-1
-Received: by mail-wr1-f69.google.com with SMTP id l15so3764000wro.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:29:58 -0700 (PDT)
+        Mon, 5 Oct 2020 05:30:21 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C6CC0613CE;
+        Mon,  5 Oct 2020 02:30:20 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id b12so8499409edz.11;
+        Mon, 05 Oct 2020 02:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ePZkaljwe6pYtW+StSXkgUMc7x0Nnw0FBYjjoTVvbrs=;
+        b=ZogVZqI0lOvZkQfVc4+275vuy4WtjN891+TWais4csUNd3KBxZu4Wt6YF0nNtiICCe
+         ZNoeIMhZ1Egq4KiKO107ee47HyqepdcZoNi2KXL/i7qZpFuj1JqPvMN2l3VqPh7tDT2q
+         vrxgEF+OmBH4lCnwZ549eDWTmne2Xn1KsYCBoJj2BiRsRkOKGTx+uVp0LDcCK0EMU+mK
+         D7EuqMtGex910dXss17cgFlBX7R/w89nHGx3vLT+ti8soMOadED7CsrKZtkqKzGfCjcU
+         ERlZbneUfXp8yT6gzs/c/w5htutG0p0tU7O3ZS/Ml1gzu/BuHkZ7DKFiQxORS1K53rjE
+         GlxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0swMm/JUHqj2ZF7vtD6A+buWAmQs/pWaJVFCZFFP3vI=;
-        b=IIH6dX0lus2StUCnH6ETieJDNzKwSeSN2nWuVdBiyWAerzWodlVy0ffsQfMx1dnwkp
-         ioixRNsn/9yHKQpcxFe6l//E5Q0yOVDXsIub8xbj9eaqhKkgDbJge71QVPnG4YqAqKBP
-         3m6G8RAbVpHmVNqcPjAT8W1o1zT9whrYaTtJdSef2RP3L0FPDVm0V16OVSbg7O6QSbHx
-         3D32fyWRnnG5aePXyHeMia/D+azsemht9Na3j3fk5vqeR0IkLyrufyK+VopCLLpecM0A
-         vOwMD3S743gSDyh6BLtzaMgYr90Ly4N8I8I4ItTWtS0zhUKZd6pmJamq/vb72W2mjunT
-         sLWw==
-X-Gm-Message-State: AOAM532sSeJo6ucmjYOJJsDsCjn1a4LqBVsOnOJsocOeNdCz42daraFS
-        VnWJZ0nh6JEp1nQpDm8RhYsLcxY3YdSkl1cb4h8bBndIL8gGyIfPpHw2RqjYAAvudo5plvGj6h5
-        39ZYAekl/QU/VspR7HxRHfYpf
-X-Received: by 2002:adf:fe43:: with SMTP id m3mr16690440wrs.19.1601890196784;
-        Mon, 05 Oct 2020 02:29:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyEQC4DRJp3zkWpIuGXAYYj/DTIrl8/GMb44mGmzfTjxcu3Rfa4cyzIYDc7LqK44dT/Q3vJIA==
-X-Received: by 2002:adf:fe43:: with SMTP id m3mr16690416wrs.19.1601890196466;
-        Mon, 05 Oct 2020 02:29:56 -0700 (PDT)
-Received: from steredhat (host-79-27-201-176.retail.telecomitalia.it. [79.27.201.176])
-        by smtp.gmail.com with ESMTPSA id v17sm12994343wrc.23.2020.10.05.02.29.55
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ePZkaljwe6pYtW+StSXkgUMc7x0Nnw0FBYjjoTVvbrs=;
+        b=mr5iGMQ9w87JD2Zh7Yh57C5VR03+W1vUrQ95P0Yypzmv9biNsa+NWmKVgzLw5a0KhN
+         bbDK2TXkgPfnKg5h4BYf6X/remCVKU2zrz/f2oZQutbK3YNobfofbFLJmPp0fAAEaH1F
+         7cK4K9cICRrJbiIO0yq87l0IgnTLTNFPcNTejmcB9q0RcA/65AMmuiyVA8LvLkWyGoN0
+         7EXlSlvrPH8E5BUSU9VHTj1lWNVVTJ2pORbfiQMo8kfds3oJdNaXo8UXkaL5MzJXeArH
+         mwO0sHrMDpiFQh0FCfTaCRTeoiV2ho7M/D2sxSlU9sW3eJjR/piTy8RiIc6rL5kgc5+a
+         AiHA==
+X-Gm-Message-State: AOAM531ybXClDkBTS8n09p5rukdPiDcpXgJ4FaeS9rRhyYgl9F4cfgwA
+        efJBmKfICOo/PdwhjW7nQME=
+X-Google-Smtp-Source: ABdhPJz2i+YrMbd1UKBch4+iSIOa3IOCRkMWx1costLrg/X1bXQYMVaFDWpCve04LneyiioSUDt/2Q==
+X-Received: by 2002:a50:b745:: with SMTP id g63mr5685774ede.181.1601890219192;
+        Mon, 05 Oct 2020 02:30:19 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id n25sm2729579ejd.114.2020.10.05.02.30.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 02:29:55 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 11:29:53 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Kieran Bingham <kbingham@kernel.org>, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org
-Subject: Re: scripts/gdb: issues when loading modules after lx-symbols
-Message-ID: <20201005092953.zu7pn2lveo3j2w4s@steredhat>
-References: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
- <9e247182-2cc3-9fac-e12e-9743ef24ec43@siemens.com>
- <20201005081451.ajtm6rctimrg5frr@steredhat>
- <0b862e95-c2a7-ad00-5f57-8d958e4af20c@siemens.com>
+        Mon, 05 Oct 2020 02:30:17 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 11:30:16 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201005093016.GD425362@ulmo>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+ <20201001112449.GA2364834@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mSxgbZZZvrAyzONB"
 Content-Disposition: inline
-In-Reply-To: <0b862e95-c2a7-ad00-5f57-8d958e4af20c@siemens.com>
+In-Reply-To: <20201001112449.GA2364834@kroah.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 10:33:30AM +0200, Jan Kiszka wrote:
-> On 05.10.20 10:14, Stefano Garzarella wrote:
-> > On Sun, Oct 04, 2020 at 08:52:37PM +0200, Jan Kiszka wrote:
-> >> On 01.10.20 16:31, Stefano Garzarella wrote:
-> >>> Hi,
-> >>> I had some issues with gdb scripts and kernel modules in Linux 5.9-rc7.
-> >>>
-> >>> If the modules are already loaded, and I do 'lx-symbols', all work fine.
-> >>> But, if I load a kernel module after 'lx-symbols', I had this issue:
-> >>>
-> >>> [ 5093.393940] invalid opcode: 0000 [#1] SMP PTI
-> >>> [ 5093.395134] CPU: 0 PID: 576 Comm: modprobe Not tainted 5.9.0-rc7-ste-00010-gf0b671d9608d-dirty #2
-> >>> [ 5093.397566] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-> >>> [ 5093.400761] RIP: 0010:do_init_module+0x1/0x270
-> >>> [ 5093.402553] Code: ff ff e9 cf fe ff ff 0f 0b 49 c7 c4 f2 ff ff ff e9 c1 fe ff ff e8 5f b2 65 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 cc <1f> 44 00 00 55 ba 10 00 00 00 be c0 0c 00 00 48 89 e5 41 56 41 55
-> >>> [ 5093.409505] RSP: 0018:ffffc90000563d18 EFLAGS: 00010246
-> >>> [ 5093.412056] RAX: 0000000000000000 RBX: ffffffffc010a0c0 RCX: 0000000000004ee3
-> >>> [ 5093.414472] RDX: 0000000000004ee2 RSI: ffffea0001efe188 RDI: ffffffffc010a0c0
-> >>> [ 5093.416349] RBP: ffffc90000563e50 R08: 0000000000000000 R09: 0000000000000002
-> >>> [ 5093.418044] R10: 0000000000000096 R11: 00000000000008a4 R12: ffff88807a0d1280
-> >>> [ 5093.424721] R13: ffffffffc010a110 R14: ffff88807a0d1300 R15: ffffc90000563e70
-> >>> [ 5093.427138] FS:  00007f018f632740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> >>> [ 5093.430037] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>> [ 5093.432279] CR2: 000055fbe282b239 CR3: 000000007922a006 CR4: 0000000000170ef0
-> >>> [ 5093.435096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >>> [ 5093.436765] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >>> [ 5093.439689] Call Trace:
-> >>> [ 5093.440954]  ? load_module+0x24b6/0x27d0
-> >>> [ 5093.443212]  ? __kernel_read+0xd6/0x150
-> >>> [ 5093.445140]  __do_sys_finit_module+0xd3/0xf0
-> >>> [ 5093.446877]  __x64_sys_finit_module+0x1a/0x20
-> >>> [ 5093.449098]  do_syscall_64+0x38/0x50
-> >>> [ 5093.450877]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>> [ 5093.456153] RIP: 0033:0x7f018f75c43d
-> >>> [ 5093.457728] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 6a 0c 00 f7 d8 64 89 01 48
-> >>> [ 5093.466349] RSP: 002b:00007ffd7f080368 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> >>> [ 5093.470613] RAX: ffffffffffffffda RBX: 0000557e5c96f9c0 RCX: 00007f018f75c43d
-> >>> [ 5093.474747] RDX: 0000000000000000 RSI: 0000557e5c964288 RDI: 0000000000000003
-> >>> [ 5093.478049] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-> >>> [ 5093.481298] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
-> >>> [ 5093.483725] R13: 0000557e5c964288 R14: 0000557e5c96f950 R15: 0000557e5c9775c0
-> >>> [ 5093.485778] Modules linked in: virtio_vdpa(+) vdpa sunrpc kvm_intel kvm irqbypass virtio_blk virtio_rng rng_core [last unloaded: virtio_vdpa]
-> >>> [ 5093.488695] ---[ end trace 23712ecebc11f53c ]---
-> >>>
-> >>> Guest kernel: Linux 5.9-rc7
-> >>> gdb: GNU gdb (GDB) Fedora 9.1-6.fc32
-> >>> I tried with QEMU 4.2.1 and the latest master branch: same issue.
-> >>>
-> >>>
-> >>> I did some digging, and skipping the gdb 'add-symbol-file' command in symbol.py
-> >>> avoid the issue, but of course I don't have the symbols loaded:
-> >>>
-> >>>     diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-> >>>     index 1be9763cf8bb..eadfaa4d4907 100644
-> >>>     --- a/scripts/gdb/linux/symbols.py
-> >>>     +++ b/scripts/gdb/linux/symbols.py
-> >>>     @@ -129,7 +129,7 @@ lx-symbols command."""
-> >>>                      filename=module_file,
-> >>>                      addr=module_addr,
-> >>>                      sections=self._section_arguments(module))
-> >>>     -            gdb.execute(cmdline, to_string=True)
-> >>>     +            #gdb.execute(cmdline, to_string=True)
-> >>>                  if module_name not in self.loaded_modules:
-> >>>                      self.loaded_modules.append(module_name)
-> >>>              else:
-> >>>
-> >>> I tried several modules and this happens every time after '(gdb) lx-symbols'.
-> >>>
-> >>> Do you have any hints?
-> >>>
-> >> I assume you are debugging a kernel inside QEMU/KVM, right?
-> > 
-> > Right!
-> > 
-> >>                                                             Does it work
-> >> without -enable-kvm?
-> > 
-> > Yes, disabling kvm it works.
-> > 
-> 
-> OK, there it is, still...
-> What may also "work" is going down to single core.
 
-No, I tried with single core and kvm enabled and I have the same issue.
+--mSxgbZZZvrAyzONB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> >>
-> >> Debugging guests in KVM mode at least was unstable for a long time. I
-> >> avoided setting soft-BPs - which is what the script does for the sake of
-> >> tracking modules loading -, falling back to hw-BPs, as I had no time to
-> >> debug that further. /Maybe/ that's the issue here.
-> > 
-> > Thanks for the suggestion, I'll try to have a look.
-> > 
-> 
-> Would be great if this issue could finally be resolved. And then covered
-> by the kvm-unit tests. Those still succeed, I think.
+On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > Hello,
+> > >=20
+> > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > Cc:.
+> > >=20
+> > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > thank you for your review!
+> > > >=20
+> > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-K=C3=B6nig wro=
+te:
+> > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wr=
+ote:
+> > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > >=20
+> > > > > > This adds a class to exported pwm devices.
+> > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > >=20
+> > > > > I wonder what is your use-case here. This for sure also has a pla=
+ce to
+> > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > accomplish you way.
+> > > >=20
+> > > > Use-case is to be able to use a pwm from a non-root userspace proce=
+ss.
+> > > > I use udev rules to adjust permissions.
+> > >=20
+> > > Hmm, how do you trigger the export? Without being aware of all the
+> > > details in the sysfs code I would expect that the exported stuff is
+> > > available instantly once the write used to export the PWM is complete=
+d.
+> > > So changing the permissions can be done directly after triggering the
+> > > export in the same process.
+> >=20
+> > The export is triggered through the userspace process itself. Why can it
+> > do this ? Because there is another udev rule, that changes permissions
+> > when a pwmchip appears.
+> > Then I'd like to have the second udev rule, that changes permissions on
+> > the freshly exported pwm. The userspace process can't do this.
+> > You are right I could propably do everything from within udev: If a
+> > pwmchip appears, export certain pwms and right away change their
+> > permissions. It does not also not feel right. It'd require knowledge
+> > from the userspace application to be mapped to udev.
+>=20
+> The way the kernel code is now, yes, you will not have any way to
+> trigger it by userspace as the kernel is creating a "raw" struct device
+> that isn't assigned to anything.  That is what needs to be fixed here.
+>=20
+> > > Out of interest: What do you use the pwm for? Isn't there a suitable
+> > > kernel driver that can do the required stuff? Compared to the kernel-=
+API
+> > > the sysfs interface isn't atomic. Is this an annoyance?
+> >=20
+> > Use-case is generating a voltage from the pwm. This voltage is used to
+> > signal different states and does not change very often. This is
+> > absolutely not annoying that this is not atomic. We just change the duty
+> > cycle on the fly. Everything else is configured one time at startup.
+> > I'd call what I need pwm-dac. I could not find a ready to use driver.
+> > Maybe I could misuse some kernel driver for this. Maybe I could use
+> > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+> > there is even a userspace facing part for this, but this is not
+> > devicetree ready.
+> > ...and the worst, please don't blame me: The application is java, so
+> > ioctl is a problem.
+>=20
+> I thought java could do ioctls, otherwise how would it ever be able to
+> talk to serial ports?
+>=20
+> Anyway, this needs to be fixed in the kernel...
 
-Yeah, I'm a bit busy, but I'll try to find a fix.
+If atomicity was a problem, we could potentially add a mechanism to the
+sysfs interface to enable that. I don't see a good way of doing that in
+a single file, since that works against how sysfs is designed. But one
+thing I could imagine is adding a file ("lock", or whatever you want to
+call it) that you can use for atomic fencing:
 
-Just an update, I tried to follow your suggestion using hw-BPs, but
-unfortunately the gdb python module doesn't provide an easy way to set
-them, so I hacked a bit gdb forcing hw-BPs and with this patch applied
-to gdb I don't see the issue anymore:
+	$ echo 1 > lock # locks the hardware state
+	$ echo 100 > period
+	$ echo 50 > duty_cycle
+	$ echo 0 > lock # flushes state to hardware
 
-diff --git a/gdb/python/py-breakpoint.c b/gdb/python/py-breakpoint.c
-index 7369c91ad9..df8ec92049 100644
---- a/gdb/python/py-breakpoint.c
-+++ b/gdb/python/py-breakpoint.c
-@@ -57,7 +57,7 @@ struct pybp_code
- static struct pybp_code pybp_codes[] =
- {
-   { "BP_NONE", bp_none},
--  { "BP_BREAKPOINT", bp_breakpoint},
-+  { "BP_BREAKPOINT", bp_hardware_breakpoint},
-   { "BP_WATCHPOINT", bp_watchpoint},
-   { "BP_HARDWARE_WATCHPOINT", bp_hardware_watchpoint},
-   { "BP_READ_WATCHPOINT", bp_read_watchpoint},
-@@ -383,7 +383,7 @@ bppy_get_location (PyObject *self, void *closure)
+But it sounds like that's not even a big issue.
 
-   BPPY_REQUIRE_VALID (obj);
+However, given the use-case description, it sounds to me like
+pwm-regulator would be a better candidate to solve this, because it's
+purpose is literally to generate a voltage using a PWM. There is a
+device tree binding for pwm-regulator, so this should work there as
+well.
 
--  if (obj->bp->type != bp_breakpoint)
-+  if (obj->bp->type != bp_hardware_breakpoint)
-     Py_RETURN_NONE;
+Lars, what exactly are the problems that you're running into when trying
+to use pwm-regulator with device tree?
 
-   const char *str = event_location_to_string (obj->bp->location.get ());
-@@ -730,7 +730,7 @@ bppy_init (PyObject *self, PyObject *args, PyObject *kwargs)
-                                    "temporary","source", "function",
-                                    "label", "line", "qualified", NULL };
-   const char *spec = NULL;
--  enum bptype type = bp_breakpoint;
-+  enum bptype type = bp_hardware_breakpoint;
-   int access_type = hw_write;
-   PyObject *internal = NULL;
-   PyObject *temporary = NULL;
-@@ -792,7 +792,7 @@ bppy_init (PyObject *self, PyObject *args, PyObject *kwargs)
-     {
-       switch (type)
-        {
--       case bp_breakpoint:
-+       case bp_hardware_breakpoint:
-          {
-            event_location_up location;
-            symbol_name_match_type func_name_match_type
-@@ -834,7 +834,7 @@ bppy_init (PyObject *self, PyObject *args, PyObject *kwargs)
-            create_breakpoint (python_gdbarch,
-                               location.get (), NULL, -1, NULL,
-                               0,
--                              temporary_bp, bp_breakpoint,
-+                              temporary_bp, bp_hardware_breakpoint,
-                               0,
-                               AUTO_BOOLEAN_TRUE,
-                               ops,
-@@ -1007,7 +1007,7 @@ gdbpy_breakpoint_created (struct breakpoint *bp)
-   if (!user_breakpoint_p (bp) && bppy_pending_object == NULL)
-     return;
+Thierry
 
--  if (bp->type != bp_breakpoint
-+  if (bp->type != bp_hardware_breakpoint
-       && bp->type != bp_watchpoint
-       && bp->type != bp_hardware_watchpoint
-       && bp->type != bp_read_watchpoint
+--mSxgbZZZvrAyzONB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Of course it is an hack, but it's a starting point :-)
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Stefano
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9656UACgkQ3SOs138+
+s6HD5xAAvnyVRSm0tP6ShHAqbfvbGKSqbPUTqlWsUE+wjnExEvJX4PSDgcs421EZ
+wUN9RpVomYodDxziajQul9gfgLM850jPwVHu5kZq+Jf5+zC3dPblZ5jJKhv6K2XW
+36DniEVx7D571P1cqmuGKXPu+NRt3sXOrASZAQRheKGwVYp1S6i5VZIqTwRNsN9b
+0jb3uP9e86DipQ8vhd7QXreXMMYJfeqo0MJoGZ3sJoVFUd8ZVv1v3hBJyVgrmuew
+33tAnCejJm2Vgkpp4UO/mXunx3a302e5XIICBJCSRxayVZ+bh3wJ2Tnrwp3nc/KP
+D6FKteu4eEJ6KT6b5Q6kryamUSffGiUXdpdy3uDoNj8zmKvBubQ9PjVn2XKDdD/A
+8yb6iMS0+nYbNfae5pmDmCLyzvtpu58BdF7j0ABy/G472V5YtQNntmOyDsgrzFOP
+ySQjhjf/k+ICoLpedv6vTxf1kSV2Pzt5eXCId8gjO9aGmT2PdhC0+Lmu/JhhHOSZ
+fpnybB0Sc3Tg8iEE2nZThZyKhWhXKfUxDlF/BPQWCPGHn0d9Gsh6moS/5ER665Cl
+mxmBFjlWZIc1PCWQEYADOCZb0btYXj4bGQKozp+IH7Iay/kbdMtPv39lrzXsgLr/
+3weuk1GzUjLJdhlMM+XV6VvfckzdXDruxc7iV4wNhEggH7z+Kmg=
+=mIRH
+-----END PGP SIGNATURE-----
 
+--mSxgbZZZvrAyzONB--
