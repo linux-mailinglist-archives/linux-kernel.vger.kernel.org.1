@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E858828360A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3ED28360D
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgJENCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
+        id S1726602AbgJENCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbgJENBx (ORCPT
+        with ESMTP id S1726535AbgJENBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:01:53 -0400
+        Mon, 5 Oct 2020 09:01:54 -0400
 Received: from smtp3.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B102CC0613B8;
-        Mon,  5 Oct 2020 06:01:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D161C0613B9
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 06:01:54 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by smtp3.goneo.de (Postfix) with ESMTP id 871DF240285;
-        Mon,  5 Oct 2020 15:01:51 +0200 (CEST)
+        by smtp3.goneo.de (Postfix) with ESMTP id 5748323F976;
+        Mon,  5 Oct 2020 15:01:53 +0200 (CEST)
 X-Virus-Scanned: by goneo
 X-Spam-Flag: NO
 X-Spam-Score: -2.952
@@ -26,30 +26,22 @@ X-Spam-Status: No, score=-2.952 tagged_above=-999 tests=[ALL_TRUSTED=-1,
         AWL=-0.052, BAYES_00=-1.9] autolearn=ham
 Received: from smtp3.goneo.de ([127.0.0.1])
         by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Yz9d6g8QCr0n; Mon,  5 Oct 2020 15:01:49 +0200 (CEST)
+        with ESMTP id c1fvo4bQLrdx; Mon,  5 Oct 2020 15:01:51 +0200 (CEST)
 Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp3.goneo.de (Postfix) with ESMTPA id E780724001C;
-        Mon,  5 Oct 2020 15:01:47 +0200 (CEST)
+        by smtp3.goneo.de (Postfix) with ESMTPA id D87632400A8;
+        Mon,  5 Oct 2020 15:01:50 +0200 (CEST)
 From:   poeschel@lemonage.de
-To:     Rob Herring <robh+dt@kernel.org>,
-        Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 31/32] auxdisplay: lcd2s DT binding doc
-Date:   Mon,  5 Oct 2020 15:01:27 +0200
-Message-Id: <20201005130128.3430804-19-poeschel@lemonage.de>
+To:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Lars Poeschel <poeschel@lemonage.de>
+Subject: [PATCH v4 32/32] auxdisplay: add a driver for lcd2s character display
+Date:   Mon,  5 Oct 2020 15:01:28 +0200
+Message-Id: <20201005130128.3430804-20-poeschel@lemonage.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201005130128.3430804-1-poeschel@lemonage.de>
 References: <20201005130128.3430804-1-poeschel@lemonage.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -57,99 +49,467 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lars Poeschel <poeschel@lemonage.de>
 
-Add a binding doc for the modtronix lcd2s auxdisplay driver. It also
-adds modtronix to the list of known vendor-prefixes.
+This driver allows to use a lcd2s 20x4 character display from Modtronix
+engineering as an auxdisplay charlcd device.
 
-Reviewed-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
 ---
-Changes in v3:
-- Fixed make dt_binding_doc errors
-Changes in v2:
-- Adopted yaml based file format
----
- .../bindings/auxdisplay/modtronix,lcd2s.yaml  | 58 +++++++++++++++++++
- .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
- 2 files changed, 60 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
+Changes in v4:
+- modtronix -> Modtronix
+- Kconfig: remove "default n"
 
-diff --git a/Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml b/Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
+---
+ drivers/auxdisplay/Kconfig  |  10 +
+ drivers/auxdisplay/Makefile |   1 +
+ drivers/auxdisplay/lcd2s.c  | 409 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 420 insertions(+)
+ create mode 100644 drivers/auxdisplay/lcd2s.c
+
+diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
+index a56171d1a1ba..96c8cdfce48d 100644
+--- a/drivers/auxdisplay/Kconfig
++++ b/drivers/auxdisplay/Kconfig
+@@ -173,6 +173,16 @@ config HT16K33
+ 	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
+ 	  LED controller driver with keyscan.
+ 
++config LCD2S
++	tristate "lcd2s 20x4 character display over I2C console"
++	depends on I2C
++	select CHARLCD
++	help
++	  This is a driver that lets you use the lcd2s 20x4 character display
++	  from Modtronix engineering as a console output device. The display
++	  is a simple single color character display. You have to connect it
++	  to an I2C bus.
++
+ config ARM_CHARLCD
+ 	bool "ARM Ltd. Character LCD Driver"
+ 	depends on PLAT_VERSATILE
+diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
+index 7e8a8c3eb3c3..307771027c89 100644
+--- a/drivers/auxdisplay/Makefile
++++ b/drivers/auxdisplay/Makefile
+@@ -12,3 +12,4 @@ obj-$(CONFIG_IMG_ASCII_LCD)	+= img-ascii-lcd.o
+ obj-$(CONFIG_HD44780)		+= hd44780.o
+ obj-$(CONFIG_HT16K33)		+= ht16k33.o
+ obj-$(CONFIG_PARPORT_PANEL)	+= panel.o
++obj-$(CONFIG_LCD2S)		+= lcd2s.o
+diff --git a/drivers/auxdisplay/lcd2s.c b/drivers/auxdisplay/lcd2s.c
 new file mode 100644
-index 000000000000..a1d55a2634a5
+index 000000000000..4b8c597a26fa
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/auxdisplay/modtronix,lcd2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/auxdisplay/lcd2s.c
+@@ -0,0 +1,409 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  console driver for LCD2S 4x20 character displays connected through i2c.
++ *  The display also has a spi interface, but the driver does not support
++ *  this yet.
++ *
++ *  This is a driver allowing you to use a LCD2S 4x20 from modtronix
++ *  engineering as auxdisplay character device.
++ *
++ *  (C) 2019 by Lemonage Software GmbH
++ *  Author: Lars Pöschel <poeschel@lemonage.de>
++ *  All rights reserved.
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/i2c.h>
++#include <linux/delay.h>
 +
-+title: Modtronix engineering LCD2S Character LCD Display
++#include "charlcd.h"
 +
-+maintainers:
-+  - Lars Poeschel <poeschel@lemonage.de>
++#define LCD2S_CMD_CUR_MOVES_FWD		0x09
++#define LCD2S_CMD_CUR_BLINK_OFF		0x10
++#define LCD2S_CMD_CUR_UL_OFF		0x11
++#define LCD2S_CMD_DISPLAY_OFF		0x12
++#define LCD2S_CMD_CUR_BLINK_ON		0x18
++#define LCD2S_CMD_CUR_UL_ON		0x19
++#define LCD2S_CMD_DISPLAY_ON		0x1a
++#define LCD2S_CMD_BACKLIGHT_OFF		0x20
++#define LCD2S_CMD_BACKLIGHT_ON		0x28
++#define LCD2S_CMD_WRITE			0x80
++#define LCD2S_CMD_MOV_CUR_RIGHT		0x83
++#define LCD2S_CMD_MOV_CUR_LEFT		0x84
++#define LCD2S_CMD_SHIFT_RIGHT		0x85
++#define LCD2S_CMD_SHIFT_LEFT		0x86
++#define LCD2S_CMD_SHIFT_UP		0x87
++#define LCD2S_CMD_SHIFT_DOWN		0x88
++#define LCD2S_CMD_CUR_ADDR		0x89
++#define LCD2S_CMD_CUR_POS		0x8a
++#define LCD2S_CMD_CUR_RESET		0x8b
++#define LCD2S_CMD_CLEAR			0x8c
++#define LCD2S_CMD_DEF_CUSTOM_CHAR	0x92
++#define LCD2S_CMD_READ_STATUS		0xd0
 +
-+description:
-+  The LCD2S is a Character LCD Display manufactured by Modtronix Engineering.
-+  The display supports a serial I2C and SPI interface. The driver currently
-+  only supports the I2C interface.
++#define LCD2S_CHARACTER_SIZE		8
 +
-+properties:
-+  compatible:
-+    const: modtronix,lcd2s
++#define LCD2S_STATUS_BUF_MASK		0x7f
 +
-+  reg:
-+    maxItems: 1
-+    description:
-+      I2C bus address of the display.
++struct lcd2s_data {
++	struct i2c_client *i2c;
++	struct charlcd *charlcd;
++};
 +
-+  display-height-chars:
-+    description: Height of the display, in character cells.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 4
++static s32 lcd2s_wait_buf_free(const struct i2c_client *client, int count)
++{
++	s32 status;
 +
-+  display-width-chars:
-+    description: Width of the display, in character cells.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 16
-+    maximum: 20
++	status = i2c_smbus_read_byte_data(client, LCD2S_CMD_READ_STATUS);
++	if (status < 0)
++		return status;
 +
-+required:
-+  - compatible
-+  - reg
-+  - display-height-chars
-+  - display-width-chars
++	while ((status & LCD2S_STATUS_BUF_MASK) < count) {
++		mdelay(1);
++		status = i2c_smbus_read_byte_data(client,
++						  LCD2S_CMD_READ_STATUS);
++		if (status < 0)
++			return status;
++	}
++	return 0;
++}
 +
-+additionalProperties: false
++static int lcd2s_i2c_master_send(const struct i2c_client *client,
++				 const char *buf, int count)
++{
++	s32 status;
 +
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
++	status = lcd2s_wait_buf_free(client, count);
++	if (status < 0)
++		return status;
 +
-+      lcd2s: auxdisplay@28 {
-+        compatible = "modtronix,lcd2s";
-+        reg = <0x28>;
-+        display-height-chars = <4>;
-+        display-width-chars = <20>;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 63996ab03521..a9dd168db6ce 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -667,6 +667,8 @@ patternProperties:
-     description: MiraMEMS Sensing Technology Co., Ltd.
-   "^mitsubishi,.*":
-     description: Mitsubishi Electric Corporation
-+  "^modtronix,.*":
-+    description: Modtronix Engineering
-   "^mosaixtech,.*":
-     description: Mosaix Technologies, Inc.
-   "^motorola,.*":
++	return i2c_master_send(client, buf, count);
++}
++
++static int lcd2s_i2c_smbus_write_byte(const struct i2c_client *client, u8 value)
++{
++	s32 status;
++
++	status = lcd2s_wait_buf_free(client, 1);
++	if (status < 0)
++		return status;
++
++	return i2c_smbus_write_byte(client, value);
++}
++
++static int lcd2s_print(struct charlcd *lcd, int c)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++	u8 buf[2] = { LCD2S_CMD_WRITE, c };
++
++	lcd2s_i2c_master_send(lcd2s->i2c, buf, sizeof(buf));
++	return 0;
++}
++
++static int lcd2s_gotoxy(struct charlcd *lcd, unsigned int x, unsigned int y)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++	u8 buf[] = { LCD2S_CMD_CUR_POS, y + 1, x + 1};
++
++	lcd2s_i2c_master_send(lcd2s->i2c, buf, sizeof(buf));
++
++	return 0;
++}
++
++static int lcd2s_home(struct charlcd *lcd)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_RESET);
++	return 0;
++}
++
++static int lcd2s_init_display(struct charlcd *lcd)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	/* turn everything off, but display on */
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_DISPLAY_ON);
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_BACKLIGHT_OFF);
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_MOVES_FWD);
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_BLINK_OFF);
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_UL_OFF);
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CLEAR);
++
++	return 0;
++}
++
++static int lcd2s_shift_cursor(struct charlcd *lcd, enum charlcd_shift_dir dir)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	if (dir == CHARLCD_SHIFT_LEFT)
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_MOV_CUR_LEFT);
++	else
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_MOV_CUR_RIGHT);
++
++	return 0;
++}
++
++static int lcd2s_shift_display(struct charlcd *lcd, enum charlcd_shift_dir dir)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	if (dir == CHARLCD_SHIFT_LEFT)
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_SHIFT_LEFT);
++	else
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_SHIFT_RIGHT);
++
++	return 0;
++}
++
++static void lcd2s_backlight(struct charlcd *lcd, enum charlcd_onoff on)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	if (on)
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_BACKLIGHT_ON);
++	else
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_BACKLIGHT_OFF);
++}
++
++static int lcd2s_display(struct charlcd *lcd, enum charlcd_onoff on)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	if (on)
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_DISPLAY_ON);
++	else
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_DISPLAY_OFF);
++
++	return 0;
++}
++
++static int lcd2s_cursor(struct charlcd *lcd, enum charlcd_onoff on)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	if (on)
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_UL_ON);
++	else
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_UL_OFF);
++
++	return 0;
++}
++
++static int lcd2s_blink(struct charlcd *lcd, enum charlcd_onoff on)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	if (on)
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_BLINK_ON);
++	else
++		lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CUR_BLINK_OFF);
++
++	return 0;
++}
++
++static int lcd2s_fontsize(struct charlcd *lcd, enum charlcd_fontsize size)
++{
++	return 0;
++}
++
++static int lcd2s_lines(struct charlcd *lcd, enum charlcd_lines lines)
++{
++	return 0;
++}
++
++static int lcd2s_redefine_char(struct charlcd *lcd, char *esc)
++{
++	/* Generator : LGcxxxxx...xx; must have <c> between '0'
++	 * and '7', representing the numerical ASCII code of the
++	 * redefined character, and <xx...xx> a sequence of 16
++	 * hex digits representing 8 bytes for each character.
++	 * Most LCDs will only use 5 lower bits of the 7 first
++	 * bytes.
++	 */
++
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++	u8 buf[LCD2S_CHARACTER_SIZE + 2] = { LCD2S_CMD_DEF_CUSTOM_CHAR };
++	u8 value;
++	int shift, i;
++
++	if (!strchr(esc, ';'))
++		return 0;
++
++	esc++;
++
++	buf[1] = *(esc++) - '0';
++	if (buf[1] > 7)
++		return 1;
++
++	i = 0;
++	shift = 0;
++	value = 0;
++	while (*esc && i < LCD2S_CHARACTER_SIZE + 2) {
++		shift ^= 4;
++		if (*esc >= '0' && *esc <= '9') {
++			value |= (*esc - '0') << shift;
++		} else if (*esc >= 'A' && *esc <= 'Z') {
++			value |= (*esc - 'A' + 10) << shift;
++		} else if (*esc >= 'a' && *esc <= 'z') {
++			value |= (*esc - 'a' + 10) << shift;
++		} else {
++			esc++;
++			continue;
++		}
++
++		if (shift == 0) {
++			buf[i++] = value;
++			value = 0;
++		}
++
++		esc++;
++	}
++
++	lcd2s_i2c_master_send(lcd2s->i2c, buf, sizeof(buf));
++	return 1;
++}
++
++static int lcd2s_clear_display(struct charlcd *lcd)
++{
++	struct lcd2s_data *lcd2s = lcd->drvdata;
++
++	/* This implicitly sets cursor to first row and column */
++	lcd2s_i2c_smbus_write_byte(lcd2s->i2c, LCD2S_CMD_CLEAR);
++	return 0;
++}
++
++static const struct charlcd_ops lcd2s_ops = {
++	.print		= lcd2s_print,
++	.backlight	= lcd2s_backlight,
++	.gotoxy		= lcd2s_gotoxy,
++	.home		= lcd2s_home,
++	.clear_display	= lcd2s_clear_display,
++	.init_display	= lcd2s_init_display,
++	.shift_cursor	= lcd2s_shift_cursor,
++	.shift_display	= lcd2s_shift_display,
++	.display	= lcd2s_display,
++	.cursor		= lcd2s_cursor,
++	.blink		= lcd2s_blink,
++	.fontsize	= lcd2s_fontsize,
++	.lines		= lcd2s_lines,
++	.redefine_char	= lcd2s_redefine_char,
++};
++
++static int lcd2s_i2c_probe(struct i2c_client *i2c,
++				const struct i2c_device_id *id)
++{
++	struct charlcd *lcd;
++	struct lcd2s_data *lcd2s;
++	int err;
++
++	if (!i2c_check_functionality(i2c->adapter,
++			I2C_FUNC_SMBUS_WRITE_BYTE_DATA |
++			I2C_FUNC_SMBUS_WRITE_BLOCK_DATA))
++		return -EIO;
++
++	/* Test, if the display is responding */
++	err = lcd2s_i2c_smbus_write_byte(i2c, LCD2S_CMD_DISPLAY_OFF);
++	if (err < 0)
++		return err;
++
++	lcd = charlcd_alloc();
++	if (!lcd)
++		return -ENOMEM;
++
++	lcd2s = kzalloc(sizeof(struct lcd2s_data), GFP_KERNEL);
++	if (!lcd2s) {
++		err = -ENOMEM;
++		goto fail1;
++	}
++
++	lcd->drvdata = lcd2s;
++	lcd2s->i2c = i2c;
++	lcd2s->charlcd = lcd;
++
++	/* Required properties */
++	err = device_property_read_u32(&i2c->dev, "display-height-chars",
++			&lcd->height);
++	if (err)
++		goto fail2;
++
++	err = device_property_read_u32(&i2c->dev, "display-width-chars",
++			&lcd->width);
++	if (err)
++		goto fail2;
++
++	lcd->ops = &lcd2s_ops;
++
++	err = charlcd_register(lcd2s->charlcd);
++	if (err)
++		goto fail2;
++
++	i2c_set_clientdata(i2c, lcd2s);
++	return 0;
++
++fail2:
++	kfree(lcd2s);
++fail1:
++	kfree(lcd);
++	return err;
++}
++
++static int lcd2s_i2c_remove(struct i2c_client *i2c)
++{
++	struct lcd2s_data *lcd2s = i2c_get_clientdata(i2c);
++
++	kfree(lcd2s->charlcd);
++	charlcd_unregister(lcd2s->charlcd);
++	return 0;
++}
++
++static const struct i2c_device_id lcd2s_i2c_id[] = {
++	{ "lcd2s", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, lcd2s_i2c_id);
++
++#ifdef CONFIG_OF
++static const struct of_device_id lcd2s_of_table[] = {
++	{ .compatible = "modtronix,lcd2s" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, lcd2s_of_table);
++#endif
++
++static struct i2c_driver lcd2s_i2c_driver = {
++	.driver = {
++		.name = "lcd2s",
++		.owner = THIS_MODULE,
++#ifdef CONFIG_OF
++		.of_match_table = of_match_ptr(lcd2s_of_table),
++#endif
++	},
++	.probe = lcd2s_i2c_probe,
++	.remove = lcd2s_i2c_remove,
++	.id_table = lcd2s_i2c_id,
++};
++
++static int __init lcd2s_modinit(void)
++{
++	int ret = 0;
++
++	ret = i2c_add_driver(&lcd2s_i2c_driver);
++	if (ret != 0)
++		pr_err("Failed to register lcd2s driver\n");
++
++	return ret;
++}
++module_init(lcd2s_modinit)
++
++static void __exit lcd2s_exit(void)
++{
++	i2c_del_driver(&lcd2s_i2c_driver);
++}
++module_exit(lcd2s_exit)
++
++MODULE_DESCRIPTION("LCD2S character display driver");
++MODULE_AUTHOR("Lars Poeschel");
++MODULE_LICENSE("GPL");
 -- 
 2.28.0
 
