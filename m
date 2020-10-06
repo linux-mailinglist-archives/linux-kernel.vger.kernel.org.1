@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC61285108
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6E028510C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbgJFRlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:41:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33910 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726197AbgJFRlW (ORCPT
+        id S1726731AbgJFRlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:41:40 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38838 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgJFRlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:41:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602006081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/NBwYPLORlbVcrvKPyGk/TLmMoRjEUUqSOuonzOzquE=;
-        b=jOLgrTYM7elLAdHt+lO47AgWgZJluLSOkedmahPuFcwkv4p0SzrDXYGuHQ20Z3AA5nDFfd
-        dTk+r7WBbEYGyi61JvUSiNnFTxhxNuH9VYQyuasf0J6VPnHz1enUUSt+EYjZpKWRMKKsDs
-        E4J7gc9CCsh8jD5duFZaYihRBPTpLzw=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-44-YAA8287ZN5uuzi85m16ceQ-1; Tue, 06 Oct 2020 13:41:18 -0400
-X-MC-Unique: YAA8287ZN5uuzi85m16ceQ-1
-Received: by mail-qt1-f199.google.com with SMTP id w3so9559308qtn.16
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 10:41:18 -0700 (PDT)
+        Tue, 6 Oct 2020 13:41:39 -0400
+Received: by mail-oi1-f196.google.com with SMTP id 26so13451076ois.5;
+        Tue, 06 Oct 2020 10:41:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/NBwYPLORlbVcrvKPyGk/TLmMoRjEUUqSOuonzOzquE=;
-        b=ESeiUbHbLT26dylWCnoCXglRxHE7JVKNvCCFRIugL62P8D4lJ6YYtGJc9d0sjMpclX
-         CrwoBFGpc8Ak16sYd/2x8Ov++jwcivnbm4cn14D181r9gn3JMIoM4lLciUwW8IaiJQB3
-         031vakEANYSN0J1x6AEHnNfRFQZ+U9nt93JqNBhJoOQ94QAARTyFXZpPJbM8b9HzOSTi
-         zIArl3P3gSIMTDV7CjuAjy9wQ0XtfmoFuT1q6QOsC6ZqZcOhmg3CGfHISbbK0PeWVnHo
-         cj0bz5/XlXrHQVQganI9pRFK4s1xnlS4sVp8rkpd9NoDMLkA8BF2S/kSkuxwHfZ5Dy0z
-         Q1bw==
-X-Gm-Message-State: AOAM532lOvpCve2Uq9HJmvfevtaUOJTHg8Kg1hCIoQUlnSaz0g0tLd3W
-        J5Z9L8HUfn8Wd4StbupANRbJQFgnCb6mSOT9A8l1954d0ZpMHkafugLqyyu/lEpp6Wt45c9IMvI
-        PA77BP1LsvianDo39H8rGdVIe
-X-Received: by 2002:a05:6214:11e4:: with SMTP id e4mr5307483qvu.61.1602006077760;
-        Tue, 06 Oct 2020 10:41:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwC6rrp56pJXHOW9M6RqEWmLm8gFLjcXWx1QR+BnWTFNsu+NoKfwHWuyOTRiXvlpY57S0kp2w==
-X-Received: by 2002:a05:6214:11e4:: with SMTP id e4mr5307457qvu.61.1602006077580;
-        Tue, 06 Oct 2020 10:41:17 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k37sm1332044qta.27.2020.10.06.10.41.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 10:41:17 -0700 (PDT)
-Subject: Re: [PATCH v2 4/6] fpga: m10bmc-sec: expose max10 canceled keys in
- sysfs
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20201003012412.16831-1-russell.h.weight@intel.com>
- <20201003012412.16831-5-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <b069fd5d-de9f-8d20-e3fb-e4d737032fb3@redhat.com>
-Date:   Tue, 6 Oct 2020 10:41:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ug2AhAe8+h2ycVxfTr0fWnf2Rz6QdU9raLFCM2GQrLA=;
+        b=sP1zaZAkZpeWDVYhiIdmCu/dyF8J+9KaOWyUFsiFuxNz5y/O0a5x3jHSLZcYbj7w7s
+         EUwtd2qid+KoZnnjnMFOZ8lVfaR8732MW9IamFTVbo+WDWaJM6DZyxL8+tGW1uPKuFbk
+         vSjt7rvmrqqZUxWxVPC3ACmzU2TdmpC0swOl2GSbcwkT7RguH8qUlLD/kHLSM/DCP7ec
+         sk6l0b87nG6UrR15eoB6d6FrvSPwOt515lm0qtBUVyo87Lh8akEcUyXM41g5zi7m0W+w
+         aSkLLkKfhRAKRm989HLZa+AGhpNk0HxStLR+GZUtNBzvkL/7u7FOciCM9cha7K5HxhNc
+         HYGg==
+X-Gm-Message-State: AOAM532pRumf4204IuE3S7LXf0EHODrlR+Ix/cr5hPhkgfhn4lSoVO3R
+        0xCQifROjZVdTpM+ShxcWg==
+X-Google-Smtp-Source: ABdhPJxuK6/8KQ3zsOdcsAxicrrnKN1swqkUr/GQWKhfcy2d6jbZjROdSuwE/aGjrCPa9XCA0j8brw==
+X-Received: by 2002:aca:4441:: with SMTP id r62mr3261589oia.153.1602006098637;
+        Tue, 06 Oct 2020 10:41:38 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t2sm1364153oie.26.2020.10.06.10.41.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 10:41:38 -0700 (PDT)
+Received: (nullmailer pid 2511425 invoked by uid 1000);
+        Tue, 06 Oct 2020 17:41:36 -0000
+Date:   Tue, 6 Oct 2020 12:41:36 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Robert Jones <rjones@gateworks.com>,
+        =?iso-8859-1?Q?S=E9bastien?= Szymanski 
+        <sebastien.szymanski@armadeus.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Li Yang <leoyang.li@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Stefan Riedmueller <s.riedmueller@phytec.de>
+Subject: Re: [PATCH 07/12] dt-bindings: arm: fsl: document i.MX6ULL boards
+Message-ID: <20201006174136.GA2511365@bogus>
+References: <20201001170759.9592-1-krzk@kernel.org>
+ <20201001170759.9592-8-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201003012412.16831-5-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001170759.9592-8-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/2/20 6:24 PM, Russ Weight wrote:
-> Extend the MAX10 BMC Security Engine driver to provide a
-> handler to expose the canceled code signing key (CSK) bit
-> vectors in sysfs. These use the standard bitmap list format
-> (e.g. 1,2-6,9).
->
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+On Thu, 01 Oct 2020 19:07:54 +0200, Krzysztof Kozlowski wrote:
+> Document and adjust the compatibles for i.MX6ULL based boards.
+> The Armadeus boards use multiple compatibles.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
-> v2:
->   - Replaced small function-creation macros for explicit function
->     declarations.
->   - Fixed get_csk_vector() function to properly apply the stride
->     variable in calls to m10bmc_raw_bulk_read()
->   - Added m10bmc_ prefix to functions in m10bmc_iops structure
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
 
-Looks ok to me.
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
