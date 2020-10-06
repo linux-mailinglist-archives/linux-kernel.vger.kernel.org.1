@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9995B285367
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1CD285366
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgJFUqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        id S1727441AbgJFUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727407AbgJFUqD (ORCPT
+        with ESMTP id S1727391AbgJFUqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:46:03 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C2BC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:46:02 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id z5so132083ilq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:46:02 -0700 (PDT)
+        Tue, 6 Oct 2020 16:46:04 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA0FC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:46:04 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id t18so89764ilo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:46:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/vsaHXKcQ93l92h/rWhaFfF8DrlMfqUO8xaQHLjCgKs=;
-        b=O3NplXvpfjLAIfYxJ4RTIFfrJzKphxLrLWGSjuYG9IDcQ3g601f8K/84jJHNcPJvu8
-         Q2ESLBIpG5NTW6cZ7T3yeTJCcR1M4hctuhXHroMWxZXmOA29k6uqm850/LUagEW5edtl
-         rxs652IGEfs3+pRO9W04aHvZLDtHVwJagaS7I=
+        bh=bv+5GiaG/LcuKTT3iu5LLoZTiwRc7KlRllwmZiSrosw=;
+        b=FL8PP2NVW1HIPVO0IhjN7z+q8LP6474DNBoj6mJ2Xe/zmlZ5SBxBZKeP8wTK0EA4m9
+         RVkR5yD5ZzEOrrZRc1AU6QSUAUlgm0zC1pTD9wl/S/brmd6Bxo3qDwTgPVyF9v5A5Kpr
+         Z2fcw3h193wXNzMBc6N8GeXXP+IXPaNOZ3a+Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/vsaHXKcQ93l92h/rWhaFfF8DrlMfqUO8xaQHLjCgKs=;
-        b=fdlg9EKSApFMHnmLgpjLcU3v333weBMoDGZMqL/WU7ZErpwwQ42kWUK8vK83J+wqxB
-         8TfLrMIMbXlBttNe6AI955uaxbWf9A2bv3u/Mh8vhgeBKNzyRMiFMbpHRv7z2bKu48TH
-         BEYG/Dbfc6IIrpOUtkcDcmiOb5GyGb7Vk1uq6SRaR3xiq3JAggjbvQaSFPKDgzno6b1W
-         BKD74Qzug7/j57ZHfcuZVrCycZDhCuDA9k5x9zj9eV1YQWeYNnCXWLG42MNQhm7FYwae
-         AcrdDfCY3QzcqNm49srHfJjmkCSCVpzv1Gdwv1DYylLlvY6osnucKc9s+KSDB8deE2JI
-         9kwA==
-X-Gm-Message-State: AOAM533aQc6Ok/7RponV6eTpEnf+GasKSdPBeh0mvvcOD0/JIfi6rdFr
-        e7H5XnhM97TupIfK9No+lKGArQ==
-X-Google-Smtp-Source: ABdhPJwCpu7ZLTBlZ04avtyCFRGaPeBaWnt/hkumvEwqIWOhFFFP541kmKJ1R33evovp9FK+P3pLOQ==
-X-Received: by 2002:a92:8587:: with SMTP id f129mr28160ilh.226.1602017161959;
-        Tue, 06 Oct 2020 13:46:01 -0700 (PDT)
+        bh=bv+5GiaG/LcuKTT3iu5LLoZTiwRc7KlRllwmZiSrosw=;
+        b=hOB31epMKe2+dx/9mNWmO6Yd6qN8b6DOG/lOrlCjdQRR8M2M8x2wUtE62n6K/pQfSK
+         xMUZvUGzrtk4kAT/zUhZxIoDCvI1qMPFKk0dVB47xsYHG2AxU9kgCIyChAPxcUlgE6OV
+         XG7N49ydRhwxbeSOwavuNc47Muwl4zIY0XSo4nhlIPCoziP82NlIJ/+VzPBd59LIGx6C
+         tuQpPw3NW1DvnOXfx3Pr7IVChzyZ+xkOC7+NQWqod3uTE0xDwy4eP9E2MI1G6wCNFYUN
+         YMoZKx3pQ2jE+TU/9nlIRQIjRdSDx6DDEbep1ByaDEXbTN2JeUXDTF1ovunpLR/E/0/1
+         cvdg==
+X-Gm-Message-State: AOAM530U/GlmVY5XW/RQCWvtYB6j/Wc7KAglB1xyae2tl5vXpZjbfZ9U
+        sXeEgrAcjlon8UygbmP1C987VA==
+X-Google-Smtp-Source: ABdhPJy7xF551ziYXOReG4BPUfTRZBAq199bpzKm3MbF/0nJHFcRodAHVwJxtWbsU8uC4/CbzkcL1Q==
+X-Received: by 2002:a05:6e02:54d:: with SMTP id i13mr4975410ils.219.1602017163833;
+        Tue, 06 Oct 2020 13:46:03 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s69sm1665627ili.54.2020.10.06.13.46.01
+        by smtp.gmail.com with ESMTPSA id s69sm1665627ili.54.2020.10.06.13.46.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 13:46:01 -0700 (PDT)
+        Tue, 06 Oct 2020 13:46:03 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org, keescook@chromium.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/11] drivers/misc/vmw_vmci: convert num guest devices counter to counter_atomic32
-Date:   Tue,  6 Oct 2020 14:44:41 -0600
-Message-Id: <81f5ca6f9b0a032840d6ec0fb403d4908b9ddec9.1602011710.git.skhan@linuxfoundation.org>
+To:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
+        james.morse@arm.com, rric@kernel.org, gregkh@linuxfoundation.org,
+        keescook@chromium.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>
+Subject: [PATCH v2 11/11] drivers/edac: convert pci counters to counter_atomic32
+Date:   Tue,  6 Oct 2020 14:44:42 -0600
+Message-Id: <03dc29c130e6522448a4328b1cfa8fbf7c9a8c97.1602011710.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1602011710.git.skhan@linuxfoundation.org>
 References: <cover.1602011710.git.skhan@linuxfoundation.org>
@@ -69,64 +71,160 @@ counter_atomic* variables will wrap around to 0 when it overflows and
 should not be used to guard resource lifetimes, device usage and
 open counts that control state changes, and pm states.
 
-atomic_t variable used to count number of vmci guest devices is used
-as just as counter and it doesn't control object lifetimes or state
-management. Overflow doesn't appear to be problem for this use.
+atomic_t variables used for pci counters keep track of pci parity and
+non-parity errors. Convert them to use counter_atomic32.
 
-Convert it to use counter_atomic32.
+Overflow will wrap around and reset the counts as was the case prior to
+the conversion.
 
-This conversion doesn't change the overflow wrap around behavior.
-
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Borislav Petkov <bp@suse.de>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/misc/vmw_vmci/vmci_guest.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/edac/edac_pci.h       |  5 +++--
+ drivers/edac/edac_pci_sysfs.c | 28 ++++++++++++++--------------
+ 2 files changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_guest.c b/drivers/misc/vmw_vmci/vmci_guest.c
-index cc8eeb361fcd..86ae27b05fc2 100644
---- a/drivers/misc/vmw_vmci/vmci_guest.c
-+++ b/drivers/misc/vmw_vmci/vmci_guest.c
-@@ -20,6 +20,7 @@
- #include <linux/smp.h>
- #include <linux/io.h>
- #include <linux/vmalloc.h>
+diff --git a/drivers/edac/edac_pci.h b/drivers/edac/edac_pci.h
+index 5175f5724cfa..797b25a6afc0 100644
+--- a/drivers/edac/edac_pci.h
++++ b/drivers/edac/edac_pci.h
+@@ -30,12 +30,13 @@
+ #include <linux/pci.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
 +#include <linux/counters.h>
  
- #include "vmci_datagram.h"
- #include "vmci_doorbell.h"
-@@ -68,11 +69,11 @@ struct pci_dev *vmci_pdev;
- static struct vmci_guest_device *vmci_dev_g;
- static DEFINE_SPINLOCK(vmci_dev_spinlock);
+ #ifdef CONFIG_PCI
  
--static atomic_t vmci_num_guest_devices = ATOMIC_INIT(0);
-+static struct counter_atomic32 vmci_num_guest_devices = COUNTER_ATOMIC_INIT(0);
+ struct edac_pci_counter {
+-	atomic_t pe_count;
+-	atomic_t npe_count;
++	struct counter_atomic32 pe_count;
++	struct counter_atomic32 npe_count;
+ };
  
- bool vmci_guest_code_active(void)
+ /*
+diff --git a/drivers/edac/edac_pci_sysfs.c b/drivers/edac/edac_pci_sysfs.c
+index 53042af7262e..d33a726234c0 100644
+--- a/drivers/edac/edac_pci_sysfs.c
++++ b/drivers/edac/edac_pci_sysfs.c
+@@ -23,8 +23,8 @@ static int edac_pci_log_pe = 1;		/* log PCI parity errors */
+ static int edac_pci_log_npe = 1;	/* log PCI non-parity error errors */
+ static int edac_pci_poll_msec = 1000;	/* one second workq period */
+ 
+-static atomic_t pci_parity_count = ATOMIC_INIT(0);
+-static atomic_t pci_nonparity_count = ATOMIC_INIT(0);
++static struct counter_atomic32 pci_parity_count = COUNTER_ATOMIC_INIT(0);
++static struct counter_atomic32 pci_nonparity_count = COUNTER_ATOMIC_INIT(0);
+ 
+ static struct kobject *edac_pci_top_main_kobj;
+ static atomic_t edac_pci_sysfs_refcount = ATOMIC_INIT(0);
+@@ -58,13 +58,13 @@ int edac_pci_get_poll_msec(void)
+ /**************************** EDAC PCI sysfs instance *******************/
+ static ssize_t instance_pe_count_show(struct edac_pci_ctl_info *pci, char *data)
  {
--	return atomic_read(&vmci_num_guest_devices) != 0;
-+	return counter_atomic32_read(&vmci_num_guest_devices) != 0;
+-	return sprintf(data, "%u\n", atomic_read(&pci->counters.pe_count));
++	return sprintf(data, "%u\n", counter_atomic32_read(&pci->counters.pe_count));
  }
  
- u32 vmci_get_vm_context_id(void)
-@@ -624,7 +625,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
+ static ssize_t instance_npe_count_show(struct edac_pci_ctl_info *pci,
+ 				char *data)
+ {
+-	return sprintf(data, "%u\n", atomic_read(&pci->counters.npe_count));
++	return sprintf(data, "%u\n", counter_atomic32_read(&pci->counters.npe_count));
+ }
  
- 	dev_dbg(&pdev->dev, "Registered device\n");
+ #define to_instance(k) container_of(k, struct edac_pci_ctl_info, kobj)
+@@ -553,7 +553,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 			edac_printk(KERN_CRIT, EDAC_PCI,
+ 				"Signaled System Error on %s\n",
+ 				pci_name(dev));
+-			atomic_inc(&pci_nonparity_count);
++			counter_atomic32_inc(&pci_nonparity_count);
+ 		}
  
--	atomic_inc(&vmci_num_guest_devices);
-+	counter_atomic32_inc(&vmci_num_guest_devices);
+ 		if (status & (PCI_STATUS_PARITY)) {
+@@ -561,7 +561,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 				"Master Data Parity Error on %s\n",
+ 				pci_name(dev));
  
- 	/* Enable specific interrupt bits. */
- 	cmd = VMCI_IMR_DATAGRAM;
-@@ -684,7 +685,7 @@ static void vmci_guest_remove_device(struct pci_dev *pdev)
+-			atomic_inc(&pci_parity_count);
++			counter_atomic32_inc(&pci_parity_count);
+ 		}
  
- 	dev_dbg(&pdev->dev, "Removing device\n");
+ 		if (status & (PCI_STATUS_DETECTED_PARITY)) {
+@@ -569,7 +569,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 				"Detected Parity Error on %s\n",
+ 				pci_name(dev));
  
--	atomic_dec(&vmci_num_guest_devices);
-+	counter_atomic32_dec(&vmci_num_guest_devices);
+-			atomic_inc(&pci_parity_count);
++			counter_atomic32_inc(&pci_parity_count);
+ 		}
+ 	}
  
- 	vmci_qp_guest_endpoints_exit();
+@@ -592,7 +592,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 				edac_printk(KERN_CRIT, EDAC_PCI, "Bridge "
+ 					"Signaled System Error on %s\n",
+ 					pci_name(dev));
+-				atomic_inc(&pci_nonparity_count);
++				counter_atomic32_inc(&pci_nonparity_count);
+ 			}
  
+ 			if (status & (PCI_STATUS_PARITY)) {
+@@ -600,7 +600,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 					"Master Data Parity Error on "
+ 					"%s\n", pci_name(dev));
+ 
+-				atomic_inc(&pci_parity_count);
++				counter_atomic32_inc(&pci_parity_count);
+ 			}
+ 
+ 			if (status & (PCI_STATUS_DETECTED_PARITY)) {
+@@ -608,7 +608,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 					"Detected Parity Error on %s\n",
+ 					pci_name(dev));
+ 
+-				atomic_inc(&pci_parity_count);
++				counter_atomic32_inc(&pci_parity_count);
+ 			}
+ 		}
+ 	}
+@@ -646,7 +646,7 @@ void edac_pci_do_parity_check(void)
+ 	if (!check_pci_errors)
+ 		return;
+ 
+-	before_count = atomic_read(&pci_parity_count);
++	before_count = counter_atomic32_read(&pci_parity_count);
+ 
+ 	/* scan all PCI devices looking for a Parity Error on devices and
+ 	 * bridges.
+@@ -658,7 +658,7 @@ void edac_pci_do_parity_check(void)
+ 	/* Only if operator has selected panic on PCI Error */
+ 	if (edac_pci_get_panic_on_pe()) {
+ 		/* If the count is different 'after' from 'before' */
+-		if (before_count != atomic_read(&pci_parity_count))
++		if (before_count != counter_atomic32_read(&pci_parity_count))
+ 			panic("EDAC: PCI Parity Error");
+ 	}
+ }
+@@ -686,7 +686,7 @@ void edac_pci_handle_pe(struct edac_pci_ctl_info *pci, const char *msg)
+ {
+ 
+ 	/* global PE counter incremented by edac_pci_do_parity_check() */
+-	atomic_inc(&pci->counters.pe_count);
++	counter_atomic32_inc(&pci->counters.pe_count);
+ 
+ 	if (edac_pci_get_log_pe())
+ 		edac_pci_printk(pci, KERN_WARNING,
+@@ -711,7 +711,7 @@ void edac_pci_handle_npe(struct edac_pci_ctl_info *pci, const char *msg)
+ {
+ 
+ 	/* global NPE counter incremented by edac_pci_do_parity_check() */
+-	atomic_inc(&pci->counters.npe_count);
++	counter_atomic32_inc(&pci->counters.npe_count);
+ 
+ 	if (edac_pci_get_log_npe())
+ 		edac_pci_printk(pci, KERN_WARNING,
 -- 
 2.25.1
 
