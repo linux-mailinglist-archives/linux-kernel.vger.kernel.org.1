@@ -2,121 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73E8284AA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F3E284A7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgJFLD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:03:28 -0400
-Received: from mailout04.rmx.de ([94.199.90.94]:38498 "EHLO mailout04.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFLD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:03:28 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout04.rmx.de (Postfix) with ESMTPS id 4C5F2M2jPXz3qmHQ;
-        Tue,  6 Oct 2020 13:03:39 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4C5F1Q4G8fz2TTRb;
-        Tue,  6 Oct 2020 13:02:50 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.97) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 6 Oct
- 2020 12:53:54 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v3 3/3] i2c: imx: Don't generate STOP condition if arbitration has been lost
-Date:   Tue, 6 Oct 2020 12:51:35 +0200
-Message-ID: <20201006105135.28985-4-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201006105135.28985-1-ceggers@arri.de>
-References: <20201006060528.drh2yoo2dklyntez@pengutronix.de>
- <20201006105135.28985-1-ceggers@arri.de>
+        id S1726013AbgJFKwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:52:49 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:41065 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFKws (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:52:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601981584; x=1633517584;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XWe73CyLKuuLoicTnYzhkWc7m8Pv7TxMKAoB74+Eo5I=;
+  b=dm6tXuKG9eXeRgxCt8P+ehlXmfBTFbPL0m4MYZPOtviUfXI072oWMgTG
+   jGEcZ3g5fnklQR4/pRAl5Y9zmSTCcW3xpr8GGCkkZ+E+Y74Mh54ldrJ+u
+   r+yKbTpD9GQRtDyB6IAYmkTNtE8XjxJikfvt+fex2T+4GYkNhGZ4Qyo16
+   SZ6knGm1OUbKBvZWv5yT/vpoH7xAkZKGFmSA8UMXPebI4u9bcgRWnQrFX
+   3lAgXXiPbWcdWeehYzLcR1n172Q7YNfBpwYGFGSQYO+HAidqSIbWR+RRi
+   vjU7uevym0B3wBWtsAaiSGnPzIwhqJFIDc9dKceNttuXXBX80bzq/blid
+   Q==;
+IronPort-SDR: 5+pWw0P3bETXIx220LLQz2A70U3JP4Ta3/3lvJJM7Z9FmDE3d5qTe0x1ddvEmVEU4EM0+0KVMA
+ P3n2uBOzj3btpYOPVqFjV7tvadbJDvgy5AIGYhN8UlJMKfvNwXqF9owzNMOoRoclrAoaUnjWQq
+ dAjE/DlulZLNf0+iMTJAf9wHKD7WZ4vwuYrVHNIRgSHEQvvJ6vAMsRcyxtd8vcThoH2rxkam46
+ KNwEmj7O1GzQpRdnu/majVzBE56MG8c2pyUxlZAuWQgDYqM2qXJZLDoMCLxBta9y2ifJdCevq8
+ 8c4=
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="91592415"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Oct 2020 03:53:03 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 6 Oct 2020 03:52:54 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 6 Oct 2020 03:53:03 -0700
+Date:   Tue, 6 Oct 2020 12:53:02 +0200
+From:   "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+CC:     "jiri@resnulli.us" <jiri@resnulli.us>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
+Subject: Re: [net-next v2 10/11] bridge: switchdev: cfm: switchdev interface
+ implementation
+Message-ID: <20201006105302.gk4yur5ztgwgbbzu@ws.localdomain>
+References: <20201001103019.1342470-1-henrik.bjoernlund@microchip.com>
+ <20201001103019.1342470-11-henrik.bjoernlund@microchip.com>
+ <20201001124929.GM8264@nanopsycho>
+ <20201005130712.ybbgiddb7bnbkz6h@ws.localdomain>
+ <fb313c83e6ac750d4bcdf96d2b2d7ebe4ae98dd6.camel@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.97]
-X-RMX-ID: 20201006-130258-4C5F1Q4G8fz2TTRb-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <fb313c83e6ac750d4bcdf96d2b2d7ebe4ae98dd6.camel@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If arbitration is lost, the master automatically changes to slave mode.
-I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
-by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
+On 06.10.2020 10:50, Nikolay Aleksandrov wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+>On Mon, 2020-10-05 at 15:07 +0200, Allan W. Nielsen wrote:
+>> Hi Jiri
+>>
+>> On 01.10.2020 14:49, Jiri Pirko wrote:
+>> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>> >
+>> > Thu, Oct 01, 2020 at 12:30:18PM CEST, henrik.bjoernlund@microchip.com wrote:
+>> > > This is the definition of the CFM switchdev interface.
+>> > >
+>> > > The interface consist of these objects:
+>> > >    SWITCHDEV_OBJ_ID_MEP_CFM,
+>> > >    SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM,
+>> > >    SWITCHDEV_OBJ_ID_CC_CONFIG_CFM,
+>> > >    SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM,
+>> > >    SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM,
+>> > >    SWITCHDEV_OBJ_ID_MEP_STATUS_CFM,
+>> > >    SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM
+>> > >
+>> > > MEP instance add/del
+>> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CFM)
+>> > >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_MEP_CFM)
+>> > >
+>> > > MEP cofigure
+>> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM)
+>> > >
+>> > > MEP CC cofigure
+>> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CONFIG_CFM)
+>> > >
+>> > > Peer MEP add/del
+>> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
+>> > >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
+>> > >
+>> > > Start/stop CCM transmission
+>> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM)
+>> > >
+>> > > Get MEP status
+>> > >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_MEP_STATUS_CFM)
+>> > >
+>> > > Get Peer MEP status
+>> > >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM)
+>> > >
+>> > > Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
+>> > > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
+>> >
+>> > You have to submit the driver parts as a part of this patchset.
+>> > Otherwise it is no good.
+>> Fair enough.
+>>
+>> With MRP we did it like this, and after Nik asked for details on what is
+>> being offload, we thought that adding this would help.
+>>
+>> The reason why we did not include the implementation of this interface
+>> is that it is for a new SoC which is still not fully available which is
+>> why we have not done the basic SwitchDev driver for it yet. But the
+>> basic functionality clearly needs to come first.
+>>
+>> Our preference is to continue fixing the comments we got on the pure SW
+>> implementation and then get back to the SwitchDev offloading.
+>>
+>> This will mean dropping the last 2 patches in the serie.
+>>
+>> Does that work for you Jiri, and Nik?
+>>
+>> /Allan
+>>
+>
+>Sounds good to me. Sorry I was unresponsive last week, but I was sick and
+>couldn't get to netdev@. I'll review the set today.
 
-So calling i2c_imx_bus_busy() is not required and would busy-wait until
-timeout.
+Perfect. Thanks for the support.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: stable@vger.kernel.org # Requires trivial backporting, simple remove
-                           # the 3rd argument from the calls to
-                           # i2c_imx_bus_busy().
----
- drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+/Allan
 
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index bf0e94814222..1619c78a17d7 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -615,6 +615,8 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
- 		/* Stop I2C transaction */
- 		dev_dbg(&i2c_imx->adapter.dev, "<%s>\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		if (i2c_imx->dma)
- 			temp &= ~I2CR_DMAEN;
-@@ -778,9 +780,12 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
- 		 */
- 		dev_dbg(dev, "<%s> clear MSTA\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--		i2c_imx_bus_busy(i2c_imx, 0, false);
-+		if (!i2c_imx->stopped)
-+			i2c_imx_bus_busy(i2c_imx, 0, false);
- 	} else {
- 		/*
- 		 * For i2c master receiver repeat restart operation like:
-@@ -905,9 +910,12 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
- 				dev_dbg(&i2c_imx->adapter.dev,
- 					"<%s> clear MSTA\n", __func__);
- 				temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+				if (!(temp & I2CR_MSTA))
-+					i2c_imx->stopped =  1;
- 				temp &= ~(I2CR_MSTA | I2CR_MTX);
- 				imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--				i2c_imx_bus_busy(i2c_imx, 0, atomic);
-+				if (!i2c_imx->stopped)
-+					i2c_imx_bus_busy(i2c_imx, 0, atomic);
- 			} else {
- 				/*
- 				 * For i2c master receiver repeat restart operation like:
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
 
