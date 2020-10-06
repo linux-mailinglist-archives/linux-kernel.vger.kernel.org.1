@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A6E284ED4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17BD284EE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgJFPWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:22:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgJFPWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:22:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726131AbgJFPZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:25:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48748 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725981AbgJFPY7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:24:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601997899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f+g/7D43QuwHAkfXKPNpc0Kb6jrG+FbW0jRAxNnLbmU=;
+        b=gh7YRBfrUCouwTU8TsAzTSROrAsjPQ6LATdUFWY7KqJm2PWqUr8G+qG6fhuPUqdJVgosz4
+        5GsahgHWPH0cFIZqCq/NSSmCwNI4Vpx4NZtYQypAGPK6Nx9CxR+WBC1WWKP0h/tNz0o9IQ
+        TL96K5tD1zYQLVIV9BnWyFv41OCvepY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-3Wv_BLmNOBKqFPwvBRyHpg-1; Tue, 06 Oct 2020 11:24:54 -0400
+X-MC-Unique: 3Wv_BLmNOBKqFPwvBRyHpg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADA46206F7;
-        Tue,  6 Oct 2020 15:22:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601997740;
-        bh=S1iVkiUFy6uy3VDJOO4K1ZuOsQXL4YSszYSoi/VRUN4=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=xKBEQODkIy3GsU6oVTT7DQ2AzitYekNw2M5EEtKJaCo53c8gNEQWYThOxvwpcdSno
-         KrMDSx943hssEKWWEJrcyCjdUSKWD7rU0AG1+wKo2AxK67ekf/4jHUqs7SF/sz5ChH
-         uAPwuKS+o/JOymYjFEh9BR+xshZFU+ajcBCsHZBE=
-Date:   Tue, 06 Oct 2020 16:21:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        Ikjoon Jang <ikjn@chromium.org>, linux-spi@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Chuanhong Guo <gch981213@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Bayi Cheng <bayi.cheng@mediatek.com>
-In-Reply-To: <20201006075405.11658-1-ikjn@chromium.org>
-References: <20201006075405.11658-1-ikjn@chromium.org>
-Subject: Re: [PATCH v5 0/4] spi: spi-mtk-nor: Add mt8192 support.
-Message-Id: <160199767222.51670.3734614928082505881.b4-ty@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C6B3104D3E0;
+        Tue,  6 Oct 2020 15:24:52 +0000 (UTC)
+Received: from gondolin (ovpn-112-156.ams2.redhat.com [10.36.112.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E43F6115F;
+        Tue,  6 Oct 2020 15:24:47 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 17:24:44 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
+        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] s390/pci: track whether util_str is valid in the
+ zpci_dev
+Message-ID: <20201006172444.1c07ee02.cohuck@redhat.com>
+In-Reply-To: <1601668844-5798-3-git-send-email-mjrosato@linux.ibm.com>
+References: <1601668844-5798-1-git-send-email-mjrosato@linux.ibm.com>
+        <1601668844-5798-3-git-send-email-mjrosato@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 15:54:01 +0800, Ikjoon Jang wrote:
-> This patchset adds 36bit dma address and power management
-> supports for mt8192-nor.
+On Fri,  2 Oct 2020 16:00:41 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+
+> We'll need to keep track of whether or not the byte string in util_str is
+> valid and thus needs to be passed to a vfio-pci passthrough device.
 > 
-> Changes in v5:
-> - Rebase from merge conflict
-> 
-> Changes in v4:
-> - Drop two patches from a list, addressed by an another series
-> - Fix 0-day ci 'shift-count-overflow' warning
-> 
-> [...]
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> Acked-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> ---
+>  arch/s390/include/asm/pci.h | 3 ++-
+>  arch/s390/pci/pci_clp.c     | 1 +
+>  2 files changed, 3 insertions(+), 1 deletion(-)
 
-Applied to
+FWIW:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Acked-by: Cornelia Huck <cohuck@redhat.com>
 
-Thanks!
-
-[1/4] dt-bindings: spi: add mt8192-nor compatible string
-      commit: 9935b612a5dba99cf8dc0f9fe7592a2a35c005fb
-[2/4] spi: spi-mtk-nor: use dma_alloc_coherent() for bounce buffer
-      commit: a1daaa991ed1f13b86f6d9df174f21c4e23d33ba
-[3/4] spi: spi-mtk-nor: support 36bit dma addressing
-      commit: e836d4cf615f89c6695408e5dcacdefa5cf50167
-[4/4] spi: spi-mtk-nor: Add power management support
-      commit: 3bfd9103c7af07915a84a6849e718622936233c1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
