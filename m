@@ -2,164 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF47285194
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B18285199
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgJFS3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 14:29:45 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:43982 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgJFS3p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:29:45 -0400
-Received: by mail-oi1-f195.google.com with SMTP id l85so13620809oih.10;
-        Tue, 06 Oct 2020 11:29:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HdoCilP9gHxlZuptkIiqOS0CEMQ6bgTjni0IwuiFV74=;
-        b=qnEk0y3gzdqczH65bYtTzhIDAezOy/x9xb9aMHRapd9E6iHUNpUfPqx+iZG8vD7sr8
-         eCGYngG4cp2fc9NFpRmYuokFIcf97DKUiCBYyGD9sif7fWvx8FNWnE/5iWaqwHfAAuCq
-         QR8Fq+lytgWAZnewqWRJsvxnCzjdL3NGzbwgxB4o3gXyA37hmQvJWrpKeGAfk8fZ2tOx
-         pdY7lpgPn7LP5YeChoKaERGowSzDEA1zxH6hyUiELS7A2aFtOBBcK9ORG+6k+ntuArNj
-         ys/kaJFuclYMPtipIIklZGUAUQqvmSq5zgbnNfsyVNIWFMm0QxNSafT9qOtKaadfjYnE
-         Y5kw==
-X-Gm-Message-State: AOAM530x8V0+t+uN2BkQNufHHnR4267pMWKYdkMTmYvaFV0i1PcUIXZ5
-        KMeWPBFOvp5+FhW6ITmwkw==
-X-Google-Smtp-Source: ABdhPJyEn/ZUppWqSvo9c2Fn7T2a6/QrTY0PirSgHBmjup22yXY1sTDgeHJYRnOoTBbOP2x3nXSc8A==
-X-Received: by 2002:a05:6808:1a:: with SMTP id u26mr3442678oic.78.1602008982994;
-        Tue, 06 Oct 2020 11:29:42 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 126sm1394296oof.28.2020.10.06.11.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 11:29:41 -0700 (PDT)
-Received: (nullmailer pid 2589688 invoked by uid 1000);
-        Tue, 06 Oct 2020 18:29:40 -0000
-Date:   Tue, 6 Oct 2020 13:29:40 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v9 05/15] dt-bindings: connector: Add property to set
- initial current cap for FRS
-Message-ID: <20201006182940.GA2574941@bogus>
-References: <20200929024004.244992-1-badhri@google.com>
- <20200929024004.244992-6-badhri@google.com>
+        id S1726847AbgJFSbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 14:31:00 -0400
+Received: from mga18.intel.com ([134.134.136.126]:60738 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725906AbgJFSa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:30:59 -0400
+IronPort-SDR: iL7HmIKyMR2j6VCKl4T8qij9Uxa+RdQnZuQJYZAJ4ebr5ZxxVZkVCSUXPYxI/rBbFApZzxg5m1
+ ZJFoHQnVb/lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="152390417"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="152390417"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 11:30:44 -0700
+IronPort-SDR: yJnOzM6JGUtNv3jxt5BfWpEVwPSVAWeJM5xLIt5aoybCmh3I63jJKlBLDREG5M/jngRsqOUS2G
+ 9piXHZZTlVjQ==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="342427114"
+Received: from bdchartr-mobl3.amr.corp.intel.com (HELO [10.212.48.222]) ([10.212.48.222])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 11:30:40 -0700
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
+ <20201005134534.GT6642@arm.com>
+ <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
+ <20201006092532.GU6642@arm.com>
+ <CAMe9rOq_nKa6xjHju3kVZephTiO+jEW3PqxgAhU9+RdLTo-jgg@mail.gmail.com>
+ <20201006152553.GY6642@arm.com>
+ <7663eff0-6c94-f6bf-f3e2-93ede50e75ed@intel.com>
+ <20201006170020.GB6642@arm.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3545e3f3-a716-5e82-bd24-450eb74b4563@intel.com>
+Date:   Tue, 6 Oct 2020 11:30:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929024004.244992-6-badhri@google.com>
+In-Reply-To: <20201006170020.GB6642@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 07:39:54PM -0700, Badhri Jagan Sridharan wrote:
-> This change adds frs-typec-current which allows setting the initial current
-> capability of the new source when vSafe5V is applied during PD3.0
-> sink Fast Role Swap.
+On 10/6/20 10:00 AM, Dave Martin wrote:
+> On Tue, Oct 06, 2020 at 08:33:47AM -0700, Dave Hansen wrote:
+>> On 10/6/20 8:25 AM, Dave Martin wrote:
+>>> Or are people reporting real stack overruns on x86 today?
+>> We have real overruns.  We have ~2800 bytes of XSAVE (regisiter) state
+>> mostly from AVX-512, and a 2048 byte MINSIGSTKSZ.
+> Right.  Out of interest, do you believe that's a direct consequence of
+> the larger kernel-generated signal frame, or does the expansion of
+> userspace stack frames play a role too?
 
-Shouldn't you Cc the person you copied this from?
+The kernel-generated signal frame is entirely responsible for the ~2800
+bytes that I'm talking about.
 
-
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
-> Changes since v1:
-> - Changing patch version to v6 to fix version number confusion.
-> 
-> Changes since v6:
-> - Removed the redundant usb-connector.txt that I created by mistake.
-> - Moved to yaml.
-> 
-> Changes since v7:
-> - Rebase 
-> 
-> Changes since v8:
-> - Redefine new-source-frs-typec-current as string enums to address
->   Rob Herring's comment.
-> ---
->  .../bindings/connector/usb-connector.yaml     | 26 +++++++++++++++++++
->  include/dt-bindings/usb/pd.h                  | 10 +++++++
->  2 files changed, 36 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> index 9bd52e63c935..0b8cd08a8678 100644
-> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> @@ -142,6 +142,32 @@ properties:
->      required:
->        - port@0
->  
-> +  new-source-frs-typec-current:
-> +    description: Initial current capability of the new source when vSafe5V
-> +      is applied during PD3.0 Fast Role Swap. "Table 6-14 Fixed Supply PDO - Sink"
-> +      of "USB Power Delivery Specification Revision 3.0, Version 1.2" provides the
-> +      different power levels and "6.4.1.3.1.6 Fast Role Swap USB Type-C Current"
-> +      provides a detailed description of the field. The sink PDO from current source
-> +      reflects the current source's(i.e. transmitter of the FRS signal) power
-> +      requirement during fr swap. The current sink (i.e. receiver of the FRS signal),
-> +      a.k.a new source, should check if it will be able to satisfy the current source's,
-> +      new sink's, requirement during frswap before enabling the frs signal reception.
-> +      This property refers to maximum current capability that the current sink can
-> +      satisfy. During FRS, VBUS voltage is at 5V, as the partners are in implicit
-> +      contract, hence, the power level is only a function of the current capability.
-> +      "not-supported" implies sink to source fast role swap not supported.
-> +      "default" refers to default USB power level as described by
-> +      "Table 6-14 Fixed Supply PDO - Sink".
-> +      "1.5A" refers to 1.5A@5V.
-> +      "3.0A" refers to 3.0A@5V.
-
-
-> +
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum:
-> +      - not-supported
-> +      - default
-> +      - 1.5A
-> +      - 3.0A
-
-What happens if the property is not present?
-
-I'm not crazy about mixing strings and what could be a number.
-
-> +
->  required:
->    - compatible
->  
-> diff --git a/include/dt-bindings/usb/pd.h b/include/dt-bindings/usb/pd.h
-> index 985f2bbd4d24..db1ad4532197 100644
-> --- a/include/dt-bindings/usb/pd.h
-> +++ b/include/dt-bindings/usb/pd.h
-> @@ -35,6 +35,16 @@
->  
->  #define VSAFE5V 5000 /* mv units */
->  
-> +/*
-> + * Based on "Table 6-14 Fixed Supply PDO - Sink" of "USB Power Delivery Specification Revision 3.0,
-> + * Version 1.2"
-> + * Initial current capability of the new source when vSafe5V is applied.
-> + */
-> +#define FRS_NOT_SUPPORTED	0
-> +#define FRS_DEFAULT_POWER	1
-> +#define FRS_5V_1P5A		2
-> +#define FRS_5V_3A		3
-
-Why are these in a DT header, but not used by the binding? Though 
-perhaps they should be. Are these numbers from the spec or made up?
-
-> +
->  #define PDO_BATT_MAX_VOLT_SHIFT	20	/* 50mV units */
->  #define PDO_BATT_MIN_VOLT_SHIFT	10	/* 50mV units */
->  #define PDO_BATT_MAX_PWR_SHIFT	0	/* 250mW units */
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
+I'm sure there are some systems where userspace plays a role, but those
+are much less of a worry at the moment, since the kernel-induced
+overflows mean an instant crash that userspace has no recourse for.
