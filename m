@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C06285183
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61061285186
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgJFSTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 14:19:40 -0400
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:43197 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgJFSTk (ORCPT
+        id S1726805AbgJFSVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 14:21:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53821 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725906AbgJFSVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:19:40 -0400
-Received: by mail-oo1-f68.google.com with SMTP id w25so3420645oos.10;
-        Tue, 06 Oct 2020 11:19:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BJWbJD2f71Np9nV5SqEsQ+f8lbMmKTYWc1i1BZ6eq58=;
-        b=PYYYZ1nNYPucm9eR/p5eizeUA8MmHER68Kjj5hpRnxNq8WnDao82AAnGBUMYm1BY99
-         BdJZvVaQhr/IXN0usxfvjZuiOFrTdPhmHbvZxHdsA9o4SfK3B5pYdZrio2i3ctXKC+ua
-         pOEGu0D0AgSFs7JhpbTjTt+v0pXcWcv+Z7BeDMVIFFlUY3Ss5zjB0i+neKq3uCCh8gZE
-         KoJqYNsafDNoeV3Xxy3L8RhJsjIuXzLcu4VfeCHPyLXZ0aS8AZrQOxqlzG/x3Ghy7QqX
-         dSPPftGjREqCF2Xo3bOZzrZ/dhLPJHiHAnLEIGZwu5uqcj6S7dcaLPKnvGzg7uW/W/Yi
-         4Zbw==
-X-Gm-Message-State: AOAM533ZO28l5Lk6/Snn8dCJzzBfTTWDYtet40FHj1CmSobj0lWp6Gg0
-        zS3DQc5VyRAyBi4YCaQejA==
-X-Google-Smtp-Source: ABdhPJwFL4l3f1wRexJyo8j2AuIR3ZQtB3DQa+PNN69rLAGMCtIaGFZl8KBStXM7MZMo3OrJBwy+jA==
-X-Received: by 2002:a4a:3954:: with SMTP id x20mr3995362oog.6.1602008379203;
-        Tue, 06 Oct 2020 11:19:39 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q8sm1331026otf.7.2020.10.06.11.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 11:19:38 -0700 (PDT)
-Received: (nullmailer pid 2573852 invoked by uid 1000);
-        Tue, 06 Oct 2020 18:19:37 -0000
-Date:   Tue, 6 Oct 2020 13:19:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     kholk11@gmail.com
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        georgi.djakov@linaro.org, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] interconnect: qcom: Add SDM660 interconnect
- provider driver
-Message-ID: <20201006181937.GA2572634@bogus>
-References: <20200928195853.40084-1-kholk11@gmail.com>
- <20200928195853.40084-2-kholk11@gmail.com>
+        Tue, 6 Oct 2020 14:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602008470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vLEPMopDgwBeHhoD6xTsXdWXnyecjzlObkKeapKxZb8=;
+        b=IJsCv7rVm4ItwWK/UO6AshW+T9xN00MAwWw8GovePUb6F6ppvf9dmmXeW3K/eLkNpPVhsP
+        XOwRx5/Rn7i6Y/thmZMOU9m6SyFSCRf3duKwDAZTUmS8LmYDjRLDv2U5jEZxKcyHaU4j8Z
+        UCZw7jIym68VuJKcFm6QmhIN/zJcJ6w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-461-alcayjT3P7G1iHsDj3bAkg-1; Tue, 06 Oct 2020 14:21:08 -0400
+X-MC-Unique: alcayjT3P7G1iHsDj3bAkg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 777FF64088;
+        Tue,  6 Oct 2020 18:21:05 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-154.ams2.redhat.com [10.36.113.154])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E2F4F60BFA;
+        Tue,  6 Oct 2020 18:21:01 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Dave Martin via Libc-alpha <libc-alpha@sourceware.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
+        <20201005134534.GT6642@arm.com>
+        <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
+        <20201006092532.GU6642@arm.com>
+        <CAMe9rOq_nKa6xjHju3kVZephTiO+jEW3PqxgAhU9+RdLTo-jgg@mail.gmail.com>
+        <20201006152553.GY6642@arm.com>
+        <7663eff0-6c94-f6bf-f3e2-93ede50e75ed@intel.com>
+        <20201006170020.GB6642@arm.com>
+Date:   Tue, 06 Oct 2020 20:21:00 +0200
+In-Reply-To: <20201006170020.GB6642@arm.com> (Dave Martin via Libc-alpha's
+        message of "Tue, 6 Oct 2020 18:00:21 +0100")
+Message-ID: <87362rp65v.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928195853.40084-2-kholk11@gmail.com>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 09:58:52PM +0200, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> 
-> Introduce a driver for the Qualcomm interconnect busses found in
-> the SDM630/SDM636/SDM660 SoCs.
-> The topology consists of several NoCs that are controlled by a
-> remote processor that collects the aggregated bandwidth for each
-> master-slave pairs.
-> 
-> On a note, these chips are managing the "bus QoS" in a "hybrid"
-> fashion: some of the paths in the topology are managed through
-> (and by, of course) the RPM uC, while some others are "AP Owned",
-> meaning that the AP shall do direct writes to the appropriate
-> QoS registers for the specific paths and ports, instead of sending
-> an indication to the RPM and leaving the job to that one.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  drivers/interconnect/qcom/Kconfig             |   9 +
->  drivers/interconnect/qcom/Makefile            |   2 +
->  drivers/interconnect/qcom/sdm660.c            | 919 ++++++++++++++++++
->  .../dt-bindings/interconnect/qcom,sdm660.h    | 116 +++
+* Dave Martin via Libc-alpha:
 
-This goes with the binding.
+> On Tue, Oct 06, 2020 at 08:33:47AM -0700, Dave Hansen wrote:
+>> On 10/6/20 8:25 AM, Dave Martin wrote:
+>> > Or are people reporting real stack overruns on x86 today?
+>> 
+>> We have real overruns.  We have ~2800 bytes of XSAVE (regisiter) state
+>> mostly from AVX-512, and a 2048 byte MINSIGSTKSZ.
+>
+> Right.  Out of interest, do you believe that's a direct consequence of
+> the larger kernel-generated signal frame, or does the expansion of
+> userspace stack frames play a role too?
 
->  4 files changed, 1046 insertions(+)
->  create mode 100644 drivers/interconnect/qcom/sdm660.c
->  create mode 100644 include/dt-bindings/interconnect/qcom,sdm660.h
+I must say that I do not quite understand this question.
+
+32 64-*byte* registers simply need 2048 bytes of storage space worst
+case, there is really no way around that.
+
+> In practice software just assumes SIGSTKSZ and then ignores the problem
+> until / unless an actual stack overflow is seen.
+>
+> There's probably a lot of software out there whose stack is
+> theoretically too small even without AVX-512 etc. in the mix, especially
+> when considering the possibility of nested signals...
+
+That is certainly true.  We have seen problems with ntpd, which
+requested a 16 KiB stack, at a time when there were various deductions
+from the stack size, and since the glibc dynamic loader also uses XSAVE,
+ntpd exceeded the remaining stack space.  But in this case, we just
+fudged the stack size computation in pthread_create and made it less
+likely that the dynamic loader was activated, which largely worked
+around this particular problem.  For MINSIGSTKSZ, we just don't have
+this option because it's simply too small in the first place.
+
+I don't immediately recall a bug due to SIGSTKSZ being too small.  The
+test cases I wrote for this were all artificial, to raise awareness of
+this issue (applications treating these as recommended values, rather
+than minimum value to avoid immediately sigaltstack/phtread_create
+failures, same issue with PTHREAD_STACK_MIN).
+
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+
