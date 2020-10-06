@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677F528513F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8F6285147
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgJFR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgJFR4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:56:54 -0400
-Received: from sstabellini-ThinkPad-T480s (c-24-130-65-46.hsd1.ca.comcast.net [24.130.65.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECA64206D4;
-        Tue,  6 Oct 2020 17:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602007013;
-        bh=6xwkV5dowZG+AGFK3o6Fg/zFGiBS1Zab6Mdlj9bmdf8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=p/o8rpkPaWKAOJErXCTTnFk86VLXwqH9uU7bgiHZrpS2zPwxMKi9yqd0krYwsViDK
-         mZ0wW7xCx8VizqKhE0K8vAJ+jisxAt+oOURnRiiLIw1gUSJsFiL9w30iWr88TAOows
-         jAoRglv7lDrdcz7rt2IuDEdDREj9qLyTU1PA5sZo=
-Date:   Tue, 6 Oct 2020 10:56:52 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org, jgross@suse.com,
-        boris.ostrovsky@oracle.com
-Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
- correctly
-In-Reply-To: <20201006114058.b93839b1b8f35a470874572b@kernel.org>
-Message-ID: <alpine.DEB.2.21.2010061040350.10908@sstabellini-ThinkPad-T480s>
-References: <160190516028.40160.9733543991325671759.stgit@devnote2> <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org> <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s> <20201006114058.b93839b1b8f35a470874572b@kernel.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726724AbgJFR6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:58:46 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:41705 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726197AbgJFR6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 13:58:46 -0400
+Received: (qmail 426512 invoked by uid 1000); 6 Oct 2020 13:58:45 -0400
+Date:   Tue, 6 Oct 2020 13:58:45 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     "Harley A.W. Lorenzo" <hl1998@protonmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-safety@lists.elisa.tech" <linux-safety@lists.elisa.tech>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH] usb: host: ehci-sched: avoid possible NULL dereference
+Message-ID: <20201006175845.GC423499@rowland.harvard.edu>
+References: <20201005213149.12332-1-sudipm.mukherjee@gmail.com>
+ <brWYeL8miTAikvEPYFNe2Kpe05OBtiD6yuS6jRg1VCX-lt7ANc1B2y7AM6ECEoG9AJwZP5_5qoGO7POvK0MtruvqG8q8kHbyHiOUIZ72Klk=@protonmail.com>
+ <20201006012544.GB399825@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006012544.GB399825@rowland.harvard.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020, Masami Hiramatsu wrote:
-> On Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
-> Stefano Stabellini <sstabellini@kernel.org> wrote:
-> 
-> > On Mon, 5 Oct 2020, Julien Grall wrote:
-> > > Hi Masami,
-> > > 
-> > > On 05/10/2020 14:39, Masami Hiramatsu wrote:
-> > > > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
-> > > > address conversion.
-> > > > 
-> > > > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-> > > > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-> > > > assumes the given virtual address is in contiguous kernel memory
-> > > > area, it can not convert the per-cpu memory if it is allocated on
-> > > > vmalloc area (depends on CONFIG_SMP).
-> > > 
-> > > Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
-> > > region for CPU0 is allocated outside of vmalloc area.
-> > > 
-> > > However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
-> > > enabled.
+On Mon, Oct 05, 2020 at 09:25:44PM -0400, stern@rowland.harvard.edu wrote:
+> On Mon, Oct 05, 2020 at 11:19:02PM +0000, Harley A.W. Lorenzo wrote:
+> > On Monday, October 5, 2020 5:31 PM, Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
 > > 
-> > I cannot reproduce the issue with defconfig, but I can with Masami's
-> > kconfig.
+> > > find_tt() can return NULL or the error value in ERR_PTR() and
+> > > dereferencing the return value without checking for the error can
+> > > lead to a possible dereference of NULL pointer or ERR_PTR().
 > > 
-> > If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
-> > problem still appears.
+> > Looks fine to me. There is in fact no checks of the return value
+> > before a dereference here, and this solves that.
 > > 
-> > If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
-> > strange because CONFIG_NUMA is enabled in defconfig, and defconfig
-> > works.
+> > Reviewed-by: Harley A.W. Lorenzo <hl1998@protonmail.com
 > 
-> Hmm, strange, because when I disabled CONFIG_NUMA_BALANCING, the issue
-> disappeared.
-> 
-> --- config-5.9.0-rc4+   2020-10-06 11:36:20.620107129 +0900
-> +++ config-5.9.0-rc4+.buggy     2020-10-05 21:04:40.369936461 +0900
-> @@ -131,7 +131,8 @@
->  CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
->  CONFIG_CC_HAS_INT128=y
->  CONFIG_ARCH_SUPPORTS_INT128=y
-> -# CONFIG_NUMA_BALANCING is not set
-> +CONFIG_NUMA_BALANCING=y
-> +CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
->  CONFIG_CGROUPS=y
->  CONFIG_PAGE_COUNTER=y
->  CONFIG_MEMCG=y
-> 
-> So buggy config just enabled NUMA_BALANCING (and default enabled)
+> No, this patch is wrong.  In fact, these calls to find_tt() cannot 
+> return NULL or an ERR_PTR value.
 
-Yeah but both NUMA and NUMA_BALANCING are enabled in defconfig which
-works fine...
+Sudip, if you would prefer to submit a patch that adds comments to those 
+call sites explaining that find_tt() will not return NULL or an error, 
+that would be okay.
 
-[...]
-
-> > The fix is fine for me. I tested it and it works. We need to remove the
-> > "Fixes:" line from the commit message. Ideally, replacing it with a
-> > reference to what is the source of the problem.
-> 
-> OK, as I said, it seems commit 9a9ab3cc00dc ("xen/arm: SMP support") has
-> introduced the per-cpu code. So note it instead of Fixes tag.
-
-...and commit 9a9ab3cc00dc was already present in 5.8 which also works
-fine with your kconfig. Something else changed in 5.9 causing this
-breakage as a side effect. Commit 9a9ab3cc00dc is there since 2013, I
-think it is OK -- this patch is fixing something else.
+Alan Stern
