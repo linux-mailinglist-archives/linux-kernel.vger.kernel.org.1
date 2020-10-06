@@ -2,199 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D921284AB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55486284ABB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgJFLRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S1726078AbgJFLRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 07:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFLRH (ORCPT
+        with ESMTP id S1725891AbgJFLRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:17:07 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A945C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 04:17:06 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id m7so12223921oie.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 04:17:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ed4CPpQf2+RS5LGSULcGr/f7sf1iuf28SM1PWzcx72Y=;
-        b=S9Iv2gxHQxCWFzsKU5ve77A1mu78ohX8tt7S9aE4yMhxrsnpeDAPCCndSXgGymqJfw
-         wX91olia87cpZ+9MzKEfiXklRhOBR2/8NT9XAhRCk8C5ON248m+V/HV7vDXlS/0D0MFp
-         1uv0Ytj266rZbxoMJlKJUmVugE/CKKZlM80ZFRmj7UArMShJzxvfVLEFIVV4ZWPuwjc2
-         5OQ8OecrCgjTbCTwJAcxp3znIv0fZL85kuSe7OanlUUskWg3u05DPg+Jp3nEGhP5wQL5
-         c/P029Y71IfGUJ5raRJBpRsMpGQmFvkS9D7b3NwIWXM/8i0C4/MvrZRQmZ+lAcRLVk8R
-         xYQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Ed4CPpQf2+RS5LGSULcGr/f7sf1iuf28SM1PWzcx72Y=;
-        b=ok/Gt4HP64jxa99HloelQbg2bTIaVnw7hA+9JCE4G1Yv8wc/akgYQSCBNgUc1Gkkgq
-         iDRQemZNGVCmwivJnz0yuPA6GCGHq0nv0AGakitkvNIi1at7yWgdknnLmVj28szTWtRp
-         E7HK0q7jnjTidFWFGlTGyiGEqMGcRtc0pYpsV9GvalJPX8R7NmucUzHUaG0obuLv9zg9
-         tK3asLDaiVHA41dFCa/F82s+/OlEP7yuxLNl0frpUbdb/6AprVYyod42ZruiJPYemRf+
-         vyxyK1wzBlQ5zAhD6DRudZKN7bGsyHqyZcKR847vHohZCrP1cOEx2mLFQVEHvTy9kt4j
-         ml1Q==
-X-Gm-Message-State: AOAM532Bf/v9K24n5LmYH/cX2PY0ZUsP6AFojRRSNeZYpdgI0NXPHuKN
-        EX9yj8JrquzyJRLxoLnYJ2g=
-X-Google-Smtp-Source: ABdhPJzMytdQqi1EXWTkhLvnBAz48cDfurcOKox6wkRveVL6Dbb6b6i5JQCoSGldySeCjIt77bFJFw==
-X-Received: by 2002:aca:abc7:: with SMTP id u190mr2281532oie.146.1601983025551;
-        Tue, 06 Oct 2020 04:17:05 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v76sm782096oif.58.2020.10.06.04.17.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 04:17:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
- <20200522065306.83-1-shreyas.joshi@biamp.com>
- <20200522100046.GH3464@linux-b0ei>
- <20201006025935.GA597@jagdpanzerIV.localdomain>
- <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
- <20201006050820.GA274215@kroah.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <055bbf1a-8eb7-7f77-5ea8-31d2ecaf1d4b@roeck-us.net>
-Date:   Tue, 6 Oct 2020 04:17:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201006050820.GA274215@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 6 Oct 2020 07:17:39 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E246C061755;
+        Tue,  6 Oct 2020 04:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Y5m31Jm4T6cxiH6YgJIR0SdaPuTbsAFwmzS70apwdoc=; b=aR/3vGTycj3gDIEHUhoDI7dSYF
+        2XqIipqUioe7bjiT1QNmG9zAx455etKR5V6RN3BxBGnVwGHdp73+iHWD+a9/3bEDRXWuOg+/HHlFD
+        R2MJ3q4s6rqMDY60GjszSrrpUE4qRk6XFZIRtjudrCe4Km+aJ+M7FZqRgRNANTXFUgUnn5JZ1D50G
+        kvcj3F4v/O9W9uYM0R1wGrEBBogwgu7ygKcymS/FxBt+Reh9yfjS/jdxQpYxWXo8UXPP0d4vOCtxT
+        FV4OAYCkUJOFA80HO6v/OUOZX2EiOR06OAO9EhwQGnH8SybkXAjfQnnyp37BzRWSHjHc23ehFD+vz
+        BiEqXRTA==;
+Received: from 54-240-197-232.amazon.com ([54.240.197.232] helo=freeip.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPkyG-0003jW-6D; Tue, 06 Oct 2020 11:17:28 +0000
+Message-ID: <077f3399e68fca343c06d1016fd6816fb6a59712.camel@infradead.org>
+Subject: Re: irq_build_affinity_masks() allocates improper affinity if
+ num_possible_cpus() > num_present_cpus()?
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Stefan Haberland <sth@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Long Li <longli@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Date:   Tue, 06 Oct 2020 12:17:25 +0100
+In-Reply-To: <65ba8a8b86201d8906313fbacc4fb711b9b423af.camel@infradead.org>
+References: <KU1P153MB0120D20BC6ED8CF54168EEE6BF0D0@KU1P153MB0120.APCP153.PROD.OUTLOOK.COM>
+         <65ba8a8b86201d8906313fbacc4fb711b9b423af.camel@infradead.org>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-eOZbIDUpVlr9V1DcroP0"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 10:08 PM, Greg Kroah-Hartman wrote:
-> On Mon, Oct 05, 2020 at 08:35:59PM -0700, Guenter Roeck wrote:
->> On 10/5/20 7:59 PM, Sergey Senozhatsky wrote:
->>> Cc-ing Guenter,
->>>
->>> On (20/05/22 12:00), Petr Mladek wrote:
->>>> On Fri 2020-05-22 16:53:06, Shreyas Joshi wrote:
->>>>> If uboot passes a blank string to console_setup then it results in a trashed memory.
->>>>> Ultimately, the kernel crashes during freeing up the memory. This fix checks if there
->>>>> is a blank parameter being passed to console_setup from uboot.
->>>>> In case it detects that the console parameter is blank then
->>>>> it doesn't setup the serial device and it gracefully exits.
->>>>>
->>>>> Signed-off-by: Shreyas Joshi <shreyas.joshi@biamp.com>
->>>>> ---
->>>>>  V1:
->>>>>     Fixed console_loglevel to default as per the review comments
->>>>>
->>>>>  kernel/printk/printk.c | 5 ++++-
->>>>>  1 file changed, 4 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
->>>>> index ad4606234545..e9ad730991e0 100644
->>>>> --- a/kernel/printk/printk.c
->>>>> +++ b/kernel/printk/printk.c
->>>>> @@ -2165,7 +2165,10 @@ static int __init console_setup(char *str)
->>>>>  	char buf[sizeof(console_cmdline[0].name) + 4]; /* 4 for "ttyS" */
->>>>>  	char *s, *options, *brl_options = NULL;
->>>>>  	int idx;
->>>>> -
->>>>> +	if (str[0] == 0) {
->>>>> +		return 1;
->>>>> +	}
->>>>>  	if (_braille_console_setup(&str, &brl_options))
->>>>>  		return 1;
->>>>
->>>> I have fixed formatting and pushed it into printk/linux.git,
->>>> branch for-5.8.
->>>
->>> Petr, this patch's causing regressions for us. We use blank console= boot
->>> param to bypass dts. It appears that it'd be better to revert the change.
->>>
->>
->> Not just to bypass dts, it was also possible to use console= to disable consoles
->> passed as config option, as well as other default console options. A quick test
->> confirms that this affects all platforms/architectures, not just Chromebooks.
->> Prior to this patch, it was possible to disable a default console with an
->> empty "console=" parameter. This is no longer possible. This means that
->> this patch results in a substantial (and, as far as I can see, completely
->> undiscussed) functionality change.
->>
->> I don't understand why (yet), but the patch also causes regressions with
->> seemingly unrelated functionality, specifically with dm-verity on at least
->> one Chromebook platform. I filed crbug.com/1135157 to track the problem,
->> and reverted the patch from all our stable releases immediately after
->> the last round of stable release merges.
->>
->> On a side note, I don't see the problem presumably fixed with this
->> patch in any of my tests.
-> 
-> I have no problem reverting this in the stable trees, but are you going
-> to hit this issue in Linus's tree in the next release?
-> 
 
-Not sure what you mean with "next release". As mentioned, I already reverted
-the patch from all Chrome OS stable branches. We have already seen the problem
-in the top-of-tree test branch (which is presumably why Sergey brought it up
-back in May), so we'll definitely have to either revert this patch in the next
-Chrome OS stable branch (presumably based on 5.10 unless that changes), or
-we'll have to find find some other (backward-compatible) solution to disable
-the default console on Chromebooks.
+--=-eOZbIDUpVlr9V1DcroP0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since the patch is already reverted in our branches, it is not an urgent
-problem for us. But we will need some solution - I really don't want to
-carry reverts of upstream patches in our trees.
+On Tue, 2020-10-06 at 09:37 +0100, David Woodhouse wrote:
+> On Tue, 2020-10-06 at 06:47 +0000, Dexuan Cui wrote:
+> > Hi all,
+> > I'm running a single-CPU Linux VM on Hyper-V. The Linux kernel is v5.9-=
+rc7
+> > and I have CONFIG_NR_CPUS=3D256.
+> >=20
+> > The Hyper-V Host (Version 17763-10.0-1-0.1457) provides a guest firmwar=
+e,
+> > which always reports 128 Local APIC entries in the ACPI MADT table. Her=
+e
+> > only the first Local APIC entry's "Processor Enabled" is 1 since this
+> > Linux VM is configured to have only 1 CPU. This means: in the Linux ker=
+nel,
+> > the "cpu_present_mask" and " cpu_online_mask " have only 1 CPU (i.e. CP=
+U0),
+> > while the "cpu_possible_mask" has 128 CPUs, and the "nr_cpu_ids" is 128=
+.
+> >=20
+> > I pass through an MSI-X-capable PCI device to the Linux VM (which has
+> > only 1 virtual CPU), and the below code does *not* report any error
+> > (i.e. pci_alloc_irq_vectors_affinity() returns 2, and request_irq()
+> > returns 0), but the code does not work: the second MSI-X interrupt is n=
+ot
+> > happening while the first interrupt does work fine.
+> >=20
+> > int nr_irqs =3D 2;
+> > int i, nvec, irq;
+> >=20
+> > nvec =3D pci_alloc_irq_vectors_affinity(pdev, nr_irqs, nr_irqs,
+> >                 PCI_IRQ_MSIX | PCI_IRQ_AFFINITY, NULL);
+> >=20
+> > for (i =3D 0; i < nvec; i++) {
+> >         irq =3D pci_irq_vector(pdev, i);
+> >         err =3D request_irq(irq, test_intr, 0, "test_intr", &intr_cxt[i=
+]);
+> > }
+> >=20
+> > It turns out that pci_alloc_irq_vectors_affinity() -> ... ->
+> > irq_create_affinity_masks() allocates an improper affinity for the seco=
+nd
+> > interrupt. The below printk() shows that the second interrupt's affinit=
+y is
+> > 1-64, but only CPU0 is present in the system! As a result, later,
+> > request_irq() -> ... -> irq_startup() -> __irq_startup_managed() return=
+s
+> > IRQ_STARTUP_ABORT because cpumask_any_and(aff, cpu_online_mask) is=20
+> > empty (i.e. >=3D nr_cpu_ids), and irq_startup() *silently* fails (i.e. =
+"return 0;"),
+> > since __irq_startup() is only called for IRQ_STARTUP_MANAGED and
+> > IRQ_STARTUP_NORMAL.
+> >=20
+> > --- a/kernel/irq/affinity.c
+> > +++ b/kernel/irq/affinity.c
+> > @@ -484,6 +484,9 @@ struct irq_affinity_desc *
+> >         for (i =3D affd->pre_vectors; i < nvecs - affd->post_vectors; i=
+++)
+> >                 masks[i].is_managed =3D 1;
+> >=20
+> > +       for (i =3D 0; i < nvecs; i++)
+> > +               printk("i=3D%d, affi =3D %*pbl\n", i,
+> > +                      cpumask_pr_args(&masks[i].mask));
+> >         return masks;
+> >  }
+> >=20
+> > [   43.770477] i=3D0, affi =3D 0,65-127
+> > [   43.770484] i=3D1, affi =3D 1-64
+> >=20
+> > Though here the issue happens to a Linux VM on Hyper-V, I think the sam=
+e
+> > issue can also happen to a physical machine, if the physical machine al=
+so
+> > uses a lot of static MADT entries, of which only the entries of the pre=
+sent
+> > CPUs are marked to be "Processor Enabled =3D=3D 1".
+> >=20
+> > I think pci_alloc_irq_vectors_affinity() -> __pci_enable_msix_range() -=
+>
+> > irq_calc_affinity_vectors() -> cpumask_weight(cpu_possible_mask) should
+> > use cpu_present_mask rather than cpu_possible_mask (), so here
+> > irq_calc_affinity_vectors() would return 1, and
+> > __pci_enable_msix_range() would immediately return -ENOSPC to avoid a
+> > *silent* failure.
+> >=20
+> > However, git-log shows that this 2018 commit intentionally changed the
+> > cpu_present_mask to cpu_possible_mask:
+> > 84676c1f21e8 ("genirq/affinity: assign vectors to all possible CPUs")
+> >=20
+> > so I'm not sure whether (and how?) we should address the *silent* failu=
+re.
+> >=20
+> > BTW, here I use a single-CPU VM to simplify the discussion. Actually,
+> > if the VM has n CPUs, with the above usage of
+> > pci_alloc_irq_vectors_affinity() (which might seem incorrect, but my po=
+int is
+> > that it's really not good to have a silent failure, which makes it a lo=
+t more=20
+> > difficult to figure out what goes wrong), it looks only the first n MSI=
+-X interrupts
+> > can work, and the (n+1)'th MSI-X interrupt can not work due to the allo=
+cated
+> > improper affinity.
+> >=20
+> > According to my tests, if we need n+1 MSI-X interrupts in such a VM tha=
+t
+> > has n CPUs, it looks we have 2 options (the second should be better):
+> >=20
+> > 1. Do not use the PCI_IRQ_AFFINITY flag, i.e.
+> >         pci_alloc_irq_vectors_affinity(pdev, n+1, n+1, PCI_IRQ_MSIX, NU=
+LL);
+> >=20
+> > 2. Use the PCI_IRQ_AFFINITY flag, and pass a struct irq_affinity affd,
+> > which tells the API that we don't care about the first interrupt's affi=
+nity:
+> >=20
+> >         struct irq_affinity affd =3D {
+> >                 .pre_vectors =3D 1,
+> > 				...
+> >         };
+> >=20
+> >         pci_alloc_irq_vectors_affinity(pdev, n+1, n+1,
+> >                 PCI_IRQ_MSIX | PCI_IRQ_AFFINITY, &affd);
+> >=20
+> > PS, irq_create_affinity_masks() is complicated. Let me know if you're
+> > interested to know how it allocates the invalid affinity "1-64" for the
+> > second MSI-X interrupt.
+>=20
+> Go on. It'll save me a cup of coffee or two...
+>=20
+> > PS2, the latest Hyper-V provides only one ACPI MADT entry to a 1-CPU VM=
+,
+> > so the issue described above can not reproduce there.
+>=20
+> It seems fairly easy to reproduce in qemu with -smp 1,maxcpus=3D128 and a
+> virtio-blk drive, having commented out the 'desc->pre_vectors++' around
+> line 130 of virtio_pci_common.c so that it does actually spread them.
+>=20
+> [    0.836252] i=3D0, affi =3D 0,65-127
+> [    0.836672] i=3D1, affi =3D 1-64
+> [    0.837905] virtio_blk virtio1: [vda] 41943040 512-byte logical blocks=
+ (21.5 GB/20.0 GiB)
+> [    0.839080] vda: detected capacity change from 0 to 21474836480
+>=20
+> In my build I had to add 'nox2apic' because I think I actually already
+> fixed this for the x2apic + no-irq-remapping case with the max_affinity
+> patch series=C2=B9. But mostly by accident.
+>=20
+>=20
+> =C2=B9 https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/head=
+s/irqaffinity
 
-Guenter
+Is it fixed by=20
+https://git.infradead.org/users/dwmw2/linux.git/commitdiff/41cfe6d54e5?
+
+
+---
+ kernel/irq/affinity.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
+index 6d7dbcf91061..00aa0ba6b32a 100644
+--- a/kernel/irq/affinity.c
++++ b/kernel/irq/affinity.c
+@@ -364,12 +364,17 @@ static int irq_build_affinity_masks(unsigned int star=
+tvec, unsigned int numvecs,
+ 		cpumask_copy(npresmsk, cpu_present_mask);
+=20
+ 	/* Spread on present CPUs starting from affd->pre_vectors */
+-	ret =3D __irq_build_affinity_masks(curvec, numvecs, firstvec,
+-					 node_to_cpumask, cpu_present_mask,
+-					 nmsk, masks);
+-	if (ret < 0)
+-		goto fail_build_affinity;
+-	nr_present =3D ret;
++	while (nr_present < numvecs) {
++		curvec =3D firstvec + nr_present;
++		ret =3D __irq_build_affinity_masks(curvec, numvecs, firstvec,
++						 node_to_cpumask, npresmsk,
++						 nmsk, masks);
++		if (ret < 0)
++			goto fail_build_affinity;
++		if (!ret)
++			break;
++		nr_present +=3D ret;
++	}
+=20
+ 	/*
+ 	 * Spread on non present CPUs starting from the next vector to be
+--=20
+2.17.1
+
+
+
+--=-eOZbIDUpVlr9V1DcroP0
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MDA2MTExNzI1WjAvBgkqhkiG9w0BCQQxIgQgCRZxgmxX8iUKhUAtbdifh1DBSjL4YrzGAHM8eeqE
+nUYwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAELIhK/PoK8DklpXKwr2QpccEScd///FRy6Ei8lYDQm+LTb8OhOtRVAakEahlBqJ
+hXB5PNugpFSWsnJvglUB/r69STkaIVT82+uV49we7R29Rw2PunaeSLJo37N+dS4kNXQOs60DObKz
+gcZxj/PjzxP0YWmUBVR4ZhLr4AtfcoUR0+vMD9IZk1CsH75Ro47Msffjmfq278msiZbcFf2MVrIF
+QNPT4VLAZWHCuo3GUS617jW++2Xu3y239GzjeXwuLuhRWkgnRYF2xO0tLUmtoS9OG0vSBgX6f5ck
+ysS2z7cxlQig9DoqxordiIY6MTT23r1s9oDboKybtZu7kZniGwIAAAAAAAA=
+
+
+--=-eOZbIDUpVlr9V1DcroP0--
+
