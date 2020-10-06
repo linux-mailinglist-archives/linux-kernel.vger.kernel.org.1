@@ -2,63 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287C0284B40
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E17284B44
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgJFMAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:00:00 -0400
-Received: from w1.tutanota.de ([81.3.6.162]:48786 "EHLO w1.tutanota.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbgJFMAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:00:00 -0400
-Received: from w3.tutanota.de (unknown [192.168.1.164])
-        by w1.tutanota.de (Postfix) with ESMTP id 01CBBFA00CD;
-        Tue,  6 Oct 2020 11:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1601985597;
-        s=s1; d=tutanota.com;
-        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-        bh=eltae3HoBYMjsE66URtFxvFlqumsCh3qkPeDnLne2qI=;
-        b=aDZcpUr6utvoZZIyEaLQi9roRWGZVSD5O2iymFuscOX6D524owNwxeU+mvMcni6u
-        pzOSVokopJAlDNRAZJ2Yr5Z8slGFsJquQNp2cUxYxBHMSPJRIivRyWdhOD8vjNDd2Wx
-        ZVL0Icg/zftENBZuIY8C9D086vZp6FQvI8GTH8k8NPLjSY92Q9hq5rYyAobWiQWI0XX
-        s3Ha4GqUtuytEEjUJ92u4xjMMTKkOk2B8OR5JOnaEf3Y6eof8coTYoOiKa3u0ZKXkL5
-        GIh4ig0KJo5yNnqhIQTpP/khNp9dZKGuPUupA7VYi35Gb+FsHqdSBcdM5/ZRrrIpKma
-        t/BM5EUB/Q==
-Date:   Tue, 6 Oct 2020 13:59:57 +0200 (CEST)
-From:   ultracoolguy@tutanota.com
-To:     Marek Behun <kabel@blackhole.sk>
-Cc:     Pavel <pavel@ucw.cz>, Dmurphy <dmurphy@ti.com>,
-        Linux Leds <linux-leds@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Message-ID: <MIxm3uX--3-2@tutanota.com>
-In-Reply-To: <20201006093356.6d25b280@blackhole.sk>
-References: <20201005141334.36d9441a@blackhole.sk> <MIt2NiS--3-2@tutanota.com> <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com> <MItBqjy--3-2@tutanota.com> <966c3f39-1310-dd60-6f33-0d9464ed2ff1@ti.com> <MItOR9Z--3-2@tutanota.com> <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de> <MItjEho--3-2@tutanota.com> <20201005173227.GA6431@duo.ucw.cz> <20201006093356.6d25b280@blackhole.sk>
-Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
+        id S1726248AbgJFMBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:01:34 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:47766 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbgJFMBe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:01:34 -0400
+Received: from 89-64-87-80.dynamic.chello.pl (89.64.87.80) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.489)
+ id 1d3ccde0236c9eb8; Tue, 6 Oct 2020 14:01:32 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cpufreq: schedutil: Simplify sugov_fast_switch()
+Date:   Tue, 06 Oct 2020 14:01:31 +0200
+Message-ID: <1869109.WhRmcVd4D2@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While I do agree with you that having the child nodes be led strings make more sense, would it be possible to have, for example, three strings controlled by the same label?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Oct 6, 2020, 07:33 by kabel@blackhole.sk:
+Drop a redundant local variable definition from sugov_fast_switch()
+and rearrange the code in there to avoid the redundant logical
+negation.
 
-> By the way I just realized that the DT binding in this driver seems
-> incorrect to me.
->
-> The controller logically supports 3 LED strings, each having
-> configurable control bank.
->
-> But the DT binding supports 2 DT nodes, one for each control bank
-> (identified by the `reg` property) and then `led-sources` says which
-> string should be controlled by given bank.
->
-> But taking in mind that DT should describe how devices are connected to
-> each other, I think the child nodes in the binding should instead
-> describe the 3 supported LED strings...
->
-> Marek
->
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+The code reads a bit easier after this change IMV.
+
+linux-next material.
+
+---
+ kernel/sched/cpufreq_schedutil.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+===================================================================
+--- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
++++ linux-pm/kernel/sched/cpufreq_schedutil.c
+@@ -114,12 +114,8 @@ static bool sugov_update_next_freq(struc
+ static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
+ 			      unsigned int next_freq)
+ {
+-	struct cpufreq_policy *policy = sg_policy->policy;
+-
+-	if (!sugov_update_next_freq(sg_policy, time, next_freq))
+-		return;
+-
+-	cpufreq_driver_fast_switch(policy, next_freq);
++	if (sugov_update_next_freq(sg_policy, time, next_freq))
++		cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
+ }
+ 
+ static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
+
+
 
