@@ -2,184 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B0D2846C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16352846C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbgJFHH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:07:29 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:7550 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726761AbgJFHH2 (ORCPT
+        id S1727137AbgJFHHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:07:21 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37045 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgJFHHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:07:28 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0966wFXG022130;
-        Tue, 6 Oct 2020 09:06:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=FxjkPnYQkvGM1UmAHc6w4pfL14faN87LhAm30HIRRnE=;
- b=e49nVdPhjPNupETe6/U4g30ynwcqKKTHgkMelWWBoGAFOEC9lJ8XidzVX84zrLKHLGS4
- LTDYEUezQxAHaln8YjsxkQE5P4J1w7tScTJlr+zOrHUAVmNV/8tnxs9zD/KUBE/5NsbI
- mCBw9IOcp3le5FRgAWgM8j5OFiLYvBk0NdcAyGmQmds4af1de1jN2Z62W+xUKI4l3gNV
- 7F7E1oeoDnJAh9fnEc/odvcJ3cGrjSzoPDutXj+ZazvhuIsXrHlBJaKQ61QQrZhKatA7
- ilcc+T65G1iyq1kYhMwxNAa3G9sMAWQQ2N6Q352CLltmukm3bHVst4aMp+yAV2KUmyB6 uA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3402tjctq2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Oct 2020 09:06:50 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7BEE710002A;
-        Tue,  6 Oct 2020 09:06:48 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node1.st.com [10.75.127.4])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4FA91212FB1;
-        Tue,  6 Oct 2020 09:06:48 +0200 (CEST)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE1.st.com
- (10.75.127.4) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
- 2020 09:06:47 +0200
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1473.003; Tue, 6 Oct 2020 09:06:47 +0200
-From:   Patrice CHOTARD <patrice.chotard@st.com>
-To:     Alain Volmat <avolmat@me.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Olof Johansson" <olof@lixom.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Nathan Huckleberry" <nhuck15@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Enrico Weigelt <info@metux.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Kate Stewart" <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] arm: use DEBUG_UART_PHYS and DEBUG_UART_VIRT for
- sti LL_UART
-Thread-Topic: [PATCH v2 1/2] arm: use DEBUG_UART_PHYS and DEBUG_UART_VIRT for
- sti LL_UART
-Thread-Index: AQHWfwft1nwSe3V2OE+vyTqBVDD3damKPumA
-Date:   Tue, 6 Oct 2020 07:06:47 +0000
-Message-ID: <63b485cb-664d-f00f-8319-ad860f9e69c9@st.com>
-References: <20200830195748.30221-1-avolmat@me.com>
- <20200830195748.30221-2-avolmat@me.com>
-In-Reply-To: <20200830195748.30221-2-avolmat@me.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.44]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2D593EB3D5E00B45B909EE0E40B52C8B@st.com>
-Content-Transfer-Encoding: base64
+        Tue, 6 Oct 2020 03:07:20 -0400
+Received: by mail-ot1-f66.google.com with SMTP id o8so11343407otl.4;
+        Tue, 06 Oct 2020 00:07:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IEjOVbc5CBTebJ+NkL7ECpC20QOFPXAJ42Fc/c1O0SY=;
+        b=NsBMiJCHkO5KL+Nxjj+1B5zTTlxsW5jiVmzATKmuU3jPCBH/9CiTP1nYvbP6CPiBMZ
+         CXOQ+AilbQH4OY9/gn1JBgJx724Ra6pDzP09tKdv+BtRNfo6V0MiQoK1V9ZxBRmwX5CN
+         TbnW3vb6x6nd+gouYaRKOtXP/FAbL/7FlZfnf8qyz0uljoBIWPib2isBdzHU3kVn3H4Y
+         5uBZ1cG5yPN5sDLVu/dRs29oObCj7MlzpOU/m5z7XGkQGi/4z4oMQzYrg7+aaXhek2pV
+         qTHV2fdyDTFCrJL/RftGKWkHF5ymB93gWujddHIhvYuYXelvIZ79smPUIp0DmAwMkMNs
+         /TbQ==
+X-Gm-Message-State: AOAM533E2eswGDbHmIprmCAHQAw6/PsQguc1zQug7UxTzcNUWLdDzh9w
+        vCc+0c2XFT6uBn03WAlZog1dyJxqRj/e0PnVljA=
+X-Google-Smtp-Source: ABdhPJyft7jjmM62xpHzFa1e5eDyNPLkIH/QmkvSYxRLkEx0Q7fnsMVR9bbUaRLw98zJcYaRRu5dXXCwl0ksw9d4EOk=
+X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr1905233otp.107.1601968038374;
+ Tue, 06 Oct 2020 00:07:18 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-06_02:2020-10-06,2020-10-06 signatures=0
+References: <20200923120817.1667149-0-mholenko@antmicro.com>
+ <20200923120817.1667149-4-mholenko@antmicro.com> <CAMuHMdXZ4QA4HX8xZJVnnj5P3USpefNn+8OFGz+Yo9T=UpNM4g@mail.gmail.com>
+ <CAPk366TrN0AUp8En6Lf4DHfyor22FyitwzK1K3tYBfei1RsYeA@mail.gmail.com>
+In-Reply-To: <CAPk366TrN0AUp8En6Lf4DHfyor22FyitwzK1K3tYBfei1RsYeA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 6 Oct 2020 09:07:07 +0200
+Message-ID: <CAMuHMdUWehGyUAq07P3U4U+JNLQaJ=4vbPghOMar39k8fQDf5Q@mail.gmail.com>
+Subject: Re: [PATCH v11 4/5] dt-bindings: serial: document LiteUART bindings
+To:     Mateusz Holenko <mholenko@antmicro.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gabriel L. Somlo" <gsomlo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxhaW4NCg0KT24gOC8zMC8yMCA5OjU3IFBNLCBBbGFpbiBWb2xtYXQgd3JvdGU6DQo+IFVw
-ZGF0ZSB0aGUgc3RpIHBsYXRmb3JtIExMX1VBUlQgc3VwcG9ydCB0byByZWx5IG9uDQo+IENPTkZJ
-R19ERUJVR19VQVJUX1BIWVMgYW5kIENPTkZJR19ERUJVR19VQVJUX1ZJUlQgZnJvbSBLY29uZmln
-DQo+DQo+IFNpZ25lZC1vZmYtYnk6IEFsYWluIFZvbG1hdCA8YXZvbG1hdEBtZS5jb20+DQo+IC0t
-LQ0KPiAgYXJjaC9hcm0vS2NvbmZpZy5kZWJ1ZyAgICAgICB8IDIzICsrKysrKysrKysrKy0tLS0t
-LS0tLS0tDQo+ICBhcmNoL2FybS9pbmNsdWRlL2RlYnVnL3N0aS5TIHwgMjYgKystLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0NCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgMzUg
-ZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9LY29uZmlnLmRlYnVnIGIv
-YXJjaC9hcm0vS2NvbmZpZy5kZWJ1Zw0KPiBpbmRleCA4MDAwMGE2NmE0ZTMuLmU5N2Q2ZTVjODg5
-OCAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm0vS2NvbmZpZy5kZWJ1Zw0KPiArKysgYi9hcmNoL2Fy
-bS9LY29uZmlnLmRlYnVnDQo+IEBAIC0xMTg0LDEwICsxMTg0LDkgQEAgY2hvaWNlDQo+ICAJCSAg
-U2F5IFkgaGVyZSBpZiB5b3Ugd2FudCBrZXJuZWwgbG93LWxldmVsIGRlYnVnZ2luZyBzdXBwb3J0
-DQo+ICAJCSAgb24gU1QgU1BFQXIxM3h4IGJhc2VkIHBsYXRmb3Jtcy4NCj4gIA0KPiAtCWNvbmZp
-ZyBTVElINDFYX0RFQlVHX0FTQzINCj4gKwljb25maWcgREVCVUdfU1RJSDQxWF9BU0MyDQo+ICAJ
-CWJvb2wgIlVzZSBTdGlINDE1LzQxNiBBU0MyIFVBUlQgZm9yIGxvdy1sZXZlbCBkZWJ1ZyINCj4g
-IAkJZGVwZW5kcyBvbiBBUkNIX1NUSQ0KPiAtCQlzZWxlY3QgREVCVUdfU1RJX1VBUlQNCj4gIAkJ
-aGVscA0KPiAgCQkgIFNheSBZIGhlcmUgaWYgeW91IHdhbnQga2VybmVsIGxvdy1sZXZlbCBkZWJ1
-Z2dpbmcgc3VwcG9ydA0KPiAgCQkgIG9uIFNUaUg0MTUvNDE2IGJhc2VkIHBsYXRmb3JtcyBsaWtl
-IGIyMDAwLCB3aGljaCBoYXMNCj4gQEAgLTExOTUsMTAgKzExOTQsOSBAQCBjaG9pY2UNCj4gIA0K
-PiAgCQkgIElmIHVuc3VyZSwgc2F5IE4uDQo+ICANCj4gLQljb25maWcgU1RJSDQxWF9ERUJVR19T
-QkNfQVNDMQ0KPiArCWNvbmZpZyBERUJVR19TVElINDFYX1NCQ19BU0MxDQo+ICAJCWJvb2wgIlVz
-ZSBTdGlINDE1LzQxNiBTQkMgQVNDMSBVQVJUIGZvciBsb3ctbGV2ZWwgZGVidWciDQo+ICAJCWRl
-cGVuZHMgb24gQVJDSF9TVEkNCj4gLQkJc2VsZWN0IERFQlVHX1NUSV9VQVJUDQo+ICAJCWhlbHAN
-Cj4gIAkJICBTYXkgWSBoZXJlIGlmIHlvdSB3YW50IGtlcm5lbCBsb3ctbGV2ZWwgZGVidWdnaW5n
-IHN1cHBvcnQNCj4gIAkJICBvbiBTVGlINDE1LzQxNiBiYXNlZCBwbGF0Zm9ybXMgbGlrZSBiMjAy
-MC4gd2hpY2ggaGFzDQo+IEBAIC0xNTM0LDEwICsxNTMyLDYgQEAgY29uZmlnIERFQlVHX1RFR1JB
-X1VBUlQNCj4gIAlib29sDQo+ICAJZGVwZW5kcyBvbiBBUkNIX1RFR1JBDQo+ICANCj4gLWNvbmZp
-ZyBERUJVR19TVElfVUFSVA0KPiAtCWJvb2wNCj4gLQlkZXBlbmRzIG9uIEFSQ0hfU1RJDQo+IC0N
-Cj4gIGNvbmZpZyBERUJVR19TVE0zMl9VQVJUDQo+ICAJYm9vbA0KPiAgCWRlcGVuZHMgb24gQVJD
-SF9TVE0zMg0KPiBAQCAtMTU5MSw3ICsxNTg1LDggQEAgY29uZmlnIERFQlVHX0xMX0lOQ0xVREUN
-Cj4gIAlkZWZhdWx0ICJkZWJ1Zy9zM2MyNHh4LlMiIGlmIERFQlVHX1MzQzI0WFhfVUFSVCB8fCBE
-RUJVR19TM0M2NFhYX1VBUlQNCj4gIAlkZWZhdWx0ICJkZWJ1Zy9zNXB2MjEwLlMiIGlmIERFQlVH
-X1M1UFYyMTBfVUFSVA0KPiAgCWRlZmF1bHQgImRlYnVnL3NpcmYuUyIgaWYgREVCVUdfU0lSRlNP
-Q19VQVJUDQo+IC0JZGVmYXVsdCAiZGVidWcvc3RpLlMiIGlmIERFQlVHX1NUSV9VQVJUDQo+ICsJ
-ZGVmYXVsdCAiZGVidWcvc3RpLlMiIGlmIERFQlVHX1NUSUg0MVhfQVNDMg0KPiArCWRlZmF1bHQg
-ImRlYnVnL3N0aS5TIiBpZiBERUJVR19TVElINDFYX1NCQ19BU0MxDQo+ICAJZGVmYXVsdCAiZGVi
-dWcvc3RtMzIuUyIgaWYgREVCVUdfU1RNMzJfVUFSVA0KPiAgCWRlZmF1bHQgImRlYnVnL3RlZ3Jh
-LlMiIGlmIERFQlVHX1RFR1JBX1VBUlQNCj4gIAlkZWZhdWx0ICJkZWJ1Zy91eDUwMC5TIiBpZiBE
-RUJVR19VWDUwMF9VQVJUDQo+IEBAIC0xNzIzLDcgKzE3MTgsOSBAQCBjb25maWcgREVCVUdfVUFS
-VF9QSFlTDQo+ICAJZGVmYXVsdCAweGZjMDBjMDAwIGlmIERFQlVHX0FUOTFfU0FNQTVENF9VU0FS
-VDMNCj4gIAlkZWZhdWx0IDB4ZmNiMDAwMDAgaWYgREVCVUdfSEkzNjIwX1VBUlQNCj4gIAlkZWZh
-dWx0IDB4ZmQ4ODMwMDAgaWYgREVCVUdfQUxQSU5FX1VBUlQwDQo+ICsJZGVmYXVsdCAweGZlNTMx
-MDAwIGlmIERFQlVHX1NUSUg0MVhfU0JDX0FTQzENCj4gIAlkZWZhdWx0IDB4ZmU4MDAwMDAgaWYg
-QVJDSF9JT1AzMlgNCj4gKwlkZWZhdWx0IDB4ZmVkMzIwMDAgaWYgREVCVUdfU1RJSDQxWF9BU0My
-DQo+ICAJZGVmYXVsdCAweGZmNjkwMDAwIGlmIERFQlVHX1JLMzJfVUFSVDINCj4gIAlkZWZhdWx0
-IDB4ZmZjMDIwMDAgaWYgREVCVUdfU09DRlBHQV9VQVJUMA0KPiAgCWRlZmF1bHQgMHhmZmMwMjEw
-MCBpZiBERUJVR19TT0NGUEdBX0FSUklBMTBfVUFSVDENCj4gQEAgLTE3NTIsNyArMTc0OSw4IEBA
-IGNvbmZpZyBERUJVR19VQVJUX1BIWVMNCj4gIAkJREVCVUdfUzNDNjRYWF9VQVJUIHx8IFwNCj4g
-IAkJREVCVUdfQkNNNjNYWF9VQVJUIHx8IERFQlVHX0FTTTkyNjBfVUFSVCB8fCBcDQo+ICAJCURF
-QlVHX1NJUkZTT0NfVUFSVCB8fCBERUJVR19ESUdJQ09MT1JfVUEwIHx8IFwNCj4gLQkJREVCVUdf
-QVQ5MV9VQVJUIHx8IERFQlVHX1NUTTMyX1VBUlQNCj4gKwkJREVCVUdfQVQ5MV9VQVJUIHx8IERF
-QlVHX1NUTTMyX1VBUlQgfHwgXA0KPiArCQlERUJVR19TVElINDFYX0FTQzIgfHwgREVCVUdfU1RJ
-SDQxWF9TQkNfQVNDMQ0KPiAgDQo+ICBjb25maWcgREVCVUdfVUFSVF9WSVJUDQo+ICAJaGV4ICJW
-aXJ0dWFsIGJhc2UgYWRkcmVzcyBvZiBkZWJ1ZyBVQVJUIg0KPiBAQCAtMTgxNyw3ICsxODE1LDkg
-QEAgY29uZmlnIERFQlVHX1VBUlRfVklSVA0KPiAgCWRlZmF1bHQgMHhmYzcwNTAwMCBpZiBERUJV
-R19aVEVfWlgNCj4gIAlkZWZhdWx0IDB4ZmNmZTg2MDAgaWYgREVCVUdfQkNNNjNYWF9VQVJUDQo+
-ICAJZGVmYXVsdCAweGZkMDAwMDAwIGlmIERFQlVHX1NQRUFSM1hYIHx8IERFQlVHX1NQRUFSMTNY
-WA0KPiArCWRlZmF1bHQgMHhmZDUzMTAwMCBpZiBERUJVR19TVElINDFYX1NCQ19BU0MxDQo+ICAJ
-ZGVmYXVsdCAweGZkODgzMDAwIGlmIERFQlVHX0FMUElORV9VQVJUMA0KPiArCWRlZmF1bHQgMHhm
-ZGQzMjAwMCBpZiBERUJVR19TVElINDFYX0FTQzINCj4gIAlkZWZhdWx0IDB4ZmUwMTAwMDAgaWYg
-U1RNMzJNUDFfREVCVUdfVUFSVA0KPiAgCWRlZmF1bHQgMHhmZTAxNzAwMCBpZiBERUJVR19NTVBf
-VUFSVDINCj4gIAlkZWZhdWx0IDB4ZmUwMTgwMDAgaWYgREVCVUdfTU1QX1VBUlQzDQo+IEBAIC0x
-ODYzLDcgKzE4NjMsOCBAQCBjb25maWcgREVCVUdfVUFSVF9WSVJUDQo+ICAJCURFQlVHX1MzQzY0
-WFhfVUFSVCB8fCBcDQo+ICAJCURFQlVHX0JDTTYzWFhfVUFSVCB8fCBERUJVR19BU005MjYwX1VB
-UlQgfHwgXA0KPiAgCQlERUJVR19TSVJGU09DX1VBUlQgfHwgREVCVUdfRElHSUNPTE9SX1VBMCB8
-fCBcDQo+IC0JCURFQlVHX0FUOTFfVUFSVCB8fCBERUJVR19TVE0zMl9VQVJUDQo+ICsJCURFQlVH
-X0FUOTFfVUFSVCB8fCBERUJVR19TVE0zMl9VQVJUIHx8IFwNCj4gKwkJREVCVUdfU1RJSDQxWF9B
-U0MyIHx8IERFQlVHX1NUSUg0MVhfU0JDX0FTQzENCj4gIA0KPiAgY29uZmlnIERFQlVHX1VBUlRf
-ODI1MF9TSElGVA0KPiAgCWludCAiUmVnaXN0ZXIgb2Zmc2V0IHNoaWZ0IGZvciB0aGUgODI1MCBk
-ZWJ1ZyBVQVJUIg0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vaW5jbHVkZS9kZWJ1Zy9zdGkuUyBi
-L2FyY2gvYXJtL2luY2x1ZGUvZGVidWcvc3RpLlMNCj4gaW5kZXggNmI0MmM5MWYyMTdkLi5hOTAz
-YTYwYjgxYzYgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtL2luY2x1ZGUvZGVidWcvc3RpLlMNCj4g
-KysrIGIvYXJjaC9hcm0vaW5jbHVkZS9kZWJ1Zy9zdGkuUw0KPiBAQCAtNiwyOCArNiw2IEBADQo+
-ICAgKiBDb3B5cmlnaHQgKEMpIDIwMTMgU1RNaWNyb2VsZWN0cm9uaWNzIChSJkQpIExpbWl0ZWQu
-DQo+ICAgKi8NCj4gIA0KPiAtI2RlZmluZSBTVElINDFYX0NPTU1TX0JBU0UgICAgICAgICAgICAg
-IDB4ZmVkMDAwMDANCj4gLSNkZWZpbmUgU1RJSDQxWF9BU0MyX0JBU0UgICAgICAgICAgICAgICAo
-U1RJSDQxWF9DT01NU19CQVNFKzB4MzIwMDApDQo+IC0NCj4gLSNkZWZpbmUgU1RJSDQxWF9TQkNf
-TFBNX0JBU0UgICAgICAgICAgICAweGZlNDAwMDAwDQo+IC0jZGVmaW5lIFNUSUg0MVhfU0JDX0NP
-TU1TX0JBU0UgICAgICAgICAgKFNUSUg0MVhfU0JDX0xQTV9CQVNFICsgMHgxMDAwMDApDQo+IC0j
-ZGVmaW5lIFNUSUg0MVhfU0JDX0FTQzFfQkFTRSAgICAgICAgICAgKFNUSUg0MVhfU0JDX0NPTU1T
-X0JBU0UgKyAweDMxMDAwKQ0KPiAtDQo+IC0NCj4gLSNkZWZpbmUgVklSVF9BRERSRVNTKHgpCQko
-eCAtIDB4MTAwMDAwMCkNCj4gLQ0KPiAtI2lmIElTX0VOQUJMRUQoQ09ORklHX1NUSUg0MVhfREVC
-VUdfQVNDMikNCj4gLSNkZWZpbmUgREVCVUdfTExfVUFSVF9CQVNFCVNUSUg0MVhfQVNDMl9CQVNF
-DQo+IC0jZW5kaWYNCj4gLQ0KPiAtI2lmIElTX0VOQUJMRUQoQ09ORklHX1NUSUg0MVhfREVCVUdf
-U0JDX0FTQzEpDQo+IC0jZGVmaW5lIERFQlVHX0xMX1VBUlRfQkFTRQlTVElINDFYX1NCQ19BU0Mx
-X0JBU0UNCj4gLSNlbmRpZg0KPiAtDQo+IC0jaWZuZGVmIERFQlVHX0xMX1VBUlRfQkFTRQ0KPiAt
-I2Vycm9yICJERUJVRyBVQVJUIGlzIG5vdCBDb25maWd1cmVkIg0KPiAtI2VuZGlmDQo+IC0NCj4g
-ICNkZWZpbmUgQVNDX1RYX0JVRl9PRkYgIDB4MDQNCj4gICNkZWZpbmUgQVNDX0NUUkxfT0ZGICAg
-IDB4MGMNCj4gICNkZWZpbmUgQVNDX1NUQV9PRkYgICAgIDB4MTQNCj4gQEAgLTM3LDggKzE1LDgg
-QEANCj4gIA0KPiAgDQo+ICAJCS5tYWNybwlhZGRydWFydCwgcnAsIHJ2LCB0bXANCj4gLQkJbGRy
-CVxycCwgICAgICA9REVCVUdfTExfVUFSVF9CQVNFCUAgcGh5c2ljYWwgYmFzZQ0KPiAtCQlsZHIJ
-XHJ2LCAgICAgID1WSVJUX0FERFJFU1MoREVCVUdfTExfVUFSVF9CQVNFKSBAIHZpcnQgYmFzZQ0K
-PiArCQlsZHIJXHJwLCAgICAgID1DT05GSUdfREVCVUdfVUFSVF9QSFlTCUAgcGh5c2ljYWwgYmFz
-ZQ0KPiArCQlsZHIJXHJ2LCAgICAgID1DT05GSUdfREVCVUdfVUFSVF9WSVJUCUAgdmlydCBiYXNl
-DQo+ICAJCS5lbmRtDQo+ICANCj4gICAgICAgICAgICAgICAgICAubWFjcm8gIHNlbmR1YXJ0LHJk
-LHJ4DQoNClJldmlld2VkLWJ5OiBQYXRyaWNlIENob3RhcmQgPHBhdHJpY2UuY2hvdGFyZEBzdC5j
-b20+DQoNClRoYW5rcw0KDQpQYXRyaWNlDQo=
+Hi Mateusz,
+
+On Tue, Oct 6, 2020 at 9:01 AM Mateusz Holenko <mholenko@antmicro.com> wrote:
+> On Fri, Sep 25, 2020 at 3:16 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Sep 23, 2020 at 12:10 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
+> > > From: Filip Kokosinski <fkokosinski@antmicro.com>
+> > >
+> > > Add documentation for LiteUART devicetree bindings.
+> > >
+> > > Signed-off-by: Filip Kokosinski <fkokosinski@antmicro.com>
+> > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/serial/litex,liteuart.yaml
+
+> > > +properties:
+> > > +  compatible:
+> > > +    const: litex,liteuart
+> >
+> > Have you already decided how to handle future LiteUART variants that add
+> > new features (e.g. CTS/RTS, DMA)?
+>
+> We were thinking of adding KConfig options, like
+>
+> [ ] LiteUART serial port support
+> < >     LiteUART DMA support
+>
+> and using ifdefs in the code.
+
+That is the driver part, not the DT part.
+If enabled, the driver still needs to know if the feature is present and
+to be used, or not.
+
+> The other option could be to extend LiteX itself so that the UART core
+> provides information about its configuration via the capabilities register.
+> That way the driver could configure itself automatically at runtime.
+>
+> This is, however, not decided yet.
+
+A capabilities register sounds good to me.
+That means everything is handled automatically by the driver
+However, it does mean the DT schema checker cannot validate the
+use of optional DT properties related to optional features, if any.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
