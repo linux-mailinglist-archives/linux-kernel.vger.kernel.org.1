@@ -2,69 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5281284B18
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F7E284B1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgJFLrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:47:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41999 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgJFLrD (ORCPT
+        id S1726444AbgJFLrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 07:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726032AbgJFLrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:47:03 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kPlQq-0003t1-GA; Tue, 06 Oct 2020 11:47:00 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eddie Wai <eddie.wai@broadcom.com>, linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] RDMA/bnxt_re: fix sizeof mismatch for allocation of pbl_tbl.
-Date:   Tue,  6 Oct 2020 12:47:00 +0100
-Message-Id: <20201006114700.537916-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 6 Oct 2020 07:47:23 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93845C061755;
+        Tue,  6 Oct 2020 04:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=tuRA8scDdkQhnVOcX0Z5HzRcuC00AyBXe2RRLJQ0MjE=; b=laLFyGeOuYTMnks2gAJDQv9lwY
+        TRv0DOUxxAJIYJN6diART2Hm+TZcmo61t4kavf/SrF8cKaPXuGTyJYUw/m2WmPArWEor/cTdBpRQ6
+        6KyXW4THOj5DwpfydhXsbXY9Zi89gDPvFNyb6B9E0XGvQXhjCzkOu4qzL8IXYHGQkTB6xJ1nojTbL
+        njXNENoRLnTllePML6iLy+eAIULAYYPq0hP6OXT5aWc5S3xyIFgis5cjSegBvqWbk3s+yQrwxgPTo
+        bq/VWNT7f5MNg/WuUbIJWLBA3HlL0/2hKYuK0gI2LQYmxvnO8XiZxAosZCn9PWs2VbrJ3v8d6l4op
+        lN6MQaeg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPlR2-0005xo-W8; Tue, 06 Oct 2020 11:47:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23BF13050F0;
+        Tue,  6 Oct 2020 13:47:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 113012011672A; Tue,  6 Oct 2020 13:47:10 +0200 (CEST)
+Date:   Tue, 6 Oct 2020 13:47:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        torvalds@linux-foundation.org
+Subject: Control Dependencies vs C Compilers
+Message-ID: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi,
 
-An incorrect sizeof is being used, u64 * is not correct, it should be
-just u64 for a table of umem_pgs number of u64 items in the pbl_tbl.
-Use the idiom sizeof(*pbl_tbl) to get the object type without the need
-to explicitly use u64.
+Let's give this linux-toolchains thing a test-run...
 
-Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As some of you might know, there's a bit of a discrepancy between what
+compiler and kernel people consider 'valid' use of the compiler :-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index a0e8d93595d8..dc7de0863c77 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3856,7 +3856,7 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
- 	}
- 
- 	umem_pgs = ib_umem_num_dma_blocks(umem, page_size);
--	pbl_tbl = kcalloc(umem_pgs, sizeof(u64 *), GFP_KERNEL);
-+	pbl_tbl = kcalloc(umem_pgs, sizeof(*pbl_tbl), GFP_KERNEL);
- 	if (!pbl_tbl) {
- 		rc = -ENOMEM;
- 		goto free_umem;
--- 
-2.27.0
+One area where this shows up is in implicit (memory) ordering provided
+by the hardware, which we kernel people would like to use to avoid
+explicit fences (expensive) but which the compiler is unaware of and
+could ruin (bad).
 
+During the last LPC we had a session on that; find here:
+
+  https://linuxplumbersconf.org/event/7/contributions/821/
+
+With recordings of the event here:
+
+  https://youtu.be/FFjV9f_Ub9o?t=89
+
+That presentation covers 3 different implicit dependencies and various
+ways in which a compiler can ruin the game. For this thread, I'd like to
+limit things to just control-dependencies. We can start separate threads
+for the other issues.
+
+In short, the control dependency relies on the hardware never
+speculating stores (instant OOTA) to provide a LOAD->STORE ordering.
+That is, a LOAD must be completed to resolve a conditional branch, the
+STORE is after the branch and cannot be made visible until the branch is
+determined (which implies the load is complete).
+
+However, our 'dear' C language has no clue of any of this.
+
+So given code like:
+
+	x = *foo;
+	if (x > 42)
+		*bar = 1;
+
+Which, if literally translated into assembly, would provide a
+LOAD->STORE order between foo and bar, could, in the hands of an
+evil^Woptimizing compiler, become:
+
+	x = *foo;
+	*bar = 1;
+
+because it knows, through value tracking, that the condition must be
+true.
+
+Our Documentation/memory-barriers.txt has a Control Dependencies section
+(which I shall not replicate here for brevity) which lists a number of
+caveats. But in general the work-around we use is:
+
+	x = READ_ONCE(*foo);
+	if (x > 42)
+		WRITE_ONCE(*bar, 1);
+
+Where READ/WRITE_ONCE() cast the variable volatile. The volatile
+qualifier dissuades the compiler from assuming it knows things and we
+then hope it will indeed emit the branch like we'd expect.
+
+
+Now, hoping the compiler generates correct code is clearly not ideal and
+very dangerous indeed. Which is why my question to the compiler folks
+assembled here is:
+
+  Can we get a C language extention for this?
+
+And while we have a fair number (and growing) existing users of this in
+the kernel, I'd not be adverse to having to annotate them.
+
+Any suggestions from the compiler people present on how they'd like to
+provide us this feature?
+
+Even just being able to detect this going wrong would be a step forward.
+
+ ~ Peter
