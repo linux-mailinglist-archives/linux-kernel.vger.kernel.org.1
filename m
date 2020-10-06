@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4142850E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED5E2850F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgJFRg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:36:26 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:42800 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgJFRgY (ORCPT
+        id S1726630AbgJFRii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:38:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42456 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgJFRig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:36:24 -0400
-Received: by mail-oo1-f67.google.com with SMTP id l18so2261631ooa.9;
-        Tue, 06 Oct 2020 10:36:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zab/6vlgKQv5s8OglqXpbzcgQo7SHEbrINSkhUR0UNk=;
-        b=uZVYrDwR1eT21Q3rgmexir35FVADL/6aWpZJrJbtFSy/rBvHQ9Ek77GeWqjy+tHY9E
-         W2bySwLmoxIFFjgzrrVP6bhNrdeHxeJWIKI1Pu2gd5/sBJBsDX8J4PTy5XoRcoiw4tiD
-         SgCQFlID6L9cDoYtDvu+jpt0EdcWrAd3LhH3MhaPXeYZNM5zhWp0nCnz6+sVacXk8Okq
-         qF6OYdkNHxBzeyt5rc0vBz3Igu0Bsy/Nt5OM53mMTEaIwN/HfhEFszi0Jw42A1pMcfQ0
-         EBLXUdh9YZ6jIjEFt5qjZZzpTny8wj1bdJsg8tjGi+A5A3N9twXLup1iDwhWmEBaxjui
-         brRw==
-X-Gm-Message-State: AOAM532zdvynZBuUPS1ydnyecF7eNdVBb2H2Wp/KuMbuYpCKWaMmRGnZ
-        4D+4QDwSftYMvQXCsiEcmw==
-X-Google-Smtp-Source: ABdhPJyXyc9tFRer/0yizocvLpctx+GNLOQGNj3t0xAR0Q9jwdpdhuV0zAGEGWARM/wmg2FvQMilpA==
-X-Received: by 2002:a4a:c011:: with SMTP id v17mr733100oop.89.1602005783118;
-        Tue, 06 Oct 2020 10:36:23 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p20sm1245961oth.48.2020.10.06.10.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 10:36:22 -0700 (PDT)
-Received: (nullmailer pid 2502055 invoked by uid 1000);
-        Tue, 06 Oct 2020 17:36:21 -0000
-Date:   Tue, 6 Oct 2020 12:36:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
-        devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        Li Yang <leoyang.li@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Anson Huang <Anson.Huang@nxp.com>
-Subject: Re: [PATCH v2 02/12] dt-bindings: vendor-prefixes: add Revotics
-Message-ID: <20201006173621.GA2502026@bogus>
-References: <20200930190143.27032-1-krzk@kernel.org>
- <20200930190143.27032-3-krzk@kernel.org>
+        Tue, 6 Oct 2020 13:38:36 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 096Hc3K3129266;
+        Tue, 6 Oct 2020 12:38:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602005884;
+        bh=b/pK5enSoaoRb18q/LZC+anAWY2faAreH43Iz2Ll7X0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=aC/uIK9YSipHG9MxlrA+YCgzx4QwuYrFazCkrc0bBNSIw5ZWbJnYTOuHDzFUdVVSe
+         3FMWDsahRRsbHs/kobaSdCGLKTrDSdlOYk2z11h1kuScnEsHiCSZ7cNwMtEut3NK9S
+         WdOfh6o8wNCvsRG+mSrry0qOdhvNAC0r8WJPDFGU=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 096Hc2A3098643
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 6 Oct 2020 12:38:03 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
+ 2020 12:38:03 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 6 Oct 2020 12:38:03 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 096Hc3qk096330;
+        Tue, 6 Oct 2020 12:38:03 -0500
+Date:   Tue, 6 Oct 2020 12:38:03 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        <linux-pm@vger.kernel.org>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Niklas Cassel <nks@flawful.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kevin Hilman <khilman@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-omap@vger.kernel.org>, <ssantosh@kernel.org>
+Subject: Re: [PATCH 3/4] power: avs: smartreflex Move driver to soc specific
+ drivers
+Message-ID: <20201006173803.3xug5pq6zsp23mi6@powwow>
+References: <20201006160516.319830-1-ulf.hansson@linaro.org>
+ <20201006160516.319830-4-ulf.hansson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200930190143.27032-3-krzk@kernel.org>
+In-Reply-To: <20201006160516.319830-4-ulf.hansson@linaro.org>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 21:01:33 +0200, Krzysztof Kozlowski wrote:
-> Document vendor prefix for Revotics (Revolution Robotics, Inc.).
+On 18:05-20201006, Ulf Hansson wrote:
+> The avs drivers are all SoC specific drivers that doesn't share any code.
+> Instead they are located in a directory, mostly to keep similar
+> functionality together. From a maintenance point of view, it makes better
+> sense to collect SoC specific drivers like these, into the SoC specific
+> directories.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Therefore, let's move the smartreflex driver for OMAP to the ti directory.
 > 
-> ---
-> 
-> Changes since v1:
-> 1. New patch
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: linux-omap@vger.kernel.org
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+[...]
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Nishanth Menon <nm@ti.com>
+
+CCying Santosh to let him know as well.
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
