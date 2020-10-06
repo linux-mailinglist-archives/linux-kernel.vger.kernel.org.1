@@ -2,179 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162FD284890
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E3F284891
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgJFIZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgJFIZn (ORCPT
+        id S1726712AbgJFIZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:25:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51264 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725912AbgJFIZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:25:43 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49344C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 01:25:43 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id v8so12107903iom.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 01:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YRj9P/9Lvsmxkr1sJc/9VWaorXzUF7X2yNhikWl2Zyw=;
-        b=KqRBxzTuIgJZ68p3ZslROEmoubYrk5WVvyHndOzgCgejx6vcpnodycSKPoyRUgPLpC
-         DzvVVdNGcA+IsJiXbiSfwg125KxadQq+eFcurKPiKuRd1Px6ZA48FwXFW3bscJwmd3gy
-         Mr+L/cchQ8lkrUa1Dvgvk+YsqaxyArjSWJtYy9Y6sBWTxNv/B8eBUOCg3ULC49F4+PsG
-         oImyyLYLEfp91+QkTwf9QpsgwNh6ooDozyh2UZzhNO5xprsTq8iHPP4/tdMfhEBfc/35
-         bwNlOacIIZV8PxT8K6cKGsMc/5wyHNPSO5DmPGjHLfHGsi17SJ6GZ+KxLWwFZ/yfrwba
-         XCMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YRj9P/9Lvsmxkr1sJc/9VWaorXzUF7X2yNhikWl2Zyw=;
-        b=OPdYPqGttRov398LzjhOg5YXSAO/5p47oQCTB9XFglh/4cSRIMB74UFA0rfyefDOIE
-         6pr/c7kCh04awp7/mR4HQiDFrRhiuldryjmqm6EzOf1qJj6nJM07OiBqO+jVsiJh0/2T
-         3ixHakci08psJMoznD2Nq8XqLU57ITnNWOPPbWt8DZ18/LOjFn+SlBKwm0ZN7m9pL/Mp
-         DiNMJ1AZPQDYFkB72AxAYt4ufDkfL5J7wjetc2JNLIE47Kjis8TjGIGd5Za/my71ODZ8
-         7Ovv2aef5NcUNvGyFGIJA2zTYIsbZInw7W8EpzwoCiFC4hhHJptpO8h+N0DctLGmTGgv
-         OmqA==
-X-Gm-Message-State: AOAM532AoU5zBxAD+mJ6djwDPi7po08ho5E3Ot7vl6IMdXKsYfOvUN0U
-        i5CfYXjS4GRDh3O15zzujm/vvJVDxbwGj8gtG1D9IUNLbf3Sj8/T
-X-Google-Smtp-Source: ABdhPJwJCHEhkfRixrBxYgOGpD7RdsD3ZKvjUm5DFxPapq4Yvpmp/pbEgQOedan6gckCg3m09xuOjp3Q54/Pu62awLo=
-X-Received: by 2002:a02:a0c2:: with SMTP id i2mr221750jah.92.1601972742395;
- Tue, 06 Oct 2020 01:25:42 -0700 (PDT)
+        Tue, 6 Oct 2020 04:25:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601972756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=0aeOdWVbZAHk4o1fXf8LWAjGuj7aq9NtCl1Z2juiW9Y=;
+        b=cH85SpgcMwU79/fvUlX/l6V/kzXJmBZ+lNp4jzbV7fZ/3YydTvbetaT6Q7bAU2Wnq8uQ+i
+        CbR6qyVNLUnZ4liTCdnF1Mqs2ZFVSnQy8whJ8ANPV32kgbztCoZQ8OYh5iG6yjlnenWvQ7
+        QN2p7RgNV7E1aXABYyDJqyb0RoZVIp4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-LUC0rFTUOk-3ABuCxHbaXg-1; Tue, 06 Oct 2020 04:25:52 -0400
+X-MC-Unique: LUC0rFTUOk-3ABuCxHbaXg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 387CC1084D62;
+        Tue,  6 Oct 2020 08:25:49 +0000 (UTC)
+Received: from [10.36.114.219] (ovpn-114-219.ams2.redhat.com [10.36.114.219])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1513A9CBA;
+        Tue,  6 Oct 2020 08:25:44 +0000 (UTC)
+Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <73394A41-16D8-431C-9E48-B14D44F045F8@nvidia.com>
+ <20201002073205.GC20872@dhcp22.suse.cz>
+ <9a7600e2-044a-50ca-acde-bf647932c751@redhat.com>
+ <20201002081023.GA4555@dhcp22.suse.cz>
+ <645b35a5-970d-dcfe-2b4a-04ebd4444756@redhat.com>
+ <F3606096-EF9F-4F69-89DC-287095B649DC@nvidia.com>
+ <20201005171632.GB2990415@carbon.DHCP.thefacebook.com>
+ <bb654219-8df6-60a7-3cf5-f886ef5ca565@redhat.com>
+ <20201005182518.GA3001706@carbon.dhcp.thefacebook.com>
+ <824eee1c-a47b-361b-ad5b-6ed64a9cbd38@redhat.com>
+ <20201005191118.GB3001706@carbon.dhcp.thefacebook.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <f7c6b7b2-f534-5a06-3d42-ec3e7f6962c1@redhat.com>
+Date:   Tue, 6 Oct 2020 10:25:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201005142109.796046410@linuxfoundation.org> <CA+G9fYvHOu8kJhRKV5GPJmnaE_x2mrnN6myb4G4YHHW-oiKD7A@mail.gmail.com>
-In-Reply-To: <CA+G9fYvHOu8kJhRKV5GPJmnaE_x2mrnN6myb4G4YHHW-oiKD7A@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 6 Oct 2020 13:55:30 +0530
-Message-ID: <CA+G9fYu5zw8=Dbm79TW6qhbu-BPYbnxTh976Kv1riUQCkv7ZNg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/57] 5.4.70-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201005191118.GB3001706@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 11:24, Naresh Kamboju <naresh.kamboju@linaro.org> wro=
-te:
->
-> On Mon, 5 Oct 2020 at 20:59, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.4.70 release.
-> > There are 57 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patc=
-h-5.4.70-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> >
->
-> Results from Linaro=E2=80=99s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
->
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On 05.10.20 21:11, Roman Gushchin wrote:
+> On Mon, Oct 05, 2020 at 08:33:44PM +0200, David Hildenbrand wrote:
+>> On 05.10.20 20:25, Roman Gushchin wrote:
+>>> On Mon, Oct 05, 2020 at 07:27:47PM +0200, David Hildenbrand wrote:
+>>>> On 05.10.20 19:16, Roman Gushchin wrote:
+>>>>> On Mon, Oct 05, 2020 at 11:03:56AM -0400, Zi Yan wrote:
+>>>>>> On 2 Oct 2020, at 4:30, David Hildenbrand wrote:
+>>>>>>
+>>>>>>> On 02.10.20 10:10, Michal Hocko wrote:
+>>>>>>>> On Fri 02-10-20 09:50:02, David Hildenbrand wrote:
+>>>>>>>>>>>> - huge page sizes controllable by the userspace?
+>>>>>>>>>>>
+>>>>>>>>>>> It might be good to allow advanced users to choose the page sizes, so they
+>>>>>>>>>>> have better control of their applications.
+>>>>>>>>>>
+>>>>>>>>>> Could you elaborate more? Those advanced users can use hugetlb, right?
+>>>>>>>>>> They get a very good control over page size and pool preallocation etc.
+>>>>>>>>>> So they can get what they need - assuming there is enough memory.
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> I am still not convinced that 1G THP (TGP :) ) are really what we want
+>>>>>>>>> to support. I can understand that there are some use cases that might
+>>>>>>>>> benefit from it, especially:
+>>>>>>>>
+>>>>>>>> Well, I would say that internal support for larger huge pages (e.g. 1GB)
+>>>>>>>> that can transparently split under memory pressure is a useful
+>>>>>>>> funtionality. I cannot really judge how complex that would be
+>>>>>>>
+>>>>>>> Right, but that's then something different than serving (scarce,
+>>>>>>> unmovable) gigantic pages from CMA / reserved hugetlbfs pool. Nothing
+>>>>>>> wrong about *real* THP support, meaning, e.g., grouping consecutive
+>>>>>>> pages and converting them back and forth on demand. (E.g., 1GB ->
+>>>>>>> multiple 2MB -> multiple single pages), for example, when having to
+>>>>>>> migrate such a gigantic page. But that's very different from our
+>>>>>>> existing gigantic page code as far as I can tell.
+>>>>>>
+>>>>>> Serving 1GB PUD THPs from CMA is a compromise, since we do not want to
+>>>>>> bump MAX_ORDER to 20 to enable 1GB page allocation in buddy allocator,
+>>>>>> which needs section size increase. In addition, unmoveable pages cannot
+>>>>>> be allocated in CMA, so allocating 1GB pages has much higher chance from
+>>>>>> it than from ZONE_NORMAL.
+>>>>>
+>>>>> s/higher chances/non-zero chances
+>>>>
+>>>> Well, the longer the system runs (and consumes a significant amount of
+>>>> available main memory), the less likely it is.
+>>>>
+>>>>>
+>>>>> Currently we have nothing that prevents the fragmentation of the memory
+>>>>> with unmovable pages on the 1GB scale. It means that in a common case
+>>>>> it's highly unlikely to find a continuous GB without any unmovable page.
+>>>>> As now CMA seems to be the only working option.
+>>>>>
+>>>>
+>>>> And I completely dislike the use of CMA in this context (for example,
+>>>> allocating via CMA and freeing via the buddy by patching CMA when
+>>>> splitting up PUDs ...).
+>>>>
+>>>>> However it seems there are other use cases for the allocation of continuous
+>>>>> 1GB pages: e.g. secretfd ( https://urldefense.proofpoint.com/v2/url?u=https-3A__lwn.net_Articles_831628_&d=DwIDaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=jJYgtDM7QT-W-Fz_d29HYQ&m=mdcwiGna7gQ4-RC_9XdaxFZ271PEQ09M0YtCcRoCkf8&s=4KlK2p0AVh1QdL8XDVeWyXPz4F63pdbbSCoxQlkNaa4&e=  ), where using
+>>>>> 1GB pages can reduce the fragmentation of the direct mapping.
+>>>>
+>>>> Yes, see RFC v1 where I already cced Mike.
+>>>>
+>>>>>
+>>>>> So I wonder if we need a new mechanism to avoid fragmentation on 1GB/PUD scale.
+>>>>> E.g. something like a second level of pageblocks. That would allow to group
+>>>>> all unmovable memory in few 1GB blocks and have more 1GB regions available for
+>>>>> gigantic THPs and other use cases. I'm looking now into how it can be done.
+>>>>
+>>>> Anything bigger than sections is somewhat problematic: you have to track
+>>>> that data somewhere. It cannot be the section (in contrast to pageblocks)
+>>>
+>>> Well, it's not a large amount of data: the number of 1GB regions is not that
+>>> high even on very large machines.
+>>
+>> Yes, but then you can have very sparse systems. And some use cases would
+>> actually want to avoid fragmentation on smaller levels (e.g., 128MB) -
+>> optimizing memory efficiency by turning off banks and such ...
+> 
+> It's a definitely a good question.
 
+Oh, and I forgot that there might be users that want bigger granularity
+:) (primarily, memory hotunplug that wants to avoid ZONE_MOVABLE  but
+still have higher chances to eventually unplug some memory)
 
-NOTE:
-While running LTP containers test suite,
-I noticed this kernel panic on arm64 Juno-r2 devices.
-Not easily reproducible and not seen on any other arm64 devices.
+> 
+>>>
+>>>>
+>>>>> If anybody has any ideas here, I'll appreciate a lot.
+>>>>
+>>>> I already brought up the idea of ZONE_PREFER_MOVABLE (see RFC v1). That
+>>>> somewhat mimics what CMA does (when sized reasonably), works well with
+>>>> memory hot(un)plug, and is immune to misconfiguration. Within such a
+>>>> zone, we can try to optimize the placement of larger blocks.
+>>>
+>>> Thank you for pointing at it!
+>>>
+>>> The main problem with it is the same as with ZONE_MOVABLE: it does require
+>>> a boot-time educated guess on a good size. I admit that the CMA does too.
+>>
+>> "Educated guess" of ratios like 1:1. 1:2, and even 1:4 (known from
+>> highmem times) ares usually perfectly fine. And if you mess up - in
+>> comparison to CMA - you won't shoot yourself in the foot, you get less
+>> gigantic pages - which is usually better than before. I consider that a
+>> clear win. Perfect? No. Can we be perfect? unlikely.
+> 
+> I'm not necessarily opposing your idea, I just think it will be tricky
+> to not introduce an additional overhead if the ratio is not perfectly
+> chosen. And there is simple a cost of adding a zone.
 
-steps to reproduce:
----------------------------
-# boot stable rc 5.4.70 kernel on juno-r2 machine
-# cd /opt/ltp
-# ./runltp -f containers
+Not sure this will be really visible - and if your kernel requires more
+than 20%..50% unmovable data than something is usually really
+fishy/special. The nice thing is that Linux will try to "auto-optimize"
+within each zone already.
 
-Crash log,
----------------
-pidns13     0  TINFO  :  cinit2: writing some data in pipe
-pidns13     0  TINFO  :  cinit1: setup handler for async I/O on pipe
-pidns13     1  TPASS  :  cinit1: si_fd is 6, si_code is 1
-[  122.275627] Internal error: synchronous external abort: 96000210
-[#1] PREEMPT SMP
-[  122.283139] Modules linked in: tda998x drm_kms_helper drm crct10dif_ce f=
-use
-[  122.290130] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.70-rc1 #1
-[  122.296406] Hardware name: ARM Juno development board (r2) (DT)
-[  122.302337] pstate: 80000085 (Nzcv daIf -PAN -UAO)
-[  122.307144] pc : sil24_interrupt+0x28/0x5f0
-[  122.311337] lr : __handle_irq_event_percpu+0x78/0x2c0
-[  122.316395] sp : ffff800010003db0
-[  122.319712] x29: ffff800010003db0 x28: ffff800011f73d80
-[  122.325034] x27: ffff800011962018 x26: ffff000954a82000
-[  122.330357] x25: ffff800011962018 x24: ffff800011f6a158
-[  122.335679] x23: ffff800010003ef4 x22: ffff000975740000
-[  122.341001] x21: 0000000000000033 x20: ffff80001233d044
-[  122.346324] x19: ffff000975742500 x18: 0000000000000000
-[  122.351646] x17: 0000000000000000 x16: 0000000000000000
-[  122.356967] x15: 0000000000000000 x14: 003d090000000000
-[  122.362290] x13: 00003d0900000000 x12: 0000000000000000
-[  122.367612] x11: 00003d0900000000 x10: 0000000000000040
-[  122.372934] x9 : ffff800011f89b68 x8 : ffff800011f89b60
-[  122.378256] x7 : ffff000975800408 x6 : 0000000000000000
-[  122.383578] x5 : ffff000975800248 x4 : ffff80096d5ba000
-[  122.388900] x3 : ffff800010003f30 x2 : ffff80001093a078
-[  122.394222] x1 : ffff000975740000 x0 : ffff00097574df80
-[  122.399545] Call trace:
-[  122.401995]  sil24_interrupt+0x28/0x5f0
-[  122.405838]  __handle_irq_event_percpu+0x78/0x2c0
-[  122.410550]  handle_irq_event_percpu+0x3c/0x98
-[  122.415002]  handle_irq_event+0x4c/0xe8
-[  122.418844]  handle_fasteoi_irq+0xbc/0x168
-[  122.422947]  generic_handle_irq+0x34/0x50
-[  122.426963]  __handle_domain_irq+0x6c/0xc0
-[  122.431066]  gic_handle_irq+0x58/0xb0
-[  122.434733]  el1_irq+0xbc/0x180
-[  122.437880]  cpuidle_enter_state+0xb8/0x528
-[  122.442070]  cpuidle_enter+0x3c/0x50
-[  122.445652]  call_cpuidle+0x40/0x78
-[  122.449146]  do_idle+0x1f0/0x2a0
-[  122.452379]  cpu_startup_entry+0x2c/0x88
-[  122.456311]  rest_init+0xdc/0xe8
-[  122.459545]  arch_call_rest_init+0x14/0x1c
-[  122.463647]  start_kernel+0x484/0x4b8
-[  122.467321] Code: d503201f f9400ac0 f9400014 91011294 (b9400294)
-[  122.473437] ---[ end trace 68b3da9e48a77548 ]---
-[  122.478062] Kernel panic - not syncing: Fatal exception in interrupt
-[  122.484429] SMP: stopping secondary CPUs
-[  122.488569] Kernel Offset: disabled
-[  122.492062] CPU features: 0x0002,24006004
-[  122.496074] Memory Limit: none
-[  122.499141] ---[ end Kernel panic - not syncing: Fatal exception in
-interrupt ]---
+My gut feeling is that it's way easier to teach Linux (add zone, add
+mmop_type, build zonelists, split memory similar to movablecore) -
+however, that doesn't imply that it's better. We'll have to see.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> But fundamentally we're speaking about the same thing: grouping pages
+> by their movability on a smaller scale. With a new zone we'll split
+> pages into two parts with a fixed border, with new pageblock layer
+> in 1GB blocks.
 
+I also discussed moving the border on demand, which is way more tricky
+and would definitely be stuff for the future.
 
-Full test log,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.6=
-9-58-g7b199c4db17f/testrun/3273934/suite/linux-log-parser/test/check-kernel=
--panic-1818664/log
+There are some papers about similar fragmentation-avoidance techniques,
+mostly in the context of energy efficiency IIRC. Especially:
+- PALLOC: https://ieeexplore.ieee.org/document/6925999
+- Adaptive-buddy:
+https://ieeexplore.ieee.org/document/7397629?reload=true&arnumber=7397629
 
-- Naresh
+IIRC, the problem about such approaches is that they are quite invasive
+and degrade some workloads due to overhead.
+
+> 
+> I think the agreement is that we need such functionality.
+
+Yeah, on my long todo list. I'll be prototyping ZONE_RPEFER_MOVABLE
+soon, to see how it looks/feels/performs.
+
+-- 
+Thanks,
+
+David / dhildenb
+
