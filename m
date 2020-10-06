@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5CE28438E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A5B284397
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbgJFAxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S1726133AbgJFBAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 21:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFAxJ (ORCPT
+        with ESMTP id S1725872AbgJFBAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:53:09 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6EBC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 17:53:08 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gm14so722811pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 17:53:08 -0700 (PDT)
+        Mon, 5 Oct 2020 21:00:49 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFE4C0613CE;
+        Mon,  5 Oct 2020 18:00:49 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t18so379734plo.1;
+        Mon, 05 Oct 2020 18:00:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=VpS7X6EIHmnMVFG8t95f4eTiEJylc/0BC3yBDzUejrM=;
-        b=lOpQopCjyEt4Ltl65nTh/NLJY26jMqDTYMrllPZw2VWtPaPoICadSHYsF7DO7J7F63
-         oWM0C2zCCdV1kRPg20jntFj067/ze5WrdoZLZYQqkxwFqFL9fv8stApj7Hy9NxIstieO
-         31uV38KLejd1JrJdu7x4DYuyK04uTmGBfbLuE=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ULovZDh4nNXnrhAmYDekggZ1SAII9f678l5WRSniMjQ=;
+        b=tT2/p9kkQck2bPx0f4E5gQd74HIXbZmZcy2pFDMGyPLhRXmy2wbiGliiPX7/s0eYIX
+         Cu1p6oHsFYVAsEWt8c6zCG9P8iWrZHL4zue7+eSo67dvcqYXtOu1sLmdH8TypU9rx7zR
+         1WTDLkQA2Zgqgy2XeqxsLBamJzJ9OXA/f7qvB4ptUL8EBzA8oY47z2gYY6D9X0mLv0ln
+         /keIq/rxiTYe5wdCkRor4AHg9wyoHuznv7VHMCMt2LUvnN69qhUn40TNg/M9sy4nAKXH
+         QxfnNeyEjWXT1nY9SGDDYAR9fiuokOgj6W3ypq+yX/ZRHgaSs6FeXhANWU0rNEuZCZTL
+         pN3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=VpS7X6EIHmnMVFG8t95f4eTiEJylc/0BC3yBDzUejrM=;
-        b=cY1ZoZmOQN49Cm0hfIoVOHoF0wPEzWwQkqIvIHKr6uZdffudB57Gci6VUJSRizNNKW
-         yQQvR6T/3hjuy/wNSR/SeL9Ld34qZTRIJckIBnqVuiFKA0nqp9vuUDJb0xeq1kTAQhuT
-         sk0KspkChFpb44cK/4gSfoTI+wIlAor6IjUi4EQAE6WPnLoR64epeizAnB4+X+qu/wzq
-         J6Nn3hrrakWO1jDrwOUApB4R1weUFaz0mVtxzHWhzUjomQV2Fz425Pklx82jRAA6BCwI
-         gIih4GjA5s3KjlSjohsCKxwGq2yLJE1vAtW84nxRh47SI6HYQQJKtG93bN1vIHA51dpg
-         5iIA==
-X-Gm-Message-State: AOAM532FM+onBk2GiC8WnZD4mJShUcbTtcWq8oTvO+aFmeoUgD01VYZt
-        GjjveNh74dhEDsdT5iNsR3jy5nWjbEj0ng==
-X-Google-Smtp-Source: ABdhPJwcHOjVjxdDby4/cVjBb9nbVM6zGtxqizkwy+3JzYP2vBMd0N90sEUJqcd/RzTbya7as0iiVA==
-X-Received: by 2002:a17:90a:c302:: with SMTP id g2mr1996266pjt.173.1601945588397;
-        Mon, 05 Oct 2020 17:53:08 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id b22sm806470pjz.27.2020.10.05.17.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 17:53:07 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ULovZDh4nNXnrhAmYDekggZ1SAII9f678l5WRSniMjQ=;
+        b=jvnp2SaYHCFOnl+Cg5rz1kiDaPp7K+0f7+ac6OS09fb0+WVxCmAn8g8S/nCdVs1dBO
+         c8Br0wQfSDpWJda4K7YwFoXyZH+md4MABRKrrvEhO/TN0BDwHzw22ccOqos8LBdS1fy/
+         oR/AtQn2dT/rBnasOrlCAvVjIIUI8WqSui1m0A/Tqvqu0APT9VEQzfRCp4ZOzw4qo/YQ
+         8UydpkQruPcAO1hKbBj/lYD6YQCAg2/NmALjjg62ljNHNIIVj06eA13gPlMBBWFvu/sf
+         Sabcw6jEAps4oOu6xpyPDf3kcWO+iUOlTPAVYggCRceIMuZrE9uTMfb+FyKywoBr6o9U
+         6xGg==
+X-Gm-Message-State: AOAM5322vV+dv5U7e+F9Vn5xiUGJlf6R6HyvmIyvM6oZ5i/AwkFQVFfs
+        BSUrIGl437LW8ZuQqcT0YkI=
+X-Google-Smtp-Source: ABdhPJzIKzYvGywr9Xvoc+MvkW9hchVKOfUbteeoYw0WFYR6RIRBJDmZRDRkTuoxEOWd9qbYFOe+yQ==
+X-Received: by 2002:a17:902:eeca:b029:d3:d8dd:3e4b with SMTP id h10-20020a170902eecab02900d3d8dd3e4bmr1030261plb.68.1601946048616;
+        Mon, 05 Oct 2020 18:00:48 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id cs21sm3278844pjb.0.2020.10.05.18.00.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 05 Oct 2020 18:00:48 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 17:54:14 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     joro@8bytes.org, digetx@gmail.com, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] iommu/tegra-smmu: Add PCI support
+Message-ID: <20201006005414.GA28640@Asurada-Nvidia>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-4-nicoleotsuka@gmail.com>
+ <20201005100419.GK425362@ulmo>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <0de13a805820e4d73b8f906682386845@codeaurora.org>
-References: <20201002220919.17245-1-khsieh@codeaurora.org> <160169114309.310579.5033839844955785761@swboyd.mtv.corp.google.com> <0de13a805820e4d73b8f906682386845@codeaurora.org>
-Subject: Re: [PATCH] drm/msm/dp: fixes wrong connection state caused by failure of link train
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     khsieh@codeaurora.org
-Date:   Mon, 05 Oct 2020 17:53:06 -0700
-Message-ID: <160194558634.310579.5267169787902306024@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005100419.GK425362@ulmo>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting khsieh@codeaurora.org (2020-10-05 11:02:10)
-> >> +       dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
-> >> +
-> >>         dp_display_disable(dp_display, 0);
-> >>=20
-> >>         rc =3D dp_display_unprepare(dp);
-> >>         if (rc)
-> >>                 DRM_ERROR("DP display unprepare failed, rc=3D%d\n", rc=
-);
-> >>=20
-> >> -       dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
-> >> -
-> >>         state =3D  atomic_read(&dp_display->hpd_state);
-> >>         if (state =3D=3D ST_DISCONNECT_PENDING) {
-> >=20
-> > I don't understand the atomic nature of this hpd_state variable. Why is
-> > it an atomic variable? Is taking a spinlock bad? What is to prevent the
-> > atomic read here to not be interrupted and then this if condition check
-> > be invalid because the variable has been updated somewhere else?
-> hpd_state variable updated by multiple threads. however it was protected =
+On Mon, Oct 05, 2020 at 12:04:19PM +0200, Thierry Reding wrote:
+> > +err_bus_set: __maybe_unused;
+> > +	bus_set_iommu(&platform_bus_type, NULL);
+> > +err_unregister:
+> > +	iommu_device_unregister(&smmu->iommu);
+> > +err_sysfs:
+> > +	iommu_device_sysfs_remove(&smmu->iommu);
+> 
+> Can you please switch to label names that are more consistent with the
+> others in this driver? Notably the ones in tegra_smmu_domain_alloc().
+> The idea is to describe in the name of the label what's happening at the
+> label. Something like this, for example:
+> 
+> unset_platform_bus:
+> 	bus_set_iommu(&platform_bus_type, NULL);
+> unregister:
+> 	iommu_device_unregister(&smmu->iommu);
+> remove_sysfs:
+> 	iommu_device_sysfs_remove(&smmu->iommu);
 
-> by mutex.
-> in theory, it should also work as u32. since it was declared as atomic=20
-> from beginning
-> and it does not cause any negative effects, can we keep it as it is?
->=20
-
-It does cause negative effects by generating worse code for something
-that is already protected from concurrency by a mutex. Can we make it an
-enum and name the enum and then add a comment indicating that the
-'event_mutex' lock protects this variable?
+Okay. Will update in v7.
