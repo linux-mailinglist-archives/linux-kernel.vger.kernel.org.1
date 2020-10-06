@@ -2,125 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79777284366
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4075928436A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgJFAfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725865AbgJFAfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:35:40 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F7542074A;
-        Tue,  6 Oct 2020 00:35:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601944539;
-        bh=z2WQFganH31foJ4iNkkZl1ET6PM+YBNa0ZXpQ29c990=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gP6hRbcXwksMMPfdO5nHFfAIPOS215+uHEf5VJBxMftLDwB3ZDXjvm6esBt0GKZ/Y
-         dCtB97jae3fCDhNz1wYhhfUU+F2HYEI/d5udzJs+kL2CiN5DpYFG3ypw1gdEIC9cLW
-         +GSU4C0+YfYR32k9LfqTlQgTzXHa3/QYW5pzDKRE=
-Date:   Tue, 6 Oct 2020 09:35:36 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Julien Grall <julien@xen.org>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Alex =?UTF-8?B?QmVubsOpZQ==?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org
-Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
- correctly
-Message-Id: <20201006093536.5f7ad9e1bc3e2fea2494c229@kernel.org>
-In-Reply-To: <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
-References: <160190516028.40160.9733543991325671759.stgit@devnote2>
-        <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725972AbgJFAjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgJFAjB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 20:39:01 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A4DC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 17:39:00 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so715779pju.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 17:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ccHRaFq+ZAlHmnxc9ccMtnL9e9SHKBcvTvEy6o8JQnU=;
+        b=cwFnvlNuuxDNi8ZaOLpl7cLSiHlSTJzsGJULkdn+T4lS/6ELbS1j7X06gHDAwJ6jBm
+         jbagL0RVmGJVV8Au5/qAoSaJOT22sgVo/RayUALPSCPK3H2ednLhD9qVfUMb1RZzEHrG
+         SyBW+Wk88BYZXCCCwdcpGwzy0JMNbhBHmxpbPwbx10E1BSyFKZD8svSbEPMZlTyAEnfM
+         bKUqaFuD/LErFQmHDbM2ha+9GRQ/ttwdWyjK/t9TCyTvCLBIrQsjo0c7N5qfbRkwq0sx
+         rc81/CAge8Pv1b+t841C6F0hSvYSXWm1S+gDtpxAq448xe7uC+XcVdKYGIQg/0Y7y1JT
+         o+/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ccHRaFq+ZAlHmnxc9ccMtnL9e9SHKBcvTvEy6o8JQnU=;
+        b=YBBZ5b01k+3utUJ91QQ4rxSd8J7Qmy1nwP4ut0nP1Y/ZQHEZH4VCVg+SWMQH6UYKTF
+         7QEuFkO48DsaxMeMfW3GIH4zunmsfL4oVOY7EZv/3kmOUyxh4iQECoA2JkVuQvqwd2O+
+         zgGwt5Mhg6Y7Crofq389W9crwd2WEDkqvWcoXh7USfAeY+XQJU7yGy5/X+sonXTpc7lO
+         IeDvKmv2Z+XB5XDtUMCWJ5coamd5R1I/XuZSxP83j1Et1juG9THtLrM1XoQAv8mJlK+Z
+         nRL4WqSzI9TjbNm/AGoFuDMRLIBnpCbTFaZZOdSSPPL6yT2X7h9ROz8TbZASpyRuH5ab
+         vejA==
+X-Gm-Message-State: AOAM531rmSjkfdd4WAjmsWGlTRfQIRBo0SztmRqUpXiBVhZX1jgIsnyg
+        8tgqRqnCdd3HQcMf3GdvaxI=
+X-Google-Smtp-Source: ABdhPJxL+84Awi1wiby1oOua19UOrjF1+qtS7MxRWz6/ueD36rUA5IoNkRlNn6+0p4gKyP99mpHB1w==
+X-Received: by 2002:a17:90b:149:: with SMTP id em9mr1781466pjb.129.1601944740152;
+        Mon, 05 Oct 2020 17:39:00 -0700 (PDT)
+Received: from [10.230.29.112] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g129sm1235855pfb.9.2020.10.05.17.38.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 17:38:59 -0700 (PDT)
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     robh@kernel.org, satyakim@qti.qualcomm.com, sudeep.holla@arm.com,
+        broonie@kernel.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
+        lukasz.luba@arm.com
+References: <20201005222623.1123-1-cristian.marussi@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 0/4] Add support for SCMIv3.0 Voltage Domain Protocol and
+ SCMI-Regulator
+Message-ID: <8483165a-e413-b2f8-bd33-6da07fe56d62@gmail.com>
+Date:   Mon, 5 Oct 2020 17:38:52 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201005222623.1123-1-cristian.marussi@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 19:18:47 +0100
-Julien Grall <julien@xen.org> wrote:
 
-> Hi Masami,
-> 
-> On 05/10/2020 14:39, Masami Hiramatsu wrote:
-> > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
-> > address conversion.
-> > 
-> > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-> > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-> > assumes the given virtual address is in contiguous kernel memory
-> > area, it can not convert the per-cpu memory if it is allocated on
-> > vmalloc area (depends on CONFIG_SMP).
-> 
-> Are you sure about this? I have a .config with CONFIG_SMP=y where the 
-> per-cpu region for CPU0 is allocated outside of vmalloc area.
-> 
-> However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING 
-> was enabled.
 
-OK, I've confirmed that this depends on CONFIG_NUMA_BALANCING instead
-of CONFIG_SMP. I'll update the comment.
-
+On 10/5/2020 3:26 PM, Cristian Marussi wrote:
+> Hi,
 > 
-> [...]
+> this series introduces the support for the new SCMI Voltage Domain Protocol
+> defined by the upcoming SCMIv3.0 specification, whose BETA release is
+> available at [1].
 > 
-> > Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
+> Afterwards, a new generic SCMI Regulator driver is developed on top of the
+> new SCMI VD Protocol.
 > 
-> FWIW, I think the bug was already present before 250c9af3d831.
+> The series is currently based on for-next/scmi [2] on top of:
+> 
+> commit 66d90f6ecee7 ("firmware: arm_scmi: Enable building as a single
+> 		     module")
+> 
+> Any feedback welcome,
 
-Hm, it seems commit 9a9ab3cc00dc ("xen/arm: SMP support") has introduced
-the per-cpu code.
-
-Thank you,
+Well, this is just great! We were right about to develop a proprietary 
+SCMI protocol in order to control a locked down PMIC accessible behind a 
+secured firmware. We would have done essentially just that since the use 
+case is to control the various regulators exposed by this PMIC over 
+SCMI. Thanks a lot!
 
 > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >   arch/arm/xen/enlighten.c |    2 +-
-> >   include/xen/arm/page.h   |    3 +++
-> >   2 files changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-> > index e93145d72c26..a6ab3689b2f4 100644
-> > --- a/arch/arm/xen/enlighten.c
-> > +++ b/arch/arm/xen/enlighten.c
-> > @@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
-> >   	pr_info("Xen: initializing cpu%d\n", cpu);
-> >   	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
-> >   
-> > -	info.mfn = virt_to_gfn(vcpup);
-> > +	info.mfn = percpu_to_gfn(vcpup);
-> >   	info.offset = xen_offset_in_page(vcpup);
-> >   
-> >   	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
-> > diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
-> > index 39df751d0dc4..ac1b65470563 100644
-> > --- a/include/xen/arm/page.h
-> > +++ b/include/xen/arm/page.h
-> > @@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
-> >   	})
-> >   #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) << XEN_PAGE_SHIFT))
-> >   
-> > +#define percpu_to_gfn(v)	\
-> > +	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
-> > +
-> >   /* Only used in PV code. But ARM guests are always HVM. */
-> >   static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
-> >   {
-> > 
+> Thanks,
 > 
-> Cheers,
+> Cristian
 > 
-> -- 
-> Julien Grall
-
+> [1]:https://developer.arm.com/documentation/den0056/c/
+> [2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+> 
+> 
+> Cristian Marussi (4):
+>    firmware: arm_scmi: Add Voltage Domain Support
+>    firmware: arm_scmi: add SCMI Voltage Domain devname
+>    regulator: add SCMI driver
+>    dt-bindings: arm: add support for SCMI Regulators
+> 
+>   .../devicetree/bindings/arm/arm,scmi.txt      |  44 ++
+>   drivers/firmware/arm_scmi/Makefile            |   2 +-
+>   drivers/firmware/arm_scmi/common.h            |   1 +
+>   drivers/firmware/arm_scmi/driver.c            |   3 +
+>   drivers/firmware/arm_scmi/voltage.c           | 378 ++++++++++++++
+>   drivers/regulator/Kconfig                     |   9 +
+>   drivers/regulator/Makefile                    |   1 +
+>   drivers/regulator/scmi-regulator.c            | 488 ++++++++++++++++++
+>   include/linux/scmi_protocol.h                 |  64 +++
+>   9 files changed, 989 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/firmware/arm_scmi/voltage.c
+>   create mode 100644 drivers/regulator/scmi-regulator.c
+> 
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Florian
