@@ -2,156 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0425285025
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D261285029
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgJFQrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:47:05 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:48307 "EHLO m42-4.mailgun.net"
+        id S1726002AbgJFQuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:50:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgJFQrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:47:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602002824; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=s4iKWaLpOC+X+JKNpHvDXG7sSzTkTqzFgDACDzo1ImM=; b=R7RVYYaM3cGutTrkPiSulELFyo5D6wu5mhFuwp44BKIua1YWS11Ip/jNiagSUSh8Xbp3iFxH
- r5Kh03I4rD6Lxgb2+XjWbGZrSy52xAxyKfv7j4kBAHCmG+LLJ5CRZayWPh3YGEEEsHnJBgRE
- GsT/Kp7yGWkK9k479ygCh37qLGk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f7c9f863711fec7b160d96c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Oct 2020 16:47:02
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BD8BCC433F1; Tue,  6 Oct 2020 16:47:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        id S1725769AbgJFQuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:50:20 -0400
+Received: from localhost.localdomain (89.208.247.74.16clouds.com [89.208.247.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BCE8AC433CA;
-        Tue,  6 Oct 2020 16:46:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BCE8AC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     Ajit Pandey <ajitp@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai link for I2S driver
-Date:   Tue,  6 Oct 2020 22:16:43 +0530
-Message-Id: <1602002803-29971-1-git-send-email-srivasam@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id A67FB206DD;
+        Tue,  6 Oct 2020 16:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602003019;
+        bh=fUDOPjppDFzL87N9Dd1uJ0Zglfzl2ngSEmYFW2hqeck=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UZAVeNEYd9XfC/QRn/EDII23lJPw4vwE3gtJnkVy9XlEDGbsQCGdwkdM6gexm1eY/
+         XU1QQ6nBLRbOzCosJS6vhN67eVOrLdwi4+or/zvb4evQG0NjwaBayH5W/ARHW0KhUr
+         RLII8DvytlrmPR6RSg0m2jfB9QkSICEWrpO9y3JI=
+From:   guoren@kernel.org
+To:     palmerdabbelt@google.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andreas Schwab <schwab@linux-m68k.org>
+Subject: [PATCH] riscv: Fixup bootup failure with HARDENED_USERCOPY
+Date:   Tue,  6 Oct 2020 16:49:33 +0000
+Message-Id: <1602002973-92934-1-git-send-email-guoren@kernel.org>
 X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajit Pandey <ajitp@codeaurora.org>
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Add dai link for supporting lpass I2S driver, which is used
-for audio capture and playback.
-Add lpass-cpu node with  pin controls and i2s primary
-and secondary dai-links
+As Aurelien has reported:
 
-Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+[    3.484586] AppArmor: AppArmor sha1 policy hashing enabled
+[    4.749835] Freeing unused kernel memory: 492K
+[    4.752017] Run /init as init process
+[    4.753571] usercopy: Kernel memory overwrite attempt detected to kernel text (offset 507879, size 11)!
+[    4.754838] ------------[ cut here ]------------
+[    4.755651] kernel BUG at mm/usercopy.c:99!
+[    4.756445] Kernel BUG [#1]
+[    4.756815] Modules linked in:
+[    4.757542] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.8.0-1-riscv64 #1 Debian 5.8.7-1
+[    4.758372] epc: ffffffe0003b5120 ra : ffffffe0003b5120 sp : ffffffe07f783ca0
+[    4.758960]  gp : ffffffe000cc7230 tp : ffffffe07f77cec0 t0 : ffffffe000cdafc0
+[    4.759772]  t1 : 0000000000000064 t2 : 0000000000000000 s0 : ffffffe07f783cf0
+[    4.760534]  s1 : ffffffe00095d780 a0 : 000000000000005b a1 : 0000000000000020
+[    4.761309]  a2 : 0000000000000005 a3 : 0000000000000000 a4 : ffffffe000c1f340
+[    4.761848]  a5 : ffffffe000c1f340 a6 : 0000000000000000 a7 : 0000000000000087
+[    4.762684]  s2 : ffffffe000941848 s3 : 000000000007bfe7 s4 : 000000000000000b
+[    4.763500]  s5 : 0000000000000000 s6 : ffffffe00091cc00 s7 : fffffffffffff000
+[    4.764376]  s8 : 0000003ffffff000 s9 : ffffffe0769f3200 s10: 000000000000000b
+[    4.765208]  s11: ffffffe07d548c40 t3 : 0000000000000000 t4 : 000000000001dcd0
+[    4.766059]  t5 : ffffffe000cc8510 t6 : ffffffe000cd64aa
+[    4.766712] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
+[    4.768308] ---[ end trace 1f8e733e834d4c3e ]---
+[    4.769129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[    4.770070] SMP: stopping secondary CPUs
+[    4.771110] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+
+Above failure is relate to commit: a0fa4027dc911 (riscv: Fixup
+static_obj() fail). When we expand static_obj include INIT_DATA,
+we also include INIT_TEXT into usercopy check kernel text:
+
+/* Is this address range in the kernel text area? */
+static inline void check_kernel_text_object(const unsigned long ptr,
+                                            unsigned long n, bool to_user)
+{
+        unsigned long textlow = (unsigned long)_stext;
+        unsigned long texthigh = (unsigned long)_etext;
+        unsigned long textlow_linear, texthigh_linear;
+
+        if (overlaps(ptr, n, textlow, texthigh))
+                usercopy_abort("kernel text", NULL, to_user, ptr - textlow, n);
+
+When INIT_TEXT/DATA are freed, new allocation will reuse these
+memory and overlaps check will be triggered.
+
+The patch met static_obj and check_kernel_text_object requirements.
+
+Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Reported-by: Aurelien Jarno <aurelien@aurel32.net>
+Tested-by: Aurelien Jarno <aurelien@aurel32.net>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Atish Patra <atishp@atishpatra.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>
 ---
-Changes since v1:
-   -- Alias name added for sound dai link node
-   
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 59 ++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ arch/riscv/kernel/vmlinux.lds.S | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index bf87558..e5863ad 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -220,6 +220,44 @@
- 			max-brightness = <1023>;
- 		};
- 	};
-+
-+	sound: sound {
-+		compatible = "qcom,sc7180-sndcard";
-+		model = "sc7180-snd-card";
-+
-+		audio-routing =
-+			"Headphone Jack", "HPOL",
-+			"Headphone Jack", "HPOR";
-+
-+		audio-jack = <&alc5682>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		dai-link@0 {
-+			link-name = "MultiMedia0";
-+			reg = <0>;
-+			cpu {
-+				sound-dai = <&lpass_cpu 0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&alc5682 0>;
-+			};
-+		};
-+
-+		dai-link@1 {
-+			link-name = "MultiMedia1";
-+			reg = <1>;
-+			cpu {
-+				sound-dai = <&lpass_cpu 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&max98357a>;
-+			};
-+		};
-+	};
- };
+diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+index f3586e3..34d00d9 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -22,13 +22,11 @@ SECTIONS
+ 	/* Beginning of code and text segment */
+ 	. = LOAD_OFFSET;
+ 	_start = .;
+-	_stext = .;
+ 	HEAD_TEXT_SECTION
+ 	. = ALIGN(PAGE_SIZE);
  
- &qfprom {
-@@ -725,6 +763,27 @@ hp_i2c: &i2c9 {
- 	modem-init;
- };
+ 	__init_begin = .;
+ 	INIT_TEXT_SECTION(PAGE_SIZE)
+-	INIT_DATA_SECTION(16)
+ 	. = ALIGN(8);
+ 	__soc_early_init_table : {
+ 		__soc_early_init_table_start = .;
+@@ -55,6 +53,7 @@ SECTIONS
+ 	. = ALIGN(SECTION_ALIGN);
+ 	.text : {
+ 		_text = .;
++		_stext = .;
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+ 		CPUIDLE_TEXT
+@@ -67,6 +66,8 @@ SECTIONS
+ 		_etext = .;
+ 	}
  
-+&lpass_cpu {
-+	status = "okay";
++	INIT_DATA_SECTION(16)
 +
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sec_mi2s_active &pri_mi2s_active &pri_mi2s_mclk_active>;
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	mi2s-primary@0 {
-+		reg = <MI2S_PRIMARY>;
-+		qcom,playback-sd-lines = <1>;
-+		qcom,capture-sd-lines = <0>;
-+	};
-+
-+	mi2s-secondary@1 {
-+		reg = <MI2S_SECONDARY>;
-+		qcom,playback-sd-lines = <0>;
-+	};
-+};
-+
- &mdp {
- 	status = "okay";
- };
+ 	/* Start of data section */
+ 	_sdata = .;
+ 	RO_DATA(SECTION_ALIGN)
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.7.4
 
