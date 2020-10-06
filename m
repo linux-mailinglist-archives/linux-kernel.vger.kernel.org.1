@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8DF285495
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC1B28549F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbgJFW2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 18:28:25 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:46608 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726323AbgJFW2Y (ORCPT
+        id S1727171AbgJFWb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 18:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726323AbgJFWb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 18:28:24 -0400
-Received: by mail-oi1-f196.google.com with SMTP id u126so266151oif.13;
-        Tue, 06 Oct 2020 15:28:23 -0700 (PDT)
+        Tue, 6 Oct 2020 18:31:28 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7BBC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 15:31:28 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so264087ioo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 15:31:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=merY9ASuRAU3zfTS2gZnDNq8Wwv3Ib+nkHis31YHECs=;
+        b=fnaviWr41bfPN7IlaF3jqU4F371ghNXPuXLMU0b4pvfZGAuR5+iWMteCxXqhyQcznL
+         0SI4gLcDhJ/2bG85y68hGfil/zZV56HJ8Lwi3v8dGWPYc9t6AfFV6zgSc/+21xvnF4R4
+         Nn9C1F8OI86IvtFl77NL2qL5N57fkMeDKZllA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BK9fnoo1uA83BhzEQ3W88lbLalesaiwBhSmKSbszAEo=;
-        b=KGEHT7kDJeAoS+PCtr7d4LDVh1qCHZD5OL+6U2jHr3I1LiFWTioFyDhuhHrudsWh/A
-         3r1zzcl3kM9yjBuVhk83rktb3dtXRtQAZvjWcbjLl36soVBvi4fA236UVnrrOOTp6mDF
-         xy3Un4OeoG9lwSwtmJ4FzJJnz8gfG2UN3+9EL9rHsbCgSrtozpIsy5nNSZyZKYPn4oni
-         jJUdABzoxMLLrNG+L9/729e2HFlCZvXprawK9GFvtzAQ8kh0AuIs0o/m4GuzNdnJocJR
-         JqN/YDcPjzYp2/NLH+KdmULqeIBggnHai+87le1mpVDje43/kW5InJJH+1IZfRfiL6PQ
-         897g==
-X-Gm-Message-State: AOAM533zinPAZ9rbqNwI77aIwnq2UzvlBkEQHKSRqG6zn7Ct1v6z7qlB
-        SkNQa1xWD2eEi3jEkVPXEA==
-X-Google-Smtp-Source: ABdhPJxoVcEzp/l6VNBrV6AdkDsAonSUtV210T7j1H1LSoBOsP96XXbUFBTHpRVqHhawYzCR0qUyPA==
-X-Received: by 2002:aca:af07:: with SMTP id y7mr298067oie.176.1602023303569;
-        Tue, 06 Oct 2020 15:28:23 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k51sm86028otc.46.2020.10.06.15.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 15:28:22 -0700 (PDT)
-Received: (nullmailer pid 2970094 invoked by uid 1000);
-        Tue, 06 Oct 2020 22:28:21 -0000
-Date:   Tue, 6 Oct 2020 17:28:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Alexander Dahl <post@lespocky.de>
-Cc:     Dan Murphy <dmurphy@ti.com>, Jeff LaBundy <jeff@labundy.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alexander Dahl <ada@thorsis.com>, linux-mips@vger.kernel.org,
-        linux-omap@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v7 03/12] dt-bindings: mfd: Fix schema warnings for
- pwm-leds
-Message-ID: <20201006222821.GA2970040@bogus>
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-4-post@lespocky.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=merY9ASuRAU3zfTS2gZnDNq8Wwv3Ib+nkHis31YHECs=;
+        b=CMwGxSUdu1MXzC1mYNu3JWT9uPy+m0SGbYFkYYauDO1+NUdMA9VetPlKzLFa4jq4Gx
+         H++oWIVImTy4n0Q8ueo7Z1XIb3LSIztLuCcgKW/2MqaRDw5whh9YNBVr/qsvIlAK70qZ
+         JWsGH5rerXrYDRZ9iKYqbaXZY6Ya/h9a0k0gaoTf80ZDZ2B71Zj+TKRZX6LX5ZPrgzeN
+         b8EA2sk09rDMYDPAruGWn/KipcO9hzahi+HMaHYAPd41cVjFw1RjT/oZLmxZPFMqdG3N
+         /SRUgJ/h9n5HnW4Z0bmmCusm/427Dga+kGW/UlByTAsCwwlmE/2ZlL0a6FdcSJMjRIKy
+         kouw==
+X-Gm-Message-State: AOAM5338z5rurhLu4zJ17j5kmmQhrSlTF2WRRyTFcuLXBhH2slZxE5Sm
+        PX/ojPjguGhfEDeaMfl9wHtqow==
+X-Google-Smtp-Source: ABdhPJw1ONzTpjA0EnLvPODLhxTqiWsX2OSj8ZKDLEQYmAzMFjM19HjPi8Ng+mFpHC9uQqKX8GiDgQ==
+X-Received: by 2002:a02:a802:: with SMTP id f2mr368210jaj.47.1602023487397;
+        Tue, 06 Oct 2020 15:31:27 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v9sm20040ioq.41.2020.10.06.15.31.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 15:31:26 -0700 (PDT)
+Subject: Re: [PATCH] usbip: vhci_hcd: fix calling usb_hcd_giveback_urb() with
+ irqs enabled
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201006215147.35146-1-skhan@linuxfoundation.org>
+ <CAAeHK+yve84dKiNbwwTDJHMcCECM8N3GodoL5UeBPPL6REVg8Q@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <8d485cef-3a99-03da-1307-9569df0659e1@linuxfoundation.org>
+Date:   Tue, 6 Oct 2020 16:31:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005203451.9985-4-post@lespocky.de>
+In-Reply-To: <CAAeHK+yve84dKiNbwwTDJHMcCECM8N3GodoL5UeBPPL6REVg8Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020 22:34:42 +0200, Alexander Dahl wrote:
-> The node names for devices using the pwm-leds driver follow a certain
-> naming scheme (now).  Parent node name is not enforced, but recommended
-> by DT project.
+On 10/6/20 4:16 PM, Andrey Konovalov wrote:
+> On Tue, Oct 6, 2020 at 11:51 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> Fix the following warning from kcov regarding usb_hcd_giveback_urb()
+>> call being made without disabling interrupts.
 > 
->   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
->   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
-> /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
->         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> Hi Shuah,
 > 
-> Signed-off-by: Alexander Dahl <post@lespocky.de>
-> ---
+> This won't fix the kcov warning, as it still requires its own fix,
+> which I'll send separately. But this will fix the improper usage of
+> usb_hcd_giveback_urb() in USB/IP.
 > 
-> Notes:
->     v6 -> v7:
->       * added warning message to commit message (Krzysztof Kozlowski)
-> 
->     v6:
->       * added this patch to series
-> 
->  Documentation/devicetree/bindings/mfd/iqs62x.yaml | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
+Yes you are right, I will record message to remove the wording in
+my v2. I should add the link to discussion anyway.
 
-Acked-by: Rob Herring <robh@kernel.org>
+thanks,
+-- Shuah
