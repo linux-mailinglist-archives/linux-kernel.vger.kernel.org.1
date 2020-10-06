@@ -2,76 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2944928450F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71C4284511
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgJFEsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 00:48:39 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:44531 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgJFEsi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 00:48:38 -0400
-Received: by mail-ej1-f68.google.com with SMTP id a3so15636416ejy.11
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 21:48:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8EPhmi+b3LSXVas4Pi/6tHD819FKsgGjoD8WRd/SEEI=;
-        b=pMOO2mWYV2O8G4YsXM1gaX07YEajrGNwqftZvnZYZrrZAK65sODJaHIqibIVQNJCTC
-         WPQYOyS/0CFMGTgzeWWMGjKbV7n9e1Oqps9vfzB83e6eRr9PQAUF//9+JvXF615t+gSi
-         GOZOLgTfFH/tRec2ZPzSTTs4XEHnOCj182Qe3pLGcAG68MqtiwyOajo8wXejNGYuz9Qo
-         Gwe+LV/QVZGVujR33pKKqs86t5wlSGIiwlDFmwB8nrIXXF0I/tu2pw8y1/Jk09SV8Gg1
-         4HaQBOE05Lwi/5dRTy5wBjHO/UpRFilYs7Us62z5/7yvEFocfntZzjzxLWj3h6SHi+q/
-         cB+A==
-X-Gm-Message-State: AOAM532A9gbGYeUlI4Sf1lyiRwYYQv5UbWkjWgQXG00RAeTQs3n47Abx
-        XTzp/EbtJWNPhBAaUWmSeno=
-X-Google-Smtp-Source: ABdhPJxkG7XMOt1pIyGobMQA6cuQQyWsXd/2CdwzyYMjiaMzWf+409kZY1PpG3sPedKxARJM2rvFIg==
-X-Received: by 2002:a17:906:696:: with SMTP id u22mr3205693ejb.446.1601959716921;
-        Mon, 05 Oct 2020 21:48:36 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id n10sm1394461edo.55.2020.10.05.21.48.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 21:48:35 -0700 (PDT)
-Subject: Re: [PATCH v2] drivers:tty:pty: Fix a race causing data loss on close
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, minyard@acm.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Corey Minyard <cminyard@mvista.com>
-References: <20201002130304.16728-1-minyard@acm.org>
- <20201005113149.GA444220@kroah.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <36dd1306-e14f-431b-a6b5-82da3868307b@kernel.org>
-Date:   Tue, 6 Oct 2020 06:48:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726762AbgJFEtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 00:49:02 -0400
+Received: from sauhun.de ([88.99.104.3]:56130 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725806AbgJFEtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 00:49:02 -0400
+Received: from localhost (p54b33262.dip0.t-ipconnect.de [84.179.50.98])
+        by pokefinder.org (Postfix) with ESMTPSA id A63AD2C0251;
+        Tue,  6 Oct 2020 06:48:59 +0200 (CEST)
+Date:   Tue, 6 Oct 2020 06:48:51 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 00/32] Improvements for Tegra I2C driver
+Message-ID: <20201006044851.GA883@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200929221915.10979-1-digetx@gmail.com>
+ <20201005205258.GB1397@kunai>
+ <60ff95a4-2466-a41f-5496-2474f5a256a8@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005113149.GA444220@kroah.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
+Content-Disposition: inline
+In-Reply-To: <60ff95a4-2466-a41f-5496-2474f5a256a8@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05. 10. 20, 13:31, Greg Kroah-Hartman wrote:
-> On Fri, Oct 02, 2020 at 08:03:04AM -0500, minyard@acm.org wrote:
->> From: Corey Minyard <cminyard@mvista.com>
->>
->> If you write to a pty master an immediately close the pty master, the
->> receiver might get a chunk of data dropped, but then receive some later
->> data.  That's obviously something rather unexpected for a user.  It
->> certainly confused my test program.
-...
-> Jiri, any thoughts about this?  At first glance, it looks sane to me,
-> but a second review would be great.
 
-Hi,
+--6TrnltStXW4iwmi0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I haven't had a chance to look into it yet (labsconf this week). Moving
-it upwards on my TODO.
+Hi Dmitry,
 
-thanks,
--- 
-js
+> Hello, Wolfram! Thank you! This series started with 10 small patches and
+> then was growing with every new review round because more ideas were
+> suggested and I needed to rebase/redo majority of the patches, hence it
+> was a bit difficult to split it up into a smaller parts that could be
+> applied incrementally. But I'll try to improve this in the future, thanks!
+
+Ah, you got me wrong. What I meant was: If these patches still need
+changes or updates, don't send a new version of all the patches, but
+rather send incremental fixes on top of these patches. Sometimes it
+happens that you end up with 30+ patches, no worries.
+
+> > http://patchwork.ozlabs.org/project/linux-i2c/list/?series=3D191802
+> >=20
+> > Is it obsolete by now?
+> >=20
+>=20
+> To be honest, I don't know. The author never answered, guess he may
+> reappear sometime in the future with a v2. Those patches need to be
+> corrected and rebased.
+
+Then, I will mark them as "Changes requested". Thanks for the heads up!
+
+Regards,
+
+   Wolfram
+
+
+--6TrnltStXW4iwmi0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl979y4ACgkQFA3kzBSg
+KbbaexAAm6W0vaVWhdxMRJtMg8O9z15RZAY/rc3yyO59rwcGaYK0ZMu6xLoluTiS
+RdzNLga+WOJA5VoXoehc82yc1wK36I4jxqnwKsijWPt6C6dWgd/0rJUZHB/+7SNG
+vG0ZZC0mrttxCDD8Gn0kRIrtIRzPoEchFtutmEYjmUGHzz8/kY6yEDRe6R3I77mL
+dtSKZED3oD5UuFeCH8L5f13pIqISndXvxjA+VYjfHv2ZYqSggv7eYkr1sc8Ncd3B
+2BoWUCdcC8VqguCzLGkd8Wa+RHQoOZCOgSEgAz1BplIOzrU2SGkCIjCQX/pXXu5p
+5yMg/Ec+2IDeG4SEpo3pGbVRNQFnNoEODCrYZxUF0nt2LOdWDdJut7MPTgNUxmW8
+r7nnnRMGEfIqrWo+7ah+mZXZC6nPnuDmEp4ygbo7COq2CsmV65brgTsmpFWYD9wF
+YtpCzXuYvxjYJRN0RfnjpYFlR/AoFYW6jLc7mDKAxnoW6C7Dk8hIa7AlWFwlYik1
+TYgF6G+5zExtNt69E0NhsgAQbTXO9B/Y9ejjqU6M23ThDJrSU27ERd9ITelP/996
+n4ZDN18boLuOqJ4rIyDstLVh/FCRjAlvXxsFfmBsiorY0KJU4bU5uVav7qQku4n6
+yqDX8/9nIFyeAsY9O7MOFpDJ0TgYZdPuCMT5etcPTp4DXGKfY8M=
+=QISv
+-----END PGP SIGNATURE-----
+
+--6TrnltStXW4iwmi0--
