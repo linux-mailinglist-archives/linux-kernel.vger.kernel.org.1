@@ -2,125 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DF72845A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564292845B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgJFFtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 01:49:12 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:51295 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgJFFtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 01:49:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601963351; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=LTWF++Bn389zksk4oUPZvJlU0ZGQ50MQBidN3ma2aZo=; b=xb0yhv5nvTqhK++pbrlWsb+jIKCWisJD9HSyEgkOdrJN5EP86uJh+gShy1L8E2rnYZC8KdtN
- 8K3hp1QRBjixYXekmCd1oWilcMpOb+X5owgzhYYJ55b+BxJJRREW2O9mHVmYoUp7OlijkAtd
- ++9QUyTFhdhS6m5g9QaIpgCaEfk=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f7c0556d6d00c7a9e0c73a1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Oct 2020 05:49:10
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6D335C433FF; Tue,  6 Oct 2020 05:49:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C809FC433CA;
-        Tue,  6 Oct 2020 05:49:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C809FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Luciano Coelho <luca@coelho.fi>
-Subject: Re: [PATCH v2 00/29] [Set 1,2,3] Rid W=1 warnings in Wireless
-References: <20200910065431.657636-1-lee.jones@linaro.org>
-        <20201002090353.GS6148@dell>
-Date:   Tue, 06 Oct 2020 08:49:05 +0300
-In-Reply-To: <20201002090353.GS6148@dell> (Lee Jones's message of "Fri, 2 Oct
-        2020 10:03:53 +0100")
-Message-ID: <87362rdhv2.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1726912AbgJFFzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 01:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgJFFzI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 01:55:08 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBB3C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 22:55:07 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id z5so9981150ilq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 22:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+S6tydLurUDpfqqIJ3NPBxeMc9ESUmLJ3tmCFVKnprI=;
+        b=ZD608extQCdAvtmJ1rP0yUNo2eff+7DJl+3Hu6wwzG3r9e2iCuKjYzY8e/eijynYeb
+         qnLjOMxxFTQWrTl6FLtNGeXPk7N92wrSn4I/fCi51wQ2Uc5YCd52lspEBdatdEPZmrlJ
+         OTTEcOzbxS1iYmKMYRRLBtv9164alYymgyxvd9B4xjNY99fnwKFrr3PXKwh038Wiv20H
+         5APLtyla8fPoT1Y56bIbfc0mGAjgHvZI3JxYeNtJBOJBXzkAG06mVoWCmHJsu3eacb64
+         aokeIAan1N1THB+L+L7nQuSnFanWUwIXycj+NogZ3j+ry441OhskIJqx657Dr7sXKwG7
+         k3Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+S6tydLurUDpfqqIJ3NPBxeMc9ESUmLJ3tmCFVKnprI=;
+        b=TUSi/4WDCghN4Rsdk7nuv8uD8pnuG1SpDt7ykleNt3ccG7KOu4TQyC5FpVgcp28UCP
+         lStU5QRiFVEAYfi27Bh+5EqjrLLlXYBSqr8epe7Rql5YvM0d2BUq9uXDlJiGfLbWr9cl
+         Z+E+pD9tSQClrMIaJWKOCtVI8OvGiUTjxAZo5AD1WMRc1BAycb/J+pZG6IscinvLTQbS
+         QMHlKllqp39M+60E8n/ahkIZThWnWwv/oAKqlcT16mT0pOxb4YswoX7GnY2f7idudfsi
+         dnsOmvthzuF2H+3jLYOJOam+vsiN3VuQ5ExxcKtsqV5o+njfQ0wYMr9vtisCxLegZTAZ
+         DF8w==
+X-Gm-Message-State: AOAM531d4XT6lkKLc4DgXE9cdZIeDHAr35lJjkRZGNSmC2DvACksy3sZ
+        GClLbYWC9adTjn65horGddvEOY0fidZEuDOebBfvzX45wwU9o3vB
+X-Google-Smtp-Source: ABdhPJzzXEZAOartKWIUk4VKYdsoe1JzVQHIZIo5H4Mw9qzgIoFd8v53NzrZnggWwFLGeAUfpuC75PT0N6jsyEwefj8=
+X-Received: by 2002:a92:c949:: with SMTP id i9mr2297670ilq.252.1601963706495;
+ Mon, 05 Oct 2020 22:55:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 6 Oct 2020 11:24:55 +0530
+Message-ID: <CA+G9fYvHOu8kJhRKV5GPJmnaE_x2mrnN6myb4G4YHHW-oiKD7A@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/57] 5.4.70-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> writes:
-
-> On Thu, 10 Sep 2020, Lee Jones wrote:
+On Mon, 5 Oct 2020 at 20:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
->> This is a rebased/re-worked set of patches which have been
->> previously posted to the mailing list(s).
->> 
->> This set is part of a larger effort attempting to clean-up W=1
->> kernel builds, which are currently overwhelmingly riddled with
->> niggly little warnings.
->> 
->> There are quite a few W=1 warnings in the Wireless.  My plan
->> is to work through all of them over the next few weeks.
->> Hopefully it won't be too long before drivers/net/wireless
->> builds clean with W=1 enabled.
->> 
->> Lee Jones (29):
->>   iwlwifi: dvm: Demote non-compliant kernel-doc headers
->>   iwlwifi: rs: Demote non-compliant kernel-doc headers
->>   iwlwifi: dvm: tx: Demote non-compliant kernel-doc headers
->>   iwlwifi: dvm: lib: Demote non-compliant kernel-doc headers
->>   iwlwifi: calib: Demote seemingly unintentional kerneldoc header
->>   wil6210: Fix a couple of formatting issues in 'wil6210_debugfs_init'
->>   iwlwifi: dvm: sta: Demote a bunch of nonconformant kernel-doc headers
->>   iwlwifi: mvm: ops: Remove unused static struct 'iwl_mvm_debug_names'
->>   iwlwifi: dvm: Demote a couple of nonconformant kernel-doc headers
->>   iwlwifi: mvm: utils: Fix some doc-rot
->>   iwlwifi: dvm: scan: Demote a few nonconformant kernel-doc headers
->>   iwlwifi: dvm: rxon: Demote non-conformant kernel-doc headers
->>   iwlwifi: mvm: tx: Demote misuse of kernel-doc headers
->>   iwlwifi: dvm: devices: Fix function documentation formatting issues
->>   iwlwifi: iwl-drv: Provide descriptions debugfs dentries
->>   wil6210: wmi: Fix formatting and demote non-conforming function
->>     headers
->>   wil6210: interrupt: Demote comment header which is clearly not
->>     kernel-doc
->>   wil6210: txrx: Demote obvious abuse of kernel-doc
->>   wil6210: txrx_edma: Demote comments which are clearly not kernel-doc
->>   wil6210: pmc: Demote a few nonconformant kernel-doc function headers
->>   wil6210: wil_platform: Demote kernel-doc header to standard comment
->>     block
->>   wil6210: wmi: Correct misnamed function parameter 'ptr_'
->>   ath6kl: wmi: Remove unused variable 'rate'
->>   ath9k: ar9002_initvals: Remove unused array
->>     'ar9280PciePhy_clkreq_off_L1_9280'
->>   ath9k: ar9001_initvals: Remove unused array 'ar5416Bank6_9100'
->>   ath9k: ar5008_initvals: Remove unused table entirely
->>   ath9k: ar5008_initvals: Move ar5416Bank{0,1,2,3,7} to where they are
->>     used
->>   brcmsmac: phytbl_lcn: Remove unused array 'dot11lcn_gain_tbl_rev1'
->>   brcmsmac: phy_lcn: Remove unused variable
->>     'lcnphy_rx_iqcomp_table_rev0'
+> This is the start of the stable review cycle for the 5.4.70 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> What's happening with all of these iwlwifi patches?
+> Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
+> Anything received after that time might be too late.
 >
-> Looks like they are still not applied.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.70-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Luca (CCed) takes iwlwifi patches to his iwlwifi tree.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.70-rc1
+git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+git branch: linux-5.4.y
+git commit: 7b199c4db17f19594dcf4d24cc26c8ddff8443da
+git describe: v5.4.69-58-g7b199c4db17f
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.69-58-g7b199c4db17f
+
+No regressions (compared to build v5.4.69)
+
+No fixes (compared to build v5.4.69)
+
+
+Ran 34627 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-mm-tests
+* network-basic-tests
+* ltp-ipc-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
