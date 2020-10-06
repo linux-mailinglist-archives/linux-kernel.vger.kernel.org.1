@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16352846C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1352846CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727137AbgJFHHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:07:21 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37045 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgJFHHU (ORCPT
+        id S1727223AbgJFHI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:08:27 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:54814 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726761AbgJFHI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:07:20 -0400
-Received: by mail-ot1-f66.google.com with SMTP id o8so11343407otl.4;
-        Tue, 06 Oct 2020 00:07:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IEjOVbc5CBTebJ+NkL7ECpC20QOFPXAJ42Fc/c1O0SY=;
-        b=NsBMiJCHkO5KL+Nxjj+1B5zTTlxsW5jiVmzATKmuU3jPCBH/9CiTP1nYvbP6CPiBMZ
-         CXOQ+AilbQH4OY9/gn1JBgJx724Ra6pDzP09tKdv+BtRNfo6V0MiQoK1V9ZxBRmwX5CN
-         TbnW3vb6x6nd+gouYaRKOtXP/FAbL/7FlZfnf8qyz0uljoBIWPib2isBdzHU3kVn3H4Y
-         5uBZ1cG5yPN5sDLVu/dRs29oObCj7MlzpOU/m5z7XGkQGi/4z4oMQzYrg7+aaXhek2pV
-         qTHV2fdyDTFCrJL/RftGKWkHF5ymB93gWujddHIhvYuYXelvIZ79smPUIp0DmAwMkMNs
-         /TbQ==
-X-Gm-Message-State: AOAM533E2eswGDbHmIprmCAHQAw6/PsQguc1zQug7UxTzcNUWLdDzh9w
-        vCc+0c2XFT6uBn03WAlZog1dyJxqRj/e0PnVljA=
-X-Google-Smtp-Source: ABdhPJyft7jjmM62xpHzFa1e5eDyNPLkIH/QmkvSYxRLkEx0Q7fnsMVR9bbUaRLw98zJcYaRRu5dXXCwl0ksw9d4EOk=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr1905233otp.107.1601968038374;
- Tue, 06 Oct 2020 00:07:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200923120817.1667149-0-mholenko@antmicro.com>
- <20200923120817.1667149-4-mholenko@antmicro.com> <CAMuHMdXZ4QA4HX8xZJVnnj5P3USpefNn+8OFGz+Yo9T=UpNM4g@mail.gmail.com>
- <CAPk366TrN0AUp8En6Lf4DHfyor22FyitwzK1K3tYBfei1RsYeA@mail.gmail.com>
-In-Reply-To: <CAPk366TrN0AUp8En6Lf4DHfyor22FyitwzK1K3tYBfei1RsYeA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 6 Oct 2020 09:07:07 +0200
-Message-ID: <CAMuHMdUWehGyUAq07P3U4U+JNLQaJ=4vbPghOMar39k8fQDf5Q@mail.gmail.com>
-Subject: Re: [PATCH v11 4/5] dt-bindings: serial: document LiteUART bindings
-To:     Mateusz Holenko <mholenko@antmicro.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Tue, 6 Oct 2020 03:08:26 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09677k8P023201;
+        Tue, 6 Oct 2020 09:07:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=Z88R9F775X/vx6uWOTTf1YpPD2/3YFVVHpJZnzBi2HA=;
+ b=dDefOCjE16trFYivvjWWfsisB5Wg+QGde63dYCqQjQktdg7FaHsvqSF0jK9czJXOi3Xl
+ 39w5XIMPfr443IXbxjsXF0Y9EO79udP9Max/MytmuOQ3zLQYtkQd4656CsExjJlh9tv9
+ 0vjfdHXiab03A5wK5U2TahX3xUyOKS1ndCq5/7jHfjShn8fmWXvPffNHBeKGs6og72dU
+ MYwTJQem5jVFY2TjJ+g6sojiEg7uSijg+wkfu5A0EKN6poreUNRdUqU0SsvrJK12hB6K
+ DmKBVUplzgjLOo/qrCesb+4wNyatVgH1/rlyBu/65tt50dO9oNA5RNUABy1gumbDVKwW 8g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3402tjvvb4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Oct 2020 09:07:56 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6282E10002A;
+        Tue,  6 Oct 2020 09:07:55 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node1.st.com [10.75.127.4])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 469BB20FA4D;
+        Tue,  6 Oct 2020 09:07:55 +0200 (CEST)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE1.st.com
+ (10.75.127.4) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
+ 2020 09:07:17 +0200
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1473.003; Tue, 6 Oct 2020 09:07:17 +0200
+From:   Patrice CHOTARD <patrice.chotard@st.com>
+To:     Alain Volmat <avolmat@me.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Olof Johansson" <olof@lixom.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Enrico Weigelt <info@metux.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Kate Stewart" <kstewart@linuxfoundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gabriel L. Somlo" <gsomlo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] arm: sti LL_UART: add STiH418 SBC UART0 support
+Thread-Topic: [PATCH v2 2/2] arm: sti LL_UART: add STiH418 SBC UART0 support
+Thread-Index: AQHWfwf0QXzHAjzt8keI+ryiHMNuy6mKPw4A
+Date:   Tue, 6 Oct 2020 07:07:17 +0000
+Message-ID: <0061645e-25ae-9eef-d9aa-df9b9b27aec7@st.com>
+References: <20200830195748.30221-1-avolmat@me.com>
+ <20200830195748.30221-3-avolmat@me.com>
+In-Reply-To: <20200830195748.30221-3-avolmat@me.com>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.44]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9FAB3CB18DEEC04FAD55FA16D2716FD1@st.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-06_02:2020-10-06,2020-10-06 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mateusz,
-
-On Tue, Oct 6, 2020 at 9:01 AM Mateusz Holenko <mholenko@antmicro.com> wrote:
-> On Fri, Sep 25, 2020 at 3:16 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Sep 23, 2020 at 12:10 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
-> > > From: Filip Kokosinski <fkokosinski@antmicro.com>
-> > >
-> > > Add documentation for LiteUART devicetree bindings.
-> > >
-> > > Signed-off-by: Filip Kokosinski <fkokosinski@antmicro.com>
-> > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/serial/litex,liteuart.yaml
-
-> > > +properties:
-> > > +  compatible:
-> > > +    const: litex,liteuart
-> >
-> > Have you already decided how to handle future LiteUART variants that add
-> > new features (e.g. CTS/RTS, DMA)?
->
-> We were thinking of adding KConfig options, like
->
-> [ ] LiteUART serial port support
-> < >     LiteUART DMA support
->
-> and using ifdefs in the code.
-
-That is the driver part, not the DT part.
-If enabled, the driver still needs to know if the feature is present and
-to be used, or not.
-
-> The other option could be to extend LiteX itself so that the UART core
-> provides information about its configuration via the capabilities register.
-> That way the driver could configure itself automatically at runtime.
->
-> This is, however, not decided yet.
-
-A capabilities register sounds good to me.
-That means everything is handled automatically by the driver
-However, it does mean the DT schema checker cannot validate the
-use of optional DT properties related to optional features, if any.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGkgQWxhaW4NCg0KT24gOC8zMC8yMCA5OjU3IFBNLCBBbGFpbiBWb2xtYXQgd3JvdGU6DQo+IEFk
+ZCB0aGUgZW50cnkgZm9yIHRoZSBTVGlINDE4IFNCQyBVQVJUMCBsb3cgbGV2ZWwgdWFydC4NCj4N
+Cj4gU2lnbmVkLW9mZi1ieTogQWxhaW4gVm9sbWF0IDxhdm9sbWF0QG1lLmNvbT4NCj4gLS0tDQo+
+ICBhcmNoL2FybS9LY29uZmlnLmRlYnVnIHwgMTkgKysrKysrKysrKysrKysrKystLQ0KPiAgMSBm
+aWxlIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYg
+LS1naXQgYS9hcmNoL2FybS9LY29uZmlnLmRlYnVnIGIvYXJjaC9hcm0vS2NvbmZpZy5kZWJ1Zw0K
+PiBpbmRleCBlOTdkNmU1Yzg4OTguLjQ0N2QxNzdmY2Y4ZCAxMDA2NDQNCj4gLS0tIGEvYXJjaC9h
+cm0vS2NvbmZpZy5kZWJ1Zw0KPiArKysgYi9hcmNoL2FybS9LY29uZmlnLmRlYnVnDQo+IEBAIC0x
+MjA0LDYgKzEyMDQsMTYgQEAgY2hvaWNlDQo+ICANCj4gIAkJICBJZiB1bnN1cmUsIHNheSBOLg0K
+PiAgDQo+ICsJY29uZmlnIERFQlVHX1NUSUg0MThfU0JDX0FTQzANCj4gKwkJYm9vbCAiVXNlIFN0
+aUg0MTggU0JDIEFTQzAgVUFSVCBmb3IgbG93LWxldmVsIGRlYnVnIg0KPiArCQlkZXBlbmRzIG9u
+IEFSQ0hfU1RJDQo+ICsJCWhlbHANCj4gKwkJICBTYXkgWSBoZXJlIGlmIHlvdSB3YW50IGtlcm5l
+bCBsb3ctbGV2ZWwgZGVidWdnaW5nIHN1cHBvcnQNCj4gKwkJICBvbiBTVGlINDE4IGJhc2VkIHBs
+YXRmb3JtcyB3aGljaCBoYXMgZGVmYXVsdCBVQVJUIHdpcmVkDQo+ICsJCSAgdXAgdG8gU0JDIEFT
+QzAuDQo+ICsNCj4gKwkJICBJZiB1bnN1cmUsIHNheSBOLg0KPiArDQo+ICAJY29uZmlnIFNUTTMy
+RjRfREVCVUdfVUFSVA0KPiAgCQlib29sICJVc2UgU1RNMzJGNCBVQVJUIGZvciBsb3ctbGV2ZWwg
+ZGVidWciDQo+ICAJCWRlcGVuZHMgb24gTUFDSF9TVE0zMkY0MjkgfHwgTUFDSF9TVE0zMkY0NjkN
+Cj4gQEAgLTE1ODcsNiArMTU5Nyw3IEBAIGNvbmZpZyBERUJVR19MTF9JTkNMVURFDQo+ICAJZGVm
+YXVsdCAiZGVidWcvc2lyZi5TIiBpZiBERUJVR19TSVJGU09DX1VBUlQNCj4gIAlkZWZhdWx0ICJk
+ZWJ1Zy9zdGkuUyIgaWYgREVCVUdfU1RJSDQxWF9BU0MyDQo+ICAJZGVmYXVsdCAiZGVidWcvc3Rp
+LlMiIGlmIERFQlVHX1NUSUg0MVhfU0JDX0FTQzENCj4gKwlkZWZhdWx0ICJkZWJ1Zy9zdGkuUyIg
+aWYgREVCVUdfU1RJSDQxOF9TQkNfQVNDMA0KPiAgCWRlZmF1bHQgImRlYnVnL3N0bTMyLlMiIGlm
+IERFQlVHX1NUTTMyX1VBUlQNCj4gIAlkZWZhdWx0ICJkZWJ1Zy90ZWdyYS5TIiBpZiBERUJVR19U
+RUdSQV9VQVJUDQo+ICAJZGVmYXVsdCAiZGVidWcvdXg1MDAuUyIgaWYgREVCVUdfVVg1MDBfVUFS
+VA0KPiBAQCAtMTYyMCw2ICsxNjMxLDcgQEAgY29uZmlnIERFQlVHX1VBUlRfUEhZUw0KPiAgCWRl
+ZmF1bHQgMHgwMzAxMGZlMCBpZiBBUkNIX1JQQw0KPiAgCWRlZmF1bHQgMHgwNzAwMDAwMCBpZiBE
+RUJVR19TVU45SV9VQVJUMA0KPiAgCWRlZmF1bHQgMHgwOTQwNTAwMCBpZiBERUJVR19aVEVfWlgN
+Cj4gKwlkZWZhdWx0IDB4MDk1MzAwMDAgaWYgREVCVUdfU1RJSDQxOF9TQkNfQVNDMA0KPiAgCWRl
+ZmF1bHQgMHgxMDAwOTAwMCBpZiBERUJVR19SRUFMVklFV19TVERfUE9SVCB8fCBcDQo+ICAJCQkJ
+REVCVUdfVkVYUFJFU1NfVUFSVDBfQ0E5DQo+ICAJZGVmYXVsdCAweDEwMTBjMDAwIGlmIERFQlVH
+X1JFQUxWSUVXX1BCMTE3Nl9QT1JUDQo+IEBAIC0xNzUwLDcgKzE3NjIsOCBAQCBjb25maWcgREVC
+VUdfVUFSVF9QSFlTDQo+ICAJCURFQlVHX0JDTTYzWFhfVUFSVCB8fCBERUJVR19BU005MjYwX1VB
+UlQgfHwgXA0KPiAgCQlERUJVR19TSVJGU09DX1VBUlQgfHwgREVCVUdfRElHSUNPTE9SX1VBMCB8
+fCBcDQo+ICAJCURFQlVHX0FUOTFfVUFSVCB8fCBERUJVR19TVE0zMl9VQVJUIHx8IFwNCj4gLQkJ
+REVCVUdfU1RJSDQxWF9BU0MyIHx8IERFQlVHX1NUSUg0MVhfU0JDX0FTQzENCj4gKwkJREVCVUdf
+U1RJSDQxWF9BU0MyIHx8IERFQlVHX1NUSUg0MVhfU0JDX0FTQzEgfHwgXA0KPiArCQlERUJVR19T
+VElINDE4X1NCQ19BU0MwDQo+ICANCj4gIGNvbmZpZyBERUJVR19VQVJUX1ZJUlQNCj4gIAloZXgg
+IlZpcnR1YWwgYmFzZSBhZGRyZXNzIG9mIGRlYnVnIFVBUlQiDQo+IEBAIC0xNzk2LDYgKzE4MDks
+NyBAQCBjb25maWcgREVCVUdfVUFSVF9WSVJUDQo+ICAJZGVmYXVsdCAweGY4MDkwMDAwIGlmIERF
+QlVHX1ZFWFBSRVNTX1VBUlQwX1JTMQ0KPiAgCWRlZmF1bHQgMHhmOGZmZWUwMCBpZiBERUJVR19B
+VDkxX1NBTTkyNjNfREJHVQ0KPiAgCWRlZmF1bHQgMHhmOGZmZjIwMCBpZiBERUJVR19BVDkxX1JN
+OTIwMF9EQkdVDQo+ICsJZGVmYXVsdCAweGY5NTMwMDAwIGlmIERFQlVHX1NUSUg0MThfU0JDX0FT
+QzANCj4gIAlkZWZhdWx0IDB4ZjllMDkwMDAgaWYgREVCVUdfQU0zM1hYVUFSVDENCj4gIAlkZWZh
+dWx0IDB4ZmEwMjAwMDAgaWYgREVCVUdfT01BUDRVQVJUMyB8fCBERUJVR19USTgxWFhVQVJUMQ0K
+PiAgCWRlZmF1bHQgMHhmYTAyMjAwMCBpZiBERUJVR19USTgxWFhVQVJUMg0KPiBAQCAtMTg2NCw3
+ICsxODc4LDggQEAgY29uZmlnIERFQlVHX1VBUlRfVklSVA0KPiAgCQlERUJVR19CQ002M1hYX1VB
+UlQgfHwgREVCVUdfQVNNOTI2MF9VQVJUIHx8IFwNCj4gIAkJREVCVUdfU0lSRlNPQ19VQVJUIHx8
+IERFQlVHX0RJR0lDT0xPUl9VQTAgfHwgXA0KPiAgCQlERUJVR19BVDkxX1VBUlQgfHwgREVCVUdf
+U1RNMzJfVUFSVCB8fCBcDQo+IC0JCURFQlVHX1NUSUg0MVhfQVNDMiB8fCBERUJVR19TVElINDFY
+X1NCQ19BU0MxDQo+ICsgIAkJREVCVUdfU1RJSDQxWF9BU0MyIHx8IERFQlVHX1NUSUg0MVhfU0JD
+X0FTQzEgfHwgXA0KPiArCQlERUJVR19TVElINDE4X1NCQ19BU0MwDQo+ICANCj4gIGNvbmZpZyBE
+RUJVR19VQVJUXzgyNTBfU0hJRlQNCj4gIAlpbnQgIlJlZ2lzdGVyIG9mZnNldCBzaGlmdCBmb3Ig
+dGhlIDgyNTAgZGVidWcgVUFSVCINCg0KUmV2aWV3ZWQtYnk6IFBhdHJpY2UgQ2hvdGFyZCA8cGF0
+cmljZS5jaG90YXJkQHN0LmNvbT4NCg0KVGhhbmtzDQoNClBhdHJpY2UNCg==
