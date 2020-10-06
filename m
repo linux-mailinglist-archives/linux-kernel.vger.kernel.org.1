@@ -2,356 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D221284644
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B7D284648
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgJFGrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:47:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:37961 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726822AbgJFGrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:47:06 -0400
-IronPort-SDR: kgfNs3dCMPpynVD7ocOdws+iDD+2j2tPAcEO9PRUmYK65Rb9fERR1LFU9tRvbAcdpCUHJRP0xh
- rS6hd4CSuhgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="161767798"
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
-   d="scan'208";a="161767798"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 23:47:05 -0700
-IronPort-SDR: n60UX+bp7g9HQ0stn4j8gwMJbIr3UUxpfWx/W7IQh+0umQgIg+RcRMtJFRQ54kLqbXeyb/Jy0i
- SAdvrAbkcPsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
-   d="scan'208";a="315490143"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga006.jf.intel.com with ESMTP; 05 Oct 2020 23:47:00 -0700
-Subject: Re: [PATCH V2] scsi: ufs: Add DeepSleep feature
-To:     Bean Huo <huobean@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-References: <20201005130451.20595-1-adrian.hunter@intel.com>
- <dff3236892909139403f70aad4ccc7c004e9f53f.camel@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <fc96fc7b-b0cd-aa89-7286-19491761bd2e@intel.com>
-Date:   Tue, 6 Oct 2020 09:46:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <dff3236892909139403f70aad4ccc7c004e9f53f.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S1727080AbgJFGsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:48:00 -0400
+Received: from mail-eopbgr1320090.outbound.protection.outlook.com ([40.107.132.90]:22112
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726822AbgJFGr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:47:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CBum74X5sMFgCPPSJEbCay9QjFEYc3G03vAytP98xjyv69n8augFd4ulJnyb+nwLk7KUZ8Uu05Y54lwt9/vgE/tMDQnjaYCuHVeGx0M4UAuaNJVWJ21b6ecruOszL3HEbaxmuCE59smqLGjHxoBmLwVqLaOwFjHpglulxX6swQQnlTQRYswcobvUFmD0+IpuJJQh5/WZu7Ad9UYD4C/D1LDtwi/Bc1LLBlYt4XQQuS25DMKfXcm3Cn4DGBbkM+eQxo06U7wFKC70Gqg5SrlVZRw7YhjXIlNfbG2o389RplJJUVTjo0h3HvNrA/Ehcw/ovl4oUFZ62BkD+lwaLyCj1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=srKEMQW5ZX8c5irQH0CrbA5OENVdARfyYlRvAFlh6YY=;
+ b=JfhnejT4QlOsLXpCzQmDUW50x2uvawqiLOIqdPOoWRqJWH6LbmqZiK/u25LIionr37fIzS2aL0OmW+Rpuylqd1e0R1vwz/zr7XZ6JG17T3AlXnR1bvjkMXpcY644T8V0EVXiNDlHIv9Pw9BTHuaPzBrxbw+nkvr5z9JDhhPILeJsH44sNiALZFhXntLFHW8xf+u9YNjddgxuzD+cOb/GY8xGF6W5JFcn4F/kVujsUar2DUOu1ahxJC5Mgw2IlNTBbhkd2juaR5IUP5OxmHypOk+dws333vPraJ4sjSWz/AsiBJcV1W3xpOKZcPgy4fEEaQEdQv8TVx5lM3lbBgUxVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=srKEMQW5ZX8c5irQH0CrbA5OENVdARfyYlRvAFlh6YY=;
+ b=CpD82TAOUPimMQUP2pcBHiCqv9vgQscdp9wVinp9jI3NDKOSD7oPO43NkzKWZ+kCb5G6nhuoI/qdvxPgsAbWZFFn2uPWU5YFr+7rVXTF1Ydjln+fz1EpNbhKFO83rdu34WoJ4tUljyfBhcBBsWqjHKP5IAxv1Io/Lmfa76C04Uo=
+Received: from KU1P153MB0120.APCP153.PROD.OUTLOOK.COM (2603:1096:802:1a::17)
+ by KL1P15301MB0005.APCP153.PROD.OUTLOOK.COM (2603:1096:802:e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.10; Tue, 6 Oct
+ 2020 06:47:45 +0000
+Received: from KU1P153MB0120.APCP153.PROD.OUTLOOK.COM
+ ([fe80::31a4:e5b8:86ec:1413]) by KU1P153MB0120.APCP153.PROD.OUTLOOK.COM
+ ([fe80::31a4:e5b8:86ec:1413%9]) with mapi id 15.20.3477.011; Tue, 6 Oct 2020
+ 06:47:45 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Stefan Haberland <sth@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Long Li <longli@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: irq_build_affinity_masks() allocates improper affinity if
+ num_possible_cpus() > num_present_cpus()?
+Thread-Topic: irq_build_affinity_masks() allocates improper affinity if
+ num_possible_cpus() > num_present_cpus()?
+Thread-Index: AdabnwA0SBdvouNFQ4iAnKm72ZKc6Q==
+Date:   Tue, 6 Oct 2020 06:47:45 +0000
+Message-ID: <KU1P153MB0120D20BC6ED8CF54168EEE6BF0D0@KU1P153MB0120.APCP153.PROD.OUTLOOK.COM>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=964c4bb6-4b17-4071-82b8-a4096ef94de1;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-10-05T06:20:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:e92f:2b81:6f33:777]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 78cb545e-ede0-49f7-6e7e-08d869c3bb8c
+x-ms-traffictypediagnostic: KL1P15301MB0005:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <KL1P15301MB00057DB7A4B11635876E8642BF0D0@KL1P15301MB0005.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XuXpjKLsOaAcbCWtWlu6ehp8ZOuuSOrgwqrBtVTJqCNCnwJnIoL9ATVb3BEqjLD2swicJuceumz/eZwqb0NjmC2RmFXpEABqKahutcl98K3EA9wDlRZtwmxLnZ6fjoVBS+AiFMReoVdNEtiCyVCJ/T6743SMxN68qd3gtlMjz5rW5RNk0w9MIWg75NAcj0lj23hRvDHwa29MFSeXho+lyTHZQ/H7V3nCe/fxd5eDpQWHHOS3U0F2VP9raeTJn738qnYq04aOlW5P+KLk8/SabDwGq/PpTaPQ5jUv3JwnrPL2YBJlc/uwQt4Kr3oJJuwU
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KU1P153MB0120.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(396003)(346002)(39860400002)(86362001)(2906002)(71200400001)(5660300002)(52536014)(82960400001)(82950400001)(10290500003)(4326008)(9686003)(8936002)(8676002)(107886003)(8990500004)(83380400001)(478600001)(7696005)(6506007)(110136005)(55016002)(54906003)(33656002)(66446008)(66476007)(66946007)(66556008)(64756008)(76116006)(186003)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: BPcugSDuIB2h/dw+ZT7P1E11Wzy3DMarAnjF0/z7KIPzkpyP8BfG31yUqRlsGrIS1Q0iqoLgVHAx9f6Qa51zvYlcVVKOLaK4PjA/e8+7dFv6ff1jGJO4l43OUgfEIcrbe4eczN1tfYN0/CJ7/vyQTwMkiXTxCLiVHr/ZtVvNN/gaKyFhp18B6+58F2Yas+B5Q6+JM7vhau3LuiZmnKIp6lPNsdwd/O9ThEFV1ia4l5yDVZ3usWUxPLcxDxFhDWD6loAqWBFwG0y8SI5asQYqLfngveOk3FrmWPH1Ae+5wCk+75Q4zNqpSPyzep0yN1VLsS2cF6CZU5vFxKY96ih8pOujhb9MggXq5fSitgZCXk58p+Ct4duUoCCvmqb/8CKfPkXyyQ3bRKiJEKz0l2tXayduSFijIuSAWAYGxJjtfOnPbIc/XOjYVIQGRqUzicdNL+xlVvFy/Rdz4aH5sxjoN1vG7utUr36g2cvBs/7ZOiymbrLn3eXTzIauuSK6b0OzttT2zcxRVihYk25hEt4ZWGhazp5ChbB2ZftcN4Qe+CHjqvDKZcfBrMm9kVlhbJcG6hsBAGD335LlK3E3G5+u8CE73oFTdoYevUAvNI4Mg2OQ0invQCq8s88y4gmtnYwsoVxFFvzjiC46QP5L+j0gKTpt1pbMwUVml6/r864N9HPgsKVfDZNgNTzOs9x2pkMqG91IdS1rbqNWytkgB1Fm2w==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KU1P153MB0120.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78cb545e-ede0-49f7-6e7e-08d869c3bb8c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 06:47:45.4549
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7HzcfM4bDN9pekRntqiF016s9zco2Oqu5uae/SMLdr0ZmNa6VikUhFi0U63zcfAPuYKyg1Xsn+fPpZZJU8Oy/A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1P15301MB0005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/20 6:46 pm, Bean Huo wrote:
-> Hi Adrian
-> 
-> thanks for submitting your patch. this patch looks fine to me.
-> 
-> 
-> do you think the new deepsleep PM level aslo should be added in
-> "rpm_lvl" description in Documentation/ABI/testing/sysfs-driver-ufs?
+Hi all,
+I'm running a single-CPU Linux VM on Hyper-V. The Linux kernel is v5.9-rc7
+and I have CONFIG_NR_CPUS=3D256.
 
-Thanks for looking at this.  Yes, I missed that.  Fixed in V3.
+The Hyper-V Host (Version 17763-10.0-1-0.1457) provides a guest firmware,
+which always reports 128 Local APIC entries in the ACPI MADT table. Here
+only the first Local APIC entry's "Processor Enabled" is 1 since this
+Linux VM is configured to have only 1 CPU. This means: in the Linux kernel,
+the "cpu_present_mask" and " cpu_online_mask " have only 1 CPU (i.e. CPU0),
+while the "cpu_possible_mask" has 128 CPUs, and the "nr_cpu_ids" is 128.
 
-> 
-> Thanks,
-> Bean
-> 
-> 
-> On Mon, 2020-10-05 at 16:04 +0300, Adrian Hunter wrote:
->> DeepSleep is a UFS v3.1 feature that achieves the lowest power
->> consumption
->> of the device, apart from power off.
->>
->> In DeepSleep mode, no commands are accepted, and the only way to exit
->> is
->> using a hardware reset or power cycle.
->>
->> This patch assumes that if a power cycle was an option, then power
->> off
->> would be preferable, so only exit via a hardware reset is supported.
->>
->> Drivers that wish to support DeepSleep need to set a new capability
->> flag
->> UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
->>  ->device_reset() callback.
->>
->> It is assumed that UFS devices with wspecversion >= 0x310 support
->> DeepSleep.
->>
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->> ---
->>
->>
->> Changes in V2:
->>
->>
->> 	Fix SSU command IMMED setting and consequently drop patch 2.
->>
->>
->>  drivers/scsi/ufs/ufs-sysfs.c |  7 +++++++
->>  drivers/scsi/ufs/ufs.h       |  1 +
->>  drivers/scsi/ufs/ufshcd.c    | 39
->> ++++++++++++++++++++++++++++++++++--
->>  drivers/scsi/ufs/ufshcd.h    | 17 +++++++++++++++-
->>  include/trace/events/ufs.h   |  3 ++-
->>  5 files changed, 63 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-
->> sysfs.c
->> index bdcd27faa054..08e72b7eef6a 100644
->> --- a/drivers/scsi/ufs/ufs-sysfs.c
->> +++ b/drivers/scsi/ufs/ufs-sysfs.c
->> @@ -28,6 +28,7 @@ static const char
->> *ufschd_ufs_dev_pwr_mode_to_string(
->>  	case UFS_ACTIVE_PWR_MODE:	return "ACTIVE";
->>  	case UFS_SLEEP_PWR_MODE:	return "SLEEP";
->>  	case UFS_POWERDOWN_PWR_MODE:	return "POWERDOWN";
->> +	case UFS_DEEPSLEEP_PWR_MODE:	return "DEEPSLEEP";
->>  	default:			return "UNKNOWN";
->>  	}
->>  }
->> @@ -38,6 +39,7 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct
->> device *dev,
->>  					     bool rpm)
->>  {
->>  	struct ufs_hba *hba = dev_get_drvdata(dev);
->> +	struct ufs_dev_info *dev_info = &hba->dev_info;
->>  	unsigned long flags, value;
->>  
->>  	if (kstrtoul(buf, 0, &value))
->> @@ -46,6 +48,11 @@ static inline ssize_t
->> ufs_sysfs_pm_lvl_store(struct device *dev,
->>  	if (value >= UFS_PM_LVL_MAX)
->>  		return -EINVAL;
->>  
->> +	if (ufs_pm_lvl_states[value].dev_state ==
->> UFS_DEEPSLEEP_PWR_MODE &&
->> +	    (!(hba->caps & UFSHCD_CAP_DEEPSLEEP) ||
->> +	     !(dev_info->wspecversion >= 0x310)))
->> +		return -EINVAL;
->> +
->>  	spin_lock_irqsave(hba->host->host_lock, flags);
->>  	if (rpm)
->>  		hba->rpm_lvl = value;
->> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
->> index f8ab16f30fdc..d593edb48767 100644
->> --- a/drivers/scsi/ufs/ufs.h
->> +++ b/drivers/scsi/ufs/ufs.h
->> @@ -442,6 +442,7 @@ enum ufs_dev_pwr_mode {
->>  	UFS_ACTIVE_PWR_MODE	= 1,
->>  	UFS_SLEEP_PWR_MODE	= 2,
->>  	UFS_POWERDOWN_PWR_MODE	= 3,
->> +	UFS_DEEPSLEEP_PWR_MODE	= 4,
->>  };
->>  
->>  #define UFS_WB_BUF_REMAIN_PERCENT(val) ((val) / 10)
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index b8f573a02713..ccacf54ed7ef 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -163,6 +163,11 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
->>  	{UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE},
->>  	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE},
->>  	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
->> +	/*
->> +	 * For DeepSleep, the link is first put in hibern8 and then
->> off.
->> +	 * Leaving the link in hibern8 is not supported.
->> +	 */
->> +	{UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE},
->>  };
->>  
->>  static inline enum ufs_dev_pwr_mode
->> @@ -8292,7 +8297,8 @@ static int ufshcd_link_state_transition(struct
->> ufs_hba *hba,
->>  	}
->>  	/*
->>  	 * If autobkops is enabled, link can't be turned off because
->> -	 * turning off the link would also turn off the device.
->> +	 * turning off the link would also turn off the device, except
->> in the
->> +	 * case of DeepSleep where the device is expected to remain
->> powered.
->>  	 */
->>  	else if ((req_link_state == UIC_LINK_OFF_STATE) &&
->>  		 (!check_for_bkops || !hba->auto_bkops_enabled)) {
->> @@ -8302,6 +8308,9 @@ static int ufshcd_link_state_transition(struct
->> ufs_hba *hba,
->>  		 * put the link in low power mode is to send the DME
->> end point
->>  		 * to device and then send the DME reset command to
->> local
->>  		 * unipro. But putting the link in hibern8 is much
->> faster.
->> +		 *
->> +		 * Note also that putting the link in Hibern8 is a
->> requirement
->> +		 * for entering DeepSleep.
->>  		 */
->>  		ret = ufshcd_uic_hibern8_enter(hba);
->>  		if (ret) {
->> @@ -8434,6 +8443,7 @@ static void ufshcd_hba_vreg_set_hpm(struct
->> ufs_hba *hba)
->>  static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->>  {
->>  	int ret = 0;
->> +	int check_for_bkops;
->>  	enum ufs_pm_level pm_lvl;
->>  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
->>  	enum uic_link_state req_link_state;
->> @@ -8519,7 +8529,13 @@ static int ufshcd_suspend(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  	}
->>  
->>  	flush_work(&hba->eeh_work);
->> -	ret = ufshcd_link_state_transition(hba, req_link_state, 1);
->> +
->> +	/*
->> +	 * In the case of DeepSleep, the device is expected to remain
->> powered
->> +	 * with the link off, so do not check for bkops.
->> +	 */
->> +	check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba);
->> +	ret = ufshcd_link_state_transition(hba, req_link_state,
->> check_for_bkops);
->>  	if (ret)
->>  		goto set_dev_active;
->>  
->> @@ -8560,11 +8576,25 @@ static int ufshcd_suspend(struct ufs_hba
->> *hba, enum ufs_pm_op pm_op)
->>  	if (hba->clk_scaling.is_allowed)
->>  		ufshcd_resume_clkscaling(hba);
->>  	ufshcd_vreg_set_hpm(hba);
->> +	/*
->> +	 * Device hardware reset is required to exit DeepSleep. Also,
->> for
->> +	 * DeepSleep, the link is off so host reset and restore will be
->> done
->> +	 * further below.
->> +	 */
->> +	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
->> +		ufshcd_vops_device_reset(hba);
->> +		WARN_ON(!ufshcd_is_link_off(hba));
->> +	}
->>  	if (ufshcd_is_link_hibern8(hba) &&
->> !ufshcd_uic_hibern8_exit(hba))
->>  		ufshcd_set_link_active(hba);
->>  	else if (ufshcd_is_link_off(hba))
->>  		ufshcd_host_reset_and_restore(hba);
->>  set_dev_active:
->> +	/* Can also get here needing to exit DeepSleep */
->> +	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
->> +		ufshcd_vops_device_reset(hba);
->> +		ufshcd_host_reset_and_restore(hba);
->> +	}
->>  	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
->>  		ufshcd_disable_auto_bkops(hba);
->>  enable_gating:
->> @@ -8626,6 +8656,9 @@ static int ufshcd_resume(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  	if (ret)
->>  		goto disable_vreg;
->>  
->> +	/* For DeepSleep, the only supported option is to have the link
->> off */
->> +	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) &&
->> !ufshcd_is_link_off(hba));
->> +
->>  	if (ufshcd_is_link_hibern8(hba)) {
->>  		ret = ufshcd_uic_hibern8_exit(hba);
->>  		if (!ret) {
->> @@ -8639,6 +8672,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
->> enum ufs_pm_op pm_op)
->>  		/*
->>  		 * A full initialization of the host and the device is
->>  		 * required since the link was put to off during
->> suspend.
->> +		 * Note, in the case of DeepSleep, the device will exit
->> +		 * DeepSleep due to device reset.
->>  		 */
->>  		ret = ufshcd_reset_and_restore(hba);
->>  		/*
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index 6663325ed8a0..8c6094fb35f4 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -114,16 +114,22 @@ enum uic_link_state {
->>  	((h)->curr_dev_pwr_mode = UFS_SLEEP_PWR_MODE)
->>  #define ufshcd_set_ufs_dev_poweroff(h) \
->>  	((h)->curr_dev_pwr_mode = UFS_POWERDOWN_PWR_MODE)
->> +#define ufshcd_set_ufs_dev_deepsleep(h) \
->> +	((h)->curr_dev_pwr_mode = UFS_DEEPSLEEP_PWR_MODE)
->>  #define ufshcd_is_ufs_dev_active(h) \
->>  	((h)->curr_dev_pwr_mode == UFS_ACTIVE_PWR_MODE)
->>  #define ufshcd_is_ufs_dev_sleep(h) \
->>  	((h)->curr_dev_pwr_mode == UFS_SLEEP_PWR_MODE)
->>  #define ufshcd_is_ufs_dev_poweroff(h) \
->>  	((h)->curr_dev_pwr_mode == UFS_POWERDOWN_PWR_MODE)
->> +#define ufshcd_is_ufs_dev_deepsleep(h) \
->> +	((h)->curr_dev_pwr_mode == UFS_DEEPSLEEP_PWR_MODE)
->>  
->>  /*
->>   * UFS Power management levels.
->> - * Each level is in increasing order of power savings.
->> + * Each level is in increasing order of power savings, except
->> DeepSleep
->> + * which is lower than PowerDown with power on but not PowerDown
->> with
->> + * power off.
->>   */
->>  enum ufs_pm_level {
->>  	UFS_PM_LVL_0, /* UFS_ACTIVE_PWR_MODE, UIC_LINK_ACTIVE_STATE */
->> @@ -132,6 +138,7 @@ enum ufs_pm_level {
->>  	UFS_PM_LVL_3, /* UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE */
->>  	UFS_PM_LVL_4, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE
->> */
->>  	UFS_PM_LVL_5, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE */
->> +	UFS_PM_LVL_6, /* UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE */
->>  	UFS_PM_LVL_MAX
->>  };
->>  
->> @@ -591,6 +598,14 @@ enum ufshcd_caps {
->>  	 * inline crypto engine, if it is present
->>  	 */
->>  	UFSHCD_CAP_CRYPTO				= 1 << 8,
->> +
->> +	/*
->> +	 * This capability allows the host controller driver to use
->> DeepSleep,
->> +	 * if it is supported by the UFS device. The host controller
->> driver must
->> +	 * support device hardware reset via the hba->device_reset()
->> callback,
->> +	 * in order to exit DeepSleep state.
->> +	 */
->> +	UFSHCD_CAP_DEEPSLEEP				= 1 << 9,
->>  };
->>  
->>  struct ufs_hba_variant_params {
->> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
->> index 84841b3a7ffd..2362244c2a9e 100644
->> --- a/include/trace/events/ufs.h
->> +++ b/include/trace/events/ufs.h
->> @@ -19,7 +19,8 @@
->>  #define UFS_PWR_MODES			\
->>  	EM(UFS_ACTIVE_PWR_MODE)		\
->>  	EM(UFS_SLEEP_PWR_MODE)		\
->> -	EMe(UFS_POWERDOWN_PWR_MODE)
->> +	EM(UFS_POWERDOWN_PWR_MODE)	\
->> +	EMe(UFS_DEEPSLEEP_PWR_MODE)
->>  
->>  #define UFSCHD_CLK_GATING_STATES	\
->>  	EM(CLKS_OFF)			\
-> 
+I pass through an MSI-X-capable PCI device to the Linux VM (which has
+only 1 virtual CPU), and the below code does *not* report any error
+(i.e. pci_alloc_irq_vectors_affinity() returns 2, and request_irq()
+returns 0), but the code does not work: the second MSI-X interrupt is not
+happening while the first interrupt does work fine.
 
+int nr_irqs =3D 2;
+int i, nvec, irq;
+
+nvec =3D pci_alloc_irq_vectors_affinity(pdev, nr_irqs, nr_irqs,
+                PCI_IRQ_MSIX | PCI_IRQ_AFFINITY, NULL);
+
+for (i =3D 0; i < nvec; i++) {
+        irq =3D pci_irq_vector(pdev, i);
+        err =3D request_irq(irq, test_intr, 0, "test_intr", &intr_cxt[i]);
+}
+
+It turns out that pci_alloc_irq_vectors_affinity() -> ... ->
+irq_create_affinity_masks() allocates an improper affinity for the second
+interrupt. The below printk() shows that the second interrupt's affinity is
+1-64, but only CPU0 is present in the system! As a result, later,
+request_irq() -> ... -> irq_startup() -> __irq_startup_managed() returns
+IRQ_STARTUP_ABORT because cpumask_any_and(aff, cpu_online_mask) is=20
+empty (i.e. >=3D nr_cpu_ids), and irq_startup() *silently* fails (i.e. "ret=
+urn 0;"),
+since __irq_startup() is only called for IRQ_STARTUP_MANAGED and
+IRQ_STARTUP_NORMAL.
+
+--- a/kernel/irq/affinity.c
++++ b/kernel/irq/affinity.c
+@@ -484,6 +484,9 @@ struct irq_affinity_desc *
+        for (i =3D affd->pre_vectors; i < nvecs - affd->post_vectors; i++)
+                masks[i].is_managed =3D 1;
+
++       for (i =3D 0; i < nvecs; i++)
++               printk("i=3D%d, affi =3D %*pbl\n", i,
++                      cpumask_pr_args(&masks[i].mask));
+        return masks;
+ }
+
+[   43.770477] i=3D0, affi =3D 0,65-127
+[   43.770484] i=3D1, affi =3D 1-64
+
+Though here the issue happens to a Linux VM on Hyper-V, I think the same
+issue can also happen to a physical machine, if the physical machine also
+uses a lot of static MADT entries, of which only the entries of the present
+CPUs are marked to be "Processor Enabled =3D=3D 1".
+
+I think pci_alloc_irq_vectors_affinity() -> __pci_enable_msix_range() ->
+irq_calc_affinity_vectors() -> cpumask_weight(cpu_possible_mask) should
+use cpu_present_mask rather than cpu_possible_mask (), so here
+irq_calc_affinity_vectors() would return 1, and
+__pci_enable_msix_range() would immediately return -ENOSPC to avoid a
+*silent* failure.
+
+However, git-log shows that this 2018 commit intentionally changed the
+cpu_present_mask to cpu_possible_mask:
+84676c1f21e8 ("genirq/affinity: assign vectors to all possible CPUs")
+
+so I'm not sure whether (and how?) we should address the *silent* failure.
+
+BTW, here I use a single-CPU VM to simplify the discussion. Actually,
+if the VM has n CPUs, with the above usage of
+pci_alloc_irq_vectors_affinity() (which might seem incorrect, but my point =
+is
+that it's really not good to have a silent failure, which makes it a lot mo=
+re=20
+difficult to figure out what goes wrong), it looks only the first n MSI-X i=
+nterrupts
+can work, and the (n+1)'th MSI-X interrupt can not work due to the allocate=
+d
+improper affinity.
+
+According to my tests, if we need n+1 MSI-X interrupts in such a VM that
+has n CPUs, it looks we have 2 options (the second should be better):
+
+1. Do not use the PCI_IRQ_AFFINITY flag, i.e.
+        pci_alloc_irq_vectors_affinity(pdev, n+1, n+1, PCI_IRQ_MSIX, NULL);
+
+2. Use the PCI_IRQ_AFFINITY flag, and pass a struct irq_affinity affd,
+which tells the API that we don't care about the first interrupt's affinity=
+:
+
+        struct irq_affinity affd =3D {
+                .pre_vectors =3D 1,
+				...
+        };
+
+        pci_alloc_irq_vectors_affinity(pdev, n+1, n+1,
+                PCI_IRQ_MSIX | PCI_IRQ_AFFINITY, &affd);
+
+PS, irq_create_affinity_masks() is complicated. Let me know if you're
+interested to know how it allocates the invalid affinity "1-64" for the
+second MSI-X interrupt.
+
+PS2, the latest Hyper-V provides only one ACPI MADT entry to a 1-CPU VM,
+so the issue described above can not reproduce there.
+
+Thanks,
+-- Dexuan
