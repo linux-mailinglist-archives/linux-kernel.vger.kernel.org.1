@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD759285150
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00567285157
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgJFSAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 14:00:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgJFSAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:00:24 -0400
-Received: from C02TF0J2HF1T.local (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6194B206D4;
-        Tue,  6 Oct 2020 18:00:16 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 19:00:12 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Bhupesh Sharma <bhsharma@redhat.com>
-Cc:     John Donnelly <john.p.donnelly@oracle.com>,
-        Chen Zhou <chenzhou10@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        RuiRui Yang <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Prabhakar Kushwaha <prabhakar.pkin@gmail.com>,
-        Simon Horman <horms@verge.net.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, nsaenzjulienne@suse.de,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v12 0/9] support reserving crashkernel above 4G on arm64
- kdump
-Message-ID: <20201006180012.GB31946@C02TF0J2HF1T.local>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
- <e9b1b5db-a848-468e-6baf-2f7b4d658805@oracle.com>
- <20201005170937.GA14576@gaia>
- <CACi5LpMWUmP1df8fB8psJY_cNGHF9MNn+TNK4B4edaRHvOXxGQ@mail.gmail.com>
+        id S1726713AbgJFSE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 14:04:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:58310 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgJFSE1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:04:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096I3oNb174234;
+        Tue, 6 Oct 2020 18:04:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=f5rjVfTDVP3MQlOMoVnck8eGw480j7JEUZw/oFMWa8Q=;
+ b=alYozzxTXUk3ny1uipjt6jMJ9ZcRvJJE55hKOStixZuAh8kvkTzUWrGhsSXEmm36giMk
+ 8/ku5B6yRzU85K65aqX8m0KRMZzQ14puNveevCsFLrMKt2hdecBuYxoFoqRNyGd8KTeI
+ qC6ujtwgQd1slBElZoA1LxCYKie0Liir+cJvwQDg1AamkgJcCrycAmOI2UZ3lz+ZOi29
+ QpOOHXFS5tFyoSkyju4Eh24aG3yvpB9to2FpN5420sAiZyk83gAaI2JxaQrn561vaLdM
+ /MH042qB5PxjoTJv4LmmoQEkWXTi+FetjBP96WUh87RPC8HCkqrb8IeP5z7OiOKEDv8t 8Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33xhxmwfuv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 06 Oct 2020 18:04:20 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096I0pKR125555;
+        Tue, 6 Oct 2020 18:04:19 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 33y36ycjm3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Oct 2020 18:04:19 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 096I4Hej002415;
+        Tue, 6 Oct 2020 18:04:17 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 06 Oct 2020 11:04:16 -0700
+Date:   Tue, 6 Oct 2020 21:04:10 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Leonid Kushnir <leonf008@gmail.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, sakari.ailus@linux.intel.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: staging: atomisp: Removed else branch in
+ function
+Message-ID: <20201006180410.GH4282@kadam>
+References: <20201006081721.GA35979@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACi5LpMWUmP1df8fB8psJY_cNGHF9MNn+TNK4B4edaRHvOXxGQ@mail.gmail.com>
+In-Reply-To: <20201006081721.GA35979@linux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010060116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010060117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:12:10PM +0530, Bhupesh Sharma wrote:
-> I think my earlier email with the test results on this series bounced
-> off the mailing list server (for some weird reason), but I still see
-> several issues with this patchset. I will add specific issues in the
-> review comments for each patch again, but overall, with a crashkernel
-> size of say 786M, I see the following issue:
+On Tue, Oct 06, 2020 at 10:17:21AM +0200, Leonid Kushnir wrote:
+> This patch fixes the checkpatch.pl warning :
 > 
-> # cat /proc/cmdline
-> BOOT_IMAGE=(hd7,gpt2)/vmlinuz-5.9.0-rc7+ root=<..snip..> rd.lvm.lv=<..snip..> crashkernel=786M
+> WARNING: else is not generally useful after a break or return
 > 
-> I see two regions of size 786M and 256M reserved in low and high
-> regions respectively, So we reserve a total of 1042M of memory, which
-> is an incorrect behaviour:
+> Expressions under 'else' branch in function 'gc0310_s_power' are
+> executed whenever the exppression in 'if' is False. Otherwise, return
+> from function occurs. Therefore, there is no need in 'else', and it has
+> been removed.
 > 
-> # dmesg | grep -i crash
-> [    0.000000] Reserving 256MB of low memory at 2816MB for crashkernel (System low RAM: 768MB)
-> [    0.000000] Reserving 786MB of memory at 654158MB for crashkernel (System RAM: 130816MB)
-> [    0.000000] Kernel command line: BOOT_IMAGE=(hd2,gpt2)/vmlinuz-5.9.0-rc7+ root=/dev/mapper/rhel_ampere--hr330a--03-root ro rd.lvm.lv=rhel_ampere-hr330a-03/root rd.lvm.lv=rhel_ampere-hr330a-03/swap crashkernel=786M cma=1024M
+> Signed-off-by: Leonid Kushnir <leonf008@gmail.com>
+> ---
+>  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
-> # cat /proc/iomem | grep -i crash
->   b0000000-bfffffff : Crash kernel (low)
->   bfcbe00000-bffcffffff : Crash kernel
+> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> index 6be3ee1d93a5..8201c15b5769 100644
+> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+> @@ -874,11 +874,10 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
+>  
+>  	if (on == 0)
+>  		return power_down(sd);
+> -	else {
+> -		ret = power_up(sd);
+> -		if (!ret)
+> -			return gc0310_init(sd);
+> -	}
+> +	ret = power_up(sd);
+> +	if (!ret)
 
-As Chen said, that's the intended behaviour and how x86 works. The
-requested 768M goes in the high range if there's not enough low memory
-and an additional buffer for swiotlb is allocated, hence the low 256M.
+Flip this check around as well.
 
-We could (as an additional patch), subtract the 256M from the high
-allocation so that you'd get a low 256M and a high 512M, not sure it's
-worth it. Note that with a "crashkernel=768M,high" option, you still get
-the additional low 256M, otherwise the crashkernel won't be able to
-boot as there's no memory in ZONE_DMA. In the explicit ",high" request
-case, I'm not sure subtracted the 256M is more intuitive.
+> +		return gc0310_init(sd);
+> +
+>  	return ret;
 
-In 5.11, we also hope to fix the ZONE_DMA layout for non-RPi4 platforms
-to cover the entire 32-bit address space (i.e. identical to the current
-ZONE_DMA32).
+Code should generally do "error handling" instead of "success handling".
+That way the success path is always indented one tab and the error path
+is indented two tabs.  I like to say that the call and the error handling
+are part of the same thing, but with success handling, it's like
+do the call, do more stuff, go back to the error handling from the
+earlier call.
 
-> IMO, we should test this feature more before including this in 5.11
+Anyway, TLDR, please write it like this:
 
-Definitely. That's one of the reasons we haven't queued it yet. So any
-help with testing here is appreciated.
+	if (on == 0)
+ 		return power_down(sd);
 
-Thanks.
+	ret = power_up(sd);
+	if (ret)
+		return ret;
 
--- 
-Catalin
+	return gc0310_init(sd);
+
+regards,
+dan carpenter
