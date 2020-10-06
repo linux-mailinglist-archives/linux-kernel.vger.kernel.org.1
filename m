@@ -2,522 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE8285282
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6480285284
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgJFTdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        id S1727207AbgJFTe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727164AbgJFTdd (ORCPT
+        with ESMTP id S1727013AbgJFTeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:33:33 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6B0C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 12:33:33 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 8D4FE29BD82
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>,
-        yongqiang.niu@mediatek.com, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        chunkuang.hu@kernel.org, CK Hu <ck.hu@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 4/4] soc: mediatek: mmsys: Use an array for setting the routing registers
-Date:   Tue,  6 Oct 2020 21:33:20 +0200
-Message-Id: <20201006193320.405529-5-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201006193320.405529-1-enric.balletbo@collabora.com>
-References: <20201006193320.405529-1-enric.balletbo@collabora.com>
+        Tue, 6 Oct 2020 15:34:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4658AC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 12:34:25 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kPsj5-0003ZN-Dy; Tue, 06 Oct 2020 21:34:19 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:5d91:2e2e:81e1:aa2d] (unknown [IPv6:2a03:f580:87bc:d400:5d91:2e2e:81e1:aa2d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 1B25C573700;
+        Tue,  6 Oct 2020 19:34:16 +0000 (UTC)
+Subject: Re: [PATCH 0/3] can: xilinx_can: Some minor changes
+To:     Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com
+Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <cover.1600073396.git.michal.simek@xilinx.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <c3b4ac47-6317-03db-f840-16acdfb25d76@pengutronix.de>
+Date:   Tue, 6 Oct 2020 21:34:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1600073396.git.michal.simek@xilinx.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="0z5WZTgETCLdli8CdlFkaSzMdLSpmjXGs"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: CK Hu <ck.hu@mediatek.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0z5WZTgETCLdli8CdlFkaSzMdLSpmjXGs
+Content-Type: multipart/mixed; boundary="cBd2KVlXsRXBLXuKUZEeQgVrnMpKeRcX1";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Michal Simek <michal.simek@xilinx.com>, linux-kernel@vger.kernel.org,
+ monstr@monstr.eu, git@xilinx.com
+Cc: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org
+Message-ID: <c3b4ac47-6317-03db-f840-16acdfb25d76@pengutronix.de>
+Subject: Re: [PATCH 0/3] can: xilinx_can: Some minor changes
+References: <cover.1600073396.git.michal.simek@xilinx.com>
+In-Reply-To: <cover.1600073396.git.michal.simek@xilinx.com>
 
-Actually, setting the registers for routing, use multiple 'if-else' for different
-routes, but this code would be more and more complicated while we
-support more and more SoCs. Change that and use a table per SoC so the
-code will be more portable and clear.
+--cBd2KVlXsRXBLXuKUZEeQgVrnMpKeRcX1
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+On 9/14/20 10:49 AM, Michal Simek wrote:
+> Hi,
+>=20
+> recently some small patches come to our internal tree. We started to us=
+e
+> coverity which found 2 issues (last two patches) which is simply to fix=
+=2E
+>=20
+> Thanks,
+> Michal
+>=20
+>=20
+> Srinivas Neeli (3):
+>   can: xilinx_can: Limit CANFD brp to 2
+>   can: xilinx_can: Check return value of set_reset_mode
+>   can: xilinx_can: Fix incorrect variable and initialize with a default=
 
- drivers/soc/mediatek/mtk-mmsys.c | 393 +++++++++++++++++--------------
- 1 file changed, 210 insertions(+), 183 deletions(-)
+>     value
 
-diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-index da2de8f6969e..f00d6d08c9c5 100644
---- a/drivers/soc/mediatek/mtk-mmsys.c
-+++ b/drivers/soc/mediatek/mtk-mmsys.c
-@@ -42,39 +42,61 @@
- #define RDMA0_SOUT_DSI1				0x1
- #define RDMA0_SOUT_DSI2				0x4
- #define RDMA0_SOUT_DSI3				0x5
-+#define RDMA0_SOUT_MASK				0x7
- #define RDMA1_SOUT_DPI0				0x2
- #define RDMA1_SOUT_DPI1				0x3
- #define RDMA1_SOUT_DSI1				0x1
- #define RDMA1_SOUT_DSI2				0x4
- #define RDMA1_SOUT_DSI3				0x5
-+#define RDMA1_SOUT_MASK				0x7
- #define RDMA2_SOUT_DPI0				0x2
- #define RDMA2_SOUT_DPI1				0x3
- #define RDMA2_SOUT_DSI1				0x1
- #define RDMA2_SOUT_DSI2				0x4
- #define RDMA2_SOUT_DSI3				0x5
-+#define RDMA2_SOUT_MASK				0x7
- #define DPI0_SEL_IN_RDMA1			0x1
- #define DPI0_SEL_IN_RDMA2			0x3
-+#define DPI0_SEL_IN_MASK			0x3
- #define DPI1_SEL_IN_RDMA1			(0x1 << 8)
- #define DPI1_SEL_IN_RDMA2			(0x3 << 8)
-+#define DPI1_SEL_IN_MASK			(0x3 << 8)
- #define DSI0_SEL_IN_RDMA1			0x1
- #define DSI0_SEL_IN_RDMA2			0x4
-+#define DSI0_SEL_IN_MASK			0x7
- #define DSI1_SEL_IN_RDMA1			0x1
- #define DSI1_SEL_IN_RDMA2			0x4
-+#define DSI1_SEL_IN_MASK			0x7
- #define DSI2_SEL_IN_RDMA1			(0x1 << 16)
- #define DSI2_SEL_IN_RDMA2			(0x4 << 16)
-+#define DSI2_SEL_IN_MASK			(0x7 << 16)
- #define DSI3_SEL_IN_RDMA1			(0x1 << 16)
- #define DSI3_SEL_IN_RDMA2			(0x4 << 16)
-+#define DSI3_SEL_IN_MASK			(0x7 << 16)
- #define COLOR1_SEL_IN_OVL1			0x1
- 
- #define OVL_MOUT_EN_RDMA			0x1
- #define BLS_TO_DSI_RDMA1_TO_DPI1		0x8
- #define BLS_TO_DPI_RDMA1_TO_DSI			0x2
-+#define BLS_RDMA1_DSI_DPI_MASK			0xf
- #define DSI_SEL_IN_BLS				0x0
- #define DPI_SEL_IN_BLS				0x0
-+#define DPI_SEL_IN_MASK				0x1
- #define DSI_SEL_IN_RDMA				0x1
-+#define DSI_SEL_IN_MASK				0x1
-+
-+struct mtk_mmsys_routes {
-+	u32 from_comp;
-+	u32 to_comp;
-+	u32 addr;
-+	u32 mask;
-+	u32 val;
-+};
- 
- struct mtk_mmsys_driver_data {
- 	const char *clk_driver;
-+	const struct mtk_mmsys_routes *routes;
-+	const unsigned int num_routes;
- };
- 
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
-@@ -93,10 +115,6 @@ static const struct mtk_mmsys_driver_data mt6797_mmsys_driver_data = {
- 	.clk_driver = "clk-mt6797-mm",
- };
- 
--static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
--	.clk_driver = "clk-mt8173-mm",
--};
--
- static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
- 	.clk_driver = "clk-mt8183-mm",
- };
-@@ -106,180 +124,192 @@ struct mtk_mmsys {
- 	const struct mtk_mmsys_driver_data *data;
- };
- 
--static unsigned int mtk_mmsys_ddp_mout_en(enum mtk_ddp_comp_id cur,
--					  enum mtk_ddp_comp_id next,
--					  unsigned int *addr)
--{
--	unsigned int value;
--
--	if (cur == DDP_COMPONENT_OVL0 && next == DDP_COMPONENT_COLOR0) {
--		*addr = DISP_REG_CONFIG_DISP_OVL0_MOUT_EN;
--		value = OVL0_MOUT_EN_COLOR0;
--	} else if (cur == DDP_COMPONENT_OVL0 && next == DDP_COMPONENT_RDMA0) {
--		*addr = DISP_REG_CONFIG_DISP_OVL_MOUT_EN;
--		value = OVL_MOUT_EN_RDMA;
--	} else if (cur == DDP_COMPONENT_OD0 && next == DDP_COMPONENT_RDMA0) {
--		*addr = DISP_REG_CONFIG_DISP_OD_MOUT_EN;
--		value = OD_MOUT_EN_RDMA0;
--	} else if (cur == DDP_COMPONENT_UFOE && next == DDP_COMPONENT_DSI0) {
--		*addr = DISP_REG_CONFIG_DISP_UFOE_MOUT_EN;
--		value = UFOE_MOUT_EN_DSI0;
--	} else if (cur == DDP_COMPONENT_OVL1 && next == DDP_COMPONENT_COLOR1) {
--		*addr = DISP_REG_CONFIG_DISP_OVL1_MOUT_EN;
--		value = OVL1_MOUT_EN_COLOR1;
--	} else if (cur == DDP_COMPONENT_GAMMA && next == DDP_COMPONENT_RDMA1) {
--		*addr = DISP_REG_CONFIG_DISP_GAMMA_MOUT_EN;
--		value = GAMMA_MOUT_EN_RDMA1;
--	} else if (cur == DDP_COMPONENT_OD1 && next == DDP_COMPONENT_RDMA1) {
--		*addr = DISP_REG_CONFIG_DISP_OD_MOUT_EN;
--		value = OD1_MOUT_EN_RDMA1;
--	} else if (cur == DDP_COMPONENT_RDMA0 && next == DDP_COMPONENT_DPI0) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN;
--		value = RDMA0_SOUT_DPI0;
--	} else if (cur == DDP_COMPONENT_RDMA0 && next == DDP_COMPONENT_DPI1) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN;
--		value = RDMA0_SOUT_DPI1;
--	} else if (cur == DDP_COMPONENT_RDMA0 && next == DDP_COMPONENT_DSI1) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN;
--		value = RDMA0_SOUT_DSI1;
--	} else if (cur == DDP_COMPONENT_RDMA0 && next == DDP_COMPONENT_DSI2) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN;
--		value = RDMA0_SOUT_DSI2;
--	} else if (cur == DDP_COMPONENT_RDMA0 && next == DDP_COMPONENT_DSI3) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN;
--		value = RDMA0_SOUT_DSI3;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DSI1) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN;
--		value = RDMA1_SOUT_DSI1;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DSI2) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN;
--		value = RDMA1_SOUT_DSI2;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DSI3) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN;
--		value = RDMA1_SOUT_DSI3;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DPI0) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN;
--		value = RDMA1_SOUT_DPI0;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DPI1) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN;
--		value = RDMA1_SOUT_DPI1;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DPI0) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA2_SOUT;
--		value = RDMA2_SOUT_DPI0;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DPI1) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA2_SOUT;
--		value = RDMA2_SOUT_DPI1;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DSI1) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA2_SOUT;
--		value = RDMA2_SOUT_DSI1;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DSI2) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA2_SOUT;
--		value = RDMA2_SOUT_DSI2;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DSI3) {
--		*addr = DISP_REG_CONFIG_DISP_RDMA2_SOUT;
--		value = RDMA2_SOUT_DSI3;
--	} else {
--		value = 0;
--	}
--
--	return value;
--}
--
--static unsigned int mtk_mmsys_ddp_sel_in(enum mtk_ddp_comp_id cur,
--					 enum mtk_ddp_comp_id next,
--					 unsigned int *addr)
--{
--	unsigned int value;
--
--	if (cur == DDP_COMPONENT_OVL0 && next == DDP_COMPONENT_COLOR0) {
--		*addr = DISP_REG_CONFIG_DISP_COLOR0_SEL_IN;
--		value = COLOR0_SEL_IN_OVL0;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DPI0) {
--		*addr = DISP_REG_CONFIG_DPI_SEL_IN;
--		value = DPI0_SEL_IN_RDMA1;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DPI1) {
--		*addr = DISP_REG_CONFIG_DPI_SEL_IN;
--		value = DPI1_SEL_IN_RDMA1;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DSI0) {
--		*addr = DISP_REG_CONFIG_DSIE_SEL_IN;
--		value = DSI0_SEL_IN_RDMA1;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DSI1) {
--		*addr = DISP_REG_CONFIG_DSIO_SEL_IN;
--		value = DSI1_SEL_IN_RDMA1;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DSI2) {
--		*addr = DISP_REG_CONFIG_DSIE_SEL_IN;
--		value = DSI2_SEL_IN_RDMA1;
--	} else if (cur == DDP_COMPONENT_RDMA1 && next == DDP_COMPONENT_DSI3) {
--		*addr = DISP_REG_CONFIG_DSIO_SEL_IN;
--		value = DSI3_SEL_IN_RDMA1;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DPI0) {
--		*addr = DISP_REG_CONFIG_DPI_SEL_IN;
--		value = DPI0_SEL_IN_RDMA2;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DPI1) {
--		*addr = DISP_REG_CONFIG_DPI_SEL_IN;
--		value = DPI1_SEL_IN_RDMA2;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DSI0) {
--		*addr = DISP_REG_CONFIG_DSIE_SEL_IN;
--		value = DSI0_SEL_IN_RDMA2;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DSI1) {
--		*addr = DISP_REG_CONFIG_DSIO_SEL_IN;
--		value = DSI1_SEL_IN_RDMA2;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DSI2) {
--		*addr = DISP_REG_CONFIG_DSIE_SEL_IN;
--		value = DSI2_SEL_IN_RDMA2;
--	} else if (cur == DDP_COMPONENT_RDMA2 && next == DDP_COMPONENT_DSI3) {
--		*addr = DISP_REG_CONFIG_DSIE_SEL_IN;
--		value = DSI3_SEL_IN_RDMA2;
--	} else if (cur == DDP_COMPONENT_OVL1 && next == DDP_COMPONENT_COLOR1) {
--		*addr = DISP_REG_CONFIG_DISP_COLOR1_SEL_IN;
--		value = COLOR1_SEL_IN_OVL1;
--	} else if (cur == DDP_COMPONENT_BLS && next == DDP_COMPONENT_DSI0) {
--		*addr = DISP_REG_CONFIG_DSI_SEL;
--		value = DSI_SEL_IN_BLS;
--	} else {
--		value = 0;
-+static const struct mtk_mmsys_routes mt8173_mmsys_routing_table[] = {
-+	{
-+		DDP_COMPONENT_BLS, DDP_COMPONENT_DSI0,
-+		DISP_REG_CONFIG_OUT_SEL,
-+		BLS_RDMA1_DSI_DPI_MASK, BLS_TO_DSI_RDMA1_TO_DPI1
-+	}, {
-+		DDP_COMPONENT_BLS, DDP_COMPONENT_DSI0,
-+		DISP_REG_CONFIG_DSI_SEL,
-+		DSI_SEL_IN_MASK, DSI_SEL_IN_BLS
-+	}, {
-+		DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_OUT_SEL,
-+		BLS_RDMA1_DSI_DPI_MASK, BLS_TO_DPI_RDMA1_TO_DSI
-+	}, {
-+		DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_DSI_SEL,
-+		DSI_SEL_IN_MASK, DSI_SEL_IN_RDMA
-+	}, {
-+		DDP_COMPONENT_BLS, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_DPI_SEL,
-+		DPI_SEL_IN_MASK, DPI_SEL_IN_BLS
-+	}, {
-+		DDP_COMPONENT_GAMMA, DDP_COMPONENT_RDMA1,
-+		DISP_REG_CONFIG_DISP_GAMMA_MOUT_EN,
-+		GAMMA_MOUT_EN_RDMA1, GAMMA_MOUT_EN_RDMA1
-+	}, {
-+		DDP_COMPONENT_OD0, DDP_COMPONENT_RDMA0,
-+		DISP_REG_CONFIG_DISP_OD_MOUT_EN,
-+		OD_MOUT_EN_RDMA0, OD_MOUT_EN_RDMA0
-+	}, {
-+		DDP_COMPONENT_OD1, DDP_COMPONENT_RDMA1,
-+		DISP_REG_CONFIG_DISP_OD_MOUT_EN,
-+		OD1_MOUT_EN_RDMA1, OD1_MOUT_EN_RDMA1
-+	}, {
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
-+		DISP_REG_CONFIG_DISP_OVL0_MOUT_EN,
-+		OVL0_MOUT_EN_COLOR0, OVL0_MOUT_EN_COLOR0
-+	}, {
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_COLOR0,
-+		DISP_REG_CONFIG_DISP_COLOR0_SEL_IN,
-+		COLOR0_SEL_IN_OVL0, COLOR0_SEL_IN_OVL0
-+	}, {
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
-+		DISP_REG_CONFIG_DISP_OVL_MOUT_EN,
-+		OVL_MOUT_EN_RDMA, OVL_MOUT_EN_RDMA
-+	}, {
-+		DDP_COMPONENT_OVL1, DDP_COMPONENT_COLOR1,
-+		DISP_REG_CONFIG_DISP_OVL1_MOUT_EN,
-+		OVL1_MOUT_EN_COLOR1, OVL1_MOUT_EN_COLOR1
-+	}, {
-+		DDP_COMPONENT_OVL1, DDP_COMPONENT_COLOR1,
-+		DISP_REG_CONFIG_DISP_COLOR1_SEL_IN,
-+		COLOR1_SEL_IN_OVL1, COLOR1_SEL_IN_OVL1
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN,
-+		RDMA0_SOUT_MASK, RDMA0_SOUT_DPI0
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI1,
-+		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN,
-+		RDMA0_SOUT_MASK, RDMA0_SOUT_DPI1
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI1,
-+		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN,
-+		RDMA0_SOUT_MASK, RDMA0_SOUT_DSI1
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI2,
-+		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN,
-+		RDMA0_SOUT_MASK, RDMA0_SOUT_DSI2
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_DSI3,
-+		DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN,
-+		RDMA0_SOUT_MASK, RDMA0_SOUT_DSI3
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN,
-+		RDMA1_SOUT_MASK, RDMA1_SOUT_DPI0
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_DPI_SEL_IN,
-+		DPI0_SEL_IN_MASK, DPI0_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI1,
-+		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN,
-+		RDMA1_SOUT_MASK, RDMA1_SOUT_DPI1
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI1,
-+		DISP_REG_CONFIG_DPI_SEL_IN,
-+		DPI1_SEL_IN_MASK, DPI1_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI0,
-+		DISP_REG_CONFIG_DSIE_SEL_IN,
-+		DSI0_SEL_IN_MASK, DSI0_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI1,
-+		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN,
-+		RDMA1_SOUT_MASK, RDMA1_SOUT_DSI1
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI1,
-+		DISP_REG_CONFIG_DSIO_SEL_IN,
-+		DSI1_SEL_IN_MASK, DSI1_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI2,
-+		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN,
-+		RDMA1_SOUT_MASK, RDMA1_SOUT_DSI2
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI2,
-+		DISP_REG_CONFIG_DSIE_SEL_IN,
-+		DSI2_SEL_IN_MASK, DSI2_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI3,
-+		DISP_REG_CONFIG_DISP_RDMA1_SOUT_EN,
-+		RDMA1_SOUT_MASK, RDMA1_SOUT_DSI3
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DSI3,
-+		DISP_REG_CONFIG_DSIO_SEL_IN,
-+		DSI3_SEL_IN_MASK, DSI3_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_DISP_RDMA2_SOUT,
-+		RDMA2_SOUT_MASK, RDMA2_SOUT_DPI0
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI0,
-+		DISP_REG_CONFIG_DPI_SEL_IN,
-+		DPI0_SEL_IN_MASK, DPI0_SEL_IN_RDMA2
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI1,
-+		DISP_REG_CONFIG_DISP_RDMA2_SOUT,
-+		RDMA2_SOUT_MASK, RDMA2_SOUT_DPI1
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DPI1,
-+		DISP_REG_CONFIG_DPI_SEL_IN,
-+		DPI1_SEL_IN_MASK, DPI1_SEL_IN_RDMA2
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI0,
-+		DISP_REG_CONFIG_DSIE_SEL_IN,
-+		DSI0_SEL_IN_MASK, DSI0_SEL_IN_RDMA2
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI1,
-+		DISP_REG_CONFIG_DISP_RDMA2_SOUT,
-+		RDMA2_SOUT_MASK, RDMA2_SOUT_DSI1
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI1,
-+		DISP_REG_CONFIG_DSIO_SEL_IN,
-+		DSI1_SEL_IN_MASK, DSI1_SEL_IN_RDMA2
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI2,
-+		DISP_REG_CONFIG_DISP_RDMA2_SOUT,
-+		RDMA2_SOUT_MASK, RDMA2_SOUT_DSI2
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI2,
-+		DISP_REG_CONFIG_DSIE_SEL_IN,
-+		DSI2_SEL_IN_MASK, DSI2_SEL_IN_RDMA2
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
-+		DISP_REG_CONFIG_DISP_RDMA2_SOUT,
-+		RDMA2_SOUT_MASK, RDMA2_SOUT_DSI3
-+	}, {
-+		DDP_COMPONENT_RDMA2, DDP_COMPONENT_DSI3,
-+		DISP_REG_CONFIG_DSIO_SEL_IN,
-+		DSI3_SEL_IN_MASK, DSI3_SEL_IN_RDMA2
- 	}
-+};
- 
--	return value;
--}
--
--static void mtk_mmsys_ddp_sout_sel(void __iomem *config_regs,
--				   enum mtk_ddp_comp_id cur,
--				   enum mtk_ddp_comp_id next)
--{
--	if (cur == DDP_COMPONENT_BLS && next == DDP_COMPONENT_DSI0) {
--		writel_relaxed(BLS_TO_DSI_RDMA1_TO_DPI1,
--			       config_regs + DISP_REG_CONFIG_OUT_SEL);
--	} else if (cur == DDP_COMPONENT_BLS && next == DDP_COMPONENT_DPI0) {
--		writel_relaxed(BLS_TO_DPI_RDMA1_TO_DSI,
--			       config_regs + DISP_REG_CONFIG_OUT_SEL);
--		writel_relaxed(DSI_SEL_IN_RDMA,
--			       config_regs + DISP_REG_CONFIG_DSI_SEL);
--		writel_relaxed(DPI_SEL_IN_BLS,
--			       config_regs + DISP_REG_CONFIG_DPI_SEL);
--	}
--}
-+static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
-+	.clk_driver = "clk-mt8173-mm",
-+	.routes = mt8173_mmsys_routing_table,
-+	.num_routes = ARRAY_SIZE(mt8173_mmsys_routing_table),
-+};
- 
- void mtk_mmsys_ddp_connect(struct device *dev,
- 			   enum mtk_ddp_comp_id cur,
- 			   enum mtk_ddp_comp_id next)
- {
- 	struct mtk_mmsys *mmsys = dev_get_drvdata(dev);
--	unsigned int addr, value, reg;
--
--	value = mtk_mmsys_ddp_mout_en(cur, next, &addr);
--	if (value) {
--		reg = readl_relaxed(mmsys->regs + addr) | value;
--		writel_relaxed(reg, mmsys->regs + addr);
--	}
--
--	mtk_mmsys_ddp_sout_sel(mmsys->regs, cur, next);
--
--	value = mtk_mmsys_ddp_sel_in(cur, next, &addr);
--	if (value) {
--		reg = readl_relaxed(mmsys->regs + addr) | value;
--		writel_relaxed(reg, mmsys->regs + addr);
--	}
-+	const struct mtk_mmsys_routes *routes = mmsys->data->routes;
-+	u32 reg;
-+	int i;
-+
-+	for (i = 0; i < mmsys->data->num_routes; i++)
-+		if (cur == routes[i].from_comp && next == routes[i].to_comp) {
-+			reg = readl(mmsys->regs + routes[i].addr);
-+			reg &= ~routes[i].mask;
-+			reg |= routes[i].val;
-+			writel(reg, mmsys->regs + routes[i].addr);
-+		}
- }
- EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_connect);
- 
-@@ -288,19 +318,16 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
- 			      enum mtk_ddp_comp_id next)
- {
- 	struct mtk_mmsys *mmsys = dev_get_drvdata(dev);
--	unsigned int addr, value, reg;
--
--	value = mtk_mmsys_ddp_mout_en(cur, next, &addr);
--	if (value) {
--		reg = readl_relaxed(mmsys->regs + addr) & ~value;
--		writel_relaxed(reg, mmsys->regs + addr);
--	}
--
--	value = mtk_mmsys_ddp_sel_in(cur, next, &addr);
--	if (value) {
--		reg = readl_relaxed(mmsys->regs + addr) & ~value;
--		writel_relaxed(reg, mmsys->regs + addr);
--	}
-+	const struct mtk_mmsys_routes *routes = mmsys->data->routes;
-+	u32 reg;
-+	int i;
-+
-+	for (i = 0; i < mmsys->data->num_routes; i++)
-+		if (cur == routes[i].from_comp && next == routes[i].to_comp) {
-+			reg = readl(mmsys->regs + routes[i].addr);
-+			reg &= ~routes[i].mask;
-+			writel(reg, mmsys->regs + routes[i].addr);
-+		}
- }
- EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_disconnect);
- 
--- 
-2.28.0
+Applied to linux-can-next.
 
+Tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--cBd2KVlXsRXBLXuKUZEeQgVrnMpKeRcX1--
+
+--0z5WZTgETCLdli8CdlFkaSzMdLSpmjXGs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl98xrUACgkQqclaivrt
+76mPDAgAk9NuDb2PQ+COt4mqhBcCJiV9dXlF2Sg6AkL1tXC6QKTcKhN1i7TIj5+9
+xll5KNn3ZmEjiLgOtYlfSQu+rytAQ75uwyrGgIbxCuvdIE4EkDV8POKkQuGf1SaJ
+3N8csixcLac+WJvqK0YxmoFswULbydTt1isX09bG/CGREOLdORt+okejVxjh+ai/
+bQl+vR6EF06pXSqY7c8CbQsy/v6/YU3SxtI0tn/2PSiVCppKHyysMSX8TxrxAIG5
++dXU2dtniAFRzvJICDWjbEEfm/ACtTy/K4tI/XrCCfJljroJ/wlrr7vYCHJ9ETBr
+j/2uZUbo6IPeXWwEVoCNQyUbl0IsJg==
+=HawR
+-----END PGP SIGNATURE-----
+
+--0z5WZTgETCLdli8CdlFkaSzMdLSpmjXGs--
