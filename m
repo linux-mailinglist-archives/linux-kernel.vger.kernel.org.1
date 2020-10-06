@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAC3284F7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919D4284F87
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgJFQIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:08:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58244 "EHLO mx2.suse.de"
+        id S1726396AbgJFQKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:10:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60120 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbgJFQIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:08:48 -0400
+        id S1726335AbgJFQKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:10:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5EA63AC55;
-        Tue,  6 Oct 2020 16:08:47 +0000 (UTC)
-Date:   Tue, 06 Oct 2020 18:08:47 +0200
-Message-ID: <s5ho8lf49rk.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 09858AC8C;
+        Tue,  6 Oct 2020 16:10:22 +0000 (UTC)
+Date:   Tue, 06 Oct 2020 18:10:21 +0200
+Message-ID: <s5hmu0z49oy.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Randy Dunlap <rdunlap@infradead.org>
 Cc:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] sound: drivers: portman2x4: fix repeated word 'if'
-In-Reply-To: <20201005191223.21514-1-rdunlap@infradead.org>
-References: <20201005191223.21514-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] sound: usb: endpoint.c: fix repeated word 'there'
+In-Reply-To: <20201005191244.23902-1-rdunlap@infradead.org>
+References: <20201005191244.23902-1-rdunlap@infradead.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -33,10 +33,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020 21:12:23 +0200,
+On Mon, 05 Oct 2020 21:12:44 +0200,
 Randy Dunlap wrote:
 > 
-> Correct duplicated word "if" to "if it".
+> Drop the duplicated word "there".
 > 
 > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 > Cc: Jaroslav Kysela <perex@perex.cz>
