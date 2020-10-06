@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633F22850A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CEE2850A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgJFRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43010 "EHLO mail.kernel.org"
+        id S1726517AbgJFRV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:21:28 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:58478 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFRUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:20:46 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B991F20760;
-        Tue,  6 Oct 2020 17:20:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602004845;
-        bh=4Foc+jU1k/rvfrsLBs93aOS5mcxlAz0t1W5dlS01hRo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=yfq1ofdv7rZJ5+ORDfeANL1fIsq8QvuchUDnxEjqXkiwUkrM7f+jjDjX5qOtiLO5H
-         KgoJQ7KK3SEr6FYxnD9spCEDZHYO6JW2VHKg3xA8vU0tmZENoeSzu13L85e+BVMqfp
-         TIMjQvJyW9M69GHv5p0s87KXy50U736GRLHqcUY8=
-Message-ID: <f10381885b6e3ea8af828f1b7be5c2f7035e82df.camel@kernel.org>
-Subject: Re: [PATCH 3/7] ceph: Promote to unsigned long long before shifting
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>
-Cc:     ericvh@gmail.com, lucho@ionkov.net, viro@zeniv.linux.org.uk,
-        idryomov@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-btrfs@vger.kernel.org,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        stable@vger.kernel.org
-Date:   Tue, 06 Oct 2020 13:20:42 -0400
-In-Reply-To: <20201004180428.14494-4-willy@infradead.org>
-References: <20201004180428.14494-1-willy@infradead.org>
-         <20201004180428.14494-4-willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1725902AbgJFRV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 13:21:28 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPS id 6693B40A1DCE;
+        Tue,  6 Oct 2020 17:21:25 +0000 (UTC)
+From:   Evgeny Novikov <novikov@ispras.ru>
+To:     Antoine Jacquet <royale@zerezo.com>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: [PATCH] media: zr364xx: propagate errors from zr364xx_start_readpipe()
+Date:   Tue,  6 Oct 2020 20:21:22 +0300
+Message-Id: <20201006172122.25038-1-novikov@ispras.ru>
+X-Mailer: git-send-email 2.16.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-10-04 at 19:04 +0100, Matthew Wilcox (Oracle) wrote:
-> On 32-bit systems, this shift will overflow for files larger than 4GB.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 61f68816211e ("ceph: check caps in filemap_fault and page_mkwrite")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/ceph/addr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 6ea761c84494..970e5a094035 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -1522,7 +1522,7 @@ static vm_fault_t ceph_filemap_fault(struct vm_fault *vmf)
->  	struct ceph_inode_info *ci = ceph_inode(inode);
->  	struct ceph_file_info *fi = vma->vm_file->private_data;
->  	struct page *pinned_page = NULL;
-> -	loff_t off = vmf->pgoff << PAGE_SHIFT;
-> +	loff_t off = (loff_t)vmf->pgoff << PAGE_SHIFT;
->  	int want, got, err;
->  	sigset_t oldset;
->  	vm_fault_t ret = VM_FAULT_SIGBUS;
+zr364xx_start_readpipe() can fail but callers do not care about that.
+This can result in various negative consequences. The patch adds missed
+error handling.
 
+Found by Linux Driver Verification project (linuxtesting.org).
 
-I went ahead and merged this into the ceph-client/testing branch. Given
-how old this bug is, I don't see a real need to rush this into v5.9, but
-if we have any other patches going in before that ships, then it might
-be good to send this one along too.
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+---
+ drivers/media/usb/zr364xx/zr364xx.c | 31 ++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
+index 8c670934d920..d65d3c2a034e 100644
+--- a/drivers/media/usb/zr364xx/zr364xx.c
++++ b/drivers/media/usb/zr364xx/zr364xx.c
+@@ -1327,6 +1327,7 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
+ {
+ 	struct zr364xx_pipeinfo *pipe = cam->pipe;
+ 	unsigned long i;
++	int err;
+ 
+ 	DBG("board init: %p\n", cam);
+ 	memset(pipe, 0, sizeof(*pipe));
+@@ -1359,9 +1360,8 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
+ 
+ 	if (i == 0) {
+ 		printk(KERN_INFO KBUILD_MODNAME ": out of memory. Aborting\n");
+-		kfree(cam->pipe->transfer_buffer);
+-		cam->pipe->transfer_buffer = NULL;
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto err_free;
+ 	} else
+ 		cam->buffer.dwFrames = i;
+ 
+@@ -1376,9 +1376,17 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
+ 	/*** end create system buffers ***/
+ 
+ 	/* start read pipe */
+-	zr364xx_start_readpipe(cam);
++	err = zr364xx_start_readpipe(cam);
++	if (err)
++		goto err_free;
++
+ 	DBG(": board initialized\n");
+ 	return 0;
++
++err_free:
++	kfree(cam->pipe->transfer_buffer);
++	cam->pipe->transfer_buffer = NULL;
++	return err;
+ }
+ 
+ static int zr364xx_probe(struct usb_interface *intf,
+@@ -1575,10 +1583,19 @@ static int zr364xx_resume(struct usb_interface *intf)
+ 	if (!cam->was_streaming)
+ 		return 0;
+ 
+-	zr364xx_start_readpipe(cam);
++	res = zr364xx_start_readpipe(cam);
++	if (res)
++		return res;
++
+ 	res = zr364xx_prepare(cam);
+-	if (!res)
+-		zr364xx_start_acquire(cam);
++	if (res)
++		goto err_prepare;
++
++	zr364xx_start_acquire(cam);
++	return 0;
++
++err_prepare:
++	zr364xx_stop_readpipe(cam);
+ 	return res;
+ }
+ #endif
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.26.2
 
