@@ -2,199 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5951F2851A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F11F2851A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgJFSer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 14:34:47 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:37997 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgJFSer (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:34:47 -0400
-Received: by mail-ot1-f65.google.com with SMTP id i12so7410702ota.5;
-        Tue, 06 Oct 2020 11:34:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T/nFz+O76MoZAtkSPqoZ0ETSJ6m02PU0D0DZHAvgJEQ=;
-        b=EVCyH+KB+DDaT3khR0P+a9HXwSp+uGeNN+TxU2K6Mx79GmEP7MRzUWXxoCa3Dk2Nx/
-         roZBIaWpMwd0302eaFtNEKEvtvLQ2Q18Z50I1YcPIxGsWvKSr9IC70Mk1X6q2Dn3NLPQ
-         NayUeklL/bNRQ2ay1+AEtYk3Y+yJUEPmpBaPbXhHIu59/VSJGdvRT5Cw1anl+uS2XrqE
-         UO/S33ACTowSJaC85onJj6MEQttBELLjNHnh/TRupMTug54uD1ouAmCCi4bWn0rM9l6Y
-         tl+BcfCvmA4O04e5tKnfnAuygO4qglV8BuUAESGsIoyvygWJcjivmGgWJPIZczWqNvrV
-         +0eQ==
-X-Gm-Message-State: AOAM532hqUHiy+AmDcpCMuDz1xACntqahtMCuEuOyIQi084tBmfydJnO
-        oKM02jY15fH1qXr6Ww8iwQ==
-X-Google-Smtp-Source: ABdhPJx1phcZuRuWBcr3gfWZUoekTD2tydrcY/GXETjtFdoxVappQeymuyeEy49v7QhaTXJ8YJ0LpQ==
-X-Received: by 2002:a9d:67c3:: with SMTP id c3mr4065466otn.9.1602009284472;
-        Tue, 06 Oct 2020 11:34:44 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m25sm1339206otl.71.2020.10.06.11.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 11:34:43 -0700 (PDT)
-Received: (nullmailer pid 2597692 invoked by uid 1000);
-        Tue, 06 Oct 2020 18:34:42 -0000
-Date:   Tue, 6 Oct 2020 13:34:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Viorel Suman <viorel.suman@gmail.com>
-Subject: Re: [PATCH v3 2/2] ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
-Message-ID: <20201006183442.GA2591611@bogus>
-References: <1601371167-32239-1-git-send-email-viorel.suman@oss.nxp.com>
- <1601371167-32239-3-git-send-email-viorel.suman@oss.nxp.com>
+        id S1726847AbgJFSfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 14:35:12 -0400
+Received: from mga09.intel.com ([134.134.136.24]:9314 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725906AbgJFSfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:35:12 -0400
+IronPort-SDR: cVd3o22uFl2/jQArJOob66txAh9DIsakqoWKNhn+VXk3XBgYyq2b8dCOQzgf32iOWzaMM6Mkf4
+ fiDoO2bv6gzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="164762015"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="164762015"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 11:35:03 -0700
+IronPort-SDR: SUEmG4YCC05mmETbutccpVDvJK8Y1GFbNiBcCARxE9UTi0TmmHIfGFxxVfO56PZYlSbH2xs9sP
+ NXHktZWmKnzA==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="315784611"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 11:35:03 -0700
+Date:   Tue, 6 Oct 2020 11:35:02 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Liran Alon <liran.alon@oracle.com>
+Subject: Re: [PATCH] KVM: nVMX: Morph notification vector IRQ on nested
+ VM-Enter to pending PI
+Message-ID: <20201006183501.GD17610@linux.intel.com>
+References: <20200812175129.12172-1-sean.j.christopherson@intel.com>
+ <CALMp9eTc9opgQ4pU92wmKSM6gUv6AEKZRqSnv_Q+rzixOLOZiw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1601371167-32239-3-git-send-email-viorel.suman@oss.nxp.com>
+In-Reply-To: <CALMp9eTc9opgQ4pU92wmKSM6gUv6AEKZRqSnv_Q+rzixOLOZiw@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:19:27PM +0300, Viorel Suman (OSS) wrote:
-> From: Viorel Suman <viorel.suman@nxp.com>
-> 
-> XCVR (Audio Transceiver) is a new IP module found on i.MX8MP.
-> 
-> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-> ---
->  .../devicetree/bindings/sound/fsl,xcvr.yaml        | 103 +++++++++++++++++++++
->  1 file changed, 103 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-> new file mode 100644
-> index 00000000..8abab2d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-> @@ -0,0 +1,103 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl,xcvr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP Audio Transceiver (XCVR) Controller
-> +
-> +maintainers:
-> +  - Viorel Suman <viorel.suman@nxp.com>
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^xcvr@.*"
-> +
-> +  compatible:
-> +    const: fsl,imx8mp-xcvr
-> +
-> +  reg:
-> +    items:
-> +      - description: 20K RAM for code and data
-> +      - description: registers space
-> +      - description: RX FIFO address
-> +      - description: TX FIFO address
-> +
-> +  reg-names:
-> +    items:
-> +      - const: ram
-> +      - const: regs
-> +      - const: rxfifo
-> +      - const: txfifo
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Peripheral clock
-> +      - description: PHY clock
-> +      - description: SPBA clock
-> +      - description: PLL clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ipg
-> +      - const: phy
-> +      - const: spba
-> +      - const: pll_ipg
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +  firmware-name:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    const: imx/xcvr/xcvr-imx8mp.bin
-> +    description: |
-> +      Should contain the name of the default firmware image
-> +      file located on the firmware search path
+On Tue, Oct 06, 2020 at 10:36:09AM -0700, Jim Mattson wrote:
+> On Wed, Aug 12, 2020 at 10:51 AM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
+> >
+> > On successful nested VM-Enter, check for pending interrupts and convert
+> > the highest priority interrupt to a pending posted interrupt if it
+> > matches L2's notification vector.  If the vCPU receives a notification
+> > interrupt before nested VM-Enter (assuming L1 disables IRQs before doing
+> > VM-Enter), the pending interrupt (for L1) should be recognized and
+> > processed as a posted interrupt when interrupts become unblocked after
+> > VM-Enter to L2.
+> >
+> > This fixes a bug where L1/L2 will get stuck in an infinite loop if L1 is
+> > trying to inject an interrupt into L2 by setting the appropriate bit in
+> > L2's PIR and sending a self-IPI prior to VM-Enter (as opposed to KVM's
+> > method of manually moving the vector from PIR->vIRR/RVI).  KVM will
+> > observe the IPI while the vCPU is in L1 context and so won't immediately
+> > morph it to a posted interrupt for L2.  The pending interrupt will be
+> > seen by vmx_check_nested_events(), cause KVM to force an immediate exit
+> > after nested VM-Enter, and eventually be reflected to L1 as a VM-Exit.
+> > After handling the VM-Exit, L1 will see that L2 has a pending interrupt
+> > in PIR, send another IPI, and repeat until L2 is killed.
+> >
+> > Note, posted interrupts require virtual interrupt deliveriy, and virtual
+> > interrupt delivery requires exit-on-interrupt, ergo interrupts will be
+> > unconditionally unmasked on VM-Enter if posted interrupts are enabled.
+> >
+> > Fixes: 705699a13994 ("KVM: nVMX: Enable nested posted interrupt processing")
+> > Cc: stable@vger.kernel.org
+> > Cc: Liran Alon <liran.alon@oracle.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > ---
+> I don't think this is the best fix.
 
-We generally only have this if the name/path can't be fixed (per 
-compatible) in the driver. Given you only have 1 possible value, that 
-doesn't seem to be the case here.
+I agree, even without any more explanantion :-)
 
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - dmas
-> +  - dma-names
-> +  - firmware-name
-> +  - resets
-
-additionalProperties: false
-
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/imx8mp-clock.h>
-> +    #include <dt-bindings/reset/imx8mp-reset.h>
-> +
-> +    xcvr: xcvr@30cc0000 {
-> +           compatible = "fsl,imx8mp-xcvr";
-> +           reg = <0x30cc0000 0x800>,
-> +                 <0x30cc0800 0x400>,
-> +                 <0x30cc0c00 0x080>,
-> +                 <0x30cc0e00 0x080>;
-> +           reg-names = "ram", "regs", "rxfifo", "txfifo";
-> +           interrupts = <0x0 128 IRQ_TYPE_LEVEL_HIGH>;
-> +           clocks = <&audiomix_clk IMX8MP_CLK_AUDIOMIX_EARC_IPG>,
-> +                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_EARC_PHY>,
-> +                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_SPBA2_ROOT>,
-> +                    <&audiomix_clk IMX8MP_CLK_AUDIOMIX_AUDPLL_ROOT>;
-> +           clock-names = "ipg", "phy", "spba", "pll_ipg";
-> +           dmas = <&sdma2 30 2 0>, <&sdma2 31 2 0>;
-> +           dma-names = "rx", "tx";
-> +           firmware-name = "imx/xcvr/xcvr-imx8mp.bin";
-> +           resets = <&audiomix_reset 0>;
-> +    };
-> -- 
-> 2.7.4
+> I believe the real problem is the way that external and posted
+> interrupts are handled in vmx_check_nested_events().
 > 
+> First of all, I believe that the existing call to
+> vmx_complete_nested_posted_interrupt() at the end of
+> vmx_check_nested_events() is far too aggressive. Unless I am missing
+> something in the SDM, posted interrupt processing is *only* triggered
+> when the notification vector is received in VMX non-root mode. It is
+> not triggered on VM-entry.
+
+That's my understanding as well.  Virtual interrupt delivery is evaluated
+on VM-Enter, but not posted interrupts.
+
+  Evaluation of pending virtual interrupts is caused only by VM entry, TPR
+  virtualization, EOI virtualization, self-IPI virtualization, and posted-
+  interrupt processing. 
+
+> Looking back one block, we have:
+> 
+> if (kvm_cpu_has_interrupt(vcpu) && !vmx_interrupt_blocked(vcpu)) {
+>     if (block_nested_events)
+>         return -EBUSY;
+>     if (!nested_exit_on_intr(vcpu))
+>         goto no_vmexit;
+>     nested_vmx_vmexit(vcpu, EXIT_REASON_EXTERNAL_INTERRUPT, 0, 0);
+>     return 0;
+> }
+> 
+> If nested_exit_on_intr() is true, we should first check to see if
+> "acknowledge interrupt on exit" is set. If so, we should acknowledge
+> the interrupt right here, with a call to kvm_cpu_get_interrupt(),
+> rather than deep in the guts of nested_vmx_vmexit(). If the vector we
+> get is the notification vector from VMCS12, then we should call
+> vmx_complete_nested_posted_interrupt(). Otherwise, we should call
+> nested_vmx_vmexit(EXIT_REASON_EXTERNAL_INTERRUPT) as we do now.
+
+That makes sense.  And we can pass in exit_intr_info instead of computing
+it in nested_vmx_vmexit() since this is the only path that does a nested
+exit with EXIT_REASON_EXTERNAL_INTERRUPT.
+
+> Furthermore, vmx_complete_nested_posted_interrupt() should write to
+> the L1 EOI register, as indicated in step 4 of the 7-step sequence
+> detailed in section 29.6 of the SDM, volume 3. It skips this step
+> today.
+
+Yar.
+
+Thanks Jim!  I'll get a series out.
