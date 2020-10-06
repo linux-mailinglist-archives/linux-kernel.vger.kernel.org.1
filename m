@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D84284E36
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE00284E28
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgJFOoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:44:03 -0400
-Received: from mail.monom.org ([188.138.9.77]:50458 "EHLO mail.monom.org"
+        id S1726087AbgJFOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:40:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:48972 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725981AbgJFOoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:44:03 -0400
-X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 10:44:02 EDT
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 8B68B5004AF;
-        Tue,  6 Oct 2020 16:37:22 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from [192.168.154.220] (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 47C4F500103;
-        Tue,  6 Oct 2020 16:37:22 +0200 (CEST)
-Subject: Re: [ANNOUNCE] v5.9-rc8-rt12
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20201006085811.mtizrfff6k5r3me7@linutronix.de>
-From:   Daniel Wagner <wagi@monom.org>
-Message-ID: <6c5bce4f-1c7f-a9e4-6707-2cda54141d8e@monom.org>
-Date:   Tue, 6 Oct 2020 16:37:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725906AbgJFOkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:40:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01EE8113E;
+        Tue,  6 Oct 2020 07:40:03 -0700 (PDT)
+Received: from [10.57.54.147] (unknown [10.57.54.147])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E34B03F71F;
+        Tue,  6 Oct 2020 07:39:59 -0700 (PDT)
+Subject: Re: [PATCH] thermal: power_allocate: add upper and lower limits
+To:     Michael Kao <michael.kao@mediatek.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20200424071601.2636-1-michael.kao@mediatek.com>
+ <accb83e0-ffbe-b6e3-6bf9-e7cc8b9fe19c@arm.com>
+ <1588156776.3573.1.camel@mtksdccf07>
+ <03286571-c110-7f5e-a911-24f8c3e4fd42@arm.com>
+ <1598347775.16267.0.camel@mtksdccf07>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <25cb2d5b-0d87-8a22-a881-a5b6e46307ec@arm.com>
+Date:   Tue, 6 Oct 2020 15:39:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201006085811.mtizrfff6k5r3me7@linutronix.de>
+In-Reply-To: <1598347775.16267.0.camel@mtksdccf07>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,16 +48,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+Hi Michael,
 
-On 06.10.20 10:58, Sebastian Andrzej Siewior wrote:
-> Dear RT folks!
+On 8/25/20 10:29 AM, Michael Kao wrote:
+> On Wed, 2020-04-29 at 21:24 +0100, Lukasz Luba wrote:
+>>
+>> On 4/29/20 11:39 AM, Michael Kao wrote:
+>>> On Fri, 2020-04-24 at 10:22 +0100, Lukasz Luba wrote:
+>>>> Hi Michael,
+>>>>
+>>>> On 4/24/20 8:16 AM, Michael Kao wrote:
+>>>>> The upper and lower limits of thermal throttle state in the
+>>>>> device tree do not apply to the power_allocate governor.
+>>>>> Add the upper and lower limits to the power_allocate governor.
+>>>>>
+>>>>> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+>>>>> ---
+>>>>>     drivers/thermal/thermal_core.c | 2 +-
+>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>>>>> index 9a321dc548c8..f6feed2265bd 100644
+>>>>> --- a/drivers/thermal/thermal_core.c
+>>>>> +++ b/drivers/thermal/thermal_core.c
+>>>>> @@ -598,7 +598,7 @@ int power_actor_set_power(struct thermal_cooling_device *cdev,
+>>>>>     	if (ret)
+>>>>>     		return ret;
+>>>>>     
+>>>>> -	instance->target = state;
+>>>>> +	instance->target = clamp_val(state, instance->lower, instance->upper);
+>>>>>     	mutex_lock(&cdev->lock);
+>>>>>     	cdev->updated = false;
+>>>>>     	mutex_unlock(&cdev->lock);
+>>>>>
+>>>>
+>>>> Thank you for the patch and having to look at it. I have some concerns
+>>>> with this approach. Let's analyze it further.
+>>>>
+>>>> In default the cooling devices in the thermal zone which is used by IPA
+>>>> do not have this 'lower' and 'upper' limits. They are set to
+>>>> THERMAL_NO_LIMIT in DT to give full control to IPA over the states.
+>>>>
+>>>> This the function 'power_actor_set_power' actually translates granted
+>>>> power to the state that device will run for the next period.
+>>>> The IPA algorithm has already split the power budget.
+>>>> Now what happen when the 'lower' value will change the state to a state
+>>>> which consumes more power than was calculated in the IPA alg... It will
+>>>> became unstable.
+>>>>
+>>>> I would rather see a change which uses these 'lower' and 'upper' limits
+>>>> before the IPA do the calculation of the power budget. But this wasn't
+>>>> a requirement and we assumed that IPA has full control over the cooling
+>>>> device (which I described above with this DT THERMAL_NO_LIMIT).
+>>>>
+>>>> Is there a problem with your platform that it has to provide some
+>>>> minimal performance, so you tried to introduce this clamping?
+>>>>
+>>>> Regards,
+>>>> Lukasz
+>>>
+>>>
+>>> Hi Lukasz,
+>>>
+>>> I refer to the documentation settings of the thermal device tree
+>>> (Documentation / devicetree / bindings / thermal / thermal.txt).
+>>>
+>>> It shows that cooling-device is a mandatory property, so max/min cooling
+>>> state should be able to support in framework point of view.
+>>> Otherwise, the limitation should be added in binding document.
+>>>
+>>> Different hardware mechanisms have different heat dissipation
+>>> capabilities.
+>>> Limiting the input heat source can slow down the heat accumulation and
+>>> temperature burst.
+>>> We want to reduce the accumulation of heat at high temperature by
+>>> limiting the minimum gear of thermal throttle.
+>>
+>> I agree that these 'lower' and 'upper' limits shouldn't be just
+>> ignored as is currently. This patch clamps the value at late stage,
+>> though.
+>>
+>> Let me have a look how it could be taken into account in the early
+>> stage, before the power calculation and split are done. Maybe there
+>> is a clean way to inject this.
+>>
+>> Regards,
+>> Lukasz
+> Hi Lukasz,
 > 
-> I'm pleased to announce the v5.9-rc8-rt12 patch set.
+> After the research, do you have any ideas or suggestions?
+> 
+> Best Regards,
+> Michael
+> 
 
-Just as heads up. I just tried to build for arm64 but PREEMPT_RT
-is not available anymore. Looks like ARCH_SUPPORTS_RT is only
-available for !KVM.
+My apologies for the delay. I have done some experiments.
+Could you resend the patch, please make sure it is not encoded in base64
+like this one.
 
-Thanks,
-Daniel
+I am going to take your patch together with some other changes.
+
+Regards,
+Lukasz
