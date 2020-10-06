@@ -2,125 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449122847E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FB02847F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727271AbgJFHyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:54:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37336 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727236AbgJFHyV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:54:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601970859;
+        id S1727323AbgJFHyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:54:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38224 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727150AbgJFHyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 03:54:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601970873;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CqPUw39/jXIA7We8BHxAVU+vFUTTd1iP9nplWmg+lMc=;
-        b=BhR/iIYt3zSOJNfv4RvUQ2BX00sqpYeFaNhP7eWv9gV6Lv0gEOrYuT/9kE7weyc0tv5pxR
-        ofeZx8WsCv+/iANdZeTOVAqWENMGja0SY65vi8Ck4ewYAZ6LgPXR1IZuj9U2ATlRb/r+Y6
-        Sxjo+rg5DsBzg17q1vXajG2s3o3uEEk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-80-fU4x2iZhNDyb1SrMx4kDoA-1; Tue, 06 Oct 2020 03:54:13 -0400
-X-MC-Unique: fU4x2iZhNDyb1SrMx4kDoA-1
-Received: by mail-ed1-f71.google.com with SMTP id be19so2550410edb.22
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 00:54:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=CqPUw39/jXIA7We8BHxAVU+vFUTTd1iP9nplWmg+lMc=;
-        b=KWJyDEfse0jlrqs342oPZidtG9wtJl4eya6bnvtfozAC8wk8m6Hu72zESnIdc/x6va
-         JtBmjZ0BZfX9WCJjNOEm0njSPvjaiAB0ZcuX/Y+clbY0g49AHScW9UDxyoTqY71IKKZx
-         vF9/shiDEbBvFdm8nptn0eckOwxCK49c/Fx8Qh/MDNjA31ste5r1mQXJT8mRuOvLa4Sl
-         Fm146vNapAFhFagkQKHyr6sPyPChe+VRVMa/GP05aZTfny0ioUx5jsBLYkU2fHqvOEAn
-         PnNcLqvjcqp0VOaauZibSYjZCbDXaxdepR8aSWc5dSxzARsb0SYmFhN3APZ1i1arEoxq
-         mOFg==
-X-Gm-Message-State: AOAM5302yexMf2eZ2/zgtavqrJzm2qapQwcey0QPu8vFJ7EbH5EHGCmI
-        IU2BtzLoFHGW/WyoTmPxDmH0rZT2brJD3rjxLKuAQXuf33aZuRilzkPCYLRdWMF1gA5e2Qeu1Ad
-        2aAUGSS1jmlCikCm0mNNjr37s
-X-Received: by 2002:a17:906:7e53:: with SMTP id z19mr3818609ejr.334.1601970850390;
-        Tue, 06 Oct 2020 00:54:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTcIIL/npOIZSASW0C84APBzE5abGizc6OTd93C3idQkS/1aVBcFnt7XcOnzD7t6TpRvLYNw==
-X-Received: by 2002:a17:906:7e53:: with SMTP id z19mr3818592ejr.334.1601970850171;
-        Tue, 06 Oct 2020 00:54:10 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id dm8sm1694159edb.57.2020.10.06.00.54.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 00:54:09 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: filter guest NX capability for cpuid2
-In-Reply-To: <20201005163743.GE11938@linux.intel.com>
-References: <20201005145921.84848-1-tianjia.zhang@linux.alibaba.com> <87ft6s8zdg.fsf@vitty.brq.redhat.com> <20201005163743.GE11938@linux.intel.com>
-Date:   Tue, 06 Oct 2020 09:54:08 +0200
-Message-ID: <87d01v94db.fsf@vitty.brq.redhat.com>
+        bh=PtL/QE9wTchzRfp7x1He5ORldnbI5Ri9Nvy/1IWwkW0=;
+        b=E+vaR6Uk6ou43BGiPTnRmllcl6ZWccsMtaAPvz5CeW+lucWVz4zFAsHFKL5FUdYTKBV+eY
+        ZOlZO/Zw7fu6+f1OUw0WC3v/m/qC1yaAYAem2zkMyumm7lULDZyuVLFdnW1zCNFCmXtL6w
+        tNMBqIGJmoA4wKO+F1774VW8T1ZA91U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D0E9ADBB;
+        Tue,  6 Oct 2020 07:54:33 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 09:54:32 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC V2] mm/vmstat: Add events for HugeTLB migration
+Message-ID: <20201006075432.GA29020@dhcp22.suse.cz>
+References: <1601445649-22163-1-git-send-email-anshuman.khandual@arm.com>
+ <20201002120422.GE4555@dhcp22.suse.cz>
+ <fa6a7ea8-df58-c692-0317-686227de54ca@arm.com>
+ <20201005060542.GM4555@dhcp22.suse.cz>
+ <308767be-acb3-a170-e64f-3c64a361f26e@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <308767be-acb3-a170-e64f-3c64a361f26e@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
+On Tue 06-10-20 08:26:35, Anshuman Khandual wrote:
+> 
+> 
+> On 10/05/2020 11:35 AM, Michal Hocko wrote:
+> > On Mon 05-10-20 07:59:12, Anshuman Khandual wrote:
+> >>
+> >>
+> >> On 10/02/2020 05:34 PM, Michal Hocko wrote:
+> >>> On Wed 30-09-20 11:30:49, Anshuman Khandual wrote:
+> >>>> Add following new vmstat events which will track HugeTLB page migration.
+> >>>>
+> >>>> 1. HUGETLB_MIGRATION_SUCCESS
+> >>>> 2. HUGETLB_MIGRATION_FAILURE
+> >>>>
+> >>>> It follows the existing semantics to accommodate HugeTLB subpages in total
+> >>>> page migration statistics. While here, this updates current trace event
+> >>>> 'mm_migrate_pages' to accommodate now available HugeTLB based statistics.
+> >>> What is the actual usecase? And how do you deal with the complexity
+> >>> introduced by many different hugetlb page sizes. Really, what is the
+> >>> point to having such a detailed view on hugetlb migration?
+> >>>
+> >>
+> >> It helps differentiate various page migration events i.e normal, THP and
+> >> HugeTLB and gives us more reliable and accurate measurement. Current stats
+> >> as per PGMIGRATE_SUCCESS and PGMIGRATE_FAIL are misleading, as they contain
+> >> both normal and HugeTLB pages as single entities, which is not accurate.
+> > 
+> > Yes this is true. But why does it really matter? Do you have a specific
+> > example?
+> 
+> An example which demonstrates that mixing and misrepresentation in these
+> stats create some problem ? Well, we could just create one scenario via
+> an application with different VMA types and triggering some migrations.
+> But the fact remains, that these stats are inaccurate and misleading
+> which is very clear and apparent.
 
-> On Mon, Oct 05, 2020 at 05:29:47PM +0200, Vitaly Kuznetsov wrote:
->> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> writes:
->> 
->> > Original KVM_SET_CPUID has removed NX on non-NX hosts as it did
->> > before. but KVM_SET_CPUID2 does not. The two should be consistent.
->> >
->> > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> > ---
->> >  arch/x86/kvm/cpuid.c | 1 +
->> >  1 file changed, 1 insertion(+)
->> >
->> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> > index 3fd6eec202d7..3e7ba2b11acb 100644
->> > --- a/arch/x86/kvm/cpuid.c
->> > +++ b/arch/x86/kvm/cpuid.c
->> > @@ -257,6 +257,7 @@ int kvm_vcpu_ioctl_set_cpuid2(struct kvm_vcpu *vcpu,
->> >  		goto out;
->> >  	}
->> >  
->> > +	cpuid_fix_nx_cap(vcpu);
->> >  	kvm_update_cpuid_runtime(vcpu);
->> >  	kvm_vcpu_after_set_cpuid(vcpu);
->> >  out:
->> 
->> I stumbled upon this too and came to the conclusion this is
->> intentional, e.g. see this:
->> 
->> commit 0771671749b59a507b6da4efb931c44d9691e248
->> Author: Dan Kenigsberg <danken@qumranet.com>
->> Date:   Wed Nov 21 17:10:04 2007 +0200
->> 
->>     KVM: Enhance guest cpuid management
->> 
->> ...
->> 
->>     [avi: fix original KVM_SET_CPUID not removing nx on non-nx hosts as it did
->>           before]
->> 
->> but this is a very, very old story.
->
-> Doesn't mean it's bogus though :-)  _If_ we want to extend this behavior to
-> KVM_SET_CPUID2, there should be a justified need.
+This doesn't sound like a proper justification to me.
+ 
+> >> After this change, PGMIGRATE_SUCCESS and PGMIGRATE_FAIL will contain page
+> >> migration statistics in terms of normal pages irrespective of whether any
+> >> previous migrations until that point involved normal pages, THP or HugeTLB
+> >> (any size) pages. At the least, this fixes existing misleading stats with
+> >> PGMIGRATE_SUCCESS and PGMIGRATE_FAIL.
+> >>
+> >> Besides, it helps us understand HugeTLB migrations in more detail. Even
+> >> though HugeTLB can be of various sizes on a given platform, these new
+> >> stats HUGETLB_MIGRATION_SUCCESS and HUGETLB_MIGRATION_FAILURE give enough
+> >> overall insight into HugeTLB migration events.
+> > 
+> > While true this all is way too vague to add yet another imprecise
+> > counter.
+> 
+> Given that user knows about all HugeTLB mappings it has got, these counters
+> are not really vague and could easily be related back.
 
-Yes, exactly. I meand to say that founding fathers of KVM left the
-adjustment for KVM_SET_CPUID exclusively on purpose and not by mistake
-:-)
+How can you tell a difference between different hugetlb sizes?
 
+> Moreover this change
+> completes the migration stats restructuring which was started with adding
+> THP counters. Otherwise it remains incomplete.
+
+Our counters will be always incomplete. Please do realize they are mere
+aid rather than a comprihensive toolset to identify the system behavior
+to the very detail. We have way too many counters and this particular
+ones are not adding much IMHO. At least not from your description which
+sounds to me like "Yeah, why not do that although there is no strong
+reason, well except that THP already has it so let's do it for hugetlb
+as well". I really do not want to deal with yet another report in few
+years that somebody wants to distinguish hugetlb migration of different
+sizes.
+
+Really, is there any _real_ practical use for these other than "nice,
+let's just have it"?
 -- 
-Vitaly
-
+Michal Hocko
+SUSE Labs
