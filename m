@@ -2,105 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4BB2848F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F232848FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgJFJFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:05:41 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:7455 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFJFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:05:40 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C5BQ92skmz9tyfQ;
-        Tue,  6 Oct 2020 11:05:37 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id I0kuODAj476l; Tue,  6 Oct 2020 11:05:37 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C5BQ90w0dz9tyf5;
-        Tue,  6 Oct 2020 11:05:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1596E8B7C3;
-        Tue,  6 Oct 2020 11:05:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 4ioz5Kq1wCci; Tue,  6 Oct 2020 11:05:38 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CD6578B7C5;
-        Tue,  6 Oct 2020 11:05:37 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id A80FD65DE8; Tue,  6 Oct 2020 09:05:37 +0000 (UTC)
-Message-Id: <1b68632425d8866d147aea9005004e4594672211.1601975100.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <319d379f696412681c66a987cc75e6abf8f958d2.1601975100.git.christophe.leroy@csgroup.eu>
-References: <319d379f696412681c66a987cc75e6abf8f958d2.1601975100.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] powerpc/32s: Remove #ifdef CONFIG_PPC_BOOK3S_32 in
- head_book3s_32.S
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  6 Oct 2020 09:05:37 +0000 (UTC)
+        id S1725970AbgJFJJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFJJG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:09:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA64C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 02:09:04 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o5so12556103wrn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:09:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QT4sff31JFxMAWV47tsow6IkRjEC9gwI2+WJTBC/iXU=;
+        b=RxzqBtgfi4VNzqUwmnMjLczASgvxj0ZLZ6HeBQYPANTVsMxh8bzbIkhgoJtzqh7Frp
+         3lf0hkXfgZ9wWzgz7uoqM15AAZXKGIdVgQnwMRv2VoiHD9szsXW/4dKOmXZD5pqaMdSm
+         zTr/42vtFeT9vpGckN2NDpPW6fwr2urFUp0Ss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=QT4sff31JFxMAWV47tsow6IkRjEC9gwI2+WJTBC/iXU=;
+        b=VxJuS6LGkuHTrvqBrPjxDqLXlpGLwRAaOYzvovYBc0SkkvVQ79kpFQJayQoGeDBY7d
+         bQeHw/T6kKJPfh85S8jtZ5o4Y3NIYZQUARJvd9YUIdiqfLgNvEbWeBkfa7/N4N5vS/K+
+         Q01Td9ux0XGGcP8O7/AzSrKulCkndSznXxfGW2W5m2T1CazzdyuWPD915bwbLbNbPOjk
+         RtoV/Q17wB4sKCIiKfv18UE7/KWJIVcpEymlSlBJZ1oIP10OSGAZ0fqlbDdl2J8rdza1
+         P0fNN3NiPEtWLLV/zAsT5YN1wPhE0u0iy04kd7p6yvpGFkec68BPbsTL+JFbPql2x6a0
+         QlAA==
+X-Gm-Message-State: AOAM531uzWh2DwOLu6OQMukyBx+nNp+GoPtXndmPbVVlNwZxW55dmPt1
+        Hj4snrmKcyKOqDAiDKs4qTcIGQ==
+X-Google-Smtp-Source: ABdhPJzE2U8EydJQd2Px1Cp1VdkD+utuSVnFMnmpFQp2SOvwCJ1IfGbebwpsVnsSKbHGvG+RwViKKA==
+X-Received: by 2002:adf:cc8c:: with SMTP id p12mr3962523wrj.92.1601975342547;
+        Tue, 06 Oct 2020 02:09:02 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z15sm2362146wrq.24.2020.10.06.02.09.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 02:09:01 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 11:08:59 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
+Message-ID: <20201006090859.GW438822@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20200930211723.3028059-1-robdclark@gmail.com>
+ <20201002110105.e56qrvzoqfioi4hs@e107158-lin.cambridge.arm.com>
+ <CAF6AEGvWMvZuy7CcGhzUSbwGtEkrNkzWHu_BN1cbdBJdZtvevA@mail.gmail.com>
+ <20201005150024.mchfdtd62rlkuh4s@e107158-lin.cambridge.arm.com>
+ <CAF6AEGs7NmCPyLdg+gg5jTTe-wgi2myRQ80tum6odv6tLLQ0DQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGs7NmCPyLdg+gg5jTTe-wgi2myRQ80tum6odv6tLLQ0DQ@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-head_book3s_32.S is only built when CONFIG_PPC_BOOK3S_32 is selected.
+On Mon, Oct 05, 2020 at 04:24:38PM -0700, Rob Clark wrote:
+> On Mon, Oct 5, 2020 at 8:00 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> >
+> > +CC Steve and Peter - they might be interested.
+> >
+> > On 10/02/20 11:07, Rob Clark wrote:
+> > > On Fri, Oct 2, 2020 at 4:01 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> > > >
+> > > > On 09/30/20 14:17, Rob Clark wrote:
+> > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > >
+> > > > > The android userspace treats the display pipeline as a realtime problem.
+> > > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+> > > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+> > > > > that I found.)
+> > > > >
+> > > > > But this presents a problem with using workqueues for non-blocking
+> > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+> > > > > preempt the worker.  Which is not really the outcome you want.. once
+> > > > > the required fences are scheduled, you want to push the atomic commit
+> > > > > down to hw ASAP.
+> > > >
+> > > > For me thees 2 properties
+> > > >
+> > > >         1. Run ASAP
+> > > >         2. Finish the work un-interrupted
+> > > >
+> > > > Scream the workers need to be SCHED_FIFO by default. CFS can't give you these
+> > > > guarantees.
+> > >
+> > > fwiw, commit_work does sleep/block for some time until fences are
+> > > signalled, but then once that happens we want it to run ASAP,
+> > > preempting lower priority SCHED_FIFO.
+> > >
+> > > >
+> > > > IMO using sched_set_fifo() for these workers is the right thing.
+> > > >
+> > >
+> > > Possibly, but we still have limited prioritization options (ie. not
+> > > enough) to set these from the kernel.  Giving userspace the control,
+> > > so it can pick sensible priorities for commit_work and vblank_work,
+> > > which fits in with the priorities of the other userspace threads seems
+> > > like the sensible thing.
+> >
+> > The problem is that the kernel can run on all types of systems. It's impossible
+> > to pick one value that fits all. Userspace must manage these priorities, and
+> > you can still export the TID to help with that.
+> >
+> > But why do you need several priorities in your pipeline? I would have thought
+> > it should execute each stage sequentially and all tasks running at the same RT
+> > priority is fine.
+> 
+> On the kernel side, vblank work should complete during the vblank
+> period, making it a harder real time requirement.  So the thinking is
+> this should be a higher priority.
+> 
+> But you are right, if you aren't overcommitted it probably doesn't matter.
 
-Remove all conditions based on CONFIG_PPC_BOOK3S_32 in the file.
+vblank work needs to preempt commit work.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_book3s_32.S | 15 ---------------
- 1 file changed, 15 deletions(-)
+Right now we don't have any driver requiring this, but if we e.g. roll out
+the gamma table update for i915, then this _has_ to happen in the vblank
+period.
 
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index e07a2c07ffe4..f659378adaf3 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -183,10 +183,8 @@ __after_mmu_off:
- 	bl	reloc_offset
- 	li	r24,0			/* cpu# */
- 	bl	call_setup_cpu		/* Call setup_cpu for this CPU */
--#ifdef CONFIG_PPC_BOOK3S_32
- 	bl	reloc_offset
- 	bl	init_idle_6xx
--#endif /* CONFIG_PPC_BOOK3S_32 */
- 
- 
- /*
-@@ -892,10 +890,8 @@ __secondary_start:
- 	lis	r3,-KERNELBASE@h
- 	mr	r4,r24
- 	bl	call_setup_cpu		/* Call setup_cpu for this CPU */
--#ifdef CONFIG_PPC_BOOK3S_32
- 	lis	r3,-KERNELBASE@h
- 	bl	init_idle_6xx
--#endif /* CONFIG_PPC_BOOK3S_32 */
- 
- 	/* get current's stack and current */
- 	lis	r2,secondary_current@ha
-@@ -936,17 +932,6 @@ __secondary_start:
- #include "../kvm/book3s_rmhandlers.S"
- #endif
- 
--/*
-- * Those generic dummy functions are kept for CPUs not
-- * included in CONFIG_PPC_BOOK3S_32
-- */
--#if !defined(CONFIG_PPC_BOOK3S_32)
--_ENTRY(__save_cpu_setup)
--	blr
--_ENTRY(__restore_cpu_setup)
--	blr
--#endif /* !defined(CONFIG_PPC_BOOK3S_32) */
--
- /*
-  * Load stuff into the MMU.  Intended to be called with
-  * IR=0 and DR=0.
+Whereas the commit work can happen in there, but it can also be delayed a
+bit (until the vblank worker has finished) we will not miss any additional
+deadline due to that.
+
+So that's why we have 2 levels. I'm not even sure you can model that with
+SCHED_DEADLINE, since essentially we need a few usec of cpu time very
+vblank (16ms normally), but thos few usec _must_ be scheduled within a
+very specific time slot or we're toast. And that vblank period is only
+1-2ms usually.
+
+> > On SMP priorities matter once you've overcomitted the systems. You need to have
+> > more RT tasks running than CPUs for priorities to matter. It seems you have
+> > a high count of RT tasks in your system?
+> >
+> > I did some profiles on Android and found that being overcomitted is hard. But
+> > that was a while ago.
+> >
+> > >
+> > > > >
+> > > > > But the decision of whether commit_work should be RT or not really
+> > > > > depends on what userspace is doing.  For a pure CFS userspace display
+> > > > > pipeline, commit_work() should remain SCHED_NORMAL.
+> > > >
+> > > > I'm not sure I agree with this. I think it's better to characterize tasks based
+> > > > on their properties/requirements rather than what the rest of the userspace is
+> > > > using.
+> > >
+> > > I mean, the issue is that userspace is already using a few different
+> > > rt priority levels for different SF threads.  We want commit_work to
+> >
+> > Why are they at different priorities? Different priority levels means that some
+> > of them have more urgent deadlines to meet and it's okay to steal execution
+> > time from lower priority tasks. Is this the case?
+> 
+> tbh, I'm not fully aware of the background.  It looks like most of the
+> SF threads run at priority=2 (100-2==98), and the main one runs at
+> priority=1
+> 
+> > RT planning and partitioning is not easy task for sure. You might want to
+> > consider using affinities too to get stronger guarantees for some tasks and
+> > prevent cross-talking.
+> 
+> There is some cgroup stuff that is pinning SF and some other stuff to
+> the small cores, fwiw.. I think the reasoning is that they shouldn't
+> be doing anything heavy enough to need the big cores.
+> 
+> > > run ASAP once fences are signalled, and vblank_work to run at a
+> > > slightly higher priority still.  But the correct choice for priorities
+> > > here depends on what userspace is using, it all needs to fit together
+> > > properly.
+> >
+> > By userspace here I think you mean none display pipeline related RT tasks that
+> > you need to coexit with and could still disrupt your pipeline?
+> 
+> I mean, commit_work should be higher priority than the other (display
+> related) RT tasks.  But the kernel doesn't know what those priorities
+> are.
+> 
+> > Using RT on Gerneral Purpose System is hard for sure. One of the major
+> > challenge is that there's no admin that has full view of the system to do
+> > proper RT planning.
+> >
+> > We need proper RT balancer daemon that helps partitioning the system for
+> > multiple RT apps on these systems..
+> >
+> > >
+> > > >
+> > > > I do appreciate that maybe some of these tasks have varying requirements during
+> > > > their life time. e.g: they have RT property during specific critical section
+> > > > but otherwise are CFS tasks. I think the UI thread in Android behaves like
+> > > > that.
+> > > >
+> > > > It's worth IMO trying that approach I pointed out earlier to see if making RT
+> > > > try to pick an idle CPU rather than preempt CFS helps. Not sure if it'd be
+> > > > accepted but IMHO it's a better direction to consider and discuss.
+> > >
+> > > The problem I was seeing was actually the opposite..  commit_work
+> > > becomes runnable (fences signalled) but doesn't get a chance to run
+> > > because a SCHED_FIFO SF thread is running.  (Maybe I misunderstood and
+> > > you're approach would help this case too?)
+> >
+> > Ah okay. Sorry I got it the wrong way around for some reason. I thought this
+> > task is preempting other CFS-based pipelined tasks.
+> >
+> > So your system seems to be overcomitted. Is SF short for SufraceFlinger? Under
+> > what scenarios do you have many SurfaceFlinger tasks? On Android I remember
+> > seeing they have priority of 1 or 2.
+> 
+> yeah, SF==SurfaceFlinger, and yeah, 1 and 2..
+> 
+> > sched_set_fifo() will use priority 50. If you set all your pipeline tasks
+> > to this priority, what happens?
+> 
+> I think this would work.. drm/msm doesn't use vblank work, so I
+> wouldn't really have problems with commit_work preempting vblank_work.
+> But I think the best option (and to handle the case if android changes
+> the RT priorties around in the future) is to let userspace set the
+> priorities.
+> 
+> > >
+> > > > Or maybe you can wrap userspace pipeline critical section lock such that any
+> > > > task holding it will automatically be promoted to SCHED_FIFO and then demoted
+> > > > to CFS once it releases it.
+> > >
+> > > The SCHED_DEADLINE + token passing approach that the lwn article
+> > > mentioned sounds interesting, if that eventually becomes possible.
+> > > But doesn't really help today..
+> >
+> > We were present in the room with Alessio when he gave that talk :-)
+> >
+> > You might have seen Valentin's talk in LPC where he's trying to get
+> > proxy-execution into shape. Which is a pre-requisite to enable using of
+> > SCHED_DEADLINE for these scenarios. IIRC it should allow all dependent tasks to
+> > run from the context of the deadline task during the display pipeline critical
+> > section.
+> >
+> > By the way, do you have issues with SoftIrqs delaying your RT tasks execution
+> > time?
+> 
+> I don't *think* so, but I'm not 100% sure if they are showing up in
+> traces.  So far it seems like SF stomping on commit_work.  (There is
+> the added complication that there are some chrome gpu-process tasks in
+> between SF and the display, including CrGpuMain (which really doesn't
+> want to be SCHED_FIFO when executing gl commands on behalf of
+> something unrelated to the compositor.. the deadline approach, IIUC,
+> might be the better option eventually for this?)
+
+deadline has the upshot that it compose much better than SCHED_FIFO:
+Everyone just drops their deadline requirements onto the scheduler,
+scheduler makes sure it's all obeyed (or rejects your request).
+
+The trouble is we'd need to know how long a commit takes, worst case, on a
+given platform. And for that you need to measure stuff, and we kinda can't
+spend a few minutes at boot-up going through the combinatorial maze of
+atomic commits to make sure we have it all.
+
+So I think in practice letting userspace set the right rt priority/mode is
+the only way to go here :-/
+-Daniel
+
+> 
+> BR,
+> -R
+> 
+> >
+> > Thanks
+> >
+> > --
+> > Qais Yousef
+
 -- 
-2.25.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
