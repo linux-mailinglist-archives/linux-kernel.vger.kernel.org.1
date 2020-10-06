@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8852845C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A7F2845C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgJFGC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:02:56 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:39253 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgJFGC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:02:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601964175; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=nZzKky66K+LBgKtoq+KUTHglfyK1fxDJQuYKFBYUmKo=; b=QDOeE/rXwahNT1F+Y7Sk8HzFLpFAhi4KYIOWO2mbObgU+YQpoDJCY1QzAGHAa+uF8HcrlMA8
- RsWn9+ybhQAYMu20MU2RPo3XbEFRu/WQtkjljOoAzh+JraCU32Br39KzZo1G2OMoLARxqeSe
- +20/Lgb16kWyTbiYgENg0r1Q8iA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f7c088242f9861fb15a4d82 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Oct 2020 06:02:42
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2E814C433F1; Tue,  6 Oct 2020 06:02:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727056AbgJFGDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726878AbgJFGDL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:03:11 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651D8C0613A7;
+        Mon,  5 Oct 2020 23:03:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AAB45C433CA;
-        Tue,  6 Oct 2020 06:02:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AAB45C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Chris Chiu <chiu@endlessos.org>
-Cc:     Pkshih <pkshih@realtek.com>, David Miller <davem@davemloft.net>,
-        kuba@kernel.org, linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] rtlwifi: rtl8192se: remove duplicated legacy_httxpowerdiff
-References: <20201005150048.4596-1-chiu@endlessm.com>
-        <CAB4CAwfaaozSbdiB05Mk-WgY1VQTyXtLNVjY+4vax09Qvr_asg@mail.gmail.com>
-Date:   Tue, 06 Oct 2020 09:02:37 +0300
-In-Reply-To: <CAB4CAwfaaozSbdiB05Mk-WgY1VQTyXtLNVjY+4vax09Qvr_asg@mail.gmail.com>
-        (Chris Chiu's message of "Tue, 6 Oct 2020 12:02:12 +0800")
-Message-ID: <87pn5vc2o2.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C56Md14Tqz9s1t;
+        Tue,  6 Oct 2020 17:03:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601964189;
+        bh=Q3UmaxMjqhetqY3eKRfEWuA+7Er4K6SVFxQKfg2syNI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eM0vent50yTDAqsA5ej+aZ+Xaa3JUVRFTtHGgdfaEBE+EKsaTfBy5JyYPU5dh4+Jd
+         F8nuF0IgO8TpEUuIN5RM4HfXWvx2WYhv33BwOy2zA7D/1rSEyRNpMpUd1nc3VGr/Im
+         weiw7b8auuHs3FD1EhhEPHvqohcSuwmy/jzwcP1g1DfaVOjPCDarrI6tHKrKJat5Hw
+         NUFWqa8cgVBOyFdpSqTQfh4LNnd+vuOCofZtnKnp8zwQ/FIRALGfvRpiyOZ2C6rjhS
+         Zhl+Tlu1iXoJtZFvTHSf16nofXMzmOMIipni/lkxNrYiR9JPeYLPpZdQK5sCMqiYR5
+         TZXEk6xY0WeTQ==
+Date:   Tue, 6 Oct 2020 17:03:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: linux-next: manual merge of the devicetree tree with the mfd tree
+Message-ID: <20201006170308.68e4781e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/XjoCBdn64DV2Y2ypT8+b32Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Chiu <chiu@endlessos.org> writes:
+--Sig_/XjoCBdn64DV2Y2ypT8+b32Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, Oct 5, 2020 at 11:01 PM Chris Chiu <chiu@endlessos.org> wrote:
->
->     From: Chris Chiu <chiu@endlessos.org>
->     
->     The legacy_httxpowerdiff in rtl8192se is pretty much the same as
->     the legacy_ht_txpowerdiff for other chips. Use the same name to
->     keep the consistency.
->     
->     Signed-off-by: Chris Chiu <chiu@endlessos.org>
->     ---
->     drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c | 2 +-
->     drivers/net/wireless/realtek/rtlwifi/rtl8192se/rf.c | 2 +-
->     drivers/net/wireless/realtek/rtlwifi/wifi.h | 1 -
->     3 files changed, 2 insertions(+), 3 deletions(-)
->     
->
-> Sorry. There's no patch series `PATCH 1/3` for this. I'll resubmit the
-> patch.
+Hi all,
 
-Please don't send HTML mail, they will be dropped by mailing list and
-patchwork.
+FIXME: Add owner of second tree to To:
+       Add author(s)/SOB of conflicting commits.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Today's linux-next merge of the devicetree tree got a conflict in:
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+  Documentation/devicetree/bindings/arm/samsung/sysreg.yaml
+
+between commit:
+
+  18394297562a ("dt-bindings: mfd: syscon: Merge Samsung Exynos Sysreg bind=
+ings")
+
+from the mfd tree and commit:
+
+  41fb845621ea ("dt-bindings: Another round of adding missing 'additionalPr=
+operties'")
+
+from the devicetree tree.
+
+I fixed it up (I just deleted the file) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/XjoCBdn64DV2Y2ypT8+b32Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98CJwACgkQAVBC80lX
+0GyN6AgApEJGy6paX+HeTa6cPeGFwcJU7aQIZc8HeX66qKpcUeS8UDWSNuwg7Jqd
+Qu08jinNYAWql10tb3Xyx7VnzTG/tISsjTLuuBVAb6ozCjagalo7x8nxtyJlHV1E
+4Pr1ULAHp+uI27o2WIiwYmjfaT8YkPAi2fV+nLTeYNMK1UiisQ22B44oBVMWAtfH
+FRjM9JEq4fOpcIdiESRwZ+1O91g/NDBs8qM/fD/kZrNwzV+oL1tMjoU3wdG/E9Cg
+J0oUswni65PCd+1I9w6ZpbiUuu+Mj4oXvHjPINaOeNr6jVP0eEL3hUzFUPNgd3Ea
+vACGXWGCRoDm1vwNs3jdLObwf9qbEg==
+=bdoA
+-----END PGP SIGNATURE-----
+
+--Sig_/XjoCBdn64DV2Y2ypT8+b32Z--
