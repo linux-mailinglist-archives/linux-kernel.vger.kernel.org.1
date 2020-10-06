@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE6B284E10
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D98B284E19
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgJFOfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:35:05 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35272 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgJFOfF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:35:05 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 0B6C4296252
-Subject: Re: [PATCH] ARM: dts: cros-ec-keyboard: Add alternate keymap for
- KEY_LEFTMETA
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Benson Leung <bleung@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Douglas Anderson <dianders@chromium.org>
-References: <20200925162604.2311841-1-swboyd@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <fba1a3ea-ddbb-d0cf-9ec5-b7c8832cb668@collabora.com>
-Date:   Tue, 6 Oct 2020 16:35:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726727AbgJFOfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:35:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725947AbgJFOfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:35:14 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09FD52137B;
+        Tue,  6 Oct 2020 14:35:14 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kPo3c-002zGa-Ur; Tue, 06 Oct 2020 10:35:12 -0400
+Message-ID: <20201006143512.835269003@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Tue, 06 Oct 2020 10:35:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [for-linus][PATCH 14/15] ftrace: ftrace_global_list is renamed to ftrace_ops_list
+References: <20201006143446.182666356@goodmis.org>
 MIME-Version: 1.0
-In-Reply-To: <20200925162604.2311841-1-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+From: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-On 25/9/20 18:26, Stephen Boyd wrote:
-> On newer keyboards this key is in a different place. Add both options to
-> the keymap so that both new and old keyboards work.
-> 
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
+Fix the comment to comply with the code.
 
-Queued for 5.10.
+Link: https://lkml.kernel.org/r/20200831031104.23322-7-richard.weiyang@linux.alibaba.com
 
-Thanks,
- Enric
+Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ include/linux/ftrace.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->  arch/arm/boot/dts/cros-ec-keyboard.dtsi | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/boot/dts/cros-ec-keyboard.dtsi b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-> index 4a0c1037fbc0..165c5bcd510e 100644
-> --- a/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-> +++ b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-> @@ -46,6 +46,7 @@ MATRIX_KEY(0x02, 0x08, KEY_LEFTBRACE)
->  			MATRIX_KEY(0x02, 0x09, KEY_F8)
->  			MATRIX_KEY(0x02, 0x0a, KEY_YEN)
->  
-> +			MATRIX_KEY(0x03, 0x00, KEY_LEFTMETA)
->  			MATRIX_KEY(0x03, 0x01, KEY_GRAVE)
->  			MATRIX_KEY(0x03, 0x02, KEY_F2)
->  			MATRIX_KEY(0x03, 0x03, KEY_5)
-> 
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index b1f56e3410dc..1bd3a0356ae4 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -217,11 +217,11 @@ extern struct ftrace_ops __rcu *ftrace_ops_list;
+ extern struct ftrace_ops ftrace_list_end;
+ 
+ /*
+- * Traverse the ftrace_global_list, invoking all entries.  The reason that we
++ * Traverse the ftrace_ops_list, invoking all entries.  The reason that we
+  * can use rcu_dereference_raw_check() is that elements removed from this list
+  * are simply leaked, so there is no need to interact with a grace-period
+  * mechanism.  The rcu_dereference_raw_check() calls are needed to handle
+- * concurrent insertions into the ftrace_global_list.
++ * concurrent insertions into the ftrace_ops_list.
+  *
+  * Silly Alpha and silly pointer-speculation compiler optimizations!
+  */
+-- 
+2.28.0
+
+
