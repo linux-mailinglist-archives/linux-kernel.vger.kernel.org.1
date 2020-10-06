@@ -2,211 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4762852A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D002852A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgJFTqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:46:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:31832 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgJFTqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:46:23 -0400
-IronPort-SDR: It7d7Bysmc78BMF06I4VxWuz4Wu0W+8PsxyhGt/D17vGmIbUNeHuEwZxvIaKjSixOntke2yY3c
- awbI09gHMUCg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="161265745"
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="161265745"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 12:46:18 -0700
-IronPort-SDR: /tUAKzQGwEZhCztATXCidW/jYmxRoaCsb0hLkIMivOsZ/syrZ/TAXVBbRT2oxF7C9zKVFGZse2
- 4vSXgkntEgXQ==
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="460958848"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.2.223])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 12:46:16 -0700
-Subject: Re: [PATCH v2 3/7] fpga: sec-mgr: expose sec-mgr update status
-To:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        "Xu, Yilun" <yilun.xu@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>
-References: <20201002223701.1317-1-russell.h.weight@intel.com>
- <20201002223701.1317-4-russell.h.weight@intel.com>
- <DM6PR11MB3819276C0C4F12E3CEF33F3E850C0@DM6PR11MB3819.namprd11.prod.outlook.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <0a7c51ea-a905-eaf6-0915-10d93423b5d7@intel.com>
-Date:   Tue, 6 Oct 2020 12:46:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727168AbgJFTrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:47:48 -0400
+Received: from outbound-smtp27.blacknight.com ([81.17.249.195]:47372 "EHLO
+        outbound-smtp27.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725943AbgJFTrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 15:47:48 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp27.blacknight.com (Postfix) with ESMTPS id EF8E81620A6
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 20:47:46 +0100 (IST)
+Received: (qmail 11003 invoked from network); 6 Oct 2020 19:47:46 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Oct 2020 19:47:46 -0000
+Date:   Tue, 6 Oct 2020 20:47:45 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+Message-ID: <20201006194745.GM3227@techsingularity.net>
+References: <20201006083639.GJ3227@techsingularity.net>
+ <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+ <20201006190322.GL3227@techsingularity.net>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB3819276C0C4F12E3CEF33F3E850C0@DM6PR11MB3819.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201006190322.GL3227@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 06, 2020 at 08:03:22PM +0100, Mel Gorman wrote:
+> On Tue, Oct 06, 2020 at 06:00:18PM +0200, Rafael J. Wysocki wrote:
+> > > server systems") and enable-cst is the commit. It was not fixed by 5.6 or
+> > > 5.9-rc8. A lot of bisections ended up here including kernel compilation,
+> > > tbench, syscall entry/exit microbenchmark, hackbench, Java workloads etc.
+> > > 
+> > > What I don't understand is why. The latencies for c-state exit states
+> > > before and after the patch are both as follows
+> > > 
+> > > /sys/devices/system/cpu/cpu0/cpuidle/state0/latency:0
+> > > /sys/devices/system/cpu/cpu0/cpuidle/state1/latency:2
+> > > /sys/devices/system/cpu/cpu0/cpuidle/state2/latency:10
+> > > /sys/devices/system/cpu/cpu0/cpuidle/state3/latency:33
+> > > /sys/devices/system/cpu/cpu0/cpuidle/state4/latency:133
+> > > 
+> > > Perf profiles did not show up anything interesting. A diff of
+> > > /sys/devices/system/cpu/cpu0/cpuidle/state0/ before and after the patch
+> > > showed up nothing interesting. Any idea why exactly this patch shows up
+> > > as being hazardous on Haswell in particular?
+> > > 
+> > Presumably, some of the idle states are disabled by default on the affected
+> > machines.
+> > 
+> > Can you check the disable and default_status attributes of each state before
+> > and after the commit in question?
+> > 
+> 
+> # grep . pre-cst/cpuidle/state*/disable
 
+Sorry, second attempt after thinking the results made no sense at all.
+Turns out I fat fingered setting up the enable-cst kernel the second time
+to collect what you asked for and the patch was not applied at all.
 
-On 10/5/20 1:41 AM, Wu, Hao wrote:
->> Subject: [PATCH v2 3/7] fpga: sec-mgr: expose sec-mgr update status
->>
->> Extend the Intel Security Manager class driver to
->> include an update/status sysfs node that can be polled
->> and read to monitor the progress of an ongoing secure
->> update. Sysfs_notify() is used to signal transitions
->> between different phases of the update process.
->>
->> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->> ---
->> v2:
->>   - Bumped documentation date and version
->>   - Changed progress state "read_file" to "reading"
->> ---
->>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 11 +++++
->>  drivers/fpga/ifpga-sec-mgr.c                  | 40 +++++++++++++++++--
->>  2 files changed, 47 insertions(+), 4 deletions(-)
->>
->> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> index 4f375f132c34..73a5246fea1b 100644
->> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> @@ -78,3 +78,14 @@ Description:Write only. Write the filename of an
->> Intel image
->>  BMC images, BMC firmware, Static Region images,
->>  and Root Entry Hashes, and to cancel Code Signing
->>  Keys (CSK).
->> +
->> +What: /sys/class/ifpga_sec_mgr/ifpga_secX/update/status
->> +Date:Oct 2020
->> +KernelVersion:  5.11
->> +Contact:Russ Weight <russell.h.weight@intel.com>
->> +Description:Read-only. Returns a string describing the current
->> +status of an update. The string will be one of the
->> +following: idle, reading, preparing, writing,
->> +programming. Userspace code can poll on this file,
->> +as it will be signaled by sysfs_notify() on each
->> +state change.
->> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
->> index 7d5a4979554b..ad918fb42dc2 100644
->> --- a/drivers/fpga/ifpga-sec-mgr.c
->> +++ b/drivers/fpga/ifpga-sec-mgr.c
->> @@ -139,6 +139,13 @@ static struct attribute *sec_mgr_security_attrs[] = {
->>  NULL,
->>  };
->>
->> +static void update_progress(struct ifpga_sec_mgr *imgr,
->> +    enum ifpga_sec_prog new_progress)
->> +{
->> +imgr->progress = new_progress;
->> +sysfs_notify(&imgr->dev.kobj, "update", "status");
->> +}
->> +
->>  static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
->>  enum ifpga_sec_err err_code)
->>  {
->> @@ -149,7 +156,7 @@ static void ifpga_sec_dev_error(struct ifpga_sec_mgr
->> *imgr,
->>  static void progress_complete(struct ifpga_sec_mgr *imgr)
->>  {
->>  mutex_lock(&imgr->lock);
->> -imgr->progress = IFPGA_SEC_PROG_IDLE;
->> +update_progress(imgr, IFPGA_SEC_PROG_IDLE);
->>  complete_all(&imgr->update_done);
->>  mutex_unlock(&imgr->lock);
->>  }
->> @@ -177,14 +184,14 @@ static void ifpga_sec_mgr_update(struct
->> work_struct *work)
->>  goto release_fw_exit;
->>  }
->>
->> -imgr->progress = IFPGA_SEC_PROG_PREPARING;
->> +update_progress(imgr, IFPGA_SEC_PROG_PREPARING);
->>  ret = imgr->iops->prepare(imgr);
->>  if (ret) {
->>  ifpga_sec_dev_error(imgr, ret);
->>  goto modput_exit;
->>  }
->>
->> -imgr->progress = IFPGA_SEC_PROG_WRITING;
->> +update_progress(imgr, IFPGA_SEC_PROG_WRITING);
->>  size = imgr->remaining_size;
->>  while (size) {
->>  blk_size = min_t(u32, size, WRITE_BLOCK_SIZE);
->> @@ -199,7 +206,7 @@ static void ifpga_sec_mgr_update(struct work_struct
->> *work)
->>  offset += blk_size;
->>  }
->>
->> -imgr->progress = IFPGA_SEC_PROG_PROGRAMMING;
->> +update_progress(imgr, IFPGA_SEC_PROG_PROGRAMMING);
->>  ret = imgr->iops->poll_complete(imgr);
->>  if (ret) {
->>  ifpga_sec_dev_error(imgr, ret);
->> @@ -259,6 +266,30 @@ static struct attribute_group
->> sec_mgr_security_attr_group = {
->>  .is_visible = sec_mgr_visible,
->>  };
->>
->> +static const char * const sec_mgr_prog_str[] = {
->> +"idle",/* IFPGA_SEC_PROG_IDLE */
->> +"reading",/* IFPGA_SEC_PROG_READING */
->> +"preparing",/* IFPGA_SEC_PROG_PREPARING */
->> +"writing",/* IFPGA_SEC_PROG_WRITING */
->> +"programming"/* IFPGA_SEC_PROG_PROGRAMMING */
->> +};
->> +
->> +static ssize_t
->> +status_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
->> +const char *status = "unknown-status";
->> +
->> +if (imgr->progress < IFPGA_SEC_PROG_MAX)
->> +status = sec_mgr_prog_str[imgr->progress];
-> I am not sure if this would be a problem that as there is no lock protection for
-> the progress value. If someone changes imgr->progress into a bad value just
-> after the first check imgr->progress < IFPGA_SEC_PROG_MAX passed.
-I'll read imgr->progress into a local variable and operate off of that so that I
-am using a consistent value.
+# grep . pre-cst/cpuidle/state*/disable
+pre-cst/cpuidle/state0/disable:0
+pre-cst/cpuidle/state1/disable:0
+pre-cst/cpuidle/state2/disable:0
+pre-cst/cpuidle/state3/disable:0
+pre-cst/cpuidle/state4/disable:0
+# grep . pre-cst/cpuidle/state*/default_status
+pre-cst/cpuidle/state0/default_status:enabled
+pre-cst/cpuidle/state1/default_status:enabled
+pre-cst/cpuidle/state2/default_status:enabled
+pre-cst/cpuidle/state3/default_status:enabled
+pre-cst/cpuidle/state4/default_status:enabled
+# grep . enable-cst/cpuidle/state*/disable
+enable-cst/cpuidle/state0/disable:0
+enable-cst/cpuidle/state1/disable:0
+enable-cst/cpuidle/state2/disable:0
+enable-cst/cpuidle/state3/disable:1
+enable-cst/cpuidle/state4/disable:1
+# grep . enable-cst/cpuidle/state*/default_status
+enable-cst/cpuidle/state0/default_status:enabled
+enable-cst/cpuidle/state1/default_status:enabled
+enable-cst/cpuidle/state2/default_status:enabled
+enable-cst/cpuidle/state3/default_status:disabled
+enable-cst/cpuidle/state4/default_status:disabled
 
-We really should never see an invalid value. These values are set explicitly (not
-incremented or decremented) during the update process. If we do see an invalid
-value, it would indicate a driver bug.
->
->> +else
->> +dev_warn(dev, "Invalid status during secure update: %d\n",
->> + imgr->progress);
-> One minor thing, dev_err or even WARN_ON should be better, and I think
-> if it hits this, that will be a critical issue in the driver, isn't it?
-Yes. I'll switch to dev_err(). A stack trace probably wouldn't be useful
-since the error would be happening in a different kernel thread.
->
-> Thanks
-> Hao
->
->> +
->> +return sprintf(buf, "%s\n", status);
->> +}
->> +static DEVICE_ATTR_RO(status);
->> +
->>  static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->>        const char *buf, size_t count)
->>  {
->> @@ -293,6 +324,7 @@ static DEVICE_ATTR_WO(filename);
->>
->>  static struct attribute *sec_mgr_update_attrs[] = {
->>  &dev_attr_filename.attr,
->> +&dev_attr_status.attr,
->>  NULL,
->>  };
->>
->> --
->> 2.17.1
+That looks like C3 and C6 are disabled after the patch.
 
+# grep . enable-cst/cpuidle/state*/name
+enable-cst/cpuidle/state0/name:POLL
+enable-cst/cpuidle/state1/name:C1
+enable-cst/cpuidle/state2/name:C1E
+enable-cst/cpuidle/state3/name:C3
+enable-cst/cpuidle/state4/name:C6
+
+-- 
+Mel Gorman
+SUSE Labs
