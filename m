@@ -2,107 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2C3284A67
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D917284A69
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgJFKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
+        id S1726075AbgJFKl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFKkM (ORCPT
+        with ESMTP id S1725891AbgJFKl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:40:12 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6C3C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 03:40:12 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id g7so12425975iov.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 03:40:12 -0700 (PDT)
+        Tue, 6 Oct 2020 06:41:27 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F68FC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 03:41:27 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l11so2410997wmh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 03:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3N9Ir7AwETZEYchp6O5ROGzFeY+LkYxOP/aeOce9GY8=;
-        b=v+ZGeZ7ngyPegpBtGP1U2YITv72KRHzHV6PqheZNf8Y3YxEZNsnLwajHcN/CXZ38Lh
-         mMaO6lcc/ZrdYxHyUgeO5KpjijiSRTsv8SLRtlc42foWQlAFCL4UV7RDSKM9Q1e6zEff
-         O94qzK0TtuU1KTH8s22KhnmcQkUoVkRv5I3izSmOGJt1ujb1Seq9SpGPmDBYilYdw/If
-         k76OPrsW80P6LhCC5WziIuJhvAoEpmH7jPnbDAwzpjhVKHVj06oXiD4J68wHI5JyDusk
-         QrmAXtDBOH4/jUK9IcGMmF2nK+UwK0uDcHuzJ5ZgdnT94qc1HUWxLLjimShmXCX4cDUB
-         1wNA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ppdxET2PA0gOKIN5kGGdI9KhczoNu7DgS5stoBevgQE=;
+        b=V9XsMoIGLC/zsM/kB8TOxJcs8Wrjs8fplUDZpxD92KTCEB9eoX1HguQq42evSkJ7AV
+         0KeRvG+PIbroLnhtt9D9K1B1lDy7QPScKp3kzisQomTGD6k1N6er6Davt9ehntA0gMIu
+         DIViALks5h9F35p6DpaRdqeZ6gdNUqgwAoWT0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3N9Ir7AwETZEYchp6O5ROGzFeY+LkYxOP/aeOce9GY8=;
-        b=uYKJpq5lbvie2TQnKdPFY8cNo10Vh3MTCXaTm9gRjsCqAEHz2Jj1bqQ+TRxSCYJ/QF
-         QCeOGnCUwKNPf8vQHQd6m0ew4mlEijC4sZVtbrzUtpWdr+ORbftO+ylgRLuaJ25MGBsS
-         K+tIlgNe7K3dch+VUmd+8PxSycRRam9TzJwcybEq/EEjydRsGP4YWCDBexBMy0R9GePK
-         f4GaSJ4ORvzt7rHuLVmOEVOAhtqUMvlIPWpsUUvhz5QobmB6PMrZJj1V44L8LVwTEN+x
-         mL4rMep2RfOrbDmb+6YKaUWsPLyxkAy4BBUBBNWruhR4gMADNFb2LnyVpvQ6in0wcGoI
-         MxrQ==
-X-Gm-Message-State: AOAM530Wa8WSMJ6CJi/1v7c6VYhVs/bwQmFAFqM/1ztmnTHdW8xSVRDS
-        gg6p7e/rPfYbxuXQOYtbDs4PI1smCD5Uw1abcVBCCA==
-X-Google-Smtp-Source: ABdhPJwhWTs3O+CaMcTl2EcNuJJ0tMcq1w56Ab0TiptOxR/LXZbuDey/kFa6PIxz/rK0QBXSvabwU0Mp7qQPUkac7Gw=
-X-Received: by 2002:a02:6952:: with SMTP id e79mr597608jac.24.1601980811726;
- Tue, 06 Oct 2020 03:40:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=ppdxET2PA0gOKIN5kGGdI9KhczoNu7DgS5stoBevgQE=;
+        b=F1k13UAP1T8MIsb5494i9xp0GUWiVepCYCWCH4rT5iyfmQ6cKI1hXTavf7ictiNdzk
+         XCdDXH7cfOyEmlRXDXAAUkyIkPSRYwzpbFZwNn8YVJcQcowOijqvKbw5TXR6daya/EaS
+         9IOx2dkgx44YWCYGC3ppSPStz75/aaLeYj6Gu4r3BG2BSizTxlC5XwKsbj7nvF2G3V//
+         syP9reEN61G2xqKKwRl77hsxNFnJWiuNhJ8bjKLac+1w7hrA13TzP18RF0oYBURZmTuu
+         /M92F2lurxWPas3eOEEuEGvsmk9BCpP+dF/usK7e2ZlwhAu/omsitPMzREO11lJjMrOu
+         3XJQ==
+X-Gm-Message-State: AOAM533XxKij3Grs2oy7/NyrGLAWQpgwF0kVJ7kp/JAFIJftXuedaK0J
+        7YDRGZQuFFsUkoTANkMb5gTKzg==
+X-Google-Smtp-Source: ABdhPJxmO06kzG4QQ1I3HEy61YhwUV447sv+LJYvQUMAmYEWxdffDW/wKWdF9BfEUBoKO6E7SGa0Tg==
+X-Received: by 2002:a1c:5f54:: with SMTP id t81mr4261579wmb.142.1601980885754;
+        Tue, 06 Oct 2020 03:41:25 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g83sm3384495wmf.15.2020.10.06.03.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 03:41:24 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 12:41:22 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+Subject: Re: [PATCH rdma-next v5 0/4] Dynamicaly allocate SG table from the
+ pages
+Message-ID: <20201006104122.GA438822@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+References: <20201004154340.1080481-1-leon@kernel.org>
+ <20201005235650.GA89159@nvidia.com>
 MIME-Version: 1.0
-References: <20200924124526.17365-1-brgl@bgdev.pl>
-In-Reply-To: <20200924124526.17365-1-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 6 Oct 2020 12:40:00 +0200
-Message-ID: <CAMRc=Mcwyy7N7xFRv8BcJiGcmhKb8Ed3YYXHOX9C=uxb+VNKNw@mail.gmail.com>
-Subject: Re: [PATCH 00/12] samples: configfs: refactor the configfs sample code
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005235650.GA89159@nvidia.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 2:45 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> Over at the GPIO sub-system we have a testing module (gpio-mockup) which
-> uses module params to instantiate simulated GPIO chips and debugfs to
-> control them. We want to switch to a more stable interface using configfs
-> to instantiate chips and sysfs to control them.
->
-> For that we need the feature that's well defined in the docs but currently
-> unimplemented - committable items. I started working on this but it won't
-> be ready for this release cycle.
->
-> In the meantime I also refactored the configfs samples a bit as I'll be
-> adding sample code for committable items. I thought that it won't hurt
-> to send the refactoring patches now for v5.10 so here it is. No logical
-> changes really, mostly just code quality and removing usage of deprecated
-> functions.
->
-> Bartosz Golaszewski (12):
->   MAINTAINERS: add the sample directory to the configfs entry
->   samples: configfs: order includes alphabetically
->   samples: configfs: remove redundant newlines
->   samples: configfs: drop unnecessary ternary operators
->   samples: configfs: improve alignment of broken lines
->   samples: configfs: fix alignment in item struct
->   samples: configfs: replace simple_strtoul() with kstrtoint()
->   samples: configfs: don't reinitialize variables which are already
->     zeroed
->   samples: configfs: prefer sizeof(*var) to sizeof(struct var_type)
->   samples: configfs: consolidate local variables of the same type
->   samples: configfs: don't use spaces before tabs
->   samples: configfs: prefer pr_err() over bare printk(KERN_ERR
->
->  MAINTAINERS                        |  1 +
->  samples/configfs/configfs_sample.c | 78 +++++++++++-------------------
->  2 files changed, 29 insertions(+), 50 deletions(-)
->
-> --
-> 2.17.1
->
+On Mon, Oct 05, 2020 at 08:56:50PM -0300, Jason Gunthorpe wrote:
+> On Sun, Oct 04, 2020 at 06:43:36PM +0300, Leon Romanovsky wrote:
+> > This series extends __sg_alloc_table_from_pages to allow chaining of
+> > new pages to already initialized SG table.
+> > 
+> > This allows for the drivers to utilize the optimization of merging contiguous
+> > pages without a need to pre allocate all the pages and hold them in
+> > a very large temporary buffer prior to the call to SG table initialization.
+> > 
+> > The second patch changes the Infiniband driver to use the new API. It
+> > removes duplicate functionality from the code and benefits the
+> > optimization of allocating dynamic SG table from pages.
+> > 
+> > In huge pages system of 2MB page size, without this change, the SG table
+> > would contain x512 SG entries.
+> > E.g. for 100GB memory registration:
+> > 
+> >              Number of entries      Size
+> >     Before        26214400          600.0MB
+> >     After            51200            1.2MB
+> > 
+> > Thanks
+> > 
+> > Maor Gottlieb (2):
+> >   lib/scatterlist: Add support in dynamic allocation of SG table from
+> >     pages
+> >   RDMA/umem: Move to allocate SG table from pages
+> > 
+> > Tvrtko Ursulin (2):
+> >   tools/testing/scatterlist: Rejuvenate bit-rotten test
+> >   tools/testing/scatterlist: Show errors in human readable form
+> 
+> This looks OK, I'm going to send it into linux-next on the hmm tree
+> for awhile to see if anything gets broken. If there is more
+> remarks/tags/etc please continue
 
-Hi Joel, Christoph,
+An idea that just crossed my mind: A pin_user_pages_sgt might be useful
+for both rdma and drm, since this would avoid the possible huge interim
+struct pages array for thp pages. Or anything else that could be coalesced
+down into a single sg entry.
 
-Any comments on this? Can this still go into v5.10?
-
-Bartosz
+Not sure it's worth it, but would at least give a slightly neater
+interface I think.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
