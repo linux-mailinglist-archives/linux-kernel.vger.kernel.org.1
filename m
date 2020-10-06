@@ -2,170 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E1728443F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6C028444A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgJFDYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 23:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        id S1726745AbgJFDaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJFDYO (ORCPT
+        with ESMTP id S1725909AbgJFDaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 23:24:14 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6309AC0613CE;
-        Mon,  5 Oct 2020 20:24:14 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w5so11745353wrp.8;
-        Mon, 05 Oct 2020 20:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gm5Rf54gYnkxJnrNPTvtfxE73fL5jd+U+PmQSMJsRvc=;
-        b=VZyb7PmpfJgybAomaVGcyJCByMa//i6iSgwkSgK+x1NvOl016eP/UXi506QBBORKTi
-         tCGJ/E76dAYPiXqNrZrcErB7Q0xU10hnaOt03I7zxUaU9GF3j2X2NsQ6wYncvNlW2SWl
-         HIEGE1PDKdy+6AbcACmRbTJTquq8RUUuZg7EQjXnUKSEnyO1qqiQKH2PIxexqvEWF8p4
-         5t7mKf1AWrQpG7txzTW454PA3VnGCs5h2D4yiORRiHTNTImQ9ZBXVSNk0Y7bjBPEUSf9
-         ZGPV+OscToCX1ucGwRfs6q9vRP9iFwGykbHytukPTA7zVhlBcSGVNMcBKkEFJxzNWUBN
-         +prg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gm5Rf54gYnkxJnrNPTvtfxE73fL5jd+U+PmQSMJsRvc=;
-        b=DvKctZcmAkdvCCEiPDORA7VHep4lYRjP7X5PYcpZ/ccvApWR84MgcwkIorilswS9Jg
-         LDh/mjhPMexLybMWM5JXOj0/XWW2XS2Yfnv1NA1fuMdPYGFpFEr+TGYvNtTELoKpNN7b
-         Y+R6s/e7RAr/jSyIg9l9gjTxR0+INIvHKe4ptpccvnBmpX/Jxp6WzLkwZdThCk1H9B4O
-         ZkaXGFeukGzh92klQH0gAqtlggiPW+aZrws3guJqDe5gdX0/rVHhTwabTskcajRQacfk
-         JOMvlLHemGKCyGo+Y3JQK3oexFP5GVPPk70T685Qv5CT2IGI5CL8yqIs1jXYG7vkuE9b
-         NuUg==
-X-Gm-Message-State: AOAM533oCk0UMlPonrPHBCqk5872w+SIlnoWLf+eZE9f6024CCIw/XIK
-        RiQW7C6XfZRUQZBETgfdRQt1YdM1pa31gJsQozPFzAz5JQI=
-X-Google-Smtp-Source: ABdhPJxMU6rAehG8uhyB/PTRpKBwU9ZZkYETuLsP9OyIut+i8rZ6MfrGcCOTvVIDW1IHzfNQuBUG9yIDHp1ndNOzhHM=
-X-Received: by 2002:a5d:640d:: with SMTP id z13mr2345446wru.28.1601954652929;
- Mon, 05 Oct 2020 20:24:12 -0700 (PDT)
+        Mon, 5 Oct 2020 23:30:06 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE4EC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 20:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=f/G7DuAt5Vd7J6Q89Y/fdvmp7kSgeSaWs9VcuRmdyDk=; b=oTmFBGviA61qjEiSv4n1ylYMSi
+        MGHlo8oH4gkMcTE8HPlOv3eraW2KLUBrsb5rJl4n07hlvkxC+DlU/1SuNvhAGC/++zm9GW1MCD8p1
+        o7KmRECGd78UZRMgWNekq5zCS4k7ZFYJHXZF/khJa1zTZUtuvmEzwDVZLkrAHWmrhOP5r4Ei+Nm1W
+        od+t0VoL68uep0MF5OPp3nyTtCpbi3CPTf0cWw9/eWc6pxm4l+lN0hHdxdLKKFXHJUU3lxZH8Hm7w
+        TIn73CzMU1YfRsy/oWvSsL3On/BIl1VJtHz+6dFzRj2nbxs9jB9rEhwx/uOQq+HiwyEFd+LYKL4J6
+        pLJpXQXQ==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPdfv-0002uG-Fs; Tue, 06 Oct 2020 03:30:03 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] arc: include/asm: fix typos of "themselves"
+Message-ID: <610cc0df-deac-e2f6-e9ce-b19b3cba9501@infradead.org>
+Date:   Mon, 5 Oct 2020 20:30:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201004192152.3298573-1-robdclark@gmail.com> <CAOeoa-d4-KyuVjwPCBcau6yp6sxeeHN4K0cQzZ=H+OQVgHsLFw@mail.gmail.com>
- <CAKMK7uHeZptOKWKTanBB_c2ek2emNjs9fFCbTwgafS19rL1sww@mail.gmail.com>
-In-Reply-To: <CAKMK7uHeZptOKWKTanBB_c2ek2emNjs9fFCbTwgafS19rL1sww@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 5 Oct 2020 20:25:21 -0700
-Message-ID: <CAF6AEGu9riswKODKuftqtxkaM=qz9CmFoVgLn1j=yCJ-TuDXLA@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH 00/14] drm/msm: de-struct_mutex-ification
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 11:20 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Mon, Oct 5, 2020 at 6:24 PM Kristian H=C3=B8gsberg <hoegsberg@gmail.co=
-m> wrote:
-> >
-> > On Sun, Oct 4, 2020 at 9:21 PM Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > This doesn't remove *all* the struct_mutex, but it covers the worst
-> > > of it, ie. shrinker/madvise/free/retire.  The submit path still uses
-> > > struct_mutex, but it still needs *something* serialize a portion of
-> > > the submit path, and lock_stat mostly just shows the lock contention
-> > > there being with other submits.  And there are a few other bits of
-> > > struct_mutex usage in less critical paths (debugfs, etc).  But this
-> > > seems like a reasonable step in the right direction.
-> >
-> > What a great patch set. Daniel has some good points and nothing that
-> > requires big changes, but on the other hand, I'm not sure it's
-> > something that needs to block this set either.
->
-> Personally I'd throw the lockdep priming on top to make sure this
-> stays correct (it's 3 lines), but yes imo this is all good to go. Just
-> figured I'll sprinkle the latest in terms of gem locking over the
-> series while it's here :-)
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Yeah, I'll defn throw the lockdep priming into v2.. and I've got using
-obj->resv for locking on the todo list but looks like enough churn
-that it will probably be it's own series (but seems like there is room
-to introduce some lock/unlock helpers that don't really change
-anything but make an obj->lock transition easier)
+Fix copy/paste spello of "themselves" in 3 places.
 
-BR,
--R
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+---
+ arch/arc/include/asm/atomic.h  |    4 ++--
+ arch/arc/include/asm/cmpxchg.h |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-> -Daniel
->
-> > Either way, for the series
-> >
-> > Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
-> >
-> > > Rob Clark (14):
-> > >   drm/msm: Use correct drm_gem_object_put() in fail case
-> > >   drm/msm: Drop chatty trace
-> > >   drm/msm: Move update_fences()
-> > >   drm/msm: Add priv->mm_lock to protect active/inactive lists
-> > >   drm/msm: Document and rename preempt_lock
-> > >   drm/msm: Protect ring->submits with it's own lock
-> > >   drm/msm: Refcount submits
-> > >   drm/msm: Remove obj->gpu
-> > >   drm/msm: Drop struct_mutex from the retire path
-> > >   drm/msm: Drop struct_mutex in free_object() path
-> > >   drm/msm: remove msm_gem_free_work
-> > >   drm/msm: drop struct_mutex in madvise path
-> > >   drm/msm: Drop struct_mutex in shrinker path
-> > >   drm/msm: Don't implicit-sync if only a single ring
-> > >
-> > >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  4 +-
-> > >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c | 12 +--
-> > >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +-
-> > >  drivers/gpu/drm/msm/msm_debugfs.c         |  7 ++
-> > >  drivers/gpu/drm/msm/msm_drv.c             | 15 +---
-> > >  drivers/gpu/drm/msm/msm_drv.h             | 19 +++--
-> > >  drivers/gpu/drm/msm/msm_gem.c             | 76 ++++++------------
-> > >  drivers/gpu/drm/msm/msm_gem.h             | 53 +++++++++----
-> > >  drivers/gpu/drm/msm/msm_gem_shrinker.c    | 58 ++------------
-> > >  drivers/gpu/drm/msm/msm_gem_submit.c      | 17 ++--
-> > >  drivers/gpu/drm/msm/msm_gpu.c             | 96 ++++++++++++++-------=
---
-> > >  drivers/gpu/drm/msm/msm_gpu.h             |  5 +-
-> > >  drivers/gpu/drm/msm/msm_ringbuffer.c      |  3 +-
-> > >  drivers/gpu/drm/msm/msm_ringbuffer.h      | 13 ++-
-> > >  14 files changed, 188 insertions(+), 194 deletions(-)
-> > >
-> > > --
-> > > 2.26.2
-> > >
-> > > _______________________________________________
-> > > Freedreno mailing list
-> > > Freedreno@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/freedreno
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+--- lnx-59-rc7.orig/arch/arc/include/asm/atomic.h
++++ lnx-59-rc7/arch/arc/include/asm/atomic.h
+@@ -45,7 +45,7 @@ static inline int atomic_##op##_return(i
+ 									\
+ 	/*								\
+ 	 * Explicit full memory barrier needed before/after as		\
+-	 * LLOCK/SCOND thmeselves don't provide any such semantics	\
++	 * LLOCK/SCOND themselves don't provide any such semantics	\
+ 	 */								\
+ 	smp_mb();							\
+ 									\
+@@ -71,7 +71,7 @@ static inline int atomic_fetch_##op(int
+ 									\
+ 	/*								\
+ 	 * Explicit full memory barrier needed before/after as		\
+-	 * LLOCK/SCOND thmeselves don't provide any such semantics	\
++	 * LLOCK/SCOND themselves don't provide any such semantics	\
+ 	 */								\
+ 	smp_mb();							\
+ 									\
+--- lnx-59-rc7.orig/arch/arc/include/asm/cmpxchg.h
++++ lnx-59-rc7/arch/arc/include/asm/cmpxchg.h
+@@ -20,7 +20,7 @@ __cmpxchg(volatile void *ptr, unsigned l
+ 
+ 	/*
+ 	 * Explicit full memory barrier needed before/after as
+-	 * LLOCK/SCOND thmeselves don't provide any such semantics
++	 * LLOCK/SCOND themselves don't provide any such semantics
+ 	 */
+ 	smp_mb();
+ 
+
