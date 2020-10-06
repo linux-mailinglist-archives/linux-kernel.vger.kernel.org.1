@@ -2,836 +2,897 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34091284FCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2039D284FD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgJFQZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:25:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33490 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgJFQZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:25:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F30CABBD;
-        Tue,  6 Oct 2020 16:25:29 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] MIPS: replace add_memory_region with memblock
-Date:   Tue,  6 Oct 2020 18:25:02 +0200
-Message-Id: <20201006162505.99514-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.16.4
+        id S1725981AbgJFQ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:28:24 -0400
+Received: from smtprelay0202.hostedemail.com ([216.40.44.202]:32786 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725902AbgJFQ2X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:28:23 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id BE0C3180A7FE6;
+        Tue,  6 Oct 2020 16:28:20 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:327:355:379:800:960:966:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:2194:2196:2198:2199:2200:2201:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3165:3865:3866:3867:3868:3871:4321:4385:4605:5007:7550:7875:7904:8603:9121:9592:10004:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12438:12555:12679:12683:12760:12986:13439:14394:14659:21080:21324:21433:21450:21451:21627:21990:30004:30025:30029:30054:30056:30075,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: value80_1013f92271c8
+X-Filterd-Recvd-Size: 30504
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  6 Oct 2020 16:28:18 +0000 (UTC)
+Message-ID: <8a0d4fc9a4e372b125249b186689f247312d4387.camel@perches.com>
+Subject: [PATCH -next] mm: Use sysfs_emit functions not sprintf
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Date:   Tue, 06 Oct 2020 09:28:17 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add_memory_region was the old interface for registering memory and
-was already changed to used memblock internaly. Replace it by
-directly calling memblock functions.
+Convert the various uses of sprintf/snprintf/scnprintf to
+format sysfs output to sysfs_emit and sysfs_emit_at to make
+clear the output is sysfs related and to avoid any possible
+buffer overrun of the PAGE_SIZE buffer.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Done with cocci scripts and some typing.
+
+Miscellanea:
+
+o dmapool: Renamed show_pools to pools_show to use DEVICE_ATTR_RO
+o hugemem: Convert multiple if (foo) return to cascaded if/else if
+           with a single return sysfs_emit
+o slub: Convert a couple uses like
+	if (foo)
+		len += sprintf(buf, len, "%d/%d/%d", a, b, c);
+	else
+		len += sprintf(buf, len, "%d", a);
+  to
+	len += sysfs_emit_at(buf, len, "%d", a);
+	if (foo)
+		len += sysfs_emit_at(buf, len, "/%d/%d", b, c);
+o whitespace neatening around these changes
+
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/mips/alchemy/common/prom.c               |  3 +-
- arch/mips/ar7/memory.c                        |  2 +-
- arch/mips/ath25/ar2315.c                      |  3 +-
- arch/mips/ath25/ar5312.c                      |  3 +-
- arch/mips/bcm47xx/prom.c                      |  3 +-
- arch/mips/bcm47xx/setup.c                     |  2 +-
- arch/mips/bcm63xx/setup.c                     |  2 +-
- arch/mips/cavium-octeon/setup.c               | 24 ++++++-------
- arch/mips/cobalt/setup.c                      |  3 +-
- arch/mips/dec/prom/memory.c                   |  8 ++---
- arch/mips/fw/arc/memory.c                     | 28 ++++++++++-----
- arch/mips/fw/sni/sniprom.c                    |  3 +-
- arch/mips/include/asm/bootinfo.h              |  7 ----
- arch/mips/include/asm/netlogic/psb-bootinfo.h |  1 +
- arch/mips/kernel/prom.c                       | 10 ++++--
- arch/mips/kernel/setup.c                      | 50 ++++-----------------------
- arch/mips/loongson2ef/common/mem.c            | 12 ++-----
- arch/mips/loongson32/common/prom.c            |  4 +--
- arch/mips/netlogic/xlp/setup.c                |  2 +-
- arch/mips/netlogic/xlr/setup.c                |  5 +--
- arch/mips/ralink/of.c                         |  3 +-
- arch/mips/rb532/prom.c                        |  2 +-
- arch/mips/sgi-ip32/ip32-memory.c              |  3 +-
- arch/mips/sibyte/common/cfe.c                 | 16 ++++-----
- arch/mips/txx9/jmr3927/prom.c                 |  4 +--
- arch/mips/txx9/rbtx4927/prom.c                |  5 +--
- arch/mips/txx9/rbtx4938/prom.c                |  3 +-
- arch/mips/txx9/rbtx4939/prom.c                |  4 +--
- 28 files changed, 88 insertions(+), 127 deletions(-)
+Depends on next-20201006
+commit 2efc459d06f1 ("sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs output")
 
-diff --git a/arch/mips/alchemy/common/prom.c b/arch/mips/alchemy/common/prom.c
-index cfa203064d3c..d910c0a64de9 100644
---- a/arch/mips/alchemy/common/prom.c
-+++ b/arch/mips/alchemy/common/prom.c
-@@ -35,6 +35,7 @@
+ mm/backing-dev.c |   8 ++--
+ mm/dmapool.c     |  27 ++++-------
+ mm/huge_memory.c |  56 ++++++++++++++---------
+ mm/hugetlb.c     |  14 +++---
+ mm/khugepaged.c  |  22 ++++-----
+ mm/ksm.c         |  32 ++++++-------
+ mm/slub.c        | 133 ++++++++++++++++++++++++++-----------------------------
+ mm/swap_state.c  |   3 +-
+ 8 files changed, 148 insertions(+), 147 deletions(-)
+
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 408d5051d05b..faa4baf1931d 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -154,7 +154,7 @@ static ssize_t name##_show(struct device *dev,				\
+ {									\
+ 	struct backing_dev_info *bdi = dev_get_drvdata(dev);		\
+ 									\
+-	return snprintf(page, PAGE_SIZE-1, "%lld\n", (long long)expr);	\
++	return sysfs_emit(page, "%lld\n", (long long)expr);		\
+ }									\
+ static DEVICE_ATTR_RW(name);
  
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/memblock.h>
- #include <linux/sizes.h>
- #include <linux/string.h>
+@@ -200,11 +200,11 @@ BDI_SHOW(max_ratio, bdi->max_ratio)
  
-@@ -93,7 +94,7 @@ void __init prom_init(void)
- 	if (!memsize_str || kstrtoul(memsize_str, 0, &memsize))
- 		memsize = SZ_64M; /* minimum memsize is 64MB RAM */
- 
--	add_memory_region(0, memsize, BOOT_MEM_RAM);
-+	memblock_add(0, memsize);
- }
- 
- static inline unsigned char str2hexnum(unsigned char c)
-diff --git a/arch/mips/ar7/memory.c b/arch/mips/ar7/memory.c
-index ad6efb36ebfe..787716c5e946 100644
---- a/arch/mips/ar7/memory.c
-+++ b/arch/mips/ar7/memory.c
-@@ -47,7 +47,7 @@ void __init prom_meminit(void)
- 	unsigned long pages;
- 
- 	pages = memsize() >> PAGE_SHIFT;
--	add_memory_region(PHYS_OFFSET, pages << PAGE_SHIFT, BOOT_MEM_RAM);
-+	memblock_add(PHYS_OFFSET, pages << PAGE_SHIFT);
- }
- 
- void __init prom_free_prom_memory(void)
-diff --git a/arch/mips/ath25/ar2315.c b/arch/mips/ath25/ar2315.c
-index e7b53e3960c8..9dbed7b5ea76 100644
---- a/arch/mips/ath25/ar2315.c
-+++ b/arch/mips/ath25/ar2315.c
-@@ -19,6 +19,7 @@
- #include <linux/bitops.h>
- #include <linux/irqdomain.h>
- #include <linux/interrupt.h>
-+#include <linux/memblock.h>
- #include <linux/platform_device.h>
- #include <linux/reboot.h>
- #include <asm/bootinfo.h>
-@@ -266,7 +267,7 @@ void __init ar2315_plat_mem_setup(void)
- 	memsize <<= 1 + ATH25_REG_MS(memcfg, AR2315_MEM_CFG_COL_WIDTH);
- 	memsize <<= 1 + ATH25_REG_MS(memcfg, AR2315_MEM_CFG_ROW_WIDTH);
- 	memsize <<= 3;
--	add_memory_region(0, memsize, BOOT_MEM_RAM);
-+	memblock_add(0, memsize);
- 	iounmap(sdram_base);
- 
- 	ar2315_rst_base = ioremap(AR2315_RST_BASE, AR2315_RST_SIZE);
-diff --git a/arch/mips/ath25/ar5312.c b/arch/mips/ath25/ar5312.c
-index 42bf2afb4765..23c879f4b734 100644
---- a/arch/mips/ath25/ar5312.c
-+++ b/arch/mips/ath25/ar5312.c
-@@ -19,6 +19,7 @@
- #include <linux/bitops.h>
- #include <linux/irqdomain.h>
- #include <linux/interrupt.h>
-+#include <linux/memblock.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/physmap.h>
- #include <linux/reboot.h>
-@@ -363,7 +364,7 @@ void __init ar5312_plat_mem_setup(void)
- 	memsize = (bank0_ac ? (1 << (bank0_ac + 1)) : 0) +
- 		  (bank1_ac ? (1 << (bank1_ac + 1)) : 0);
- 	memsize <<= 20;
--	add_memory_region(0, memsize, BOOT_MEM_RAM);
-+	memblock_add(0, memsize);
- 	iounmap(sdram_base);
- 
- 	ar5312_rst_base = ioremap(AR5312_RST_BASE, AR5312_RST_SIZE);
-diff --git a/arch/mips/bcm47xx/prom.c b/arch/mips/bcm47xx/prom.c
-index 135a5407f015..3e2a8166377f 100644
---- a/arch/mips/bcm47xx/prom.c
-+++ b/arch/mips/bcm47xx/prom.c
-@@ -27,6 +27,7 @@
- #include <linux/init.h>
- #include <linux/types.h>
- #include <linux/kernel.h>
-+#include <linux/memblock.h>
- #include <linux/spinlock.h>
- #include <linux/ssb/ssb_driver_chipcommon.h>
- #include <linux/ssb/ssb_regs.h>
-@@ -97,7 +98,7 @@ static __init void prom_init_mem(void)
- 	 */
- 	if (c->cputype == CPU_74K && (mem == (128  << 20)))
- 		mem -= 0x1000;
--	add_memory_region(0, mem, BOOT_MEM_RAM);
-+	memblock_add(0, mem);
- }
- 
- /*
-diff --git a/arch/mips/bcm47xx/setup.c b/arch/mips/bcm47xx/setup.c
-index 82627c264964..751997eb1552 100644
---- a/arch/mips/bcm47xx/setup.c
-+++ b/arch/mips/bcm47xx/setup.c
-@@ -141,7 +141,7 @@ static void __init bcm47xx_register_bcma(void)
- 
- /*
-  * Memory setup is done in the early part of MIPS's arch_mem_init. It's supposed
-- * to detect memory and record it with add_memory_region.
-+ * to detect memory and record it with memblock_add.
-  * Any extra initializaion performed here must not use kmalloc or bootmem.
-  */
- void __init plat_mem_setup(void)
-diff --git a/arch/mips/bcm63xx/setup.c b/arch/mips/bcm63xx/setup.c
-index e28ee9a7cc7e..d811e3e03f81 100644
---- a/arch/mips/bcm63xx/setup.c
-+++ b/arch/mips/bcm63xx/setup.c
-@@ -146,7 +146,7 @@ void __init plat_time_init(void)
- 
- void __init plat_mem_setup(void)
+ static ssize_t stable_pages_required_show(struct device *dev,
+ 					  struct device_attribute *attr,
+-					  char *page)
++					  char *buf)
  {
--	add_memory_region(0, bcm63xx_get_memory_size(), BOOT_MEM_RAM);
-+	memblock_add(0, bcm63xx_get_memory_size());
+ 	dev_warn_once(dev,
+-		"the stable_pages_required attribute has been removed. Use the stable_writes queue attribute instead.\n");
+-	return snprintf(page, PAGE_SIZE-1, "%d\n", 0);
++		      "the stable_pages_required attribute has been removed. Use the stable_writes queue attribute instead.\n");
++	return sysfs_emit(buf, "%d\n", 0);
+ }
+ static DEVICE_ATTR_RO(stable_pages_required);
  
- 	_machine_halt = bcm63xx_machine_halt;
- 	_machine_restart = __bcm63xx_machine_reboot;
-diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-index 8a357cb068c2..561389d3fadb 100644
---- a/arch/mips/cavium-octeon/setup.c
-+++ b/arch/mips/cavium-octeon/setup.c
-@@ -16,6 +16,7 @@
- #include <linux/export.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/memblock.h>
- #include <linux/serial.h>
- #include <linux/smp.h>
- #include <linux/types.h>
-@@ -930,7 +931,7 @@ static __init void memory_exclude_page(u64 addr, u64 *mem, u64 *size)
+diff --git a/mm/dmapool.c b/mm/dmapool.c
+index a97c97232337..c0082c8f8399 100644
+--- a/mm/dmapool.c
++++ b/mm/dmapool.c
+@@ -62,20 +62,13 @@ static DEFINE_MUTEX(pools_lock);
+ static DEFINE_MUTEX(pools_reg_lock);
+ 
+ static ssize_t
+-show_pools(struct device *dev, struct device_attribute *attr, char *buf)
++pools_show(struct device *dev, struct device_attribute *attr, char *buf)
  {
- 	if (addr > *mem && addr < *mem + *size) {
- 		u64 inc = addr - *mem;
--		add_memory_region(*mem, inc, BOOT_MEM_RAM);
-+		memblock_add(*mem, inc);
- 		*mem += inc;
- 		*size -= inc;
+-	unsigned temp;
+-	unsigned size;
+-	char *next;
+ 	struct dma_page *page;
+ 	struct dma_pool *pool;
++	int len;
+ 
+-	next = buf;
+-	size = PAGE_SIZE;
+-
+-	temp = scnprintf(next, size, "poolinfo - 0.1\n");
+-	size -= temp;
+-	next += temp;
++	len = sysfs_emit(buf, "poolinfo - 0.1\n");
+ 
+ 	mutex_lock(&pools_lock);
+ 	list_for_each_entry(pool, &dev->dma_pools, pools) {
+@@ -90,19 +83,17 @@ show_pools(struct device *dev, struct device_attribute *attr, char *buf)
+ 		spin_unlock_irq(&pool->lock);
+ 
+ 		/* per-pool info, no real statistics yet */
+-		temp = scnprintf(next, size, "%-16s %4u %4zu %4zu %2u\n",
+-				 pool->name, blocks,
+-				 pages * (pool->allocation / pool->size),
+-				 pool->size, pages);
+-		size -= temp;
+-		next += temp;
++		len += sysfs_emit_at(buf, len, "%-16s %4u %4zu %4zu %2u\n",
++				     pool->name, blocks,
++				     pages * (pool->allocation / pool->size),
++				     pool->size, pages);
  	}
-@@ -992,19 +993,18 @@ void __init plat_mem_setup(void)
+ 	mutex_unlock(&pools_lock);
  
- /* Crashkernel ignores bootmem list. It relies on mem=X@Y option */
- #ifdef CONFIG_CRASH_DUMP
--	add_memory_region(reserve_low_mem, max_memory, BOOT_MEM_RAM);
-+	memblock_add(reserve_low_mem, max_memory);
- 	total += max_memory;
- #else
- #ifdef CONFIG_KEXEC
- 	if (crashk_size > 0) {
--		add_memory_region(crashk_base, crashk_size, BOOT_MEM_RAM);
-+		memblock_add(crashk_base, crashk_size);
- 		crashk_end = crashk_base + crashk_size;
- 	}
- #endif
- 	/*
--	 * When allocating memory, we want incrementing addresses from
--	 * bootmem_alloc so the code in add_memory_region can merge
--	 * regions next to each other.
-+	 * When allocating memory, we want incrementing addresses,
-+	 * which is handled by memblock
- 	 */
- 	cvmx_bootmem_lock();
- 	while (total < max_memory) {
-@@ -1039,13 +1039,9 @@ void __init plat_mem_setup(void)
- 			 */
- 			if (memory < crashk_base && end >  crashk_end) {
- 				/* region is fully in */
--				add_memory_region(memory,
--						  crashk_base - memory,
--						  BOOT_MEM_RAM);
-+				memblock_add(memory, crashk_base - memory);
- 				total += crashk_base - memory;
--				add_memory_region(crashk_end,
--						  end - crashk_end,
--						  BOOT_MEM_RAM);
-+				memblock_add(crashk_end, end - crashk_end);
- 				total += end - crashk_end;
- 				continue;
- 			}
-@@ -1073,7 +1069,7 @@ void __init plat_mem_setup(void)
- 				 */
- 				mem_alloc_size -= end - crashk_base;
- #endif
--			add_memory_region(memory, mem_alloc_size, BOOT_MEM_RAM);
-+			memblock_add(memory, mem_alloc_size);
- 			total += mem_alloc_size;
- 			/* Recovering mem_alloc_size */
- 			mem_alloc_size = 4 << 20;
-@@ -1088,7 +1084,7 @@ void __init plat_mem_setup(void)
- 
- 	/* Adjust for physical offset. */
- 	kernel_start &= ~0xffffffff80000000ULL;
--	add_memory_region(kernel_start, kernel_size, BOOT_MEM_RAM);
-+	memblock_add(kernel_start, kernel_size);
- #endif /* CONFIG_CRASH_DUMP */
- 
- #ifdef CONFIG_CAVIUM_RESERVE32
-diff --git a/arch/mips/cobalt/setup.c b/arch/mips/cobalt/setup.c
-index c136a18c7221..46581e686882 100644
---- a/arch/mips/cobalt/setup.c
-+++ b/arch/mips/cobalt/setup.c
-@@ -13,6 +13,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/ioport.h>
-+#include <linux/memblock.h>
- #include <linux/pm.h>
- 
- #include <asm/bootinfo.h>
-@@ -112,7 +113,7 @@ void __init prom_init(void)
- 			strlcat(arcs_cmdline, " ", COMMAND_LINE_SIZE);
- 	}
- 
--	add_memory_region(0x0, memsz, BOOT_MEM_RAM);
-+	memblock_add(0, memsz);
- 
- 	setup_8250_early_printk_port(CKSEG1ADDR(0x1c800000), 0, 0);
- }
-diff --git a/arch/mips/dec/prom/memory.c b/arch/mips/dec/prom/memory.c
-index df8e1af20eb7..44490c30d63b 100644
---- a/arch/mips/dec/prom/memory.c
-+++ b/arch/mips/dec/prom/memory.c
-@@ -12,7 +12,6 @@
- #include <linux/types.h>
- 
- #include <asm/addrspace.h>
--#include <asm/bootinfo.h>
- #include <asm/dec/machtype.h>
- #include <asm/dec/prom.h>
- #include <asm/page.h>
-@@ -50,8 +49,7 @@ static __init void pmax_setup_memory_region(void)
- 	}
- 	memcpy((void *)(CKSEG0 + 0x80), &old_handler, 0x80);
- 
--	add_memory_region(0, (unsigned long)memory_page - CKSEG1 - CHUNK_SIZE,
--			  BOOT_MEM_RAM);
-+	memblock_add(0, (unsigned long)memory_page - CKSEG1 - CHUNK_SIZE);
+-	return PAGE_SIZE - size;
++	return len;
  }
  
- /*
-@@ -76,13 +74,13 @@ static __init void rex_setup_memory_region(void)
- 		else if (!mem_size)
- 			mem_start += (8 * bm->pagesize);
- 		else {
--			add_memory_region(mem_start, mem_size, BOOT_MEM_RAM);
-+			memblock_add(mem_start, mem_size);
- 			mem_start += mem_size + (8 * bm->pagesize);
- 			mem_size = 0;
- 		}
- 	}
- 	if (mem_size)
--		add_memory_region(mem_start, mem_size, BOOT_MEM_RAM);
-+		memblock_add(mem_start, mem_size);
- }
+-static DEVICE_ATTR(pools, 0444, show_pools, NULL);
++static DEVICE_ATTR_RO(pools);
  
- void __init prom_meminit(u32 magic)
-diff --git a/arch/mips/fw/arc/memory.c b/arch/mips/fw/arc/memory.c
-index da0712ad85f5..37625ae5e35d 100644
---- a/arch/mips/fw/arc/memory.c
-+++ b/arch/mips/fw/arc/memory.c
-@@ -68,20 +68,24 @@ static char *arc_mtypes[8] = {
- 						: arc_mtypes[a.arc]
- #endif
- 
-+enum {
-+	mem_free, mem_prom_used, mem_reserved
-+};
+ /**
+  * dma_pool_create - Creates a pool of consistent memory blocks, for dma.
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index cba3812a5c3e..02412cb27168 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -163,12 +163,17 @@ static struct shrinker huge_zero_page_shrinker = {
+ static ssize_t enabled_show(struct kobject *kobj,
+ 			    struct kobj_attribute *attr, char *buf)
+ {
++	const char *output;
 +
- static inline int memtype_classify_arcs(union linux_memtypes type)
- {
- 	switch (type.arcs) {
- 	case arcs_fcontig:
- 	case arcs_free:
--		return BOOT_MEM_RAM;
-+		return mem_free;
- 	case arcs_atmp:
--		return BOOT_MEM_ROM_DATA;
-+		return mem_prom_used;
- 	case arcs_eblock:
- 	case arcs_rvpage:
- 	case arcs_bmem:
- 	case arcs_prog:
- 	case arcs_aperm:
--		return BOOT_MEM_RESERVED;
-+		return mem_reserved;
- 	default:
- 		BUG();
- 	}
-@@ -93,15 +97,15 @@ static inline int memtype_classify_arc(union linux_memtypes type)
- 	switch (type.arc) {
- 	case arc_free:
- 	case arc_fcontig:
--		return BOOT_MEM_RAM;
-+		return mem_free;
- 	case arc_atmp:
--		return BOOT_MEM_ROM_DATA;
-+		return mem_prom_used;
- 	case arc_eblock:
- 	case arc_rvpage:
- 	case arc_bmem:
- 	case arc_prog:
- 	case arc_aperm:
--		return BOOT_MEM_RESERVED;
-+		return mem_reserved;
- 	default:
- 		BUG();
- 	}
-@@ -143,9 +147,17 @@ void __weak __init prom_meminit(void)
- 		size = p->pages << ARC_PAGE_SHIFT;
- 		type = prom_memtype_classify(p->type);
- 
--		add_memory_region(base, size, type);
-+		/* ignore mirrored RAM on IP28/IP30 */
-+		if (base < PHYS_OFFSET)
-+			continue;
-+
-+		memblock_add(base, size);
-+
-+		if (type == mem_reserved)
-+			memblock_reserve(base, size);
- 
--		if (type == BOOT_MEM_ROM_DATA) {
-+		if (type == mem_prom_used) {
-+			memblock_reserve(base, size);
- 			if (nr_prom_mem >= 5) {
- 				pr_err("Too many ROM DATA regions");
- 				continue;
-diff --git a/arch/mips/fw/sni/sniprom.c b/arch/mips/fw/sni/sniprom.c
-index 80112f2298b6..29bed39f9bb6 100644
---- a/arch/mips/fw/sni/sniprom.c
-+++ b/arch/mips/fw/sni/sniprom.c
-@@ -131,8 +131,7 @@ static void __init sni_mem_init(void)
- 		}
- 		pr_debug("Bank%d: %08x @ %08x\n", i,
- 			memconf[i].size, memconf[i].base);
--		add_memory_region(memconf[i].base, memconf[i].size,
--				  BOOT_MEM_RAM);
-+		memblock_add(memconf[i].base, memconf[i].size);
- 	}
- }
- 
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index 6dd173a22aeb..aa03b1237155 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -90,13 +90,6 @@ const char *get_system_type(void);
- 
- extern unsigned long mips_machtype;
- 
--#define BOOT_MEM_RAM		1
--#define BOOT_MEM_ROM_DATA	2
--#define BOOT_MEM_RESERVED	3
--#define BOOT_MEM_INIT_RAM	4
--#define BOOT_MEM_NOMAP		5
--
--extern void add_memory_region(phys_addr_t start, phys_addr_t size, long type);
- extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
- 
- extern void prom_init(void);
-diff --git a/arch/mips/include/asm/netlogic/psb-bootinfo.h b/arch/mips/include/asm/netlogic/psb-bootinfo.h
-index 272544b55ceb..c716e9397113 100644
---- a/arch/mips/include/asm/netlogic/psb-bootinfo.h
-+++ b/arch/mips/include/asm/netlogic/psb-bootinfo.h
-@@ -87,6 +87,7 @@ struct nlm_boot_mem_map {
- 		uint32_t type;		/* type of memory segment */
- 	} map[NLM_BOOT_MEM_MAP_MAX];
- };
-+#define NLM_BOOT_MEM_RAM	1
- 
- /* Pointer to saved boot loader info */
- extern struct psb_info nlm_prom_info;
-diff --git a/arch/mips/kernel/prom.c b/arch/mips/kernel/prom.c
-index 9e50dc8df2f6..fab532cb5a11 100644
---- a/arch/mips/kernel/prom.c
-+++ b/arch/mips/kernel/prom.c
-@@ -50,14 +50,18 @@ void __init early_init_dt_add_memory_arch(u64 base, u64 size)
- 		size = PHYS_ADDR_MAX - base;
- 	}
- 
--	add_memory_region(base, size, BOOT_MEM_RAM);
-+	memblock_add(base, size);
- }
- 
- int __init early_init_dt_reserve_memory_arch(phys_addr_t base,
- 					phys_addr_t size, bool nomap)
- {
--	add_memory_region(base, size,
--			  nomap ? BOOT_MEM_NOMAP : BOOT_MEM_RESERVED);
-+	if (nomap) {
-+		memblock_remove(base, size);
-+	} else {
-+		memblock_add(base, size);
-+		memblock_reserve(base, size);
-+	}
- 
- 	return 0;
- }
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 4c04a86f075b..fb05b66e111f 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -91,45 +91,6 @@ unsigned long ARCH_PFN_OFFSET;
- EXPORT_SYMBOL(ARCH_PFN_OFFSET);
- #endif
- 
--void __init add_memory_region(phys_addr_t start, phys_addr_t size, long type)
--{
--	/*
--	 * Note: This function only exists for historical reason,
--	 * new code should use memblock_add or memblock_add_node instead.
--	 */
--
--	/*
--	 * If the region reaches the top of the physical address space, adjust
--	 * the size slightly so that (start + size) doesn't overflow
--	 */
--	if (start + size - 1 == PHYS_ADDR_MAX)
--		--size;
--
--	/* Sanity check */
--	if (start + size < start) {
--		pr_warn("Trying to add an invalid memory region, skipped\n");
--		return;
--	}
--
--	if (start < PHYS_OFFSET)
--		return;
--
--	memblock_add(start, size);
--	/* Reserve any memory except the ordinary RAM ranges. */
--	switch (type) {
--	case BOOT_MEM_RAM:
--		break;
--
--	case BOOT_MEM_NOMAP: /* Discard the range from the system. */
--		memblock_remove(start, size);
--		break;
--
--	default: /* Reserve the rest of the memory types at boot time */
--		memblock_reserve(start, size);
--		break;
--	}
--}
--
- void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_addr_t sz_max)
- {
- 	void *dm = &detect_magic;
-@@ -146,7 +107,7 @@ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_add
- 		((unsigned long long) sz_min) / SZ_1M,
- 		((unsigned long long) sz_max) / SZ_1M);
- 
--	add_memory_region(start, size, BOOT_MEM_RAM);
-+	memblock_add(start, size);
- }
- 
- /*
-@@ -400,7 +361,7 @@ static int __init early_parse_mem(char *p)
- 	if (*p == '@')
- 		start = memparse(p + 1, &p);
- 
--	add_memory_region(start, size, BOOT_MEM_RAM);
-+	memblock_add(start, size);
- 
- 	return 0;
- }
-@@ -426,13 +387,14 @@ static int __init early_parse_memmap(char *p)
- 
- 	if (*p == '@') {
- 		start_at = memparse(p+1, &p);
--		add_memory_region(start_at, mem_size, BOOT_MEM_RAM);
-+		memblock_add(start_at, mem_size);
- 	} else if (*p == '#') {
- 		pr_err("\"memmap=nn#ss\" (force ACPI data) invalid on MIPS\n");
- 		return -EINVAL;
- 	} else if (*p == '$') {
- 		start_at = memparse(p+1, &p);
--		add_memory_region(start_at, mem_size, BOOT_MEM_RESERVED);
-+		memblock_add(start_at, mem_size);
-+		memblock_reserve(start_at, mem_size);
- 	} else {
- 		pr_err("\"memmap\" invalid format!\n");
- 		return -EINVAL;
-@@ -644,7 +606,7 @@ static void __init bootcmdline_init(void)
-  * arch_mem_init - initialize memory management subsystem
-  *
-  *  o plat_mem_setup() detects the memory configuration and will record detected
-- *    memory areas using add_memory_region.
-+ *    memory areas using memblock_add.
-  *
-  * At this stage the memory configuration of the system is known to the
-  * kernel but generic memory management system is still entirely uninitialized.
-diff --git a/arch/mips/loongson2ef/common/mem.c b/arch/mips/loongson2ef/common/mem.c
-index ae21f1c62baa..057d58bb470e 100644
---- a/arch/mips/loongson2ef/common/mem.c
-+++ b/arch/mips/loongson2ef/common/mem.c
-@@ -17,10 +17,7 @@ u32 memsize, highmemsize;
- 
- void __init prom_init_memory(void)
- {
--	add_memory_region(0x0, (memsize << 20), BOOT_MEM_RAM);
--
--	add_memory_region(memsize << 20, LOONGSON_PCI_MEM_START - (memsize <<
--				20), BOOT_MEM_RESERVED);
-+	memblock_add(0x0, (memsize << 20));
- 
- #ifdef CONFIG_CPU_SUPPORTS_ADDRWINCFG
- 	{
-@@ -41,12 +38,7 @@ void __init prom_init_memory(void)
- 
- #ifdef CONFIG_64BIT
- 	if (highmemsize > 0)
--		add_memory_region(LOONGSON_HIGHMEM_START,
--				  highmemsize << 20, BOOT_MEM_RAM);
--
--	add_memory_region(LOONGSON_PCI_MEM_END + 1, LOONGSON_HIGHMEM_START -
--			  LOONGSON_PCI_MEM_END - 1, BOOT_MEM_RESERVED);
--
-+		memblock_add(LOONGSON_HIGHMEM_START, highmemsize << 20);
- #endif /* !CONFIG_64BIT */
- }
- 
-diff --git a/arch/mips/loongson32/common/prom.c b/arch/mips/loongson32/common/prom.c
-index fd76114fa3b0..c133b5adf34e 100644
---- a/arch/mips/loongson32/common/prom.c
-+++ b/arch/mips/loongson32/common/prom.c
-@@ -7,8 +7,8 @@
- 
- #include <linux/io.h>
- #include <linux/init.h>
-+#include <linux/memblock.h>
- #include <linux/serial_reg.h>
--#include <asm/bootinfo.h>
- #include <asm/fw/fw.h>
- 
- #include <loongson1.h>
-@@ -42,5 +42,5 @@ void __init prom_free_prom_memory(void)
- 
- void __init plat_mem_setup(void)
- {
--	add_memory_region(0x0, (memsize << 20), BOOT_MEM_RAM);
-+	memblock_add(0x0, (memsize << 20));
- }
-diff --git a/arch/mips/netlogic/xlp/setup.c b/arch/mips/netlogic/xlp/setup.c
-index 1a0fc5b62ba4..230adaf93e11 100644
---- a/arch/mips/netlogic/xlp/setup.c
-+++ b/arch/mips/netlogic/xlp/setup.c
-@@ -89,7 +89,7 @@ static void __init xlp_init_mem_from_bars(void)
- 		if (map[i] > 0x10000000 && map[i] < 0x20000000)
- 			map[i] = 0x20000000;
- 
--		add_memory_region(map[i], map[i+1] - map[i], BOOT_MEM_RAM);
-+		memblock_add(map[i], map[i+1] - map[i]);
- 	}
- }
- 
-diff --git a/arch/mips/netlogic/xlr/setup.c b/arch/mips/netlogic/xlr/setup.c
-index 72ceddc9a03f..627e88101316 100644
---- a/arch/mips/netlogic/xlr/setup.c
-+++ b/arch/mips/netlogic/xlr/setup.c
-@@ -34,6 +34,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/serial_8250.h>
-+#include <linux/memblock.h>
- #include <linux/pm.h>
- 
- #include <asm/idle.h>
-@@ -149,7 +150,7 @@ static void prom_add_memory(void)
- 
- 	bootm = (void *)(long)nlm_prom_info.psb_mem_map;
- 	for (i = 0; i < bootm->nr_map; i++) {
--		if (bootm->map[i].type != BOOT_MEM_RAM)
-+		if (bootm->map[i].type != NLM_BOOT_MEM_RAM)
- 			continue;
- 		start = bootm->map[i].addr;
- 		size   = bootm->map[i].size;
-@@ -158,7 +159,7 @@ static void prom_add_memory(void)
- 		if (i == 0 && start == 0 && size == 0x0c000000)
- 			size = 0x0ff00000;
- 
--		add_memory_region(start, size - pref_backup, BOOT_MEM_RAM);
-+		memblock_add(start, size - pref_backup);
- 	}
- }
- 
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 90c6d4a11c5d..cbae9d23ab7f 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -84,8 +84,7 @@ void __init plat_mem_setup(void)
- 	if (memory_dtb)
- 		of_scan_flat_dt(early_init_dt_scan_memory, NULL);
- 	else if (soc_info.mem_size)
--		add_memory_region(soc_info.mem_base, soc_info.mem_size * SZ_1M,
--				  BOOT_MEM_RAM);
-+		memblock_add(soc_info.mem_base, soc_info.mem_size * SZ_1M);
+ 	if (test_bit(TRANSPARENT_HUGEPAGE_FLAG, &transparent_hugepage_flags))
+-		return sprintf(buf, "[always] madvise never\n");
+-	else if (test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags))
+-		return sprintf(buf, "always [madvise] never\n");
++		output = "[always] madvise never";
++	else if (test_bit(TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG,
++			  &transparent_hugepage_flags))
++		output = "always [madvise] never";
  	else
- 		detect_memory_region(soc_info.mem_base,
- 				     soc_info.mem_size_min * SZ_1M,
-diff --git a/arch/mips/rb532/prom.c b/arch/mips/rb532/prom.c
-index 303cc3dc1749..a9d1f2019dc3 100644
---- a/arch/mips/rb532/prom.c
-+++ b/arch/mips/rb532/prom.c
-@@ -126,5 +126,5 @@ void __init prom_init(void)
- 
- 	/* give all RAM to boot allocator,
- 	 * except for the first 0x400 and the last 0x200 bytes */
--	add_memory_region(ddrbase + 0x400, memsize - 0x600, BOOT_MEM_RAM);
-+	memblock_add(ddrbase + 0x400, memsize - 0x600);
- }
-diff --git a/arch/mips/sgi-ip32/ip32-memory.c b/arch/mips/sgi-ip32/ip32-memory.c
-index 62b956cc2d1d..0f53fed39da6 100644
---- a/arch/mips/sgi-ip32/ip32-memory.c
-+++ b/arch/mips/sgi-ip32/ip32-memory.c
-@@ -9,6 +9,7 @@
- #include <linux/types.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/memblock.h>
- #include <linux/mm.h>
- 
- #include <asm/ip32/crime.h>
-@@ -36,7 +37,7 @@ void __init prom_meminit(void)
- 
- 		printk("CRIME MC: bank %u base 0x%016Lx size %LuMiB\n",
- 			bank, base, size >> 20);
--		add_memory_region(base, size, BOOT_MEM_RAM);
-+		memblock_add(base, size);
- 	}
+-		return sprintf(buf, "always madvise [never]\n");
++		output = "always madvise [never]";
++
++	return sysfs_emit(buf, "%s\n", output);
  }
  
-diff --git a/arch/mips/sibyte/common/cfe.c b/arch/mips/sibyte/common/cfe.c
-index cbf5939ed53a..89f7fca45152 100644
---- a/arch/mips/sibyte/common/cfe.c
-+++ b/arch/mips/sibyte/common/cfe.c
-@@ -114,16 +114,14 @@ static __init void prom_meminit(void)
- 			if (initrd_start) {
- 				if ((initrd_pstart > addr) &&
- 				    (initrd_pstart < (addr + size))) {
--					add_memory_region(addr,
--							  initrd_pstart - addr,
--							  BOOT_MEM_RAM);
-+					memblock_add(addr,
-+						     initrd_pstart - addr);
- 					rd_flag = 1;
- 				}
- 				if ((initrd_pend > addr) &&
- 				    (initrd_pend < (addr + size))) {
--					add_memory_region(initrd_pend,
--						(addr + size) - initrd_pend,
--						 BOOT_MEM_RAM);
-+					memblock_add(initrd_pend,
-+						(addr + size) - initrd_pend);
- 					rd_flag = 1;
- 				}
- 			}
-@@ -142,7 +140,7 @@ static __init void prom_meminit(void)
- 				 */
- 				if (size > 512)
- 					size -= 512;
--				add_memory_region(addr, size, BOOT_MEM_RAM);
-+				memblock_add(addr, size);
- 			}
- 			board_mem_region_addrs[board_mem_region_count] = addr;
- 			board_mem_region_sizes[board_mem_region_count] = size;
-@@ -158,8 +156,8 @@ static __init void prom_meminit(void)
+ static ssize_t enabled_store(struct kobject *kobj,
+@@ -200,11 +205,11 @@ static struct kobj_attribute enabled_attr =
+ 	__ATTR(enabled, 0644, enabled_show, enabled_store);
+ 
+ ssize_t single_hugepage_flag_show(struct kobject *kobj,
+-				struct kobj_attribute *attr, char *buf,
+-				enum transparent_hugepage_flag flag)
++				  struct kobj_attribute *attr, char *buf,
++				  enum transparent_hugepage_flag flag)
+ {
+-	return sprintf(buf, "%d\n",
+-		       !!test_bit(flag, &transparent_hugepage_flags));
++	return sysfs_emit(buf, "%d\n",
++			  !!test_bit(flag, &transparent_hugepage_flags));
+ }
+ 
+ ssize_t single_hugepage_flag_store(struct kobject *kobj,
+@@ -232,15 +237,24 @@ ssize_t single_hugepage_flag_store(struct kobject *kobj,
+ static ssize_t defrag_show(struct kobject *kobj,
+ 			   struct kobj_attribute *attr, char *buf)
+ {
+-	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG, &transparent_hugepage_flags))
+-		return sprintf(buf, "[always] defer defer+madvise madvise never\n");
+-	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG, &transparent_hugepage_flags))
+-		return sprintf(buf, "always [defer] defer+madvise madvise never\n");
+-	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG, &transparent_hugepage_flags))
+-		return sprintf(buf, "always defer [defer+madvise] madvise never\n");
+-	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG, &transparent_hugepage_flags))
+-		return sprintf(buf, "always defer defer+madvise [madvise] never\n");
+-	return sprintf(buf, "always defer defer+madvise madvise [never]\n");
++	const char *output;
++
++	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG,
++		     &transparent_hugepage_flags))
++		output = "[always] defer defer+madvise madvise never";
++	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_FLAG,
++			  &transparent_hugepage_flags))
++		output = "always [defer] defer+madvise madvise never";
++	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_KSWAPD_OR_MADV_FLAG,
++			  &transparent_hugepage_flags))
++		output = "always defer [defer+madvise] madvise never";
++	else if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_REQ_MADV_FLAG,
++			  &transparent_hugepage_flags))
++		output = "always defer defer+madvise [madvise] never";
++	else
++		output = "always defer defer+madvise madvise [never]";
++
++	return sysfs_emit(buf, "%s\n", output);
+ }
+ 
+ static ssize_t defrag_store(struct kobject *kobj,
+@@ -281,10 +295,10 @@ static struct kobj_attribute defrag_attr =
+ 	__ATTR(defrag, 0644, defrag_show, defrag_store);
+ 
+ static ssize_t use_zero_page_show(struct kobject *kobj,
+-		struct kobj_attribute *attr, char *buf)
++				  struct kobj_attribute *attr, char *buf)
+ {
+ 	return single_hugepage_flag_show(kobj, attr, buf,
+-				TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG);
++					 TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG);
+ }
+ static ssize_t use_zero_page_store(struct kobject *kobj,
+ 		struct kobj_attribute *attr, const char *buf, size_t count)
+@@ -296,9 +310,9 @@ static struct kobj_attribute use_zero_page_attr =
+ 	__ATTR(use_zero_page, 0644, use_zero_page_show, use_zero_page_store);
+ 
+ static ssize_t hpage_pmd_size_show(struct kobject *kobj,
+-		struct kobj_attribute *attr, char *buf)
++				   struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", HPAGE_PMD_SIZE);
++	return sysfs_emit(buf, "%lu\n", HPAGE_PMD_SIZE);
+ }
+ static struct kobj_attribute hpage_pmd_size_attr =
+ 	__ATTR_RO(hpage_pmd_size);
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index fe76f8fd5a73..d919542ff6e5 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2837,7 +2837,7 @@ static ssize_t nr_hugepages_show_common(struct kobject *kobj,
+ 	else
+ 		nr_huge_pages = h->nr_huge_pages_node[nid];
+ 
+-	return sprintf(buf, "%lu\n", nr_huge_pages);
++	return sysfs_emit(buf, "%lu\n", nr_huge_pages);
+ }
+ 
+ static ssize_t __nr_hugepages_store_common(bool obey_mempolicy,
+@@ -2910,7 +2910,8 @@ HSTATE_ATTR(nr_hugepages);
+  * huge page alloc/free.
+  */
+ static ssize_t nr_hugepages_mempolicy_show(struct kobject *kobj,
+-				       struct kobj_attribute *attr, char *buf)
++					   struct kobj_attribute *attr,
++					   char *buf)
+ {
+ 	return nr_hugepages_show_common(kobj, attr, buf);
+ }
+@@ -2928,7 +2929,7 @@ static ssize_t nr_overcommit_hugepages_show(struct kobject *kobj,
+ 					struct kobj_attribute *attr, char *buf)
+ {
+ 	struct hstate *h = kobj_to_hstate(kobj, NULL);
+-	return sprintf(buf, "%lu\n", h->nr_overcommit_huge_pages);
++	return sysfs_emit(buf, "%lu\n", h->nr_overcommit_huge_pages);
+ }
+ 
+ static ssize_t nr_overcommit_hugepages_store(struct kobject *kobj,
+@@ -2966,7 +2967,7 @@ static ssize_t free_hugepages_show(struct kobject *kobj,
+ 	else
+ 		free_huge_pages = h->free_huge_pages_node[nid];
+ 
+-	return sprintf(buf, "%lu\n", free_huge_pages);
++	return sysfs_emit(buf, "%lu\n", free_huge_pages);
+ }
+ HSTATE_ATTR_RO(free_hugepages);
+ 
+@@ -2974,7 +2975,8 @@ static ssize_t resv_hugepages_show(struct kobject *kobj,
+ 					struct kobj_attribute *attr, char *buf)
+ {
+ 	struct hstate *h = kobj_to_hstate(kobj, NULL);
+-	return sprintf(buf, "%lu\n", h->resv_huge_pages);
++
++	return sysfs_emit(buf, "%lu\n", h->resv_huge_pages);
+ }
+ HSTATE_ATTR_RO(resv_hugepages);
+ 
+@@ -2991,7 +2993,7 @@ static ssize_t surplus_hugepages_show(struct kobject *kobj,
+ 	else
+ 		surplus_huge_pages = h->surplus_huge_pages_node[nid];
+ 
+-	return sprintf(buf, "%lu\n", surplus_huge_pages);
++	return sysfs_emit(buf, "%lu\n", surplus_huge_pages);
+ }
+ HSTATE_ATTR_RO(surplus_hugepages);
+ 
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index f1d5f6dde47c..28dcaca63f2b 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -124,7 +124,7 @@ static ssize_t scan_sleep_millisecs_show(struct kobject *kobj,
+ 					 struct kobj_attribute *attr,
+ 					 char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_scan_sleep_millisecs);
++	return sysfs_emit(buf, "%u\n", khugepaged_scan_sleep_millisecs);
+ }
+ 
+ static ssize_t scan_sleep_millisecs_store(struct kobject *kobj,
+@@ -152,7 +152,7 @@ static ssize_t alloc_sleep_millisecs_show(struct kobject *kobj,
+ 					  struct kobj_attribute *attr,
+ 					  char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_alloc_sleep_millisecs);
++	return sysfs_emit(buf, "%u\n", khugepaged_alloc_sleep_millisecs);
+ }
+ 
+ static ssize_t alloc_sleep_millisecs_store(struct kobject *kobj,
+@@ -180,7 +180,7 @@ static ssize_t pages_to_scan_show(struct kobject *kobj,
+ 				  struct kobj_attribute *attr,
+ 				  char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_pages_to_scan);
++	return sysfs_emit(buf, "%u\n", khugepaged_pages_to_scan);
+ }
+ static ssize_t pages_to_scan_store(struct kobject *kobj,
+ 				   struct kobj_attribute *attr,
+@@ -205,7 +205,7 @@ static ssize_t pages_collapsed_show(struct kobject *kobj,
+ 				    struct kobj_attribute *attr,
+ 				    char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_pages_collapsed);
++	return sysfs_emit(buf, "%u\n", khugepaged_pages_collapsed);
+ }
+ static struct kobj_attribute pages_collapsed_attr =
+ 	__ATTR_RO(pages_collapsed);
+@@ -214,7 +214,7 @@ static ssize_t full_scans_show(struct kobject *kobj,
+ 			       struct kobj_attribute *attr,
+ 			       char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_full_scans);
++	return sysfs_emit(buf, "%u\n", khugepaged_full_scans);
+ }
+ static struct kobj_attribute full_scans_attr =
+ 	__ATTR_RO(full_scans);
+@@ -223,7 +223,7 @@ static ssize_t khugepaged_defrag_show(struct kobject *kobj,
+ 				      struct kobj_attribute *attr, char *buf)
+ {
+ 	return single_hugepage_flag_show(kobj, attr, buf,
+-				TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG);
++					 TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG);
+ }
+ static ssize_t khugepaged_defrag_store(struct kobject *kobj,
+ 				       struct kobj_attribute *attr,
+@@ -248,7 +248,7 @@ static ssize_t khugepaged_max_ptes_none_show(struct kobject *kobj,
+ 					     struct kobj_attribute *attr,
+ 					     char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_max_ptes_none);
++	return sysfs_emit(buf, "%u\n", khugepaged_max_ptes_none);
+ }
+ static ssize_t khugepaged_max_ptes_none_store(struct kobject *kobj,
+ 					      struct kobj_attribute *attr,
+@@ -273,7 +273,7 @@ static ssize_t khugepaged_max_ptes_swap_show(struct kobject *kobj,
+ 					     struct kobj_attribute *attr,
+ 					     char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_max_ptes_swap);
++	return sysfs_emit(buf, "%u\n", khugepaged_max_ptes_swap);
+ }
+ 
+ static ssize_t khugepaged_max_ptes_swap_store(struct kobject *kobj,
+@@ -297,10 +297,10 @@ static struct kobj_attribute khugepaged_max_ptes_swap_attr =
+ 	       khugepaged_max_ptes_swap_store);
+ 
+ static ssize_t khugepaged_max_ptes_shared_show(struct kobject *kobj,
+-					     struct kobj_attribute *attr,
+-					     char *buf)
++					       struct kobj_attribute *attr,
++					       char *buf)
+ {
+-	return sprintf(buf, "%u\n", khugepaged_max_ptes_shared);
++	return sysfs_emit(buf, "%u\n", khugepaged_max_ptes_shared);
+ }
+ 
+ static ssize_t khugepaged_max_ptes_shared_store(struct kobject *kobj,
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 9afccc36dbd2..3c7f7a1101c5 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -2833,7 +2833,7 @@ static void wait_while_offlining(void)
+ static ssize_t sleep_millisecs_show(struct kobject *kobj,
+ 				    struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%u\n", ksm_thread_sleep_millisecs);
++	return sysfs_emit(buf, "%u\n", ksm_thread_sleep_millisecs);
+ }
+ 
+ static ssize_t sleep_millisecs_store(struct kobject *kobj,
+@@ -2857,7 +2857,7 @@ KSM_ATTR(sleep_millisecs);
+ static ssize_t pages_to_scan_show(struct kobject *kobj,
+ 				  struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%u\n", ksm_thread_pages_to_scan);
++	return sysfs_emit(buf, "%u\n", ksm_thread_pages_to_scan);
+ }
+ 
+ static ssize_t pages_to_scan_store(struct kobject *kobj,
+@@ -2880,7 +2880,7 @@ KSM_ATTR(pages_to_scan);
+ static ssize_t run_show(struct kobject *kobj, struct kobj_attribute *attr,
+ 			char *buf)
+ {
+-	return sprintf(buf, "%lu\n", ksm_run);
++	return sysfs_emit(buf, "%lu\n", ksm_run);
+ }
+ 
+ static ssize_t run_store(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -2927,9 +2927,9 @@ KSM_ATTR(run);
+ 
+ #ifdef CONFIG_NUMA
+ static ssize_t merge_across_nodes_show(struct kobject *kobj,
+-				struct kobj_attribute *attr, char *buf)
++				       struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%u\n", ksm_merge_across_nodes);
++	return sysfs_emit(buf, "%u\n", ksm_merge_across_nodes);
+ }
+ 
+ static ssize_t merge_across_nodes_store(struct kobject *kobj,
+@@ -2984,9 +2984,9 @@ KSM_ATTR(merge_across_nodes);
+ #endif
+ 
+ static ssize_t use_zero_pages_show(struct kobject *kobj,
+-				struct kobj_attribute *attr, char *buf)
++				   struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%u\n", ksm_use_zero_pages);
++	return sysfs_emit(buf, "%u\n", ksm_use_zero_pages);
+ }
+ static ssize_t use_zero_pages_store(struct kobject *kobj,
+ 				   struct kobj_attribute *attr,
+@@ -3008,7 +3008,7 @@ KSM_ATTR(use_zero_pages);
+ static ssize_t max_page_sharing_show(struct kobject *kobj,
+ 				     struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%u\n", ksm_max_page_sharing);
++	return sysfs_emit(buf, "%u\n", ksm_max_page_sharing);
+ }
+ 
+ static ssize_t max_page_sharing_store(struct kobject *kobj,
+@@ -3049,21 +3049,21 @@ KSM_ATTR(max_page_sharing);
+ static ssize_t pages_shared_show(struct kobject *kobj,
+ 				 struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", ksm_pages_shared);
++	return sysfs_emit(buf, "%lu\n", ksm_pages_shared);
+ }
+ KSM_ATTR_RO(pages_shared);
+ 
+ static ssize_t pages_sharing_show(struct kobject *kobj,
+ 				  struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", ksm_pages_sharing);
++	return sysfs_emit(buf, "%lu\n", ksm_pages_sharing);
+ }
+ KSM_ATTR_RO(pages_sharing);
+ 
+ static ssize_t pages_unshared_show(struct kobject *kobj,
+ 				   struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", ksm_pages_unshared);
++	return sysfs_emit(buf, "%lu\n", ksm_pages_unshared);
+ }
+ KSM_ATTR_RO(pages_unshared);
+ 
+@@ -3080,21 +3080,21 @@ static ssize_t pages_volatile_show(struct kobject *kobj,
+ 	 */
+ 	if (ksm_pages_volatile < 0)
+ 		ksm_pages_volatile = 0;
+-	return sprintf(buf, "%ld\n", ksm_pages_volatile);
++	return sysfs_emit(buf, "%ld\n", ksm_pages_volatile);
+ }
+ KSM_ATTR_RO(pages_volatile);
+ 
+ static ssize_t stable_node_dups_show(struct kobject *kobj,
+ 				     struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", ksm_stable_node_dups);
++	return sysfs_emit(buf, "%lu\n", ksm_stable_node_dups);
+ }
+ KSM_ATTR_RO(stable_node_dups);
+ 
+ static ssize_t stable_node_chains_show(struct kobject *kobj,
+ 				       struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", ksm_stable_node_chains);
++	return sysfs_emit(buf, "%lu\n", ksm_stable_node_chains);
+ }
+ KSM_ATTR_RO(stable_node_chains);
+ 
+@@ -3103,7 +3103,7 @@ stable_node_chains_prune_millisecs_show(struct kobject *kobj,
+ 					struct kobj_attribute *attr,
+ 					char *buf)
+ {
+-	return sprintf(buf, "%u\n", ksm_stable_node_chains_prune_millisecs);
++	return sysfs_emit(buf, "%u\n", ksm_stable_node_chains_prune_millisecs);
+ }
+ 
+ static ssize_t
+@@ -3127,7 +3127,7 @@ KSM_ATTR(stable_node_chains_prune_millisecs);
+ static ssize_t full_scans_show(struct kobject *kobj,
+ 			       struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", ksm_scan.seqnr);
++	return sysfs_emit(buf, "%lu\n", ksm_scan.seqnr);
+ }
+ KSM_ATTR_RO(full_scans);
+ 
+diff --git a/mm/slub.c b/mm/slub.c
+index 8f66de8a5ab3..7ae323bd77ac 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4735,7 +4735,7 @@ static int list_locations(struct kmem_cache *s, char *buf,
+ 
+ 	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
+ 			     GFP_KERNEL)) {
+-		return sprintf(buf, "Out of memory\n");
++		return sysfs_emit(buf, "Out of memory\n");
  	}
- #ifdef CONFIG_BLK_DEV_INITRD
- 	if (initrd_start) {
--		add_memory_region(initrd_pstart, initrd_pend - initrd_pstart,
--				  BOOT_MEM_RESERVED);
-+		memblock_add(initrd_pstart, initrd_pend - initrd_pstart);
-+		memblock_reserve(initrd_pstart, initrd_pend - initrd_pstart);
+ 	/* Push back cpu slabs */
+ 	flush_all(s);
+@@ -4758,50 +4758,41 @@ static int list_locations(struct kmem_cache *s, char *buf,
+ 	for (i = 0; i < t.count; i++) {
+ 		struct location *l = &t.loc[i];
+ 
+-		if (len > PAGE_SIZE - KSYM_SYMBOL_LEN - 100)
+-			break;
+-		len += sprintf(buf + len, "%7ld ", l->count);
++		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
+ 
+ 		if (l->addr)
+-			len += sprintf(buf + len, "%pS", (void *)l->addr);
++			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
+ 		else
+-			len += sprintf(buf + len, "<not-available>");
++			len += sysfs_emit_at(buf, len, "<not-available>");
+ 
+-		if (l->sum_time != l->min_time) {
+-			len += sprintf(buf + len, " age=%ld/%ld/%ld",
+-				l->min_time,
+-				(long)div_u64(l->sum_time, l->count),
+-				l->max_time);
+-		} else
+-			len += sprintf(buf + len, " age=%ld",
+-				l->min_time);
++		len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
++		if (l->sum_time != l->min_time)
++			len += sysfs_emit_at(buf, len, "%ld/%ld",
++					     (long)div_u64(l->sum_time,
++							   l->count),
++					     l->max_time);
+ 
++		len += sysfs_emit_at(buf, len, " pid=%ld", l->min_pid);
+ 		if (l->min_pid != l->max_pid)
+-			len += sprintf(buf + len, " pid=%ld-%ld",
+-				l->min_pid, l->max_pid);
+-		else
+-			len += sprintf(buf + len, " pid=%ld",
+-				l->min_pid);
++			len += sysfs_emit_at(buf, len, "-%ld", l->max_pid);
+ 
+ 		if (num_online_cpus() > 1 &&
+-				!cpumask_empty(to_cpumask(l->cpus)) &&
+-				len < PAGE_SIZE - 60)
+-			len += scnprintf(buf + len, PAGE_SIZE - len - 50,
+-					 " cpus=%*pbl",
+-					 cpumask_pr_args(to_cpumask(l->cpus)));
+-
+-		if (nr_online_nodes > 1 && !nodes_empty(l->nodes) &&
+-				len < PAGE_SIZE - 60)
+-			len += scnprintf(buf + len, PAGE_SIZE - len - 50,
+-					 " nodes=%*pbl",
+-					 nodemask_pr_args(&l->nodes));
+-
+-		len += sprintf(buf + len, "\n");
++		    !cpumask_empty(to_cpumask(l->cpus)))
++			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
++					     cpumask_pr_args(to_cpumask(l->cpus)));
++
++		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
++			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
++					     nodemask_pr_args(&l->nodes));
++
++		len += sysfs_emit_at(buf, len, "\n");
+ 	}
+ 
+ 	free_loc_track(&t);
++
+ 	if (!t.count)
+-		len += sprintf(buf, "No data\n");
++		len += sysfs_emit_at(buf, len, "No data\n");
++
+ 	return len;
+ }
+ #endif	/* CONFIG_SLUB_DEBUG */
+@@ -4903,6 +4894,7 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
+ 	unsigned long total = 0;
+ 	int node;
+ 	int x;
++	int len;
+ 	unsigned long *nodes;
+ 
+ 	nodes = kcalloc(nr_node_ids, sizeof(unsigned long), GFP_KERNEL);
+@@ -4992,15 +4984,17 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
+ 			nodes[node] += x;
+ 		}
+ 	}
+-	x = sprintf(buf, "%lu", total);
++
++	len = sysfs_emit(buf, "%lu", total);
+ #ifdef CONFIG_NUMA
+ 	for (node = 0; node < nr_node_ids; node++)
+ 		if (nodes[node])
+-			x += sprintf(buf + x, " N%d=%lu",
+-					node, nodes[node]);
++			len += sysfs_emit_at(buf, len, " N%d=%lu",
++					     node, nodes[node]);
+ #endif
+ 	kfree(nodes);
+-	return x + sprintf(buf + x, "\n");
++	len += sysfs_emit_at(buf, len, "\n");
++	return len;
+ }
+ 
+ #define to_slab_attr(n) container_of(n, struct slab_attribute, attr)
+@@ -5022,37 +5016,37 @@ struct slab_attribute {
+ 
+ static ssize_t slab_size_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", s->size);
++	return sysfs_emit(buf, "%u\n", s->size);
+ }
+ SLAB_ATTR_RO(slab_size);
+ 
+ static ssize_t align_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", s->align);
++	return sysfs_emit(buf, "%u\n", s->align);
+ }
+ SLAB_ATTR_RO(align);
+ 
+ static ssize_t object_size_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", s->object_size);
++	return sysfs_emit(buf, "%u\n", s->object_size);
+ }
+ SLAB_ATTR_RO(object_size);
+ 
+ static ssize_t objs_per_slab_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", oo_objects(s->oo));
++	return sysfs_emit(buf, "%u\n", oo_objects(s->oo));
+ }
+ SLAB_ATTR_RO(objs_per_slab);
+ 
+ static ssize_t order_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", oo_order(s->oo));
++	return sysfs_emit(buf, "%u\n", oo_order(s->oo));
+ }
+ SLAB_ATTR_RO(order);
+ 
+ static ssize_t min_partial_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%lu\n", s->min_partial);
++	return sysfs_emit(buf, "%lu\n", s->min_partial);
+ }
+ 
+ static ssize_t min_partial_store(struct kmem_cache *s, const char *buf,
+@@ -5072,7 +5066,7 @@ SLAB_ATTR(min_partial);
+ 
+ static ssize_t cpu_partial_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", slub_cpu_partial(s));
++	return sysfs_emit(buf, "%u\n", slub_cpu_partial(s));
+ }
+ 
+ static ssize_t cpu_partial_store(struct kmem_cache *s, const char *buf,
+@@ -5097,13 +5091,13 @@ static ssize_t ctor_show(struct kmem_cache *s, char *buf)
+ {
+ 	if (!s->ctor)
+ 		return 0;
+-	return sprintf(buf, "%pS\n", s->ctor);
++	return sysfs_emit(buf, "%pS\n", s->ctor);
+ }
+ SLAB_ATTR_RO(ctor);
+ 
+ static ssize_t aliases_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", s->refcount < 0 ? 0 : s->refcount - 1);
++	return sysfs_emit(buf, "%d\n", s->refcount < 0 ? 0 : s->refcount - 1);
+ }
+ SLAB_ATTR_RO(aliases);
+ 
+@@ -5149,20 +5143,19 @@ static ssize_t slabs_cpu_partial_show(struct kmem_cache *s, char *buf)
+ 		}
+ 	}
+ 
+-	len = sprintf(buf, "%d(%d)", objects, pages);
++	len = sysfs_emit(buf, "%d(%d)", objects, pages);
+ 
+ #ifdef CONFIG_SMP
+ 	for_each_online_cpu(cpu) {
+ 		struct page *page;
+ 
+ 		page = slub_percpu_partial(per_cpu_ptr(s->cpu_slab, cpu));
+-
+-		if (page && len < PAGE_SIZE - 20)
+-			len += sprintf(buf + len, " C%d=%d(%d)", cpu,
+-				page->pobjects, page->pages);
++		len += sysfs_emit_at(buf, len, " C%d=%d(%d)",
++				     cpu, page->pobjects, page->pages);
  	}
  #endif
+-	return len + sprintf(buf + len, "\n");
++	len += sysfs_emit_at(buf, len, "\n");
++	return len;
  }
-diff --git a/arch/mips/txx9/jmr3927/prom.c b/arch/mips/txx9/jmr3927/prom.c
-index 68a96473c134..53c68de54d30 100644
---- a/arch/mips/txx9/jmr3927/prom.c
-+++ b/arch/mips/txx9/jmr3927/prom.c
-@@ -37,7 +37,7 @@
-  */
- #include <linux/init.h>
- #include <linux/kernel.h>
--#include <asm/bootinfo.h>
-+#include <linux/memblock.h>
- #include <asm/txx9/generic.h>
- #include <asm/txx9/jmr3927.h>
+ SLAB_ATTR_RO(slabs_cpu_partial);
  
-@@ -47,6 +47,6 @@ void __init jmr3927_prom_init(void)
- 	if ((tx3927_ccfgptr->ccfg & TX3927_CCFG_TLBOFF) == 0)
- 		pr_err("TX3927 TLB off\n");
+@@ -5174,27 +5167,27 @@ SLAB_ATTR_RO(reclaim_account);
  
--	add_memory_region(0, JMR3927_SDRAM_SIZE, BOOT_MEM_RAM);
-+	memblock_add(0, JMR3927_SDRAM_SIZE);
- 	txx9_sio_putchar_init(TX3927_SIO_REG(1));
- }
-diff --git a/arch/mips/txx9/rbtx4927/prom.c b/arch/mips/txx9/rbtx4927/prom.c
-index fe6d0b54763f..9b4acff826eb 100644
---- a/arch/mips/txx9/rbtx4927/prom.c
-+++ b/arch/mips/txx9/rbtx4927/prom.c
-@@ -29,13 +29,14 @@
-  *  with this program; if not, write to the Free Software Foundation, Inc.,
-  *  675 Mass Ave, Cambridge, MA 02139, USA.
-  */
-+
- #include <linux/init.h>
--#include <asm/bootinfo.h>
-+#include <linux/memblock.h>
- #include <asm/txx9/generic.h>
- #include <asm/txx9/rbtx4927.h>
- 
- void __init rbtx4927_prom_init(void)
+ static ssize_t hwcache_align_show(struct kmem_cache *s, char *buf)
  {
--	add_memory_region(0, tx4927_get_mem_size(), BOOT_MEM_RAM);
-+	memblock_add(0, tx4927_get_mem_size());
- 	txx9_sio_putchar_init(TX4927_SIO_REG(0) & 0xfffffffffULL);
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_HWCACHE_ALIGN));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_HWCACHE_ALIGN));
  }
-diff --git a/arch/mips/txx9/rbtx4938/prom.c b/arch/mips/txx9/rbtx4938/prom.c
-index 2b36a2ee744c..0de84716a428 100644
---- a/arch/mips/txx9/rbtx4938/prom.c
-+++ b/arch/mips/txx9/rbtx4938/prom.c
-@@ -12,12 +12,11 @@
+ SLAB_ATTR_RO(hwcache_align);
  
- #include <linux/init.h>
- #include <linux/memblock.h>
--#include <asm/bootinfo.h>
- #include <asm/txx9/generic.h>
- #include <asm/txx9/rbtx4938.h>
- 
- void __init rbtx4938_prom_init(void)
+ #ifdef CONFIG_ZONE_DMA
+ static ssize_t cache_dma_show(struct kmem_cache *s, char *buf)
  {
--	add_memory_region(0, tx4938_get_mem_size(), BOOT_MEM_RAM);
-+	memblock_add(0, tx4938_get_mem_size());
- 	txx9_sio_putchar_init(TX4938_SIO_REG(0) & 0xfffffffffULL);
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_CACHE_DMA));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_CACHE_DMA));
  }
-diff --git a/arch/mips/txx9/rbtx4939/prom.c b/arch/mips/txx9/rbtx4939/prom.c
-index 1dc47ce81c92..ba25ba1bd2ec 100644
---- a/arch/mips/txx9/rbtx4939/prom.c
-+++ b/arch/mips/txx9/rbtx4939/prom.c
-@@ -7,7 +7,7 @@
-  */
+ SLAB_ATTR_RO(cache_dma);
+ #endif
  
- #include <linux/init.h>
--#include <asm/bootinfo.h>
-+#include <linux/memblock.h>
- #include <asm/txx9/generic.h>
- #include <asm/txx9/rbtx4939.h>
+ static ssize_t usersize_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", s->usersize);
++	return sysfs_emit(buf, "%u\n", s->usersize);
+ }
+ SLAB_ATTR_RO(usersize);
  
-@@ -23,7 +23,7 @@ void __init rbtx4939_prom_init(void)
- 		win = ____raw_readq(&tx4939_ddrcptr->win[i]);
- 		start = (unsigned long)(win >> 48);
- 		size = (((unsigned long)(win >> 32) & 0xffff) + 1) - start;
--		add_memory_region(start << 20, size << 20, BOOT_MEM_RAM);
-+		memblock_add(start << 20, size << 20);
+ static ssize_t destroy_by_rcu_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_TYPESAFE_BY_RCU));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_TYPESAFE_BY_RCU));
+ }
+ SLAB_ATTR_RO(destroy_by_rcu);
+ 
+@@ -5213,33 +5206,33 @@ SLAB_ATTR_RO(total_objects);
+ 
+ static ssize_t sanity_checks_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_CONSISTENCY_CHECKS));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_CONSISTENCY_CHECKS));
+ }
+ SLAB_ATTR_RO(sanity_checks);
+ 
+ static ssize_t trace_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_TRACE));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_TRACE));
+ }
+ SLAB_ATTR_RO(trace);
+ 
+ static ssize_t red_zone_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_RED_ZONE));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_RED_ZONE));
+ }
+ 
+ SLAB_ATTR_RO(red_zone);
+ 
+ static ssize_t poison_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_POISON));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_POISON));
+ }
+ 
+ SLAB_ATTR_RO(poison);
+ 
+ static ssize_t store_user_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_STORE_USER));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_STORE_USER));
+ }
+ 
+ SLAB_ATTR_RO(store_user);
+@@ -5283,7 +5276,7 @@ SLAB_ATTR_RO(free_calls);
+ #ifdef CONFIG_FAILSLAB
+ static ssize_t failslab_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%d\n", !!(s->flags & SLAB_FAILSLAB));
++	return sysfs_emit(buf, "%d\n", !!(s->flags & SLAB_FAILSLAB));
+ }
+ SLAB_ATTR_RO(failslab);
+ #endif
+@@ -5307,7 +5300,7 @@ SLAB_ATTR(shrink);
+ #ifdef CONFIG_NUMA
+ static ssize_t remote_node_defrag_ratio_show(struct kmem_cache *s, char *buf)
+ {
+-	return sprintf(buf, "%u\n", s->remote_node_defrag_ratio / 10);
++	return sysfs_emit(buf, "%u\n", s->remote_node_defrag_ratio / 10);
+ }
+ 
+ static ssize_t remote_node_defrag_ratio_store(struct kmem_cache *s,
+@@ -5332,7 +5325,7 @@ SLAB_ATTR(remote_node_defrag_ratio);
+ #ifdef CONFIG_SLUB_STATS
+ static int show_stat(struct kmem_cache *s, char *buf, enum stat_item si)
+ {
+-	unsigned long sum  = 0;
++	unsigned long sum = 0;
+ 	int cpu;
+ 	int len;
+ 	int *data = kmalloc_array(nr_cpu_ids, sizeof(int), GFP_KERNEL);
+@@ -5347,16 +5340,16 @@ static int show_stat(struct kmem_cache *s, char *buf, enum stat_item si)
+ 		sum += x;
  	}
- 	txx9_sio_putchar_init(TX4939_SIO_REG(0) & 0xfffffffffULL);
+ 
+-	len = sprintf(buf, "%lu", sum);
++	len = sysfs_emit(buf, "%lu", sum);
+ 
+ #ifdef CONFIG_SMP
+-	for_each_online_cpu(cpu) {
+-		if (data[cpu] && len < PAGE_SIZE - 20)
+-			len += sprintf(buf + len, " C%d=%u", cpu, data[cpu]);
+-	}
++	for_each_online_cpu(cpu)
++		len += sysfs_emit_at(buf, len, " C%d=%u", cpu, data[cpu]);
+ #endif
+ 	kfree(data);
+-	return len + sprintf(buf + len, "\n");
++
++	len += sysfs_emit_at(buf, len, "\n");
++	return len;
  }
--- 
-2.16.4
+ 
+ static void clear_stat(struct kmem_cache *s, enum stat_item si)
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index ee465827420e..aeb5bc4d64ec 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -900,7 +900,8 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+ static ssize_t vma_ra_enabled_show(struct kobject *kobj,
+ 				     struct kobj_attribute *attr, char *buf)
+ {
+-	return sprintf(buf, "%s\n", enable_vma_readahead ? "true" : "false");
++	return sysfs_emit(buf, "%s\n",
++			  enable_vma_readahead ? "true" : "false");
+ }
+ static ssize_t vma_ra_enabled_store(struct kobject *kobj,
+ 				      struct kobj_attribute *attr,
+
 
