@@ -2,317 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2203B284E39
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C4B284E3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJFOq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:46:29 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:35906 "EHLO nat-hk.nvidia.com"
+        id S1726248AbgJFOqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:46:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:49124 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgJFOq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:46:28 -0400
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7c82d30000>; Tue, 06 Oct 2020 22:44:35 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
- 2020 14:44:35 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 6 Oct 2020 14:44:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U1mcdlidsH5KKldT2VzLsGhsS75F9p9PCpvEpQsVOO3arLACECpSNMuhvfiorimdk+ROEJgZs5pFlo5/FG7EFvc0ES8KohbanXOs1r45OKGkrJx+KafJXGR4UctCPCkUubnNZCNzViCE0jr/efWaNs0B3VWWo7lXRYjCHck0LYequby1n3OlMrxjbSYrtI9/TpdbBSA9kT4WFsrXOrfhGakN2bKx+Rw7MJFhzn9xTUpsPBMgmMmXU8aM8EvELkf3DrfDo8sbWQd5JaKkll86Xpo4s3aHVXckEmcZrlqyRdWYoTmz05kCUAZWibtkIiguyyHXP+mCasu9EfME56YIig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=85dKNWchZ5x7mLhnoRSSNCqVjhghPgZ3tmyOe5h/Ks8=;
- b=Cl5SxCG3XrMBovITikiwQNzLY2NwDJXzX4M+9qig0WNznURXDw1t5/QvwDmeqF+sE5GEZXygYN72wx57Q9rh/jKgA+wKLMgAvAKa2b6uXO2dy+q4pDmxs9VH/9neQ5PpQF8lVqdLUlveqRiukh+CWiQixEol2RTHITX+o4AHI1Ea5UVgxcaBGSb39gunYXUleKEzg81sZVJYa08UmtoKcDPe80ZgHaL6y22HsGBps5Wr+LKUp6RedeswW6omY4r73r+MC5Zt2eUkO1d9OQgeXkD57GWVmWlcgphmFmNQwWgB8/nRmss8fzJZx3TUgra6s2YDMOERVZPMAtBI31bIQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM5PR1201MB0010.namprd12.prod.outlook.com (2603:10b6:3:e3::23)
- by DM6PR12MB3194.namprd12.prod.outlook.com (2603:10b6:5:184::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36; Tue, 6 Oct
- 2020 14:44:32 +0000
-Received: from DM5PR1201MB0010.namprd12.prod.outlook.com
- ([fe80::4517:3a8d:9dff:3b62]) by DM5PR1201MB0010.namprd12.prod.outlook.com
- ([fe80::4517:3a8d:9dff:3b62%9]) with mapi id 15.20.3433.045; Tue, 6 Oct 2020
- 14:44:32 +0000
-From:   Nikolay Aleksandrov <nikolay@nvidia.com>
-To:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
-CC:     "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [net-next v2 07/11] bridge: cfm: Netlink Interface.
-Thread-Topic: [net-next v2 07/11] bridge: cfm: Netlink Interface.
-Thread-Index: AQHWl95AV7EP++4hzUuEZgE7asQnRqmKrqmA
-Date:   Tue, 6 Oct 2020 14:44:31 +0000
-Message-ID: <056628d19fcd58c88e084d14ca063204b006f8a4.camel@nvidia.com>
-References: <20201001103019.1342470-1-henrik.bjoernlund@microchip.com>
-         <20201001103019.1342470-8-henrik.bjoernlund@microchip.com>
-In-Reply-To: <20201001103019.1342470-8-henrik.bjoernlund@microchip.com>
-Reply-To: Nikolay Aleksandrov <nikolay@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
- header.from=nvidia.com;
-x-originating-ip: [84.238.136.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 513ee3a2-fe4e-46e8-b33a-08d86a065633
-x-ms-traffictypediagnostic: DM6PR12MB3194:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR12MB3194C31E2FED33A12EF5B631DF0D0@DM6PR12MB3194.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wNDk5K/dx0+oNjZxh0hUYyyd+cU9vxoJxI/7H4VywK2rUktceSbWDLaXCR+7/YZsKWdTFx8e/KB+JUayTaRmnFqMPn/6R9wt4vpcgZNGKfLY7pnkQfQkbU80zZ4yzicTc5HWycr/pASu+9e05u7dCNC6y4t37JPK6669u9a2KtI4fZboNGH5+TnqCq651GAhvbJ7g44c5KmD+ZpL/manAU4rcVcNsT0KiooASrs5ia2kLxHiJj7PFYyW6hAVGG69UmyC0msmTA4fes/RONR8yi6zuI+WPRuas6Z2mqESMm+cQweNXWq3Fe0wOQ6nLC1lt8H3chsnfCIhJW/tCIpwWGhuQ7tmjc3h2lp3fwN0Q2QFgUB0RNiTA8rFeNmTvjfV
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0010.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(396003)(346002)(36756003)(478600001)(3450700001)(2906002)(2616005)(6512007)(26005)(186003)(4326008)(6486002)(8676002)(316002)(6506007)(110136005)(8936002)(64756008)(66446008)(66946007)(66476007)(66556008)(91956017)(76116006)(86362001)(71200400001)(83380400001)(5660300002)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: fAywAOYLBLPVfqvsZctrZF8WiZpUyTC3eCNH0WaLTFq6r+loPUQzd5FSYm3clOyx9xJhKFAnSkzWejlmvKQ5SBbh5PkWuNZ6YUDQaYH8x5GZn9rkUkiyXF8on6HlcTV7665I8GjyyCmNgoEff83r0GfFDPnqjVcSCaewRxzH6j+ega8EfYqo0JFjyN1p/73aNSTpr8aDA27rmMGa9tX1QAtVrz60knRq4mQcReB0Xp8MvaP3hayrO2xvuffVxQm+9YcFJSmLTepM16YgEI5gzAMehqZukC3uCLfFjEvh4P0nWLCKU9htT/ZRFCI5S2lIOG9MPddtDVnITmqXzLMpOPiPgkXYldIZxKLTkJ5crhHjtc81ud3n877htNfS0KlYCLD/m63R9VXXHXUXtHWahPYcjdE+8NanN32zHZN1tov6Wes1IG4DwII+j2TmPzbKFbgraZXWGJxJRpkB6lQR1LJNtyg1BQtRy/Ge1lHlVfIJtKQcGcup4CR53NMe/gmoK+zh88JC6I1Rg+RMABrYPytZSIOhpEdOMWFg5rjoW2KfuKRSwJSlyEwlovgHrRIKUplBDhu2Lo0fE5nhu5hqdlQyeCHKdLVohvMpw7J3igS0VGoMCZ17MZpceXiU6O1/bTQT/K0PKuqUO7phJtKGhg==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C7C7EE908C40E54E8E93C0F2219D15FB@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1725946AbgJFOqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:46:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 408791476;
+        Tue,  6 Oct 2020 07:46:50 -0700 (PDT)
+Received: from [10.57.54.147] (unknown [10.57.54.147])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B2433F71F;
+        Tue,  6 Oct 2020 07:46:46 -0700 (PDT)
+Subject: Re: [PATCH] thermal: power_allocate: add upper and lower limits
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     Michael Kao <michael.kao@mediatek.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20200424071601.2636-1-michael.kao@mediatek.com>
+ <accb83e0-ffbe-b6e3-6bf9-e7cc8b9fe19c@arm.com>
+ <1588156776.3573.1.camel@mtksdccf07>
+ <03286571-c110-7f5e-a911-24f8c3e4fd42@arm.com>
+ <1598347775.16267.0.camel@mtksdccf07>
+ <25cb2d5b-0d87-8a22-a881-a5b6e46307ec@arm.com>
+Message-ID: <77bd14bb-0318-332a-4ea1-f60a314ce3be@arm.com>
+Date:   Tue, 6 Oct 2020 15:46:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0010.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 513ee3a2-fe4e-46e8-b33a-08d86a065633
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 14:44:32.0222
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tOSffFEbQsxZlBKtJGlbFlWl/wx3L+n9/kCKVoaXhEQJ1cP8cnhTHM39Be+ZYtwVfHtykZzGcZ+HcPHvqsSRPw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3194
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601995475; bh=85dKNWchZ5x7mLhnoRSSNCqVjhghPgZ3tmyOe5h/Ks8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Reply-To:Accept-Language:Content-Language:
-         X-MS-Has-Attach:X-MS-TNEF-Correlator:user-agent:
-         authentication-results:x-originating-ip:x-ms-publictraffictype:
-         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=FidQo2bHXobK2OW0MNOdtXeQ1AgLcQKEuDfIrIsTVHpK6g+JX4y2Ye79YPlv1FpAC
-         3ByDmE6wXD0UUvUB+iW0BCmIbffqZT3tyz2fRMCLVhUY/ewKhUzsjV5epo8MDzuqBw
-         CdjOOtpSESgvUYMvvtYTAkIaM5+PYJo+j/kk+hMuBuPJ1c7iUP1eax4DvWUlQOT80S
-         3YrhS2Hc3sIWa89DphreV/Fxd98sPl4I9/+yd4AXxHvNNSj85qKkRumBZG2Sx1M0Gz
-         GYT5OL5NEoBg0gOdPs0BZXYRZbdgfqvuRCN/1RhJJojXlI1biz4+MggxaHgF6ocgX9
-         vITY58C3GJrEA==
+In-Reply-To: <25cb2d5b-0d87-8a22-a881-a5b6e46307ec@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEwLTAxIGF0IDEwOjMwICswMDAwLCBIZW5yaWsgQmpvZXJubHVuZCB3cm90
-ZToNCj4gVGhpcyBpcyB0aGUgaW1wbGVtZW50YXRpb24gb2YgQ0ZNIG5ldGxpbmsgY29uZmlndXJh
-dGlvbg0KPiBhbmQgc3RhdHVzIGluZm9ybWF0aW9uIGludGVyZmFjZS4NCj4gDQo+IEFkZCBuZXcg
-bmVzdGVkIG5ldGxpbmsgYXR0cmlidXRlcy4gVGhlc2UgYXR0cmlidXRlcyBhcmUgdXNlZCBieSB0
-aGUNCj4gdXNlciBzcGFjZSB0byBjcmVhdGUvZGVsZXRlL2NvbmZpZ3VyZSBDRk0gaW5zdGFuY2Vz
-IGFuZCBnZXQgc3RhdHVzLg0KPiBBbHNvIHRoZXkgYXJlIHVzZWQgYnkgdGhlIGtlcm5lbCB0byBu
-b3RpZnkgdGhlIHVzZXIgc3BhY2Ugd2hlbiBjaGFuZ2VzDQo+IGluIGFueSBzdGF0dXMgaGFwcGVu
-cy4NCj4gDQo+IFNFVExJTks6DQo+ICAgICBJRkxBX0JSSURHRV9DRk06DQo+ICAgICAgICAgSW5k
-aWNhdGUgdGhhdCB0aGUgZm9sbG93aW5nIGF0dHJpYnV0ZXMgYXJlIENGTS4NCj4gDQo+ICAgICBJ
-RkxBX0JSSURHRV9DRk1fTUVQX0NSRUFURToNCj4gICAgICAgICBUaGlzIGluZGljYXRlIHRoYXQg
-YSBNRVAgaW5zdGFuY2UgbXVzdCBiZSBjcmVhdGVkLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX01F
-UF9ERUxFVEU6DQo+ICAgICAgICAgVGhpcyBpbmRpY2F0ZSB0aGF0IGEgTUVQIGluc3RhbmNlIG11
-c3QgYmUgZGVsZXRlZC4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9NRVBfQ09ORklHOg0KPiAgICAg
-ICAgIFRoaXMgaW5kaWNhdGUgdGhhdCBhIE1FUCBpbnN0YW5jZSBtdXN0IGJlIGNvbmZpZ3VyZWQu
-DQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfQ09ORklHOg0KPiAgICAgICAgIFRoaXMgaW5kaWNh
-dGUgdGhhdCBhIE1FUCBpbnN0YW5jZSBDb250aW51aXR5IENoZWNrIChDQykNCj4gICAgICAgICBm
-dW5jdGlvbmFsaXR5IG11c3QgYmUgY29uZmlndXJlZC4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9D
-Q19QRUVSX01FUF9BREQ6DQo+ICAgICAgICAgVGhpcyBpbmRpY2F0ZSB0aGF0IGEgQ0MgUGVlciBN
-RVAgbXVzdCBiZSBhZGRlZC4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9DQ19QRUVSX01FUF9SRU1P
-VkU6DQo+ICAgICAgICAgVGhpcyBpbmRpY2F0ZSB0aGF0IGEgQ0MgUGVlciBNRVAgbXVzdCBiZSBy
-ZW1vdmVkLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX0NDTV9UWDoNCj4gICAgICAgICBUaGlz
-IGluZGljYXRlIHRoYXQgdGhlIENDIHRyYW5zbWl0dGVkIENDTSBQRFUgbXVzdCBiZSBjb25maWd1
-cmVkLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1JESToNCj4gICAgICAgICBUaGlzIGluZGlj
-YXRlIHRoYXQgdGhlIENDIHRyYW5zbWl0dGVkIENDTSBQRFUgUkRJIG11c3QgYmUNCj4gICAgICAg
-ICBjb25maWd1cmVkLg0KPiANCj4gR0VUTElOSzoNCj4gICAgIFJlcXVlc3QgZmlsdGVyIFJURVhU
-X0ZJTFRFUl9DRk1fQ09ORklHOg0KPiAgICAgSW5kaWNhdGluZyB0aGF0IENGTSBjb25maWd1cmF0
-aW9uIGluZm9ybWF0aW9uIG11c3QgYmUgZGVsaXZlcmVkLg0KPiANCj4gICAgIElGTEFfQlJJREdF
-X0NGTToNCj4gICAgICAgICBQb2ludHMgdG8gdGhlIENGTSBpbmZvcm1hdGlvbi4NCj4gDQo+ICAg
-ICBJRkxBX0JSSURHRV9DRk1fTUVQX0NSRUFURV9JTkZPOg0KPiAgICAgICAgIFRoaXMgaW5kaWNh
-dGUgdGhhdCBNRVAgaW5zdGFuY2UgY3JlYXRlIHBhcmFtZXRlcnMgYXJlIGZvbGxvd2luZy4NCj4g
-ICAgIElGTEFfQlJJREdFX0NGTV9NRVBfQ09ORklHX0lORk86DQo+ICAgICAgICAgVGhpcyBpbmRp
-Y2F0ZSB0aGF0IE1FUCBpbnN0YW5jZSBjb25maWcgcGFyYW1ldGVycyBhcmUgZm9sbG93aW5nLg0K
-PiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX0NPTkZJR19JTkZPOg0KPiAgICAgICAgIFRoaXMgaW5k
-aWNhdGUgdGhhdCBNRVAgaW5zdGFuY2UgQ0MgZnVuY3Rpb25hbGl0eQ0KPiAgICAgICAgIHBhcmFt
-ZXRlcnMgYXJlIGZvbGxvd2luZy4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9DQ19SRElfSU5GTzoN
-Cj4gICAgICAgICBUaGlzIGluZGljYXRlIHRoYXQgQ0MgdHJhbnNtaXR0ZWQgQ0NNIFBEVSBSREkN
-Cj4gICAgICAgICBwYXJhbWV0ZXJzIGFyZSBmb2xsb3dpbmcuDQo+ICAgICBJRkxBX0JSSURHRV9D
-Rk1fQ0NfQ0NNX1RYX0lORk86DQo+ICAgICAgICAgVGhpcyBpbmRpY2F0ZSB0aGF0IENDIHRyYW5z
-bWl0dGVkIENDTSBQRFUgcGFyYW1ldGVycyBhcmUNCj4gICAgICAgICBmb2xsb3dpbmcuDQo+ICAg
-ICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9NRVBfSU5GTzoNCj4gICAgICAgICBUaGlzIGluZGlj
-YXRlIHRoYXQgdGhlIGFkZGVkIHBlZXIgTUVQIElEcyBhcmUgZm9sbG93aW5nLg0KPiANCj4gICAg
-IFJlcXVlc3QgZmlsdGVyIFJURVhUX0ZJTFRFUl9DRk1fU1RBVFVTOg0KPiAgICAgSW5kaWNhdGlu
-ZyB0aGF0IENGTSBzdGF0dXMgaW5mb3JtYXRpb24gbXVzdCBiZSBkZWxpdmVyZWQuDQo+IA0KPiAg
-ICAgSUZMQV9CUklER0VfQ0ZNOg0KPiAgICAgICAgIFBvaW50cyB0byB0aGUgQ0ZNIGluZm9ybWF0
-aW9uLg0KPiANCj4gICAgIElGTEFfQlJJREdFX0NGTV9NRVBfU1RBVFVTX0lORk86DQo+ICAgICAg
-ICAgVGhpcyBpbmRpY2F0ZSB0aGF0IHRoZSBNRVAgaW5zdGFuY2Ugc3RhdHVzIGFyZSBmb2xsb3dp
-bmcuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfSU5GTzoNCj4gICAgICAg
-ICBUaGlzIGluZGljYXRlIHRoYXQgdGhlIHBlZXIgTUVQIHN0YXR1cyBhcmUgZm9sbG93aW5nLg0K
-PiANCj4gQ0ZNIG5lc3RlZCBhdHRyaWJ1dGUgaGFzIHRoZSBmb2xsb3dpbmcgYXR0cmlidXRlcyBp
-biBuZXh0IGxldmVsLg0KPiANCj4gU0VUTElOSyBhbmQgR0VUTElOSyBSVEVYVF9GSUxURVJfQ0ZN
-X0NPTkZJRzoNCj4gICAgIElGTEFfQlJJREdFX0NGTV9NRVBfQ1JFQVRFX0lOU1RBTkNFOg0KPiAg
-ICAgICAgIFRoZSBjcmVhdGVkIE1FUCBpbnN0YW5jZSBudW1iZXIuDQo+ICAgICAgICAgVGhlIHR5
-cGUgaXMgdTMyLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX01FUF9DUkVBVEVfRE9NQUlOOg0KPiAg
-ICAgICAgIFRoZSBjcmVhdGVkIE1FUCBkb21haW4uDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTMy
-IChicl9jZm1fZG9tYWluKS4NCj4gICAgICAgICBJdCBtdXN0IGJlIEJSX0NGTV9QT1JULg0KPiAg
-ICAgICAgIFRoaXMgbWVhbnMgdGhhdCBDRk0gZnJhbWVzIGFyZSB0cmFuc21pdHRlZCBhbmQgcmVj
-ZWl2ZWQNCj4gICAgICAgICBkaXJlY3RseSBvbiB0aGUgcG9ydCAtIHVudGFnZ2VkLiBOb3QgaW4g
-YSBWTEFOLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX01FUF9DUkVBVEVfRElSRUNUSU9OOg0KPiAg
-ICAgICAgIFRoZSBjcmVhdGVkIE1FUCBkaXJlY3Rpb24uDQo+ICAgICAgICAgVGhlIHR5cGUgaXMg
-dTMyIChicl9jZm1fbWVwX2RpcmVjdGlvbikuDQo+ICAgICAgICAgSXQgbXVzdCBiZSBCUl9DRk1f
-TUVQX0RJUkVDVElPTl9ET1dOLg0KPiAgICAgICAgIFRoaXMgbWVhbnMgdGhhdCBDRk0gZnJhbWVz
-IGFyZSB0cmFuc21pdHRlZCBhbmQgcmVjZWl2ZWQgb24NCj4gICAgICAgICB0aGUgcG9ydC4gTm90
-IGluIHRoZSBicmlkZ2UuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fTUVQX0NSRUFURV9JRklOREVY
-Og0KPiAgICAgICAgIFRoZSBjcmVhdGVkIE1FUCByZXNpZGVuY2UgcG9ydCBpZmluZGV4Lg0KPiAg
-ICAgICAgIFRoZSB0eXBlIGlzIHUzMiAoaWZpbmRleCkuDQo+IA0KPiAgICAgSUZMQV9CUklER0Vf
-Q0ZNX01FUF9ERUxFVEVfSU5TVEFOQ0U6DQo+ICAgICAgICAgVGhlIGRlbGV0ZWQgTUVQIGluc3Rh
-bmNlIG51bWJlci4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIuDQo+IA0KPiAgICAgSUZMQV9C
-UklER0VfQ0ZNX01FUF9DT05GSUdfSU5TVEFOQ0U6DQo+ICAgICAgICAgVGhlIGNvbmZpZ3VyZWQg
-TUVQIGluc3RhbmNlIG51bWJlci4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIuDQo+ICAgICBJ
-RkxBX0JSSURHRV9DRk1fTUVQX0NPTkZJR19VTklDQVNUX01BQzoNCj4gICAgICAgICBUaGUgY29u
-ZmlndXJlZCBNRVAgdW5pY2FzdCBNQUMgYWRkcmVzcy4NCj4gICAgICAgICBUaGUgdHlwZSBpcyA2
-KnU4IChhcnJheSkuDQo+ICAgICAgICAgVGhpcyBpcyB1c2VkIGFzIFNNQUMgaW4gYWxsIHRyYW5z
-bWl0dGVkIENGTSBmcmFtZXMuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fTUVQX0NPTkZJR19NRExF
-VkVMOg0KPiAgICAgICAgIFRoZSBjb25maWd1cmVkIE1FUCB1bmljYXN0IE1EIGxldmVsLg0KPiAg
-ICAgICAgIFRoZSB0eXBlIGlzIHUzMi4NCj4gICAgICAgICBJdCBtdXN0IGJlIGluIHRoZSByYW5n
-ZSAxLTcuDQo+ICAgICAgICAgTm8gQ0ZNIGZyYW1lcyBhcmUgcGFzc2luZyB0aHJvdWdoIHRoaXMg
-TUVQIG9uIGxvd2VyIGxldmVscy4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9NRVBfQ09ORklHX01F
-UElEOg0KPiAgICAgICAgIFRoZSBjb25maWd1cmVkIE1FUCBJRC4NCj4gICAgICAgICBUaGUgdHlw
-ZSBpcyB1MzIuDQo+ICAgICAgICAgSXQgbXVzdCBiZSBpbiB0aGUgcmFuZ2UgMC0weDFGRkYuDQo+
-ICAgICAgICAgVGhpcyBNRVAgSUQgaXMgaW5zZXJ0ZWQgaW4gYW55IHRyYW5zbWl0dGVkIENDTSBm
-cmFtZS4NCj4gDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfQ09ORklHX0lOU1RBTkNFOg0KPiAg
-ICAgICAgIFRoZSBjb25maWd1cmVkIE1FUCBpbnN0YW5jZSBudW1iZXIuDQo+ICAgICAgICAgVGhl
-IHR5cGUgaXMgdTMyLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX0NPTkZJR19FTkFCTEU6DQo+
-ICAgICAgICAgVGhlIENvbnRpbnVpdHkgQ2hlY2sgKENDKSBmdW5jdGlvbmFsaXR5IGlzIGVuYWJs
-ZWQgb3IgZGlzYWJsZWQuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTMyIChib29sKS4NCj4gICAg
-IElGTEFfQlJJREdFX0NGTV9DQ19DT05GSUdfRVhQX0lOVEVSVkFMOg0KPiAgICAgICAgIFRoZSBD
-QyBleHBlY3RlZCByZWNlaXZlIGludGVydmFsIG9mIENDTSBmcmFtZXMuDQo+ICAgICAgICAgVGhl
-IHR5cGUgaXMgdTMyIChicl9jZm1fY2NtX2ludGVydmFsKS4NCj4gICAgICAgICBUaGlzIGlzIGFs
-c28gdGhlIHRyYW5zbWlzc2lvbiBpbnRlcnZhbCBvZiBDQ00gZnJhbWVzIHdoZW4gZW5hYmxlZC4N
-Cj4gICAgIElGTEFfQlJJREdFX0NGTV9DQ19DT05GSUdfRVhQX01BSUQ6DQo+ICAgICAgICAgVGhl
-IENDIGV4cGVjdGVkIHJlY2VpdmUgTUFJRCBpbiBDQ00gZnJhbWVzLg0KPiAgICAgICAgIFRoZSB0
-eXBlIGlzIENGTV9NQUlEX0xFTkdUSCp1OC4NCj4gICAgICAgICBUaGlzIGlzIE1BSUQgaXMgYWxz
-byBpbnNlcnRlZCBpbiB0cmFuc21pdHRlZCBDQ00gZnJhbWVzLg0KPiANCj4gICAgIElGTEFfQlJJ
-REdFX0NGTV9DQ19QRUVSX01FUF9JTlNUQU5DRToNCj4gICAgICAgICBUaGUgY29uZmlndXJlZCBN
-RVAgaW5zdGFuY2UgbnVtYmVyLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMi4NCj4gICAgIElG
-TEFfQlJJREdFX0NGTV9DQ19QRUVSX01FUElEOg0KPiAgICAgICAgIFRoZSBDQyBQZWVyIE1FUCBJ
-RCBhZGRlZC4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIuDQo+ICAgICAgICAgV2hlbiBhIFBl
-ZXIgTUVQIElEIGlzIGFkZGVkIGFuZCBDQyBpcyBlbmFibGVkIGl0IGlzIGV4cGVjdGVkIHRvDQo+
-ICAgICAgICAgcmVjZWl2ZSBDQ00gZnJhbWVzIGZyb20gdGhhdCBQZWVyIE1FUC4NCj4gDQo+ICAg
-ICBJRkxBX0JSSURHRV9DRk1fQ0NfUkRJX0lOU1RBTkNFOg0KPiAgICAgICAgIFRoZSBjb25maWd1
-cmVkIE1FUCBpbnN0YW5jZSBudW1iZXIuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTMyLg0KPiAg
-ICAgSUZMQV9CUklER0VfQ0ZNX0NDX1JESV9SREk6DQo+ICAgICAgICAgVGhlIFJESSB0aGF0IGlz
-IGluc2VydGVkIGluIHRyYW5zbWl0dGVkIENDTSBQRFUuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMg
-dTMyIChib29sKS4NCj4gDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfQ0NNX1RYX0lOU1RBTkNF
-Og0KPiAgICAgICAgIFRoZSBjb25maWd1cmVkIE1FUCBpbnN0YW5jZSBudW1iZXIuDQo+ICAgICAg
-ICAgVGhlIHR5cGUgaXMgdTMyLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX0NDTV9UWF9ETUFD
-Og0KPiAgICAgICAgIFRoZSB0cmFuc21pdHRlZCBDQ00gZnJhbWUgZGVzdGluYXRpb24gTUFDIGFk
-ZHJlc3MuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgNip1OCAoYXJyYXkpLg0KPiAgICAgICAgIFRo
-aXMgaXMgdXNlZCBhcyBETUFDIGluIGFsbCB0cmFuc21pdHRlZCBDRk0gZnJhbWVzLg0KPiAgICAg
-SUZMQV9CUklER0VfQ0ZNX0NDX0NDTV9UWF9TRVFfTk9fVVBEQVRFOg0KPiAgICAgICAgIFRoZSB0
-cmFuc21pdHRlZCBDQ00gZnJhbWUgdXBkYXRlIChpbmNyZW1lbnQpIG9mIHNlcXVlbmNlDQo+ICAg
-ICAgICAgbnVtYmVyIGlzIGVuYWJsZWQgb3IgZGlzYWJsZWQuDQo+ICAgICAgICAgVGhlIHR5cGUg
-aXMgdTMyIChib29sKS4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9DQ19DQ01fVFhfUEVSSU9EOg0K
-PiAgICAgICAgIFRoZSBwZXJpb2Qgb2YgdGltZSB3aGVyZSBDQ00gZnJhbWUgYXJlIHRyYW5zbWl0
-dGVkLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMi4NCj4gICAgICAgICBUaGUgdGltZSBpcyBn
-aXZlbiBpbiBzZWNvbmRzLiBTRVRMSU5LIElGTEFfQlJJREdFX0NGTV9DQ19DQ01fVFgNCj4gICAg
-ICAgICBtdXN0IGJlIGRvbmUgYmVmb3JlIHRpbWVvdXQgdG8ga2VlcCB0cmFuc21pc3Npb24gYWxp
-dmUuDQo+ICAgICAgICAgV2hlbiBwZXJpb2QgaXMgemVybyBhbnkgb25nb2luZyBDQ00gZnJhbWUg
-dHJhbnNtaXNzaW9uDQo+ICAgICAgICAgd2lsbCBiZSBzdG9wcGVkLg0KPiAgICAgSUZMQV9CUklE
-R0VfQ0ZNX0NDX0NDTV9UWF9JRl9UTFY6DQo+ICAgICAgICAgVGhlIHRyYW5zbWl0dGVkIENDTSBm
-cmFtZSB1cGRhdGUgd2l0aCBJbnRlcmZhY2UgU3RhdHVzIFRMVg0KPiAgICAgICAgIGlzIGVuYWJs
-ZWQgb3IgZGlzYWJsZWQuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTMyIChib29sKS4NCj4gICAg
-IElGTEFfQlJJREdFX0NGTV9DQ19DQ01fVFhfSUZfVExWX1ZBTFVFOg0KPiAgICAgICAgIFRoZSB0
-cmFuc21pdHRlZCBJbnRlcmZhY2UgU3RhdHVzIFRMViB2YWx1ZSBmaWVsZC4NCj4gICAgICAgICBU
-aGUgdHlwZSBpcyB1OC4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9DQ19DQ01fVFhfUE9SVF9UTFY6
-DQo+ICAgICAgICAgVGhlIHRyYW5zbWl0dGVkIENDTSBmcmFtZSB1cGRhdGUgd2l0aCBQb3J0IFN0
-YXR1cyBUTFYgaXMgZW5hYmxlZA0KPiAgICAgICAgIG9yIGRpc2FibGVkLg0KPiAgICAgICAgIFRo
-ZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfQ0NNX1RYX1BP
-UlRfVExWX1ZBTFVFOg0KPiAgICAgICAgIFRoZSB0cmFuc21pdHRlZCBQb3J0IFN0YXR1cyBUTFYg
-dmFsdWUgZmllbGQuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTguDQo+IA0KPiBHRVRMSU5LIFJU
-RVhUX0ZJTFRFUl9DRk1fU1RBVFVTOg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX01FUF9TVEFUVVNf
-SU5TVEFOQ0U6DQo+ICAgICAgICAgVGhlIE1FUCBpbnN0YW5jZSBudW1iZXIgb2YgdGhlIGRlbGl2
-ZXJlZCBzdGF0dXMuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTMyLg0KPiAgICAgSUZMQV9CUklE
-R0VfQ0ZNX01FUF9TVEFUVVNfT1BDT0RFX1VORVhQX1NFRU46DQo+ICAgICAgICAgVGhlIE1FUCBp
-bnN0YW5jZSByZWNlaXZlZCBDRk0gUERVIHdpdGggdW5leHBlY3RlZCBPcGNvZGUuDQo+ICAgICAg
-ICAgVGhlIHR5cGUgaXMgdTMyIChib29sKS4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9NRVBfU1RB
-VFVTX1ZFUlNJT05fVU5FWFBfU0VFTjoNCj4gICAgICAgICBUaGUgTUVQIGluc3RhbmNlIHJlY2Vp
-dmVkIENGTSBQRFUgd2l0aCB1bmV4cGVjdGVkIHZlcnNpb24uDQo+ICAgICAgICAgVGhlIHR5cGUg
-aXMgdTMyIChib29sKS4NCj4gICAgIElGTEFfQlJJREdFX0NGTV9NRVBfU1RBVFVTX1JYX0xFVkVM
-X0xPV19TRUVOOg0KPiAgICAgICAgIFRoZSBNRVAgaW5zdGFuY2UgcmVjZWl2ZWQgQ0NNIFBEVSB3
-aXRoIE1EIGxldmVsIGxvd2VyIHRoYW4NCj4gICAgICAgICBjb25maWd1cmVkIGxldmVsLiBUaGlz
-IGZyYW1lIGlzIGRpc2NhcmRlZC4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJvb2wpLg0K
-PiANCj4gICAgIElGTEFfQlJJREdFX0NGTV9DQ19QRUVSX1NUQVRVU19JTlNUQU5DRToNCj4gICAg
-ICAgICBUaGUgTUVQIGluc3RhbmNlIG51bWJlciBvZiB0aGUgZGVsaXZlcmVkIHN0YXR1cy4NCj4g
-ICAgICAgICBUaGUgdHlwZSBpcyB1MzIuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9T
-VEFUVVNfUEVFUl9NRVBJRDoNCj4gICAgICAgICBUaGUgYWRkZWQgUGVlciBNRVAgSUQgb2YgdGhl
-IGRlbGl2ZXJlZCBzdGF0dXMuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTMyLg0KPiAgICAgSUZM
-QV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX0NDTV9ERUZFQ1Q6DQo+ICAgICAgICAgVGhlIEND
-TSBkZWZlY3Qgc3RhdHVzLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+ICAg
-ICAgICAgVHJ1ZSBtZWFucyBubyBDQ00gZnJhbWUgaXMgcmVjZWl2ZWQgZm9yIDMuMjUgaW50ZXJ2
-YWxzLg0KPiAgICAgICAgIElGTEFfQlJJREdFX0NGTV9DQ19DT05GSUdfRVhQX0lOVEVSVkFMLg0K
-PiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX1JESToNCj4gICAgICAgICBUaGUg
-bGFzdCByZWNlaXZlZCBDQ00gUERVIFJESS4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJv
-b2wpLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX1BPUlRfVExWX1ZBTFVF
-Og0KPiAgICAgICAgIFRoZSBsYXN0IHJlY2VpdmVkIENDTSBQRFUgUG9ydCBTdGF0dXMgVExWIHZh
-bHVlIGZpZWxkLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHU4Lg0KPiAgICAgSUZMQV9CUklER0Vf
-Q0ZNX0NDX1BFRVJfU1RBVFVTX0lGX1RMVl9WQUxVRToNCj4gICAgICAgICBUaGUgbGFzdCByZWNl
-aXZlZCBDQ00gUERVIEludGVyZmFjZSBTdGF0dXMgVExWIHZhbHVlIGZpZWxkLg0KPiAgICAgICAg
-IFRoZSB0eXBlIGlzIHU4Lg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX1NF
-RU46DQo+ICAgICAgICAgQSBDQ00gZnJhbWUgaGFzIGJlZW4gcmVjZWl2ZWQgZnJvbSBQZWVyIE1F
-UC4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJvb2wpLg0KPiAgICAgICAgIFRoaXMgaXMg
-Y2xlYXJlZCBhZnRlciBHRVRMSU5LIElGTEFfQlJJREdFX0NGTV9DQ19QRUVSX1NUQVRVU19JTkZP
-Lg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX1RMVl9TRUVOOg0KPiAgICAg
-ICAgIEEgQ0NNIGZyYW1lIHdpdGggVExWIGhhcyBiZWVuIHJlY2VpdmVkIGZyb20gUGVlciBNRVAu
-DQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTMyIChib29sKS4NCj4gICAgICAgICBUaGlzIGlzIGNs
-ZWFyZWQgYWZ0ZXIgR0VUTElOSyBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfSU5GTy4N
-Cj4gICAgIElGTEFfQlJJREdFX0NGTV9DQ19QRUVSX1NUQVRVU19TRVFfVU5FWFBfU0VFTjoNCj4g
-ICAgICAgICBBIENDTSBmcmFtZSB3aXRoIHVuZXhwZWN0ZWQgc2VxdWVuY2UgbnVtYmVyIGhhcyBi
-ZWVuIHJlY2VpdmVkDQo+ICAgICAgICAgZnJvbSBQZWVyIE1FUC4NCj4gICAgICAgICBUaGUgdHlw
-ZSBpcyB1MzIgKGJvb2wpLg0KPiAgICAgICAgIFdoZW4gYSBzZXF1ZW5jZSBudW1iZXIgaXMgbm90
-IG9uZSBoaWdoZXIgdGhhbiBwcmV2aW91c2x5IHJlY2VpdmVkDQo+ICAgICAgICAgdGhlbiBpdCBp
-cyB1bmV4cGVjdGVkLg0KPiAgICAgICAgIFRoaXMgaXMgY2xlYXJlZCBhZnRlciBHRVRMSU5LIElG
-TEFfQlJJREdFX0NGTV9DQ19QRUVSX1NUQVRVU19JTkZPLg0KPiANCj4gUmV2aWV3ZWQtYnk6IEhv
-cmF0aXUgVnVsdHVyICA8aG9yYXRpdS52dWx0dXJAbWljcm9jaGlwLmNvbT4NCj4gU2lnbmVkLW9m
-Zi1ieTogSGVucmlrIEJqb2Vybmx1bmQgIDxoZW5yaWsuYmpvZXJubHVuZEBtaWNyb2NoaXAuY29t
-Pg0KPiAtLS0NCj4gIGluY2x1ZGUvdWFwaS9saW51eC9pZl9icmlkZ2UuaCB8IDEyNSArKysrKysN
-Cj4gIGluY2x1ZGUvdWFwaS9saW51eC9ydG5ldGxpbmsuaCB8ICAgMiArDQo+ICBuZXQvYnJpZGdl
-L01ha2VmaWxlICAgICAgICAgICAgfCAgIDIgKy0NCj4gIG5ldC9icmlkZ2UvYnJfY2ZtLmMgICAg
-ICAgICAgICB8ICAgNSArDQo+ICBuZXQvYnJpZGdlL2JyX2NmbV9uZXRsaW5rLmMgICAgfCA3MjQg
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICBuZXQvYnJpZGdlL2JyX25ldGxp
-bmsuYyAgICAgICAgfCAgNjcgKystDQo+ICBuZXQvYnJpZGdlL2JyX3ByaXZhdGUuaCAgICAgICAg
-fCAgMzEgKysNCj4gIDcgZmlsZXMgY2hhbmdlZCwgOTQwIGluc2VydGlvbnMoKyksIDE2IGRlbGV0
-aW9ucygtKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IG5ldC9icmlkZ2UvYnJfY2ZtX25ldGxpbmsu
-Yw0KPiANCg0KSGkgSGVucmlrLA0KVGhpcyBwYXRjaCBkZWZpbml0ZWx5IGNhbiBiZSBicm9rZW4g
-aW50byBhIGZldyBzbWFsbGVyIG9uZXMgdGhhdCBhZGQgc3VwcG9ydCBmb3INCmNvbmZpZ3VyaW5n
-L2R1bXBpbmcgZGlmZmVyZW50IGNmbSBwYXJ0cy4NCg0KQWxzbywgYW5kIG1vcmUgaW1wb3J0YW50
-bHksIHRoZSBJRkxBX0FGX1NQRUMgZml4IG11c3QgZ28gdG8gLW5ldCBhcyBhIHNlcGFyYXRlDQpw
-YXRjaCBzaW5jZSB0aGUgcHJvYmxlbSBpcyB0aGVyZSBldmVuIG5vdy4gQWZ0ZXIgaXQgZ2V0cyBh
-Y2NlcHRlZCBhbmQgLW5ldCBpcw0KbWVyZ2VkIGludG8gbmV0LW5leHQgeW91IGNhbiByZWJhc2Ug
-b24gdG9wIG9mIGl0Lg0KDQpUaGFua3MsDQogTmlrDQoNCg0K
+
+
+On 10/6/20 3:39 PM, Lukasz Luba wrote:
+> Hi Michael,
+> 
+> On 8/25/20 10:29 AM, Michael Kao wrote:
+>> On Wed, 2020-04-29 at 21:24 +0100, Lukasz Luba wrote:
+>>>
+>>> On 4/29/20 11:39 AM, Michael Kao wrote:
+>>>> On Fri, 2020-04-24 at 10:22 +0100, Lukasz Luba wrote:
+>>>>> Hi Michael,
+>>>>>
+>>>>> On 4/24/20 8:16 AM, Michael Kao wrote:
+>>>>>> The upper and lower limits of thermal throttle state in the
+>>>>>> device tree do not apply to the power_allocate governor.
+>>>>>> Add the upper and lower limits to the power_allocate governor.
+>>>>>>
+>>>>>> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+>>>>>> ---
+>>>>>>     drivers/thermal/thermal_core.c | 2 +-
+>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/thermal/thermal_core.c 
+>>>>>> b/drivers/thermal/thermal_core.c
+>>>>>> index 9a321dc548c8..f6feed2265bd 100644
+>>>>>> --- a/drivers/thermal/thermal_core.c
+>>>>>> +++ b/drivers/thermal/thermal_core.c
+>>>>>> @@ -598,7 +598,7 @@ int power_actor_set_power(struct 
+>>>>>> thermal_cooling_device *cdev,
+>>>>>>         if (ret)
+>>>>>>             return ret;
+>>>>>> -    instance->target = state;
+>>>>>> +    instance->target = clamp_val(state, instance->lower, 
+>>>>>> instance->upper);
+>>>>>>         mutex_lock(&cdev->lock);
+>>>>>>         cdev->updated = false;
+>>>>>>         mutex_unlock(&cdev->lock);
+>>>>>>
+>>>>>
+>>>>> Thank you for the patch and having to look at it. I have some concerns
+>>>>> with this approach. Let's analyze it further.
+>>>>>
+>>>>> In default the cooling devices in the thermal zone which is used by 
+>>>>> IPA
+>>>>> do not have this 'lower' and 'upper' limits. They are set to
+>>>>> THERMAL_NO_LIMIT in DT to give full control to IPA over the states.
+>>>>>
+>>>>> This the function 'power_actor_set_power' actually translates granted
+>>>>> power to the state that device will run for the next period.
+>>>>> The IPA algorithm has already split the power budget.
+>>>>> Now what happen when the 'lower' value will change the state to a 
+>>>>> state
+>>>>> which consumes more power than was calculated in the IPA alg... It 
+>>>>> will
+>>>>> became unstable.
+>>>>>
+>>>>> I would rather see a change which uses these 'lower' and 'upper' 
+>>>>> limits
+>>>>> before the IPA do the calculation of the power budget. But this wasn't
+>>>>> a requirement and we assumed that IPA has full control over the 
+>>>>> cooling
+>>>>> device (which I described above with this DT THERMAL_NO_LIMIT).
+>>>>>
+>>>>> Is there a problem with your platform that it has to provide some
+>>>>> minimal performance, so you tried to introduce this clamping?
+>>>>>
+>>>>> Regards,
+>>>>> Lukasz
+>>>>
+>>>>
+>>>> Hi Lukasz,
+>>>>
+>>>> I refer to the documentation settings of the thermal device tree
+>>>> (Documentation / devicetree / bindings / thermal / thermal.txt).
+>>>>
+>>>> It shows that cooling-device is a mandatory property, so max/min 
+>>>> cooling
+>>>> state should be able to support in framework point of view.
+>>>> Otherwise, the limitation should be added in binding document.
+>>>>
+>>>> Different hardware mechanisms have different heat dissipation
+>>>> capabilities.
+>>>> Limiting the input heat source can slow down the heat accumulation and
+>>>> temperature burst.
+>>>> We want to reduce the accumulation of heat at high temperature by
+>>>> limiting the minimum gear of thermal throttle.
+>>>
+>>> I agree that these 'lower' and 'upper' limits shouldn't be just
+>>> ignored as is currently. This patch clamps the value at late stage,
+>>> though.
+>>>
+>>> Let me have a look how it could be taken into account in the early
+>>> stage, before the power calculation and split are done. Maybe there
+>>> is a clean way to inject this.
+>>>
+>>> Regards,
+>>> Lukasz
+>> Hi Lukasz,
+>>
+>> After the research, do you have any ideas or suggestions?
+>>
+>> Best Regards,
+>> Michael
+>>
+> 
+> My apologies for the delay. I have done some experiments.
+> Could you resend the patch, please make sure it is not encoded in base64
+> like this one.
+> 
+> I am going to take your patch together with some other changes.
+> 
+> Regards,
+> Lukasz
+
+Please change also the commit message to something like:
+
+thermal: core: add upper and lower limits to power_actor_set_power
+
+The upper and lower limits of thermal throttle state in the
+DT do not apply to the Intelligent Power Allocation (IPA) governor.
+Add the clamping for cooling device upper and lower limits in the
+power_actor_set_power() used by IPA.
+
+Regards,
+Lukasz
+
+
+
