@@ -2,123 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428BF2848E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D382848EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgJFI6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFI6e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:58:34 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23800C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 01:58:34 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so7635040pgl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 01:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=vkRHJyGChLkKIQ9Yu0q2nBBAktc3uVt2UFwIZhntbIA=;
-        b=XnapKJdsdd0e28QirBbJ6AkfPrr2NtzaHAoTQPckffkrNaBZVoO+Pw0oI/6ifM3cLC
-         L1sygGE4sACX8961MqEFbvdzUsMbPH0P2ySyFrphcJJALAF7VEyk7FbLAD1kC/mOhbBQ
-         U1VZrEc5WSBn466WfaoBJOtONn/Zdyn9/Z+oadaZRYXaVQB+COUq8/Qlhf7ETFK0ENNc
-         XuZEY9PxhsmZyC2kVzkLWccWiZxUhTYq1Wom/CBPs+62OoBb4BJKiMwBJyund335DhT5
-         BluabXVii28wtQ9YVWVpoeVGWxC6qFMPFaJgN/Vcugsi2LNPpZ/BF1t+3yNf9qnXwo0+
-         p4RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=vkRHJyGChLkKIQ9Yu0q2nBBAktc3uVt2UFwIZhntbIA=;
-        b=BVAR569JAhCNQqCTq2j6ejOyjZToFrS5UYNxUXmvxAsi2KT49IKK9hD0m9x/d6B1Cw
-         923v8+j2GrfLlkwEJ3rQl0mT+h6z2k9ib96h//Lhs5/vyEDwL7xQEq/hOm7d5eOUzZ4A
-         2HC9/tCTDFAtfRDp2eg0sVsXp/oe5PK+OrbzQHg5AXG5p4KqeTczZsK2HBeajEhWFoHt
-         zJuByz66k8fXm4H5P1aCD/RCxFU+oGNHYaHfjEzB/rK/IGWKS76yHjtied9TUay3wGw9
-         q98ZOh4hKhInvVziD5gbpG+z2S28rYyOmxyeFVHhdEJ7HbeEUtYncNPqBgS5CUncw2m9
-         GksA==
-X-Gm-Message-State: AOAM533kqBc1x21i5J9/djBUEBKPDTqcIAdWgq4/fqc1zfVTTOSFmfGw
-        KZVoD5XVQlcKUedIYiGcH7ncIQ==
-X-Google-Smtp-Source: ABdhPJzTp/pVza4zpWwjrb0hHeZFRoopLGsa597KkVaTmVo0/IZboydkcbx5SkWWpM4CtTYCUPLq3Q==
-X-Received: by 2002:a62:7e94:0:b029:152:60c3:faaa with SMTP id z142-20020a627e940000b029015260c3faaamr3946593pfc.9.1601974713632;
-        Tue, 06 Oct 2020 01:58:33 -0700 (PDT)
-Received: from debian ([122.174.189.32])
-        by smtp.gmail.com with ESMTPSA id i7sm2622829pfo.208.2020.10.06.01.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 01:58:33 -0700 (PDT)
-Message-ID: <862a8f5622f5fd44064347d8ef437806989a310f.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.8 00/85] 5.8.14-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Date:   Tue, 06 Oct 2020 14:28:28 +0530
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        id S1725970AbgJFJAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:00:15 -0400
+Received: from ozlabs.org ([203.11.71.1]:34613 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJFJAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:00:15 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5BHm6nJYz9sT6;
+        Tue,  6 Oct 2020 20:00:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601974812;
+        bh=8CfOUIbMt8fnTJfPAaJni1imQZSSTLb8IdHxm/8lC9A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EM5mBZ22SlHV3CHVixJkaN3v3ud9mmjXLADtHfAOEvwKw7p7+DCFrTjSJQKktY2Iz
+         3v2N7Ldue/9u51p2lZ0RLyOpxeM2Gro17oot2pnj25rtDOk+pzC/ulC8TixhZZkCwG
+         AS5UWYwHwwZ5ZBODbSL69s+T4HKqb+KnhoJQf3wVXBSdRsy0Gj7ArgfU0Omj8WJ8SQ
+         Zkf+PeKurTftZGSJVbXz3axeeU3mILyI+qcQLrd9r8pGaV99ypbeQVE9jUJ7lIr9V3
+         zAn2bUdsK8gA5hVi9I9lanz2WAJm8Cs/+5dkFJqWK44J0OfxmUwBMQSCMwIJSgkPSs
+         m4jwhgVhidXPg==
+Date:   Tue, 6 Oct 2020 20:00:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>, Greg KH <greg@kroah.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the extcon tree with the drm-misc
+ tree
+Message-ID: <20201006200003.1be00223@canb.auug.org.au>
+In-Reply-To: <20200910141854.1d4b1b10@canb.auug.org.au>
+References: <20200910141854.1d4b1b10@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/HrwGoabrIGrrkf8jEjgNMeZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-05 at 17:25 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.14 release.
-> There are 85 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
-> 
-> Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	
-> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.8.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+--Sig_/HrwGoabrIGrrkf8jEjgNMeZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-hello,
+Hi all,
 
-compiled and booted 5.8.14-rc1+.
-No dmesg regression compared to 5.8.13.
+On Thu, 10 Sep 2020 14:18:54 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the extcon tree got a conflict in:
+>=20
+>   MAINTAINERS
+>=20
+> between commit:
+>=20
+>   f61249dddecc ("MAINTAINERS: Add entry for i.MX 8MQ DCSS driver")
+>=20
+> from the drm-misc tree and commit:
+>=20
+>   d0e3c25150dd ("MAINTAINERS: Add entry for NXP PTN5150A CC driver")
+>=20
+> from the extcon tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc MAINTAINERS
+> index 623c53ab5bd5,da94c9b12f1b..000000000000
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@@ -12496,14 -12430,13 +12496,21 @@@ F:	drivers/iio/gyro/fxas21002c_core.
+>   F:	drivers/iio/gyro/fxas21002c_i2c.c
+>   F:	drivers/iio/gyro/fxas21002c_spi.c
+>  =20
+>  +NXP i.MX 8MQ DCSS DRIVER
+>  +M:	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+>  +R:	Lucas Stach <l.stach@pengutronix.de>
+>  +L:	dri-devel@lists.freedesktop.org
+>  +S:	Maintained
+>  +F:	Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
+>  +F:	drivers/gpu/drm/imx/dcss/
+>  +
+> + NXP PTN5150A CC LOGIC AND EXTCON DRIVER
+> + M:	Krzysztof Kozlowski <krzk@kernel.org>
+> + L:	linux-kernel@vger.kernel.org
+> + S:	Maintained
+> + F:	Documentation/devicetree/bindings/extcon/extcon-ptn5150.yaml
+> + F:	drivers/extcon/extcon-ptn5150.c
+> +=20
+>   NXP SGTL5000 DRIVER
+>   M:	Fabio Estevam <festevam@gmail.com>
+>   L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
 
-networking (wifi): functional (ok)
-ssh : works (ok)
-rsync of a large directory over ssh : works (ok)
-git clone : functional (ok)
-web browser: works (ok)
-email: works (ok)
-wget: functional (ok).
-play audio/video files : functional (ok)
+This is now a conflict between the char-misc tree and the drm tree.
 
-Base Board Information:
-Manufacturer: ASUSTeK COMPUTER INC.
-Product Name: X507UAR
-Version: 1.0       
-Serial Number: N0CV1847MB0006040
-Asset Tag: ATN12345678901234567
-Board is a hosting board
-Board is replaceable
-Location In Chassis: MIDDLE              
-Chassis Handle: 0x0003
-Type: Motherboard
-Contained Object Handles: 0
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/HrwGoabrIGrrkf8jEjgNMeZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- 
-software engineer
-rajagiri school of engineering and technology
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98MhMACgkQAVBC80lX
+0GxtOQf/Qsg+ZvC10zGeMGUucLd6WO1c+qikncq8KpWaOiPfL+qcfJylSpDAwF26
+soTu4wodcX1Mmz5jtKURs9tF4p25YmHN5C49v+1WVLlSznSS7a1qa5SUz4KIfyNz
+PftRDbswJPE5V4L/G1TGreoK8dcsfF6/zjlBkAvHGxugfwn+1xAloWwzUIH53hiK
+RIBPF1QLF9tpRyHNlSF0nGHFrjAyW98hhqapLze1Tgv95bb1w9Tuw/2HS+FODY54
+BDE8irKOz+qBNoQ4rqsVumQQpQyB6nZnIeP6aLGH3rKey1zUCx9VJuck+OGuUCZw
+arSyIx4vrOy5irLITAtJPU8nZXWeiw==
+=EzTU
+-----END PGP SIGNATURE-----
+
+--Sig_/HrwGoabrIGrrkf8jEjgNMeZ--
