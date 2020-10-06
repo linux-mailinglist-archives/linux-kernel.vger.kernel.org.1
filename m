@@ -2,125 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D988284CAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7FF284CAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgJFNqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:46:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:47872 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFNqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:46:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B85C6143D;
-        Tue,  6 Oct 2020 06:46:31 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [10.119.48.41])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38BF03F71F;
-        Tue,  6 Oct 2020 06:46:31 -0700 (PDT)
-Subject: Re: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>
-Cc:     herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, broonie@kernel.org,
-        linux-crypto@vger.kernel.org, Will Deacon <will@kernel.org>,
-        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20201006034854.2277538-1-jeremy.linton@arm.com>
- <20201006082748.GB25305@willie-the-truck> <20201006100121.GW6642@arm.com>
- <20201006102507.GA19213@gaia> <20201006104313.GX6642@arm.com>
- <20201006123350.GB19213@gaia>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <877e948c-2903-5537-05a6-654f4753407c@arm.com>
-Date:   Tue, 6 Oct 2020 08:45:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726181AbgJFNqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:46:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57702 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725902AbgJFNql (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 09:46:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601991998;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cfRavjoFjpVYow5g6GANBDu/ddRusDzHcHdXr7NgCLc=;
+        b=O6mINS4zTY1mDFXyZNQxeno+Nln+NiTbQ3VlmNBHKseJqE7rU/nSKZTf++I93QYfMQzyZs
+        b3kw/dgMgqYPSdZ7eOzOj54tsL/4eQ8S8xXlnFfOEA6knXV1E7gs4W1Xt1aDkxmjlbrx5U
+        jc0RR10qj9sE53og3RR9sZNMCtg21ZU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-6XIYramKNHK8Y3XmZaVOaw-1; Tue, 06 Oct 2020 09:46:34 -0400
+X-MC-Unique: 6XIYramKNHK8Y3XmZaVOaw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A60F802B45;
+        Tue,  6 Oct 2020 13:46:33 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-117-72.rdu2.redhat.com [10.10.117.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B681376640;
+        Tue,  6 Oct 2020 13:46:29 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 464ED220AD7; Tue,  6 Oct 2020 09:46:29 -0400 (EDT)
+Date:   Tue, 6 Oct 2020 09:46:29 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>, vkuznets@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
+Message-ID: <20201006134629.GB5306@redhat.com>
+References: <20201001215508.GD3522@redhat.com>
+ <20201001223320.GI7474@linux.intel.com>
+ <20201002153854.GC3119@redhat.com>
+ <20201002183036.GB24460@linux.intel.com>
+ <20201002192734.GD3119@redhat.com>
+ <20201002194517.GD24460@linux.intel.com>
+ <20201002200214.GB10232@redhat.com>
+ <20201002211314.GE24460@linux.intel.com>
+ <20201005153318.GA4302@redhat.com>
+ <20201005161620.GC11938@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201006123350.GB19213@gaia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005161620.GC11938@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/6/20 7:33 AM, Catalin Marinas wrote:
-> On Tue, Oct 06, 2020 at 11:43:14AM +0100, Dave P Martin wrote:
->> On Tue, Oct 06, 2020 at 11:25:11AM +0100, Catalin Marinas wrote:
->>> On Tue, Oct 06, 2020 at 11:01:21AM +0100, Dave P Martin wrote:
->>>> On Tue, Oct 06, 2020 at 09:27:48AM +0100, Will Deacon wrote:
->>>>> On Mon, Oct 05, 2020 at 10:48:54PM -0500, Jeremy Linton wrote:
->>>>>> The AES code uses a 'br x7' as part of a function called by
->>>>>> a macro. That branch needs a bti_j as a target. This results
->>>>>> in a panic as seen below. Instead of trying to replace the branch
->>>>>> target with a bti_jc, lets replace the indirect branch with a
->>>>>> bl/ret, bl sequence that can target the existing bti_c.
->>>>>>
->>>>>>    Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
->>>>>>    CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
->>>>>>    pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
->>>>>>    pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
->>>>>>    lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
->>>>>>    sp : ffff80001052b730
->>>>>>
->>>>>>    aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
->>>>>>     __xts_crypt+0xb0/0x2dc [aes_neon_bs]
->>>>>>     xts_encrypt+0x28/0x3c [aes_neon_bs]
->>>>>>    crypto_skcipher_encrypt+0x50/0x84
->>>>>>    simd_skcipher_encrypt+0xc8/0xe0
->>>>>>    crypto_skcipher_encrypt+0x50/0x84
->>>>>>    test_skcipher_vec_cfg+0x224/0x5f0
->>>>>>    test_skcipher+0xbc/0x120
->>>>>>    alg_test_skcipher+0xa0/0x1b0
->>>>>>    alg_test+0x3dc/0x47c
->>>>>>    cryptomgr_test+0x38/0x60
->>>>>>
->>>>>> Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
->>>>>
->>>>> nit: the "commit" string shouldn't be here, and I think the linux-next
->>>>> scripts will yell at us if we don't remove it.
->>>>>
->>>>>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->>>>>> ---
->>>>>>   arch/arm64/crypto/aes-neonbs-core.S | 6 +++---
->>>>>>   1 file changed, 3 insertions(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
->>>>>> index b357164379f6..32f53ebe5e2c 100644
->>>>>> --- a/arch/arm64/crypto/aes-neonbs-core.S
->>>>>> +++ b/arch/arm64/crypto/aes-neonbs-core.S
->>>>>> @@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
->>>>>>   
->>>>>>   0:	mov		bskey, x21
->>>>>>   	mov		rounds, x22
->>>>>> -	br		x7
->>>>>> +	ret
->>>>
->>>> Dang, replied on an old version.
->>>
->>> Which I ignored (by default, when the kbuild test robot complains ;)).
->>>
->>>> Since this is logically a tail call, could we simply be using br x16 or
->>>> br x17 for this?
->>>>
->>>> The architecture makes special provision for that so that the compiler
->>>> can generate tail-calls.
->>>
->>> So a "br x16" is compatible with a bti_c landing pad. I think it makes
->>> more sense to keep it as a tail call.
->>
->> Just to be clear, I'm happy either way, but I thought it would make
->> sense to point this out.
+On Mon, Oct 05, 2020 at 09:16:20AM -0700, Sean Christopherson wrote:
+> On Mon, Oct 05, 2020 at 11:33:18AM -0400, Vivek Goyal wrote:
+> > On Fri, Oct 02, 2020 at 02:13:14PM -0700, Sean Christopherson wrote:
+> > Now I have few questions.
+> > 
+> > - If we exit to user space asynchronously (using kvm request), what debug
+> >   information is in there which tells user which address is bad. I admit
+> >   that even above trace does not seem to be telling me directly which
+> >   address (HVA?) is bad.
+> > 
+> >   But if I take a crash dump of guest, using above information I should
+> >   be able to get to GPA which is problematic. And looking at /proc/iomem
+> >   it should also tell which device this memory region is in.
+> > 
+> >   Also using this crash dump one should be able to walk through virtiofs data
+> >   structures and figure out which file and what offset with-in file does
+> >   it belong to. Now one can look at filesystem on host and see file got
+> >   truncated and it will become obvious it can't be faulted in. And then
+> >   one can continue to debug that how did we arrive here.
+> > 
+> > But if we don't exit to user space synchronously, Only relevant
+> > information we seem to have is -EFAULT. Apart from that, how does one
+> > figure out what address is bad, or who tried to access it. Or which
+> > file/offset does it belong to etc.
+> >
+> > I agree that problem is not necessarily in guest code. But by exiting
+> > synchronously, it gives enough information that one can use crash
+> > dump to get to bottom of the issue. If we exit to user space
+> > asynchronously, all this information will be lost and it might make
+> > it very hard to figure out (if not impossible), what's going on.
 > 
-> I'd prefer the replacement with a br x16/17, it keeps the code pretty
-> much unchanged.
+> If we want userspace to be able to do something useful, KVM should explicitly
+> inform userspace about the error, userspace shouldn't simply assume that
+> -EFAULT means a HVA->PFN lookup failed.
+
+I guess that's fine. But for this patch, user space is not doing anything.
+Its just printing error -EFAULT and dumping guest state (Same as we do
+in case of synchronous fault).
+
+> Userspace also shouldn't have to
+> query guest state to handle the error, as that won't work for protected guests
+> guests like SEV-ES and TDX.
+
+So qemu would not be able to dump vcpu register state when kvm returns
+with -EFAULT for the case of SEV-ES and TDX?
+
 > 
-> Jeremy, could you please respin this patch and give it a try?
+> I can think of two options:
+> 
+>   1. Send a signal, a la kvm_send_hwpoison_signal().
 
-Sounds like a plan.
+This works because -EHWPOISON is a special kind of error which is
+different from -EFAULT. For truncation, even kvm gets -EFAULT.
 
-I'm probably going to change the subject again, guess I will put a v3 on 
-it too. :)
+        if (vm_fault & (VM_FAULT_HWPOISON | VM_FAULT_HWPOISON_LARGE))
+                return (foll_flags & FOLL_HWPOISON) ? -EHWPOISON : -EFAULT;
+        if (vm_fault & (VM_FAULT_SIGBUS | VM_FAULT_SIGSEGV))
+                return -EFAULT;
 
+Anyway, if -EFAULT is too generic, and we need something finer grained,
+that can be looked into when we actually have a method where kvm/qemu
+injects error into guest.
 
+> 
+>   2. Add a userspace exit reason along with a new entry in the run struct,
+>      e.g. that provides the bad GPA, HVA, possibly permissions, etc...
+
+This sounds more reasonable to me. That is kvm gives additional
+information to qemu about failing HVA and GPA with -EFAULT and that
+can be helpful in debugging a problem. This seems like an extension
+of KVM API.
+
+Even with this, if we want to figure out which file got truncated, we
+will need to take a dump of guest and try to figure out which file
+this GPA is currently mapping(By looking at virtiofs data structures).
+And that becomes little easier if vcpu is running the task which 
+accessed that GPA. Anyway, if we have failing GPA, I think it should
+be possible to figure out inode even without accessing task being
+current on vcpu.
+
+So we seem to have 3 options.
+
+A. Just exit to user space with -EFAULT (using kvm request) and don't
+   wait for the accessing task to run on vcpu again. 
+
+B. Store error gfn in an hash and exit to user space when task accessing
+   gfn runs again.
+
+C. Extend KVM API and report failing HVA/GFN access by guest. And that
+   should allow not having to exit to user space synchronously.
+
+Thanks
+Vivek
 
