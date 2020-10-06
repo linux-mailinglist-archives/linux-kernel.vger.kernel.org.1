@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8762B28497F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457352849A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJFJnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:43:09 -0400
-Received: from mout.gmx.net ([212.227.17.20]:51189 "EHLO mout.gmx.net"
+        id S1726013AbgJFJut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:50:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725962AbgJFJnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:43:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601977381;
-        bh=MRG/DidZTMAP3s/IKygvp2ugxJn5R6bJa+RqDMprr3A=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=RJNbDXt2g4hh29Zl7x8j5rFscE1YFwWtvw53aiaHjw7P+lC/cmJu0Kc1/SMgBg5ie
-         WLLlspcuHC6fTZhryPL1rpJuRZq+axnMm9qizK+6dW6boXvYV9rtvl/UjaOxXODjIY
-         3d3lgrk5l9p8T0Ze5g5YGDuz7lZNru34hbUoHPIc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ts7.local ([91.8.173.95]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MbAci-1kwrOO3hzk-00bXEk; Tue, 06
- Oct 2020 11:43:00 +0200
-From:   Thomas Schmitt <scdbackup@gmx.net>
-To:     linux-scsi@vger.kernel.org
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, Thomas Schmitt <scdbackup@gmx.net>
-Subject: [PATCH v2 2/2] sr: fix automatic tray loading for data reading
-Date:   Tue,  6 Oct 2020 11:40:26 +0200
-Message-Id: <20201006094026.1730-3-scdbackup@gmx.net>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201006094026.1730-1-scdbackup@gmx.net>
-References: <20201006094026.1730-1-scdbackup@gmx.net>
+        id S1725939AbgJFJut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:50:49 -0400
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 914852080A;
+        Tue,  6 Oct 2020 09:50:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601977848;
+        bh=PeSuqk/VTDEBoJqvvMEQqoW1Xu2MaaV6ZO1NmFYY/kw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NEMirvyv6rsJ5s455o1dpjT1Vjx+M2kXvbXTeVrHWhjFRAvhXB3uxg9F+40YqOQlJ
+         xXBNGuieCh82T2WSNKT7Svuu4U6KyQCI/rzPdd10RdyCQcgxm4I7y85L/wEdpKJVo+
+         qI+jJeETZMN1hsbWgzRvxLVTADUqzqbCqPr5bg8g=
+Received: by mail-oi1-f174.google.com with SMTP id m128so11976720oig.7;
+        Tue, 06 Oct 2020 02:50:48 -0700 (PDT)
+X-Gm-Message-State: AOAM531GzzmZm7MS3tKzsrB+qc6fiOekSkOhF42RcOOaTmaFBbRnuuKn
+        Yjgdfv0QqfD7hi2x44E5VESiuAocDWsrwXnyPc0=
+X-Google-Smtp-Source: ABdhPJxBEeiiBphMyrQIZMyEkkAqAtMZ88OEGyAIKH5mqqzSYj9oMaI+RhIeIxd8TdMqbKl+i3qDOQZdwB+1ZCXT2OI=
+X-Received: by 2002:a05:6808:8e5:: with SMTP id d5mr2231046oic.33.1601977847799;
+ Tue, 06 Oct 2020 02:50:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:l6ieuFgGsYKG0hE/t+kPEvA27KMQa7HUegLkrn6XgsyAYX3WwjC
- DhexRajTu/N89hanWQRi0GRynj8P0alW0hVBwrdWS+AMITo8iAu7tj1gVvYHz/UyqN+uBTi
- sYUYJsakyq2l2yzOSZX3kBku7+CrTzrxHh0iElUNUJHzSshBIvTII6X6uyX5d+Me6i/90ww
- 3m5qmAs6TmvMplmrGe8Mw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RYa96kB+0ww=:w/pmmUVibN6OGtyT+mpzkK
- uML4P15EonK3MCzgl5GcAgkiP98lMqCcchlxNSZVlOv5d0byxJqlLRTHoV5Ej0fMsPooNistW
- b1w9wCTQKAvD+lfzwz5ZbszjbVe+HRI2Ant1ao2EqsS0Lvjv4f1Y2Zzb8Rqbqsg9TSROWweDS
- gUGP4iMBuJ1rI3Y6CAVjtj+8cp5NgXC/L3ptNqtFOc8yz36gikT0roI0jLq8qnnyZ3cOi6mFx
- Y8k39ipnyLSiyyDsZny1BpMaOyKkL7GhiR2naU9qbWmZMPLjRcfApAA2GkHswNHkk7mN5IQ9G
- 0ePgjx9mIUZA/GquUUvRABd4w9MvVHGBhg8IB9iblbu+vaEruOE2bOVcp5L8xsOYHuf+3hjxY
- 2RkcOTjjE/4rKOYcC7xFj81n31gRo5O8DEkEa8iVxOXWfVJDr++pw/D/t2s3zQiH+LcPyc5S2
- 99QoX/kDc7D7uyIJF8FmhgGaswDiix4UY8jSqoyiDZUU49VXalDWXnux4BcynYQ1cF4biNKFx
- Q68vffQ7aW/6i0gN5muXfMsUcDVDoAJ4J8PyBThZnzuPdRaoJiahF5g2i43OjMkI8IbHdhTP3
- N7+mRlv/1sJ2Tk4NOa9i6y1Ao2kdK/tHK+CYo/vtiHdjZI13K6BaB72JXT2b/r97IcExDS8oc
- Z8ajzlTaIbVspRwyKizK7mdGOzsP2FLYCkd33iLWWJljun7NKmLR09A18KVbGUDzT3QIR7HtN
- MMP1MjIpPwOyUzYF7dF6BCO8eXHaWOjmPWvHD4V5FJWGB9H0rHTDckI4BwOKn75oD24IkVx5h
- HdByxZH/1IRtIaZi7q2aMIY1uWCfWZp2/662YSJgW+3xE1yggtHqkmzUcZ1rjB59+y8eeKr48
- SuGS6mN1h9qsBf+p9rXDodUZo6G3VJMrUv0RddpAW74YW4HxVuaLBVfQBSKsDBt2mgZX/LKJ/
- vAx3sHz2Z9Mvg+YS+g0+HLj5Ap8DB02UjoajrkbeVvLruKMDedLGeLMdWIdq9bzRhlPQuUskQ
- uJyYXflWjuQ0jk5JNq88cSmdIcERD9ljOedQx8YOGh1sIUavmz0KoJMAsrFlwXYmEdgmlbvDI
- JNeeYQa+QEaDtISWUCIjr1zy0hcVfNvxcgVgrs/ojxQC+8B8CdXezFhwFTNMjjuZu65JbO0a7
- YOqhQIt5sTzSoVcmYKXQG1j9wHf6zs2CNPxspZyoQfxn7Ih6JuJjcDlX82fQs465HSxIhiqrt
- b9js8tcDChVQGh0d49H/H5oAgBhJeiz0Mp/mcvw==
+References: <20201005181804.1331237-1-jeremy.linton@arm.com>
+ <CAMj1kXEkrRvp5Xd_+D_V7Nr1uiKnfAEdZU4kciC5R7_H8aRNZA@mail.gmail.com>
+ <c7959ca7-5212-0dfb-2ebc-6247083d356b@arm.com> <20201006093817.GV6642@arm.com>
+In-Reply-To: <20201006093817.GV6642@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 6 Oct 2020 11:50:36 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFQYeiwouX7uWHp29QRySkOU6XnP7tdvXseDhYqJEOUeg@mail.gmail.com>
+Message-ID: <CAMj1kXFQYeiwouX7uWHp29QRySkOU6XnP7tdvXseDhYqJEOUeg@mail.gmail.com>
+Subject: Re: [BUG][PATCH] arm64: bti: fix BTI to handle local indirect branches
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If
-  open("/dev/sr0", O_RDONLY);
-pulls in the tray of an optical drive, it immediately returns -1 with
-errno ENOMEDIUM or the first read(2) fails with EIO. Later, when the drive
-has stopped blinking, another open() yields success and read() works.
-This affects not only userland reading of the device file but also
-mounting the device.
-The reason is that medium assessment happens before automatic tray
-loading.
+On Tue, 6 Oct 2020 at 11:38, Dave Martin <Dave.Martin@arm.com> wrote:
+>
+> On Mon, Oct 05, 2020 at 02:24:47PM -0500, Jeremy Linton wrote:
+> > Hi,
+> >
+> > On 10/5/20 1:54 PM, Ard Biesheuvel wrote:
+> > >On Mon, 5 Oct 2020 at 20:18, Jeremy Linton <jeremy.linton@arm.com> wrote:
+> > >>
+> > >>The AES code uses a 'br x7' as part of a function called by
+> > >>a macro, that ends up needing a BTI_J as a target.
+> > >
+> > >Could we instead just drop the tail call, i.e, replace it with a ret
+> > >and do a 'bl' after it returns? The indirect call does not really
+> > >serve a purpose here anyway
+> >
+> > Yes, that is an option, it adds an extra ret. Which probably doesn't mean
+> > much in most cases. I assumed this code was optimized this way because it
+> > mattered somewhere.
+>
+> Since this really does seem to be a tail-call and since x16 and x17
+> appear to be otherwise unused here, can we not just use x16 or x17
+> instead of x7?
+>
+> This relies on there being no other calls to veneered functions in the
+> mix, but this code is all in a single section so that shouldn't be a
+> concern.
+>
+> Due to the magic status of x16 and x17 in br instructions, the resulting
+> jump should be compatible with BTI c.  I think this matches how the
+> compiler should typically compile tail-calls.
+>
 
-Use the new function cdrom_handle_open_tray() for deciding and performing
-tray loading before doing medium assessment.
-
-Signed-off-by: Thomas Schmitt <scdbackup@gmx.net>
-=2D--
- drivers/scsi/sr.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 2b43c0f97442..1c3806f59865 100644
-=2D-- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -540,12 +540,18 @@ static int sr_block_open(struct block_device *bdev, =
-fmode_t mode)
-
- 	sdev =3D cd->device;
- 	scsi_autopm_get_device(sdev);
--	if (bdev_check_media_change(bdev))
--		sr_revalidate_disk(cd);
-
- 	mutex_lock(&cd->lock);
--	ret =3D cdrom_open(&cd->cdi, bdev, mode);
-+	ret =3D cdrom_handle_open_tray(&cd->cdi, mode, 0);
- 	mutex_unlock(&cd->lock);
-+	if (!ret) {
-+		if (bdev_check_media_change(bdev))
-+			sr_revalidate_disk(cd);
-+
-+		mutex_lock(&cd->lock);
-+		ret =3D cdrom_open(&cd->cdi, bdev, mode);
-+		mutex_unlock(&cd->lock);
-+	}
-
- 	scsi_autopm_put_device(sdev);
- 	if (ret)
-=2D-
-2.20.1
-
+Ah, excellent point. That is definitely the cleanest fix.
