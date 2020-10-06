@@ -2,124 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5447B2845CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B575C2845DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgJFGFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgJFGFj (ORCPT
+        id S1727023AbgJFGOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:14:14 -0400
+Received: from pb-smtp2.pobox.com ([64.147.108.71]:54676 "EHLO
+        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgJFGOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:05:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1A2C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:05:39 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kPg6L-0000oO-Ed; Tue, 06 Oct 2020 08:05:29 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kPg6K-0008VL-6x; Tue, 06 Oct 2020 08:05:28 +0200
-Date:   Tue, 6 Oct 2020 08:05:28 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] i2c: imx: Fix reset of I2SR_IAL flag
-Message-ID: <20201006060528.drh2yoo2dklyntez@pengutronix.de>
-References: <20201002152305.4963-1-ceggers@arri.de>
- <20201002152305.4963-2-ceggers@arri.de>
+        Tue, 6 Oct 2020 02:14:14 -0400
+X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 02:14:12 EDT
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 14A8B7EAEC;
+        Tue,  6 Oct 2020 02:08:37 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to:cc
+        :subject:references:date:in-reply-to:message-id:mime-version
+        :content-type:content-transfer-encoding; s=sasl; bh=JosSPNpjBWcb
+        KqfS+M6QynL4m+Y=; b=SRy5Ye8EoS2+BrD0ctceAn+/2pUuV+qCkn6l5/RRuKo1
+        7HpXNlsvzUmrCxtnp0gUMLeSPANB/xFQDWhUsldTY1Nh3iV7sSxG7Ku3BKmnMnWq
+        8TMYPxnYG1yOujKWBxaDiIEcXPdoyLzIg9RMAaTPFWr6zYi7rWI0WMv4HUzfkLM=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:cc
+        :subject:references:date:in-reply-to:message-id:mime-version
+        :content-type:content-transfer-encoding; q=dns; s=sasl; b=kHo57j
+        rnA8Tk65fVXe5JMGpHEHwz15lHqH9C5VaB0iu/PPHXKR4J1Rp8LjlXGYFxpBpMdQ
+        RVGG+z/lSaDTPfNfw7hFSbIKcwGZdqhAqPHeR2vpuKrSYnUX7Jj5WnFjz5gUga0m
+        0jlym+OxLhjuwIZfkuhPa89Ur7BWiTeijRbBc=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 0D4157EAEA;
+        Tue,  6 Oct 2020 02:08:37 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [34.74.119.39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 885FB7EAE8;
+        Tue,  6 Oct 2020 02:08:36 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+From:   Junio C Hamano <gitster@pobox.com>
+To:     Martin =?utf-8?Q?=C3=85gren?= <martin.agren@gmail.com>
+Cc:     Git Mailing List <git@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Subject: Re: [ANNOUNCE] Git v2.29.0-rc0
+References: <xmqqa6x070tn.fsf@gitster.c.googlers.com>
+        <CAN0heSrKgNSHKDL07-BWrbF9n6fyWUZVDykdHPCD6CfwgV8QNA@mail.gmail.com>
+Date:   Mon, 05 Oct 2020 23:08:30 -0700
+In-Reply-To: <CAN0heSrKgNSHKDL07-BWrbF9n6fyWUZVDykdHPCD6CfwgV8QNA@mail.gmail.com>
+        ("Martin =?utf-8?Q?=C3=85gren=22's?= message of "Tue, 6 Oct 2020 05:57:02
+ +0200")
+Message-ID: <xmqqy2kj6g4h.fsf@gitster.c.googlers.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="beidewvdqrs5sqid"
-Content-Disposition: inline
-In-Reply-To: <20201002152305.4963-2-ceggers@arri.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+X-Pobox-Relay-ID: 5F0A4E96-079A-11EB-8A2E-74DE23BA3BAF-77302942!pb-smtp2.pobox.com
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Martin =C3=85gren <martin.agren@gmail.com> writes:
 
---beidewvdqrs5sqid
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Minor comments follow.
+> ...
+> s/used // (without 'g' flag!)
 
-On Fri, Oct 02, 2020 at 05:23:03PM +0200, Christian Eggers wrote:
-> According to the "VFxxx Controller Reference Manual" (and the comment
-> block starting at line 97), Vybrid requires writing a one for clearing
-> an interrupt flag. Syncing the method for clearing I2SR_IIF in
-> i2c_imx_isr().
->=20
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Cc: stable@vger.kernel.org
-> ---
->  drivers/i2c/busses/i2c-imx.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index 0ab5381aa012..34648df7f1a6 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -424,7 +424,12 @@ static int i2c_imx_bus_busy(struct imx_i2c_struct *i=
-2c_imx, int for_busy, bool a
-> =20
->  		/* check for arbitration lost */
->  		if (temp & I2SR_IAL) {
-> -			temp &=3D ~I2SR_IAL;
-> +			/*
-> +			 * i2sr_clr_opcode is the value to clear all interrupts.
-> +			 * Here we want to clear only I2SR_IAL, so we write
-> +			 * ~i2sr_clr_opcode with just the I2SR_IAL bit toggled.
-> +			 */
-> +			temp =3D ~i2c_imx->hwdata->i2sr_clr_opcode ^ I2SR_IAL;
->  			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
->  			return -EAGAIN;
 
-Could we please move clearing an irq to a dedicated function? Such that
-it looks like:
-
-	/* check for arbitration lost */
-	if (temp & I2SR_IAL) {
-		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
-		return -EAGAIN;
-	}
-
-Then you also don't need to duplicate the describing comment but just
-add it to the implementation of i2c_imx_clear_irq().
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---beidewvdqrs5sqid
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl98CSUACgkQwfwUeK3K
-7Am04Af+OTHNZcf5HD/6YfTPax3ijKMVsrDbdquTlavc18g1lO3D/xaDPAY5mi36
-bh/qE6BmZhlIkmUMK01v48HMbItfQsI7B+r5qVoVdH6RXzsNC9nHsoHwcyULBba4
-apXyv5v1gmySyFiyA+udRI38vv4+4NPX48YAiKIFuMl7TYzI8wFNYQmaywWVvAya
-tGy06ddMFv5Sz5gIlm0wxNZ54L1UPSdvxFtzdkWPD98liHG7hxNK0EsmAwNfherR
-0lhL9CpNcP49RSEgI6wYOEAWCc4iRWoZ1C/hGQWkL58mttTv8TaCGuzgGvjR6yC/
-+Lb/zwLwG5jqdfSEiLjMUvUTMF4JLw==
-=RlAA
------END PGP SIGNATURE-----
-
---beidewvdqrs5sqid--
+Thanks.
