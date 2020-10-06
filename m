@@ -2,302 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F232848FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D062848FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgJFJJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        id S1725977AbgJFJMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFJJG (ORCPT
+        with ESMTP id S1725912AbgJFJMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:09:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA64C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 02:09:04 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id o5so12556103wrn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:09:04 -0700 (PDT)
+        Tue, 6 Oct 2020 05:12:24 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8E0C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 02:12:22 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id ds1so1246003pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:12:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QT4sff31JFxMAWV47tsow6IkRjEC9gwI2+WJTBC/iXU=;
-        b=RxzqBtgfi4VNzqUwmnMjLczASgvxj0ZLZ6HeBQYPANTVsMxh8bzbIkhgoJtzqh7Frp
-         3lf0hkXfgZ9wWzgz7uoqM15AAZXKGIdVgQnwMRv2VoiHD9szsXW/4dKOmXZD5pqaMdSm
-         zTr/42vtFeT9vpGckN2NDpPW6fwr2urFUp0Ss=
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=iI+T0jVC0awhFlyLVkFV9k9t0yQtugtoKHCQe1uH6jQ=;
+        b=wKmmUuU5R9eGNGqNyvYvD1AwgACh+oJv3hlwhFnw/YvjBuTRwA/qjRLtcMlQNd5baB
+         A/ev7foNXQG1GXjgT3nJMtSIF80i37LmOfRtyOOWzfT+nDJ6YM3Fkzz/OswofaMS+yIO
+         yhZ2zDpcY7/kMC+SRP/PCIRhjvdsAtHPCCUIbG74iG+zk/vBqecpTkFO5JgPOGDffOvv
+         XgsK4+8vtVsP7XDlV7w2ZgozgngV6ahrXz9rq/YeT83/15KtuAgSG/4/cz7AATYm3oKA
+         MJbGcirZ8PhaET4iuWvl4vW23yUvu85KSfjVqu5dKGHYcEv23FdHNbHdwd4yA0FCPtlG
+         p1FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=QT4sff31JFxMAWV47tsow6IkRjEC9gwI2+WJTBC/iXU=;
-        b=VxJuS6LGkuHTrvqBrPjxDqLXlpGLwRAaOYzvovYBc0SkkvVQ79kpFQJayQoGeDBY7d
-         bQeHw/T6kKJPfh85S8jtZ5o4Y3NIYZQUARJvd9YUIdiqfLgNvEbWeBkfa7/N4N5vS/K+
-         Q01Td9ux0XGGcP8O7/AzSrKulCkndSznXxfGW2W5m2T1CazzdyuWPD915bwbLbNbPOjk
-         RtoV/Q17wB4sKCIiKfv18UE7/KWJIVcpEymlSlBJZ1oIP10OSGAZ0fqlbDdl2J8rdza1
-         P0fNN3NiPEtWLLV/zAsT5YN1wPhE0u0iy04kd7p6yvpGFkec68BPbsTL+JFbPql2x6a0
-         QlAA==
-X-Gm-Message-State: AOAM531uzWh2DwOLu6OQMukyBx+nNp+GoPtXndmPbVVlNwZxW55dmPt1
-        Hj4snrmKcyKOqDAiDKs4qTcIGQ==
-X-Google-Smtp-Source: ABdhPJzE2U8EydJQd2Px1Cp1VdkD+utuSVnFMnmpFQp2SOvwCJ1IfGbebwpsVnsSKbHGvG+RwViKKA==
-X-Received: by 2002:adf:cc8c:: with SMTP id p12mr3962523wrj.92.1601975342547;
-        Tue, 06 Oct 2020 02:09:02 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z15sm2362146wrq.24.2020.10.06.02.09.01
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=iI+T0jVC0awhFlyLVkFV9k9t0yQtugtoKHCQe1uH6jQ=;
+        b=es2PAQPXNhuSsdfdrUg3J7SDkVObYPgenutz7hZ+8A6qLJvETTH5nnf9qboClH045M
+         yD+fcOb/8Zt+V7WlYWkaFY+TNekEYXZtV1fNeB6P01qB0H3Ea7KrZTwLVjuUsoV9ZXPD
+         MrYcKFbTh7CI2AUn0AWm09hfUAYwiQAtdN5qLco2wo+aFBRQXCe3cWZud6RqB2AJHskC
+         TJxA82tAM0mXp0VO7orfxH4IZ2Aorn79mA6VqPgUDZ56FoB3ljScQSTFV8vDgm9GElGx
+         wMlXIb6q81boU1ykwvvlfTeYx2QFvxmg9xX5mYwMi8OyXfKbxHTk5MnId/IkKwMP2ntA
+         obtg==
+X-Gm-Message-State: AOAM530Kg+HXOah7xEm3LsOPzKHgvsGj1bMjhosBGFd9gB4zgfS4Ru1X
+        JUqDc+Mv/9s3KDgGKfuoAYdrdPIHAAqn/w==
+X-Google-Smtp-Source: ABdhPJwhZoSWoDd082no1r7ReHiODxsjE5mZb8A+LxCdLOAy4JqU+2nMmElrGuVbmsLEcNRtU0s3EQ==
+X-Received: by 2002:a17:90a:2ec8:: with SMTP id h8mr3484965pjs.173.1601975542231;
+        Tue, 06 Oct 2020 02:12:22 -0700 (PDT)
+Received: from debian ([122.174.189.32])
+        by smtp.gmail.com with ESMTPSA id d1sm2665259pfn.220.2020.10.06.02.12.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 02:09:01 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 11:08:59 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
-Message-ID: <20201006090859.GW438822@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20200930211723.3028059-1-robdclark@gmail.com>
- <20201002110105.e56qrvzoqfioi4hs@e107158-lin.cambridge.arm.com>
- <CAF6AEGvWMvZuy7CcGhzUSbwGtEkrNkzWHu_BN1cbdBJdZtvevA@mail.gmail.com>
- <20201005150024.mchfdtd62rlkuh4s@e107158-lin.cambridge.arm.com>
- <CAF6AEGs7NmCPyLdg+gg5jTTe-wgi2myRQ80tum6odv6tLLQ0DQ@mail.gmail.com>
+        Tue, 06 Oct 2020 02:12:21 -0700 (PDT)
+Message-ID: <fca6c83971bd30ee6e9e12b2d45560d0d4a1004d.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.8 00/85] 5.8.14-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 06 Oct 2020 14:42:19 +0530
+In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
+References: <20201005142114.732094228@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGs7NmCPyLdg+gg5jTTe-wgi2myRQ80tum6odv6tLLQ0DQ@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 04:24:38PM -0700, Rob Clark wrote:
-> On Mon, Oct 5, 2020 at 8:00 AM Qais Yousef <qais.yousef@arm.com> wrote:
-> >
-> > +CC Steve and Peter - they might be interested.
-> >
-> > On 10/02/20 11:07, Rob Clark wrote:
-> > > On Fri, Oct 2, 2020 at 4:01 AM Qais Yousef <qais.yousef@arm.com> wrote:
-> > > >
-> > > > On 09/30/20 14:17, Rob Clark wrote:
-> > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > >
-> > > > > The android userspace treats the display pipeline as a realtime problem.
-> > > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > > > that I found.)
-> > > > >
-> > > > > But this presents a problem with using workqueues for non-blocking
-> > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > > > preempt the worker.  Which is not really the outcome you want.. once
-> > > > > the required fences are scheduled, you want to push the atomic commit
-> > > > > down to hw ASAP.
-> > > >
-> > > > For me thees 2 properties
-> > > >
-> > > >         1. Run ASAP
-> > > >         2. Finish the work un-interrupted
-> > > >
-> > > > Scream the workers need to be SCHED_FIFO by default. CFS can't give you these
-> > > > guarantees.
-> > >
-> > > fwiw, commit_work does sleep/block for some time until fences are
-> > > signalled, but then once that happens we want it to run ASAP,
-> > > preempting lower priority SCHED_FIFO.
-> > >
-> > > >
-> > > > IMO using sched_set_fifo() for these workers is the right thing.
-> > > >
-> > >
-> > > Possibly, but we still have limited prioritization options (ie. not
-> > > enough) to set these from the kernel.  Giving userspace the control,
-> > > so it can pick sensible priorities for commit_work and vblank_work,
-> > > which fits in with the priorities of the other userspace threads seems
-> > > like the sensible thing.
-> >
-> > The problem is that the kernel can run on all types of systems. It's impossible
-> > to pick one value that fits all. Userspace must manage these priorities, and
-> > you can still export the TID to help with that.
-> >
-> > But why do you need several priorities in your pipeline? I would have thought
-> > it should execute each stage sequentially and all tasks running at the same RT
-> > priority is fine.
+On Mon, 2020-10-05 at 17:25 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.14 release.
+> There are 85 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
 > 
-> On the kernel side, vblank work should complete during the vblank
-> period, making it a harder real time requirement.  So the thinking is
-> this should be a higher priority.
+> Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
+> Anything received after that time might be too late.
 > 
-> But you are right, if you aren't overcommitted it probably doesn't matter.
+> The whole patch series can be found in one patch at:
+> 	
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.14-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-vblank work needs to preempt commit work.
+forgot to add...
 
-Right now we don't have any driver requiring this, but if we e.g. roll out
-the gamma table update for i915, then this _has_ to happen in the vblank
-period.
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
 
-Whereas the commit work can happen in there, but it can also be delayed a
-bit (until the vblank worker has finished) we will not miss any additional
-deadline due to that.
 
-So that's why we have 2 levels. I'm not even sure you can model that with
-SCHED_DEADLINE, since essentially we need a few usec of cpu time very
-vblank (16ms normally), but thos few usec _must_ be scheduled within a
-very specific time slot or we're toast. And that vblank period is only
-1-2ms usually.
-
-> > On SMP priorities matter once you've overcomitted the systems. You need to have
-> > more RT tasks running than CPUs for priorities to matter. It seems you have
-> > a high count of RT tasks in your system?
-> >
-> > I did some profiles on Android and found that being overcomitted is hard. But
-> > that was a while ago.
-> >
-> > >
-> > > > >
-> > > > > But the decision of whether commit_work should be RT or not really
-> > > > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > > >
-> > > > I'm not sure I agree with this. I think it's better to characterize tasks based
-> > > > on their properties/requirements rather than what the rest of the userspace is
-> > > > using.
-> > >
-> > > I mean, the issue is that userspace is already using a few different
-> > > rt priority levels for different SF threads.  We want commit_work to
-> >
-> > Why are they at different priorities? Different priority levels means that some
-> > of them have more urgent deadlines to meet and it's okay to steal execution
-> > time from lower priority tasks. Is this the case?
-> 
-> tbh, I'm not fully aware of the background.  It looks like most of the
-> SF threads run at priority=2 (100-2==98), and the main one runs at
-> priority=1
-> 
-> > RT planning and partitioning is not easy task for sure. You might want to
-> > consider using affinities too to get stronger guarantees for some tasks and
-> > prevent cross-talking.
-> 
-> There is some cgroup stuff that is pinning SF and some other stuff to
-> the small cores, fwiw.. I think the reasoning is that they shouldn't
-> be doing anything heavy enough to need the big cores.
-> 
-> > > run ASAP once fences are signalled, and vblank_work to run at a
-> > > slightly higher priority still.  But the correct choice for priorities
-> > > here depends on what userspace is using, it all needs to fit together
-> > > properly.
-> >
-> > By userspace here I think you mean none display pipeline related RT tasks that
-> > you need to coexit with and could still disrupt your pipeline?
-> 
-> I mean, commit_work should be higher priority than the other (display
-> related) RT tasks.  But the kernel doesn't know what those priorities
-> are.
-> 
-> > Using RT on Gerneral Purpose System is hard for sure. One of the major
-> > challenge is that there's no admin that has full view of the system to do
-> > proper RT planning.
-> >
-> > We need proper RT balancer daemon that helps partitioning the system for
-> > multiple RT apps on these systems..
-> >
-> > >
-> > > >
-> > > > I do appreciate that maybe some of these tasks have varying requirements during
-> > > > their life time. e.g: they have RT property during specific critical section
-> > > > but otherwise are CFS tasks. I think the UI thread in Android behaves like
-> > > > that.
-> > > >
-> > > > It's worth IMO trying that approach I pointed out earlier to see if making RT
-> > > > try to pick an idle CPU rather than preempt CFS helps. Not sure if it'd be
-> > > > accepted but IMHO it's a better direction to consider and discuss.
-> > >
-> > > The problem I was seeing was actually the opposite..  commit_work
-> > > becomes runnable (fences signalled) but doesn't get a chance to run
-> > > because a SCHED_FIFO SF thread is running.  (Maybe I misunderstood and
-> > > you're approach would help this case too?)
-> >
-> > Ah okay. Sorry I got it the wrong way around for some reason. I thought this
-> > task is preempting other CFS-based pipelined tasks.
-> >
-> > So your system seems to be overcomitted. Is SF short for SufraceFlinger? Under
-> > what scenarios do you have many SurfaceFlinger tasks? On Android I remember
-> > seeing they have priority of 1 or 2.
-> 
-> yeah, SF==SurfaceFlinger, and yeah, 1 and 2..
-> 
-> > sched_set_fifo() will use priority 50. If you set all your pipeline tasks
-> > to this priority, what happens?
-> 
-> I think this would work.. drm/msm doesn't use vblank work, so I
-> wouldn't really have problems with commit_work preempting vblank_work.
-> But I think the best option (and to handle the case if android changes
-> the RT priorties around in the future) is to let userspace set the
-> priorities.
-> 
-> > >
-> > > > Or maybe you can wrap userspace pipeline critical section lock such that any
-> > > > task holding it will automatically be promoted to SCHED_FIFO and then demoted
-> > > > to CFS once it releases it.
-> > >
-> > > The SCHED_DEADLINE + token passing approach that the lwn article
-> > > mentioned sounds interesting, if that eventually becomes possible.
-> > > But doesn't really help today..
-> >
-> > We were present in the room with Alessio when he gave that talk :-)
-> >
-> > You might have seen Valentin's talk in LPC where he's trying to get
-> > proxy-execution into shape. Which is a pre-requisite to enable using of
-> > SCHED_DEADLINE for these scenarios. IIRC it should allow all dependent tasks to
-> > run from the context of the deadline task during the display pipeline critical
-> > section.
-> >
-> > By the way, do you have issues with SoftIrqs delaying your RT tasks execution
-> > time?
-> 
-> I don't *think* so, but I'm not 100% sure if they are showing up in
-> traces.  So far it seems like SF stomping on commit_work.  (There is
-> the added complication that there are some chrome gpu-process tasks in
-> between SF and the display, including CrGpuMain (which really doesn't
-> want to be SCHED_FIFO when executing gl commands on behalf of
-> something unrelated to the compositor.. the deadline approach, IIUC,
-> might be the better option eventually for this?)
-
-deadline has the upshot that it compose much better than SCHED_FIFO:
-Everyone just drops their deadline requirements onto the scheduler,
-scheduler makes sure it's all obeyed (or rejects your request).
-
-The trouble is we'd need to know how long a commit takes, worst case, on a
-given platform. And for that you need to measure stuff, and we kinda can't
-spend a few minutes at boot-up going through the combinatorial maze of
-atomic commits to make sure we have it all.
-
-So I think in practice letting userspace set the right rt priority/mode is
-the only way to go here :-/
--Daniel
-
-> 
-> BR,
-> -R
-> 
-> >
-> > Thanks
-> >
-> > --
-> > Qais Yousef
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+software engineer
+rajagiri school of engineering and technology
+
