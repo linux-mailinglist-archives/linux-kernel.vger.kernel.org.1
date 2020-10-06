@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC22284B9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77250284BA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgJFM07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJFM06 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:26:58 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B52C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 05:26:57 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c62so16400235qke.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 05:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xBjl3ijOtmAZHKFY2Q8VHDVWCHXszRzYVrHWQVZx7Tk=;
-        b=SN4g7TUIcZiG8gkjZ1H/2y7nSkf/356q8TN46sZv42cMGw257ggPHqEIxcAVaP+JLI
-         3COaYblkwqSkvZ3VvGo2aUITxO8n/evEej4R7WiuDd7vx54iTJcM3rODUcbY6fWaVTW4
-         EVA/uoMKZADbRpGktJwSEyKjfdPmW4OZ5Pgj9gbyiUAeVG9BSCNrYKIVLMh5QYABE1hs
-         w1jTd6DwqzNWx+JVVeImewGQMVDM8zVSKQkPPfvZMzsDUJL1mfqV3Q9BDqZ118Hyt26G
-         gkZ1HAOD9Z0OMFKclpgVIarkGX2NI41znNb9Xowm3HI01KbpOjvjgZDdADe5bWIp/JNN
-         qaaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xBjl3ijOtmAZHKFY2Q8VHDVWCHXszRzYVrHWQVZx7Tk=;
-        b=ecQBx0sGNmEQu/vOW+drNdggDoctpvnlTv+C0G4QQKbys3ETMJL2+4SajmZGHI1wcM
-         +sPRMfjmRDEHqGO44BVJWphYOHpWZ8oKl0eF4jbDS1Lni+5NKjFiJJqlEzzHjyXwmcTk
-         DfVNI+ZNgvJ3/7NHH4yZCRZHiDahRdaQUEFjlWZDyvtQvAsu5+AR76A6Fy/BggfO+Eo5
-         L/qujcxNoTfwzNhtI4Yiz3difBQgucnqPDADhOj7LkcYGwBTdeGkpsWMbkZsiHqQojUX
-         AhvIHZuFn3108TR627+2NS3fN6shfmPna5t+dI9WuSSSsPIaIZeBdYsTR4U+Q2d26usI
-         sxuw==
-X-Gm-Message-State: AOAM533aCPIJaFwJXikRUQR8Kad53UKJCE7B1HqFzvbJ6UqVOR94uuLi
-        AT8J4odWNg0Te4AqZxvlj8sm7Q==
-X-Google-Smtp-Source: ABdhPJw5uBK6Jg1qFL06jjeM7TFRlowFnJJ0b29ROqLVECyy9T+v9Aj67lt6n4PC1ZTOH3f53Rrkvg==
-X-Received: by 2002:a37:2c06:: with SMTP id s6mr4947152qkh.55.1601987216328;
-        Tue, 06 Oct 2020 05:26:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id m67sm2358458qkf.98.2020.10.06.05.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 05:26:55 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kPm3T-000W9Y-2O; Tue, 06 Oct 2020 09:26:55 -0300
-Date:   Tue, 6 Oct 2020 09:26:55 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Message-ID: <20201006122655.GG5177@ziepe.ca>
-References: <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
- <20201004125059.GP9916@ziepe.ca>
- <CAKMK7uF0AfuYGsHzKXhF=k-mAW=Wx_APf9fY9M9ormnwypoxZA@mail.gmail.com>
- <20201005172854.GA5177@ziepe.ca>
- <CAKMK7uFzxWF7V=7vkeNC-8shsPZRgdz9fYTsn0ayENv2BpnFEg@mail.gmail.com>
- <20201005183704.GC5177@ziepe.ca>
- <CAKMK7uH97Yb2JFviG_ynGC1hbQ69h9hcyFVFd2PFYHCDzfBN6g@mail.gmail.com>
- <CAKMK7uHRxK3yNrvX=+n-XpSv7PDCz8w+mwof3pkUUJq3TpmiuQ@mail.gmail.com>
- <20201005234104.GD5177@ziepe.ca>
- <CAKMK7uHt=kD=njZvMULy-k-bY4emn=u8__t7etQDq3_WUL7VAw@mail.gmail.com>
+        id S1726459AbgJFMbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:31:55 -0400
+Received: from mailout02.rmx.de ([62.245.148.41]:57880 "EHLO mailout02.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726241AbgJFMby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:31:54 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout02.rmx.de (Postfix) with ESMTPS id 4C5H060bwnzNl5N;
+        Tue,  6 Oct 2020 14:31:50 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4C5Gzj2lCWz2xbl;
+        Tue,  6 Oct 2020 14:31:29 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.66) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 6 Oct
+ 2020 14:30:56 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     David Laight <David.Laight@aculab.com>
+CC:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v3 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Date:   Tue, 6 Oct 2020 14:30:55 +0200
+Message-ID: <2080355.2eSLTprjVn@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <f8f1a9f54e0e426dbe27cc13a3b9de8d@AcuMS.aculab.com>
+References: <20201006060528.drh2yoo2dklyntez@pengutronix.de> <20201006105135.28985-2-ceggers@arri.de> <f8f1a9f54e0e426dbe27cc13a3b9de8d@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uHt=kD=njZvMULy-k-bY4emn=u8__t7etQDq3_WUL7VAw@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.66]
+X-RMX-ID: 20201006-143135-4C5Gzj2lCWz2xbl-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 08:23:23AM +0200, Daniel Vetter wrote:
-> On Tue, Oct 6, 2020 at 1:41 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Tue, Oct 06, 2020 at 12:43:31AM +0200, Daniel Vetter wrote:
-> >
-> > > > iow I think I can outright delete the frame vector stuff.
-> > >
-> > > Ok this doesn't work, because dma_mmap always uses a remap_pfn_range,
-> > > which is a VM_IO | VM_PFNMAP vma and so even if it's cma backed and
-> > > not a carveout, we can't get the pages.
-> >
-> > If CMA memory has struct pages it probably should be mmap'd with
-> > different flags, and the lifecycle of the CMA memory needs to respect
-> > the struct page refcount?
+Hi David,
+
+On Tuesday, 6 October 2020, 14:06:36 CEST, David Laight wrote:
+> From: Christian Eggers
+> > +static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned
+> > int bits) +{
+> > +	unsigned int temp;
+> > +
+> > +	/*
+> > +	 * i2sr_clr_opcode is the value to clear all interrupts.
+> > +	 * Here we want to clear only <bits>, so we write
+> > +	 * ~i2sr_clr_opcode with just <bits> toggled.
+> > +	 */
+> > +	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
+> > +	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> > +}
 > 
-> I guess yes and no. The problem is if there's pagecache in the cma
-> region, pup(FOLL_LONGTERM) needs to first migrate those pages out of
-> the cma range. Because all normal page allocation in cma regions must
-> be migratable at all times.
+> That looks either wrong or maybe just overcomplicated.
+Yes, it looks so.
 
-Eh? Then how are we doing follow_pfn() on this stuff and not being
-completely broken?
+> Why isn't:
+> 	imx_i2c_write_reg(bits, i2c_imx, IMX_I2C_I2SR);
+> enough?
+i.MX requires W1C and Vybrid requires W0C in order to clear status bits.
 
-The entire point of this framevec API is to pin the memory and
-preventing it from moving around. 
+> More usually you just write back the read value of such
+> 'write 1 to clear' status registers and then act on all
+> the set bits.
+This pattern has been suggested by Uwe Klein-Koenig. It works because write 
+access to read-only register bits is ignored, independent whether 0 or 1 is 
+written. W0C is quite unusual, but I didn't design the hardware... The pattern 
+ensures that not accidentally more status bits are cleared than desired.
 
-Sounds like it is fundamentally incompatible with CMA. Why is
-something trying to mix the two?
+> That ensures you clear all interrupts that were pending.
+I think that Uwe's intention was not clearing bits which are not handled at 
+this place. Otherwise events may get lost.
 
-> This is actually worse than the gpu case I had in mind, where at most
-> you can sneak access other gpu buffers. With cma you should be able to
-> get at arbitrary pagecache (well anything that's GFP_MOVEABLE really).
-> Nice :-(
+> If you need to avoid writes of bits that aren't in the
+> 'clear all interrupts' value then you just need:
+> 	bits &= i2c_imx->hwdata->i2sr_clr_opcode;
+> prior to the write.
+I think this wouldn't fit the W0C case for Vybrid.
 
-Ah, we have a winner :\
+Best regards
+Christian
 
-Jason
+
+
