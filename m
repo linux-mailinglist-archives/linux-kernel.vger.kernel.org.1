@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3FA28431E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2553284322
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbgJFAA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726658AbgJFAAQ (ORCPT
+        id S1726012AbgJFAFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:05:05 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49070 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725865AbgJFAFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:00:16 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72111C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 17:00:16 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ds1so659602pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 17:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lMOsfwi87KqTZTytxIFmtZd/oiM8x07q/Mp8jyPAAXI=;
-        b=TR41v40N3c0mT6iKV7st9SNhlg9QTdUELsrtGct+/7ED4AfArTHDYCsYjVMUkQrTa3
-         TjLWrSiIYucTjdyPSil2F0f1UtirIgTuT1jSdLl4ISjQqsqs7BRoB50aBYiQw+Y7p0xW
-         YlXFC0yuaCZWWhtfaFXRua4TpMPmDF+5ayx4Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lMOsfwi87KqTZTytxIFmtZd/oiM8x07q/Mp8jyPAAXI=;
-        b=V3cTrm8fxULa5Fmu53V8wXblSfZ+LnLvw/b7Guopauf5ual7h6ZjhhOri1PkdJ3s4u
-         AAqQZHjmFncdSOp21+/zwo0kXp/jD/5UgoWjWPoMUfofKTdHkjnxNPxw4TZXR71spavE
-         CuN9r8D0Ae1WjKsK9hkFOHlbz+m0tdl0DrVjfg+d7WDYJR3dKBjfTBYvRU5okEnOlKfm
-         yfGyag6VA7oRroV85TF6FBeGOx/qVlPUmnX5T4LTvwAcP8GjmoO+uW7o819XVomhZ7ta
-         3OzfMxHzWoLvH+JELu/SLi84eo7P+DT6h8jwWjfWtXxnIJrqike51S9oVQVE1gP3cjSu
-         uFTw==
-X-Gm-Message-State: AOAM533MwZ23nlSqn5lRWkKm57dgEsaUmJLbOVVB/cvVciHSDK3PQs/w
-        p15ZszInM59c7h854NBXf42j6w==
-X-Google-Smtp-Source: ABdhPJwWiBEIxSg5nqXR/ySYj20GAHUNH/4qqdyUS4ujisiRNJr16ZDSNzx/7HeR6hfmV6aR90nuLA==
-X-Received: by 2002:a17:90a:3fcb:: with SMTP id u11mr1785643pjm.128.1601942415868;
-        Mon, 05 Oct 2020 17:00:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j25sm1070281pfn.212.2020.10.05.17.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 17:00:15 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Emese Revfy <re.emese@gmail.com>,
-        "Tobin C. Harding" <me@tobin.cc>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: [PATCH v2] MAINTAINERS: Change hardening mailing list
-Date:   Mon,  5 Oct 2020 17:00:12 -0700
-Message-Id: <20201006000012.2768958-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 5 Oct 2020 20:05:05 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09604k5j009329
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 5 Oct 2020 20:04:47 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D0627420107; Mon,  5 Oct 2020 20:04:45 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 20:04:45 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201006000445.GC4540@mit.edu>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
+ <20201005081454.GA493107@localhost>
+ <20201005173639.GA2311765@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005173639.GA2311765@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As more email from git history gets aimed at the OpenWall
-kernel-hardening@ list, there has been a desire to separate "new topics"
-from "on-going" work. To handle this, the superset of hardening email
-topics are now to be directed to linux-hardening@vger.kernel.org. Update
-the MAINTAINERS file and the .mailmap to accomplish this, so that
-linux-hardening@ can be treated like any other regular upstream kernel
-development list.
+On Mon, Oct 05, 2020 at 10:36:39AM -0700, Darrick J. Wong wrote:
+> > Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
+> > ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
+> > with intentionally overlapping bitmap blocks.
+> > 
+> > On an always-read-only filesystem explicitly marked with
+> > EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
+> > point all the block and inode bitmaps to a single block
+> 
+> LOL, WHAT?
+> 
+> I didn't know shared blocks applied to fs metadata.  I thought that
+> "shared" only applied to file extent maps being able to share physical
+> bloctks.
+ 
+My understanding matches Darrick's.  I was going to track down the
+Google engineer who has most recently (as far as I know) enhanced
+e2fsprogs's support of the shared block feature (see the commits
+returned by "git log --author dvander@google.com contrib/android") but
+he's apparently out of the office today.  Hopefully I'll be able to
+track him down and ask about this tomorrow.
 
-Link: https://lore.kernel.org/linux-hardening/202010051443.279CC265D@keescook/
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- .mailmap    | 1 +
- MAINTAINERS | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+> Oookay.  So that's not how you create these shared block ext4s,
+> apparently...
 
-diff --git a/.mailmap b/.mailmap
-index 50096b96c85d..91cea2d9a6a3 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -184,6 +184,7 @@ Leon Romanovsky <leon@kernel.org> <leonro@nvidia.com>
- Linas Vepstas <linas@austin.ibm.com>
- Linus Lüssing <linus.luessing@c0d3.blue> <linus.luessing@ascom.ch>
- Linus Lüssing <linus.luessing@c0d3.blue> <linus.luessing@web.de>
-+<linux-hardening@vger.kernel.org> <kernel-hardening@lists.openwall.com>
- Li Yang <leoyang.li@nxp.com> <leoli@freescale.com>
- Li Yang <leoyang.li@nxp.com> <leo@zh-kernel.org>
- Lukasz Luba <lukasz.luba@arm.com> <l.luba@partner.samsung.com>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index adc4f0619b19..8fa1d8ce2188 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7216,7 +7216,7 @@ F:	drivers/staging/gasket/
- GCC PLUGINS
- M:	Kees Cook <keescook@chromium.org>
- R:	Emese Revfy <re.emese@gmail.com>
--L:	kernel-hardening@lists.openwall.com
-+L:	linux-hardening@vger.kernel.org
- S:	Maintained
- F:	Documentation/kbuild/gcc-plugins.rst
- F:	scripts/Makefile.gcc-plugins
-@@ -9776,7 +9776,7 @@ F:	drivers/scsi/53c700*
- LEAKING_ADDRESSES
- M:	Tobin C. Harding <me@tobin.cc>
- M:	Tycho Andersen <tycho@tycho.pizza>
--L:	kernel-hardening@lists.openwall.com
-+L:	linux-hardening@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tobin/leaks.git
- F:	scripts/leaking_addresses.pl
--- 
-2.25.1
+Yeah, they are created by the e2fsdroid program.  See sources in
+contrib/e2fsdroid.  I took a quick look, and I don't see anything
+there which is frobbing with with the bitmaps; but perhaps I'm missing
+something, which is why I'd ask David to see if he knows anything
+about this.
 
+More to the point, if we are have someone who is trying to dedup or
+otherwise frob with bitmaps, I suspect this will break "e2fsck -E
+unshare_blocks /dev/XXX", which is a way that you can take a root file
+system which is using shared_blocks, and turn it into something that
+can actually be mount read/write.  This is something that I believe
+was being used by AOSP "debug" or "userdebug" (I'm a bit fuzzy on the
+details) so that Android developers couldn't actually modify the root
+file system.  (Of course, you have to also disable dm-verity in order
+for this to work....)
+
+Unfortunately, e2fsdroid is currently not buildable under the standard
+Linux compilation environment.  For the reason why, see:
+
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=928551#75
+
+The first step would be to teach e2fsprogs's configure to check for
+libsparse, and to link against it if it's available.  But before we
+could enable this by default for Linux distribution, we need to link
+against libsparse using dlopen(), since most distro release engineers
+would be.... cranky.... if mke2fs were to drag in some random Android
+libraries that have to be installed as shared libraries in their
+installers.  Which is the point of comment #75 in the above bug.
+
+Since the only use of shared_blocks is for Android, since very few
+other projects want a completely read-only root file system, and where
+dedup is actually significantly helpful, we've never tried to make
+this work outside of the Android context.  At least in theory, though,
+it might be useful if we could create shared_block file systems using
+"mke2fs -O shared_blocks -d /path/to/embedded-root-fs system.img 1G".
+Patches gratefully accepted....
+
+Cheers,
+
+					- Ted
