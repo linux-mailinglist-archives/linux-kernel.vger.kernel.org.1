@@ -2,212 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E16284F2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EF5284F2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgJFPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:44:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:50574 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgJFPoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:44:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E5CA113E;
-        Tue,  6 Oct 2020 08:43:59 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 405293F71F;
-        Tue,  6 Oct 2020 08:43:57 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 16:43:54 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Tony Luck <tony.luck@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
-Message-ID: <20201006154353.GZ6642@arm.com>
-References: <20200929205746.6763-1-chang.seok.bae@intel.com>
- <20201005134534.GT6642@arm.com>
- <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
- <20201006092532.GU6642@arm.com>
- <CAMe9rOq_nKa6xjHju3kVZephTiO+jEW3PqxgAhU9+RdLTo-jgg@mail.gmail.com>
- <CAMe9rOreJzDZxh8HDDRBvOVZ0Zp_UuoZsenhynh1jjxNNsgTKw@mail.gmail.com>
+        id S1726335AbgJFPoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:44:21 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:41931 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725769AbgJFPoS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:44:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601999057; x=1633535057;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=wwHDWis+FR/uiwH2DbWAwpt249w3wbP+pJ3EliI7z/8=;
+  b=UljX1dtN8Asug+0srcRfVyW6iS1EkC57kVQQiQzVhu0a4LK7mbxZwGU9
+   N2Xn3XEDNaCMnq0JlyJinmTFE/SNXxg7DLUV950bakK5iZW5P71rn8MSk
+   hbCmd1/folun1FbMyxatoBR73IToKR+K6AqsOPV3bvlTOMF3EvCBKojnr
+   HwDg59SdNnZYVMxEbZqDJz5/xwdfEy7m3DoZcS0wjKn72ptFEz+TXKWis
+   HtT4tUS3E6B+j6QOze3Ah/MK9Ck2xYSy0SExg7ue6S2Bawp3ZucA24gvz
+   IQYkOtmb8HT0x5ICk8+Bq9E4KdL4wW5flxALuxgeB6WNQaJkkSdMbG11z
+   Q==;
+IronPort-SDR: 3xwKByHWsU8ZrzinDvsjzODa+E/mg12sRNAAO4Zcf3OAsq4S+rNi749SeYpaTfnijBmdcytgyW
+ 0jsfc9JFtkyHcw147fzdGvCLL26+PZ+TnnjF4q6xdJ98IsbF5ThQaR5eYbTLCgzmw5JCntFkIf
+ f7H8X+3OUpuQ0BW6AWQ4HobiHa1zefgV0abyWn7enjXdLQ5vEb0lU+nUWnqgelUa6iN0/1Y8sC
+ TA5cOoEznSA5FCmA302mnB3JySo5DjgP42r4gPDUu9hEG5q4yIb+Oh6OnMaeSWrFHouxCvlee4
+ BN8=
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="91627120"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Oct 2020 08:44:17 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 6 Oct 2020 08:44:16 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Tue, 6 Oct 2020 08:44:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8AuDFlYU95rQeRFGFdNu5b83q0W/v+o8n+tVruUdLni4foR/T7OAPegZtu+W6+x0oFssC75v0qggxGwPKGpqyMRJAbTpgoPKGwQVbP88v9QcgLu1Qc8hNN4gVFHfRbzDj6W8TKp1mwgSBdNbTUVEu/tuq9279UOQGijN/Oo7kPlpyDNhfG21lUjDu4rPiBFeKR9Rij+evMvFs9Tw+9+iGC8idgH4u1tgL9VCKfkyih54vO/pdadmVIgNlrWgNp0lSuOcYbqKojSx8LXFAtAwmAvp09cdYELcmeDlE/M/uGhwhOmmKmykbGl9QinkiNfrg9UKFhw0GcnEBhxmoAihA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wwHDWis+FR/uiwH2DbWAwpt249w3wbP+pJ3EliI7z/8=;
+ b=SU7j3QtdD+q7xFiZATqLOODyA7EcrvtYMh+2OiVtlIRUpzCc2wwmqQQRXvlkQ7gVK+t33m+P/jhfJQkxXBl8Rmkvjag0zaTTa0eD5H44l3WtAxl06RuR0xXRRlLFugf63XvkWRbVVNldqIjbVCJ0NU/LiQ91gzit69qTXVpCW/LTGQ7tixuwds9GZWKy7vYs8msllOWBwzH40BpgzcqEo1FEa1iDcJWDoNxL3M0zlflV/1hiHWNi9Q+r7MFHXEoo1f1T6/sucm47+3UiaSBwWFBspehdD3z+GNDWu5fQOk7Zm01tXhhH9eIZZLd9hcEJc5fJZ1LQ0p1rIowAJIQwrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wwHDWis+FR/uiwH2DbWAwpt249w3wbP+pJ3EliI7z/8=;
+ b=UBokLFcbPbGENXrxKgyKHDXFnrjNu46+1fVa3fQeWeFoherXWFiRvud5yEJyxeJ/1ecxGr1DOF1lNLBibjs+VoG/CG2G0N2DzbMmt7KhfChwJnJvOCYrQL0qnV4EaLdb7f2lLEnMxd2dYf/+R7FcKsK5q8EYV+pFzxHWvMgTdbw=
+Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
+ (2603:10b6:903:b1::22) by CY4PR11MB1942.namprd11.prod.outlook.com
+ (2603:10b6:903:125::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Tue, 6 Oct
+ 2020 15:44:13 +0000
+Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
+ ([fe80::908:a628:69ca:d62e]) by CY4PR1101MB2341.namprd11.prod.outlook.com
+ ([fe80::908:a628:69ca:d62e%7]) with mapi id 15.20.3433.045; Tue, 6 Oct 2020
+ 15:44:13 +0000
+From:   <Codrin.Ciubotariu@microchip.com>
+To:     <colin.king@canonical.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <Ludovic.Desroches@microchip.com>, <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] ASoC: mchp-spdifrx: fix spelling mistake "overrrun"
+ -> "overrun"
+Thread-Topic: [PATCH][next] ASoC: mchp-spdifrx: fix spelling mistake
+ "overrrun" -> "overrun"
+Thread-Index: AQHWm/Q817bEwg9jYUW656J+jxiSmqmKtymA
+Date:   Tue, 6 Oct 2020 15:44:13 +0000
+Message-ID: <69436582-3b11-b063-dffa-9975773617ff@microchip.com>
+References: <20201006152024.542418-1-colin.king@canonical.com>
+In-Reply-To: <20201006152024.542418-1-colin.king@canonical.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [86.121.164.182]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b000b9b0-880d-4fb6-b1cb-08d86a0eacad
+x-ms-traffictypediagnostic: CY4PR11MB1942:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR11MB19425697B2E35C7DD02E2569E70D0@CY4PR11MB1942.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7TM758PcrHjOm8OTPEkT2l8MIt44Rqkif7QlnQLERpwUwo+7fGRLdl/8EKss97+kow4drHtC+3fCwH642Ka63Xuz/w7+O65c36IRXoIxcqkyT13LuOAF0dFcWq1aRJROPI3txQyiTqme5rNLKIzl5TmRsXNlpAI1d3AJPGAPCae7PV1Ew9AYQaOuUWmD+WZyYNMWdOq2lyh9rVxkZ1hhlWnntdKtz96Yiea5IRJE20MP7BY3MamO1+G1hdDIKAMIGxDgOZ/SLEQa+u2+HodKZ3loqbfWLwK5hGkvfyimFU+II77VhLdwQjjrR8otvLkkqarKQOmyRCsEBfzB4WbojrFn+Ixapdc3+WftJX0z9XoSR+iRa984zxvTevrDQFstkMTdrvhIoNDk4bWWi2oa3g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(396003)(366004)(39860400002)(7416002)(71200400001)(66446008)(2906002)(66476007)(64756008)(66556008)(66946007)(83380400001)(6486002)(8676002)(6506007)(26005)(36756003)(76116006)(2616005)(91956017)(478600001)(53546011)(186003)(31696002)(4326008)(316002)(8936002)(110136005)(54906003)(5660300002)(6512007)(86362001)(31686004)(4744005)(921003)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: fVjfpbkqQPi6x/K+XRXSd2FeNFfXlyZZ2JQWUANNAgdNFwoPUtIaJ9pdlUysMoXrhzvDhp9YhTuyLS2a565WUfUmB1urQgNftANCp07WwCeFAhIKHAaRQg+Nyxskp/Ei8KBeaLxIcMnQTp3MEUmRfr6Vja2CXCSK2aFRmdRKLC2ABEGzD5NFlof4egTjkKI3U+ZgdJv+fzcYdDoHj4McaQO+rmEWsFXHm4EQOEhKzp/OjIkchKt5p3MMqIntzHqNs/U5nyFqj0aUu/wpd9tVc5W8QeEnvRYme3vFFyUIYipOabCPE30KUQngbKzaXepL0zw52Ne2Q0iZjFJjZvwdOfKniwU1AKfmAdoM0R66QaSGNo3wOPRalkSluu6i6gZYjAr5d6y6pceXjWSVLc5gLd0jbUgjIxJnAIe3Amv8CyZOuzehsdUoPFmxZEii/JMxbnuYI5TerubwTWH7i2e1JwgSWWCE8RhqJmfLXnCDvI1sssxZVW3dLr6YkVyk3/BQo7r4fABHA2FgvHq3XYCO3+Lat5UDyi9mL6EyJgQYyfLdjaWkOoWH1T85igYgb90pnuin6OXw/2YYgg1ZAVHvcjOLoIL4qJtx/+KHZY6OPYQ6Ysg5dALO1uTeeTNoa6KcoJrTc88Z35X+NVC5idtdOg==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CBD31730194B6A4B8A662E6392974F78@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMe9rOreJzDZxh8HDDRBvOVZ0Zp_UuoZsenhynh1jjxNNsgTKw@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b000b9b0-880d-4fb6-b1cb-08d86a0eacad
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 15:44:13.1296
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Hr3p2GQqU/gQCzb20Q6MZt91hBSMPyBsHwy4jczFn1LE2TMeTb5hApVf85HwCxBvp1fKZoOTzEsgrIA6tTWXzR44ls5pHQl7MsoKwq1yVf8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1942
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 08:18:03AM -0700, H.J. Lu wrote:
-> On Tue, Oct 6, 2020 at 5:12 AM H.J. Lu <hjl.tools@gmail.com> wrote:
-> >
-> > On Tue, Oct 6, 2020 at 2:25 AM Dave Martin <Dave.Martin@arm.com> wrote:
-> > >
-> > > On Mon, Oct 05, 2020 at 10:17:06PM +0100, H.J. Lu wrote:
-> > > > On Mon, Oct 5, 2020 at 6:45 AM Dave Martin <Dave.Martin@arm.com> wrote:
-> > > > >
-> > > > > On Tue, Sep 29, 2020 at 01:57:42PM -0700, Chang S. Bae wrote:
-> > > > > > During signal entry, the kernel pushes data onto the normal userspace
-> > > > > > stack. On x86, the data pushed onto the user stack includes XSAVE state,
-> > > > > > which has grown over time as new features and larger registers have been
-> > > > > > added to the architecture.
-> > > > > >
-> > > > > > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
-> > > > > > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
-> > > > > > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
-> > > > > > constant indicates to userspace how much data the kernel expects to push on
-> > > > > > the user stack, [2][3].
-> > > > > >
-> > > > > > However, this constant is much too small and does not reflect recent
-> > > > > > additions to the architecture. For instance, when AVX-512 states are in
-> > > > > > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
-> > > > > >
-> > > > > > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
-> > > > > > cause user stack overflow when delivering a signal.
-> > > > > >
-> > > > > > In this series, we suggest a couple of things:
-> > > > > > 1. Provide a variable minimum stack size to userspace, as a similar
-> > > > > >    approach to [5]
-> > > > > > 2. Avoid using a too-small alternate stack
-> > > > >
-> > > > > I can't comment on the x86 specifics, but the approach followed in this
-> > > > > series does seem consistent with the way arm64 populates
-> > > > > AT_MINSIGSTKSZ.
-> > > > >
-> > > > > I need to dig up my glibc hacks for providing a sysconf interface to
-> > > > > this...
-> > > >
-> > > > Here is my proposal for glibc:
-> > > >
-> > > > https://sourceware.org/pipermail/libc-alpha/2020-September/118098.html
-> > >
-> > > Thanks for the link.
-> > >
-> > > Are there patches yet?  I already had some hacks in the works, but I can
-> > > drop them if there's something already out there.
-> >
-> > I am working on it.
-> >
-> > >
-> > > > 1. Define SIGSTKSZ and MINSIGSTKSZ to 64KB.
-> > >
-> > > Can we do this?  IIUC, this is an ABI break and carries the risk of
-> > > buffer overruns.
-> > >
-> > > The reason for not simply increasing the kernel's MINSIGSTKSZ #define
-> > > (apart from the fact that it is rarely used, due to glibc's shadowing
-> > > definitions) was that userspace binaries will have baked in the old
-> > > value of the constant and may be making assumptions about it.
-> > >
-> > > For example, the type (char [MINSIGSTKSZ]) changes if this #define
-> > > changes.  This could be a problem if an newly built library tries to
-> > > memcpy() or dump such an object defined by and old binary.
-> > > Bounds-checking and the stack sizes passed to things like sigaltstack()
-> > > and makecontext() could similarly go wrong.
-> >
-> > With my original proposal:
-> >
-> > https://sourceware.org/pipermail/libc-alpha/2020-September/118028.html
-> >
-> > char [MINSIGSTKSZ] won't compile.  The feedback is to increase the
-> > constants:
-> >
-> > https://sourceware.org/pipermail/libc-alpha/2020-September/118092.html
-> >
-> > >
-> > > > 2. Add _SC_RSVD_SIG_STACK_SIZE for signal stack size reserved by the kernel.
-> > >
-> > > How about "_SC_MINSIGSTKSZ"?  This was my initial choice since only the
-> > > discovery method is changing.  The meaning of the value is exactly the
-> > > same as before.
-> > >
-> > > If we are going to rename it though, it could make sense to go for
-> > > something more directly descriptive, say, "_SC_SIGNAL_FRAME_SIZE".
-> > >
-> > > The trouble with including "STKSZ" is that is sounds like a
-> > > recommendation for your stack size.  While the signal frame size is
-> > > relevant to picking a stack size, it's not the only thing to
-> > > consider.
-> >
-> > The problem is that AT_MINSIGSTKSZ is the signal frame size used by
-> > kernel.   The minimum stack size for a signal handler is more likely
-> > AT_MINSIGSTKSZ + 1.5KB unless AT_MINSIGSTKSZ returns the signal
-> > frame size used by kernel + 6KB for user application.
-> >
-> > >
-> > > Also, do we need a _SC_SIGSTKSZ constant, or should the entire concept
-> > > of a "recommended stack size" be abandoned?  glibc can at least make a
-> > > slightly more informed guess about suitable stack sizes than the kernel
-> > > (and glibc already has to guess anyway, in order to determine the
-> > > default thread stack size).
-> >
-> > Glibc should try to deduct signal frame size if AT_MINSIGSTKSZ isn't
-> > available.
-> >
-> > >
-> > > > 3. Deprecate SIGSTKSZ and MINSIGSTKSZ if _SC_RSVD_SIG_STACK_SIZE
-> > > > is in use.
-> > >
-> > > Great if we can do it.  I was concerned that this might be
-> > > controversial.
-> > >
-> > > Would this just be a recommendation, or can we enforce it somehow?
-> >
-> > It is just an idea.  We need to move away from constant SIGSTKSZ and
-> > MINSIGSTKSZ.
-> >
-> 
-> Here is the glibc patch:
-> 
-> https://gitlab.com/x86-glibc/glibc/-/commits/users/hjl/AT_MINSIGSTKSZ
-> 
-> AT_MINSIGSTKSZ should return the signal frame size used by kernel + 6KB
-> for user application.
-
-I'm not sure about the 6K here.
-
-We a few fundamental parameters:
-
- * the actual maximum size of the kernel-allocated signal frame (which
-   we'll report via AT_MINSIGSTKSZ);
-
- * the size of additional userspace stack frame required to execute the
-   minimal (i.e., empty) signal handler.  (On AArch64, this is 0.  In
-   environments where the C lirbrary calls signal handlers through some
-   sort of wrapper, this would need to include the wrapper's stack
-   needs also);
-
- * additional userspace stack needs for the actual signal handler code.
-   This is completely unknown.
-
-
-_SC_MINSIGSTKSZ (however named) should certainly include the first two,
-but I'm not sure about the third.  It will at least be architecture-
-dependent.
-
-
-This is one reason why I still favor having more than one constant here:
-the fundamental system properties should be discoverable for software
-that knows how to calculate its own stack needs accurately.
-
-Since calculating stack needs is hard and most software doesn't bother
-to do it, we could also give a "recommended" stack size which
-incorporates a guess of typical handler stack needs (similarly to the
-legacy SIGSTKSZ constant), but I think that should be a separate
-parameter.
-
-Cheers
----Dave
+T24gMDYuMTAuMjAyMCAxODoyMCwgQ29saW4gS2luZyB3cm90ZToNCj4gRVhURVJOQUwgRU1BSUw6
+IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25vdyB0
+aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBGcm9tOiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2lu
+Z0BjYW5vbmljYWwuY29tPg0KPiANCj4gVGhlcmUgaXMgYSBzcGVsbGluZyBtaXN0YWtlIGluIGEg
+ZGV2X3dhcm4gbWVzc2FnZS4gRml4IGl0Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFu
+IEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IENvZHJpbiBD
+aXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29tPg0KDQpUaGFuayB5b3Ug
+Q29saW4hDQoNCkJlc3QgcmVnYXJkcywNCkNvZHJpbg0K
