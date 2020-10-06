@@ -2,197 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3809D284B25
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7328D284B2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgJFLxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbgJFLxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:53:40 -0400
-Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 864AD2080A;
-        Tue,  6 Oct 2020 11:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601985219;
-        bh=xj3DKmTx+xt1aiabZV+/vLYvUVuonNKpv+Ct1aH1EHE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D5yyin2NOr4oSD50jB8ARYD+XBa8anpaThKEZxh48wy4EEVp4KVAutI6fdGCZeM+N
-         LCb8S6HQ8plDyG7JYeaYYVkxgIGlN1hu1hiMow2opK9csBI39ul7UR4qX53KH23X+Z
-         9/OMvCv2SusraPLjD1pwXSWLIFl9dWS7e0X1I/us=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kPlXF-0015t5-2w; Tue, 06 Oct 2020 13:53:37 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] script: add a script for checking doc problems with external functions
-Date:   Tue,  6 Oct 2020 13:53:34 +0200
-Message-Id: <e40a32900dba6b8e7a1f41838ee8caeb1ef1c1b3.1601985151.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201005125920.27a7768d@coco.lan>
-References: <20201005125920.27a7768d@coco.lan>
+        id S1726143AbgJFL5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 07:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgJFL5F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 07:57:05 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D02C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 04:57:05 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m11so6393210otk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 04:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0/v0p3FvFQy6vefIiWkN5sABT9yaRl0KmB4aTLtFJ80=;
+        b=lLhpfE52DsBTlXOZaNcfYtajrRM/cDqIwevRSBDcVW4qoPVbzEi7+sihe6YcHp2QOU
+         hnAD2eoXIOk84DvIqJ2RTZpXb49sc13g/2RKsA0kTklQEV+Sykz8QqnvTSECPTErHsRx
+         qsTQaNy+j6UOMtosFQSSws5ErF7y9aC00H4zo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0/v0p3FvFQy6vefIiWkN5sABT9yaRl0KmB4aTLtFJ80=;
+        b=ATCTkonSBL2gmlr598He9SXZ6CfDTaXmXMPFq3S+Ey+DO+V7uKSb4l1oFhz84KwRCB
+         tV+Me4q0iqeXqAPChJ9aQroLPvMEbxDdMx/BaUfMo8B7zZE8jiA/4yfbCLjSbmFBR0E3
+         R7olxl9ZU0W+g2yg+R5v7aWUIPfQ6EhVxiGOUVogUWEpK07ed3BKpqZMtYTUd1/5Ofvu
+         UX+aFBK4XIaYzDv7pDLwStGOKveC8Kc4AK6I+gGg3jXj7SjlyL6MyIjO/E2gRoAqZs2B
+         ng65oLf06tbUUJ5H8OLK97mrRQK6cKFCL/wmGNXcFgAFJnVpEuAGRS1ypM1HDV4uRSFs
+         /GeA==
+X-Gm-Message-State: AOAM530BeHqjb/I5ZDOL/aCni0S1tPNBITs5UggC46yAmtBnzszVNr2X
+        y55Jrnn2f2jYhvcMLvLTqzUivdjerls1P06sP4sX5Q==
+X-Google-Smtp-Source: ABdhPJyMG6+nB6zVd1RDfgIGK4/zu55vJ18yPOXo0KPUU4RdObE/Y3T3eJQEZZwVcpMDmw5VSMtR9OkGz5YHDq9+Jw8=
+X-Received: by 2002:a05:6830:1c3c:: with SMTP id f28mr2857746ote.188.1601985424516;
+ Tue, 06 Oct 2020 04:57:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <0-v1-447bb60c11dd+174-frame_vec_fix_jgg@nvidia.com>
+ <20201005175308.GI4225@quack2.suse.cz> <20201005175746.GA4734@nvidia.com>
+In-Reply-To: <20201005175746.GA4734@nvidia.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 6 Oct 2020 13:56:53 +0200
+Message-ID: <CAKMK7uGrQq6tb2hMUSC-=JkTNMC2DvdQkcZncmVBKZ-0x6S61Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jan Kara <jack@suse.cz>, andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@osg.samsung.com>,
+        Mel Gorman <mgorman@suse.de>, stable <stable@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While not all EXPORT_SYMBOL*() symbols should be documented,
-it seems useful to have a tool which would help to check what
-symbols aren't documented.
+On Mon, Oct 5, 2020 at 7:58 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Mon, Oct 05, 2020 at 07:53:08PM +0200, Jan Kara wrote:
+> > On Mon 05-10-20 14:38:54, Jason Gunthorpe wrote:
+> > > When get_vaddr_frames() does its hacky follow_pfn() loop it should never
+> > > be allowed to extract a struct page from a normal VMA. This could allow a
+> > > serious use-after-free problem on any kernel memory.
+> > >
+> > > Restrict this to only work on VMA's with one of VM_IO | VM_PFNMAP
+> > > set. This limits the use-after-free problem to only IO memory, which while
+> > > still serious, is an improvement.
+> > >
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: 8025e5ddf9c1 ("[media] mm: Provide new get_vaddr_frames() helper")
+> > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > >  mm/frame_vector.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+> > > index 10f82d5643b6de..26cb20544b6c37 100644
+> > > +++ b/mm/frame_vector.c
+> > > @@ -99,6 +99,10 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+> > >             if (ret >= nr_frames || start < vma->vm_end)
+> > >                     break;
+> > >             vma = find_vma_intersection(mm, start, start + 1);
+> > > +           if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> > > +                   ret = -EINVAL;
+> > > +                   goto out;
+> > > +           }
+> > >     } while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
+> >
+> > Hum, I fail to see how this helps. If vma has no VM_IO or VM_PFNMAP flag,
+> > we'd exit the loop (to out: label) anyway due to the loop termination
+> > condition and why not return the frames we already have? Furthermore
+> > find_vma_intersection() can return NULL which would oops in your check
+> > then. What am I missing?
+>
+> Oh, nothing, you are right. It just didn't read naturally because
+> hitting the wrong kind of VMA should be an error condition :\
 
-This is a first step on this direction. The tool has some
-limitations. Yet, it could be useful for maintainers to check
-about missing documents on their subsystems.
-
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/check_docs_external_symbols | 127 ++++++++++++++++++++++++++++
- 1 file changed, 127 insertions(+)
- create mode 100755 scripts/check_docs_external_symbols
-
-diff --git a/scripts/check_docs_external_symbols b/scripts/check_docs_external_symbols
-new file mode 100755
-index 000000000000..cc12562e6cd6
---- /dev/null
-+++ b/scripts/check_docs_external_symbols
-@@ -0,0 +1,127 @@
-+#!/usr/bin/perl
-+# SPDX-License-Identifier: GPL-2.0
-+
-+#
-+# Copyright (c) 2020, Huawei Tech. Co., Ltd.
-+# Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org
-+#
-+# This script helps to check if exported functions are documented at either
-+# a file, on at the included headers.
-+#
-+# The script is not perfect and may produce some false negatives, as
-+# currently it doesn't handle Makefile "-I" directives that might be inside
-+# a Kernel directory.
-+#
-+# So, use it with caution.
-+#
-+# Usage:
-+#	scripts/check_external docs
-+# or:
-+#	scripts/check_external docs <files and/or directories>
-+
-+use warnings;
-+use strict;
-+use File::Find;
-+
-+sub check_file($) {
-+	my $file = shift;
-+	my (@files, @exports, @doc, @doc_refs);
-+	my $content = "\n";
-+
-+	return 0 if (!($file =~ /\.[ch]$/));
-+
-+	my $dir = $file;
-+	$dir =~ s,[^\/]+$,,;
-+
-+	open IN, $file or return 0;
-+	while (<IN>) {
-+		push @exports, $1 if (m/^EXPORT_SYMBOL.*\(\s*(\S+)\s*\)/);
-+
-+		if (m/^\s*#\s*include\s+[\<](\S+)[\>]/) {
-+			if (-e "include/$1") {
-+				push @files, "include/$1";
-+			} else {
-+				# Currently, can't check if include is elsewhere
-+				return 0;
-+			}
-+		}
-+		if (m/^\s*#\s*include\s+[\"](\S+)[\"]/) {
-+			if (-e "$dir/$1") {
-+				push @files, "$dir/$1";
-+			} else {
-+				# Currently, can't check if include is elsewhere
-+				return 0;
-+			}
-+		}
-+		$content .= $_;
-+	}
-+	close IN;
-+
-+	return 0 if ($content eq "\n");
-+
-+
-+	push @files, $file;
-+	for (my $i = 0; $i < scalar(@files); $i++) {
-+		$doc_refs[$i] = 0;
-+		$doc[$i] = qx(./scripts/kernel-doc --sphinx-version 3.2.1 $files[$i] 2>/dev/null);
-+	}
-+
-+	my @missing_exports;
-+	my $found = -1;
-+	foreach my $e (@exports) {
-+		# Check if the symbol is a function
-+		if (!($content =~ (m/\n\s*(?:\w+\s+){0,}\*?\s*\b\Q$e\E\b\s*\(/))) {
-+			next;
-+		}
-+		for (my $i = 0; $i < scalar(@files); $i++) {
-+			if ($doc[$i] =~ m/\b\Q$e\E\b/) {
-+				$found = $i;
-+				$doc_refs[$i]++;
-+				last;
-+			}
-+		}
-+
-+		push @missing_exports, $e if ($found < 0);
-+	}
-+
-+	if (@missing_exports) {
-+		print "warning: $file: missing documentation for @missing_exports\n";
-+	}
-+
-+	for (my $i = 0; $i < scalar(@files); $i++) {
-+		next if (!$doc_refs[$i]);
-+		my $includes = qx(git grep -l "kernel-doc::\\s*$files[$i]" Documentation/);
-+
-+		printf "warning: %s: file not included at Documentation/\n", $files[$i] if ($includes eq "");
-+	}
-+	return 1;
-+}
-+
-+sub parse_dir {
-+	check_file $File::Find::name;
-+}
-+
-+#
-+# main
-+#
-+
-+my $file;
-+
-+if (@ARGV) {
-+	while (@ARGV) {
-+		my $file = shift;
-+
-+		if (-d $file) {
-+			find({wanted => \&parse_dir, no_chdir => 1}, $file);
-+		} else {
-+			check_file $file;
-+		}
-+	}
-+	exit;
-+} else {
-+	my @files = qx(git grep -l EXPORT_SYMBOL);
-+	foreach $file (@files) {
-+		$file =~ s/\s+$//;
-+		check_file $file;
-+	}
-+}
+Also follow_pfn checks for this same conditionat already too, so this
+isn't really stopping anything bad from happening.
+-Daniel
 -- 
-2.26.2
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
