@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319E228451F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CD2284522
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgJFEzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 00:55:07 -0400
-Received: from smtprelay0242.hostedemail.com ([216.40.44.242]:60730 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725912AbgJFEzH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 00:55:07 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E8DE618025614;
-        Tue,  6 Oct 2020 04:55:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3868:3870:3874:4250:4321:5007:6120:7576:7903:10004:10400:10450:10455:10848:11026:11232:11657:11658:11914:12043:12296:12297:12740:12760:12895:13069:13149:13161:13229:13230:13255:13311:13357:13439:14181:14254:14659:14721:19904:19999:21080:21451:21627:30001:30002:30003:30004:30005:30006:30007:30008:30009:30010:30011:30012:30013:30014:30015:30016:30017:30018:30019:30020:30021:30022:30023:30024:30025:30026:30027:30028:30029:30030:30031:30032:30033:30034:30035:30036:30037:30038:30039:30040:30041:30042:30043:30044:30045:30046:30047:30048:30049:30050:30051:30052:30053:30054:30055:30057:30058:30059:30060:30061:30062:30063:30064:30065:30066:30067:30068:30069:30070:30071:30072:30073:30074:30075:30076:30077:30078:30079:30080:300
-X-HE-Tag: smell79_1c14f78271c4
-X-Filterd-Recvd-Size: 2318
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  6 Oct 2020 04:55:04 +0000 (UTC)
-Message-ID: <92c4f9bd1d43b80a424a52131fcbc6a1a416de64.camel@perches.com>
-Subject: Re: [RFC PATCH] DRM: amd: powerplay: don't undef pr_warn() {causes
- ARC build errors}
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Cc:     kernel test robot <lkp@intel.com>, Evan Quan <evan.quan@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>
-Date:   Mon, 05 Oct 2020 21:55:03 -0700
-In-Reply-To: <9c86375d-34a9-6584-0069-452b193076d6@infradead.org>
-References: <9c86375d-34a9-6584-0069-452b193076d6@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1726739AbgJFE6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 00:58:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725963AbgJFE6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 00:58:06 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E71420782;
+        Tue,  6 Oct 2020 04:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601960285;
+        bh=No65u2z/JLmabKggIX1FzjIr8Y3OJWVr8Z7RrHC8IFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BCVMV8QidVPtXU/OPsTicNP4Q6mD9B4onOLF+uqkufelA+VRt6KPk+l6FfiVzSm0d
+         5jZqO2v+jiO0U3wh7ZjBC2vC7BBBSL157sXRkHPgF1yhRUDmDbs9GOULCZOeRWa+Fn
+         DkqtE+BNDb3cZPJgUPH1Ax0pIKs2VzcQDDGY8qbE=
+Date:   Tue, 6 Oct 2020 07:58:00 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
+        Keith Busch <kbusch@kernel.org>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH blk-next 1/2] blk-mq-rdma: Delete not-used multi-queue
+ RDMA map queue code
+Message-ID: <20201006045800.GE1874917@unreal>
+References: <20200929091358.421086-1-leon@kernel.org>
+ <20200929091358.421086-2-leon@kernel.org>
+ <20200929102046.GA14445@lst.de>
+ <20200929103549.GE3094@unreal>
+ <879916e4-b572-16b9-7b92-94dba7e918a3@grimberg.me>
+ <20201002064505.GA9593@lst.de>
+ <14fab6a7-f7b5-2f9d-e01f-923b1c36816d@grimberg.me>
+ <20201005083817.GA14908@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005083817.GA14908@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-05 at 21:50 -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> arch/arc/ implements BUG_ON() with BUG(). ARC has its own BUG()
-> function and that function uses pr_warn() as part of its implementation.
-> 
-> Several (8) files in amd/powerplay/ #undef various pr_xyz() functions so
-> that they won't be used by these drivers, since dev_() functions are
-> preferred here and the #undefs make the pr_() functions unavailable.
-[]
-> --- lnx-59-rc7.orig/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
-> +++ lnx-59-rc7/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
-> @@ -52,7 +52,7 @@
->   * They are more MGPU friendly.
->   */
->  #undef pr_err
-> -#undef pr_warn
-> +//#undef pr_warn
->  #undef pr_info
->  #undef pr_debug
->  
-> --- lnx-59-rc7.orig/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
-> +++ lnx-59-rc7/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
-> @@ -54,7 +54,7 @@
->   * They are more MGPU friendly.
->   */
->  #undef pr_err
-> -#undef pr_warn
-> +//#undef pr_warn
->  #undef pr_info
->  #undef pr_debug 
+On Mon, Oct 05, 2020 at 10:38:17AM +0200, Christoph Hellwig wrote:
+> On Fri, Oct 02, 2020 at 01:20:35PM -0700, Sagi Grimberg wrote:
+> >> Well, why would they change it?  The whole point of the infrastructure
+> >> is that there is a single sane affinity setting for a given setup. Now
+> >> that setting needed some refinement from the original series (e.g. the
+> >> current series about only using housekeeping cpus if cpu isolation is
+> >> in use).  But allowing random users to modify affinity is just a receipe
+> >> for a trainwreck.
+> >
+> > Well allowing people to mangle irq affinity settings seem to be a hard
+> > requirement from the discussions in the past.
+> >
+> >> So I think we need to bring this back ASAP, as doing affinity right
+> >> out of the box is an absolute requirement for sane performance without
+> >> all the benchmarketing deep magic.
+> >
+> > Well, it's hard to say that setting custom irq affinity settings is
+> > deemed non-useful to anyone and hence should be prevented. I'd expect
+> > that irq settings have a sane default that works and if someone wants to
+> > change it, it can but there should be no guarantees on optimal
+> > performance. But IIRC this had some dependencies on drivers and some
+> > more infrastructure to handle dynamic changes...
+>
+> The problem is that people change random settings.  We need to generalize
+> it into a sane API (e.g. the housekeeping CPUs thing which totally makes
+> sense).
 
-These are bad ideas as all of these pr_<level> entries
-may become functions in a near-term future.
+I don't see many people jump on the bandwagon, someone should do it, but
+who will? I personally have no knowledge in that area to do anything
+meaningful.
 
-
+Thanks
