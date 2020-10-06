@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50722852E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58352852F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgJFUJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:09:48 -0400
-Received: from smtprelay0160.hostedemail.com ([216.40.44.160]:56374 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725962AbgJFUJs (ORCPT
+        id S1727236AbgJFULb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbgJFULb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:09:48 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 5607F100E7B4C;
-        Tue,  6 Oct 2020 20:09:47 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3872:3873:4250:4321:4384:5007:7576:8957:10004:10400:10848:11026:11232:11658:11914:12297:12438:12740:12760:12895:13069:13095:13311:13357:13439:14181:14659:14721:14777:21080:21433:21627:21740:21819:21987:30003:30022:30029:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: event64_5d11b9e271c9
-X-Filterd-Recvd-Size: 2155
-Received: from XPS-9350 (unknown [172.58.35.183])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  6 Oct 2020 20:09:45 +0000 (UTC)
-Message-ID: <cd8fb6742e4776a98412278815fc86b568820b6e.camel@perches.com>
-Subject: Re: [PATCH v4] checkpatch: add new warnings to author signoff
- checks.
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 06 Oct 2020 13:09:42 -0700
-In-Reply-To: <CABJPP5Awe=CDC7riYBBVDf9WRO4aAMXK2QROYdtGyJXNjqB-ew@mail.gmail.com>
-References: <20201006185114.168358-1-dwaipayanray1@gmail.com>
-         <8553d6679f97ae9d285a9ffd61198f5e3c11dc35.camel@perches.com>
-         <CABJPP5Awe=CDC7riYBBVDf9WRO4aAMXK2QROYdtGyJXNjqB-ew@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 6 Oct 2020 16:11:31 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CC2C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:11:31 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a1so2157598pjd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:11:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C9Kgi1FQskOa5rSl0SoHJY6w4fOZRjsIxfeDIa/Yl5g=;
+        b=bngJdOednPPuqfXzuTJ3Dna0ddWYu8EHGAsghPWNLqJ86xkIxlVYD3DaouvgHlvfr1
+         tsbrpAorqyu87ogKgW7Kzqb20vTlFInPzWyEde1ZEN3f73TuSOgtc3TiI3BrvhbpOTip
+         qsQQ3OcXdR1wmhVUyWYbqAWOu9INTKEK7EdaU6G4trqmG7SwMjrb8yIu+F3PK8n26F01
+         3kLgcXPtzfSQpb8HCdi7h0JgfRs8xUHSQ8myifYJ5K8Yp0iY8j0qOldzO9qa+eKj0vCe
+         NfXCRjiDklhO2TGhN1UQLb64yfHgFSoTUAJtc8WLmhZayGufgO3I5sHK+Mw30JNry16E
+         zh8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C9Kgi1FQskOa5rSl0SoHJY6w4fOZRjsIxfeDIa/Yl5g=;
+        b=F9OfvDCJ+7Ggt9sStWocur+alO0p9l/151ckixavkKxsB0y98eGkdISzbkX5xujqrX
+         cDVNbHS0WwrI1aFFEJ9pdCq/aIeZb9nqzTOkg7ajSQV415xIMSMPYVNLMxjf/csGdoF/
+         u12x81fy98V9qkqeH1NUuFpxexqcVwmSKBuUUr0ylWzTJlS0GN5w7HeH8DeI3ozogNK0
+         36hKQyHFdpEVCHtoY3cvzpe9M+HhsP8dwEGSt/757dsZOY8eM2jntqP6sD+3XHPrRHKy
+         4vBQSwkGaINfhgR0DWZ9/ATxzjKO2FcDnFeeNcFQlYgenCgbSOP3J2duayzDtR8mYwB2
+         ugmQ==
+X-Gm-Message-State: AOAM532LFVtg+AoVLrbpbCif7/fLwWqIEl/U+2pVIJxYpgcN2EFKcvLP
+        XQkfkzVAuuA2YLxJPQi3z/E=
+X-Google-Smtp-Source: ABdhPJyzZeCqbMGIe9fwsCjHJi8T25atdRy70SOIh1kg2RHVkXJKhsTDrSI/CDE6vczBsNkMcQ2qDw==
+X-Received: by 2002:a17:902:7896:b029:d3:7768:1eb with SMTP id q22-20020a1709027896b02900d3776801ebmr4632386pll.17.1602015090360;
+        Tue, 06 Oct 2020 13:11:30 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id e27sm13504pfj.62.2020.10.06.13.11.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 13:11:29 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, KP Singh <kpsingh@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] LSM: Fix type of id parameter in kernel_post_load_data prototype
+Date:   Tue,  6 Oct 2020 13:11:15 -0700
+Message-Id: <20201006201115.716550-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-07 at 00:31 +0530, Dwaipayan Ray wrote:
-> On Wed, Oct 7, 2020 at 12:25 AM Joe Perches <joe@perches.com> wrote:
-> > On Wed, 2020-10-07 at 00:21 +0530, Dwaipayan Ray wrote:
-> > > The author signed-off-by checks are currently very vague.
-> > > Cases like same name or same address are not handled separately.
-> > > 
-> > > For example, running checkpatch on commit be6577af0cef
-> > > ("parisc: Add atomic64_set_release() define to avoid CPU soft lockups"),
-> > > gives:
-> > 
-> > Aren't you still missing emitting an message for cases like
-> > 
-> > From: "J. Random Developer" <jrd@bigcorp.com>
-> > [...]
-> > Signed-off-by: "J. Random Developer" (BigCorp) <jrd@bigcorp.com>
-> > 
-> > Where a comment does not match?
-> > 
-> > 
-> 
-> Yes, messages for comments were not emitted previously too
-> cause the same_email_address() function just matches name
-> and email (discarding name comments and email comments).
-> 
-> So should I add it to this patch, or should I work on it in a different
-> patch perhaps because it involves change on another subroutine?
+Clang warns:
 
-I suggest adding it to this patch.
+security/security.c:1716:59: warning: implicit conversion from
+enumeration type 'enum kernel_load_data_id' to different enumeration
+type 'enum kernel_read_file_id' [-Wenum-conversion]
+        ret = call_int_hook(kernel_post_load_data, 0, buf, size, id,
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+security/security.c:715:22: note: expanded from macro 'call_int_hook'
+                        RC = P->hook.FUNC(__VA_ARGS__);         \
+                             ~            ^~~~~~~~~~~
+1 warning generated.
 
+There is a mismatch between the id parameter type in
+security_kernel_post_load_data and the function pointer prototype that
+is created by the LSM_HOOK macro in the security_list_options union. Fix
+the type in the LSM_HOOK macro as 'enum kernel_load_data_id' is what is
+expected.
+
+Fixes: b64fcae74b6d ("LSM: Introduce kernel_post_load_data() hook")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1172
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ include/linux/lsm_hook_defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index d67cb3502310..32a940117e7a 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -186,7 +186,7 @@ LSM_HOOK(int, 0, kernel_create_files_as, struct cred *new, struct inode *inode)
+ LSM_HOOK(int, 0, kernel_module_request, char *kmod_name)
+ LSM_HOOK(int, 0, kernel_load_data, enum kernel_load_data_id id, bool contents)
+ LSM_HOOK(int, 0, kernel_post_load_data, char *buf, loff_t size,
+-	 enum kernel_read_file_id id, char *description)
++	 enum kernel_load_data_id id, char *description)
+ LSM_HOOK(int, 0, kernel_read_file, struct file *file,
+ 	 enum kernel_read_file_id id, bool contents)
+ LSM_HOOK(int, 0, kernel_post_read_file, struct file *file, char *buf,
+
+base-commit: dba8648dcab90564b8a11c952c06a9e1153506fb
+-- 
+2.29.0.rc0
 
