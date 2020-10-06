@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39202852B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26F62852C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727176AbgJFT5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:57:17 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:2157 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgJFT5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:57:16 -0400
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7ccc1a0000>; Wed, 07 Oct 2020 03:57:14 +0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
- 2020 19:57:11 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.54) by
- HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 6 Oct 2020 19:57:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C3JaJs71AmHNyeefFtO6CQSttK5OCQTjdUpFSsYO+N1qfeil+6VjFXjUWMKEaOwKD29/R7O/Bx6jv6c7TQtwCyC57qPbzlksrZ+dY9DnwN3o6hP2Xz5ymPdDCkLDVHYFYe2j+UvkRP52u72yhhD7lLPkdmMb0TbLZ6ba0XjTLdXQrA/Af9Wp0Drsvwo2XeXoc/LG7U0l4cErwbPsl65Dq+hzPlrpTCEw7ACEnINQsCpT1PxdudWrHpp08UAL+y3kV8TY2YeivrpXFKDkwrFh0VQKSKDt/Ss5RxbwSzwsputK/iudSrE4Npz4SOiQPzeAc9/triaohKpOf5j3oD5ZIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QIQgotZjbgtbePDGBorQQND4hYGxHZ/sSx6mYy8MD+g=;
- b=VYGdEYKDFdLtL5TUx/gXrvXkFoqO4E5PLgdHPMeNcdvbIFY0PYc/U2Zs9Uz78snVJz8GspJfXBO/wK67XxbxueVJC0am5NLd/lTk08At7/aOJ9CqI/OcCGKb9Mx+jhDtj3yXgte3NBrtI/+l9UVOAJ0ylXlAyhLUy9ogOscwIr73flQBuFDvpEy2oo3aLwmiaQQSNoMbASc30DSh0JbYy0eILHwT+BOTpk2y1IDlxJ6tL7Pgg5iqDnENrfPui8gwjhOA+1GzIvVHDsAJaFmykrTFzZhnhakJOrVFK6sKQHFYLOH+p39W9WPgv4K3MP9iF4rEfgJ13hxKNqT04byhIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4235.namprd12.prod.outlook.com (2603:10b6:5:220::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Tue, 6 Oct
- 2020 19:57:09 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.044; Tue, 6 Oct 2020
- 19:57:09 +0000
-Date:   Tue, 6 Oct 2020 16:57:08 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Colin King <colin.king@canonical.com>
-CC:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Eddie Wai <eddie.wai@broadcom.com>,
-        <linux-rdma@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] RDMA/bnxt_re: fix sizeof mismatch for allocation
- of pbl_tbl.
-Message-ID: <20201006195708.GA165314@nvidia.com>
-References: <20201006114700.537916-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201006114700.537916-1-colin.king@canonical.com>
-X-ClientProxiedBy: MN2PR17CA0016.namprd17.prod.outlook.com
- (2603:10b6:208:15e::29) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727186AbgJFT7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbgJFT7T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 15:59:19 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D296CC061755;
+        Tue,  6 Oct 2020 12:59:19 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k8so9687484pfk.2;
+        Tue, 06 Oct 2020 12:59:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZYjJmEzfZrC6Hihw3ID6mMFuzIxUBipJdm+pO3rrqoY=;
+        b=i3iGk2ZX1himIdLPkto0elmDN6PMTmLq7WiGsSUdW9WdrFLn4YFHlgRfL0VMoacqlS
+         DXpk+AoHyNNKWiFTaHqixzdd69Mu3zAMGnH2msxkUpXOJkBcTiL0A0MAhTu0yfl89UBE
+         YxcJ92Adjx5ckMyqQ2wTXe5dJgkWkBw/7wbE+ruml7E/G4kz2vKTk8tjY1s0VgPmLDmT
+         pRuIQ6FJGtFNcXyeZ/hs5GpJbBhY/FiKpIHRF9IL7T4HacNBincGSrkbF8oFU+DoEAjf
+         PZpP+VH92MINfUc8TO4kX3+8TR0IufUaQf+HBflWaqwPRlsEnQZiHmK7+f9SrPmx98PF
+         qqHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZYjJmEzfZrC6Hihw3ID6mMFuzIxUBipJdm+pO3rrqoY=;
+        b=AEjy3P7FZEtKc3EUrrwr39rvKfnkUNkuJ/HqSGhSKN6OlUuQe7hGtkpS2LrxEJU9Gs
+         JfTx35SXi/Xs/2mflRCY/dyHJYRt34NU30TabqvO7Bxd7n9qpm7wG231YdfPqSP9mo18
+         bF6F6oF/S0vExbz9aKME7JbiIY/YQtwuOHY7qvyV24C9ROt+QXD3hw7T1lctS/nBH31R
+         XrvQfL0iuVnL3UKdnpwiwcPJXHOT+FZKR2oY/Rt3P+rg4+ECKPg2NtwWVTcWiI5T52vq
+         8pLElQMKa5S62qnjfx06E0GeIdc7Ed+7KkJ2AksiZA7QIU9iubwQFDFXh11zuKC/oMzg
+         VRiQ==
+X-Gm-Message-State: AOAM533lVGeAV3D4qNgiWxTF3TiYyhnzdGU2pp/PoEz3n6qLwYT8J8CD
+        U0WMzrwbz/jbXrEIFAT0Rn0=
+X-Google-Smtp-Source: ABdhPJyMGvLRP5VoA5b32DWBiERlsyISvHJjQfLqGqsvjGM6UzGYbTWWrh++/+RMyN8OJ9sxaAuqUg==
+X-Received: by 2002:a63:1542:: with SMTP id 2mr2204654pgv.248.1602014359196;
+        Tue, 06 Oct 2020 12:59:19 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id t10sm1901423pjr.37.2020.10.06.12.59.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 12:59:18 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] crypto: xor - Remove unused variable count in do_xor_speed
+Date:   Tue,  6 Oct 2020 12:58:48 -0700
+Message-Id: <20201006195848.707504-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0016.namprd17.prod.outlook.com (2603:10b6:208:15e::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21 via Frontend Transport; Tue, 6 Oct 2020 19:57:09 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kPt5A-000h0z-4q; Tue, 06 Oct 2020 16:57:08 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602014234; bh=QIQgotZjbgtbePDGBorQQND4hYGxHZ/sSx6mYy8MD+g=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=m83MtDrOJBM+LxwGBAfahMXTwjGrRYOL/AE9RMIw7ua9+LNdsEqcW+HR4TQOtB/mk
-         WoJPCRSkaWdf0rSG6yu0JZYTwDgrZD23IDsZOqpBVBtX6SyBhoghswQ8q3EBlVLy9e
-         kgzuEiCxs6Rq0bgvh2pVboX0oeFmgyHZIvbEg6Dq5Q7DXZyTzxM5TLyUyM0LA+P39b
-         tjziR0lQ8aMJ5ZB8P5ejnuBelaIpJmm4YMtEVuJO4RlCLpYuxDKFIK/BzYTm9wT40s
-         pPui35YWVVI7U7OE8CXxyagYyY9ZD5qxPeoVHmQuDLYXT8LClswZF7BN1+GW/rK+QH
-         LJkTyHF5QXWxA==
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 12:47:00PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> An incorrect sizeof is being used, u64 * is not correct, it should be
-> just u64 for a table of umem_pgs number of u64 items in the pbl_tbl.
-> Use the idiom sizeof(*pbl_tbl) to get the object type without the need
-> to explicitly use u64.
-> 
-> Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
-> Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Clang warns:
 
-Applied to for-next, thanks
+crypto/xor.c:101:4: warning: variable 'count' is uninitialized when used
+here [-Wuninitialized]
+                        count++;
+                        ^~~~~
+crypto/xor.c:86:17: note: initialize the variable 'count' to silence
+this warning
+        int i, j, count;
+                       ^
+                        = 0
+1 warning generated.
 
-Jason
+After the refactoring to use ktime that happened in this function, count
+is only assigned, never read. Just remove the variable to get rid of the
+warning.
+
+Fixes: c055e3eae0f1 ("crypto: xor - use ktime for template benchmarking")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1171
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ crypto/xor.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/crypto/xor.c b/crypto/xor.c
+index a0badbc03577..eacbf4f93990 100644
+--- a/crypto/xor.c
++++ b/crypto/xor.c
+@@ -83,7 +83,7 @@ static void __init
+ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+ {
+ 	int speed;
+-	int i, j, count;
++	int i, j;
+ 	ktime_t min, start, diff;
+ 
+ 	tmpl->next = template_list;
+@@ -98,8 +98,6 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+ 			mb(); /* prevent loop optimzation */
+ 			tmpl->do_2(BENCH_SIZE, b1, b2);
+ 			mb();
+-			count++;
+-			mb();
+ 		}
+ 		diff = ktime_sub(ktime_get(), start);
+ 		if (diff < min)
+
+base-commit: ed4424f2fb02497b0ea92bf58c533c598c0da1d3
+-- 
+2.29.0.rc0
+
