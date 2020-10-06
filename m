@@ -2,115 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D860284BC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D89E284BC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgJFMj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
+        id S1726602AbgJFMlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgJFMj4 (ORCPT
+        with ESMTP id S1726362AbgJFMlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:39:56 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CB4C061755;
-        Tue,  6 Oct 2020 05:39:56 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id i5so367984edr.5;
-        Tue, 06 Oct 2020 05:39:56 -0700 (PDT)
+        Tue, 6 Oct 2020 08:41:01 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92656C061755;
+        Tue,  6 Oct 2020 05:41:01 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id y198so10074661qka.0;
+        Tue, 06 Oct 2020 05:41:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PDfjNNuI8ntPGAI87RSMywylXAzVcUt7MXvjlFqM91Q=;
-        b=hbUZ41dDHeSJJ1OpfyoiOxv14aL1baBaXpNOm0OWS/pY+RKg6VeYeHAK45rNFNO0PN
-         VmOoztHUfQo7oz6PfLM81R1WybntMdsWHzRoqbvTAadLfuIiW7yo+qUqV3lb2qcpx/yf
-         TddGLsKlgvLHnzktKgxAkBcueCsMPNr0S7WoE1HC74/RQKVcCO+JFwTcsWWJbjZ5/bzS
-         TlhlnWxRPJzmBt2vifDFL5Mpso47zmSjVXcVB2yAE/5WrRGzq3cowKymFS427MnDprTq
-         hf2NwjTypMwN9dyUfuLKM2Ih9i+AREPiVRwmv8i4JSl1SQy1NInHeUZYlrFTOTd4SprT
-         ijFw==
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JaPcxTzHOUYSQCnzELOojEKcjmTrX8LESVFQagjWhck=;
+        b=HOJNvrVoZQZdk40LnRGQYDH8TyQKVGQFHrekgmxL28a1RKktojXVKlLt1v8A8tobgQ
+         rzStEJ0fXQged/50vnIu6n39N3w4LJa0JqDJry21gsqWlpo+Mepm57yCt/TZPoWZXepH
+         5zz3r2F5xZkfdPP9Wr6oRk6rYhASD5kLXXgKhe4sTfbAVCAj7/JLCJtF11g92FjMO1o9
+         xx/KZMH6WlbLfhNIeZGEQwJ4GmE7oprcBjMMzZOujky1aFZYuPQUNimZI/4NbewQF/SZ
+         pbD/JylWg/DKZnZwLe/hcG4wKrtaffvKDtIZsGJHkC7FJtGEsquZTPEoP+Q2wQkI79Dv
+         uqhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PDfjNNuI8ntPGAI87RSMywylXAzVcUt7MXvjlFqM91Q=;
-        b=tPxoIcchBxXupTZetHsMH3rB8vLPwqf0EdXvu6nHIQzd+v49q9F+UhO+/NK8mlHFK/
-         qdL/gQANm4I/Y/Ysu3bKT/SFI1DADsJHt6aNeR+0ovylexDFD9CRty/Cuog/ciSkh+/w
-         5Opu1XlNhjZgyKxLVuye0ndKjuOHPjxmh8JZZlRd1dbgso8KHts0whfY3CtkDQYaU9ai
-         yI4tMLc/D9OREPJZ4FYm1XJvsqGf6InKnsHJ1UNBCHMsBCwxK21ErqzpwKcVxLyk5wzg
-         ydI4zc3Dvawz86vwbUQzWEA4pKYqp1gWJOxqjYB0wesJSv+V5jPhMjSe4EuZ2jna9gZP
-         WKgA==
-X-Gm-Message-State: AOAM530SyqrX6oeX2Yx33LTy0bYwodEq+8RjddjrNc2tSrIfuuKu+i1n
-        tXlQSWGMa1CWbQObKf2eM1avSRkZ9lo=
-X-Google-Smtp-Source: ABdhPJxK3ZxagNcu+hHEkHxPDu92CO2yjszW+SvKx1HIN4XtNALCQ0STGkdQSXejAqzk8Bwd+fYrWw==
-X-Received: by 2002:a05:6402:18d:: with SMTP id r13mr5073298edv.267.1601987995071;
-        Tue, 06 Oct 2020 05:39:55 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id r27sm2301228edx.33.2020.10.06.05.39.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 05:39:53 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 14:39:49 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
-Subject: Re: [PATCH v2 0/4] soc/tegra: Prevent the PMC driver from corrupting
- interrupt routing
-Message-ID: <20201006123949.GA1888126@ulmo>
-References: <20201006101137.1393797-1-maz@kernel.org>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JaPcxTzHOUYSQCnzELOojEKcjmTrX8LESVFQagjWhck=;
+        b=KFOZbJvt74HANy1FV6YuocyUxCiqKvECnlrn3IvdyB7VJh/7AM5NJ2uSZXR5kJ9bo/
+         5JmY2n/GqekYwQ4buxKUg4uT9KybLK3BlOpoQ/0BG7F3EMGIDN0zUnoTJobAKR+ADN01
+         VxNW929E8bf2wgMoOgABDFjFnV4eZTdfjK1/CkjKGIDy4KSdYMtNzoJ8b58qJLEdg9AG
+         OEFKCNPJ0MrNdX9G4ftfFQ76YovKg68H5Y0pGI3lHKf1cO6FlJiGJgoaqC582xcq39F0
+         aWleTNSxj4x3FKwqtCTsPCFf4yMwvuylfGbhg+SFYQzCtAfOUbC/hZeyqIf0eQIiE4xE
+         W4RQ==
+X-Gm-Message-State: AOAM533bWu+T9wutHRv9BTUYCPfqcjJAfy5I57RrfVArK70Rcc/S+UXV
+        VjJTI8oMt3qiUUZyAM9Wh6M=
+X-Google-Smtp-Source: ABdhPJzwWbtY06hLKwxuR0LFgyHV8RZT87PYv1SxqOJUhSGqN46nXcpIwo0odOCSItAMJ740qHzxvQ==
+X-Received: by 2002:a37:5144:: with SMTP id f65mr5193131qkb.351.1601988060707;
+        Tue, 06 Oct 2020 05:41:00 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:1102::1844? ([2620:10d:c091:480::1:e46d])
+        by smtp.gmail.com with ESMTPSA id s3sm203856qkj.27.2020.10.06.05.40.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 05:40:59 -0700 (PDT)
+From:   Jes Sorensen <jes.sorensen@gmail.com>
+X-Google-Original-From: Jes Sorensen <Jes.Sorensen@gmail.com>
+Subject: Re: [RFC] Status of orinoco_usb
+To:     Arend Van Spriel <arend.vanspriel@broadcom.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20201002103517.fhsi5gaepzbzo2s4@linutronix.de>
+ <20201002113725.GB3292884@kroah.com>
+ <20201002115358.6aqemcn5vqc5yqtw@linutronix.de>
+ <20201002120625.GA3341753@kroah.com> <877ds4damx.fsf@codeaurora.org>
+ <0c67580b-1bed-423b-2f00-49eae20046aa@broadcom.com>
+Message-ID: <7f6e7c37-b7d6-1da4-6a3d-257603afd2ae@gmail.com>
+Date:   Tue, 6 Oct 2020 08:40:57 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
-Content-Disposition: inline
-In-Reply-To: <20201006101137.1393797-1-maz@kernel.org>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <0c67580b-1bed-423b-2f00-49eae20046aa@broadcom.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/6/20 3:45 AM, Arend Van Spriel wrote:
+> + Jes
+> 
+> On 10/5/2020 4:12 PM, Kalle Valo wrote:
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>>
+>>> On Fri, Oct 02, 2020 at 01:53:58PM +0200, Sebastian Andrzej Siewior
+>>> wrote:
+>>>> On 2020-10-02 13:37:25 [+0200], Greg Kroah-Hartman wrote:
+>>>>>> Is it possible to end up here in softirq context or is this a relic?
+>>>>>
+>>>>> I think it's a relic of where USB host controllers completed their
+>>>>> urbs
+>>>>> in hard-irq mode.  The BH/tasklet change is a pretty recent change.
+>>>>
+>>>> But the BH thingy for HCDs went in v3.12 for EHCI. XHCI was v5.5. My
+>>>> guess would be that people using orinoco USB are on EHCI :)
+>>>
+>>> USB 3 systems run XHCI, which has a USB 2 controller in it, so these
+>>> types of things might not have been noticed yet.  Who knows :)
+>>>
+>>>>>> Should it be removed?
+>>>>>
+>>>>> We can move it out to drivers/staging/ and then drop it to see if
+>>>>> anyone
+>>>>> complains that they have the device and is willing to test any
+>>>>> changes.
+>>>>
+>>>> Not sure moving is easy since it depends on other files in that folder.
+>>>> USB is one interface next to PCI for instance. Unless you meant to move
+>>>> the whole driver including all interfaces.
+>>>> I was suggesting to remove the USB bits.
+>>>
+>>> I forgot this was tied into other code, sorry.  I don't know what to
+>>> suggest other than maybe try to fix it up the best that you can, and
+>>> let's see if anyone notices...
+>>
+>> That's what I would suggest as well.
+>>
+>> These drivers for ancient hardware are tricky. Even if there doesn't
+>> seem to be any users on the driver sometimes people pop up reporting
+>> that it's still usable. We had that recently with one another wireless
+>> driver (forgot the name already).
+> 
+> Quite a while ago I shipped an orinoco dongle to Jes Sorensen which he
+> wanted to use for some intern project if I recall correctly. Guess that
+> idea did not fly yet.
 
---J/dobhs11T7y2rNN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I had an outreachy intern who worked on some of it, so I shipped all my
+Orinoco hardware to her. We never made as much progress as I had hoped,
+and I haven't had time to work on it since.
 
-On Tue, Oct 06, 2020 at 11:11:33AM +0100, Marc Zyngier wrote:
-> This is a respin of the initial version posted at [1] (the cover
-> letter describes the rational for doing this).
->=20
-> Jon, Thierry: I haven't applied your TB tags as the series has changed
-> significantly. Please let me know if they are still valid.
->=20
-> If everybody is OK with this, I'll stick it in irq/irqchip-next.
+Cheers,
+Jes
 
-Looks good to me, still booting fine and waking up from suspend via wake-
-events, albeit still with the unrelated issues:
-
-Tested-by: Thierry Reding <treding@nvidia.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---J/dobhs11T7y2rNN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl98ZYcACgkQ3SOs138+
-s6GTMw//cIY//y1C9HqaPcgfu3lg0bX29BmpzKpeELWhURu0S9JfLpRLmYY/R+z5
-2lV+/2nRXdGTMwn2hhVDjmZz9CyUSlzr2jb0yaBDS9XvcxAaiW5dEDs7HmCsiZaM
-ZVpGH9BGCW0cIBPpCwnVVPK3Z0r01PWZuZHE/T6X0jZA5F0pKcdeaQxad/Cphpt7
-L26lzSxNewNks7e20Nb8h+aTc2gv+IiHZzIck9Pfk2ikG/9pLRq8T2HVCyA4BPmq
-0tTyINmmyKUJaYvElj9S47GIueTJ7PKalpjH3nujYp28YGuSZPVVjbhFMEuFcBYm
-gZj4lbzOAORGqv6ezbxTqQxC2UAaOi5Faxuy03t9JaMyhKmuer9/9AUAvE/+kGA4
-4jsvkpxfUXOFOpsVjGcfYgpblrDBeuTitIIyNG2Ux9SYrZTFK5O2GKp1bE8ZABmU
-dHbOFymNESXcdV6YVNzxSo5So7YpAVKQivUM7bt9BgTeFXyJzUhmDo0DaW19KKNN
-m/Y35jUUkaO1QymewTDQzub4ik6f4Mvvt3G1hBlT+G8kZKdpH54VuHJBVzg7biIT
-pkczprNwvu5T5KlgVgz4hcJW/GxkEh3ZzvxJV56hSMpVpQaztAaNYTDPFtPZSBM5
-3DHE0utiDveEsJFsMAIOWRefdEayzlgg7UfxEwFu1M3XbRn+yEk=
-=PK80
------END PGP SIGNATURE-----
-
---J/dobhs11T7y2rNN--
