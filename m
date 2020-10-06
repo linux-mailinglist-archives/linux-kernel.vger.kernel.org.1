@@ -2,172 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B423284A29
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44A4284A35
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgJFKLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:11:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56890 "EHLO mail.kernel.org"
+        id S1726589AbgJFKNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:13:48 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49886 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726075AbgJFKLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:11:47 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B5C720853;
-        Tue,  6 Oct 2020 10:11:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601979105;
-        bh=NZTkrPpxbTDeDFNsq+Knp0WH5R+1R2cA6tjzcVY1/Q4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MYS5d7ZawOe+3ULT5X5XidlD8VszR2DErwp/aKKhu7W7D2oCwp6lobXIieS1SR6du
-         y1fzxanDXg3z3Fs0AUYP/EBVUGNskChbN+rfKYtHdKFwLf3TFYq/cx/NDSN+XX4/Tg
-         5BStCE33dPGQAylLJOfsZYTWQSHbEfKkhmvInoX4=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kPjwe-0002Qo-0u; Tue, 06 Oct 2020 11:11:44 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
-Subject: [PATCH v2 4/4] soc/tegra: pmc: Don't create fake interrupt hierarchy levels
-Date:   Tue,  6 Oct 2020 11:11:37 +0100
-Message-Id: <20201006101137.1393797-5-maz@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201006101137.1393797-1-maz@kernel.org>
-References: <20201006101137.1393797-1-maz@kernel.org>
+        id S1725939AbgJFKNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:13:48 -0400
+IronPort-SDR: GJF+ZJKmB7AyyGNA5nEd8GwyFlQtzPW5jXr+po7dyltA3xIulumVLRQMvivohgMQ/PRpaBUb3H
+ 3Vlz+IzCgEZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="249139349"
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
+   d="scan'208";a="249139349"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 03:13:47 -0700
+IronPort-SDR: XAaSnIz0pfANUQnsfhr7b0MqHvxOGh6WYsP/F5uIvEYBQsWAVr/l6KzC064+WJuap1kJdFXrQS
+ wOums69vryMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
+   d="scan'208";a="315559985"
+Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 06 Oct 2020 03:13:46 -0700
+Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kPjyb-0001A1-0A; Tue, 06 Oct 2020 10:13:45 +0000
+Date:   Tue, 06 Oct 2020 18:13:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/drm/amd/pm/vi_dpm_table] BUILD SUCCESS
+ f5f1d7aa62162df4516afc1cad92257ccf442dcc
+Message-ID: <5f7c433c.TTk9rnA+F58kyDUy%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, tglx@linutronix.de, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Tegra PMC driver does ungodly things with the interrupt hierarchy,
-repeatedly corrupting it by pulling hwirq numbers out of thin air,
-overriding existing IRQ mappings and changing the handling flow
-of unsuspecting users.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/drm/amd/pm/vi_dpm_table
+branch HEAD: f5f1d7aa62162df4516afc1cad92257ccf442dcc  drm/amd/pm: Replace one-element array with flexible-array member in struct vi_dpm_table
 
-All of this is done in the name of preserving the interrupt hierarchy
-even when these levels do not exist in the HW. Together with the use
-of proper IRQs for IPIs, this leads to an unbootable system as the
-rescheduling IPI gets repeatedly repurposed for random drivers...
+elapsed time: 724m
 
-Instead, let's trim the hierarchy yo the level that actually makes
-sense for the HW, and not any deeper. This avoids having unnecessary
-callbacks, overriding mappings, and otherwise keeps the hierarchy sane.
+configs tested: 99
+configs skipped: 2
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                           ip28_defconfig
+sh                   sh7724_generic_defconfig
+m68k                          atari_defconfig
+arc                            hsdk_defconfig
+mips                        qi_lb60_defconfig
+mips                      maltaaprp_defconfig
+mips                           rs90_defconfig
+arm                          exynos_defconfig
+mips                          ath79_defconfig
+arm                          pxa168_defconfig
+mips                           ci20_defconfig
+m68k                            q40_defconfig
+sh                          r7780mp_defconfig
+sparc64                             defconfig
+sh                         apsh4a3a_defconfig
+arm                        multi_v5_defconfig
+xtensa                           alldefconfig
+sh                           se7722_defconfig
+sh                   secureedge5410_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+ia64                             allmodconfig
+mips                        jmr3927_defconfig
+arm                         vf610m4_defconfig
+mips                          ath25_defconfig
+powerpc                 canyonlands_defconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201006
+i386                 randconfig-a005-20201006
+i386                 randconfig-a001-20201006
+i386                 randconfig-a004-20201006
+i386                 randconfig-a003-20201006
+i386                 randconfig-a002-20201006
+x86_64               randconfig-a012-20201005
+x86_64               randconfig-a015-20201005
+x86_64               randconfig-a014-20201005
+x86_64               randconfig-a013-20201005
+x86_64               randconfig-a011-20201005
+x86_64               randconfig-a016-20201005
+i386                 randconfig-a014-20201005
+i386                 randconfig-a015-20201005
+i386                 randconfig-a013-20201005
+i386                 randconfig-a016-20201005
+i386                 randconfig-a011-20201005
+i386                 randconfig-a012-20201005
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201005
+x86_64               randconfig-a002-20201005
+x86_64               randconfig-a001-20201005
+x86_64               randconfig-a003-20201005
+x86_64               randconfig-a005-20201005
+x86_64               randconfig-a006-20201005
+
 ---
- drivers/soc/tegra/pmc.c | 53 ++++-------------------------------------
- 1 file changed, 4 insertions(+), 49 deletions(-)
-
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index b39536c68f45..eed500e4b7b6 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -1989,45 +1989,14 @@ static int tegra_pmc_irq_alloc(struct irq_domain *domain, unsigned int virq,
- 			err = irq_domain_set_hwirq_and_chip(domain, virq,
- 							    event->id,
- 							    &pmc->irq, pmc);
--
--			/*
--			 * GPIOs don't have an equivalent interrupt in the
--			 * parent controller (GIC). However some code, such
--			 * as the one in irq_get_irqchip_state(), require a
--			 * valid IRQ chip to be set. Make sure that's the
--			 * case by passing NULL here, which will install a
--			 * dummy IRQ chip for the interrupt in the parent
--			 * domain.
--			 */
--			if (domain->parent)
--				irq_domain_set_hwirq_and_chip(domain->parent,
--							      virq, 0, NULL,
--							      NULL);
--
-+			if (!err)
-+				err = irq_domain_trim_hierarchy(virq, domain->parent);
- 			break;
- 		}
- 	}
- 
--	/*
--	 * For interrupts that don't have associated wake events, assign a
--	 * dummy hardware IRQ number. This is used in the ->irq_set_type()
--	 * and ->irq_set_wake() callbacks to return early for these IRQs.
--	 */
--	if (i == soc->num_wake_events) {
--		err = irq_domain_set_hwirq_and_chip(domain, virq, ULONG_MAX,
--						    &pmc->irq, pmc);
--
--		/*
--		 * Interrupts without a wake event don't have a corresponding
--		 * interrupt in the parent controller (GIC). Pass NULL for the
--		 * chip here, which causes a dummy IRQ chip to be installed
--		 * for the interrupt in the parent domain, to make this
--		 * explicit.
--		 */
--		if (domain->parent)
--			irq_domain_set_hwirq_and_chip(domain->parent, virq, 0,
--						      NULL, NULL);
--	}
-+	if (i == soc->num_wake_events)
-+		err = irq_domain_trim_hierarchy(virq, domain);
- 
- 	return err;
- }
-@@ -2043,9 +2012,6 @@ static int tegra210_pmc_irq_set_wake(struct irq_data *data, unsigned int on)
- 	unsigned int offset, bit;
- 	u32 value;
- 
--	if (data->hwirq == ULONG_MAX)
--		return 0;
--
- 	offset = data->hwirq / 32;
- 	bit = data->hwirq % 32;
- 
-@@ -2080,9 +2046,6 @@ static int tegra210_pmc_irq_set_type(struct irq_data *data, unsigned int type)
- 	unsigned int offset, bit;
- 	u32 value;
- 
--	if (data->hwirq == ULONG_MAX)
--		return 0;
--
- 	offset = data->hwirq / 32;
- 	bit = data->hwirq % 32;
- 
-@@ -2123,10 +2086,6 @@ static int tegra186_pmc_irq_set_wake(struct irq_data *data, unsigned int on)
- 	unsigned int offset, bit;
- 	u32 value;
- 
--	/* nothing to do if there's no associated wake event */
--	if (WARN_ON(data->hwirq == ULONG_MAX))
--		return 0;
--
- 	offset = data->hwirq / 32;
- 	bit = data->hwirq % 32;
- 
-@@ -2154,10 +2113,6 @@ static int tegra186_pmc_irq_set_type(struct irq_data *data, unsigned int type)
- 	struct tegra_pmc *pmc = irq_data_get_irq_chip_data(data);
- 	u32 value;
- 
--	/* nothing to do if there's no associated wake event */
--	if (data->hwirq == ULONG_MAX)
--		return 0;
--
- 	value = readl(pmc->wake + WAKE_AOWAKE_CNTRL(data->hwirq));
- 
- 	switch (type) {
--- 
-2.28.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
