@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A54285200
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E48F285203
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgJFTD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:03:27 -0400
-Received: from outbound-smtp24.blacknight.com ([81.17.249.192]:48364 "EHLO
-        outbound-smtp24.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726791AbgJFTD0 (ORCPT
+        id S1726938AbgJFTEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:04:22 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:41652 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726791AbgJFTEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:03:26 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp24.blacknight.com (Postfix) with ESMTPS id D3AA1C0C23
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 20:03:24 +0100 (IST)
-Received: (qmail 27506 invoked from network); 6 Oct 2020 19:03:24 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Oct 2020 19:03:24 -0000
-Date:   Tue, 6 Oct 2020 20:03:22 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-Message-ID: <20201006190322.GL3227@techsingularity.net>
-References: <20201006083639.GJ3227@techsingularity.net>
- <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+        Tue, 6 Oct 2020 15:04:22 -0400
+Received: by mail-oi1-f194.google.com with SMTP id x69so13731710oia.8;
+        Tue, 06 Oct 2020 12:04:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qRpEP4O4Xg7xFp6XQzZqQIu/xXtLIIBg9evjxYMVcxA=;
+        b=eXc2eFsptcQkJLm/KSKZ5QiGMjYYZW1Vf3S3NrbJfxzlfu0ZSdtIo+qwy8VF+elEhu
+         9XaTbuuKw1XyjOpO1YAw8WxOyRtOL6w4PquhltdLUkjiyUyDQfIZ8XdhNqeFmDbxOnni
+         WFrSPKRJZMA3wxtVOMr19Xav/x1RBGxBAdoU55lIfWpipxJ0NCCsUFjC9dJjpOkwdBoK
+         oP0EuUJeoEFQqMoO6kH5Le9yqlVQ24Pb5lYpscxTSpHA369/Q1jUr7s0yFp+NnB7ypUy
+         zQNVaM5ajLU7xUPw2YFUPoWA0xeVlrxqS6b03LwCUFSrbRmZ/bEDIB4z6QyBpFoh8GT4
+         2Raw==
+X-Gm-Message-State: AOAM532f33WzHpiogdd2gFCbRu4qi4tbFCAzBWOrlefjsVhjeIpXEVH7
+        GEvErcYAPV3Ra4oxJQx+iQ==
+X-Google-Smtp-Source: ABdhPJx7JJEYZejq7vojdRBlVNLxq4Nqt8pFIHjeMaqptJwbsYMpCHWJ6VcmOB1RXwIlYPVt4E9KxA==
+X-Received: by 2002:aca:f203:: with SMTP id q3mr3454887oih.148.1602011061400;
+        Tue, 06 Oct 2020 12:04:21 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m187sm1544891oia.39.2020.10.06.12.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 12:04:20 -0700 (PDT)
+Received: (nullmailer pid 2647308 invoked by uid 1000);
+        Tue, 06 Oct 2020 19:04:19 -0000
+Date:   Tue, 6 Oct 2020 14:04:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Libin <huawei.libin@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v6 15/17] dt-bindings: arm: hisilicon: convert Hi6220
+ domain controller bindings to json-schema
+Message-ID: <20201006190419.GA2646913@bogus>
+References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
+ <20200930031712.2365-16-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200930031712.2365-16-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 06:00:18PM +0200, Rafael J. Wysocki wrote:
-> > server systems") and enable-cst is the commit. It was not fixed by 5.6 or
-> > 5.9-rc8. A lot of bisections ended up here including kernel compilation,
-> > tbench, syscall entry/exit microbenchmark, hackbench, Java workloads etc.
-> > 
-> > What I don't understand is why. The latencies for c-state exit states
-> > before and after the patch are both as follows
-> > 
-> > /sys/devices/system/cpu/cpu0/cpuidle/state0/latency:0
-> > /sys/devices/system/cpu/cpu0/cpuidle/state1/latency:2
-> > /sys/devices/system/cpu/cpu0/cpuidle/state2/latency:10
-> > /sys/devices/system/cpu/cpu0/cpuidle/state3/latency:33
-> > /sys/devices/system/cpu/cpu0/cpuidle/state4/latency:133
-> > 
-> > Perf profiles did not show up anything interesting. A diff of
-> > /sys/devices/system/cpu/cpu0/cpuidle/state0/ before and after the patch
-> > showed up nothing interesting. Any idea why exactly this patch shows up
-> > as being hazardous on Haswell in particular?
-> > 
-> Presumably, some of the idle states are disabled by default on the affected
-> machines.
+On Wed, 30 Sep 2020 11:17:10 +0800, Zhen Lei wrote:
+> Convert the Hisilicon Hi6220 domain controllers binding to DT schema
+> format using json-schema. All of them are grouped into one yaml file, to
+> help users understand differences and avoid repeated descriptions.
 > 
-> Can you check the disable and default_status attributes of each state before
-> and after the commit in question?
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../hisilicon/controller/hi6220-domain-ctrl.yaml   | 68 ++++++++++++++++++++++
+>  .../controller/hisilicon,hi6220-aoctrl.txt         | 18 ------
+>  .../controller/hisilicon,hi6220-mediactrl.txt      | 18 ------
+>  .../controller/hisilicon,hi6220-pmctrl.txt         | 18 ------
+>  4 files changed, 68 insertions(+), 54 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi6220-domain-ctrl.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
 > 
 
-# grep . pre-cst/cpuidle/state*/disable
-pre-cst/cpuidle/state0/disable:0
-pre-cst/cpuidle/state1/disable:0
-pre-cst/cpuidle/state2/disable:0
-pre-cst/cpuidle/state3/disable:0
-pre-cst/cpuidle/state4/disable:0
-# grep . enable-cst/cpuidle/state*/disable
-enable-cst/cpuidle/state0/disable:0
-enable-cst/cpuidle/state1/disable:0
-enable-cst/cpuidle/state2/disable:0
-enable-cst/cpuidle/state3/disable:0
-enable-cst/cpuidle/state4/disable:0
-# grep . pre-cst/cpuidle/state*/default_status
-pre-cst/cpuidle/state0/default_status:enabled
-pre-cst/cpuidle/state1/default_status:enabled
-pre-cst/cpuidle/state2/default_status:enabled
-pre-cst/cpuidle/state3/default_status:enabled
-pre-cst/cpuidle/state4/default_status:enabled
-
-After the commit, the default_status file does not appear in /sys
-
--- 
-Mel Gorman
-SUSE Labs
+Applied, thanks!
