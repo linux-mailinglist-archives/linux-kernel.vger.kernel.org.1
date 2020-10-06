@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC2028454B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B816E284555
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgJFF3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 01:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgJFF3D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 01:29:03 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DD5C0613A7;
-        Mon,  5 Oct 2020 22:29:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727007AbgJFF3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 01:29:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgJFF3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 01:29:46 -0400
+Received: from localhost (unknown [122.167.144.92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C55cF0SFHz9s1t;
-        Tue,  6 Oct 2020 16:29:01 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601962141;
-        bh=F+1rPI31EQ0Yp6CTlJrktkE9AdgfgC4kNv8vVKKJhyE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZvBQcmAKqqxxUUQiMM+Jmg5T/CogRGVcpPyHFoBw/aY//SkCA8jT7TDcI3Z6YpeWw
-         HI7hX8X1TT2c2fn1uR7qIaPQqJVExYg8n77DhORor0N+utf666hgYA9ymubGByKff/
-         uLnn0wq2L1JNvzzccDXQiCUeNdPnIu8WbxjEAe3o2uh6FPi+wdXNHJnAU2oCmsvUf+
-         pFHmW9NzDCxWLhWXEzCcdm3R83CepFF1yfUDk2YVDYeKM76jb9h3oysWLLD6sYFxyN
-         eFXK9Wq0OLYiqtB4egH2MgX/BPQfqK0ZiDJSf8j6oh0PLmE31+YDVI+/MZwTTHIfvl
-         mvLaKdEcRPJzA==
-Date:   Tue, 6 Oct 2020 16:29:00 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Raul E Rangel <rrangel@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mmc tree
-Message-ID: <20201006162900.40f67920@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C34120870;
+        Tue,  6 Oct 2020 05:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601962185;
+        bh=IqVDArZkdO/B6tbx3G9IqtpqMW94z4IPv/01HlGFHyY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XJYtCNTyvx3ozaL1aRMYZGV+bTbvDa3P+1vHmIpIZkmMpy/W3RdFSo1VlEtqd2ZwS
+         VXm0e3hsDFIgJyUblJEaSpP3cJaPtrtrYpgunMrPuk68lEyTmKEkfZetm3/aycx6/+
+         f5jbT6MC2Pw1++qOdAXkqzyJva8aLdhWHo97xSwA=
+Date:   Tue, 6 Oct 2020 10:59:40 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
+Message-ID: <20201006052940.GO2968@vkoul-mobl>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-2-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8taTh5X6EUuHwNuuNpD6e6C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8taTh5X6EUuHwNuuNpD6e6C
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 05-10-20, 13:38, Rob Herring wrote:
+> This doesn't yet do anything in the tools, but make it explicit so we can
+> check either 'unevaluatedProperties' or 'additionalProperties' is present
+> in schemas.
+> 
+> 'unevaluatedProperties' is appropriate when including another schema (via
+> '$ref') and all possible properties and/or child nodes are not
+> explicitly listed in the schema with the '$ref'.
+> 
+> This is in preparation to add a meta-schema to check for missing
+> 'unevaluatedProperties' or 'additionalProperties'. This has been a
+> constant source of review issues.
 
-Hi all,
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
-After merging the mmc tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
-
-drivers/mmc/host/sdhci-acpi.c: In function 'amd_select_drive_strength':
-drivers/mmc/host/sdhci-acpi.c:562:39: error: 'SDHCI_PRESET_DRV_SHIFT' undec=
-lared (first use in this function); did you mean 'SDHCI_PRESET_DRV_MASK'?
-  562 |   (preset & SDHCI_PRESET_DRV_MASK) >> SDHCI_PRESET_DRV_SHIFT;
-      |                                       ^~~~~~~~~~~~~~~~~~~~~~
-      |                                       SDHCI_PRESET_DRV_MASK
-
-Caused by commit
-
-  e9b80bb74fdd ("mmc: sdhci-acpi: AMDI0040: Allow changing HS200/HS400 driv=
-er strength")
-
-I have used the mmc tree from next-20201002 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8taTh5X6EUuHwNuuNpD6e6C
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98AJwACgkQAVBC80lX
-0GxQSwf+Jxjfn1Jt87/SOdDPeyd7ILWRp50SH2k+SHHOHYVAsHSIYsbgcUyaC2Mp
-Av6DACiT5LH6Pm3aFk6SeRQuvWpQuagZbxWOmT1bH/Dy+G9h1sFvqU77HxY/SzCQ
-2Vh0qyoKByX83JahjyUl4bnntnw/WkrSeoJfv5FyDqZZn5MXb0oQtOtjeETC0En0
-+1ebBrnorb0/oi569CJTjuXVcXlPmrKXZx5ZgFx2tBon4OTja018ooOzkeBcuo/f
-tFS/J2oya/xT2Qw8ZpudGszU9O0+CDTmc+x9XmRh+Uj16HGaGthbj+SKb/SIIFxw
-gM8XiIOwXsgl6FH46JkykC7t/wyImQ==
-=MbRs
------END PGP SIGNATURE-----
-
---Sig_/8taTh5X6EUuHwNuuNpD6e6C--
+-- 
+~Vinod
