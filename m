@@ -2,112 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04B52853E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1D02854C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgJFVbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727435AbgJFVa7 (ORCPT
+        id S1727460AbgJFWxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 18:53:41 -0400
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:31544 "EHLO
+        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726771AbgJFWxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:30:59 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F103C0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 14:30:59 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id m17so75884ioo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 14:30:59 -0700 (PDT)
+        Tue, 6 Oct 2020 18:53:40 -0400
+Received: from pps.filterd (m0098781.ppops.net [127.0.0.1])
+        by mx0a-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 096LJP5t007767;
+        Tue, 6 Oct 2020 16:31:51 -0500
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2052.outbound.protection.outlook.com [104.47.36.52])
+        by mx0a-00010702.pphosted.com with ESMTP id 33xnb0yr0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Oct 2020 16:31:51 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iK17aP8cUs3Nx4duMFR99PvOGRkxiBqdq/aLqAGq7w8b1WC6/roDAXg2cDgjD+2GlIOIA1++ZWZp1/JEQfIMo2ytM+5F+J6TfunG3dl4LPv18tAdEJ2Is/grDfS5Fdf8LpXiTOopckDz4s2DpNYDuxFGd9pebhxQeiyuEQg1umrbSmQ8L/BbDOMaOwbnJydduB+4fD7MOaD3xRwi7IwrptrICER7G+urvqvKlMl4TO5CPHBNr94mecVk3URi/hLmmP0+zXCVOUldIT1PQ9OSJcVbb5EoH6Q5eCygtRGqYZcc9MrC1lRyA69oZyqBQpS1DehEk4DbHtZw3u4U/iEwjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+vgRO+C+EbzwLwKtvklhwp9pcOLtQhYuqDw0r0GECPg=;
+ b=Wueh0y/QrnYHLqi/B19rmE7StI4szsZGsYqUkomUi2F9WtBI3gPgbo85wWM9rlSAzZo58tEduq+W8bWxwHnAqECzykg/r3shHvrcJsW2yZVVyCKf/itGclKQg4YXhXhJNVCsiHx+32wGdWBjDgCKy1874IGtD2rC61CQdOPIZ5II4CIWCUR27MrkS8mXQjYG0C0MnV3cOjP129JboGruGLq+nSxzJbzZR3xbbbhVYwNVR8x7KQ8rMSsGd7KhO/6ZZK9MCCon8Tk7n6qlbMm5VLCW+jYOEG2DePLDR2VsfW04PPDqzESqPStj7ZtOuZ+3h8wj2urZymgdRkhsU0RMmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
+ header.d=ni.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SeRQNuUdnOGTder7Ky3iLwHcr5kl6r9wzx3ytZhXRHM=;
-        b=fJ1d5oEdTTRDoZEZYc7+uJD9E26J1Ulv2STtWruQ/rVOpCh8/JQoD7CeGhsVDMUUzq
-         vWmfmY+74UnmgTAVJ/cAhw7QTP1Y48rz5/yZE+HIviCHEu+NKvrfmDMQLFmveT3isahZ
-         iX8we2w3S6LOpPexhnjQK8dWXziqzgTAn2FB+y/74qTiRdhKCLzeFFGrISK9B83XIwrn
-         rRlBZUmnvFVFuSXXTnaKd55jKDSxP/hqVxA4ZlWQCps3BazpNfdmmnx5Al9AF6j5HPJB
-         iHaZiDgnrGi8Vn4pFZhS0uUUEKkjiSCECvP9HvvmzlGgf4Lp9M714NlzDU+CG1UqLZZf
-         UVKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SeRQNuUdnOGTder7Ky3iLwHcr5kl6r9wzx3ytZhXRHM=;
-        b=AKuQyLRTJewEu6H1BkmI1td73qUo3lRmBS13amuFMUXoeurTElI/1hFOfUpsPO1X9E
-         +JtH3GpNXhUU2MtiH/p8QqRa0nRaC5E6UITiEA2o0wYw+aBlA4l3nCC49yIE6FMOlc+O
-         WetK4f9zQ9udY7/8n1Ipf5qwrCAInv90tudFADZnYhfLwsojOfFmeYu8dXLnpL8j6/Fx
-         XQPnd+4z6cTS9Ywj8vySvbAIDiI+3lpEQaPCJH03MYAvxsC15Wjlhe0h6vCDaqrnhG9t
-         6HNlolUNw0Nw7LAfgEWS6SVjph1WXwIe3YFmBifih6dUjkngam7qH6lctXo7AFKNOydh
-         U2pw==
-X-Gm-Message-State: AOAM53364IaUiyEbjSSjFW808rMmZryQr8ZeHZC/5Duti7g6m1oj7uig
-        NYgnGmRcuqP8eA/KMBWFZTkN9g==
-X-Google-Smtp-Source: ABdhPJzDr4PRceMlDmLxQwdrbTzP3K8MGoWz3gki9rB86SibkOnGYFFTCykXgk1plTn1ocsbTsCDkg==
-X-Received: by 2002:a05:6602:2f07:: with SMTP id q7mr2795506iow.191.1602019858519;
-        Tue, 06 Oct 2020 14:30:58 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id z20sm2043215ior.2.2020.10.06.14.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:30:57 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        mka@chromium.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net 2/2] net: ipa: skip suspend/resume activities if not set up
-Date:   Tue,  6 Oct 2020 16:30:47 -0500
-Message-Id: <20201006213047.31308-3-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201006213047.31308-1-elder@linaro.org>
-References: <20201006213047.31308-1-elder@linaro.org>
+ d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+vgRO+C+EbzwLwKtvklhwp9pcOLtQhYuqDw0r0GECPg=;
+ b=lw3s12bt7uydILOzyk48Ze5bJ3W+JuVTvxKbVBgtEGiQ/G5Z/zRHpQPSAT9nqoOh3FWAaMz04jr9cj/Ms+Lyk+J90N1cuB5HDuafSXEsu8XViRgkZgORRMX29gzo3Sy36Ovv0zCVkvW58tYxUZhxdEnkGOHTr3BtPTr/6SOTJCc=
+Authentication-Results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=ni.com;
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29) by SA0PR04MB7403.namprd04.prod.outlook.com
+ (2603:10b6:806:e3::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Tue, 6 Oct
+ 2020 21:31:48 +0000
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::f4f0:f1bc:f09a:da84]) by SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::f4f0:f1bc:f09a:da84%7]) with mapi id 15.20.3433.043; Tue, 6 Oct 2020
+ 21:31:48 +0000
+Date:   Tue, 6 Oct 2020 16:31:43 -0500
+From:   Michael Auchter <michael.auchter@ni.com>
+To:     Ben Levinsky <BLEVINSK@xilinx.com>
+Cc:     "Ed T. Mooring" <emooring@xilinx.com>,
+        "sunnyliangjy@gmail.com" <sunnyliangjy@gmail.com>,
+        "punit1.agrawal@toshiba.co.jp" <punit1.agrawal@toshiba.co.jp>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Michal Simek <michals@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20201006213143.GD701433@xaphan>
+References: <20201005160614.3749-1-ben.levinsky@xilinx.com>
+ <20201005160614.3749-6-ben.levinsky@xilinx.com>
+ <20201005193449.GA701433@xaphan>
+ <BYAPR02MB4407B7F06962DB30ED90761FB50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR02MB4407B7F06962DB30ED90761FB50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+X-Originating-IP: [130.164.62.229]
+X-ClientProxiedBy: SA9PR10CA0004.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::9) To SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (130.164.62.229) by SA9PR10CA0004.namprd10.prod.outlook.com (2603:10b6:806:a7::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.37 via Frontend Transport; Tue, 6 Oct 2020 21:31:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1c64963c-4e58-4701-e1c2-08d86a3f3ae5
+X-MS-TrafficTypeDiagnostic: SA0PR04MB7403:
+X-Microsoft-Antispam-PRVS: <SA0PR04MB74035DFBAC9D00587AC1FDF8870D0@SA0PR04MB7403.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v8hCkRcVLKQ8vYehhKgVjaiKr1jXZjWXfu1OjANap6QeNVtc3Lr+hI4C3T29CmQWGrzBtrJM9xf8F2r2egG+Ywsn8bInCWEl7Y08EjbhZ+Cpzl7Mp+eNWMsHhJubNTtGhEdMseFKoNDuAsDW7WWHfhXhBsFYqUY8yTzY/X2L3BPZPBEH177CQIrwYv76wAnKN/5oZ14Ubo68sBtXgPMb8LQ9E2DoEBxJ/lOUDBA5aDTJoSsPoTW8gUouRF9CouRTkRl1fP4TZFot+GAk6Rh5fGHLFZP3m3zTcTXxRsvyJ+/FTYrrZIato1VmmnQuh5diGrGh5We4aOnxWxUJM51T4g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3646.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(396003)(346002)(376002)(39860400002)(366004)(136003)(83380400001)(4326008)(7416002)(33716001)(86362001)(33656002)(8676002)(8936002)(6916009)(6486002)(9686003)(956004)(478600001)(54906003)(2906002)(26005)(44832011)(6496006)(5660300002)(186003)(1076003)(66556008)(66946007)(66476007)(316002)(6666004)(52116002)(16526019);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: ziU6Q/33Q2d53yJy4jXyYMos5meFUn6j7Vu12iH7IuTI8NAmqvkVHeAAyQp7+orNP8bS9mCsPHUVkr/9MemZQjEgJKRFENH8bzm8+ejOHTjQOau3iVt0apqGonnqku/YPpOMikMpN41SJ2emEJiihMcKPQApNlHH4k16roSfarFoC0/o09yBM6AmCcarONoWOhQJtBSkc6+jE1KqC8qr4F/k4/QwNB0T2RU9F8xnYesTztEmt2JzbN16Em5dpZR729Dxvy/0kPeOx2VKnhoy1vpfW4lTyRQck47K6EZhhxdEPFvJeDXUv5t8887p+Eb5SgjwcDVdOSxBtV9Qe5OUTP6HRE3haJf9e4XG7wPTMIVXCjJzHDovU2MP5uU0T6GisStHEnJbWiz7oWnpBY5PjqLLtgyyawD2Hs2Ci2a559Qta/T95e2OJC9nCbIVCwzoKbyw6wceRrnBf4dtfSMAquYyVIquism0pz9j2QHYqZ9xL9wX6IHbu6k9y8heD8xk2fmG7EPfojtXt3MbsaZZZBzfQGnVCZheSGQun2sBY8KAVT1uEo0BYPQh7tZ6HTTaQh/AD/WplmM5RgMj/QG/pXYPrXszvJSxdB4BYlrKnc3XFyLpu3SMXVlpGsulaKztH/LlIeE/8j0edIhoJEaazw==
+X-OriginatorOrg: ni.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c64963c-4e58-4701-e1c2-08d86a3f3ae5
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3646.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2020 21:31:48.1220
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j9Bb8OFc5Ebt1lPZ8WFol7/l9apdB6/Hk/YyF0XECFi9jlRK7NcxqpTXRe+Nc1e4QdX02EKDyGbIAtKZ41KsaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7403
+Subject: Re: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5 remoteproc driver
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-06_14:2020-10-06,2020-10-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30 suspectscore=1
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ impostorscore=0 clxscore=1015 adultscore=0 mlxlogscore=999 mlxscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=30 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010060141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When processing a system suspend request we suspend modem endpoints
-if they are enabled, and call ipa_cmd_tag_process() (which issues
-IPA commands) to ensure the IPA pipeline is cleared.  It is an error
-to attempt to issue an IPA command before setup is complete, so this
-is clearly a bug.  But we also shouldn't suspend or resume any
-endpoints that have not been set up.
+On Tue, Oct 06, 2020 at 07:15:49PM +0000, Ben Levinsky wrote:
+> 
+> Hi Michael,
+> 
+> Thanks for the review
+> 
 
-Have ipa_endpoint_suspend() and ipa_endpoint_resume() immediately
-return if setup hasn't completed, to avoid any attempt to configure
-endpoints or issue IPA commands in that case.
+< ... snip ... >
 
-Fixes: 84f9bd12d46d ("soc: qcom: ipa: IPA endpoints")
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_endpoint.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > > +	z_rproc = rproc->priv;
+> > > +	z_rproc->dev.release = zynqmp_r5_release;
+> > 
+> > This is the only field of z_rproc->dev that's actually initialized, and
+> > this device is not registered with the core at all, so zynqmp_r5_release
+> > will never be called.
+> > 
+> > Since it doesn't look like there's a need to create this additional
+> > device, I'd suggest:
+> > 	- Dropping the struct device from struct zynqmp_r5_rproc
+> > 	- Performing the necessary cleanup in the driver remove
+> > 	  callback instead of trying to tie it to device release
+> 
+> For the most part I agree. I believe the device is still needed for
+> the mailbox client setup.
+> 
+> As the call to mbox_request_channel_byname() requires its own device
+> that has the corresponding child node with the corresponding
+> mbox-related properties.
+> 
+> With that in mind, is it still ok to keep the device node?
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index b7efd7c95e9c8..ed60fa5bcdaca 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -1471,6 +1471,9 @@ void ipa_endpoint_resume_one(struct ipa_endpoint *endpoint)
- 
- void ipa_endpoint_suspend(struct ipa *ipa)
- {
-+	if (!ipa->setup_complete)
-+		return;
-+
- 	if (ipa->modem_netdev)
- 		ipa_modem_suspend(ipa->modem_netdev);
- 
-@@ -1482,6 +1485,9 @@ void ipa_endpoint_suspend(struct ipa *ipa)
- 
- void ipa_endpoint_resume(struct ipa *ipa)
- {
-+	if (!ipa->setup_complete)
-+		return;
-+
- 	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_COMMAND_TX]);
- 	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_LAN_RX]);
- 
--- 
-2.20.1
+Ah, I see. Thanks for the clarification!
 
+Instead of manually dealing with the device node creation for the
+individual processors, perhaps it makes more sense to use
+devm_of_platform_populate() to create them. This is also consistent with
+the way the TI K3 R5F remoteproc driver does things.
+
+Cheers,
+ Michael
