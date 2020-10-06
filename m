@@ -2,118 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90408284EAF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2B9284F06
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgJFPPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgJFPPZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:15:25 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E779EC061755;
-        Tue,  6 Oct 2020 08:15:24 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id m15so1365407pls.8;
-        Tue, 06 Oct 2020 08:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=O3wutOykn+qjv13+aIbbS9aviAcrhkTNsBYW/8APKCI=;
-        b=Ge7sc9DFWYNmWKj/NId96QnjqS7divhkH2kHeTLILE/UPpyrCZ4IXU+0R3PRtbRyVH
-         RVWsno4V7HbX1f1vratyfq6JlxSIHTI7s6CvK/KRkNviLAqBuNZBUxJZca8RdsURKy/t
-         a6TubcGai1NF8WOXxKDBm8vNQsp8tbAJuPBzIpq5gazkyPhWnZj4Y3TWJ4ywE90xTQ0S
-         wmhWCPeMv2RRIqEzNiSluNno3KwyBrVQZ4ZIkgGdZNeoEHL7m5LBhFDWvTa0fMCE7vSy
-         ucoDTbq1s9IHd22dW7ECLT9QUIic0BEMjgQmzs9dDUkM9bVgdaLTvDzbOG83mGH2d1JV
-         9asQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=O3wutOykn+qjv13+aIbbS9aviAcrhkTNsBYW/8APKCI=;
-        b=eCMN35Du900jj4OtMw5L8jCCimW/BUrODZc0Swqkr5VC6RDEuD7k/A8F5xUH1vbx4D
-         mtGOxE0XgGYyc+CavrzIsOxCC3XHR/WFxugxMK0LheXaKlZKgkG9PvJTOpkDkg+osEKe
-         p0dJ70efqbi+ZNkY2Q1iYSkF3MJj5A3YuVDxBasiWAngzdAyA9C9X7d/HMJB1axPaQ4r
-         2kdLFyWabDC/oiwS//z2Xx0T9igQ5yTGmKjrI+9s4sXXrYb6d1wBdZTDI88UF9juG2JU
-         xNRZhL+MxjP5gbdB2XGN0TqFixqmL2emTA3fY/le5s3A5u9EqmCQmk9GoD0oOsSii+87
-         LL8Q==
-X-Gm-Message-State: AOAM5311GvGhky69XwpnQUKL/6PwhG6WxklbKFSlPb2lDDx7cwT6Yue2
-        cVD3vrG+U2lhL9WuUrdl93A=
-X-Google-Smtp-Source: ABdhPJxJ93yZXWx4BKa4VxxHx7oDzy9xslGONHzwIA0G3joVJKEsY34G7bWYFkiQtBWe4B7/3lfdEg==
-X-Received: by 2002:a17:902:b7ca:b029:d3:eca2:d221 with SMTP id v10-20020a170902b7cab02900d3eca2d221mr1808827plz.74.1601997324473;
-        Tue, 06 Oct 2020 08:15:24 -0700 (PDT)
-Received: from ashish-sangwan.user.nutanix.com (mcp02.nutanix.com. [192.146.155.5])
-        by smtp.googlemail.com with ESMTPSA id x7sm2924159pgl.77.2020.10.06.08.15.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 08:15:23 -0700 (PDT)
-From:   Ashish Sangwan <ashishsangwan2@gmail.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc:     ashishsangwan2@gmail.com, stable@vger.kernel.org,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] NFS: Fix mode bits and nlink count for v4 referral dirs
-Date:   Tue,  6 Oct 2020 08:14:56 -0700
-Message-Id: <20201006151456.20875-1-ashishsangwan2@gmail.com>
-X-Mailer: git-send-email 2.16.3
+        id S1726319AbgJFPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:30:54 -0400
+Received: from mga04.intel.com ([192.55.52.120]:49350 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbgJFPax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:30:53 -0400
+IronPort-SDR: ZNG5azsZl3wraXneFyZK0nUSgoNjDlrZfdWSec4iCUzWBKHdpFe9Mz+C0PqB+I6ElFslMJkJaX
+ TOOYpm1PLUjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="161915881"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="161915881"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:15:35 -0700
+IronPort-SDR: Ld8hUSmXzhhmCv51vSWvkEQIse22EktXhPt6YDefIVr2f33rzb4FsKm4nZeXZkdwOy+qoPioiy
+ +Br3LSVF+cmQ==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="460838766"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:15:34 -0700
+Date:   Tue, 6 Oct 2020 08:15:32 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jethro Beekman <jethro@fortanix.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20201006151532.GA17610@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
+ <20201006025703.GG15803@linux.intel.com>
+ <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Request for mode bits and nlink count in the nfs4_get_referral call
-and if server returns them use them instead of hard coded values.
+On Tue, Oct 06, 2020 at 10:30:16AM +0200, Jethro Beekman wrote:
+> On 2020-10-06 04:57, Sean Christopherson wrote:
+> > On Sat, Oct 03, 2020 at 07:50:56AM +0300, Jarkko Sakkinen wrote:
+> >> +struct sgx_enclave_run {
+> >> +  __u64 tcs;
+> >> +  __u64 user_handler;
+> >> +  __u64 user_data;
+> >> +  __u32 leaf;
+> >
+> > I am still very strongly opposed to omitting exit_reason.  It is not at all
+> > difficult to imagine scenarios where 'leaf' alone is insufficient for the
+> > caller or its handler to deduce why the CPU exited the enclave.  E.g. see
+> > Jethro's request for intercepting interrupts.
+>
+> Not entirely sure what this has to do with my request, I just expect to see
+> leaf=ERESUME in this case, I think? E.g. as you would see in EAX when calling
+> ENCLU.
 
-CC: stable@vger.kernel.org
-Signed-off-by: Ashish Sangwan <ashishsangwan2@gmail.com>
----
- fs/nfs/nfs4proc.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+But how would you differentiate from the case that an exception occured in
+the enclave?  That will also transfer control with leaf=ERESUME.  If there
+was a prior exception and userspace didn't zero out the struct, there would
+be "valid" data in the exception fields.
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index 6e95c85fe395..efec05c5f535 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -266,7 +266,9 @@ const u32 nfs4_fs_locations_bitmap[3] = {
- 	| FATTR4_WORD0_FSID
- 	| FATTR4_WORD0_FILEID
- 	| FATTR4_WORD0_FS_LOCATIONS,
--	FATTR4_WORD1_OWNER
-+	FATTR4_WORD1_MODE
-+	| FATTR4_WORD1_NUMLINKS
-+	| FATTR4_WORD1_OWNER
- 	| FATTR4_WORD1_OWNER_GROUP
- 	| FATTR4_WORD1_RAWDEV
- 	| FATTR4_WORD1_SPACE_USED
-@@ -7594,16 +7596,28 @@ nfs4_listxattr_nfs4_user(struct inode *inode, char *list, size_t list_len)
-  */
- static void nfs_fixup_referral_attributes(struct nfs_fattr *fattr)
- {
-+	bool fix_mode = true, fix_nlink = true;
-+
- 	if (!(((fattr->valid & NFS_ATTR_FATTR_MOUNTED_ON_FILEID) ||
- 	       (fattr->valid & NFS_ATTR_FATTR_FILEID)) &&
- 	      (fattr->valid & NFS_ATTR_FATTR_FSID) &&
- 	      (fattr->valid & NFS_ATTR_FATTR_V4_LOCATIONS)))
- 		return;
- 
-+	if (fattr->valid & NFS_ATTR_FATTR_MODE)
-+		fix_mode = false;
-+	if (fattr->valid & NFS_ATTR_FATTR_NLINK)
-+		fix_nlink = false;
- 	fattr->valid |= NFS_ATTR_FATTR_TYPE | NFS_ATTR_FATTR_MODE |
- 		NFS_ATTR_FATTR_NLINK | NFS_ATTR_FATTR_V4_REFERRAL;
--	fattr->mode = S_IFDIR | S_IRUGO | S_IXUGO;
--	fattr->nlink = 2;
-+
-+	if (fix_mode)
-+		fattr->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	else
-+		fattr->mode |= S_IFDIR;
-+
-+	if (fix_nlink)
-+		fattr->nlink = 2;
- }
- 
- static int _nfs4_proc_fs_locations(struct rpc_clnt *client, struct inode *dir,
--- 
-2.22.0
-
+An exit_reason also would allow retrofitting the exception fields into a
+union, i.e. the fields are valid if and only if exit_reason is exception.
