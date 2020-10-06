@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F702850E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FE12850E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgJFRfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:35:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35009 "EHLO
+        id S1726561AbgJFRff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:35:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21982 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725981AbgJFRfM (ORCPT
+        by vger.kernel.org with ESMTP id S1725925AbgJFRff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:35:12 -0400
+        Tue, 6 Oct 2020 13:35:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602005711;
+        s=mimecast20190719; t=1602005734;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iRg0GJHVofMir4bUhfVjc9yEZQKs/9hfnaxI5B7+zds=;
-        b=WTYBfnSAfZSiyVCXP9c+tlHO5CJu/pQXWamifpFRwFKpD//Ot8HsJMB/gXankOJAZ6dIcf
-        8t7O1rMtufMx8a7Wagstt5XK0WPwEJH3jda4BI5+doNfUtg8D7/9VCW/4cxDXuatIJZg+l
-        TpKeoeGxPzPEMO6K292qcuFT9XjQtz0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-Bi-55OjxOLCbx1-UbQ1AOg-1; Tue, 06 Oct 2020 13:35:09 -0400
-X-MC-Unique: Bi-55OjxOLCbx1-UbQ1AOg-1
-Received: by mail-qv1-f69.google.com with SMTP id de12so8544016qvb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 10:35:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=iRg0GJHVofMir4bUhfVjc9yEZQKs/9hfnaxI5B7+zds=;
-        b=iojYX7W5cB07mm/9pBNqxcMHyHfis+j+S2x3z9+5onHR72LGJH3ooxLpbitV4WcEhu
-         LA5/G3rzN+fVMSVrExPgsuJS1pGg1HkjGJpR/Pd2OASwBv+KHkRXALDNNhcz/gNMwfDk
-         wRg1wRgExSkGQmHxUo530TLbJnqMJFn8zi09DxkWwQcncF2KvmAa/D2aW/2v9DFfBAlu
-         69CrQbQFrlSYL773zia0Gp92MvFwxuxDuVBRVJzamxiWJbix7iIMRvv/QAF0a1YnW4f6
-         mICS8QgddexkunsmrdhsWw3YNZ8ywHOZmGPcCqVMaXj1GHq7PhJwXQKJzjGq8hwFEcDv
-         5CjA==
-X-Gm-Message-State: AOAM5315fpNPlWO5uWLf4T4Hm9ugDAdKLm1R9CqWfd3qfA6Cj+Qtj69I
-        bzZ+BOdscIQtVCjdw8WfPZjZ+LprVzOyEh2vggrJi0xOxdYbtmSqP0SyiJ1mAJc7D1+d4Ocgrhq
-        gJCBOOex+sxBpYSaHhH0HCo+q
-X-Received: by 2002:a05:6214:1852:: with SMTP id d18mr6021086qvy.32.1602005709097;
-        Tue, 06 Oct 2020 10:35:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzRnQpbyOrNXUS055K41hsMO7RJdIiY4zHjkZi7NHkqShF3RvFMy8E0WWJoYdq4xMXjpIASQ==
-X-Received: by 2002:a05:6214:1852:: with SMTP id d18mr6021067qvy.32.1602005708880;
-        Tue, 06 Oct 2020 10:35:08 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l13sm2936891qtv.82.2020.10.06.10.35.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 10:35:08 -0700 (PDT)
-Subject: Re: [PATCH v2 3/6] fpga: m10bmc-sec: expose max10 flash update counts
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20201003012412.16831-1-russell.h.weight@intel.com>
- <20201003012412.16831-4-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <465d98a3-2e24-caf0-02f8-54e8505ab803@redhat.com>
-Date:   Tue, 6 Oct 2020 10:35:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        bh=Ybm7bx/2hLVzC/qs9Aik0Q9f8yt1VNXDeAzYuJE6DP8=;
+        b=XzPpaONjqlOaqH6JDACAX4Ry0PyZQxX+2upffwZdD70NO5ZWXe2USccw/Xln85u3unV9hs
+        hx24NF8rDcIeyqmctLkT+H3UFGP63dNuNShml8K4yHml7l+w57RWRb26hN4acgtI4wBJ1T
+        +QREPADFAgTXKPNGLgK47HQtE5MlXvg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-BLJsxStUNgeO1dIWijuUYw-1; Tue, 06 Oct 2020 13:35:32 -0400
+X-MC-Unique: BLJsxStUNgeO1dIWijuUYw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 455E01054F8A;
+        Tue,  6 Oct 2020 17:35:31 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-117-72.rdu2.redhat.com [10.10.117.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E242355782;
+        Tue,  6 Oct 2020 17:35:27 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 7616E220AD7; Tue,  6 Oct 2020 13:35:27 -0400 (EDT)
+Date:   Tue, 6 Oct 2020 13:35:27 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com
+Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
+Message-ID: <20201006173527.GG5306@redhat.com>
+References: <20201005161620.GC11938@linux.intel.com>
+ <20201006134629.GB5306@redhat.com>
+ <877ds38n6r.fsf@vitty.brq.redhat.com>
+ <20201006141501.GC5306@redhat.com>
+ <874kn78l2z.fsf@vitty.brq.redhat.com>
+ <20201006150817.GD5306@redhat.com>
+ <871rib8ji1.fsf@vitty.brq.redhat.com>
+ <20201006161200.GB17610@linux.intel.com>
+ <87y2kj71gj.fsf@vitty.brq.redhat.com>
+ <20201006171704.GC17610@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201003012412.16831-4-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006171704.GC17610@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 06, 2020 at 10:17:04AM -0700, Sean Christopherson wrote:
 
-On 10/2/20 6:24 PM, Russ Weight wrote:
-> Extend the MAX10 BMC Security Engine driver to provide a
-> handler to expose the flash update count for the FPGA user
-> image in sysfs.
->
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> ---
-> v2:
->   - Renamed get_qspi_flash_count() to m10bmc_user_flash_count()
->   - Minor code cleanup per review comments
->   - Added m10bmc_ prefix to functions in m10bmc_iops structure
-> ---
->  drivers/fpga/intel-m10-bmc-secure.c | 31 +++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
+[..]
+> > > Note, TDX doesn't allow injection exceptions, so reflecting a #PF back
+> > > into the guest is not an option.  
+> > 
+> > Not even #MC? So sad :-)
+> 
+> Heh, #MC isn't allowed either, yet...
 
-Looks fine.
+If #MC is not allowd, logic related to hwpoison memory will not work
+as that seems to inject #MC.
 
-Reviewed-by: Tom Rix <trix@redhat.com>
-
+Vivek
 
