@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8758628527B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D5A28527E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgJFTdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:33:11 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:34387 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726981AbgJFTdK (ORCPT
+        id S1727161AbgJFTd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:33:29 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38180 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727097AbgJFTd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:33:10 -0400
-Received: by mail-ot1-f67.google.com with SMTP id d28so7127197ote.1;
-        Tue, 06 Oct 2020 12:33:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Vr0kh5Yxt0ub2gjD/7iyTdno80qJHwUQsM63YCqKmPE=;
-        b=NH6tzrB/M9/29bFwH6AjtwdZ8KtGXCMe677oW2Gm5J+KwZpZ7S0NjwuFuhSXxotZj1
-         sWa/CkxSGJ6ncmNDKq5T+YMioOINq+1p2YdSoJHumcaGF+SbPa87u9IHPWBKDUkohDnB
-         O77S3PEE7/FBZhWVAYR2WRAatKkBboGW4ybrNZkbBPUsAozWMk4Ghz1wvdm//UpC/zre
-         rtnWg60orniGcWMQA/06w86lrTxRfqFVm4P4ehB+NxDJYk/nXSfhMh3ZFEXnwYNzi00v
-         A/nTjnztRbuK8wGpa/FTLfG3hgqTxAf2Ttf2zT4eb3soZ9sNkhMZ0BJj94K46S4jcle+
-         aJjg==
-X-Gm-Message-State: AOAM531nvzMPVyN6t5nWrkQDujZiIeT5RKZP+PrMdTVj9tmMKFdR60LB
-        KWjDAv4uwVEOgbWLMC6B8zVhfD5QJwyw
-X-Google-Smtp-Source: ABdhPJz+7hDASH5s1uaYlFg8P2NS0UoUxaBOu1qyfY2bBXP9RS81Vr5QtD5xZcp7K8YqiXsh+Bt+Hg==
-X-Received: by 2002:a05:6830:1e30:: with SMTP id t16mr4070247otr.18.1602012788414;
-        Tue, 06 Oct 2020 12:33:08 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i6sm1729470oig.54.2020.10.06.12.33.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 12:33:07 -0700 (PDT)
-Received: (nullmailer pid 2693469 invoked by uid 1000);
-        Tue, 06 Oct 2020 19:33:06 -0000
-Date:   Tue, 6 Oct 2020 14:33:06 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jun Nie <jun.nie@linaro.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        shawn.guo@linaro.org, stephan@gerhold.net, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: power: rpmpd: Add MSM8939 RPM power
- domains
-Message-ID: <20201006193306.GA2693413@bogus>
-References: <20200930100145.9457-1-jun.nie@linaro.org>
- <20200930100145.9457-2-jun.nie@linaro.org>
+        Tue, 6 Oct 2020 15:33:29 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 6FABC28A7A9
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>,
+        yongqiang.niu@mediatek.com, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        chunkuang.hu@kernel.org, CK Hu <ck.hu@mediatek.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 0/4] soc: mediatek: Prepare MMSYS for DDP routing using tables
+Date:   Tue,  6 Oct 2020 21:33:16 +0200
+Message-Id: <20201006193320.405529-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930100145.9457-2-jun.nie@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 18:01:44 +0800, Jun Nie wrote:
-> MSM8939 has three RPM power domains: VDDCX and VDDMX and VDDMDCX.
-> Add the device tree bindings to manage them through rpmpd.
-> 
-> Signed-off-by: Jun Nie <jun.nie@linaro.org>
-> ---
->  .../devicetree/bindings/power/qcom,rpmpd.yaml          |  1 +
->  include/dt-bindings/power/qcom-rpmpd.h                 | 10 ++++++++++
->  2 files changed, 11 insertions(+)
-> 
+Dear all,
 
-Acked-by: Rob Herring <robh@kernel.org>
+The following series are intended to prepare the mtk-mmsys driver to
+allow different DDP (Data Display Path) routing tables per SoC. Note
+that the series has been tested only on MT8173 platform and could break
+the display on MT2701 and MT2712 based devices. I kindly ask for someone
+having these devices to provide a tested routing table (unfortunately I
+didn't have enough documentation to figure out this myself).
+
+For the other devices (MT8183, MT6779 and MT6797) DRM support is not in
+mainline yet so nothing will break.
+
+Thanks,
+  Enric
+
+
+CK Hu (2):
+  soc: mediatek: mmsys: Create struct mtk_mmsys to store context data
+  soc: mediatek: mmsys: Use an array for setting the routing registers
+
+Enric Balletbo i Serra (1):
+  soc: mediatek: mmsys: Use devm_platform_ioremap_resource()
+
+Yongqiang Niu (1):
+  soc / drm: mediatek: Move DDP component defines into mtk-mmsys.h
+
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  34 +-
+ drivers/soc/mediatek/mtk-mmsys.c            | 429 +++++++++++---------
+ include/linux/soc/mediatek/mtk-mmsys.h      |  33 ++
+ 3 files changed, 263 insertions(+), 233 deletions(-)
+
+-- 
+2.28.0
+
