@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27675284360
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD7B284363
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgJFAeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFAeE (ORCPT
+        id S1726661AbgJFAec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:34:32 -0400
+Received: from mx.aristanetworks.com ([162.210.129.12]:55370 "EHLO
+        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725931AbgJFAeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:34:04 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412DDC0613CE;
-        Mon,  5 Oct 2020 17:34:04 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id nl2so695950pjb.1;
-        Mon, 05 Oct 2020 17:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=IXQFOUHrH8bt86SLgjOWRJ9SpW6/8NcDU5WZWejyEGs=;
-        b=hKjsXNmSEgGgBUoiWA5tATc5pz3P+Ovdzi9HDFr3sc0TA8enS3QcMiPxn/v+TUayf0
-         OmpzJm6VdjN5mlJ1gU9VGj/WqZGlYW9ebrm/GsP4Ck3vQJOhZLBpSF2FZIQ5BC9QRrSz
-         FKcZ+spZs4tA6iPPafzLANU2JvQweRRfFMDLcVN/VuucH3T4J24EzRubHw39CbRLe6Ce
-         cazuuPmfbIB/IkPTqkNjTeVe753efXzo+njkx7o0uHSvOmLPqbamsAGHBz4JVHGemTTe
-         w+4zx7sgTaHNQuYMofsjiN2ftVAI38PxYHVmVDTWZ3l47HjffULLlFNB57QfGI7tGEBp
-         FY3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IXQFOUHrH8bt86SLgjOWRJ9SpW6/8NcDU5WZWejyEGs=;
-        b=huMqdWxRoUG+mVhLJUfRh7ygtXT/Wkon3NFZUT3ayBrB/sYbzEWGMdy/iHlr1Z1DoH
-         JrOMQyX8oAFCGPbixmBstev0cFZzoS36buu5PIHBY1KloVoeV/fE4IQvfW11cuBVZWcG
-         OFz19E4EH1VLCcUZ5yh5UbR4lNKRDBW2j5+kCJKhX0aej2EjDRV8R/HxoRZ58tk9A66H
-         a1DIhyD1slvSl48gVecGchJcDTlIc8/mbaBEu9nDXevdutqwmWMIdi5VAWz4VFFx4DM0
-         Jhd5kYuOJBAa+5YuwIg9As4oBr3lsLTMPtdOzXoHr2tNN6WK6NQnxDQYz8DAp46UvDiM
-         nCiw==
-X-Gm-Message-State: AOAM533Biw9Lxu9L+qotWmynA9z2dxZEV7q7ymUUWObqXkyVU7iDTKxb
-        MZniKK2kQuqEbpnF20qRSlubdHMXJmQ=
-X-Google-Smtp-Source: ABdhPJx60QfTP8SkwhetSwFfjmOhuCp2Wgxwfoy0efqga5UqMXt7YfzCnEtpb1OAS6o5ZjHkUBbCuA==
-X-Received: by 2002:a17:90a:bf03:: with SMTP id c3mr1950157pjs.65.1601944443594;
-        Mon, 05 Oct 2020 17:34:03 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id v9sm763862pjh.2.2020.10.05.17.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 17:34:02 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 17:34:00 -0700
-From:   dmitry.torokhov@gmail.com
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: exynos: do not rely on 'users' counter in ISR
-Message-ID: <20201006003400.GN1009802@dtor-ws>
-References: <20201005052420.GA3262631@dtor-ws>
- <20201005110908.GA3243@qmqm.qmqm.pl>
- <20201005173636.GK1009802@dtor-ws>
- <20201005190010.GA29936@qmqm.qmqm.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201005190010.GA29936@qmqm.qmqm.pl>
+        Mon, 5 Oct 2020 20:34:31 -0400
+Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
+        by smtp.aristanetworks.com (Postfix) with ESMTP id 06BB940186E;
+        Mon,  5 Oct 2020 17:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1601944471;
+        bh=LpZcLetgb6Yau+n4eJ1mqDJGnO3Rm9CeKFzY3fDiNBA=;
+        h=Date:To:Subject:From:From;
+        b=BaOKJLY3y0+cmHigCOFvT1aWajaHlz2pSbQfzN/k+l9Tmbd8UMoyKGpC1BBfXGI9T
+         zmXuEDYl0Wqc6Zu+Mc+IIEF+ZyYtqmEVP97+PuDOuHYtm9QAzrSnuzFuVkhkZuufgo
+         3/7g/mOpZQVNQ7lrc+VLO/hv+/0YVomid5/FUUIa8bT81PJyf/7M1A9Mes0yyEm30N
+         Kf2NHZbO2itXPtyQGx41RzE32B6UXvNY3ZfDuyhx8kUAW5EqIoSLCo95C2IM7EuPX4
+         7+PiSHDA+itNv73LUORAcdp3luHva8yi6wfGbNP7XvoAi5VWKXyV20cbLqUiN0x+4u
+         dYE7NKYmrjKbg==
+Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
+        id DFDEE95C02DC; Mon,  5 Oct 2020 17:34:30 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 17:34:30 -0700
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, pablo@netfilter.org, fruggeri@arista.com
+Subject: [PATCH nf] netfilter: conntrack: connection timeout after
+ re-register
+User-Agent: Heirloom mailx 12.5 7/5/10
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-Id: <20201006003430.DFDEE95C02DC@us180.sjc.aristanetworks.com>
+From:   fruggeri@arista.com (Francesco Ruggeri)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 09:00:10PM +0200, Michał Mirosław wrote:
-> On Mon, Oct 05, 2020 at 10:36:36AM -0700, dmitry.torokhov@gmail.com wrote:
-> > Hi Michał,
-> > 
-> > On Mon, Oct 05, 2020 at 01:09:08PM +0200, Michał Mirosław wrote:
-> > > and breaking the loop will desync touch
-> > > state (I would guess this would be noticable by next user).
-> > Upon next open driver will service the interrupt and provide new set of
-> > touch coordinates. Userspace is supposed to query current state of
-> > device when opening it before starting processing events. Or you are
-> > concerned about some other state?
-> 
-> From the code I would expect that there is a slight window, wher when the
-> user releases the touch between close() and open(), the client that open()s
-> will see a 'pressed' state until the ISR runs again (probably immediately
-> because of pending interrupt). OTOH, maybe the app should be prepared
-> for that anyway?
+I am sending out this patch mainly to clarify the source of a problem
+I am seeing.
+An idle tcp connection is timing out on a 4.19 kernel after
+conntrack unregister/re-register. By playing with SO_KEEPALIVE
+setsockopts on the client I can make it timeout in a few seconds.
+I could not find any relevant commits in code after 4.19.
+The problem seems to come from commit f94e63801ab2 ("netfilter:
+conntrack: reset tcp maxwin on re-register").
+Clearing maxwin of existing tcp connections on register, causes
+tcp_in_window to set td_end to 1 less than it should if the first
+packet it sees after the re-register is an outgoing keepalive packet,
+causing it to later return false when getting packets from the peer
+ack-ing the correct octet.
+My iptables configuration on the client is:
 
-I think users should be prepared for it. There could be many users, so
-anyone opening interface device (evdev or similar) can not expect that
-the hardware device is in a quiesce state; it could just happen that
-finger was on the surface and will be released as someone is opening the
-device anyway.
+*filter
+:INPUT DROP [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 4445 -j ACCEPT
+COMMIT
 
-Thanks.
+I unregister conntrack by using:
 
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+
+and then I restore the original one.
+I do not see the issue with this patch, but I am not sure it is the
+correct
+
+Thanks,
+Francesco Ruggeri
+
+Fixes: f94e63801ab2 ("netfilter: conntrack: reset tcp maxwin on re-register")
+Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+---
+ net/netfilter/nf_conntrack_proto_tcp.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
+index e8c86ee4c1c4..1ae1b7c78393 100644
+--- a/net/netfilter/nf_conntrack_proto_tcp.c
++++ b/net/netfilter/nf_conntrack_proto_tcp.c
+@@ -538,6 +538,12 @@ static bool tcp_in_window(const struct nf_conn *ct,
+ 			 * Let's try to use the data from the packet.
+ 			 */
+ 			sender->td_end = end;
++			if (seq == end) {
++				/* This could be a keepalive packet with
++				 * SEG.SEQ = SND.NXT-1.
++				 */
++				sender->td_end++;
++			}
+ 			swin = win << sender->td_scale;
+ 			sender->td_maxwin = (swin == 0 ? 1 : swin);
+ 			sender->td_maxend = end + sender->td_maxwin;
 -- 
-Dmitry
+2.28.0
+
