@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47660284AAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1087284AAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbgJFLHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:07:15 -0400
-Received: from ozlabs.org ([203.11.71.1]:42601 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFLHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:07:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1725996AbgJFLL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 07:11:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJFLL0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 07:11:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601982685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wx2auHMav5YSxabwrXD0pmlNxBIh/RjNOkQG6oFpCCM=;
+        b=jUGyBuhvEqiYclLtQZCtrRE3UAiGIKXRSuArVvaCiPrD9BNzVBuy280VG/AwIq8LxmYwMf
+        Or5ZIRXre5BQi0wfC8rBYQ8SIRpd+uQstuSDvoFGQn517cvV/yYHRGQ3m3zJvm2dROPzHC
+        h8/3/XtZWVEZtnbPTY65hgXnf67f8ko=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-aZQ1Y3weOjGLRnBRIGQ5VA-1; Tue, 06 Oct 2020 07:11:20 -0400
+X-MC-Unique: aZQ1Y3weOjGLRnBRIGQ5VA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5F6S31xxz9sS8;
-        Tue,  6 Oct 2020 22:07:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601982433;
-        bh=8ImrifGUmi7VURj7TBNSZenjHM+KYL36+UEt7USuaN8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ek/by9Lw/qKmsqoivyzZ4a9Vqzieubwoga5h64AUALTk04sOxk5tVDu22VpqELFWh
-         qYBxA6AxdtA0FaIdku/5qWr1t5Gw4ExDML/il3bKndO9bEpS5ZAWC4vu+7U81IuG/b
-         RHu1PmgIlBqsWLfYadG9f90vGyRQvRIVGJWupNF468yzzzd5pinvJLU6cYsi0j24b/
-         vhJ+cF/HJzwm6+52so904Sbl73NPSXeMyeA2CFK/Fm/HytMug0N6RR4lh5K/QBYdCJ
-         7Exxbsfh2mFEiystQ5VQmZV9OyV1tVkZyMJXoQw4FfK1i9TkMnzbWWBVJCku5mfuU5
-         El5QePvSjREYg==
-Date:   Tue, 6 Oct 2020 22:07:11 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Joe Perches <joe@perches.com>, John Hubbard <jhubbard@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the akpm tree with the kselftest-fixes
- tree
-Message-ID: <20201006220711.0ec49da3@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A659A107AD64;
+        Tue,  6 Oct 2020 11:11:17 +0000 (UTC)
+Received: from krava (unknown [10.40.194.161])
+        by smtp.corp.redhat.com (Postfix) with SMTP id F278E78805;
+        Tue,  6 Oct 2020 11:11:14 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 13:11:13 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: Re: [PATCH] perf evlist: fix memory corruption for Kernel PMU event
+Message-ID: <20201006111113.GB249615@krava>
+References: <20201001115729.27116-1-song.bao.hua@hisilicon.com>
+ <20201001230653.GM50079@tassilo.jf.intel.com>
+ <dc9c24dcc58d477fa7e9c1a2ea246791@hisilicon.com>
+ <CAM9d7cjM262j4ixjayz+M1BqYDuiqRmrd9ifx++XBxT830ymRQ@mail.gmail.com>
+ <41a3e45d558242f79f9e10a8d9ca92f1@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jy/9B02r2lXeGj4L1pUyxT3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41a3e45d558242f79f9e10a8d9ca92f1@hisilicon.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jy/9B02r2lXeGj4L1pUyxT3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 06, 2020 at 06:39:44AM +0000, Song Bao Hua (Barry Song) wrote:
 
-Hi all,
+SNIP
 
-Today's linux-next merge of the akpm tree got a conflict in:
+> > > Andi, thanks! Could you share the link or the commit ID? I'd like to take a
+> > look at the fix.
+> > > I could still reproduce this issue in the latest linus' tree and I didn't find any
+> > commit
+> > > related to this issue in linux-next and tip/perf/core.
+> > 
+> > I think Andi was referring to this discussion which is not merged yet:
+> > 
+> > https://lore.kernel.org/lkml/20200922031346.15051-2-liwei391@huawei.co
+> > m/
+> > 
+> > I suggested a patch at the end.  Can you please try it?
+> 
+> I tried the patch you suggested.
+> 
+> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+> index 2208444ecb44..cfcdbd7be066 100644
+> --- a/tools/lib/perf/evlist.c
+> +++ b/tools/lib/perf/evlist.c
+> @@ -45,6 +45,9 @@ static void __perf_evlist__propagate_maps(struct perf_evlist *evlist,
+>          if (!evsel->own_cpus || evlist->has_user_cpus) {
+>                  perf_cpu_map__put(evsel->cpus);
+>                 evsel->cpus = perf_cpu_map__get(evlist->cpus);
+> +       } else if (!evsel->system_wide && perf_cpu_map__empty(evlist->cpus)) {
+> +               perf_cpu_map__put(evsel->cpus);
+> +               evsel->cpus = perf_cpu_map__get(evlist->cpus);
+>         } else if (evsel->cpus != evsel->own_cpus) {
+>                 perf_cpu_map__put(evsel->cpus);
+>                 evsel->cpus = perf_cpu_map__get(evsel->own_cpus);
+> 
+> it did fix the crash I have seen on arm64. I'd prefer you put the below fixes tag in the commit log. 
+> Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
+> Perf stat began to crash from v5.4 kernel, so the fix should be backported to stable trees.
 
-  tools/testing/selftests/vm/gup_test.c
+awesome.. Namhyung, could you please send full patch?
 
-between commit:
+thanks,
+jirka
 
-  aa803771a80a ("tools: Avoid comma separated statements")
-
-from the kselftest-fixes tree and commit:
-
-  5c64830675a6 ("mm/gup_benchmark: rename to mm/gup_test")
-
-from the akpm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/vm/gup_test.c
-index 1d4359341e44,e930135727a2..000000000000
---- a/tools/testing/selftests/vm/gup_test.c
-+++ b/tools/testing/selftests/vm/gup_test.c
-@@@ -104,17 -104,13 +104,17 @@@ int main(int argc, char **argv
-  	if (write)
-  		gup.flags |=3D FOLL_WRITE;
- =20
-- 	fd =3D open("/sys/kernel/debug/gup_benchmark", O_RDWR);
-+ 	fd =3D open("/sys/kernel/debug/gup_test", O_RDWR);
- -	if (fd =3D=3D -1)
- -		perror("open"), exit(1);
- +	if (fd =3D=3D -1) {
- +		perror("open");
- +		exit(1);
- +	}
- =20
-  	p =3D mmap(NULL, size, PROT_READ | PROT_WRITE, flags, filed, 0);
- -	if (p =3D=3D MAP_FAILED)
- -		perror("mmap"), exit(1);
- +	if (p =3D=3D MAP_FAILED) {
- +		perror("mmap");
- +		exit(1);
- +	}
-  	gup.addr =3D (unsigned long)p;
- =20
-  	if (thp =3D=3D 1)
-
---Sig_/jy/9B02r2lXeGj4L1pUyxT3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98T98ACgkQAVBC80lX
-0GyVGwf/cFeXKZjjCj3Z3CXP9NWmDJknD0xDuBBiXJlIxPsNHP+476/ZnsWlrX8x
-N89SmZO+VIyWdHTjv4SYLnDaF9vw0v4/qbhVbt8DB8kweGQizZ+9b76MA8B49e3I
-Yi/14S6TAJuaTMR2H06AF4jZuDO/6Mu3yVx9YJ6hev/4h/AbNUmHkM+LE2R2Aevu
-VN58RDLWjfBg+prQtgTqZ3UW6REVTF3QcCoTaeyzfxUe6j0Ojln1wwTm5BirgUiC
-/oXPH9LGSAskZT66DY4Pz6yDYka2vdir46i/ByC+bGTaJBcvPqBW6TfpOxMPa6QX
-QSM95IwBgTZkqRdRTv4dLQ/qUUy0Cg==
-=Tlm6
------END PGP SIGNATURE-----
-
---Sig_/jy/9B02r2lXeGj4L1pUyxT3--
