@@ -2,78 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F01284793
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F212A2847A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgJFHlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:41:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49480 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726670AbgJFHlU (ORCPT
+        id S1727235AbgJFHmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:42:18 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42819 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726670AbgJFHmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:41:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601970079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eFC0ISn2+rWqsHgSwE4sZ0+UQ3DhHxUZGAadpsJBkLw=;
-        b=SnA6ci52OjArJTJSaAYCMYdXCqHtfbII7sEGje6ijOxmHEXl9GDSnOpEEbM1vR9B4E9+SV
-        Iz1xWnvs10YKOTqB6E5GS6ria/6iLRrpTEnyeqQi/4KlDCvxnk4JnMHpw2hj9coboAbYdQ
-        p/bfj68fCfXELer50PplT41HRIxJjbw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-JKwoqOqxNom9jlTPhAa4hQ-1; Tue, 06 Oct 2020 03:41:15 -0400
-X-MC-Unique: JKwoqOqxNom9jlTPhAa4hQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC3AE1868411;
-        Tue,  6 Oct 2020 07:41:13 +0000 (UTC)
-Received: from T590 (ovpn-12-63.pek2.redhat.com [10.72.12.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C4C5755767;
-        Tue,  6 Oct 2020 07:41:04 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 15:41:00 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     Veronika Kabatova <vkabatov@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH V7 0/2] percpu_ref & block: reduce memory footprint of
- percpu_ref in fast path
-Message-ID: <20201006074100.GA26059@T590>
-References: <20201001154842.26896-1-ming.lei@redhat.com>
+        Tue, 6 Oct 2020 03:42:16 -0400
+Received: by mail-ot1-f66.google.com with SMTP id m13so11416006otl.9;
+        Tue, 06 Oct 2020 00:42:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X92StBJO7Jl08+emNfT4SOvEfEh2SDH9sc44xoCG2JQ=;
+        b=jDi0Mjz/ZGTamRVFUUtQ4Rn2TjOLfqBteqgqxKanvMacjTpaSfFdk2WoE9eDnaUxXj
+         x86NKJQl+R60tC9HXWlFem/3WvLrI5eZMeT0XBED8sGwRdcGCcvJKghx1V9Zl95p8pHd
+         IdFJZlBuqVw1s9yGR9ZJOm8iOW7nTIZcKW2tZG8uKn6+QNR7/omL6DONaBNmrbJZ/YOw
+         9VHDteqoGekRfwnIyWvHU34YRUhW9taXfQXINl0hN9J4I2HrIwD60WzF8bMD2r/+bWto
+         MeDJ6UbZtmCImHfbJeC4RNXjajjRcGBDkaQegs3rdhXM1pHGN/4LkYEEXcg2A2LDSZx3
+         /v0w==
+X-Gm-Message-State: AOAM533fmr93poNo1YrJEqSmM2bZas+ybUWrtkMW/Tm9TLiI7p4l/0Qp
+        t/VJDafHqVueoxDwlMLRO2BML5YMieOXkOe3UKA=
+X-Google-Smtp-Source: ABdhPJzRlbEpWRGt0J1cMm9H92xwWTt7DmJhhKL4iaOIkYDjOIUTuv76uRmvAtK3KDjga7sfjkeNBHq0tHs9kJqt0m0=
+X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr1972113otp.107.1601970134083;
+ Tue, 06 Oct 2020 00:42:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001154842.26896-1-ming.lei@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201005183830.486085-1-robh@kernel.org> <20201005183830.486085-4-robh@kernel.org>
+In-Reply-To: <20201005183830.486085-4-robh@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 6 Oct 2020 09:42:03 +0200
+Message-ID: <CAMuHMdXhtt=BMU4hrQLrNb9W6ZodaVFRd7tAfdrzzxEXpCgDPg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] dt-bindings: Explicitly allow additional properties
+ in board/SoC schemas
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-can@vger.kernel.org, linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org, Linux I2C <linux-i2c@vger.kernel.org>,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-rtc@vger.kernel.org,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:48:40PM +0800, Ming Lei wrote:
-> Hi,
-> 
-> The 1st patch removes memory footprint of percpu_ref in fast path
-> from 7 words to 2 words, since it is often used in fast path and
-> embedded in user struct.
-> 
-> The 2nd patch moves .q_usage_counter to 1st cacheline of
-> 'request_queue'.
-> 
-> Simple test on null_blk shows ~2% IOPS boost on one 16cores(two threads
-> per core) machine, dual socket/numa.
-> 
-> V7:
-> 	- add comments about reason for struct split
+On Mon, Oct 5, 2020 at 8:39 PM Rob Herring <robh@kernel.org> wrote:
+> In order to add meta-schema checks for additional/unevaluatedProperties
+> being present, all schema need to make this explicit. As the top-level
+> board/SoC schemas always have additional properties, add
+> 'additionalProperties: true'.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Hello Jens
+>  Documentation/devicetree/bindings/arm/renesas.yaml             | 2 ++
 
-Can you consider to merge the patchset in block tree if you are fine?
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+Gr{oetje,eeting}s,
 
-Thanks,
-Ming
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
