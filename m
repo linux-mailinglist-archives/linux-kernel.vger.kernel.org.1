@@ -2,141 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F0B2848EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4662849D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJFJCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgJFJCG (ORCPT
+        id S1726105AbgJFJ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:58:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59576 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJFJ65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:02:06 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2E0C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 02:02:05 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id g12so7097672wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ELTOM63/E69ypngcYfw/PJPfhYd4cEJ7an+k4N3B6b0=;
-        b=g9wi81nrJ6UmEn/MRqwSU3xumhiaQ0GlcaOw6xhEiKsSlmdZGbw38cKNFRTONJfpMI
-         rShanLIbCvxjdhkiYNqPKi8Vup+zyqcTTnfz4QRxI2fGoVF/BXzxdheJLLdkAm12bFyk
-         3kBeDptyUMuaNkrhRSTcA1A/T6L6yWAM6n5FeSKYE2zaV/4ekUktD7m6gzftaKqCslQR
-         huR7AcNlYvOew6KNi+AYhIHETRnDzB8NwQj18Wh7qqEdGSSm3mOuAbvbqWH4Ba7Xfwi+
-         fgpsN7r8/tS8zIrrqQMGr7zwKzIZg+cN6IJHlSWnWOoGC6fYbIhpRIsIOTcTbuR/xJfb
-         1jtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ELTOM63/E69ypngcYfw/PJPfhYd4cEJ7an+k4N3B6b0=;
-        b=MlyzDdQrlHiUnq5xJ4y1akt8r3qyMnkIKNDoYKG2uUZGgrJEhYW5XZgtw1QPh7hThX
-         l0ZexNmXvKzAsM06N7K9KiKamFn+bqEU0i1vu+bUqqb1f0KZFtuJxNXUKOrlnMoSCk8Y
-         +QaeTxHeLDv/QPfwd6+IyZ2xUPiMfTINsa7gPgF5Lfg/9O/IW/HHheMbvggu0DnGL71y
-         F7PISooz1ZIrv/EWpkYJYFmYd2l51beZpsGDaY0YQsjUFFAMFq6nlFZf8Grpf5UaIbsZ
-         /dekRarh4h32oJz+C0r3H4NrVG/tpJgB1C90Xol5RMqGB9drZy36pVOfDOj/44KHMN3i
-         i92w==
-X-Gm-Message-State: AOAM533aD/n8S5hYk/RZCme7XsxdGhz490GQXyhOYFjvAUBilNsd+jNa
-        9/ijAbEwPVDhiTdCxof64YF1Zw==
-X-Google-Smtp-Source: ABdhPJw9C14n0661BEnE2zEAj/ACDnuST1NwREigggn7nJYJ/4H739MpvIQh/+WmIXOHfrDVMm5QuA==
-X-Received: by 2002:adf:9541:: with SMTP id 59mr3734807wrs.396.1601974924384;
-        Tue, 06 Oct 2020 02:02:04 -0700 (PDT)
-Received: from localhost ([85.163.43.78])
-        by smtp.gmail.com with ESMTPSA id q15sm3609684wrr.8.2020.10.06.02.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 02:02:03 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 11:02:03 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     "Allan W. Nielsen" <allan.nielsen@microchip.com>
-Cc:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>,
-        davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
-        nikolay@nvidia.com, jiri@mellanox.com, idosch@mellanox.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org, UNGLinuxDriver@microchip.com,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: Re: [net-next v2 10/11] bridge: switchdev: cfm: switchdev interface
- implementation
-Message-ID: <20201006090203.GA3336@nanopsycho>
-References: <20201001103019.1342470-1-henrik.bjoernlund@microchip.com>
- <20201001103019.1342470-11-henrik.bjoernlund@microchip.com>
- <20201001124929.GM8264@nanopsycho>
- <20201005130712.ybbgiddb7bnbkz6h@ws.localdomain>
+        Tue, 6 Oct 2020 05:58:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601978335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7LV4W7glSecH78sK1+Pn5RbohOXK+OKpDxoa9IzxyOE=;
+        b=U6B5y5V7IZkwM9ScCiOE82tX/IRSP3p1f+UuEr/GOhXhcXKlaGyH/cRDLcvGmu4yvlKDyI
+        aJlYHciB2ammab0iZS4rbX9tKFhgjK7unqRV83L5vxMvyVmGLYfpewSU0L7Vz/rpQWNOsV
+        7yCobW2yFk22ZAwXAykoAXh6QOWAv8w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-178-lLK2Aw8zM5Wouy5X8P0zEw-1; Tue, 06 Oct 2020 05:58:51 -0400
+X-MC-Unique: lLK2Aw8zM5Wouy5X8P0zEw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BB7D1084D61;
+        Tue,  6 Oct 2020 09:58:50 +0000 (UTC)
+Received: from localhost (ovpn-112-180.ams2.redhat.com [10.36.112.180])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CE3F10013BD;
+        Tue,  6 Oct 2020 09:58:44 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 10:04:27 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Qian Cai <cai@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Subject: Re: virtiofs: WARN_ON(out_sgs + in_sgs != total_sgs)
+Message-ID: <20201006090427.GA41482@stefanha-x1.localdomain>
+References: <5ea77e9f6cb8c2db43b09fbd4158ab2d8c066a0a.camel@redhat.com>
+ <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
+ <20201004143119.GA58616@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20201004143119.GA58616@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
 Content-Disposition: inline
-In-Reply-To: <20201005130712.ybbgiddb7bnbkz6h@ws.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Oct 05, 2020 at 03:07:12PM CEST, allan.nielsen@microchip.com wrote:
->Hi Jiri
->
->On 01.10.2020 14:49, Jiri Pirko wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->> 
->> Thu, Oct 01, 2020 at 12:30:18PM CEST, henrik.bjoernlund@microchip.com wrote:
->> > This is the definition of the CFM switchdev interface.
->> > 
->> > The interface consist of these objects:
->> >    SWITCHDEV_OBJ_ID_MEP_CFM,
->> >    SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM,
->> >    SWITCHDEV_OBJ_ID_CC_CONFIG_CFM,
->> >    SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM,
->> >    SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM,
->> >    SWITCHDEV_OBJ_ID_MEP_STATUS_CFM,
->> >    SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM
->> > 
->> > MEP instance add/del
->> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CFM)
->> >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_MEP_CFM)
->> > 
->> > MEP cofigure
->> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM)
->> > 
->> > MEP CC cofigure
->> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CONFIG_CFM)
->> > 
->> > Peer MEP add/del
->> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
->> >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
->> > 
->> > Start/stop CCM transmission
->> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM)
->> > 
->> > Get MEP status
->> >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_MEP_STATUS_CFM)
->> > 
->> > Get Peer MEP status
->> >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM)
->> > 
->> > Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
->> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
->> 
->> You have to submit the driver parts as a part of this patchset.
->> Otherwise it is no good.
->Fair enough.
->
->With MRP we did it like this, and after Nik asked for details on what is
->being offload, we thought that adding this would help.
->
->The reason why we did not include the implementation of this interface
->is that it is for a new SoC which is still not fully available which is
->why we have not done the basic SwitchDev driver for it yet. But the
->basic functionality clearly needs to come first.
->
->Our preference is to continue fixing the comments we got on the pure SW
->implementation and then get back to the SwitchDev offloading.
->
->This will mean dropping the last 2 patches in the serie.
->
->Does that work for you Jiri, and Nik?
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sure.
+On Sun, Oct 04, 2020 at 10:31:19AM -0400, Vivek Goyal wrote:
+> On Fri, Oct 02, 2020 at 10:44:37PM -0400, Qian Cai wrote:
+> > On Fri, 2020-10-02 at 12:28 -0400, Qian Cai wrote:
+> > > Running some fuzzing on virtiofs from a non-privileged user could tri=
+gger a
+> > > warning in virtio_fs_enqueue_req():
+> > >=20
+> > > WARN_ON(out_sgs + in_sgs !=3D total_sgs);
+> >=20
+> > Okay, I can reproduce this after running for a few hours:
+> >=20
+> > out_sgs =3D 3, in_sgs =3D 2, total_sgs =3D 6
+>=20
+> Thanks. I can also reproduce it simply by calling.
+>=20
+> ioctl(fd, 0x5a004000, buf);
+>=20
+> I think following WARN_ON() is not correct.
+>=20
+> WARN_ON(out_sgs + in_sgs !=3D total_sgs)
+>=20
+> toal_sgs should actually be max sgs. It looks at ap->num_pages and
+> counts one sg for each page. And it assumes that same number of
+> pages will be used both for input and output.
+>=20
+> But there are no such guarantees. With above ioctl() call, I noticed
+> we are using 2 pages for input (out_sgs) and one page for output (in_sgs)=
+.
+>=20
+> So out_sgs=3D4, in_sgs=3D3 and total_sgs=3D8 and warning triggers.
+>=20
+> I think total sgs is actually max number of sgs and warning
+> should probably be.
+>=20
+> WARN_ON(out_sgs + in_sgs >  total_sgs)
+>=20
+> Stefan, WDYT?
 
->
->/Allan
->
+It should be possible to calculate total_sgs precisely (not a maximum).
+Treating it as a maximum could hide bugs.
+
+Maybe sg_count_fuse_req() should count in_args/out_args[numargs -
+1].size pages instead of adding ap->num_pages.
+
+Do you have the details of struct fuse_req and struct fuse_args_pages
+fields for the ioctl in question?
+
+Thanks,
+Stefan
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl98MxsACgkQnKSrs4Gr
+c8gfnwf+MqC6BshRLBrYU+tLmXR6WJwbG8X0i6P2g42yuD/GJ4WOYHVPw2oEdnc/
+OwEMYJ9LWwFiYmhT5DeapDx9XmVJVMlPeQ6GjkRilgo53OGu3IMi3T3JIOHKN4ZZ
+nCwWqrE1CA4bVx7sX6HUKOqGwLhOIs1DrAen/sNjEtbKi2Bum1OTpo5uWDQuGEIn
+BwYfQmuuSL/lBpz2Um+le97b8YskkC01oJAMONlNtQZqhYyZKl67Xbqq219Mnyzv
+O0uePL5gPQr1pNOknKXmgOsZUSHn5XamPiNz2LbHFVGRswIUM0BCNFVTnfOeRi7r
+Zm0jNqFLkavBPraEY08HjFnbBTwLDQ==
+=Ol2A
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
+
