@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BE92846CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B5C2846D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgJFHIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:08:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgJFHIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:08:47 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4C0120866;
-        Tue,  6 Oct 2020 07:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601968126;
-        bh=OxzGt1kFtMJ7gtU6zDQQYWvzhLcjesuXJvcefsYMV3o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UfLg53ERF6V+iy5l7L5knqZ53sktCfmF3g+zDw2pZm8zfNGsdOpFg7q+ihwJmOMnb
-         BCOxKLA9aa91HkT7X+c6DXPnwlijjpclvhrbRcvZWk5yQqroEUBXlSNxOwYHhB+CgS
-         HyuqeYqOhZbFLR0RkU4vTjF4vLN2oLyHc0c3Te+E=
-Received: by mail-ej1-f52.google.com with SMTP id dt13so6667173ejb.12;
-        Tue, 06 Oct 2020 00:08:45 -0700 (PDT)
-X-Gm-Message-State: AOAM530P9+T92f1o3Ly7clfQxaqDfs55rSWjDD5Bv+e3UOUnXAtDI++r
-        dRPhqoPt0dA84Y4BLbU9kJ8Xe2oTZc3WeC2QUi0=
-X-Google-Smtp-Source: ABdhPJzLhPEqvT6J5geGmoPrQ7IMn3x8MOdczLNtU8+s0aEKZxKZUoL/SxJbXP5Lz/uWo9ZtsXhlGuOCe+asmSXMEd0=
-X-Received: by 2002:a17:907:43c0:: with SMTP id ok24mr3586572ejb.385.1601968124314;
- Tue, 06 Oct 2020 00:08:44 -0700 (PDT)
+        id S1727096AbgJFHKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgJFHKi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 03:10:38 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED7DC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 00:10:38 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id j8so1164581pjy.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 00:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Xy5wqMUeXlibqHeEj3LQp2tBjNI9zLCjjBKnBCJJgVU=;
+        b=RyxzkNxuBWFQ47CWdVmYlqtzz3L4gm7iYrz17kOBXIQQNbebPkVolc8Qh9iz+NlNKf
+         SBVDPQakMDXo0hXpZO8IlFdVtcyYO5EXpP+zGOXoEqf8uTO5DuQf9RHXDLNwN7xNKEwa
+         T9c61gSHCoh4bUPtRNnfYbleH/kK0TWvNTzLRCynOvKiRbihypdKzHfm/AvzEhI0kwWf
+         Weo6z/GlXhVwT5MG6JUymuXP9P1gdqdJFi9C2FP2YBGvhgaGOnV5hS5v7O4pD+BuVkiX
+         d44ECxV/3cN/tWe3MpECm3K/d8N+9gpenIuTq5o632JfOGwSvuHYDHNlxOxceG51nKDH
+         XF+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Xy5wqMUeXlibqHeEj3LQp2tBjNI9zLCjjBKnBCJJgVU=;
+        b=arfLFkk4MrTWIJSdef22Ol1HqWhenUxGM71je3DnDpzvConchI5QZughbTzpHW0gW5
+         MrRxvV+eS3QoXUFl08OVjR2TAh99YuUvANrOq1ccR+JcEXdvNsJ+gYB/Q9/ZJLtIfNQ0
+         z/WzL7BTfvgK5hEEppHA6gvR8twGlveE2FWL9ZoZbp7ek4BH3Xr4NWJENkjvYA5JbzK6
+         O3FZ/xXV0fRJE+pZc+Jqhji0v3Lrk1bNrrT2qPQHsnOnXpeWuIgB90Cctr6CDxp1VPHG
+         dKnH/zQLqVaulkzmECpsmbe8aW6dXSnjnbNWqRawihQazjzcxSfd+i6wpr4YqLIGR5ZW
+         4lNg==
+X-Gm-Message-State: AOAM530Et8arQ0F8WacudsTTUyvn/USav/awBCSDucLwJLS6iW7TEbKc
+        ksMUEH2AInrzg3jx2g1Z4nJBtw==
+X-Google-Smtp-Source: ABdhPJzUrGr33bgXauuGPiiRUSheuTO3a1+5ATd8VPWULKIaEEp0V6T42MLd3HP+OQMUm4WnZMkppQ==
+X-Received: by 2002:a17:90b:3010:: with SMTP id hg16mr2851367pjb.21.1601968237639;
+        Tue, 06 Oct 2020 00:10:37 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id x4sm2237867pfm.86.2020.10.06.00.10.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Oct 2020 00:10:36 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 12:40:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
+        linux@armlinux.org.uk, rjw@rjwysocki.net, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm: disable frequency invariance for
+ CONFIG_BL_SWITCHER
+Message-ID: <20201006071034.u65c5sphzwlvi6cs@vireshk-i7>
+References: <20200924123016.13427-1-ionela.voinescu@arm.com>
+ <20200924123016.13427-3-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-References: <20201006041214.GA4145870@dtor-ws>
-In-Reply-To: <20201006041214.GA4145870@dtor-ws>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 6 Oct 2020 09:08:32 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfgDcNOuO6RJpLjacvKVSPg5siLnC+2sKKhJmPgCrGpDA@mail.gmail.com>
-Message-ID: <CAJKOXPfgDcNOuO6RJpLjacvKVSPg5siLnC+2sKKhJmPgCrGpDA@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: adc: exynos: do not rely on 'users' counter in ISR
-To:     dmitry.torokhov@gmail.com
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-iio@vger.kernel.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924123016.13427-3-ionela.voinescu@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 06:12, <dmitry.torokhov@gmail.com> wrote:
->
-> The order in which 'users' counter is decremented vs calling drivers'
-> close() method is implementation specific, and we should not rely on
-> it. Let's introduce driver private flag and use it to signal ISR
-> to exit when device is being closed.
->
-> This has a side-effect of fixing issue of accessing inut->users
-> outside of input->mutex protection.
->
-> Reported-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+On 24-09-20, 13:30, Ionela Voinescu wrote:
+> big.LITTLE switching complicates the setting of a correct cpufreq-based
+> frequency invariance scale factor due to (as observed in
+> drivers/cpufreq/vexpress-spc-cpufreq.c):
+>  - Incorrect current and maximum frequencies as a result of the
+>    exposure of a virtual frequency table to the cpufreq core,
+>  - Missed updates as a result of asynchronous frequency adjustments
+>    caused by frequency changes in other CPU pairs.
+> 
+> Given that its functionality is atypical in regards to frequency
+> invariance and this is an old technology, disable frequency
+> invariance for when big.LITTLE switching is configured in to prevent
+> incorrect scale setting.
+> 
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Suggested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
 > ---
->
-> v2: switched from ordinary read/write to READ_ONCE/WRITE_ONCE per Micha=
-=C5=82
-> Miros=C5=82aw
->
->  drivers/iio/adc/exynos_adc.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  arch/arm/include/asm/topology.h | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+> index e5e3d5ce4d55..470299ee2fba 100644
+> --- a/arch/arm/include/asm/topology.h
+> +++ b/arch/arm/include/asm/topology.h
+> @@ -7,10 +7,13 @@
+>  #include <linux/cpumask.h>
+>  #include <linux/arch_topology.h>
+>  
+> +/* big.LITTLE switcher is incompatible with frequency invariance */
+> +#ifndef CONFIG_BL_SWITCHER
+>  /* Replace task scheduler's default frequency-invariant accounting */
+>  #define arch_set_freq_scale topology_set_freq_scale
+>  #define arch_scale_freq_capacity topology_get_freq_scale
+>  #define arch_scale_freq_invariant topology_scale_freq_invariant
+> +#endif
+>  
+>  /* Replace task scheduler's default cpu-invariant accounting */
+>  #define arch_scale_cpu_capacity topology_get_cpu_scale
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Best regards,
-Krzysztof
+-- 
+viresh
