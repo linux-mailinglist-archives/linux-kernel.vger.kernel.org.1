@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF93284378
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF6F28435C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgJFApj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:45:39 -0400
-Received: from mga14.intel.com ([192.55.52.115]:37998 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726562AbgJFApj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:45:39 -0400
-IronPort-SDR: ThpEB1RxMfaoukI/eJ+9FjOOrLJizEpi4UFgw4R8Igy4alARkoRhA0ssNB+se87u9lUqQFd9sv
- HS5nkTSdq74A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="163511992"
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="163511992"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP; 05 Oct 2020 17:45:39 -0700
-IronPort-SDR: sdLt+WG5kroCEue5dSYKRx7UAWYevQPfDZMW+tG8m2+KbDqeybGtqc1aZQkr/duTsX8x+nUd90
- K0qTc17Ta/ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="417755291"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Oct 2020 17:25:18 -0700
-Date:   Mon, 5 Oct 2020 17:27:17 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] drivers core: Introduce CPU type sysfs interface
-Message-ID: <20201006002717.GC6041@ranerica-svr.sc.intel.com>
-References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
- <20201003084934.GA14035@zn.tnic>
+        id S1726006AbgJFAcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:32:24 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:51279 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgJFAcY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 20:32:24 -0400
+X-Originating-IP: 50.39.163.217
+Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id EFCD620006;
+        Tue,  6 Oct 2020 00:32:18 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 17:32:16 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201006003216.GB6553@localhost>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
+ <20201005081454.GA493107@localhost>
+ <20201005173639.GA2311765@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201003084934.GA14035@zn.tnic>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201005173639.GA2311765@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 10:49:34AM +0200, Borislav Petkov wrote:
-> On Fri, Oct 02, 2020 at 06:17:41PM -0700, Ricardo Neri wrote:
-> > Patch 1 of the series proposes the generic interface, with hooks
-> > that architectures can override to suit their needs. The three patches
-> > patches implement such interface for x86 (as per request from Boris,
-> > I pulled patch 2 from a separate submission [1]).
+On Mon, Oct 05, 2020 at 10:36:39AM -0700, Darrick J. Wong wrote:
+> On Mon, Oct 05, 2020 at 01:14:54AM -0700, Josh Triplett wrote:
+> > Ran into an ext4 regression when testing upgrades to 5.9-rc kernels:
+> > 
+> > Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
+> > ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
+> > with intentionally overlapping bitmap blocks.
+> > 
+> > On an always-read-only filesystem explicitly marked with
+> > EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
+> > point all the block and inode bitmaps to a single block
 > 
-> So I ask you to show me the whole thing, how this is supposed to be used
-> in a *real* use case and you're sending me a couple of patches which
-> report these heterogeneous or whatever they're gonna be called CPUs.
+> LOL, WHAT?
 > 
-> Are you telling me that all this development effort was done so that
-> you can report heterogeneity in sysfs? Or you just had to come up with
-> *something*?
-> 
-> Let me try again: please show me the *big* *picture* with all the code
-> how this is supposed to be used. In the patches I read a bunch of "may"
-> formulations of what is possible and what userspace could do and so on.
-> 
-> Not that - show me the *full* and *real* use cases which you are
-> enabling and which justify all that churn. Instead of leaving it all to
-> userspace CPUID and the kernel not caring one bit.
-> 
-> Does that make more sense?
+> I didn't know shared blocks applied to fs metadata.  I thought that
+> "shared" only applied to file extent maps being able to share physical
+> blocks.
 
-Yes Boris, thanks for the clarification. The proposed sysfs interface is
-one instance in which we use cpuinfo_x86.x86_cpu_type. I have other
-changes that use this new member. I will post them.
+The flag isn't documented very well yet, but since it specifically
+forces the filesystem to always be mounted read-only, the bitmaps really
+shouldn't matter at all. (In an ideal world, a permanently read-only
+filesystem should be able to omit all the bitmaps entirely. Pointing
+them all to a single disk block is the next best thing.)
 
+> Could /somebody/ please document the ondisk format changes that are
+> associated with this feature?
+
+I pretty much had to sort it out by looking at a combination of
+e2fsprogs and the kernel, and a lot of experimentation, until I ended up
+with something that the kernel was completely happy with without a
+single complaint.
+
+I'd be happy to write up a summary of the format.
+
+I'd still really like to see this patch applied for 5.9, to avoid having
+filesystems that an old kernel can mount but a new one can't. This still
+seems like a regression to me.
+
+> > of all 1s,
+> > because a read-only filesystem will never allocate or free any blocks or
+> > inodes.
 > 
-> > [1]. https://lkml.org/lkml/2020/10/2/1013
-> 
-> For supplying links, we use lore.kernel.org/r/<message-id> solely.
-> Please use that from now on.
+> All 1s?  So the inode bitmap says that every inode table slot is in use,
+> even if the inode record itself says it isn't?
 
-Sure Boris, I will use lore.kernel.org in the future.
+Yes.
 
-Thanks and BR,
-Ricardo
+> What does e2fsck -n
+> think about that kind of metadata inconsistency?
+
+If you set up the rest of the metadata consistently with it (for
+instance, 0 free blocks and 0 free inodes), you'll only get a single
+complaint, from the e2fsck equivalent of block_validity. See
+https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=956509 for details on
+that; with that fixed, e2fsck wouldn't complain at all. The kernel,
+prior to 5.9-rc2, doesn't have a single complaint, whether at mount,
+unmount, or read of every file and directory on the filesystem.
+
+The errors you got in your e2fsck run came because you just overrode the
+bitmaps, but didn't make the rest of the metadata consistent with that.
+I can provide a sample filesystem if that would help.
+
+- Josh
