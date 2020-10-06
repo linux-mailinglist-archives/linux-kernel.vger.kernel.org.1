@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A71D2846F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A572846FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727143AbgJFHSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:18:45 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:54696 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgJFHSo (ORCPT
+        id S1727226AbgJFHTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727172AbgJFHTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:18:44 -0400
-Received: by mail-wm1-f67.google.com with SMTP id p15so1785872wmi.4;
-        Tue, 06 Oct 2020 00:18:43 -0700 (PDT)
+        Tue, 6 Oct 2020 03:19:13 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27463C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 00:19:13 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id o9so775240plx.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 00:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=m2b+rmKRGPYGRHjXu3I4nFOGjf5oCG8gDODedqsY8HI=;
+        b=MzsarqGUb28zUo1ZRQuRl2CQFRw++HYQ9UsKlDiioJRx4DDwqhZDVh8zkS5ZMaLDPN
+         PuUv7/4fQPcMU4pTP8LgkCw7cXvG4Q7wMpcYZP1NRw5oFwk9avs29jXu6WJ7Kqpb3dEw
+         E84b/Q8xEWKH54B99Wka5P9nno7+tj/P6JYT+sykdnSBV80ZOiZ5/Y2SSMr+KISzJyFC
+         lsnZ4iPOniWwx5fMVAMlNJwUHCsFhvi4eOWqtdMmuUuYtXldriIAPaBJoOJqEX0nljck
+         OurpuFskSQdMmkCc1oZiC+bdw4aFm2tydZEQQh3tvvSFD02Q6AqJuOZN5nGTssGzhquK
+         Bk7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ITHR5xjZR9qU+0rYpKhMHSvOMECUC8YhvuIaZkbc094=;
-        b=GywvVwXGaNFwG9Yd/RCYeWbh2qp4MjuuBaNpmxhVItCUlnBHVpKHI78FJ9mw4ngFrN
-         nWqrqsguZCm8ovFwC2HUA3/aSzitrL9yKo6HfM8T/PB7zMR3pZcs6d3a/gUTujH2TX3H
-         uNB73y+mMNh2MjyWlnyBIUIg8CMIuIwa19pN/gwZK4HzqnlZ7Wr0gAOtnjtlmmWhIMAk
-         346rYuImiA00jPV3kfTxxlFZY8eIuNdWZsKHSYHPygWnuGMDlsU0gW9hCv1tPgFP8GpQ
-         SlEhIB+feU+COtj6V7PAD1064u+1U160C6RrL6L/YGWm/a6kAXP2HP+BHvV8BfpqdxuY
-         J2iQ==
-X-Gm-Message-State: AOAM531CtsumdiVJ1zaWvkBB+2/47CfIJ0BdioqGJnpLCwPVJaM0UycH
-        buIhUdJBlkD3fYpQUEp3w8Y=
-X-Google-Smtp-Source: ABdhPJx0yNrHEU7UDvNE8lhlFuoDDRp9Cl+ESLoSIMyNzIen0lPioASqSAe2IV+9r6VqPllxNH0sgA==
-X-Received: by 2002:a1c:4604:: with SMTP id t4mr3284322wma.48.1601968722386;
-        Tue, 06 Oct 2020 00:18:42 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id p9sm2617wmm.4.2020.10.06.00.18.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 06 Oct 2020 00:18:41 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 09:18:38 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
-        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v3 18/24] iommu/mediatek: Support master use iova over
- 32bit
-Message-ID: <20201006071838.GA5703@kozik-lap>
-References: <20200930070647.10188-1-yong.wu@mediatek.com>
- <20200930070647.10188-19-yong.wu@mediatek.com>
+        bh=m2b+rmKRGPYGRHjXu3I4nFOGjf5oCG8gDODedqsY8HI=;
+        b=OACqYmySlYjfofTNW1fvL1C/aEBmnF7V/MYnjlnXb6RWeSdJIOgOwfAdYuZz88IWhb
+         I7Sg4a7vPfzt50ikMernzqLja5FoaXdBKFSkCdAw8oOF58M99lSmMtyoi7Dk5ti8qCwF
+         B2QLLTFgFEGZjMDGg8xMQvv30+j0zdE2Ln30R8VfmFLhrA9fMazhRbidCmGgUEWuTeEA
+         9yFsRr/xA7V5wpSjj2Ao0GPWl8WH1Teekj2FePUtZOymJ/cx4pfDdmwuDk6aeAcZ0Ut5
+         MVCK7mBk2dE7vfzhwrx8v0kC4j0C+nClzWAImh53caCni5yuswOU6cxd6DvWsm7n4Ep9
+         BjPQ==
+X-Gm-Message-State: AOAM533iyo8dE4Fx2MREV6PHsPC8C7Bl5wQNqIn09+dQVox89fnOB5pc
+        J5ZKshTnkU2PkfSfmtnOyfnnpQ==
+X-Google-Smtp-Source: ABdhPJwDUUyCJoFXkW7uX+HT9mhqyp71hZG+SsLmVoqnODhfEK9QCzoSbQzGtxk5AUvOx2IO9tk/nQ==
+X-Received: by 2002:a17:90a:a595:: with SMTP id b21mr2943649pjq.95.1601968752689;
+        Tue, 06 Oct 2020 00:19:12 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id j4sm2140975pfj.143.2020.10.06.00.19.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Oct 2020 00:19:11 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 12:49:09 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, daniel.lezcano@linaro.org,
+        morten.rasmussen@arm.com, chris.redpath@arm.com
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
+References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+ <20200924095347.32148-3-nicola.mazzucato@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200930070647.10188-19-yong.wu@mediatek.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200924095347.32148-3-nicola.mazzucato@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 03:06:41PM +0800, Yong Wu wrote:
-> After extending v7s, our pagetable already support iova reach
-> 16GB(34bit). the master got the iova via dma_alloc_attrs may reach
-> 34bits, but its HW register still is 32bit. then how to set the
-> bit32/bit33 iova? this depend on a SMI larb setting(bank_sel).
+On 24-09-20, 10:53, Nicola Mazzucato wrote:
+> I am seeking some feedback/comments on the following approach.
 > 
-> we separate whole 16GB iova to four banks:
-> bank: 0: 0~4G; 1: 4~8G; 2: 8-12G; 3: 12-16G;
-> The bank number is (iova >> 32).
-> 
-> We will preassign which bank the larbs belong to. currently we don't
-> have a interface for master to adjust its bank number.
-> 
-> Each a bank is a iova_region which is a independent iommu-domain.
-> the iova range for each iommu-domain can't cross 4G.
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/iommu/mtk_iommu.c  | 12 +++++++++---
->  drivers/memory/mtk-smi.c   |  7 +++++++
->  include/soc/mediatek/smi.h |  1 +
->  3 files changed, 17 insertions(+), 3 deletions(-)
+> Intro:
+> Info of performance depency for cpus will be beneficial for systems
+> where f/w description of the CPU performance control domain is different
+> from the clock domain, e.g. per-CPU control with multiple CPUs sharing
+> clock, and kernel OSPM s/w components need to take CPU performance
+> dependency into account.
+> Essentially these s/w components will have to be provided with
+> this information from dt and this RFC is presenting a possible way
+> to do so.
 
+I am not sure I understand what performance control mean here. Can you please
+elaborate a bit more on that ? For example, with current code and understanding,
+a cpufreq policy belongs to a group of CPUs which change their frequency
+together, which also mean that they change their performance level together and
+so I am not able to understand what's going on here. Sorry about that.
 
-For the memory part:
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+What kind of hardware configuration doesn't work with this ?
 
-Best regards,
-Krzysztof
+-- 
+viresh
