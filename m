@@ -2,73 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3119B285066
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FB9285074
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgJFRA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:00:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:52364 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgJFRA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:00:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A31C1D6E;
-        Tue,  6 Oct 2020 10:00:26 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A660A3F66B;
-        Tue,  6 Oct 2020 10:00:24 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 18:00:21 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Tony Luck <tony.luck@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
-Message-ID: <20201006170020.GB6642@arm.com>
-References: <20200929205746.6763-1-chang.seok.bae@intel.com>
- <20201005134534.GT6642@arm.com>
- <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
- <20201006092532.GU6642@arm.com>
- <CAMe9rOq_nKa6xjHju3kVZephTiO+jEW3PqxgAhU9+RdLTo-jgg@mail.gmail.com>
- <20201006152553.GY6642@arm.com>
- <7663eff0-6c94-f6bf-f3e2-93ede50e75ed@intel.com>
+        id S1726165AbgJFRFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:05:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51965 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725769AbgJFRFe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 13:05:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602003932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uJcTj5yDFr6ZWVoIw5jsMoDe6o0IbfUHl+w8TFbOuHs=;
+        b=BeTQtZkCIE//TuHLmbSv2e9Qe0ZVPTR+jUwbc7qXmROQjm6hl8gddnVrnPW5IV+SV/Qpx8
+        SfEA7mgOlec1Idzg7d18Qv+M5Q0Lv/znfqYMSq48E+twwpunryG4tqx/+s1rkKYnXqqH9a
+        tkebi7YA78COPc8Jl5RoFMveNi+Zu5o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-xsnUbgMfM--AZu5bL-9mSw-1; Tue, 06 Oct 2020 13:05:28 -0400
+X-MC-Unique: xsnUbgMfM--AZu5bL-9mSw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F7B31902EA7;
+        Tue,  6 Oct 2020 17:05:27 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.132])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D90A25C1BD;
+        Tue,  6 Oct 2020 17:05:24 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  6 Oct 2020 19:05:26 +0200 (CEST)
+Date:   Tue, 6 Oct 2020 19:05:23 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     syzbot <syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, christian@brauner.io,
+        linux-kernel@vger.kernel.org, liuzhiqiang26@huawei.com,
+        syzkaller-bugs@googlegroups.com, Tejun Heo <tj@kernel.org>
+Subject: Re: WARNING in get_signal
+Message-ID: <20201006170523.GC9995@redhat.com>
+References: <000000000000da06e405b0b20f1e@google.com>
+ <87zh54bp0n.fsf@x220.int.ebiederm.org>
+ <20201005134923.GA9995@redhat.com>
+ <20201005163016.GB9995@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7663eff0-6c94-f6bf-f3e2-93ede50e75ed@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201005163016.GB9995@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 08:33:47AM -0700, Dave Hansen wrote:
-> On 10/6/20 8:25 AM, Dave Martin wrote:
-> > Or are people reporting real stack overruns on x86 today?
-> 
-> We have real overruns.  We have ~2800 bytes of XSAVE (regisiter) state
-> mostly from AVX-512, and a 2048 byte MINSIGSTKSZ.
+On 10/05, Oleg Nesterov wrote:
+>
+> On 10/05, Oleg Nesterov wrote:
+> >
+> > > It looks like this code was introduced in commit 73ddff2bee15 ("job
+> > > control: introduce JOBCTL_TRAP_STOP and use it for group stop trap").
+> >
+> > Yes, but I bet this was broken later, _may be_ by 924de3b8c9410c4.
+>
+> No, it seems this bug is really old. I'll try to make the fix tomorrow.
 
-Right.  Out of interest, do you believe that's a direct consequence of
-the larger kernel-generated signal frame, or does the expansion of
-userspace stack frames play a role too?
+I still do not see a good fix. I am crying ;)
 
-In practice software just assumes SIGSTKSZ and then ignores the problem
-until / unless an actual stack overflow is seen.
+For the moment, lets forget about this problem. 924de3b8c9410c4 was wrong
+anyway, task_join_group_stop() should be fixed:
 
-There's probably a lot of software out there whose stack is
-theoretically too small even without AVX-512 etc. in the mix, especially
-when considering the possibility of nested signals...
+	- if current is traced, "jobctl & JOBCTL_STOP_PENDING" is not
+	  enough, we need to check SIGNAL_STOP_STOPPED/group_stop_count
 
-Cheers
----Dave
+	- if the new thread is traced, task_join_group_stop() should do
+	  nothing, we should rely on ptrace_init_task()
+
+
+Now lets return to this bug report. This (incomplete) test-case
+
+	void *tf(void *arg)
+	{
+		return NULL;
+	}
+
+	int main(void)
+	{
+		int pid = fork();
+		if (!pid) {
+			setpgrp();
+			kill(getpid(), SIGTSTP);
+
+			pthread_t th;
+			pthread_create(&th, NULL, tf, NULL);
+
+			return 0;
+		}
+
+		waitpid(pid, NULL, WSTOPPED);
+
+		ptrace(PTRACE_SEIZE, pid, 0, PTRACE_O_TRACECLONE);
+		waitpid(pid, NULL, 0);
+
+		ptrace(PTRACE_CONT, pid, 0,0);
+		waitpid(pid, NULL, 0);
+
+		int status;
+		int thr = waitpid(-1, &status, 0);
+		printf("pids: %d %d status: %x\n", pid, thr, status);
+
+		return 0;
+	}
+
+triggers WARN_ON_ONCE(!signr) in do_jobctl_trap() and shows that the
+auto-attached sub-thread reports the wrong status.
+
+This patch
+
+	--- x/include/linux/ptrace.h
+	+++ x/include/linux/ptrace.h
+	@@ -218,7 +218,7 @@ static inline void ptrace_init_task(stru
+			__ptrace_link(child, current->parent, current->ptracer_cred);
+	 
+			if (child->ptrace & PT_SEIZED)
+	-			task_set_jobctl_pending(child, JOBCTL_TRAP_STOP);
+	+			task_set_jobctl_pending(child, JOBCTL_TRAP_STOP|SIGTRAP);
+			else
+				sigaddset(&child->pending.signal, SIGSTOP);
+		}
+
+should fix the problem, but it is not enough even if we forget about
+task_join_group_stop().
+
+	- it is not clear to me if the new thread should join the group stop
+	  after (say) PTRACE_CONT. If yes, it is not clear how can we do this.
+
+	- in any case it should stop after ptrace_detach(), but in this case
+	  jobctl & JOBCTL_STOP_SIGMASK == SIGTRAP doesn't look right.
+
+	  So perhaps we can change the patch above to use
+	  current->jobctl & JOBCTL_STOP_SIGMASK instead of SIGTRAP ?
+
+	  This too doesn't look good, the 1st ptrace_stop() should probably
+	  always report SIGTRAP...
+
+Oleg.
+
