@@ -2,63 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010E8284A83
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D18284A85
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgJFKza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFKza (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:55:30 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A87BC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 03:55:46 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id h2so1029939pll.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 03:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=03FxLy90dLlLdrAAQm3bmUMCLJ3zRxRqIshsWPg0LL4=;
-        b=TkT/yuufBBokd8h2BzoIWB93ui00fd28ni8qqg6tLLuXpmoaFi9R4xyj6rpUdgeGRV
-         dBtD3dBy4PumVMk3j4KD8s2bFfmNop79iBaaK6+oYelWNQIxGrAHznZejGcj9IqsGM1S
-         HXbsejAFBk9/1rC49P9LI+zscgI6jMlzSj3jPGL4zmBdoMz8Rcjp8zGVdEKs7gfC8VCb
-         ifoqdavvu1c9Ome03GibZwh5g2VcjTHOYLWtNbacVeGUOEf+p7n/RTlG7y4WSYHgcufy
-         tEhJwRIGLfnKjVcZG+bbOdLpYO76+pXCQsYLyZdg8YVE68UMACEBGaRiVD4FuhIH75iu
-         6KvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=03FxLy90dLlLdrAAQm3bmUMCLJ3zRxRqIshsWPg0LL4=;
-        b=mA6/KAgh4DdNH2bPh1+tyHFugPhkLqK4sQLCv8DVPuTUCFRUyi/UQqipdkCd0mS6YG
-         ZxS9zM7zaGmRqqj+3WnGEdOymbYxoF8HRM99rFOa3NJW/MLnPgM0XWQnQOttiwWGiPkn
-         /GZwldNhHI+7ci7s3pBRZWQlAZGJ1VSR9hXMlqJv6FsrxGvIOLmi6SDQxbMXttxCY0KX
-         HEyyGHr82yXgDgUi3Oj8PsXb4FR5teCHBN3BkpUOBYLfyJKtCaITKbBQXuXaOdt7UFK6
-         r0rwZhc84fgPpkLTkoEBbGN78cE/IUQrrGGXzP+90DRmtWyofxf2rO6wWwAbjCZB6MKn
-         DIkg==
-X-Gm-Message-State: AOAM530Ku68sdzog3dBhqq98BW7p7sBalQYr00DNEdlS9krrzMlsCVpU
-        apZa7EprmQQGtuaPTUVknRB5WFaax3IRpO82rBA=
-X-Google-Smtp-Source: ABdhPJxY9Nt4tCnCIUP3YRDSAD1ONohVGSw8CrlgZt3qj/rKA/K7LdprfSGkBDvpWsj3xUcfRuHzgNbwhgON8G8PThQ=
-X-Received: by 2002:a17:90a:1149:: with SMTP id d9mr3889350pje.227.1601981745837;
- Tue, 06 Oct 2020 03:55:45 -0700 (PDT)
+        id S1726013AbgJFK5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:57:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJFK5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:57:24 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F291A2078E;
+        Tue,  6 Oct 2020 10:57:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601981860;
+        bh=60zeaRU1xit+wfcrdW2n7n9Bnz/m2UEBztYIili/YWI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eYgtM85Xh4loYAUINwZRp0Dm+EX59Z63wDtLYbNg9sJqfcn5aEZW8MQvukrFVbza+
+         cAIlw9dMARhK0fj3b3yyj3J6XDUpPXzN2S8OuF5RRWV6fXqZWmreMCcrPuqFLxmd1c
+         wr+qHeIO8A6vTrMMDvjnLzpvzrdIdg6sh1WZ7pRg=
+Date:   Tue, 6 Oct 2020 11:56:37 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        robh@kernel.org, satyakim@qti.qualcomm.com,
+        etienne.carriere@linaro.org
+Subject: Re: [PATCH 3/4] regulator: add SCMI driver
+Message-ID: <20201006105637.GB5259@sirena.org.uk>
+References: <20201005222623.1123-1-cristian.marussi@arm.com>
+ <20201005222623.1123-4-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:f55b:0:0:0:0 with HTTP; Tue, 6 Oct 2020 03:55:45
- -0700 (PDT)
-Reply-To: sgtkaylam28@gmail.com
-From:   SgtKayla Manthey <baldemaimouna01@gmail.com>
-Date:   Tue, 6 Oct 2020 03:55:45 -0700
-Message-ID: <CAC5XXA6gZnw3Ag7yhurDQo1QR5Cx8ZMOC3qDqJvDSz=PtoWqng@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jq0ap7NbKX2Kqbes"
+Content-Disposition: inline
+In-Reply-To: <20201005222623.1123-4-cristian.marussi@arm.com>
+X-Cookie: Will it improve my CASH FLOW?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2KrYrdmK2Kkg2LfZitio2KnYjA0K2KfYs9mF2Yog2YPYp9mK2YTYpyDZhdmGINmB2LbZhNmDINmH
-2YQg2YjYtdmE2KrZgyDYp9mE2LHYs9in2YTYqSDYp9mE2LPYp9io2YLYqdifINin2YPYqtioINmE
-2YoNCtin2YTYudmI2K/YqSDYtNmD2LHYpyDZhNmDLg0K
+
+--jq0ap7NbKX2Kqbes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 05, 2020 at 11:26:22PM +0100, Cristian Marussi wrote:
+
+> - .get_voltage / .set_voltage: routed via SCMI Voltage Domain Protocol
+> - .get_voltage_sel/.set_voltage_sel: using regulator framework helpers
+
+You should not be implementing both of these interfaces, pick one.  It
+looks like the direct voltage operations are the redundant ones here,
+while the protocol uses actual voltages to communicate with the firmware
+which makes the direct voltage operations a better fit it seems like the
+expectation is that only a limited set of voltages is supported (as is
+normal for the underlying physical regulators) so you want selectors.
+
+> +	sreg->name = devm_kasprintf(dev, GFP_KERNEL, "%s", vinfo->name);
+> +	sreg->desc.name = devm_kasprintf(dev, GFP_KERNEL,
+> +					 "Vscmi.%s", sreg->name);
+> +	if (!sreg->name || !sreg->desc.name)
+> +		return -ENOMEM;
+
+Why are we using different names here?
+
+> +	num_doms = handle->voltage_ops->num_domains_get(handle);
+> +	if (num_doms <= 0) {
+> +		dev_err(&sdev->dev, "number of voltage domains invalid\n");
+> +		return num_doms ?: -EINVAL;
+
+Please write normal conditional statements to improve legibility.
+
+--jq0ap7NbKX2Kqbes
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl98TWQACgkQJNaLcl1U
+h9D+0wf/Ubh37zBd01Ip/uAlyqHQxeRSTr8vkFYb/cvjhQDqfkBRpeSLyJqEEnQB
+RWd3mf3UN05rIxmZ54qpwCLc7uNJNJ+jx57FmDYFI6GgAbNHt5c3A6ZoiTIT9Obs
+KLMDKtz5/ncww8bIcKDkt/Y0FPYnU7mtkji8JQZ/IqLAL4W0Af6W7329I7kOYelg
+MxQq+8JuU8itRYYcx8EJ5BaTGdz8YTcXpgxDQc1Uvj2CtivibdqrSfY0GbMtCjRL
+09WPrusKFYLAHlvnaPV8nmFM0PKFesPblyRv/QKHF7cm6DyszDm9HE9gzB059vbO
+goUYheBD4knkWzJQRp98E4PprszmzQ==
+=gIit
+-----END PGP SIGNATURE-----
+
+--jq0ap7NbKX2Kqbes--
