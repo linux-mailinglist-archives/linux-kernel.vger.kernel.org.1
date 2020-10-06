@@ -2,75 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484E3284A61
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386FD284A5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgJFKgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:36:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36220 "EHLO mail.kernel.org"
+        id S1726060AbgJFKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:35:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFKgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:36:12 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1725891AbgJFKfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:35:45 -0400
+Received: from localhost (deu95-h05-176-171-255-236.dsl.sta.abo.bbox.fr [176.171.255.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4231B2080A;
-        Tue,  6 Oct 2020 10:36:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 902922080A;
+        Tue,  6 Oct 2020 10:35:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601980571;
-        bh=PQR6Uxb0nhKxapVOyR72S8ZRuO6rYgI0q0HVtWS+SLw=;
+        s=default; t=1601980544;
+        bh=iZXnIWy2l9HS4uSNbQ+gW7Bpg/P6i/Lo3Y/xZuANNPI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KqYOAPReH7n44rGE3eR/7G8NJ/kciOyAi89FCE5ICAvLmdYAY4y5Jko+Xpjh5cWnA
-         4l0JLCPa06YEbZ4dO3gzyiMf+PmUFLUHjDj7H+lYQH6QkAkZwWJqHvYKx2dL9HZ3Yw
-         U1WTtryX+e5tsaolPiyztZK4vULw7Wbr38Tm4Ckw=
-Date:   Tue, 6 Oct 2020 11:35:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        ardb@kernel.org, will@kernel.org, catalin.marinas@arm.com,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-kernel@vger.kernel.org
-Subject: Re: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
-Message-ID: <20201006103508.GA5259@sirena.org.uk>
-References: <20201006034854.2277538-1-jeremy.linton@arm.com>
+        b=IzBvH0x38Q/wYJTIs5xaQFknuuvw6tcwd+CJNR1lm5ErfYidSkQjB904MEqA24RDp
+         tWuIQrtdCJMR7a62G9Nlp4ziIGdX717ojn/gcpR91sYQmkZ8UIA2ZkS3hbBkc0HrHC
+         p9Drw9nndIDRv0SXKKYRaOh3zKeZCO/pdThg+b38=
+Date:   Tue, 6 Oct 2020 12:35:41 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     Alex Belits <abelits@marvell.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "will@kernel.org" <will@kernel.org>,
+        Prasun Kapoor <pkapoor@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v4 03/13] task_isolation: userspace hard
+ isolation from kernel
+Message-ID: <20201006103541.GA31325@lothringen>
+References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
+ <b18546567a2ed61073ae86f2d9945257ab285dfa.camel@marvell.com>
+ <20201001135640.GA1748@lothringen>
+ <7e54b3c5e0d4c91eb64f2dd1583dd687bc34757e.camel@marvell.com>
+ <20201004231404.GA66364@lothringen>
+ <d0289bb9-cc10-9e64-f8ac-b4d252b424b8@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006034854.2277538-1-jeremy.linton@arm.com>
-X-Cookie: Will it improve my CASH FLOW?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <d0289bb9-cc10-9e64-f8ac-b4d252b424b8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 05, 2020 at 02:52:49PM -0400, Nitesh Narayan Lal wrote:
+> 
+> On 10/4/20 7:14 PM, Frederic Weisbecker wrote:
+> > On Sun, Oct 04, 2020 at 02:44:39PM +0000, Alex Belits wrote:
+> >> On Thu, 2020-10-01 at 15:56 +0200, Frederic Weisbecker wrote:
+> >>> External Email
+> >>>
+> >>> -------------------------------------------------------------------
+> >>> ---
+> >>> On Wed, Jul 22, 2020 at 02:49:49PM +0000, Alex Belits wrote:
+> >>>> +/*
+> >>>> + * Description of the last two tasks that ran isolated on a given
+> >>>> CPU.
+> >>>> + * This is intended only for messages about isolation breaking. We
+> >>>> + * don't want any references to actual task while accessing this
+> >>>> from
+> >>>> + * CPU that caused isolation breaking -- we know nothing about
+> >>>> timing
+> >>>> + * and don't want to use locking or RCU.
+> >>>> + */
+> >>>> +struct isol_task_desc {
+> >>>> +	atomic_t curr_index;
+> >>>> +	atomic_t curr_index_wr;
+> >>>> +	bool	warned[2];
+> >>>> +	pid_t	pid[2];
+> >>>> +	pid_t	tgid[2];
+> >>>> +	char	comm[2][TASK_COMM_LEN];
+> >>>> +};
+> >>>> +static DEFINE_PER_CPU(struct isol_task_desc, isol_task_descs);
+> >>> So that's quite a huge patch that would have needed to be split up.
+> >>> Especially this tracing engine.
+> >>>
+> >>> Speaking of which, I agree with Thomas that it's unnecessary. It's
+> >>> too much
+> >>> code and complexity. We can use the existing trace events and perform
+> >>> the
+> >>> analysis from userspace to find the source of the disturbance.
+> >> The idea behind this is that isolation breaking events are supposed to
+> >> be known to the applications while applications run normally, and they
+> >> should not require any analysis or human intervention to be handled.
+> > Sure but you can use trace events for that. Just trace interrupts, workqueues,
+> > timers, syscalls, exceptions and scheduler events and you get all the local
+> > disturbance. You might want to tune a few filters but that's pretty much it.
+> >
+> > As for the source of the disturbances, if you really need that information,
+> > you can trace the workqueue and timer queue events and just filter those that
+> > target your isolated CPUs.
+> >
+> 
+> I agree that we can do all those things with tracing.
+> However, IMHO having a simplified logging mechanism to gather the source of
+> violation may help in reducing the manual effort.
+> 
+> Although, I am not sure how easy will it be to maintain such an interface
+> over time.
 
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The thing is: tracing is your simplified logging mechanism here. You can achieve
+the same in userspace with _way_ less code, no race, and you can do it in
+bash.
 
-On Mon, Oct 05, 2020 at 10:48:54PM -0500, Jeremy Linton wrote:
-> The AES code uses a 'br x7' as part of a function called by
-> a macro. That branch needs a bti_j as a target. This results
-> in a panic as seen below. Instead of trying to replace the branch
-> target with a bti_jc, lets replace the indirect branch with a
-> bl/ret, bl sequence that can target the existing bti_c.
+Thanks.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
 
---tKW2IUtsqtDRztdT
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl98SFsACgkQJNaLcl1U
-h9BMrwf/RiJaQYvD/q24Fy2YkxfBrOM7a14fYbCR6mSTUD1AauKZxhnZcdF18CgJ
-EOJ5dddU832+k7MJxQIlLmtfYMFrP3wu6f+uxQH4Ft4q6MGXNhMjAJcmiGoZsVdG
-5LCtaCxJrjzFMl7t30C9G1OCFU2YdBDVNeKVsgpgRROHKNfk7mnZJdxbX/HPNmkb
-8mhjE4CazgyLRrp5goweWCi/nGc0uPKnfLqiGgJRpfEskB/y8jBvrQ3EaTEnnxFp
-+I/Wzej1o4QCE1QKYYMQr0Y+lQsAih9kcvVDJgETlwyXgYgcTo3kL2TTCT9pMEaQ
-qKa+msQKZvs+bWYZPCQp9Un+hZBzpg==
-=LGy1
------END PGP SIGNATURE-----
-
---tKW2IUtsqtDRztdT--
