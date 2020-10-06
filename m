@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563CB285305
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB8F285308
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbgJFUV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:21:29 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46049 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgJFUV3 (ORCPT
+        id S1727204AbgJFUYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgJFUYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:21:29 -0400
-Received: by mail-ot1-f66.google.com with SMTP id f37so9999862otf.12;
-        Tue, 06 Oct 2020 13:21:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ujTRQgLhFlaA0guIPLKbfPjdF6Mj7DpzagyROHx0puA=;
-        b=KAOmjLsOiz8Zh+WZ+o0jB+06WBYpw+h9fcB5MjhAwB23HBq2YHJhxPN0iPQyhPZ6Fs
-         4pYk26rKZkL2eNkGok+QepYBEfJt/DmFDvAvhxwGlJyEBfuIGVl8U8ewOTreL+DHtqzq
-         jAwpfLwH3IePn2d3y/qGQFnMF7JsLpTQaitw+zyP1p7luPsEkIjegI8oV10ls8N3ltAo
-         prL4z/Gi5F6TAcCwyA7MGrHCKGxNRH1JbfUm7M/cYbCXxux6y/EhIvBSxVHBCV5C9/ZN
-         IxXBhAKFrKNbIkv0jWB+aTG7P5uMSUWcWTrErl3YkvPSBnoHZLzVzYvKfq/foKJgxq+l
-         F35Q==
-X-Gm-Message-State: AOAM5312pgof+G5kc8toSsa+2JSMXrUmnRjBHZxsBx4z3pxCnInVx1XY
-        f46sw9D2e2xqFIP2X8465Q==
-X-Google-Smtp-Source: ABdhPJyGEGNZNGnhUSBgHrhz39iCD8BurNeQ2LW+WNv8Mvwown0qQRHbfAjkBYwsoWLSgZICGmKQFg==
-X-Received: by 2002:a9d:1e86:: with SMTP id n6mr4143817otn.94.1602015688799;
-        Tue, 06 Oct 2020 13:21:28 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l1sm1727206ooe.20.2020.10.06.13.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 13:21:27 -0700 (PDT)
-Received: (nullmailer pid 2769098 invoked by uid 1000);
-        Tue, 06 Oct 2020 20:21:27 -0000
-Date:   Tue, 6 Oct 2020 15:21:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: phy: Allow defining the SATA AFE TX
- amplitude
-Message-ID: <20201006202127.GA2769064@bogus>
-References: <20201001031916.411999-1-f.fainelli@gmail.com>
- <20201001031916.411999-2-f.fainelli@gmail.com>
+        Tue, 6 Oct 2020 16:24:46 -0400
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D576AC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:24:45 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4C5TTg0rfQz1sFh8;
+        Tue,  6 Oct 2020 22:24:38 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4C5TTf09dkz1qs0b;
+        Tue,  6 Oct 2020 22:24:38 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 6uiGA06vKZ4Z; Tue,  6 Oct 2020 22:24:36 +0200 (CEST)
+X-Auth-Info: 9erhqb+3Z1Fo9R5IYhOj9VKQ6gfK1E0/LG3P3DPkjPE=
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue,  6 Oct 2020 22:24:35 +0200 (CEST)
+Subject: Re: PHY reset question
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de
+References: <20201006080424.GA6988@pengutronix.de>
+ <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
+Date:   Tue, 6 Oct 2020 22:24:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001031916.411999-2-f.fainelli@gmail.com>
+In-Reply-To: <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 20:19:15 -0700, Florian Fainelli wrote:
-> Document a new property which allows the selection of the SATA AFE TX
-> amplitude in milli Volts. Possible values are 400, 500, 600 and 800mV.
+On 10/6/20 9:36 PM, Florian Fainelli wrote:
+[...]
+>> - Use compatible ("compatible = "ethernet-phy-id0022.1560") in the
+>> devicetree,
+>>    so that reading the PHYID is not needed
+>>    - easy to solve.
+>>    Disadvantage:
+>>    - losing PHY auto-detection capability
+>>    - need a new devicetree if different PHY is used (for example in
+>> different
+>>      board revision)
 > 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  Documentation/devicetree/bindings/phy/brcm-sata-phy.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+> Or you can punt that to the boot loader to be able to tell the
+> difference and populate different compatible, or even manage the PHY
+> reset to be able to read the actual PHY OUI. To me that is still the
+> best solution around.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Wasn't there some requirement for Linux to be bootloader-independent ?
+Some systems cannot replace their bootloaders, e.g. if the bootloader is
+in ROM, so this might not be a solution.
+
+>> - modify PHY framework to deassert reset before identifying the PHY.
+>>    Disadvantages?
+
+If this happens on MX6 with FEC, can you please try these two patches?
+
+https://patchwork.ozlabs.org/project/netdev/patch/20201006135253.97395-1-marex@denx.de/
+
+https://patchwork.ozlabs.org/project/netdev/patch/20201006202029.254212-1-marex@denx.de/
+
+Thanks!
