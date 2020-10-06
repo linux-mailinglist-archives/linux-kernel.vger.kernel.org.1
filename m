@@ -2,155 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFDE2854B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B322854B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgJFWkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 18:40:24 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35901 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgJFWkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 18:40:24 -0400
-Received: by mail-ot1-f66.google.com with SMTP id 60so447341otw.3;
-        Tue, 06 Oct 2020 15:40:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OadiA/el+2vt6yJfwpShon4bZ4FHD8Ssx0XuXvhq3A0=;
-        b=tSZrt2RBpLcayz8xQ8D2pX2bSCNjaoX0QBHRjQxkpHduUmzJ0HfvpJrknCrdpV7k5x
-         0f3KIgo1W7PubcQ336EqBxQ6BsGV1oz8vEAxdBiNF0ZixO3SbS9OT7ACL7UFO8YDMQHk
-         eLhP/M/C033PbCkwWNTBHdTK2PSsBO+Et35N0RqQbxB5pWLo+EjKbjIcrd4sU7Gs/8yG
-         vUQf5z1HfNE1nMUrTW5XndME5MR4j6WC2O2W85qyqPxWrwWrqrj2CbasJkb0ily7ELc0
-         SxqBur/O1ApEqx8P6YL4dAgMFTUk02eeENgELWuQYm1fwcP+k+EcNSty7BLeecH9XpPR
-         3GQA==
-X-Gm-Message-State: AOAM532QuEMUuAQnrUXJbPpvzeWXQaDH9/tNHlccD8GgeeCQhPD9++qc
-        YzSwVSSr77s3piZsp2Horg==
-X-Google-Smtp-Source: ABdhPJwtnpeb6V8bOjRNwhtZ1T0muIYWEbwVo54wVwTVpTcW/JpgqRRvbRZ3Lrx5XSrZFpAaM8JrdQ==
-X-Received: by 2002:a9d:27a1:: with SMTP id c30mr115324otb.214.1602024023600;
-        Tue, 06 Oct 2020 15:40:23 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e7sm199652oia.9.2020.10.06.15.40.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 15:40:23 -0700 (PDT)
-Received: (nullmailer pid 2989602 invoked by uid 1000);
-        Tue, 06 Oct 2020 22:40:22 -0000
-Date:   Tue, 6 Oct 2020 17:40:22 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: tas2764: Add the TAS2764 binding doc
-Message-ID: <20201006224022.GA2986208@bogus>
-References: <20201006172341.16423-1-dmurphy@ti.com>
+        id S1727703AbgJFWp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 18:45:56 -0400
+Received: from mga03.intel.com ([134.134.136.65]:41676 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726566AbgJFWp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 18:45:56 -0400
+IronPort-SDR: lG3QvKkW+57SpBwyTwYMNSCflG/0qZdLJ4b2HV4uKE+YXjzLeILbNg/PVTCKlDIC6/z8286+Ta
+ kR/bcwPIgjpw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="164797539"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="164797539"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 15:45:54 -0700
+IronPort-SDR: W4s6uVAMv/wWjKImtrYsHBUxSulbo23oKS3gGpZqeT1emkKgexwZOlRQaUgNtmfkZ7C5HeSM2k
+ ZGknGaqObfRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="461044940"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 06 Oct 2020 15:45:54 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
+        by linux.intel.com (Postfix) with ESMTP id 2679C580782;
+        Tue,  6 Oct 2020 15:45:54 -0700 (PDT)
+Message-ID: <b75c3ff53dbe26ee0c6825e8d1f5f10489a5722c.camel@linux.intel.com>
+Subject: Re: [PATCH V8 1/5] PCI: Add defines for Designated Vendor-Specific
+ Extended Capability
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     lee.jones@linaro.org, dvhart@infradead.org, andy@infradead.org,
+        bhelgaas@google.com, hdegoede@redhat.com,
+        alexey.budankov@linux.intel.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>, rjw@rjwysocki.net
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Date:   Tue, 06 Oct 2020 15:45:54 -0700
+In-Reply-To: <20201003013123.20269-2-david.e.box@linux.intel.com>
+References: <20201003013123.20269-1-david.e.box@linux.intel.com>
+         <20201003013123.20269-2-david.e.box@linux.intel.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006172341.16423-1-dmurphy@ti.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 12:23:40PM -0500, Dan Murphy wrote:
-> Add the binding for the TAS2764 Smart Amplifier.
+Hi Bjorn,
+
+This patch has been acked and unchanged for weeks. Is it possible to
+get this pulled into next? We have SIOV and CXL related work that is
+using these definitions. Thanks.
+
+David
+
+On Fri, 2020-10-02 at 18:31 -0700, David E. Box wrote:
+> Add PCIe Designated Vendor-Specific Extended Capability (DVSEC) and
+> defines
+> for the header offsets. Defined in PCIe r5.0, sec 7.9.6.
 > 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > ---
->  .../devicetree/bindings/sound/tas2764.yaml    | 74 +++++++++++++++++++
->  1 file changed, 74 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/tas2764.yaml
+>  include/uapi/linux/pci_regs.h | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/tas2764.yaml b/Documentation/devicetree/bindings/sound/tas2764.yaml
-> new file mode 100644
-> index 000000000000..d2c90c82b13f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/tas2764.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/sound/tas2764.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> diff --git a/include/uapi/linux/pci_regs.h
+> b/include/uapi/linux/pci_regs.h
+> index f9701410d3b5..beafeee39e44 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -720,6 +720,7 @@
+>  #define PCI_EXT_CAP_ID_DPC	0x1D	/* Downstream Port
+> Containment */
+>  #define PCI_EXT_CAP_ID_L1SS	0x1E	/* L1 PM Substates */
+>  #define PCI_EXT_CAP_ID_PTM	0x1F	/* Precision Time Measurement
+> */
+> +#define PCI_EXT_CAP_ID_DVSEC	0x23	/* Designated Vendor-Specific 
+> */
+>  #define PCI_EXT_CAP_ID_DLF	0x25	/* Data Link Feature */
+>  #define PCI_EXT_CAP_ID_PL_16GT	0x26	/* Physical Layer
+> 16.0 GT/s */
+>  #define PCI_EXT_CAP_ID_MAX	PCI_EXT_CAP_ID_PL_16GT
+> @@ -1062,6 +1063,10 @@
+>  #define  PCI_L1SS_CTL1_LTR_L12_TH_SCALE	0xe0000000  /*
+> LTR_L1.2_THRESHOLD_Scale */
+>  #define PCI_L1SS_CTL2		0x0c	/* Control 2 Register
+> */
+>  
+> +/* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
+> +#define PCI_DVSEC_HEADER1		0x4 /* Designated Vendor-
+> Specific Header1 */
+> +#define PCI_DVSEC_HEADER2		0x8 /* Designated Vendor-
+> Specific Header2 */
 > +
-> +title: Texas Instruments TAS2764 Smart PA
-> +
-> +maintainers:
-> +  - Dan Murphy <dmurphy@ti.com>
-> +
-> +description: |
-> +  The TAS2764 is a mono, digital input Class-D audio amplifier optimized for
-> +  efficiently driving high peak power into small loudspeakers.
-> +  Integrated speaker voltage and current sense provides for
-> +  real time monitoring of loudspeaker behavior.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,tas2764
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: |
-> +       I2C address of the device can be between 0x38 to 0x45.
-> +
-> +  reset-gpios:
-> +    description: GPIO used to reset the device.
+>  /* Data Link Feature */
+>  #define PCI_DLF_CAP		0x04	/* Capabilities Register */
+>  #define  PCI_DLF_EXCHANGE_ENABLE	0x80000000  /* Data Link
+> Feature Exchange Enable */
 
-maxItems: 1
-
-> +
-> +  shutdown-gpios:
-> +    description: GPIO used to control the state of the device.
-
-maxItems: 1
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  ti,imon-slot-no:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: TDM TX current sense time slot.
-> +
-> +  ti,vmon-slot-no:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: TDM TX voltage sense time slot.
-> +
-> +  '#sound-dai-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +   #include <dt-bindings/gpio/gpio.h>
-> +   i2c0 {
-> +     #address-cells = <1>;
-> +     #size-cells = <0>;
-> +     codec: codec@38 {
-> +       compatible = "ti,tas2764";
-> +       reg = <0x38>;
-> +       #sound-dai-cells = <1>;
-> +       interrupt-parent = <&gpio1>;
-> +       interrupts = <14>;
-> +       reset-gpio = <&gpio1 15 0>;
-
-This fails checks...
-
-> +       shutdown-gpios = <&gpio1 15 0>;
-> +       ti,imon-slot-no = <0>;
-> +       ti,vmon-slot-no = <2>;
-> +     };
-> +   };
-> +
-> +...
-> -- 
-> 2.28.0.585.ge1cfff676549
-> 
