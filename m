@@ -2,194 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF668285470
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDE728547D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgJFWWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 18:22:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55314 "EHLO mail.kernel.org"
+        id S1727633AbgJFWY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 18:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgJFWWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 18:22:25 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726171AbgJFWY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 18:24:26 -0400
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C100E208E4;
-        Tue,  6 Oct 2020 22:22:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 219EB208C7;
+        Tue,  6 Oct 2020 22:24:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602022944;
-        bh=1dw57jndG1w0rY5pSxG5+iaWD+GIZRZxtFESIzn87pY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MTGoZLbjAPzoAY4B+lnKXwl3Knthrwu+scEjzJ4zt1sKXW/azDMwSgTrtSVkbhpNy
-         YxZh8+Mj0OSpGLgv32M2CXmZTqx2PZkJpTJorja6s7RJBjRRTKgx2cp6cVVoDPrE8/
-         Re9EnlyLW2FaSNR4i2nN0La0r5ESTr56/B1y+vpg=
-Date:   Tue, 6 Oct 2020 17:22:22 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Yinghai Lu <yinghai@kernel.org>
-Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
-Message-ID: <20201006222222.GA3221382@bjorn-Precision-5520>
+        s=default; t=1602023064;
+        bh=ODZjWaSRaFY4JSUgeXVgfhX7/EBM5vWx2lh7MNUxdVU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TygR46YjTz/1XrhiNZZmhcx0xOcebl8ZXmDYSvvdngzQ5faKhO/DWWqmt+w9LFwE3
+         JBQ48FZ3/k5VVeFoHssC5ahdaXjugm9QidBcAuiv+IbRWdVNergd9rw189VVPLnQkT
+         TjqAKTLiP7VPUUhCqks6KBtUunAtOr3vR7IJ2hYE=
+Received: by mail-oi1-f170.google.com with SMTP id x69so293195oia.8;
+        Tue, 06 Oct 2020 15:24:24 -0700 (PDT)
+X-Gm-Message-State: AOAM532e5EONQl2TRIj9DI55plkhoPHuqkUhujF+hqF6QYG+EwKUGewP
+        DHQEbw1xwohoIXOWULQ/9N/3gmWbs6DwQWo9wg==
+X-Google-Smtp-Source: ABdhPJx+GSG/cf6694XKRJ+lTouM+0b0kUqRgqrABKzhgC4+xCKRDs+TTVKhkpHtuzgtS0GU7R6ls8Ac+msrhLFmtSc=
+X-Received: by 2002:a05:6808:10e:: with SMTP id b14mr287558oie.152.1602023063251;
+ Tue, 06 Oct 2020 15:24:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200909112850.hbtgkvwqy2rlixst@pali>
+References: <20201002114426.31277-1-lukasz.luba@arm.com> <20201002114426.31277-4-lukasz.luba@arm.com>
+ <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com>
+ <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com> <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
+ <bc5d21c1-ea84-9132-2e52-ae84fbb0515a@arm.com> <CAD=FV=VfA8AB3BZk8Ykkhigv9eGijzu4zuA6KdXk0K5UG0yCCQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=VfA8AB3BZk8Ykkhigv9eGijzu4zuA6KdXk0K5UG0yCCQ@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 6 Oct 2020 17:24:12 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ37TVk4=E1DyZuhfH1jZ7wyauGLucSH7XW9wkeT3PSgg@mail.gmail.com>
+Message-ID: <CAL_JsqJ37TVk4=E1DyZuhfH1jZ7wyauGLucSH7XW9wkeT3PSgg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
+ with abstract scale
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Amit Kucheria <amitk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Krzysztof, Yinghai]
+On Fri, Oct 2, 2020 at 12:39 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Fri, Oct 2, 2020 at 9:40 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >
+> > On 10/2/20 4:47 PM, Doug Anderson wrote:
+> > > Hi,
+> > >
+> > > On Fri, Oct 2, 2020 at 8:13 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> > >>
+> > >> Hi Doug,
+> > >>
+> > >> On 10/2/20 3:31 PM, Doug Anderson wrote:
+> > >>> Hi,
+> > >>>
+> > >>> On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> > >>>>
+> > >>>> Update the documentation for the binding 'sustainable-power' and allow
+> > >>>> to provide values in an abstract scale. It is required when the cooling
+> > >>>> devices use an abstract scale for their power values.
+> > >>>>
+> > >>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> > >>>> ---
+> > >>>>    .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+> > >>>>    1 file changed, 9 insertions(+), 4 deletions(-)
+> > >>>>
+> > >>>> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> > >>>> index 3ec9cc87ec50..4d8f2e37d1e6 100644
+> > >>>> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> > >>>> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> > >>>> @@ -99,10 +99,15 @@ patternProperties:
+> > >>>>          sustainable-power:
+> > >>>>            $ref: /schemas/types.yaml#/definitions/uint32
+> > >>>>            description:
+> > >>>> -          An estimate of the sustainable power (in mW) that this thermal zone
+> > >>>> -          can dissipate at the desired control temperature. For reference, the
+> > >>>> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
+> > >>>> -          10-inch tablet is around 4500mW.
+> > >>>> +          An estimate of the sustainable power (in mW or in an abstract scale)
+> > >>>> +         that this thermal zone can dissipate at the desired control
+> > >>>> +         temperature. For reference, the sustainable power of a 4-inch phone
+> > >>>> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
+> > >>>> +
+> > >>>> +         It is possible to express the sustainable power in an abstract
+> > >>>> +         scale. This is the case when the related cooling devices use also
+> > >>>> +         abstract scale to express their power usage. The scale must be
+> > >>>> +         consistent.
+> > >>>
+> > >>> Two thoughts:
+> > >>>
+> > >>> 1. If we're going to allow "sustainable-power" to be in abstract
+> > >>> scale, why not allow "dynamic-power-coefficient" to be in abstract
+> > >>> scale too?  I assume that the whole reason against that originally was
+> > >>> the idea of device tree purity, but if we're allowing the abstract
+> > >>> scale here then there seems no reason not to allow it for
+> > >>> "dynamic-power-coefficient".
+> > >>
+> > >> With this binding it's a bit more tricky.
+> > >> I also have to discuss a few things internally. This requirement of
+> > >> uW/MHz/V^2 makes the code easier also for potential drivers
+> > >> like GPU (which are going to register the devfreq cooling with EM).
+> > >>
+> > >> Let me think about it, but for now I would just update these bits.
+> > >> These are required to proper IPA operation, the dyn.-pow.-coef. is a
+> > >> nice to have and possible next step.
+> > >
+> > > I guess the problem is that Rajendra is currently planning to remove
+> > > all the "dynamic-power-coefficient" values from device tree right now
+> > > and move them to the source code because the numbers we currently have
+> > > in the device tree _are_ in abstract scale and thus violate the
+> > > bindings.  Moving this to source code won't help us get to more real
+> > > power numbers (since it'll still be abstract scale), it'll just be
+> > > pure churn.  If we're OK with the abstract scale in general then we
+> > > should allow it everywhere and not add churn for no reason.
+> >
+> > IIUC he is still going to use the Energy Model, but with different
+> > registration function. We have such a driver: scmi-cpufreq.c, which
+> > uses em_dev_register_perf_domain(). He can still use EM, EAS, IPA
+> > not violating anything.
+>
+> Right.  He's going to take the exact same "abstract scale" numbers
+> that he has today and take them out of device tree and put them in the
+> cpufreq driver.  Doing so magically makes it so that he's not
+> violating anything since "abstract scale" is not currently allowed in
+> device tree but is allowed in the cpufreq driver.  I'm not saying that
+> he's doing anything wrong, I'm just saying that it's pointless churn.
+> If we're OK with "abstract scale" in one place in the device tree we
+> should be OK with it everywhere in the device tree.  Then Rajendra
+> wouldn't need his patch at all and he could leave his numbers in the
+> device tree.
+>
+>
+> > The real problem that we want to address is with sustainable-power in
+> > IPA. It is used in power budget calculation and if the devices operate
+> > in abstract scale, then there is an issue.
+> > There are two options to get that value:
+> > 1. from DT, which can have optimized value, stored by OEM engineer
+> > 2. from IPA estimation code, which just calculates it as a sum of
+> > minimum OPP power for each cooling device.
+> >
+> > The 2nd option might not be the best for a platform, so vendor/OEM
+> > engineer might want to provide a better value in DT -> 1st option.
+> > This is currently against the binding description and I have to fix it.
+>
+> Right, things are already broken today because a SoC vendor could
+> (without violating any rules) provide their SoC core
+> "dynamic-power-coefficient" in "abstract scale" in code and there
+> would be no way to for a board to (without violating DT bindings)
+> specify a "sustainable-power".  ...so, in that sense, your patch does
+> provide a benefit even if we don't make any changes to the rules for
+> "sustainable-power".  All I'm saying is that if these new rules for
+> allowing an abstract scale for "sustainable-power" in the device tree
+> are OK that it should _also_ be OK to add new rules to allow an
+> abstract scale for "dynamic-power-coefficient".
 
-On Wed, Sep 09, 2020 at 01:28:50PM +0200, Pali Rohár wrote:
-> Hello! I'm adding more people to loop.
-> 
-> Can somebody look at these race conditions and my patch?
-> 
-> On Friday 14 August 2020 10:08:24 Pali Rohár wrote:
-> > Hello! I would like to remind this issue which I reported month ago.
-> > 
-> > On Thursday 16 July 2020 13:04:23 Pali Rohár wrote:
-> > > Hello Bjorn!
-> > > 
-> > > I see following error message in dmesg which looks like a race condition:
-> > > 
-> > > sysfs: cannot create duplicate filename '/devices/platform/soc/d0070000.pcie/pci0000:00/0000:00:00.0/config'
-> > > 
-> > > I looked at it deeper and found out that in PCI subsystem code is race
-> > > condition between pci_bus_add_device() and pci_sysfs_init() calls. Both
-> > > of these functions calls pci_create_sysfs_dev_files() and calling this
-> > > function more times for same pci device throws above error message.
-> > > 
-> > > There can be two different race conditions:
-> > > 
-> > > 1. pci_bus_add_device() called pcibios_bus_add_device() or
-> > > pci_fixup_device() but have not called pci_create_sysfs_dev_files() yet.
-> > > Meanwhile pci_sysfs_init() is running and pci_create_sysfs_dev_files()
-> > > was called for newly registered device. In this case function
-> > > pci_create_sysfs_dev_files() is called two times, ones from
-> > > pci_bus_add_device() and once from pci_sysfs_init().
-> > > 
-> > > 2. pci_sysfs_init() is called. It first sets sysfs_initialized to 1
-> > > which unblock calling pci_create_sysfs_dev_files(). Then another bus
-> > > registers new PCI device and calls pci_bus_add_device() which calls
-> > > pci_create_sysfs_dev_files() and registers sysfs files. Function
-> > > pci_sysfs_init() continues execution and calls function
-> > > pci_create_sysfs_dev_files() also for this newly registered device. So
-> > > pci_create_sysfs_dev_files() is again called two times.
-> > > 
-> > > 
-> > > I workaround both race conditions I created following hack patch. After
-> > > applying it I'm not getting that 'sysfs: cannot create duplicate filename'
-> > > error message anymore.
-> > > 
-> > > Can you look at it how to fix both race conditions in proper way?
-> > 
-> > Is this workaround diff enough? Or are you going to prepare
-> > something better?
-> > 
-> > Please let me know if I should send this diff as regular patch.
+Didn't we beat this one to death with "dynamic-power-coefficient"?
+That is the abstract scale because I don't think you can really ever
+measure it and because vendors don't want to advertise their absolute
+power.
 
-I'm not really a fan of this because pci_sysfs_init() is a bit of a
-hack to begin with, and this makes it even more complicated.
+> > >>> 2. Is it worth adding some type of indication of what type of units
+> > >>> "sustainable-power" is represented in?  Maybe even a made up unit so
+> > >>> that you could tell the difference between made up units in the same
+> > >>> system?  I'd envision something like:
+> > >>>
+> > >>> sustainable-power-units = "qualcomm,sc7180-bogoWatts"
+> > >>>
+> > >>> ...and on the dynamic-power-coefficient side, the same:
+> > >>>
+> > >>> dynamic-power-coefficient-units = "qualcomm,sc7180-bogoWatts"
+> > >>>
+> > >>> One could imagine someone even later (after devices are widely
+> > >>> distributed) figuring out translations between these bogoWatts numbers
+> > >>> and real Watts if someone could come up with a case where it matters.
+> > >>
+> > >> To figure this out we don't need a new binding.
+> > >> I think a simple comment in the DT would be enough for this, even e.g.:
+> > >>
+> > >> sustainable-power = <100> /* bogoWatts */
+> > >
+> > > There are some important differences:
+> > >
+> > > a) Your comment is gone when the device tree is compiled.  If we
+> > > actually add a string to the device tree then, in theory, we can add
+> > > conversions in code (without touching the device tree) down the road.
+> >
+> > We don't need code and binding with a bogoscale. It is up to the
+> > platform integrator to make sure the scale in consistent in all devices.
+> > Comment in DT is good enough.
+>
+> One other nice thing about having the units is that the device tree is
+> supposed to be more of a "pure" thing, less sullied about what's
+> convenient and more about a real description of a thing.  Presumably
+> that's why "abstract scale" wasn't allowed originally?  In any case,
+> giving quantifiable units to the number somehow makes it feel less
+> made up because it's possible to come up with a way to convert it back
+> to real units.
+>
+>
+> > > b) I believe there can be more than one abstract scale present in a
+> > > single device tree, at least in theory.  Adding a string allows you to
+> > > know if you're comparing apples to apples or apples to organges.
+> >
+> > IMHO DT is not the place for such abstractions, but Rob might correct me
+> > here.
+>
+> Yup, seems like we're blocked waiting for Rob to chime in unless
+> someone else has the authority to make the call about how to deal with
+> "abstract scale" numbers in the device tree.
 
-It's not obvious from the code why we need pci_sysfs_init(), but
-Yinghai hinted [1] that we need to create sysfs after assigning
-resources.  I experimented by removing pci_sysfs_init() and skipping
-the ROM BAR sizing.  In that case, we create sysfs files in
-pci_bus_add_device() and later assign space for the ROM BAR, so we
-fail to create the "rom" sysfs file.
+I don't really know nor completely follow the issues. I just get all
+these PM related bindings piece by piece with everyone solving their
+own single issue. It's death by 1000 cuts. So my default position is
+NAK. All the missing pieces and deficiencies can build up until
+there's a coherent picture (maybe?).
 
-The current solution to that is to delay the sysfs files until
-pci_sysfs_init(), a late_initcall(), which runs after resource
-assignments.  But I think it would be better if we could create the
-sysfs file when we assign the BAR.  Then we could get rid of the
-late_initcall() and that implicit ordering requirement.
-
-But I haven't tried to code it up, so it's probably more complicated
-than this.  I guess ideally we would assign all the resources before
-pci_bus_add_device().  If we could do that, we could just remove
-pci_sysfs_init() and everything would just work, but I think that's a
-HUGE can of worms.
-
-[1] https://lore.kernel.org/linux-pci/CAE9FiQWBXHgz-gWCmpWLaBOfQQJwtRZemV6Ut9GVw_KJ-dTGTA@mail.gmail.com/
-
-> > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> > > index 8e40b3e6da77..691be2258c4e 100644
-> > > --- a/drivers/pci/bus.c
-> > > +++ b/drivers/pci/bus.c
-> > > @@ -316,7 +316,7 @@ void pci_bus_add_device(struct pci_dev *dev)
-> > >  	 */
-> > >  	pcibios_bus_add_device(dev);
-> > >  	pci_fixup_device(pci_fixup_final, dev);
-> > > -	pci_create_sysfs_dev_files(dev);
-> > > +	pci_create_sysfs_dev_files(dev, false);
-> > >  	pci_proc_attach_device(dev);
-> > >  	pci_bridge_d3_update(dev);
-> > >  
-> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > > index 6d78df981d41..b0c4852a51dd 100644
-> > > --- a/drivers/pci/pci-sysfs.c
-> > > +++ b/drivers/pci/pci-sysfs.c
-> > > @@ -1328,13 +1328,13 @@ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
-> > >  	return retval;
-> > >  }
-> > >  
-> > > -int __must_check pci_create_sysfs_dev_files(struct pci_dev *pdev)
-> > > +int __must_check pci_create_sysfs_dev_files(struct pci_dev *pdev, bool sysfs_initializing)
-> > >  {
-> > >  	int retval;
-> > >  	int rom_size;
-> > >  	struct bin_attribute *attr;
-> > >  
-> > > -	if (!sysfs_initialized)
-> > > +	if (!sysfs_initializing && !sysfs_initialized)
-> > >  		return -EACCES;
-> > >  
-> > >  	if (pdev->cfg_size > PCI_CFG_SPACE_SIZE)
-> > > @@ -1437,18 +1437,21 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pdev)
-> > >  static int __init pci_sysfs_init(void)
-> > >  {
-> > >  	struct pci_dev *pdev = NULL;
-> > > -	int retval;
-> > > +	int retval = 0;
-> > >  
-> > > -	sysfs_initialized = 1;
-> > >  	for_each_pci_dev(pdev) {
-> > > -		retval = pci_create_sysfs_dev_files(pdev);
-> > > +		if (!pci_dev_is_added(pdev))
-> > > +			continue;
-> > > +		retval = pci_create_sysfs_dev_files(pdev, true);
-> > >  		if (retval) {
-> > >  			pci_dev_put(pdev);
-> > > -			return retval;
-> > > +			goto out;
-> > >  		}
-> > >  	}
-> > >  
-> > > -	return 0;
-> > > +out:
-> > > +	sysfs_initialized = 1;
-> > > +	return retval;
-> > >  }
-> > >  late_initcall(pci_sysfs_init);
-> > >  
-> > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> > > index 6d3f75867106..304294c7171e 100644
-> > > --- a/drivers/pci/pci.h
-> > > +++ b/drivers/pci/pci.h
-> > > @@ -19,7 +19,7 @@ bool pcie_cap_has_rtctl(const struct pci_dev *dev);
-> > >  
-> > >  /* Functions internal to the PCI core code */
-> > >  
-> > > -int pci_create_sysfs_dev_files(struct pci_dev *pdev);
-> > > +int pci_create_sysfs_dev_files(struct pci_dev *pdev, bool sysfs_initializing);
-> > >  void pci_remove_sysfs_dev_files(struct pci_dev *pdev);
-> > >  #if !defined(CONFIG_DMI) && !defined(CONFIG_ACPI)
-> > >  static inline void pci_create_firmware_label_files(struct pci_dev *pdev)
-> > > 
+Rob
