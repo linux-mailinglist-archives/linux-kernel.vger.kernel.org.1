@@ -2,423 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7072D284B8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C86A284B8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgJFMVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgJFMVN (ORCPT
+        id S1726594AbgJFMVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:21:55 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52534 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726329AbgJFMVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:21:13 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1C3C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 05:21:13 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z1so13213877wrt.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 05:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=t0N69QCkcOuVUePm6DDLzLJ3FPaHM4LOMBGRQnTz/dA=;
-        b=c6M1Lc+afDx4uhXXLf/SzKWfMa1oMBn+neWQFcy0qgimYoNn3V8OX9CGf3VVdO0nHu
-         hcGjXSMi3vDhg/Kmhz2XI9wZafkHYzgOgduPcBg0yY9ISM06OMitmPHzN0IBvOpec/hL
-         PORQndl1bNHVYio4O5Iyu8Cab0l9+FkOsgcLoIksEacjXQ38EPdEn2u/nqiOIpLTiOnR
-         Qut+1MyXGzgJgQ+QyVA0pziFxtdUWmWBz1L8H2gJY7pDm6m1k/UhM00YsaeDE/0BNagT
-         ZMSrssg0lFzvjTPpjHaGDaoG8mX1PsUQFyOWmy50ZH6cPejf93nbKf7JSfcXezGbwDlJ
-         gEcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=t0N69QCkcOuVUePm6DDLzLJ3FPaHM4LOMBGRQnTz/dA=;
-        b=tUC/SUeGlfzV88UBm1G0/M1kKdV3jZ4KXJ1YbNqPziGSufVHJcwrwNknEskeIhdpqJ
-         B2ykQcKmYfN5zjeTU/XlSosB5ljsAowP9HYnGgAZjgu6U1+s0DugdenZjsVlhCV5tloO
-         YkncWwpSQu71Y68DT1mSn0fxIFj95jDESoQ9J5foToGCEkhIEjmgPUEpO/zYEGiqfceT
-         kSp/ztvQIUUBiTRFL6o96NwpNcVNMMm//H5sq5EEtwQtNjVDhCrL5LGKE7r0MAyXXOLB
-         weHVIWOMzR6rlG2FyBwFcypu/9vK8IwrG4mcJIEXzJT89e0vlwVGp2ZPkx5cZsETmBKi
-         yC7A==
-X-Gm-Message-State: AOAM530UEbWmoSLtSPsH7FiNN+EaryRdJaibLDH9YN8w0I4+Tqijehgp
-        eU7eRA02el4d6Cx/j9N4AETpDQ==
-X-Google-Smtp-Source: ABdhPJwC89P7MlUrxsd5DJ5eTfNxbp0oV1tGR0OA2BskLMPr8AeOjhS6QyRdMMLfIDKJ9tTZ+YtRBA==
-X-Received: by 2002:adf:eb04:: with SMTP id s4mr4963161wrn.81.1601986871692;
-        Tue, 06 Oct 2020 05:21:11 -0700 (PDT)
-Received: from localhost.localdomain (lns-bzn-59-82-252-130-8.adsl.proxad.net. [82.252.130.8])
-        by smtp.gmail.com with ESMTPSA id s19sm3742521wmc.41.2020.10.06.05.21.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 05:21:11 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rui.zhang@intel.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Steven Price <steven.price@arm.com>
-Subject: [PATCH 4/4] powercap/drivers/dtpm: Add CPU energy model based support
-Date:   Tue,  6 Oct 2020 14:20:24 +0200
-Message-Id: <20201006122024.14539-5-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201006122024.14539-1-daniel.lezcano@linaro.org>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+        Tue, 6 Oct 2020 08:21:54 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 096CLMDW003646;
+        Tue, 6 Oct 2020 07:21:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601986882;
+        bh=Ajt9ibuYrJxtVllMh28OvHRU7fjyVHlUBUr+BALwdGs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=vjTotTy8fD+GFfa5PqIra/Wgd42xLpEb8rqt+cIIuxIvEzDwCcl7dW9AIdXypsbDC
+         8KJfms0fnZnQULMjPVVVzkSmLN3+r9Fr9UUKHesfas9gv/wCUZDlQid4GrtP/81iZo
+         4fyMyV6L09NRrncvMcW0zk2uMdDQkfy1V99w0gXw=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 096CLMij011343
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 6 Oct 2020 07:21:22 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
+ 2020 07:21:19 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 6 Oct 2020 07:21:19 -0500
+Received: from [10.250.37.2] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 096CLJFt060768;
+        Tue, 6 Oct 2020 07:21:19 -0500
+Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
+To:     <ultracoolguy@tutanota.com>, Marek Behun <kabel@blackhole.sk>
+CC:     Pavel <pavel@ucw.cz>, Linux Leds <linux-leds@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+References: <20201005141334.36d9441a@blackhole.sk> <MIt2NiS--3-2@tutanota.com>
+ <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com> <MItBqjy--3-2@tutanota.com>
+ <966c3f39-1310-dd60-6f33-0d9464ed2ff1@ti.com> <MItOR9Z--3-2@tutanota.com>
+ <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de>
+ <MItjEho--3-2@tutanota.com> <20201005173227.GA6431@duo.ucw.cz>
+ <20201006093356.6d25b280@blackhole.sk> <MIxm3uX--3-2@tutanota.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <144aa75a-4369-cd81-d7dc-2354a9afd7c5@ti.com>
+Date:   Tue, 6 Oct 2020 07:21:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <MIxm3uX--3-2@tutanota.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the powercap dtpm controller, we are able to plug devices with
-power limitation features in the tree.
+All
 
-The following patch introduces the CPU power limitation based on the
-energy model and the performance states.
+On 10/6/20 6:59 AM, ultracoolguy@tutanota.com wrote:
+> While I do agree with you that having the child nodes be led strings make more sense, would it be possible to have, for example, three strings controlled by the same label?
+>
+> Oct 6, 2020, 07:33 by kabel@blackhole.sk:
+>
+>> By the way I just realized that the DT binding in this driver seems
+>> incorrect to me.
+>>
+>> The controller logically supports 3 LED strings, each having
+>> configurable control bank.
 
-The power limitation is done at the performance domain level. If some
-CPUs are unplugged, the corresponding power will be substracted from
-the performance domain total power.
+There are two control banks. You can connect the HVLED outputs to either 
+control bank A or B there is no individual control of the LED strings.
 
-It is up to the platform to initialize the dtpm tree and add the CPU.
 
-Here is an example to create a simple tree with one root node called
-"pkg" and the cpu's performance domains.
+>> But the DT binding supports 2 DT nodes, one for each control bank
+>> (identified by the `reg` property) and then `led-sources` says which
+>> string should be controlled by given bank.
+>>
+>> But taking in mind that DT should describe how devices are connected to
+>> each other, I think the child nodes in the binding should instead
+>> describe the 3 supported LED strings...
 
-int dtpm_register_pkg(struct dtpm_descr *descr)
-{
-	struct dtpm *pkg;
-	int ret;
+The outputs in this case are virtual outputs which are the banks (A and B).
 
-	pkg = dtpm_alloc();
-	if (!pkg)
-		return -ENOMEM;
+Since the device is bank controlled the actual current sinks are not 
+defined thus making the the banks the actual outputs.
 
-	ret = dtpm_register_parent(descr->name, pkg, descr->parent);
-	if (ret)
-		return ret;
+This is why the 'reg' property defines the control bank either A or B 
+and the led-sources indicates the strings associated with the control bank.
 
-	return dtpm_register_cpu(pkg);
-}
-
-struct dtpm_descr descr = {
-	.name = "pkg",
-	.init = dtpm_register_pkg,
-};
-DTPM_DECLARE(descr);
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/powercap/Kconfig    |   8 ++
- drivers/powercap/Makefile   |   1 +
- drivers/powercap/dtpm_cpu.c | 242 ++++++++++++++++++++++++++++++++++++
- include/linux/cpuhotplug.h  |   1 +
- include/linux/dtpm.h        |   3 +
- 5 files changed, 255 insertions(+)
- create mode 100644 drivers/powercap/dtpm_cpu.c
-
-diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-index 777cf60300b8..240dc09e8dc2 100644
---- a/drivers/powercap/Kconfig
-+++ b/drivers/powercap/Kconfig
-@@ -49,4 +49,12 @@ config DTPM
- 	help
- 	  This enables support for the power capping for the dynamic
- 	  thermal management userspace engine.
-+
-+config DTPM_CPU
-+	bool "Add CPU power capping based on the energy model"
-+	depends on DTPM && ENERGY_MODEL
-+	help
-+	  This enables support for CPU power limitation based on
-+	  energy model.
-+
- endif
-diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-index 6482ac52054d..fabcf388a8d3 100644
---- a/drivers/powercap/Makefile
-+++ b/drivers/powercap/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_DTPM) += dtpm.o
-+obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
- obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
- obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
- obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-new file mode 100644
-index 000000000000..23ebf704c599
---- /dev/null
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -0,0 +1,242 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2020 Linaro Limited
-+ *
-+ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-+ *
-+ */
-+#include <linux/cpumask.h>
-+#include <linux/cpufreq.h>
-+#include <linux/cpuhotplug.h>
-+#include <linux/dtpm.h>
-+#include <linux/energy_model.h>
-+#include <linux/pm_qos.h>
-+#include <linux/slab.h>
-+#include <linux/units.h>
-+
-+static struct dtpm *__parent;
-+
-+static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
-+
-+struct dtpm_cpu {
-+	struct freq_qos_request qos_req;
-+	int cpu;
-+};
-+
-+static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
-+{
-+	u64 power_min, power_max;
-+
-+	power_min = em->table[0].power;
-+	power_min *= MICROWATT_PER_MILLIWATT;
-+	power_min += dtpm->power_min;
-+
-+	power_max = em->table[em->nr_perf_states - 1].power;
-+	power_max *= MICROWATT_PER_MILLIWATT;
-+	power_max += dtpm->power_max;
-+
-+	return dtpm_update_power(dtpm, power_min, power_max);
-+}
-+
-+static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
-+{
-+	u64 power_min, power_max;
-+
-+	power_min = em->table[0].power;
-+	power_min *= MICROWATT_PER_MILLIWATT;
-+	power_min = dtpm->power_min - power_min;
-+
-+	power_max = em->table[em->nr_perf_states - 1].power;
-+	power_max *= MICROWATT_PER_MILLIWATT;
-+	power_max = dtpm->power_max - power_max;
-+
-+	return dtpm_update_power(dtpm, power_min, power_max);
-+}
-+
-+static int set_pd_power_limit(struct powercap_zone *pcz, int cid,
-+			      u64 power_limit)
-+{
-+	struct dtpm *dtpm = to_dtpm(pcz);
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+	struct em_perf_domain *pd;
-+	unsigned long freq;
-+	int i, nr_cpus;
-+
-+	spin_lock(&dtpm->lock);
-+
-+	power_limit = clamp_val(power_limit, dtpm->power_min, dtpm->power_max);
-+
-+	pd = em_cpu_get(dtpm_cpu->cpu);
-+
-+	nr_cpus = cpumask_weight(to_cpumask(pd->cpus));
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		u64 power = pd->table[i].power * MICROWATT_PER_MILLIWATT;
-+
-+		if ((power * nr_cpus) > power_limit)
-+			break;
-+	}
-+
-+	freq = pd->table[i - 1].frequency;
-+
-+	freq_qos_update_request(&dtpm_cpu->qos_req, freq);
-+
-+	dtpm->power_limit = power_limit;
-+
-+	spin_unlock(&dtpm->lock);
-+
-+	return 0;
-+}
-+
-+static int get_pd_power_limit(struct powercap_zone *pcz, int cid, u64 *data)
-+{
-+	struct dtpm *dtpm = to_dtpm(pcz);
-+
-+	spin_lock(&dtpm->lock);
-+	*data = dtpm->power_max;
-+	spin_unlock(&dtpm->lock);
-+
-+	return 0;
-+}
-+
-+static int get_pd_power_uw(struct powercap_zone *pcz, u64 *power_uw)
-+{
-+	struct dtpm *dtpm = to_dtpm(pcz);
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+	struct em_perf_domain *pd;
-+	unsigned long freq;
-+	int i, nr_cpus;
-+
-+	freq = cpufreq_quick_get(dtpm_cpu->cpu);
-+	pd = em_cpu_get(dtpm_cpu->cpu);
-+	nr_cpus = cpumask_weight(to_cpumask(pd->cpus));
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		if (pd->table[i].frequency < freq)
-+			continue;
-+
-+		*power_uw = pd->table[i].power *
-+			MICROWATT_PER_MILLIWATT * nr_cpus;
-+
-+		return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int cpu_release_zone(struct powercap_zone *pcz)
-+{
-+	struct dtpm *dtpm = to_dtpm(pcz);
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+
-+	freq_qos_remove_request(&dtpm_cpu->qos_req);
-+
-+	return dtpm_release_zone(pcz);
-+}
-+
-+static struct powercap_zone_constraint_ops pd_constraint_ops = {
-+	.set_power_limit_uw = set_pd_power_limit,
-+	.get_power_limit_uw = get_pd_power_limit,
-+};
-+
-+static struct powercap_zone_ops pd_zone_ops = {
-+	.get_power_uw = get_pd_power_uw,
-+	.release = cpu_release_zone,
-+};
-+
-+static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
-+{
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	struct dtpm *dtpm;
-+
-+	policy = cpufreq_cpu_get(cpu);
-+
-+	if (!policy)
-+		return 0;
-+
-+	pd = em_cpu_get(cpu);
-+	if (!pd)
-+		return -EINVAL;
-+
-+	dtpm = per_cpu(dtpm_per_cpu, cpu);
-+
-+	power_sub(dtpm, pd);
-+
-+	if (cpumask_weight(policy->cpus) != 1)
-+		return 0;
-+
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = NULL;
-+
-+	dtpm_unregister(dtpm);
-+
-+	return 0;
-+}
-+
-+static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-+{
-+        struct dtpm *dtpm;
-+	struct dtpm_cpu *dtpm_cpu;
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	char name[CPUFREQ_NAME_LEN];
-+	int ret;
-+
-+	policy = cpufreq_cpu_get(cpu);
-+
-+	if (!policy)
-+		return 0;
-+
-+	pd = em_cpu_get(cpu);
-+	if (!pd)
-+		return -EINVAL;
-+
-+	dtpm = per_cpu(dtpm_per_cpu, cpu);
-+	if (dtpm)
-+		return power_add(dtpm, pd);
-+
-+	dtpm = dtpm_alloc();
-+	if (!dtpm)
-+		return -EINVAL;
-+
-+	dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
-+	if (!dtpm_cpu)
-+		return -ENOMEM;
-+
-+	dtpm->private = dtpm_cpu;
-+	dtpm_cpu->cpu = cpu;
-+
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = dtpm;
-+
-+	ret = power_add(dtpm, pd);
-+	if (ret)
-+		return ret;
-+
-+	dtpm->power_limit = dtpm->power_max;
-+
-+	sprintf(name, "cpu%d", dtpm_cpu->cpu);
-+
-+	ret = dtpm_register(name, dtpm, __parent, &pd_zone_ops,
-+			    1, &pd_constraint_ops);
-+	if (ret)
-+		return ret;
-+
-+	ret = freq_qos_add_request(&policy->constraints,
-+				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
-+				   pd->table[pd->nr_perf_states - 1].frequency);
-+	return ret;
-+}
-+
-+int dtpm_register_cpu(struct dtpm *parent)
-+{
-+	__parent = parent;
-+
-+	return cpuhp_setup_state(CPUHP_AP_DTPM_CPU_ONLINE,
-+				 "dtpm_cpu:online",
-+				 cpuhp_dtpm_cpu_online,
-+				 cpuhp_dtpm_cpu_offline);
-+}
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index bf9181cef444..6792bad4a435 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -190,6 +190,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
- 	CPUHP_AP_X86_HPET_ONLINE,
- 	CPUHP_AP_X86_KVM_CLK_ONLINE,
-+	CPUHP_AP_DTPM_CPU_ONLINE,
- 	CPUHP_AP_ACTIVE,
- 	CPUHP_ONLINE,
- };
-diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-index 6696bdcfdb87..b62215a13baa 100644
---- a/include/linux/dtpm.h
-+++ b/include/linux/dtpm.h
-@@ -70,4 +70,7 @@ int dtpm_register_parent(const char *name, struct dtpm *dtpm,
- int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent,
- 		  struct powercap_zone_ops *ops, int nr_constraints,
- 		  struct powercap_zone_constraint_ops *const_ops);
-+
-+int dtpm_register_cpu(struct dtpm *parent);
-+
- #endif
--- 
-2.17.1
+Dan
 
