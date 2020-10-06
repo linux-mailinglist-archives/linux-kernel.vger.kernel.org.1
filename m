@@ -2,110 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F6C28441F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25052284421
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgJFCox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 22:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgJFCow (ORCPT
+        id S1726714AbgJFCva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 22:51:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52858 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgJFCva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 22:44:52 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90525C0613CE;
-        Mon,  5 Oct 2020 19:44:52 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id p11so490312pld.5;
-        Mon, 05 Oct 2020 19:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=c/r3PEj0YRai5C3VqjNaYuwwDYS1p6JUQvyN0lvoAyM=;
-        b=gZKPVgcb9eSWsRLOQDMDuEXhOqUdFypNE0jzBHtA4crYiiIlkgr3O7vxr/i6mlssBg
-         +hkHeLWWlyBaKfQhyNbu/aGLbkPCOJzfcHHVa8ein8Qs5VUK7iG5UOEbzqPNifN7tIKQ
-         Ex1AWgNGUtM/NkR19tiiBCtcTt821D3uZMQZoG02lCXH0BebKwUuNzGfKSx0JXRc+w97
-         ZRG/tQ2JuJEgE8P+PaEMmptZAOpPf8ucw0As5q6K+dkTCqIOT8/Qzzk6bCfl46wtbQ4a
-         8BGa75rHZG88KLuAXsBNX5UrQf6M2WNt7xcGng9gSJKqDp6dUugssXT6zsE03krYdrPu
-         8jfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=c/r3PEj0YRai5C3VqjNaYuwwDYS1p6JUQvyN0lvoAyM=;
-        b=j62kUjKgd8QflG/DqI8ih6JmNWqUy6vl9YstG1nTcMjEVhSFYRhE85IIQFHE8q9xNW
-         V+042FssuPCLMvRxBk/UhT+w1XhUrGApwmkON7JXBoHdR9tW26+uEAg6B1oxEEuHZPEL
-         L/fmDmfRS+HOUfOqKNVRtAnhXyOBMZBRkF8zYWGQi2WR/V+CNgi/mxfydjCs4ZpcMk/w
-         +am76PymlJ0zkn0Gv6j+JJFnkfedVZdVZ99qEXVBFuyHnUbQgmtuf9W00GWvYykTu1VW
-         kZ3KOP0JyADiXcriMQkWAdqrb06tlRqmf00pm5OOrI0WE1MFM989d/NB2E7+82xERYwh
-         8W7A==
-X-Gm-Message-State: AOAM5321wSOKexSahHmkgfdBR37BWgfM+0l2E2uZf3jfi6VsnCk73vDL
-        xM6CRGZG5MDYHUilrPRgGDnpvck55KGQ6Nsdw3Q=
-X-Google-Smtp-Source: ABdhPJy2nooYLBrQ5KLb9QiAVlVBANGc294nAeAdlos0bGJi0zn5KhComJuVTd3U0wSPeZ8/kFZkXg==
-X-Received: by 2002:a17:90a:588b:: with SMTP id j11mr2164529pji.45.1601952291222;
-        Mon, 05 Oct 2020 19:44:51 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.207.135])
-        by smtp.gmail.com with ESMTPSA id gi20sm940810pjb.28.2020.10.05.19.44.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 19:44:50 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Subject: Re: [PATCH v3] bluetooth: hci_h5: fix memory leak in h5_close
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201001194329.9328-1-anant.thazhemadam@gmail.com>
- <20201004051708.21985-1-anant.thazhemadam@gmail.com>
- <407eed16-ba46-0ba6-544f-d5e820a1ced7@redhat.com>
-Message-ID: <93ed51be-97b9-c5b4-8448-d06528a1d1af@gmail.com>
-Date:   Tue, 6 Oct 2020 08:14:45 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 5 Oct 2020 22:51:30 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0962nwax106626;
+        Tue, 6 Oct 2020 02:51:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=YosbUU7kIPdnSwmp8WXDorI0qaN8IkFGsOrxOmisByQ=;
+ b=o/d8baE3rfitjkiEc+2W8xFn1pTeh35tEcBNdJsaGAm65xK2fy/zRSFUdjG8XQG3VWyh
+ ETj1XOSUFr638HpqF6JG77zeXqNhXYoTMMwnOXVEIdoevGL5abYpkm83Hudr8vV2UOYH
+ VZ1TEKEIaLx7ocsoXX4ZCCbeV/Bet7EN3MNZqIQi8zh65wbRpa+wX1TF3yUxhZaOleCJ
+ 4UkotrK1jzRqizjEJN+yprguqLZihtiWH1JMJnoNt+P+EMBp1SNgwW5wkyDaKbLvnR7+
+ XXjkkve8Vs1La5Q3ZjU3Zp4j/gdhStg7anLGszJD2bCG7aXtbz7B/kJ3mUpX8th0cj/O 2w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33xhxmshps-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 06 Oct 2020 02:51:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0962omMm058934;
+        Tue, 6 Oct 2020 02:51:14 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33y36xc7s8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Oct 2020 02:51:14 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0962pBIn029775;
+        Tue, 6 Oct 2020 02:51:11 GMT
+Received: from localhost (/10.159.149.142)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 05 Oct 2020 19:51:11 -0700
+Date:   Mon, 5 Oct 2020 19:51:10 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201006025110.GJ49559@magnolia>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
+ <20201005081454.GA493107@localhost>
+ <20201005173639.GA2311765@magnolia>
+ <20201006003216.GB6553@localhost>
 MIME-Version: 1.0
-In-Reply-To: <407eed16-ba46-0ba6-544f-d5e820a1ced7@redhat.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006003216.GB6553@localhost>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010060016
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010060016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-10-2020 14:48, Hans de Goede wrote:
-> To fully fix the memleak you also need to add a kfree_skb(h5->rx_skb);
-> call to the end of h5_serdev_remove(), because in the hu->serdev case
-> that is where the h5 struct will be free-ed (it is free-ed after that
-> function exits).
+On Mon, Oct 05, 2020 at 05:32:16PM -0700, Josh Triplett wrote:
+> On Mon, Oct 05, 2020 at 10:36:39AM -0700, Darrick J. Wong wrote:
+> > On Mon, Oct 05, 2020 at 01:14:54AM -0700, Josh Triplett wrote:
+> > > Ran into an ext4 regression when testing upgrades to 5.9-rc kernels:
+> > > 
+> > > Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
+> > > ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
+> > > with intentionally overlapping bitmap blocks.
+> > > 
+> > > On an always-read-only filesystem explicitly marked with
+> > > EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
+> > > point all the block and inode bitmaps to a single block
+> > 
+> > LOL, WHAT?
+> > 
+> > I didn't know shared blocks applied to fs metadata.  I thought that
+> > "shared" only applied to file extent maps being able to share physical
+> > blocks.
+> 
+> The flag isn't documented very well yet, but since it specifically
+> forces the filesystem to always be mounted read-only, the bitmaps really
+> shouldn't matter at all. (In an ideal world, a permanently read-only
+> filesystem should be able to omit all the bitmaps entirely. Pointing
+> them all to a single disk block is the next best thing.)
 
-Hi Hans,
+I disagree; creating undocumented forks of an existing ondisk format
+(especially one that presents as inconsistent metadata to regular tools)
+is creating a ton of pain for future users and maintainers when the
+incompat forks collide with the canonical implementation(s).
 
-I'm not entirely convinced that it might be entirely the best idea to do
-that.
+(Granted, I don't know if you /created/ this new interpretation of the
+feature flag or if you've merely been stuck with it...)
 
-* The bug detected by syzbot only provides us with reproducer and
-information about this bug (which gets triggered when !hu->serdev).
-Even if like you said, there might be a memory leak unattended to when
-hu->serdev exists, then this might not necessarily be the right place to fix
-it.
+I don't say that as a theoretical argument -- you've just crashed right
+into this, because nobody knew that the in-kernel block validity doesn't
+know how to deal with this other than to error out.
 
-* From what I can see, all the drivers that have modified to provide serdev
-support have different close() mechanisms.
-However, one thing they do have in common (in this context) is that their
-respective serdev_remove() function simply calls hci_uart_unregister_device()
-to unregister the device.
-It is primarily for this reason that I feel adding a kfree_skb() call at the end
-of h5_serdev_remove() might not exactly be the best way we could solve this
-(and since this hasn't been picked up by syzbot yet, there's no way to know if
-this just fixes things or ends up causing unforeseen complications).
+> > Could /somebody/ please document the ondisk format changes that are
+> > associated with this feature?
+> 
+> I pretty much had to sort it out by looking at a combination of
+> e2fsprogs and the kernel, and a lot of experimentation, until I ended up
+> with something that the kernel was completely happy with without a
+> single complaint.
+> 
+> I'd be happy to write up a summary of the format.
 
-Alternatively, wouldn't freeing h5->rx_skb and assigning it to NULL, for both
-hu->serdev and !hu->serdev cases within h5_close() itself be a better
-approach? I've also taken the liberty of testing a patch that does this, and it
-seems to work correctly too. :)
+Seems like a good idea, particularly since you're asking for a format
+change that requires kernel support and the ondisk format documentation
+lives under Documentation/.  That said...
 
-But then again, I'm not exactly an authority on how this works.
+> I'd still really like to see this patch applied for 5.9, to avoid having
+> filesystems that an old kernel can mount but a new one can't. This still
+> seems like a regression to me.
+> 
+> > > of all 1s,
+> > > because a read-only filesystem will never allocate or free any blocks or
+> > > inodes.
+> > 
+> > All 1s?  So the inode bitmap says that every inode table slot is in use,
+> > even if the inode record itself says it isn't?
+> 
+> Yes.
+> 
+> > What does e2fsck -n
+> > think about that kind of metadata inconsistency?
+> 
+> If you set up the rest of the metadata consistently with it (for
+> instance, 0 free blocks and 0 free inodes), you'll only get a single
+> complaint, from the e2fsck equivalent of block_validity. See
+> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=956509 for details on
+> that;
 
-Thanks,
-Anant
+...Ted shot down this whole thing six months ago.
+
+The Debian bug database is /not/ the designated forum to discuss changes
+to the ondisk format; linux-ext4 is.
+
+--D
+
+> with that fixed, e2fsck wouldn't complain at all. The kernel,
+> prior to 5.9-rc2, doesn't have a single complaint, whether at mount,
+> unmount, or read of every file and directory on the filesystem.
+> 
+> The errors you got in your e2fsck run came because you just overrode the
+> bitmaps, but didn't make the rest of the metadata consistent with that.
+> I can provide a sample filesystem if that would help.
+> 
+> - Josh
