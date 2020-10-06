@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D602853D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9952853E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbgJFVZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:25:05 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:38057 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727356AbgJFVZF (ORCPT
+        id S1727397AbgJFVa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727301AbgJFVa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:25:05 -0400
-Received: by mail-oi1-f195.google.com with SMTP id 26so143105ois.5;
-        Tue, 06 Oct 2020 14:25:04 -0700 (PDT)
+        Tue, 6 Oct 2020 17:30:56 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66609C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 14:30:56 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id q7so255344ile.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 14:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BMsqqfJIL4fFlYLnqY+a4r1RHb+1tAuL+qe7bBh9m1M=;
+        b=GHikp9gtOR5vwaEIdrJYP8nqy1dsU9d/Cfnb7FBFdOkO8ErSafqVoyW3eL+RLzLRVF
+         ZjL+PmoFMPDgYZ8sbfv4Yln/o/cZIdOfaeFe460PRYOqE3BXAGUY5G2hFWcgXsG1Ixjw
+         W43exqEsQUqWI92cKx3sD0ENDtEJQIuFqiVnmY5rAj1rDvY5DI4ijMz1fiK5aQ6C9i+a
+         BFufl0KfiDrV2ehw5mTNyk9K4sGXI7j3mJqPtEWeYZZs2ewgfFmjUAPvRygmrYHrD4jr
+         GZziTAGfAuTmE1dqH1gS+ISfpihRQXNeEYtq67xMuRggliDa3axZ89bSkqzAx6McOV86
+         4ZzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JO35QNksNafPiPoNfhfKmz+mcxZsJcR4pz+973C07jU=;
-        b=tVkFCq2tIYQnBUSHyTQDZgT1skOAOM8Hsnp6Gz2f/T0ZJ96noVB0j640pljKeTz4i2
-         Ix0SFWvlRPN8Mnrbh0WFdZ6nmDgic/4vjWJIczuSWo4PLnT9riMOQ2rfGcpbRO+lNT/N
-         EEyE0TRTzK0Tn0MgkPDDOk52I8Ot8HrOGcWWOeZfv0BlRpOCs/jLU6HZdUdNyf+yf2GI
-         dEEO9O4ez5funG8w5gdg8jqGUEDLbOrT66sVwYTjJm87QjwFshrG/iUt5+YjchZnRrbo
-         i4yMEC80CgOZZkVx5AkYe0hDVN6qk4HEhahL07BfWlqsZyTScfogqlcN9tufcC759e31
-         gi3A==
-X-Gm-Message-State: AOAM531KjCCTcFs2M1JIjzFFbXNDiLJQyvc3h+WTdGUhU8PpJTPfpjpA
-        fzwlRAr1bVI53D7EJfX7Nw==
-X-Google-Smtp-Source: ABdhPJw6XhxTki8ItSMT1HhgO9hq9gFvJXenFx4JV6TiJEboAUdoHRidMc/5Q6HFS1gfcwLpOzejJg==
-X-Received: by 2002:aca:2b02:: with SMTP id i2mr153953oik.108.1602019503921;
-        Tue, 06 Oct 2020 14:25:03 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z25sm137745ood.21.2020.10.06.14.25.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BMsqqfJIL4fFlYLnqY+a4r1RHb+1tAuL+qe7bBh9m1M=;
+        b=mEC59Rqi7LjTOd9xWxDqo+dIJ/QriYocQSRU0nZ/q0Dc4WnqW0hxyEab2MbYUx9oay
+         CVvIi25uuZKoQerFNbWSVXzZ4AiHm6KWteymdzsvz5twkEoDBegYyI7Jp+UzdEMratAn
+         UVJDo8tHVSn169Vnhshd5yBQO0Uu/VdWiYl0lb1EYlWeaFsVrLSTdGiG93y70NcFq1iw
+         BchdhLgEt6yJjtjlh0Eaqr1EHPtPKdr+DweKptzJ9btrOQ88Jf6IkpDpMqHcubWjgtmL
+         olkzrhXboL0w9TRbYWwM7wUuo47x2MM5IBunfY8YWAV9A2FVVBLMzxns3wyfRG+cYV42
+         yQBg==
+X-Gm-Message-State: AOAM531B+X/gqxrpZ5z0LepDb9oPffWyW51M/E8spgn/WJ7AotbHd1if
+        6gbBMMW6/Fsq8jSAHRwy11JtYA==
+X-Google-Smtp-Source: ABdhPJzNCel9QtHRenLw+gBXDP0q6l89iGgOsoQvr06aIYEdp0XfwA60DryeLCijTiPRRPkz4djr5Q==
+X-Received: by 2002:a92:2602:: with SMTP id n2mr194390ile.82.1602019855646;
+        Tue, 06 Oct 2020 14:30:55 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id z20sm2043215ior.2.2020.10.06.14.30.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:25:03 -0700 (PDT)
-Received: (nullmailer pid 2870551 invoked by uid 1000);
-        Tue, 06 Oct 2020 21:25:02 -0000
-Date:   Tue, 6 Oct 2020 16:25:02 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, bgolaszewski@baylibre.com,
-        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        bhelgaas@google.com
-Subject: Re: [RFC PATCH 2/3] dt-bindings: gpio: Add binding documentation for
- Etron EJ168/EJ188/EJ198
-Message-ID: <20201006212502.GA2866970@bogus>
-References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
- <20201004162908.3216898-3-martin.blumenstingl@googlemail.com>
+        Tue, 06 Oct 2020 14:30:54 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        mka@chromium.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net 0/2] net: ipa: non-setup bug fixes
+Date:   Tue,  6 Oct 2020 16:30:45 -0500
+Message-Id: <20201006213047.31308-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201004162908.3216898-3-martin.blumenstingl@googlemail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 06:29:07PM +0200, Martin Blumenstingl wrote:
-> Etron EJ168/EJ188/EJ198 are USB xHCI host controllers which embed a GPIO
-> controller.
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  .../devicetree/bindings/gpio/etron,ej1x8.yaml | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/etron,ej1x8.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/etron,ej1x8.yaml b/Documentation/devicetree/bindings/gpio/etron,ej1x8.yaml
-> new file mode 100644
-> index 000000000000..fa554045bdb5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/etron,ej1x8.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/etron,ej1x8.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: GPIO controller embedded into the EJ168/EJ188/EJ198 xHCI controllers
-> +
-> +maintainers:
-> +  - Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - pci1b6f,7023
-> +      - pci1b6f,7052
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +
-> +  gpio-controller: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#gpio-cells"
-> +  - gpio-controller
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +      pcie {
-> +        #address-cells = <3>;
-> +        #size-cells = <2>;
-> +
-> +        gpio@0,0,0 {
-> +          compatible = "pci1b6f,7023";
-> +          reg = <0x0 0x0 0x0 0x0 0x1000>;
-> +          gpio-controller;
-> +          #gpio-cells = <2>;
-> +        };
+This series fixes two bugs that occur if the IPA driver has not
+completed its setup phase of initialization when an event occurs.
 
-How would this look if you needed to describe the XHCI controller? 
-That's another PCI function?
+One event is the crash of the modem.  If the modem crashes,
+ipa_modem_crashed() is called, and it performs various activities
+intended to put the IPA hardware into a good state before the modem
+reboots.  But if the IPA setup has not completed, resources used
+for this cleanup will not be properly initialized.  So we must
+skip doing this activity if we have not completed setup.
 
-> +      };
-> +
-> +...
-> -- 
-> 2.28.0
-> 
+Similarly, if a system suspend is initiated but IPA setup has not
+completed, the processing done in ipa_endpoint_suspend() should be
+avoided.  And a subsequent system resume should also avoid resuming
+endpoints that have not been initialized by IPA setup.
+
+					-Alex
+
+Alex Elder (2):
+  net: ipa: only clear hardware state if setup has completed
+  net: ipa: skip suspend/resume activities if not set up
+
+ drivers/net/ipa/ipa_endpoint.c | 6 ++++++
+ drivers/net/ipa/ipa_modem.c    | 3 +++
+ 2 files changed, 9 insertions(+)
+
+-- 
+2.20.1
+
