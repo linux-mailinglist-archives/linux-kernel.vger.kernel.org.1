@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C7F284B7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E40284B84
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgJFMNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:13:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgJFMNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:13:52 -0400
-Received: from coco.lan (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4760E20663;
-        Tue,  6 Oct 2020 12:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601986431;
-        bh=5N1sB0RTYC4S5uCLZ5Ub0O/RMBumfJWMKP5+urqBL+k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZbOSVj459Jb21PThxbVW5rGNSnI5aMlk5GCNTghfKjj/ULAIk1AAB3G+9pEtSmQYe
-         oo8G51N1ddfo2J2LgYuappfgeYfnDU+DSP4JX67x0yYCKTyD6XCR487Avzz5pNBEHy
-         N7dR0z4dBokJQKxRhY/0xw2j6QFo0+RpO8u0fSJw=
-Date:   Tue, 6 Oct 2020 14:13:46 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        "Matthew Wilcox" <willy@infradead.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] script: add a script for checking doc problems with
- external functions
-Message-ID: <20201006141346.68074cff@coco.lan>
-In-Reply-To: <e40a32900dba6b8e7a1f41838ee8caeb1ef1c1b3.1601985151.git.mchehab+huawei@kernel.org>
-References: <20201005125920.27a7768d@coco.lan>
-        <e40a32900dba6b8e7a1f41838ee8caeb1ef1c1b3.1601985151.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726362AbgJFMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgJFMUq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:20:46 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9173C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 05:20:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id n15so7462472wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 05:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jHqlJlKyK3t+BplWZMVjP0HJb12amo5gWYHD/Aa8e9s=;
+        b=fB7+dnIdkE+utP0B/DtZDwiIRlCjrN+H3ocJF3Kg7TpO8uliOFUsHs0nCFJEtu0z9F
+         Q30VL7TfftLQawwmbVq6URRycNI2U6ymvN5r3ssthQWYhxxOMR6uDwwx0csrjUWsugcA
+         PnxUifmMqz16gCqUpSj7ePV6H+Tepnrg4QrSqGfkYudLBOi52MSWEfjBTZqi4ygvWx5R
+         JgDZbi7WNI/wKqXtS6kv93sdmGnjSOwsIHr+ELxQCtYl5TG7bnvfwrjDVTxFwtwpXTYq
+         024D9ccCJTIPWHTAjoamaaUTreonc3WYsdmKK5J1DMALErGonc/Y6/7KtNdsFFiM46mM
+         ueMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jHqlJlKyK3t+BplWZMVjP0HJb12amo5gWYHD/Aa8e9s=;
+        b=UD8gxdvZ1I/aaS6bI5NT34ttQloC+bnnYf+lU9SA2f7R4HS35RSPfvfNhqd0PeJ00Q
+         nA1CRcgyLjT8HPsLtB9Hh7tkR+ixjKwxzQIukTlZL8kmeqEfmhBXN0XOQopAAWSeACPK
+         YSt6fiJqJWDsEVkyc+yJ0TYB0KJlIAGNxWxr5ScNHuzYlogBx0mTIe053wR9BybaUVtY
+         md/lNJqhTOEKxWIuB+1fxh75Zb7yNNjdrd+bbXvmNv0vAXzw6DgLDOit2isVqpeVHtxi
+         1WD/yCklBtGC0gsWr13q+asg4ApjxcqUWvyrS4aENDRWAtrRFeBjPK5OlRHd3u8auOEQ
+         UxaA==
+X-Gm-Message-State: AOAM531f4VjBmGzxAh81urmdSX3WdWxNs04LCCHWQq/nFuwo5xF2VInn
+        HJO32R7DnkuxVv+5r3cBMeQYQg==
+X-Google-Smtp-Source: ABdhPJxC22IO37gpc3nCTUf4QVKu5O5/BfhzkqDY75+/hntvPjceH3AhCEQMht+nQSLUH68LbDfjnQ==
+X-Received: by 2002:a5d:540e:: with SMTP id g14mr4828784wrv.148.1601986844293;
+        Tue, 06 Oct 2020 05:20:44 -0700 (PDT)
+Received: from localhost.localdomain (lns-bzn-59-82-252-130-8.adsl.proxad.net. [82.252.130.8])
+        by smtp.gmail.com with ESMTPSA id s19sm3742521wmc.41.2020.10.06.05.20.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 05:20:43 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com
+Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rui.zhang@intel.com
+Subject: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
+Date:   Tue,  6 Oct 2020 14:20:20 +0200
+Message-Id: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew/Jon,
+The density of components greatly increased the last decade bringing a
+numerous number of heating sources which are monitored by more than 20
+sensors on recent SoC. The skin temperature, which is the case
+temperature of the device, must stay below approximately 45°C in order
+to comply with the legal requirements.
 
-Em Tue,  6 Oct 2020 13:53:34 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+The skin temperature is managed as a whole by an user space daemon,
+which is catching the current application profile, to allocate a power
+budget to the different components where the resulting heating effect
+will comply with the skin temperature constraint.
 
-> While not all EXPORT_SYMBOL*() symbols should be documented,
-> it seems useful to have a tool which would help to check what
-> symbols aren't documented.
-> 
-> This is a first step on this direction. The tool has some
-> limitations. Yet, it could be useful for maintainers to check
-> about missing documents on their subsystems.
-> 
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This technique is called the Dynamic Thermal Power Management.
 
-As suggested, I improved the script for it to provide some hints
-about what documentation is missing:
+The Linux kernel does not provide any unified interface to act on the
+power of the different devices. Currently, the thermal framework is
+changed to export artificially the performance states of different
+devices via the cooling device software component with opaque values.
+This change is done regardless of the in-kernel logic to mitigate the
+temperature. The user space daemon uses all the available knobs to act
+on the power limit and those differ from one platform to another.
 
-	$ ./scripts/check_docs_external_symbols drivers/media/v4l2-core/
-	warning: drivers/media/v4l2-core/videobuf-dma-contig.c: missing documentation for videobuf_queue_dma_contig_init videobuf_to_dma_contig videobuf_dma_contig_free
-	warning: drivers/media/v4l2-core/v4l2-clk.c: missing documentation for v4l2_clk_get v4l2_clk_put v4l2_clk_enable v4l2_clk_disable v4l2_clk_get_rate v4l2_clk_set_rate	v4l2_clk_register v4l2_clk_unregister __v4l2_clk_register_fixed v4l2_clk_unregister_fixed
-	warning: include/media/v4l2-h264.h: file not included at Documentation/
-	warning: drivers/media/v4l2-core/v4l2-h264.c: file not included at Documentation/
-	warning: drivers/media/v4l2-core/videobuf-core.c: missing documentation for videobuf_alloc_vb videobuf_waiton videobuf_iolock videobuf_queue_to_vaddr videobuf_queue_core_init videobuf_queue_is_busy videobuf_queue_cancel videobuf_next_field videobuf_mmap_free __videobuf_mmap_setup videobuf_mmap_setup videobuf_reqbufs videobuf_querybuf videobuf_qbuf videobuf_dqbuf videobuf_streamon videobuf_streamoff videobuf_read_one videobuf_read_start videobuf_read_stop videobuf_stop videobuf_read_stream videobuf_poll_stream videobuf_mmap_mapper
-	warning: drivers/media/v4l2-core/v4l2-mem2mem.c: file not included at Documentation/
-	warning: drivers/media/v4l2-core/v4l2-dev.c: missing documentation for video_device_alloc video_device_release video_device_release_empty video_devdata v4l2_prio_init v4l2_prio_change v4l2_prio_open v4l2_prio_close v4l2_prio_max v4l2_prio_check __video_register_device
-	warning: drivers/media/v4l2-core/v4l2-dev.c: file not included at Documentation/
+This series provides a Dynamic Thermal Power Management framework to
+provide an unified way to act on the power of the devices.
 
-It also report things that shouldn't be documented, like those:
+Daniel Lezcano (4):
+  units: Add Watt units
+  Documentation/powercap/dtpm: Add documentation for dtpm
+  powercap/drivers/dtpm: Add API for dynamic thermal power management
+  powercap/drivers/dtpm: Add CPU energy model based support
 
-	$ ./scripts/check_docs_external_symbols drivers/media/pci/saa7134
-	warning: drivers/media/pci/saa7134/saa7134-video.c: missing documentation for saa7134_vb2_buffer_queue saa7134_enum_input saa7134_g_input saa7134_s_input saa7134_querycap saa7134_s_std saa7134_g_std saa7134_querystd saa7134_g_tuner saa7134_s_tuner saa7134_g_frequency saa7134_s_frequency
-	warning: drivers/media/pci/saa7134/saa7134-core.c: missing documentation for saa7134_stop_streaming saa7134_ts_register saa7134_ts_unregister saa7134_set_gpio saa7134_dmasound_init saa7134_dmasound_exit saa7134_pgtable_free saa7134_pgtable_build saa7134_pgtable_alloc saa7134_set_dmabits
-	warning: drivers/media/pci/saa7134/saa7134-ts.c: missing documentation for saa7134_ts_buffer_init saa7134_ts_buffer_prepare saa7134_ts_queue_setup saa7134_ts_start_streaming saa7134_ts_stop_streaming
+ Documentation/power/powercap/dtpm.rst | 222 +++++++++++++
+ drivers/powercap/Kconfig              |  14 +
+ drivers/powercap/Makefile             |   2 +
+ drivers/powercap/dtpm.c               | 430 ++++++++++++++++++++++++++
+ drivers/powercap/dtpm_cpu.c           | 242 +++++++++++++++
+ include/asm-generic/vmlinux.lds.h     |  11 +
+ include/linux/cpuhotplug.h            |   1 +
+ include/linux/dtpm.h                  |  76 +++++
+ include/linux/units.h                 |   4 +
+ 9 files changed, 1002 insertions(+)
+ create mode 100644 Documentation/power/powercap/dtpm.rst
+ create mode 100644 drivers/powercap/dtpm.c
+ create mode 100644 drivers/powercap/dtpm_cpu.c
+ create mode 100644 include/linux/dtpm.h
 
-On this specific case, the saa7134 driver was split into multiple
-drivers, depending on the PCI sub-interfaces found on some complex
-media devices. IMO, it doesn't make any sense to document such
-symbols, as they aren't meant to be used outside saa7134 sub-drivers.
-
--
-
-As noticed on its comments, this script is not perfect. It tries to
-avoid reporting false-positives by not processing files that it
-can't find all includes and by skipping non-functions.
-
-Yet, it can take a long time for it to parse the entire Kernel
-tree. So, at least on its current state, I don't think it would
-be a good idea to add it to the default build.
-
-Feel free to either take it as-is, to improve it, or to ignore ;-)
-
-Thanks,
-Mauro
+--
+2.17.1
