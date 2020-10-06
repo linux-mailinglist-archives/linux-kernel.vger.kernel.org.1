@@ -2,152 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4722852DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD7D2852DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbgJFUER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:04:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725962AbgJFUEQ (ORCPT
+        id S1727234AbgJFUEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgJFUEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:04:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602014654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nAsLvgW1nDOTPpn1U85aTp/X7z+VtDo99/tckF5jXNI=;
-        b=iGvuAtojmV7k69MejaC4O5HTbnKN7dN9I6xPrjq3AgVn7746bb1zdtFsaAbCmcE5bBZV+W
-        2s56X+TtcRjMyUWkdXcPFBjXrnxltr6EjpuoGu0hrDSl1nJgWP8oDF4VoscwrYN67bPgkk
-        T7ICsQAJIIR3Lh8AUHAwwRF3WRhbXcs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-r50GUUy5MiC9VEv4faOv2Q-1; Tue, 06 Oct 2020 16:04:10 -0400
-X-MC-Unique: r50GUUy5MiC9VEv4faOv2Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DA58804018;
-        Tue,  6 Oct 2020 20:04:08 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 767315D9CD;
-        Tue,  6 Oct 2020 20:03:50 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 16:03:47 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
-        containers@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
-        simo@redhat.com, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>, aris@redhat.com
-Subject: Re: [PATCH ghak90 V9 11/13] audit: contid check descendancy and
- nesting
-Message-ID: <20201006200347.GI2882171@madcap2.tricolour.ca>
-References: <cover.1593198710.git.rgb@redhat.com>
- <01229b93733d9baf6ac9bb0cc243eeb08ad579cd.1593198710.git.rgb@redhat.com>
- <CAHC9VhT6cLxxws_pYWcL=mWe786xPoTTFfPZ1=P4hx4V3nytXA@mail.gmail.com>
- <20200807171025.523i2sxfyfl7dfjy@madcap2.tricolour.ca>
- <CAHC9VhQ3MVUY8Zs4GNXdaqhiPJBzHW_YcCe=DghAgo7g6yrNBw@mail.gmail.com>
+        Tue, 6 Oct 2020 16:04:54 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF2DC061755;
+        Tue,  6 Oct 2020 13:04:54 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g12so9414983wrp.10;
+        Tue, 06 Oct 2020 13:04:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tRQODXhkyMhqAiuDJZNlm3kG1yqPZ4LhCnBerXa8fy0=;
+        b=td8u0u1o74xCYga/sRU1+8vHTRNjSWwKN2PLZ90aKdgGqbCJ1hrq6btcIWp7yow+Xc
+         CeIAgoVj0nFYVeb1EXO9pHuZQuJhr1uf2+DkNODPw3btErnMMOkJNGPoq38y1Fcvdfli
+         JHzAP33DLHlyGK65pmfkbgXg8o+USgzJShbel+je1NsEcmgGGm6yA41xq1d1jeB1X5E/
+         Jq0kurRhzNpBdRmly3pB1AqsvukzGZgaXU+Ql8w7B19vNmHGNHBdSSng6V/ukARoGoBP
+         TsKiK9nRKjh8NYd1RIfhgyzieuo6uVwrVNnBUlNNGnQvLhyL15WYeUCHpKf2JjGh7f5s
+         1ZUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tRQODXhkyMhqAiuDJZNlm3kG1yqPZ4LhCnBerXa8fy0=;
+        b=RRng9c7fJrPjLLCbs+WSh9wQjBWmXNFC+hdxpy1WZ8ucD27gZxvT91m3Vf/a13tVdH
+         ONW32Tcb9jFPhoqSNOF5K03brrSC6srY9xXe3KEgSeCwqBGf3gOi0NlAZRV9WbyS83Bg
+         f71lOZIydSIAbIhikQmAImu1RCzjuNZ+JaF9PqQyTt9Un0iAGH4zENzcu2HZB+bKwWhw
+         49wGCA04XV2K9bjWqFAA8vaz8T48N/F3thznivq7b6RiRIMFmDTONjeSo26MioRu2y0q
+         c8aO5vvtV7Rs6XJOsDbGS8ytQCURCyncgqzvLjXz4o8LrA0acPKOekAbHGZnesvdG4Ci
+         O7cQ==
+X-Gm-Message-State: AOAM533y7Oun6iFiRMyfIOhAhlDbDS9BNqTTHcIsNsXEpNZ5O/GnLMV2
+        JD7gJ/9W/4kO1vAqeUskGQ+5N4eWqs8l7FcCP7k=
+X-Google-Smtp-Source: ABdhPJz6PyYjI7Gkv9sBVYYCB7DNANoIBBXN/TCg8JGdbEBBV9HtFkEtzpKF789VkS2hz0b5+WA85x+C1C1okZzorps=
+X-Received: by 2002:a5d:4987:: with SMTP id r7mr6412093wrq.327.1602014692564;
+ Tue, 06 Oct 2020 13:04:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhQ3MVUY8Zs4GNXdaqhiPJBzHW_YcCe=DghAgo7g6yrNBw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200930211723.3028059-1-robdclark@gmail.com> <20201002110105.e56qrvzoqfioi4hs@e107158-lin.cambridge.arm.com>
+ <CAF6AEGvWMvZuy7CcGhzUSbwGtEkrNkzWHu_BN1cbdBJdZtvevA@mail.gmail.com>
+ <20201005150024.mchfdtd62rlkuh4s@e107158-lin.cambridge.arm.com>
+ <CAF6AEGs7NmCPyLdg+gg5jTTe-wgi2myRQ80tum6odv6tLLQ0DQ@mail.gmail.com> <20201006105918.v3xspb6xasjyy5ky@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20201006105918.v3xspb6xasjyy5ky@e107158-lin.cambridge.arm.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 6 Oct 2020 13:04:40 -0700
+Message-ID: <CAF6AEGu_V_EGcPQ+F_Z73cMCAcFPoM-GuiGWUPr+=6GD4Om=zg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-21 16:13, Paul Moore wrote:
-> On Fri, Aug 7, 2020 at 1:10 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > On 2020-07-05 11:11, Paul Moore wrote:
-> > > On Sat, Jun 27, 2020 at 9:23 AM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > > Require the target task to be a descendant of the container
-> > > > orchestrator/engine.
-> 
-> If you want to get formal about this, you need to define "target" in
-> the sentence above.  Target of what?
+On Tue, Oct 6, 2020 at 3:59 AM Qais Yousef <qais.yousef@arm.com> wrote:
+>
+> On 10/05/20 16:24, Rob Clark wrote:
+>
+> [...]
+>
+> > > RT planning and partitioning is not easy task for sure. You might want to
+> > > consider using affinities too to get stronger guarantees for some tasks and
+> > > prevent cross-talking.
+> >
+> > There is some cgroup stuff that is pinning SF and some other stuff to
+> > the small cores, fwiw.. I think the reasoning is that they shouldn't
+> > be doing anything heavy enough to need the big cores.
+>
+> Ah, so you're on big.LITTLE type of system. I have done some work which enables
+> biasing RT tasks towards big cores and control the default boost value if you
+> have util_clamp and schedutil enabled. You can use util_clamp in general to
+> help with DVFS related response time delays.
+>
+> I haven't done any work to try our best to pick a small core first but fallback
+> to big if there's no other alternative.
+>
+> It'd be interesting to know how often you end up on a big core if you remove
+> the affinity. The RT scheduler picks the first cpu in the lowest priority mask.
+> So it should have this bias towards picking smaller cores first if they're
+> in the lower priority mask (ie: not running higher priority RT tasks).
 
-The target is the task having its audit container identifier modified by
-the orchestrator current task.
+fwiw, the issue I'm looking at is actually at the opposite end of the
+spectrum, less demanding apps that let cpus throttle down to low
+OPPs.. which stretches out the time taken at each step in the path
+towards screen (which seems to improve the odds that we hit priority
+inversion scenarios with SCHED_FIFO things stomping on important CFS
+things)
 
-> FWIW, I read the above to basically mean that a task can only set the
-> audit container ID of processes which are beneath it in the "process
-> tree" where the "process tree" is defined as the relationship between
-> a parent and children processes such that the children processes are
-> branches below the parent process.
+There is a *big* difference in # of cpu cycles per frame between
+highest and lowest OPP..
 
-Yes.
+BR,
+-R
 
-> I have no problem with that, with the understanding that nesting
-> complicates it somewhat.  For example, this isn't true when one of the
-> children is a nested orchestrator, is it?
-
-It should still be true if that child is a nested orchestrator that has
-not yet spawned any children or threads (or they have all died off).
-
-It does get more complicated when we consider the scenario outlined
-below about perceived layer violations...
-
-> > > > You would only change the audit container ID from one set or inherited
-> > > > value to another if you were nesting containers.
-> 
-> I thought we decided we were going to allow an orchestrator to move a
-> process between audit container IDs, yes?  no?
-
-We did?  I don't remember anything about that.  Has this been requested?
-This seems to violate the rule that we can't change the audit container
-identifier once it has been set (other than nesting).  Can you suggest a
-use case?
-
-> > > > If changing the contid, the container orchestrator/engine must be a
-> > > > descendant and not same orchestrator as the one that set it so it is not
-> > > > possible to change the contid of another orchestrator's container.
-> 
-> Try rephrasing the above please, it isn't clear to me what you are
-> trying to say.
-
-This is harder than I expected to rephrase...  It also makes it clear
-that there are some scenarios that have not been considered that may
-need to be restricted.
-
-Orchestrator A spawned task B which is itself an orchestrator without
-chidren yet.  Orchestrator A sets the audit container identifier of B.
-Neither A, nor B, nor any other child of A (or any of their
-descendants), nor any orchestrator outside the tree of A (uncles, aunts
-and cousins are outside), can change the audit container identifier of
-B.
-
-Orchestrator B spawns task C.  Here's where it gets tricky.  It seems
-like a layer violation for B to spawn a child C and have A reach over B
-to set the audit container identifier of C, especially if B is also an
-orchestrator.  This all will be especially hard to police if we don't
-limit the ability of an orchestrator task to set an audit container
-identifier to that orchestrator's immediate children, only once.
-
-> > Are we able to agree on the premises above?  Is anything asserted that
-> > should not be and is there anything missing?
-> 
-> See above.
-> 
-> If you want to go back to the definitions/assumptions stage, it
-> probably isn't worth worrying about the other comments until we get
-> the above sorted.
-
-I don't want to.  I'm trying to confirm that we are on the same page.
-
-> paul moore
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+> So unless you absolutely don't want any RT tasks on a big cores, it'd be worth
+> removing this affinity and check the percentage of time you spend on little
+> cores. This should help with your worst case scenario as you make more cpus
+> available.
+>
+> > > > run ASAP once fences are signalled, and vblank_work to run at a
+> > > > slightly higher priority still.  But the correct choice for priorities
+> > > > here depends on what userspace is using, it all needs to fit together
+> > > > properly.
+> > >
+> > > By userspace here I think you mean none display pipeline related RT tasks that
+> > > you need to coexit with and could still disrupt your pipeline?
+> >
+> > I mean, commit_work should be higher priority than the other (display
+> > related) RT tasks.  But the kernel doesn't know what those priorities
+> > are.
+>
+> So if you set commit_work to sched_set_fifo(), it'd be at a reasonably high
+> priority (50) by default. Which means you just need to manage your SF
+> priorities without having to change commit_work priority itself?
+>
+> >
+> > > Using RT on Gerneral Purpose System is hard for sure. One of the major
+> > > challenge is that there's no admin that has full view of the system to do
+> > > proper RT planning.
+> > >
+> > > We need proper RT balancer daemon that helps partitioning the system for
+> > > multiple RT apps on these systems..
+> > >
+> > > >
+> > > > >
+> > > > > I do appreciate that maybe some of these tasks have varying requirements during
+> > > > > their life time. e.g: they have RT property during specific critical section
+> > > > > but otherwise are CFS tasks. I think the UI thread in Android behaves like
+> > > > > that.
+> > > > >
+> > > > > It's worth IMO trying that approach I pointed out earlier to see if making RT
+> > > > > try to pick an idle CPU rather than preempt CFS helps. Not sure if it'd be
+> > > > > accepted but IMHO it's a better direction to consider and discuss.
+> > > >
+> > > > The problem I was seeing was actually the opposite..  commit_work
+> > > > becomes runnable (fences signalled) but doesn't get a chance to run
+> > > > because a SCHED_FIFO SF thread is running.  (Maybe I misunderstood and
+> > > > you're approach would help this case too?)
+> > >
+> > > Ah okay. Sorry I got it the wrong way around for some reason. I thought this
+> > > task is preempting other CFS-based pipelined tasks.
+> > >
+> > > So your system seems to be overcomitted. Is SF short for SufraceFlinger? Under
+> > > what scenarios do you have many SurfaceFlinger tasks? On Android I remember
+> > > seeing they have priority of 1 or 2.
+> >
+> > yeah, SF==SurfaceFlinger, and yeah, 1 and 2..
+> >
+> > > sched_set_fifo() will use priority 50. If you set all your pipeline tasks
+> > > to this priority, what happens?
+> >
+> > I think this would work.. drm/msm doesn't use vblank work, so I
+> > wouldn't really have problems with commit_work preempting vblank_work.
+> > But I think the best option (and to handle the case if android changes
+> > the RT priorties around in the future) is to let userspace set the
+> > priorities.
+>
+> I don't really mind. But it seems better for me if we know that two kernel
+> threads need to have a specific relative priorities to each others then to
+> handle this in the kernel properly. Userspace will only need then to worry
+> about managing its *own* priorities relative to that.
+>
+> Just seen Peter suggesting in another email to use SCHED_DEADLINE for vblank
+> work. Which I think achieves the above if commit_work uses sched_set_fifo().
+>
+> >
+> > > >
+> > > > > Or maybe you can wrap userspace pipeline critical section lock such that any
+> > > > > task holding it will automatically be promoted to SCHED_FIFO and then demoted
+> > > > > to CFS once it releases it.
+> > > >
+> > > > The SCHED_DEADLINE + token passing approach that the lwn article
+> > > > mentioned sounds interesting, if that eventually becomes possible.
+> > > > But doesn't really help today..
+> > >
+> > > We were present in the room with Alessio when he gave that talk :-)
+> > >
+> > > You might have seen Valentin's talk in LPC where he's trying to get
+> > > proxy-execution into shape. Which is a pre-requisite to enable using of
+> > > SCHED_DEADLINE for these scenarios. IIRC it should allow all dependent tasks to
+> > > run from the context of the deadline task during the display pipeline critical
+> > > section.
+> > >
+> > > By the way, do you have issues with SoftIrqs delaying your RT tasks execution
+> > > time?
+> >
+> > I don't *think* so, but I'm not 100% sure if they are showing up in
+>
+> If you ever get a chance to run a high network throughput test, it might help
+> to see if softirqs are affecting you. I know Android has issues with this under
+> some circumstances.
+>
+> > traces.  So far it seems like SF stomping on commit_work.  (There is
+> > the added complication that there are some chrome gpu-process tasks in
+> > between SF and the display, including CrGpuMain (which really doesn't
+> > want to be SCHED_FIFO when executing gl commands on behalf of
+> > something unrelated to the compositor.. the deadline approach, IIUC,
+> > might be the better option eventually for this?)
+>
+> If you meant sched_deadline + token approach, then yeah I think it'd be better.
+> But as you said, we can't do this yet :/
+>
+> But as Peter pointed out, this doesn't mean you can't use SCHED_DEADLINE at all
+> if it does make sense.
+>
+> Thanks
+>
+> --
+> Qais Yousef
