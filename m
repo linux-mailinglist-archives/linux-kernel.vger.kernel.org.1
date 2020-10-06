@@ -2,95 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F4D284585
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85BA28458A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgJFFl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 01:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
+        id S1727002AbgJFFmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 01:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgJFFl2 (ORCPT
+        with ESMTP id S1726973AbgJFFmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 01:41:28 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AB0C0613A7;
-        Mon,  5 Oct 2020 22:41:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C55tY0nfDz9sSG;
-        Tue,  6 Oct 2020 16:41:25 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601962886;
-        bh=ikESFfcRC4tBYcPMUJ4Xq5Q0lFmdUMPSxYua/LbJa44=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dHU5TN+DvnimAIYm1L3ulcbdQX9TWFquAkSuLpofMuXMU+4LIYx7GWZW9E+UgROmS
-         Zo5zUGsOcIhqWc5NEwxbLNE5RbqwfcUwbUP9LfM2pxVc62uVX7Y1tHEKUJ1+iCMsHG
-         VG8KAl8DTkNU8piFK1DZOMNvtR3DTnIejUysP2/xeWmJlgLJAnu3EUTmA6BDYKXw3Y
-         LGaZ+eqolXh3sZ0IAszC5P24DfF190eqHMioFykMHhsMPt5CTmtuZ5bXFfIcTSLQ95
-         Xg2p9n690queOiIfD50fY/a28CuTd4zOnWAhVFpO/GOvRfG14U3+V+ec6VFVS8ek/O
-         GoL8fRFQYnqGQ==
-Date:   Tue, 6 Oct 2020 16:41:24 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20201006164124.1dfa2543@canb.auug.org.au>
-In-Reply-To: <20201006051301.GA5917@lst.de>
-References: <20201006145847.14093e47@canb.auug.org.au>
-        <20201006051301.GA5917@lst.de>
+        Tue, 6 Oct 2020 01:42:31 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6A5C0613AB
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 22:42:31 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id i3so1068574pjz.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 22:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FYOEybxQ9Y8nUxVZmzLLg+Qyso2tjlpbGNthFRqblLc=;
+        b=scAXD8YuBk8j/NF0iYDdCeaAVj2lJqU4ekQ7XmxKGRZD9n7rlAL/7uG23DDE1fcZ56
+         zF72mU8P6EdMfXizzEbowAVRT7aqB90B0ZPahldWPyAERYWd6msUiWvIw5u5I68GC10s
+         2mfO8dqRM6oWZLB0Q6RNjtouVvMzAMtCqHytHKbKwrjH25Far6tK8oMk2FL/+Ytm6yFo
+         ix24Oh/3R7FZgjcOmnnbZhO2Rnj4pwkEjTGIWiz4UAhFCmHcKJq5fJPHDGVhMb52+bja
+         GRW+sJiWWq/RfS6N9j6fS0MlegpQS8J4O6R0p/6fHQbNSKo6Dg2SOD+ESIa+qx/GxTp7
+         QQLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FYOEybxQ9Y8nUxVZmzLLg+Qyso2tjlpbGNthFRqblLc=;
+        b=YiIYJehWmrpTFy1vmCsTwCTpWNoNbFqV/qk6GTKmBEbVs9OdHNyYZoQojpw2IjbsVv
+         PdJ88TRLHISgbv2cyQ8pLDrMhXbk2YJvbCFYe5nWHHharLmEBWl8EiYA8Wfj17JXiyj+
+         ihf3+LPexANGdjy+3R9gIzOBVHr9FaBrU50N9G+/Tjcdq+hFY3sD2XRmBBvzWavXeTAI
+         TljL1Lnz5y3669rUaetcW3RiWtdEAZdyGHoUTABFtX4YpvgnGeBQ8wwTuY4TCFx6CV3F
+         3APxJFaF0Dh6rlqnc1PkdGA+71o87CyvpyvoHjU2GH0x7sdaosQhB1/RpPYWrx3BDi8B
+         1O8g==
+X-Gm-Message-State: AOAM530h2puTsVKS7s2SpHk8K/zBILjkIjvXkZTjZ3MUqo5GK4A7Nr/B
+        qwPr+AYC0WmVeinEqRmU1yVsyg==
+X-Google-Smtp-Source: ABdhPJzo+T1F54fl8q16F3SuWBffglk48PEytQu7/wpxM8oR5iYvbOQGglf6EbVoa0EICQ893qG+lw==
+X-Received: by 2002:a17:90b:950:: with SMTP id dw16mr2661711pjb.200.1601962950652;
+        Mon, 05 Oct 2020 22:42:30 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id d145sm2005503pfd.136.2020.10.05.22.42.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Oct 2020 22:42:29 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 11:12:28 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 3/4] dt-bindings: Explicitly allow additional properties
+ in board/SoC schemas
+Message-ID: <20201006054228.ho3ajzfgpiew32ft@vireshk-i7>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-4-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tvQ9uHJiyurvGljcUYc8aAR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005183830.486085-4-robh@kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tvQ9uHJiyurvGljcUYc8aAR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 05-10-20, 13:38, Rob Herring wrote:
+> In order to add meta-schema checks for additional/unevaluatedProperties
+> being present, all schema need to make this explicit. As the top-level
+> board/SoC schemas always have additional properties, add
+> 'additionalProperties: true'.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/arm/spear.yaml               | 3 +++
 
-Hi Christoph,
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-On Tue, 6 Oct 2020 07:13:01 +0200 Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Oct 06, 2020 at 02:58:47PM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > After merging the net-next tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this: =20
->=20
-> It actually doesn't need that or the two other internal headers.
-> Bjoern has a fixed, and it was supposed to be queued up according to
-> patchwork.
-
-Yeah, it is in the bpf-next tree but not merged into the net-next tree
-yet.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/tvQ9uHJiyurvGljcUYc8aAR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98A4QACgkQAVBC80lX
-0GwcdAf/V8X39M331bbePWerqdE8ffZwC8FwZXh0cn5toFHc7v0ALoA/jBx57+DT
-eNGStnkdrtpL7ZRxQZy2VvLujgYV+vB6Yk6qpl1Rhj0N7Qc6b4li8m9W/b425rCG
-DQ2UwMNklanLhHhdnQmnDanVNsGAgU8gsZZxIizdnB1GpDw1J3uvg6lkjUBNFGOT
-RnIqklYjFEL3fnHrbziJGW251tSbsTwnWhcUIm2W3eaL+jC/d1Equg0ZTTQ/ugpZ
-pKkE66s5jrY1hkX04cwr2aT4WGnQGeYxmKin5G8AI8GHZVpdNtInSNRKKX7lrRs1
-1O7hmiHS2H+V+LI1qmCtFH6ziGVbDQ==
-=ysHf
------END PGP SIGNATURE-----
-
---Sig_/tvQ9uHJiyurvGljcUYc8aAR--
+-- 
+viresh
