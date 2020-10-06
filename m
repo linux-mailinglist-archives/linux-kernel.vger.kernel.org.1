@@ -2,123 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386FD284A5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E32D284A66
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgJFKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:35:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35832 "EHLO mail.kernel.org"
+        id S1726000AbgJFKjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:39:12 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45871 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFKfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:35:45 -0400
-Received: from localhost (deu95-h05-176-171-255-236.dsl.sta.abo.bbox.fr [176.171.255.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725891AbgJFKjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:39:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 902922080A;
-        Tue,  6 Oct 2020 10:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601980544;
-        bh=iZXnIWy2l9HS4uSNbQ+gW7Bpg/P6i/Lo3Y/xZuANNPI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IzBvH0x38Q/wYJTIs5xaQFknuuvw6tcwd+CJNR1lm5ErfYidSkQjB904MEqA24RDp
-         tWuIQrtdCJMR7a62G9Nlp4ziIGdX717ojn/gcpR91sYQmkZ8UIA2ZkS3hbBkc0HrHC
-         p9Drw9nndIDRv0SXKKYRaOh3zKeZCO/pdThg+b38=
-Date:   Tue, 6 Oct 2020 12:35:41 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     Alex Belits <abelits@marvell.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "will@kernel.org" <will@kernel.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH v4 03/13] task_isolation: userspace hard
- isolation from kernel
-Message-ID: <20201006103541.GA31325@lothringen>
-References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
- <b18546567a2ed61073ae86f2d9945257ab285dfa.camel@marvell.com>
- <20201001135640.GA1748@lothringen>
- <7e54b3c5e0d4c91eb64f2dd1583dd687bc34757e.camel@marvell.com>
- <20201004231404.GA66364@lothringen>
- <d0289bb9-cc10-9e64-f8ac-b4d252b424b8@redhat.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5DV36053z9ryj;
+        Tue,  6 Oct 2020 21:39:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601980748;
+        bh=88JnpQ7C+gTPN1c0ndqW0e0KCBQd0VM16IPzZbRxXPo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Wm0KbNw5+u9sHKyC5Qs6bZAvuZS9Ybh1uu/74QvtQ5SxJewQ2C/LU+JcArcUI8oJr
+         QxZptoPonhHfDqvic4+sghrMUTdsnKYKy264fMc4uHEV60cyi7mOAzmKp7WkOAo8tm
+         zzLeyq4nK1Ez0x6ShcSja5PpCXyjKozLEXnNZRXm4FiW8enLhNFYvM6zrpdaf2cNPh
+         R4cy67ANoBHm6TzfU0KEWCwomwFdAcTj0Kw+Orx1RE2THWIRbZ8awccUbJFF/wHzdh
+         1dNUb4ic++lBq1rOCdvH+B/KHCHHkYf4lSvgVBkMSUXb/0Cx1FevlrgRFRRe7r8AKk
+         N8+EMwDMHTX5A==
+Date:   Tue, 6 Oct 2020 21:39:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul@pwsan.com>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: manual merge of the akpm-current tree with the risc-v
+ tree
+Message-ID: <20201006213906.08554ae2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0289bb9-cc10-9e64-f8ac-b4d252b424b8@redhat.com>
+Content-Type: multipart/signed; boundary="Sig_/QuaTwP8UxkmkDMdTUVhTZAO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 02:52:49PM -0400, Nitesh Narayan Lal wrote:
-> 
-> On 10/4/20 7:14 PM, Frederic Weisbecker wrote:
-> > On Sun, Oct 04, 2020 at 02:44:39PM +0000, Alex Belits wrote:
-> >> On Thu, 2020-10-01 at 15:56 +0200, Frederic Weisbecker wrote:
-> >>> External Email
-> >>>
-> >>> -------------------------------------------------------------------
-> >>> ---
-> >>> On Wed, Jul 22, 2020 at 02:49:49PM +0000, Alex Belits wrote:
-> >>>> +/*
-> >>>> + * Description of the last two tasks that ran isolated on a given
-> >>>> CPU.
-> >>>> + * This is intended only for messages about isolation breaking. We
-> >>>> + * don't want any references to actual task while accessing this
-> >>>> from
-> >>>> + * CPU that caused isolation breaking -- we know nothing about
-> >>>> timing
-> >>>> + * and don't want to use locking or RCU.
-> >>>> + */
-> >>>> +struct isol_task_desc {
-> >>>> +	atomic_t curr_index;
-> >>>> +	atomic_t curr_index_wr;
-> >>>> +	bool	warned[2];
-> >>>> +	pid_t	pid[2];
-> >>>> +	pid_t	tgid[2];
-> >>>> +	char	comm[2][TASK_COMM_LEN];
-> >>>> +};
-> >>>> +static DEFINE_PER_CPU(struct isol_task_desc, isol_task_descs);
-> >>> So that's quite a huge patch that would have needed to be split up.
-> >>> Especially this tracing engine.
-> >>>
-> >>> Speaking of which, I agree with Thomas that it's unnecessary. It's
-> >>> too much
-> >>> code and complexity. We can use the existing trace events and perform
-> >>> the
-> >>> analysis from userspace to find the source of the disturbance.
-> >> The idea behind this is that isolation breaking events are supposed to
-> >> be known to the applications while applications run normally, and they
-> >> should not require any analysis or human intervention to be handled.
-> > Sure but you can use trace events for that. Just trace interrupts, workqueues,
-> > timers, syscalls, exceptions and scheduler events and you get all the local
-> > disturbance. You might want to tune a few filters but that's pretty much it.
-> >
-> > As for the source of the disturbances, if you really need that information,
-> > you can trace the workqueue and timer queue events and just filter those that
-> > target your isolated CPUs.
-> >
-> 
-> I agree that we can do all those things with tracing.
-> However, IMHO having a simplified logging mechanism to gather the source of
-> violation may help in reducing the manual effort.
-> 
-> Although, I am not sure how easy will it be to maintain such an interface
-> over time.
+--Sig_/QuaTwP8UxkmkDMdTUVhTZAO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The thing is: tracing is your simplified logging mechanism here. You can achieve
-the same in userspace with _way_ less code, no race, and you can do it in
-bash.
+Hi all,
 
-Thanks.
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
+  arch/riscv/mm/init.c
 
+between commit:
 
+  c29c38fa2a8b ("RISC-V: Remove any memblock representing unusable memory a=
+rea")
+
+from the risc-v tree and commits:
+
+  3520eeb79142 ("arch, drivers: replace for_each_membock() with for_each_me=
+m_range()")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+It also looks like there is a bug in that risc-v tree patch: mem_start
+is used uninitialised in setup_bootmem().
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/riscv/mm/init.c
+index 812a48c91a95,bc72bb6b5fe0..000000000000
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@@ -152,20 -141,25 +152,20 @@@ disable
+  }
+  #endif /* CONFIG_BLK_DEV_INITRD */
+ =20
+ -static phys_addr_t dtb_early_pa __initdata;
+ -
+  void __init setup_bootmem(void)
+  {
+- 	struct memblock_region *reg;
+- 	phys_addr_t mem_start, end =3D 0;
+ -	phys_addr_t mem_size =3D 0;
+ -	phys_addr_t total_mem =3D 0;
++ 	phys_addr_t mem_start, start, end =3D 0;
+  	phys_addr_t vmlinux_end =3D __pa_symbol(&_end);
+  	phys_addr_t vmlinux_start =3D __pa_symbol(&_start);
++ 	u64 i;
+ =20
+  	/* Find the memory region containing the kernel */
+- 	for_each_memblock(memory, reg) {
+- 		end =3D reg->base + reg->size;
++ 	for_each_mem_range(i, &start, &end) {
++ 		phys_addr_t size =3D end - start;
+ -		if (!total_mem)
+ +		if (!mem_start)
+- 			mem_start =3D reg->base;
+- 		if (reg->base <=3D vmlinux_start && vmlinux_end <=3D end)
+- 			BUG_ON(reg->size =3D=3D 0);
++ 			mem_start =3D start;
++ 		if (start <=3D vmlinux_start && vmlinux_end <=3D end)
++ 			BUG_ON(size =3D=3D 0);
+ -		total_mem =3D total_mem + size;
+  	}
+ =20
+  	/*
+@@@ -542,18 -455,11 +533,18 @@@ static void __init setup_vm_final(void
+  {
+  	uintptr_t va, map_size;
+  	phys_addr_t pa, start, end;
+- 	struct memblock_region *reg;
++ 	u64 i;
+ =20
+ -	/* Set mmu_enabled flag */
+ -	mmu_enabled =3D true;
+ -
+ +	/**
+ +	 * MMU is enabled at this point. But page table setup is not complete ye=
+t.
+ +	 * fixmap page table alloc functions should be used at this point
+ +	 */
+ +	pt_ops.alloc_pte =3D alloc_pte_fixmap;
+ +	pt_ops.get_pte_virt =3D get_pte_virt_fixmap;
+ +#ifndef __PAGETABLE_PMD_FOLDED
+ +	pt_ops.alloc_pmd =3D alloc_pmd_fixmap;
+ +	pt_ops.get_pmd_virt =3D get_pmd_virt_fixmap;
+ +#endif
+  	/* Setup swapper PGD for fixmap */
+  	create_pgd_mapping(swapper_pg_dir, FIXADDR_START,
+  			   __pa_symbol(fixmap_pgd_next),
+
+--Sig_/QuaTwP8UxkmkDMdTUVhTZAO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98SUoACgkQAVBC80lX
+0GzL2Qf6A/4fOgFUcUt8QAulXpyS4Qe60EepexdyNkCLlcrctE3HdI4fZNUxPrge
+ch84X2RyXhM1boNXoUhDOXQWuorreWkzJai75GSE/1G6o4rymjLI5YwmHoIWRzj+
+jhpIWxtPfVEmBfOP6duNry+g0le+PEU5HcOA5AgLO9Qaf2d/l5VbtyZE+OKMyHmD
+p1QijUc7H/9XRiC4TsifNFKm7WN8QMZGcw6ZU3FNNX7YZYVze4YxDIVj2zyKFZGk
+/UTw8nkRPVTcgxcYR02UKKDIXuPtaU3i20uOOPngklVDaCbztvbbiWk9O0P8SU+E
+xXYOn1a+/X5qunRCnyp24HiOWqKpeg==
+=oWC7
+-----END PGP SIGNATURE-----
+
+--Sig_/QuaTwP8UxkmkDMdTUVhTZAO--
