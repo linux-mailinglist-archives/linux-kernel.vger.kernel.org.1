@@ -2,288 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB61028534B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9430628534D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbgJFUjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36202 "EHLO
+        id S1727351AbgJFUjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727166AbgJFUjE (ORCPT
+        with ESMTP id S1727166AbgJFUjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:39:04 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BDDC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:39:04 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y20so14473399iod.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aP26k3iPNr1VpqvkggYcdxciq5A3h6k+A8ZkkiVk+vE=;
-        b=ZS2TGe3M6BM2pCGvzZsvuQhQScVUluOJsnRH1r5i7A7P6n2UP7siMbluTKbkh4+efU
-         UbqSZZ+fZQFwAS4BzVTQ+ar++o7dmdlQJ22yy7Dy/lTn9yWkfYz7e1qZyE9eKgBE3HSs
-         q2vSZxGTu1hN+p8wF+jDAJ+KtO9L8yLq2iLt8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aP26k3iPNr1VpqvkggYcdxciq5A3h6k+A8ZkkiVk+vE=;
-        b=K/9eWk79bSgY9MFlOC6tStORuYau50huW7+8hDajXgoV8jUPjNbK7waxXHPIylC4i1
-         Gs/ZFRzSziVpiEuJguwabEtitMkFhVIu4mHdb08OheDWkRuxAK6vNaRhyIpxT750cFzJ
-         ENzNCgPrETfCJkkTwlKiK8vaDmf60LCJxSo+URCfRZ4Ag3pysozmneueSi+30Q8nShAi
-         nnvn5+2CWSvDv8wi0owixrvYP6r+1zg6bmr3XtxK1TiwWZ2rAAxdJbJnTlaQ/YiLuW/S
-         IrMkmtqh0O4Maztsi+yZ1ZHVE4EwmPmkjZpXix+FbkpNOxvfRd1zLC4X6Y/6RBQt2J2D
-         p4zw==
-X-Gm-Message-State: AOAM5308IjC4ZYCXfNn6p6jTgxwNy5gpO0sVr2K+usUxwl+ARx+O6GUo
-        27gOuwzYwMKyM6yXHGCXbdNmPgE0veaZMJtqdXqB
-X-Google-Smtp-Source: ABdhPJw+FN3XoT0rxMl6Ve49NN7RdklCAzgoNyZ08hcLaNGIRm+nAoOXgbR9257x0DX6r58+AhI1DeDfnRtTGG/ffQA=
-X-Received: by 2002:a5d:9842:: with SMTP id p2mr2700429ios.113.1602016743286;
- Tue, 06 Oct 2020 13:39:03 -0700 (PDT)
+        Tue, 6 Oct 2020 16:39:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625DEC061755;
+        Tue,  6 Oct 2020 13:39:22 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602016760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W13RXkAwMTllQhqWm5cq5BZE5nH6uHmGVcHK9GSn3ns=;
+        b=y+lasBvaLUkuLHab5bkpdFiFeUtzZZkMAe0MxPseafS75HZSeZdZN+kymi6dFFQhKZE8VW
+        qc4YvcR4WDd1//cfrfaBnkbFypqZk/QtRqz9DZvsgiv7QXhlnycxcB2xYbujy3EWoOOElY
+        q69FX0eoD272W8M4mxPKAIOLXvd7sGMUJlPaA/xQfAoNdaNCVTQNkJC0J3x4FtpMJBhnq8
+        Os8tzxF592SL6LmG6y8BBUPyOy70MBixUpq551uCnXoajQx0Cc6pZV5/R2R+NwWupaF01r
+        ngTIFTL+iP5AAP2JTZh0eYTc2Nyhf/lod73UHMtQOt9GWFeG7lOyOgueN3WvXg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602016760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W13RXkAwMTllQhqWm5cq5BZE5nH6uHmGVcHK9GSn3ns=;
+        b=Kdu9Uo5QYf3A/MyHqKY64fPOxUCAHdJsz+vmpNmY3CnKUZHAh/QD3Mj/dOOk2nryIArRRE
+        eYsAfpW+lOuFYvBA==
+To:     Marc Zyngier <maz@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Venkat Reddy Talla <vreddytalla@nvidia.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 1/4] genirq/irqdomain: Allow partial trimming of irq_data hierarchy
+In-Reply-To: <20201006101137.1393797-2-maz@kernel.org>
+References: <20201006101137.1393797-1-maz@kernel.org> <20201006101137.1393797-2-maz@kernel.org>
+Date:   Tue, 06 Oct 2020 22:39:20 +0200
+Message-ID: <87eemb6qdj.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
- <1593266228-61125-2-git-send-email-guoren@kernel.org> <20200911204512.GA2705@aurel32.net>
- <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
- <20200914103836.GB2705@aurel32.net> <87lfgzeidk.fsf@igel.home>
- <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
- <CAOnJCUJhb2K89pRETbfTJ=5jHQhWfyfrOUu8zOE77j+id6OpSA@mail.gmail.com> <CAJF2gTRc-RUBiQ=ZE7BT8tABHu3=Bcmuc+ADyBLZ7r7fozwahg@mail.gmail.com>
-In-Reply-To: <CAJF2gTRc-RUBiQ=ZE7BT8tABHu3=Bcmuc+ADyBLZ7r7fozwahg@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 6 Oct 2020 13:38:52 -0700
-Message-ID: <CAOnJCUKi-bzEvYWw3BxBbGe6ODHEzdjTWsfrmS54qEk1i1Kr8Q@mail.gmail.com>
-Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Hu <nickhu@andestech.com>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 9:46 AM Guo Ren <guoren@kernel.org> wrote:
+On Tue, Oct 06 2020 at 11:11, Marc Zyngier wrote:
+> It appears that some HW is ugly enough that not all the interrupts
+> connected to a particular interrupt controller end up with the same
+> hierarchy repth (some of them are terminated early). This leaves
+
+  depth?
+
+> the irqchip hacker with only two choices, both equally bad:
 >
-> On Tue, Oct 6, 2020 at 3:14 AM Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > On Thu, Sep 24, 2020 at 9:19 AM Guo Ren <guoren@kernel.org> wrote:
-> > >
-> > > How about this, revert the commit and don't free INIT_DATA_SECTION. I
-> > > think the solution is safe enough, but wast a little memory.
-> > >
-> > > diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> > > index f3586e3..34d00d9 100644
-> > > --- a/arch/riscv/kernel/vmlinux.lds.S
-> > > +++ b/arch/riscv/kernel/vmlinux.lds.S
-> > > @@ -22,13 +22,11 @@ SECTIONS
-> > >         /* Beginning of code and text segment */
-> > >         . = LOAD_OFFSET;
-> > >         _start = .;
-> > > -       _stext = .;
-> > >         HEAD_TEXT_SECTION
-> > >         . = ALIGN(PAGE_SIZE);
-> > >
-> > >         __init_begin = .;
-> > >         INIT_TEXT_SECTION(PAGE_SIZE)
-> > > -       INIT_DATA_SECTION(16)
-> > >         . = ALIGN(8);
-> > >         __soc_early_init_table : {
-> > >                 __soc_early_init_table_start = .;
-> > > @@ -55,6 +53,7 @@ SECTIONS
-> > >         . = ALIGN(SECTION_ALIGN);
-> > >         .text : {
-> > >                 _text = .;
-> > > +               _stext = .;
-> > >                 TEXT_TEXT
-> > >                 SCHED_TEXT
-> > >                 CPUIDLE_TEXT
-> > > @@ -67,6 +66,8 @@ SECTIONS
-> > >                 _etext = .;
-> > >         }
-> > >
-> > > +       INIT_DATA_SECTION(16)
-> > > +
-> >
-> > I think you need to move EXIT_DATA as well. Currently, we have init
-> > data & text in one section.
-> It's not related to this issue. There is two check code problem:
-
-Yes. But we shouldn't move only INIT_DATA_SECTION out of __init section
-while leaving percpu & exit data in the __init section. Here is what I
-have in mind.
-
-diff --git a/arch/riscv/kernel/vmlinux.lds.S
-b/arch/riscv/kernel/vmlinux.lds.S
-index 9795359cb9da..4432cef8184e 100644
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@ -26,13 +26,11 @@ SECTIONS
-        /* Beginning of code and text segment */
-        . = LOAD_OFFSET;
-        _start = .;
-        _start = .;
--       _stext = .;
-        HEAD_TEXT_SECTION
-        . = ALIGN(PAGE_SIZE);
-
-        __init_begin = .;
-        INIT_TEXT_SECTION(PAGE_SIZE)
--       INIT_DATA_SECTION(16)
-        . = ALIGN(8);
-        __soc_early_init_table : {
-                __soc_early_init_table_start = .;
-@@ -49,16 +47,13 @@ SECTIONS
-        {
-                EXIT_TEXT
-        }
--       .exit.data :
--       {
--               EXIT_DATA
--       }
--       PERCPU_SECTION(L1_CACHE_BYTES)
-+
-        __init_end = .;
-
-        . = ALIGN(SECTION_ALIGN);
-        .text : {
-                _text = .;
-+               _stext = .;
-                TEXT_TEXT
-                SCHED_TEXT
-                CPUIDLE_TEXT
-@@ -77,6 +72,17 @@ SECTIONS
- #endif
-
-        /* Start of data section */
-+       __init_data_begin = .;
-+       INIT_DATA_SECTION(16)
-+       .exit.data :
-+       {
-+               EXIT_DATA
-+       }
-+
-+       PERCPU_SECTION(L1_CACHE_BYTES)
-+
-+       __init_data_end = .;
-+
-
-As you correctly pointed out, this wastes around ~200K init memory
-that is wasted.
-That is not an ideal solution.
-
-The other alternative is to move __init_text section after _text as
-well similar to other architectures. But that won't work
-for RISC-V as we jump from _start to __start_kernel(in __init section)
-in head.S.  A JAL instruction can't be fit because
-__start_kernel is now too far. We can't replace JAL with a JALR
-because that would require an additional
-instruction and violates image header format.
-
-Any other ideas to solve this problem without wasting memory ?
-
->  1.     static int static_obj(const void *obj)
->     {
->             unsigned long start = (unsigned long) &_stext,
->                           end   = (unsigned long) &_end,
->                           addr  = (unsigned long) obj;
+> - create discrete domain chains, one for each "hierarchy depth",
+>   which is very hard to maintain
 >
->             /*
->              * static variable?
->              */
->             if ((addr >= start) && (addr < end))
->                     return 1;
+> - create fake hierarchy levels for the shallow paths, leading
+>   to all kind of problems (what are the safe hwirq values for these
+>   fake levels?)
 >
->  2.     /* Is this address range in the kernel text area? */
->     static inline void check_kernel_text_object(const unsigned long ptr,
->                                                 unsigned long n, bool to_user)
->     {
->             unsigned long textlow = (unsigned long)_stext;
->             unsigned long texthigh = (unsigned long)_etext;
->             unsigned long textlow_linear, texthigh_linear;
->
->             if (overlaps(ptr, n, textlow, texthigh))
->                     usercopy_abort("kernel text", NULL, to_user, ptr -
-> textlow, n);
->
-> The patch of commit: a0fa4027dc911 (riscv: Fixup static_obj() fail) broke 2th.
->
-> > In general it is better idea to separate those similar to ARM64.
-> > Additionally, ARM64 applies different mapping for init data & text
-> > as the init data section is marked as non-executable[1]
-> Yes, it's safer to protect init text & init data, but it's should be
-> another patch.
->
+> Instead, let's offer the possibility to cut short a single interrupt
 
-Yes. I will send the patch based on this fix.
+s/let's offer/implement/
 
-> >
-> > However, we don't modify any permission for any init sections. Should
-> > we do that as well ?
-> Agree, we should do that.
+> hierarchy, exactly representing the HW. This can only be done from
+> the .alloc() callback, before mappings can be established.
 >
-> >
-> > [1] https://patchwork.kernel.org/patch/9572869/
-> >
-> > >         /* Start of data section */
-> > >         _sdata = .;
-> > >         RO_DATA(SECTION_ALIGN)
-> > >
-> > > On Thu, Sep 24, 2020 at 3:36 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
-> > > >
-> > > > On Sep 14 2020, Aurelien Jarno wrote:
-> > > >
-> > > > > How should we proceed to get that fixed in time for 5.9? For the older
-> > > > > branches where it has been backported (so far 5.7 and 5.8), should we
-> > > > > just get that commit reverted instead?
-> > > >
-> > > > Can this please be resolved ASAP?
-> > > >
-> > > > Andreas.
-> > > >
-> > > > --
-> > > > Andreas Schwab, schwab@linux-m68k.org
-> > > > GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> > > > "And now for something completely different."
-> > >
-> > >
-> > >
-> > > --
-> > > Best Regards
-> > >  Guo Ren
-> > >
-> > > ML: https://lore.kernel.org/linux-csky/
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  include/linux/irqdomain.h |  3 +++
+>  kernel/irq/irqdomain.c    | 56 +++++++++++++++++++++++++++++++++++----
+>  2 files changed, 54 insertions(+), 5 deletions(-)
 >
->
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
+> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+> index b37350c4fe37..c6901c1bb981 100644
+> --- a/include/linux/irqdomain.h
+> +++ b/include/linux/irqdomain.h
+> @@ -509,6 +509,9 @@ extern void irq_domain_free_irqs_parent(struct irq_domain *domain,
+>  					unsigned int irq_base,
+>  					unsigned int nr_irqs);
+>  
+> +extern int irq_domain_trim_hierarchy(unsigned int virq,
+> +				     struct irq_domain *domain);
+> +
+>  static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
+>  {
+>  	return domain->flags & IRQ_DOMAIN_FLAG_HIERARCHY;
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> index 76cd7ebd1178..d0adaeea70b6 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -1136,6 +1136,17 @@ static struct irq_data *irq_domain_insert_irq_data(struct irq_domain *domain,
+>  	return irq_data;
+>  }
+>  
+> +static void __irq_domain_free_hierarchy(struct irq_data *irq_data)
+> +{
+> +	struct irq_data *tmp;
+> +
+> +	while (irq_data) {
+> +		tmp = irq_data;
+> +		irq_data = irq_data->parent_data;
+> +		kfree(tmp);
+> +	}
+> +}
+> +
+>  static void irq_domain_free_irq_data(unsigned int virq, unsigned int nr_irqs)
+>  {
+>  	struct irq_data *irq_data, *tmp;
+> @@ -1147,14 +1158,49 @@ static void irq_domain_free_irq_data(unsigned int virq, unsigned int nr_irqs)
+>  		irq_data->parent_data = NULL;
+>  		irq_data->domain = NULL;
+>  
+> -		while (tmp) {
+> -			irq_data = tmp;
+> -			tmp = tmp->parent_data;
+> -			kfree(irq_data);
+> -		}
+> +		__irq_domain_free_hierarchy(tmp);
+>  	}
+>  }
+>  
+> +/**
+> + * irq_domain_trim_hierarchy - Trim the irq hierarchy from a particular
+> + *			       irq domain
+> + * @virq:	IRQ number to trim where the hierarchy is to be trimmed
+> + * @domain:	domain from which the hierarchy gets discarded for this
+> + *		interrupt
+> + *
+> + * Drop the partial irq_data hierarchy from @domain (included) onward.
+> + *
+> + * This is only meant to be called from a .alloc() callback, when no
+> + * actual mapping in the respective domains has been established yet.
+> + * Its only use is to be able to trim levels of hierarchy that do not
+> + * have any real meaning for this interrupt.
+> + */
+> +int irq_domain_trim_hierarchy(unsigned int virq, struct irq_domain *domain)
+> +{
+> +	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
+> +
+> +	/* It really needs to be a hierarchy, and not a single entry */
+> +	if (WARN_ON(!irq_data->parent_data))
+> +		return -EINVAL;
+> +
+> +	/* Skip until we find the right domain */
+> +	while (irq_data->parent_data && irq_data->parent_data->domain != domain)
+> +		irq_data = irq_data->parent_data;
+> +
+> +	/* The domain doesn't exist in the hierarchy, which is pretty bad */
+> +	if (WARN_ON(!irq_data->parent_data))
+> +		return -ENOENT;
+> +
+> +	/* Sever the inner part of the hierarchy...  */
+> +	tail = irq_data->parent_data;
+> +	irq_data->parent_data = NULL;
+> +	__irq_domain_free_hierarchy(tail);
+
+This is butt ugly, really. Especially the use case where the tegra PMC
+domain removes itself from the hierarchy from .alloc()
+
+That said, I don't have a better idea either. Sigh...
+
+Thanks,
+
+        tglx
 
 
-
--- 
-Regards,
-Atish
