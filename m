@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6553A284C33
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FFE284C38
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgJFNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFNFw (ORCPT
+        id S1726319AbgJFNG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:06:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43383 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726105AbgJFNGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:05:52 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAD1C061755;
-        Tue,  6 Oct 2020 06:05:51 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 6 Oct 2020 09:06:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601989613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y104BtTdOzAa80N7i3WOmV1nO/+g8slrnxNz0C4ODak=;
+        b=Q502X6cIEUwmfCk4wFV52n3DGO5yup/3h9w3tdQT22TRahCyoXMUSTue5l3YjNgYYccOpc
+        TG/jVqFSoWEKg6VfKumvE3CDM1QaHDCwM9bHSaBViEOAQm26M58JiEVVZjQ7Yfi6s7+p5V
+        tFhV9B3+6R1NYRlKb5Fqtvb+GEqrRWQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-Di54MA5uOGqm0AYrOkFu7g-1; Tue, 06 Oct 2020 09:06:48 -0400
+X-MC-Unique: Di54MA5uOGqm0AYrOkFu7g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5HlG0kH8z9sTK;
-        Wed,  7 Oct 2020 00:05:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601989546;
-        bh=q9mpa/0KffrcwWOYPGlh8L15Eanc/pISr+9iZYcDjTA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Z3LhaWQ63AkrZnv4Ays2nvFojIu78WkcEqwEcpcfR2TpahT2qxQhpUeye3fY6EV/W
-         osa/GG+0YVOV7nTv71lQZslfZSiQj6Ptm5zkmYzVXW0G8D0fU32eGtOhJXQCJ8x4cC
-         iW6wsPBN1sQPBlCtshTpUXjOs3jl0FAMqObGTLztYreYUUDHt0ApWTOKAxDcUeFgai
-         b/piRFkgtm508Jj4P+V+R6DUoyMr9hLRvMdJyO354YFVzzULJlmvGf37Vn68q5Vt1y
-         HvlVXnrPEHLjJ61+L03NVCKirVfH77NscHYP02QJK4C7C2iOIXsoef37YGJregrNXD
-         rfWJPGT2vmbmA==
-Date:   Wed, 7 Oct 2020 00:05:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the powerpc tree
-Message-ID: <20201007000544.48aabc91@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9754A8030C7;
+        Tue,  6 Oct 2020 13:06:47 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-117-72.rdu2.redhat.com [10.10.117.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B9D79CBA;
+        Tue,  6 Oct 2020 13:06:38 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 3CCFE220AD7; Tue,  6 Oct 2020 09:06:38 -0400 (EDT)
+Date:   Tue, 6 Oct 2020 09:06:38 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     Qian Cai <cai@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Subject: Re: virtiofs: WARN_ON(out_sgs + in_sgs != total_sgs)
+Message-ID: <20201006130638.GA5306@redhat.com>
+References: <5ea77e9f6cb8c2db43b09fbd4158ab2d8c066a0a.camel@redhat.com>
+ <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
+ <20201004143119.GA58616@redhat.com>
+ <20201006090427.GA41482@stefanha-x1.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/F60SFxaoty6HOU9ZG//eX4x";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006090427.GA41482@stefanha-x1.localdomain>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/F60SFxaoty6HOU9ZG//eX4x
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 06, 2020 at 10:04:27AM +0100, Stefan Hajnoczi wrote:
+> On Sun, Oct 04, 2020 at 10:31:19AM -0400, Vivek Goyal wrote:
+> > On Fri, Oct 02, 2020 at 10:44:37PM -0400, Qian Cai wrote:
+> > > On Fri, 2020-10-02 at 12:28 -0400, Qian Cai wrote:
+> > > > Running some fuzzing on virtiofs from a non-privileged user could trigger a
+> > > > warning in virtio_fs_enqueue_req():
+> > > > 
+> > > > WARN_ON(out_sgs + in_sgs != total_sgs);
+> > > 
+> > > Okay, I can reproduce this after running for a few hours:
+> > > 
+> > > out_sgs = 3, in_sgs = 2, total_sgs = 6
+> > 
+> > Thanks. I can also reproduce it simply by calling.
+> > 
+> > ioctl(fd, 0x5a004000, buf);
+> > 
+> > I think following WARN_ON() is not correct.
+> > 
+> > WARN_ON(out_sgs + in_sgs != total_sgs)
+> > 
+> > toal_sgs should actually be max sgs. It looks at ap->num_pages and
+> > counts one sg for each page. And it assumes that same number of
+> > pages will be used both for input and output.
+> > 
+> > But there are no such guarantees. With above ioctl() call, I noticed
+> > we are using 2 pages for input (out_sgs) and one page for output (in_sgs).
+> > 
+> > So out_sgs=4, in_sgs=3 and total_sgs=8 and warning triggers.
+> > 
+> > I think total sgs is actually max number of sgs and warning
+> > should probably be.
+> > 
+> > WARN_ON(out_sgs + in_sgs >  total_sgs)
+> > 
+> > Stefan, WDYT?
+> 
+> It should be possible to calculate total_sgs precisely (not a maximum).
+> Treating it as a maximum could hide bugs.
 
-Hi all,
+I thought about calculating total_sgs as well. Then became little lazy.
+I will redo the patch and then calculate total_sgs precisely.
 
-In commit
+> 
+> Maybe sg_count_fuse_req() should count in_args/out_args[numargs -
+> 1].size pages instead of adding ap->num_pages.
 
-  3b6c3adbb2fa ("powerpc/perf: Exclude pmc5/6 from the irrelevant PMU group=
- constraints")
+That should work, I guess. Will try.
 
-Fixes tag
+Vivek
+> 
+> Do you have the details of struct fuse_req and struct fuse_args_pages
+> fields for the ioctl in question?
 
-  Fixes: 7ffd948 ("powerpc/perf: factor out power8 pmu functions")
+> 
+> Thanks,
+> Stefan
 
-has these problem(s):
 
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
-Since Michael doesn't generally rebase his tree, this is more to be
-remebered for next time.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/F60SFxaoty6HOU9ZG//eX4x
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98a6gACgkQAVBC80lX
-0GyhGgf/dKuWO59GS1sTLc4QQFWvP5GchwtYC0M3p6TOGGoofD6TtCvxmxR4DPG8
-DcOvgvWF5hMq4LOE0Ts2fUpGpps4HdYewvgi4SiCBr7VWYZHWNEVhSO/VQZ66gn5
-vEMVEozGw2JOwtSHvk/oNmT6sLeqpbYLzsQtdG32I5Oe+gh/odT6Eaz23T4NGW7J
-r/TINbteFZezngchveOIGyN0lb4cOuHMbu3LClivARydqzHFhftgEnh5JHhOWSAY
-ORrEHC5XkGPSv+OOTtfsWHYI6y4bjt1KkQ7vJ4IVbjxuYmQJcE7sNYy9Ku5/9kA3
-/aNNq1R8B5To65aFGwfPHxroB/uYoA==
-=oBxs
------END PGP SIGNATURE-----
-
---Sig_/F60SFxaoty6HOU9ZG//eX4x--
