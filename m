@@ -2,127 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CED284638
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384F428463A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbgJFGl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgJFGl7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:41:59 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF0BC0613A9
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:41:57 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id t12so10063043ilh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uHM1D8yaoPgVu7OkaALEGbJy4kg1o1eRhm5NyrRUylM=;
-        b=F2Tik6j5lSqAx01VgPEc/ic+3a+2cD1ALsagm7/uTKd1bFTlXB0iPvJ6wLB5MMREgm
-         cQFQECDIn+HmLqpvNq+6dM7W/vCKzNLNOk8FhCCoUoQ5HtaN1QmvZRAmOIx67g27vp8U
-         dkXLOPpf9OkLw2ZTqn7JxwF3ktoTg4BcmFrl+HB5IasXlTK+GbxCc4aNY1oM3Cd2C2u3
-         IhDCLLQGMij02rtGUhH8uQOJIYa0gJ8cRtQSPgeHOIU7J3cNpBYvbzi9AVuqHFR6gpRI
-         ab6mJlHu1WZwBiJk/UAduBwW8UjiuIckfS1QbPhdCsrbrKIvk23SboncRwXDNfRFlbdA
-         u1Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uHM1D8yaoPgVu7OkaALEGbJy4kg1o1eRhm5NyrRUylM=;
-        b=XC/KyDxg0nUdmAGQq+qXCUg6QzelKxNp2antg1evtBUHFEnpIWWjMLb8OJP9oFPaDK
-         VNHubNmDcpGJIp1e3j+yyBH4ID7rfxCV9RghkyLVFGmJLQEJ+l5P45kVttZw51ilZf2N
-         uEI/YQt+y1icK4/6Ac7jDH4XKlMry2rHGWt7YgcAur6ymi3xRqvLraCTf295mkwzhraD
-         GOuUT1sxqdR1PpX3R0DWcEGGz1ExHM35XLPoI7GWTQj0UgZPM77ebpwnuEN1DW93G17X
-         744A8M5bTxTUaMIB/a6OyZVfI+ghLBrvP4n4Pv2UgJKzhO+czBM6KC4AITwn+lXn40b9
-         nnkw==
-X-Gm-Message-State: AOAM531je6ELVUci5tzgA7dH6R6HM3OkXgNi90/StH0QtmdZ3RsOwL3K
-        3FvV9Hr3fEMchhs2ScxYhfC+DVPnH1DQtXqAGUaLvA==
-X-Google-Smtp-Source: ABdhPJwOFY2AVkq+DSviecXMqxbtuAa8qCx0Gyx56bAvbqU5sjiGaic0Dbg30kwuz9+gBlPKxjdMeoxiUgKTvZh1Evg=
-X-Received: by 2002:a92:c00c:: with SMTP id q12mr2436199ild.294.1601966516666;
- Mon, 05 Oct 2020 23:41:56 -0700 (PDT)
+        id S1727084AbgJFGmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:42:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726769AbgJFGmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:42:13 -0400
+Received: from coco.lan (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C055320757;
+        Tue,  6 Oct 2020 06:42:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601966532;
+        bh=IEl0kKuVJ/RD+zUKJf/fDMYwBEIERa3g9HxZNp7xstU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MRCX853GuJjy9gYrG+JBO6vBt1Um5qvYezrgSpCTHfT2EyUD1hRdzBi1xFh8anm2A
+         9M/WEk4v3R6XrmexZi3AvM5vZkV/cVh6nQ1cR711vsDo6N9SuzWJw0FpYYJTmHKwR+
+         IKfuVMeer6XJ4ucr+Se01Q4Gj5iYIH7DvgI/evp8=
+Date:   Tue, 6 Oct 2020 08:42:07 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Markus Heiser <markus.heiser@darmarit.de>
+Subject: Re: [PATCH] scripts: kernel-doc: allow passing desired Sphinx C
+ domain dialect
+Message-ID: <20201006084207.125c88d5@coco.lan>
+In-Reply-To: <20201005101736.7adf4f46@lwn.net>
+References: <ee1f16453ad40eae2603adfde5f6dda3ab1befc7.1601798520.git.mchehab+huawei@kernel.org>
+        <20201005101736.7adf4f46@lwn.net>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200930014058.44460-1-luka.kovacic@sartura.hr>
- <20200930014058.44460-5-luka.kovacic@sartura.hr> <20200930194759.GA24378@amd>
-In-Reply-To: <20200930194759.GA24378@amd>
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Tue, 6 Oct 2020 08:41:45 +0200
-Message-ID: <CADZsf3ZL712nZh5nQxh5RQ=YCbM0fEK8dp-uHyOW+2FSMv+UpA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/7] drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 9:48 PM Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > +static int iei_wt61p803_puzzle_led_brightness_set_blocking(struct led_classdev *cdev,
-> > +             enum led_brightness brightness)
-> > +{
-> > +     struct iei_wt61p803_puzzle_led *priv = cdev_to_iei_wt61p803_puzzle_led(cdev);
-> > +     unsigned char *resp_buf = priv->response_buffer;
-> > +     unsigned char led_power_cmd[5] = {
-> > +             IEI_WT61P803_PUZZLE_CMD_HEADER_START,
-> > +             IEI_WT61P803_PUZZLE_CMD_LED,
-> > +             IEI_WT61P803_PUZZLE_CMD_LED_POWER,
-> > +             (char)IEI_LED_OFF
-> > +     };
-> > +     size_t reply_size;
-> > +
-> > +     mutex_lock(&priv->lock);
-> > +     if (brightness == LED_OFF) {
-> > +             led_power_cmd[3] = (char)IEI_LED_OFF;
-> > +             priv->led_power_state = LED_OFF;
-> > +     } else {
-> > +             led_power_cmd[3] = (char)IEI_LED_ON;
-> > +             priv->led_power_state = LED_ON;
-> > +     }
-> > +     mutex_unlock(&priv->lock);
-> > +
-> > +     return iei_wt61p803_puzzle_write_command(priv->mcu, led_power_cmd,
-> > +                     sizeof(led_power_cmd), resp_buf, &reply_size);
-> > +}
->
-> Is the mutex needed? If so, should it include the
-> iei_wt61p803_puzzle_write_command()? Does
-> iei_wt61p803_puzzle_write_command() have internal locking to prevent
-> two messages from being mingled?
->
-> Best regards,
->                                                                         Pavel
->
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+Em Mon, 5 Oct 2020 10:17:36 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-Hello Pavel,
+> On Sun,  4 Oct 2020 10:02:03 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> 
+> > When kernel-doc is called via kerneldoc.py, there's no need to
+> > auto-detect the Sphinx version, as the Sphinx module already
+> > knows it. So, add an optional parameter to allow changing the
+> > Sphinx dialect.
+> > 
+> > As kernel-doc can also be manually called, keep the auto-detection
+> > logic if the parameter was not specified. On such case, emit
+> > a warning if sphinx-build can't be found at PATH.
+> > 
+> > Suggested-by: Jonathan Corbet <corbet@lwn.net>
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/sphinx/kerneldoc.py |  5 ++++
+> >  scripts/kernel-doc                | 40 ++++++++++++++++++++++++-------
+> >  2 files changed, 37 insertions(+), 8 deletions(-)  
+> 
+> So I'm glad to see this.  Still not fully sold on the autodetection, but if
+> we don't actually use it, maybe I can live with it :)
+> 
+> One little nit:
+> 
+> > diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
+> > index 233f610539f0..e9857ab904f1 100644
+> > --- a/Documentation/sphinx/kerneldoc.py
+> > +++ b/Documentation/sphinx/kerneldoc.py
+> > +    } elsif ($cmd eq "sphinx-version") {
+> > +	my $ver_string = shift @ARGV;
+> > +	if ($ver_string =~ m/^(\d+)\.(\d+)\.(\d+)/) {
+> > +	    $sphinx_major = $1;
+> > +	    $sphinx_minor = $2;
+> > +	    $sphinx_patch = $3;
+> > +	} else {
+> > +	    die "Sphinx version should be at major.minor.patch format\n";
+> > +	}  
+> 
+> Can we allow just major.minor, with patch defaulting to zero?  People
+> passing this by hand may not want to look up their patch version every
+> time, and I doubt it will ever matter...
 
-The mutex isn't needed and can be removed.
-The function iei_wt61p803_puzzle_write_command() already handles its own
-mutex locking, so a separate mutex isn't required.
+Sure. It should be easy to make the third argument optional, although
+the regex will be a little more harder to understand.
 
-Does brightness_set_blocking only block a single caller (each caller separately)
-or does it block all callers until the previous caller is finished?
+Something like this should do the trick:
 
-Kind regards,
-Luka
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 01efb0afb8c2..104d79949a8a 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -466,12 +466,16 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
+ 	$show_not_found = 1;  # A no-op but don't fail
+     } elsif ($cmd eq "sphinx-version") {
+ 	my $ver_string = shift @ARGV;
+-	if ($ver_string =~ m/^(\d+)\.(\d+)\.(\d+)/) {
++	if ($ver_string =~ m/^(\d+)\.(\d+)(?:\.?(\d+)?)/) {
+ 	    $sphinx_major = $1;
+ 	    $sphinx_minor = $2;
+-	    $sphinx_patch = $3;
++	    if ($3) {
++		$sphinx_patch = $3;
++	    } else {
++		$sphinx_patch = 0;
++	    }
+ 	} else {
+-	    die "Sphinx version should be at major.minor.patch format\n";
++	    die "Sphinx version should either major.minor or major.minor.patch format\n";
+ 	}
+     } else {
+ 	# Unknown argument
+
+As right now we don't support Sphinx version 3.0[1], we're actually using just
+$sphinx_major. So, I'm wonder if it would make sense to also make <minor>
+optional.
+
+The change would be trivial, although the regex will become even more
+harder to read ;-)
+
+[1] not sure how valuable would be adding support for Sphinx 3.0. While
+I didn't make any tests, I'm strongly suspecting that, with the approach
+we took for backward/forward compatibility, adding support for it
+would mean to just do a trivial change at cdomain.py by applying a
+patch that Markus did replacing a regex function that doesn't exist
+anymore at Sphinx API and emulating C namespace with the logic I
+already implemented. 
+
+I guess I'll give it a try anyway, as it seems weird to have a gap
+in the middle of the supported versions.
+
+
+Thanks,
+Mauro
