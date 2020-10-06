@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6E92843DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2C32843DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgJFBh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 21:37:59 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:38731 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgJFBh6 (ORCPT
+        id S1726657AbgJFBrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 21:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgJFBrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 21:37:58 -0400
-Received: by mail-wr1-f52.google.com with SMTP id n18so3781499wrs.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 18:37:57 -0700 (PDT)
+        Mon, 5 Oct 2020 21:47:15 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9473C0613CE;
+        Mon,  5 Oct 2020 18:47:14 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id lw21so11110219ejb.6;
+        Mon, 05 Oct 2020 18:47:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JwV09/w/RjxBfz8l5wIfRzn/NkiJgzZyHVb8PU5aPKc=;
+        b=XBD+nkpC+gN+dhdYzuY0IosVUQQMvXWIT4hMmWDJGgdGIiT8gchvbbEe3nJelN3V5F
+         7FPqoEbSPVlWsEP3d2hoDbJoAXN65CycixLYsWa5WOyKfnU0/y0zU8uM0US6eaqeUSuq
+         xTZJUwHvmbmBsugBu7iXe5a90/ZByVMh7Rv1EqgsVlMhePaOzjdVS4uNzxfVboifP765
+         rDhYApcDY4HpHORiwTJvyBPnUBRWQ2N5bfRfb1KxiXkw4FR1VQi4lULVHJambHMrbQiZ
+         FWJgFHA6ibN7/C9yQKYOQzRGl0Gln0kEdeu3Ph3AH+UScgR4LT6C6U6tkgrVTPwoFWun
+         oACg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6XOkPuWAVksaYnpbdbI4+rs3vKcq8+w0HL/+QULyvzU=;
-        b=r5OCtM1z6p8rULJ789sR8KLSRUWKRJDfjifaeEkv08sWJNDZprpjDk11TBTF9JeRzq
-         VGOVwg4lpok3gvVs6HVKGQYYLxe057Qsn9UJuZd6668D8DwqZWSeQ+ZXwoi0dsdE5BOg
-         EwrOb/6LOHl0NjJfaqLjOxSsCHPuxReauDz3v07njvKTxeHV+O0moCXMLxFIlz5hJgzO
-         i4bJEAtHOm3eKHIML7Yiqa4H1dp12zIN8+y8M+bhchUWQegL+UiSwyXZXAFvSqYAoM3g
-         rZAxP+dsbwfENLC3m917ePHmQDhw0Or0xnMvkQjUkrSCN7I/iAA5aeNJCnbluHjEjbCW
-         U3Zw==
-X-Gm-Message-State: AOAM532XiZ/HHcXU43n5R347O+57HYWIwAVRXpLPOyaCG4A8oB1qi22Z
-        YqJWmUVBpRFavU2cUxqbEAWmoTPJLAaL2o5SpE8=
-X-Google-Smtp-Source: ABdhPJwyqVss08r0Zo5xGYxMyLycQbmJn+NVAdh2lAKksXH/11wR+PmwiR/6mxjK/uUXpj77zcVVGaFqpXuLfNdxxIk=
-X-Received: by 2002:adf:e481:: with SMTP id i1mr2021795wrm.391.1601948276735;
- Mon, 05 Oct 2020 18:37:56 -0700 (PDT)
+        bh=JwV09/w/RjxBfz8l5wIfRzn/NkiJgzZyHVb8PU5aPKc=;
+        b=c43fNMo/Guvidf02Yb5la5oLtQMVWVUcfzJVTYjm/qJKd5AIbyBOwKnZ+pLVCHb4y4
+         5QDowOy3RwpewRgzxDt9TUQBjBsjvKq4N4LGDEm5bCYypPQXjm5JhfEYAINAHfuyJ2/C
+         AAGEGUvfxpGekt2cGdF+FTgBY8oKp4xTX+zRHQFhGS/3GVm7DO25Mc/7do47tapBfPGJ
+         LWehLFokV17lMmNe58+yUreCpC5bf6C4pdVweh2mCvZ+8N3GHoloO7/nQT4VsKIMxMX2
+         +nngL5wv9BVLo833L6bO/77mZCDDyxtbbvSblQ+wF5n8DWYm9yJyakroFKtSo0A5dlYE
+         DnIA==
+X-Gm-Message-State: AOAM531Qq4fmmRx6nCVRA6AxnSUBarRcXWsW81dBM13Vn27gvd4wZX2j
+        Q4eiwdkuCU63ErQaZ3hEkUwYkZecpIX3kedZErE=
+X-Google-Smtp-Source: ABdhPJzGaUJBfnhyfiAmVMJA9fZxeOWClmaZqreZTN3WSSqp8jg8groI8CWdu5H9A3KRycQX+9Bn0ZXp8TUHg1gMsIA=
+X-Received: by 2002:a17:906:7254:: with SMTP id n20mr2599660ejk.382.1601948833392;
+ Mon, 05 Oct 2020 18:47:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-2-jolsa@kernel.org>
- <20201001190530.GD3999500@krava> <CAM9d7chyjSaqhjjT4myfs5p9ExH-3Rugme-OFaF8454yO4_s1w@mail.gmail.com>
- <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com> <20201002192944.GH3999500@krava>
-In-Reply-To: <20201002192944.GH3999500@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 6 Oct 2020 10:37:45 +0900
-Message-ID: <CAM9d7cgoaU4wcid46+uScFcZtMZZQR+fijuE7XO1mjC2cLwX-A@mail.gmail.com>
-Subject: Re: [PATCHv2 1/9] perf tools: Add build id shell test
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>
+References: <CAMdYzYrYdDYF_Y_TwQ65u=Ymu2_8Rs9KWm_TfXcaPGTwucT=jg@mail.gmail.com>
+ <20201005222953.GD2804081@piout.net>
+In-Reply-To: <20201005222953.GD2804081@piout.net>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Mon, 5 Oct 2020 21:47:01 -0400
+Message-ID: <CAMdYzYpHxD4qSCM=-jhj0byBpoPv0LqBuCpkYH=QCX0NrvEAtA@mail.gmail.com>
+Subject: Re: [Question] rtc wake behavior and sysfs
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     a.zummo@towertech.it, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        len.brown@intel.com, pavel@ucw.cz,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-rtc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 3, 2020 at 4:29 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Mon, Oct 5, 2020 at 6:29 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
 >
-> On Fri, Oct 02, 2020 at 10:34:51AM -0700, Ian Rogers wrote:
+> On 05/10/2020 09:13:08-0400, Peter Geis wrote:
+> > Good Morning,
+> >
+> > While testing suspend to ram on the Ouya, I encountered an interesting
+> > issue with the rtc-tps65910 driver.
+> > Attempting to use rtc-wake on the default configuration returned:
+> > rtcwake: /dev/rtc0 not enabled for wakeup events
+> > This is due to:
+> > eb5eba4ef722 drivers/rtc/rtc-tps65910.c: enable/disable wake in suspend/resume
+> > This commit changed this driver's behavior to not enable wakeup by
+> > default, but enables it when entering sleep mode.
+> > This seems to be odd behavior to me.
+> > Looking at a few other rtc drivers show they simply enable themselves
+> > as wakeup sources by default.
+> >
+> > I also found the sysfs entries are at /sys/devices/ ..
+> > /tps65910-rtc/power but are missing at /sys/class/rtc/rtc0/power/
+> >
+> > I have two questions.
+> >  - Should the sysfs wakeup entries be missing at /sys/class/rtc/rtc0/power/ ?
 >
-> SNIP
+> I would be in /sys/class/rtc/rtc0/device/power
 >
-> > > > +
-> > > >  LIBJVMTI = libperf-jvmti.so
-> > > >
-> > > >  ifndef NO_JVMTI
-> > > > @@ -756,6 +763,13 @@ $(OUTPUT)perf-read-vdsox32: perf-read-vdso.c util/find-map.c
-> > > >         $(QUIET_CC)$(CC) -mx32 $(filter -static,$(LDFLAGS)) -Wall -Werror -o $@ perf-read-vdso.c
-> > > >  endif
-> > > >
-> > > > +ifndef NO_BUILDID_EX
-> > > > +$(OUTPUT)buildid-ex-sha1:
-> > > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=sha1 -o $@ -x c -
-> > > > +$(OUTPUT)buildid-ex-md5:
-> > > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=md5 -o $@ -x c -
-> > > > +endif
-> > >
-> > > Can we just build them in the test shell script instead?
+> >  - Shouldn't a rtc be enabled as a wakeup source by default?
+> >
 >
-> it would solve the build-directory/install-directory
-> lookup search.. but it'd need to do detect compiler
-> and depend on it as Ian said
->
-> do you have some other reason to compile it in test?
+> The short answer is no, the reason being that not all RTCs are connected
+> to an IRQ or a pin that can wakeup or start the platform. What should be
+> done is enabling wakeup only when interrupts are available or the
+> wakeup-source property is in the rtc device tree node.
 
-No I just wanted to make it easy to find the binaries
-and assumed a compiler is available in the test machine
-(which is not true for my company setup.... :-/)
+Thank you for your explanation.
 
-But otherwise we should keep the binaries somewhere
-in the install directory..
+So it would seem we have two issues.
+- The sysfs wakeup entries are not populating in
+/sys/class/rtc/rtc0/power when they are populating in
+/sys/devices/<..>/tps65910-rtc/power.
+- The wakeup-source property is not being applied to the tps65910-rtc
+sub-device when it is applied in the tps65910 devicetree node.
 
-Thanks
-Namhyung
+Should wakeup-source handling be the tps65910-rtc driver's
+responsibility, or is that a limitation of the driver core that needs
+to be fixed?
+
+>
+> --
+> Alexandre Belloni, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
