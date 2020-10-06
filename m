@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0941284C4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E84284C50
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgJFNK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:10:58 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37330 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgJFNK6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:10:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 096DAqjP067210;
-        Tue, 6 Oct 2020 08:10:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601989852;
-        bh=wXYej7kHKz/S7upJVmm0fCftqCmHyaYzVlDlMTvs1Mc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=azraLYS2AZaJwnVgtxF/BL2MfkCgBc0+OOrGQwHUsde8qV7vdMzV/KAeFqMDQHPCT
-         TysCDaze8mZOlTzJDVzCKF9VM691GyGCrBc1l65J5NjjIlBrn6W3st48skCQArOExT
-         bNL0iKlGXPFmDG1F/OSdFBzfHSvQrB/ddId1y7qA=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 096DAq0I010328
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Oct 2020 08:10:52 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
- 2020 08:10:52 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 6 Oct 2020 08:10:52 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 096DAn1b112932;
-        Tue, 6 Oct 2020 08:10:50 -0500
-Subject: Re: [PATCH 0/2] Enable GPIO and I2C configs for TI's J721e platform
-To:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <will@kernel.org>, <catalin.marinas@arm.com>, <nm@ti.com>
-References: <20201002164535.9920-1-faiz_abbas@ti.com>
- <68cadd9b-63b1-caaf-080c-e2f346f4a908@ti.com>
- <ce66e552-a816-9e67-5e94-d9a20bbc2bc7@ti.com>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <f8877ca8-fe32-29e5-cb0c-2ce0af3eb73a@ti.com>
-Date:   Tue, 6 Oct 2020 16:10:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726356AbgJFNLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:11:05 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59742 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgJFNLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 09:11:04 -0400
+Received: from zn.tnic (p200300ec2f0d6300a8f8264196af23e2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6300:a8f8:2641:96af:23e2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 61D5C1EC032C;
+        Tue,  6 Oct 2020 15:11:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601989863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=clROgJ61P5a49kXfjwMkQ6QsqWJQYwRU0nWrYA+gEvU=;
+        b=ApENEiGQkupNE3emSm8NnJUXsbnv4CzTQZmeC4mshXnUqJR++jE/KM1NyqJoAaPFbpFcUI
+        CvG2/LNseLYToiBnMZ4Lb1qvbKwBUKGR6d/JiqQ0DU66ueINh0+Dk5AnbWWl/B3tixZxh3
+        NoeShd1fYvgJ+cS+/a5ETdYKFMg3//g=
+Date:   Tue, 6 Oct 2020 15:10:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v4 03/13] x86/platform/uv: Adjust references in UV kernel
+ modules
+Message-ID: <20201006131054.GD27700@zn.tnic>
+References: <20201005203929.148656-1-mike.travis@hpe.com>
+ <20201005203929.148656-4-mike.travis@hpe.com>
+ <20201005211611.GK21151@zn.tnic>
+ <7598f508-6c4a-f1df-f83f-2f68bc99578f@hpe.com>
 MIME-Version: 1.0
-In-Reply-To: <ce66e552-a816-9e67-5e94-d9a20bbc2bc7@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7598f508-6c4a-f1df-f83f-2f68bc99578f@hpe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2020 16:03, Faiz Abbas wrote:
-> Hi Tero,
-> 
-> On 06/10/20 5:21 pm, Tero Kristo wrote:
->> On 02/10/2020 19:45, Faiz Abbas wrote:
->>> The following patches enable configs in the arm64 defconfig to support
->>> GPIO and I2C support on TI's J721e platform.
->>>
->>> Faiz Abbas (2):
->>>     arm64: defconfig: Enable OMAP I2C driver
->>>     arm64: defconfig: Enable DAVINCI_GPIO driver
->>>
->>>    arch/arm64/configs/defconfig | 2 ++
->>>    1 file changed, 2 insertions(+)
->>>
->>
->> Why are you enabling these?
->>
->> Are they required for booting the board?
->>
->> If not, they shall not be enabled, as it just clutters the arm64 defconfig unnecessarily.
->>
-> 
-> They are required because the SD card regulators need gpio over i2c expander and also
-> soc gpio support to come up in UHS modes.
+On Mon, Oct 05, 2020 at 02:32:38PM -0700, Mike Travis wrote:
+> Yes, there was the MACRO is_uv() that conflicted with the automated
+> "generate uv_mmrs.h" PERL script that also uses it that I changed.  I see
+> now maybe just getting rid of the entire thing in this file might have been
+> better?
 
-Is that needed for boot support? If it is only needed with UHS cards, 
-that does not seem important enough for me. We can already boot the 
-board via other means.
+If you need to change only this patch then sure, you can send me an
+updated one as a reply to this message. If more changes are needed, you
+can always do that cleanup later - up to you.
 
-> 
-> But in general isn't any feature we add supposed to be enabled in the arm64 defconfig?
+Thx.
 
-That is debatable, as it just increases the kernel size / build time for 
-everybody. Personally I would merge only things that are absolutely 
-necessary, for everything else we can just do local config modifications.
+-- 
+Regards/Gruss,
+    Boris.
 
--Tero
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+https://people.kernel.org/tglx/notes-about-netiquette
