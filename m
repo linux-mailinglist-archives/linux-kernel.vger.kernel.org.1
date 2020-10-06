@@ -2,140 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85BA28458A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4B728459F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbgJFFmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 01:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        id S1726934AbgJFFpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 01:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726973AbgJFFmb (ORCPT
+        with ESMTP id S1726007AbgJFFpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 01:42:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6A5C0613AB
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 22:42:31 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id i3so1068574pjz.4
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 22:42:31 -0700 (PDT)
+        Tue, 6 Oct 2020 01:45:19 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACEBC0613A7;
+        Mon,  5 Oct 2020 22:45:19 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id dn5so12211475edb.10;
+        Mon, 05 Oct 2020 22:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FYOEybxQ9Y8nUxVZmzLLg+Qyso2tjlpbGNthFRqblLc=;
-        b=scAXD8YuBk8j/NF0iYDdCeaAVj2lJqU4ekQ7XmxKGRZD9n7rlAL/7uG23DDE1fcZ56
-         zF72mU8P6EdMfXizzEbowAVRT7aqB90B0ZPahldWPyAERYWd6msUiWvIw5u5I68GC10s
-         2mfO8dqRM6oWZLB0Q6RNjtouVvMzAMtCqHytHKbKwrjH25Far6tK8oMk2FL/+Ytm6yFo
-         ix24Oh/3R7FZgjcOmnnbZhO2Rnj4pwkEjTGIWiz4UAhFCmHcKJq5fJPHDGVhMb52+bja
-         GRW+sJiWWq/RfS6N9j6fS0MlegpQS8J4O6R0p/6fHQbNSKo6Dg2SOD+ESIa+qx/GxTp7
-         QQLQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4CB/51OBXfRdfHZfYzfsP0JO6gUmP9LvBjOs0UlO6yI=;
+        b=bS3mhI4ptIIHGdZCGeltKqPx+Nk8vEpP88oNghEJVy1vRzOExWsWK1yVXPerGiuWKR
+         tp3Ed8ucslCgQco7huC2Kz9a88Z1iq393QpgzhlaHn+WW4evf5VUsw3D3Z9lzxl5XEZn
+         F51FRCVupTwE8wHOStlg7Qx46FMmplH8HY0IV1RGGpX0XIhkweE0efUw2zG//7v3ANoU
+         ujSmxbnVLg7tr9zBwUUgck7mjzp9tFTtnppuBT6aO+QLJUPmkkqO5rWgx/sic50AB3r+
+         P+OcjFldQt6sjFE1+cik+AbqWsAdtz/4RdktviZS4jE58uD9dB1PjeJ0EgMmyDsXA6uP
+         NXRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FYOEybxQ9Y8nUxVZmzLLg+Qyso2tjlpbGNthFRqblLc=;
-        b=YiIYJehWmrpTFy1vmCsTwCTpWNoNbFqV/qk6GTKmBEbVs9OdHNyYZoQojpw2IjbsVv
-         PdJ88TRLHISgbv2cyQ8pLDrMhXbk2YJvbCFYe5nWHHharLmEBWl8EiYA8Wfj17JXiyj+
-         ihf3+LPexANGdjy+3R9gIzOBVHr9FaBrU50N9G+/Tjcdq+hFY3sD2XRmBBvzWavXeTAI
-         TljL1Lnz5y3669rUaetcW3RiWtdEAZdyGHoUTABFtX4YpvgnGeBQ8wwTuY4TCFx6CV3F
-         3APxJFaF0Dh6rlqnc1PkdGA+71o87CyvpyvoHjU2GH0x7sdaosQhB1/RpPYWrx3BDi8B
-         1O8g==
-X-Gm-Message-State: AOAM530h2puTsVKS7s2SpHk8K/zBILjkIjvXkZTjZ3MUqo5GK4A7Nr/B
-        qwPr+AYC0WmVeinEqRmU1yVsyg==
-X-Google-Smtp-Source: ABdhPJzo+T1F54fl8q16F3SuWBffglk48PEytQu7/wpxM8oR5iYvbOQGglf6EbVoa0EICQ893qG+lw==
-X-Received: by 2002:a17:90b:950:: with SMTP id dw16mr2661711pjb.200.1601962950652;
-        Mon, 05 Oct 2020 22:42:30 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id d145sm2005503pfd.136.2020.10.05.22.42.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Oct 2020 22:42:29 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 11:12:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Richard Weinberger <richard@nod.at>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 3/4] dt-bindings: Explicitly allow additional properties
- in board/SoC schemas
-Message-ID: <20201006054228.ho3ajzfgpiew32ft@vireshk-i7>
-References: <20201005183830.486085-1-robh@kernel.org>
- <20201005183830.486085-4-robh@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4CB/51OBXfRdfHZfYzfsP0JO6gUmP9LvBjOs0UlO6yI=;
+        b=bWxdM/UooYf65RASINgF9lQi/C0ELPrJaWElO8WQy8k4XiKuxA+juvv3N5xqO2F4Xw
+         6En/XTeV9DLnhlJIXQkUXgZrjhq30cUYIPxBhJPAV2GBs5H6sAmnzcZwiLpvW/0Vb/Uy
+         Ye9tH7YSruevaHjCa2hBs2+bazQC5HOhmMxMfVrNYEOVPsIWwkRydzZLtKDOHC5Vv5oE
+         7qObJIFF3VN5s3C70x5RWUPg8u/0TT+SKu9pyQG+FeOYLW9n3oxwk2pcvzBwcKNp23Wh
+         XUnsUmA21SLtO5aXdYpA7n+yLN/JW7pOWhUhFGmVifQxjIfZtqsxUWyNXRFzaS4S8R6q
+         dl5A==
+X-Gm-Message-State: AOAM531uyp93gPMzR+/8GcNruYntkbfsj2WN9uohQWdQrDY4uzaYx6zG
+        Zs8nXSMQc6XJ9JFE3XH/gOpEKRoSgbq6Pg==
+X-Google-Smtp-Source: ABdhPJwdY4s7DYpZzPmb2y8yWfywLtlNeIet9RuXg3cp4C8fLE2gUrJZvj9N9wTxntoX0j4cmTqEpA==
+X-Received: by 2002:a50:fe98:: with SMTP id d24mr3449636edt.223.1601963117524;
+        Mon, 05 Oct 2020 22:45:17 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f00:6a00:dc1a:256e:66bd:f0d1? (p200300ea8f006a00dc1a256e66bdf0d1.dip0.t-ipconnect.de. [2003:ea:8f00:6a00:dc1a:256e:66bd:f0d1])
+        by smtp.googlemail.com with ESMTPSA id ao17sm1322764ejc.18.2020.10.05.22.45.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 22:45:16 -0700 (PDT)
+Subject: Re: [RFC] net: phy: add shutdown hook to struct phy_driver
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200930174419.345cc9b4@xhacker.debian>
+ <20200930190911.GU3996795@lunn.ch>
+ <bab6c68f-8ed7-26b7-65ed-a65c7210e691@gmail.com>
+ <20200930201135.GX3996795@lunn.ch>
+ <379683c5-3ce5-15a6-20c4-53a698f0a3d0@gmail.com>
+ <20201005165356.7b34906a@xhacker.debian>
+ <95121d4a-0a03-0012-a845-3a10aa31f253@gmail.com>
+ <0d565005-45ad-e85f-bc79-8e9100ceaf6c@gmail.com>
+ <c7cc2088-19ca-8fcc-925d-2183634da073@gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <2e3bc015-5ceb-0583-0d65-70bb5d889952@gmail.com>
+Date:   Tue, 6 Oct 2020 07:45:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005183830.486085-4-robh@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <c7cc2088-19ca-8fcc-925d-2183634da073@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-10-20, 13:38, Rob Herring wrote:
-> In order to add meta-schema checks for additional/unevaluatedProperties
-> being present, all schema need to make this explicit. As the top-level
-> board/SoC schemas always have additional properties, add
-> 'additionalProperties: true'.
+On 05.10.2020 18:00, Florian Fainelli wrote:
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/arm/spear.yaml               | 3 +++
+> 
+> On 10/5/2020 8:54 AM, Heiner Kallweit wrote:
+>> On 05.10.2020 17:41, Florian Fainelli wrote:
+>>>
+>>>
+>>> On 10/5/2020 1:53 AM, Jisheng Zhang wrote:
+>>>> On Wed, 30 Sep 2020 13:23:29 -0700 Florian Fainelli wrote:
+>>>>
+>>>>
+>>>>>
+>>>>> On 9/30/2020 1:11 PM, Andrew Lunn wrote:
+>>>>>> On Wed, Sep 30, 2020 at 01:07:19PM -0700, Florian Fainelli wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 9/30/2020 12:09 PM, Andrew Lunn wrote:
+>>>>>>>> On Wed, Sep 30, 2020 at 05:47:43PM +0800, Jisheng Zhang wrote:
+>>>>>>>>> Hi,
+>>>>>>>>>
+>>>>>>>>> A GE phy supports pad isolation which can save power in WOL mode. But once the
+>>>>>>>>> isolation is enabled, the MAC can't send/receive pkts to/from the phy because
+>>>>>>>>> the phy is "isolated". To make the PHY work normally, I need to move the
+>>>>>>>>> enabling isolation to suspend hook, so far so good. But the isolation isn't
+>>>>>>>>> enabled in system shutdown case, to support this, I want to add shutdown hook
+>>>>>>>>> to net phy_driver, then also enable the isolation in the shutdown hook. Is
+>>>>>>>>> there any elegant solution?
+>>>>>>>>  
+>>>>>>>>> Or we can break the assumption: ethernet can still send/receive pkts after
+>>>>>>>>> enabling WoL, no?
+>>>>>>>>
+>>>>>>>> That is not an easy assumption to break. The MAC might be doing WOL,
+>>>>>>>> so it needs to be able to receive packets.
+>>>>>>>>
+>>>>>>>> What you might be able to assume is, if this PHY device has had WOL
+>>>>>>>> enabled, it can assume the MAC does not need to send/receive after
+>>>>>>>> suspend. The problem is, phy_suspend() will not call into the driver
+>>>>>>>> is WOL is enabled, so you have no idea when you can isolate the MAC
+>>>>>>>> from the PHY.
+>>>>>>>>
+>>>>>>>> So adding a shutdown in mdio_driver_register() seems reasonable.  But
+>>>>>>>> you need to watch out for ordering. Is the MDIO bus driver still
+>>>>>>>> running?
+>>>>>>>
+>>>>>>> If your Ethernet MAC controller implements a shutdown callback and that
+>>>>>>> callback takes care of unregistering the network device which should also
+>>>>>>> ensure that phy_disconnect() gets called, then your PHY's suspend function
+>>>>>>> will be called.
+>>>>>>
+>>>>>> Hi Florian
+>>>>>>
+>>>>>> I could be missing something here, but:
+>>>>>>
+>>>>>> phy_suspend does not call into the PHY driver if WOL is enabled. So
+>>>>>> Jisheng needs a way to tell the PHY it should isolate itself from the
+>>>>>> MAC, and suspend is not that.
+>>>>>
+>>>>> I missed that part, that's right if WoL is enabled at the PHY level then
+>>>>> the suspend callback is not called, how about we change that and we
+>>>>> always call the PHY's suspend callback? This would require that we audit
+>>>>
+>>>> Hi all,
+>>>>
+>>>> The PHY's suspend callback usually calls genphy_suspend() which will set
+>>>> BMCR_PDOWN bit, this may break WoL. I think this is one the reason why
+>>>> we ignore the phydrv->suspend() when WoL is enabled. If we goes to this
+>>>> directly, it looks like we need to change each phy's suspend implementation,
+>>>> I.E if WoL is enabled, ignore genphy_suspend() and do possible isolation;
+>>>> If WoL is disabled, keep the code path as is.
+>>>>
+>>>> So compared with the shutdown hook, which direction is better?
+>>>
+>>> I believe you will have an easier time to add an argument to the PHY driver suspend's function to indicate the WoL status, or to move down the check for WoL being enabled/supported compared to adding support for shutdown into the MDIO bus layer, and then PHY drivers.
+>>
+>> Maybe the shutdown callback of mdio_bus_type could be implemented.
+>> It could iterate over all PHY's on the bus, check for WoL (similar to
+>> mdio_bus_phy_may_suspend) and do whatever is needed.
+>> Seems to me to be the most generic way.
+> 
+> OK and we optionally call into a PHY device's shutdown function if defined so it can perform PHY specific work? That would work for me.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-
--- 
-viresh
+If suspend and shutdown procedure are the same for the PHY, then we may not
+need a shutdown hook in phy_driver. This seems to be the case here.
+I just wonder what the actual use case is, because typically MAC drivers
+call phy_stop (that calls phy_suspend) in their shutdown hook.
