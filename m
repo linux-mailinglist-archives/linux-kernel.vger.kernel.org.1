@@ -2,178 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9430628534D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A555285355
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbgJFUjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
+        id S1727305AbgJFUox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727166AbgJFUjX (ORCPT
+        with ESMTP id S1726997AbgJFUox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:39:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625DEC061755;
-        Tue,  6 Oct 2020 13:39:22 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602016760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W13RXkAwMTllQhqWm5cq5BZE5nH6uHmGVcHK9GSn3ns=;
-        b=y+lasBvaLUkuLHab5bkpdFiFeUtzZZkMAe0MxPseafS75HZSeZdZN+kymi6dFFQhKZE8VW
-        qc4YvcR4WDd1//cfrfaBnkbFypqZk/QtRqz9DZvsgiv7QXhlnycxcB2xYbujy3EWoOOElY
-        q69FX0eoD272W8M4mxPKAIOLXvd7sGMUJlPaA/xQfAoNdaNCVTQNkJC0J3x4FtpMJBhnq8
-        Os8tzxF592SL6LmG6y8BBUPyOy70MBixUpq551uCnXoajQx0Cc6pZV5/R2R+NwWupaF01r
-        ngTIFTL+iP5AAP2JTZh0eYTc2Nyhf/lod73UHMtQOt9GWFeG7lOyOgueN3WvXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602016760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W13RXkAwMTllQhqWm5cq5BZE5nH6uHmGVcHK9GSn3ns=;
-        b=Kdu9Uo5QYf3A/MyHqKY64fPOxUCAHdJsz+vmpNmY3CnKUZHAh/QD3Mj/dOOk2nryIArRRE
-        eYsAfpW+lOuFYvBA==
-To:     Marc Zyngier <maz@kernel.org>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 1/4] genirq/irqdomain: Allow partial trimming of irq_data hierarchy
-In-Reply-To: <20201006101137.1393797-2-maz@kernel.org>
-References: <20201006101137.1393797-1-maz@kernel.org> <20201006101137.1393797-2-maz@kernel.org>
-Date:   Tue, 06 Oct 2020 22:39:20 +0200
-Message-ID: <87eemb6qdj.fsf@nanos.tec.linutronix.de>
+        Tue, 6 Oct 2020 16:44:53 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E138BC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:44:52 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id o9so156399ilo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FAVTd4/uhiW60aPw+XvSmqORkXupHL87bPyGbV0HsYw=;
+        b=U8RRNn9buGpyfeQW5lvmH3Wmzq2YD8O1mN7x0FY+53p4cXKgvqPJy505TkImeSvG5u
+         vPqk7VPNdpjJ6qSCnY+aBFwsvl58Pzzg7PMB9AE+AL+AfTUxXgRReKKC4MwkcYRN5fQj
+         kFbcmpk7KiSko4YptwdL9RjK32FM9VmUFsc+s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FAVTd4/uhiW60aPw+XvSmqORkXupHL87bPyGbV0HsYw=;
+        b=IhvplawZ7M2VSxJyvjxDovoqB77veBnadW+b/1PRYolU1WCWET/cbiGXLHEslDugyz
+         dEzmmukhWoBUarmapUOMTopizZ/uVn3xngpyaNFweu0/m+NgNt+c6GdMV+jOiYl9RYYN
+         mF3Ojb0HwpvCEG209QKfJtH0F20bG1X4cGaL9SOGuhApKDxKEiMbAWnGXe1NPRlD190+
+         ORBA+7EsqPwIODYFEP2nvyzZDONX05NrhFNKc50PeLLK6Xy9e/1ZIg8mFeT8aifD9Mdi
+         51EJoeRnIlXy6jPrylJndBewTMkibLIAlka/O9qYe8b4Nu3DH6QCbLYXwwM/jG7v9V/J
+         3jVg==
+X-Gm-Message-State: AOAM530WwX6L7azLmSnrGxHKdJC15wdDxfsK23jl+WhEsvgykRXK4n3q
+        WnQtmGWSUwajVLyYLAfA8Q4nRw==
+X-Google-Smtp-Source: ABdhPJyYiB/m/jo1bQRIrsuVzVlWXVEm/AoM5jDHZ7E+dxaOLQnEmcXEJ+hfYOVO3MBQ5PqFH2fXzQ==
+X-Received: by 2002:a92:b30c:: with SMTP id p12mr9703ilh.35.1602017092051;
+        Tue, 06 Oct 2020 13:44:52 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s69sm1665627ili.54.2020.10.06.13.44.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 13:44:51 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        shuah@kernel.org, rafael@kernel.org, johannes@sipsolutions.net,
+        lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
+        bp@alien8.de, arve@android.com, tkjos@android.com,
+        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
+        hridya@google.com, surenb@google.com, minyard@acm.org,
+        arnd@arndb.de, mchehab@kernel.org, rric@kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org
+Subject: [PATCH v2 00/11] Introduce Simple atomic counters
+Date:   Tue,  6 Oct 2020 14:44:31 -0600
+Message-Id: <cover.1602011710.git.skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06 2020 at 11:11, Marc Zyngier wrote:
-> It appears that some HW is ugly enough that not all the interrupts
-> connected to a particular interrupt controller end up with the same
-> hierarchy repth (some of them are terminated early). This leaves
+This patch series is a result of discussion at the refcount_t BOF
+the Linux Plumbers Conference. In this discussion, we identified
+a need for looking closely and investigating atomic_t usages in
+the kernel when it is used strictly as a counter without it
+controlling object lifetimes and state changes.
 
-  depth?
+There are a number of atomic_t usages in the kernel where atomic_t api
+is used strictly for counting and not for managing object lifetime. In
+some cases, atomic_t might not even be needed.
 
-> the irqchip hacker with only two choices, both equally bad:
->
-> - create discrete domain chains, one for each "hierarchy depth",
->   which is very hard to maintain
->
-> - create fake hierarchy levels for the shallow paths, leading
->   to all kind of problems (what are the safe hwirq values for these
->   fake levels?)
->
-> Instead, let's offer the possibility to cut short a single interrupt
+The purpose of these counters is to clearly differentiate atomic_t
+counters from atomic_t usages that guard object lifetimes, hence prone
+to overflow and underflow errors. It allows tools that scan for underflow
+and overflow on atomic_t usages to detect overflow and underflows to scan
+just the cases that are prone to errors.
 
-s/let's offer/implement/
+Simple atomic counters api provides interfaces for simple atomic counters
+that just count, and don't guard resource lifetimes. Counter will wrap
+around to 0 when it overflows and should not be used to guard resource
+lifetimes, device usage and open counts that control state changes, and
+pm states.
 
-> hierarchy, exactly representing the HW. This can only be done from
-> the .alloc() callback, before mappings can be established.
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  include/linux/irqdomain.h |  3 +++
->  kernel/irq/irqdomain.c    | 56 +++++++++++++++++++++++++++++++++++----
->  2 files changed, 54 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-> index b37350c4fe37..c6901c1bb981 100644
-> --- a/include/linux/irqdomain.h
-> +++ b/include/linux/irqdomain.h
-> @@ -509,6 +509,9 @@ extern void irq_domain_free_irqs_parent(struct irq_domain *domain,
->  					unsigned int irq_base,
->  					unsigned int nr_irqs);
->  
-> +extern int irq_domain_trim_hierarchy(unsigned int virq,
-> +				     struct irq_domain *domain);
-> +
->  static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
->  {
->  	return domain->flags & IRQ_DOMAIN_FLAG_HIERARCHY;
-> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-> index 76cd7ebd1178..d0adaeea70b6 100644
-> --- a/kernel/irq/irqdomain.c
-> +++ b/kernel/irq/irqdomain.c
-> @@ -1136,6 +1136,17 @@ static struct irq_data *irq_domain_insert_irq_data(struct irq_domain *domain,
->  	return irq_data;
->  }
->  
-> +static void __irq_domain_free_hierarchy(struct irq_data *irq_data)
-> +{
-> +	struct irq_data *tmp;
-> +
-> +	while (irq_data) {
-> +		tmp = irq_data;
-> +		irq_data = irq_data->parent_data;
-> +		kfree(tmp);
-> +	}
-> +}
-> +
->  static void irq_domain_free_irq_data(unsigned int virq, unsigned int nr_irqs)
->  {
->  	struct irq_data *irq_data, *tmp;
-> @@ -1147,14 +1158,49 @@ static void irq_domain_free_irq_data(unsigned int virq, unsigned int nr_irqs)
->  		irq_data->parent_data = NULL;
->  		irq_data->domain = NULL;
->  
-> -		while (tmp) {
-> -			irq_data = tmp;
-> -			tmp = tmp->parent_data;
-> -			kfree(irq_data);
-> -		}
-> +		__irq_domain_free_hierarchy(tmp);
->  	}
->  }
->  
-> +/**
-> + * irq_domain_trim_hierarchy - Trim the irq hierarchy from a particular
-> + *			       irq domain
-> + * @virq:	IRQ number to trim where the hierarchy is to be trimmed
-> + * @domain:	domain from which the hierarchy gets discarded for this
-> + *		interrupt
-> + *
-> + * Drop the partial irq_data hierarchy from @domain (included) onward.
-> + *
-> + * This is only meant to be called from a .alloc() callback, when no
-> + * actual mapping in the respective domains has been established yet.
-> + * Its only use is to be able to trim levels of hierarchy that do not
-> + * have any real meaning for this interrupt.
-> + */
-> +int irq_domain_trim_hierarchy(unsigned int virq, struct irq_domain *domain)
-> +{
-> +	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
-> +
-> +	/* It really needs to be a hierarchy, and not a single entry */
-> +	if (WARN_ON(!irq_data->parent_data))
-> +		return -EINVAL;
-> +
-> +	/* Skip until we find the right domain */
-> +	while (irq_data->parent_data && irq_data->parent_data->domain != domain)
-> +		irq_data = irq_data->parent_data;
-> +
-> +	/* The domain doesn't exist in the hierarchy, which is pretty bad */
-> +	if (WARN_ON(!irq_data->parent_data))
-> +		return -ENOENT;
-> +
-> +	/* Sever the inner part of the hierarchy...  */
-> +	tail = irq_data->parent_data;
-> +	irq_data->parent_data = NULL;
-> +	__irq_domain_free_hierarchy(tail);
+Using counter_atomic* to guard lifetimes could lead to use-after free
+when it overflows and undefined behavior when used to manage state
+changes and device usage/open states.
 
-This is butt ugly, really. Especially the use case where the tegra PMC
-domain removes itself from the hierarchy from .alloc()
+This patch series introduces Simple atomic counters. Counter atomic ops
+leverage atomic_t and provide a sub-set of atomic_t ops.
 
-That said, I don't have a better idea either. Sigh...
+In addition this patch series converts a few drivers to use the new api.
+The following criteria is used for select variables for conversion:
 
-Thanks,
+1. Variable doesn't guard object lifetimes, manage state changes e.g:
+   device usage counts, device open counts, and pm states.
+2. Variable is used for stats and counters.
+3. The conversion doesn't change the overflow behavior.
 
-        tglx
+Changes since Patch v1
+-- Thanks for reviews and reviewed-by, and Acked-by tags. Updated
+   the patches with the tags.
+-- Addressed Kees's  and Joel's comments:
+   1. Removed dec_return interfaces (Patch 1/11)
+   2. Removed counter_simple interfaces to be added later with changes
+      to drivers that use them (if any) (Patch 1/11)
+   3. Comment and Changelogs updates to Patch 2/11
 
+Kees, if this series is good, would you like to take this through your
+tree or would you like to take this through mine?
+
+Changes since RFC:
+-- Thanks for reviews and reviewed-by, and Acked-by tags. Updated
+   the patches with the tags.
+-- Addressed Kees's comments:
+   1. Non-atomic counters renamed to counter_simple32 and counter_simple64
+      to clearly indicate size.
+   2. Added warning for counter_simple* usage and it should be used only
+      when there is no need for atomicity.
+   3. Renamed counter_atomic to counter_atomic32 to clearly indicate size.
+   4. Renamed counter_atomic_long to counter_atomic64 and it now uses
+      atomic64_t ops and indicates size.
+   5. Test updated for the API renames.
+   6. Added helper functions for test results printing
+   7. Verified that the test module compiles in kunit env. and test
+      module can be loaded to run the test.
+   8. Updated Documentation to reflect the intent to make the API
+      restricted so it can never be used to guard object lifetimes
+      and state management. I left _return ops for now, inc_return
+      is necessary for now as per the discussion we had on this topic.
+-- Updated driver patches with API name changes.
+-- We discussed if binder counters can be non-atomic. For now I left
+   them the same as the RFC patch - using counter_atomic32
+-- Unrelated to this patch series:
+   The patch series review uncovered improvements could be made to
+   test_async_driver_probe and vmw_vmci/vmci_guest. I will track
+   these for fixing later.
+
+Shuah Khan (11):
+  counters: Introduce counter_atomic* counters
+  selftests:lib:test_counters: add new test for counters
+  drivers/base: convert deferred_trigger_count and probe_count to
+    counter_atomic32
+  drivers/base/devcoredump: convert devcd_count to counter_atomic32
+  drivers/acpi: convert seqno counter_atomic32
+  drivers/acpi/apei: convert seqno counter_atomic32
+  drivers/android/binder: convert stats, transaction_log to
+    counter_atomic32
+  drivers/base/test/test_async_driver_probe: convert to use
+    counter_atomic32
+  drivers/char/ipmi: convert stats to use counter_atomic32
+  drivers/misc/vmw_vmci: convert num guest devices counter to
+    counter_atomic32
+  drivers/edac: convert pci counters to counter_atomic32
+
+ Documentation/core-api/counters.rst          | 103 +++++++++++
+ MAINTAINERS                                  |   8 +
+ drivers/acpi/acpi_extlog.c                   |   5 +-
+ drivers/acpi/apei/ghes.c                     |   5 +-
+ drivers/android/binder.c                     |  41 ++---
+ drivers/android/binder_internal.h            |   3 +-
+ drivers/base/dd.c                            |  19 +-
+ drivers/base/devcoredump.c                   |   5 +-
+ drivers/base/test/test_async_driver_probe.c  |  23 +--
+ drivers/char/ipmi/ipmi_msghandler.c          |   9 +-
+ drivers/char/ipmi/ipmi_si_intf.c             |   9 +-
+ drivers/edac/edac_pci.h                      |   5 +-
+ drivers/edac/edac_pci_sysfs.c                |  28 +--
+ drivers/misc/vmw_vmci/vmci_guest.c           |   9 +-
+ include/linux/counters.h                     | 173 +++++++++++++++++++
+ lib/Kconfig                                  |  10 ++
+ lib/Makefile                                 |   1 +
+ lib/test_counters.c                          | 157 +++++++++++++++++
+ tools/testing/selftests/lib/Makefile         |   1 +
+ tools/testing/selftests/lib/config           |   1 +
+ tools/testing/selftests/lib/test_counters.sh |   5 +
+ 21 files changed, 546 insertions(+), 74 deletions(-)
+ create mode 100644 Documentation/core-api/counters.rst
+ create mode 100644 include/linux/counters.h
+ create mode 100644 lib/test_counters.c
+ create mode 100755 tools/testing/selftests/lib/test_counters.sh
+
+-- 
+2.25.1
 
