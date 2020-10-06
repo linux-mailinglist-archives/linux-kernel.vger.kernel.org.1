@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD34B28439E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0412843BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbgJFBGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 21:06:37 -0400
-Received: from mga05.intel.com ([192.55.52.43]:44650 "EHLO mga05.intel.com"
+        id S1726165AbgJFBNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 21:13:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725785AbgJFBGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 21:06:37 -0400
-IronPort-SDR: suNcF+wd2X9sCieTtc93tF4KeXHIR2GJyABPJg2UO9fkql3j53KZWxVKjCOOA+IFJ9CNppfAAg
- 2Ys/2hZqJPmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="248999147"
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="248999147"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 18:06:36 -0700
-IronPort-SDR: ffBB7t+xNXiv8KMGFiiIMOi5s2eA6Y4WZE1hFXaawbbF8MKbCjYe8YUQhB36VzTPHK/HcwaLBq
- degP0k/ldI5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="353188958"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by FMSMGA003.fm.intel.com with ESMTP; 05 Oct 2020 18:06:36 -0700
-Date:   Mon, 5 Oct 2020 18:08:35 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
-Message-ID: <20201006010835.GF6041@ranerica-svr.sc.intel.com>
-References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
- <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
- <20201003085345.GA114893@kroah.com>
- <20201003110548.GA145099@kroah.com>
+        id S1725864AbgJFBNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 21:13:24 -0400
+Received: from sstabellini-ThinkPad-T480s (c-24-130-65-46.hsd1.ca.comcast.net [24.130.65.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BB812076B;
+        Tue,  6 Oct 2020 01:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601946803;
+        bh=vu//iV9DFORvtpOSAwSb6Cxpg+zQ2L0xIZTcyUKvZok=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=t3p14RX2TmiiKLDeyQDTfo98b1wPAx0w/xAAEuIv5ZxxtlNPm8Ixbv2YyqiyOLors
+         fpEfj/NWTzAWFRe3bpAgnpGxrZlkXYC+Unl8Rxe10yhEgO8LdQftSDen7MXMSb2yTs
+         BJu643jbm2fK6lKNhN7ZUS9zn8YUaAMpqBgS9hdY=
+Date:   Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Julien Grall <julien@xen.org>
+cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        takahiro.akashi@linaro.org, jgross@suse.com,
+        boris.ostrovsky@oracle.com
+Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
+ correctly
+In-Reply-To: <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
+Message-ID: <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s>
+References: <160190516028.40160.9733543991325671759.stgit@devnote2> <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201003110548.GA145099@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 01:05:48PM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
-> > > +/**
-> > > + * arch_get_cpu_type_name() - Get the CPU type name
-> > > + * @cpu_type:	Type of CPU micro-architecture.
-> > > + *
-> > > + * Returns a string name associated with the CPU micro-architecture type as
-> > > + * indicated in @cpu_type. The format shall be <vendor>_<cpu_type>. Returns
-> > > + * NULL if the CPU type is not known.
-> > > + */
-> > > +const char __weak *arch_get_cpu_type_name(u32 cpu_type)
-> > > +{
-> > > +	return NULL;
-> > > +}
-> > 
-> > Why is vendor part of this?  Shouldn't it just be arch?
-> > 
-> > I say this as "vendor" is kind of "interesting" when it comes to other
-> > arches...
-> > 
-> > Speaking of other arches, we all know that other arches have this
-> > feature as well, have you worked with any other groups to verify that
-> > this interface will also work with them?
+On Mon, 5 Oct 2020, Julien Grall wrote:
+> Hi Masami,
 > 
-> Here's one set of patches for ARM64 for much the same type of cpu
-> design:
-> 	https://android-review.googlesource.com/c/kernel/common/+/1437098/3
-> Yes, it's not been posted to any kernel lists, but this is public so you
-> need to work with the ARM developers to come up with an interface that
-> works for everyone please.
+> On 05/10/2020 14:39, Masami Hiramatsu wrote:
+> > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
+> > address conversion.
+> > 
+> > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
+> > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
+> > assumes the given virtual address is in contiguous kernel memory
+> > area, it can not convert the per-cpu memory if it is allocated on
+> > vmalloc area (depends on CONFIG_SMP).
+> 
+> Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
+> region for CPU0 is allocated outside of vmalloc area.
+> 
+> However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
+> enabled.
 
-Thanks for the pointer, Greg! I will study this proposal and work with
-the ARM engineers.
+I cannot reproduce the issue with defconfig, but I can with Masami's
+kconfig.
 
-BR,
-Ricardo
+If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
+problem still appears.
+
+If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
+strange because CONFIG_NUMA is enabled in defconfig, and defconfig
+works.
+
+
+> [...]
+> 
+> > Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
+> 
+> FWIW, I think the bug was already present before 250c9af3d831.
+
+Yeah, I bet 250c9af3d831 is not what introduced the issue. Whatever
+caused virt_to_phys to stop working on vmalloc'ed addresses is the cause
+of the problem. It is something that went in 5.9 (5.8 works) but I don't
+know what for sure.
+
+
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >   arch/arm/xen/enlighten.c |    2 +-
+> >   include/xen/arm/page.h   |    3 +++
+> >   2 files changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+> > index e93145d72c26..a6ab3689b2f4 100644
+> > --- a/arch/arm/xen/enlighten.c
+> > +++ b/arch/arm/xen/enlighten.c
+> > @@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
+> >   	pr_info("Xen: initializing cpu%d\n", cpu);
+> >   	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
+> >   -	info.mfn = virt_to_gfn(vcpup);
+> > +	info.mfn = percpu_to_gfn(vcpup);
+> >   	info.offset = xen_offset_in_page(vcpup);
+> >     	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
+> > diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
+> > index 39df751d0dc4..ac1b65470563 100644
+> > --- a/include/xen/arm/page.h
+> > +++ b/include/xen/arm/page.h
+> > @@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
+> >   	})
+> >   #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) <<
+> > XEN_PAGE_SHIFT))
+> >   +#define percpu_to_gfn(v)	\
+> > +	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
+> > +
+> >   /* Only used in PV code. But ARM guests are always HVM. */
+> >   static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
+> >   {
+
+
+The fix is fine for me. I tested it and it works. We need to remove the
+"Fixes:" line from the commit message. Ideally, replacing it with a
+reference to what is the source of the problem.
+
+Aside from that:
+
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
