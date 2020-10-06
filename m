@@ -2,207 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41BF284418
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F34C2843AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgJFChU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 22:37:20 -0400
-Received: from mga17.intel.com ([192.55.52.151]:13977 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbgJFChT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 22:37:19 -0400
-IronPort-SDR: qBBBYC0Lt6WWn/gVCd9bzVRkNQfsegVzgSJCZSMtGWB5xEj68a2ZlsWEHfbUtfMK9DxUCtgia/
- HMVJHJ8Zwu6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="144228490"
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="144228490"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 19:37:16 -0700
-IronPort-SDR: MpXM1MZf4oqqaeeBLZWNVUP74ywSGtveurnv9Nni0Doi61AjIzIk0SHkEsXrposybMLXe4Z6Lw
- tvUmDOWEsfaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="517688478"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Oct 2020 19:32:29 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 5 Oct 2020 18:22:34 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 5 Oct 2020 18:22:34 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Mon, 5 Oct 2020 18:22:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HMekWhXDjtPxgUQtwOiznHSXbuuQp/R5r3VHRtwWoCtQVn/FgsannMkBVQ+9e1Cua/f/1ofRhKf3xuqAi0GdMM5/UUHLDqrAe2G9FcFLHJ+cBfVt1L3+GsCxDX2xKCzJY8cVSntneFeKqH8AFkGiA/N8VRIZccs82OSCxvT2wbQKoRSDX89WJjOxS8EDmHlsKOjy4EQhxV3kTAstAIb6+1CGsr4J0DtraHI7AtAJVX2LnkbcnPcOjpY77eA5QXFo8H+g+QO+Ea23dvz2KbYtvazhgMNcgZiOhsatPqCWT69nRiQL0ad066l4PoxR+fVsRXdoFJn20gsNKKFGUuTPQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iSAs58AQjt/g8IoEOgIwcNzJ8ouBObUZjDgJbbabNP8=;
- b=cTTJocjscHxidrTVjI7Ii6AL9RSwIqcT3IrZiTLjTJ3qAs1LGy7ZArWWABjhbWKrOLNUA6/gllNZhaMAyYFNJUwq1gls/6i5UNJt2+YmRwqmToNiP+RDu4B8aKqa4cujWyWNj97NpFXxvdDEf7jB2yoEUTg06Q2efKoArD2o9EiZfK2CY7RsRsAkJOoGwbUFWFxSq9I70TEpbJDEwunhWftiIXK4j+5ePA/VHG2xxMuDOjRs4ghGFxpKck1PJCQ4S6ip/n83F/jftQmR1fKrljalmRxp+WcZLsWvZ6TNldWHQ5i3sIopnRwhZyh5JqO9VrvTGxr6LPevKShY2OE27Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iSAs58AQjt/g8IoEOgIwcNzJ8ouBObUZjDgJbbabNP8=;
- b=Dc++q8aGFXXG+zStPpOVH7HBn7Kj5hmOPubnkKYPANCtAHni211+kPBRrV+0fkvPcCYaaLej/WJ+GaL+AFv6eYR2xNF2gjkdQgPOczdkaKe+EfaGMetaYvohLU/TaB+JfBcYKlqoPLixo5kVr/jnpEi5LknFeYh6rsslLPL+xBE=
-Received: from BYAPR11MB3015.namprd11.prod.outlook.com (2603:10b6:a03:86::14)
- by SJ0PR11MB4957.namprd11.prod.outlook.com (2603:10b6:a03:2df::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Tue, 6 Oct
- 2020 01:22:31 +0000
-Received: from BYAPR11MB3015.namprd11.prod.outlook.com
- ([fe80::e1af:b9b8:7e60:e77c]) by BYAPR11MB3015.namprd11.prod.outlook.com
- ([fe80::e1af:b9b8:7e60:e77c%4]) with mapi id 15.20.3433.043; Tue, 6 Oct 2020
- 01:22:31 +0000
-From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     Michal Simek <michal.simek@xilinx.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>
-Subject: RE: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Thread-Topic: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Thread-Index: AQHWl/61fFIKn6YDxkK/M5PRzKZE1amC4PoAgAEZhQCAACt8AIAAMNyAgAAQH4CABEzPQIAAA8WAgACDndCAADs7AIAAVytQ
-Date:   Tue, 6 Oct 2020 01:22:31 +0000
-Message-ID: <BYAPR11MB301505B60397A083050E962EB80D0@BYAPR11MB3015.namprd11.prod.outlook.com>
-References: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
- <20201001142149.23445-3-muhammad.husaini.zulkifli@intel.com>
- <20201001153526.GD906@bogus>
- <ce2bcac9-8341-d7c1-0652-309ca4e9413c@xilinx.com>
- <20201002105840.GE906@bogus>
- <1b714566-d6dd-ead1-322e-f92847b923f3@xilinx.com>
- <20201002145115.GA6520@bogus>
- <BYAPR11MB30151480E71BBA232E9B0ADEB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
- <20201005084441.znou7licvvtomva4@bogus>
- <BYAPR11MB3015F4E8FDF3CB1273A35EFAB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
- <20201005200744.robd42nkt6ahg52x@bogus>
-In-Reply-To: <20201005200744.robd42nkt6ahg52x@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.220]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ba99bb91-c9b3-409d-be3e-08d869964be3
-x-ms-traffictypediagnostic: SJ0PR11MB4957:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR11MB49573C416157B21F0A26A5E0B80D0@SJ0PR11MB4957.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OYHnvKChLPmWojpRzcxtYNGkz05kPX6DYRUpw+xSu5802pGfpHuO9CyGO/HO7FMTOyOXIZ72bIYpTmNhAV2tZrM3jGbdhz3ojxyDYqyPWaY42S15numYyCPW2YJv4yXgPpouL7WWQZqsqZzCFzGuV4ViK6GyA8Nen+bIAetaaH3OHMkgG5GB/JmSUHjLfY8fo187dp2FD3TUks4juhNjy0Pfj34lFbPoP2KI64KZHdpJ0HSY9+R6i+tnt/UG874lKwdrfM6lpYxTnJVgA5xK2lkvVgH+Z7r9c+DSaeAfzo8uTqxqihgHSRMo07KNST//aj4Vu0o+F1O6FqtAVs1POw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3015.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(7696005)(9686003)(478600001)(107886003)(8676002)(83380400001)(8936002)(26005)(76116006)(52536014)(316002)(2906002)(54906003)(33656002)(4326008)(55016002)(5660300002)(71200400001)(66446008)(6916009)(64756008)(86362001)(6506007)(66476007)(186003)(66946007)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: t6X6fWTHvly/7YaKw5F44cSk0rid7Dq92eA5xNthbqdJjVJ4+g8HmiNNNlNGDiZ6fJ6XWE/lqDtLueCzSXdv/T5KUCnHpgOG4OnKYE4Q7g8UsOwVA2BpZkUtly+xYaTfwmrExSjF+NkpsUmEQe+XIqpy2XqeTq/l0vl9YjLH81efJq8tdIOP+rvNQGEUtEjPG+zDzMHRyg5MEsMWPYRkE9NnfVyns94M/cGuYl/eHy0jT5GEefYHrH/5wQp0Z/NojB3qp3V2/Qi/+qT22CM5r5SwXnZkPXAXENHredWrlyx9qn4B5QwHTSXb5TYoq/ECJ+OZ6fAsfIUxaNI07v6iPaZShme3YRwCzuXaB4QMIkBgYRsBL5IadI4HhEJH5xtDz/cKLBkA/W3VNVb1jCTL+j2Lsxt58khcGfl2bT2dcYYsyBPooYObHvDJd7y3n4SjmumXbVhR52O7MZjnQhfVmMI+/BB+lQmJsnjGPNGCdqopoS8D2c9qOKu4IGXngtS18HrcbFZ68yaB/5mdvCRt1LPQ9ftfY6SdUIa4da53KQx6FFmxES6TtoUDV09ZnOkTFSa8iQoOdK8dYc+s/ltesXTIHWnpjKAlTpWxjD0+PZj6Cab1ejuwMMqjRY4K86iPwfCOIgW0Cvf2/a3TTk6+sA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726512AbgJFBK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 21:10:27 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:41393 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgJFBKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 21:10:23 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201006011017epoutp0296e01a9602596620fa94cb505b1f2ccc~7QfYIgmPy1813818138epoutp02j;
+        Tue,  6 Oct 2020 01:10:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201006011017epoutp0296e01a9602596620fa94cb505b1f2ccc~7QfYIgmPy1813818138epoutp02j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601946617;
+        bh=B4PawtUJM2t4wzU2pvIySnG7we9Bhgj1khiFTd9d9CE=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Rx8RJtC6Yj3KjGbngnY3QrOD1xUh97k2CcjP1L4bTfTZIPheVmtqSJrA4EZdpPPOg
+         trAwp0No0N/0erQYIZqHeGT1O8Y1jJ5bsPfmRbRjm0h8DI5JF5XlW5/vhGg3S/8m9/
+         spUfOkBMrCNoisTG2YOcZI8q4vf8cCSD1/9SF9L8=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20201006011016epcas1p459c312e10a907b7832b22cd23eb9d8a4~7QfXew6HM1279312793epcas1p4Q;
+        Tue,  6 Oct 2020 01:10:16 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.154]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4C4zsY6sg8zMqYks; Tue,  6 Oct
+        2020 01:10:09 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        20.E2.09577.1F3CB7F5; Tue,  6 Oct 2020 10:10:09 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201006011008epcas1p300f9dc6918a008b4b0acf5870f438a2e~7QfP7yysc1939819398epcas1p3e;
+        Tue,  6 Oct 2020 01:10:08 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201006011008epsmtrp151af87c3414c2b6b37057fcba7d215f2~7QfP5fMXI0584005840epsmtrp1N;
+        Tue,  6 Oct 2020 01:10:08 +0000 (GMT)
+X-AuditID: b6c32a39-bfdff70000002569-24-5f7bc3f11c68
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C1.AB.08604.0F3CB7F5; Tue,  6 Oct 2020 10:10:08 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201006011007epsmtip14dca797b06e6c0e4525f28d6ead67ad0~7QfO-JeoX3017730177epsmtip1d;
+        Tue,  6 Oct 2020 01:10:07 +0000 (GMT)
+Subject: Re: [PATCH 4/4] dt-bindings: Explicitly allow additional properties
+ in common schemas
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <0e155728-89b3-5f31-f008-dfd57b6c4f6b@samsung.com>
+Date:   Tue, 6 Oct 2020 10:23:28 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3015.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba99bb91-c9b3-409d-be3e-08d869964be3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 01:22:31.0783
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8dm9pruFfmAIjPLR55DmqmCY5yrdx9eGcdb+0ytOOXr8w9GT1XidxTC/fuJ1pZWmr2lUWpDwZLhDHS52Sm50BJmeekT2AE8XTJGQxRNbt9Aqj++Z+TYWjWC4eclgWKpB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4957
-X-OriginatorOrg: intel.com
+In-Reply-To: <20201005183830.486085-5-robh@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01UaVBTVxSe+/KWoFKfiOXCVIHYOtUqEhF66KB1lNpXdapVy1hnbIzwBhhD
+        kknAqnQYQMCouFBcSkRgCC5sChGQTVBWaQtBUEQxrmhAFgUEXKA2EJzy7zvnfOd8850z9woF
+        NiahgzBQHsyr5FKZiJ5CFlTOd13UVxkqcU0cXQxpN28zYDBWCCD/vZaBTONRGtIiA+DE43Ya
+        kgZmQ6IhioTkqgYKMk+MUlCZ2oHg1uBLGvbpLtGQ+vJPCiLSmkl4FJlBgMGQw0BjwREK0uKT
+        KTgQl8bAw8FqBEO3NAQcHzlPgP5pCwUZwycE0Bf7gILLySMI9nflI9CMvkZQU/iEgKSqXhLu
+        9g9R0FycSEN+90UEsTn55nl6M6/qw1EEJZHnGKhPqqVh4HAVAqMxA0HBQBQNNZm3aPhHd5iB
+        iL67DKSeixZA68UyBvJLrxFQlFhHwTn9CAGV+8souJR6nIS2iAs0dDbHCiBGOx2Mf1XT8L64
+        hoH4om4EH0oLGWh/fISGC2/N2v+25JLwd0kwxNTUUCvWcNFN50kuKSuU6+7sJLm89LsEV6l5
+        zXBFWiPDpehDuL6mNsSd1iRQnK60k+Ca60M4fcYBmgu/ZiC5+y2lNNfb0MBw6VlZ1AbHrTu9
+        AnipH69y4uW+Cr9Auf8y0dpNklUSdw9X8SKxJ3wtcpJLg/hlIu91GxatDpSZjypy2iWVhZhT
+        G6RqtWjxci+VIiSYdwpQqIOXiXiln0zpqXRRS4PUIXJ/F19F0DdiV9cl7mbi9p0ByRffEUo9
+        uTun+yYVjuoFB5GVELNLcVfXfXQQTRHasIUIv0h5QlqCfoTr4zIoSzCEcElkA/mx5VR1FmMp
+        XEW4sT9lgvUS4aL2B+Osmex2bBpqGxexZbfh2nsvxucK2DRbXN0WO16g2QW4vKOVHsPTWWd8
+        +81TNIat2eX48tk3xBgm2c+x4W3r+NBZrA+uK4ia4MzAdQnt5rxQaMV64Lz0eWNpAWuH77Un
+        ExbsiK/0JArGdDHbPBV3HHuGLBa8cd/pjokNzMQvavMYC3bAnUdjJnAoTq+roi3NGoTzyhsp
+        S8ENl5+NJ8aEBex8fKl4sSXtjIven0EW4U9w72AsNUbBrDXWxNhYKHNx8yMjYcH2WLf/AH0M
+        ibST3GgnWdBOsqD9XywFkRnoU16pDvLn1WKl++Rz69H4i1/gWYhO9bxyqUCEEFUgLBSIbK1d
+        fHZLbKz9pHv28iqFRBUi49UVyN283ziBwyxfhfnLkAdLxO5L3NzcYKnYw10sFtlZP77nJLFh
+        /aXB/E6eV/Kqj32E0MohnHC0Cr9uN/qLx0oUL2mqWLHQ3SDbfHL1g0SvGblX91k3eLY8jFtZ
+        aveqKbs/bsuhz5yPcyafMvsuU3h7j1PY2sK2nxqmrTuUlOzhoBs2Zuderc5N7bmxRRs2tzg1
+        TNMTuGezH/fFwqJ5I4p5Pnsdt//2+/36gNqN+iub1iR8f2rY7dcdmWr7Q93DP288Mnvrm/gz
+        LlFLTaFZTL1uTuY227gn30WXZWWv831rMgavcpL/WCZ7fmdtxNMv7da3vtt1Q/dtzvU5lVKP
+        P2a8HqgxmbxadPLn630Hs4fnS21brSN/uFBSVb4jgV7p/FXjM+81u+0ls+x8o1dPvbk3qCTs
+        pKDj8p3erdPsMsNHRaQ6QCpeIFCppf8BncC7Z3oFAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0xTZxiA851rgRCOBcIB41SGmBHBsTD2uhlisjkO0yWbm2RbdNiMBlBA
+        RmFDWTJA5CaXOQWh0pZLASlYoFCkgIC0sMCklYsExDoRzEDuooCCshayhH9P3u95vvfPy8P5
+        BsqJFxIeJYwMF4Q6U5ZEvdb5Hfd5bWzA+2MaR5D33qfBYGzHQb0qpqHCmEWBPCEYskfHKZAu
+        7oB8QyIBMp2ehIrsNyRoiyYQDLyco+BCcRUFRXO5JMTL+wl4nKDAwGCopuFefSYJ8isyElIv
+        y2n452UHgqWBFAyurpVhoBobJEGxnI3DQvojEmplawiSp9QIUt68QNDZ8AQDqW6WgOHnSyT0
+        N+ZToJ5WIkivVpv+U5k83XoWgqaEUhp6pH9RsJihQ2A0KhDULyZS0FkxQMHd4gwa4heGaSgq
+        vYjDkLKFBnVzGwaa/C4SSlVrGGiTW0ioKrpKwEj8DQom+9NxSBLbgLG7g4LVxk4armimEaw3
+        N9AwPppJwY1Xpt1vB2sI+LspCpI6O8lDX3AX+8oITloZy01PThJcXfkwxmlTXtCcRmykuQJV
+        NLfQN4K46yl5JFfcPIlx/T3RnEqRSnFxbQaCezjYTHGzej3NlVdWkl/t/MHyYKAwNOQXYeR+
+        n1OWwTLlayxCRcRUT/eScagHT0MWPJbxYq91VNJm5jNNiJXmO2/OHdmc3g6TwzOxLavVitKQ
+        pUmZQezsQvJGa8ucYv9dGtlw7JiTbMZzS7ODM0o7dqxRT24GasSup0k2FlCMG9s6MUSZ2YbZ
+        zd5fGUNmtmZ82NqSFczMBOPCGl4NEWa2Z/xZjXwM23S2sV1544R5mQXjzdaVu5rHOLOXXZP2
+        4ZvswD4Yl2GbvJO9NZOP/4FsxVtq8ZZEvCURb0kKEKFAjsIIUVhQmMgzwjNc+KuHSBAmig4P
+        8vjpbJgKbdy823sN6JZi3qMdYTzUjlge7mxn7eEfE8C3DhScOy+MPBsQGR0qFLWj7TzC2cF6
+        6OfCH/lMkCBKeEYojBBG/v+K8Syc4jCL2x+7enjndd+V7Tp/WP9g38D3kuNtCwUdvMRrOcQ9
+        7yn+apJ0wD1G6dLm0i3ZI7F4NhZ3wr/s8Sxhm9r95aef+HgNn9Me8AtE/GFdpo9VwtShE3d6
+        JaV43TbdrmLXiQ+qVlMnjX57vEvOnFzLfrKvde/DY+OF64Xhjwb+DP399NGYcu60+Gn3bnuh
+        Plrqq3E1hF5qIattpkZHu5JKahwor5zrTPqz166tB46VyY+UH92vr/1opWbHN1a+ys7j2tIs
+        q7J5z88Lb4a4bf+u6UO/b8uXvUSWt2fm7hysh9y3n03nGn0dpxoEgQFPL1WnXoiVHL7p9C64
+        X7a30fymDsxaFjW2fO1MiIIFnm54pEjwH6+El7RiBAAA
+X-CMS-MailID: 20201006011008epcas1p300f9dc6918a008b4b0acf5870f438a2e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201005183933epcas1p36d2c9cc1f3ad9180421269ca74330d65
+References: <20201005183830.486085-1-robh@kernel.org>
+        <CGME20201005183933epcas1p36d2c9cc1f3ad9180421269ca74330d65@epcas1p3.samsung.com>
+        <20201005183830.486085-5-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Sudeep and Michal,
+On 10/6/20 3:38 AM, Rob Herring wrote:
+> In order to add meta-schema checks for additional/unevaluatedProperties
+> being present, all schema need to make this explicit. As common/shared
+> schema are included by other schemas, they should always allow for
+> additionalProperties.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+(snip)
 
->-----Original Message-----
->From: Sudeep Holla <sudeep.holla@arm.com>
->Sent: Tuesday, October 6, 2020 4:08 AM
->To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
->Cc: Michal Simek <michal.simek@xilinx.com>; Hunter, Adrian
-><adrian.hunter@intel.com>; ulf.hansson@linaro.org; linux-
->mmc@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
->kernel@vger.kernel.org; Raja Subramanian, Lakshmi Bai
-><lakshmi.bai.raja.subramanian@intel.com>; arnd@arndb.de; Wan Mohamad,
->Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
->Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Truste=
-d
->Firmware Service call
->
->On Mon, Oct 05, 2020 at 05:04:10PM +0000, Zulkifli, Muhammad Husaini wrote=
-:
->
->> To be clarify keembay_sd_voltage_selection function as Michal's
->> prefers is actually using the firmware driver. This function located
->> in firmware driver.
->
->OK, it can be just one function place it in any file you think is more app=
-ropriate
->need not be arasan controller driver. Any reasons why this can't work ? Ca=
-n even
->be in some header.
->
->int keembay_sd_voltage_selection(int volt) {
->	int res;
->
->	arm_smccc_1_1_invoke(KEEMBAY_SET_SD_VOLTAGE_FUNC_ID, volt,
->&res)
->
->	/* appropriate error check if needed here */
->
->	return res;
->}
->
-Yeah I believe it can work. I will create one header file in include/linux/=
-firmware/intel/Keembay_firmware.h=20
-To handle this func and arasan controller can call this func.
-Are you guys ok with this?
+>  Documentation/devicetree/bindings/extcon/wlf,arizona.yaml    | 2 ++
+(snip)
 
->> I will call this func during voltage switching from arasan controller.
->> I believe this implementation require DT to specify the compatible
->> name and method use either smc/hvc.
->
->No, use the standard one as detected by arm_smccc_1_1_invoke (It calls
->arm_smccc_get_conduit internally and use SMC/HVC based on that)
->
->>
->> Are you saying that by using simple smcc based function library I
->> should call below func() in arasan controller. For example
->> 1) arm_smccc_get_version(void)
->> 2) arm_smccc_version_init(arm_smccc_get_version(),
->SMCCC_CONDUIT_SMC);
->
->Nope
->
->> 3) arm_smccc_1_1_invoke(KEEMBAY_SET_SD_VOLTAGE_FUNC_ID,
->voltage_value
->> ,  &res);
->
->Just this.
->
->--
->Regards,
->Sudeep
+For the extcon part,
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
