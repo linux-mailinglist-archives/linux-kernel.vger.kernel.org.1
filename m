@@ -2,271 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B002852C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E810E2852CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727191AbgJFUAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:00:13 -0400
-Received: from mga09.intel.com ([134.134.136.24]:22783 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgJFUAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:00:12 -0400
-IronPort-SDR: bpJZkOBbuSmtLf8TdGDXEjXzMahgdiopHS1j2PVFoJPafzqQrA3PVjbN6XKsOyVkHu7UFDjF8R
- uzGEcOZVrAKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="164798101"
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="164798101"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 13:00:10 -0700
-IronPort-SDR: uDe4lxWJP+Hz8hY5BF53JET2btrnbIDhircC2xMxZlRebfqh7Qevt3cvuINBFDqTZIbh/34Qx6
- wjyy8p4TE3OQ==
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="460967583"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.2.223])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 13:00:09 -0700
-Subject: Re: [PATCH v2 4/7] fpga: sec-mgr: expose sec-mgr update errors
-To:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        "Xu, Yilun" <yilun.xu@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>
-References: <20201002223701.1317-1-russell.h.weight@intel.com>
- <20201002223701.1317-5-russell.h.weight@intel.com>
- <DM6PR11MB3819F5AF4275019A8F0D3208850C0@DM6PR11MB3819.namprd11.prod.outlook.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <cf78c4e2-a519-4c1a-6e0d-849bbd24d44a@intel.com>
-Date:   Tue, 6 Oct 2020 13:00:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727192AbgJFUBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:01:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48424 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727154AbgJFUBp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 16:01:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602014503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v7NLuxXdQeQQY7stz0aLibMIgf9SUDLzEKLNrU4cSWE=;
+        b=A3Xbm5T8d4Pk5b7iiSyA8VY/kjWiRm8RExEpyCnvoUU4B74+JuPCkyV7YPetf7MSgf/Xyr
+        Sar8fuRGDdamRmyIgT7v0nAwOYzrCCJ8+pjq5DQ207eIuOooFAcvJ16cxOCmUckHYweTcM
+        3XCdFcW0n7DYNmDxUo1eanC5ldDEzBc=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-ywddheaVNM69Bbz937a1dA-1; Tue, 06 Oct 2020 16:01:41 -0400
+X-MC-Unique: ywddheaVNM69Bbz937a1dA-1
+Received: by mail-qk1-f200.google.com with SMTP id r128so10102463qkc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:01:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v7NLuxXdQeQQY7stz0aLibMIgf9SUDLzEKLNrU4cSWE=;
+        b=ulExRrh8fLbJLf41KPgtKm0Wn8QtpTpQlZ47rFe2p0cEYnViNmM3UkmggMxlvxV0eY
+         B9xv4ye2tCq93gvwVcw8nqc0Ga9O3OdimDY5p3kv4vtPUtKC5UZ2AaDNQC+knmzkKceb
+         uTe5URolM8gVz3CPOfRDB57VhCKU9dzPS1lk4a6wzJzGkBXJIoMaPYehetqTMOVda1ul
+         Rfda26V2w6A5TWlQf9eUe3cZViVavrmfBz/kfbd7QC4gzHzZolOU0eLbWAPgcHXCgwVv
+         8f3fVqhk/RcIWM+tkpuNtC+KzA6DdGgHhjoiTRFvhiGBkJBuJwSNFIn+kGKSGci9dPds
+         hLaA==
+X-Gm-Message-State: AOAM533aC2XMyj7RWIYOqumA3+X/rJoqzNPhN/vf/6ccLDdXHTR4c2Qu
+        M4yh7iftuWs/MnnUjIxPToHD926+WdVHCiTZKfRCjRcBr/wLEh8QQA7KBjObEiS1v6w3v+VQn5S
+        zMM+14/EV0jme/7sGR1RvdH0k
+X-Received: by 2002:ac8:6f0d:: with SMTP id g13mr7112013qtv.236.1602014501062;
+        Tue, 06 Oct 2020 13:01:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMZEDi/lS32ur2gphW1U6vX5ouVhu9SJ6z4d3TFoTXExgFknAz59jMazvy+qKDR9hLk+JcHA==
+X-Received: by 2002:ac8:6f0d:: with SMTP id g13mr7111977qtv.236.1602014500686;
+        Tue, 06 Oct 2020 13:01:40 -0700 (PDT)
+Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
+        by smtp.gmail.com with ESMTPSA id g7sm3144991qtc.19.2020.10.06.13.01.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 13:01:39 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 16:01:38 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the akpm-current tree
+Message-ID: <20201006200138.GA6026@xz-x1>
+References: <20201006230516.64f7b17f@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR11MB3819F5AF4275019A8F0D3208850C0@DM6PR11MB3819.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20201006230516.64f7b17f@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 06, 2020 at 11:05:16PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the akpm-current tree, today's linux-next build (sparc
+> defconfig) produced this warning:
+> 
+> mm/memory.c: In function 'copy_present_page':
+> mm/memory.c:800:20: warning: unused variable 'dst_mm' [-Wunused-variable]
+>   struct mm_struct *dst_mm = dst_vma->vm_mm;
+>                     ^~~~~~
+> mm/memory.c: In function 'copy_present_pte':
+> mm/memory.c:889:20: warning: unused variable 'dst_mm' [-Wunused-variable]
+>   struct mm_struct *dst_mm = dst_vma->vm_mm;
+>                     ^~~~~~
+> 
+> Maybe introduced by commit
+> 
+>   7e6cdccef3df ("mm-remove-src-dst-mm-parameter-in-copy_page_range-v2")
 
+Yes it is.  The mm pointer is only used by set_pte_at(), while I just noticed
+that some of the archs do not use the mm pointer at all, hence this warning.
 
-On 10/5/20 1:55 AM, Wu, Hao wrote:
->> Subject: [PATCH v2 4/7] fpga: sec-mgr: expose sec-mgr update errors
->>
->> Extend Intel Security Manager class driver to include
->> an update/error sysfs node that can be read for error
->> information when a secure update fails.
->>
->> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->> ---
->> v2:
->>   - Bumped documentation date and version
->>   - Added warning to sec_progress() for invalid progress status
->>   - Added sec_error() function (similar to sec_progress())
->> ---
->>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 17 ++++
->>  drivers/fpga/ifpga-sec-mgr.c                  | 81 ++++++++++++++++---
->>  include/linux/fpga/ifpga-sec-mgr.h            |  1 +
->>  3 files changed, 89 insertions(+), 10 deletions(-)
->>
->> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> index 73a5246fea1b..1f9f2c215e0c 100644
->> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> @@ -89,3 +89,20 @@ Description:Read-only. Returns a string describing
->> the current
->>  programming. Userspace code can poll on this file,
->>  as it will be signaled by sysfs_notify() on each
->>  state change.
->> +
->> +What: /sys/class/ifpga_sec_mgr/ifpga_secX/update/error
->> +Date:Oct 2020
->> +KernelVersion:  5.11
->> +Contact:Russ Weight <russell.h.weight@intel.com>
->> +Description:Read-only. Returns a string describing the failure
->> +of a secure update. This string will be in the form
->> +of <STATUS>:<ERROR>, where <STATUS> will be one of
->> +the status strings described for the status sysfs
->> +file and <ERROR> will be one of the following:
->> +hw-error, timeout, user-abort, device-busy,
->> +invalid-file-size, read-write-error, flash-wearout,
->> +file-read-error.  The error sysfs file is only
->> +meaningful when the secure update engine is in the
->> +idle state. If this file is read while a secure
->> +update is in progress, then the read will fail with
->> +EBUSY.
->> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
->> index ad918fb42dc2..456ea0b71e3d 100644
->> --- a/drivers/fpga/ifpga-sec-mgr.c
->> +++ b/drivers/fpga/ifpga-sec-mgr.c
->> @@ -146,10 +146,16 @@ static void update_progress(struct ifpga_sec_mgr
->> *imgr,
->>  sysfs_notify(&imgr->dev.kobj, "update", "status");
->>  }
->>
->> +static void set_error(struct ifpga_sec_mgr *imgr, enum ifpga_sec_err
->> err_code)
->> +{
->> +imgr->err_state = imgr->progress;
->> +imgr->err_code = err_code;
->> +}
->> +
->>  static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
->>  enum ifpga_sec_err err_code)
->>  {
->> -imgr->err_code = err_code;
->> +set_error(imgr, err_code);
->>  imgr->iops->cancel(imgr);
->>  }
->>
->> @@ -172,7 +178,7 @@ static void ifpga_sec_mgr_update(struct work_struct
->> *work)
->>
->>  get_device(&imgr->dev);
->>  if (request_firmware(&fw, imgr->filename, &imgr->dev)) {
->> -imgr->err_code = IFPGA_SEC_ERR_FILE_READ;
->> +set_error(imgr, IFPGA_SEC_ERR_FILE_READ);
->>  goto idle_exit;
->>  }
->>
->> @@ -180,7 +186,7 @@ static void ifpga_sec_mgr_update(struct work_struct
->> *work)
->>  imgr->remaining_size = fw->size;
->>
->>  if (!try_module_get(imgr->dev.parent->driver->owner)) {
->> -imgr->err_code = IFPGA_SEC_ERR_BUSY;
->> +set_error(imgr, IFPGA_SEC_ERR_BUSY);
->>  goto release_fw_exit;
->>  }
->>
->> @@ -274,22 +280,76 @@ static const char * const sec_mgr_prog_str[] = {
->>  "programming"/* IFPGA_SEC_PROG_PROGRAMMING */
->>  };
->>
->> -static ssize_t
->> -status_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +static const char * const sec_mgr_err_str[] = {
->> +"none",/* IFPGA_SEC_ERR_NONE */
->> +"hw-error",/* IFPGA_SEC_ERR_HW_ERROR */
->> +"timeout",/* IFPGA_SEC_ERR_TIMEOUT */
->> +"user-abort",/* IFPGA_SEC_ERR_CANCELED */
->> +"device-busy",/* IFPGA_SEC_ERR_BUSY */
->> +"invalid-file-size",/* IFPGA_SEC_ERR_INVALID_SIZE */
->> +"read-write-error",/* IFPGA_SEC_ERR_RW_ERROR */
->> +"flash-wearout",/* IFPGA_SEC_ERR_WEAROUT */
->> +"file-read-error"/* IFPGA_SEC_ERR_FILE_READ */
->> +};
->> +
->> +static const char *sec_progress(struct device *dev, enum ifpga_sec_prog
->> prog)
->>  {
->> -struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
->>  const char *status = "unknown-status";
->>
->> -if (imgr->progress < IFPGA_SEC_PROG_MAX)
->> -status = sec_mgr_prog_str[imgr->progress];
->> +if (prog < IFPGA_SEC_PROG_MAX)
->> +status = sec_mgr_prog_str[prog];
->>  else
->>  dev_warn(dev, "Invalid status during secure update: %d\n",
->> - imgr->progress);
->> + prog);
->> +
->> +return status;
->> +}
->> +
->> +static const char *sec_error(struct device *dev, enum ifpga_sec_err
->> err_code)
->> +{
->> +const char *error = "unknown-error";
->> +
->> +if (err_code < IFPGA_SEC_ERR_MAX)
->> +error = sec_mgr_err_str[err_code];
->> +else
->> +dev_warn(dev, "Invalid error code during secure
->> update: %d\n",
->> + err_code);
->> +
->> +return error;
->> +}
->> +
->> +static ssize_t
->> +status_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
->>
->> -return sprintf(buf, "%s\n", status);
->> +return sprintf(buf, "%s\n", sec_progress(dev, imgr->progress));
->>  }
->>  static DEVICE_ATTR_RO(status);
->>
->> +static ssize_t
->> +error_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
->> +int ret;
->> +
->> +mutex_lock(&imgr->lock);
->> +
->> +if (imgr->progress != IFPGA_SEC_PROG_IDLE)
->> +ret = -EBUSY;
->> +else if (!imgr->err_code)
->> +ret = 0;
->> +else
->> +ret = sprintf(buf, "%s:%s\n",
->> +      sec_progress(dev, imgr->err_state),
->> +      sec_error(dev, imgr->err_code));
-> In scheduled work for update, there is no lock protection, would that be a
-> real problem here? e.g. progress is changed, or err_state and err_code
-> are not matched.
--EBUSY is returned unless we are in the IDLE state. Also, the lock is held
-during this function, so new updates cannot begin. This means there is no
-worker thread in progress and there is no concurrent execution context
-that can change the err_state and err_code values. They would retain the
-error state from the previous update.
+The required change attached; this is quite special that we only referenced the
+mm once in each of the function, so that temp variable can actually be avoided.
+Ideally there should be some way to only define the variable on archs that need
+this mm pointer (e.g., when set_pte_at() or some similar function is called
+multiple times in some function, it should still be helpful to introduce a
+local variable to keep dst_vma->vm_mm).  However I don't know a good way to do
+this...
 
-Thanks for the comments!
-- Russ
->
-> Thanks
-> Hao
->
->> +
->> +mutex_unlock(&imgr->lock);
->> +
->> +return ret;
->> +}
->> +static DEVICE_ATTR_RO(error);
->> +
->>  static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->>        const char *buf, size_t count)
->>  {
->> @@ -325,6 +385,7 @@ static DEVICE_ATTR_WO(filename);
->>  static struct attribute *sec_mgr_update_attrs[] = {
->>  &dev_attr_filename.attr,
->>  &dev_attr_status.attr,
->> +&dev_attr_error.attr,
->>  NULL,
->>  };
->>
->> diff --git a/include/linux/fpga/ifpga-sec-mgr.h b/include/linux/fpga/ifpga-
->> sec-mgr.h
->> index 27008abd8e75..246e3d452c59 100644
->> --- a/include/linux/fpga/ifpga-sec-mgr.h
->> +++ b/include/linux/fpga/ifpga-sec-mgr.h
->> @@ -110,6 +110,7 @@ struct ifpga_sec_mgr {
->>  const u8 *data;/* pointer to update data */
->>  u32 remaining_size;/* size remaining to transfer */
->>  enum ifpga_sec_prog progress;
->> +enum ifpga_sec_prog err_state;/* progress state at time of
->> failure */
->>  enum ifpga_sec_err err_code;/* security manager error code */
->>  bool driver_unload;
->>  void *priv;
->> --
->> 2.17.1
+Thanks,
+
+------------8<------------
+diff --git a/mm/memory.c b/mm/memory.c
+index 8ade87e8600a..d9b16136014c 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -798,7 +798,6 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+                  pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+                  struct page **prealloc, pte_t pte, struct page *page)
+ {
+-       struct mm_struct *dst_mm = dst_vma->vm_mm;
+        struct mm_struct *src_mm = src_vma->vm_mm;
+        struct page *new_page;
+
+@@ -874,7 +873,7 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+        /* All done, just insert the new page copy in the child */
+        pte = mk_pte(new_page, dst_vma->vm_page_prot);
+        pte = maybe_mkwrite(pte_mkdirty(pte), dst_vma);
+-       set_pte_at(dst_mm, addr, dst_pte, pte);
++       set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+        return 0;
+ }
+
+@@ -887,7 +886,6 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+                 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+                 struct page **prealloc)
+ {
+-       struct mm_struct *dst_mm = dst_vma->vm_mm;
+        struct mm_struct *src_mm = src_vma->vm_mm;
+        unsigned long vm_flags = src_vma->vm_flags;
+        pte_t pte = *src_pte;
+@@ -932,7 +930,7 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+        if (!(vm_flags & VM_UFFD_WP))
+                pte = pte_clear_uffd_wp(pte);
+
+-       set_pte_at(dst_mm, addr, dst_pte, pte);
++       set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+        return 0;
+ }
+------------8<------------
+
+-- 
+Peter Xu
 
