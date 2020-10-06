@@ -2,163 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EBE284CAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D988284CAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgJFNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgJFNp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:45:28 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA8BC061755;
-        Tue,  6 Oct 2020 06:45:28 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 7so7993326pgm.11;
-        Tue, 06 Oct 2020 06:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=5tbBktaYCveUyqUKP7C5+yx8eshWk6kNr6MFBtqaYs0=;
-        b=tdFbbEab7P6ctnOCztAANhuNGfm0C/s+XpQayT+qel735y0nuTSQeZEui67TMEJKO5
-         T1qaKdEgNKghpD6QPcfuqQxD9wJomEOMw6TIcsjv1cJasXB5IxHYbFA2Ee8aMWFTjJ5H
-         k4QNJ2puGJPlj7rqNBI90PSx0qvHIl2R7QHn7sZG8WX0g83Nd7dRtzpsmDLFiYBI2olt
-         DhmLNuHtiKwF8jOru8FkRFegFa8XtfNYrxyHHxDxuLIQBpiGUdpq3IILRshj4fvDEmOV
-         8C0dOPV/bfkWx+6l205vAv0pG06xIg8FjgoU9WKBsb77UJEOGVNdFEbFaA0SrORVWgMd
-         9uYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5tbBktaYCveUyqUKP7C5+yx8eshWk6kNr6MFBtqaYs0=;
-        b=WLPp2SsKqjVD1k0SND57J4oy2bmvpc0j41ewkGamMVtlp5dKoc9yY3XYO+05ka3oKR
-         7To5j3WIo7jfztrEnrnEKlaURRJCnvKOvuzSiogB1tFnL6/HgbMO0uxyBhvo+2ygu2en
-         GaiFRme/QDg6WAE7jI5Dnq2jMw9qtsF0t9HpZOezQGikbBy4nzJP+uovDwbar6+XRbIY
-         NBPM0c7HgJDaHTaC6O7lYjQu+BQIqsTTeMpbRHul3IsZCQDBPN9sYrrHbk/PslP0+18F
-         /f1CiAwFHgi0QMlsLqH6SeQEKLLJdEBlTLZg0AzD8Y5je0Bf1N3MZXKXtJLVF665BjHz
-         8Otg==
-X-Gm-Message-State: AOAM533aR+0NjxT1WWJ8VE7QOWbNFv9ImGsaFJvzgv7DddlnZHggWBN/
-        BOaYsjImpxjw/RXUJBpHkvNnzxkzeLPlGHtI
-X-Google-Smtp-Source: ABdhPJy8NH8Q6FBcZVTf/neYX6uRWoUFtx1mZx7iecYevo8Bf//iUTH5fR7Nsg1WtwWkexNTbJW4ug==
-X-Received: by 2002:aa7:8dc7:0:b029:151:2237:52c5 with SMTP id j7-20020aa78dc70000b0290151223752c5mr4649146pfr.32.1601991927399;
-        Tue, 06 Oct 2020 06:45:27 -0700 (PDT)
-Received: from ?IPv6:2402:b801:2840:8200:a50f:f34d:264:5cdf? ([2402:b801:2840:8200:a50f:f34d:264:5cdf])
-        by smtp.gmail.com with ESMTPSA id h12sm3703548pfo.68.2020.10.06.06.45.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 06:45:26 -0700 (PDT)
-Subject: Re: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20201002164915.938217-1-jbrunet@baylibre.com>
- <CAPDyKFo6T_P+TQQZSzFgHwLeE08f146KxKBpAutv209MXq0mjA@mail.gmail.com>
- <87wo052grp.fsf@nanos.tec.linutronix.de>
- <87v9fn7ce2.fsf@nanos.tec.linutronix.de>
-From:   Brad Harper <bjharper@gmail.com>
-Message-ID: <e4e6cc45-bc18-40ec-035e-fdb45b9a8f46@gmail.com>
-Date:   Wed, 7 Oct 2020 00:45:20 +1100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1726123AbgJFNqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:46:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:47872 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgJFNqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 09:46:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B85C6143D;
+        Tue,  6 Oct 2020 06:46:31 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [10.119.48.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38BF03F71F;
+        Tue,  6 Oct 2020 06:46:31 -0700 (PDT)
+Subject: Re: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>
+Cc:     herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, broonie@kernel.org,
+        linux-crypto@vger.kernel.org, Will Deacon <will@kernel.org>,
+        ardb@kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20201006034854.2277538-1-jeremy.linton@arm.com>
+ <20201006082748.GB25305@willie-the-truck> <20201006100121.GW6642@arm.com>
+ <20201006102507.GA19213@gaia> <20201006104313.GX6642@arm.com>
+ <20201006123350.GB19213@gaia>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <877e948c-2903-5537-05a6-654f4753407c@arm.com>
+Date:   Tue, 6 Oct 2020 08:45:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <87v9fn7ce2.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201006123350.GB19213@gaia>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm happy to test anything on a range of amlogic hardware with standard 
-/ rt and  multiple mmc devices.  Ill test Jerome's patch in next 24 
-hours to report the results.
+Hi,
 
-On 6/10/2020 11:43 pm, Thomas Gleixner wrote:
-> On Mon, Oct 05 2020 at 10:55, Thomas Gleixner wrote:
->> On Mon, Oct 05 2020 at 10:22, Ulf Hansson wrote:
->>> On Fri, 2 Oct 2020 at 18:49, Jerome Brunet <jbrunet@baylibre.com> wrote:
->>>> IRQF_ONESHOT was added to this driver to make sure the irq was not enabled
->>>> again until the thread part of the irq had finished doing its job.
+On 10/6/20 7:33 AM, Catalin Marinas wrote:
+> On Tue, Oct 06, 2020 at 11:43:14AM +0100, Dave P Martin wrote:
+>> On Tue, Oct 06, 2020 at 11:25:11AM +0100, Catalin Marinas wrote:
+>>> On Tue, Oct 06, 2020 at 11:01:21AM +0100, Dave P Martin wrote:
+>>>> On Tue, Oct 06, 2020 at 09:27:48AM +0100, Will Deacon wrote:
+>>>>> On Mon, Oct 05, 2020 at 10:48:54PM -0500, Jeremy Linton wrote:
+>>>>>> The AES code uses a 'br x7' as part of a function called by
+>>>>>> a macro. That branch needs a bti_j as a target. This results
+>>>>>> in a panic as seen below. Instead of trying to replace the branch
+>>>>>> target with a bti_jc, lets replace the indirect branch with a
+>>>>>> bl/ret, bl sequence that can target the existing bti_c.
+>>>>>>
+>>>>>>    Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
+>>>>>>    CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+>>>>>>    pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+>>>>>>    pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+>>>>>>    lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+>>>>>>    sp : ffff80001052b730
+>>>>>>
+>>>>>>    aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+>>>>>>     __xts_crypt+0xb0/0x2dc [aes_neon_bs]
+>>>>>>     xts_encrypt+0x28/0x3c [aes_neon_bs]
+>>>>>>    crypto_skcipher_encrypt+0x50/0x84
+>>>>>>    simd_skcipher_encrypt+0xc8/0xe0
+>>>>>>    crypto_skcipher_encrypt+0x50/0x84
+>>>>>>    test_skcipher_vec_cfg+0x224/0x5f0
+>>>>>>    test_skcipher+0xbc/0x120
+>>>>>>    alg_test_skcipher+0xa0/0x1b0
+>>>>>>    alg_test+0x3dc/0x47c
+>>>>>>    cryptomgr_test+0x38/0x60
+>>>>>>
+>>>>>> Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
+>>>>>
+>>>>> nit: the "commit" string shouldn't be here, and I think the linux-next
+>>>>> scripts will yell at us if we don't remove it.
+>>>>>
+>>>>>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+>>>>>> ---
+>>>>>>   arch/arm64/crypto/aes-neonbs-core.S | 6 +++---
+>>>>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
+>>>>>> index b357164379f6..32f53ebe5e2c 100644
+>>>>>> --- a/arch/arm64/crypto/aes-neonbs-core.S
+>>>>>> +++ b/arch/arm64/crypto/aes-neonbs-core.S
+>>>>>> @@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
+>>>>>>   
+>>>>>>   0:	mov		bskey, x21
+>>>>>>   	mov		rounds, x22
+>>>>>> -	br		x7
+>>>>>> +	ret
 >>>>
->>>> Doing so upsets RT because, under RT, the hardirq part of the irq handler
->>>> is not migrated to a thread if the irq is claimed with IRQF_ONESHOT.
->>>> In this case, it has been reported to eventually trigger a deadlock with
->>>> the led subsystem.
->>>>
->>>> Preventing RT from doing this migration was certainly not the intent, the
->>>> description of IRQF_ONESHOT does not really reflect this constraint:
->>>>
->>>>   > IRQF_ONESHOT - Interrupt is not reenabled after the hardirq handler finished.
->>>>   >              Used by threaded interrupts which need to keep the
->>>>   >              irq line disabled until the threaded handler has been run.
->>>>
->>>> This is exactly what this driver was trying to acheive so I'm still a bit
->>>> confused whether this is a driver or an RT issue.
->>>>
->>>> Anyway, this can be solved driver side by manually disabling the IRQs
->>>> instead of the relying on the IRQF_ONESHOT. IRQF_ONESHOT may then be removed
->>>> while still making sure the irq won't trigger until the threaded part of
->>>> the handler is done.
->>> Thomas, may I have your opinion on this one.
+>>>> Dang, replied on an old version.
 >>>
->>> I have no problem to apply $subject patch, but as Jerome also
->>> highlights above - this kind of makes me wonder if this is an RT
->>> issue, that perhaps deserves to be solved in a generic way.
+>>> Which I ignored (by default, when the kbuild test robot complains ;)).
 >>>
->>> What do you think?
->> Let me stare at the core code. Something smells fishy.
-> The point is that for threaded interrupts (without a primary handler)
-> the core needs to be told that the interrupt line should be masked until
-> the threaded handler finished. That's what IRQF_ONESHOT is for.
->
-> For interrupts which have both a primary and a threaded handler that's a
-> different story. The primary handler decides whether the thread should
-> be woken and it decides whether to block further interrupt delivery in
-> the device or keep it enabled.
->
-> When forced interrupt threading is enabled (even independent of RT) then
-> we have the following cases:
->
->    1) Regular device interrupt (primary handler only)
->
->       The primary handler is replaced with the default 'wake up thread'
->       handler and the original primary handler becomes the threaded
->       handler. This enforces IRQF_ONESHOT so that the interupt line (for
->       level interrupts) stays masked until the thread completed handling.
->
->    2) Threaded interrupts
->
->       Interrupts which have been requested as threaded handler (no
->       primary handler) are not changed obvioulsy
->
->    3) Interrupts which have both a primary and a thread handler
->
->       Here IRQF_ONESHOT decides whether the primary handler will be
->       forced threaded or not.
->
->       That's a bit unfortunate and ill defined and was not intended to be
->       used that way.
->
->       We rather should make interrupts which need to have their primary
->       handler in hard interrupt context to set IRQF_NO_THREAD. That
->       should at the same time confirm that the primary handler is RT
->       safe.
->
->       Let me stare at the core code and the actual usage sites some more.
->
-> Thanks,
->
->          tglx
->
->
->
->
->
->
+>>>> Since this is logically a tail call, could we simply be using br x16 or
+>>>> br x17 for this?
+>>>>
+>>>> The architecture makes special provision for that so that the compiler
+>>>> can generate tail-calls.
+>>>
+>>> So a "br x16" is compatible with a bti_c landing pad. I think it makes
+>>> more sense to keep it as a tail call.
+>>
+>> Just to be clear, I'm happy either way, but I thought it would make
+>> sense to point this out.
+> 
+> I'd prefer the replacement with a br x16/17, it keeps the code pretty
+> much unchanged.
+> 
+> Jeremy, could you please respin this patch and give it a try?
+
+Sounds like a plan.
+
+I'm probably going to change the subject again, guess I will put a v3 on 
+it too. :)
+
+
+
