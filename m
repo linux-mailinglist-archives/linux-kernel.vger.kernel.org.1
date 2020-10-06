@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9915E2843D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6E92843DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgJFBeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 21:34:25 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14745 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725872AbgJFBeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 21:34:25 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 37E85699AB092B3F594E;
-        Tue,  6 Oct 2020 09:34:23 +0800 (CST)
-Received: from [10.174.176.61] (10.174.176.61) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 6 Oct 2020 09:34:15 +0800
-Subject: Re: [PATCH v12 7/9] kdump: add threshold for the required memory
-To:     Catalin Marinas <catalin.marinas@arm.com>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
- <20200907134745.25732-8-chenzhou10@huawei.com> <20201005171248.GB14576@gaia>
-CC:     <will@kernel.org>, <james.morse@arm.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <dyoung@redhat.com>, <bhe@redhat.com>,
-        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
-        <prabhakar.pkin@gmail.com>, <bhsharma@redhat.com>,
-        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
-        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <8777c5be-a8d1-50bd-a44d-168dea009e13@huawei.com>
-Date:   Tue, 6 Oct 2020 09:34:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1726604AbgJFBh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 21:37:59 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:38731 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgJFBh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 21:37:58 -0400
+Received: by mail-wr1-f52.google.com with SMTP id n18so3781499wrs.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 18:37:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6XOkPuWAVksaYnpbdbI4+rs3vKcq8+w0HL/+QULyvzU=;
+        b=r5OCtM1z6p8rULJ789sR8KLSRUWKRJDfjifaeEkv08sWJNDZprpjDk11TBTF9JeRzq
+         VGOVwg4lpok3gvVs6HVKGQYYLxe057Qsn9UJuZd6668D8DwqZWSeQ+ZXwoi0dsdE5BOg
+         EwrOb/6LOHl0NjJfaqLjOxSsCHPuxReauDz3v07njvKTxeHV+O0moCXMLxFIlz5hJgzO
+         i4bJEAtHOm3eKHIML7Yiqa4H1dp12zIN8+y8M+bhchUWQegL+UiSwyXZXAFvSqYAoM3g
+         rZAxP+dsbwfENLC3m917ePHmQDhw0Or0xnMvkQjUkrSCN7I/iAA5aeNJCnbluHjEjbCW
+         U3Zw==
+X-Gm-Message-State: AOAM532XiZ/HHcXU43n5R347O+57HYWIwAVRXpLPOyaCG4A8oB1qi22Z
+        YqJWmUVBpRFavU2cUxqbEAWmoTPJLAaL2o5SpE8=
+X-Google-Smtp-Source: ABdhPJwyqVss08r0Zo5xGYxMyLycQbmJn+NVAdh2lAKksXH/11wR+PmwiR/6mxjK/uUXpj77zcVVGaFqpXuLfNdxxIk=
+X-Received: by 2002:adf:e481:: with SMTP id i1mr2021795wrm.391.1601948276735;
+ Mon, 05 Oct 2020 18:37:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201005171248.GB14576@gaia>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.61]
-X-CFilter-Loop: Reflected
+References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-2-jolsa@kernel.org>
+ <20201001190530.GD3999500@krava> <CAM9d7chyjSaqhjjT4myfs5p9ExH-3Rugme-OFaF8454yO4_s1w@mail.gmail.com>
+ <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com> <20201002192944.GH3999500@krava>
+In-Reply-To: <20201002192944.GH3999500@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 6 Oct 2020 10:37:45 +0900
+Message-ID: <CAM9d7cgoaU4wcid46+uScFcZtMZZQR+fijuE7XO1mjC2cLwX-A@mail.gmail.com>
+Subject: Re: [PATCHv2 1/9] perf tools: Add build id shell test
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/10/6 1:12, Catalin Marinas wrote:
-> On Mon, Sep 07, 2020 at 09:47:43PM +0800, Chen Zhou wrote:
->> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
->> index 3f735cb37ace..d11d597a470d 100644
->> --- a/kernel/crash_core.c
->> +++ b/kernel/crash_core.c
->> @@ -378,6 +378,15 @@ int __init reserve_crashkernel_low(void)
->>  }
->>  
->>  #if defined(CONFIG_X86) || defined(CONFIG_ARM64)
->> +
->> +/*
->> + * Add a threshold for required memory size of crashkernel. If required memory
->> + * size is greater than threshold, just go for high allocation directly. The
->> + * value of threshold is set as half of the total low memory.
->> + */
->> +#define REQUIRED_MEMORY_THRESHOLD	(memblock_mem_size(CRASH_ADDR_LOW_MAX >> \
->> +			PAGE_SHIFT) >> 1)
->> +
->>  #ifdef CONFIG_KEXEC_CORE
->>  /*
->>   * reserve_crashkernel() - reserves memory for crash kernel
->> @@ -422,7 +431,7 @@ void __init reserve_crashkernel(void)
->>  		 * So try low memory first and fall back to high memory
->>  		 * unless "crashkernel=size[KMG],high" is specified.
->>  		 */
->> -		if (!high)
->> +		if (!high && crash_size <= REQUIRED_MEMORY_THRESHOLD)
->>  			crash_base = memblock_find_in_range(CRASH_ALIGN,
->>  						CRASH_ADDR_LOW_MAX,
->>  						crash_size, CRASH_ALIGN);
-> Since any change now is affecting the x86 semantics slightly, I'd
-> suggest you drop this patch. We can add it later if needed, once the
-> core changes are in.
-Ok, i will drop this patch in next version.
-
-Thanks,
-Chen Zhou
+On Sat, Oct 3, 2020 at 4:29 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> Thinking about this, if one requires a crashkernel reservation that
-> allocates all of the ZONE_DMA, it would probably be noticed and explicit
-> ,high/,low options can be used.
+> On Fri, Oct 02, 2020 at 10:34:51AM -0700, Ian Rogers wrote:
 >
-> Note that we are also trying to make ZONE_DMA full 32-bit on non-RPi4
-> hardware.
+> SNIP
 >
+> > > > +
+> > > >  LIBJVMTI = libperf-jvmti.so
+> > > >
+> > > >  ifndef NO_JVMTI
+> > > > @@ -756,6 +763,13 @@ $(OUTPUT)perf-read-vdsox32: perf-read-vdso.c util/find-map.c
+> > > >         $(QUIET_CC)$(CC) -mx32 $(filter -static,$(LDFLAGS)) -Wall -Werror -o $@ perf-read-vdso.c
+> > > >  endif
+> > > >
+> > > > +ifndef NO_BUILDID_EX
+> > > > +$(OUTPUT)buildid-ex-sha1:
+> > > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=sha1 -o $@ -x c -
+> > > > +$(OUTPUT)buildid-ex-md5:
+> > > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=md5 -o $@ -x c -
+> > > > +endif
+> > >
+> > > Can we just build them in the test shell script instead?
+>
+> it would solve the build-directory/install-directory
+> lookup search.. but it'd need to do detect compiler
+> and depend on it as Ian said
+>
+> do you have some other reason to compile it in test?
 
+No I just wanted to make it easy to find the binaries
+and assumed a compiler is available in the test machine
+(which is not true for my company setup.... :-/)
+
+But otherwise we should keep the binaries somewhere
+in the install directory..
+
+Thanks
+Namhyung
