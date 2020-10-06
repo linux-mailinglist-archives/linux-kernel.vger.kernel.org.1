@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B04284A3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017C0284A42
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgJFKRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:17:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58236 "EHLO mail.kernel.org"
+        id S1725996AbgJFKWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:22:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgJFKRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:17:18 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725891AbgJFKWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:22:05 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45D0220870;
-        Tue,  6 Oct 2020 10:17:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD3BB206F7;
+        Tue,  6 Oct 2020 10:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601979437;
-        bh=LjlbuXXwVZiOZnh4s8AiRFzOTD9ANSeAEjirAmE6Ijs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TNdguZjsASN3AhbyCcaIXFW6z4k/3XU5Hmc1yusVyUJx+Ho6rrIzvQM7KUvpKeGNQ
-         BTJW96WlaTEyY2T7WpQ5QozEknz60csXY/YjdG8qua52OXo8iXCQ6rHdCHU241BpUN
-         OGSBGdIVoZ86xv1cpozwyxSgPrFZ0HvXBhJVBxdc=
-Received: by mail-ej1-f44.google.com with SMTP id h24so10236188ejg.9;
-        Tue, 06 Oct 2020 03:17:17 -0700 (PDT)
-X-Gm-Message-State: AOAM530xwAYN+Rj5qFkbPHSajwUHyAtmfNXrm/NS6HPCWiW6M/FOnlqI
-        LWwMelqPMQfAOD0a5uMrHwXjppI0uumUBuqhhwg=
-X-Google-Smtp-Source: ABdhPJwlwRJfXM/fE2yWBLSzyxvAdx3iSTpcYDDZzKdj0oQdX9ZBfNiA7FQzsxHAYvDsj3Cf4ThgOgnubFLXNR4lgeA=
-X-Received: by 2002:a17:906:5247:: with SMTP id y7mr4228617ejm.503.1601979435624;
- Tue, 06 Oct 2020 03:17:15 -0700 (PDT)
+        s=default; t=1601979724;
+        bh=Ve2Hs48ECFHrozfy/9YA4JqTfIIfXpqScexJdmyzwR8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LmiNyHEKE0lu4FPRd11pWBzqiiJeywATVRYwfMAy/pSdKaWuAlIYRVgRaw7IX80cP
+         SBraN7hKlC51/cVAVxvFOGZ8+xrcOvPAIZqX9xljDrGFEtbPXq+d2poiel0+2w8Nok
+         HP4C+5tG2M5w3s8Lo+NEEy1M8hogxhBZznDIpPqg=
+Date:   Tue, 6 Oct 2020 11:21:59 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>, herbert@gondor.apana.org.au,
+        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
+        ardb@kernel.org, broonie@kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, linux-arm-kernel@lists.infradead.org
+Subject: Re: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
+Message-ID: <20201006102158.GA25414@willie-the-truck>
+References: <20201006034854.2277538-1-jeremy.linton@arm.com>
+ <20201006082748.GB25305@willie-the-truck>
+ <20201006100121.GW6642@arm.com>
 MIME-Version: 1.0
-References: <CGME20201006100556eucas1p2b69f76968a7a5901b5e9c66338c388d4@eucas1p2.samsung.com>
- <CAJKOXPfQHzFb8uUzu2_X=7Jvk9P-z-jahi6csggpZvGsEhNm6Q@mail.gmail.com> <dleftj362rekjw.fsf%l.stelmach@samsung.com>
-In-Reply-To: <dleftj362rekjw.fsf%l.stelmach@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 6 Oct 2020 12:17:02 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPePumx3-v7Odp8Fv65gzXFZw+EkZCaX-YE-CYrrmyr-8g@mail.gmail.com>
-Message-ID: <CAJKOXPePumx3-v7Odp8Fv65gzXFZw+EkZCaX-YE-CYrrmyr-8g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] ARM: dts: exynos: Add Ethernet to Artik 5 board
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006100121.GW6642@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 12:06, Lukasz Stelmach <l.stelmach@samsung.com> wrote=
-:
->
-> It was <2020-10-03 sob 12:13>, when Krzysztof Kozlowski wrote:
-> > On Fri, 2 Oct 2020 at 21:22, =C5=81ukasz Stelmach <l.stelmach@samsung.c=
-om> wrote:
-> >>
-> >> Add node for ax88796c ethernet chip.
-> >>
-> >> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> >> ---
-> >>  arch/arm/boot/dts/exynos3250-artik5-eval.dts | 21 +++++++++++++++++++=
-+
-> >>  1 file changed, 21 insertions(+)
-> >>
-> >> diff --git a/arch/arm/boot/dts/exynos3250-artik5-eval.dts b/arch/arm/b=
-oot/dts/exynos3250-artik5-eval.dts
-> >> index 20446a846a98..7f115c348a2a 100644
-> >> --- a/arch/arm/boot/dts/exynos3250-artik5-eval.dts
-> >> +++ b/arch/arm/boot/dts/exynos3250-artik5-eval.dts
-> >> @@ -37,3 +37,24 @@ &mshc_2 {
-> >>  &serial_2 {
-> >>         status =3D "okay";
-> >>  };
-> >> +
-> >> +&spi_0 {
-> >> +       status =3D "okay";
-> >> +       cs-gpios =3D <&gpx3 4 GPIO_ACTIVE_LOW>, <0>;
-> >> +
-> >> +       assigned-clocks        =3D <&cmu CLK_MOUT_MPLL>, <&cmu CLK_DIV=
-_MPLL_PRE>, <&cmu CLK_MOUT_SPI0>,    <&cmu CLK_DIV_SPI0>,  <&cmu CLK_DIV_SP=
-I0_PRE>, <&cmu CLK_SCLK_SPI0>;
-> >
-> > No spaces before or after '=3D'.
-> >
->
-> You mean " =3D ", don't you?
+On Tue, Oct 06, 2020 at 11:01:21AM +0100, Dave Martin wrote:
+> On Tue, Oct 06, 2020 at 09:27:48AM +0100, Will Deacon wrote:
+> > On Mon, Oct 05, 2020 at 10:48:54PM -0500, Jeremy Linton wrote:
+> > > The AES code uses a 'br x7' as part of a function called by
+> > > a macro. That branch needs a bti_j as a target. This results
+> > > in a panic as seen below. Instead of trying to replace the branch
+> > > target with a bti_jc, lets replace the indirect branch with a
+> > > bl/ret, bl sequence that can target the existing bti_c.
+> > > 
+> > >   Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
+> > >   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+> > >   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+> > >   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+> > >   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+> > >   sp : ffff80001052b730
+> > > 
+> > >   aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+> > >    __xts_crypt+0xb0/0x2dc [aes_neon_bs]
+> > >    xts_encrypt+0x28/0x3c [aes_neon_bs]
+> > >   crypto_skcipher_encrypt+0x50/0x84
+> > >   simd_skcipher_encrypt+0xc8/0xe0
+> > >   crypto_skcipher_encrypt+0x50/0x84
+> > >   test_skcipher_vec_cfg+0x224/0x5f0
+> > >   test_skcipher+0xbc/0x120
+> > >   alg_test_skcipher+0xa0/0x1b0
+> > >   alg_test+0x3dc/0x47c
+> > >   cryptomgr_test+0x38/0x60
+> > > 
+> > > Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
+> > 
+> > nit: the "commit" string shouldn't be here, and I think the linux-next
+> > scripts will yell at us if we don't remove it.
+> > 
+> > > Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> > > ---
+> > >  arch/arm64/crypto/aes-neonbs-core.S | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
+> > > index b357164379f6..32f53ebe5e2c 100644
+> > > --- a/arch/arm64/crypto/aes-neonbs-core.S
+> > > +++ b/arch/arm64/crypto/aes-neonbs-core.S
+> > > @@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
+> > >  
+> > >  0:	mov		bskey, x21
+> > >  	mov		rounds, x22
+> > > -	br		x7
+> > > +	ret
+> 
+> Dang, replied on an old version.
 
-Ah, of course.
+They're not versioned, so who knows which one is older!
 
->
-> >> + assigned-clock-parents =3D <&cmu CLK_FOUT_MPLL>, <&cmu
-> >> CLK_MOUT_MPLL>, <&cmu CLK_DIV_MPLL_PRE>, <&cmu CLK_MOUT_SPI0>, <&cmu
-> >> CLK_DIV_SPI0>, <&cmu CLK_DIV_SPI0_PRE>;
-> >
-> > This line is still too long. Please wrap it at 80. Checkpatch should
-> > complain about it... so it seems you did not run it. Please fix all
-> > checkpatch issues.
->
-> My idea was too keep assigned-clocks and assigned-clock-parrent lines
-> aligned, so it is clearly visible which parrent applies to which
-> clock. Is it inappropriate?
+> Since this is logically a tail call, could we simply be using br x16 or
+> br x17 for this?
 
-The line gets too long and in the existing DTSes we wrapped item by
-item. Solution could be to add comments, e.g.:
-assigned-clock-parents =3D <&cmu CLK_FOUT_MPLL>,
-           <&cmu CLK_DIV_MPLL_PRE>, /* for: CLK_DIV_MPLL_PRE */
-           <&cmu CLK_MOUT_SPI0>, /* for: CLK_MOUT_SPI0 */
+Yup, that would work too. This was just "obviously correct" and it would
+be nice to get a fix in for 5.9.
 
-but I am not sure if dtc allows such comments.
-
-Best regards,
-Krzysztof
+Will
