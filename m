@@ -2,115 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C4628440C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13B4284415
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgJFCVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 22:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgJFCVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 22:21:19 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66913C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 19:21:19 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id x69so10959618oia.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 19:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B7YQCtriFYyuSJeB+Rgpa2EtsmRfHWlWKqL/m20tV3g=;
-        b=agICYGi+Zn+O2nR9/R+3zPUtITCJKzAHXYSO0EXnIJALzDNMqz7ZwtmSW0xl5lK7QN
-         SQnBKpakW1T5Af48cSGdx2s93g35gI5bdf2Dv/NyBDEjXfBq4wzQLuOWNUSh0Tb/mfeE
-         lFyTYtsedupVZkPBrNnTtFKw76wgcKIs5rOj7EB2c9/36vYfFH3dfVTD94ZfitCQlUHi
-         lOH2bT6zyjUD61tAZ92i8qHQeZPbtr5zjQ/BVpbrVY1YXh11wsLY/PChT1cwOQPabyGO
-         JhdyoDKB6+00x8KFWur0gJHvcxBj/JmQWGvMifEAO7/nT/Ug79gIahNH+xdOKxjvgvNO
-         0Leg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B7YQCtriFYyuSJeB+Rgpa2EtsmRfHWlWKqL/m20tV3g=;
-        b=mYFtknYUd/7H32onlXhLpgYvRoQHS+UBP079Wx3H4WgvcQJAsbmaiuqfIfZxK2CZm/
-         z9jylMUuprNjKv71DnKq/zClC9mz58tGBJjVyO3rY3SK1HFJQJLRw1t0CoGP4sSGDISi
-         5bGSR5hZ0iowwvQgZGeJL4NInai7CDrf3Bpzlr5Wd2WDB3aXR4as2xXvmk9GDNUvYZQP
-         Go8YZpJGD75EUN8AwIHiCkm8x9CWIEHGMX9Z9In2BhliuJp6+LP0+mx/EelhWK+nDQcl
-         WkTkZz1j1phZSAKGdzFyj9HRbdp1EsvgiMrBXXXSsa/mBHQe3t9JzVh9JtAJkh+qaGWU
-         sa3Q==
-X-Gm-Message-State: AOAM531iP65UD0hZ2lQONkv0Yyby2I2e5jtgAH3fu73ahE18iQsrbLIG
-        DkszjZ3EyhyaBgdDqgtGTExJ8psHKmAZD8WJ0y1A8Q==
-X-Google-Smtp-Source: ABdhPJyaigADMxJVRHsJXTDpn7xQepDIyEsrSKDqr2gON8I7pqtt4ytgpvEH4UI3M9PIXZzqObSCbLTZmVNH33TZ/pw=
-X-Received: by 2002:aca:4911:: with SMTP id w17mr1388997oia.80.1601950878466;
- Mon, 05 Oct 2020 19:21:18 -0700 (PDT)
+        id S1726654AbgJFC3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 22:29:51 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42778 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725870AbgJFC3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 22:29:51 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 0962S93K005537;
+        Tue, 6 Oct 2020 04:28:09 +0200
+Date:   Tue, 6 Oct 2020 04:28:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Emese Revfy <re.emese@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] random32: Restore __latent_entropy attribute on
+ net_rand_state
+Message-ID: <20201006022808.GA5531@1wt.eu>
+References: <20201002151610.24258-1-thibaut.sautereau@clip-os.org>
+ <202010051910.BC7E9F4@keescook>
 MIME-Version: 1.0
-References: <20200304213941.112303-1-xii@google.com> <20200305075742.GR2596@hirez.programming.kicks-ass.net>
- <CAPM31RJdNtxmOi2eeRYFyvRKG9nofhqZfPgZGA5U7u8uZ2WXwA@mail.gmail.com>
- <20200306084039.GC12561@hirez.programming.kicks-ass.net> <CAOBoifiWWcodi9HddxVsKUahTSdAS5OiQOcapDJ-4p+HufRzeQ@mail.gmail.com>
- <20201005111920.GO2611@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201005111920.GO2611@hirez.programming.kicks-ass.net>
-From:   Xi Wang <xii@google.com>
-Date:   Mon, 5 Oct 2020 19:21:18 -0700
-Message-ID: <CAOBoifgYxJsrVxjdJL_QmAUwRDq8uwfbUKS4089U08N1+F1XTQ@mail.gmail.com>
-Subject: Re: [PATCH] sched: watchdog: Touch kernel watchdog in sched code
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paul Turner <pjt@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Don <joshdon@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202010051910.BC7E9F4@keescook>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 4:19 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Mar 06, 2020 at 02:34:20PM -0800, Xi Wang wrote:
-> > On Fri, Mar 6, 2020 at 12:40 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Thu, Mar 05, 2020 at 02:11:49PM -0800, Paul Turner wrote:
-> > > > The goal is to improve jitter since we're constantly periodically
-> > > > preempting other classes to run the watchdog.   Even on a single CPU
-> > > > this is measurable as jitter in the us range.  But, what increases the
-> > > > motivation is this disruption has been recently magnified by CPU
-> > > > "gifts" which require evicting the whole core when one of the siblings
-> > > > schedules one of these watchdog threads.
-> > > >
-> > > > The majority outcome being asserted here is that we could actually
-> > > > exercise pick_next_task if required -- there are other potential
-> > > > things this will catch, but they are much more braindead generally
-> > > > speaking (e.g. a bug in pick_next_task itself).
-> > >
-> > > I still utterly hate what the patch does though; there is no way I'll
-> > > have watchdog code hook in the scheduler like this. That's just asking
-> > > for trouble.
-> > >
-> > > Why isn't it sufficient to sample the existing context switch counters
-> > > from the watchdog? And why can't we fix that?
-> >
-> > We could go to pick next and repick the same task. There won't be a
-> > context switch but we still want to hold the watchdog. I assume such a
-> > counter also needs to be per cpu and inside the rq lock. There doesn't
-> > seem to be an existing one that fits this purpose.
->
-> Sorry, your reply got lost, but I just ran into something that reminded
-> me of this.
->
-> There's sched_count. That's currently schedstat, but if you can find a
-> spot in a hot cacheline (from schedule()'s perspective) then it
-> should be cheap to incremenent unconditionally.
->
-> If only someone were to write a useful cacheline perf tool (and no that
-> c2c trainwreck doesn't count).
->
+Hi Kees,
 
-Thanks, I'll try the alternative implementation.
+On Mon, Oct 05, 2020 at 07:12:29PM -0700, Kees Cook wrote:
+> On Fri, Oct 02, 2020 at 05:16:11PM +0200, Thibaut Sautereau wrote:
+> > From: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+> > 
+> > Commit f227e3ec3b5c ("random32: update the net random state on interrupt
+> > and activity") broke compilation and was temporarily fixed by Linus in
+> > 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy
+> > gcc plugin") by entirely moving net_rand_state out of the things handled
+> > by the latent_entropy GCC plugin.
+> > 
+> > From what I understand when reading the plugin code, using the
+> > __latent_entropy attribute on a declaration was the wrong part and
+> > simply keeping the __latent_entropy attribute on the variable definition
+> > was the correct fix.
+> > 
+> > Fixes: 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy gcc plugin")
+> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Willy Tarreau <w@1wt.eu>
+> > Cc: Emese Revfy <re.emese@gmail.com>
+> > Signed-off-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+> 
+> Yes, that looks correct. Thank you!
+> 
+> Acked-by: Kees Cook <keescook@chromium.org>
+> 
+> I'm not sure the best tree for this. Ted, Andrew, Linus? I'll take it
+> via my gcc plugin tree if no one else takes it. :)
 
--Xi
+It was already merged as commit 09a6b0bc3be79 and queued for -stable.
+
+Cheers,
+Willy
