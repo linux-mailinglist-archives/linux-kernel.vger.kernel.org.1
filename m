@@ -2,160 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E15284A34
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B04284A3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgJFKNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:13:48 -0400
-Received: from mga09.intel.com ([134.134.136.24]:54366 "EHLO mga09.intel.com"
+        id S1726075AbgJFKRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:17:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFKNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:13:47 -0400
-IronPort-SDR: iQ0dOvr4qX9IJZ6n7ZJRsVMCCc+TE1lqhZ6m1KiRxJ2WMhyqJjbh21zOn0mMbgT67MTM9cSttF
- nKlpPrNpUS/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="164575603"
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
-   d="scan'208";a="164575603"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 03:13:46 -0700
-IronPort-SDR: ScqH8csVV1zLuwo2l3oG0h165BQWplaKmrUcnYGHfUlMspJv7wTzYbvoAHLwJ9tHtyedsQppUE
- d34clss6wOww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
-   d="scan'208";a="342179276"
-Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Oct 2020 03:13:45 -0700
-Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kPjya-00019y-SA; Tue, 06 Oct 2020 10:13:44 +0000
-Date:   Tue, 06 Oct 2020 18:13:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/drm/amd/pm/phm_clock_array] BUILD
- SUCCESS 1f7c023f13d8ff183e706018a0d5690e3e851f12
-Message-ID: <5f7c433f.ZyMD+YUIVAwiHGVe%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725939AbgJFKRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:17:18 -0400
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45D0220870;
+        Tue,  6 Oct 2020 10:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601979437;
+        bh=LjlbuXXwVZiOZnh4s8AiRFzOTD9ANSeAEjirAmE6Ijs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TNdguZjsASN3AhbyCcaIXFW6z4k/3XU5Hmc1yusVyUJx+Ho6rrIzvQM7KUvpKeGNQ
+         BTJW96WlaTEyY2T7WpQ5QozEknz60csXY/YjdG8qua52OXo8iXCQ6rHdCHU241BpUN
+         OGSBGdIVoZ86xv1cpozwyxSgPrFZ0HvXBhJVBxdc=
+Received: by mail-ej1-f44.google.com with SMTP id h24so10236188ejg.9;
+        Tue, 06 Oct 2020 03:17:17 -0700 (PDT)
+X-Gm-Message-State: AOAM530xwAYN+Rj5qFkbPHSajwUHyAtmfNXrm/NS6HPCWiW6M/FOnlqI
+        LWwMelqPMQfAOD0a5uMrHwXjppI0uumUBuqhhwg=
+X-Google-Smtp-Source: ABdhPJwlwRJfXM/fE2yWBLSzyxvAdx3iSTpcYDDZzKdj0oQdX9ZBfNiA7FQzsxHAYvDsj3Cf4ThgOgnubFLXNR4lgeA=
+X-Received: by 2002:a17:906:5247:: with SMTP id y7mr4228617ejm.503.1601979435624;
+ Tue, 06 Oct 2020 03:17:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <CGME20201006100556eucas1p2b69f76968a7a5901b5e9c66338c388d4@eucas1p2.samsung.com>
+ <CAJKOXPfQHzFb8uUzu2_X=7Jvk9P-z-jahi6csggpZvGsEhNm6Q@mail.gmail.com> <dleftj362rekjw.fsf%l.stelmach@samsung.com>
+In-Reply-To: <dleftj362rekjw.fsf%l.stelmach@samsung.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 6 Oct 2020 12:17:02 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPePumx3-v7Odp8Fv65gzXFZw+EkZCaX-YE-CYrrmyr-8g@mail.gmail.com>
+Message-ID: <CAJKOXPePumx3-v7Odp8Fv65gzXFZw+EkZCaX-YE-CYrrmyr-8g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] ARM: dts: exynos: Add Ethernet to Artik 5 board
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        =?UTF-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/drm/amd/pm/phm_clock_array
-branch HEAD: 1f7c023f13d8ff183e706018a0d5690e3e851f12  drm/amd/pm: Replace one-element array with flexible-array in struct phm_clock_array
+On Tue, 6 Oct 2020 at 12:06, Lukasz Stelmach <l.stelmach@samsung.com> wrote=
+:
+>
+> It was <2020-10-03 sob 12:13>, when Krzysztof Kozlowski wrote:
+> > On Fri, 2 Oct 2020 at 21:22, =C5=81ukasz Stelmach <l.stelmach@samsung.c=
+om> wrote:
+> >>
+> >> Add node for ax88796c ethernet chip.
+> >>
+> >> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+> >> ---
+> >>  arch/arm/boot/dts/exynos3250-artik5-eval.dts | 21 +++++++++++++++++++=
++
+> >>  1 file changed, 21 insertions(+)
+> >>
+> >> diff --git a/arch/arm/boot/dts/exynos3250-artik5-eval.dts b/arch/arm/b=
+oot/dts/exynos3250-artik5-eval.dts
+> >> index 20446a846a98..7f115c348a2a 100644
+> >> --- a/arch/arm/boot/dts/exynos3250-artik5-eval.dts
+> >> +++ b/arch/arm/boot/dts/exynos3250-artik5-eval.dts
+> >> @@ -37,3 +37,24 @@ &mshc_2 {
+> >>  &serial_2 {
+> >>         status =3D "okay";
+> >>  };
+> >> +
+> >> +&spi_0 {
+> >> +       status =3D "okay";
+> >> +       cs-gpios =3D <&gpx3 4 GPIO_ACTIVE_LOW>, <0>;
+> >> +
+> >> +       assigned-clocks        =3D <&cmu CLK_MOUT_MPLL>, <&cmu CLK_DIV=
+_MPLL_PRE>, <&cmu CLK_MOUT_SPI0>,    <&cmu CLK_DIV_SPI0>,  <&cmu CLK_DIV_SP=
+I0_PRE>, <&cmu CLK_SCLK_SPI0>;
+> >
+> > No spaces before or after '=3D'.
+> >
+>
+> You mean " =3D ", don't you?
 
-elapsed time: 724m
+Ah, of course.
 
-configs tested: 96
-configs skipped: 2
+>
+> >> + assigned-clock-parents =3D <&cmu CLK_FOUT_MPLL>, <&cmu
+> >> CLK_MOUT_MPLL>, <&cmu CLK_DIV_MPLL_PRE>, <&cmu CLK_MOUT_SPI0>, <&cmu
+> >> CLK_DIV_SPI0>, <&cmu CLK_DIV_SPI0_PRE>;
+> >
+> > This line is still too long. Please wrap it at 80. Checkpatch should
+> > complain about it... so it seems you did not run it. Please fix all
+> > checkpatch issues.
+>
+> My idea was too keep assigned-clocks and assigned-clock-parrent lines
+> aligned, so it is clearly visible which parrent applies to which
+> clock. Is it inappropriate?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The line gets too long and in the existing DTSes we wrapped item by
+item. Solution could be to add comments, e.g.:
+assigned-clock-parents =3D <&cmu CLK_FOUT_MPLL>,
+           <&cmu CLK_DIV_MPLL_PRE>, /* for: CLK_DIV_MPLL_PRE */
+           <&cmu CLK_MOUT_SPI0>, /* for: CLK_MOUT_SPI0 */
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           ip28_defconfig
-sh                   sh7724_generic_defconfig
-m68k                          atari_defconfig
-arc                            hsdk_defconfig
-mips                        qi_lb60_defconfig
-mips                      maltaaprp_defconfig
-mips                           rs90_defconfig
-arm                          exynos_defconfig
-mips                          ath79_defconfig
-arm                          pxa168_defconfig
-mips                           ci20_defconfig
-m68k                            q40_defconfig
-sh                          r7780mp_defconfig
-sparc64                             defconfig
-powerpc                      chrp32_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                         palmz72_defconfig
-arm                          ixp4xx_defconfig
-mips                        jmr3927_defconfig
-arm                         vf610m4_defconfig
-mips                          ath25_defconfig
-powerpc                 canyonlands_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20201004
-i386                 randconfig-a005-20201004
-i386                 randconfig-a001-20201004
-i386                 randconfig-a004-20201004
-i386                 randconfig-a003-20201004
-i386                 randconfig-a002-20201004
-x86_64               randconfig-a012-20201005
-x86_64               randconfig-a015-20201005
-x86_64               randconfig-a014-20201005
-x86_64               randconfig-a013-20201005
-x86_64               randconfig-a011-20201005
-x86_64               randconfig-a016-20201005
-i386                 randconfig-a014-20201005
-i386                 randconfig-a015-20201005
-i386                 randconfig-a013-20201005
-i386                 randconfig-a016-20201005
-i386                 randconfig-a011-20201005
-i386                 randconfig-a012-20201005
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+but I am not sure if dtc allows such comments.
 
-clang tested configs:
-x86_64               randconfig-a004-20201005
-x86_64               randconfig-a002-20201005
-x86_64               randconfig-a001-20201005
-x86_64               randconfig-a003-20201005
-x86_64               randconfig-a005-20201005
-x86_64               randconfig-a006-20201005
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Best regards,
+Krzysztof
