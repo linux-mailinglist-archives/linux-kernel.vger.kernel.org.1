@@ -2,173 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E042A28478B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434E2284776
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgJFHiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:38:00 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:36572 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgJFHh6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:37:58 -0400
-Received: by mail-ot1-f65.google.com with SMTP id 60so11408196otw.3;
-        Tue, 06 Oct 2020 00:37:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8+YGZEZXCDlVSYcoSNcJ9v6pHT8JdkLtCN5s+E2ToaQ=;
-        b=L3b/PWChkoqoS3sM68KkIks1b0cT9jMiy6dEJ9WER5VSr4OUBijAy2r0ZZDu964yjz
-         VfYs+kttlFUUP4B0e2mPea0gSV3iwIyp/iscNyRT6mHVtn8iPaLkWHSACJPMMBwj+eSl
-         utbFbKULMEnBeRrgiJxKhsqHpC0l88y4yzNFHScB/x1qHcvrT7e4I0yjt3x/Sann2q4h
-         y6EQVsfVkoKicpJiyuAJVQuixqzSrEfdShe63f3CfTQY76y4JWp4uaRykmsJ7mzqt11b
-         pwyHr5l4guJHbdpXDUG3lkH7L8LwjJrWNf7+Z0I8N80RMqyHFPxvrMulIJw3KWT1NFHX
-         8Wcw==
-X-Gm-Message-State: AOAM530TkVNGXR8CUhM7L2hbvAP7zPSf1zQWRsPH5X4MYux3okdjemRq
-        M09bV9zRdfkzREB3AYB0zIRmbB0IPlE+jS+LjT4=
-X-Google-Smtp-Source: ABdhPJz2bCZlgB6we6A9AWlaXsOI2O+CwxUcnmKhPrIVPza5tGmo+mK6C98Ugzjy2W9HQnh3L0gpSmpM+xs5ujOFQMY=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr2082078otc.145.1601969875043;
- Tue, 06 Oct 2020 00:37:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201005183830.486085-1-robh@kernel.org> <20201005183830.486085-2-robh@kernel.org>
-In-Reply-To: <20201005183830.486085-2-robh@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 6 Oct 2020 09:37:43 +0200
-Message-ID: <CAMuHMdXjBSzbs4yAPJ-XUTBRZWKN61hO8vQ1-nGN5nAo7JnV-w@mail.gmail.com>
-Subject: Re: [PATCH 1/4] dt-bindings: Add missing 'unevaluatedProperties'
-To:     Rob Herring <robh@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        linux-iio@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Sebastian Reichel <sre@kernel.org>, linux-ide@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-leds@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-rtc@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-can@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        id S1727193AbgJFHhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgJFHhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 03:37:47 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AD4420789;
+        Tue,  6 Oct 2020 07:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601969866;
+        bh=GXj/FhHy/xOz5Avkl+n0ZiQDzSQIl/qp/OlFQDMTwok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y61YesSGpL+/tE5dfXTx0IrqApDwXLdX3J5gWZk75zR5uB+Ujz5NHa/ilZxvdos97
+         pkOSOMRrS4N1LvHz34slvyiPpZ4O3yYZrT6pkZaE3iIJMZqmVDgf1eAVpTU6/gYHhp
+         g1i+OVCyuXj8wCMXW0tLytYkvjOf6L/uczSOoaz0=
+Date:   Tue, 6 Oct 2020 09:37:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Richard Weinberger <richard@nod.at>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+Message-ID: <20201006073744.GA6753@kroah.com>
+References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+ <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
+ <20201003085345.GA114893@kroah.com>
+ <20201006005736.GD6041@ranerica-svr.sc.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006005736.GD6041@ranerica-svr.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Mon, Oct 05, 2020 at 05:57:36PM -0700, Ricardo Neri wrote:
+> On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
+> > > Hybrid CPU topologies combine CPUs of different microarchitectures in the
+> > > same die. Thus, even though the instruction set is compatible among all
+> > > CPUs, there may still be differences in features (e.g., some CPUs may
+> > > have counters that others CPU do not). There may be applications
+> > > interested in knowing the type of micro-architecture topology of the
+> > > system to make decisions about process affinity.
+> > > 
+> > > While the existing sysfs for capacity (/sys/devices/system/cpu/cpuX/
+> > > cpu_capacity) may be used to infer the types of micro-architecture of the
+> > > CPUs in the platform, it may not be entirely accurate. For instance, two
+> > > subsets of CPUs with different types of micro-architecture may have the
+> > > same capacity due to power or thermal constraints.
+> > > 
+> > > Create the new directory /sys/devices/system/cpu/types. Under such
+> > > directory, create individual subdirectories for each type of CPU micro-
+> > > architecture. Each subdirectory will have cpulist and cpumap files. This
+> > > makes it convenient for user space to read all the CPUs of the same type
+> > > at once without having to inspect each CPU individually.
+> > > 
+> > > Implement a generic interface using weak functions that architectures can
+> > > override to indicate a) support for CPU types, b) the CPU type number, and
+> > > c) a string to identify the CPU vendor and type.
+> > > 
+> > > For example, an x86 system with one Intel Core and four Intel Atom CPUs
+> > > would look like this (other architectures have the hooks to use whatever
+> > > directory naming convention below "types" that meets their needs):
+> > > 
+> > > user@host:~$: ls /sys/devices/system/cpu/types
+> > > intel_atom_0  intel_core_0
+> > > 
+> > > user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
+> > > cpulist cpumap
+> > > 
+> > > user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
+> > > cpulist cpumap
+> > > 
+> > > user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpumap
+> > > 0f
+> > > 
+> > > user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpulist
+> > > 0-3
+> > > 
+> > > user@ihost:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpumap
+> > > 10
+> > > 
+> > > user@host:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpulist
+> > > 4
+> 
+> Thank you for the quick and detailed Greg!
+> 
+> > 
+> > The output of 'tree' sometimes makes it easier to see here, or:
+> > 	grep -R . *
+> > also works well.
+> 
+> Indeed, this would definitely make it more readable.
+> 
+> > 
+> > > On non-hybrid systems, the /sys/devices/system/cpu/types directory is not
+> > > created. Add a hook for this purpose.
+> > 
+> > Why should these not show up if the system is not "hybrid"?
+> 
+> My thinking was that on a non-hybrid system, it does not make sense to
+> create this interface, as all the CPUs will be of the same type.
 
-On Mon, Oct 5, 2020 at 8:39 PM Rob Herring <robh@kernel.org> wrote:
-> This doesn't yet do anything in the tools, but make it explicit so we can
-> check either 'unevaluatedProperties' or 'additionalProperties' is present
-> in schemas.
->
-> 'unevaluatedProperties' is appropriate when including another schema (via
-> '$ref') and all possible properties and/or child nodes are not
-> explicitly listed in the schema with the '$ref'.
->
-> This is in preparation to add a meta-schema to check for missing
-> 'unevaluatedProperties' or 'additionalProperties'. This has been a
-> constant source of review issues.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Why not just have this an attribute type in the existing cpuX directory?
+Why do this have to be a totally separate directory and userspace has to
+figure out to look in two different spots for the same cpu to determine
+what it is?
 
-Thanks for your patch!
+That feels wasteful, it should be much simpler to use the existing
+object, right?
 
->  Documentation/devicetree/bindings/bus/renesas,bsc.yaml       | 2 ++
->  .../bindings/memory-controllers/renesas,rpc-if.yaml          | 2 ++
->  Documentation/devicetree/bindings/net/renesas,ether.yaml     | 2 ++
->  Documentation/devicetree/bindings/serial/renesas,hscif.yaml  | 2 ++
->  Documentation/devicetree/bindings/serial/renesas,sci.yaml    | 2 ++
->  Documentation/devicetree/bindings/serial/renesas,scif.yaml   | 2 ++
->  Documentation/devicetree/bindings/serial/renesas,scifa.yaml  | 2 ++
->  Documentation/devicetree/bindings/serial/renesas,scifb.yaml  | 2 ++
->  Documentation/devicetree/bindings/spi/renesas,hspi.yaml      | 2 ++
->  Documentation/devicetree/bindings/spi/renesas,rspi.yaml      | 2 ++
->  Documentation/devicetree/bindings/spi/renesas,sh-msiof.yaml  | 2 ++
+That way, you also show the "type" of all cpus, no matter if they are
+"hybrid" or not, again, making userspace deal with things in a much
+simpler manner.
 
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > +/**
+> > > + * arch_get_cpu_type() - Get the CPU type number
+> > > + * @cpu:	Index of the CPU of which the index is needed
+> > > + *
+> > > + * Get the CPU type number of @cpu, a non-zero unsigned 32-bit number that
+> > > + * uniquely identifies a type of CPU micro-architecture. All CPUs of the same
+> > > + * type have the same type number. Type numbers are defined by each CPU
+> > > + * architecture.
+> > > + */
+> > > +u32 __weak arch_get_cpu_type(int cpu)
+> > 
+> > Can you just have this "cpu type" be an enumerated type so we have a
+> > clue as to what they really are?  Each arch can then define it, right?
+> 
+> Do you mean that each arch can have its own definition of the same
+> enumeration or that all archs share a common enumeration?
 
-> --- a/Documentation/devicetree/bindings/net/renesas,ether.yaml
-> +++ b/Documentation/devicetree/bindings/net/renesas,ether.yaml
-> @@ -85,6 +85,8 @@ required:
->    - clocks
->    - pinctrl-0
->
-> +unevaluatedProperties: false
+Each arch should have its own definition of this enumerated type.
 
-This one has received an "additionalProperties: false" in commit
-41506bff84f1563e ("dt-bindings: net: renesas, ether: Improve schema validation")
-in net-next, which you probably want to remove.
+> > > +/**
+> > > + * arch_get_cpu_type_name() - Get the CPU type name
+> > > + * @cpu_type:	Type of CPU micro-architecture.
+> > > + *
+> > > + * Returns a string name associated with the CPU micro-architecture type as
+> > > + * indicated in @cpu_type. The format shall be <vendor>_<cpu_type>. Returns
+> > > + * NULL if the CPU type is not known.
+> > > + */
+> > > +const char __weak *arch_get_cpu_type_name(u32 cpu_type)
+> > > +{
+> > > +	return NULL;
+> > > +}
+> > 
+> > Why is vendor part of this?  Shouldn't it just be arch?
+> > 
+> > I say this as "vendor" is kind of "interesting" when it comes to other
+> > arches...
+> 
+> I thought of this as maybe intel_atcm vs a potential amd_minizen. I
+> guess arch is sufficient, as there will never be an amd_atom.
 
-> +
->  examples:
->    # Lager board
->    - |
+Even if there is, that can be part of the cpu "type" that you have for
+your enumerated type, right?
 
-Gr{oetje,eeting}s,
+thanks,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
