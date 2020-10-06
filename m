@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8862853AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEB72853B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbgJFVLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:11:19 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34647 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727166AbgJFVLT (ORCPT
+        id S1727527AbgJFVLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727176AbgJFVLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:11:19 -0400
-Received: by mail-ot1-f65.google.com with SMTP id d28so224274ote.1;
-        Tue, 06 Oct 2020 14:11:18 -0700 (PDT)
+        Tue, 6 Oct 2020 17:11:51 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CBDC061755;
+        Tue,  6 Oct 2020 14:11:51 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a200so49159pfa.10;
+        Tue, 06 Oct 2020 14:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2tqJkBGJARHw0fisbVFNUFYK1tY9kLS6Zh35Q++bpoc=;
+        b=hrbCklgzpYH5awrwrrE3PsY2AVZbXUZCxoXi6hUDTIv4xb4bs4hcZBBnlF6tWVhWou
+         wX1FRs7vh9C8QB5lzSeO+rZtZ2ZKLs9csrIzYIP0seS0y1pHTa/A9kuu8mJZ9NomMfG7
+         MUvuZRNRjH1dV+bYREfJ60lw7pnSimPL+0SJXLMlak5yGJXSYoWTt7tj77EMmqBfVBsC
+         GzZEBrH9+6fgQMzswZzytanpbFFHZlMUwaIKSplHrhlcWDS4wGadWQnsFmOdqcUfHFqU
+         QNVG+vJL9R/ZJuZqgnQBZ8yqHBJ8jmxROnuhrs+7ZqnR/n6ZnRBPEd955vka3TbuT3RO
+         wL/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5FP0smEmtRjA7sa6KoPbSMBo/XXzMk5YV0latxBLaGo=;
-        b=B1biTQ7G0TMiCR/L0g+TsD2+1UfQj7qXkolWxczh+39lD2UvdiHG5AAM1zYmh+7e0U
-         UpiSZFsK6TdCtCIFZdQBNsEvsGH9mg4E6whR+9VtWaEFOe26SutfNnNwa8/ArPFwh43P
-         IHL+ACecq1HlvkhMpYI+y7Nk4x0HjRxU88k7yk5Yh4uYVCHcrlEV1Nx1x08dUiaTHv5y
-         EcuQIoXpg/XoMaMi+9uTWf9Pe0anFQ++uDcgneFlqPVYZYTGWQwkcZVI34/DSmCdTapl
-         H44VfA+9JS0fDc0XCzOjJOhWyuV5CIC3Gy/KRUSMzv0z81He4GEcGU+n1+u6JBmWpFIp
-         BK1Q==
-X-Gm-Message-State: AOAM532HF4TMC1D2DbQ5oovUXjtXlAoqyzJB4UshTnRE4sWXJQ1Nli1Q
-        OLwZBe20uImLLy83tnh/gQ==
-X-Google-Smtp-Source: ABdhPJznxbwgrx4oSXOYZC8dTgbjtyD4TW76I6oDeE7VGirnsKALIyRtHYG26LH2daEjUmTJm4T2ag==
-X-Received: by 2002:a9d:2ab:: with SMTP id 40mr3904256otl.137.1602018678507;
-        Tue, 06 Oct 2020 14:11:18 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i205sm3286oih.23.2020.10.06.14.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:11:17 -0700 (PDT)
-Received: (nullmailer pid 2848240 invoked by uid 1000);
-        Tue, 06 Oct 2020 21:11:16 -0000
-Date:   Tue, 6 Oct 2020 16:11:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
-Cc:     Marcus Cooper <codekipper@gmail.com>, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-sunxi@googlegroups.com, Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v6 13/14] dt-bindings: sound: sun4i-i2s: Document H3 with
- missing RX channel possibility
-Message-ID: <20201006211116.GA2848184@bogus>
-References: <20201003141950.455829-1-peron.clem@gmail.com>
- <20201003141950.455829-14-peron.clem@gmail.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2tqJkBGJARHw0fisbVFNUFYK1tY9kLS6Zh35Q++bpoc=;
+        b=jyPK4ctMBGFlgB8Ftu3/OSIbD7PuDID65h25keSvYG/JveKSXenewSFZGcPc+nYkss
+         zXuUarjvGf8JdoXgeQPg41L+sw6gIwvEG2UeTBFnHMCcGQlIRXPcz9Yv7LG1/kowNlnV
+         N4hnvqrmVMv9AxSay7+Cpb20n6iV1wHiQ3JYA1TDCnqGeGEIFim7AUAf3llhpHBZWYTV
+         r/N6IU9Qdn6LSqGrfays7UPIc4w7zZmmmcBciycX8yEAcq5ktewPJVKCGQ4QKm8kan5H
+         2zks5nhOuLeSo4Uwjrc1QqA2ri52K8w0d5PSe4OGWiwzaEsQsVTeCXtmyw6weNaqojCT
+         r/GQ==
+X-Gm-Message-State: AOAM530n5iQe6O9ns7qc1xtvdas/OiOtJbrLAkHZIRMQPTmqcrEiI1Iu
+        7+vUFr2A9+1aIfZ1h+FVQsI=
+X-Google-Smtp-Source: ABdhPJwQ7h4I2JibCyvrjDaoC8dqkF4Gm/PbNbnwlnIJtnayOi1FJHbZ5uc+lWHTY8tQGtWpq6GaYg==
+X-Received: by 2002:a63:dc4f:: with SMTP id f15mr102197pgj.332.1602018711026;
+        Tue, 06 Oct 2020 14:11:51 -0700 (PDT)
+Received: from [10.230.29.112] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id h15sm83588pfo.194.2020.10.06.14.11.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 14:11:50 -0700 (PDT)
+To:     Marek Vasut <marex@denx.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de
+References: <20201006080424.GA6988@pengutronix.de>
+ <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
+ <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: PHY reset question
+Message-ID: <0687984c-5768-7c71-5796-8e16169f5192@gmail.com>
+Date:   Tue, 6 Oct 2020 14:11:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201003141950.455829-14-peron.clem@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 03 Oct 2020 16:19:49 +0200, Cl�ment P�ron wrote:
-> Like A83T the Allwinner H3 doesn't have the DMA reception available for
-> some audio interfaces.
-> 
-> As it's already documented for A83T convert this to an enum and add the H3
-> interface.
-> 
-> Signed-off-by: Cl�ment P�ron <peron.clem@gmail.com>
-> ---
->  .../devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml    | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On 10/6/2020 1:24 PM, Marek Vasut wrote:
+> On 10/6/20 9:36 PM, Florian Fainelli wrote:
+> [...]
+>>> - Use compatible ("compatible = "ethernet-phy-id0022.1560") in the
+>>> devicetree,
+>>>     so that reading the PHYID is not needed
+>>>     - easy to solve.
+>>>     Disadvantage:
+>>>     - losing PHY auto-detection capability
+>>>     - need a new devicetree if different PHY is used (for example in
+>>> different
+>>>       board revision)
+>>
+>> Or you can punt that to the boot loader to be able to tell the
+>> difference and populate different compatible, or even manage the PHY
+>> reset to be able to read the actual PHY OUI. To me that is still the
+>> best solution around.
+> 
+> Wasn't there some requirement for Linux to be bootloader-independent ?
+
+What kind of dependency does this create here? The fact that Linux is 
+capable of parsing a compatible string of the form 
+"ethernet-phyAAAA.BBBB" is not something that is exclusively applicable 
+to Linux. Linux just so happens to support that, but so could FreeBSD or 
+any OS for that matter.
+
+This is exactly the way firmware should be going, that is to describe 
+accurately the hardware, while making the life of the OS much easier 
+when it can. If we supported ACPI that is exactly what would have to 
+happen IMHO.
+
+> Some systems cannot replace their bootloaders, e.g. if the bootloader is
+> in ROM, so this might not be a solution.
+
+It is always possible to chain load a field updateable boot loader, and 
+even when that is not desirable you could devise a solution that allows 
+to utilize say a slightly different DTB that you could append to the 
+kernel. Again, if you want to use strictly the same DTB, then you have 
+to do what I just suggested and have the boot loader absorb some of this 
+complexit
+
+> 
+>>> - modify PHY framework to deassert reset before identifying the PHY.
+>>>     Disadvantages?
+> 
+> If this happens on MX6 with FEC, can you please try these two patches?
+> 
+> https://patchwork.ozlabs.org/project/netdev/patch/20201006135253.97395-1-marex@denx.de/
+> 
+> https://patchwork.ozlabs.org/project/netdev/patch/20201006202029.254212-1-marex@denx.de/
+
+Your patches are not scaling across multiple Ethernet MAC drivers 
+unfortunately, so I am not sure this should be even remotely considered 
+a viable solution.
+-- 
+Florian
