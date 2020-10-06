@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F00285299
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75282852A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbgJFTjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:39:13 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:2576 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgJFTjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:39:13 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4C5ST95m3Xz6D;
-        Tue,  6 Oct 2020 21:39:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1602013150; bh=WfMGi2j/s4NLE/IArNdm11UxaiMauv154f6EGk5HmZk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GNNB43lZG1uXGM0+tJdkf3jI/5O6e/BHOjPuZnOaOaVvohLXvcZTlUWITgtUE1Q/2
-         mv3Zb9dlzq8vsQy8P5zrDZ6TV+UAxGN1X2wtBpto+uyvKV5PQaBlLhGfiM3qF/pzbQ
-         zr+3Cn8gvqU1cucym4c7jAe6S2AbJ15b6Gbqqs/uFVEDNhxWtI9hJrARwsVk4Cz4ea
-         AbTteE9cssxRW7sXa2OMO3MN4kYzPhsA8WkZLG8LWpBd8VW0p0SU56MPILHnwbtk+U
-         hD96DTRWcFGrgIfEECojMWWHiT7pEktVTp9EbMUffjX6cSlhskT2Ma1UAY4Sk2p4YB
-         9+uduqFyCaA3Q==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Tue, 6 Oct 2020 21:39:07 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     dmitry.torokhov@gmail.com
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: adc: exynos: do not rely on 'users' counter in
- ISR
-Message-ID: <20201006193907.GA30199@qmqm.qmqm.pl>
-References: <20201006041214.GA4145870@dtor-ws>
+        id S1727123AbgJFTnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:43:46 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:48368 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbgJFTnq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 15:43:46 -0400
+Received: from 89-64-87-80.dynamic.chello.pl (89.64.87.80) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.489)
+ id 3bf34580619004af; Tue, 6 Oct 2020 21:43:44 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: [PATCH v2] cpufreq: stats: Add memory barrier to store_reset()
+Date:   Tue, 06 Oct 2020 21:43:43 +0200
+Message-ID: <4635763.B4JZuFUhXG@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201006041214.GA4145870@dtor-ws>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 09:12:14PM -0700, dmitry.torokhov@gmail.com wrote:
-> The order in which 'users' counter is decremented vs calling drivers'
-> close() method is implementation specific, and we should not rely on
-> it. Let's introduce driver private flag and use it to signal ISR
-> to exit when device is being closed.
-> 
-> This has a side-effect of fixing issue of accessing inut->users
-> outside of input->mutex protection.
-[...]
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Reviewed-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
-(after with a fix mentioned below)
+There is nothing to prevent the CPU or the compiler from reordering
+the writes to stats->reset_time and stats->reset_pending in
+store_reset(), in which case the readers of stats->reset_time may see
+a stale value.  Moreover, on 32-bit arches the write to reset_time
+cannot be completed in one go, so the readers of it may see a
+partially updated value in that case.
 
-> --- a/drivers/iio/adc/exynos_adc.c
-> +++ b/drivers/iio/adc/exynos_adc.c
-[...]
-> @@ -712,6 +715,7 @@ static int exynos_adc_ts_open(struct input_dev *dev)
->  {
->  	struct exynos_adc *info = input_get_drvdata(dev);
->  
-> +	WRITE_ONCE(info->ts_enabled, true);
->  	enable_irq(info->tsirq);
->  
->  	return 0;
-> @@ -721,6 +725,7 @@ static void exynos_adc_ts_close(struct input_dev *dev)
->  {
->  	struct exynos_adc *info = input_get_drvdata(dev);
->  
-> +	WRITE_ONCE(info->ts_enabled, true);
->  	disable_irq(info->tsirq);
+To prevent that from happening, add a write memory barrier between
+the writes to stats->reset_time and stats->reset_pending in
+store_reset() and corresponding read memory barrier in the
+readers of stats->reset_time.
 
-Shouldn't 'true' be 'false' here?
+Fixes: 40c3bd4cfa6f ("cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Best Regards,
-Micha³ Miros³aw
+linux-next material.
+
+-> v2: Pair read and write memory barriers as appropriate.
+
+---
+ drivers/cpufreq/cpufreq_stats.c |   20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/cpufreq_stats.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/cpufreq_stats.c
++++ linux-pm/drivers/cpufreq/cpufreq_stats.c
+@@ -47,6 +47,11 @@ static void cpufreq_stats_reset_table(st
+ 
+ 	/* Adjust for the time elapsed since reset was requested */
+ 	WRITE_ONCE(stats->reset_pending, 0);
++	/*
++	 * Prevent the reset_time read from being reordered before the
++	 * reset_pending accesses in cpufreq_stats_record_transition().
++	 */
++	smp_rmb();
+ 	cpufreq_stats_update(stats, READ_ONCE(stats->reset_time));
+ }
+ 
+@@ -71,10 +76,16 @@ static ssize_t show_time_in_state(struct
+ 
+ 	for (i = 0; i < stats->state_num; i++) {
+ 		if (pending) {
+-			if (i == stats->last_index)
++			if (i == stats->last_index) {
++				/*
++				 * Prevent the reset_time read from occurring
++				 * before the reset_pending read above.
++				 */
++				smp_rmb();
+ 				time = get_jiffies_64() - READ_ONCE(stats->reset_time);
+-			else
++			} else {
+ 				time = 0;
++			}
+ 		} else {
+ 			time = stats->time_in_state[i];
+ 			if (i == stats->last_index)
+@@ -99,6 +110,11 @@ static ssize_t store_reset(struct cpufre
+ 	 * avoid races.
+ 	 */
+ 	WRITE_ONCE(stats->reset_time, get_jiffies_64());
++	/*
++	 * The memory barrier below is to prevent the readers of reset_time from
++	 * seeing a stale or partially updated value.
++	 */
++	smp_wmb();
+ 	WRITE_ONCE(stats->reset_pending, 1);
+ 
+ 	return count;
+
+
+
