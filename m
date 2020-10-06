@@ -2,129 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4075928436A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13F128436F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgJFAjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFAjB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:39:01 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A4DC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 17:39:00 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id p21so715779pju.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 17:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ccHRaFq+ZAlHmnxc9ccMtnL9e9SHKBcvTvEy6o8JQnU=;
-        b=cwFnvlNuuxDNi8ZaOLpl7cLSiHlSTJzsGJULkdn+T4lS/6ELbS1j7X06gHDAwJ6jBm
-         jbagL0RVmGJVV8Au5/qAoSaJOT22sgVo/RayUALPSCPK3H2ednLhD9qVfUMb1RZzEHrG
-         SyBW+Wk88BYZXCCCwdcpGwzy0JMNbhBHmxpbPwbx10E1BSyFKZD8svSbEPMZlTyAEnfM
-         bKUqaFuD/LErFQmHDbM2ha+9GRQ/ttwdWyjK/t9TCyTvCLBIrQsjo0c7N5qfbRkwq0sx
-         rc81/CAge8Pv1b+t841C6F0hSvYSXWm1S+gDtpxAq448xe7uC+XcVdKYGIQg/0Y7y1JT
-         o+/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ccHRaFq+ZAlHmnxc9ccMtnL9e9SHKBcvTvEy6o8JQnU=;
-        b=YBBZ5b01k+3utUJ91QQ4rxSd8J7Qmy1nwP4ut0nP1Y/ZQHEZH4VCVg+SWMQH6UYKTF
-         7QEuFkO48DsaxMeMfW3GIH4zunmsfL4oVOY7EZv/3kmOUyxh4iQECoA2JkVuQvqwd2O+
-         zgGwt5Mhg6Y7Crofq389W9crwd2WEDkqvWcoXh7USfAeY+XQJU7yGy5/X+sonXTpc7lO
-         IeDvKmv2Z+XB5XDtUMCWJ5coamd5R1I/XuZSxP83j1Et1juG9THtLrM1XoQAv8mJlK+Z
-         nRL4WqSzI9TjbNm/AGoFuDMRLIBnpCbTFaZZOdSSPPL6yT2X7h9ROz8TbZASpyRuH5ab
-         vejA==
-X-Gm-Message-State: AOAM531rmSjkfdd4WAjmsWGlTRfQIRBo0SztmRqUpXiBVhZX1jgIsnyg
-        8tgqRqnCdd3HQcMf3GdvaxI=
-X-Google-Smtp-Source: ABdhPJxL+84Awi1wiby1oOua19UOrjF1+qtS7MxRWz6/ueD36rUA5IoNkRlNn6+0p4gKyP99mpHB1w==
-X-Received: by 2002:a17:90b:149:: with SMTP id em9mr1781466pjb.129.1601944740152;
-        Mon, 05 Oct 2020 17:39:00 -0700 (PDT)
-Received: from [10.230.29.112] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g129sm1235855pfb.9.2020.10.05.17.38.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 17:38:59 -0700 (PDT)
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     robh@kernel.org, satyakim@qti.qualcomm.com, sudeep.holla@arm.com,
-        broonie@kernel.org, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
-        lukasz.luba@arm.com
-References: <20201005222623.1123-1-cristian.marussi@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 0/4] Add support for SCMIv3.0 Voltage Domain Protocol and
- SCMI-Regulator
-Message-ID: <8483165a-e413-b2f8-bd33-6da07fe56d62@gmail.com>
-Date:   Mon, 5 Oct 2020 17:38:52 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        id S1725970AbgJFAnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:43:50 -0400
+Received: from mga14.intel.com ([192.55.52.115]:37810 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725865AbgJFAnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 20:43:49 -0400
+IronPort-SDR: 5g0sG7IrbYcyE7zxvxkOjOwp7KySsRavwrxjZ0xOojWJReeIiCCqBwTC7EZmVO2srIMNILKbvn
+ 8gz3VxKk4SXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="163511715"
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="163511715"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 17:43:48 -0700
+IronPort-SDR: OOFCHfBm4/akDzY00d2dzxIjXsV3R3XPLlolbmVOu+fdMvHVutRSlz5upIfNw1czD5QxbgjPrn
+ PuEAbCvbG2kg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="341724465"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga004.fm.intel.com with ESMTP; 05 Oct 2020 17:43:48 -0700
+Date:   Tue, 6 Oct 2020 00:43:48 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/resctrl: Correct MBM total and local values
+Message-ID: <20201006004348.GA1415745@otcwcpicx6.sc.intel.com>
+References: <1601331173-185230-1-git-send-email-fenghua.yu@intel.com>
+ <20201005093506.GB21151@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20201005222623.1123-1-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005093506.GB21151@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Boris,
 
+On Mon, Oct 05, 2020 at 11:35:06AM +0200, Borislav Petkov wrote:
+> On Mon, Sep 28, 2020 at 03:12:53PM -0700, Fenghua Yu wrote:
+> > MBM total and local readings are corrected by the following correction
+> > factor table on Broadwell server and Skylake server.
+> > 
+> > core		rmid		rmid			correction
+> > count		count		threshold		factor
+> > 1		8		0			1.000000
+> > 2		16		0			1.000000
+> > 3		24		15			0.969650
+> > 4		32		0			1.000000
+> > 5		40		31			1.066667
+> > 6		48		31			0.969650
+> > 7		56		47			1.142857
+> > 8		64		0			1.000000
+> > 9		72		63			1.185115
+> > 10		80		63			1.066553
+> > 11		88		79			1.454545
+> > 12		96		0			1.000000
+> > 13		104		95			1.230769
+> > 14		112		95			1.142857
+> > 15		120		95			1.066667
+> > 16		128		0			1.000000
+> > 17		136		127			1.254863
+> > 18		144		127			1.185255
+> > 19		152		0			1.000000
+> > 20		160		127			1.066667
+> > 21		168		0			1.000000
+> > 22		176		159			1.454334
+> > 23		184		0			1.000000
+> > 24		192		127			0.969744
+> > 25		200		191			1.280246
+> > 26		208		191			1.230921
+> > 27		216		0			1.000000
+> > 28		224		191			1.143118
+> 
+> Table is already in the code, why is it needed in the commit message
+> too?
 
-On 10/5/2020 3:26 PM, Cristian Marussi wrote:
-> Hi,
-> 
-> this series introduces the support for the new SCMI Voltage Domain Protocol
-> defined by the upcoming SCMIv3.0 specification, whose BETA release is
-> available at [1].
-> 
-> Afterwards, a new generic SCMI Regulator driver is developed on top of the
-> new SCMI VD Protocol.
-> 
-> The series is currently based on for-next/scmi [2] on top of:
-> 
-> commit 66d90f6ecee7 ("firmware: arm_scmi: Enable building as a single
-> 		     module")
-> 
-> Any feedback welcome,
+This is the original table I get from hardware guys. The table is not
+published anywhere else (not in errata docs) except in this patch. To
+optimize the code, the table is converted to an array in the patch. 
 
-Well, this is just great! We were right about to develop a proprietary 
-SCMI protocol in order to control a locked down PMIC accessible behind a 
-secured firmware. We would have done essentially just that since the use 
-case is to control the various regulators exposed by this PMIC over 
-SCMI. Thanks a lot!
+I keep this original table here for two reasons:
+1. It's an original table that can be tracked by any one in the future.
+   If I don't list the original table here, others may wonder where I
+   get the converted table from.
+2. Reviewers may check if the converted table in the patch is correctly
+   converted by comparing the converted table to the original table.
+
+So I can keep this original table in the commit message, right? I will
+add more info why I keep it in the commit message.
 
 > 
-> Thanks,
+> > If rmid > rmid threshold, MBM total and local values should be multipled
+> > by the correction factor.
+> > 
+> > The above table is modified for better code:
+> > 1. The threshold 0 is changed to rmid count - 1 so we don't do correction
 > 
-> Cristian
+> Who is "we"?
+
+I will not use "we".
+
 > 
-> [1]:https://developer.arm.com/documentation/den0056/c/
-> [2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+> >    for the case.
+> > 2. Correction factor is normalized to 2^20 for better performance
+> >    by avoiding floating point and division calculation in corrected
+> >    MBM values.
+> > 
+> > Detailed information about the correction is described in erratum SKX99:
+> > https://www.intel.com/content/www/us/en/processors/xeon/scalable/xeon-scalable-spec-update.html
+> > and BDF102: https://www.intel.com/content/dam/www/public/us/en/documents/specification-updates/xeon-e5-v4-spec-update.pdf
+> > 
+> > The problem is described in details in "3.6 Intel MBM RMID Imbalance":
+> > https://software.intel.com/content/www/us/en/develop/articles/intel-resource-director-technology-rdt-reference-manual.html
+> 
+> I hear those URLs are awfully unstable. I'd suggested you upload the
+> pdfs to bugzilla but the erratum text is short enough so that you can
+> simply add it here.
+
+Ok. I will describe the problem in the commit message.
+
+> 
+> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > Reviewed-by: Tony Luck <tony.luck@intel.com>
+> > ---
+> > 
+> > Applied to tip:x86/cache.
+> > 
+> >  arch/x86/kernel/cpu/resctrl/core.c     |  4 ++
+> >  arch/x86/kernel/cpu/resctrl/internal.h |  1 +
+> >  arch/x86/kernel/cpu/resctrl/monitor.c  | 75 +++++++++++++++++++++++++-
+> >  3 files changed, 78 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+> > index 9e1712e8aef7..efe3ed61ae0c 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/core.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/core.c
+> > @@ -893,6 +893,10 @@ static __init void __check_quirks_intel(void)
+> >  			set_rdt_options("!cmt,!mbmtotal,!mbmlocal,!l3cat");
+> >  		else
+> >  			set_rdt_options("!l3cat");
+> > +		/* FALLTHROUGH */
+> 
+> WARNING: Prefer 'fallthrough;' over fallthrough comment
+> #89: FILE: arch/x86/kernel/cpu/resctrl/core.c:896:
+> +               /* FALLTHROUGH */
 > 
 > 
-> Cristian Marussi (4):
->    firmware: arm_scmi: Add Voltage Domain Support
->    firmware: arm_scmi: add SCMI Voltage Domain devname
->    regulator: add SCMI driver
->    dt-bindings: arm: add support for SCMI Regulators
-> 
->   .../devicetree/bindings/arm/arm,scmi.txt      |  44 ++
->   drivers/firmware/arm_scmi/Makefile            |   2 +-
->   drivers/firmware/arm_scmi/common.h            |   1 +
->   drivers/firmware/arm_scmi/driver.c            |   3 +
->   drivers/firmware/arm_scmi/voltage.c           | 378 ++++++++++++++
->   drivers/regulator/Kconfig                     |   9 +
->   drivers/regulator/Makefile                    |   1 +
->   drivers/regulator/scmi-regulator.c            | 488 ++++++++++++++++++
->   include/linux/scmi_protocol.h                 |  64 +++
->   9 files changed, 989 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/firmware/arm_scmi/voltage.c
->   create mode 100644 drivers/regulator/scmi-regulator.c
+> Have you heard of checkpatch.pl?
 > 
 
--- 
-Florian
+Ok. Will fix the warning.
+
+> > +	case INTEL_FAM6_BROADWELL_X:
+> > +		intel_rdt_mbm_quirk();
+> > +		break;
+> >  	}
+> 
+> ...
+> 
+> > diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > index 54dffe574e67..05e06744e4b1 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/slab.h>
+> >  #include <asm/cpu_device_id.h>
+> > +#include <asm/intel-family.h>
+> >  #include "internal.h"
+> >  
+> >  struct rmid_entry {
+> > @@ -64,6 +65,61 @@ unsigned int rdt_mon_features;
+> >   */
+> >  unsigned int resctrl_cqm_threshold;
+> >  
+> > +#define CF(cf)	((unsigned long)(1048576 * (cf) + 0.5))
+> > +
+> > +/*
+> > + * MBM total and local correction table indexed by CBO which is equal to
+> 
+> "CBO" is?
+
+CBO is Caching Agent. To make it more readable, I will change the words to
+"... indexed by core count which ...".
+
+> 
+> > + * (x86_cache_max_rmid + 1) / 8 - 1 and is from 0 up to 27.
+> > + * The correction factor is normalized to 2^20 (1048576) so it's faster
+> > + * to calculate corrected value by shifting:
+> > + * corrected_value = (original_value * correction_factor) >> 20
+> > + */
+> > +static struct mbm_creation_factor_table {
+> > +	u32 rmidthreshold;
+> > +	u64 cf;
+> > +} mbm_cf_table[] = {
+> 
+> That array wants to be read-only right?
+
+Ok. Will add "const" to the array.
+
+> 
+> > +	{7,	CF(1.000000)},
+> > +	{15,	CF(1.000000)},
+> > +	{15,	CF(0.969650)},
+> > +	{31,	CF(1.000000)},
+> > +	{31,	CF(1.066667)},
+> > +	{31,	CF(0.969650)},
+> > +	{47,	CF(1.142857)},
+> > +	{63,	CF(1.000000)},
+> > +	{63,	CF(1.185115)},
+> > +	{63,	CF(1.066553)},
+> > +	{79,	CF(1.454545)},
+> > +	{95,	CF(1.000000)},
+> > +	{95,	CF(1.230769)},
+> > +	{95,	CF(1.142857)},
+> > +	{95,	CF(1.066667)},
+> > +	{127,	CF(1.000000)},
+> > +	{127,	CF(1.254863)},
+> > +	{127,	CF(1.185255)},
+> > +	{151,	CF(1.000000)},
+> > +	{127,	CF(1.066667)},
+> > +	{167,	CF(1.000000)},
+> > +	{159,	CF(1.454334)},
+> > +	{183,	CF(1.000000)},
+> > +	{127,	CF(0.969744)},
+> > +	{191,	CF(1.280246)},
+> > +	{191,	CF(1.230921)},
+> > +	{215,	CF(1.000000)},
+> > +	{191,	CF(1.143118)},
+> > +};
+> > +
+> > +static u32 mbm_cf_rmidthreshold = UINT_MAX;
+> > +static u64 mbm_cf;
+> > +
+> > +static inline u64 corrected_mbm_count(u32 rmid, unsigned long val)
+> 
+> Function name needs a verb.
+
+Will add a verb in the name.
+
+> 
+> > +{
+> > +	/* Correct MBM value. */
+> > +	if (rmid > mbm_cf_rmidthreshold)
+> > +		val = (val * mbm_cf) >> 20;
+> > +
+> > +	return val;
+> > +}
+> 
+> ...
+> 
+> > @@ -644,3 +701,17 @@ int rdt_get_mon_l3_config(struct rdt_resource *r)
+> >  
+> >  	return 0;
+> >  }
+> > +
+> > +void intel_rdt_mbm_quirk(void)
+> 
+> Function name needs a verb.
+
+Will add a verb in the name.
+
+> 
+> > +{
+> > +	int cf_index;
+> > +
+> > +	cf_index = (boot_cpu_data.x86_cache_max_rmid + 1) / 8 - 1;
+> > +	if (cf_index >= ARRAY_SIZE(mbm_cf_table)) {
+> > +		pr_info("No MBM correction factor available\n");
+> > +		return;
+> > +	}
+> > +
+> > +	mbm_cf_rmidthreshold = mbm_cf_table[cf_index].rmidthreshold;
+> > +	mbm_cf = mbm_cf_table[cf_index].cf;
+> > +}
+> > -- 
+> 
+
+Thank you very much for your review!
+
+-Fenghua
