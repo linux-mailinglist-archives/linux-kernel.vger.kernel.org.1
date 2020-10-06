@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AF2284484
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A808284487
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgJFELx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 00:11:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJFELx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 00:11:53 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE5EF208A9;
-        Tue,  6 Oct 2020 04:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601957512;
-        bh=eX8rve6HxwI2nYREP/V5u420GCVH7dLvjYOErIjpC2k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TSZDzh1NqvIKkuuXh23GCAVV4bbk8DDnoE8f7FdveBiMASMNiLefK8vV1MaBkpnFY
-         BFiZ0Ef0IPKDHiuGlEjSEhlScxIjuTX+2NfG9iVWwgWpw9988CfF+AIqQNk5+vOaWU
-         RewyZePi8kttZp0dUeL8zT/Ly1Fce4l7skSyNQ7o=
-Date:   Tue, 6 Oct 2020 13:11:48 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Alex =?UTF-8?B?QmVubsOpZQ==?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org, jgross@suse.com,
-        boris.ostrovsky@oracle.com
-Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
- correctly
-Message-Id: <20201006131148.1f7b63b688eae7b1e0eb2228@kernel.org>
-In-Reply-To: <20201006114058.b93839b1b8f35a470874572b@kernel.org>
-References: <160190516028.40160.9733543991325671759.stgit@devnote2>
-        <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
-        <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s>
-        <20201006114058.b93839b1b8f35a470874572b@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726867AbgJFEMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 00:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgJFEMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 00:12:17 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962EFC0613CE;
+        Mon,  5 Oct 2020 21:12:17 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r10so180278pgb.10;
+        Mon, 05 Oct 2020 21:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=HwUCVxLaOWReGj/++nkGikV+jRyqPV3oLYh82Dlr2Zo=;
+        b=g1ZUY1XHEAer78d/G/a+EyY3prXdEq+o+f5KAImHzibvav6awCFOgLSxxGn06PpW2c
+         osSTFChqonvGurbT/ylDaYobheGShjwCg8tdmiZe/eAcqJo06uNNjKhv0mhgFlPc+GHh
+         j6Y47eGgVbkVmaWGi1m3QBdss5dFS5grEq+v+SYHAgdrUJnZYVjWn1/50yciX8JWrIju
+         LdyKZshDQHzDh445mUMkoZyimWSgVTiZC56zCo+c1ixuyrBVNdc93Igj0lWJKmqKRUS0
+         49VOCu9drvtSdQ6DnfLE5gPDMOswoVV8gFkF8uW8iJfsXHYdvhi2SOWy/FC3oh1VAhZQ
+         HcAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=HwUCVxLaOWReGj/++nkGikV+jRyqPV3oLYh82Dlr2Zo=;
+        b=MqvMeFnVVoJklcAIjD+U5RcWJNxwMLKyOEVWuEE46kmDnJ6PFLoxxs0RM6ie39J05V
+         /jNmTxswuUcAgtBW9sh6Q+SoOUr/ElY6OBD9S1O1jI2q/Q2RfvWdpkGyddS5pP+awTqh
+         YzA3KJSStXSIZZz4bbckgVuC9l859FJNcJLNap6GyGvjVJM2STbyAe9zTQdgIwJU7N0z
+         BzJHP2zCGlN+HnPKzhNNYa7qkuZQwPV8Ut6t7XNgGq7pixmHH9hbe97L3lKzW/Ow+UP0
+         27j8ECV91LEqACTy2HQjMfq2xhO2/xJLBc40R729tF3YoYEPED0YL1ScXw59VGJmuSLA
+         W3rw==
+X-Gm-Message-State: AOAM533y6gPqhxwGxI78FLTy44/6m6BlYMHtdBRMtL8hz4hrwYJIk2lv
+        GAGwqta/fp72OeekvGKNNHc=
+X-Google-Smtp-Source: ABdhPJzw2Ms221Zj4/SbT46oKwh5Nx3E6AfFsIONc6DxNHFPkVu+HiW5rFl53MV5hurP76A2u1y6fA==
+X-Received: by 2002:aa7:821a:0:b029:152:aa68:222d with SMTP id k26-20020aa7821a0000b0290152aa68222dmr2837484pfi.73.1601957536981;
+        Mon, 05 Oct 2020 21:12:16 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id b16sm1573170pfp.195.2020.10.05.21.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 21:12:16 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 21:12:14 -0700
+From:   dmitry.torokhov@gmail.com
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] iio: adc: exynos: do not rely on 'users' counter in ISR
+Message-ID: <20201006041214.GA4145870@dtor-ws>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 11:40:58 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+The order in which 'users' counter is decremented vs calling drivers'
+close() method is implementation specific, and we should not rely on
+it. Let's introduce driver private flag and use it to signal ISR
+to exit when device is being closed.
 
-> On Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
-> Stefano Stabellini <sstabellini@kernel.org> wrote:
-> 
-> > On Mon, 5 Oct 2020, Julien Grall wrote:
-> > > Hi Masami,
-> > > 
-> > > On 05/10/2020 14:39, Masami Hiramatsu wrote:
-> > > > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
-> > > > address conversion.
-> > > > 
-> > > > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-> > > > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-> > > > assumes the given virtual address is in contiguous kernel memory
-> > > > area, it can not convert the per-cpu memory if it is allocated on
-> > > > vmalloc area (depends on CONFIG_SMP).
-> > > 
-> > > Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
-> > > region for CPU0 is allocated outside of vmalloc area.
-> > > 
-> > > However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
-> > > enabled.
-> > 
-> > I cannot reproduce the issue with defconfig, but I can with Masami's
-> > kconfig.
-> > 
-> > If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
-> > problem still appears.
-> > 
-> > If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
-> > strange because CONFIG_NUMA is enabled in defconfig, and defconfig
-> > works.
-> 
-> Hmm, strange, because when I disabled CONFIG_NUMA_BALANCING, the issue
-> disappeared.
+This has a side-effect of fixing issue of accessing inut->users
+outside of input->mutex protection.
 
-Ah, OK. It depends on NUMA. On arm64, CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK
-is enabled if CONFIG_NUMA=y.
+Reported-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
 
-Since per-cpu first chunk has been allocated by memblock if the
-CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK is enabled(See
-pcpu_embed_first_chunk()), when the kernel allocate the xen_vcpu_info
-on the first chunk, it will be in the linear address space.
-However, if we disable CONFIG_NUMA, it will be on vmalloc page.
+v2: switched from ordinary read/write to READ_ONCE/WRITE_ONCE per Michał
+Mirosław 
 
-And if the first chunk has been filled up before initializing xen,
-the xen_vcpu_info will be allocated on the 2nd chunk which is has been
-allocated by the backend allocator (kernel memory or vmalloc, depends
-on CONFIG_SMP).
+ drivers/iio/adc/exynos_adc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-So anyway we have to check it carefully with a special function, which is
-per_cpu_ptr_to_phys(). 
-
-Thank you,
+diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
+index 22131a677445..6c705fe599a3 100644
+--- a/drivers/iio/adc/exynos_adc.c
++++ b/drivers/iio/adc/exynos_adc.c
+@@ -7,6 +7,7 @@
+  *  Copyright (C) 2013 Naveen Krishna Chatradhi <ch.naveen@samsung.com>
+  */
+ 
++#include <linux/compiler.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/interrupt.h>
+@@ -135,6 +136,8 @@ struct exynos_adc {
+ 	u32			value;
+ 	unsigned int            version;
+ 
++	bool			ts_enabled;
++
+ 	bool			read_ts;
+ 	u32			ts_x;
+ 	u32			ts_y;
+@@ -633,7 +636,7 @@ static irqreturn_t exynos_ts_isr(int irq, void *dev_id)
+ 	bool pressed;
+ 	int ret;
+ 
+-	while (info->input->users) {
++	while (READ_ONCE(info->ts_enabled)) {
+ 		ret = exynos_read_s3c64xx_ts(dev, &x, &y);
+ 		if (ret == -ETIMEDOUT)
+ 			break;
+@@ -712,6 +715,7 @@ static int exynos_adc_ts_open(struct input_dev *dev)
+ {
+ 	struct exynos_adc *info = input_get_drvdata(dev);
+ 
++	WRITE_ONCE(info->ts_enabled, true);
+ 	enable_irq(info->tsirq);
+ 
+ 	return 0;
+@@ -721,6 +725,7 @@ static void exynos_adc_ts_close(struct input_dev *dev)
+ {
+ 	struct exynos_adc *info = input_get_drvdata(dev);
+ 
++	WRITE_ONCE(info->ts_enabled, true);
+ 	disable_irq(info->tsirq);
+ }
+ 
+-- 
+2.28.0.806.g8561365e88-goog
 
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Dmitry
