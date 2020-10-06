@@ -2,80 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A852848BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4182848BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgJFIim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgJFIim (ORCPT
+        id S1725972AbgJFIkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:40:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24893 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725934AbgJFIkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:38:42 -0400
-Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14952C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 01:38:58 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id 9382623F0DD;
-        Tue,  6 Oct 2020 10:38:55 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.975
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.975 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.075, BAYES_00=-1.9] autolearn=ham
-Received: from smtp2.goneo.de ([127.0.0.1])
-        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jTXJSYUp0euX; Tue,  6 Oct 2020 10:38:54 +0200 (CEST)
-Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
-        by smtp2.goneo.de (Postfix) with ESMTPSA id 12590241A53;
-        Tue,  6 Oct 2020 10:38:54 +0200 (CEST)
-Date:   Tue, 6 Oct 2020 10:38:44 +0200
-From:   Lars Poeschel <poeschel@lemonage.de>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 00/32] Make charlcd device independent
-Message-ID: <20201006083834.ejbl5itjvkbqbmby@lem-wkst-02.lemonage>
-References: <20201005122732.3429347-1-poeschel@lemonage.de>
- <CANiq72mH93Yes8dShcFffEqS_O3NtuDOa8HyS20zKvLoiPn1hg@mail.gmail.com>
+        Tue, 6 Oct 2020 04:40:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601973631;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=I+SRVoG86bF5ws5RN5TAfcOwR0YacOLrIivK72/5PyA=;
+        b=MdfnKs164+v/RbI9ZWwh+QCDW+c0NbZKmRrTi1z83We6vaxRjmLTslrBcyExHtHB7m/UWb
+        /2+m9psiAfyj62omabwG2nTevdO6BsLrhM5/BLR9aAaXP3HeWDvmYEuYIQ6Q4VrXcEdaiM
+        yRIY/pkIRQOis6TMeCfrChRbhkAyd+4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-EHneLjS9OUGcgKGUg0sUNQ-1; Tue, 06 Oct 2020 04:40:27 -0400
+X-MC-Unique: EHneLjS9OUGcgKGUg0sUNQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C91631084CA0;
+        Tue,  6 Oct 2020 08:40:25 +0000 (UTC)
+Received: from [10.36.114.219] (ovpn-114-219.ams2.redhat.com [10.36.114.219])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3213C60C05;
+        Tue,  6 Oct 2020 08:40:23 +0000 (UTC)
+Subject: Re: [PATCH 9/9] mm, page_alloc: optionally disable pcplists during
+ page isolation
+To:     Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20200922143712.12048-1-vbabka@suse.cz>
+ <20200922143712.12048-10-vbabka@suse.cz>
+ <20201006083418.GB29020@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <a35c1f92-b56a-e6c4-9920-33f99850eb76@redhat.com>
+Date:   Tue, 6 Oct 2020 10:40:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72mH93Yes8dShcFffEqS_O3NtuDOa8HyS20zKvLoiPn1hg@mail.gmail.com>
+In-Reply-To: <20201006083418.GB29020@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:30:59PM +0200, Miguel Ojeda wrote:
-> Hi Lars,
+On 06.10.20 10:34, Michal Hocko wrote:
+> On Tue 22-09-20 16:37:12, Vlastimil Babka wrote:
+>> Page isolation can race with process freeing pages to pcplists in a way that
+>> a page from isolated pageblock can end up on pcplist. This can be fixed by
+>> repeated draining of pcplists, as done by patch "mm/memory_hotplug: drain
+>> per-cpu pages again during memory offline" in [1].
+>>
+>> David and Michal would prefer that this race was closed in a way that callers
+>> of page isolation who need stronger guarantees don't need to repeatedly drain.
+>> David suggested disabling pcplists usage completely during page isolation,
+>> instead of repeatedly draining them.
+>>
+>> To achieve this without adding special cases in alloc/free fastpath, we can use
+>> the same approach as boot pagesets - when pcp->high is 0, any pcplist addition
+>> will be immediately flushed.
+>>
+>> The race can thus be closed by setting pcp->high to 0 and draining pcplists
+>> once, before calling start_isolate_page_range(). The draining will serialize
+>> after processes that already disabled interrupts and read the old value of
+>> pcp->high in free_unref_page_commit(), and processes that have not yet disabled
+>> interrupts, will observe pcp->high == 0 when they are rescheduled, and skip
+>> pcplists. This guarantees no stray pages on pcplists in zones where isolation
+>> happens.
+>>
+>> This patch thus adds zone_pcplist_disable() and zone_pcplist_enable() functions
+>> that page isolation users can call before start_isolate_page_range() and after
+>> unisolating (or offlining) the isolated pages. A new zone->pcplist_disabled
+>> atomic variable makes sure we disable only pcplists once and don't enable
+>> them prematurely in case there are multiple users in parallel.
+>>
+>> We however have to avoid external updates to high and batch by taking
+>> pcp_batch_high_lock. To allow multiple isolations in parallel, change this lock
+>> from mutex to rwsem.
 > 
-> On Mon, Oct 5, 2020 at 2:27 PM <poeschel@lemonage.de> wrote:
-> >
-> > This tries to make charlcd device independent.
+> The overall idea makes sense. I just suspect you are over overcomplicating 
+> the implementation a bit. Is there any reason that we cannot start with
+> a really dumb implementation first. The only user of this functionality
+> is the memory offlining and that is already strongly synchronized
+> (mem_hotplug_begin) so a lot of trickery can be dropped here. Should we
+> find a new user later on we can make the implementation finer grained
+> but now it will not serve any purpose. So can we simply update pcp->high
+> and drain all pcp in the given zone and wait for all remote pcp draining
+> in zone_pcplist_enable and updte revert all that in zone_pcplist_enable.
+> We can stick to the existing pcp_batch_high_lock.
 > 
-> Thanks a lot for the work!
+> What do you think?
 > 
-> I see you have written the differences between versions in each patch,
-> but given there are 32 patches, it'd be nice to comment which ones have
-> changed so that folks that already did a review can take a look at
-> those.
 
-Changes in v4:
-- modtronix -> Modtronix in new lcd2s driver
-- Kconfig: remove "default n" in new lcd2s driver
+My two cents, we might want to make use of this in some cases of
+alloc_contig_range() soon ("try hard mode"). So I'd love to see a
+synchronized mechanism. However, that can be factored out into a
+separate patch, so this patch gets significantly simpler.
 
-Changes in v3:
-- Fix some typos in Kconfig stuff
-- Fix kernel test robot reported error: Missed EXPORT_SYMBOL_GPL
-- new patch to reduce display timeout
-- better patch description to why not move cursor beyond end of a line
-- Fixed make dt_binding_doc errors
 
-Changes in v2:
-- split whole patch into many smaller chunks
-- device tree doc in yaml
+-- 
+Thanks,
 
-Regards,
-Lars
+David / dhildenb
+
