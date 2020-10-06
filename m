@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12885284C96
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28ACE284C95
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgJFNdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        id S1726002AbgJFNdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgJFNdc (ORCPT
+        with ESMTP id S1725902AbgJFNdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:33:32 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CCAC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 06:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4EuFqx5BLHnEuSbZbHwwDASDoQ4qTKYnpBwSKictmrY=; b=AGTkU6WVtH4G/hfGMJ++W8Kjl/
-        CVScfS1tqrv226bmMp7gKBb/dMEFSL3XrPXJR5TSonuWQwK7bjCDyRRAzHdhesvXfcFA7PAFiTI4j
-        jfPxX9QJxVPp1AY8jNjY6Am6ptCY//sL3B1VxIcUlxZAoH4GX0ZQYyWfW+6+voD8UCEZujk3MOavw
-        2z5VXanODbGfohkpgpGqtBCvYPIOAqfdyUYx4BUSXUplekV11Gy8HLshVpZlvlJcG2i9bIdIXV6HA
-        0iSUAZKQ+ZAxHX8d3MU3BruREDcDEMP4M9AWHEelzDgEwO+U0y2AcmlYuY4Rs3/J4t4Tz4rGe5FJO
-        IXRs+AUQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPn5c-0000sL-AQ; Tue, 06 Oct 2020 13:33:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91CF73019CE;
-        Tue,  6 Oct 2020 15:33:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7543B20244ED7; Tue,  6 Oct 2020 15:33:09 +0200 (CEST)
-Date:   Tue, 6 Oct 2020 15:33:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Scott Wood <swood@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH -v2 07/17] sched: Fix hotplug vs CPU bandwidth control
-Message-ID: <20201006133309.GU2628@hirez.programming.kicks-ass.net>
-References: <20201005145717.346020688@infradead.org>
- <20201005150921.661842442@infradead.org>
- <CAKfTPtDr+pOxEninW5m_R6bKPWqwpFYsrHVLcQ-LimLvk3hDAw@mail.gmail.com>
+        Tue, 6 Oct 2020 09:33:23 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D17C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 06:33:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 144so9044612pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 06:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Vm1qg5tFM/go3uZ+IFi1ZY4Ibsza7VdedxtPshUR0wA=;
+        b=SBSdKX6/2NAGUgBAXq+UB2ZJMH7fmjLJhOIhMKAOF26PXkpGxgg4lfSi/6WXVBo72G
+         5DXxSuMVgntF9ApClATEoRCpHukGPkhqPTvb5f5xdxXZaq2gw7o2GJBDJUYXHx1T9QnV
+         i/2h/JDWbXHNwKRKT8zkVsG51wFmakNlkuto5NxL+00tKr7CTRDd8lXbAUuLpzDNVY8b
+         RCmCc2S27hc+0F+CCE8Z5SNXMLxskJjznMPLmXK/nSqB6uietnMhq4cR6vfMzblRzZpR
+         lG4VavePWJze81z/6OVaLMdVqjfoE6J3jfc3DDCZvlOYm9IeHL8Ma81WkkKOy1pZXu0v
+         dUZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vm1qg5tFM/go3uZ+IFi1ZY4Ibsza7VdedxtPshUR0wA=;
+        b=JVe2ELZhzBC3qUgxwa5Tb9CKyhA4xBF7jq/x1NvumA4SwJhkDTnNwVsmtYgPZeueRO
+         FuhfcX8xX+/JvtNFNgyMGATapnvBtSgJ2cm/X7PtJihkKO0sNoCaHblXs5RdD1eKaG51
+         WnpfbsHoL+Nif8ku/OzpWKW/zFlLiMvdNk4BxYefk+j0kSsq/sYJcpcFPCObhBesqrxh
+         CfzyeJtJlH5z/gMN9GMNMDQ8eImMcQCX8vGHPNhVLU/KyS/HlLpa4iwftrNGXmtbLaIv
+         qNvabx+ZDby2h8tYc9Fp+X8rsZSGb5XRDQEzAcwFvJMKgjfyAi+WHlU/XnrqD5FGXBUz
+         Lliw==
+X-Gm-Message-State: AOAM5315k1MVM1A6+MSAwxI34YafShviqLH7+mCglsv8tFObW2VyV7WP
+        xf0x72Fn43+JOnrVruWvqlA=
+X-Google-Smtp-Source: ABdhPJykmUpJZjbW3TXNR0HlZqdGk1+eN6n3FA+FALID62Wf2jiP3bwcEQSalwp4zPrtaQCp1zp4Sg==
+X-Received: by 2002:a63:cd48:: with SMTP id a8mr3877058pgj.83.1601991202854;
+        Tue, 06 Oct 2020 06:33:22 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id s8sm2808255pjn.10.2020.10.06.06.33.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 06:33:21 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 22:33:19 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
+        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] printk: handle blank console arguments passed in.
+Message-ID: <20201006133319.GA178176@jagdpanzerIV.localdomain>
+References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
+ <20200522065306.83-1-shreyas.joshi@biamp.com>
+ <20200522100046.GH3464@linux-b0ei>
+ <20201006025935.GA597@jagdpanzerIV.localdomain>
+ <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+ <20201006065907.GA528@jagdpanzerIV.localdomain>
+ <20201006095435.GC32369@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtDr+pOxEninW5m_R6bKPWqwpFYsrHVLcQ-LimLvk3hDAw@mail.gmail.com>
+In-Reply-To: <20201006095435.GC32369@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 02:46:28PM +0200, Vincent Guittot wrote:
-
-> > @@ -6993,6 +6995,14 @@ int sched_cpu_deactivate(unsigned int cp
-> >
-> >         balance_push_set(cpu, true);
-> >
-> > +       rq_lock_irqsave(rq, &rf);
-> > +       if (rq->rd) {
-> > +               update_rq_clock();
+On (20/10/06 11:54), Petr Mladek wrote:
+> On Tue 2020-10-06 15:59:07, Sergey Senozhatsky wrote:
+> > On (20/10/05 20:35), Guenter Roeck wrote:
+> > > On a side note, I don't see the problem presumably fixed with this
+> > > patch in any of my tests.
+> > 
+> > Hmm. This is rather interesting. Empty console= certainly oops-es my laptop,
 > 
-> Tried to compile but rq parameter is missing
+> Just by chance. Do you have any log with the Oops? Or does it die
+> silently?
 
-Damn :/, I'm sure I fixed that. must've lost a refresh before sending.
+The laptop in question has fbdev and no serial. It dies with blank screen.
+I'll try to dig it and get some backtrace or anything useful.
+
+	-ss
