@@ -2,109 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184EC2845B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055942845BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgJFF5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 01:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
+        id S1726851AbgJFGBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgJFF5b (ORCPT
+        with ESMTP id S1726588AbgJFGBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 01:57:31 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112F5C0613A8
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 22:57:30 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x5so682952plo.6
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 22:57:30 -0700 (PDT)
+        Tue, 6 Oct 2020 02:01:49 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25979C0613A8
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:01:48 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a17so1041339pju.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:01:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Gx4WOvLZE+8XVE2Cbj1TNlsvQN+bEc7hhbjF/tgIFks=;
-        b=lIzQwVFztGvCS46aamlT+Zp90+6vgiZYuYVYPYCJ266iK/uoWXyEyrXdL+ASF2Rpqj
-         ZMXs/jATshsL6nNxJIJtjbFrXbBtj+7EKt0zWl0QpYwJSVFxB/yglLqM6l06tKlgg73j
-         pP+effqg9e6dsJyuFUrqtstsMcZCr/eCqWXu0=
+        bh=BXyFah0M1LT/tl5rtZLB+bxtBhQm6vlhUicSg4mgrDQ=;
+        b=i7jY2Ub8O4E9K5Uy2G0aoxmbLQOHzuk/xBVomiMp12FFKTjg3+9qTj5PxCMyyYHXXX
+         zwAw4LfEFBA71A9Zff5encg5+n1PCd1YRVUcCqKAGUvsg6eEBLYYvU1N5bxjwC6VCgmG
+         13Z8BICaPxVomWnc6imPzaYRvOfE+MM5x/CI0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Gx4WOvLZE+8XVE2Cbj1TNlsvQN+bEc7hhbjF/tgIFks=;
-        b=ZjGoNAihjictSzS7phD25sI117JSneQWMWgq0DdelmpjtI3jzWy1lH1fR/PS2Ol4od
-         xirYOeN810RtT59OSJJ8ALP+ptj7p2AZA0NVeZmLZc0a7Fojvfk0cnvMHsUrRC38EQd8
-         YiqgUVzleFg5wDMx+mg6BOUsUWefRaXK6yjGHFSEqsDCB7DiL4a2Mp02mcLNknR8eLGM
-         5o5oHsczgG6h5ZIv8sf7VoHcsEmcd3ZUsv/HrdOr7E+Ca1jThFWBtc6XfjV7oNfMnSHo
-         eyAhRyzFwjPaptFVKzs/vhodLZ3mzdIpc0u+FS9q0bcrTrAxlUBRPkXfhXfCuBhoQeyi
-         R3Eg==
-X-Gm-Message-State: AOAM532ymTKSS2z2THZsU7GqkY2FQjpXLQ5iH0wnZl3iYULOqzAaO+Iq
-        6cS+elhjxXuxt7RdteafQO2yug==
-X-Google-Smtp-Source: ABdhPJyyhqIDHGy7mDnDHpQB09ZhAu+H7/Ucq2xIm6TB1CInHA8Hx4CXWDmYBVa2VyTjeL4m+tfnaA==
-X-Received: by 2002:a17:90a:8007:: with SMTP id b7mr274521pjn.84.1601963849512;
-        Mon, 05 Oct 2020 22:57:29 -0700 (PDT)
+        bh=BXyFah0M1LT/tl5rtZLB+bxtBhQm6vlhUicSg4mgrDQ=;
+        b=Di8E0gakSZrm1qs6sfvQqc+vDOqd7qPJ1t8ADQHW0dn6QMC6Jy4YC858El+66ewQzt
+         C13ceKr0QFBAQVo6l8Pf+i4SAp9xwRIb/QzxEVpX4osFv0n/qiyBw2u+5rYi9JWBoWf/
+         nlkzV9Z9ZWjgzIWpX1z8vwLQLIhEhpoP+H3l56CT0YntYArqCZ6JjT+Ru6uuzsb+PCCD
+         iK31rTVkwMElrZkAsfGqSFXAg9Fvpwb2opXZAeNN2S8anCdUoxT4untd0EZUzB7v2+Su
+         zhMW8lhCBw1cjT+zwBHBB2B8GcSbHGley8ka3Nqol0AZJfxbj/PKAEam+tl+a9cWrfIj
+         nksw==
+X-Gm-Message-State: AOAM5300wvyJRKw/VgdiOhg4brY1u/gcuLqNA4cLIkL2nCntpyV2t872
+        is/JG8+4/rTzuh6SZv0aSgZ2gDMQyfiK4Tek
+X-Google-Smtp-Source: ABdhPJyrC+5WoAylplQ4k13T2QFC5W3m5sU9r2cx3dLVztKhLdvY0R60Htd0Phr92a+jRZCNEaKAfg==
+X-Received: by 2002:a17:902:9008:b029:d3:b4d2:9a2 with SMTP id a8-20020a1709029008b02900d3b4d209a2mr1824586plp.15.1601964107582;
+        Mon, 05 Oct 2020 23:01:47 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y126sm1607049pgb.40.2020.10.05.22.57.28
+        by smtp.gmail.com with ESMTPSA id h2sm2060779pfk.90.2020.10.05.23.01.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 22:57:28 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 22:57:27 -0700
+        Mon, 05 Oct 2020 23:01:45 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 23:01:44 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Emese Revfy <re.emese@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] random32: Restore __latent_entropy attribute on
- net_rand_state
-Message-ID: <202010052257.CB8E47E@keescook>
-References: <20201002151610.24258-1-thibaut.sautereau@clip-os.org>
- <202010051910.BC7E9F4@keescook>
- <20201006022808.GA5531@1wt.eu>
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        George Popescu <georgepope@android.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] ubsan: Move cc-option tests into Kconfig
+Message-ID: <202010052258.96765BC83@keescook>
+References: <20201002221527.177500-1-keescook@chromium.org>
+ <20201002221527.177500-2-keescook@chromium.org>
+ <20201004070847.GA1650@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006022808.GA5531@1wt.eu>
+In-Reply-To: <20201004070847.GA1650@Ryzen-9-3900X.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:28:09AM +0200, Willy Tarreau wrote:
-> Hi Kees,
+On Sun, Oct 04, 2020 at 12:08:47AM -0700, Nathan Chancellor wrote:
+> On Fri, Oct 02, 2020 at 03:15:24PM -0700, Kees Cook wrote:
+> > Instead of doing if/endif blocks with cc-option calls in the UBSAN
+> > Makefile, move all the tests into Kconfig and use the Makefile to
+> > collect the results.
+> > 
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Link: https://lore.kernel.org/lkml/CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com/
 > 
-> On Mon, Oct 05, 2020 at 07:12:29PM -0700, Kees Cook wrote:
-> > On Fri, Oct 02, 2020 at 05:16:11PM +0200, Thibaut Sautereau wrote:
-> > > From: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-> > > 
-> > > Commit f227e3ec3b5c ("random32: update the net random state on interrupt
-> > > and activity") broke compilation and was temporarily fixed by Linus in
-> > > 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy
-> > > gcc plugin") by entirely moving net_rand_state out of the things handled
-> > > by the latent_entropy GCC plugin.
-> > > 
-> > > From what I understand when reading the plugin code, using the
-> > > __latent_entropy attribute on a declaration was the wrong part and
-> > > simply keeping the __latent_entropy attribute on the variable definition
-> > > was the correct fix.
-> > > 
-> > > Fixes: 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy gcc plugin")
-> > > Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Cc: Willy Tarreau <w@1wt.eu>
-> > > Cc: Emese Revfy <re.emese@gmail.com>
-> > > Signed-off-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-> > 
-> > Yes, that looks correct. Thank you!
-> > 
-> > Acked-by: Kees Cook <keescook@chromium.org>
-> > 
-> > I'm not sure the best tree for this. Ted, Andrew, Linus? I'll take it
-> > via my gcc plugin tree if no one else takes it. :)
+> I tested menuconfig to make sure all the flags when CONFIG_UBSAN_MISC is
+> flipped.
 > 
-> It was already merged as commit 09a6b0bc3be79 and queued for -stable.
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Ah, perfect! Thanks.
+Awesome, thank you!
+
+> One comment below.
+> 
+> > [...]
+> > diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+> > index 9716dab06bc7..72862da47baf 100644
+> > --- a/scripts/Makefile.ubsan
+> > +++ b/scripts/Makefile.ubsan
+> > @@ -1,37 +1,21 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> >  
+> > -export CFLAGS_UBSAN :=
+> > +# -fsanitize=* options makes GCC less smart than usual and
+> > +# increases the number of 'maybe-uninitialized' false-positives.
+> > +ubsan-cflags-$(CONFIG_UBSAN) += $(call cc-disable-warning, maybe-uninitialized)
+> 
+> Is this just to force -Wno-maybe-uninitialized even when W=2?
+> -Wmaybe-uninitialized is already disabled globally after
+> commit 78a5255ffb6a ("Stop the ad-hoc games with
+> -Wno-maybe-initialized"). I feel like it might be worth a comment in
+> case that changes in the future but maybe that is a bit much.
+> 
+> > [...]
+> > -      # -fsanitize=* options makes GCC less smart than usual and
+> > -      # increase number of 'maybe-uninitialized false-positives
+> > -      CFLAGS_UBSAN += $(call cc-option, -Wno-maybe-uninitialized)
+
+It's just a direct copying of the existing logic, but into the new
+"ubsan-cflags-y" style. But yes, AFAICT, that was the intent when it was
+added in commit a76bcf557ef4 ("Kbuild: enable -Wmaybe-uninitialized
+warning for "make W=1"").
+
+So for this patch, I kept the logic as it was.
 
 -- 
 Kees Cook
