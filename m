@@ -2,106 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75282852A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57832852A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgJFTnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:43:46 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:48368 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgJFTnq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:43:46 -0400
-Received: from 89-64-87-80.dynamic.chello.pl (89.64.87.80) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.489)
- id 3bf34580619004af; Tue, 6 Oct 2020 21:43:44 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: [PATCH v2] cpufreq: stats: Add memory barrier to store_reset()
-Date:   Tue, 06 Oct 2020 21:43:43 +0200
-Message-ID: <4635763.B4JZuFUhXG@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S1727137AbgJFTpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:45:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:55622 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgJFTpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 15:45:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D069F113E;
+        Tue,  6 Oct 2020 12:45:00 -0700 (PDT)
+Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.195.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E2873F71F;
+        Tue,  6 Oct 2020 12:44:59 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] arm64: random: Remove no longer needed prototypes
+Date:   Tue,  6 Oct 2020 20:44:53 +0100
+Message-Id: <20201006194453.36519-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Commit 9bceb80b3cc4 ("arm64: kaslr: Use standard early random
+function") removed the direct calls of the __arm64_rndr() and
+__early_cpu_has_rndr() functions, but left the dummy prototypes in the
+ #else branch of the #ifdef CONFIG_ARCH_RANDOM guard.
 
-There is nothing to prevent the CPU or the compiler from reordering
-the writes to stats->reset_time and stats->reset_pending in
-store_reset(), in which case the readers of stats->reset_time may see
-a stale value.  Moreover, on 32-bit arches the write to reset_time
-cannot be completed in one go, so the readers of it may see a
-partially updated value in that case.
+Remove the redundant prototypes, as they have no users outside of
+this header file.
 
-To prevent that from happening, add a write memory barrier between
-the writes to stats->reset_time and stats->reset_pending in
-store_reset() and corresponding read memory barrier in the
-readers of stats->reset_time.
-
-Fixes: 40c3bd4cfa6f ("cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 ---
+ arch/arm64/include/asm/archrandom.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-linux-next material.
-
--> v2: Pair read and write memory barriers as appropriate.
-
----
- drivers/cpufreq/cpufreq_stats.c |   20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-Index: linux-pm/drivers/cpufreq/cpufreq_stats.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/cpufreq_stats.c
-+++ linux-pm/drivers/cpufreq/cpufreq_stats.c
-@@ -47,6 +47,11 @@ static void cpufreq_stats_reset_table(st
- 
- 	/* Adjust for the time elapsed since reset was requested */
- 	WRITE_ONCE(stats->reset_pending, 0);
-+	/*
-+	 * Prevent the reset_time read from being reordered before the
-+	 * reset_pending accesses in cpufreq_stats_record_transition().
-+	 */
-+	smp_rmb();
- 	cpufreq_stats_update(stats, READ_ONCE(stats->reset_time));
+diff --git a/arch/arm64/include/asm/archrandom.h b/arch/arm64/include/asm/archrandom.h
+index 44209f6146aa..ffb1a40d5475 100644
+--- a/arch/arm64/include/asm/archrandom.h
++++ b/arch/arm64/include/asm/archrandom.h
+@@ -79,10 +79,5 @@ arch_get_random_seed_long_early(unsigned long *v)
  }
+ #define arch_get_random_seed_long_early arch_get_random_seed_long_early
  
-@@ -71,10 +76,16 @@ static ssize_t show_time_in_state(struct
- 
- 	for (i = 0; i < stats->state_num; i++) {
- 		if (pending) {
--			if (i == stats->last_index)
-+			if (i == stats->last_index) {
-+				/*
-+				 * Prevent the reset_time read from occurring
-+				 * before the reset_pending read above.
-+				 */
-+				smp_rmb();
- 				time = get_jiffies_64() - READ_ONCE(stats->reset_time);
--			else
-+			} else {
- 				time = 0;
-+			}
- 		} else {
- 			time = stats->time_in_state[i];
- 			if (i == stats->last_index)
-@@ -99,6 +110,11 @@ static ssize_t store_reset(struct cpufre
- 	 * avoid races.
- 	 */
- 	WRITE_ONCE(stats->reset_time, get_jiffies_64());
-+	/*
-+	 * The memory barrier below is to prevent the readers of reset_time from
-+	 * seeing a stale or partially updated value.
-+	 */
-+	smp_wmb();
- 	WRITE_ONCE(stats->reset_pending, 1);
- 
- 	return count;
-
-
+-#else
+-
+-static inline bool __arm64_rndr(unsigned long *v) { return false; }
+-static inline bool __init __early_cpu_has_rndr(void) { return false; }
+-
+ #endif /* CONFIG_ARCH_RANDOM */
+ #endif /* _ASM_ARCHRANDOM_H */
+-- 
+2.17.1
 
