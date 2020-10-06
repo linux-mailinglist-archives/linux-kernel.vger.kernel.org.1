@@ -2,135 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC426284B12
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5281284B18
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgJFLqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726164AbgJFLqc (ORCPT
+        id S1726398AbgJFLrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 07:47:05 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41999 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgJFLrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:46:32 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FF2C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 04:46:30 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id s7so10327462qkh.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 04:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=khls/uJRiiihhpviNhiZwsjCwrKDMmXzS3nICWnkoE0=;
-        b=agizYAIKwE8nBdCa5FoqruUUgBMZurpzsRC/wNwcTfsnDpXFpX+QcbtpQZNad/gVxa
-         Ejl6u02QYnFEvkiLjpKZ89TQcWssfDx6i1puGgdAIuUB6ND5BzNSJb8mCyvibixY/EdF
-         pgB/nl85OHsSwiBYpCSL7eI4xgkqvC8eyTW5baeGzGZtamDu1VrTEVHS2Fh2e5EwIdCa
-         l+bmTT2IpUpEbcBgO/Vn+7GdNx0SxYlBrsPTJWV6ElQQYg1Sr5wjBNab9QjBywAk8rRQ
-         P2SnLftBpoJJDcabtclfyifyvMC+FfaH8IiaW3kaxddjvGyMpMoG34dBGPgpiVQuLKfY
-         N8wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=khls/uJRiiihhpviNhiZwsjCwrKDMmXzS3nICWnkoE0=;
-        b=Ov9TjM0mt+f+Uws/353dmzDQgkSulKqsya8S38V4+Y1G8jDwMZv66DCKoAQScsox3L
-         a98AJYT0K4Jg6E9EmdG3gud3dPH88CRNJh4saN3nyKxiWj3tU5gXF9hl0bxut5ndd2Y/
-         KvURUHF7ObUSS1RRvWodLCPWE0M5zKJG/6e5s0Icuzu/hE3iIFkOFZNsF5X7O4Iv/80y
-         tJ/LpwFhC+d+HmKzLExq1LakoJ+2ZmSqN72/VbLTB8fRwiLJoNv/c4j6qCty587FkpLM
-         u9RNV2nzz7pnwv4V2AvPwiHgEuM26uycn/PzaLECBtAN7Kf3zokbqYi8Un9J+8+z1+9G
-         k2Hg==
-X-Gm-Message-State: AOAM531/+dpXgJTGJEeIjj4ifvK9fUi4NWu8jkdMcsxKECcZWSh4LWGb
-        z/v18gg8g650qX2CPjny16V2Rw==
-X-Google-Smtp-Source: ABdhPJxGjy8GMWaeQn4E93BfLwEPNtp1gYfctvZFDUSCXr33xy4Gvvi+lX1EpAqLKazySn71iDwf0Q==
-X-Received: by 2002:a37:4e45:: with SMTP id c66mr4918962qkb.36.1601984789486;
-        Tue, 06 Oct 2020 04:46:29 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id j88sm1989818qte.96.2020.10.06.04.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 04:46:28 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kPlQJ-000VYo-SU; Tue, 06 Oct 2020 08:46:27 -0300
-Date:   Tue, 6 Oct 2020 08:46:27 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>,
+        Tue, 6 Oct 2020 07:47:03 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kPlQq-0003t1-GA; Tue, 06 Oct 2020 11:47:00 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
         Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v5 0/4] Dynamicaly allocate SG table from the
- pages
-Message-ID: <20201006114627.GE5177@ziepe.ca>
-References: <20201004154340.1080481-1-leon@kernel.org>
- <20201005235650.GA89159@nvidia.com>
- <20201006104122.GA438822@phenom.ffwll.local>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Eddie Wai <eddie.wai@broadcom.com>, linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] RDMA/bnxt_re: fix sizeof mismatch for allocation of pbl_tbl.
+Date:   Tue,  6 Oct 2020 12:47:00 +0100
+Message-Id: <20201006114700.537916-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006104122.GA438822@phenom.ffwll.local>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 12:41:22PM +0200, Daniel Vetter wrote:
-> On Mon, Oct 05, 2020 at 08:56:50PM -0300, Jason Gunthorpe wrote:
-> > On Sun, Oct 04, 2020 at 06:43:36PM +0300, Leon Romanovsky wrote:
-> > > This series extends __sg_alloc_table_from_pages to allow chaining of
-> > > new pages to already initialized SG table.
-> > > 
-> > > This allows for the drivers to utilize the optimization of merging contiguous
-> > > pages without a need to pre allocate all the pages and hold them in
-> > > a very large temporary buffer prior to the call to SG table initialization.
-> > > 
-> > > The second patch changes the Infiniband driver to use the new API. It
-> > > removes duplicate functionality from the code and benefits the
-> > > optimization of allocating dynamic SG table from pages.
-> > > 
-> > > In huge pages system of 2MB page size, without this change, the SG table
-> > > would contain x512 SG entries.
-> > > E.g. for 100GB memory registration:
-> > > 
-> > >              Number of entries      Size
-> > >     Before        26214400          600.0MB
-> > >     After            51200            1.2MB
-> > > 
-> > > Thanks
-> > > 
-> > > Maor Gottlieb (2):
-> > >   lib/scatterlist: Add support in dynamic allocation of SG table from
-> > >     pages
-> > >   RDMA/umem: Move to allocate SG table from pages
-> > > 
-> > > Tvrtko Ursulin (2):
-> > >   tools/testing/scatterlist: Rejuvenate bit-rotten test
-> > >   tools/testing/scatterlist: Show errors in human readable form
-> > 
-> > This looks OK, I'm going to send it into linux-next on the hmm tree
-> > for awhile to see if anything gets broken. If there is more
-> > remarks/tags/etc please continue
-> 
-> An idea that just crossed my mind: A pin_user_pages_sgt might be useful
-> for both rdma and drm, since this would avoid the possible huge interim
-> struct pages array for thp pages. Or anything else that could be coalesced
-> down into a single sg entry.
-> 
-> Not sure it's worth it, but would at least give a slightly neater
-> interface I think.
+From: Colin Ian King <colin.king@canonical.com>
 
-We've talked about it. Christoph wants to see this area move to a biovec
-interface instead of sgl, but it might still be worthwhile to have an
-interm step at least as an API consolidation.
+An incorrect sizeof is being used, u64 * is not correct, it should be
+just u64 for a table of umem_pgs number of u64 items in the pbl_tbl.
+Use the idiom sizeof(*pbl_tbl) to get the object type without the need
+to explicitly use u64.
 
-Avoiding the page list would be complicated as we'd somehow have to
-code share the page table iterator scheme.
+Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
+Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jason
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index a0e8d93595d8..dc7de0863c77 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3856,7 +3856,7 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 	}
+ 
+ 	umem_pgs = ib_umem_num_dma_blocks(umem, page_size);
+-	pbl_tbl = kcalloc(umem_pgs, sizeof(u64 *), GFP_KERNEL);
++	pbl_tbl = kcalloc(umem_pgs, sizeof(*pbl_tbl), GFP_KERNEL);
+ 	if (!pbl_tbl) {
+ 		rc = -ENOMEM;
+ 		goto free_umem;
+-- 
+2.27.0
+
