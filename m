@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D43284EA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE14C284EA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgJFPIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:08:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31386 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725996AbgJFPIZ (ORCPT
+        id S1726012AbgJFPNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgJFPNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:08:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601996904;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i83JxvEfIcNXrBcnlCwlCaoOFvRbvbxzvz3uQY0uymE=;
-        b=Znbo6OGBDq++So0TAsrjZS91TPyLlbr1vjmHOzvf9Q8Yt6tKEF3t6DqGrlzgdQTtElCAei
-        QAmXa0nZWAgVPNhHg2u4sim8yUiFfQSN9Qp3Iblyjbv46/1NkK84GRFRvwsihsoHWGAAha
-        p9ruAr6XolAVZAKN1xBneNynOZUQ2dw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-H6SMMST3Oregs6umPqEjjg-1; Tue, 06 Oct 2020 11:08:22 -0400
-X-MC-Unique: H6SMMST3Oregs6umPqEjjg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2EE1D87950C;
-        Tue,  6 Oct 2020 15:08:21 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-117-72.rdu2.redhat.com [10.10.117.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4924673682;
-        Tue,  6 Oct 2020 15:08:18 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id CAC2E220AD7; Tue,  6 Oct 2020 11:08:17 -0400 (EDT)
-Date:   Tue, 6 Oct 2020 11:08:17 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-Message-ID: <20201006150817.GD5306@redhat.com>
-References: <20201002192734.GD3119@redhat.com>
- <20201002194517.GD24460@linux.intel.com>
- <20201002200214.GB10232@redhat.com>
- <20201002211314.GE24460@linux.intel.com>
- <20201005153318.GA4302@redhat.com>
- <20201005161620.GC11938@linux.intel.com>
- <20201006134629.GB5306@redhat.com>
- <877ds38n6r.fsf@vitty.brq.redhat.com>
- <20201006141501.GC5306@redhat.com>
- <874kn78l2z.fsf@vitty.brq.redhat.com>
+        Tue, 6 Oct 2020 11:13:38 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74266C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 08:13:38 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id 7so6270585vsp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 08:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=24vAgql5Dqcn8/iHEJwevkJshhxRgPh777MgK3JWTsY=;
+        b=pnmDEAYzNx9gWXPcfR0aRKzsSXPzwRgvhgbj7H/Vizqzd6iuFianxXf/KSWglOHbLR
+         ojrNXPnrz8dC9sefKr5f+COQ6ufaaPG6Rp9APm733BpQWqwNwYk5bAp9qrtxyP0FVlqW
+         Ui48aZxx4smn/FiFt4W5ohVuZFbIK5g76f0U0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=24vAgql5Dqcn8/iHEJwevkJshhxRgPh777MgK3JWTsY=;
+        b=Z5ymz6LZTxtfvV8oaoslqw8mCOFyS7fYnEiPkBwsHDcLe7X+uAL9IRPuKykDc6MjvL
+         l2ITLHELV0l1yUDkN7OnHMeWaqupPgVIPFlGmvdXqU0I0iHvFffCtNb4ll/dkroFSm+e
+         lhlvAVp5y/eV/DZx5oi1eOQqMoaj4TiuOt6nHRXaCMB1oLGZBfdSohC40S53GYanky76
+         08y7EwAAEYQrTOPNOMgjgwp1hE/yIKnOSKNf5itrQ09chCuYjBJ9d6k/r9QsDA9zILXr
+         MT56Ck7pdYN77O+y9aLdn5nwH6NYELCPB1pp8EQX/UDGUP98qe/sueW3IkF37h5iI1Is
+         cATg==
+X-Gm-Message-State: AOAM533BSf6QfCVEgXk/rO7RnOXAmcpwTOKmOwwzP5q581qH5LWiFss6
+        rKPFSCDiuUTZ3sXbi+ble/f2eeXnMHZjqqJwAsLJUA==
+X-Google-Smtp-Source: ABdhPJwne6XwG4rCqz7el40G36q5VtevxEWc60abwElUWGgAA5HzmqXYaOA70Ubk9BY4LaFmDcaFwZe4Kz2wK8eLBrQ=
+X-Received: by 2002:a67:a603:: with SMTP id p3mr3833722vse.4.1601997217529;
+ Tue, 06 Oct 2020 08:13:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874kn78l2z.fsf@vitty.brq.redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200925083507.13603-1-ptikhomirov@virtuozzo.com> <20200925083507.13603-3-ptikhomirov@virtuozzo.com>
+In-Reply-To: <20200925083507.13603-3-ptikhomirov@virtuozzo.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 6 Oct 2020 17:13:25 +0200
+Message-ID: <CAJfpegvgmnWrmsACuWe_hYCfVm2r0Ltv0C+sN+3T1DBMzrGE9w@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] ovl: introduce new "uuid=off" option for inodes
+ index feature
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:50:44PM +0200, Vitaly Kuznetsov wrote:
-> Vivek Goyal <vgoyal@redhat.com> writes:
-> 
-> > On Tue, Oct 06, 2020 at 04:05:16PM +0200, Vitaly Kuznetsov wrote:
-> >> Vivek Goyal <vgoyal@redhat.com> writes:
-> >> 
-> >> > A. Just exit to user space with -EFAULT (using kvm request) and don't
-> >> >    wait for the accessing task to run on vcpu again. 
-> >> 
-> >> What if we also save the required information (RIP, GFN, ...) in the
-> >> guest along with the APF token
-> >
-> > Can you elaborate a bit more on this. You mean save GFN on stack before
-> > it starts waiting for PAGE_READY event?
-> 
-> When PAGE_NOT_PRESENT event is injected as #PF (for now) in the guest
-> kernel gets all the registers of the userspace process (except for CR2
-> which is replaced with a token). In case it is not trivial to extract
-> accessed GFN from this data we can extend the shared APF structure and
-> add it there, KVM has it when it queues APF.
-> 
-> >
-> >> so in case of -EFAULT we can just 'crash'
-> >> the guest and the required information can easily be obtained from
-> >> kdump? This will solve the debugging problem even for TDX/SEV-ES (if
-> >> kdump is possible there).
-> >
-> > Just saving additional info in guest will not help because there might
-> > be many tasks waiting and you don't know which GFN is problematic one.
-> 
-> But KVM knows which token caused the -EFAULT when we exit to userspace
-> (and we can pass this information to it) so to debug the situation you
-> take this token and then explore the kdump searching for what's
-> associated with this exact token.
+On Fri, Sep 25, 2020 at 10:35 AM Pavel Tikhomirov
+<ptikhomirov@virtuozzo.com> wrote:
 
-So you will have to report token (along with -EFAULT) to user space. So this
-is basically the 3rd proposal which is extension of kvm API and will
-report say HVA/GFN also to user space along with -EFAULT.
+> Note: In our (Virtuozzo) use case users inside a container can create
+> "regular" overlayfs mounts without any "index=" option, but we still
+> want to migrate this containers with CRIU so we set "index=on" as kernel
+> default so that all the container overlayfs mounts get support of file
+> handles automatically. With "uuid=off" we want the same thing (to be
+> able to "copy" container with uuid change) - we would set kernel default
+> so that all the container overlayfs mounts get "uuid=off" automatically.
 
-Thanks
-Vivek
+I'm not sure I buy that argument for a kernel option.   It should
+rather be a "container" option in that case, but AFAIK the kernel
+doesn't have a concept of a container.  I think this needs to be
+discussed on the relevant mailing lists.
 
+As of now mainline kernel doesn't support unprivileged overlay mounts,
+so I guess this is not an issue.  Let's just merge this without the
+kernel and the module options.
+
+Thanks,
+Miklos
