@@ -2,151 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A56284882
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162FD284890
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgJFIZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        id S1726654AbgJFIZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbgJFIZO (ORCPT
+        with ESMTP id S1725960AbgJFIZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:25:14 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109DAC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 01:25:12 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id a3so16324028ejy.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 01:25:11 -0700 (PDT)
+        Tue, 6 Oct 2020 04:25:43 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49344C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 01:25:43 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id v8so12107903iom.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 01:25:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YdhpNKlTW8M5AEVFobND3IcWnRcYsnTU1ylxUOoxLOQ=;
-        b=qHporHfANLglN4o1QtjGAQRWNnN7asjRL3cjazvXjsHh09RfWeLWPhNLVvwSLhWTRD
-         dq9W25RBebcUYOBXWtFq8Xg4Jpr5iwt1eXNmqsekvon7Xl48K0UpprSPFSz88KD7f3X5
-         mVcgrKZ1Q+07rFYOZ6TaIw9SiDE9zLlxqZ10OzeIv3M1P2sRohlLAogcHVmvgwhtbxWh
-         aDv0+4vxSuOdMGAP1BZwP0BlcnNmUE37U3q6XBhiOW2IywzQSNU0oPIf35dwBbDiZGem
-         YyfEcoZuw1vq+eSTNb3BPCippk6TyfUXDjeg7Imo0qPxxzlaz4AKfZHvUV+rJldsOuzH
-         6yMA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YRj9P/9Lvsmxkr1sJc/9VWaorXzUF7X2yNhikWl2Zyw=;
+        b=KqRBxzTuIgJZ68p3ZslROEmoubYrk5WVvyHndOzgCgejx6vcpnodycSKPoyRUgPLpC
+         DzvVVdNGcA+IsJiXbiSfwg125KxadQq+eFcurKPiKuRd1Px6ZA48FwXFW3bscJwmd3gy
+         Mr+L/cchQ8lkrUa1Dvgvk+YsqaxyArjSWJtYy9Y6sBWTxNv/B8eBUOCg3ULC49F4+PsG
+         oImyyLYLEfp91+QkTwf9QpsgwNh6ooDozyh2UZzhNO5xprsTq8iHPP4/tdMfhEBfc/35
+         bwNlOacIIZV8PxT8K6cKGsMc/5wyHNPSO5DmPGjHLfHGsi17SJ6GZ+KxLWwFZ/yfrwba
+         XCMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YdhpNKlTW8M5AEVFobND3IcWnRcYsnTU1ylxUOoxLOQ=;
-        b=QCmyun1AQ/xqBRpUPXvJk8P2hbvOnVkHE14uON8ouKWjX8hSDsqxwOLS2moetXDaXI
-         54pcct8AYdP9me+A/8VKCENmgzkGfHzsnZgtf7hIgrDA2ngH1x0mHr80Iv927qwBqjWG
-         lGS5hHwLDPrMRJL3C8RFxWtKiE4imZX0W/4oSKvUkPxpPlJPnl+dUZhc8oOx6O+eIkBQ
-         SnPtxmHzH7SqsRfDaF0yKZ12+pmYlFX+cZiyNo1UYx0PzrXevlSsfiY+/hpD00R8p2sW
-         pFmxF4ynxlv2SD9kydRL2X7U5xan/epcv5eKwi5FpK/WtefURxVIXowyjIWhMF5kyJK6
-         01eg==
-X-Gm-Message-State: AOAM533W1B9JoDccG0+tihH5FEt8ya6y+34B1JBLR1CWw+kNM9+efXTf
-        5Tpez+aMd26l9V6ljAUHi8fBAV7WX3LKAfhA
-X-Google-Smtp-Source: ABdhPJxsjuEumsaEtaU67N9vbg2cBftfsc/wZW21wnFzsv2BjeMFHC1JmQFLaFRJtrvHxARri2Z8Zg==
-X-Received: by 2002:a5d:6409:: with SMTP id z9mr120080wru.391.1601972710164;
-        Tue, 06 Oct 2020 01:25:10 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id y11sm3353486wrs.16.2020.10.06.01.25.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 01:25:09 -0700 (PDT)
-Subject: Re: [PATCH 0/4] dt-bindings: additional/unevaluatedProperties
- clean-ups
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Richard Weinberger <richard@nod.at>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-References: <20201005183830.486085-1-robh@kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <d04c47dd-6e37-a7ac-f3c4-d6e6c308dbcd@linaro.org>
-Date:   Tue, 6 Oct 2020 09:25:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YRj9P/9Lvsmxkr1sJc/9VWaorXzUF7X2yNhikWl2Zyw=;
+        b=OPdYPqGttRov398LzjhOg5YXSAO/5p47oQCTB9XFglh/4cSRIMB74UFA0rfyefDOIE
+         6pr/c7kCh04awp7/mR4HQiDFrRhiuldryjmqm6EzOf1qJj6nJM07OiBqO+jVsiJh0/2T
+         3ixHakci08psJMoznD2Nq8XqLU57ITnNWOPPbWt8DZ18/LOjFn+SlBKwm0ZN7m9pL/Mp
+         DiNMJ1AZPQDYFkB72AxAYt4ufDkfL5J7wjetc2JNLIE47Kjis8TjGIGd5Za/my71ODZ8
+         7Ovv2aef5NcUNvGyFGIJA2zTYIsbZInw7W8EpzwoCiFC4hhHJptpO8h+N0DctLGmTGgv
+         OmqA==
+X-Gm-Message-State: AOAM532AoU5zBxAD+mJ6djwDPi7po08ho5E3Ot7vl6IMdXKsYfOvUN0U
+        i5CfYXjS4GRDh3O15zzujm/vvJVDxbwGj8gtG1D9IUNLbf3Sj8/T
+X-Google-Smtp-Source: ABdhPJwJCHEhkfRixrBxYgOGpD7RdsD3ZKvjUm5DFxPapq4Yvpmp/pbEgQOedan6gckCg3m09xuOjp3Q54/Pu62awLo=
+X-Received: by 2002:a02:a0c2:: with SMTP id i2mr221750jah.92.1601972742395;
+ Tue, 06 Oct 2020 01:25:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201005183830.486085-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201005142109.796046410@linuxfoundation.org> <CA+G9fYvHOu8kJhRKV5GPJmnaE_x2mrnN6myb4G4YHHW-oiKD7A@mail.gmail.com>
+In-Reply-To: <CA+G9fYvHOu8kJhRKV5GPJmnaE_x2mrnN6myb4G4YHHW-oiKD7A@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 6 Oct 2020 13:55:30 +0530
+Message-ID: <CA+G9fYu5zw8=Dbm79TW6qhbu-BPYbnxTh976Kv1riUQCkv7ZNg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/57] 5.4.70-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 6 Oct 2020 at 11:24, Naresh Kamboju <naresh.kamboju@linaro.org> wro=
+te:
+>
+> On Mon, 5 Oct 2020 at 20:59, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.4.70 release.
+> > There are 57 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patc=
+h-5.4.70-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git linux-5.4.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> >
+>
+> Results from Linaro=E2=80=99s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
+>
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
-On 05/10/2020 19:38, Rob Herring wrote:
-> The default behavior for json-schema is any unknown property is allowed.
-> T
-> 
-> hat is generally not the behavior we want for DT. In order to disallow
-> extra properties, schemas need to define 'additionalProperties: false'
-> typically. Ideally, we'd just add that automatically with the tools, but
-> there are some exceptions so only making things explicit everywhere
-> really works. Missing 'additionalProperties' or 'unevaluatedProperties'
-> has been a constant source of review comments, so a meta-schema check is
-> really needed here.
-> 
->   Documentation/devicetree/bindings/nvmem/nvmem.yaml     |  2 ++
->   .../devicetree/bindings/nvmem/qcom,qfprom.yaml         |  2 ++
+NOTE:
+While running LTP containers test suite,
+I noticed this kernel panic on arm64 Juno-r2 devices.
+Not easily reproducible and not seen on any other arm64 devices.
 
-for nvmem parts,
+steps to reproduce:
+---------------------------
+# boot stable rc 5.4.70 kernel on juno-r2 machine
+# cd /opt/ltp
+# ./runltp -f containers
 
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Crash log,
+---------------
+pidns13     0  TINFO  :  cinit2: writing some data in pipe
+pidns13     0  TINFO  :  cinit1: setup handler for async I/O on pipe
+pidns13     1  TPASS  :  cinit1: si_fd is 6, si_code is 1
+[  122.275627] Internal error: synchronous external abort: 96000210
+[#1] PREEMPT SMP
+[  122.283139] Modules linked in: tda998x drm_kms_helper drm crct10dif_ce f=
+use
+[  122.290130] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.4.70-rc1 #1
+[  122.296406] Hardware name: ARM Juno development board (r2) (DT)
+[  122.302337] pstate: 80000085 (Nzcv daIf -PAN -UAO)
+[  122.307144] pc : sil24_interrupt+0x28/0x5f0
+[  122.311337] lr : __handle_irq_event_percpu+0x78/0x2c0
+[  122.316395] sp : ffff800010003db0
+[  122.319712] x29: ffff800010003db0 x28: ffff800011f73d80
+[  122.325034] x27: ffff800011962018 x26: ffff000954a82000
+[  122.330357] x25: ffff800011962018 x24: ffff800011f6a158
+[  122.335679] x23: ffff800010003ef4 x22: ffff000975740000
+[  122.341001] x21: 0000000000000033 x20: ffff80001233d044
+[  122.346324] x19: ffff000975742500 x18: 0000000000000000
+[  122.351646] x17: 0000000000000000 x16: 0000000000000000
+[  122.356967] x15: 0000000000000000 x14: 003d090000000000
+[  122.362290] x13: 00003d0900000000 x12: 0000000000000000
+[  122.367612] x11: 00003d0900000000 x10: 0000000000000040
+[  122.372934] x9 : ffff800011f89b68 x8 : ffff800011f89b60
+[  122.378256] x7 : ffff000975800408 x6 : 0000000000000000
+[  122.383578] x5 : ffff000975800248 x4 : ffff80096d5ba000
+[  122.388900] x3 : ffff800010003f30 x2 : ffff80001093a078
+[  122.394222] x1 : ffff000975740000 x0 : ffff00097574df80
+[  122.399545] Call trace:
+[  122.401995]  sil24_interrupt+0x28/0x5f0
+[  122.405838]  __handle_irq_event_percpu+0x78/0x2c0
+[  122.410550]  handle_irq_event_percpu+0x3c/0x98
+[  122.415002]  handle_irq_event+0x4c/0xe8
+[  122.418844]  handle_fasteoi_irq+0xbc/0x168
+[  122.422947]  generic_handle_irq+0x34/0x50
+[  122.426963]  __handle_domain_irq+0x6c/0xc0
+[  122.431066]  gic_handle_irq+0x58/0xb0
+[  122.434733]  el1_irq+0xbc/0x180
+[  122.437880]  cpuidle_enter_state+0xb8/0x528
+[  122.442070]  cpuidle_enter+0x3c/0x50
+[  122.445652]  call_cpuidle+0x40/0x78
+[  122.449146]  do_idle+0x1f0/0x2a0
+[  122.452379]  cpu_startup_entry+0x2c/0x88
+[  122.456311]  rest_init+0xdc/0xe8
+[  122.459545]  arch_call_rest_init+0x14/0x1c
+[  122.463647]  start_kernel+0x484/0x4b8
+[  122.467321] Code: d503201f f9400ac0 f9400014 91011294 (b9400294)
+[  122.473437] ---[ end trace 68b3da9e48a77548 ]---
+[  122.478062] Kernel panic - not syncing: Fatal exception in interrupt
+[  122.484429] SMP: stopping secondary CPUs
+[  122.488569] Kernel Offset: disabled
+[  122.492062] CPU features: 0x0002,24006004
+[  122.496074] Memory Limit: none
+[  122.499141] ---[ end Kernel panic - not syncing: Fatal exception in
+interrupt ]---
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
 
-thanks,
---srini
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.6=
+9-58-g7b199c4db17f/testrun/3273934/suite/linux-log-parser/test/check-kernel=
+-panic-1818664/log
+
+- Naresh
