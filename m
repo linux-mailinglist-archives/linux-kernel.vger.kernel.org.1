@@ -2,157 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7FF284CAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72514284CB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgJFNqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:46:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57702 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgJFNql (ORCPT
+        id S1726000AbgJFNtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgJFNtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:46:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601991998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cfRavjoFjpVYow5g6GANBDu/ddRusDzHcHdXr7NgCLc=;
-        b=O6mINS4zTY1mDFXyZNQxeno+Nln+NiTbQ3VlmNBHKseJqE7rU/nSKZTf++I93QYfMQzyZs
-        b3kw/dgMgqYPSdZ7eOzOj54tsL/4eQ8S8xXlnFfOEA6knXV1E7gs4W1Xt1aDkxmjlbrx5U
-        jc0RR10qj9sE53og3RR9sZNMCtg21ZU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-301-6XIYramKNHK8Y3XmZaVOaw-1; Tue, 06 Oct 2020 09:46:34 -0400
-X-MC-Unique: 6XIYramKNHK8Y3XmZaVOaw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A60F802B45;
-        Tue,  6 Oct 2020 13:46:33 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-117-72.rdu2.redhat.com [10.10.117.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B681376640;
-        Tue,  6 Oct 2020 13:46:29 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 464ED220AD7; Tue,  6 Oct 2020 09:46:29 -0400 (EDT)
-Date:   Tue, 6 Oct 2020 09:46:29 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>, vkuznets@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-Message-ID: <20201006134629.GB5306@redhat.com>
-References: <20201001215508.GD3522@redhat.com>
- <20201001223320.GI7474@linux.intel.com>
- <20201002153854.GC3119@redhat.com>
- <20201002183036.GB24460@linux.intel.com>
- <20201002192734.GD3119@redhat.com>
- <20201002194517.GD24460@linux.intel.com>
- <20201002200214.GB10232@redhat.com>
- <20201002211314.GE24460@linux.intel.com>
- <20201005153318.GA4302@redhat.com>
- <20201005161620.GC11938@linux.intel.com>
+        Tue, 6 Oct 2020 09:49:07 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8123CC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 06:49:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H+rKA1C/hAizwisiqc1O7WqpHp3LalDuVAXZgHje7So=; b=BJyFKR4hUN3ADfAVMa9/LnFQWA
+        dxvsz67JiD6I+emAEdYoDAbsCvI8uAwpphEMnRT0gzb/5i6hO04UOI2igBwUroI2DzFdB1wz8IGeU
+        2A2YdEXr3XVseO/fDAVwTuyJ7UCHXicK2+zGwjmYXV3q2nNdA01Tee5VlFnkOP/pZ/AdtXxVZBlje
+        jgDKaaoQ94NzgUXPMWuwMx9OHNPdAZSg2aaWohQfGY1FGhpkAAViBl2HTW3/tgmX3q5jP3AU0o+EG
+        yN9zEZrjrT7t/KzeO3FK9VutyzpkJbFxAl70YzaAlpYWEAODEfUJ+q1Eg9LuIG+GReqgb65F8fcSL
+        n5plppaA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPnKn-0001sq-9H; Tue, 06 Oct 2020 13:48:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1B0473006D0;
+        Tue,  6 Oct 2020 15:48:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 07F83203C8BE2; Tue,  6 Oct 2020 15:48:50 +0200 (CEST)
+Date:   Tue, 6 Oct 2020 15:48:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org
+Subject: Re: [PATCH -v2 15/17] sched: Fix migrate_disable() vs rt/dl balancing
+Message-ID: <20201006134850.GV2628@hirez.programming.kicks-ass.net>
+References: <20201005145717.346020688@infradead.org>
+ <20201005150922.458081448@infradead.org>
+ <jhjv9fnmwhg.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005161620.GC11938@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <jhjv9fnmwhg.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 09:16:20AM -0700, Sean Christopherson wrote:
-> On Mon, Oct 05, 2020 at 11:33:18AM -0400, Vivek Goyal wrote:
-> > On Fri, Oct 02, 2020 at 02:13:14PM -0700, Sean Christopherson wrote:
-> > Now I have few questions.
-> > 
-> > - If we exit to user space asynchronously (using kvm request), what debug
-> >   information is in there which tells user which address is bad. I admit
-> >   that even above trace does not seem to be telling me directly which
-> >   address (HVA?) is bad.
-> > 
-> >   But if I take a crash dump of guest, using above information I should
-> >   be able to get to GPA which is problematic. And looking at /proc/iomem
-> >   it should also tell which device this memory region is in.
-> > 
-> >   Also using this crash dump one should be able to walk through virtiofs data
-> >   structures and figure out which file and what offset with-in file does
-> >   it belong to. Now one can look at filesystem on host and see file got
-> >   truncated and it will become obvious it can't be faulted in. And then
-> >   one can continue to debug that how did we arrive here.
-> > 
-> > But if we don't exit to user space synchronously, Only relevant
-> > information we seem to have is -EFAULT. Apart from that, how does one
-> > figure out what address is bad, or who tried to access it. Or which
-> > file/offset does it belong to etc.
+On Tue, Oct 06, 2020 at 12:20:43PM +0100, Valentin Schneider wrote:
+> 
+> On 05/10/20 15:57, Peter Zijlstra wrote:
+> > In order to minimize the interference of migrate_disable() on lower
+> > priority tasks, which can be deprived of runtime due to being stuck
+> > below a higher priority task. Teach the RT/DL balancers to push away
+> > these higher priority tasks when a lower priority task gets selected
+> > to run on a freshly demoted CPU (pull).
 > >
-> > I agree that problem is not necessarily in guest code. But by exiting
-> > synchronously, it gives enough information that one can use crash
-> > dump to get to bottom of the issue. If we exit to user space
-> > asynchronously, all this information will be lost and it might make
-> > it very hard to figure out (if not impossible), what's going on.
+> > This adds migration interference to the higher priority task, but
+> > restores bandwidth to system that would otherwise be irrevocably lost.
+> > Without this it would be possible to have all tasks on the system
+> > stuck on a single CPU, each task preempted in a migrate_disable()
+> > section with a single high priority task running.
+> >
+> > This way we can still approximate running the M highest priority tasks
+> > on the system.
+> >
 > 
-> If we want userspace to be able to do something useful, KVM should explicitly
-> inform userspace about the error, userspace shouldn't simply assume that
-> -EFAULT means a HVA->PFN lookup failed.
-
-I guess that's fine. But for this patch, user space is not doing anything.
-Its just printing error -EFAULT and dumping guest state (Same as we do
-in case of synchronous fault).
-
-> Userspace also shouldn't have to
-> query guest state to handle the error, as that won't work for protected guests
-> guests like SEV-ES and TDX.
-
-So qemu would not be able to dump vcpu register state when kvm returns
-with -EFAULT for the case of SEV-ES and TDX?
-
+> Ah, so IIUC that's the important bit that makes it we can't just say go
+> through the pushable_tasks list and skip migrate_disable() tasks.
 > 
-> I can think of two options:
+> Once the highest-prio task exits its migrate_disable() region, your patch
+> pushes it away. If we ended up with a single busy CPU, it'll spread the
+> tasks around one migrate_enable() at a time.
 > 
->   1. Send a signal, a la kvm_send_hwpoison_signal().
-
-This works because -EHWPOISON is a special kind of error which is
-different from -EFAULT. For truncation, even kvm gets -EFAULT.
-
-        if (vm_fault & (VM_FAULT_HWPOISON | VM_FAULT_HWPOISON_LARGE))
-                return (foll_flags & FOLL_HWPOISON) ? -EHWPOISON : -EFAULT;
-        if (vm_fault & (VM_FAULT_SIGBUS | VM_FAULT_SIGSEGV))
-                return -EFAULT;
-
-Anyway, if -EFAULT is too generic, and we need something finer grained,
-that can be looked into when we actually have a method where kvm/qemu
-injects error into guest.
-
+> That time where the top task is migrate_disable() is still a crappy time,
+> and as you pointed out earlier today if it is a genuine pcpu task then the
+> whole thing is -EBORKED...
 > 
->   2. Add a userspace exit reason along with a new entry in the run struct,
->      e.g. that provides the bad GPA, HVA, possibly permissions, etc...
+> An alternative I could see would be to prevent those piles from forming
+> altogether, say by issuing a similar push_cpu_stop() on migrate_disable()
+> if the next pushable task is already migrate_disable(); but that's a
+> proactive approach whereas yours is reactive, so I'm pretty sure that's
+> bound to perform worse.
 
-This sounds more reasonable to me. That is kvm gives additional
-information to qemu about failing HVA and GPA with -EFAULT and that
-can be helpful in debugging a problem. This seems like an extension
-of KVM API.
+I think it is always possible to form pileups. Just start enough tasks
+such that newer, higher priority, tasks have to preempt existing tasks.
 
-Even with this, if we want to figure out which file got truncated, we
-will need to take a dump of guest and try to figure out which file
-this GPA is currently mapping(By looking at virtiofs data structures).
-And that becomes little easier if vcpu is running the task which 
-accessed that GPA. Anyway, if we have failing GPA, I think it should
-be possible to figure out inode even without accessing task being
-current on vcpu.
+Also, we might not be able to place the task elsewhere, suppose we have
+all our M CPUs filled with an RT task, then when the lowest priority
+task has migrate_disable(), wake the highest priority task.
 
-So we seem to have 3 options.
+Per the SMP invariant, this new highest priority task must preempt the
+lowest priority task currently running, otherwise we would not be
+running the M highest prio tasks.
 
-A. Just exit to user space with -EFAULT (using kvm request) and don't
-   wait for the accessing task to run on vcpu again. 
-
-B. Store error gfn in an hash and exit to user space when task accessing
-   gfn runs again.
-
-C. Extend KVM API and report failing HVA/GFN access by guest. And that
-   should allow not having to exit to user space synchronously.
-
-Thanks
-Vivek
-
+That's not to say it might not still be beneficial from trying to avoid
+them, but we must assume a pilup will occur, therefore my focus was on
+dealing with them as best we can first.
