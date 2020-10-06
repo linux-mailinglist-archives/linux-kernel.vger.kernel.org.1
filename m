@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42532851FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2BE2851FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgJFTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:00:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38288 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgJFTA0 (ORCPT
+        id S1726924AbgJFTBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgJFTBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:00:26 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602010824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F8SQ0k7RLei+mK3UMQDWPVDraM3VGYk47tKS5XTJPEU=;
-        b=Uy5kBvdctYZXM07+PHqZq72K/MYxqST8WcuVV2aJ7bI2RRp9+Hoo+hIbRMI2jNnG03EeJ/
-        dLXkIlnNQhHbLhbqBL/hVKRAn2kLwbwwQML3U8GrRvDa4EQjNe6+O9PpcMqb/h5iUwiKkL
-        rpkZR4HWO+gZ16di3YP40M3SwIcAx3lPhg/X7wi65YMTbEQEEJW1HduZKlpYGRX9l5/bZE
-        rLrtKoEgZsR5s1wTHeN4sTaEQZkuMAE+hnv65Eq2clUakVBKie1uKpRw2A/V6VQGtdgkMc
-        MA2v11SXbE123QdWkpBls2Qm+NbSmEocGjFehwf+118WKPKCzfVh3yhUMiCMYQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602010824;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F8SQ0k7RLei+mK3UMQDWPVDraM3VGYk47tKS5XTJPEU=;
-        b=wO0Hply58Utt7IDcUrnj83TDombhYB2nXAEbIe/4ZPkYf8T75Mg+FtxAoWDAEpUe6q/2Mb
-        NCdqgR+aISo8BmCw==
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Stefan Haberland <sth@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Long Li <longli@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: irq_build_affinity_masks() allocates improper affinity if num_possible_cpus() > num_present_cpus()?
-In-Reply-To: <65ba8a8b86201d8906313fbacc4fb711b9b423af.camel@infradead.org>
-References: <KU1P153MB0120D20BC6ED8CF54168EEE6BF0D0@KU1P153MB0120.APCP153.PROD.OUTLOOK.COM> <65ba8a8b86201d8906313fbacc4fb711b9b423af.camel@infradead.org>
-Date:   Tue, 06 Oct 2020 21:00:24 +0200
-Message-ID: <87h7r76uyf.fsf@nanos.tec.linutronix.de>
+        Tue, 6 Oct 2020 15:01:32 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AF0C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 12:01:32 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id n61so13298292ota.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 12:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YSymH4vd/R57ZcKC0GdaMdmbsJkR/uPBbSzo5j6VwGI=;
+        b=WYCtXI6u/py4vSrocw3RaLLovCI1JxT5ISmnl3Cx2aVM2XY/kv/f/+IV2MEz3qejW5
+         CstYX+nDT2/lYjGF+onBkWGgL1k6jRJjbXI9H/t9kHWAgJ4DREu1VWnA6y98qyulp4Bc
+         5lh6t4bbo7XH9xKRzR/Zype2yl63f+eaLxFnME3uk7+llKI7qurGMhBkoMYADAe0dVxw
+         +QTYra5wUEtSupM3LdA5JkStECMvPIH4cGJatO3we+aNOGspa/mu9k+v5kA7zEHJ1Nbw
+         6Olm66WRO5BGRZ2MgDfvfk8QexwDVH3li5Wg4sMQA/YCkngCl8j3NA60NN6UFy+U9RJS
+         1Irg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YSymH4vd/R57ZcKC0GdaMdmbsJkR/uPBbSzo5j6VwGI=;
+        b=ZZCiv/FaBOn50lgZWVUorxpi1weEe9//5xgugbqNfPGXzlqn+z0/sJSmmj8LKSrDoY
+         smLi06vT5uXFcrrtriCc6CEML+vdB16sjv9IMSwjJC+511EtWFqRYDXEYcQRiF6Xk/c0
+         Pjw7gsnwqTLQbUflmU9hoBf/OQdqicL9uC1ihPSgehQFsy9yoyQWt9JPI35oiMDk4ZmU
+         mtr3nzEwQYyhXOwWY0FDGpls7aznrEKeCWXW4tWCTsZJhYmFNV7e/O/5OkHJklF/wz9n
+         G6IjYCrKe4NjhDrmOvjc4zHblcVQ2CUUXPLxZ5NsXnxaVae5D766wJG/qKw36sHgR0vF
+         /1YQ==
+X-Gm-Message-State: AOAM533VrULTUeG5CBLBs0Oyixmt6sIlEgE/l1lhxeFE712nKDT0omCc
+        oIy6OzG229spVF4qSr+Q1FVHAMJNPcObSmSG2kk=
+X-Google-Smtp-Source: ABdhPJz9lz/9PlcW/fDp6CK8frwTEfGJVwHqpkf+vqobGR9FlivLWUs9JnrTHt/RdlwgWZLE8PY/RWYaA28brxuUdl4=
+X-Received: by 2002:a9d:4b18:: with SMTP id q24mr3709804otf.265.1602010891747;
+ Tue, 06 Oct 2020 12:01:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20201006185114.168358-1-dwaipayanray1@gmail.com> <8553d6679f97ae9d285a9ffd61198f5e3c11dc35.camel@perches.com>
+In-Reply-To: <8553d6679f97ae9d285a9ffd61198f5e3c11dc35.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Wed, 7 Oct 2020 00:31:08 +0530
+Message-ID: <CABJPP5Awe=CDC7riYBBVDf9WRO4aAMXK2QROYdtGyJXNjqB-ew@mail.gmail.com>
+Subject: Re: [PATCH v4] checkpatch: add new warnings to author signoff checks.
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06 2020 at 09:37, David Woodhouse wrote:
-> On Tue, 2020-10-06 at 06:47 +0000, Dexuan Cui wrote:
->> PS2, the latest Hyper-V provides only one ACPI MADT entry to a 1-CPU VM,
->> so the issue described above can not reproduce there.
+On Wed, Oct 7, 2020 at 12:25 AM Joe Perches <joe@perches.com> wrote:
 >
-> It seems fairly easy to reproduce in qemu with -smp 1,maxcpus=3D128 and a
-> virtio-blk drive, having commented out the 'desc->pre_vectors++' around
-> line 130 of virtio_pci_common.c so that it does actually spread them.
+> On Wed, 2020-10-07 at 00:21 +0530, Dwaipayan Ray wrote:
+> > The author signed-off-by checks are currently very vague.
+> > Cases like same name or same address are not handled separately.
+> >
+> > For example, running checkpatch on commit be6577af0cef
+> > ("parisc: Add atomic64_set_release() define to avoid CPU soft lockups"),
+> > gives:
 >
-> [    0.836252] i=3D0, affi =3D 0,65-127
-> [    0.836672] i=3D1, affi =3D 1-64
-> [    0.837905] virtio_blk virtio1: [vda] 41943040 512-byte logical blocks=
- (21.5 GB/20.0 GiB)
-> [    0.839080] vda: detected capacity change from 0 to 21474836480
+> Aren't you still missing emitting an message for cases like
 >
-> In my build I had to add 'nox2apic' because I think I actually already
-> fixed this for the x2apic + no-irq-remapping case with the max_affinity
-> patch series=C2=B9. But mostly by accident.
+> From: "J. Random Developer" <jrd@bigcorp.com>
+> [...]
+> Signed-off-by: "J. Random Developer" (BigCorp) <jrd@bigcorp.com>
+>
+> Where a comment does not match?
+>
+>
 
-There is nothing to fix. It's intentional behaviour. Managed interrupts
-and their spreading (aside of the rather odd spread here) work that way.
+Yes, messages for comments were not emitted previously too
+cause the same_email_address() function just matches name
+and email (discarding name comments and email comments).
 
-And virtio-blk works perfectly fine with that.
+So should I add it to this patch, or should I work on it in a different
+patch perhaps because it involves change on another subroutine?
 
 Thanks,
-
-        tglx
+Dwaipayan.
