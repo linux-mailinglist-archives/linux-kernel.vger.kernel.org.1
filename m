@@ -2,82 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D411284681
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA8C284686
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbgJFG7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
+        id S1727216AbgJFG70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726875AbgJFG7M (ORCPT
+        with ESMTP id S1727156AbgJFG7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:59:12 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F139C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:59:12 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bb1so751612plb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:59:12 -0700 (PDT)
+        Tue, 6 Oct 2020 02:59:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F24C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:59:23 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n18so4324897wrs.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:59:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q9cOmodfFrT5+fSRpGBDBdOT09/lFZuhORm0j5NKURo=;
-        b=e3gsF++h/v9HcvaGyFuWP9pq6Zmxh9tW6PmvBRpws0Q6pUEJyS/MKU7lfJWxqf9YpL
-         PgduuobI1xIeumw2vyCmjtLZCeiQyKwMczi4SMMXtrEC3yjTemPFkvKQ6/z32Hcw5Vi6
-         6TVXIEul8mmVf/10Bny/Uj1v1WmNjXkUwBkLzPyi20mWLx00tnDOpN6a6u+Sh60WFI6s
-         wbCrq4xxoMSqxgSmP8NykQNyszT9Vxw+qj0cruBdeNl6SRv/W6IjKvfflUqZR9ol+H1H
-         tSrvZ0yC5iIUzgi0aqF0q9Ld4aC5dj/lp3S+f5fG9kXQsnUe/g/VVdC4z0TN0M7b8u2o
-         Fsxg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=CJt8sMvkLfzd8pVfQzeKwrD9wQt2ezco6HzjCXU2Seg=;
+        b=JxVBGe9v20fI1rWZ+LblFSymah+5lDcEzko2dpzuxH2sV76ZNSZuJMvGzdxBOU4EEE
+         016bYoBGw9BoWO2uYbYpJh2Spqfe+txcbLLwj0dDMlR/N5yVsSaJVMqeu9en2rycu/TT
+         n1jnC4KuJCiEYEIdFvD/egT0iBvuzR0aC8sGAuxTCPbkVANitwk76rko2yla+Dj7q7e8
+         sZCK0Cx3psrp4tVRMioIbzifJSWNfJENU2wQrZHVs830d0ZwDclsCeY3DZLdaTt0c5D8
+         BR0YmsLI9C2kzSZ+GpT1D4lBMiJpvLvJ21dr2n2+YN+vRiNGtA+lOfa8qajAa2TyKNwy
+         4j1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q9cOmodfFrT5+fSRpGBDBdOT09/lFZuhORm0j5NKURo=;
-        b=IQUh/wNbnHySBAb2VHh4YlXdvlu4BVgE6X6iPBvA1RkIuSuguwTVDcAsxZI8fFjgz4
-         YBc48ZjukVD+4SpapZeUYxPmBqG5r/86iPFtMyHYFTdpCipF0QH1fLYt5wcHLR7X9haa
-         ZM1BLEi+1PAHbcw6MkCHaJ6tV1SN+nVZ9S9RgYdN6K/0i2sZyMd94yHUwdgUUZ0Uy9Rx
-         HJqso+4M34yGVvwPt8F38nyZBfU7A36MT5yl3w7oHOqzuda88wsd3OvHrZoZgxIBZs4i
-         Ufd9cpVZifC1nBkzPpJmIJ/bgAMhUfsZIJi28LzGFqenU34Xp8k2pTHDGrKcb7sWCdC5
-         l4Hg==
-X-Gm-Message-State: AOAM530ErOFB4nCCFA4n5GpcWkqMZEIVJvDHQWz4/dzNaNBJ+Vak88PQ
-        G//sfSn14MT8i2sg9ny5Zz9YWnIHMUI=
-X-Google-Smtp-Source: ABdhPJwb0YG8Y+BTGF13JA05/n2Zqfz5DSBipK8kzCzgKSrrbLBF/ST/0LX8BP4UgJey5FRoI1KMLw==
-X-Received: by 2002:a17:902:9006:b029:d3:b4d2:402c with SMTP id a6-20020a1709029006b02900d3b4d2402cmr2028110plp.34.1601967551658;
-        Mon, 05 Oct 2020 23:59:11 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id x3sm1681870pjf.42.2020.10.05.23.59.09
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=CJt8sMvkLfzd8pVfQzeKwrD9wQt2ezco6HzjCXU2Seg=;
+        b=Rzi0A33+xd0+MWrPEtOY/GIqR3m5yW4tHJShGRrjzS8URpeYRsULPlz79yQ1JQLOx5
+         CUEmQEbMcr/PgllupFF0GaIdN2WIDSRhSLE+fDt5MdaVUyg/ZVtrWAXeVICOicylGQDU
+         5G1MRRyaQdfy2PXyZnQTopIViZdVCzU41pqyQ1sywuXrw7yn6rrj572003XjBH9lCNkC
+         HLGeAVKfu0CCYYMqGtgIL5GDHZHWLs20t6hxzqCsynwm4bqckmcp51fSrNhSyqCObRWo
+         L3Awmr3qsvcodyI5EEyGfxPbCjprjR12kIZl9HLqn5wT1xK7NG1cZyIFkjHvZGphTC++
+         epoQ==
+X-Gm-Message-State: AOAM531kQfE+GfstMlwkhMZgKkwCvEiBrPLR4no56CyGtLTJ/UZ96M1Z
+        j06d2ZQMDue9bAb/mnaC4EIwiHx5ahkb7g==
+X-Google-Smtp-Source: ABdhPJw9aVlQCFJI6s9KKSTQz6LD1w2/gTI0uxeBSfs6H68t2v5l2G/j/zLB0TtAX8AL+VsxEknjwQ==
+X-Received: by 2002:adf:eac6:: with SMTP id o6mr3347103wrn.117.1601967562086;
+        Mon, 05 Oct 2020 23:59:22 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id m3sm2805162wrs.83.2020.10.05.23.59.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 23:59:10 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 15:59:07 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Mon, 05 Oct 2020 23:59:21 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 07:59:18 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dri-devel@lists.freedesktop.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-Message-ID: <20201006065907.GA528@jagdpanzerIV.localdomain>
-References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
- <20200522065306.83-1-shreyas.joshi@biamp.com>
- <20200522100046.GH3464@linux-b0ei>
- <20201006025935.GA597@jagdpanzerIV.localdomain>
- <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: Use 'additionalProperties' instead of
+ 'unevaluatedProperties'
+Message-ID: <20201006065918.GZ6148@dell>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-3-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201005183830.486085-3-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/10/05 20:35), Guenter Roeck wrote:
-> On a side note, I don't see the problem presumably fixed with this
-> patch in any of my tests.
+On Mon, 05 Oct 2020, Rob Herring wrote:
 
-Hmm. This is rather interesting. Empty console= certainly oops-es my laptop,
-but not the cros board I just tested this on. Do we carry around any chromeos
-patches that may affect the parsing of the kernel boot command line?
+> In cases where we don't reference another schema, 'additionalProperties'
+> can be used instead. This is preferred for now as 'unevaluatedProperties'
+> support isn't implemented yet.
+> 
+> In a few cases, this means adding some missing property definitions of
+> which most are for SPI bus properties. 'unevaluatedProperties' is not going
+> to work for the SPI bus properties anyways as they are evaluated from the
+> parent node, not the SPI child node.
 
-	-ss
+Acked-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
