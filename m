@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E04285490
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8DF285495
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbgJFW2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 18:28:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59644 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726323AbgJFW2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 18:28:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CF634AD72;
-        Tue,  6 Oct 2020 22:28:03 +0000 (UTC)
-Subject: Re: [PATCH 5/9] mm, page_alloc: make per_cpu_pageset accessible only
- after init
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-6-vbabka@suse.cz>
- <20201005132445.GA4555@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <bbe42c37-a442-52cb-b620-b1753be1d643@suse.cz>
-Date:   Wed, 7 Oct 2020 00:28:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727671AbgJFW2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 18:28:25 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:46608 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726323AbgJFW2Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 18:28:24 -0400
+Received: by mail-oi1-f196.google.com with SMTP id u126so266151oif.13;
+        Tue, 06 Oct 2020 15:28:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BK9fnoo1uA83BhzEQ3W88lbLalesaiwBhSmKSbszAEo=;
+        b=KGEHT7kDJeAoS+PCtr7d4LDVh1qCHZD5OL+6U2jHr3I1LiFWTioFyDhuhHrudsWh/A
+         3r1zzcl3kM9yjBuVhk83rktb3dtXRtQAZvjWcbjLl36soVBvi4fA236UVnrrOOTp6mDF
+         xy3Un4OeoG9lwSwtmJ4FzJJnz8gfG2UN3+9EL9rHsbCgSrtozpIsy5nNSZyZKYPn4oni
+         jJUdABzoxMLLrNG+L9/729e2HFlCZvXprawK9GFvtzAQ8kh0AuIs0o/m4GuzNdnJocJR
+         JqN/YDcPjzYp2/NLH+KdmULqeIBggnHai+87le1mpVDje43/kW5InJJH+1IZfRfiL6PQ
+         897g==
+X-Gm-Message-State: AOAM533zinPAZ9rbqNwI77aIwnq2UzvlBkEQHKSRqG6zn7Ct1v6z7qlB
+        SkNQa1xWD2eEi3jEkVPXEA==
+X-Google-Smtp-Source: ABdhPJxoVcEzp/l6VNBrV6AdkDsAonSUtV210T7j1H1LSoBOsP96XXbUFBTHpRVqHhawYzCR0qUyPA==
+X-Received: by 2002:aca:af07:: with SMTP id y7mr298067oie.176.1602023303569;
+        Tue, 06 Oct 2020 15:28:23 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k51sm86028otc.46.2020.10.06.15.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 15:28:22 -0700 (PDT)
+Received: (nullmailer pid 2970094 invoked by uid 1000);
+        Tue, 06 Oct 2020 22:28:21 -0000
+Date:   Tue, 6 Oct 2020 17:28:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     Dan Murphy <dmurphy@ti.com>, Jeff LaBundy <jeff@labundy.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexander Dahl <ada@thorsis.com>, linux-mips@vger.kernel.org,
+        linux-omap@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-leds@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v7 03/12] dt-bindings: mfd: Fix schema warnings for
+ pwm-leds
+Message-ID: <20201006222821.GA2970040@bogus>
+References: <20201005203451.9985-1-post@lespocky.de>
+ <20201005203451.9985-4-post@lespocky.de>
 MIME-Version: 1.0
-In-Reply-To: <20201005132445.GA4555@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005203451.9985-4-post@lespocky.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 3:24 PM, Michal Hocko wrote:
-> On Tue 22-09-20 16:37:08, Vlastimil Babka wrote:
->> setup_zone_pageset() replaces the boot_pageset by allocating and initializing a
->> proper percpu one. Currently it assigns zone->pageset with the newly allocated
->> one before initializing it. That's currently not an issue, because the zone
->> should not be in any zonelist, thus not visible to allocators at this point.
->> 
->> Memory ordering between the pcplist contents and its visibility is also not
->> guaranteed here, but that also shouldn't be an issue because online_pages()
->> does a spin_unlock(pgdat->node_size_lock) before building the zonelists.
->> 
->> However it's best that we don't silently rely on operations that can be changed
->> in the future. Make sure only properly initialized pcplists are visible, using
->> smp_store_release(). The read side has a data dependency via the zone->pageset
->> pointer instead of an explicit read barrier.
+On Mon, 05 Oct 2020 22:34:42 +0200, Alexander Dahl wrote:
+> The node names for devices using the pwm-leds driver follow a certain
+> naming scheme (now).  Parent node name is not enforced, but recommended
+> by DT project.
 > 
-> Heh, this looks like inveting a similar trap the previous patch was
-> removing. But more seriously considering that we need a locking for the
-> whole setup, wouldn't it be better to simply document the locking
-> requirements rather than adding scary looking barriers future ourselves
-> or somebody else will need to scratch heads about. I am pretty sure we
-> don't do anything like that when initializating numa node or other data
-> structures that might be allocated during the memory hotadd.
-
-Yeah it will be best to drop this for now. I just looked closed at 
-build_zonelist() implementation and got scared how it just modifies the list 
-that others might be reading at the same time. zoneref_set_zone() sets 
-zoneref->zone and zoneref->zone_idx without any sync, what if somebody, e.g. 
-for_next_zone_zonelist_nodemask() makes decision based on zone_idx and then 
-picks wrong zone pointer? etc.
-
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> ---
->>  mm/page_alloc.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->> 
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 99b74c1c2b0a..de3b48bda45c 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -6246,15 +6246,17 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
->>  
->>  void __meminit setup_zone_pageset(struct zone *zone)
->>  {
->> +	struct per_cpu_pageset __percpu * new_pageset;
->>  	struct per_cpu_pageset *p;
->>  	int cpu;
->>  
->> -	zone->pageset = alloc_percpu(struct per_cpu_pageset);
->> +	new_pageset = alloc_percpu(struct per_cpu_pageset);
->>  	for_each_possible_cpu(cpu) {
->> -		p = per_cpu_ptr(zone->pageset, cpu);
->> +		p = per_cpu_ptr(new_pageset, cpu);
->>  		pageset_init(p);
->>  	}
->>  
->> +	smp_store_release(&zone->pageset, new_pageset);
->>  	zone_set_pageset_high_and_batch(zone);
->>  }
->>  
->> -- 
->> 2.28.0
+>   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+>   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
+>         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> 
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
+> ---
+> 
+> Notes:
+>     v6 -> v7:
+>       * added warning message to commit message (Krzysztof Kozlowski)
+> 
+>     v6:
+>       * added this patch to series
+> 
+>  Documentation/devicetree/bindings/mfd/iqs62x.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
 
+Acked-by: Rob Herring <robh@kernel.org>
