@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053FD284E44
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0BA284EBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgJFOsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgJFOsm (ORCPT
+        id S1726330AbgJFPSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:18:46 -0400
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:59606 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725902AbgJFPSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:48:42 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB73FC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 07:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jvhKVBKVIe7z+Sca0xM4NQq1rBIpnHhLLPH1G4GBru0=; b=HgKH9ZwwVua6z2Z3TAI9RF3q0N
-        cr+Q8EmMnG5UJ/FA6UvWC5xaQk+RGn8xd5CfBQnmGG/B5KUqxqbTuL3RHPqYID9APboMkc5QWdPqG
-        m+TQnSyrneyaMmDETIAlP8aFG3kuw4TQ9Hyo0n9qotRoznmOCixIYj1UNX6YhgPgoNl8UmhKaRCdR
-        bm+FPFlIhy4jM1Vl8IKAIdrl1rpgp6Mj8tztnj/qi+6aBH55KvRoVd8qYl4qG3eV890vQoLM61bGP
-        qKMWflBBdKEeF3ZWLBwrkkzAGqG/pPtniufMUHUTBZhghUMm79AiVnwKDL14mvv6es4hfFAbkqh/0
-        0YzPKPag==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPoGI-0000MJ-Gv; Tue, 06 Oct 2020 14:48:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 904AF3011C6;
-        Tue,  6 Oct 2020 16:48:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7750328527D77; Tue,  6 Oct 2020 16:48:16 +0200 (CEST)
-Date:   Tue, 6 Oct 2020 16:48:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
-Subject: Re: [PATCH -v2 15/17] sched: Fix migrate_disable() vs rt/dl balancing
-Message-ID: <20201006144816.GZ2628@hirez.programming.kicks-ass.net>
-References: <20201005145717.346020688@infradead.org>
- <20201005150922.458081448@infradead.org>
- <jhjv9fnmwhg.mognet@arm.com>
- <20201006134850.GV2628@hirez.programming.kicks-ass.net>
- <20201006143704.GJ4352@localhost.localdomain>
+        Tue, 6 Oct 2020 11:18:43 -0400
+X-Greylist: delayed 1758 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 11:18:43 EDT
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126] helo=xylophone)
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1kPoHH-0004bn-TJ; Tue, 06 Oct 2020 15:49:19 +0100
+Message-ID: <9f395cf46fc5edef55ac1d053d0203c5d39a44cf.camel@codethink.co.uk>
+Subject: Re: [PATCH 5.4 00/57] 5.4.70-rc1 review
+From:   Ben Hutchings <ben.hutchings@codethink.co.uk>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 06 Oct 2020 15:49:19 +0100
+In-Reply-To: <CA+G9fYu5zw8=Dbm79TW6qhbu-BPYbnxTh976Kv1riUQCkv7ZNg@mail.gmail.com>
+References: <20201005142109.796046410@linuxfoundation.org>
+         <CA+G9fYvHOu8kJhRKV5GPJmnaE_x2mrnN6myb4G4YHHW-oiKD7A@mail.gmail.com>
+         <CA+G9fYu5zw8=Dbm79TW6qhbu-BPYbnxTh976Kv1riUQCkv7ZNg@mail.gmail.com>
+Organization: Codethink Ltd.
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006143704.GJ4352@localhost.localdomain>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:37:04PM +0200, Juri Lelli wrote:
-> On 06/10/20 15:48, Peter Zijlstra wrote:
-> > On Tue, Oct 06, 2020 at 12:20:43PM +0100, Valentin Schneider wrote:
-> > > 
-> > > On 05/10/20 15:57, Peter Zijlstra wrote:
-> > > > In order to minimize the interference of migrate_disable() on lower
-> > > > priority tasks, which can be deprived of runtime due to being stuck
-> > > > below a higher priority task. Teach the RT/DL balancers to push away
-> > > > these higher priority tasks when a lower priority task gets selected
-> > > > to run on a freshly demoted CPU (pull).
+On Tue, 2020-10-06 at 13:55 +0530, Naresh Kamboju wrote:
+[...]
+> NOTE:
+> While running LTP containers test suite,
+> I noticed this kernel panic on arm64 Juno-r2 devices.
+> Not easily reproducible and not seen on any other arm64 devices.
 > 
-> Still digesting the whole lot, but can't we "simply" force push the
-> higest prio (that we preempt to make space for the migrate_disabled
-> lower prio) directly to the cpu that would accept the lower prio that
-> cannot move?
+> steps to reproduce:
+> ---------------------------
+> # boot stable rc 5.4.70 kernel on juno-r2 machine
+> # cd /opt/ltp
+> # ./runltp -f containers
 > 
-> Asking because AFAIU we are calling find_lock_rq from push_cpu_stop and
-> that selects the best cpu for the high prio. I'm basically wondering if
-> we could avoid moving, potentially multiple, high prio tasks around to
-> make space for a lower prio task.
+> Crash log,
+> ---------------
+> pidns13     0  TINFO  :  cinit2: writing some data in pipe
+> pidns13     0  TINFO  :  cinit1: setup handler for async I/O on pipe
+> pidns13     1  TPASS  :  cinit1: si_fd is 6, si_code is 1
+> [  122.275627] Internal error: synchronous external abort: 96000210
+> [#1] PREEMPT SMP
+[...]
+> [  122.399545] Call trace:
+> [  122.401995]  sil24_interrupt+0x28/0x5f0
+[...]
+> [  122.467321] Code: d503201f f9400ac0 f9400014 91011294 (b9400294)
+[...]
 
-The intention was to do as you describe in the first paragraph, and
-isn't pull also using find_lock_rq() to select the 'lowest' priority
-runqueue to move the task to?
+This corresponds to the statement:
 
-That is, both actions should end up at the same 'lowest' prio CPU.
+        status = readl(host_base + HOST_IRQ_STAT);
+
+So it looks like the PCI device stopped responding to MMIO for some
+reason.  It could be faulty hardware.  I don't see any sign of run-time 
+power management in that driver that might explain it.
+
+Ben.
+
+-- 
+Ben Hutchings, Software Developer                         Codethink Ltd
+https://www.codethink.co.uk/                 Dale House, 35 Dale Street
+                                     Manchester, M1 2HF, United Kingdom
+
