@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D238C284830
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EE7284832
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgJFIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726521AbgJFIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 6 Oct 2020 04:14:20 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35330 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgJFIOU (ORCPT
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32305 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJFIOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Oct 2020 04:14:20 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0968E6mu093407;
-        Tue, 6 Oct 2020 03:14:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601972046;
-        bh=R+hYz0n1bmLNJQrANIRZOfjNkI2Oo7acRkOE16iJCMg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WoTEI/RBcFFGd7bW+IIZstsZfzN0qZSoWPIP/solb6kWdPY9BN3diCKvnAwWNpW/K
-         EiQ1r4ldeQbP85R3TaSa6pTmQUoNaN8i0d3EPWio7fWCMo6FvmMHhDIVRJUzJhgHrV
-         BDalHpVl1Ka03TdHDXao4D4kK2pUXYp0WDhBy6Es=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0968E6Nh016473
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Oct 2020 03:14:06 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
- 2020 03:14:05 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 6 Oct 2020 03:14:05 -0500
-Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0968E2pN018962;
-        Tue, 6 Oct 2020 03:14:03 -0500
-Subject: Re: [PATCH 0/2] Enable GPIO and I2C configs for TI's J721e platform
-To:     Nishanth Menon <nm@ti.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <t-kristo@ti.com>
-References: <20201002164535.9920-1-faiz_abbas@ti.com>
- <20201002170211.ghzbjqt6nti6mssh@attakatha>
-From:   Faiz Abbas <faiz_abbas@ti.com>
-Message-ID: <7c45f8e1-afc7-b386-fddb-29d44326067c@ti.com>
-Date:   Tue, 6 Oct 2020 13:44:01 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601972058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=3WYv1Mp0VvNRnKAiPIjAGPXvKYJUNrJ37TUk6L8shGg=;
+        b=bwa2I8Gsi9V+L5JLqCpmHgzKF6wnz8uh/YGApEZnNgHV5K502LfnBcR/SPmj8KtgyQ8HiI
+        8zQZWOugP+RzGXafcA4HE2FG4DbPBmNlLQeSUxb2qAhEFDItzaB/baIwBNkmxeuTiGFuIH
+        3KJHwpxFFdnHAWCbzvQYdW/Lptn4Ft8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-OAndu4Q0Nwam07G_XTQKqg-1; Tue, 06 Oct 2020 04:14:14 -0400
+X-MC-Unique: OAndu4Q0Nwam07G_XTQKqg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC49618C5201;
+        Tue,  6 Oct 2020 08:14:11 +0000 (UTC)
+Received: from [10.36.114.219] (ovpn-114-219.ams2.redhat.com [10.36.114.219])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 703E99CBA;
+        Tue,  6 Oct 2020 08:14:08 +0000 (UTC)
+Subject: Re: [PATCH v6 03/11] device-dax/kmem: move resource tracking to
+ drvdata
+To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org
+References: <160196728453.2166475.12832711415715687418.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <160196730203.2166475.10332959995680506711.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <82beb6ec-b6c0-47ff-d02d-b823436ba08a@redhat.com>
+Date:   Tue, 6 Oct 2020 10:14:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20201002170211.ghzbjqt6nti6mssh@attakatha>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <160196730203.2166475.10332959995680506711.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nishanth,
+On 06.10.20 08:55, Dan Williams wrote:
+> Towards removing the mode specific @dax_kmem_res attribute from the
+> generic 'struct dev_dax', and preparing for multi-range support, move
+> resource tracking to driver data.  The memory for the resource name
+> needs to have its own lifetime separate from the device bind lifetime
+> for cases where the driver is unbound, but the kmem range could not be
+> unplugged from the page allocator.
+> 
+> The resource reservation also needs to be released manually via
+> release_resource() given the awkward manipulation of the
+> IORESOURCE_BUSY flag.
+> 
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Cc: Brice Goglin <Brice.Goglin@inria.fr>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Jia He <justin.he@arm.com>
+> Cc: Joao Martins <joao.m.martins@oracle.com>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 
-On 02/10/20 10:32 pm, Nishanth Menon wrote:
-> On 22:15-20201002, Faiz Abbas wrote:
->> The following patches enable configs in the arm64 defconfig to support
->> GPIO and I2C support on TI's J721e platform.
->>
->> Faiz Abbas (2):
->>   arm64: defconfig: Enable OMAP I2C driver
->>   arm64: defconfig: Enable DAVINCI_GPIO driver
->>
->>  arch/arm64/configs/defconfig | 2 ++
->>  1 file changed, 2 insertions(+)
-> 
-> 
-> Could we do an audit and make sure nothing else is missing - Say ALSA /
-> DRM or something else?
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I'm not aware of anything that might be missing. That said, I am not
-aware of every single config in every subsystem. IMO the various driver
-owners should be responsible for adding their configs to defconfig.
- 
-> 
-> And I don't really see the need to split these into individual patches,
-> maybe, take a hint from [1]
-> 
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/20200630171500.11438-1-geert+renesas@glider.be/
-> 
+Thanks!
 
-Sounds good. I'll squash into a single patch and repost.
 
+-- 
 Thanks,
-Faiz
+
+David / dhildenb
+
