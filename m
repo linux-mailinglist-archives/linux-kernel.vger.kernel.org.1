@@ -2,65 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87700284EC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA47284ECA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgJFPUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:20:43 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48921 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgJFPUj (ORCPT
+        id S1726497AbgJFPVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgJFPVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:20:39 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kPolM-0003j9-On; Tue, 06 Oct 2020 15:20:24 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ASoC: mchp-spdifrx: fix spelling mistake "overrrun" -> "overrun"
-Date:   Tue,  6 Oct 2020 16:20:24 +0100
-Message-Id: <20201006152024.542418-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 6 Oct 2020 11:21:06 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA718C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 08:21:04 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id o9so55528ilo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 08:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mmj7x7pJat8UNIIwIa7Sd+SRNOWKvcmn8r90tiL0s1A=;
+        b=IXQwwVAi7F6pRyGOUEQ8zaCzPCqLYGzR6fWH1AMiUEwCFiSYJ471FkLdAmCwbx2c54
+         ItJ9whV/AqUo+mM2d7MbaozYvKfTm/b80nFjzDVrSdzgt+4L5TPDPIQZWJW4+sAYwEpy
+         BbucuKw8YdnI1BxGGqAvEq5di/ZoXDjLG4oTw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mmj7x7pJat8UNIIwIa7Sd+SRNOWKvcmn8r90tiL0s1A=;
+        b=ipOsWcjku++mqjKlYBLwZpS8sbAhG7+okrnqq0q1XWquOlhCALCTPk0MTRPPflTgt3
+         KhjiuVQuWwrgsaCc/9Z6K3as6V8voWSdszVoBC/DefUorSUcuOs4mBfBtn8vdyD5uI8P
+         TfSW99cO+ErqC53/tL/4A2Y041n0scCEiky/DOC+nGmbFtfIIK3HESy1AKQ7VAUs9VGi
+         5LBPxwsic+pUULi8Q9unvZ+tMGAPw20xN14RwArn3Tw9aU7/jCd9169/HNeHonAnVKPI
+         ZAOSUyGUP/HrMOureB9UYynIDhPTq/nH97BYKkFDIl2e8GagcmMjslhzEn784XB4B7K6
+         c+mw==
+X-Gm-Message-State: AOAM531rOZokIdwq1lo435mL4Du6NFBh+eC2apzhNEgr7zwKq303m5vA
+        e276aGp3Z2Ad5wHCmOt2h33+gg==
+X-Google-Smtp-Source: ABdhPJyqEmZz43/2Pp1HykB1ZUp+7my5maxDOMBk3deo+zKUWBRwafPlIzkV/qrgjjh1lVhgQ7y1zw==
+X-Received: by 2002:a92:b50b:: with SMTP id f11mr4049407ile.109.1601997664092;
+        Tue, 06 Oct 2020 08:21:04 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id z76sm349366ilf.76.2020.10.06.08.21.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 08:21:03 -0700 (PDT)
+Subject: Re: [PATCH 00/11] Introduce Simple atomic and non-atomic counters
+To:     Kees Cook <keescook@chromium.org>
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, shuah@kernel.org,
+        rafael@kernel.org, johannes@sipsolutions.net, lenb@kernel.org,
+        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
+        surenb@google.com, minyard@acm.org, arnd@arndb.de,
+        mchehab@kernel.org, rric@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1601073127.git.skhan@linuxfoundation.org>
+ <202009260923.9A2606CFF6@keescook>
+ <3929a023-eb7a-509c-50e1-ee72dca05191@linuxfoundation.org>
+ <202009281612.EDC1C0078@keescook>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <700f0ed4-fe09-7610-b460-89b5ad08452c@linuxfoundation.org>
+Date:   Tue, 6 Oct 2020 09:21:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <202009281612.EDC1C0078@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 9/28/20 5:13 PM, Kees Cook wrote:
+> On Mon, Sep 28, 2020 at 04:41:47PM -0600, Shuah Khan wrote:
+>> On 9/26/20 10:29 AM, Kees Cook wrote:
+>>> On Fri, Sep 25, 2020 at 05:47:14PM -0600, Shuah Khan wrote:
+>>>>      7. Verified that the test module compiles in kunit env. and test
+>>>>         module can be loaded to run the test.
+>>>
+>>> I meant write it using KUnit interfaces (e.g. KUNIT_EXPECT*(),
+>>> kunit_test_suite(), etc):
+>>> https://www.kernel.org/doc/html/latest/dev-tools/kunit/
+>>>
+>>> Though I see the docs are still not updated[1] to reflect the Kconfig
+>>> (CONFIG_foo_KUNIT_TEST) and file naming conventions (foo_kunit.c).
+>>>
+>>
+>> I would like to be able to run this test outside Kunit env., hence the
+>> choice to go with a module and kselftest script. It makes it easier to
+>> test as part of my workflow as opposed to doing a kunit and build and
+>> running it that way.
+> 
+> It does -- you just load it normally like before and it prints out
+> everything just fine. This is how I use the lib/test_user_copy.c and
+> lib/test_overflow.c before/after their conversions.
+> 
 
-There is a spelling mistake in a dev_warn message. Fix it.
+I am not seeing any kunit links to either of these tests. I find the
+lib/test_overflow.c very hard to read.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/atmel/mchp-spdifrx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am going to stick with what I have for now and handle conversion
+later.
 
-diff --git a/sound/soc/atmel/mchp-spdifrx.c b/sound/soc/atmel/mchp-spdifrx.c
-index 726e4951d9a5..e6ded6f8453f 100644
---- a/sound/soc/atmel/mchp-spdifrx.c
-+++ b/sound/soc/atmel/mchp-spdifrx.c
-@@ -338,7 +338,7 @@ static irqreturn_t mchp_spdif_interrupt(int irq, void *dev_id)
- 	}
- 
- 	if (pending & SPDIFRX_IR_OVERRUN) {
--		dev_warn(dev->dev, "Overrrun detected\n");
-+		dev_warn(dev->dev, "Overrun detected\n");
- 		ret = IRQ_HANDLED;
- 	}
- 
--- 
-2.27.0
+I think it might be a good idea to add tests for atomic_t and refcount_t
+APIS as well at some point.
 
+thanks,
+-- Shuah
