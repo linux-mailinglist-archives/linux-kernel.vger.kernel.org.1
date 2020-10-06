@@ -2,86 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD54284B4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95469284B4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgJFMFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:05:25 -0400
-Received: from ozlabs.org ([203.11.71.1]:43043 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgJFMFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:05:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5GPZ4Fz5z9sTK;
-        Tue,  6 Oct 2020 23:05:22 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601985922;
-        bh=V7t/KbI24qB0mFMuwivDsNixxT/ei5wb0/EpytKcEcg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=F4NPPTfuBK9fkp+5BVY/ZtLKY4tkb/2vjl1z4hto0Z2MtxL7KzD2sNwL41CTuQ6N8
-         6VEILByjwUxNO03R7t1GlzCa+vZaEqGNoHM9fcwRUDU7sF6ybanFn7IMHWJGPZYvKN
-         W9kYXroIfddDYbbIKumCy1zkxuDEQ049jrf/fGK8t+/FTrALpcP37wFYsbZLWYRbrf
-         3mqSjc+lWAkYIrNseLhhrqmQ/9rCtSQ3BH2dpIgKBihoUT9z0Plkh44LJWx3N4MIOK
-         yKMH4hDjiTTTgR3Bt2WPf+xs3H/2Z5xga7dcmRHvy5iLekPZzqA7TDN9kL/mXgU+Ki
-         BH671miJJTVDA==
-Date:   Tue, 6 Oct 2020 23:05:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the akpm-current tree
-Message-ID: <20201006230516.64f7b17f@canb.auug.org.au>
+        id S1726590AbgJFMGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:06:30 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:33147 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726248AbgJFMG3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:06:29 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from tariqt@nvidia.com)
+        with SMTP; 6 Oct 2020 15:06:24 +0300
+Received: from dev-l-vrt-206-005.mtl.labs.mlnx (dev-l-vrt-206-005.mtl.labs.mlnx [10.234.206.5])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 096C6OXo014486;
+        Tue, 6 Oct 2020 15:06:24 +0300
+From:   Tariq Toukan <tariqt@nvidia.com>
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        Tariq Toukan <tariqt@nvidia.com>
+Subject: [RFC PATCH] workqueue: Add support for exposing singlethread workqueues in sysfs
+Date:   Tue,  6 Oct 2020 15:06:07 +0300
+Message-Id: <20201006120607.20310-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VdaJs1DRKyd.OsHkFmrYWuN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VdaJs1DRKyd.OsHkFmrYWuN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Extend the workqueue API so that singlethread workqueues can be exposed
+in sysfs. Guarantee max_active is 1 by turning it read-only.
 
-Hi all,
+This allows admins to control the cpumask of a workqueue, and apply
+the desired system cpu separation/isolation policy.
 
-After merging the akpm-current tree, today's linux-next build (sparc
-defconfig) produced this warning:
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |  2 +-
+ include/linux/workqueue.h                     |  4 ++++
+ kernel/workqueue.c                            | 21 +++++++++++++++++--
+ 3 files changed, 24 insertions(+), 3 deletions(-)
 
-mm/memory.c: In function 'copy_present_page':
-mm/memory.c:800:20: warning: unused variable 'dst_mm' [-Wunused-variable]
-  struct mm_struct *dst_mm =3D dst_vma->vm_mm;
-                    ^~~~~~
-mm/memory.c: In function 'copy_present_pte':
-mm/memory.c:889:20: warning: unused variable 'dst_mm' [-Wunused-variable]
-  struct mm_struct *dst_mm =3D dst_vma->vm_mm;
-                    ^~~~~~
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index 1d91a0d0ab1d..5106820a5cd5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -2033,7 +2033,7 @@ int mlx5_cmd_init(struct mlx5_core_dev *dev)
+ 	create_msg_cache(dev);
+ 
+ 	set_wqname(dev);
+-	cmd->wq = create_singlethread_workqueue(cmd->wq_name);
++	cmd->wq = create_singlethread_sysfs_workqueue(cmd->wq_name);
+ 	if (!cmd->wq) {
+ 		mlx5_core_err(dev, "failed to create command workqueue\n");
+ 		err = -ENOMEM;
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index 26de0cae2a0a..d4d4ca2b041a 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -344,6 +344,7 @@ enum {
+ 	__WQ_ORDERED		= 1 << 17, /* internal: workqueue is ordered */
+ 	__WQ_LEGACY		= 1 << 18, /* internal: create*_workqueue() */
+ 	__WQ_ORDERED_EXPLICIT	= 1 << 19, /* internal: alloc_ordered_workqueue() */
++	__WQ_MAX_ACTIVE_RO	= 1 << 20, /* internal: make max_active read-only */
+ 
+ 	WQ_MAX_ACTIVE		= 512,	  /* I like 512, better ideas? */
+ 	WQ_MAX_UNBOUND_PER_CPU	= 4,	  /* 4 * #cpus for unbound wq */
+@@ -432,6 +433,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 			WQ_MEM_RECLAIM, 1, (name))
+ #define create_singlethread_workqueue(name)				\
+ 	alloc_ordered_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, name)
++#define create_singlethread_sysfs_workqueue(name)			\
++	alloc_ordered_workqueue("%s", __WQ_MAX_ACTIVE_RO |		\
++				__WQ_LEGACY | WQ_MEM_RECLAIM, name)
+ 
+ extern void destroy_workqueue(struct workqueue_struct *wq);
+ 
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index c41c3c17b86a..a80d34726e68 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4258,6 +4258,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 	if ((flags & WQ_POWER_EFFICIENT) && wq_power_efficient)
+ 		flags |= WQ_UNBOUND;
+ 
++	if (flags & __WQ_MAX_ACTIVE_RO)
++		flags |= WQ_SYSFS;
++
+ 	/* allocate wq and format name */
+ 	if (flags & WQ_UNBOUND)
+ 		tbl_size = nr_node_ids * sizeof(wq->numa_pwq_tbl[0]);
+@@ -5401,9 +5404,11 @@ static ssize_t max_active_store(struct device *dev,
+ }
+ static DEVICE_ATTR_RW(max_active);
+ 
++static struct device_attribute dev_attr_max_active_ro =
++	__ATTR(max_active, 0444, max_active_show, NULL);
++
+ static struct attribute *wq_sysfs_attrs[] = {
+ 	&dev_attr_per_cpu.attr,
+-	&dev_attr_max_active.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(wq_sysfs);
+@@ -5642,6 +5647,7 @@ static void wq_device_release(struct device *dev)
+  */
+ int workqueue_sysfs_register(struct workqueue_struct *wq)
+ {
++	const struct device_attribute *max_active_entry;
+ 	struct wq_device *wq_dev;
+ 	int ret;
+ 
+@@ -5650,7 +5656,8 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
+ 	 * attributes breaks ordering guarantee.  Disallow exposing ordered
+ 	 * workqueues.
+ 	 */
+-	if (WARN_ON(wq->flags & __WQ_ORDERED_EXPLICIT))
++	if (WARN_ON(!(wq->flags & __WQ_MAX_ACTIVE_RO) &&
++		    wq->flags & __WQ_ORDERED_EXPLICIT))
+ 		return -EINVAL;
+ 
+ 	wq->wq_dev = wq_dev = kzalloc(sizeof(*wq_dev), GFP_KERNEL);
+@@ -5675,6 +5682,16 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
+ 		return ret;
+ 	}
+ 
++	max_active_entry = wq->flags & __WQ_MAX_ACTIVE_RO ?
++		&dev_attr_max_active_ro : &dev_attr_max_active;
++
++	ret = device_create_file(&wq_dev->dev, max_active_entry);
++	if (ret) {
++		device_unregister(&wq_dev->dev);
++		wq->wq_dev = NULL;
++		return ret;
++	}
++
+ 	if (wq->flags & WQ_UNBOUND) {
+ 		struct device_attribute *attr;
+ 
+-- 
+2.21.0
 
-Maybe introduced by commit
-
-  7e6cdccef3df ("mm-remove-src-dst-mm-parameter-in-copy_page_range-v2")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/VdaJs1DRKyd.OsHkFmrYWuN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98XXwACgkQAVBC80lX
-0GxgdQf+LMC6YH2RSBoXYKVSZ0lOZ6kQ1c3TBGXk5ylUwoDGqRCwIYTr3uYe8OS7
-YFVRJugZxVRQbXj/Q6Ew1lOoGsQWXIygpRQdziHpxfaQBQ2hpTe4czZfHGtv+m2b
-FRaqa15wCCbOAL1WrqkDaZIAgU7LMfsv15DF52+rTHi9gl57W7ywVoLGpGSzxn5K
-Ewpuqsfx6LaEa3gbzB2mxLTbRwdraJPaJXJSF7Kwhb8DhqMy3gC/xtTIQaqGfOKx
-/yX5RPW7GAu/IBLm9k1c++iqjTA+NPCVNx7NRHFVaJ++jO9TaGDlm3bfsAC5Qwas
-9NsYcUXbZveBRD8aZqqYHrXetlXhbg==
-=/xoz
------END PGP SIGNATURE-----
-
---Sig_/VdaJs1DRKyd.OsHkFmrYWuN--
