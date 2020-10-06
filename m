@@ -2,117 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28BE285190
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CE428518F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgJFS2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 14:28:52 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52218 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgJFS2w (ORCPT
+        id S1726791AbgJFS2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 14:28:11 -0400
+Received: from smtprelay0016.hostedemail.com ([216.40.44.16]:44320 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726759AbgJFS2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:28:52 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096IOu8Y012997;
-        Tue, 6 Oct 2020 18:28:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=6+95rsR9Z5CjnDrnTBVtpeRBJgt9yjv4jhnHQhmfouo=;
- b=P7oF4q8zxf2Q23cohhSEQNdGXSDxa1t5zKv/jbcxspBlc7BMHD0TceE38/jHiIn7AqyD
- f6c+0cv5CAKDroQwH4kzpJIA/Yd3BX8hH+2Z11VB0r/Ld2tck78gnLnBXfhFpMv23zlC
- G3bs4B1sogMTojT52qkklmDX0rTYgY/3RyRdbaf57TghEyTV/V+1oc1lvKqOPb17k5TI
- GaLWd6MfF8CWI9kWbl8OA7+zx7qh99ub1lzzC4emxOmz30sYdRn1A/Y88r3gib9Pq5NX
- SFpp1CYrjFIYBnGzmkjWTLzGWUw+ED17nlgHV1oTi4EGAADbYwv9gk7trBVhf3jpA2bj sw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33xhxmwmm5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 06 Oct 2020 18:28:37 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096ILMsQ016127;
-        Tue, 6 Oct 2020 18:26:36 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33y2vnd2n7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Oct 2020 18:26:36 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 096IQZ1c003553;
-        Tue, 6 Oct 2020 18:26:35 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 06 Oct 2020 11:26:35 -0700
-Date:   Tue, 6 Oct 2020 21:26:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net: phy: dp83869: fix unsigned comparisons
- against less than zero values
-Message-ID: <20201006182628.GI4282@kadam>
-References: <20201002165422.94328-1-colin.king@canonical.com>
- <1ffbf497-cb07-4302-8a79-236338f00383@ti.com>
+        Tue, 6 Oct 2020 14:28:11 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C4FB0181D3025;
+        Tue,  6 Oct 2020 18:28:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3872:3874:4250:4321:5007:6119:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21433:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: apple32_06173e3271c8
+X-Filterd-Recvd-Size: 1578
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  6 Oct 2020 18:28:09 +0000 (UTC)
+Message-ID: <0daa402f9b4724a3e9bc6908f3b7e095bd892eb3.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add new warnings to author signoff
+ checks.
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 06 Oct 2020 11:28:08 -0700
+In-Reply-To: <CABJPP5AkdKekb2mRuiDm1-GOuqZ1vL=eNt=OJZN2iAPH1yNytQ@mail.gmail.com>
+References: <20201005192409.192317-1-dwaipayanray1@gmail.com>
+         <1d8396cb33b33c3d0107ba701b7e597041dfdbc2.camel@perches.com>
+         <CABJPP5DDmurU9c2qCoJcg7hvwnkYo4LCx+TW6xKG2G23Uf_Cxw@mail.gmail.com>
+         <c1ca28e77e8e3bfa7aadf3efa8ed70f97a9d369c.camel@perches.com>
+         <CABJPP5AmvDPFQhWfxC8TA7SCGtwzurVykR5mtPx0ytm-PJDmYA@mail.gmail.com>
+         <alpine.DEB.2.21.2010060635000.10609@felia>
+         <CABJPP5AkdKekb2mRuiDm1-GOuqZ1vL=eNt=OJZN2iAPH1yNytQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ffbf497-cb07-4302-8a79-236338f00383@ti.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010060118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010060118
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 12:26:49PM -0500, Dan Murphy wrote:
-> Colin
-> 
-> On 10/2/20 11:54 AM, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> > 
-> > Currently the comparisons of u16 integers value and sopass_val with
-> > less than zero for error checking is always false because the values
-> > are unsigned. Fix this by making these variables int.  This does not
-> > affect the shift and mask operations performed on these variables
-> > 
-> > Addresses-Coverity: ("Unsigned compared against zero")
-> > Fixes: 49fc23018ec6 ("net: phy: dp83869: support Wake on LAN")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >   drivers/net/phy/dp83869.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/phy/dp83869.c b/drivers/net/phy/dp83869.c
-> > index 0aee5f645b71..cf6dec7b7d8e 100644
-> > --- a/drivers/net/phy/dp83869.c
-> > +++ b/drivers/net/phy/dp83869.c
-> > @@ -305,7 +305,7 @@ static int dp83869_set_wol(struct phy_device *phydev,
-> >   static void dp83869_get_wol(struct phy_device *phydev,
-> >   			    struct ethtool_wolinfo *wol)
-> >   {
-> > -	u16 value, sopass_val;
-> > +	int value, sopass_val;
-> >   	wol->supported = (WAKE_UCAST | WAKE_BCAST | WAKE_MAGIC |
-> >   			WAKE_MAGICSECURE);
-> 
-> Wonder why this was not reported before as the previous comparison issue
-> reported by zero day.
+On Tue, 2020-10-06 at 18:45 +0530, Dwaipayan Ray wrote:
+> To summarize it, two changes that could be made are
+> the CHK for subaddress extension could be converted to
+> a WARN, and the WARN in case of a missing author signoff
+> could be converted to an ERROR.
 
-It was reported on Sep 25.  I forward those zero day bot emails.
+Sure, why not...
 
-https://lore.kernel.org/lkml/20200925123858.GX18329@kadam/
-
-regards,
-dan carpenter
 
