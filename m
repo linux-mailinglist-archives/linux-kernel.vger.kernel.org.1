@@ -2,271 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB4A284841
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC422848A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgJFITU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Oct 2020 04:19:20 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:40294 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgJFITT (ORCPT
+        id S1726398AbgJFIbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:31:15 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:44201 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJFIbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:19:19 -0400
-Received: by mail-io1-f77.google.com with SMTP id f8so6645791iow.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 01:19:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
-         :content-transfer-encoding;
-        bh=+HcSobxVvGQHZab0mThAeS+WsclToV8ohddZNLV7vPs=;
-        b=JG9bm/hIm5+rQUC560yQGUt4j2iIguLpYV7tE34oT8flBCdLd0SHIPPg48CLHb54+c
-         OCBrO+22mOm7jRNpD0hzWBT3uajljk+/JmcDL6V9hkoHvbanvGrs9++GClthgjGy+gtm
-         vDCPTX7QpXEplTr7f5ytsoX+AxDDc1kkQ59MyR5Re9alNJEZbB61FVOe4whYtfuKSPSW
-         bNoA3jKRKYZKT2kFWF6VOmwkbhqcj3R+Mq+tinTCAxwH9bMymBdriQup3kYXl0f4BMw6
-         SIgMxAzfvXeE0XH8xtNUy/b9Rd6rCTrZr19o6Hd9KxNcGzcXQkZHqPh4s7oD6qeUTPa8
-         +ZAg==
-X-Gm-Message-State: AOAM531w/69bmmA73OgGhVvQlRxED+gLzhigzIifTsCH00D6i/XvfHHv
-        pHU6UpImraMxAMhwazISK+7kRwvfij3V4uoq2hisWFDreC/b
-X-Google-Smtp-Source: ABdhPJyKkjwpbIN1IH4cBrbOMObgcQ7S6a8vKtcJkVsTBQiZUXFqz8bh2OmxeV9bUTunTwKx7ep7iYV183tmmeNm7VY47yzqKtj2
+        Tue, 6 Oct 2020 04:31:14 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id B79D25C00A6;
+        Tue,  6 Oct 2020 04:31:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 06 Oct 2020 04:31:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=A0uEjs8ek2TiwpBw4iCwjm/gIfz
+        YDZHLIda4slMrPSM=; b=ulBkd0T64OyDJ/OlIOUECTmcUqo2QHTWX7zo5FVgevj
+        wrhSV3KJyGFQN0rurHEgjDB1jDIOJWEndsq3R0Q6xTZqcN0NNy3qr8W+yjGcQuPe
+        LEVJiDh7gyRmZme2hiyfPJbSx+AtHiZMZuK5yHhoYjckyg8k9jk4iqOXz8BROjdE
+        pkBAr9MRm7ZaQMtIEcVPeyEgEGZ/vu8gPW66z45Mcom2iiUthNxoLe8y4pDTy74X
+        TzmdCeReg+bS6u4iLJTCm7n5E0WuVeWzHYeXhNlcrMdcIlrSzALRkZzpisIy+iZ2
+        AfJF9bh3P60/ZBRHF23v/87mjJPytWGEOEDzcd1gC7Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=A0uEjs
+        8ek2TiwpBw4iCwjm/gIfzYDZHLIda4slMrPSM=; b=ctGZbV8LA4l7ydxU6/Vd4t
+        bSZmojZ9v8MxvAqwbNzuNIpgLNfj9gYOb65xpGNf2LtBturD60mTYD7g5CdofTxH
+        aGy5e8hvRGN2Cqmni9zJoW9PrP+v/ro5d5C8SMTe8SarC0CPuoFIePqosjbPHO/H
+        hHs4gQ2LtBv0qXU+5522uVnXAs+bqgEdwVv21rAT4eH3n1K4g0aoK3BkJ+heiT5Q
+        Ao9UnetDwnlADXCkelL87ORieofkIpWVGHLxr+2ewyZQNQChYdhigSqMJ5hUBc//
+        9ZnUf5oMJ3a0eCcKqoTA9oBJXaYxrkZakQSbCS52IPgAWeexw8PHyMj+T8HzK23Q
+        ==
+X-ME-Sender: <xms:Tyt8X4enpkdT1-Uq0nPdeRM0MEBeV_zbl4CxeCTqSQZutMjM9-65gg>
+    <xme:Tyt8X6O64gafeyQIPC7qgL4bhEfVi8CAJGqJcB64Hg0oDLNgNoKvq2w0MfjyNHCmU
+    Iz4cbyKabV4VQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeeggddtgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:Tyt8X5hB3AHUz3lh9Bbc_QDl7NF4Qz2Q5EJU3zMDB80iTQAOrxYN6w>
+    <xmx:Tyt8X9_puTqns5Mc0kWxLrF6ER9VRBzJp_ip2ZXCwF6h9ddl-Rs4Kg>
+    <xmx:Tyt8X0uyHkGAGsu0iglT9wyzU25hqu88wZj0xuCTmXvUbHICDA5dYw>
+    <xmx:UCt8X-Vk-jVakxAcWO4_F78H2lr3HXf7BDUqK3uBUv7UJGDq-aUf5Q>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9FB5F3064684;
+        Tue,  6 Oct 2020 04:31:11 -0400 (EDT)
+Date:   Tue, 6 Oct 2020 10:21:30 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: Re: linux-next: manual merge of the char-misc tree with the powerpc
+ tree
+Message-ID: <20201006082130.GB12331@kroah.com>
+References: <20201006183506.186a3562@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a92:484e:: with SMTP id v75mr2682129ila.293.1601972357048;
- Tue, 06 Oct 2020 01:19:17 -0700 (PDT)
-Date:   Tue, 06 Oct 2020 01:19:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004831d405b0fc41d2@google.com>
-Subject: INFO: task hung in hub_port_init
-From:   syzbot <syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net,
-        gregkh@linuxfoundation.org, gustavoars@kernel.org,
-        ingrassia@epigenesys.com, kaber@trash.net,
-        kadlec@blackhole.kfki.hu, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        niklas.soderlund+renesas@ragnatech.se, pablo@netfilter.org,
-        sergei.shtylyov@cogentembedded.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006183506.186a3562@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 06, 2020 at 06:35:06PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the char-misc tree got a conflict in:
+> 
+>   drivers/misc/ocxl/Kconfig
+> 
+> between commit:
+> 
+>   dde6f18a8779 ("ocxl: Don't return trigger page when allocating an interrupt")
+> 
+> from the powerpc tree and commit:
+> 
+>   4b53a3c72116 ("ocxl: fix kconfig dependency warning for OCXL")
+> 
+> from the char-misc tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc drivers/misc/ocxl/Kconfig
+> index 0d815b2a40b3,947294f6d7f4..000000000000
+> --- a/drivers/misc/ocxl/Kconfig
+> +++ b/drivers/misc/ocxl/Kconfig
+> @@@ -9,9 -9,8 +9,9 @@@ config OCXL_BAS
+>   
+>   config OCXL
+>   	tristate "OpenCAPI coherent accelerator support"
+>  -	depends on PPC_POWERNV && PCI && EEH && HOTPLUG_PCI_POWERNV
+>  +	depends on PPC_POWERNV && PCI && EEH && PPC_XIVE_NATIVE
+> ++	depends on HOTPLUG_PCI_POWERNV
+>   	select OCXL_BASE
+> - 	select HOTPLUG_PCI_POWERNV
+>   	default m
+>   	help
+>   	  Select this option to enable the ocxl driver for Open
 
-syzbot found the following issue on:
+Looks good, thanks!
 
-HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14c3b3db900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=74d6ef051d3d2eacf428
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153bf5bd900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124c92af900000
-
-The issue was bisected to:
-
-commit 6dcf45e514974a1ff10755015b5e06746a033e5f
-Author: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Date:   Mon Jan 9 15:34:04 2017 +0000
-
-    sh_eth: use correct name for ECMR_MPDE bit
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152bb760500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=172bb760500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=132bb760500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-Fixes: 6dcf45e51497 ("sh_eth: use correct name for ECMR_MPDE bit")
-
-INFO: task kworker/0:0:5 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/0:0     state:D stack:27664 pid:    5 ppid:     2 flags:0x00004000
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- usb_kill_urb.part.0+0x197/0x220 drivers/usb/core/urb.c:696
- usb_kill_urb+0x7c/0x90 drivers/usb/core/urb.c:691
- usb_start_wait_urb+0x24a/0x2b0 drivers/usb/core/message.c:64
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- hub_port_init+0x11ae/0x2d80 drivers/usb/core/hub.c:4689
- hub_port_connect drivers/usb/core/hub.c:5140 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x1e64/0x3e60 drivers/usb/core/hub.c:5576
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- process_scheduled_works kernel/workqueue.c:2331 [inline]
- worker_thread+0x82b/0x1120 kernel/workqueue.c:2417
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-INFO: task kworker/1:2:2641 blocked for more than 144 seconds.
-      Not tainted 5.9.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/1:2     state:D stack:26992 pid: 2641 ppid:     2 flags:0x00004000
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- usb_kill_urb.part.0+0x197/0x220 drivers/usb/core/urb.c:696
- usb_kill_urb+0x7c/0x90 drivers/usb/core/urb.c:691
- usb_start_wait_urb+0x24a/0x2b0 drivers/usb/core/message.c:64
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- usb_get_descriptor+0xc5/0x1b0 drivers/usb/core/message.c:655
- usb_get_device_descriptor+0x81/0xf0 drivers/usb/core/message.c:927
- hub_port_init+0x78f/0x2d80 drivers/usb/core/hub.c:4784
- hub_port_connect drivers/usb/core/hub.c:5140 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x1e64/0x3e60 drivers/usb/core/hub.c:5576
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-INFO: task kworker/1:1:6862 blocked for more than 146 seconds.
-      Not tainted 5.9.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/1:1     state:D stack:26864 pid: 6862 ppid:     2 flags:0x00004000
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- usb_kill_urb.part.0+0x197/0x220 drivers/usb/core/urb.c:696
- usb_kill_urb+0x7c/0x90 drivers/usb/core/urb.c:691
- usb_start_wait_urb+0x24a/0x2b0 drivers/usb/core/message.c:64
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- hub_port_init+0x11ae/0x2d80 drivers/usb/core/hub.c:4689
- hub_port_connect drivers/usb/core/hub.c:5140 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x1e64/0x3e60 drivers/usb/core/hub.c:5576
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-INFO: task kworker/0:1:6870 blocked for more than 148 seconds.
-      Not tainted 5.9.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/0:1     state:D stack:27416 pid: 6870 ppid:     2 flags:0x00004000
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- usb_kill_urb.part.0+0x197/0x220 drivers/usb/core/urb.c:696
- usb_kill_urb+0x7c/0x90 drivers/usb/core/urb.c:691
- usb_start_wait_urb+0x24a/0x2b0 drivers/usb/core/message.c:64
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- usb_get_descriptor+0xc5/0x1b0 drivers/usb/core/message.c:655
- usb_get_device_descriptor+0x81/0xf0 drivers/usb/core/message.c:927
- hub_port_init+0x78f/0x2d80 drivers/usb/core/hub.c:4784
- hub_port_connect drivers/usb/core/hub.c:5140 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x1e64/0x3e60 drivers/usb/core/hub.c:5576
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-INFO: task kworker/1:3:6898 blocked for more than 150 seconds.
-      Not tainted 5.9.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/1:3     state:D stack:27256 pid: 6898 ppid:     2 flags:0x00004000
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- usb_kill_urb.part.0+0x197/0x220 drivers/usb/core/urb.c:696
- usb_kill_urb+0x7c/0x90 drivers/usb/core/urb.c:691
- usb_start_wait_urb+0x24a/0x2b0 drivers/usb/core/message.c:64
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- usb_get_descriptor+0xc5/0x1b0 drivers/usb/core/message.c:655
- usb_get_device_descriptor+0x81/0xf0 drivers/usb/core/message.c:927
- hub_port_init+0x78f/0x2d80 drivers/usb/core/hub.c:4784
- hub_port_connect drivers/usb/core/hub.c:5140 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x1e64/0x3e60 drivers/usb/core/hub.c:5576
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Showing all locks held in the system:
-5 locks held by kworker/0:0/5:
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90000cbfda8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffff88809e17a218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:785 [inline]
- #2: ffff88809e17a218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1b6/0x3e60 drivers/usb/core/hub.c:5522
- #3: ffff88809e163588 (&port_dev->status_lock){+.+.}-{3:3}, at: usb_lock_port drivers/usb/core/hub.c:3012 [inline]
- #3: ffff88809e163588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_port_connect drivers/usb/core/hub.c:5139 [inline]
- #3: ffff88809e163588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- #3: ffff88809e163588 (&port_dev->status_lock){+.+.}-{3:3}, at: port_event drivers/usb/core/hub.c:5494 [inline]
- #3: ffff88809e163588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_event+0x1e4f/0x3e60 drivers/usb/core/hub.c:5576
- #4: ffff888217aea068 (hcd->address0_mutex){+.+.}-{3:3}, at: hub_port_init+0x1b6/0x2d80 drivers/usb/core/hub.c:4563
-2 locks held by kworker/u4:4/208:
-1 lock held by khungtaskd/1167:
- #0: ffffffff8a067f40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5852
-5 locks held by kworker/1:2/2641:
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90008de7da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffff88809e5de218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:785 [inline]
- #2: ffff88809e5de218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1b6/0x3e60 drivers/usb/core/hub.c:5522
- #3: ffff88809e594588 (&port_dev->status_lock){+.+.}-{3:3}, at: usb_lock_port drivers/usb/core/hub.c:3012 [inline]
- #3: ffff88809e594588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_port_connect drivers/usb/core/hub.c:5139 [inline]
- #3: ffff88809e594588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- #3: ffff88809e594588 (&port_dev->status_lock){+.+.}-{3:3}, at: port_event drivers/usb/core/hub.c:5494 [inline]
- #3: ffff88809e594588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_event+0x1e4f/0x3e60 drivers/usb/core/hub.c:5576
- #4: ffff888217ba0c68 (hcd->address0_mutex){+.+.}-{3:3}, at: hub_port_init+0x1b6/0x2d80 drivers/usb/core/hub.c:4563
-1 lock held by in:imklog/6751:
- #0: ffff8880a25dc3f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-5 locks held by kworker/1:1/6862:
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880a62d8538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc900056b7da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffff88809e2f5218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:785 [inline]
- #2: ffff88809e2f5218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1b6/0x3e60 drivers/usb/core/hub.c:5522
- #3: ffff888217ac8588 (&port_dev->status_lock){+.+.}-{3:3}, at: usb_lock_port drivers/usb/core/hub.c:3012 [inline]
- #3: ffff888217ac8588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_port_connect drivers/usb/core/hub.c:5139 [inline]
- #3: ffff888217ac8588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- #3: ffff888217ac8588 (&port_dev->status_lock){+.+.}-{3:3}, at: port_event drivers/usb/core/hub.c:5494 [inline]
- #3: ffff888217ac8588 (&port_dev->status_lock){+.+.}-{3:3}, at: hub_event+0x1e4f/0x3e60 drivers/usb/core/hub.c:5576
- #4: ffff888217a6c268 (hcd->address0_mutex){+.+.}-{3:3}, at: hub_port_init+0x1b6/0x2d80 drivers/usb/core/hub.c:4563
-5 locks held by kworker/0:1/6870:
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+greg k-h
