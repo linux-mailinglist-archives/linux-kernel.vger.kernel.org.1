@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD94C284F98
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2429284F9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgJFQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:13:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24575 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726214AbgJFQNB (ORCPT
+        id S1726459AbgJFQN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:13:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37478 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgJFQN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:13:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602000780;
+        Tue, 6 Oct 2020 12:13:26 -0400
+Date:   Tue, 6 Oct 2020 18:13:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602000805;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xKb7sZVPybPTfbA/gFJsTXmJHS4tONXKkrgyfpj9y48=;
-        b=gPSFc+0+ZCgcTS0MbaYXmrmejjdgpanFO59nGIguOAbn/egwzYzzQT2Nh8cXS44X+t5Wq9
-        WHmNqU6DW4E+vzUlwRFea+jcoWKqoIFh5mQe+6tqaij7osJWVau5BgQyJQvO93txqrmCTg
-        UkRufoZMYcV4/us3/K+c+cJbp7dZclM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-53J22Gl_PPu2IF5lEv0o2g-1; Tue, 06 Oct 2020 12:12:54 -0400
-X-MC-Unique: 53J22Gl_PPu2IF5lEv0o2g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 516D2425D4;
-        Tue,  6 Oct 2020 16:12:52 +0000 (UTC)
-Received: from ovpn-112-231.ams2.redhat.com (ovpn-112-231.ams2.redhat.com [10.36.112.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E6CC15C1C4;
-        Tue,  6 Oct 2020 16:12:47 +0000 (UTC)
-Message-ID: <c750c3256bec4ceab91a95f2725e4bc026f4b5dc.camel@redhat.com>
-Subject: Re: [PATCH net-next] selftests: mptcp: interpret \n as a new line
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 06 Oct 2020 18:12:45 +0200
-In-Reply-To: <20201006160631.3987766-1-matthieu.baerts@tessares.net>
-References: <20201006160631.3987766-1-matthieu.baerts@tessares.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        bh=aZptl3j2TZnVgHibHySJvfx6RC/wAj9H8/wlATVQaqU=;
+        b=BEWE2we4ShOb/+Trfuojq3AORHTvRfsXC7NrfkX+DCCLjKKK3QHzVfxK8AHSDtGDfcRCkL
+        l2r+7Z4ZdrcNQQu95yqcIYaKoOIR2Vcg8BxKpfiG+sxyVjH39iWrZXgjluo1BfePXGyMXm
+        +B4BrCmGVHdmdJlEiOD62ruvsWzJpbSFuwR9Re2OBXmvdqGzs8NWTYVci02N+vj6MYBCdZ
+        1Rcc3N+Mx3P4I5W+EOCYh3DlG4y+qehLCNu1SJ2cui3w8TbYdE6eWoKy1LOPtJoXeFCJen
+        AcniwxUhb5tWxMgLWYr/rqg4rYoai8GEplX7JgOn5YnW2DNnXG3D4+QdMEsyqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602000805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aZptl3j2TZnVgHibHySJvfx6RC/wAj9H8/wlATVQaqU=;
+        b=wicHBhjxbzbMXoqqnZYQ8/ltJ4Mq8q3kYLqe+/sDj7rqkuxzcv/FQ83JaTtrMuJ0FrHL4p
+        yM9npEE7PLZNx2Cg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Daniel Wagner <wagi@monom.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.9-rc8-rt12
+Message-ID: <20201006161323.wsjkbnlj5smbffpz@linutronix.de>
+References: <20201006085811.mtizrfff6k5r3me7@linutronix.de>
+ <6c5bce4f-1c7f-a9e4-6707-2cda54141d8e@monom.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6c5bce4f-1c7f-a9e4-6707-2cda54141d8e@monom.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-06 at 18:06 +0200, Matthieu Baerts wrote:
-> In case of errors, this message was printed:
-> 
->   (...)
->   balanced bwidth with unbalanced delay       5233 max 5005  [ fail ]
->   client exit code 0, server 0
->   \nnetns ns3-0-EwnkPH socket stat for 10003:
->   (...)
-> 
-> Obviously, the idea was to add a new line before the socket stat and not
-> print "\nnetns".
-> 
-> The commit 8b974778f998 ("selftests: mptcp: interpret \n as a new line")
-> is very similar to this one. But the modification in simult_flows.sh was
-> missed because this commit above was done in parallel to one here below.
-> 
-> Fixes: 1a418cb8e888 ("mptcp: simult flow self-tests")
-> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+On 2020-10-06 16:37:21 [+0200], Daniel Wagner wrote:
+> Hi Sebastian,
+Hi Daniel,
 
-Acked-by: Paolo Abeni <pabeni@redhat.com>
+> On 06.10.20 10:58, Sebastian Andrzej Siewior wrote:
+> > Dear RT folks!
+> > 
+> > I'm pleased to announce the v5.9-rc8-rt12 patch set.
+> 
+> Just as heads up. I just tried to build for arm64 but PREEMPT_RT
+> is not available anymore. Looks like ARCH_SUPPORTS_RT is only
+> available for !KVM.
 
+It has been announced in v5.9-rc2-rt1
+   https://lore.kernel.org/linux-rt-users/20200824154605.v66t2rsxobt3r5jg@linutronix.de/
+
+and you replied to that mail. That mail contains information why and
+what needs to be done to remove that restriction.
+
+> Thanks,
+> Daniel
+
+Sebastian
