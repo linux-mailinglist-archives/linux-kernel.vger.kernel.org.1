@@ -2,165 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FFF28545F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8406B28546C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgJFWQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 18:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgJFWQ3 (ORCPT
+        id S1727403AbgJFWUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 18:20:46 -0400
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:30676 "EHLO
+        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726709AbgJFWUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 18:16:29 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B508C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 15:16:28 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k8so167853pfk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 15:16:28 -0700 (PDT)
+        Tue, 6 Oct 2020 18:20:46 -0400
+X-Greylist: delayed 2924 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 18:20:44 EDT
+Received: from pps.filterd (m0098780.ppops.net [127.0.0.1])
+        by mx0a-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 096MEqsP010696;
+        Tue, 6 Oct 2020 17:20:38 -0500
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
+        by mx0a-00010702.pphosted.com with ESMTP id 33xpttqk66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Oct 2020 17:20:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hwusWcKjKfLu5QCjBLk+Wy22o/o1dtQsLGS7GN18NOiH/d7t8sEGevx8dpyDvJtgOd37LIQ9S1SHMo+6+Vj7uBo70chHfsUNZ1cDepavuoG94m19K+4VaMYcnT7Bv8xduBxkrbV+YYlVVUI/SewemRCnKnQ4lHtt/dMSsMNPQTH6Vpw1OdDSafj0++Yb36AUq2JRSHoZymmMz3xsQAKO+P2teHUpXnJ37nIaNktklmAAl9Jj9iTid2yHWbluzBDWDu+Y3fxts2N3i8cnwnxJdPKvXKv0tvFzhtUsW7p5xw25LHHJL3LJN+7PL9KPNU7t6iqW1jeRGVSlPtz8UOJ1CA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JoNi5b4sQHhgh8RHvTIdoEK6DN4w5AUDvF5ZSXtMu0M=;
+ b=d10HIAL2HlsYE+89AUaXHMwjQXvCNF7uX6X6QE3YCZOwhEEimeXQeSULafBnM239ylT9k8y4l5uE0aECiRV/JGc7ML0m2JWB+YJQMvFsD/dHt2bLOISaJ/0wTZlt4FxvI6kP6PVZRgN40VVJbeiB3edlpqOSy32FE7OtB9/n93r5TSWQkMzzQhBoqQ+fl3I3dUUTOqLks0V2e+FoHfEgVHM97ewhIVqNdfLnXKB0JFA/kfQ3sHv0dEGzIR5LQjJFQmiZRhzPsqk4KbleO0n6ItSV8aIv8zO+85jK/u+NbJV5EUwDVEoraGKT+ydvXFytyt4Af9/1S5/MImJlK1PYdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
+ header.d=ni.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TZnPth6VE++hvzuNUfaHWicTx8/+4Slf0WDCf2FuLRc=;
-        b=gR0n4ubdEdVO4WV/3XKYG27xL6p/ZtBAtqQAC6whuiZuOGYMz8bF2TMNtLr6vHpV4y
-         gsyzCKJLQtShQeLL8Vog5N7deC3xuhZEj5J3Xr1QZBD08/iQw/Bw3T51udXUsZDiI8sw
-         IMCty4759uTuXOkZBjsY2fG79kWo0H4MPq4805DG7Y9SX/V4KxX93Q//dDew0ea2ui6Z
-         nU7G8tohGaBwspFk8x60m4MbKXY2CVfdMoeH83tRgl17e5180Yphnu2jEv+FIvMdw6n8
-         M6WlNqyCE4P9eOhYVH5R4BT4f+VuCEi+uYeR0p2GlP84gEq92JApbyC84lTSKWVcQLtS
-         UAGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZnPth6VE++hvzuNUfaHWicTx8/+4Slf0WDCf2FuLRc=;
-        b=A8tnHSyOJvGVE1flnwmJl3pkOZI/+TbJnctucXngxKkOAa+ZuL0//f92r7jCdhfFLg
-         obwsb5lfmp3GChmxXEP/Dcbs6YoNKh+hp/XyGKf/xk6RpbR+sa/xIiDntSFhRldemPSA
-         kw7KWJSX/UWwKQYj9SZzxpnhUuP1G4ISiGHPAfxYkUA2W7Ew6mzPele9A8VWR7efNBEq
-         ew1WUxfveS1kIWUs5Keyjt31VWLzQoGez1gXV6IuHs6uQnqS8yYx8uiF45SxagAADFzV
-         qTtG/AhlYWDGuU9+uVhCE8LxrkmZB3Gt/9GzeVv010Q1xnrRgQGzFOVGEDrbWXDSdjV2
-         C3gA==
-X-Gm-Message-State: AOAM532EVz9+GHksthBQEXeSAM0XZZTjPTptlXpaGMkIwzja6pvC10jG
-        LHV/M6YblUVrbJwk2UMqaTtepK5VRCI1mtS4eyLjAw==
-X-Google-Smtp-Source: ABdhPJwdJy8g0LlZPYfzlhUdhMsLIvpCBugytTpZRvhK5IM+CWH8zBNe2LajgIJWefDQEB8lwpe1l93L94uXeaZXuGc=
-X-Received: by 2002:a62:ee10:0:b029:142:2501:3972 with SMTP id
- e16-20020a62ee100000b029014225013972mr119379pfi.55.1602022588112; Tue, 06 Oct
- 2020 15:16:28 -0700 (PDT)
+ d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JoNi5b4sQHhgh8RHvTIdoEK6DN4w5AUDvF5ZSXtMu0M=;
+ b=DlLd4Fyn+mUW+iWnbfHZfpsWUeLhXXUhYvtHVr1xC6DWqO+jiF2waN8zIsdaP6zfRtUiNIP8mBIh8CWNMJUrQtBlh/8rTFkLutjUR+2cDjrstmWp9OGnf4ej4Fo6Ggxn0Mi8ta/fohaR27mDTXswoE7zwen9ag9HNRaPDfUAbrY=
+Authentication-Results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=ni.com;
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29) by SN6PR04MB3936.namprd04.prod.outlook.com
+ (2603:10b6:805:48::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Tue, 6 Oct
+ 2020 22:20:36 +0000
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::f4f0:f1bc:f09a:da84]) by SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::f4f0:f1bc:f09a:da84%7]) with mapi id 15.20.3433.043; Tue, 6 Oct 2020
+ 22:20:36 +0000
+Date:   Tue, 6 Oct 2020 17:20:31 -0500
+From:   Michael Auchter <michael.auchter@ni.com>
+To:     Ben Levinsky <BLEVINSK@xilinx.com>
+Cc:     "Ed T. Mooring" <emooring@xilinx.com>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Michal Simek <michals@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20201006222031.GA809209@xaphan>
+References: <20201005160614.3749-1-ben.levinsky@xilinx.com>
+ <20201005160614.3749-6-ben.levinsky@xilinx.com>
+ <20201005193449.GA701433@xaphan>
+ <BYAPR02MB4407B7F06962DB30ED90761FB50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <20201006213143.GD701433@xaphan>
+ <BYAPR02MB4407B356B56B9A1D561950B7B50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR02MB4407B356B56B9A1D561950B7B50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+X-Originating-IP: [130.164.62.229]
+X-ClientProxiedBy: SN4PR0501CA0006.namprd05.prod.outlook.com
+ (2603:10b6:803:40::19) To SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29)
 MIME-Version: 1.0
-References: <20201006215147.35146-1-skhan@linuxfoundation.org>
-In-Reply-To: <20201006215147.35146-1-skhan@linuxfoundation.org>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 7 Oct 2020 00:16:16 +0200
-Message-ID: <CAAeHK+yve84dKiNbwwTDJHMcCECM8N3GodoL5UeBPPL6REVg8Q@mail.gmail.com>
-Subject: Re: [PATCH] usbip: vhci_hcd: fix calling usb_hcd_giveback_urb() with
- irqs enabled
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (130.164.62.229) by SN4PR0501CA0006.namprd05.prod.outlook.com (2603:10b6:803:40::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.13 via Frontend Transport; Tue, 6 Oct 2020 22:20:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f728a023-b6cd-4594-3049-08d86a460c3a
+X-MS-TrafficTypeDiagnostic: SN6PR04MB3936:
+X-Microsoft-Antispam-PRVS: <SN6PR04MB39360096F8CD9ED738EF9DCD870D0@SN6PR04MB3936.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Irv5EbhBOhCcvRgN1g9sEZOnXcmO1XJtZN8NhbIDzwQD6Er/9/I9/GcQcxXPbbQLYMw3dfytdjPDaOUegwOYBzIk2U9yu3oqesMpZ6DNyj4FDGOXvSnzEggUzIDJQTfV3Q8rQtOtDMmBvcQG2bbuTpvEAiWxY09JFTmpwHSOMss60PBgQZ3jDg2WwgygSUuBMHi+o7048+19bsi6qnd1Gsr3iDwQcE37e1mm1aRILGbE1uxcYJSC/0hj6BYVTOM/nI/wbJX81BHskTbPZCQ9Fq/pMJ4SsAWMcOlps5VqEeKQOfysDF+RliSJtvSZ9h7BChlUoN3W+JtfkgglHBFj2Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3646.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(346002)(39850400004)(396003)(136003)(376002)(16526019)(186003)(8936002)(478600001)(26005)(5660300002)(956004)(33656002)(83380400001)(6666004)(8676002)(66476007)(66556008)(66946007)(6916009)(6486002)(2906002)(54906003)(316002)(9686003)(4326008)(52116002)(33716001)(6496006)(1076003)(44832011)(86362001)(53546011)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: H1mG8BA9hzklEciygUxmcF73NGKzYOFPSJ3MVuckKioez+4e+5uNm3bEiNU89ccLjJg+hvF0vB7qdJbhEATQDAZI5JG4KNCV+TXcBn+Fs8aeFIaFA59IWAP7flPBlzTiJzIYlT9yTdMt+kcrcl3iZbXHzRhqcZzX3AdJ2YujVHilKTGYr+CKn5ia1aQgm/Np0sqDCvHGAK3nxFaJdcz53yfnTi+hf8aQ2AnLtPV+YRQot50sweFtuTDKEW2tBxvwEYs/jPrKkgIkmJkaQXmvi1X2hGuvgAQDPl1HKoISM5KVQAfa2eySkJ8cGD8tV67SUNLy3PSQoRjyj+AcSYNbgmrKGtp+EkWH08aNdezI+irLT6STLb+dFc/fG/k+1r4AGFwyuVejKlQE8iN21BCf5Rcof7IqVvT1rA9fK009zLjVrDn1f9/xSG7XWC6kttL9/obUQD9nvEZbuV1BvtI1bvShVb6YtvckPja+giDn5JQ/WvXkMcGwjBW8yrqnsQHhEntH9dunahWERfUuWMJrvTDCoy9AWt7eFrKSRhpfgBzkZIyXkxJ45TQDwlrLrv2339ZFkCjwDxtBmgruFplgAINVTvetY21hSGW1mppS5hbgOHfWd/H8MngkxdaJake0TGQJ7JIysaFisw1jSuVcTw==
+X-OriginatorOrg: ni.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f728a023-b6cd-4594-3049-08d86a460c3a
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3646.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2020 22:20:36.0668
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yPrX/FjZfjT9qTCfZYfuG2y3y6EvYy1AFlVrQwnFf8RaWyeo9JaiXm0murd1cK8jHYhC63XEZbML11dN3ARUUg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3936
+Subject: Re: RE: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-06_15:2020-10-06,2020-10-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30 malwarescore=0
+ mlxscore=0 adultscore=0 impostorscore=0 suspectscore=1 phishscore=0
+ spamscore=0 clxscore=1015 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=30 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010060145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 11:51 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> Fix the following warning from kcov regarding usb_hcd_giveback_urb()
-> call being made without disabling interrupts.
+On Tue, Oct 06, 2020 at 09:46:38PM +0000, Ben Levinsky wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Michael Auchter <michael.auchter@ni.com>
+> > Sent: Tuesday, October 6, 2020 2:32 PM
+> > To: Ben Levinsky <BLEVINSK@xilinx.com>
+> > Cc: Ed T. Mooring <emooring@xilinx.com>; sunnyliangjy@gmail.com;
+> > punit1.agrawal@toshiba.co.jp; Stefano Stabellini <stefanos@xilinx.com>;
+> > Michal Simek <michals@xilinx.com>; devicetree@vger.kernel.org;
+> > mathieu.poirier@linaro.org; linux-remoteproc@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; robh+dt@kernel.org; linux-arm-
+> > kernel@lists.infradead.org
+> > Subject: Re: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5
+> > remoteproc driver
+> > 
+> > On Tue, Oct 06, 2020 at 07:15:49PM +0000, Ben Levinsky wrote:
+> > >
+> > > Hi Michael,
+> > >
+> > > Thanks for the review
+> > >
+> > 
+> > < ... snip ... >
+> > 
+> > > > > +	z_rproc = rproc->priv;
+> > > > > +	z_rproc->dev.release = zynqmp_r5_release;
+> > > >
+> > > > This is the only field of z_rproc->dev that's actually initialized, and
+> > > > this device is not registered with the core at all, so zynqmp_r5_release
+> > > > will never be called.
+> > > >
+> > > > Since it doesn't look like there's a need to create this additional
+> > > > device, I'd suggest:
+> > > > 	- Dropping the struct device from struct zynqmp_r5_rproc
+> > > > 	- Performing the necessary cleanup in the driver remove
+> > > > 	  callback instead of trying to tie it to device release
+> > >
+> > > For the most part I agree. I believe the device is still needed for
+> > > the mailbox client setup.
+> > >
+> > > As the call to mbox_request_channel_byname() requires its own device
+> > > that has the corresponding child node with the corresponding
+> > > mbox-related properties.
+> > >
+> > > With that in mind, is it still ok to keep the device node?
+> > 
+> > Ah, I see. Thanks for the clarification!
+> > 
+> > Instead of manually dealing with the device node creation for the
+> > individual processors, perhaps it makes more sense to use
+> > devm_of_platform_populate() to create them. This is also consistent with
+> > the way the TI K3 R5F remoteproc driver does things.
+> > 
+> > Cheers,
+> >  Michael
+> 
+> I've been working on this today for a way around it and found one that I think works with your initial suggestion,
+> - in z_rproc, change dev from struct device to struct device*
+> 	^ the above is shown the usage thereof below. It is there for the mailbox setup.
+> - in driver probe:
+> 	- add list_head to keep track of each core's z_rproc and for the driver remove clean up
+> 	- in each core's probe (zynqmp_r5_probe) dothe following:
+> 
+> 
+>        rproc_ptr = rproc_alloc(dev, dev_name(dev), &zynqmp_r5_rproc_ops,
+>                                                   NULL, sizeof(struct zynqmp_r5_rproc));
+>         if (!rproc_ptr)
+>                 return -ENOMEM;
+>         z_rproc = rproc_ptr->priv;
+>         z_rproc->dt_node = node;
+>         z_rproc->rproc = rproc_ptr;
+>         z_rproc->dev = &rproc_ptr->dev;
+>         z_rproc->dev->of_node = node; 
+> where node is the specific R5 core's of_node/ Device tree node.
+> 	
+> the above preserves most of the mailbox setup code.
 
-Hi Shuah,
+I see how this works, but it feels a bit weird to me to be overriding
+the remoteproc dev's of_node ptr. Personally I find the
+devm_of_platform_populate() approach a bit less confusing.
 
-This won't fix the kcov warning, as it still requires its own fix,
-which I'll send separately. But this will fix the improper usage of
-usb_hcd_giveback_urb() in USB/IP.
+But, it's also not my call to make ;). Perhaps a remoteproc maintainer
+can chime in here.
 
-Thank you for working on this!
-
->
-> usb_hcd_giveback_urb() is called from vhci's urb_enqueue, when it
-> determines it doesn't need to xmit the urb and can give it back.
-> This path runs in task context.
->
-> Disable irqs around usb_hcd_giveback_urb() call.
->
-> WARNING: CPU: 2 PID: 57 at kernel/kcov.c:834
-> kcov_remote_start+0xa7/0x400 kernel/kcov.c:834
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 2 PID: 57 Comm: kworker/2:1 Not tainted 5.9.0-rc7+ #45
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> Workqueue: usb_hub_wq hub_event
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x14b/0x19d lib/dump_stack.c:118
->  panic+0x319/0x765 kernel/panic.c:231
->  __warn.cold+0x2f/0x2f kernel/panic.c:600
->  report_bug+0x273/0x300 lib/bug.c:198
->  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> RIP: 0010:kcov_remote_start+0xa7/0x400 kernel/kcov.c:834
-> Code: 84 26 03 00 00 fa 66 0f 1f 44 00 00 65 8b 05 50 13 93 7e a9 00
-> 01 ff 00 41 8b 94 24 50 0a 00 00 75 1a 81 e2 ff ff ff bf 74 12 <0f> 0b
-> 48 83 3d 17 c4 26 08 00 0f 85 62 01 00 00 0f 0b 65 8b 05 20
-> RSP: 0018:ffffc9000030f600 EFLAGS: 00010002
-> RAX: 0000000080000000 RBX: 0100000000000003 RCX: ffffc90014cd1000
-> RDX: 0000000000000002 RSI: ffffffff85199fcc RDI: 0100000000000003
-> RBP: 0000000000000282 R08: ffff88806d594640 R09: fffff52000061eca
-> R10: 0000000000000003 R11: fffff52000061ec9 R12: ffff88806d594640
-> R13: 0000000000000000 R14: 0100000000000003 R15: 0000000000000000
->  kcov_remote_start_usb include/linux/kcov.h:52 [inline]
->  __usb_hcd_giveback_urb+0x284/0x4b0 drivers/usb/core/hcd.c:1649
->  usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
->  vhci_urb_enqueue.cold+0x37f/0x4c5 drivers/usb/usbip/vhci_hcd.c:801
->  usb_hcd_submit_urb+0x2b1/0x20d0 drivers/usb/core/hcd.c:1547
->  usb_submit_urb+0x6e5/0x13b0 drivers/usb/core/urb.c:570
->  usb_start_wait_urb+0x10f/0x2c0 drivers/usb/core/message.c:58
->  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
->  usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
->  hub_set_address drivers/usb/core/hub.c:4472 [inline]
->  hub_port_init+0x23f6/0x2d20 drivers/usb/core/hub.c:4748
->  hub_port_connect drivers/usb/core/hub.c:5140 [inline]
->  hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
->  port_event drivers/usb/core/hub.c:5494 [inline]
->  hub_event+0x1cc9/0x38d0 drivers/usb/core/hub.c:5576
->  process_one_work+0x7b6/0x1190 kernel/workqueue.c:2269
->  worker_thread+0x94/0xdc0 kernel/workqueue.c:2415
->  kthread+0x372/0x450 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> Kernel Offset: disabled
-> Rebooting in 1 seconds..
->
-> Reported-by: Andrey Konovalov <andreyknvl@google.com>
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> ---
->  drivers/usb/usbip/vhci_hcd.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-> index 1b598db5d8b9..66cde5e5f796 100644
-> --- a/drivers/usb/usbip/vhci_hcd.c
-> +++ b/drivers/usb/usbip/vhci_hcd.c
-> @@ -797,8 +797,14 @@ static int vhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
->         usb_hcd_unlink_urb_from_ep(hcd, urb);
->  no_need_unlink:
->         spin_unlock_irqrestore(&vhci->lock, flags);
-> -       if (!ret)
-> +       if (!ret) {
-> +               /* usb_hcd_giveback_urb() should be called with
-> +                * irqs disabled
-> +                */
-> +               local_irq_disable();
->                 usb_hcd_giveback_urb(hcd, urb, urb->status);
-> +               local_irq_enable();
-> +       }
->         return ret;
->  }
->
-> --
-> 2.25.1
->
+> 
+> 
+> With this, I have already successfully done the following in a v19 patch
+> - move all the previous driver release code to remove
+> - able to probe, start/stop r5, driver remove repeatedly
+> 
+> Also, this mimics the TI R5 driver code as each core's rproc has a list_head and they have a structure for the cluster which among other things maintains a linked list of the cores' specific rproc information.
+> 
+> Thanks
+> Ben
