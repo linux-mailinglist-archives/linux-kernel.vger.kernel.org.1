@@ -2,160 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6D128446C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0F8284455
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgJFD6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 23:58:47 -0400
-Received: from mga09.intel.com ([134.134.136.24]:7291 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbgJFD6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 23:58:46 -0400
-IronPort-SDR: z9qayJkDs50ZYqNHXP7KRTV62KmCtooOZbh5OI890Cwik4kfqBZ/VZtWwFoxVv4VDhblB+J+pP
- FxXSrPoTZ0cw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="164478411"
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="164478411"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 20:58:42 -0700
-IronPort-SDR: cKWN0VRgTwU820TpT6TxhC135MCOp8TbkJe/wvY9/BRBwxNybA41vDUyBD3kI1Z/aZaZ2bD/vf
- +Tl2UqQUlDJA==
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="341825674"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 20:58:39 -0700
-Subject: [PATCH v10 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user,
- kernel}
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     bp@alien8.de
-Cc:     Tony Luck <tony.luck@intel.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        stable@vger.kernel.org, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        0day robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, x86@kernel.org
-Date:   Mon, 05 Oct 2020 20:40:10 -0700
-Message-ID: <160195561059.2163339.8787400120285484198.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1726809AbgJFDjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgJFDjF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 23:39:05 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB20C0613CE;
+        Mon,  5 Oct 2020 20:39:05 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o5so11766575wrn.13;
+        Mon, 05 Oct 2020 20:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FwIS/ZODNB8+XMrbGKPg2oqieogMxq8fh8uSfx5pWG4=;
+        b=B7FrGuJXPfKUlJ9l0jfWv+Ve6A7XPPa6fZLOk+MgTpYpy87opySF+VYBHXl8tAWkLq
+         T0Ajfb3FdHkB8xRyM9M8k4woBNNYq7XY4UWSMZxWK7q6R8ID3eRHMyGL0mPi/6n8KPjJ
+         2oqXwKeIGY6tmS6L3ezN+eq/BTBxUA8NIi1NucgR5gDlda/jdgxTaBXDeWN8i1OyRmyN
+         Qi7kQ6nGab3FHvez86AuOAAvB8OymEcQB6rCnJMOzeBtk3XcfuK9wbr/GVdcmtMP4WL0
+         g5lAj4YiYVtYCScrJ2XPNLZoNI8SISpjm4U9gg8/o3NJ/4KkmLOjbWgttMYEgwWs0DHU
+         OfiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FwIS/ZODNB8+XMrbGKPg2oqieogMxq8fh8uSfx5pWG4=;
+        b=ZQ349Drohf7oWCQO1bl5QLoMyNE+mg+Hz1Bn/b8lQsX7YcTIHBtE0t/xjkqDfRPPei
+         5esPyQRprTr4V8+k6Xnz6h3J7sDvWh9+mdIpBge0hA1J5b9iLh9fEsI5H9c2ydGWOQak
+         8bfuqrRcbD0y1owdIomYC6044cnFzGYKbvQmxxYJEJ6BKs5v3GgAVRa90WdKi5SpnBAm
+         03jnsMetd026V6CWtns19SmSK0QGPC2qnvFZ/ZgTB45ocsmVcX8ofPC59CUg7YBYInsz
+         p+Nz1rQFakcieYFtBa10paE/KXizR3JFI/XbssYzDFJGIs5EGevdxKcY2qM2cTg31Tfn
+         GiqQ==
+X-Gm-Message-State: AOAM532Fh5mnXBTDIQFyP/zT/HhRZYfGXBo/Kv1oyjGljrYbAro23k1U
+        /gOPXXwyoTeo+CQe1YrV5ClkIGbjcNVFx/QRYxRLMliB6H8=
+X-Google-Smtp-Source: ABdhPJyUbdKz587egzViKBfukW+6sdOLD87D+e1o6XTSsYRkUVaQvH5UDDvnzcp5clV0wdx99mHgcD4zLyUIH+mnTcE=
+X-Received: by 2002:a5d:640d:: with SMTP id z13mr2391517wru.28.1601955544026;
+ Mon, 05 Oct 2020 20:39:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201004192152.3298573-1-robdclark@gmail.com> <20201005092419.15608-1-hdanton@sina.com>
+ <20201005140203.GS438822@phenom.ffwll.local> <CAOeoa-cqyb8NZJnJdY+A2H680+C4H0WzXhp-uYj8Fg093BqAnw@mail.gmail.com>
+ <20201006004416.15040-1-hdanton@sina.com>
+In-Reply-To: <20201006004416.15040-1-hdanton@sina.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 5 Oct 2020 20:40:12 -0700
+Message-ID: <CAF6AEGvyEYFa-RLrxqgXjxhiLgc-rB+dbscboROPHGPxoC-RMw@mail.gmail.com>
+Subject: Re: [PATCH 13/14] drm/msm: Drop struct_mutex in shrinker path
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     "Kristian H . Kristensen" <hoegsberg@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v9 [1]:
+On Mon, Oct 5, 2020 at 5:44 PM Hillf Danton <hdanton@sina.com> wrote:
+>
+>
+> On Mon, 5 Oct 2020 18:17:01 Kristian H. Kristensen wrote:
+> > On Mon, Oct 5, 2020 at 4:02 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > >
+> > > On Mon, Oct 05, 2020 at 05:24:19PM +0800, Hillf Danton wrote:
+> > > >
+> > > > On Sun,  4 Oct 2020 12:21:45
+> > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > >
+> > > > > Now that the inactive_list is protected by mm_lock, and everything
+> > > > > else on per-obj basis is protected by obj->lock, we no longer depend
+> > > > > on struct_mutex.
+> > > > >
+> > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > ---
+> > > > >  drivers/gpu/drm/msm/msm_gem.c          |  1 -
+> > > > >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 54 --------------------------
+> > > > >  2 files changed, 55 deletions(-)
+> > > > >
+> > > > [...]
+> > > >
+> > > > > @@ -71,13 +33,8 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+> > > > >  {
+> > > > >     struct msm_drm_private *priv =
+> > > > >             container_of(shrinker, struct msm_drm_private, shrinker);
+> > > > > -   struct drm_device *dev = priv->dev;
+> > > > >     struct msm_gem_object *msm_obj;
+> > > > >     unsigned long freed = 0;
+> > > > > -   bool unlock;
+> > > > > -
+> > > > > -   if (!msm_gem_shrinker_lock(dev, &unlock))
+> > > > > -           return SHRINK_STOP;
+> > > > >
+> > > > >     mutex_lock(&priv->mm_lock);
+> > > >
+> > > > Better if the change in behavior is documented that SHRINK_STOP will
+> > > > no longer be needed.
+> > >
+> > > btw I read through this and noticed you have your own obj lock, plus
+> > > mutex_lock_nested. I strongly recommend to just cut over to dma_resv_lock
+> > > for all object lock needs (soc drivers have been terrible with this
+> > > unfortuntaly), and in the shrinker just use dma_resv_trylock instead of
+> > > trying to play clever games outsmarting lockdep.
+>
+> The trylock makes page reclaimers turn to their next target e.g. inode
+> cache instead of waiting for the mutex to be released. It makes sense
+> for instance in scenarios of mild memory pressure.
 
-- (Boris) Compile out the copy_mc_fragile() infrastructure in the
-  CONFIG_X86_MCE=n case.
+is there some behind-the-scenes signalling for this, or is this just
+down to what the shrinker callbacks return?  Generally when we get
+into shrinking, there are a big set of purgable bo's to consider, so
+the shrinker callback return wouldn't be considering just one
+potentially lock contended bo (buffer object).  Ie failing one
+trylock, we just move on to the next.
 
-  This had several knock-on effects. The proposed x86: copy_mc_generic()
-  was internally checking for X86_FEATURE_ERMS and falling back to
-  copy_mc_fragile(), however that fallback is not possible in the
-  CONFIG_X86_MCE=n case when copy_mc_fragile() is compiled out. Instead,
-  copy_mc_to_user() is rewritten similar to copy_user_generic() that walks
-  through several fallback implementations copy_mc_fragile ->
-  copy_mc_enhanced_fast_string (new) -> copy_user_generic (no #MC
-  recovery).
+fwiw, what I've seen on the userspace bo cache vs shrinker (anything
+that is shrinker potential is in userspace bo cache and
+MADV(WONTNEED)) is that in steady state I see a very strong recycling
+of bo's (which avoids allocating and mmap'ing or mapping to gpu a new
+buffer object), so it is definitely a win in mmap/realloc bandwidth..
+in steady state there is a lot of free and realloc of same-sized
+buffers from frame to frame.
 
-[1]: http://lore.kernel.org/r/160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com
+But in transient situations like moving to new game level when there
+is a heavy memory pressure and lots of freeing old
+buffers/textures/etc and then allocating new ones, I see shrinker
+kicking in hard (in android situations, not so much so with
+traditional linux userspace)
 
----
+BR,
+-R
 
-Hi Boris,
-
-I gave this some soak time over the weekend for the robots to chew on
-for regressions. No reports, and the updates pass my testing. Please
-consider including this in your updates for v5.10, and thanks for
-offering to pick this up.
-
----
-
-The motivations to go rework memcpy_mcsafe() are that the benefit of
-doing slow and careful copies is obviated on newer CPUs, and that the
-current opt-in list of cpus to instrument recovery is broken relative to
-those cpus.  There is no need to keep an opt-in list up to date on an
-ongoing basis if pmem/dax operations are instrumented for recovery by
-default. With recovery enabled by default the old "mcsafe_key" opt-in to
-careful copying can be made a "fragile" opt-out. Where the "fragile"
-list takes steps to not consume poison across cachelines.
-
-The discussion with Linus made clear that the current "_mcsafe" suffix
-was imprecise to a fault. The operations that are needed by pmem/dax are
-to copy from a source address that might throw #MC to a destination that
-may write-fault, if it is a user page. So copy_to_user_mcsafe() becomes
-copy_mc_to_user() to indicate the separate precautions taken on source
-and destination. copy_mc_to_kernel() is introduced as a non-SMAP version
-that does not expect write-faults on the destination, but is still
-prepared to abort with an error code upon taking #MC.
-
----
-
-Dan Williams (2):
-      x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user,kernel}()
-      x86/copy_mc: Introduce copy_mc_enhanced_fast_string()
-
-
- arch/powerpc/Kconfig                               |    2 
- arch/powerpc/include/asm/string.h                  |    2 
- arch/powerpc/include/asm/uaccess.h                 |   40 +++--
- arch/powerpc/lib/Makefile                          |    2 
- arch/powerpc/lib/copy_mc_64.S                      |    4 
- arch/x86/Kconfig                                   |    2 
- arch/x86/Kconfig.debug                             |    2 
- arch/x86/include/asm/copy_mc_test.h                |   75 +++++++++
- arch/x86/include/asm/mce.h                         |    9 +
- arch/x86/include/asm/mcsafe_test.h                 |   75 ---------
- arch/x86/include/asm/string_64.h                   |   32 ----
- arch/x86/include/asm/uaccess.h                     |    9 +
- arch/x86/include/asm/uaccess_64.h                  |   20 --
- arch/x86/kernel/cpu/mce/core.c                     |    8 -
- arch/x86/kernel/quirks.c                           |   10 -
- arch/x86/lib/Makefile                              |    1 
- arch/x86/lib/copy_mc.c                             |   96 ++++++++++++
- arch/x86/lib/copy_mc_64.S                          |  163 ++++++++++++++++++++
- arch/x86/lib/memcpy_64.S                           |  115 --------------
- arch/x86/lib/usercopy_64.c                         |   21 ---
- drivers/md/dm-writecache.c                         |   15 +-
- drivers/nvdimm/claim.c                             |    2 
- drivers/nvdimm/pmem.c                              |    6 -
- include/linux/string.h                             |    9 -
- include/linux/uaccess.h                            |   13 ++
- include/linux/uio.h                                |   10 +
- lib/Kconfig                                        |    7 +
- lib/iov_iter.c                                     |   48 +++---
- tools/arch/x86/include/asm/mcsafe_test.h           |   13 --
- tools/arch/x86/lib/memcpy_64.S                     |  115 --------------
- tools/objtool/check.c                              |    5 -
- tools/perf/bench/Build                             |    1 
- tools/perf/bench/mem-memcpy-x86-64-lib.c           |   24 ---
- tools/testing/nvdimm/test/nfit.c                   |   49 +++---
- .../testing/selftests/powerpc/copyloops/.gitignore |    2 
- tools/testing/selftests/powerpc/copyloops/Makefile |    6 -
- .../selftests/powerpc/copyloops/copy_mc_64.S       |    1 
- .../selftests/powerpc/copyloops/memcpy_mcsafe_64.S |    1 
- 38 files changed, 484 insertions(+), 531 deletions(-)
- rename arch/powerpc/lib/{memcpy_mcsafe_64.S => copy_mc_64.S} (98%)
- create mode 100644 arch/x86/include/asm/copy_mc_test.h
- delete mode 100644 arch/x86/include/asm/mcsafe_test.h
- create mode 100644 arch/x86/lib/copy_mc.c
- create mode 100644 arch/x86/lib/copy_mc_64.S
- delete mode 100644 tools/arch/x86/include/asm/mcsafe_test.h
- delete mode 100644 tools/perf/bench/mem-memcpy-x86-64-lib.c
- create mode 120000 tools/testing/selftests/powerpc/copyloops/copy_mc_64.S
- delete mode 120000 tools/testing/selftests/powerpc/copyloops/memcpy_mcsafe_64.S
-
-base-commit: a1b8638ba1320e6684aa98233c15255eb803fac7
+>
+> > >
+> > > I recently wrote an entire blog length rant on why I think
+> > > mutex_lock_nested is too dangerous to be useful:
+> > >
+> > > https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
+> > >
+> > > Not anything about this here, just general comment. The problem extends to
+> > > shmem helpers and all that also having their own locks for everything.
+> >
+> > This is definitely a tangible improvement though - very happy to see
+> > msm_gem_shrinker_lock() go.
+> >
+> > Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
+> >
+> > > -Daniel
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
