@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71C4284511
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B2D284517
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgJFEtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 00:49:02 -0400
-Received: from sauhun.de ([88.99.104.3]:56130 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725806AbgJFEtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 00:49:02 -0400
-Received: from localhost (p54b33262.dip0.t-ipconnect.de [84.179.50.98])
-        by pokefinder.org (Postfix) with ESMTPSA id A63AD2C0251;
-        Tue,  6 Oct 2020 06:48:59 +0200 (CEST)
-Date:   Tue, 6 Oct 2020 06:48:51 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 00/32] Improvements for Tegra I2C driver
-Message-ID: <20201006044851.GA883@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200929221915.10979-1-digetx@gmail.com>
- <20201005205258.GB1397@kunai>
- <60ff95a4-2466-a41f-5496-2474f5a256a8@gmail.com>
+        id S1726775AbgJFEu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 00:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgJFEu1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 00:50:27 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9529CC0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 21:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:Cc:From:To:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Dt6GxUiiNucMJVb8insT90iPuGdOD6EG4FZ0RccNAMI=; b=m1TmLnvP1zb+gBR5X8PaSFHKAQ
+        LgPis6cwWOZTnfJm2d22Cz6eTicstsnc9GrWWPi8Nap0uFabAaCeqneFSMqS7LDWNzUC4nUqAkJbl
+        wnKF4vP5M+cJpKYAqlSrMxeCZBkeYXeaJAG1UpNXfsr+Mn7eSY8GM2lV93MrsoiDmfZpC+Kk5aDs/
+        v3TdzyPj7KsTU0d7yyaUeF+sS8IaG3OkTBTagEe3wpAH1A+ZIHNBOZYZDZE9uDHSyoKQWClXh24FG
+        FcJciAgxOSqEuHahBeSS2JyqHAFegQpGCwPUOq7OloHiP8IOxkWj5zN/8LfZjHAlGiWkthTmhYKls
+        iEYLfUNA==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPevb-0008JQ-K8; Tue, 06 Oct 2020 04:50:19 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>, Evan Quan <evan.quan@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>
+Subject: [RFC PATCH] DRM: amd: powerplay: don't undef pr_warn() {causes ARC
+ build errors}
+Message-ID: <9c86375d-34a9-6584-0069-452b193076d6@infradead.org>
+Date:   Mon, 5 Oct 2020 21:50:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
-Content-Disposition: inline
-In-Reply-To: <60ff95a4-2466-a41f-5496-2474f5a256a8@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Randy Dunlap <rdunlap@infradead.org>
 
---6TrnltStXW4iwmi0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+arch/arc/ implements BUG_ON() with BUG(). ARC has its own BUG()
+function and that function uses pr_warn() as part of its implementation.
 
-Hi Dmitry,
+Several (8) files in amd/powerplay/ #undef various pr_xyz() functions so
+that they won't be used by these drivers, since dev_() functions are
+preferred here and the #undefs make the pr_() functions unavailable.
 
-> Hello, Wolfram! Thank you! This series started with 10 small patches and
-> then was growing with every new review round because more ideas were
-> suggested and I needed to rebase/redo majority of the patches, hence it
-> was a bit difficult to split it up into a smaller parts that could be
-> applied incrementally. But I'll try to improve this in the future, thanks!
+Hence the following build errors are reported in ARC builds:
 
-Ah, you got me wrong. What I meant was: If these patches still need
-changes or updates, don't send a new version of all the patches, but
-rather send incremental fixes on top of these patches. Sometimes it
-happens that you end up with 30+ patches, no worries.
+../drivers/gpu/drm/amd/amdgpu/../powerplay/navi10_ppt.c: In function 'navi10_fill_i2c_req':
+../arch/arc/include/asm/bug.h:24:2: error: implicit declaration of function 'pr_warn'; did you mean 'drm_warn'? [-Werror=implicit-function-declaration]
 
-> > http://patchwork.ozlabs.org/project/linux-i2c/list/?series=3D191802
-> >=20
-> > Is it obsolete by now?
-> >=20
->=20
-> To be honest, I don't know. The author never answered, guess he may
-> reappear sometime in the future with a v2. Those patches need to be
-> corrected and rebased.
+../drivers/gpu/drm/amd/amdgpu/../powerplay/sienna_cichlid_ppt.c: In function 'sienna_cichlid_fill_i2c_req':
+../arch/arc/include/asm/bug.h:24:2: error: implicit declaration of function 'pr_warn'; did you mean 'drm_warn'? [-Werror=implicit-function-declaration]
 
-Then, I will mark them as "Changes requested". Thanks for the heads up!
+Fixes: 55084d7f4022 ("drm/amd/powerplay: forbid to use pr_err/warn/info/debug")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Evan Quan <evan.quan@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+---
+Another alternative is for amd/powerplay/ drivers not to use BUG()
+or BUG_ON().
+A third alternative is to ask the ARC developers to implement BUG()
+without using any pr_() functions.
 
-Regards,
+ drivers/gpu/drm/amd/powerplay/navi10_ppt.c         |    2 +-
+ drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-   Wolfram
+--- lnx-59-rc7.orig/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
++++ lnx-59-rc7/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
+@@ -52,7 +52,7 @@
+  * They are more MGPU friendly.
+  */
+ #undef pr_err
+-#undef pr_warn
++//#undef pr_warn
+ #undef pr_info
+ #undef pr_debug
+ 
+--- lnx-59-rc7.orig/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
++++ lnx-59-rc7/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
+@@ -54,7 +54,7 @@
+  * They are more MGPU friendly.
+  */
+ #undef pr_err
+-#undef pr_warn
++//#undef pr_warn
+ #undef pr_info
+ #undef pr_debug
+ 
 
-
---6TrnltStXW4iwmi0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl979y4ACgkQFA3kzBSg
-KbbaexAAm6W0vaVWhdxMRJtMg8O9z15RZAY/rc3yyO59rwcGaYK0ZMu6xLoluTiS
-RdzNLga+WOJA5VoXoehc82yc1wK36I4jxqnwKsijWPt6C6dWgd/0rJUZHB/+7SNG
-vG0ZZC0mrttxCDD8Gn0kRIrtIRzPoEchFtutmEYjmUGHzz8/kY6yEDRe6R3I77mL
-dtSKZED3oD5UuFeCH8L5f13pIqISndXvxjA+VYjfHv2ZYqSggv7eYkr1sc8Ncd3B
-2BoWUCdcC8VqguCzLGkd8Wa+RHQoOZCOgSEgAz1BplIOzrU2SGkCIjCQX/pXXu5p
-5yMg/Ec+2IDeG4SEpo3pGbVRNQFnNoEODCrYZxUF0nt2LOdWDdJut7MPTgNUxmW8
-r7nnnRMGEfIqrWo+7ah+mZXZC6nPnuDmEp4ygbo7COq2CsmV65brgTsmpFWYD9wF
-YtpCzXuYvxjYJRN0RfnjpYFlR/AoFYW6jLc7mDKAxnoW6C7Dk8hIa7AlWFwlYik1
-TYgF6G+5zExtNt69E0NhsgAQbTXO9B/Y9ejjqU6M23ThDJrSU27ERd9ITelP/996
-n4ZDN18boLuOqJ4rIyDstLVh/FCRjAlvXxsFfmBsiorY0KJU4bU5uVav7qQku4n6
-yqDX8/9nIFyeAsY9O7MOFpDJ0TgYZdPuCMT5etcPTp4DXGKfY8M=
-=QISv
------END PGP SIGNATURE-----
-
---6TrnltStXW4iwmi0--
