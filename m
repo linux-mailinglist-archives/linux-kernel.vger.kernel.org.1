@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675A8284F92
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE2E284F7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgJFQLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:11:53 -0400
-Received: from mailout12.rmx.de ([94.199.88.78]:38157 "EHLO mailout12.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgJFQLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:11:52 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout12.rmx.de (Postfix) with ESMTPS id 4C5Msv4MsxzRq0K;
-        Tue,  6 Oct 2020 18:11:47 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4C5Mrw5nVzz2xqM;
-        Tue,  6 Oct 2020 18:10:56 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.45) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 6 Oct
- 2020 18:10:03 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "David Laight" <David.Laight@ACULAB.COM>
-CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v4 3/3] i2c: imx: Don't generate STOP condition if arbitration has been lost
-Date:   Tue, 6 Oct 2020 18:08:14 +0200
-Message-ID: <20201006160814.22047-4-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201006160814.22047-1-ceggers@arri.de>
-References: <20201006160814.22047-1-ceggers@arri.de>
+        id S1726012AbgJFQIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgJFQIZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:08:25 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8304FC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 09:08:25 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d6so9294963pfn.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 09:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jJv8ne5lHMZ3SN8KNlNdOlkt6VCa4NI36SX+k70xRj4=;
+        b=efanPX0XrluboO2J7/a2TNE/DU9Zv2ttXRPZSm7HAtoHz7qHmWSDKU7qfILDaTXlys
+         IxkHSLf432ByvWsWg08M7l8fsWWuw6fYt/q/zlXYyKMbwwTCZ0fYCHesk0UlVpPobD0Y
+         ySQq9x4TlYej6ld7T5CAPmeELHrPkMPHjkDnKyHZMSdOt4JLZh90KIxniC6Q9383AFjr
+         8hK08JKUlwI+raJ51tmcNfCxdijhztzF5auVJ6KgSceX0y7dfjT/vGPILp6z4jUroywO
+         1mwos+eVIxvmyjb86kWfDRFlBFbxiDx7oZ3a5Gf9x6xmAr6r3Hy+4RUnj7NYdPAinPzW
+         NL5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jJv8ne5lHMZ3SN8KNlNdOlkt6VCa4NI36SX+k70xRj4=;
+        b=VX1g4MCR3ziGpM/8gLXT4KezxVES/FNc04rrrF3ZuaiQArHvT3YnVuKTutTPiinLLg
+         agAZgyi9VdBfDS/aRVzHHhbjRqOZv7pFm0Drc1OSIAo6U32f5mKWpD7qkX1AfUj4VgQw
+         AnkOYISFnIemQI8DMxgqWVazT7MzBxhyCmT1EbDhjMBw2y+dkni0I5DlhnCJ2QMB6BBX
+         PCCxDjdar9bTk43m2M7XyAT1k4CSGLnbD4byRxNS/c/uljd+1R61A5LmOZU2ZcLYpky+
+         +xyHT7fBCUOIAWBgxc3tCycG0Qi9njPRhLkhBBsfuEGpG6uqhJo4+dN7rM5X9sRQDM0b
+         o62g==
+X-Gm-Message-State: AOAM532+REGTjJamNA7L2MioN8FBUCB/Oysh2jAMzyO31D3Puqo9cqjG
+        wdWuwLLqt677bnkHJfwfP7w=
+X-Google-Smtp-Source: ABdhPJzLN0LZrMYcJJYTHn5razWiFuaYxrciZelOK82RyIn3pJkSSnFlPZ7GRfWgw2KSgxZsmEYX+Q==
+X-Received: by 2002:a62:bd05:0:b029:142:2501:3a02 with SMTP id a5-20020a62bd050000b029014225013a02mr4911104pff.81.1602000504794;
+        Tue, 06 Oct 2020 09:08:24 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id d8sm3410623pjr.46.2020.10.06.09.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 09:08:23 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 01:08:21 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
+        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] printk: handle blank console arguments passed in.
+Message-ID: <20201006160821.GA430@jagdpanzerIV.localdomain>
+References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
+ <20200522065306.83-1-shreyas.joshi@biamp.com>
+ <20200522100046.GH3464@linux-b0ei>
+ <20201006025935.GA597@jagdpanzerIV.localdomain>
+ <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+ <20201006065907.GA528@jagdpanzerIV.localdomain>
+ <20201006095435.GC32369@alley>
+ <20201006133319.GA178176@jagdpanzerIV.localdomain>
+ <7d512002-e33c-198f-52df-a89a30bc665b@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.45]
-X-RMX-ID: 20201006-181104-4C5Mrw5nVzz2xqM-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d512002-e33c-198f-52df-a89a30bc665b@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If arbitration is lost, the master automatically changes to slave mode.
-I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
-by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
+On (20/10/06 07:22), Guenter Roeck wrote:
+> On 10/6/20 6:33 AM, Sergey Senozhatsky wrote:
+> > On (20/10/06 11:54), Petr Mladek wrote:
+> >> On Tue 2020-10-06 15:59:07, Sergey Senozhatsky wrote:
+> >>> On (20/10/05 20:35), Guenter Roeck wrote:
+> >>>> On a side note, I don't see the problem presumably fixed with this
+> >>>> patch in any of my tests.
+> >>>
+> >>> Hmm. This is rather interesting. Empty console= certainly oops-es my laptop,
+> >>
+> >> Just by chance. Do you have any log with the Oops? Or does it die
+> >> silently?
+> > 
+> > The laptop in question has fbdev and no serial. It dies with blank screen.
+> > I'll try to dig it and get some backtrace or anything useful.
+> > 
+> 
+> Some versions of systemd (and possibly other distributions) apparently
+> react allergic if no console is present. See [1]. Maybe that is what
+> happens with your laptop ?
 
-So calling i2c_imx_bus_busy() is not required and would busy-wait until
-timeout.
+Seems to be crashing before /init
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: stable@vger.kernel.org # Requires trivial backporting, simple remove
-                           # the 3rd argument from the calls to
-                           # i2c_imx_bus_busy().
----
- drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+> That exchange leads to the question what should be done with /dev/console
+> if there is no console. On Chromebooks we see an error when trying
+> to open it if I recall correctly.
 
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index 63575af41c09..5d8a79319b2b 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -615,6 +615,8 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
- 		/* Stop I2C transaction */
- 		dev_dbg(&i2c_imx->adapter.dev, "<%s>\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		if (i2c_imx->dma)
- 			temp &= ~I2CR_DMAEN;
-@@ -778,9 +780,12 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
- 		 */
- 		dev_dbg(dev, "<%s> clear MSTA\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--		i2c_imx_bus_busy(i2c_imx, 0, false);
-+		if (!i2c_imx->stopped)
-+			i2c_imx_bus_busy(i2c_imx, 0, false);
- 	} else {
- 		/*
- 		 * For i2c master receiver repeat restart operation like:
-@@ -905,9 +910,12 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
- 				dev_dbg(&i2c_imx->adapter.dev,
- 					"<%s> clear MSTA\n", __func__);
- 				temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+				if (!(temp & I2CR_MSTA))
-+					i2c_imx->stopped =  1;
- 				temp &= ~(I2CR_MSTA | I2CR_MTX);
- 				imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--				i2c_imx_bus_busy(i2c_imx, 0, atomic);
-+				if (!i2c_imx->stopped)
-+					i2c_imx_bus_busy(i2c_imx, 0, atomic);
- 			} else {
- 				/*
- 				 * For i2c master receiver repeat restart operation like:
--- 
-Christian Eggers
-Embedded software developer
+A wild guess:
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+Devices that you test, do they have 'blah blah  console=  blah blah'
+command line? If so, does anything change if you revert the patch in
+question and change kernel boot command line to 'blah blah console='?
 
+	-ss
