@@ -2,112 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968372844FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CEA284500
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgJFEhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 00:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S1726603AbgJFEiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 00:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgJFEhV (ORCPT
+        with ESMTP id S1725806AbgJFEiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 00:37:21 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D40C0613A7;
-        Mon,  5 Oct 2020 21:37:20 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id a5so4051951ljj.11;
-        Mon, 05 Oct 2020 21:37:20 -0700 (PDT)
+        Tue, 6 Oct 2020 00:38:06 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CF1C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 21:38:06 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id u21so15648883eja.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 21:38:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=x1Ui7AeYdmvfqVpFDAqv3wK+Nw0lnT10o1RG3kNWsCE=;
-        b=sil+lNL3s6dQgxzwTPIOjQmmrEI5tLh7HEDg0zr22N7ZqjI2ErYDGt6Wj06ePCJFA3
-         4Lu3n3YfacZ9+qKgHhKBWhXAUdDWsxZEhXXAi998D/4B99ko/Imzkqk9GNdWfbtU6eO1
-         4Al4U8rcG47YdwGeLsddpjAZWbzg1TMHh96i5G6LMnjycwo6zsq1JvFVSupPKDZqewBE
-         QrGPHwRIQuMPAyGU5mN7iPerCSjoeoVeFENXHWlxhRAy7GZT8nNdomao1IRJ7F7Jstki
-         eK9/URxUk9R3r77YinlbK/gZRDH3nkQWSt+aUGolSKj4i9nmmKFmDJV3uPpD8Z2ECp04
-         B2Jw==
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=UX3RCPrcGPIrqbUR3n59SCIf8TFoEsCauVyzo+DA3ec=;
+        b=BtbI7jxuD2tSaxYjg9Y1Q/u0svxxBJ2fTSfMePeuhgX0R67Oubt+RaNzbgbLVEhTZS
+         VYrLlMyt62cgemHc2wY80mXdcgbgaOUvPgJAOwvZ4jfOwLiKaUaz1xzROfNIkbnO9TzO
+         9gAzVHe643wT5urCjG+EQ4dJHXHFW20Vi+m3IfaNvBKBPqIiyHsP9GtWKRXDP1hXKLUw
+         AfgDcu2nkeBD+NWOnm2jhGpQ7SHrMiQoPBkR1nKDjpR9W6ebixHE/c6tpqw+DFmVVoGp
+         l/vl/NcjdW0x3ojClvU3UBDb8CKKNixQ4Ymkwn7Z0Pm5joZszHItgy1TT/AsMPIe1iEe
+         nI2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=x1Ui7AeYdmvfqVpFDAqv3wK+Nw0lnT10o1RG3kNWsCE=;
-        b=OOeU2memkbCTkKUkPspVrLH66+/RryiaqE7eSHA5DIGlovw8TAo1dnR0P2j8MBq66Q
-         P65CPdQWDlA+rn6aWYmC03hLaBr9UdcZXzfHQ/XKOFJRwAh9SdsZ2/pDVmpfeaMaaxkU
-         QU2td8N5InDpwirYCxceMWsnSYCfKE+DJyWnzIjmzpOselwUqD7m72kR0u7Ba/day6v7
-         DHxelME4EZMO93TDfE9UzZWDtiSMFsjZim6D/HfOjCqr3u4hO1Mm5bNkcSnCNwrbYKp0
-         5ZLhptad0XDkqS2IQbf5LwW1BvIpuIPK+1Qh5ByoLYOPe6xV7vbF7t7JPXHS+KVagcA5
-         BdjQ==
-X-Gm-Message-State: AOAM530xeATqCTdmyPGe1v1y8TEwhtN2Ez1nOz20OlJV9+sFccjr5tyH
-        OL7quYRN7E+c1F8sV2M/TGgXAlaDcHPJCJQdRFnXQ6gvwsoGYA==
-X-Google-Smtp-Source: ABdhPJwYsHG+/E/R7zGiINSRImu9KKjzJIUV/oAEMgmhcZpLucwoIGZTKURf6tAr5dNeTKa9pyvRPVUzVTBgIaWPDZc=
-X-Received: by 2002:a2e:9709:: with SMTP id r9mr907813lji.119.1601959038233;
- Mon, 05 Oct 2020 21:37:18 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=UX3RCPrcGPIrqbUR3n59SCIf8TFoEsCauVyzo+DA3ec=;
+        b=Zja5JcaRE/S9od0TQbGbaptcpHJQ0ddZPib74yN3kjeDOV1y9eHBzYTMbxnp7eW+OH
+         0WrXip1+HNtLH/LGKurtI/qfCybI6Mzdn3ikI5U0jxHZ7Img9l5W6VhnwmFdRxps9Eze
+         gavXMeSiaWq1GwGG7oZaQtFuHwVZYQ3eZhsSC+0fX6QlVHQf1OcnQCF7HJiBcuq3QHKs
+         XOMNYvg263znzd4SYKdZV0HYrA/lYRDqPJm4YhzBGH/AYqPEMzNvgZFJXhpIQdmgy+BW
+         dmwqKKtJu9IfnyyJ/kp2je/mNe9SP0vYYoUISQRQ1q18iATT9B4t1ToKP/Ya+ZArQiRY
+         xq9g==
+X-Gm-Message-State: AOAM533MMw9Dsji3hNY7MQIOHH4CxOvsFo0DfeQYBeDKdC5X1LE/33iX
+        aS/OkSfsNR27qALPlg1mF1of9ftna6Tj6A==
+X-Google-Smtp-Source: ABdhPJxiSxU0j/zKJ0sQ+aLdTW8YRHvbvpeOl5LpshvHzdwmskFIFWRh25dkohjVxsLMhZJKe/te/w==
+X-Received: by 2002:a17:906:1a4c:: with SMTP id j12mr3156834ejf.372.1601959084888;
+        Mon, 05 Oct 2020 21:38:04 -0700 (PDT)
+Received: from felia ([2001:16b8:2d91:5500:d137:30b3:dfba:6d8f])
+        by smtp.gmail.com with ESMTPSA id a19sm1366382edb.84.2020.10.05.21.38.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 21:38:04 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Tue, 6 Oct 2020 06:38:02 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+cc:     Joe Perches <joe@perches.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] checkpatch: add new warnings to author signoff
+ checks.
+In-Reply-To: <CABJPP5AmvDPFQhWfxC8TA7SCGtwzurVykR5mtPx0ytm-PJDmYA@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2010060635000.10609@felia>
+References: <20201005192409.192317-1-dwaipayanray1@gmail.com> <1d8396cb33b33c3d0107ba701b7e597041dfdbc2.camel@perches.com> <CABJPP5DDmurU9c2qCoJcg7hvwnkYo4LCx+TW6xKG2G23Uf_Cxw@mail.gmail.com> <c1ca28e77e8e3bfa7aadf3efa8ed70f97a9d369c.camel@perches.com>
+ <CABJPP5AmvDPFQhWfxC8TA7SCGtwzurVykR5mtPx0ytm-PJDmYA@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <1599060933-8092-1-git-send-email-u0084500@gmail.com>
- <20200902165713.GG56237@roeck-us.net> <CADiBU3_iHk4aoM8o6GcaTmWDZT4ymvb0Ff-XeLLZ0C9dhCnLZQ@mail.gmail.com>
- <fd2a33fc-2383-66cb-0fd7-d5aa0cc9111f@roeck-us.net> <CADiBU3_vYAmHDCONrExzyM+1CTfqJx_eS1hYG8aHkNWFzTcwfg@mail.gmail.com>
- <63c7f5e4-eff2-1420-30a5-a0b98a7815e0@roeck-us.net> <CADiBU3-83rVLqhVAqqSGc0qQ66PHsGVVcp_m3sm_4ZS5A+GXKQ@mail.gmail.com>
- <CADiBU3_c5O-yUac-ytp5WoQQ12edkU+4wn+WNBOVGRGM15NBJA@mail.gmail.com>
- <20201002133145.GA3384841@kroah.com> <c2d689eb-5538-6af2-614f-766521100273@roeck-us.net>
- <20201005110808.GA298743@kroah.com> <88586992-650f-a4a1-2fa0-8cef313380fb@roeck-us.net>
-In-Reply-To: <88586992-650f-a4a1-2fa0-8cef313380fb@roeck-us.net>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 6 Oct 2020 12:37:06 +0800
-Message-ID: <CADiBU38wk825SqtFRAiYqqV47Wwi43AuWKut19qeTbGBZFqPow@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Fix if vbus before cc, hard_reset_count
- not reset issue
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cy_huang <cy_huang@richtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="8323329-908877500-1601959084=:10609"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guenter Roeck <linux@roeck-us.net> =E6=96=BC 2020=E5=B9=B410=E6=9C=885=E6=
-=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8811:30=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On 10/5/20 4:08 AM, Greg KH wrote:
-> [ ... ]
-> >>> What ever happened with this patch, is there still disagreement?
-> >>>
-> >>
-> >> Yes, there is. I wouldn't have added the conditional without reason,
-> >> and I am concerned that removing it entirely will open another problem=
-.
-> >> Feel free to apply, though - I can't prove that my concern is valid,
-> >> and after all we'll get reports from the field later if it is.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-908877500-1601959084=:10609
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+
+
+On Tue, 6 Oct 2020, Dwaipayan Ray wrote:
+
+> On Tue, Oct 6, 2020 at 2:39 AM Joe Perches <joe@perches.com> wrote:
 > >
-> > Ok, can I get an ack so I know who to come back to in the future if
-> > there are issues?  :)
+> > On Tue, 2020-10-06 at 01:37 +0530, Dwaipayan Ray wrote:
+> > > On Tue, Oct 6, 2020 at 1:07 AM Joe Perches <joe@perches.com> wrote:
+> > > > On Tue, 2020-10-06 at 00:54 +0530, Dwaipayan Ray wrote:
+> > > > > The author signed-off-by checks are currently very vague.
+> > > > > Cases like same name or same address are not handled separately.
+> > > >
+> > > > When you run tests for this, how many mismatches are
+> > > > caused by name formatting changes like:
+> > > >
+> > > > From: "Developer, J. Random" <jrd@bigcorp.com>
+> > > > ...
+> > > > Signed-off-by: "J. Random Developer" <jrd@bigcorp.com>?
+> > > >
+> > > > Should these differences generate a warning?
+> > > >
+> > >
+> > > Hi,
+> > > I ran my tests on non merge commits between v5.7 and v5.8.
+> > >
+> > > There were a total of 250 NO_AUTHOR_SIGN_OFF Warnings
+> > >
+> > > 203 of these were email address mismatches.
+> > > 32 of these were name mismatches.
+> > >
+> > > So for the name mismatches, the typical cases are like:
+> > >
+> > > 'From: tannerlove <tannerlove@google.com>' != 'Signed-off-by: Tanner
+> > > Love <tannerlove@google.com>'
+> > > 'From: "朱灿灿" <zhucancan@vivo.com>' != 'Signed-off-by: zhucancan
+> > > <zhucancan@vivo.com>'
+> > > 'From: Yuval Basson <ybason@marvell.com>' != 'Signed-off-by: Yuval
+> > > Bason <ybason@marvell.com>'
+> > > 'From: allen <allen.chen@ite.com.tw>' != 'Signed-off-by: Allen Chen
+> > > <allen.chen@ite.com.tw>'
+> > >
+> > > I didn't find the exact formatting change you mentioned in my commit range.
+> > > But I did find something like:
+> > >
+> > > 'From: "Paul A. Clarke" <pc@us.ibm.com>' != 'Signed-off-by: Paul
+> > > Clarke <pc@us.ibm.com>'
+> > >
+> > > So it's like some have parts of their names removed, some have language
+> > > conflicts, and yet some have well different spellings, or initials,
+> > > etc. It's like
+> > > a wide variety of things happening here.
+> > >
+> > > I think considering these, it should be warned about, and let people know
+> > > that there might be something wrong going on.
+> > >
+> > > What do you think?
 > >
+> > Except for comments and quotes like:
+> >
+> >         From: J. Random Developer (BigCorp) <jrd@bigcorp.com>
+> >         Signed-off-by: "J. Random Developer" <jrd@bigcorp.com>
+> >
+> > I think any time there's a mismatch, there
+> > should be a warning emitted.
+> >
+> > That includes any subaddress detail difference.
+> >
+> >
+> Hi,
+> Yeah these cases are being handled.
+> 
+> Comments and quotes don't generate any warning message but
+> all the other mismatches do.
+> 
+> Only the check for subaddress generates a --strict check message.
+> others are all WARN messages. It was followed from our discussion at
+> https://lore.kernel.org/linux-kernel-mentees/7b52e085f0b69ad1742966f8eacd02deb9299b96.camel@perches.com/
+> 
+> So does it need to be changed to a WARN or is it fine like that?
 >
-> Not from me, for the reasons I stated. I would be ok with something like:
->
-> -       if (tcpm_port_is_disconnected(port))
-> +       if (tcpm_port_is_disconnected(port) ||
-> +           (tcpm_cc_is_open(port->cc1) && tcpm_cc_is_open(port->cc2)))
->
-> to narrow down the condition.
 
-I have tried the above comment and It doesn't work.
-How about to change the judgement like as below
+I will repeat what I suggested before:
 
--       if (tcpm_port_is_disconnected(port))
-+       if (tcpm_port_is_disconnected(port) || !port->vbus_present)
+I think the complete mismatch where we cannot even find a name or an email 
+match the author deserves to be reported as ERROR.
 
-The hard_reset_count not reset issue is following by the below order
-1. VBUS off ( at the same time, cc is still detected as attached)
-port->attached become false and cc is not open
-2. After that, cc detached.
-due to port->attached is false, tcpm_detach() directly return.
+Dwaipayan, if Joe does not disagree, could you change that in your PATCH v4?
 
-And that's why hard_reset_count is not reset to 0.
->
-> Guenter
+Lukas
+--8323329-908877500-1601959084=:10609--
