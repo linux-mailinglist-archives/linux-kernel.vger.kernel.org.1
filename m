@@ -2,230 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391382849B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0C62849B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgJFJwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJFJwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:52:02 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A521C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 02:52:02 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id lw21so12704617ejb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BpndHynjiFOuceItUVm+AOdG3zbe75h4joXfwYhnJAg=;
-        b=FCLx73moQAXqeIjasaAw7nsZvnH+svOrYn1ReUOpR2YYnEdn1Rw93VfaRHuhiv3Pbs
-         Y4re8crhbHyo6oGRSxVJeua10lYk+UaKKgBJ6bnVji7ZmoniVQkNdUMJcXhvXJXaVEew
-         VM5tYxc5Vljyfa6N/QiUCH/671ZaxGlC5EP1Ig8aifLkuR1c4etMCzVL3nhjHt/e7zlM
-         aBn86JYpPvC9kFy5JgSi4hL9yYuFNcGUBLcKB/fHU5R3FpKCOCB0pSx6h018XFZj2YbO
-         nZV16RDQ6Lih66mujQgRUlu/fNYqzmSN+ByvQuzsejexVkQSW4G4dcT50VaFx59ZikyJ
-         R5Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BpndHynjiFOuceItUVm+AOdG3zbe75h4joXfwYhnJAg=;
-        b=pwOhu8ZVTDdXYs/SoZdHEk7ueirxWmR3QeEUrmCH0ecTLcYVD44eYCkqN4NqgoUcqm
-         dQP+Xof2vak/hTG7R2QX5/fpWSRMOIR+V8Ket3HoLeS9l3DvDxBVk+1fqHA30auxsOhq
-         OvPKMNSGXMINcUZFCgG4YeM7JSWAsNtwi/useKTqqLkdBUwOW2Xs0w4yNfT3oW3hLGz3
-         9EVxiyzGiWLg6er5A3ByFGMMpDEcmlahWk4bu2af0aCa8dG1oRZnFkVx/RHp1N6eL21q
-         BME3Wyy9SOcRY3CDxj1iuEi6m6onZ8hVjsLQNL/VavTLgMgCbSpuIMgWu9u4WzoCaE1J
-         TVhg==
-X-Gm-Message-State: AOAM532B0xQApXNqQgRU0q6X4Cb/fGz8hvja9TaoBtaLcD+cLIyXXlGJ
-        co5WsJBVT1fAZAc2WImIjgc8qStYEWg=
-X-Google-Smtp-Source: ABdhPJytDn5qeBQbaa/PyR2BMzIVAbfo2+hXQgKZxA3UE8zolJnnIZqwo0zBndyLTd1iD/j/syzE/w==
-X-Received: by 2002:a17:906:f106:: with SMTP id gv6mr4379100ejb.411.1601977920680;
-        Tue, 06 Oct 2020 02:52:00 -0700 (PDT)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id e9sm1969902edu.49.2020.10.06.02.51.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 02:52:00 -0700 (PDT)
-Subject: Re: [PATCH v3] arm64: dts: rockchip: add SPDIF node for
- rk3399-rockpro64
-To:     Katsuhiro Suzuki <katsuhiro@katsuster.net>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201005140311.2507530-1-katsuhiro@katsuster.net>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <e5ab2c62-ad00-4cdf-8b0a-24fda59c980b@gmail.com>
-Date:   Tue, 6 Oct 2020 11:51:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726348AbgJFJw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:52:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35026 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgJFJw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:52:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601977948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ulSDWXMr10E+uJPSQdJ8cKG+Cd7wmtT+2X/m5iX0aAU=;
+        b=ikiY38WS/RPv+s96r6L/3Tsq8KSOAEGIOtfbM6PSVu7LNRaEOEM1bV46q8GR24gURXKaVd
+        smhZ6NQOZycL8zEEWFiCy7AZaSHaoUr3ZLHL1Go0y1CI8yxBMBHt1X1nqGnSbtSN2LHh5y
+        13F4ppPol58ohTd+N167oy+89m77SuE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D803FB204;
+        Tue,  6 Oct 2020 09:52:27 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 11:52:26 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
+        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] printk: handle blank console arguments passed in.
+Message-ID: <20201006095226.GB32369@alley>
+References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
+ <20200522065306.83-1-shreyas.joshi@biamp.com>
+ <20200522100046.GH3464@linux-b0ei>
+ <20201006025935.GA597@jagdpanzerIV.localdomain>
+ <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <20201005140311.2507530-1-katsuhiro@katsuster.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Katsuhiro, Heiko,
+On Mon 2020-10-05 20:35:59, Guenter Roeck wrote:
+> On 10/5/20 7:59 PM, Sergey Senozhatsky wrote:
+> > On (20/05/22 12:00), Petr Mladek wrote:
+> >> On Fri 2020-05-22 16:53:06, Shreyas Joshi wrote:
+> >>> If uboot passes a blank string to console_setup then it results in a trashed memory.
+> >>> Ultimately, the kernel crashes during freeing up the memory. This fix checks if there
+> >>> is a blank parameter being passed to console_setup from uboot.
+> >>> In case it detects that the console parameter is blank then
+> >>> it doesn't setup the serial device and it gracefully exits.
+> >>>
+> > Petr, this patch's causing regressions for us. We use blank console= boot
+> > param to bypass dts. It appears that it'd be better to revert the change.
+> > 
+> Not just to bypass dts, it was also possible to use console= to disable consoles
+> passed as config option, as well as other default console options. A quick test
+> confirms that this affects all platforms/architectures, not just Chromebooks.
+> Prior to this patch, it was possible to disable a default console with an
+> empty "console=" parameter. This is no longer possible. This means that
+> this patch results in a substantial (and, as far as I can see, completely
+> undiscussed) functionality change.
 
-Question for the maintainer:
-Should we add a SPDIF node if the connector is not physical on a board,
-only a header?
+Where is this behavior documented, please?
 
-Thanks Katsuhiro for the "aplay -l" screen print.
+I do not see it anywhere (documentation, git log, google) and it is far from
+obvious from the code. It seems that any random string would do the
+same job, e.g. console=none.
 
-**** List of PLAYBACK Hardware Devices ****
-card 0: hdmisound [hdmi-sound], device 0: ff8a0000.i2s-i2s-hifi
-i2s-hifi-0 [ff8a0000.i2s-i2s-hifi i2s-hifi-0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: rockchiprk3399 [rockchip,rk3399], device 0: ff890000.i2s-ES8316
-HiFi ES8316 HiFi-0 [ff890000.i2s-ES8316 HiFi ES8316 HiFi-0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 2: rockchiprk339_1 [rockchip,rk3399], device 0:
-ff870000.spdif-dit-hifi dit-hifi-0 [ff870000.spdif-dit-hifi dit-hifi-0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+Of course, we need to restore the original behavior when it breaks
+existing systems. But I want to be sure that there is no better
+solution.
+
+And it makes perfect sense to disable all consoles or drop all defined
+by dts. But I would prefer to make it more obvious way, for
+example by parameters like:
+
+   + console=none
+   + no-console
+   + no-dtd-console
+   + no-default-console
 
 
-On 10/5/20 4:03 PM, Katsuhiro Suzuki wrote:
-> This patch adds 'disabled' SPDIF sound node and related settings
-> of SPDIF for rk3399-rockpro64.
+JFYI, the console= parameter handling is a real historical mess. We are
+always surprised what undefined behavior people depend on. For
+example, see:
+
+  + commit 33225d7b0ac9903c5701b ("printk: Correctly set CON_CONSDEV
+    even when preferred console was not registered")
+
+  + commit e369d8227fd211be3624 ("printk: Fix preferred console
+    selection with multiple matches")
+
+> I don't understand why (yet), but the patch also causes regressions with
+> seemingly unrelated functionality, specifically with dm-verity on at least
+> one Chromebook platform. I filed crbug.com/1135157 to track the problem,
+> and reverted the patch from all our stable releases immediately after
+> the last round of stable release merges.
 > 
-> RockPro64 has output pins for SPDIF Tx. But RK3399 does not have
-> enough DMA channel for enabling SPDIF tx. Current settings are:
-> 
->   - I2S0     (Req num 0, 1): Enabled : Output to 40pins header CON40
->   - I2S1     (Req num 2, 3): Enabled : Output to ES8316 on board
->   - I2S2     (Req num 4, 5): Enabled : Output to internal HDMI core
->   - SPDIF Tx (Req num 7)   : Disabled: Output to connector J10
-> 
-> If users want to enable ALL sound I/Os, we need 7 DMA channels for
-> it. But unfortunately, RK3399 has only 6 DMA channels. So users have
-> to choose from the following:
-> 
->   - Disable one of I2S (Ex. I2S0) and enable SPDIF tx
->   - Keep enable I2S0/1/2 and disable SPDIF tx
-> 
-> Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-> 
-> ---
-> 
-> Changes in v3:
->   - Refine commit description why adding disabled node
-> 
-> Changes in v2:
->   - Remove redundant status property
-> ---
->  .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 27 +++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-> index 6e553ff47534..58097245994a 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-> @@ -76,6 +76,23 @@ sound {
->  		dais = <&i2s1_p0>;
->  	};
->  
+> On a side note, I don't see the problem presumably fixed with this
+> patch in any of my tests.
 
+Console drivers might provide a custom match() callback to handle
+various aliases. I guess that some driver wrongly matches the empty
+string stored in the array of preferred consoles.
 
-	hdmi_sound: hdmi-sound {
-		compatible = "simple-audio-card";
-		simple-audio-card,name = "hdmi-sound";
+There are likely other ways to fix the original problem.
 
-Maybe rename to "HDMI"?
-
-[..]
-	};
-
-	sound {
-		compatible = "audio-graph-card";
-		label = "rockchip,rk3399";
-
-Maybe change this to "ES8316" to prevent confusion?
-
-		dais = <&i2s1_p0>;
-	};
-
-
-> +	sound-dit {
-> +		compatible = "audio-graph-card"
-> +		label = "rockchip,rk3399";
-
-This would be the second sound card with the same label.
-It seems that aplay/linux? adds "-1" to it and removes the comma, so we get:
-
-hdmisound
-rockchiprk3399
-rockchiprk339_1
-
-Shouldn't we label it with something that reflect the function/output.
-Shouldn't we standardize to SPDIF, HDMI and Analog similar to rk3318/rk3328?
-Make a shorter label without spaces or special chars, so that chars
-don't get removed?
-
-Proposal:
-
-HDMI
-ES8316
-SPDIF
-
-> +		dais = <&spdif_p0>;
-
-Maybe disable too?
-
-The "sound-dit" node is standard enabled and will start some process
-with a dia in a node that is disabled.
-
-
-> +	};
-> +
-> +	spdif-dit {
-> +		compatible = "linux,spdif-dit";
-> +		#sound-dai-cells = <0>;
-
-Maybe disable too?
-
-> +
-> +		port {
-> +			dit_p0_0: endpoint {
-
-> +				remote-endpoint = <&spdif_p0_0>;
-
-This also points to something that's disabled.
-
-> +			};
-> +		};
-> +	};
-> +
->  	vcc12v_dcin: vcc12v-dcin {
->  		compatible = "regulator-fixed";
->  		regulator-name = "vcc12v_dcin";
-> @@ -698,6 +715,16 @@ &sdhci {
->  	status = "okay";
->  };
->  
-> +&spdif {
-> +	pinctrl-0 = <&spdif_bus_1>;
-
-This node is disabled.
-
-> +
-> +	spdif_p0: port {
-> +		spdif_p0_0: endpoint {
-> +			remote-endpoint = <&dit_p0_0>;
-> +		};
-> +	};
-> +};
-> +
->  &spi1 {
->  	status = "okay";
->  
-> 
-
+Best Regards,
+Petr
