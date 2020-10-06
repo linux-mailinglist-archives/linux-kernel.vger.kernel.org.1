@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCDE284716
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3462E284717
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgJFH0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgJFH0F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:26:05 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5B4C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 00:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xENzTHFzaXi/jzE+/UY1sLe+a8GOwjtfxQ4NuWU0g1s=; b=PQJi2HxsUTZyQtvCbMKKpFVYB5
-        sI48ALsxwCfaQdQaT0Fis/Q52PnhrbyO5B8LngR3bsVKa2S+2vUoUxEDcLfh6ajdBjeRRNDN5FizL
-        EUcrXMMrj+fMtas3TaMcujzgKdZWlKISqemabpLAEpAceQ7i41UpRIlT4Soz39Bt86Dd+RDIdFP6H
-        AejnJEHrvMzw6uP9o5ESIY5aRwUbWby+o9WuJOt7dKOlJt/lAfDf9Kl3z87EQfWsVQDsDy1NrezSc
-        ZOqE+Fu2D0EII/Mh/xR0W6trthpZBKk3y2Iu4pzVFNsxAV6s3N3LL6bMud5YkMo0/Bcb5H/yPjN/F
-        UCG80GVQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPhM1-0007L8-KE; Tue, 06 Oct 2020 07:25:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 28A6D300B22;
-        Tue,  6 Oct 2020 09:25:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 074E92B7E371B; Tue,  6 Oct 2020 09:25:40 +0200 (CEST)
-Date:   Tue, 6 Oct 2020 09:25:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
-        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org
-Subject: Re: [PATCH -v2 03/17] sched/hotplug: Ensure only per-cpu kthreads
- run during hotplug
-Message-ID: <20201006072540.GK2628@hirez.programming.kicks-ass.net>
-References: <20201005145717.346020688@infradead.org>
- <20201005150921.257350016@infradead.org>
+        id S1727014AbgJFH0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:26:34 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:50665 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727050AbgJFH0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 03:26:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601969193; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=iW2DFmmCUNMCi9XnrrPNlbTQzrZkhy2zOuOXnyMaLXk=; b=wSy8KpPzGGER3kVpm6y6VuoNBtyjKR69t8WHayiuTDhkWE1Hv6XCDs45jWTAHZJyjfRJ8VW8
+ 0G6usyF5bJdnt0gliZsOWV9RP0I6VpJn7gKSqh2rY2RbqG1dOb6UFP+S1QFP20hrX4fMUMr7
+ j+aHwRz2h3Muov8nmaS22+3rCZM=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f7c1c2942f9861fb17c9ad0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Oct 2020 07:26:33
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 44B86C433FF; Tue,  6 Oct 2020 07:26:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1FD9C433CB;
+        Tue,  6 Oct 2020 07:26:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1FD9C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Carl Huang <cjhuang@codeaurora.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org
+Subject: Re: [PATCH 2/2] ath11k: Handle errors if peer creation fails
+References: <20201004100218.311653-1-alex.dewar90@gmail.com>
+Date:   Tue, 06 Oct 2020 10:26:28 +0300
+In-Reply-To: <20201004100218.311653-1-alex.dewar90@gmail.com> (Alex Dewar's
+        message of "Sun, 4 Oct 2020 11:02:17 +0100")
+Message-ID: <87blhfbysb.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005150921.257350016@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 04:57:20PM +0200, Peter Zijlstra wrote:
-> +static inline void balance_switch(struct rq *rq)
-> +{
-> +	if (unlikely(rq->balance_flags)) {
-> +		/*
-> +		 * Run the balance_callbacks, except on hotplug
-> +		 * when we need to push the current task away.
-> +		 */
-> +		if (!IS_ENABLED(CONFIG_HOTPLUG_CPU) ||
-> +		    !(rq->balance_flags & BALANCE_PUSH) ||
-> +		    !balance_push(rq))
-> +			__balance_callbacks(rq);
-> +	}
-> +}
+Alex Dewar <alex.dewar90@gmail.com> writes:
 
-> @@ -1392,12 +1396,13 @@ queue_balance_callback(struct rq *rq,
->  {
->  	lockdep_assert_held(&rq->lock);
+> ath11k_peer_create() is called without its return value being checked,
+> meaning errors will be unhandled. Add missing check and, as the mutex is
+> unconditionally unlocked on leaving this function, simplify the exit
+> path.
+>
+> Addresses-Coverity-ID: 1497531 ("Code maintainability issues")
+> Fixes: 701e48a43e15 ("ath11k: add packet log support for QCA6390")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+>  drivers/net/wireless/ath/ath11k/mac.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+> index 7f8dd47d2333..58db1b57b941 100644
+> --- a/drivers/net/wireless/ath/ath11k/mac.c
+> +++ b/drivers/net/wireless/ath/ath11k/mac.c
+> @@ -5211,7 +5211,7 @@ ath11k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
+>  	struct ath11k *ar = hw->priv;
+>  	struct ath11k_base *ab = ar->ab;
+>  	struct ath11k_vif *arvif = (void *)vif->drv_priv;
+> -	int ret;
+> +	int ret = 0;
+
+I prefer not to initialise the ret variable.
+
+>  	arvif->is_started = true;
 >  
-> -	if (unlikely(head->next))
-> +	if (unlikely(head->next || (rq->balance_flags & BALANCE_PUSH)))
->  		return;
+>  	/* TODO: Setup ps and cts/rts protection */
+>  
+> -	mutex_unlock(&ar->conf_mutex);
+> -
+> -	return 0;
+> -
+> -err:
+> +unlock:
+>  	mutex_unlock(&ar->conf_mutex);
+>  
+>  	return ret;
 
-With this bit from Valentin we can probably simplify the above function,
-but I've not thought about that yet.
+So in the pending branch I changed this to:
+
+	ret = 0;
+
+out:
+	mutex_unlock(&ar->conf_mutex);
+
+	return ret;
+
+Please check.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
