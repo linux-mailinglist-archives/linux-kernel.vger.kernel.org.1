@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18056284663
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED3428466D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgJFG42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
+        id S1727182AbgJFG6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbgJFG41 (ORCPT
+        with ESMTP id S1727050AbgJFG62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:56:27 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6B3C061755;
-        Mon,  5 Oct 2020 23:56:27 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id i3so1151667pjz.4;
-        Mon, 05 Oct 2020 23:56:27 -0700 (PDT)
+        Tue, 6 Oct 2020 02:58:28 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDD2C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:58:28 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d3so1835981wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zBFfKBhYyU0BtbuXx1ytS4yKHobNdT3L7z7UjpAJros=;
-        b=kgJHrKjSonX86RVyPSZeK3n/eKSf3Z5iXCkubCL03B3xjIlw1I3UVJ5Oz6oldmemu+
-         6rJaL5DsTUyCupB4FYMEDWaEzoKMDYYXIQOzUgjn5hUWTJy59aH+ZNZ62Wd5BhngbW+1
-         0t/iPMHM6DE34xJiMl00x6wskZr1nXO7FFDAXeHWWClyXlHaK4doUjutMC2RfUGt6v1H
-         aNu6t9dcg6fA8UquACGkeYCbd8l8RxkDsn0fPe19wpct/YACSiqaDcOtAkkIYP1k3T/E
-         skQ03oqS+ySD5bD1roJ9TodIimXd3IeQU7kggLi5lG4G9zbMkMHvREwF+SRpEL16PkSd
-         QQZQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hye8oZPllXv0LLz+UWG2B82nJ6IN2QnHfKrsEX8XCOU=;
+        b=jn2dIC4KneJcMCE5DY3o93rmWgdTmK7NJWwKNWGocC7HbxwqveIdxS9nVru8ryq+P9
+         s4//ef94qJ6Y8ujWnpglPZlIlD6sJ33blfTKKcaCdwJolql9IFEUfzJMHCTe1JnaG8Iw
+         b+YeHxV9DI6DSD3tgOAF3IaWem5VxRfAN0ODuGo/qw2A8ReI6qDWtdlFFibEvRuFiEoQ
+         dhilbFbgvuG8V67ydtdAffL1xmKMRbv76Ctys34uqkoMVb3gFX2RETn3H/bHFtSxghuV
+         ji7JhUukKOJOEajfS3LrzYX2Rf2L6FpU2JZ9jHfMZk5oQaZMZKMZfy/k1RR5/u729NJu
+         K0HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zBFfKBhYyU0BtbuXx1ytS4yKHobNdT3L7z7UjpAJros=;
-        b=mq88bkJ/7vRmN2lkWxa5Lm1iog5+KphQF3TqBTKIQOB1bvmPg4P5fwYPYN4CGSNBpE
-         UxKF5Nq8jW2j/AOaDC+CxCjqDuyGydPd0J5raoFdu5jKyuFjosiAIPOS8uyjtg1Z90gl
-         l9i+Y/ejTLCylTUGc4XNPmr32qXoha4YKWG/xmZfNal9vvOJhQTo/q7HKCBF8O9FrFyR
-         kwFZHJ13SbUtTqndl42LdAe3Ouk4XRUzXkyS3aTL00AnafXVjAFcS0a9eA06Vn1AGjME
-         PH91gr53mbMbslGub6PE3Krg/8ugS5ynw2J5rrFhLdCse2YT7ozpsP5t/wq7lbzDNLex
-         WLwQ==
-X-Gm-Message-State: AOAM532sTB0ZLw0mt0U3XvsdbFa7uwECs5tuGedrSffQUq8+Kd+E8iKo
-        Ho8PIJQNq6cgbqxAx0sL1i8=
-X-Google-Smtp-Source: ABdhPJyMkxuEeZ7MXGRLAPbbNrvhXEYbnB5A9eIh229n8RdwQydJJiqZO5UUjbb6Ulu9S4QCxG/8bA==
-X-Received: by 2002:a17:902:8693:b029:d3:9c6b:ca5f with SMTP id g19-20020a1709028693b02900d39c6bca5fmr1958085plo.67.1601967386593;
-        Mon, 05 Oct 2020 23:56:26 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id h9sm2042609pfh.213.2020.10.05.23.56.24
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hye8oZPllXv0LLz+UWG2B82nJ6IN2QnHfKrsEX8XCOU=;
+        b=ik52C35UkJTtYmVW+PpPaUjkdL51OB1Cz7nu/bpjbDLDUstTtszy2uyTmJMPWxFvy8
+         g3Qm4RsR4XQTcQL3VLptkmabt6K4KYSh+Rw90YaYpUuTadTMpuI6yzxIHdBjWIWvBkZG
+         ytNOJNaiNQNV5aQLURF7GKIsWopU2KmXhC9YMaXJN0GcJFbKXkDOUWpyR/EYvYNjuekB
+         OfjzFmgQRxVeQ9dAC4+WKRyHhJW6BVK9mb7MaIK50oVeHAd1zbF8BxH99qavXW4oZ6oH
+         tuTOioEyOHFdcnMPcb5rJi7PyLPQQeZeMH0/HK/4lAOt+BoVuhyW0iMkPvSQxnXk3X3p
+         k+FQ==
+X-Gm-Message-State: AOAM531P4M4qcsUQt9/+48bpzNiZCikJxpsiUd16qKbLYod9uQgjM/FN
+        FD4eyHMW+JjQ3uwtyBDf0JABog==
+X-Google-Smtp-Source: ABdhPJxsvKtzCqkv4fxGZg3y/AIgf4rU1S8D4EatsKLRXGnqjE4r6Ftdz8iBdl2gfcmAi+GG7YDezw==
+X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr3211564wms.77.1601967506851;
+        Mon, 05 Oct 2020 23:58:26 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id u12sm3158245wrt.81.2020.10.05.23.58.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 23:56:25 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 23:56:23 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v2] srcu: avoid escaped section names
-Message-ID: <20201006065623.GA2418984@ubuntu-m3-large-x86>
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
- <20200929192549.501516-1-ndesaulniers@google.com>
- <20200930204044.GZ29330@paulmck-ThinkPad-P72>
- <CAKwvOd=nabONrWyYFK7Y06TrKBOyHHfNUiiy69VJQ2NtCpbp5Q@mail.gmail.com>
- <20201002205130.GK29330@paulmck-ThinkPad-P72>
- <CAKwvOdkPMSwQneMLFNg3ihM5zHorFy+uGvzAL7y70+hu_1q24w@mail.gmail.com>
- <CA+icZUW_z5nJ1c69JS7Nm1QknF+CH+sPkhF4g2+L=d=H-vxVgw@mail.gmail.com>
- <20201005184910.GC29330@paulmck-ThinkPad-P72>
+        Mon, 05 Oct 2020 23:58:26 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 07:58:20 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 4/4] dt-bindings: Explicitly allow additional properties
+ in common schemas
+Message-ID: <20201006065820.GY6148@dell>
+References: <20201005183830.486085-1-robh@kernel.org>
+ <20201005183830.486085-5-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005184910.GC29330@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201005183830.486085-5-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:49:10AM -0700, Paul E. McKenney wrote:
-> On Mon, Oct 05, 2020 at 08:38:42PM +0200, Sedat Dilek wrote:
-> > On Mon, Oct 5, 2020 at 8:29 PM 'Nick Desaulniers' via Clang Built
-> > Linux <clang-built-linux@googlegroups.com> wrote:
-> > >
-> > > On Fri, Oct 2, 2020 at 1:51 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Wed, Sep 30, 2020 at 01:55:48PM -0700, Nick Desaulniers wrote:
-> > > > > On Wed, Sep 30, 2020 at 1:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > On Tue, Sep 29, 2020 at 12:25:49PM -0700, Nick Desaulniers wrote:
-> > > > > > > The stringification operator, `#`, in the preprocessor escapes strings.
-> > > > > > > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> > > > > > > they treat section names that contain \".
-> > > > > > >
-> > > > > > > The portable solution is to not use a string literal with the
-> > > > > > > preprocessor stringification operator.
-> > > > > > >
-> > > > > > > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> > > > > > > Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-> > > > > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > > > >
-> > > > > > I am guessing that this needs to go up with other patches.  If so:
-> > > > > >
-> > > > > > Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > >
-> > > > > > If not, let me know and I will queue it.
-> > > > >
-> > > > > I could have bundled them up as a series.  I think you can pick it up,
-> > > > > and I'll owe you a beer?
-> > > >
-> > > > It is queued, thank you!
-> > > >
-> > > > When does it need to hit mainline?  (Your default is the v5.11 merge
-> > > > window, that is, the one following the upcoming merge window.)
-> > >
-> > > No rush, this patch wasn't blocking any known issue, just a cleanup
-> > > while I was in the neighborhood.  100 years ago, I was an Eagle scout.
-> > > Pretty sure there was a motto about "leaving things better than you
-> > > found them."  Thanks for help resolving the merge conflict reported in
-> > > -next related to it.
-> > 
-> > Wasn't there a problem with your "Fixes:" tag (Fixes: *drop word
-> > "commit"* commit_hashid ("...")?
-> 
-> Indeed there was, and I have it noted to be fixed on my next rebase.
-> 
-> Perhaps another reason not to rush to mainline though.  ;-)
-> 
-> 							Thanx, Paul
+On Mon, 05 Oct 2020, Rob Herring wrote:
 
-I am replying here as well so that the relevant parties are in the know
-but I believe this patch should be fast tracked with a cc stable tag as
-this appears to be the root cause of the issue that Nick reported a few
-weeks ago:
+> In order to add meta-schema checks for additional/unevaluatedProperties
+> being present, all schema need to make this explicit. As common/shared
+> schema are included by other schemas, they should always allow for
+> additionalProperties.
 
-https://lore.kernel.org/rcu/CAKwvOdm4AQhobdkKT08bjPGb15N58QN79XWxEaQt-P5Dk4+avQ@mail.gmail.com/
-https://github.com/ClangBuiltLinux/linux/issues/1081
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-I can reproduce the issue on next-20201002 on my Raspberry Pi 4 just by
-booting it up. As soon as I apply this patch, all warnings disappear. I
-asked the original reporters to test if the patch resolves the issue for
-them but I figured more visibility on this, the sooner. The commit
-message might need to be revised if this turns out to be the case to
-make it more apparent that it has a user visible issue, rather than just
-a QoL fix.
-
-Additionally, it seems like the patch is missing some reviewed by tags
-from Kees, Sedat, and myself. Feel free to add a
-
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-
-as well.
-
-Cheers,
-Nathan
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
