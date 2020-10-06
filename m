@@ -2,160 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD88284D83
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A17284D79
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgJFOWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:22:21 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2960 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725902AbgJFOWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:22:20 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 44BB4C97F0EE94ABF5FB;
-        Tue,  6 Oct 2020 15:22:18 +0100 (IST)
-Received: from [127.0.0.1] (10.210.170.159) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 6 Oct 2020
- 15:22:16 +0100
-Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
- 23/23] perf metricgroup: remove duped metric group events)
-From:   John Garry <john.garry@huawei.com>
-To:     Ian Rogers <irogers@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20200507140819.126960-1-irogers@google.com>
- <20200507140819.126960-24-irogers@google.com>
- <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
- <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
- <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
- <CAP-5=fXwQZVDxJM4LmEvsKW9h0HYP6t3F0EZfy0+hwAzDmBgGA@mail.gmail.com>
- <248e8d19-8727-b403-4196-59eac1b1f305@huawei.com>
-Message-ID: <b621fdcb-9af5-bbc2-992a-ebfaa7888dc2@huawei.com>
-Date:   Tue, 6 Oct 2020 15:19:13 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726131AbgJFOUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgJFOUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:20:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E604C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 07:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fQNQMTdNpFR2hXxPiuAoxHao1e9b1oM909lnBs1Kqak=; b=GwVjeRMFqHpxsMaT5JxvGi7Rw4
+        P/eDXcDHo4LGla+cvldr3kmJdrWhOo3XZWwWh17L+04ZvRHL9JxxiTuO3qYGzden7WfC41k/V/T1u
+        GOFMhBQSJl9mrhyLXEliliZcJHEjAWqZ1xTfbHabxt32VCZ1OYD06M74Qq/K/sDTRByF0ORp4w/nn
+        eWknbODS/a6nNBEGKRjVSCZBhBvncwPurRyiUIWuvleVOySPrMT+VqPGQtnhhvGtwUOF6XWj9AuTb
+        +glx8lqlQmkBAEvdqnBeUYC32BccOkt9lKgUD7mt9DBrRnU2mwnJIJfNjA4XtO8LN5Y66GzErMYgq
+        3dFsd9yg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPnoz-0005ON-89; Tue, 06 Oct 2020 14:20:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3EFD03006D0;
+        Tue,  6 Oct 2020 16:20:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0AE6628527D6B; Tue,  6 Oct 2020 16:20:04 +0200 (CEST)
+Date:   Tue, 6 Oct 2020 16:20:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        valentin.schneider@arm.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org
+Subject: Re: [PATCH -v2 12/17] sched,rt: Use cpumask_any*_distribute()
+Message-ID: <20201006142004.GX2628@hirez.programming.kicks-ass.net>
+References: <20201005145717.346020688@infradead.org>
+ <20201005150922.156231026@infradead.org>
+ <20201006140926.GI4352@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <248e8d19-8727-b403-4196-59eac1b1f305@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.170.159]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006140926.GI4352@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2020 19:05, John Garry wrote:
->> Can you provide a reproduction? Looking on broadwell
->> this metric doesn't exist.
+On Tue, Oct 06, 2020 at 04:09:26PM +0200, Juri Lelli wrote:
+
+> > --- a/kernel/sched/deadline.c
+> > +++ b/kernel/sched/deadline.c
+> > @@ -2001,7 +2001,7 @@ static int find_later_rq(struct task_str
+> >  	if (this_cpu != -1)
+> >  		return this_cpu;
+> >  
+> > -	cpu = cpumask_any(later_mask);
+> > +	cpu = cpumask_any_distribute(later_mask);
+> >  	if (cpu < nr_cpu_ids)
+> >  		return cpu;
 > 
-> Right, I just added this test metric as my 2x x86 platform has no 
-> examples which I can find:
-> 
-> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json 
-> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> index 8cdc7c13dc2a..fc6d9adf996a 100644
-> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> @@ -348,5 +348,11 @@
->          "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
->          "MetricGroup": "Power",
->          "MetricName": "C7_Pkg_Residency"
-> +    },
-> +    {
-> +        "BriefDescription": "test metric",
-> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE * 
-> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
-> +        "MetricGroup": "Test",
-> +        "MetricName": "test_metric_inc"
->      }
-> ]
-> 
+> Think we can use cpumask_any_and_distribute() with later_mask for
+> deadline as well inside the for_each_domain loop as you do for rt below.
 
-It seems that the code in find_evsel_group() does not properly handle 
-the scenario of event alias matching different PMUs (as I already said).
+Ah, indeed.. I missed it because it is cpumask_first, instead of
+cpumask_any as with rt.
 
-So I got it working on top of "perf metricgroup: Fix uncore metric 
-expressions" with the following change:
+I folded the below.
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index d948a7f910cf..6293378c019c 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -213,7 +213,8 @@ static struct evsel *find_evsel_group(struct evlist 
-*perf_evlist,
-  		/* Ignore event if already used and merging is disabled. */
-  		if (metric_no_merge && test_bit(ev->idx, evlist_used))
-  			continue;
--		if (!has_constraint && ev->leader != current_leader) {
-+		if (!has_constraint && (!current_leader || 
-strcmp(current_leader->name, ev->leader->name))) {
-  			/*
-  			 * Start of a new group, discard the whole match and
-  			 * start again.
-@@ -279,7 +280,8 @@ static struct evsel *find_evsel_group(struct evlist 
-*perf_evlist,
-  			 * when then group is left.
-  			 */
-  			if (!has_constraint &&
--			    ev->leader != metric_events[i]->leader)
-+			    strcmp(ev->leader->name, metric_events[i]->leader->name))
-  				break;
-  			if (!strcmp(metric_events[i]->name, ev->name)) {
-  				set_bit(ev->idx, evlist_used);
-
-which gives for my test metric:
-
-./perf stat -v -M test_metric_inc sleep 1
-Using CPUID GenuineIntel-6-3D-4
-metric expr unc_cbo_xsnp_response.miss_xcore / 
-unc_cbo_xsnp_response.miss_eviction for test_metric_inc
-found event unc_cbo_xsnp_response.miss_eviction
-found event unc_cbo_xsnp_response.miss_xcore
-adding 
-{unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
-unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
-unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
-unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
-unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
-Control descriptor is not initialized
-unc_cbo_xsnp_response.miss_eviction: 595175 1001021311 1001021311
-unc_cbo_xsnp_response.miss_eviction: 592516 1001020037 1001020037
-unc_cbo_xsnp_response.miss_xcore: 39139 1001021311 1001021311
-unc_cbo_xsnp_response.miss_xcore: 38718 1001020037 1001020037
-
-Performance counter stats for 'system wide':
-
-         1,187,691      unc_cbo_xsnp_response.miss_eviction #     0.07 
-test_metric_inc
-            77,857      unc_cbo_xsnp_response.miss_xcore 
-
-
-       1.001068918 seconds time elapsed
-
-John
+---
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1981,8 +1981,8 @@ static int find_later_rq(struct task_str
+ 				return this_cpu;
+ 			}
+ 
+-			best_cpu = cpumask_first_and(later_mask,
+-							sched_domain_span(sd));
++			best_cpu = cpumask_any_and_distribute(later_mask,
++							      sched_domain_span(sd));
+ 			/*
+ 			 * Last chance: if a CPU being in both later_mask
+ 			 * and current sd span is valid, that becomes our
