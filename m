@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E152848DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CDF2848DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbgJFI4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:56:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45466 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFI4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:56:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 491D6AD08;
-        Tue,  6 Oct 2020 08:56:46 +0000 (UTC)
-Message-ID: <0b0de451147224657e5ac42d755c05447ee530b0.camel@suse.de>
-Subject: Re: INFO: task hung in hub_port_init
-From:   Oliver Neukum <oneukum@suse.de>
-To:     syzbot <syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com>,
-        coreteam@netfilter.org, davem@davemloft.net,
-        gregkh@linuxfoundation.org, gustavoars@kernel.org,
-        ingrassia@epigenesys.com, kaber@trash.net,
-        kadlec@blackhole.kfki.hu, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        niklas.soderlund+renesas@ragnatech.se, pablo@netfilter.org,
-        sergei.shtylyov@cogentembedded.com, syzkaller-bugs@googlegroups.com
-Date:   Tue, 06 Oct 2020 10:56:40 +0200
-In-Reply-To: <0000000000004831d405b0fc41d2@google.com>
-References: <0000000000004831d405b0fc41d2@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S1726133AbgJFI6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:58:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35286 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFI6O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 04:58:14 -0400
+Date:   Tue, 6 Oct 2020 10:58:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601974693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=hEJvtAL62ULulPeD/jHa+GvV5aMwJhSsP1ywkU7v+VI=;
+        b=PKeVFABfgPEXsRA2YZAPcDtc+bOop9XApl3EJ3Xu9kDpSLcne9ypDCoFtnxfec6u+e28H5
+        lnIhMElSUsJF9IBTAhN8WAggoCg2bWWwSSBWqSPQzgDHhajdUEpfrsAE5q2oovXa1XeiSA
+        OhE0YNET6dJPQP8ECPj6whamrOOr91wUvTafYcf/bg+1+qLdAKtC+u7dkVt949bc33oAjp
+        Q6RYh8nqRZ4QqXjCUFnBmyOYXCvL3pJJAIwtAd0Bd6ulCf6hmhRphbgcOwOwnev4PX/ByD
+        904IpKZRC+Pk61nYUCjJDmox/NLLP9srfmUSvD9lw9oDhKcMDHPfZ9Rbe7lUXA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601974693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=hEJvtAL62ULulPeD/jHa+GvV5aMwJhSsP1ywkU7v+VI=;
+        b=Vi8JoNxeOmOCltXe4uKFOCy8teLIbxGs5RVqhFpA2FRMBhMg5rxhDgEQQTb2LlqItNru6T
+        xKqryMhvvN+qJjBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.9-rc8-rt12
+Message-ID: <20201006085811.mtizrfff6k5r3me7@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, den 06.10.2020, 01:19 -0700 schrieb syzbot:
+Dear RT folks!
 
-Hi,
+I'm pleased to announce the v5.9-rc8-rt12 patch set. 
 
-> HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14c3b3db900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-> dashboard link: https://syzkaller.appspot.com/bug?extid=74d6ef051d3d2eacf428
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153bf5bd900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124c92af900000
-> 
-> The issue was bisected to:
-> 
-> commit 6dcf45e514974a1ff10755015b5e06746a033e5f
-> Author: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> Date:   Mon Jan 9 15:34:04 2017 +0000
-> 
->     sh_eth: use correct name for ECMR_MPDE bit
+Changes since v5.9-rc8-rt11:
 
-I am afraid this has bisected a race condition into neverland.
+  - The kernel test robot reported a few warnings due to the printk code
+    and a compile error in the powerpc architecture.
 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152bb760500000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=172bb760500000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=132bb760500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-> Fixes: 6dcf45e51497 ("sh_eth: use correct name for ECMR_MPDE bit")
-> 
-> INFO: task kworker/0:0:5 blocked for more than 143 seconds.
->       Not tainted 5.9.0-rc7-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:kworker/0:0     state:D stack:27664 pid:    5 ppid:     2 flags:0x00004000
-> Workqueue: usb_hub_wq hub_event
-> Call Trace:
->  context_switch kernel/sched/core.c:3778 [inline]
->  __schedule+0xec9/0x2280 kernel/sched/core.c:4527
->  schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+Known issues
+     - It has been pointed out that due to changes to the printk code the
+       internal buffer representation changed. This is only an issue if tools
+       like `crash' are used to extract the printk buffer from a kernel memory
+       image.
 
-By this time urb_dequeue() has been killed and has returned.
+The delta patch against v5.9-rc8-rt11 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.9/incr/patch-5.9-rc8-rt11-rt12.patch.xz
 
->  usb_kill_urb.part.0+0x197/0x220 drivers/usb/core/urb.c:696
->  usb_kill_urb+0x7c/0x90 drivers/usb/core/urb.c:691
->  usb_start_wait_urb+0x24a/0x2b0 drivers/usb/core/message.c:64
->  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
->  usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
->  hub_port_init+0x11ae/0x2d80 drivers/usb/core/hub.c:4689
->  hub_port_connect drivers/usb/core/hub.c:5140 [inline]
->  hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
->  port_event drivers/usb/core/hub.c:5494 [inline]
-> 
+You can get this release via the git tree at:
 
-This looks like it should.
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.9-rc8-rt12
 
-Which HC driver are you using for these tests? It looks like
-the HCD is not acting on urb_dequeue(), rather than a locking
-issue.
+The RT patch against v5.9-rc8 can be found here:
 
-	Regards
-		Oliver
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.9/older/patch-5.9-rc8-rt12.patch.xz
 
+The split quilt queue is available at:
 
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.9/older/patches-5.9-rc8-rt12.tar.xz
+
+Sebastian
+
+diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
+index c9a889880214e..d488311efab1f 100644
+--- a/arch/powerpc/kexec/crash.c
++++ b/arch/powerpc/kexec/crash.c
+@@ -311,9 +311,6 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
+ 	unsigned int i;
+ 	int (*old_handler)(struct pt_regs *regs);
+ 
+-	/* Avoid hardlocking with irresponsive CPU holding logbuf_lock */
+-	printk_nmi_enter();
+-
+ 	/*
+ 	 * This function is only called after the system
+ 	 * has panicked or is otherwise in a critical state.
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 8b74ff17b2eef..ee7008c436ca1 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1981,12 +1981,6 @@ asmlinkage int vprintk(const char *fmt, va_list args)
+ }
+ EXPORT_SYMBOL(vprintk);
+ 
+-int vprintk_default(const char *fmt, va_list args)
+-{
+-	return vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, 0, fmt, args);
+-}
+-EXPORT_SYMBOL_GPL(vprintk_default);
+-
+ /**
+  * printk - print a kernel message
+  * @fmt: format string
+@@ -2784,7 +2778,7 @@ static int __init init_printk_kthread(void)
+ }
+ late_initcall(init_printk_kthread);
+ 
+-static int vprintk_deferred(const char *fmt, va_list args)
++__printf(1, 0) static int vprintk_deferred(const char *fmt, va_list args)
+ {
+ 	return vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, 0, fmt, args);
+ }
+diff --git a/localversion-rt b/localversion-rt
+index 05c35cb580779..6e44e540b927b 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt11
++-rt12
