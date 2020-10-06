@@ -2,137 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1664284652
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE48E284656
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgJFGxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
+        id S1727110AbgJFGx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgJFGxR (ORCPT
+        with ESMTP id S1725962AbgJFGx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:53:17 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F734C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:53:17 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l15so1526668wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:53:16 -0700 (PDT)
+        Tue, 6 Oct 2020 02:53:26 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F13C0613A7;
+        Mon,  5 Oct 2020 23:53:26 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id d66so392959ill.0;
+        Mon, 05 Oct 2020 23:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=aXzg8jiyuQTiAqmu/XuvmpavXYdKtRsp/UTQZG95Smw=;
-        b=pPgf1JCfjmJPkigztvFLycNQEqLNvGaDmU8v4vDNDOiqpolMjDdoAlZCwzZ0TezAem
-         96XB+H5QoLZUFzmiGUv4qpJSCrUVIwx+iNfdvku0YZm558HIKBnN2z0gypIu+70WEcRX
-         BcflYfuhTXwiHO0G+nq+RVT93rOV3mzT0xnpIdzpCKcb8Y8kw3X59Sxdk+Wfdudc+GEZ
-         YmWBUg8YoRgD5S6G+vYhrKqz9mdnoVB83wAnDiavTXcrhpl/10l5y+Y3US13xEc9wTfC
-         xLavQGcOM6fAXnKN75j9qi7OpLSrtAkwyIqrmuv9ML+gE9eR9kHn9J++EtZ4LLvuanla
-         5UYg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z0+dp4f3ePtjH+bvz+fgSMrbzLb2G05YyXJcIAi4CoM=;
+        b=tIspH0Wvzoky/Yo8C9WKQ/cq6Q2KSVKQ814aQl/tzXcgMq7/nX7W0oxmfTlKSxhR5g
+         I0c0nX8JdqwIakcIruSrwMU7zEt3NXlm8MjmB5HU/tGuklfcQS6zW9F21wql6umjSUSk
+         uWL8pxjFyJds9IkEENhyaiSqiR25a0ZMgbK6BaE7CP/NrjbreQ3FL2DMAlWd3d1r7LO1
+         fAOuysta+Ija1x/mlSWlsVYwFywJLw4i81kuyLRLbN4yNPU6GnXejRAtwcpgYeUKDMK6
+         RrYsGzK2HcmQx2vPUykVXR45GW4SLFkCkYELrHhaJGHHxESm4CMp134TPDkvdTVVOLXA
+         IlgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aXzg8jiyuQTiAqmu/XuvmpavXYdKtRsp/UTQZG95Smw=;
-        b=q4BxSasmIbf2Mag2DA665XxSmptuP79g6raDs5zG+OgiwFT14XJT8OLC4tCejH+cb6
-         xc1JINRDU/LTc9F2pNxT/e54e0mFQcpBcvRN9zb4vXhWA2INKQ9X6ogPviL+mJAVDvQo
-         vPxpTWiQVapCk1LYTXTBzjzSYNKftHfnxEEV9wEwqCPLYSvItDccZVIYSstCEI/lrFOU
-         nmZ2blFUZH7LPhzaiP8vhxkpg7MTMawaD0QodY/iKOAPE+aJZHsiqZNIcivPi/wjs624
-         sc8k+uMfjCgEBEW0nN/aqASi7j6r4OjkRohxNX/Z2NHw8JDecD4cP/V9xH3LOyb2JB0D
-         XcgA==
-X-Gm-Message-State: AOAM531YrWtBctDLkw52++Ur0cat34xW/824ZsTKABZNdk1XL3CcnhgW
-        CFL9pwmHU191ZeBDe9paeCjusw==
-X-Google-Smtp-Source: ABdhPJy0df4K8D/KdPGMoFwrdfIEx8/yLi+cOlJ/BcG32LpXoy0TYcL6DFd8rywPZp9IvWXyo8eamg==
-X-Received: by 2002:a05:600c:216:: with SMTP id 22mr2954681wmi.149.1601967195504;
-        Mon, 05 Oct 2020 23:53:15 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id l11sm1893529wrt.54.2020.10.05.23.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 23:53:14 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 07:53:13 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Brunner <Michael.Brunner@kontron.com>
-Cc:     "mibru@gmx.de" <mibru@gmx.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: kempld-core: Mark kempld-acpi_table as
- __maybe_unused
-Message-ID: <20201006065313.GW6148@dell>
-References: <37c55c13f9042dde06fd67c829b06765286d0580.camel@kontron.com>
- <20201002070134.GR6148@dell>
- <b7fb20174aa7fd8a15132b6de679498fe0b18fd1.camel@kontron.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z0+dp4f3ePtjH+bvz+fgSMrbzLb2G05YyXJcIAi4CoM=;
+        b=TdOJeXVJjXXF1OKyX0EhfM8SFjtPH8p97iOuJy21debhhiwb2Z0bdn2sIHlCaGI8Gr
+         deibCDdj8RZGkjNzMTbGLTOBjJKSlUm63Glb+u7A8R8LFxggdSfZLvfEF2pnbdF2r9j3
+         HXv5u/I6zYCTZKrUSXc1YBh2KxGG+2MeIfSdE166VKNHqeU+H0VGJ7FsGH3cvVDMmF9I
+         JrTUWTHTywbcoAvZVqzBgPNZGLs1Cdh71PuwMRqp95A2xFOMMc7kDahMckUIbVakGm7k
+         vhjA0LLxzQFpw3Atw8ALvWCRk54kLme1tZm0+ACTW39rXZcApSum/umdtYAO2LkZ7G4a
+         ep6w==
+X-Gm-Message-State: AOAM531kFtvem50YRNuILobdJtfnO3Zh104oxgdyXPd7Cs00icwQyxPR
+        WmobJ1wXZZjKUJoy2jSGAsX/411RIWnxvbkkq3cENM4Uryg=
+X-Google-Smtp-Source: ABdhPJw8QRmKhmDepZiLjWxV+Z6JBqnX0TuFfhHXXXnKJ0RZrcV37wZLtmaAZKuRuiSs8X74eibWondUY4YjBDtxP2o=
+X-Received: by 2002:a92:5882:: with SMTP id z2mr2492627ilf.137.1601967205601;
+ Mon, 05 Oct 2020 23:53:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b7fb20174aa7fd8a15132b6de679498fe0b18fd1.camel@kontron.com>
+References: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
+ <CAOQ4uxjot9f=XZEchRuNopVyZtKGzp7R7j5i2GxO_OuxUE8KMg@mail.gmail.com> <20201005224642.0c23dbb66a637c7581be725f@virtuozzo.com>
+In-Reply-To: <20201005224642.0c23dbb66a637c7581be725f@virtuozzo.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 6 Oct 2020 09:53:15 +0300
+Message-ID: <CAOQ4uxj=hd+NP6g5P8+Cj71AUnoZpWk8x=SvAZhDv45ApY0Emw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/1] overlayfs: C/R enhancments (RFC)
+To:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Andrei Vagin <avagin@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        David Howells <dhowells@redhat.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020, Michael Brunner wrote:
+On Mon, Oct 5, 2020 at 10:47 PM Alexander Mikhalitsyn
+<alexander.mikhalitsyn@virtuozzo.com> wrote:
+>
+> Hi Amir,
+>
+> On Mon, 5 Oct 2020 10:56:50 +0300
+> Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> > On Sun, Oct 4, 2020 at 10:25 PM Alexander Mikhalitsyn
+> > <alexander.mikhalitsyn@virtuozzo.com> wrote:
+> > >
+> > > Some time ago we discussed about the problem of Checkpoint-Restoring
+> > > overlayfs mounts [1]. Big thanks to Amir for review and suggestions.
+> > >
+> > > Brief from previous discussion.
+> > > Problem statement: to checkpoint-restore overlayfs mounts we need
+> > > to save overlayfs mount state and save it into the image. Basically,
+> > > this state for us it's just mount options of overlayfs mount. But
+> > > here we have two problems:
+> > >
+> > > I. during mounting overlayfs user may specify relative paths in upperdir,
+> > > workdir, lowerdir options
+> > >
+> > > II. also user may unmount mount from which these paths was opened during mounting
+> > >
+> > > This is real problems for us. My first patch was attempt to address both problems.
+> > > 1. I've added refcnt get for mounts from which overlayfs was mounted.
+> > > 2. I've changed overlayfs mountinfo show algorithm, so overlayfs started to *always*
+> > > show full paths for upperdir,workdir,lowerdirs.
+> > > 3. I've added mnt_id show-time only option which allows to determine from which mnt_id
+> > > we opened options paths.
+> > >
+> > > Pros:
+> > > - we can determine full information about overlayfs mount
+> > > - we hold refcnt to mount, so, user may unmount source mounts only
+> > > with lazy flag
+> > >
+> > > Cons:
+> > > - by adding refcnt get for mount I've changed possible overlayfs usecases
+> > > - by showing *full* paths we can more easily reache PAGE_SIZE limit of
+> > > mounts options in procfs
+> > > - by adding mnt_id show-only option I've added inconsistency between
+> > > mount-time options and show-time mount options
+> > >
+> > > After very productive discussion with Amir and Pavel I've decided to write new
+> > > implementation. In new approach we decided *not* to take extra refcnts to mounts.
+> > > Also we decided to use exportfs fhandles instead of full paths. To determine
+> > > full path we plan to use the next algo:
+> > > 1. Export {s_dev; fhandle} from overlayfs for *all* sources
+> > > 2. User open_by_handle_at syscall to open all these fhandles (we need to
+> > > determine mount for each fhandle, looks like we can do this by s_dev by linear
+> > > search in /proc/<pid>/mountinfo)
+> > > 3. Then readlink /proc/<pid>/fd/<opened fd>
+> > > 4. Dump this full path+mnt_id
+> > >
+> >
+> > Hi Alex,
+> >
+> > The general concept looks good to me.
+> > I will not provide specific comment on the implementation (it looks
+> > fine) until the
+> > concept API is accepted by the maintainer.
+> >
+> > The main thing I want to make sure is that if we add this interface it can
+> > serve other use cases as well.
+>
+> Yes, let's create universal interface.
+>
 
-> On Fri, 2020-10-02 at 08:01 +0100, Lee Jones wrote:
-> > On Thu, 01 Oct 2020, Michael Brunner wrote:
-> > 
-> > > The Intel 0-DAY CI Kernel Test Service reports an unused variable
-> > > warning when compiling with clang for PowerPC:
-> > > 
-> > > > > drivers/mfd/kempld-core.c:556:36: warning: unused variable
-> > > > > 'kempld_acpi_table' [-Wunused-const-variable]
-> > >    static const struct acpi_device_id kempld_acpi_table[] = {
-> > > 
-> > > The issue can be fixed by marking kempld_acpi_table as
-> > > __maybe_unused.
-> > > 
-> > > Fixes: e8299c7313af ("[PATCH] mfd: Add ACPI support to Kontron PLD
-> > > driver")
-> > > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
-> > > ---
-> > >  drivers/mfd/kempld-core.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
-> > > index 1dfe556df038..273481dfaad4 100644
-> > > --- a/drivers/mfd/kempld-core.c
-> > > +++ b/drivers/mfd/kempld-core.c
-> > > @@ -553,7 +553,7 @@ static int kempld_remove(struct platform_device
-> > > *pdev)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > -static const struct acpi_device_id kempld_acpi_table[] = {
-> > > +static const struct acpi_device_id __maybe_unused
-> > > kempld_acpi_table[] = {
-> > >  	{ "KEM0001", (kernel_ulong_t)&kempld_platform_data_generic },
-> > >  	{}
-> > >  };
-> > 
-> > This is not the right fix.  Better just to compile it out completely
-> > in these circumstances.  I already have a fix for this in soak.
-> 
-> Ok - thank you for the other fix you submitted!
-> 
-> But just out of curiosity - in process/coding-style.rst is written that
-> __maybe_unused should be preferred over wrapping in preprocessor
-> conditionals, if a function or variable may potentially go unused in a
-> particular configuration. So why is my patch not the right one here? At
-> least in my tests it seemed to solve the issue.
+Note that this universal interface contradicts the direction of sysfs
+which is a convenient way for getting filesystem instance info, but
+not object info.
 
-It's a bone of contention for sure.  In these kinds of scenarios
-(i.e. ACPI and OF tables) it is way more common to wrap them:
+> >
+> > During my talk on LPC, I got a similar request from two developers for two
+> > different use cases. They wanted a safe method to iterate "changes
+> > since baseline"
+> > from either within the container or from the host.
+>
+> This discussions was on lkml or in private room?
+>
 
-$ git grep -B3 'acpi_device_id\|of_device_id' | grep 'CONFIG_ACPI\|CONFIG_OF' | wc -l
-596
-$ git grep -B3 'acpi_device_id\|of_device_id' | grep __maybe_unused | wc -l
-63
+The containers track:
+https://youtu.be/fSyr_IXM21Y?t=4939
 
-Parsing them out completely, also has the benefit of saving space,
-reducing the size of the finalised binary.
+We continued in private channels, but the general idea
+is an API to provide some insight about underlying layers
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> >
+> > Your proposed API is a step in the direction for meeting their requirement.
+> > The major change is that ioctl (or whatever method) should expose the
+> > layers topology of a specific object, not only the overlay instance.
+> >
+> > For C/R you would query the layers topology of the overlay root dir.
+> >
+> > My comments of the specific methods below are not meant to
+> > object to the choice of ioctl, but they are meant to give the alternative
+> > a fair chance. I am kind of leaning towards ioctl myself.
+> >
+> > > But there is question. How to export this {s_dev; fhandle} from kernel to userspace?
+> > > - We decided not to use procfs.
+> >
+> > Why not?
+> > C/R already uses procfs to export fhandle for fanotify/inotify
+> > I kind of like the idea of having /sys/fs/overlay/instances etc.
+> > It could be useful to many things.
+>
+> Ah, sorry. For some reason I've decided that we excluded procfs/sysfs option :)
+> Let's take this option into account too.
+>
+> >
+> > > - Amir proposed solution - use xattrs. But after diving into it I've meet problem
+> > > where I can set this xattrs?
+> > > If I set this xattrs on overlayfs dentries then during rsync, or cp -p=xattr we will copy
+> > > this temporary information.
+> >
+> > No you won't.
+> > rsync, cp will only copy xattrs listed with listxattr.
+> > Several filesystems, such as cifs and nfs export "object properties"
+> > via private xattrs
+> > that are not listed in listxattr (e.g. CIFS_XATTR_CIFS_ACL).
+> > You are not limited in what you can do in the "trusted.overlay" namespace, for
+> > example "trusted.overlay.layers.0.fh"
+> >
+> > The advantage is that it is very easy to implement and requires
+> > less discussions about ABI, but I agree it does feel a bit like a hack.
+>
+> Ack. I can try to write some draft implementation with xattrs.
+>
+
+You don't have to write code before getting an ack from
+maintainer on the design, but fine by me.
+
+> >
+> > > - ioctls? (this patchset implements this approach)
+> > > - fsinfo subsystem (not merged yet) [2]
+> > >
+> > > Problems with ioctls:
+> > > 1. We limited in output data size (16 KB AFAIK)
+> > > but MAX_HANDLE_SZ=128(bytes), OVL_MAX_STACK=500(num lowerdirs)
+> > > So, MAX_HANDLE_SZ*OVL_MAX_STACK = 64KB which is bigger than limit.
+> > > So, I've decided to give user one fhandle by one call. This is also
+> > > bad from the performance point of view.
+> > > 2. When using ioctls we need to have *fixed* size of input and output.
+> > > So, if MAX_HANDLE_SZ will change in the future our _IOR('o', 2, struct ovl_mnt_opt_fh)
+> > > will also change with struct ovl_mnt_opt_fh.
+> > >
+> >
+> > The choice of API with fixed output size for a variable length info seems weird.
+>
+> Yes, and I've proposed option with ioctl syscall where we open file descriptor
+> instead of doing direct copy_from_user/copy_to_user.
+>
+> >
+> > I am tempted to suggest extending name_to_handle_at(), for example
+> > name_to_handle_at(ovl_root_fd, path, &fhandle, &layer_id, AT_LAYER)
+> >
+> > Where layer_id can be input/output arg.
+> >
+> > But I acknowledge this is going to be a much harder sell...
+>
+> Looks interesting. I'll need to dive and think about it.
+>
+
+This API change has a lot more stakeholders.
+I think it would be wiser for you to stay within the overlayfs boundaries.
+
+Thanks,
+Amir.
