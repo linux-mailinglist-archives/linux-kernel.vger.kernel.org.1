@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF2E284B86
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225DA284B87
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgJFMUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S1726487AbgJFMU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbgJFMUv (ORCPT
+        with ESMTP id S1726182AbgJFMU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:20:51 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C09C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 05:20:50 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id j136so2870869wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 05:20:50 -0700 (PDT)
+        Tue, 6 Oct 2020 08:20:58 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CABC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 05:20:58 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q5so2135075wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 05:20:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=xF/1RSp7bqmtycW1zGKYYAA7v8YwsJOV1VWvLd51HvY=;
-        b=JNyxWDqWBJo/CJXTGKT3YpwfrRWtPB4ugqyRr1olCTfp3iwejoyRXJ+MNVy5D+F6t7
-         fdTkqXxeWNNoa97xO2nzoK/DwcjRHBtG3ICdkcaBK47O2ri8wGfGGCNdtoZD9SARwm5D
-         LTrKwFRg0j23t6TkXX/7XfecgS9QeYbUtC22nKTabsE5b9LrairpLN1lqhWjvJ0Dc5rM
-         WzS+mafPqZJV/d/5Rkt+BYrtTFrIrCSDdvyu3oRJ4WNPWq9botdJXVmhqz1c/09yZZj2
-         gnegKviwWZ0ygOWa9lM4sOGjWVldp83ar7kFclo2/HEUX7ZAAq/3VT+xYXBv+UROX8NZ
-         nR7g==
+        bh=MYjkJSPSiLs6Kw7doNztBkznwqoyjPfBbc2ahKMdbtE=;
+        b=d0uuVUaiKVZo/uJHIyV8T3AfP/3Pjv8oIT6c+JBXSxUMFZIWIPJG9jNjIoEwclkD1b
+         ZzqG8di/PI3Om7OljkoAhLofROh0YIcdtC5ID7iqcNfeXvgNjldYNUA0Nl4quykHf9bU
+         TZmw4ai/IFmhfoJYwB8/xjN9H63oEOlglJegBnGhKIhimqSyNNaMbZwbgzJwrPTnB0yH
+         AdipZ3UrdvnYwJhoDhs/Cq7I7sSnibs02LngNyxbi7Pcd8kz5HKH1NdRz7n8eaJd5gvu
+         YcaJKqBWmQyt2kzVmYjk33/ppeejixCH4R490fJ5wWYuR6mscfOcEFH2o31Dhdm5diQl
+         GXWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=xF/1RSp7bqmtycW1zGKYYAA7v8YwsJOV1VWvLd51HvY=;
-        b=pUQ3+x8/wU0hnlrpIv/VkcFHG8j/3Xylu/OcxTnE5jEwwA13+K9B8Fg87HgrD0B8/Q
-         rUvWFEAkTXl/YR49Aj57/1j47UTiPCoh5tvykS55k+p2zCP+EmWTtllHrZF1HvgtcXmq
-         Jz3I3mihrmZSt2Fz6pRKZLFq+5x7iOfLnp7Dva5BWodttFdf2D7f45LELtZ3m7rmQOP9
-         0yyeU1LQRoe2xHA8s44b3cCHWQJFvle7Yp3PJRnSArWd1Qi/lQuu5v9MmLoQADit6yTO
-         EMo6fZbU3I/Ye0SK8JXqMxuEiB7yAzfIjBo49CTqXU0DN0U+Yo5EoFGNZm2xtcfmaTGi
-         /SAw==
-X-Gm-Message-State: AOAM531nScs+A5uGf1ur1ZiTZCPM6P99u+civk2meLwfAXswxWjp0ywx
-        aJy22VsCZ+8eAJgAjDlgXeJarw==
-X-Google-Smtp-Source: ABdhPJzvP7GVBRXo9QjGkkWJc/k26ot9SDmzIJoB2oPy+E2mruOf7vHdeBnkofFpvhOLjKe/bdpYLQ==
-X-Received: by 2002:a1c:66d5:: with SMTP id a204mr4412406wmc.62.1601986849332;
-        Tue, 06 Oct 2020 05:20:49 -0700 (PDT)
+        bh=MYjkJSPSiLs6Kw7doNztBkznwqoyjPfBbc2ahKMdbtE=;
+        b=CxRMCLrM/sM/gsxwxZ/Z0JhgF1ceK9YLOHa2wY7vYrdVHURrI0EkcGAvvoqXKjal+w
+         SXN0QbUgPDTx58AXbGV97HD2Z9eH4p0Ue3oAMQkJkPTBQ7w6mbZqB9E3MUjgRIlBTWKz
+         S/h8H+zDSx7l5NsC1actfvgQ1VAlC4PUiwowM2bL5Z08K4ho6Y3WOvalaL/lBhwlw8eX
+         hpsLDIiT79ndOJGr5/TySv/pGQRj5eSsvTgjVoq/nSBty7yvYdyJ0tjJw8BkEqVa39/K
+         cbs4j3mO6fOSp+3e5hxxatiJD1B/JbjmRaq+AxNtccPlk5NVOPxZZbaQtw1dWfL9Pwaf
+         Qn7g==
+X-Gm-Message-State: AOAM530CGLLnZaF/r2u9OtK5FjQgiJhP3oMwBaPGZzllmrSq3kRRPve7
+        Ry3MQGfe++8ZTOXGJw5mFsuakg==
+X-Google-Smtp-Source: ABdhPJyXhl3+UEYrgeX/RLGRc1kcYm8V80cm0o4VixNQkHinRoYlDMr7n4MLfunVPq0tqCFcYxcpjQ==
+X-Received: by 2002:a1c:9dcf:: with SMTP id g198mr4461277wme.42.1601986856459;
+        Tue, 06 Oct 2020 05:20:56 -0700 (PDT)
 Received: from localhost.localdomain (lns-bzn-59-82-252-130-8.adsl.proxad.net. [82.252.130.8])
-        by smtp.gmail.com with ESMTPSA id s19sm3742521wmc.41.2020.10.06.05.20.48
+        by smtp.gmail.com with ESMTPSA id s19sm3742521wmc.41.2020.10.06.05.20.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 05:20:48 -0700 (PDT)
+        Tue, 06 Oct 2020 05:20:56 -0700 (PDT)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com
 Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
         linux-pm@vger.kernel.org, rui.zhang@intel.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH 1/4] units: Add Watt units
-Date:   Tue,  6 Oct 2020 14:20:21 +0200
-Message-Id: <20201006122024.14539-2-daniel.lezcano@linaro.org>
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH 2/4] Documentation/powercap/dtpm: Add documentation for dtpm
+Date:   Tue,  6 Oct 2020 14:20:22 +0200
+Message-Id: <20201006122024.14539-3-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201006122024.14539-1-daniel.lezcano@linaro.org>
 References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
@@ -64,28 +63,252 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As there are the temperature units, let's add the Watt macros definition.
+The dynamic thermal and power management is a technique to dynamically
+adjust the power consumption of different devices in order to ensure a
+global thermal constraint.
+
+An userspace daemon is usually monitoring the temperature and the
+power to take immediate action on the device.
+
+The DTPM framework provides an unified API to userspace to act on the
+power.
+
+Document this framework.
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- include/linux/units.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/power/powercap/dtpm.rst | 222 ++++++++++++++++++++++++++
+ 1 file changed, 222 insertions(+)
+ create mode 100644 Documentation/power/powercap/dtpm.rst
 
-diff --git a/include/linux/units.h b/include/linux/units.h
-index aaf716364ec3..92c234e71cab 100644
---- a/include/linux/units.h
-+++ b/include/linux/units.h
-@@ -4,6 +4,10 @@
- 
- #include <linux/kernel.h>
- 
-+#define MILLIWATT_PER_WATT	1000L
-+#define MICROWATT_PER_MILLIWATT	1000L
-+#define MICROWATT_PER_WATT	1000000L
+diff --git a/Documentation/power/powercap/dtpm.rst b/Documentation/power/powercap/dtpm.rst
+new file mode 100644
+index 000000000000..ce11cf183994
+--- /dev/null
++++ b/Documentation/power/powercap/dtpm.rst
+@@ -0,0 +1,222 @@
++==========================================
++Dynamic Thermal Power Management framework
++==========================================
 +
- #define ABSOLUTE_ZERO_MILLICELSIUS -273150
- 
- static inline long milli_kelvin_to_millicelsius(long t)
++On the embedded world, the complexity of the SoC leads to an
++increasing number of hotspots which need to be monitored and mitigated
++as a whole in order to prevent the temperature to go above the
++normative and legally stated 'skin temperature'.
++
++Another aspect is to sustain the performance for a given power budget,
++for example virtual reality where the user can feel dizziness if the
++performance is capped while a big CPU is processing something else. Or
++reduce the battery charging because the dissipated power is too high
++compared with the power consumed by other devices.
++
++The userspace is the most adequate place to dynamically act on the
++different devices by limiting their power given an application
++profile: it has the knowledge of the platform.
++
++The Dynamic Thermal Power Management (DTPM) is a technique acting on
++the device power by limiting and/or balancing a power budget among
++different devices.
++
++The DTPM framework provides an unified interface to act on the
++device power.
++
++===========
++1. Overview
++===========
++
++The DTPM framework relies on the powercap framework to create the
++powercap entries in the sysfs directory and implement the backend
++driver to do the connection with the power manageable device.
++
++The DTPM is a tree representation describing the power constraints
++shared between devices, not their physical positions.
++
++The nodes of the tree are a virtual description aggregating the power
++characteristics of the children nodes and their power limitations.
++
++The leaves of the tree are the real power manageable devices.
++
++For instance:
++
++  SoC
++   |
++   `-- pkg
++	|
++	|-- pd0 (cpu0-3)
++	|
++	`-- pd1 (cpu4-5)
++
++* The pkg power will be the sum of pd0 and pd1 power numbers.
++
++  SoC (400mW - 3100mW)
++   |
++   `-- pkg (400mW - 3100mW)
++	|
++	|-- pd0 (100mW - 700mW)
++	|
++	`-- pd1 (300mW - 2400mW)
++
++* When the nodes are inserted in the tree, their power characteristics
++  are propagated to the parents.
++
++  SoC (600mW - 5900mW)
++   |
++   |-- pkg (400mW - 3100mW)
++   |    |
++   |    |-- pd0 (100mW - 700mW)
++   |    |
++   |    `-- pd1 (300mW - 2400mW)
++   |
++   `-- pd2 (200mW - 2800mW)
++
++* Each node have a weight on a 2^10 basis reflecting the percentage of
++  power consumption along the siblings.
++
++  SoC (w=1024)
++   |
++   |-- pkg (w=538)
++   |    |
++   |    |-- pd0 (w=231)
++   |    |
++   |    `-- pd1 (w=794)
++   |
++   `-- pd2 (w=486)
++
++   Note the sum of weights at the same level are equal to 1024.
++
++* When a power limitation is applied to a node, then it is distributed
++  along the children given their weights. For example, if we set a
++  power limitation of 3200mW at the 'SoC' root node, the resulting
++  tree will be.
++
++  SoC (w=1024) <--- power_limit = 3200mW
++   |
++   |-- pkg (w=538) --> power_limit = 1681mW
++   |    |
++   |    |-- pd0 (w=231) --> power_limit = 378mW
++   |    |
++   |    `-- pd1 (w=794) --> power_limit = 1303mW
++   |
++   `-- pd2 (w=486) --> power_limit = 1519mW
++
++====================
++1.1 Flat description
++====================
++
++A root node is created and it is the parent of all the nodes. This
++description is the simplest one and it is supposed to give to
++userspace a flat representation of all the devices supporting the
++power limitation without any power limitation distribution.
++
++============================
++1.2 Hierarchical description
++============================
++
++The different devices supporting the power limitation are represented
++hierarchically. There is one root node, all intermediate nodes are
++grouping the child nodes which can be intermediate nodes also or real
++devices.
++
++The intermediate nodes aggregate the power information and allows to
++set the power limit given the weight of the nodes.
++
++================
++2. Userspace API
++================
++
++As stated in the overview, the DTPM framework is built on top of the
++powercap framework. Thus the sysfs interface is the same, please refer
++to the powercap documentation for further details.
++
++ * power_uw: Instantaneous power consumption. If the node is an
++   intermediate node, then the power consumption will be the sum of all
++   children power consumption.
++
++ * max_power_range_uw: The power range resulting of the maximum power
++   minus the minimum power.
++
++ * name: The name of the node. This is implementation dependant. Even
++   if it is not recommended for the userspace, several nodes can have
++   the same name.
++
++ * constraint_X_name: The name of the constraint.
++
++ * constraint_X_max_power_uw: The maximum power limit to be applicable
++   to the node.
++
++ * constraint_X_power_limit_uw: The power limit to be applied to the
++   node. If the value contained in constraint_X_max_power_uw is set,
++   the constraint will be removed.
++
++ * constraint_X_time_window_us: The meaning of this file will depend
++   on the constraint number.
++
++===============
++2.1 Constraints
++===============
++
++ * Constraint 0: The power limitation is immediately applied, without
++   limitation in time.
++
++=============
++3. Kernel API
++=============
++
++============
++3.1 Overview
++============
++
++The DTPM framework has no power limiting backend support. It is
++generic and provides a set of API to let the different drivers to
++implement the backend part for the power limitation and create a the
++power constraints tree.
++
++It is up to the platform to provide the initialization function to
++allocate and link the different nodes of the tree.
++
++A special macro has the role of declaring a node and the corresponding
++initialization function via a description structure. This one contains
++an optional parent field allowing to hook different devices to an
++already existing tree at boot time.
++
++struct dtpm_descr my_descr = {
++	.name = "my_name",
++	.init = my_init_func,
++};
++
++DTPM_DECLARE(my_descr);
++
++The nodes of the DTPM tree are described with dtpm structure. The
++steps to add a new power limitable device is done in three steps:
++
++ * Allocate the dtpm node
++ * Set the power number of the dtpm node
++ * Register the dtpm node
++
++The registration of the dtpm node is done with the powercap
++ops. Basically, it must implements the callbacks to get and set the
++power and the limit.
++
++Alternatively, if the node to be inserted is an intermediate one, then
++a simple function to insert it as a future parent is available.
++
++If a device has its power characteristics changing, then the tree must
++be updated with the new power numbers and weights.
++
++================
++3.2 Nomenclature
++================
++
++ * dtpm_alloc() : Allocate and initialize a dtpm structure
++
++ * dtpm_register() : Add the dtpm node to the tree
++
++ * dtpm_register_parent() : Add an intermediate node
++
++ * dtpm_unregister() : Remove the dtpm node from the tree
++
++ * dtpm_update_power() : Update the power characteristics of the dtpm node
 -- 
 2.17.1
 
