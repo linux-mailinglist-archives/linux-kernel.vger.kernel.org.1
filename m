@@ -2,82 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9735285439
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976CC285440
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgJFV4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:56:37 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:44665 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgJFV4h (ORCPT
+        id S1727054AbgJFWAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 18:00:17 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:42635 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726248AbgJFWAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:56:37 -0400
-Received: by mail-oi1-f195.google.com with SMTP id x62so199730oix.11;
-        Tue, 06 Oct 2020 14:56:36 -0700 (PDT)
+        Tue, 6 Oct 2020 18:00:17 -0400
+Received: by mail-oo1-f65.google.com with SMTP id l18so104194ooa.9;
+        Tue, 06 Oct 2020 15:00:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bglMfaGCPZoIC769u/qzkj7/UCSVgyZAU0TAtaZX0ic=;
-        b=PNxfwSJtWr5vChKNJuvYikUsxqK5Ma37JsRjlu9J9xy1g+LgVEEUEI989etqgyUqZZ
-         JXM5Nk4PMj9OkMa0iX812rTxnGMVALtABkvFZ0tyGqPd+wfIMOJAnGrojtXD7GdD2lLe
-         tehy732F/wVD9ndnCnngMuYRMMYqiYaok4lSu0m6zn6HKkcCA0ejxy84zseaB/nTZC1K
-         OzuiW9nDEToZtS93WM856E/lniyozCNztCjHcBTpLwUB+mrHyd8RAq3tiRplE4TpKNnL
-         59rcsbI2vUXVYshKZLYreoP3EHqvFuR9gJG2P6pWP2Ekrt57KAOcBMgxdN4D5GfiDYXA
-         d0wQ==
-X-Gm-Message-State: AOAM5331E+SfkXqwd7jVp+uS4sPvSkmcEn9mth187kqqbOwXJZPOgLQx
-        EiyCPeR8ab9UTTCx+17wPg==
-X-Google-Smtp-Source: ABdhPJw9X+yy5sd6g0SoJzD18HZAK6goRNyUoFypAxbzPgCKrSy5wep/PHIMRmMtvq9FD8Ds5sYzUg==
-X-Received: by 2002:a05:6808:b24:: with SMTP id t4mr194181oij.93.1602021396142;
-        Tue, 06 Oct 2020 14:56:36 -0700 (PDT)
+        bh=Z2hvVkSpnHINzNhjhUjzJuQ0tG2BYYHBLjAIAeoL0TQ=;
+        b=M7zubysSj6BwvkJ5Zf7l+umy4xvZJdE9tdGWJCcqpe+wLYTMFVauubqiQRn58qzENo
+         j70TpG+V4ikpugK/L/5k9O2ipJKMuFrb2KzIznpzmtLh6K9TKX5ZdQMBxjCJZq6eZdEE
+         A8L2kFCiMA6ZeoQDNr3EJmgrLYnP9wbEepIcOc6Sm8ICsBxVQmG78TMhYwz9ft0t9FHU
+         EF2hrJ2QYWZ9P6MBTfYz8mGG+eeFxdIaPcFlkAOIj+nWu5gGaQuJd0xcxIK5435XVmzx
+         Q7ZTy9fejOoTOvevK3yAiLqX7z1Rhso8P7SRmPjpKbpIj6OFEuANTl+ykYGixDiU4fB4
+         45Lw==
+X-Gm-Message-State: AOAM53057ubVGYbkCxhLzebUhzOKsCLtJXNh/Pf/a6N0mhwvq8xDtjbm
+        OvgkEcaN/RUh63sncS6IxQ==
+X-Google-Smtp-Source: ABdhPJwftGpL2HYPjAt+Z1eQOcxnHz4QpTbvxtaOM3xgT1/4qgIW1HO6EhL66hoTavvtO3KwGn4Pyw==
+X-Received: by 2002:a05:6820:22c:: with SMTP id j12mr104968oob.87.1602021616239;
+        Tue, 06 Oct 2020 15:00:16 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m15sm187545ooj.10.2020.10.06.14.56.34
+        by smtp.gmail.com with ESMTPSA id o205sm119360oig.8.2020.10.06.15.00.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:56:35 -0700 (PDT)
-Received: (nullmailer pid 2920605 invoked by uid 1000);
-        Tue, 06 Oct 2020 21:56:34 -0000
-Date:   Tue, 6 Oct 2020 16:56:34 -0500
+        Tue, 06 Oct 2020 15:00:15 -0700 (PDT)
+Received: (nullmailer pid 2926434 invoked by uid 1000);
+        Tue, 06 Oct 2020 22:00:14 -0000
+Date:   Tue, 6 Oct 2020 17:00:14 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     poeschel@lemonage.de
-Cc:     Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        allen <allen.chen@ite.com.tw>, Lubomir Rintel <lkundrak@v3.sk>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Willy Tarreau <w@1wt.eu>, Daniel Palmer <daniel@0x0f.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 31/32] auxdisplay: lcd2s DT binding doc
-Message-ID: <20201006215634.GA2920548@bogus>
-References: <20201005130128.3430804-1-poeschel@lemonage.de>
- <20201005130128.3430804-19-poeschel@lemonage.de>
+To:     Bogdan Togorean <bogdan.togorean@analog.com>
+Cc:     dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drm: dt-bindings: adi: axi-hdmi-tx: Add DT bindings
+ for axi-hdmi-tx
+Message-ID: <20201006220014.GA2920793@bogus>
+References: <20201005141226.180655-1-bogdan.togorean@analog.com>
+ <20201005141226.180655-2-bogdan.togorean@analog.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005130128.3430804-19-poeschel@lemonage.de>
+In-Reply-To: <20201005141226.180655-2-bogdan.togorean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020 15:01:27 +0200, poeschel@lemonage.de wrote:
-> From: Lars Poeschel <poeschel@lemonage.de>
+On Mon, Oct 05, 2020 at 05:12:09PM +0300, Bogdan Togorean wrote:
+> Add YAML device tree bindings for Analog Devices Inc. AXI HDMI TX
+> IP core DRM driver.
 > 
-> Add a binding doc for the modtronix lcd2s auxdisplay driver. It also
-> adds modtronix to the list of known vendor-prefixes.
-> 
-> Reviewed-by: Willy Tarreau <w@1wt.eu>
-> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+> Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
 > ---
-> Changes in v3:
-> - Fixed make dt_binding_doc errors
-> Changes in v2:
-> - Adopted yaml based file format
-> ---
->  .../bindings/auxdisplay/modtronix,lcd2s.yaml  | 58 +++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
->  2 files changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/auxdisplay/modtronix,lcd2s.yaml
-> 
+>  .../bindings/gpu/adi,axi-hdmi-tx.yaml         | 70 +++++++++++++++++++
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Not a GPU? Goes in .../bindings/display/
+
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpu/adi,axi-hdmi-tx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/gpu/adi,axi-hdmi-tx.yaml b/Documentation/devicetree/bindings/gpu/adi,axi-hdmi-tx.yaml
+> new file mode 100644
+> index 000000000000..ab7e71d14d1d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpu/adi,axi-hdmi-tx.yaml
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpu/adi,axi-hdmi-tx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AXI HDMI TX HDL core
+> +
+> +maintainers:
+> +  - Bogdan Togorean <bogdan.togorean@analog.com>
+> +
+> +description: |
+> +  The AXI HDMI HDL driver is the driver for the HDL graphics core which
+> +  is used on various FPGA designs. It's mostly used to interface with
+> +  the ADV7511 driver on some Zynq boards (e.g. ZC702 & ZedBoard).
+> +
+> +properties:
+> +  compatible:
+> +    const: adi,axi-hdmi-tx-1.00.a
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    items:
+> +      - description: phandle to AXIS DMA controller
+> +    maxItems: 1
+> +
+> +  dma-names:
+> +    items:
+> +      - const: video
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: phandle to the pixel clock
+> +
+> +  adi,is-rgb:
+> +    type: boolean
+> +    description: control color space conversion
+> +
+> +  port:
+> +    type: object
+> +    description: |
+> +      Port as described in Documentation/devicetree/bindings/graph.txt.
+> +      Remote output connection to ADV7511 driver
+
+The exact device it's connected to is outside the scope of this binding.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - dmas
+> +  - dma-names
+> +  - clocks
+> +  - port
+
+additionalProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    axi_hdmi_tx: axi_hdmi@70e00000 {
+> +            compatible = "adi,axi-hdmi-tx-1.00.a";
+> +            reg = <0x70e00000 0x10000>;
+> +            dmas = <&hdmi_dma 0>;
+> +            dma-names = "video";
+> +            clocks = <&hdmi_clock>;
+> +
+> +            port {
+> +                    axi_hdmi_out: endpoint {
+> +                            remote-endpoint = <&zynq_hdmi_in>;
+> +                    };
+> +            };
+> +    };
+> +...
+> -- 
+> 2.28.0
+> 
