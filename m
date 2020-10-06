@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4BD2853C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970152853C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgJFVQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727301AbgJFVQa (ORCPT
+        id S1727479AbgJFVR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:17:27 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:36712 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727301AbgJFVR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:16:30 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3408CC061755;
-        Tue,  6 Oct 2020 14:16:30 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id md26so19729670ejb.10;
-        Tue, 06 Oct 2020 14:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OUkZ8Np/B9A5Tr2kvzOhcQInYr++ig9zgQwFFSAu5tQ=;
-        b=HbRX7gi1rPpzW3Kg6eXahbjwIJfYemIFBUgMPBCH2QT+LuGRdW4faXr1lXwhww5TJB
-         DMMp+Scow7tWo1hnPmsh9A+I56TOloNz3sRkTtDTaKCBzcMPvQ2djXJTmsB2M5gqQnUX
-         QAg+1sfZ/x5vO3dnoDkz0+UyGjXDgk+5Y1aQ4yqhXryiveq6b/J3vYdFUaPJhKmS0mr2
-         HpnF8ZjwoPam+RwZQFMg+seI1epJQ4cSeYkECArsvnu9ly0CY8keC4QMyTIDT7wXGzBR
-         BBBZCj7LY6QNVcXbPFQBnR9elvR2s+ba7uybvfH/feLSVnh6GwgLTFGUUl2gREjfb36O
-         KGFw==
+        Tue, 6 Oct 2020 17:17:27 -0400
+Received: by mail-ot1-f66.google.com with SMTP id 60so228940otw.3;
+        Tue, 06 Oct 2020 14:17:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OUkZ8Np/B9A5Tr2kvzOhcQInYr++ig9zgQwFFSAu5tQ=;
-        b=I7YpOZNt9hguGeC/H9TCMyoRXvCmXM6GgNZBrKgM0KgVqPJ7QsOZ0LYrbCNf3XbRWh
-         OcQjmdlk9m3vnOO/BDqLWbrq2BIJlxxnb96ienSjbn/Ilwn9+Qjwgo7Fd3Lm9XSKAguL
-         uKvrA1hBCDdwoMpVJEcs6v3XuVoaUizhTIn+QO0U+r/EKH0dfhgcHf+f/akQMReOjnJj
-         H6Rm6bgKqQmdixUcRS4q3DF1cd0lfBQlFJ5cBN+7BvtwdoemMEOgqNpF46YYtDWZPNg4
-         oGNwAY4jhb0Ajfe92dtrj2LGd10k4b73ApXsT80yL39VLLxPCANTPdrFeJFxlsf06kXS
-         iCdg==
-X-Gm-Message-State: AOAM5306N3PEicRvKKv4rADWfRgqfgsiKp2AgH7WaZBYbw/zVig7vmp7
-        UGvkvhH+Sq/kmZFQ3Izox0zxvis7UqKetdsTFwk=
-X-Google-Smtp-Source: ABdhPJw+dQle2HSBoAZP866K10e69otfUfs5n0PUaiC38bdzpVNq1/8RsU6nmsKWYrXTaBvgzbPZnYzHdmqPsjI+uNw=
-X-Received: by 2002:a17:906:3bc9:: with SMTP id v9mr1518941ejf.340.1602018988897;
- Tue, 06 Oct 2020 14:16:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PDfEFjOxvV5lnlJ5Dhtp3js2iortYdXKM+0f6FyQWho=;
+        b=cpsmOD66oVflxCH+Xfp8sA7BQMedOe41NDfEIpF4Khx2c/b3gKYlwOwYYQtH2VGJKH
+         w6hb6G6yJ634502S5rDx5JEBnYl0t+ExspJGpML8u8SfhUTN08r/zlkTbjQiadUzLfFn
+         0gXOXhr7kTQOhb3+vnUEbI2hVR8hwF/0IznYJxdYkS8c0EuQMcF/iA14YcgdBzk6TIxa
+         Fd+bLwvpQXTq03Ja90Is92EYjhct/MrFcXkxbyo8+ntQzSeT6GB7BJa2Te2Ll4Y9r0Ka
+         iNpCH0uBBHc4q16f1fpdl15TrTrQaA0UAdphDDgtbG3IXql7kef1TjGC1wfG4wTq0BQb
+         pFiA==
+X-Gm-Message-State: AOAM533z3baOrozNpR+BrBtChic0xVLpXuhiexWKmtzvwbN6Y2f1QqYa
+        RDCOO74a8FgZ6RprLKXBc+NL+Jx9gSZC
+X-Google-Smtp-Source: ABdhPJxHWw8Nsyci8DS/igtGgNuSzSxHHAh9iRU+J8qZ4eCIk3SbSIp1v9rGpeD5riEEemBsERVA7g==
+X-Received: by 2002:a05:6830:2425:: with SMTP id k5mr4129010ots.86.1602019044700;
+        Tue, 06 Oct 2020 14:17:24 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f11sm133739oot.4.2020.10.06.14.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 14:17:24 -0700 (PDT)
+Received: (nullmailer pid 2858433 invoked by uid 1000);
+        Tue, 06 Oct 2020 21:17:22 -0000
+Date:   Tue, 6 Oct 2020 16:17:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chu Lin <linchuyuan@google.com>
+Cc:     linux-hwmon@vger.kernel.org, linux@roeck-us.net,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        jdelvare@suse.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: hwmon: max20730: adding device tree
+ doc for max20730
+Message-ID: <20201006211722.GA2858348@bogus>
+References: <20201004031445.2321090-1-linchuyuan@google.com>
+ <20201004031445.2321090-2-linchuyuan@google.com>
 MIME-Version: 1.0
-References: <20201005150313.149754-6-konradybcio@gmail.com> <202010061559.8KJNEgYi-lkp@intel.com>
-In-Reply-To: <202010061559.8KJNEgYi-lkp@intel.com>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Tue, 6 Oct 2020 23:15:53 +0200
-Message-ID: <CAMS8qEW=4_+-noGH+eyqJ5qPF3Ap06aF37aY2tsFPRwSOPRR0A@mail.gmail.com>
-Subject: Re: [PATCH 05/11] arm64: dts: qcom: msm8992: Add support for SDHCI2
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004031445.2321090-2-linchuyuan@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please note that the bot is correct (this patch does not build if
-applied on its own), but I mentioned its dependence on a clk patch in
-the cover letter.
+On Sun, 04 Oct 2020 03:14:44 +0000, Chu Lin wrote:
+> max20730 Integrated, Step-Down Switching Regulator with PMBus
+> 
+> Signed-off-by: Chu Lin <linchuyuan@google.com>
+> ---
+> ChangeLog v1 -> v2
+>   hwmon: pmbus: max20730:
+>   - Don't do anything to the ret if an error is returned from pmbus_read_word
+>   - avoid overflow when doing multiplication
+> 
+> ChangeLog v2 -> v3
+>   dt-bindings: hwmon: max20730:
+>   - Provide the binding documentation in yaml format
+>   hwmon: pmbus: max20730:
+>   - No change
+> 
+> ChangeLog v3 -> v4
+>   dt-bindings: hwmon: max20730:
+>   - Fix highefficiency to high efficiency in description
+>   - Fix presents to present in vout-voltage-divider
+>   - Add additionalProperties: false
+>   hwmon: pmbus: max20730:
+>   - No change
+> 
+>  .../bindings/hwmon/maxim,max20730.yaml        | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml
+> 
 
-Konrad
+Reviewed-by: Rob Herring <robh@kernel.org>
