@@ -2,101 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA5E28508E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CB4285093
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJFRRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:17:20 -0400
-Received: from mga05.intel.com ([192.55.52.43]:56410 "EHLO mga05.intel.com"
+        id S1726363AbgJFRSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:18:08 -0400
+Received: from namei.org ([65.99.196.166]:33268 "EHLO namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFRRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:17:20 -0400
-IronPort-SDR: JwG/zZYucnqANSln8iCWHIPUu0Z4iFgm5tk8lU+/fe11ZBlSLE53YYug8IJN+2S5+qW7jqkvkb
- wNauNVNFS2GQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="249300989"
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="249300989"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 10:17:06 -0700
-IronPort-SDR: m+Tc5wq9sWO0NnqVdPajk56RgYJuwBhCaLiCcwUTC2KqKoUADxb93Jjs7styw57WgIjZitEn4p
- XZCRfVeRmV8w==
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="527456307"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 10:17:06 -0700
-Date:   Tue, 6 Oct 2020 10:17:04 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-Message-ID: <20201006171704.GC17610@linux.intel.com>
-References: <20201005153318.GA4302@redhat.com>
- <20201005161620.GC11938@linux.intel.com>
- <20201006134629.GB5306@redhat.com>
- <877ds38n6r.fsf@vitty.brq.redhat.com>
- <20201006141501.GC5306@redhat.com>
- <874kn78l2z.fsf@vitty.brq.redhat.com>
- <20201006150817.GD5306@redhat.com>
- <871rib8ji1.fsf@vitty.brq.redhat.com>
- <20201006161200.GB17610@linux.intel.com>
- <87y2kj71gj.fsf@vitty.brq.redhat.com>
+        id S1725902AbgJFRSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 13:18:07 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 096HHqvb007464;
+        Tue, 6 Oct 2020 17:17:52 GMT
+Date:   Wed, 7 Oct 2020 04:17:52 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     Kees Cook <keescook@chromium.org>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Scott Branden <scott.branden@broadcom.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 01/16] fs/kernel_read_file: Remove FIRMWARE_PREALLOC_BUFFER
+ enum
+In-Reply-To: <20201002173828.2099543-2-keescook@chromium.org>
+Message-ID: <alpine.LRH.2.21.2010070417400.18879@namei.org>
+References: <20201002173828.2099543-1-keescook@chromium.org> <20201002173828.2099543-2-keescook@chromium.org>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2kj71gj.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 06:39:56PM +0200, Vitaly Kuznetsov wrote:
-> Sean Christopherson <sean.j.christopherson@intel.com> writes:
-> 
-> > On Tue, Oct 06, 2020 at 05:24:54PM +0200, Vitaly Kuznetsov wrote:
-> >> Vivek Goyal <vgoyal@redhat.com> writes:
-> >> > So you will have to report token (along with -EFAULT) to user space. So this
-> >> > is basically the 3rd proposal which is extension of kvm API and will
-> >> > report say HVA/GFN also to user space along with -EFAULT.
-> >> 
-> >> Right, I meant to say that guest kernel has full register state of the
-> >> userspace process which caused APF to get queued and instead of trying
-> >> to extract it in KVM and pass to userspace in case of a (later) failure
-> >> we limit KVM api change to contain token or GFN only and somehow keep
-> >> the rest in the guest. This should help with TDX/SEV-ES.
-> >
-> > Whatever gets reported to userspace should be identical with and without
-> > async page faults, i.e. it definitely shouldn't have token information.
-> >
-> 
-> Oh, right, when the error gets reported synchronously guest's kernel is
-> not yet aware of the issue so it won't be possible to find anything in
-> its kdump if userspace decides to crash it immediately. The register
-> state (if available) will be actual though.
-> 
-> > Note, TDX doesn't allow injection exceptions, so reflecting a #PF back
-> > into the guest is not an option.  
-> 
-> Not even #MC? So sad :-)
+On Fri, 2 Oct 2020, Kees Cook wrote:
 
-Heh, #MC isn't allowed either, yet...
-
-> > Nor do I think that's "correct" behavior (see everyone's objections to
-> > using #PF for APF fixed).  I.e. the event should probably be an IRQ.
+> FIRMWARE_PREALLOC_BUFFER is a "how", not a "what", and confuses the LSMs
+> that are interested in filtering between types of things. The "how"
+> should be an internal detail made uninteresting to the LSMs.
 > 
-> I recall Paolo objected against making APF 'page not present' into in
-> interrupt as it will require some very special handling to make sure it
-> gets injected (and handled) immediately but I'm not really sure how big
-> the hack is going to be, maybe in the light of TDX/SEV-ES it's worth a
-> try.
+> Fixes: a098ecd2fa7d ("firmware: support loading into a pre-allocated buffer")
+> Fixes: fd90bc559bfb ("ima: based on policy verify firmware signatures (pre-allocated buffer)")
+> Fixes: 4f0496d8ffa3 ("ima: based on policy warn about loading firmware (pre-allocated buffer)")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> Acked-by: Scott Branden <scott.branden@broadcom.com>
+> Cc: stable@vger.kernel.org
 
-This shouldn't have anything to do with APF.  Again, the event injection is
-needed even in the synchronous case as the file truncation in the host can
-affect existing mappings in the guest.
 
-I don't know that the mechanism needs to be virtiofs specific or if there can
-be a more generic "these PFNs have disappeared", but it's most definitely
-orthogonal to APF.
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+
+
+-- 
+James Morris
+<jmorris@namei.org>
+
