@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03BF285208
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDD728520D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgJFTFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S1726989AbgJFTGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgJFTFf (ORCPT
+        with ESMTP id S1726760AbgJFTGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:05:35 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4213C061755;
-        Tue,  6 Oct 2020 12:05:34 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id u8so16266563lff.1;
-        Tue, 06 Oct 2020 12:05:34 -0700 (PDT)
+        Tue, 6 Oct 2020 15:06:16 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C78CC061755;
+        Tue,  6 Oct 2020 12:06:16 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id x16so8534903pgj.3;
+        Tue, 06 Oct 2020 12:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dbgm9EPpdn69MOQOGW1NmOkPRWAvrhHZv3YgGUWUYO4=;
-        b=nCuVvffNUqX3JHoJTL9N3FEG+N30Jd67eXqBiN11gRdobkj619iU7qnZfhWN2CSEyh
-         IyJhCzb9gliT0Hm24v2E+9076qVfyt08uSMi6g502CXaooTTt/s/riIq+fnwdt+LvWw0
-         xg3lQ5LM38VN/83InIxsW33CTndDLDt+uLVSrAjiy/Hfbj5tuhMO1vb46/88sGJbPmoQ
-         oLcQokDa8/8s7nHNZYPUE2LqIkKukXI64kI/Bg3Yltk58eNsCaVVZTNWK8AliJwUJCjF
-         znWN2uG/Bfym9eoD6L5xgV4Nl6YUxKrN5p3FXF+KqjJ34pWwSGy2ypFvtUCAWjcmOC3O
-         x2RQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S59CLvJk1ju+tb0DRKEkJbopm1JVSnijReq8sE5oqI8=;
+        b=TdIMjj/NUNBepEvRubaDe/8GfKw3Icn3ZwxMrBQ+s3FhE1276H18es7JR3AViuYt4c
+         C2aY8JdPuYlha7hXD2PX4XG1o30zQI2+Q3hPNAxbhOKlUUCawmxOhvx+Z+oka7Mh4Ugp
+         is8efVZ9wELJgYTqVTMmLaNmJXlJpkcZ2u8JwrVsf0FXzgVcbrlsMK0CzPSMCHSmHDQK
+         nnaQwX5EinZGBM8UKc6MlvVYkAr1RtRNcdDgjGyIY++2WkpQ/I8LAabk010LvgzNtTl2
+         0qFfIZ91n/oDQlZti6wdPJz/g4TH+4RrNcNk+7XpRkwXwkqTY46MJzhU5WPHLz11Lk93
+         be8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dbgm9EPpdn69MOQOGW1NmOkPRWAvrhHZv3YgGUWUYO4=;
-        b=Uzxp3uARMDC6WwQV5yzziD44cjP0oQxNtUcj1kUG2Y0cjCKXpUrPDwViVnD1iAe4lZ
-         zeFtufERoLvtc0vXWGfqsh9p24f93moAEFqpCZ57D49cEBguJ0S47xnfElTdP+cIguR3
-         k+Bzj+aVXM6/kp+62PjQ24nXaP5Nnh70ot6COJbfj4exvcJWxF6YEIgXDyOObbGrswOO
-         Tpv4Xk7IEuPtH0+HO8xMxQ8Qa06yCmz60XxmGuZtc/MqTQMKUbeh+lxwqv7z8ijNEZTT
-         6Ikp1mDECjVCSoLDFPyYW0geUcI02wDrfBq5gGBjaq3YDiR/GC/58g5i7jjPnTauAA01
-         tkFA==
-X-Gm-Message-State: AOAM532jgeylR6abF9/s0LHMjW7elemkIo8gH115puiODQ46NysOzWoD
-        +rtAYa5lxWgere7ximHUHucPJJKbkt2cqNvun4U=
-X-Google-Smtp-Source: ABdhPJwjRtjH65ntww7uSgF852KSTpZTpwRT5o9+a5Afmw3wub9NAuaJ2GJkzguay1vK1/vQdch8KAwchaYlo+9Ohr4=
-X-Received: by 2002:a19:8457:: with SMTP id g84mr890012lfd.500.1602011132919;
- Tue, 06 Oct 2020 12:05:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S59CLvJk1ju+tb0DRKEkJbopm1JVSnijReq8sE5oqI8=;
+        b=D+5yHeOeptGJV9C97oqVv3WoLpKSGObZFuaUqmZU6fYxDPCvPDCoiEdPIqw8IFIwlQ
+         aY2CYRQcCijBx8QmJ6CbOlipWdz3ZPQeqPJl5ONhxox8z/I/ct+nnINjBIfkCsPpfy7+
+         nfnQd7f7Kkpxck9QDriJiZZX0e5Eymv70LimJzWOtTpJdzwfvbFK9e9SPR5xdEfAz1Gj
+         eMT8drQJZOgmwvmlOtECpHitQib2GsbnxwWNRDgycMWhM7D3DZzjcKPYbi2Wkt/ycRJL
+         Q5mz0PKjfL0HhqoE2Xvf8uLk0RVfWLGnDigeVJdVrMnQXAmWVf184UvN0p3jRQ61QfIO
+         ir3g==
+X-Gm-Message-State: AOAM530WJf6n+0/6kob95qx55fEyEVH+q+LYFlFVO7BOXU0zxVz7FiZ3
+        AAOgtiqEAqkpKy+bMmAN0LM=
+X-Google-Smtp-Source: ABdhPJxyTXhwK+locjTAlQWxxM1VFrei2oZGqCjlKqd35PRuWS4DiDMdUQvecKz3LS7h3FUIJXSRGA==
+X-Received: by 2002:aa7:9afc:0:b029:152:9d45:6723 with SMTP id y28-20020aa79afc0000b02901529d456723mr5918408pfp.35.1602011175862;
+        Tue, 06 Oct 2020 12:06:15 -0700 (PDT)
+Received: from adolin ([49.207.211.213])
+        by smtp.gmail.com with ESMTPSA id i1sm3476625pjh.52.2020.10.06.12.06.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 12:06:15 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 00:36:10 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     Julia.Lawall@lip6.fr
+Cc:     corbet@lwn.net, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH 1/2 V2] scripts: coccicheck: Change default value for
+ parallelism
+Message-ID: <bfda3151b26c8e16c67bd8ab32057e248540de42.1602010816.git.sylphrenadin@gmail.com>
+References: <cover.1602010816.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-References: <20200929235049.2533242-1-haoluo@google.com> <20200929235049.2533242-2-haoluo@google.com>
-In-Reply-To: <20200929235049.2533242-2-haoluo@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 6 Oct 2020 12:05:21 -0700
-Message-ID: <CAADnVQKc4m6X62udhpPE3EBBvuOA2ngyWSOKQ7fc-rtqdeQj6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/6] bpf: Introduce pseudo_btf_id
-To:     Hao Luo <haoluo@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1602010816.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 4:50 PM Hao Luo <haoluo@google.com> wrote:
->
-> -       ret = replace_map_fd_with_map_ptr(env);
-> -       if (ret < 0)
-> -               goto skip_full_check;
-> -
->         if (bpf_prog_is_dev_bound(env->prog->aux)) {
->                 ret = bpf_prog_offload_verifier_prep(env->prog);
->                 if (ret)
-> @@ -11662,6 +11757,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
->         if (ret)
->                 goto skip_full_check;
->
-> +       ret = resolve_pseudo_ldimm64(env);
-> +       if (ret < 0)
-> +               goto skip_full_check;
-> +
+By default, coccicheck utilizes all available threads to implement
+parallelisation. However, when all available threads are used,
+a decrease in performance is noted. The elapsed time is  minimum
+when at most one thread per core is used.
 
-Hao,
+For example, on benchmarking the semantic patch kfree.cocci for
+usb/serial using hyperfine, the outputs obtained for J=5 and J=2
+are 1.32 and 1.90 times faster than those for J=10 and J=9
+respectively for two separate runs. For the larger drivers/staging
+directory, minimium elapsed time is obtained for J=3 which is 1.86
+times faster than that for J=12. The optimal J value does not
+exceed 6 in any of the test runs. The benchmarks are run on a machine
+with 6 cores, with 2 threads per core, i.e, 12 hyperthreads in all.
 
-this change broke several tests in test_verifier:
-#21/u empty prog FAIL
-Unexpected error message!
-    EXP: unknown opcode 00
-    RES: last insn is not an exit or jmp
+To improve performance, modify coccicheck to use at most only
+one thread per core by default.
 
-#656/u test5 ld_imm64 FAIL
-Unexpected error message!
-    EXP: invalid bpf_ld_imm64 insn
-    RES: last insn is not an exit or jmp
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
 
-#656/p test5 ld_imm64 FAIL
-Unexpected error message!
-    EXP: invalid bpf_ld_imm64 insn
-    RES: last insn is not an exit or jmp
+---
+Changes in V2:
+	- Change commit message as suggested by Julia Lawall
+Changes in V3:
+	- Use J/2 as optimal value for machines with more
+than 8 hyperthreads as well.
+---
+ scripts/coccicheck | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Please send a fix.
-Thanks
+diff --git a/scripts/coccicheck b/scripts/coccicheck
+index e04d328210ac..a72aa6c037ff 100755
+--- a/scripts/coccicheck
++++ b/scripts/coccicheck
+@@ -75,8 +75,13 @@ else
+         OPTIONS="--dir $KBUILD_EXTMOD $COCCIINCLUDE"
+     fi
+ 
++    # Use only one thread per core by default if hyperthreading is enabled
++    THREADS_PER_CORE=$(lscpu | grep "Thread(s) per core: " | tr -cd [:digit:])
+     if [ -z "$J" ]; then
+         NPROC=$(getconf _NPROCESSORS_ONLN)
++	if [ $THREADS_PER_CORE -gt 1 -a $NPROC -gt 2 ] ; then
++		NPROC=$((NPROC/2))
++	fi
+     else
+         NPROC="$J"
+     fi
+-- 
+2.25.1
+
