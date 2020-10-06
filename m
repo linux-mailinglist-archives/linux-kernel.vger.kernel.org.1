@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAB8284A36
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E15284A34
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgJFKNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:13:47 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18826 "EHLO mga01.intel.com"
+        id S1726551AbgJFKNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:13:48 -0400
+Received: from mga09.intel.com ([134.134.136.24]:54366 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgJFKNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725891AbgJFKNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Oct 2020 06:13:47 -0400
-IronPort-SDR: 0opgnY3KpbIgec0DhtYQNFnqjCPYUYJXG65Gg8eMDSyXlpd1PYszoe4KpG9G11EueCtLPc99CB
- utpRm7SE7+8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="181881790"
+IronPort-SDR: iQ0dOvr4qX9IJZ6n7ZJRsVMCCc+TE1lqhZ6m1KiRxJ2WMhyqJjbh21zOn0mMbgT67MTM9cSttF
+ nKlpPrNpUS/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="164575603"
 X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
-   d="scan'208";a="181881790"
+   d="scan'208";a="164575603"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 03:13:46 -0700
-IronPort-SDR: 02+nws5yRY/FQfpaO4iXQZWLzKoBBOYXMw2SvvJ0Ua1GC4KCVyr6xVNfXOIE4dZrcd8B0T3aGS
- J7grKJdgQ88w==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 03:13:46 -0700
+IronPort-SDR: ScqH8csVV1zLuwo2l3oG0h165BQWplaKmrUcnYGHfUlMspJv7wTzYbvoAHLwJ9tHtyedsQppUE
+ d34clss6wOww==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
-   d="scan'208";a="353414412"
+   d="scan'208";a="342179276"
 Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 06 Oct 2020 03:13:45 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 06 Oct 2020 03:13:45 -0700
 Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kPjyb-0001A3-0Z; Tue, 06 Oct 2020 10:13:45 +0000
-Date:   Tue, 06 Oct 2020 18:13:18 +0800
+        id 1kPjya-00019y-SA; Tue, 06 Oct 2020 10:13:44 +0000
+Date:   Tue, 06 Oct 2020 18:13:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/drm/amd/pm/phm_uvd_clock] BUILD SUCCESS 07165bd83308c6cb00f1a8977ced9886b40ea271
-Message-ID: <5f7c433e.pXkC6KsN6HN/Ldhj%lkp@intel.com>
+Subject: [gustavoars-linux:testing/drm/amd/pm/phm_clock_array] BUILD
+ SUCCESS 1f7c023f13d8ff183e706018a0d5690e3e851f12
+Message-ID: <5f7c433f.ZyMD+YUIVAwiHGVe%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -44,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/drm/amd/pm/phm_uvd_clock
-branch HEAD: 07165bd83308c6cb00f1a8977ced9886b40ea271  drm/amd/pm: Replace one-element array with flexible-array in struct phm_uvd_clock_voltage_dependency_table
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/drm/amd/pm/phm_clock_array
+branch HEAD: 1f7c023f13d8ff183e706018a0d5690e3e851f12  drm/amd/pm: Replace one-element array with flexible-array in struct phm_clock_array
 
 elapsed time: 724m
 
-configs tested: 109
+configs tested: 96
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -61,36 +62,29 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-sh                                  defconfig
-arm                             mxs_defconfig
-mips                          malta_defconfig
-arm                         assabet_defconfig
-arm                          collie_defconfig
-mips                           ci20_defconfig
+mips                           ip28_defconfig
+sh                   sh7724_generic_defconfig
+m68k                          atari_defconfig
+arc                            hsdk_defconfig
+mips                        qi_lb60_defconfig
+mips                      maltaaprp_defconfig
 mips                           rs90_defconfig
 arm                          exynos_defconfig
 mips                          ath79_defconfig
 arm                          pxa168_defconfig
+mips                           ci20_defconfig
 m68k                            q40_defconfig
 sh                          r7780mp_defconfig
 sparc64                             defconfig
-arm                       mainstone_defconfig
-arm                         bcm2835_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc8313_rdb_defconfig
-sh                        sh7763rdp_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
+powerpc                      chrp32_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                         palmz72_defconfig
+arm                          ixp4xx_defconfig
 mips                        jmr3927_defconfig
 arm                         vf610m4_defconfig
 mips                          ath25_defconfig
 powerpc                 canyonlands_defconfig
-powerpc                      chrp32_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                          g5_defconfig
-c6x                         dsk6455_defconfig
-powerpc                     sequoia_defconfig
-arm                            dove_defconfig
+ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
@@ -122,18 +116,12 @@ mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-x86_64               randconfig-a004-20201006
-x86_64               randconfig-a002-20201006
-x86_64               randconfig-a001-20201006
-x86_64               randconfig-a005-20201006
-x86_64               randconfig-a003-20201006
-x86_64               randconfig-a006-20201006
-i386                 randconfig-a006-20201005
-i386                 randconfig-a005-20201005
-i386                 randconfig-a001-20201005
-i386                 randconfig-a004-20201005
-i386                 randconfig-a003-20201005
-i386                 randconfig-a002-20201005
+i386                 randconfig-a006-20201004
+i386                 randconfig-a005-20201004
+i386                 randconfig-a001-20201004
+i386                 randconfig-a004-20201004
+i386                 randconfig-a003-20201004
+i386                 randconfig-a002-20201004
 x86_64               randconfig-a012-20201005
 x86_64               randconfig-a015-20201005
 x86_64               randconfig-a014-20201005
