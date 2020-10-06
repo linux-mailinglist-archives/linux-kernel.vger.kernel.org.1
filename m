@@ -2,595 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2969B28496D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C023284972
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgJFJfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:35:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33280 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725981AbgJFJfd (ORCPT
+        id S1726171AbgJFJgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgJFJgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:35:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601976929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TQu40ivjzMkZ5qmpV6fBj/07LFZrhSosHAMQc2Yn7/w=;
-        b=Y5U9bl8RZo7CPvsQjfi4VGVY428eHSlBf3CgW5qldnb1lk0fBcy1jU4OcTGtmTfU3CcEef
-        2BLU5FfYJSV0qUV5xzSCL4WS0txSilh2J3JLh5zkBjkxCCTu4aXET4s3KVpSa2na9of6TA
-        uoMGiEcosOnnKFagyapYud2TOzFqrqI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-UM06U8a1MCmIGayg5VLWsg-1; Tue, 06 Oct 2020 05:35:28 -0400
-X-MC-Unique: UM06U8a1MCmIGayg5VLWsg-1
-Received: by mail-wm1-f69.google.com with SMTP id w23so503129wmi.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:35:28 -0700 (PDT)
+        Tue, 6 Oct 2020 05:36:02 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517EAC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 02:36:02 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f21so2203210wml.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jfHRjgUc3yWmaMNP8V6npRHveQSEaYznJy9xDxqdq5Y=;
+        b=V4AlHabOmn6H1w4iRNEGS0B70b8dv2DIEZuurCYdgOgzzKGxgOH6LDi0oU30jzagKc
+         nRxT2MEZyLjf9RvcqMiFjcPOZKT5cchMQIVnFpIyJjAAlzwzNA+seFw9c0nwVP6J/wG+
+         dE4STfKprpfEiAUbFdH0mQqVPGuDeexiySSD4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TQu40ivjzMkZ5qmpV6fBj/07LFZrhSosHAMQc2Yn7/w=;
-        b=TcfbXyFY9ZFOxQR/VtT8x/3XEZPITq3E/yClj/91r6Bb+AItMbPpjl9Uprf4GQplHd
-         Xx01xJvQs/oFQDdubjDbq565VeZQwLKjxR5WCadmY2RZQjtZ+FgxmEZKbHVtPJ5yTWDV
-         aabOIZL23r5poJyN9GMd5nKcgMRb1vodrJ5LfUJz8k3e1xQhUNAJZ/OzUD/cIUVAFdlu
-         9UiuJX+hteoK7b9QL1SdnJhzAaBiVYluMTyDdPeA0XZwfSkBP3oPEEfuFZS7zimUkvuE
-         R7+cO79pM1vzuEgevuwYClb6T5gas1OswF2LfeLQAzLzuqBGdagY16opEsxZ/hDupJ4L
-         aW/g==
-X-Gm-Message-State: AOAM533fjN4uHp0pBdK/EOjoAej4zpKy8KO5zXFrRf+3TrznqTpro85U
-        x5eVrErUSKuGw2LAzfN7HHDWBf5kqUj+x2QGi3/7ukl2XuEBpswziqD6CRru3xyfgdV/+dsdxYV
-        djAe7t33Ol58E4z6fdPlPzNgt
-X-Received: by 2002:a05:6000:151:: with SMTP id r17mr3768300wrx.311.1601976926685;
-        Tue, 06 Oct 2020 02:35:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyYSuIeoZraQvXm6Njdyk0ifLN1ApiU4H5T3QHqdmyS8S33FXj/FEaK9eLX0kQJ1n3xS/pHhg==
-X-Received: by 2002:a05:6000:151:: with SMTP id r17mr3768261wrx.311.1601976926190;
-        Tue, 06 Oct 2020 02:35:26 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.91.67])
-        by smtp.gmail.com with ESMTPSA id i1sm3461959wrx.44.2020.10.06.02.35.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=jfHRjgUc3yWmaMNP8V6npRHveQSEaYznJy9xDxqdq5Y=;
+        b=nK2xowIahrBp9ty5mXZSDoZTzwxtQQcFnCO2fI9qmnFTGCHZAeV/KrDtypjAZMCGRh
+         Em+gEyNz0qM1oZJlVfsxt3R4rDG0fkXb+KZ/UQMsdbHqbcKWgoR3R8Xbj2zm1ZYRt/Im
+         JlaGQYRI7hkG/6toqJ/Z+vMRGgHvxQ0bXtxzbZccYer4mAT/Bok1XLmMedHq1cRCZH/z
+         CIn8Ba3mUJZdK2K8b8coQsl5iHPGAhCigj7wBTthVpnOy9OCfjPC9MEPC/1FSHElOsI1
+         1qpt5cqZ8kz3b6WsZYU9R+K7vd7Giy7Tkp48jkYS5updAsy8uATYvYNonnHsQy+3+d58
+         jL9A==
+X-Gm-Message-State: AOAM530tEKAomgu6mkd5e0VqibawocozPA67IKGKBzlnREs8+UpGrnNb
+        OhL+PmYyZR8xuNBYZs4C5jBxwA==
+X-Google-Smtp-Source: ABdhPJzEaJYL1QdJ5uR4JBld7BCAOyXdwCbFSfIsfUiUeAGtF+t3pE5ORpDjMh0kMl0i7jqARrQBkA==
+X-Received: by 2002:a7b:c95a:: with SMTP id i26mr4006324wml.25.1601976960896;
+        Tue, 06 Oct 2020 02:36:00 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id k15sm3880199wrv.90.2020.10.06.02.35.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 02:35:25 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 11:35:23 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     luca abeni <luca.abeni@santannapisa.it>
-Cc:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        tommaso.cucinotta@santannapisa.it, alessio.balsini@gmail.com,
-        bristot@redhat.com, dietmar.eggemann@arm.com,
-        linux-rt-users@vger.kernel.org, mtosatti@redhat.com,
-        williams@redhat.com, valentin.schneider@arm.com
-Subject: Re: [RFC PATCH v2 4/6] sched/deadline: Introduce deadline servers
-Message-ID: <20201006093523.GD4352@localhost.localdomain>
-References: <20200807095051.385985-1-juri.lelli@redhat.com>
- <20200807095051.385985-5-juri.lelli@redhat.com>
- <20201006095612.381d806f@sweethome>
+        Tue, 06 Oct 2020 02:36:00 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 11:35:58 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        arm-msm <linux-arm-msm@vger.kernel.org>,
+        "Kristian H . Kristensen" <hoegsberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH 13/14] drm/msm: Drop struct_mutex in shrinker path
+Message-ID: <20201006093558.GZ438822@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Hillf Danton <hdanton@sina.com>, Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        arm-msm <linux-arm-msm@vger.kernel.org>,
+        "Kristian H . Kristensen" <hoegsberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>
+References: <20201004192152.3298573-1-robdclark@gmail.com>
+ <20201005092419.15608-1-hdanton@sina.com>
+ <20201005140203.GS438822@phenom.ffwll.local>
+ <CAOeoa-cqyb8NZJnJdY+A2H680+C4H0WzXhp-uYj8Fg093BqAnw@mail.gmail.com>
+ <20201006004416.15040-1-hdanton@sina.com>
+ <CAF6AEGvyEYFa-RLrxqgXjxhiLgc-rB+dbscboROPHGPxoC-RMw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006095612.381d806f@sweethome>
+In-Reply-To: <CAF6AEGvyEYFa-RLrxqgXjxhiLgc-rB+dbscboROPHGPxoC-RMw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/20 09:56, luca abeni wrote:
-> Hi,
+On Mon, Oct 05, 2020 at 08:40:12PM -0700, Rob Clark wrote:
+> On Mon, Oct 5, 2020 at 5:44 PM Hillf Danton <hdanton@sina.com> wrote:
+> >
+> >
+> > On Mon, 5 Oct 2020 18:17:01 Kristian H. Kristensen wrote:
+> > > On Mon, Oct 5, 2020 at 4:02 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Mon, Oct 05, 2020 at 05:24:19PM +0800, Hillf Danton wrote:
+> > > > >
+> > > > > On Sun,  4 Oct 2020 12:21:45
+> > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > >
+> > > > > > Now that the inactive_list is protected by mm_lock, and everything
+> > > > > > else on per-obj basis is protected by obj->lock, we no longer depend
+> > > > > > on struct_mutex.
+> > > > > >
+> > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > > ---
+> > > > > >  drivers/gpu/drm/msm/msm_gem.c          |  1 -
+> > > > > >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 54 --------------------------
+> > > > > >  2 files changed, 55 deletions(-)
+> > > > > >
+> > > > > [...]
+> > > > >
+> > > > > > @@ -71,13 +33,8 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+> > > > > >  {
+> > > > > >     struct msm_drm_private *priv =
+> > > > > >             container_of(shrinker, struct msm_drm_private, shrinker);
+> > > > > > -   struct drm_device *dev = priv->dev;
+> > > > > >     struct msm_gem_object *msm_obj;
+> > > > > >     unsigned long freed = 0;
+> > > > > > -   bool unlock;
+> > > > > > -
+> > > > > > -   if (!msm_gem_shrinker_lock(dev, &unlock))
+> > > > > > -           return SHRINK_STOP;
+> > > > > >
+> > > > > >     mutex_lock(&priv->mm_lock);
+> > > > >
+> > > > > Better if the change in behavior is documented that SHRINK_STOP will
+> > > > > no longer be needed.
+> > > >
+> > > > btw I read through this and noticed you have your own obj lock, plus
+> > > > mutex_lock_nested. I strongly recommend to just cut over to dma_resv_lock
+> > > > for all object lock needs (soc drivers have been terrible with this
+> > > > unfortuntaly), and in the shrinker just use dma_resv_trylock instead of
+> > > > trying to play clever games outsmarting lockdep.
+> >
+> > The trylock makes page reclaimers turn to their next target e.g. inode
+> > cache instead of waiting for the mutex to be released. It makes sense
+> > for instance in scenarios of mild memory pressure.
 > 
-> sorry for the late reply... Anyway, I am currently testing this
-> patchset (and trying to use it for the "SCHED_DEADLINE-based cgroup
-> scheduling" patchset).
-> And during my tests I had a doubt:
+> is there some behind-the-scenes signalling for this, or is this just
+> down to what the shrinker callbacks return?  Generally when we get
+> into shrinking, there are a big set of purgable bo's to consider, so
+> the shrinker callback return wouldn't be considering just one
+> potentially lock contended bo (buffer object).  Ie failing one
+> trylock, we just move on to the next.
 > 
+> fwiw, what I've seen on the userspace bo cache vs shrinker (anything
+> that is shrinker potential is in userspace bo cache and
+> MADV(WONTNEED)) is that in steady state I see a very strong recycling
+> of bo's (which avoids allocating and mmap'ing or mapping to gpu a new
+> buffer object), so it is definitely a win in mmap/realloc bandwidth..
+> in steady state there is a lot of free and realloc of same-sized
+> buffers from frame to frame.
 > 
-> 
-> On Fri,  7 Aug 2020 11:50:49 +0200
-> Juri Lelli <juri.lelli@redhat.com> wrote:
-> 
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > Low priority tasks (e.g., SCHED_OTHER) can suffer starvation if tasks
-> > with higher priority (e.g., SCHED_FIFO) monopolize CPU(s).
-> [...]
-> > @@ -1024,10 +1062,34 @@ static enum hrtimer_restart dl_task_timer(struct hrtimer *timer)
-> >  	struct sched_dl_entity *dl_se = container_of(timer,
-> >  						     struct sched_dl_entity,
-> >  						     dl_timer);
-> > -	struct task_struct *p = dl_task_of(dl_se);
-> > +	struct task_struct *p;
-> >  	struct rq_flags rf;
-> >  	struct rq *rq;
-> >  
-> > +	if (dl_server(dl_se)) {
-> > +		struct rq *rq = rq_of_dl_se(dl_se);
-> > +		struct rq_flags rf;
-> > +
-> > +		rq_lock(rq, &rf);
-> > +		if (dl_se->dl_throttled) {
-> > +			sched_clock_tick();
-> > +			update_rq_clock(rq);
-> > +
-> > +			if (dl_se->server_has_tasks(dl_se)) {
-> > +				enqueue_dl_entity(dl_se, dl_se, ENQUEUE_REPLENISH);
-> > +				resched_curr(rq);
-> > +				__push_dl_task(rq, &rf);
-> > +			} else {
-> > +				replenish_dl_entity(dl_se, dl_se);
-> 
-> I am wondering if here we need a "task_non_contending(dl_se)" after
-> "replenish_dl_entity(dl_se, dl_se);"...
-> 
-> Basically, what happened is that all the served tasks blocked while the
-> server was throttled... So, now the server should be disabled (so, we
-> replenish the dl entity but we do not insert it in runqueue).
-> But when the server finished its budget and has been throttled, it has
-> not been disabled (so, its utilization is still in running_bw).
+> But in transient situations like moving to new game level when there
+> is a heavy memory pressure and lots of freeing old
+> buffers/textures/etc and then allocating new ones, I see shrinker
+> kicking in hard (in android situations, not so much so with
+> traditional linux userspace)
 
-Hummm. For CFS, we call dl_server_stop() after the last CFS task blocks
-and that calls dequeue_dl(SLEEP), which should be calling
-task_non_contending(). That should be happening also while the server is
-throttled and CFS tasks are running outside of it, no? Guess I'm missing
-something.
+Yeah per-buffer trylock is fine. Trylock on the mm_lock (or anything else
+device-global, like struct_mutex and msm_gem_shrinker_lock) I think isn't
+fine, since if you're unlucky you're hogging a ton of memory and that's
+the only freeable resource in the system. Going to other shrinkers won't
+help when it's the gpu shrinker that has all the freeable memory.
 
-> I think that if we do not call task_non_contending() the server's
-> utilization is not correctly removed from running_bw (this does not
-> happen for regular tasks, because task_non_contending() is invoked when
-> they block, even if the dl entity is throttled... But for servers I
-> think we have an issue).
-> 
-> What do you think? Do you agree with this change?
-> 
-> I have no easy way to reproduce the issue, but this change fixed some
-> strange behaviours I was seeing when using this patch to schedule RT
-> cgroups.
-> 
-> 
-> 
-> 			Thanks,
-> 				Luca
-> > +			}
-> > +
-> > +		}
-> > +		rq_unlock(rq, &rf);
-> > +
-> > +		return HRTIMER_NORESTART;
-> > +	}
-> > +
-> > +	p = dl_task_of(dl_se);
-> >  	rq = task_rq_lock(p, &rf);
-> >  
-> >  	/*
-> > @@ -1098,21 +1160,7 @@ static enum hrtimer_restart dl_task_timer(struct hrtimer *timer)
-> >  	else
-> >  		resched_curr(rq);
-> >  
-> > -#ifdef CONFIG_SMP
-> > -	/*
-> > -	 * Queueing this task back might have overloaded rq, check if we need
-> > -	 * to kick someone away.
-> > -	 */
-> > -	if (has_pushable_dl_tasks(rq)) {
-> > -		/*
-> > -		 * Nothing relies on rq->lock after this, so its safe to drop
-> > -		 * rq->lock.
-> > -		 */
-> > -		rq_unpin_lock(rq, &rf);
-> > -		push_dl_task(rq);
-> > -		rq_repin_lock(rq, &rf);
-> > -	}
-> > -#endif
-> > +	__push_dl_task(rq, &rf);
-> >  
-> >  unlock:
-> >  	task_rq_unlock(rq, p, &rf);
-> > @@ -1154,12 +1202,11 @@ static void init_dl_task_timer(struct sched_dl_entity *dl_se)
-> >   */
-> >  static inline void dl_check_constrained_dl(struct sched_dl_entity *dl_se)
-> >  {
-> > -	struct task_struct *p = dl_task_of(dl_se);
-> > -	struct rq *rq = rq_of_dl_rq(dl_rq_of_se(dl_se));
-> > +	struct rq *rq = rq_of_dl_se(dl_se);
-> >  
-> >  	if (dl_time_before(dl_se->deadline, rq_clock(rq)) &&
-> >  	    dl_time_before(rq_clock(rq), dl_next_period(dl_se))) {
-> > -		if (unlikely(dl_se->dl_boosted || !start_dl_timer(p)))
-> > +		if (unlikely(dl_se->dl_boosted || !start_dl_timer(dl_se)))
-> >  			return;
-> >  		dl_se->dl_throttled = 1;
-> >  		if (dl_se->runtime > 0)
-> > @@ -1216,29 +1263,10 @@ static u64 grub_reclaim(u64 delta, struct rq *rq, struct sched_dl_entity *dl_se)
-> >  	return (delta * u_act) >> BW_SHIFT;
-> >  }
-> >  
-> > -/*
-> > - * Update the current task's runtime statistics (provided it is still
-> > - * a -deadline task and has not been removed from the dl_rq).
-> > - */
-> > -static void update_curr_dl(struct rq *rq)
-> > +static void update_curr_dl_se(struct rq *rq, struct sched_dl_entity *dl_se, s64 delta_exec)
-> >  {
-> > -	struct task_struct *curr = rq->curr;
-> > -	struct sched_dl_entity *dl_se = &curr->dl;
-> > -	s64 delta_exec, scaled_delta_exec;
-> > -	int cpu = cpu_of(rq);
-> > +	s64 scaled_delta_exec;
-> >  
-> > -	if (!dl_task(curr) || !on_dl_rq(dl_se))
-> > -		return;
-> > -
-> > -	/*
-> > -	 * Consumed budget is computed considering the time as
-> > -	 * observed by schedulable tasks (excluding time spent
-> > -	 * in hardirq context, etc.). Deadlines are instead
-> > -	 * computed using hard walltime. This seems to be the more
-> > -	 * natural solution, but the full ramifications of this
-> > -	 * approach need further study.
-> > -	 */
-> > -	delta_exec = update_curr_common(rq);
-> >  	if (unlikely(delta_exec <= 0)) {
-> >  		if (unlikely(dl_se->dl_yielded))
-> >  			goto throttle;
-> > @@ -1256,10 +1284,9 @@ static void update_curr_dl(struct rq *rq)
-> >  	 * according to current frequency and CPU maximum capacity.
-> >  	 */
-> >  	if (unlikely(dl_se->flags & SCHED_FLAG_RECLAIM)) {
-> > -		scaled_delta_exec = grub_reclaim(delta_exec,
-> > -						 rq,
-> > -						 &curr->dl);
-> > +		scaled_delta_exec = grub_reclaim(delta_exec, rq, dl_se);
-> >  	} else {
-> > +		int cpu = cpu_of(rq);
-> >  		unsigned long scale_freq = arch_scale_freq_capacity(cpu);
-> >  		unsigned long scale_cpu = arch_scale_cpu_capacity(cpu);
-> >  
-> > @@ -1278,11 +1305,18 @@ static void update_curr_dl(struct rq *rq)
-> >  		    (dl_se->flags & SCHED_FLAG_DL_OVERRUN))
-> >  			dl_se->dl_overrun = 1;
-> >  
-> > -		__dequeue_task_dl(rq, curr, 0);
-> > -		if (unlikely(dl_se->dl_boosted || !start_dl_timer(curr)))
-> > -			enqueue_task_dl(rq, curr, ENQUEUE_REPLENISH);
-> > +		dequeue_dl_entity(dl_se, 0);
-> > +		if (!dl_server(dl_se))
-> > +			dequeue_pushable_dl_task(rq, dl_task_of(dl_se));
-> >  
-> > -		if (!is_leftmost(curr, &rq->dl))
-> > +		if (unlikely(dl_se->dl_boosted || !start_dl_timer(dl_se))) {
-> > +			if (dl_server(dl_se))
-> > +				enqueue_dl_entity(dl_se, dl_se, ENQUEUE_REPLENISH);
-> > +			else
-> > +				enqueue_task_dl(rq, dl_task_of(dl_se), ENQUEUE_REPLENISH);
-> > +		}
-> > +
-> > +		if (!is_leftmost(dl_se, &rq->dl))
-> >  			resched_curr(rq);
-> >  	}
-> >  
-> > @@ -1312,20 +1346,82 @@ static void update_curr_dl(struct rq *rq)
-> >  	}
-> >  }
-> >  
-> > +void dl_server_update(struct sched_dl_entity *dl_se, s64 delta_exec)
-> > +{
-> > +	update_curr_dl_se(dl_se->rq, dl_se, delta_exec);
-> > +}
-> > +
-> > +void dl_server_start(struct sched_dl_entity *dl_se)
-> > +{
-> > +	if (!dl_server(dl_se)) {
-> > +		dl_se->dl_server = 1;
-> > +		setup_new_dl_entity(dl_se);
-> > +	}
-> > +	enqueue_dl_entity(dl_se, dl_se, ENQUEUE_WAKEUP);
-> > +}
-> > +
-> > +void dl_server_stop(struct sched_dl_entity *dl_se)
-> > +{
-> > +	dequeue_dl_entity(dl_se, DEQUEUE_SLEEP);
-> > +}
-> > +
-> > +void dl_server_init(struct sched_dl_entity *dl_se, struct rq *rq,
-> > +		    dl_server_has_tasks_f has_tasks,
-> > +		    dl_server_pick_f pick)
-> > +{
-> > +	dl_se->rq = rq;
-> > +	dl_se->server_has_tasks = has_tasks;
-> > +	dl_se->server_pick = pick;
-> > +}
-> > +
-> > +/*
-> > + * Update the current task's runtime statistics (provided it is still
-> > + * a -deadline task and has not been removed from the dl_rq).
-> > + */
-> > +static void update_curr_dl(struct rq *rq)
-> > +{
-> > +	struct task_struct *curr = rq->curr;
-> > +	struct sched_dl_entity *dl_se = &curr->dl;
-> > +	s64 delta_exec;
-> > +
-> > +	if (!dl_task(curr) || !on_dl_rq(dl_se))
-> > +		return;
-> > +
-> > +	/*
-> > +	 * Consumed budget is computed considering the time as
-> > +	 * observed by schedulable tasks (excluding time spent
-> > +	 * in hardirq context, etc.). Deadlines are instead
-> > +	 * computed using hard walltime. This seems to be the more
-> > +	 * natural solution, but the full ramifications of this
-> > +	 * approach need further study.
-> > +	 */
-> > +	delta_exec = update_curr_common(rq);
-> > +	update_curr_dl_se(rq, dl_se, delta_exec);
-> > +}
-> > +
-> >  static enum hrtimer_restart inactive_task_timer(struct hrtimer *timer)
-> >  {
-> >  	struct sched_dl_entity *dl_se = container_of(timer,
-> >  						     struct sched_dl_entity,
-> >  						     inactive_timer);
-> > -	struct task_struct *p = dl_task_of(dl_se);
-> > +	struct task_struct *p = NULL;
-> >  	struct rq_flags rf;
-> >  	struct rq *rq;
-> >  
-> > -	rq = task_rq_lock(p, &rf);
-> > +	if (!dl_server(dl_se)) {
-> > +		p = dl_task_of(dl_se);
-> > +		rq = task_rq_lock(p, &rf);
-> > +	} else {
-> > +		rq = dl_se->rq;
-> > +		rq_lock(rq, &rf);
-> > +	}
-> >  
-> >  	sched_clock_tick();
-> >  	update_rq_clock(rq);
-> >  
-> > +	if (dl_server(dl_se))
-> > +		goto no_task;
-> > +
-> >  	if (!dl_task(p) || p->state == TASK_DEAD) {
-> >  		struct dl_bw *dl_b = dl_bw_of(task_cpu(p));
-> >  
-> > @@ -1342,14 +1438,21 @@ static enum hrtimer_restart inactive_task_timer(struct hrtimer *timer)
-> >  
-> >  		goto unlock;
-> >  	}
-> > +
-> > +no_task:
-> >  	if (dl_se->dl_non_contending == 0)
-> >  		goto unlock;
-> >  
-> >  	sub_running_bw(dl_se, &rq->dl);
-> >  	dl_se->dl_non_contending = 0;
-> >  unlock:
-> > -	task_rq_unlock(rq, p, &rf);
-> > -	put_task_struct(p);
-> > +
-> > +	if (!dl_server(dl_se)) {
-> > +		task_rq_unlock(rq, p, &rf);
-> > +		put_task_struct(p);
-> > +	} else {
-> > +		rq_unlock(rq, &rf);
-> > +	}
-> >  
-> >  	return HRTIMER_NORESTART;
-> >  }
-> > @@ -1402,34 +1505,35 @@ static void dec_dl_deadline(struct dl_rq *dl_rq, u64 deadline)
-> >  static inline void inc_dl_deadline(struct dl_rq *dl_rq, u64 deadline) {}
-> >  static inline void dec_dl_deadline(struct dl_rq *dl_rq, u64 deadline) {}
-> >  
-> > +static inline void update_dl_migration(struct dl_rq *dl_rq) {}
-> > +
-> >  #endif /* CONFIG_SMP */
-> >  
-> >  static inline
-> >  void inc_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
-> >  {
-> > -	int prio = dl_task_of(dl_se)->prio;
-> >  	u64 deadline = dl_se->deadline;
-> >  
-> > -	WARN_ON(!dl_prio(prio));
-> >  	dl_rq->dl_nr_running++;
-> >  	add_nr_running(rq_of_dl_rq(dl_rq), 1);
-> >  
-> >  	inc_dl_deadline(dl_rq, deadline);
-> > -	inc_dl_migration(dl_se, dl_rq);
-> > +	if (!dl_server(dl_se))
-> > +		inc_dl_migration(dl_se, dl_rq);
-> > +	update_dl_migration(dl_rq);
-> >  }
-> >  
-> >  static inline
-> >  void dec_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
-> >  {
-> > -	int prio = dl_task_of(dl_se)->prio;
-> > -
-> > -	WARN_ON(!dl_prio(prio));
-> >  	WARN_ON(!dl_rq->dl_nr_running);
-> >  	dl_rq->dl_nr_running--;
-> >  	sub_nr_running(rq_of_dl_rq(dl_rq), 1);
-> >  
-> >  	dec_dl_deadline(dl_rq, dl_se->deadline);
-> > -	dec_dl_migration(dl_se, dl_rq);
-> > +	if (!dl_server(dl_se))
-> > +		dec_dl_migration(dl_se, dl_rq);
-> > +	update_dl_migration(dl_rq);
-> >  }
-> >  
-> >  static void __enqueue_dl_entity(struct sched_dl_entity *dl_se)
-> > @@ -1524,8 +1628,7 @@ enqueue_dl_entity(struct sched_dl_entity *dl_se,
-> >  	} else if (flags & ENQUEUE_REPLENISH) {
-> >  		replenish_dl_entity(dl_se, pi_se);
-> >  	} else if ((flags & ENQUEUE_RESTORE) &&
-> > -		  dl_time_before(dl_se->deadline,
-> > -				 rq_clock(rq_of_dl_rq(dl_rq_of_se(dl_se))))) {
-> > +		   dl_time_before(dl_se->deadline, rq_clock(rq_of_dl_se(dl_se)))) {
-> >  		setup_new_dl_entity(dl_se);
-> >  	}
-> >  
-> > @@ -1592,14 +1695,6 @@ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags)
-> >  		enqueue_pushable_dl_task(rq, p);
-> >  }
-> >  
-> > -static void __dequeue_task_dl(struct rq *rq, struct task_struct *p, int flags)
-> > -{
-> > -	dequeue_dl_entity(&p->dl, flags);
-> > -
-> > -	if (!p->dl.dl_throttled)
-> > -		dequeue_pushable_dl_task(rq, p);
-> > -}
-> > -
-> >  static void dequeue_task_dl(struct rq *rq, struct task_struct *p, int flags)
-> >  {
-> >  	update_curr_dl(rq);
-> > @@ -1607,7 +1702,9 @@ static void dequeue_task_dl(struct rq *rq, struct task_struct *p, int flags)
-> >  	if (p->on_rq == TASK_ON_RQ_MIGRATING)
-> >  		flags |= DEQUEUE_MIGRATING;
-> >  
-> > -	__dequeue_task_dl(rq, p, flags);
-> > +	dequeue_dl_entity(&p->dl, flags);
-> > +	if (!p->dl.dl_throttled)
-> > +		dequeue_pushable_dl_task(rq, p);
-> >  }
-> >  
-> >  /*
-> > @@ -1789,12 +1886,12 @@ static void check_preempt_curr_dl(struct rq *rq, struct task_struct *p,
-> >  }
-> >  
-> >  #ifdef CONFIG_SCHED_HRTICK
-> > -static void start_hrtick_dl(struct rq *rq, struct task_struct *p)
-> > +static void start_hrtick_dl(struct rq *rq, struct sched_dl_entity *dl_se)
-> >  {
-> > -	hrtick_start(rq, p->dl.runtime);
-> > +	hrtick_start(rq, dl_se->runtime);
-> >  }
-> >  #else /* !CONFIG_SCHED_HRTICK */
-> > -static void start_hrtick_dl(struct rq *rq, struct task_struct *p)
-> > +static void start_hrtick_dl(struct rq *rq, struct sched_dl_entity *dl_se)
-> >  {
-> >  }
-> >  #endif
-> > @@ -1809,9 +1906,6 @@ static void set_next_task_dl(struct rq *rq, struct task_struct *p, bool first)
-> >  	if (!first)
-> >  		return;
-> >  
-> > -	if (hrtick_enabled(rq))
-> > -		start_hrtick_dl(rq, p);
-> > -
-> >  	if (rq->curr->sched_class != &dl_sched_class)
-> >  		update_dl_rq_load_avg(rq_clock_pelt(rq), rq, 0);
-> >  
-> > @@ -1835,13 +1929,30 @@ static struct task_struct *pick_next_task_dl(struct rq *rq)
-> >  	struct dl_rq *dl_rq = &rq->dl;
-> >  	struct task_struct *p;
-> >  
-> > +again:
-> >  	if (!sched_dl_runnable(rq))
-> >  		return NULL;
-> >  
-> >  	dl_se = pick_next_dl_entity(rq, dl_rq);
-> >  	BUG_ON(!dl_se);
-> > -	p = dl_task_of(dl_se);
-> > -	set_next_task_dl(rq, p, true);
-> > +	if (dl_server(dl_se)) {
-> > +		p = dl_se->server_pick(dl_se);
-> > +		if (!p) {
-> > +			// XXX should not happen, warn?!
-> > +			dl_se->dl_yielded = 1;
-> > +			update_curr_dl_se(rq, dl_se, 0);
-> > +			goto again;
-> > +		}
-> > +		p->server = dl_se;
-> > +	} else {
-> > +		p = dl_task_of(dl_se);
-> > +		set_next_task_dl(rq, p, true);
-> > +	}
-> > +
-> > +	/* XXX not quite right */
-> > +	if (hrtick_enabled(rq))
-> > +		start_hrtick_dl(rq, dl_se);
-> > +
-> >  	return p;
-> >  }
-> >  
-> > @@ -1873,8 +1984,8 @@ static void task_tick_dl(struct rq *rq, struct task_struct *p, int queued)
-> >  	 * be set and schedule() will start a new hrtick for the next task.
-> >  	 */
-> >  	if (hrtick_enabled(rq) && queued && p->dl.runtime > 0 &&
-> > -	    is_leftmost(p, &rq->dl))
-> > -		start_hrtick_dl(rq, p);
-> > +	    is_leftmost(&p->dl, &rq->dl))
-> > +		start_hrtick_dl(rq, &p->dl);
-> >  }
-> >  
-> >  static void task_fork_dl(struct task_struct *p)
-> > @@ -2771,6 +2882,7 @@ static void __dl_clear_params(struct sched_dl_entity *dl_se)
-> >  	dl_se->dl_yielded		= 0;
-> >  	dl_se->dl_non_contending	= 0;
-> >  	dl_se->dl_overrun		= 0;
-> > +	dl_se->dl_server		= 0;
-> >  }
-> >  
-> >  void init_dl_entity(struct sched_dl_entity *dl_se)
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 10a230d85104a..5130239c0e1e5 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -868,6 +868,8 @@ s64 update_curr_common(struct rq *rq)
-> >  
-> >  	account_group_exec_runtime(curr, delta_exec);
-> >  	cgroup_account_cputime(curr, delta_exec);
-> > +	if (curr->server)
-> > +		dl_server_update(curr->server, delta_exec);
-> >  
-> >  	return delta_exec;
-> >  }
-> > @@ -897,6 +899,8 @@ static void update_curr(struct cfs_rq *cfs_rq)
-> >  		trace_sched_stat_runtime(curtask, delta_exec, curr->vruntime);
-> >  		cgroup_account_cputime(curtask, delta_exec);
-> >  		account_group_exec_runtime(curtask, delta_exec);
-> > +		if (curtask->server)
-> > +			dl_server_update(curtask->server, delta_exec);
-> >  	}
-> >  
-> >  	account_cfs_rq_runtime(cfs_rq, delta_exec);
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index d3db8c7d8b641..f035cd8ccd224 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -346,6 +346,35 @@ extern int  dl_task_can_attach(struct task_struct *p, const struct cpumask *cs_c
-> >  extern int  dl_cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
-> >  extern bool dl_cpu_busy(unsigned int cpu);
-> >  
-> > +/*
-> > + * SCHED_DEADLINE supports servers (nested scheduling) with the following
-> > + * interface:
-> > + *
-> > + *   dl_se::rq -- runqueue we belong to.
-> > + *
-> > + *   dl_se::server_has_tasks() -- used on bandwidth enforcement; we 'stop' the
-> > + *                                server when it runs out of tasks to run.
-> > + *
-> > + *   dl_se::server_pick() -- nested pick_next_task(); we yield the period if this
-> > + *                           returns NULL.
-> > + *
-> > + *   dl_server_update() -- called from update_curr_common(), propagates runtime
-> > + *                         to the server.
-> > + *
-> > + *   dl_server_start()
-> > + *   dl_server_stop()  -- start/stop the server when it has (no) tasks
-> > + *
-> > + *   dl_server_init()
-> > + *
-> > + * XXX
-> > + */
-> > +extern void dl_server_update(struct sched_dl_entity *dl_se, s64 delta_exec);
-> > +extern void dl_server_start(struct sched_dl_entity *dl_se);
-> > +extern void dl_server_stop(struct sched_dl_entity *dl_se);
-> > +extern void dl_server_init(struct sched_dl_entity *dl_se, struct rq *rq,
-> > +		    dl_server_has_tasks_f has_tasks,
-> > +		    dl_server_pick_f pick);
-> > +
-> >  #ifdef CONFIG_CGROUP_SCHED
-> >  
-> >  #include <linux/cgroup.h>
-> 
+Also other shrinkers (inode and all these) also do lots of per-object
+trylocking. I think there's a canonical threshold of shrinker rounds where
+you're supposed to try harder (if possible), but that doesn't apply to
+dma_resv_lock.
+-Daniel
 
+> 
+> BR,
+> -R
+> 
+> >
+> > > >
+> > > > I recently wrote an entire blog length rant on why I think
+> > > > mutex_lock_nested is too dangerous to be useful:
+> > > >
+> > > > https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
+> > > >
+> > > > Not anything about this here, just general comment. The problem extends to
+> > > > shmem helpers and all that also having their own locks for everything.
+> > >
+> > > This is definitely a tangible improvement though - very happy to see
+> > > msm_gem_shrinker_lock() go.
+> > >
+> > > Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
+> > >
+> > > > -Daniel
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> > > > _______________________________________________
+> > > > dri-devel mailing list
+> > > > dri-devel@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
