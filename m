@@ -2,303 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D60285349
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB61028534B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgJFUij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:38:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55298 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727301AbgJFUii (ORCPT
+        id S1727345AbgJFUjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727166AbgJFUjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602016716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=CY270tE78aHdEFg/7AHMwZ0G16nZKyLFE05PWyXGF2g=;
-        b=WxNxSn+6lJT5tv/YcmDjO6dFSBlg54kL7VzJCfuFtYCUH8WYOKnOBS0mLvIybnaAtG1aah
-        tvwPYfWPlv5wOM0AlxzJYoo0yT9/koNstyqjYxUjhyv/BTt7LfMETuRwJ48GAqhBRMHuyR
-        68zthzef1RORR+LgGF5nR80Vg2JuWnY=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-wqxgvaapOFGRCpCfKeLlPA-1; Tue, 06 Oct 2020 16:38:34 -0400
-X-MC-Unique: wqxgvaapOFGRCpCfKeLlPA-1
-Received: by mail-oi1-f199.google.com with SMTP id b22so1719737oib.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:38:34 -0700 (PDT)
+        Tue, 6 Oct 2020 16:39:04 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BDDC0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:39:04 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id y20so14473399iod.5
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aP26k3iPNr1VpqvkggYcdxciq5A3h6k+A8ZkkiVk+vE=;
+        b=ZS2TGe3M6BM2pCGvzZsvuQhQScVUluOJsnRH1r5i7A7P6n2UP7siMbluTKbkh4+efU
+         UbqSZZ+fZQFwAS4BzVTQ+ar++o7dmdlQJ22yy7Dy/lTn9yWkfYz7e1qZyE9eKgBE3HSs
+         q2vSZxGTu1hN+p8wF+jDAJ+KtO9L8yLq2iLt8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=CY270tE78aHdEFg/7AHMwZ0G16nZKyLFE05PWyXGF2g=;
-        b=kCUq67FW9ETvEUnp6DweqEZV1wQbCXGG3jgl3IgEFRYYi6RIAsc2ySF9ZYkBN8JCNL
-         OucBpc0xIZyycIkpcMD9ayWO6YGoPTzQYvFtyrZEUaJvDDRKGsqZk7ZC3vJDmtAW6W/7
-         ZldCzKLgIv4M2U5RY1NfJ4V90t9WWwmR+04sc1cvs2YBO5DYQvtU6P30PauzB+htyZWJ
-         MGATfW7eo9jTgZBl7LEvFsyhRKrkb05gHyKN2UpRVwkF8oPX1LPkmuCDfmJBb/6GYfQx
-         HgxWvwV/OAFZOS8L9gtyXy2f3QxolZnTwKTJymSQNllNixUsJ6rhQBiu/rWGqIVxdJCd
-         nAUg==
-X-Gm-Message-State: AOAM532YHI7F4/UD3qdz78qR5H76v2QfWdvahD5YGpiLg+PvrLvDCG8c
-        l4FUN6Bg9OgaNw2F9aEBA4I8x3QpvQKRD36Pfp0TNQnL8iuCVToFWyjtnGfwcJ0khroD7gwp0DJ
-        6Paq8GQH4heyLdeNgRuSPiwM/
-X-Received: by 2002:a05:6808:3bb:: with SMTP id n27mr50822oie.130.1602016713474;
-        Tue, 06 Oct 2020 13:38:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUWuzCs2Ch8AH0f1TjICwuy4PYh6JGFTou71mlG7LYS+r2BhiCyDdDlV7L1zOpSmLX7k8m5g==
-X-Received: by 2002:a05:6808:3bb:: with SMTP id n27mr50815oie.130.1602016713164;
-        Tue, 06 Oct 2020 13:38:33 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r131sm1790082oig.50.2020.10.06.13.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 13:38:32 -0700 (PDT)
-From:   trix@redhat.com
-To:     corbet@lwn.net, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] media: ov7670: do not aggregate returns
-Date:   Tue,  6 Oct 2020 13:38:17 -0700
-Message-Id: <20201006203817.8173-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aP26k3iPNr1VpqvkggYcdxciq5A3h6k+A8ZkkiVk+vE=;
+        b=K/9eWk79bSgY9MFlOC6tStORuYau50huW7+8hDajXgoV8jUPjNbK7waxXHPIylC4i1
+         Gs/ZFRzSziVpiEuJguwabEtitMkFhVIu4mHdb08OheDWkRuxAK6vNaRhyIpxT750cFzJ
+         ENzNCgPrETfCJkkTwlKiK8vaDmf60LCJxSo+URCfRZ4Ag3pysozmneueSi+30Q8nShAi
+         nnvn5+2CWSvDv8wi0owixrvYP6r+1zg6bmr3XtxK1TiwWZ2rAAxdJbJnTlaQ/YiLuW/S
+         IrMkmtqh0O4Maztsi+yZ1ZHVE4EwmPmkjZpXix+FbkpNOxvfRd1zLC4X6Y/6RBQt2J2D
+         p4zw==
+X-Gm-Message-State: AOAM5308IjC4ZYCXfNn6p6jTgxwNy5gpO0sVr2K+usUxwl+ARx+O6GUo
+        27gOuwzYwMKyM6yXHGCXbdNmPgE0veaZMJtqdXqB
+X-Google-Smtp-Source: ABdhPJw+FN3XoT0rxMl6Ve49NN7RdklCAzgoNyZ08hcLaNGIRm+nAoOXgbR9257x0DX6r58+AhI1DeDfnRtTGG/ffQA=
+X-Received: by 2002:a5d:9842:: with SMTP id p2mr2700429ios.113.1602016743286;
+ Tue, 06 Oct 2020 13:39:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
+ <1593266228-61125-2-git-send-email-guoren@kernel.org> <20200911204512.GA2705@aurel32.net>
+ <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
+ <20200914103836.GB2705@aurel32.net> <87lfgzeidk.fsf@igel.home>
+ <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
+ <CAOnJCUJhb2K89pRETbfTJ=5jHQhWfyfrOUu8zOE77j+id6OpSA@mail.gmail.com> <CAJF2gTRc-RUBiQ=ZE7BT8tABHu3=Bcmuc+ADyBLZ7r7fozwahg@mail.gmail.com>
+In-Reply-To: <CAJF2gTRc-RUBiQ=ZE7BT8tABHu3=Bcmuc+ADyBLZ7r7fozwahg@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 6 Oct 2020 13:38:52 -0700
+Message-ID: <CAOnJCUKi-bzEvYWw3BxBbGe6ODHEzdjTWsfrmS54qEk1i1Kr8Q@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nick Hu <nickhu@andestech.com>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Zong Li <zong.li@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, Oct 6, 2020 at 9:46 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Tue, Oct 6, 2020 at 3:14 AM Atish Patra <atishp@atishpatra.org> wrote:
+> >
+> > On Thu, Sep 24, 2020 at 9:19 AM Guo Ren <guoren@kernel.org> wrote:
+> > >
+> > > How about this, revert the commit and don't free INIT_DATA_SECTION. I
+> > > think the solution is safe enough, but wast a little memory.
+> > >
+> > > diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> > > index f3586e3..34d00d9 100644
+> > > --- a/arch/riscv/kernel/vmlinux.lds.S
+> > > +++ b/arch/riscv/kernel/vmlinux.lds.S
+> > > @@ -22,13 +22,11 @@ SECTIONS
+> > >         /* Beginning of code and text segment */
+> > >         . = LOAD_OFFSET;
+> > >         _start = .;
+> > > -       _stext = .;
+> > >         HEAD_TEXT_SECTION
+> > >         . = ALIGN(PAGE_SIZE);
+> > >
+> > >         __init_begin = .;
+> > >         INIT_TEXT_SECTION(PAGE_SIZE)
+> > > -       INIT_DATA_SECTION(16)
+> > >         . = ALIGN(8);
+> > >         __soc_early_init_table : {
+> > >                 __soc_early_init_table_start = .;
+> > > @@ -55,6 +53,7 @@ SECTIONS
+> > >         . = ALIGN(SECTION_ALIGN);
+> > >         .text : {
+> > >                 _text = .;
+> > > +               _stext = .;
+> > >                 TEXT_TEXT
+> > >                 SCHED_TEXT
+> > >                 CPUIDLE_TEXT
+> > > @@ -67,6 +66,8 @@ SECTIONS
+> > >                 _etext = .;
+> > >         }
+> > >
+> > > +       INIT_DATA_SECTION(16)
+> > > +
+> >
+> > I think you need to move EXIT_DATA as well. Currently, we have init
+> > data & text in one section.
+> It's not related to this issue. There is two check code problem:
 
-Adding muliple status together loses individual failures.
-Check each status separately.
+Yes. But we shouldn't move only INIT_DATA_SECTION out of __init section
+while leaving percpu & exit data in the __init section. Here is what I
+have in mind.
 
-Clean up some other returns for consistency.
+diff --git a/arch/riscv/kernel/vmlinux.lds.S
+b/arch/riscv/kernel/vmlinux.lds.S
+index 9795359cb9da..4432cef8184e 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -26,13 +26,11 @@ SECTIONS
+        /* Beginning of code and text segment */
+        . = LOAD_OFFSET;
+        _start = .;
+        _start = .;
+-       _stext = .;
+        HEAD_TEXT_SECTION
+        . = ALIGN(PAGE_SIZE);
 
-Fixed several coding style problems by running
-the file through checkpatch.pl --fix-inplace
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/media/i2c/ov7670.c | 96 ++++++++++++++++++++++----------------
- 1 file changed, 56 insertions(+), 40 deletions(-)
-
-diff --git a/drivers/media/i2c/ov7670.c b/drivers/media/i2c/ov7670.c
-index b42b289faaef..d2df811b1a40 100644
---- a/drivers/media/i2c/ov7670.c
-+++ b/drivers/media/i2c/ov7670.c
-@@ -561,6 +561,7 @@ static int ov7670_read(struct v4l2_subdev *sd, unsigned char reg,
- 		unsigned char *value)
- {
- 	struct ov7670_info *info = to_state(sd);
+        __init_begin = .;
+        INIT_TEXT_SECTION(PAGE_SIZE)
+-       INIT_DATA_SECTION(16)
+        . = ALIGN(8);
+        __soc_early_init_table : {
+                __soc_early_init_table_start = .;
+@@ -49,16 +47,13 @@ SECTIONS
+        {
+                EXIT_TEXT
+        }
+-       .exit.data :
+-       {
+-               EXIT_DATA
+-       }
+-       PERCPU_SECTION(L1_CACHE_BYTES)
 +
- 	if (info->use_smbus)
- 		return ov7670_read_smbus(sd, reg, value);
- 	else
-@@ -571,6 +572,7 @@ static int ov7670_write(struct v4l2_subdev *sd, unsigned char reg,
- 		unsigned char value)
- {
- 	struct ov7670_info *info = to_state(sd);
+        __init_end = .;
+
+        . = ALIGN(SECTION_ALIGN);
+        .text : {
+                _text = .;
++               _stext = .;
+                TEXT_TEXT
+                SCHED_TEXT
+                CPUIDLE_TEXT
+@@ -77,6 +72,17 @@ SECTIONS
+ #endif
+
+        /* Start of data section */
++       __init_data_begin = .;
++       INIT_DATA_SECTION(16)
++       .exit.data :
++       {
++               EXIT_DATA
++       }
 +
- 	if (info->use_smbus)
- 		return ov7670_write_smbus(sd, reg, value);
- 	else
-@@ -597,6 +599,7 @@ static int ov7670_write_array(struct v4l2_subdev *sd, struct regval_list *vals)
- {
- 	while (vals->reg_num != 0xff || vals->value != 0xff) {
- 		int ret = ov7670_write(sd, vals->reg_num, vals->value);
++       PERCPU_SECTION(L1_CACHE_BYTES)
 +
- 		if (ret < 0)
- 			return ret;
- 		vals++;
-@@ -921,27 +924,38 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
- {
- 	int ret;
- 	unsigned char v;
--/*
-- * Horizontal: 11 bits, top 8 live in hstart and hstop.  Bottom 3 of
-- * hstart are in href[2:0], bottom 3 of hstop in href[5:3].  There is
-- * a mystery "edge offset" value in the top two bits of href.
-- */
--	ret =  ov7670_write(sd, REG_HSTART, (hstart >> 3) & 0xff);
--	ret += ov7670_write(sd, REG_HSTOP, (hstop >> 3) & 0xff);
--	ret += ov7670_read(sd, REG_HREF, &v);
-+	/*
-+	 * Horizontal: 11 bits, top 8 live in hstart and hstop.  Bottom 3 of
-+	 * hstart are in href[2:0], bottom 3 of hstop in href[5:3].  There is
-+	 * a mystery "edge offset" value in the top two bits of href.
-+	 */
-+	ret = ov7670_write(sd, REG_HSTART, (hstart >> 3) & 0xff);
-+	if (ret)
-+		return ret;
-+	ret = ov7670_write(sd, REG_HSTOP, (hstop >> 3) & 0xff);
-+	if (ret)
-+		return ret;
-+	ret = ov7670_read(sd, REG_HREF, &v);
-+	if (ret)
-+		return ret;
- 	v = (v & 0xc0) | ((hstop & 0x7) << 3) | (hstart & 0x7);
- 	msleep(10);
--	ret += ov7670_write(sd, REG_HREF, v);
--/*
-- * Vertical: similar arrangement, but only 10 bits.
-- */
--	ret += ov7670_write(sd, REG_VSTART, (vstart >> 2) & 0xff);
--	ret += ov7670_write(sd, REG_VSTOP, (vstop >> 2) & 0xff);
--	ret += ov7670_read(sd, REG_VREF, &v);
-+	ret = ov7670_write(sd, REG_HREF, v);
-+	if (ret)
-+		return ret;
-+	/* Vertical: similar arrangement, but only 10 bits. */
-+	ret = ov7670_write(sd, REG_VSTART, (vstart >> 2) & 0xff);
-+	if (ret)
-+		return ret;
-+	ret = ov7670_write(sd, REG_VSTOP, (vstop >> 2) & 0xff);
-+	if (ret)
-+		return ret;
-+	ret = ov7670_read(sd, REG_VREF, &v);
-+	if (ret)
-+		return ret;
- 	v = (v & 0xf0) | ((vstop & 0x3) << 2) | (vstart & 0x3);
- 	msleep(10);
--	ret += ov7670_write(sd, REG_VREF, v);
--	return ret;
-+	return ov7670_write(sd, REG_VREF, v);
- }
- 
- 
-@@ -1245,6 +1259,7 @@ static int ov7670_enum_frame_size(struct v4l2_subdev *sd,
- 	 */
- 	for (i = 0; i < n_win_sizes; i++) {
- 		struct ov7670_win_size *win = &info->devtype->win_sizes[i];
++       __init_data_end = .;
 +
- 		if (info->min_width && win->width < info->min_width)
- 			continue;
- 		if (info->min_height && win->height < info->min_height)
-@@ -1285,17 +1300,17 @@ static int ov7670_store_cmatrix(struct v4l2_subdev *sd,
- 				raw = 0xff;
- 			else
- 				raw = (-1 * matrix[i]) & 0xff;
--		}
--		else {
-+		} else {
- 			if (matrix[i] > 255)
- 				raw = 0xff;
- 			else
- 				raw = matrix[i] & 0xff;
- 		}
--		ret += ov7670_write(sd, REG_CMATRIX_BASE + i, raw);
-+		ret = ov7670_write(sd, REG_CMATRIX_BASE + i, raw);
-+		if (ret)
-+			return ret;
- 	}
--	ret += ov7670_write(sd, REG_CMATRIX_SIGN, signbits);
--	return ret;
-+	return ov7670_write(sd, REG_CMATRIX_SIGN, signbits);
- }
- 
- 
-@@ -1381,11 +1396,9 @@ static int ov7670_s_sat_hue(struct v4l2_subdev *sd, int sat, int hue)
- {
- 	struct ov7670_info *info = to_state(sd);
- 	int matrix[CMATRIX_LEN];
--	int ret;
- 
- 	ov7670_calc_cmatrix(info, matrix, sat, hue);
--	ret = ov7670_store_cmatrix(sd, matrix);
--	return ret;
-+	return ov7670_store_cmatrix(sd, matrix);
- }
- 
- 
-@@ -1403,14 +1416,12 @@ static unsigned char ov7670_abs_to_sm(unsigned char v)
- static int ov7670_s_brightness(struct v4l2_subdev *sd, int value)
- {
- 	unsigned char com8 = 0, v;
--	int ret;
- 
- 	ov7670_read(sd, REG_COM8, &com8);
- 	com8 &= ~COM8_AEC;
- 	ov7670_write(sd, REG_COM8, com8);
- 	v = ov7670_abs_to_sm(value);
--	ret = ov7670_write(sd, REG_BRIGHT, v);
--	return ret;
-+	return ov7670_write(sd, REG_BRIGHT, v);
- }
- 
- static int ov7670_s_contrast(struct v4l2_subdev *sd, int value)
-@@ -1424,13 +1435,14 @@ static int ov7670_s_hflip(struct v4l2_subdev *sd, int value)
- 	int ret;
- 
- 	ret = ov7670_read(sd, REG_MVFP, &v);
-+	if (ret)
-+		return ret;
- 	if (value)
- 		v |= MVFP_MIRROR;
- 	else
- 		v &= ~MVFP_MIRROR;
- 	msleep(10);  /* FIXME */
--	ret += ov7670_write(sd, REG_MVFP, v);
--	return ret;
-+	return ov7670_write(sd, REG_MVFP, v);
- }
- 
- static int ov7670_s_vflip(struct v4l2_subdev *sd, int value)
-@@ -1439,13 +1451,14 @@ static int ov7670_s_vflip(struct v4l2_subdev *sd, int value)
- 	int ret;
- 
- 	ret = ov7670_read(sd, REG_MVFP, &v);
-+	if (ret)
-+		return ret;
- 	if (value)
- 		v |= MVFP_FLIP;
- 	else
- 		v &= ~MVFP_FLIP;
- 	msleep(10);  /* FIXME */
--	ret += ov7670_write(sd, REG_MVFP, v);
--	return ret;
-+	return ov7670_write(sd, REG_MVFP, v);
- }
- 
- /*
-@@ -1460,8 +1473,10 @@ static int ov7670_g_gain(struct v4l2_subdev *sd, __s32 *value)
- 	unsigned char gain;
- 
- 	ret = ov7670_read(sd, REG_GAIN, &gain);
-+	if (ret)
-+		return ret;
- 	*value = gain;
--	return ret;
-+	return 0;
- }
- 
- static int ov7670_s_gain(struct v4l2_subdev *sd, int value)
-@@ -1470,12 +1485,13 @@ static int ov7670_s_gain(struct v4l2_subdev *sd, int value)
- 	unsigned char com8;
- 
- 	ret = ov7670_write(sd, REG_GAIN, value & 0xff);
-+	if (ret)
-+		return ret;
- 	/* Have to turn off AGC as well */
--	if (ret == 0) {
--		ret = ov7670_read(sd, REG_COM8, &com8);
--		ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
--	}
--	return ret;
-+	ret = ov7670_read(sd, REG_COM8, &com8);
-+	if (ret)
-+		return ret;
-+	return ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
- }
- 
- /*
-@@ -1680,13 +1696,13 @@ static int ov7670_s_power(struct v4l2_subdev *sd, int on)
- 		return 0;
- 
- 	if (on) {
--		ov7670_power_on (sd);
-+		ov7670_power_on(sd);
- 		ov7670_init(sd, 0);
- 		ov7670_apply_fmt(sd);
- 		ov7675_apply_framerate(sd);
- 		v4l2_ctrl_handler_setup(&info->hdl);
- 	} else {
--		ov7670_power_off (sd);
-+		ov7670_power_off(sd);
- 	}
- 
- 	return 0;
+
+As you correctly pointed out, this wastes around ~200K init memory
+that is wasted.
+That is not an ideal solution.
+
+The other alternative is to move __init_text section after _text as
+well similar to other architectures. But that won't work
+for RISC-V as we jump from _start to __start_kernel(in __init section)
+in head.S.  A JAL instruction can't be fit because
+__start_kernel is now too far. We can't replace JAL with a JALR
+because that would require an additional
+instruction and violates image header format.
+
+Any other ideas to solve this problem without wasting memory ?
+
+>  1.     static int static_obj(const void *obj)
+>     {
+>             unsigned long start = (unsigned long) &_stext,
+>                           end   = (unsigned long) &_end,
+>                           addr  = (unsigned long) obj;
+>
+>             /*
+>              * static variable?
+>              */
+>             if ((addr >= start) && (addr < end))
+>                     return 1;
+>
+>  2.     /* Is this address range in the kernel text area? */
+>     static inline void check_kernel_text_object(const unsigned long ptr,
+>                                                 unsigned long n, bool to_user)
+>     {
+>             unsigned long textlow = (unsigned long)_stext;
+>             unsigned long texthigh = (unsigned long)_etext;
+>             unsigned long textlow_linear, texthigh_linear;
+>
+>             if (overlaps(ptr, n, textlow, texthigh))
+>                     usercopy_abort("kernel text", NULL, to_user, ptr -
+> textlow, n);
+>
+> The patch of commit: a0fa4027dc911 (riscv: Fixup static_obj() fail) broke 2th.
+>
+> > In general it is better idea to separate those similar to ARM64.
+> > Additionally, ARM64 applies different mapping for init data & text
+> > as the init data section is marked as non-executable[1]
+> Yes, it's safer to protect init text & init data, but it's should be
+> another patch.
+>
+
+Yes. I will send the patch based on this fix.
+
+> >
+> > However, we don't modify any permission for any init sections. Should
+> > we do that as well ?
+> Agree, we should do that.
+>
+> >
+> > [1] https://patchwork.kernel.org/patch/9572869/
+> >
+> > >         /* Start of data section */
+> > >         _sdata = .;
+> > >         RO_DATA(SECTION_ALIGN)
+> > >
+> > > On Thu, Sep 24, 2020 at 3:36 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
+> > > >
+> > > > On Sep 14 2020, Aurelien Jarno wrote:
+> > > >
+> > > > > How should we proceed to get that fixed in time for 5.9? For the older
+> > > > > branches where it has been backported (so far 5.7 and 5.8), should we
+> > > > > just get that commit reverted instead?
+> > > >
+> > > > Can this please be resolved ASAP?
+> > > >
+> > > > Andreas.
+> > > >
+> > > > --
+> > > > Andreas Schwab, schwab@linux-m68k.org
+> > > > GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+> > > > "And now for something completely different."
+> > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > >  Guo Ren
+> > >
+> > > ML: https://lore.kernel.org/linux-csky/
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> >
+> >
+> > --
+> > Regards,
+> > Atish
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
+
+
+
 -- 
-2.18.1
-
+Regards,
+Atish
