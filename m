@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4EB284FA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD94C284F98
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgJFQPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:15:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40888 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFQPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:15:19 -0400
-IronPort-SDR: iGdI+DcKJHsCT4DH16t9LU1f0E7Kfw2dDra2E61iictBCeQELuiGvuORiL5K164J3ShPiF9T+i
- Y6Cxu2yMue7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="228694422"
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="228694422"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 09:12:02 -0700
-IronPort-SDR: stvAu5V5ArIkhb65+5xX22vrNhwq9qvEre1+vJPC+dd8YMhN4ZwLklfbXK9J9x0T9beEC2KXf+
- UDk1DR+bwfQA==
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="348545356"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 09:12:01 -0700
-Date:   Tue, 6 Oct 2020 09:12:00 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-Message-ID: <20201006161200.GB17610@linux.intel.com>
-References: <20201002200214.GB10232@redhat.com>
- <20201002211314.GE24460@linux.intel.com>
- <20201005153318.GA4302@redhat.com>
- <20201005161620.GC11938@linux.intel.com>
- <20201006134629.GB5306@redhat.com>
- <877ds38n6r.fsf@vitty.brq.redhat.com>
- <20201006141501.GC5306@redhat.com>
- <874kn78l2z.fsf@vitty.brq.redhat.com>
- <20201006150817.GD5306@redhat.com>
- <871rib8ji1.fsf@vitty.brq.redhat.com>
+        id S1726363AbgJFQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:13:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24575 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726214AbgJFQNB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:13:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602000780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xKb7sZVPybPTfbA/gFJsTXmJHS4tONXKkrgyfpj9y48=;
+        b=gPSFc+0+ZCgcTS0MbaYXmrmejjdgpanFO59nGIguOAbn/egwzYzzQT2Nh8cXS44X+t5Wq9
+        WHmNqU6DW4E+vzUlwRFea+jcoWKqoIFh5mQe+6tqaij7osJWVau5BgQyJQvO93txqrmCTg
+        UkRufoZMYcV4/us3/K+c+cJbp7dZclM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-53J22Gl_PPu2IF5lEv0o2g-1; Tue, 06 Oct 2020 12:12:54 -0400
+X-MC-Unique: 53J22Gl_PPu2IF5lEv0o2g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 516D2425D4;
+        Tue,  6 Oct 2020 16:12:52 +0000 (UTC)
+Received: from ovpn-112-231.ams2.redhat.com (ovpn-112-231.ams2.redhat.com [10.36.112.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E6CC15C1C4;
+        Tue,  6 Oct 2020 16:12:47 +0000 (UTC)
+Message-ID: <c750c3256bec4ceab91a95f2725e4bc026f4b5dc.camel@redhat.com>
+Subject: Re: [PATCH net-next] selftests: mptcp: interpret \n as a new line
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 06 Oct 2020 18:12:45 +0200
+In-Reply-To: <20201006160631.3987766-1-matthieu.baerts@tessares.net>
+References: <20201006160631.3987766-1-matthieu.baerts@tessares.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871rib8ji1.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 05:24:54PM +0200, Vitaly Kuznetsov wrote:
-> Vivek Goyal <vgoyal@redhat.com> writes:
-> > So you will have to report token (along with -EFAULT) to user space. So this
-> > is basically the 3rd proposal which is extension of kvm API and will
-> > report say HVA/GFN also to user space along with -EFAULT.
+On Tue, 2020-10-06 at 18:06 +0200, Matthieu Baerts wrote:
+> In case of errors, this message was printed:
 > 
-> Right, I meant to say that guest kernel has full register state of the
-> userspace process which caused APF to get queued and instead of trying
-> to extract it in KVM and pass to userspace in case of a (later) failure
-> we limit KVM api change to contain token or GFN only and somehow keep
-> the rest in the guest. This should help with TDX/SEV-ES.
+>   (...)
+>   balanced bwidth with unbalanced delay       5233 max 5005  [ fail ]
+>   client exit code 0, server 0
+>   \nnetns ns3-0-EwnkPH socket stat for 10003:
+>   (...)
+> 
+> Obviously, the idea was to add a new line before the socket stat and not
+> print "\nnetns".
+> 
+> The commit 8b974778f998 ("selftests: mptcp: interpret \n as a new line")
+> is very similar to this one. But the modification in simult_flows.sh was
+> missed because this commit above was done in parallel to one here below.
+> 
+> Fixes: 1a418cb8e888 ("mptcp: simult flow self-tests")
+> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-Whatever gets reported to userspace should be identical with and without
-async page faults, i.e. it definitely shouldn't have token information.
+Acked-by: Paolo Abeni <pabeni@redhat.com>
 
-Note, TDX doesn't allow injection exceptions, so reflecting a #PF back
-into the guest is not an option.  Nor do I think that's "correct"
-behavior (see everyone's objections to using #PF for APF fixed).  I.e. the
-event should probably be an IRQ.
