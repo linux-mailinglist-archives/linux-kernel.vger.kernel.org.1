@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE31628503E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A48285040
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgJFQ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:56:38 -0400
-Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:36932 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725902AbgJFQ4h (ORCPT
+        id S1726258AbgJFQ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgJFQ5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:56:37 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BDBD763D;
-        Tue,  6 Oct 2020 16:56:36 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:1963:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:4321:4362:5007:6117:6742:6743:7901:7903:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21611:21627:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: juice93_3f08596271c8
-X-Filterd-Recvd-Size: 2140
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  6 Oct 2020 16:56:32 +0000 (UTC)
-Message-ID: <1c2595d8df301b1e7f42a6f0093321a41bfea825.camel@perches.com>
-Subject: Re: [PATCH v5 00/52] Fix html build with Sphinx  3.1 and above
-From:   Joe Perches <joe@perches.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Kees Cook <keescook@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>, Sean Young <sean@mess.org>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Tue, 06 Oct 2020 09:56:31 -0700
-In-Reply-To: <cover.1601992016.git.mchehab+huawei@kernel.org>
-References: <cover.1601992016.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 6 Oct 2020 12:57:43 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECF5C061755;
+        Tue,  6 Oct 2020 09:57:41 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id qp15so18670732ejb.3;
+        Tue, 06 Oct 2020 09:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GJ3BhH33jimFHyih/N7AY4tXkM7p8UBTJJ+fLzw3IMg=;
+        b=HjPnohUQPVltGOeuFvHs/G/eBQqv8qdw+ndMMAEIEhh0Da+fr/fbmlClQ5BfSacRjq
+         Dbts7YKOE5ij2TxRyXkKgtZu+bBObqYMo7wHme+mYGzyBSe2RzPFadtePY+EWXvh30ZW
+         edexQCRMxiG71yF2evJAaTjzYdw0jjbNaGcmbrfup++qSIqyv3cMaQhdPvnVakBfpLkH
+         wylEueiMqojbwWYCTXMYzFwoIK7aSoY4Xuadz3IuFwH5rODZOzyiRLjnEdeTRFCSZo9l
+         PxpTNSEw4ruvsNiIw4OWzAqrGpOVFSyAdigBr1gAAGUTL8+FEhne1qxEVVun8WW5IReD
+         wZIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GJ3BhH33jimFHyih/N7AY4tXkM7p8UBTJJ+fLzw3IMg=;
+        b=KNs1JDJ1N5LYj4A+R4KD6WHSOZTVNxxWokWf8Tdxwc72MAYC7hy2UME4xU47p8t44m
+         rCW7YAXe4AKoMZJ5GZRGnSy5WVOogQvKGGy5dN8223oam+L/2+eE/xaq26EfERl4ql4I
+         nxAQUFDJW8d63bFzZbpZoWlY4X6w7JSlp+ev3I71yEMyL/T2+y2P4NQ+DnJtQr21nv5s
+         y7qDp7q5roNRrkWd9mikWcnZiCe1Ldsfj8OiHCCrsLmPoBTMACZ2y4pxcf9QNf6Rct8y
+         M5fRLC9QPNHUvU3D209guO9F7xm7VdmhEsAHsBqfVbxv9zOUmjhNjUkefl5cumU/IPPx
+         ARfg==
+X-Gm-Message-State: AOAM533FrRspJAtMqexn+aKI4HpWZKruSBFepGTG3695Ij5BmUXznbul
+        i0PPju8HeAtlmw53rKahITE=
+X-Google-Smtp-Source: ABdhPJys+u9QrGhclIfTpXuQY7ohw8Y+Df14qsRlJvuGAJLe+Py+Sfy4GQcFRjRi1uFFrbsen+sKMw==
+X-Received: by 2002:a17:906:a00c:: with SMTP id p12mr513027ejy.10.1602003460186;
+        Tue, 06 Oct 2020 09:57:40 -0700 (PDT)
+Received: from skbuf ([188.26.229.171])
+        by smtp.gmail.com with ESMTPSA id p2sm2540371ejd.34.2020.10.06.09.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 09:57:39 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 19:57:38 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net v2] net: dsa: microchip: fix race condition
+Message-ID: <20201006165738.lcvca2ujwqehmopp@skbuf>
+References: <20201006155651.21473-1-ceggers@arri.de>
+ <20201006162125.ulftqdiufdxjesn7@skbuf>
+ <1774255.9Jiduhijpd@n95hx1g2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1774255.9Jiduhijpd@n95hx1g2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-06 at 16:02 +0200, Mauro Carvalho Chehab wrote:
-> This series add proper support for Sphinx 3.1 and above for building the html docs.
+On Tue, Oct 06, 2020 at 06:30:57PM +0200, Christian Eggers wrote:
+> If think that ksz_switch_remove() will not be called at all if there is an
+> error in the probe path.
 
-Thanks Mauro.
+Indeed.
 
-I do like how the source docs are simplified for human reading
-instead of having to mentally skip useless markup notations.
+> In all other cases, the work should be queued.
 
-
+In that case, it looks like the "if" condition can be removed in a
+further patch, because it is now unnecessary. Please be sure to test
+that though.
