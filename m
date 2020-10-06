@@ -2,105 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8128B2846B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F0F2846BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbgJFHCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:02:12 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:32992 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbgJFHCL (ORCPT
+        id S1727166AbgJFHCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgJFHCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:02:11 -0400
-Received: by mail-lf1-f67.google.com with SMTP id l2so828777lfk.0;
-        Tue, 06 Oct 2020 00:02:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xVHBvfBhaYdlhUHysSfoQOHRN/3Ik6cMafEkNwOoykw=;
-        b=GmL2nfcGTdV2AlFhlkDKdCxneiPy64o2mMmLa98akCHiY3SKNBvT56WPZyEIFvFuB0
-         B5VFA2CcUKfQMfppcff2d+8Qhm1WBdUKerBFwkaGzNVS2/H31BEvbapIfEYqLXvA92LT
-         P0C9Z9+WbWE/fq7BygTZ9ywmhDnwOd60Mdl9MgJoSCWon18AOOEIXaXCgn9SZLUI9NWA
-         enrpk4kDACIubUwzwcgGuIsjzzxZs2js4qMKyYmhsvp02agYPYTuC4K4+knZz9dl+s+r
-         ZdQ5AnHflTXSBNM2jiPWEhlp7HyumRCfcPaZ24AXHKTqEdPbVW/j17m0LT55zUKFPcnu
-         6AVA==
-X-Gm-Message-State: AOAM532E7UZSZgurtu4gNoj0EpxSvm4FH9hGWToWpS4Y4CJ921klOARG
-        odbRowp1WZ/OonOHOsQDx3w=
-X-Google-Smtp-Source: ABdhPJz6A1+SkmW10Xw4aOOUN7l0P+lzOXGyuSTP6v01ODYApoqx0s8L+151N65BY9/siAUeE+UBbw==
-X-Received: by 2002:ac2:4d10:: with SMTP id r16mr8083lfi.58.1601967728460;
-        Tue, 06 Oct 2020 00:02:08 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id o6sm573531ljc.33.2020.10.06.00.02.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 00:02:07 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kPgz3-00072H-Vo; Tue, 06 Oct 2020 09:02:02 +0200
-Date:   Tue, 6 Oct 2020 09:02:01 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     Lars Melin <larsm17@gmail.com>, Johan Hovold <johan@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <20201006070201.GB26280@localhost>
-References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
- <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
- <20201005082045.GL5141@localhost>
- <20201005130134.459b4de9@monster.powergraphx.local>
- <20201005110638.GP5141@localhost>
- <5222246c-08d7-dcf8-248d-c1fefc72c46f@gmail.com>
- <20201005140723.56f6c434@monster.powergraphx.local>
+        Tue, 6 Oct 2020 03:02:51 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7E3C061755;
+        Tue,  6 Oct 2020 00:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Type:MIME-Version:References:
+        In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=adrY46/H5ldFRjts4EPwmHDoTunggJgvwwqJ+GThmd0=; b=EKc4TPKNowUrkfmhJOEFktI56
+        P3kCXKmT66YIOCDrfgOwSTlDM9g4VVdP6aUhHaYRCiLNIRam5yqZI9ochxpp2o1eMsjZs9Tmdo1TD
+        IuH6Vd1OOLsgYCtEFPQhaDck/N3qPB98sX+S8+HmSwhrlm+7akJV5lJhbtgLSy/LrvKbI=;
+Received: from [2a02:790:ff:919:e2ce:c3ff:fe93:fc31] (helo=localhost)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kPgzg-0001Er-1d; Tue, 06 Oct 2020 09:02:43 +0200
+Received: from localhost.lan ([::1] helo=localhost)
+        by localhost with esmtp (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kPgzc-0002Lk-Gy; Tue, 06 Oct 2020 09:02:36 +0200
+Date:   Tue, 6 Oct 2020 09:02:26 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, rydberg@bitmath.org,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com
+Subject: Re: [REGRESSION] hwmon: (applesmc) avoid overlong udelay()
+Message-ID: <20201006090226.4275c824@kemnade.info>
+In-Reply-To: <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+References: <20200930105442.3f642f6c@aktux>
+        <20200930164446.GB219887@roeck-us.net>
+        <CAK8P3a2CbhJT+B-F+cnX+uiJep9oiLM28n045-ATaVaU41u2hw@mail.gmail.com>
+        <20201002002251.28462e64@aktux>
+        <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005140723.56f6c434@monster.powergraphx.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/wnaJC=MAqSjbZrPP_wOohnU"; protocol="application/pgp-signature"
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 02:07:23PM +0200, Wilken Gottwalt wrote:
-> On Mon, 5 Oct 2020 18:36:36 +0700 Lars Melin <larsm17@gmail.com> wrote:
-> > On 10/5/2020 18:06, Johan Hovold wrote:
+--Sig_/wnaJC=MAqSjbZrPP_wOohnU
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-> > > Do you remember the interface layout and why you blacklisted interface
-> > > 1?
+On Thu, 1 Oct 2020 21:07:51 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-> > It is very likely that Cellient has replaced the VID with their own and 
-> > kept the PID, it is something other mfgrs has done when buying modules 
-> > from Qualcomm's series of devices with predefined composition.
-> > 
-> > The MS Windows driver for 05c6:9025 describes the interfaces as:
-> > 
-> > MI_00 Qualcomm HS-USB Diagnostics 9025
-> > MI_01 Android Composite ADB Interface
-> > MI_02 Qualcomm HS-USB Android Modem 9025
-> > MI_03 Qualcomm HS-USB NMEA 9025
-> > MI_04 Qualcomm Wireless HS-USB Ethernet Adapter 9025
-> > MI_05 USB Mass Storage Device
-> > 
-> > where the net interface is for QMI/RMNET.
-> > It fully matches the blacklisting Wilken has done for 2692:9025
-> 
-> Does your device have a GPS connector? Mine had not and I'm not sure
-> if the description of MI_01 is actually correct. I remember looking at
-> this port and seeing bogus NMEA data.
+> On 10/1/20 3:22 PM, Andreas Kemnade wrote:
+> > On Wed, 30 Sep 2020 22:00:09 +0200
+> > Arnd Bergmann <arnd@arndb.de> wrote:
+> >  =20
+> >> On Wed, Sep 30, 2020 at 6:44 PM Guenter Roeck <linux@roeck-us.net> wro=
+te: =20
+> >>>
+> >>> On Wed, Sep 30, 2020 at 10:54:42AM +0200, Andreas Kemnade wrote:   =20
+> >>>> Hi,
+> >>>>
+> >>>> after the $subject patch I get lots of errors like this:   =20
+> >>>
+> >>> For reference, this refers to commit fff2d0f701e6 ("hwmon: (applesmc)
+> >>> avoid overlong udelay()").
+> >>>   =20
+> >>>> [  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+> >>>> [  120.378621] applesmc: LKSB: write data fail
+> >>>> [  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+> >>>> [  120.512787] applesmc: LKSB: write data fail
+> >>>>
+> >>>> CPU sticks at low speed and no fan is turning on.
+> >>>> Reverting this patch on top of 5.9-rc6 solves this problem.
+> >>>>
+> >>>> Some information from dmidecode:
+> >>>>
+> >>>> Base Board Information
+> >>>>         Manufacturer: Apple Inc.
+> >>>>         Product Name: Mac-7DF21CB3ED6977E5
+> >>>>         Version: MacBookAir6,2
+> >>>>
+> >>>> Handle 0x0020, DMI type 11, 5 bytes OEM Strings         String 1: Ap=
+ple ROM Version.  Model:       =E2=80=A6,
+> >>>> Handle 0x0020, DMI type 11, 5 bytes
+> >>>> OEM Strings
+> >>>>         String 1: Apple ROM Version.  Model:        MBA61.  EFI Vers=
+ion:  122.0.0
+> >>>>         String 2: .0.0.  Built by:     root@saumon.  Date:         W=
+ed Jun 10 18:
+> >>>>         String 3: 10:36 PDT 2020.  Revision:     122 (B&I).  ROM Ver=
+sion:  F000_B
+> >>>>         String 4: 00.  Build Type:   Official Build, Release.  Compi=
+ler:     Appl
+> >>>>         String 5: e clang version 3.0 (tags/Apple/clang-211.10.1) (b=
+ased on LLVM
+> >>>>         String 6: 3.0svn).
+> >>>>
+> >>>> Writing to things in /sys/devices/platform/applesmc.768 gives also t=
+he
+> >>>> said errors.
+> >>>> But writing 1 to fan1_maunal and 5000 to fan1_output turns the fan on
+> >>>> despite error messages.
+> >>>>   =20
+> >>> Not really sure what to do here. I could revert the patch, but then w=
+e'd gain
+> >>> clang compile failures. Arnd, any idea ?   =20
+> >>
+> >> It seems that either I made a mistake in the conversion and it sleeps =
+for
+> >> less time than before, or my assumption was wrong that converting a de=
+lay to
+> >> a sleep is safe here.
+> >>
+> >> The error message indicates that the write fails, not the read, so that
+> >> is what I'd look at first. Right away I can see that the maximum time =
+to
+> >> retry is only half of what it used to be, as we used to wait for
+> >> 0x10, 0x20, 0x40, 0x80, ..., 0x20000 microseconds for a total of
+> >> 0x3fff0 microseconds (262ms), while my patch went with the 131ms
+> >> total delay based on the comment saying "/* wait up to 128 ms for a
+> >> status change. */".
+> >> =20
+> > Yes, that is also what I read from the code. I just thought there must
+> > be something simple, which just needs a short look from another pair of
+> > eyes.
+> >  =20
+> >> Since there is sleeping wait, I see no reason the timeout couldn't
+> >> be extended a lot, e.g. to a second, as in
+> >>
+> >> #define APPLESMC_MAX_WAIT 0x100000
+> >>
+> >> If that doesn't work, I'd try using mdelay() in place of
+> >> usleep_range(), such as
+> >>
+> >>            mdelay(DIV_ROUND_UP(us, USEC_PER_MSEC)));
+> >>
+> >> This adds back a really nasty latency, but it should avoid the
+> >> compile-time problem.
+> >>
+> >> Andreas, can you try those two things? (one at a time,
+> >> not both) =20
+> >=20
+> > Ok, I tried. None of them works. I rechecked my work and created real
+> > git commits out of them and CONFIG_LOCALVERSION_AUTO is also set so
+> > the usual stupid things are rules out.
+> > In detail:
+> > On top of 5.9-rc6 + *reverted* patch:
+> > diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
+> > index fd99c9df8a00..2a9bd7f2b71b 100644
+> > --- a/drivers/hwmon/applesmc.c
+> > +++ b/drivers/hwmon/applesmc.c
+> > @@ -45,7 +45,7 @@
+> >  /* wait up to 128 ms for a status change. */
+> >  #define APPLESMC_MIN_WAIT	0x0010
+> >  #define APPLESMC_RETRY_WAIT	0x0100
+> > -#define APPLESMC_MAX_WAIT	0x20000
+> > +#define APPLESMC_MAX_WAIT	0x8000
+> > =20
+> >  #define APPLESMC_READ_CMD	0x10
+> >  #define APPLESMC_WRITE_CMD	0x11
+> >  =20
+>=20
+> Oh man, that code is so badlys broken.
+>=20
+> send_byte() repeats sending the data if it was not immediately successful.
+> That is done for both data and commands. Effectively that happens if
+> the command is not immediately accepted. However, send_argument()
+> clearly assumes that each data byte is sent exactly once. Sending
+> it more than once will mess up the key that is supposed to be sent.
+> The Apple SMC emulation code in qemu confirms that data bytes can not
+> be written more than once.
+>=20
+> Of course, theoretically it may be that the first data byte was not
+> accepted (after all, the ACK bit is not set), but the ACK bit is
+> not checked again after udelay(APPLESMC_RETRY_WAIT), so it may
+> well have been set in the 256 uS between its check and re-writing
+> the data.
+>=20
+> In other words, this entire code only works accidentally to start with.
+>=20
+> If you like, you could play around with the code and find out if and
+> when exactly bit 1 (busy) is set, if and when bit 2 (ack) is set, and
+> if and when any other bit is set. We could also try to read port 0x31e
+> (the error port). Maybe the we can figure out what the error actually
+> is. But then I don't really know what we could do with that information.
+>=20
+Smoe research results: the second data byte seems to cause problems, not the
+command byte.
 
-Well if it's NMEA then the interface shouldn't be blacklisted (even if
-the values are bogus on your device), but if it's ADB it should be as
-that is handled by userspace.
+> Other than that, the only useful idea I have is something crazy like
+> 	if (us < 10000)
+> 		udelay(us);
+> 	else
+> 		mdelay(DIV_ROUND_CLOSEST(udelay, 1000));
+> in the hope that clang doesn't convert that back into a
+> compile-time constant and udelay().
+>=20
+> Overall it seems like the apple protocol may expect to receive data
+> bytes faster than 1ms apart, because that is the only real difference
+> between the original code and the new code using mdelay().
 
-Here's some lsusb output from a Cellient MPL200 that still uses the
-Qualcomm VID:
+Yes, that explanation makes sense. If I am trying something like that, only
+the last byte requires more than APPLESMC_MIN_WAIT. I have seen max. 256us.
+So we could probably even use msleep for us > 1000 and udelay for anything =
+below.
 
-	https://www.mail-archive.com/modemmanager-devel@lists.freedesktop.org/msg04523.html
+Regards,
+Andreas
 
-which gives some support to Lars's hypothesis. I guess we'll just keep
-the first interface reserved.
+--Sig_/wnaJC=MAqSjbZrPP_wOohnU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Johan
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEPIWxmAFyOaBcwCpFl4jFM1s/ye8FAl98FoIACgkQl4jFM1s/
+ye8+KA//YGYtFolaG50snSVDEAfyJQWjKgmrlyPbjQ+t/TItOYe7r8R45gsKKzKg
+g5dduys+4ChzbL4lqociSE8cEGcx5GZgdfFH8npFE+rEPzRcgO1i0IpQaA1jR5rH
+2des6u3jaFtkOG46Wm/1hDBIlZ+difL5xrqdneFdDm+fdp7kv+vmXVqFcLJeCbMW
+r/7Rgcn1ev0eIfGF9k0DmkAkmaf57SFKh33X0sIpqYye70lVAgK1dyyNHBf/7fsG
+RyrZ/Bi8yxEsjHxAwpcwXoBk5pJeZVWj0AS4rbXGS2eM8CjdUbXiYHgABIP7c6WH
+hFMP4LcHJmc81xHNc5sycCEHS3rJmtaCmXrVKxEoKlbrSWA56hYYamOT1abNZHkr
+ReuIvKB39i2/u9aUUib7oguTkw/n431Xc1ke/t+xGsJUKTM1FQToEZ3SV0Oz8ltp
+C/k0T3FoMXX+ngHdIRg/qhYkrRl3XgzRUMFwnL58DvaQzrBLsdHqrTXsFi1F6gwB
+FHPDcc9/b+uiIRd9d/gXLyzekYqSjO/oHpfcm9GidPUPoj/Bt0hcqIW04L/ZMAQe
+UcVCZi9D7xFn5hcU9Us0axuxKLSNY6IgYeS2e+clxAD+/ahA8RbRTUB9K0uW4oDq
+PW7AG0lhuBHiuAqjiVQaH9arC+JUZNQDl+7hqA0hb4FuXLQZD8A=
+=U87M
+-----END PGP SIGNATURE-----
+
+--Sig_/wnaJC=MAqSjbZrPP_wOohnU--
