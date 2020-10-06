@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9AE28510E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2596D285112
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgJFRmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:42:24 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:45273 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgJFRmY (ORCPT
+        id S1726753AbgJFRmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:42:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53549 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgJFRmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:42:24 -0400
-Received: by mail-ot1-f68.google.com with SMTP id f37so9511388otf.12;
-        Tue, 06 Oct 2020 10:42:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qcdVVsuOoJSsciqyI4x1smopaEokqWO2AhD7kFOR+b4=;
-        b=aHIghfbEG7FKo7e9j6Irm11XmXRYPB02AvA4up7UYOxbcLj5KFFv35OQfNPw0KETPe
-         X5wwfs1kstxmdPVYm+Z7bgCwcXgZFiafOztB3Tjax9wuf6lYYBT/95B1GQPflJzioYFT
-         NMgB9rSkqe1y9JtgF+j67tb7s+RjrJsWGV7Tna4GOBM47or4amfkgwS9dnTA0A8fuI9f
-         fd9hr7OAfdsZjSmO9M3BIaM9HbiotK6Mpv1VzXFm2XCCJ4KgBhFJGAMwBizUUmdczyej
-         1nUj17m6Kdrdq8+2Jfn0FT6dvSeo8jCj82eXtuK74raXdnJEM6Alvk/cfe2AiYioarQl
-         zrWg==
-X-Gm-Message-State: AOAM532RZHaG13NBHNEt+74PTTM50HJOan1YIRAqWcYCjxYsr3M9gmUk
-        hKfisK4xCmeWilTXYEe5xw==
-X-Google-Smtp-Source: ABdhPJy+zeElLxLI7Ibo9bKDD4DwXtRKnjDwB9+Pqaz2dhTAVo3YhemmXBUFCB4os7dDMwCRRFOxbw==
-X-Received: by 2002:a9d:268:: with SMTP id 95mr3580655otb.148.1602006143715;
-        Tue, 06 Oct 2020 10:42:23 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s13sm1252277otq.5.2020.10.06.10.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 10:42:23 -0700 (PDT)
-Received: (nullmailer pid 2512736 invoked by uid 1000);
-        Tue, 06 Oct 2020 17:42:22 -0000
-Date:   Tue, 6 Oct 2020 12:42:22 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        =?iso-8859-1?Q?S=E9bastien?= Szymanski 
-        <sebastien.szymanski@armadeus.com>, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Robert Jones <rjones@gateworks.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 08/12] dt-bindings: arm: fsl: document i.MX7S boards
-Message-ID: <20201006174222.GA2512673@bogus>
-References: <20201001170759.9592-1-krzk@kernel.org>
- <20201001170759.9592-9-krzk@kernel.org>
+        Tue, 6 Oct 2020 13:42:32 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kPqyn-0007TZ-M2; Tue, 06 Oct 2020 17:42:25 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ath11k: fix memory leak of 'combinations'
+Date:   Tue,  6 Oct 2020 18:42:25 +0100
+Message-Id: <20201006174225.545919-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001170759.9592-9-krzk@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Oct 2020 19:07:55 +0200, Krzysztof Kozlowski wrote:
-> Document and adjust the compatibles for i.MX7S based boards.
-> The Toradex boards use multiple compatibles.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Currently the error return path when 'limits' fails to allocate
+does not free the memory allocated for 'combinations'. Fix this
+by adding a kfree before returning.
+
+Addresses-Coverity: ("Resource leak")
+Fixes: 2626c269702e ("ath11k: add interface_modes to hw_params")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath11k/mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index 3f63a7bd6b59..7f8dd47d2333 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -6041,8 +6041,10 @@ static int ath11k_mac_setup_iface_combinations(struct ath11k *ar)
+ 	n_limits = 2;
+ 
+ 	limits = kcalloc(n_limits, sizeof(*limits), GFP_KERNEL);
+-	if (!limits)
++	if (!limits) {
++		kfree(combinations);
+ 		return -ENOMEM;
++	}
+ 
+ 	limits[0].max = 1;
+ 	limits[0].types |= BIT(NL80211_IFTYPE_STATION);
+-- 
+2.27.0
+
