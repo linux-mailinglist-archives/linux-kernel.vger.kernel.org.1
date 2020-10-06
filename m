@@ -2,145 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD921284627
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDFA284631
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgJFGhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgJFGhf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:37:35 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02DDEC0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:37:35 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id g4so12331893edk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=xLEheXVkRVPoO0mnE3ySwFlQ18AemugwN4oAiuDRkUQ=;
-        b=cDBoN8mXSVFFwLwgCm1zVThWPFWrVJzCo2bUQQjSTOnDnRKUTLseAxqtyasrLqM/QK
-         ogvSl4dPw0ASBMf4lIF1ZmYtrLSDEvFpwyph/PCRghnob89wpeq2T/BGkHwn2VdOghmS
-         AqOzMMaizgSghkuNdjtEkx/MPfiE0FOPQEO+T5BsXYr/vY1vBUTnE+31IVirNrsuaHOC
-         zKjDyzqi6qwltBUdCALVZghawzcLsSt+1lCIMRi3xNDSU3gY6nfkNkjgIsJ0TUlHxZGY
-         XDvo6SEIzPNMcfd9f6tm+rTPSwIjgsJb5V/22CVVsfqW5E/w0lGeawFOi1z6q68BeVlj
-         LXYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=xLEheXVkRVPoO0mnE3ySwFlQ18AemugwN4oAiuDRkUQ=;
-        b=d9ObHD3sUOWqrB/BQ5UUu2dcO9Xhoeila1PT5WeRK0Gy0FqyDW/OO51zVYlekOt6b+
-         tWGdeFYDAOO0C38Ja37I7FjSKnaSSsKXRvdEDM0SkkTfo6l+qmyyC14PGpfV64JDUAW3
-         bowcXkm3vgpUwpEJdebDK+oB/lKVAyP+yPRRwX6tl/GIDfqWmDCao43L9a2UOYM28S0G
-         M3CqSapoTO3gz8UrOsY76rAMxzQ6qHw/R+Xo/1ncPCTZLr0sEFS7WbY4tnp2gSRZmCIz
-         F/fxwmt2wL7cISKeO/9tue/7ThGlD0mPHNbYfGpp9QI6TRmBUfnZWr3/7EJkZBZEMG8n
-         1Y2A==
-X-Gm-Message-State: AOAM5332MaAPxQRY81Jwh6lD07XJYFrr9kcuIGyBQ1xWa1UMpKBljt8c
-        ICl05rsH1mKBAcxhn5sI4uK02d7iJe2pbkos+ABLXQwunXk=
-X-Google-Smtp-Source: ABdhPJzkM8KQLRMBKxYYLPl7+n3d0Jd5psKGrV0bEXrAEY3sdZMqiysyZeBQvd1ZGy99V9pxmu/HIUDLdJ2xqgBg7HI=
-X-Received: by 2002:aa7:d959:: with SMTP id l25mr3623626eds.383.1601966253585;
- Mon, 05 Oct 2020 23:37:33 -0700 (PDT)
-MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Tue, 6 Oct 2020 16:37:22 +1000
-Message-ID: <CAPM=9tyLDWM8c6L0fTG6SeouqXRixTTS2MHX8FKeEGekGinp8w@mail.gmail.com>
-Subject: [git pull] drm fbdev fixes for 5.9 final
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727092AbgJFGjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:39:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:21170 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725962AbgJFGjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:39:14 -0400
+IronPort-SDR: FG5RRd7EqbjOSJDFiSuE9G8SihQKK/h4XbqV3iqwZiv58ZnfM4r6mJ7k8yalSIemTr5gpRUy6u
+ Td5UOOjzGByw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="143777066"
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
+   d="scan'208";a="143777066"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 23:39:12 -0700
+IronPort-SDR: 1VXdvjD4c1simjVGPIHwjuhJx8HPqnMBbxth3NEM9g7Jxd5sx8m56ZzsutZwlQ1khYbCdgxjMf
+ llQY6w8QZBNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,342,1596524400"; 
+   d="scan'208";a="315487337"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.190])
+  by orsmga006.jf.intel.com with ESMTP; 05 Oct 2020 23:39:09 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>, Bean Huo <huobean@gmail.com>
+Subject: [PATCH V3] scsi: ufs: Add DeepSleep feature
+Date:   Tue,  6 Oct 2020 09:38:35 +0300
+Message-Id: <20201006063835.26727-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+DeepSleep is a UFS v3.1 feature that achieves the lowest power consumption
+of the device, apart from power off.
 
-Daniel queued these up last week and I took a long weekend so didn't
-get them out, but fixing the OOB access on get font seems like
-something we should land and it's cc'ed stable as well. The other big
-change is a partial revert for a regression on android on the clcd
-fbdev driver, and one other docs fix.
+In DeepSleep mode, no commands are accepted, and the only way to exit is
+using a hardware reset or power cycle.
 
-Dave.
+This patch assumes that if a power cycle was an option, then power off
+would be preferable, so only exit via a hardware reset is supported.
 
-drm-fixes-2020-10-06-1:
-drm fixes for 5.9 final
+Drivers that wish to support DeepSleep need to set a new capability flag
+UFSHCD_CAP_DEEPSLEEP and provide a hardware reset via the existing
+ ->device_reset() callback.
 
-fbdev:
-- Re-add FB_ARMCLCD for android.
-- Fix global-out-of-bounds read in fbcon_get_font().
+It is assumed that UFS devices with wspecversion >= 0x310 support
+DeepSleep.
 
-core:
-- Small doc fix.
-The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
 
-  Linux 5.9-rc8 (2020-10-04 16:04:34 -0700)
 
-are available in the Git repository at:
+Changes in V3:
 
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-10-06-1
+	Updated sysfs doc for rpm_lvl and spm_lvl
 
-for you to fetch changes up to 86fdf61e71046618f6f499542cee12f2348c523c:
+Changes in V2:
 
-  Merge tag 'drm-misc-fixes-2020-10-01' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-10-06
-12:38:28 +1000)
+	Fix SSU command IMMED setting and consequently drop patch 2.
 
-----------------------------------------------------------------
-drm fixes for 5.9 final
 
-fbdev:
-- Re-add FB_ARMCLCD for android.
-- Fix global-out-of-bounds read in fbcon_get_font().
+ Documentation/ABI/testing/sysfs-driver-ufs | 34 +++++++++++--------
+ drivers/scsi/ufs/ufs-sysfs.c               |  7 ++++
+ drivers/scsi/ufs/ufs.h                     |  1 +
+ drivers/scsi/ufs/ufshcd.c                  | 39 ++++++++++++++++++++--
+ drivers/scsi/ufs/ufshcd.h                  | 17 +++++++++-
+ include/trace/events/ufs.h                 |  3 +-
+ 6 files changed, 83 insertions(+), 18 deletions(-)
 
-core:
-- Small doc fix.
+diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
+index d1a352194d2e..53150a8dc2b0 100644
+--- a/Documentation/ABI/testing/sysfs-driver-ufs
++++ b/Documentation/ABI/testing/sysfs-driver-ufs
+@@ -823,19 +823,22 @@ Date:		September 2014
+ Contact:	Subhash Jadavani <subhashj@codeaurora.org>
+ Description:	This entry could be used to set or show the UFS device
+ 		runtime power management level. The current driver
+-		implementation supports 6 levels with next target states:
+-		0 - an UFS device will stay active, an UIC link will
++		implementation supports 7 levels with next target states:
++		0 - UFS device will stay active, UIC link will
+ 		stay active
+-		1 - an UFS device will stay active, an UIC link will
++		1 - UFS device will stay active, UIC link will
+ 		hibernate
+-		2 - an UFS device will moved to sleep, an UIC link will
++		2 - UFS device will be moved to sleep, UIC link will
+ 		stay active
+-		3 - an UFS device will moved to sleep, an UIC link will
++		3 - UFS device will be moved to sleep, UIC link will
+ 		hibernate
+-		4 - an UFS device will be powered off, an UIC link will
++		4 - UFS device will be powered off, UIC link will
+ 		hibernate
+-		5 - an UFS device will be powered off, an UIC link will
++		5 - UFS device will be powered off, UIC link will
+ 		be powered off
++		6 - UFS device will be moved to deep sleep, UIC link
++		will be powered off. Note, deep sleep might not be
++		supported in which case this value will not be accepted
+ 
+ What:		/sys/bus/platform/drivers/ufshcd/*/rpm_target_dev_state
+ Date:		February 2018
+@@ -856,19 +859,22 @@ Date:		September 2014
+ Contact:	Subhash Jadavani <subhashj@codeaurora.org>
+ Description:	This entry could be used to set or show the UFS device
+ 		system power management level. The current driver
+-		implementation supports 6 levels with next target states:
+-		0 - an UFS device will stay active, an UIC link will
++		implementation supports 7 levels with next target states:
++		0 - UFS device will stay active, UIC link will
+ 		stay active
+-		1 - an UFS device will stay active, an UIC link will
++		1 - UFS device will stay active, UIC link will
+ 		hibernate
+-		2 - an UFS device will moved to sleep, an UIC link will
++		2 - UFS device will be moved to sleep, UIC link will
+ 		stay active
+-		3 - an UFS device will moved to sleep, an UIC link will
++		3 - UFS device will be moved to sleep, UIC link will
+ 		hibernate
+-		4 - an UFS device will be powered off, an UIC link will
++		4 - UFS device will be powered off, UIC link will
+ 		hibernate
+-		5 - an UFS device will be powered off, an UIC link will
++		5 - UFS device will be powered off, UIC link will
+ 		be powered off
++		6 - UFS device will be moved to deep sleep, UIC link
++		will be powered off. Note, deep sleep might not be
++		supported in which case this value will not be accepted
+ 
+ What:		/sys/bus/platform/drivers/ufshcd/*/spm_target_dev_state
+ Date:		February 2018
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+index bdcd27faa054..08e72b7eef6a 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -28,6 +28,7 @@ static const char *ufschd_ufs_dev_pwr_mode_to_string(
+ 	case UFS_ACTIVE_PWR_MODE:	return "ACTIVE";
+ 	case UFS_SLEEP_PWR_MODE:	return "SLEEP";
+ 	case UFS_POWERDOWN_PWR_MODE:	return "POWERDOWN";
++	case UFS_DEEPSLEEP_PWR_MODE:	return "DEEPSLEEP";
+ 	default:			return "UNKNOWN";
+ 	}
+ }
+@@ -38,6 +39,7 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct device *dev,
+ 					     bool rpm)
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
++	struct ufs_dev_info *dev_info = &hba->dev_info;
+ 	unsigned long flags, value;
+ 
+ 	if (kstrtoul(buf, 0, &value))
+@@ -46,6 +48,11 @@ static inline ssize_t ufs_sysfs_pm_lvl_store(struct device *dev,
+ 	if (value >= UFS_PM_LVL_MAX)
+ 		return -EINVAL;
+ 
++	if (ufs_pm_lvl_states[value].dev_state == UFS_DEEPSLEEP_PWR_MODE &&
++	    (!(hba->caps & UFSHCD_CAP_DEEPSLEEP) ||
++	     !(dev_info->wspecversion >= 0x310)))
++		return -EINVAL;
++
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+ 	if (rpm)
+ 		hba->rpm_lvl = value;
+diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+index f8ab16f30fdc..d593edb48767 100644
+--- a/drivers/scsi/ufs/ufs.h
++++ b/drivers/scsi/ufs/ufs.h
+@@ -442,6 +442,7 @@ enum ufs_dev_pwr_mode {
+ 	UFS_ACTIVE_PWR_MODE	= 1,
+ 	UFS_SLEEP_PWR_MODE	= 2,
+ 	UFS_POWERDOWN_PWR_MODE	= 3,
++	UFS_DEEPSLEEP_PWR_MODE	= 4,
+ };
+ 
+ #define UFS_WB_BUF_REMAIN_PERCENT(val) ((val) / 10)
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b8f573a02713..ccacf54ed7ef 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -163,6 +163,11 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
+ 	{UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE},
+ 	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE},
+ 	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
++	/*
++	 * For DeepSleep, the link is first put in hibern8 and then off.
++	 * Leaving the link in hibern8 is not supported.
++	 */
++	{UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE},
+ };
+ 
+ static inline enum ufs_dev_pwr_mode
+@@ -8292,7 +8297,8 @@ static int ufshcd_link_state_transition(struct ufs_hba *hba,
+ 	}
+ 	/*
+ 	 * If autobkops is enabled, link can't be turned off because
+-	 * turning off the link would also turn off the device.
++	 * turning off the link would also turn off the device, except in the
++	 * case of DeepSleep where the device is expected to remain powered.
+ 	 */
+ 	else if ((req_link_state == UIC_LINK_OFF_STATE) &&
+ 		 (!check_for_bkops || !hba->auto_bkops_enabled)) {
+@@ -8302,6 +8308,9 @@ static int ufshcd_link_state_transition(struct ufs_hba *hba,
+ 		 * put the link in low power mode is to send the DME end point
+ 		 * to device and then send the DME reset command to local
+ 		 * unipro. But putting the link in hibern8 is much faster.
++		 *
++		 * Note also that putting the link in Hibern8 is a requirement
++		 * for entering DeepSleep.
+ 		 */
+ 		ret = ufshcd_uic_hibern8_enter(hba);
+ 		if (ret) {
+@@ -8434,6 +8443,7 @@ static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba)
+ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ {
+ 	int ret = 0;
++	int check_for_bkops;
+ 	enum ufs_pm_level pm_lvl;
+ 	enum ufs_dev_pwr_mode req_dev_pwr_mode;
+ 	enum uic_link_state req_link_state;
+@@ -8519,7 +8529,13 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	}
+ 
+ 	flush_work(&hba->eeh_work);
+-	ret = ufshcd_link_state_transition(hba, req_link_state, 1);
++
++	/*
++	 * In the case of DeepSleep, the device is expected to remain powered
++	 * with the link off, so do not check for bkops.
++	 */
++	check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba);
++	ret = ufshcd_link_state_transition(hba, req_link_state, check_for_bkops);
+ 	if (ret)
+ 		goto set_dev_active;
+ 
+@@ -8560,11 +8576,25 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (hba->clk_scaling.is_allowed)
+ 		ufshcd_resume_clkscaling(hba);
+ 	ufshcd_vreg_set_hpm(hba);
++	/*
++	 * Device hardware reset is required to exit DeepSleep. Also, for
++	 * DeepSleep, the link is off so host reset and restore will be done
++	 * further below.
++	 */
++	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
++		ufshcd_vops_device_reset(hba);
++		WARN_ON(!ufshcd_is_link_off(hba));
++	}
+ 	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
+ 		ufshcd_set_link_active(hba);
+ 	else if (ufshcd_is_link_off(hba))
+ 		ufshcd_host_reset_and_restore(hba);
+ set_dev_active:
++	/* Can also get here needing to exit DeepSleep */
++	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
++		ufshcd_vops_device_reset(hba);
++		ufshcd_host_reset_and_restore(hba);
++	}
+ 	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+ 		ufshcd_disable_auto_bkops(hba);
+ enable_gating:
+@@ -8626,6 +8656,9 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (ret)
+ 		goto disable_vreg;
+ 
++	/* For DeepSleep, the only supported option is to have the link off */
++	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
++
+ 	if (ufshcd_is_link_hibern8(hba)) {
+ 		ret = ufshcd_uic_hibern8_exit(hba);
+ 		if (!ret) {
+@@ -8639,6 +8672,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		/*
+ 		 * A full initialization of the host and the device is
+ 		 * required since the link was put to off during suspend.
++		 * Note, in the case of DeepSleep, the device will exit
++		 * DeepSleep due to device reset.
+ 		 */
+ 		ret = ufshcd_reset_and_restore(hba);
+ 		/*
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 6663325ed8a0..8c6094fb35f4 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -114,16 +114,22 @@ enum uic_link_state {
+ 	((h)->curr_dev_pwr_mode = UFS_SLEEP_PWR_MODE)
+ #define ufshcd_set_ufs_dev_poweroff(h) \
+ 	((h)->curr_dev_pwr_mode = UFS_POWERDOWN_PWR_MODE)
++#define ufshcd_set_ufs_dev_deepsleep(h) \
++	((h)->curr_dev_pwr_mode = UFS_DEEPSLEEP_PWR_MODE)
+ #define ufshcd_is_ufs_dev_active(h) \
+ 	((h)->curr_dev_pwr_mode == UFS_ACTIVE_PWR_MODE)
+ #define ufshcd_is_ufs_dev_sleep(h) \
+ 	((h)->curr_dev_pwr_mode == UFS_SLEEP_PWR_MODE)
+ #define ufshcd_is_ufs_dev_poweroff(h) \
+ 	((h)->curr_dev_pwr_mode == UFS_POWERDOWN_PWR_MODE)
++#define ufshcd_is_ufs_dev_deepsleep(h) \
++	((h)->curr_dev_pwr_mode == UFS_DEEPSLEEP_PWR_MODE)
+ 
+ /*
+  * UFS Power management levels.
+- * Each level is in increasing order of power savings.
++ * Each level is in increasing order of power savings, except DeepSleep
++ * which is lower than PowerDown with power on but not PowerDown with
++ * power off.
+  */
+ enum ufs_pm_level {
+ 	UFS_PM_LVL_0, /* UFS_ACTIVE_PWR_MODE, UIC_LINK_ACTIVE_STATE */
+@@ -132,6 +138,7 @@ enum ufs_pm_level {
+ 	UFS_PM_LVL_3, /* UFS_SLEEP_PWR_MODE, UIC_LINK_HIBERN8_STATE */
+ 	UFS_PM_LVL_4, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_HIBERN8_STATE */
+ 	UFS_PM_LVL_5, /* UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE */
++	UFS_PM_LVL_6, /* UFS_DEEPSLEEP_PWR_MODE, UIC_LINK_OFF_STATE */
+ 	UFS_PM_LVL_MAX
+ };
+ 
+@@ -591,6 +598,14 @@ enum ufshcd_caps {
+ 	 * inline crypto engine, if it is present
+ 	 */
+ 	UFSHCD_CAP_CRYPTO				= 1 << 8,
++
++	/*
++	 * This capability allows the host controller driver to use DeepSleep,
++	 * if it is supported by the UFS device. The host controller driver must
++	 * support device hardware reset via the hba->device_reset() callback,
++	 * in order to exit DeepSleep state.
++	 */
++	UFSHCD_CAP_DEEPSLEEP				= 1 << 9,
+ };
+ 
+ struct ufs_hba_variant_params {
+diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
+index 84841b3a7ffd..2362244c2a9e 100644
+--- a/include/trace/events/ufs.h
++++ b/include/trace/events/ufs.h
+@@ -19,7 +19,8 @@
+ #define UFS_PWR_MODES			\
+ 	EM(UFS_ACTIVE_PWR_MODE)		\
+ 	EM(UFS_SLEEP_PWR_MODE)		\
+-	EMe(UFS_POWERDOWN_PWR_MODE)
++	EM(UFS_POWERDOWN_PWR_MODE)	\
++	EMe(UFS_DEEPSLEEP_PWR_MODE)
+ 
+ #define UFSCHD_CLK_GATING_STATES	\
+ 	EM(CLKS_OFF)			\
+-- 
+2.17.1
 
-----------------------------------------------------------------
-Dave Airlie (1):
-      Merge tag 'drm-misc-fixes-2020-10-01' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-
-Mauro Carvalho Chehab (1):
-      drm: drm_dsc.h: fix a kernel-doc markup
-
-Peilin Ye (3):
-      fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
-      Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
-      fbcon: Fix global-out-of-bounds read in fbcon_get_font()
-
-Peter Collingbourne (1):
-      Partially revert "video: fbdev: amba-clcd: Retire elder CLCD driver"
-
- MAINTAINERS                             |   5 +
- drivers/video/console/newport_con.c     |   7 +-
- drivers/video/fbdev/Kconfig             |  20 +
- drivers/video/fbdev/Makefile            |   1 +
- drivers/video/fbdev/amba-clcd.c         | 986 ++++++++++++++++++++++++++++++++
- drivers/video/fbdev/core/fbcon.c        |  12 +
- drivers/video/fbdev/core/fbcon.h        |   7 -
- drivers/video/fbdev/core/fbcon_rotate.c |   1 +
- drivers/video/fbdev/core/tileblit.c     |   1 +
- include/drm/drm_dsc.h                   |   2 +-
- include/linux/amba/clcd-regs.h          |  87 +++
- include/linux/amba/clcd.h               | 290 ++++++++++
- include/linux/font.h                    |  13 +
- lib/fonts/font_10x18.c                  |   9 +-
- lib/fonts/font_6x10.c                   |   9 +-
- lib/fonts/font_6x11.c                   |   9 +-
- lib/fonts/font_7x14.c                   |   9 +-
- lib/fonts/font_8x16.c                   |   9 +-
- lib/fonts/font_8x8.c                    |   9 +-
- lib/fonts/font_acorn_8x8.c              |   9 +-
- lib/fonts/font_mini_4x6.c               |   8 +-
- lib/fonts/font_pearl_8x8.c              |   9 +-
- lib/fonts/font_sun12x22.c               |   9 +-
- lib/fonts/font_sun8x16.c                |   7 +-
- lib/fonts/font_ter16x32.c               |   9 +-
- 25 files changed, 1469 insertions(+), 68 deletions(-)
- create mode 100644 drivers/video/fbdev/amba-clcd.c
- create mode 100644 include/linux/amba/clcd-regs.h
- create mode 100644 include/linux/amba/clcd.h
