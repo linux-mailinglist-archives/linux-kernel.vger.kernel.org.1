@@ -2,94 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A572846FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3238C284703
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbgJFHTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727172AbgJFHTN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:19:13 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27463C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 00:19:13 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id o9so775240plx.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 00:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m2b+rmKRGPYGRHjXu3I4nFOGjf5oCG8gDODedqsY8HI=;
-        b=MzsarqGUb28zUo1ZRQuRl2CQFRw++HYQ9UsKlDiioJRx4DDwqhZDVh8zkS5ZMaLDPN
-         PuUv7/4fQPcMU4pTP8LgkCw7cXvG4Q7wMpcYZP1NRw5oFwk9avs29jXu6WJ7Kqpb3dEw
-         E84b/Q8xEWKH54B99Wka5P9nno7+tj/P6JYT+sykdnSBV80ZOiZ5/Y2SSMr+KISzJyFC
-         lsnZ4iPOniWwx5fMVAMlNJwUHCsFhvi4eOWqtdMmuUuYtXldriIAPaBJoOJqEX0nljck
-         OurpuFskSQdMmkCc1oZiC+bdw4aFm2tydZEQQh3tvvSFD02Q6AqJuOZN5nGTssGzhquK
-         Bk7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m2b+rmKRGPYGRHjXu3I4nFOGjf5oCG8gDODedqsY8HI=;
-        b=OACqYmySlYjfofTNW1fvL1C/aEBmnF7V/MYnjlnXb6RWeSdJIOgOwfAdYuZz88IWhb
-         I7Sg4a7vPfzt50ikMernzqLja5FoaXdBKFSkCdAw8oOF58M99lSmMtyoi7Dk5ti8qCwF
-         B2QLLTFgFEGZjMDGg8xMQvv30+j0zdE2Ln30R8VfmFLhrA9fMazhRbidCmGgUEWuTeEA
-         9yFsRr/xA7V5wpSjj2Ao0GPWl8WH1Teekj2FePUtZOymJ/cx4pfDdmwuDk6aeAcZ0Ut5
-         MVCK7mBk2dE7vfzhwrx8v0kC4j0C+nClzWAImh53caCni5yuswOU6cxd6DvWsm7n4Ep9
-         BjPQ==
-X-Gm-Message-State: AOAM533iyo8dE4Fx2MREV6PHsPC8C7Bl5wQNqIn09+dQVox89fnOB5pc
-        J5ZKshTnkU2PkfSfmtnOyfnnpQ==
-X-Google-Smtp-Source: ABdhPJwDUUyCJoFXkW7uX+HT9mhqyp71hZG+SsLmVoqnODhfEK9QCzoSbQzGtxk5AUvOx2IO9tk/nQ==
-X-Received: by 2002:a17:90a:a595:: with SMTP id b21mr2943649pjq.95.1601968752689;
-        Tue, 06 Oct 2020 00:19:12 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id j4sm2140975pfj.143.2020.10.06.00.19.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 00:19:11 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 12:49:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org,
-        morten.rasmussen@arm.com, chris.redpath@arm.com
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
-References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
- <20200924095347.32148-3-nicola.mazzucato@arm.com>
+        id S1727242AbgJFHTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725912AbgJFHTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 03:19:41 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE41F20789;
+        Tue,  6 Oct 2020 07:19:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601968781;
+        bh=LNvDSp5Z7ckYp/tfBKKh/c0uKzVgBYQkEA3ApjQ/XAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RudRPuqMfeRzH2CdAdAfUeQNERc1m7eIvf8sr2VJhxUPWSJYQYbevDWycHB90JytL
+         ZNJymQGhY6biBYvBBRCBne4bNQKcC6x3Cw7o56JWE7FWAYfdSTmM1FL2+2Rhkm/z9G
+         pKw5CoUinzcI6T7MoKuIwJJYPaeyDMOCPxUxP9kc=
+Date:   Tue, 6 Oct 2020 09:19:38 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Harley A.W. Lorenzo" <hl1998@protonmail.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-safety@lists.elisa.tech" <linux-safety@lists.elisa.tech>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>
+Subject: Re: [PATCH] usb: host: ehci-sched: avoid possible NULL dereference
+Message-ID: <20201006071938.GA5503@kroah.com>
+References: <20201005213149.12332-1-sudipm.mukherjee@gmail.com>
+ <brWYeL8miTAikvEPYFNe2Kpe05OBtiD6yuS6jRg1VCX-lt7ANc1B2y7AM6ECEoG9AJwZP5_5qoGO7POvK0MtruvqG8q8kHbyHiOUIZ72Klk=@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924095347.32148-3-nicola.mazzucato@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <brWYeL8miTAikvEPYFNe2Kpe05OBtiD6yuS6jRg1VCX-lt7ANc1B2y7AM6ECEoG9AJwZP5_5qoGO7POvK0MtruvqG8q8kHbyHiOUIZ72Klk=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-09-20, 10:53, Nicola Mazzucato wrote:
-> I am seeking some feedback/comments on the following approach.
+On Mon, Oct 05, 2020 at 11:19:02PM +0000, Harley A.W. Lorenzo wrote:
+> On Monday, October 5, 2020 5:31 PM, Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
 > 
-> Intro:
-> Info of performance depency for cpus will be beneficial for systems
-> where f/w description of the CPU performance control domain is different
-> from the clock domain, e.g. per-CPU control with multiple CPUs sharing
-> clock, and kernel OSPM s/w components need to take CPU performance
-> dependency into account.
-> Essentially these s/w components will have to be provided with
-> this information from dt and this RFC is presenting a possible way
-> to do so.
+> > find_tt() can return NULL or the error value in ERR_PTR() and
+> > dereferencing the return value without checking for the error can
+> > lead to a possible dereference of NULL pointer or ERR_PTR().
+> 
+> Looks fine to me. There is in fact no checks of the return value
+> before a dereference here, and this solves that.
+> 
+> Reviewed-by: Harley A.W. Lorenzo <hl1998@protonmail.com
 
-I am not sure I understand what performance control mean here. Can you please
-elaborate a bit more on that ? For example, with current code and understanding,
-a cpufreq policy belongs to a group of CPUs which change their frequency
-together, which also mean that they change their performance level together and
-so I am not able to understand what's going on here. Sorry about that.
+Nit, in the future, you need the trailing '>' there.
 
-What kind of hardware configuration doesn't work with this ?
+thanks,
 
--- 
-viresh
+greg k-h
