@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36F6284764
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2911E28476C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgJFHfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:35:10 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:55517 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgJFHfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:35:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C58Pm1lTHz9sSs;
-        Tue,  6 Oct 2020 18:35:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601969708;
-        bh=G6drw9dezd1UQq/NLkRw5u/t3LndYUdAFJyNKx+CzdU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GnOTvKege9v1FY64dpaggBASKEsPYj/bA02lkfzXxEIe6bk9YaiVQO6ZXnZLrU6BS
-         lLDZWSMFemZ/D0w15OLKZEBKRUrHDgnrqubCy7mqWXm2YcElxqF7ueL6qo23Fp4TJU
-         WpKmrwQDJ/Yl0M20eisumg/9HBul0s8xvUvb6Kl6oreKbWW4A8RAEr729O2fI65VXR
-         Su+ub4xG5DOxtdM24IRC3Bp4U0An3de9vmw5zj9i3xRUJxgz7fR5nv/3lADhwAftR+
-         Ik99YC63Pw20UJm6SFdT+sqe4uguAOXZzct+jUU4hBg8vBQfsVXJBL++0ea2CAqHob
-         90IAjltMOTWTA==
-Date:   Tue, 6 Oct 2020 18:35:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: linux-next: manual merge of the char-misc tree with the powerpc
- tree
-Message-ID: <20201006183506.186a3562@canb.auug.org.au>
+        id S1727132AbgJFHhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgJFHhX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 03:37:23 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4699BC061755;
+        Tue,  6 Oct 2020 00:37:23 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id h9so8336246ybm.4;
+        Tue, 06 Oct 2020 00:37:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/rpeFQkYljEUQNuTkq/Bj2u7+/dyH0xezKDk13QHrgs=;
+        b=I67uwF8vGMVRz59yBBMrVkpGNZTXp4IgrRIJat4txQOiEint3X7+0frmO1+OP2xuWW
+         dy6A3KrEdkNdLr/DfTotYvumHXgSwK2/woqDxNF68WeIgGxhplRIW7dew+npYnCSKKh0
+         q3h7uIwal8cfV5ESVkmi9ioZPp34tGb++/15qwdH8wSL5PIYv3eWqjVEEIdkW15TR4+e
+         1U5wra92LcbHDEDcFSqRNeknx0uqzrkKYZC2dsKQeP9tkUZSFZrr4OC75giOsALjchSM
+         cS1xhflpWwksi5AvYe59QvVVKayZ4e9K64wtDa9w8upG1hm6/gVNje+O16L/6Vvf8ydl
+         c8PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/rpeFQkYljEUQNuTkq/Bj2u7+/dyH0xezKDk13QHrgs=;
+        b=GkC5i21vj8C6qOSZX2Bym2ax6pVJusoUzSICxndhbgPV5Qfb2c397d1SUvGoZKxEtf
+         cWXS0BAbN+V59zK7M6Lws7VoGWCJLamIRBwvxnpHPVaGDllVrHymnpI/aiF9LcSdZfSI
+         lZGtQ7AovUsY/DCIW0TUgsvx60QS7xU3ju57QSV7xVNp+GwvPo7MRtw4eTEpAbZ32vIc
+         vaXYr6xdyaGjRud+IwTOq5oDaCbehA5WUmtCmQIvzYo7pj5bw3eSHtsfJWeNL+GEOgLy
+         r+DLGHNyjrYzKqe2bcA+Dfw9Nu2tF3aP2s5WSWxzWpK+gxnfKK/IjC1zhfkQuysboRxs
+         nwww==
+X-Gm-Message-State: AOAM533iXAX4KON8G8isB2jE4LljMnI3928oM10ldWQDLlFMaONpo4JU
+        QzruJAyk5ZeDBEhphP0FMb6JW0Lct3jCbaFwOqg=
+X-Google-Smtp-Source: ABdhPJwfLgnSYcRLFdadsRTIRNtTVSAEW78ZUxbTkRbnbV/agJqAH9pErSId1/aBoVObNOb6KwW1Tf2hFeBRMZcyA9w=
+X-Received: by 2002:a25:e811:: with SMTP id k17mr4717314ybd.401.1601969842337;
+ Tue, 06 Oct 2020 00:37:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GfSsT2Kfmr2d+e01ablFb9.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200816190732.6905-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200816190732.6905-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200825022102.GA3808062@bogus>
+In-Reply-To: <20200825022102.GA3808062@bogus>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 6 Oct 2020 08:36:56 +0100
+Message-ID: <CA+V-a8tFqsWE+vhF4R3-Ce0MjamPkWdwYSm8pAVN9AXSUq4d=g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] dt-bindings: can: rcar_can: Add r8a7742 support
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Rob Herring <robh@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-can@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GfSsT2Kfmr2d+e01ablFb9.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-Hi all,
+On Tue, Aug 25, 2020 at 3:21 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, 16 Aug 2020 20:07:31 +0100, Lad Prabhakar wrote:
+> > Document RZ/G1H (r8a7742) SoC specific bindings. The R8A7742 CAN module
+> > is identical to R-Car Gen2 family.
+> >
+> > No driver change is needed due to the fallback compatible value
+> > "renesas,rcar-gen2-can".
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> > ---
+> >  Documentation/devicetree/bindings/net/can/rcar_can.txt | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+>
+> Acked-by: Rob Herring <robh@kernel.org>
+>
+Could you please pick up this patch. It has been acked by the
+maintainers. Let me know if you want me to RESEND this patch.
 
-Today's linux-next merge of the char-misc tree got a conflict in:
-
-  drivers/misc/ocxl/Kconfig
-
-between commit:
-
-  dde6f18a8779 ("ocxl: Don't return trigger page when allocating an interru=
-pt")
-
-from the powerpc tree and commit:
-
-  4b53a3c72116 ("ocxl: fix kconfig dependency warning for OCXL")
-
-from the char-misc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
 Cheers,
-Stephen Rothwell
-
-diff --cc drivers/misc/ocxl/Kconfig
-index 0d815b2a40b3,947294f6d7f4..000000000000
---- a/drivers/misc/ocxl/Kconfig
-+++ b/drivers/misc/ocxl/Kconfig
-@@@ -9,9 -9,8 +9,9 @@@ config OCXL_BAS
- =20
-  config OCXL
-  	tristate "OpenCAPI coherent accelerator support"
- -	depends on PPC_POWERNV && PCI && EEH && HOTPLUG_PCI_POWERNV
- +	depends on PPC_POWERNV && PCI && EEH && PPC_XIVE_NATIVE
-++	depends on HOTPLUG_PCI_POWERNV
-  	select OCXL_BASE
-- 	select HOTPLUG_PCI_POWERNV
-  	default m
-  	help
-  	  Select this option to enable the ocxl driver for Open
-
---Sig_/GfSsT2Kfmr2d+e01ablFb9.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98HioACgkQAVBC80lX
-0GyRfwgAkidgqs1bB97u1dg5aB8UkYvfzipcPVv0yYNpMfOfY4gi1gnGFaw0SUPg
-TJJRwISUFftQujmrSnTEKWuEqho2V1p0qaPcWabJTCRd5Ub+cJvdRcjKQZwJJNFm
-5FnnTNjyadVmYtryS4P6vj4L+M5d/8zQBbF9o6e6j2Xir73D4mJCH0l/e0RFfcK6
-hMNOXphi+28UnfJm1byvlRmEHlRX75jCQCHJJnRHlvXHL6VDhdJ8zo+P1gAzQXH9
-cpcrUPE7RqtTZ/j8I2sXPVZ2LmrvGRLzlKj8kEbXu+jM5CX/QxzRwtJ/QDXwlR3/
-toM9myajY6ov87LBx1OvxgNcdEXg/g==
-=BlnR
------END PGP SIGNATURE-----
-
---Sig_/GfSsT2Kfmr2d+e01ablFb9.--
+Prabhakar
