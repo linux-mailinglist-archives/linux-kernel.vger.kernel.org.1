@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A7F2845C4
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3352845C5
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgJFGDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbgJFGDL (ORCPT
+        id S1727068AbgJFGDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:03:35 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:37625 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgJFGDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:03:11 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651D8C0613A7;
-        Mon,  5 Oct 2020 23:03:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C56Md14Tqz9s1t;
-        Tue,  6 Oct 2020 17:03:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601964189;
-        bh=Q3UmaxMjqhetqY3eKRfEWuA+7Er4K6SVFxQKfg2syNI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eM0vent50yTDAqsA5ej+aZ+Xaa3JUVRFTtHGgdfaEBE+EKsaTfBy5JyYPU5dh4+Jd
-         F8nuF0IgO8TpEUuIN5RM4HfXWvx2WYhv33BwOy2zA7D/1rSEyRNpMpUd1nc3VGr/Im
-         weiw7b8auuHs3FD1EhhEPHvqohcSuwmy/jzwcP1g1DfaVOjPCDarrI6tHKrKJat5Hw
-         NUFWqa8cgVBOyFdpSqTQfh4LNnd+vuOCofZtnKnp8zwQ/FIRALGfvRpiyOZ2C6rjhS
-         Zhl+Tlu1iXoJtZFvTHSf16nofXMzmOMIipni/lkxNrYiR9JPeYLPpZdQK5sCMqiYR5
-         TZXEk6xY0WeTQ==
-Date:   Tue, 6 Oct 2020 17:03:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robherring2@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Tue, 6 Oct 2020 02:03:35 -0400
+X-Greylist: delayed 3620 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 02:03:34 EDT
+Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 2496B200006;
+        Tue,  6 Oct 2020 06:03:29 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 23:03:27 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: linux-next: manual merge of the devicetree tree with the mfd tree
-Message-ID: <20201006170308.68e4781e@canb.auug.org.au>
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
+ overlapped bitmaps
+Message-ID: <20201006060327.GA9227@localhost>
+References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
+ <20201005081454.GA493107@localhost>
+ <20201005173639.GA2311765@magnolia>
+ <20201006003216.GB6553@localhost>
+ <20201006025110.GJ49559@magnolia>
+ <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XjoCBdn64DV2Y2ypT8+b32Z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006050306.GA8098@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XjoCBdn64DV2Y2ypT8+b32Z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 05, 2020 at 10:03:13PM -0700, Josh Triplett wrote:
+> On Mon, Oct 05, 2020 at 11:18:34PM -0400, Theodore Y. Ts'o wrote:
+> > What Josh is proposing I'm pretty sure would also break "e2fsck -E
+> > unshare_blocks", so that's another reason not to accept this as a
+> > valid format change.
+> 
+> The kernel already accepted this as a valid mountable filesystem format,
+> without a single error or warning of any kind, and has done so stably
+> for years.
+> 
+> > As far as I'm concerned, contrib/e2fsdroid is the canonical definition
+> > of how to create valid file systems with shared_blocks.
+> 
+> I'm not trying to create a problem here; I'm trying to address a whole
+> family of problems. I was generally under the impression that mounting
+> existing root filesystems fell under the scope of the kernel<->userspace
+> or kernel<->existing-system boundary, as defined by what the kernel
+> accepts and existing userspace has used successfully, and that upgrading
+> the kernel should work with existing userspace and systems. If there's
+> some other rule that applies for filesystems, I'm not aware of that.
+> (I'm also not trying to suggest that every random corner case of what
+> the kernel *could* accept needs to be the format definition, but rather,
+> cases that correspond to existing userspace.)
+> 
+> It wouldn't be *impossible* to work around this, this time; it may be
+> possible to adapt the existing userspace to work on the new and old
+> kernels. My concern is, if a filesystem format accepted by previous
+> kernels can be rejected by future kernels, what stops a future kernel
+> from further changing the format definition or its strictness
+> (co-evolving with one specific userspace) and causing further
+> regressions?
+> 
+> I don't *want* to rely on what apparently turned out to be an
+> undocumented bug in the kernel's validator. That's why I was trying to
+> fix the issue in what seemed like the right way, by detecting the
+> situation and turning off the validator. That seemed like it would fully
+> address the issue. If it would help, I could also supply a tiny filesystem
+> image for regression testing.
+> 
+> I'm trying to figure out what solution you'd like to see here, as long
+> as it isn't "any userspace that isn't e2fsdroid can be broken at will".
+> I'd be willing to work to adapt the userspace bits I have to work around
+> the regression, but I'd like to get this on the radar so this doesn't
+> happen again.
 
-Hi all,
+To clarify something further: I'm genuinely not looking to push hard on
+the limits or corners of the kernel/userspace boundary here, nor do I
+want to create an imposition on development. I'm happy to attempt to be
+a little more flexible than most userspace. I'm trying to make
+substantial, non-trivial use of the userspace side of a kernel/userspace
+boundary, and within reason, I need to rely on the kernel's stability
+guarantees. I'm relying on the combination of
+Documentation/filesystems/ext4 and fs/ext4 as the format documentation.
+The first time I discovered this issue was in doing some "there's about
+to be a new kernel release" regression testing for 5.9, in which it
+created a debugging adventure to track down what the problem was. I'd
+like to find a good way to report and handle this kind of thing going
+forward, if another issue like this arises.
 
-FIXME: Add owner of second tree to To:
-       Add author(s)/SOB of conflicting commits.
-
-Today's linux-next merge of the devicetree tree got a conflict in:
-
-  Documentation/devicetree/bindings/arm/samsung/sysreg.yaml
-
-between commit:
-
-  18394297562a ("dt-bindings: mfd: syscon: Merge Samsung Exynos Sysreg bind=
-ings")
-
-from the mfd tree and commit:
-
-  41fb845621ea ("dt-bindings: Another round of adding missing 'additionalPr=
-operties'")
-
-from the devicetree tree.
-
-I fixed it up (I just deleted the file) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/XjoCBdn64DV2Y2ypT8+b32Z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98CJwACgkQAVBC80lX
-0GyN6AgApEJGy6paX+HeTa6cPeGFwcJU7aQIZc8HeX66qKpcUeS8UDWSNuwg7Jqd
-Qu08jinNYAWql10tb3Xyx7VnzTG/tISsjTLuuBVAb6ozCjagalo7x8nxtyJlHV1E
-4Pr1ULAHp+uI27o2WIiwYmjfaT8YkPAi2fV+nLTeYNMK1UiisQ22B44oBVMWAtfH
-FRjM9JEq4fOpcIdiESRwZ+1O91g/NDBs8qM/fD/kZrNwzV+oL1tMjoU3wdG/E9Cg
-J0oUswni65PCd+1I9w6ZpbiUuu+Mj4oXvHjPINaOeNr6jVP0eEL3hUzFUPNgd3Ea
-vACGXWGCRoDm1vwNs3jdLObwf9qbEg==
-=bdoA
------END PGP SIGNATURE-----
-
---Sig_/XjoCBdn64DV2Y2ypT8+b32Z--
+- Josh Triplett
