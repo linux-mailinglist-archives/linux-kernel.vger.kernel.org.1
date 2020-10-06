@@ -2,175 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564292845B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184EC2845B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 07:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgJFFzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 01:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        id S1726899AbgJFF5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 01:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgJFFzI (ORCPT
+        with ESMTP id S1726007AbgJFF5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 01:55:08 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBB3C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 22:55:07 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id z5so9981150ilq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 22:55:07 -0700 (PDT)
+        Tue, 6 Oct 2020 01:57:31 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112F5C0613A8
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 22:57:30 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x5so682952plo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 22:57:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+S6tydLurUDpfqqIJ3NPBxeMc9ESUmLJ3tmCFVKnprI=;
-        b=ZD608extQCdAvtmJ1rP0yUNo2eff+7DJl+3Hu6wwzG3r9e2iCuKjYzY8e/eijynYeb
-         qnLjOMxxFTQWrTl6FLtNGeXPk7N92wrSn4I/fCi51wQ2Uc5YCd52lspEBdatdEPZmrlJ
-         OTTEcOzbxS1iYmKMYRRLBtv9164alYymgyxvd9B4xjNY99fnwKFrr3PXKwh038Wiv20H
-         5APLtyla8fPoT1Y56bIbfc0mGAjgHvZI3JxYeNtJBOJBXzkAG06mVoWCmHJsu3eacb64
-         aokeIAan1N1THB+L+L7nQuSnFanWUwIXycj+NogZ3j+ry441OhskIJqx657Dr7sXKwG7
-         k3Mw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gx4WOvLZE+8XVE2Cbj1TNlsvQN+bEc7hhbjF/tgIFks=;
+        b=lIzQwVFztGvCS46aamlT+Zp90+6vgiZYuYVYPYCJ266iK/uoWXyEyrXdL+ASF2Rpqj
+         ZMXs/jATshsL6nNxJIJtjbFrXbBtj+7EKt0zWl0QpYwJSVFxB/yglLqM6l06tKlgg73j
+         pP+effqg9e6dsJyuFUrqtstsMcZCr/eCqWXu0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+S6tydLurUDpfqqIJ3NPBxeMc9ESUmLJ3tmCFVKnprI=;
-        b=TUSi/4WDCghN4Rsdk7nuv8uD8pnuG1SpDt7ykleNt3ccG7KOu4TQyC5FpVgcp28UCP
-         lStU5QRiFVEAYfi27Bh+5EqjrLLlXYBSqr8epe7Rql5YvM0d2BUq9uXDlJiGfLbWr9cl
-         Z+E+pD9tSQClrMIaJWKOCtVI8OvGiUTjxAZo5AD1WMRc1BAycb/J+pZG6IscinvLTQbS
-         QMHlKllqp39M+60E8n/ahkIZThWnWwv/oAKqlcT16mT0pOxb4YswoX7GnY2f7idudfsi
-         dnsOmvthzuF2H+3jLYOJOam+vsiN3VuQ5ExxcKtsqV5o+njfQ0wYMr9vtisCxLegZTAZ
-         DF8w==
-X-Gm-Message-State: AOAM531d4XT6lkKLc4DgXE9cdZIeDHAr35lJjkRZGNSmC2DvACksy3sZ
-        GClLbYWC9adTjn65horGddvEOY0fidZEuDOebBfvzX45wwU9o3vB
-X-Google-Smtp-Source: ABdhPJzzXEZAOartKWIUk4VKYdsoe1JzVQHIZIo5H4Mw9qzgIoFd8v53NzrZnggWwFLGeAUfpuC75PT0N6jsyEwefj8=
-X-Received: by 2002:a92:c949:: with SMTP id i9mr2297670ilq.252.1601963706495;
- Mon, 05 Oct 2020 22:55:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201005142109.796046410@linuxfoundation.org>
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 6 Oct 2020 11:24:55 +0530
-Message-ID: <CA+G9fYvHOu8kJhRKV5GPJmnaE_x2mrnN6myb4G4YHHW-oiKD7A@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/57] 5.4.70-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gx4WOvLZE+8XVE2Cbj1TNlsvQN+bEc7hhbjF/tgIFks=;
+        b=ZjGoNAihjictSzS7phD25sI117JSneQWMWgq0DdelmpjtI3jzWy1lH1fR/PS2Ol4od
+         xirYOeN810RtT59OSJJ8ALP+ptj7p2AZA0NVeZmLZc0a7Fojvfk0cnvMHsUrRC38EQd8
+         YiqgUVzleFg5wDMx+mg6BOUsUWefRaXK6yjGHFSEqsDCB7DiL4a2Mp02mcLNknR8eLGM
+         5o5oHsczgG6h5ZIv8sf7VoHcsEmcd3ZUsv/HrdOr7E+Ca1jThFWBtc6XfjV7oNfMnSHo
+         eyAhRyzFwjPaptFVKzs/vhodLZ3mzdIpc0u+FS9q0bcrTrAxlUBRPkXfhXfCuBhoQeyi
+         R3Eg==
+X-Gm-Message-State: AOAM532ymTKSS2z2THZsU7GqkY2FQjpXLQ5iH0wnZl3iYULOqzAaO+Iq
+        6cS+elhjxXuxt7RdteafQO2yug==
+X-Google-Smtp-Source: ABdhPJyyhqIDHGy7mDnDHpQB09ZhAu+H7/Ucq2xIm6TB1CInHA8Hx4CXWDmYBVa2VyTjeL4m+tfnaA==
+X-Received: by 2002:a17:90a:8007:: with SMTP id b7mr274521pjn.84.1601963849512;
+        Mon, 05 Oct 2020 22:57:29 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y126sm1607049pgb.40.2020.10.05.22.57.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 22:57:28 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 22:57:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Emese Revfy <re.emese@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] random32: Restore __latent_entropy attribute on
+ net_rand_state
+Message-ID: <202010052257.CB8E47E@keescook>
+References: <20201002151610.24258-1-thibaut.sautereau@clip-os.org>
+ <202010051910.BC7E9F4@keescook>
+ <20201006022808.GA5531@1wt.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006022808.GA5531@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Oct 2020 at 20:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.70 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.70-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Tue, Oct 06, 2020 at 04:28:09AM +0200, Willy Tarreau wrote:
+> Hi Kees,
+> 
+> On Mon, Oct 05, 2020 at 07:12:29PM -0700, Kees Cook wrote:
+> > On Fri, Oct 02, 2020 at 05:16:11PM +0200, Thibaut Sautereau wrote:
+> > > From: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+> > > 
+> > > Commit f227e3ec3b5c ("random32: update the net random state on interrupt
+> > > and activity") broke compilation and was temporarily fixed by Linus in
+> > > 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy
+> > > gcc plugin") by entirely moving net_rand_state out of the things handled
+> > > by the latent_entropy GCC plugin.
+> > > 
+> > > From what I understand when reading the plugin code, using the
+> > > __latent_entropy attribute on a declaration was the wrong part and
+> > > simply keeping the __latent_entropy attribute on the variable definition
+> > > was the correct fix.
+> > > 
+> > > Fixes: 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy gcc plugin")
+> > > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Cc: Willy Tarreau <w@1wt.eu>
+> > > Cc: Emese Revfy <re.emese@gmail.com>
+> > > Signed-off-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+> > 
+> > Yes, that looks correct. Thank you!
+> > 
+> > Acked-by: Kees Cook <keescook@chromium.org>
+> > 
+> > I'm not sure the best tree for this. Ted, Andrew, Linus? I'll take it
+> > via my gcc plugin tree if no one else takes it. :)
+> 
+> It was already merged as commit 09a6b0bc3be79 and queued for -stable.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Ah, perfect! Thanks.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.70-rc1
-git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
-able-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-git branch: linux-5.4.y
-git commit: 7b199c4db17f19594dcf4d24cc26c8ddff8443da
-git describe: v5.4.69-58-g7b199c4db17f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.69-58-g7b199c4db17f
-
-No regressions (compared to build v5.4.69)
-
-No fixes (compared to build v5.4.69)
-
-
-Ran 34627 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-mm-tests
-* network-basic-tests
-* ltp-ipc-tests
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Kees Cook
