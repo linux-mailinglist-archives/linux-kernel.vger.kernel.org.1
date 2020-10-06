@@ -2,91 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D95284C8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50AB284C91
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgJFNaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
+        id S1726123AbgJFNbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgJFNae (ORCPT
+        with ESMTP id S1725902AbgJFNbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:30:34 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16119C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 06:30:33 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id t18so3568227ilo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 06:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nxheCNIBk27fHu3SnrcxO61/+dDNHmsAZ+V/ZMEW1FQ=;
-        b=eLcRUkG2BvfNZR/tqkzKvzcLDyo/A6+biNXbVCHVso0GMsT/R5rqPedObSgaDe9L8c
-         x0z6llgsNEBoVzsgqpOaFfZ9JiPbsICxfW7EziTA0SG+UDfU3+TFx8yDCkzQZ9jwPUDW
-         9KrsUS04E/nlNYGV9xNGXMqKnYGYloDBAJCgd0gq2oRHsItaZLz32OR39N1g24dgtK9j
-         eGJbie/Rfp+ie0uFEvMdRtZG0FFl9mjwlbnWOcsw9xz143eu8uMwTFT5Hew5ULmMJvDN
-         iTSkUk7cXgD6eFxPcmNfN4cFenqUrB0GGG2jvdiZyds5NoT2vnOIN0ZmzoAeoWoe87d6
-         GIIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nxheCNIBk27fHu3SnrcxO61/+dDNHmsAZ+V/ZMEW1FQ=;
-        b=d/82/VFHYBZUCBZ64hoPwglrm6xBGhN5kRA8dJbFYWJp/JGYSSmP7xTPJx7DHegVdg
-         6MDb7Z/BuIFzBVeeygs5Pvi4asNpZz9a23DAnEd+SGiU+dIjeA/r7gl6YjA0LkepIwRt
-         gIoNqDbI2mXIhmkn8xDzh2I+gZUhoJkHcJcTW71kUs9HMO2Yq5Wn1DTQ7OquSKul9lfp
-         ErsyuLodFBbVBuGrGcgW17VxICD3L2DpxhQSwX2etOwp6dAsVFQcx0uZsB2Og8zVtwBq
-         oaSER8yHHkFYwkazdVYIhRuYCN9sKiepViv63yjwUf4Unbzw8HRG81j3hvnWGQgDrjEH
-         YMuQ==
-X-Gm-Message-State: AOAM531WsICH6pOQdIBspgq9K3/npoimldh8foufmjtc7gPPgRfri9J9
-        9cdKTNa1qqh8ePYjaz5QxLDmJg==
-X-Google-Smtp-Source: ABdhPJyYNSRknztkzPHBli45617VnJ7M3gsP6dNnh3SvCD7hO2X+20R3o/jN3dD0tjR3bCKJt301AA==
-X-Received: by 2002:a05:6e02:547:: with SMTP id i7mr3863840ils.0.1601991032389;
-        Tue, 06 Oct 2020 06:30:32 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id y26sm1511291iol.24.2020.10.06.06.30.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 06:30:31 -0700 (PDT)
-Subject: Re: [PATCH V7 0/2] percpu_ref & block: reduce memory footprint of
- percpu_ref in fast path
-To:     Ming Lei <ming.lei@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Cc:     Veronika Kabatova <vkabatov@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>
-References: <20201001154842.26896-1-ming.lei@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8b0828ee-8b86-a505-842b-f86968591bfe@kernel.dk>
-Date:   Tue, 6 Oct 2020 07:30:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 6 Oct 2020 09:31:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9411C061755;
+        Tue,  6 Oct 2020 06:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=O3EWqYk+iCYFGfEpVJGDX+3mmor+Zzy4SSzmYtlNgNM=; b=JbzkWDu/5QAaGHZnDmRJa+sIw3
+        kqd/HaSCUfqkEHljgxx6j8vM/8H8L1yPJApFRqM2COj+kmVqiSuzRp6kcqwo1b+HL9BzWRM+W0WmT
+        pwJvxtk+WtDs6VoQh87qElveWqeOqviJEGe4n8dSl+rremfIQHh3PHxn1LYvWhMzsyjUSTVzM0Zaf
+        iW4HmtMBhw7y4P5SOEaX4XWLbMV26M0MUgRbgxtrKADB3owiTeMIulsYU/QoclL5zOjgTkjbbpeX/
+        cixSHrItvf0GwhiWdfVUsccBAlD97kmrYnWbPP1fsex3ymnfkO7tZ5NdjyWmddYBmUcDT2taG9v/a
+        cJyT94wg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPn3k-0001vB-G7; Tue, 06 Oct 2020 13:31:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A39453006D0;
+        Tue,  6 Oct 2020 15:31:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8226928297408; Tue,  6 Oct 2020 15:31:15 +0200 (CEST)
+Date:   Tue, 6 Oct 2020 15:31:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "j.alglave@ucl.ac.uk" <j.alglave@ucl.ac.uk>,
+        "luc.maranget@inria.fr" <luc.maranget@inria.fr>,
+        "akiyks@gmail.com" <akiyks@gmail.com>,
+        "dlustig@nvidia.com" <dlustig@nvidia.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+Subject: Re: Control Dependencies vs C Compilers
+Message-ID: <20201006133115.GT2628@hirez.programming.kicks-ass.net>
+References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
+ <3dfe7daed3c44f46a6989b6513ad7bb0@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20201001154842.26896-1-ming.lei@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3dfe7daed3c44f46a6989b6513ad7bb0@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 9:48 AM, Ming Lei wrote:
-> Hi,
+On Tue, Oct 06, 2020 at 12:37:06PM +0000, David Laight wrote:
+> From: Peter Zijlstra
+> > Sent: 06 October 2020 12:47
+> > Hi,
+> > 
+> > Let's give this linux-toolchains thing a test-run...
+> > 
+> > As some of you might know, there's a bit of a discrepancy between what
+> > compiler and kernel people consider 'valid' use of the compiler :-)
+> > 
+> > One area where this shows up is in implicit (memory) ordering provided
+> > by the hardware, which we kernel people would like to use to avoid
+> > explicit fences (expensive) but which the compiler is unaware of and
+> > could ruin (bad).
+> ...
+> > 
+> > In short, the control dependency relies on the hardware never
+> > speculating stores (instant OOTA) to provide a LOAD->STORE ordering.
+> > That is, a LOAD must be completed to resolve a conditional branch, the
+> > STORE is after the branch and cannot be made visible until the branch is
+> > determined (which implies the load is complete).
+> > 
+> > However, our 'dear' C language has no clue of any of this.
+> > 
+> > So given code like:
+> > 
+> > 	x = *foo;
+> > 	if (x > 42)
+> > 		*bar = 1;
+> > 
+> > Which, if literally translated into assembly, would provide a
+> > LOAD->STORE order between foo and bar, could, in the hands of an
+> > evil^Woptimizing compiler, become:
+> > 
+> > 	x = *foo;
+> > 	*bar = 1;
+> > 
+> > because it knows, through value tracking, that the condition must be
+> > true.
+> > 
+> > Our Documentation/memory-barriers.txt has a Control Dependencies section
+> > (which I shall not replicate here for brevity) which lists a number of
+> > caveats. But in general the work-around we use is:
+> > 
+> > 	x = READ_ONCE(*foo);
+> > 	if (x > 42)
+> > 		WRITE_ONCE(*bar, 1);
 > 
-> The 1st patch removes memory footprint of percpu_ref in fast path
-> from 7 words to 2 words, since it is often used in fast path and
-> embedded in user struct.
+> An alternative is to 'persuade' the compiler that
+> any 'tracked' value for a local variable is invalid.
+> Rather like the way that barrier() 'invalidates' memory.
+> So you generate:
 > 
-> The 2nd patch moves .q_usage_counter to 1st cacheline of
-> 'request_queue'.
+> 	x = *foo
+> 	asm ("" : "+r" (x));
+> 	if (x > 42)
+> 		*bar = 1;
 > 
-> Simple test on null_blk shows ~2% IOPS boost on one 16cores(two threads
-> per core) machine, dual socket/numa.
+> Since the "+r" constraint indicates that the value of 'x'
+> might have changed it can't optimise based on any
+> presumed old value.
+> (Unless it looks inside the asm opcodes...)
 
-Applied, thanks.
+The compiler can still try and lift the store out of the block, possibly
+by inventing more stores.
 
--- 
-Jens Axboe
+Please go read memory-barriers.txt for a bunch of other examples.
 
+This thread is not to collect work-arounds that might convince a
+compiler to emit the desired code as a side effect, but to get the
+compiler people involved and get control-dependencies recognised such
+that correct code gen is guaranteed.
+
+Only if we get the compiler people on board and have them provide means
+are we guaranteed safe from the optimizer. Otherwise we'll just keep
+playing whack-a-mole with fancy new optimization techniques. And given
+how horridly painful it is to debug memory ordering problems, I feel it
+is best to make sure we're not going to have to more than necessary.
