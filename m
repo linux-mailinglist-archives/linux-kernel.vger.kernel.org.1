@@ -2,141 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384F428463A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E92B28463E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgJFGmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726769AbgJFGmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:42:13 -0400
-Received: from coco.lan (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C055320757;
-        Tue,  6 Oct 2020 06:42:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601966532;
-        bh=IEl0kKuVJ/RD+zUKJf/fDMYwBEIERa3g9HxZNp7xstU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MRCX853GuJjy9gYrG+JBO6vBt1Um5qvYezrgSpCTHfT2EyUD1hRdzBi1xFh8anm2A
-         9M/WEk4v3R6XrmexZi3AvM5vZkV/cVh6nQ1cR711vsDo6N9SuzWJw0FpYYJTmHKwR+
-         IKfuVMeer6XJ4ucr+Se01Q4Gj5iYIH7DvgI/evp8=
-Date:   Tue, 6 Oct 2020 08:42:07 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Markus Heiser <markus.heiser@darmarit.de>
-Subject: Re: [PATCH] scripts: kernel-doc: allow passing desired Sphinx C
- domain dialect
-Message-ID: <20201006084207.125c88d5@coco.lan>
-In-Reply-To: <20201005101736.7adf4f46@lwn.net>
-References: <ee1f16453ad40eae2603adfde5f6dda3ab1befc7.1601798520.git.mchehab+huawei@kernel.org>
-        <20201005101736.7adf4f46@lwn.net>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727121AbgJFGm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:42:58 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11252 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgJFGm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:42:58 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7c11860000>; Mon, 05 Oct 2020 23:41:10 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
+ 2020 06:42:55 +0000
+Date:   Tue, 6 Oct 2020 09:42:51 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Si-Wei Liu <siwliu.kernel@gmail.com>, <jasowang@redhat.com>,
+        <netdev@vger.kernel.org>, <joao.m.martins@oracle.com>,
+        <boris.ostrovsky@oracle.com>, <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        Si-Wei Liu <si-wei.liu@oracle.com>
+Subject: Re: [PATCH] vdpa/mlx5: should keep avail_index despite device status
+Message-ID: <20201006064251.GA245562@mtl-vdi-166.wap.labs.mlnx>
+References: <1601583511-15138-1-git-send-email-si-wei.liu@oracle.com>
+ <CAPWQSg1y8uvpiwxxp_ONGFs8GeuOY09q3AShfLCmhv77ePma-Q@mail.gmail.com>
+ <20201006022133-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201006022133-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601966470; bh=ASs8JiGhlMNd52uGVVMaQ1Y7RyhmCiPPg7YfPHpQFa4=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=nkXgBjaLnjffyiY59h9MLp4hDRC627b5J3L4h1vN/qgrrVlYiAgRU/aH3laHlVpIF
+         QDc7hvJE9TCfs50aW8eq+ej+ikWVqzMVFae0RUxUlkMFl8BHjt+QGWQc0D1utam2uF
+         4PGzhAiESNkrzWhAczeUbb6mwtPGYRewq3F5xv4z6BZ5yNE8ELk+X3l136UYcoGAKC
+         ecN4MldL7g63fCLWWKqVGQD/LB0YRSYBnrwyhlRbabBloWZI140Bupz9vmtDK1T4TD
+         8vDfBcQHyl9owITyPs26ftW2/9MwCLOmLT3n47pmdklQ1yrr8y/VZZOGgrTxEoDyBs
+         EcCvyHCbh7lmA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 5 Oct 2020 10:17:36 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
+On Tue, Oct 06, 2020 at 02:22:15AM -0400, Michael S. Tsirkin wrote:
 
-> On Sun,  4 Oct 2020 10:02:03 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > When kernel-doc is called via kerneldoc.py, there's no need to
-> > auto-detect the Sphinx version, as the Sphinx module already
-> > knows it. So, add an optional parameter to allow changing the
-> > Sphinx dialect.
+Acked-by: Eli Cohen <elic@nvidia.com>
+
+> On Fri, Oct 02, 2020 at 01:17:00PM -0700, Si-Wei Liu wrote:
+> > + Eli.
 > > 
-> > As kernel-doc can also be manually called, keep the auto-detection
-> > logic if the parameter was not specified. On such case, emit
-> > a warning if sphinx-build can't be found at PATH.
-> > 
-> > Suggested-by: Jonathan Corbet <corbet@lwn.net>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  Documentation/sphinx/kerneldoc.py |  5 ++++
-> >  scripts/kernel-doc                | 40 ++++++++++++++++++++++++-------
-> >  2 files changed, 37 insertions(+), 8 deletions(-)  
+> > On Thu, Oct 1, 2020 at 2:02 PM Si-Wei Liu <si-wei.liu@oracle.com> wrote:
+> > >
+> > > A VM with mlx5 vDPA has below warnings while being reset:
+> > >
+> > > vhost VQ 0 ring restore failed: -1: Resource temporarily unavailable (11)
+> > > vhost VQ 1 ring restore failed: -1: Resource temporarily unavailable (11)
+> > >
+> > > We should allow userspace emulating the virtio device be
+> > > able to get to vq's avail_index, regardless of vDPA device
+> > > status. Save the index that was last seen when virtq was
+> > > stopped, so that userspace doesn't complain.
+> > >
+> > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
 > 
-> So I'm glad to see this.  Still not fully sold on the autodetection, but if
-> we don't actually use it, maybe I can live with it :)
+> Eli can you review this pls? I need to send a pull request to Linux by
+> tomorrow - do we want to include this?
 > 
-> One little nit:
+> > > ---
+> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 20 ++++++++++++++------
+> > >  1 file changed, 14 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > index 70676a6..74264e59 100644
+> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > @@ -1133,15 +1133,17 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+> > >         if (!mvq->initialized)
+> > >                 return;
+> > >
+> > > -       if (query_virtqueue(ndev, mvq, &attr)) {
+> > > -               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
+> > > -               return;
+> > > -       }
+> > >         if (mvq->fw_state != MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY)
+> > >                 return;
+> > >
+> > >         if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
+> > >                 mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
+> > > +
+> > > +       if (query_virtqueue(ndev, mvq, &attr)) {
+> > > +               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
+> > > +               return;
+> > > +       }
+> > > +       mvq->avail_idx = attr.available_index;
+> > >  }
+> > >
+> > >  static void suspend_vqs(struct mlx5_vdpa_net *ndev)
+> > > @@ -1411,8 +1413,14 @@ static int mlx5_vdpa_get_vq_state(struct vdpa_device *vdev, u16 idx, struct vdpa
+> > >         struct mlx5_virtq_attr attr;
+> > >         int err;
+> > >
+> > > -       if (!mvq->initialized)
+> > > -               return -EAGAIN;
+> > > +       /* If the virtq object was destroyed, use the value saved at
+> > > +        * the last minute of suspend_vq. This caters for userspace
+> > > +        * that cares about emulating the index after vq is stopped.
+> > > +        */
+> > > +       if (!mvq->initialized) {
+> > > +               state->avail_index = mvq->avail_idx;
+> > > +               return 0;
+> > > +       }
+> > >
+> > >         err = query_virtqueue(ndev, mvq, &attr);
+> > >         if (err) {
+> > > --
+> > > 1.8.3.1
+> > >
 > 
-> > diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
-> > index 233f610539f0..e9857ab904f1 100644
-> > --- a/Documentation/sphinx/kerneldoc.py
-> > +++ b/Documentation/sphinx/kerneldoc.py
-> > +    } elsif ($cmd eq "sphinx-version") {
-> > +	my $ver_string = shift @ARGV;
-> > +	if ($ver_string =~ m/^(\d+)\.(\d+)\.(\d+)/) {
-> > +	    $sphinx_major = $1;
-> > +	    $sphinx_minor = $2;
-> > +	    $sphinx_patch = $3;
-> > +	} else {
-> > +	    die "Sphinx version should be at major.minor.patch format\n";
-> > +	}  
-> 
-> Can we allow just major.minor, with patch defaulting to zero?  People
-> passing this by hand may not want to look up their patch version every
-> time, and I doubt it will ever matter...
-
-Sure. It should be easy to make the third argument optional, although
-the regex will be a little more harder to understand.
-
-Something like this should do the trick:
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 01efb0afb8c2..104d79949a8a 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -466,12 +466,16 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
- 	$show_not_found = 1;  # A no-op but don't fail
-     } elsif ($cmd eq "sphinx-version") {
- 	my $ver_string = shift @ARGV;
--	if ($ver_string =~ m/^(\d+)\.(\d+)\.(\d+)/) {
-+	if ($ver_string =~ m/^(\d+)\.(\d+)(?:\.?(\d+)?)/) {
- 	    $sphinx_major = $1;
- 	    $sphinx_minor = $2;
--	    $sphinx_patch = $3;
-+	    if ($3) {
-+		$sphinx_patch = $3;
-+	    } else {
-+		$sphinx_patch = 0;
-+	    }
- 	} else {
--	    die "Sphinx version should be at major.minor.patch format\n";
-+	    die "Sphinx version should either major.minor or major.minor.patch format\n";
- 	}
-     } else {
- 	# Unknown argument
-
-As right now we don't support Sphinx version 3.0[1], we're actually using just
-$sphinx_major. So, I'm wonder if it would make sense to also make <minor>
-optional.
-
-The change would be trivial, although the regex will become even more
-harder to read ;-)
-
-[1] not sure how valuable would be adding support for Sphinx 3.0. While
-I didn't make any tests, I'm strongly suspecting that, with the approach
-we took for backward/forward compatibility, adding support for it
-would mean to just do a trivial change at cdomain.py by applying a
-patch that Markus did replacing a regex function that doesn't exist
-anymore at Sphinx API and emulating C namespace with the logic I
-already implemented. 
-
-I guess I'll give it a try anyway, as it seems weird to have a gap
-in the middle of the supported versions.
-
-
-Thanks,
-Mauro
