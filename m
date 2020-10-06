@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDED62845C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5447B2845CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgJFGDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        id S1726890AbgJFGFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgJFGDs (ORCPT
+        with ESMTP id S1726022AbgJFGFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:03:48 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5C0C0613A7
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:03:48 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 34so7368147pgo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o+1mE6CyvtWobK1yelGFLZic7reL9nnvtSTOf+SbuLw=;
-        b=AKn2a5gAkmOS3c6KWOCMKE3zG3Yr5UDOsY6/N8l40OaXH4y/N7DSqqkQajgy41Pdt9
-         +57NKe9lna49m7GxxMfS/mY5SlHcJ08EUO33cGnDhzLZwI13XWrO0zqTlZtNWpoikCmD
-         41q/FOv2LZz3+a3ULfrwTu2Jhj80EkzgKXHME=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o+1mE6CyvtWobK1yelGFLZic7reL9nnvtSTOf+SbuLw=;
-        b=gvip6/0xhmVxg1pBlbxKmh+ErbqLYIX1PirrWjy45QlWkRPDMT4TskgbXvPSphW7cw
-         0DOFlPQ4BWp8mcSvD+CehtGnJzbtWS95YbyCALTIt4wMvhpDooL9QrP9KBBOyWGsdKKm
-         tEK5lQ+WFbLFt4IjGXsphM/mFmimyxmrqK5qcMubn3njAcN3ew3gXpT/g0j3yU1+Hl+H
-         XJJOTj1C/EZLlFjxZbI1xlHWwjIYGDWVxYVW4FVFBYIB5WWujXzkx6Dpyo+9uCn243Hn
-         jYPCZ4zK220XYaQNIhoQ98hJI5dCHbgN3Xi48fMGzsgPlLb8H1PgSVTNIHUkELuYEs/V
-         Tpqw==
-X-Gm-Message-State: AOAM531bwXj+j/aw4/y/VUXjT+ZqnrxfVh/4ZddRc72MEyTkBierW+oP
-        dtt6KxdGVrtEG4eEXTb04NqXfA==
-X-Google-Smtp-Source: ABdhPJx7XGhq35ijTOKBA/RFWn71PBN4VOHEabH/E2FAQcBchGZPetIPIEeI1vV0ftKbbx0ldqK6uA==
-X-Received: by 2002:a05:6a00:2291:b029:142:2501:3987 with SMTP id f17-20020a056a002291b029014225013987mr3072038pfe.76.1601964228199;
-        Mon, 05 Oct 2020 23:03:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r206sm1942936pfr.91.2020.10.05.23.03.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 23:03:47 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 23:03:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        George Popescu <georgepope@android.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] ubsan: Force -Wno-maybe-uninitialized only for GCC
-Message-ID: <202010052301.CFBC03C72E@keescook>
-References: <20201002221527.177500-1-keescook@chromium.org>
- <20201002221527.177500-4-keescook@chromium.org>
- <20201004071614.GC1650@Ryzen-9-3900X.localdomain>
+        Tue, 6 Oct 2020 02:05:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1A2C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:05:39 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kPg6L-0000oO-Ed; Tue, 06 Oct 2020 08:05:29 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kPg6K-0008VL-6x; Tue, 06 Oct 2020 08:05:28 +0200
+Date:   Tue, 6 Oct 2020 08:05:28 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Message-ID: <20201006060528.drh2yoo2dklyntez@pengutronix.de>
+References: <20201002152305.4963-1-ceggers@arri.de>
+ <20201002152305.4963-2-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="beidewvdqrs5sqid"
 Content-Disposition: inline
-In-Reply-To: <20201004071614.GC1650@Ryzen-9-3900X.localdomain>
+In-Reply-To: <20201002152305.4963-2-ceggers@arri.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 12:16:14AM -0700, Nathan Chancellor wrote:
-> On Fri, Oct 02, 2020 at 03:15:26PM -0700, Kees Cook wrote:
-> > Clang handles 'maybe-uninitialized' better in the face of using UBSAN,
-> > so do not make this universally disabled for UBSAN builds.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Well this patch is not strictly necessary because Clang does not support
-> -Wmaybe-uninitialized anyways :) its flags are -Wuninitialized and
-> -Wsometimes-uninitialized so the warning stays enabled for UBSAN as it
-> stands.
 
-Ah, yes. Heh. Well... perhaps I can just drop this patch.
+--beidewvdqrs5sqid
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> However, something like this could still worthwhile because it would
-> save us one call to cc-disable-warning (yay micro optimizations).
-> 
-> Maybe it just does not need to have a whole new symbol, just make it
-> 
-> ubsan-cflags-$(CONFIG_CC_IS_GCC)
-> 
-> instead of
-> 
-> ubsan-cflags-$(CONFIG_UBSAN)
+On Fri, Oct 02, 2020 at 05:23:03PM +0200, Christian Eggers wrote:
+> According to the "VFxxx Controller Reference Manual" (and the comment
+> block starting at line 97), Vybrid requires writing a one for clearing
+> an interrupt flag. Syncing the method for clearing I2SR_IIF in
+> i2c_imx_isr().
+>=20
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/i2c/busses/i2c-imx.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index 0ab5381aa012..34648df7f1a6 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -424,7 +424,12 @@ static int i2c_imx_bus_busy(struct imx_i2c_struct *i=
+2c_imx, int for_busy, bool a
+> =20
+>  		/* check for arbitration lost */
+>  		if (temp & I2SR_IAL) {
+> -			temp &=3D ~I2SR_IAL;
+> +			/*
+> +			 * i2sr_clr_opcode is the value to clear all interrupts.
+> +			 * Here we want to clear only I2SR_IAL, so we write
+> +			 * ~i2sr_clr_opcode with just the I2SR_IAL bit toggled.
+> +			 */
+> +			temp =3D ~i2c_imx->hwdata->i2sr_clr_opcode ^ I2SR_IAL;
+>  			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+>  			return -EAGAIN;
 
-If it gets kept, I'd still like it gated on CONFIG_UBSAN in some way
-(e.g. the patch has an implicit depends due to the "if UBSAN" section).
+Could we please move clearing an irq to a dedicated function? Such that
+it looks like:
 
-But yes, this patch is rather a no-op.
+	/* check for arbitration lost */
+	if (temp & I2SR_IAL) {
+		i2c_imx_clear_irq(i2c_imx, I2SR_IAL);
+		return -EAGAIN;
+	}
 
--- 
-Kees Cook
+Then you also don't need to duplicate the describing comment but just
+add it to the implementation of i2c_imx_clear_irq().
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--beidewvdqrs5sqid
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl98CSUACgkQwfwUeK3K
+7Am04Af+OTHNZcf5HD/6YfTPax3ijKMVsrDbdquTlavc18g1lO3D/xaDPAY5mi36
+bh/qE6BmZhlIkmUMK01v48HMbItfQsI7B+r5qVoVdH6RXzsNC9nHsoHwcyULBba4
+apXyv5v1gmySyFiyA+udRI38vv4+4NPX48YAiKIFuMl7TYzI8wFNYQmaywWVvAya
+tGy06ddMFv5Sz5gIlm0wxNZ54L1UPSdvxFtzdkWPD98liHG7hxNK0EsmAwNfherR
+0lhL9CpNcP49RSEgI6wYOEAWCc4iRWoZ1C/hGQWkL58mttTv8TaCGuzgGvjR6yC/
++Lb/zwLwG5jqdfSEiLjMUvUTMF4JLw==
+=RlAA
+-----END PGP SIGNATURE-----
+
+--beidewvdqrs5sqid--
