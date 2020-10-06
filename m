@@ -2,95 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D18284A85
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8E7284A87
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgJFK5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFK5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:57:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F291A2078E;
-        Tue,  6 Oct 2020 10:57:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601981860;
-        bh=60zeaRU1xit+wfcrdW2n7n9Bnz/m2UEBztYIili/YWI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eYgtM85Xh4loYAUINwZRp0Dm+EX59Z63wDtLYbNg9sJqfcn5aEZW8MQvukrFVbza+
-         cAIlw9dMARhK0fj3b3yyj3J6XDUpPXzN2S8OuF5RRWV6fXqZWmreMCcrPuqFLxmd1c
-         wr+qHeIO8A6vTrMMDvjnLzpvzrdIdg6sh1WZ7pRg=
-Date:   Tue, 6 Oct 2020 11:56:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        robh@kernel.org, satyakim@qti.qualcomm.com,
-        etienne.carriere@linaro.org
-Subject: Re: [PATCH 3/4] regulator: add SCMI driver
-Message-ID: <20201006105637.GB5259@sirena.org.uk>
-References: <20201005222623.1123-1-cristian.marussi@arm.com>
- <20201005222623.1123-4-cristian.marussi@arm.com>
+        id S1726074AbgJFK6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:58:13 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48467 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgJFK6N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:58:13 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id AD33B5802D4;
+        Tue,  6 Oct 2020 06:58:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 06 Oct 2020 06:58:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=QO5Cktwa7U/2cxe1mWgOsTKgbpB
+        WHkoWuoes5Mt0ow0=; b=0Bw0rz4AolMe9dxUfPAZmAXRCF1U0BIgsk1K+z3ltsS
+        6rOdjVSp44Zf4vvU0GFxgAklxRUtbxtNA9ArOvwGFSlHXLpn7RygijNcXgrEddTB
+        6Ey/tpiqCyBo3W/dU8RYt0zyeaeGBc2VkzPWVYJTP+yNqBGvNHtXYVBmgRgBjzlK
+        BNSFBG3boCq9tHRAWkpKTHG8odDSWBqLvGPzGx9oWmxb8sQExzChym6uTiSiSCXK
+        5u9XYxeOM7pDm/2V/F24mZWCKalMRQHkzPYREAn4mJL/6TKx3euz0BF7V8FVgOoQ
+        8iYU+W5HN6skzOZ8PSCgNQeLYoweI4rMwiH0sHaYSmQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=QO5Ckt
+        wa7U/2cxe1mWgOsTKgbpBWHkoWuoes5Mt0ow0=; b=iYb1qjidja2wtWYK0sBz3z
+        P5S2UxfMwN3IRYowpD06ZdjweByQxJZ/QbOuFlQQNOYFDft8iOFKok41FygSFs+9
+        DrSUOYZPLyvezbSMT3aisO09uYLdrlkhMWkhpULGT/EAJaY6dknZU71cOg9P3HSb
+        rzUo9C7fWxbiukivy5Gng+Od1+7dwXv7tXBm4ZZusBzG3LWaiFU+D8BrbHSUnyuC
+        EgAJF9YEKYBQBrD02krSxOEJZp+npFWnp8IcrIBQzhXLKnhIx4I03MrvD5jVQpTQ
+        dTSbtL6ccocjAcCmff+Z3JmpO/vkHiFnkIcp4G/cu/9gnsOTdvL5GBi2+ySIkLWA
+        ==
+X-ME-Sender: <xms:0k18XyjNdvMTjj40yuqjitCHVuKehteNJi70tidnLmUcwRSatW1u1w>
+    <xme:0k18XzBmvX5bEHmfOSXOd67HCjQ5rMOIgVAN7mSWRlguhYzHAPrQBaAtI7Nkhhfw_
+    4p6ys_z-MjStA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeeggdefgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:0k18X6H6E-xDFr_jMkz6-oR0PMjkgyViNUOjmBC_-EEev2Tbrmyvww>
+    <xmx:0k18X7TI_Wbq3lQpu_EA0YvXCNlm8Jjb907pDs3VrBHCA2bYbPBYdQ>
+    <xmx:0k18X_zwkzYQoMRpMT8-WwwSwBP3H5wlX-F15L5xZrR03EUVN_T1QQ>
+    <xmx:1E18X3d-prAVsuMhZ83XJ3VEnSKFOMOeiRuHrTGMLdWMRxoHrK03mw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 24F0C306467D;
+        Tue,  6 Oct 2020 06:58:26 -0400 (EDT)
+Date:   Tue, 6 Oct 2020 12:58:24 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dave Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the extcon tree with the drm-misc
+ tree
+Message-ID: <20201006105824.GA26735@kroah.com>
+References: <20200910141854.1d4b1b10@canb.auug.org.au>
+ <20201006200003.1be00223@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jq0ap7NbKX2Kqbes"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005222623.1123-4-cristian.marussi@arm.com>
-X-Cookie: Will it improve my CASH FLOW?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201006200003.1be00223@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 06, 2020 at 08:00:03PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Thu, 10 Sep 2020 14:18:54 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Today's linux-next merge of the extcon tree got a conflict in:
+> > 
+> >   MAINTAINERS
+> > 
+> > between commit:
+> > 
+> >   f61249dddecc ("MAINTAINERS: Add entry for i.MX 8MQ DCSS driver")
+> > 
+> > from the drm-misc tree and commit:
+> > 
+> >   d0e3c25150dd ("MAINTAINERS: Add entry for NXP PTN5150A CC driver")
+> > 
+> > from the extcon tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> > -- 
+> > Cheers,
+> > Stephen Rothwell
+> > 
+> > diff --cc MAINTAINERS
+> > index 623c53ab5bd5,da94c9b12f1b..000000000000
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@@ -12496,14 -12430,13 +12496,21 @@@ F:	drivers/iio/gyro/fxas21002c_core.
+> >   F:	drivers/iio/gyro/fxas21002c_i2c.c
+> >   F:	drivers/iio/gyro/fxas21002c_spi.c
+> >   
+> >  +NXP i.MX 8MQ DCSS DRIVER
+> >  +M:	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+> >  +R:	Lucas Stach <l.stach@pengutronix.de>
+> >  +L:	dri-devel@lists.freedesktop.org
+> >  +S:	Maintained
+> >  +F:	Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
+> >  +F:	drivers/gpu/drm/imx/dcss/
+> >  +
+> > + NXP PTN5150A CC LOGIC AND EXTCON DRIVER
+> > + M:	Krzysztof Kozlowski <krzk@kernel.org>
+> > + L:	linux-kernel@vger.kernel.org
+> > + S:	Maintained
+> > + F:	Documentation/devicetree/bindings/extcon/extcon-ptn5150.yaml
+> > + F:	drivers/extcon/extcon-ptn5150.c
+> > + 
+> >   NXP SGTL5000 DRIVER
+> >   M:	Fabio Estevam <festevam@gmail.com>
+> >   L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+> 
+> This is now a conflict between the char-misc tree and the drm tree.
 
---jq0ap7NbKX2Kqbes
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Looks fine, this should be easy for Linus to resolve :)
 
-On Mon, Oct 05, 2020 at 11:26:22PM +0100, Cristian Marussi wrote:
+thanks,
 
-> - .get_voltage / .set_voltage: routed via SCMI Voltage Domain Protocol
-> - .get_voltage_sel/.set_voltage_sel: using regulator framework helpers
-
-You should not be implementing both of these interfaces, pick one.  It
-looks like the direct voltage operations are the redundant ones here,
-while the protocol uses actual voltages to communicate with the firmware
-which makes the direct voltage operations a better fit it seems like the
-expectation is that only a limited set of voltages is supported (as is
-normal for the underlying physical regulators) so you want selectors.
-
-> +	sreg->name = devm_kasprintf(dev, GFP_KERNEL, "%s", vinfo->name);
-> +	sreg->desc.name = devm_kasprintf(dev, GFP_KERNEL,
-> +					 "Vscmi.%s", sreg->name);
-> +	if (!sreg->name || !sreg->desc.name)
-> +		return -ENOMEM;
-
-Why are we using different names here?
-
-> +	num_doms = handle->voltage_ops->num_domains_get(handle);
-> +	if (num_doms <= 0) {
-> +		dev_err(&sdev->dev, "number of voltage domains invalid\n");
-> +		return num_doms ?: -EINVAL;
-
-Please write normal conditional statements to improve legibility.
-
---jq0ap7NbKX2Kqbes
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl98TWQACgkQJNaLcl1U
-h9D+0wf/Ubh37zBd01Ip/uAlyqHQxeRSTr8vkFYb/cvjhQDqfkBRpeSLyJqEEnQB
-RWd3mf3UN05rIxmZ54qpwCLc7uNJNJ+jx57FmDYFI6GgAbNHt5c3A6ZoiTIT9Obs
-KLMDKtz5/ncww8bIcKDkt/Y0FPYnU7mtkji8JQZ/IqLAL4W0Af6W7329I7kOYelg
-MxQq+8JuU8itRYYcx8EJ5BaTGdz8YTcXpgxDQc1Uvj2CtivibdqrSfY0GbMtCjRL
-09WPrusKFYLAHlvnaPV8nmFM0PKFesPblyRv/QKHF7cm6DyszDm9HE9gzB059vbO
-goUYheBD4knkWzJQRp98E4PprszmzQ==
-=gIit
------END PGP SIGNATURE-----
-
---jq0ap7NbKX2Kqbes--
+greg k-h
