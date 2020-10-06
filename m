@@ -2,164 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4182848BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EE62848BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgJFIkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:40:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24893 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725934AbgJFIkR (ORCPT
+        id S1726000AbgJFIln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:41:43 -0400
+Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:41366 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725912AbgJFIln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:40:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601973631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=I+SRVoG86bF5ws5RN5TAfcOwR0YacOLrIivK72/5PyA=;
-        b=MdfnKs164+v/RbI9ZWwh+QCDW+c0NbZKmRrTi1z83We6vaxRjmLTslrBcyExHtHB7m/UWb
-        /2+m9psiAfyj62omabwG2nTevdO6BsLrhM5/BLR9aAaXP3HeWDvmYEuYIQ6Q4VrXcEdaiM
-        yRIY/pkIRQOis6TMeCfrChRbhkAyd+4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-EHneLjS9OUGcgKGUg0sUNQ-1; Tue, 06 Oct 2020 04:40:27 -0400
-X-MC-Unique: EHneLjS9OUGcgKGUg0sUNQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C91631084CA0;
-        Tue,  6 Oct 2020 08:40:25 +0000 (UTC)
-Received: from [10.36.114.219] (ovpn-114-219.ams2.redhat.com [10.36.114.219])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3213C60C05;
-        Tue,  6 Oct 2020 08:40:23 +0000 (UTC)
-Subject: Re: [PATCH 9/9] mm, page_alloc: optionally disable pcplists during
- page isolation
-To:     Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-10-vbabka@suse.cz>
- <20201006083418.GB29020@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <a35c1f92-b56a-e6c4-9920-33f99850eb76@redhat.com>
-Date:   Tue, 6 Oct 2020 10:40:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 6 Oct 2020 04:41:43 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id F1A551802E636;
+        Tue,  6 Oct 2020 08:41:58 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2538:2559:2562:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:3873:4321:4362:4605:5007:6690:7875:7903:7974:8784:9121:10004:10400:10848:11026:11232:11233:11473:11658:11914:12043:12048:12297:12438:12555:12740:12895:13069:13141:13146:13230:13311:13357:13894:14181:14659:14721:21080:21325:21451:21627:21740:30012:30054:30067:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: blood15_5b13f4f271c5
+X-Filterd-Recvd-Size: 2753
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  6 Oct 2020 08:41:57 +0000 (UTC)
+Message-ID: <23e7b9e33738bfa1b1d1ac0ccd4d78235decaa30.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: Fix false positive on empty block
+ comment lines
+From:   Joe Perches <joe@perches.com>
+To:     =?UTF-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     =?UTF-8?Q?Bart=C5=82omiej_?= =?UTF-8?Q?=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Date:   Tue, 06 Oct 2020 01:41:56 -0700
+In-Reply-To: <20201006083509.19934-1-l.stelmach@samsung.com>
+References: <CGME20201006083511eucas1p213c64f56efcc905970fa2b26a05c55bf@eucas1p2.samsung.com>
+         <20201006083509.19934-1-l.stelmach@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20201006083418.GB29020@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.20 10:34, Michal Hocko wrote:
-> On Tue 22-09-20 16:37:12, Vlastimil Babka wrote:
->> Page isolation can race with process freeing pages to pcplists in a way that
->> a page from isolated pageblock can end up on pcplist. This can be fixed by
->> repeated draining of pcplists, as done by patch "mm/memory_hotplug: drain
->> per-cpu pages again during memory offline" in [1].
->>
->> David and Michal would prefer that this race was closed in a way that callers
->> of page isolation who need stronger guarantees don't need to repeatedly drain.
->> David suggested disabling pcplists usage completely during page isolation,
->> instead of repeatedly draining them.
->>
->> To achieve this without adding special cases in alloc/free fastpath, we can use
->> the same approach as boot pagesets - when pcp->high is 0, any pcplist addition
->> will be immediately flushed.
->>
->> The race can thus be closed by setting pcp->high to 0 and draining pcplists
->> once, before calling start_isolate_page_range(). The draining will serialize
->> after processes that already disabled interrupts and read the old value of
->> pcp->high in free_unref_page_commit(), and processes that have not yet disabled
->> interrupts, will observe pcp->high == 0 when they are rescheduled, and skip
->> pcplists. This guarantees no stray pages on pcplists in zones where isolation
->> happens.
->>
->> This patch thus adds zone_pcplist_disable() and zone_pcplist_enable() functions
->> that page isolation users can call before start_isolate_page_range() and after
->> unisolating (or offlining) the isolated pages. A new zone->pcplist_disabled
->> atomic variable makes sure we disable only pcplists once and don't enable
->> them prematurely in case there are multiple users in parallel.
->>
->> We however have to avoid external updates to high and batch by taking
->> pcp_batch_high_lock. To allow multiple isolations in parallel, change this lock
->> from mutex to rwsem.
+On Tue, 2020-10-06 at 10:35 +0200, Łukasz Stelmach wrote:
+> To avoid false positives in presence of SPDX-License-Identifier in
+> networking files it is required to increase the leeway for empty block
+> comment lines by one line.
 > 
-> The overall idea makes sense. I just suspect you are over overcomplicating 
-> the implementation a bit. Is there any reason that we cannot start with
-> a really dumb implementation first. The only user of this functionality
-> is the memory offlining and that is already strongly synchronized
-> (mem_hotplug_begin) so a lot of trickery can be dropped here. Should we
-> find a new user later on we can make the implementation finer grained
-> but now it will not serve any purpose. So can we simply update pcp->high
-> and drain all pcp in the given zone and wait for all remote pcp draining
-> in zone_pcplist_enable and updte revert all that in zone_pcplist_enable.
-> We can stick to the existing pcp_batch_high_lock.
+> For example, checking drivers/net/loopback.c which starts with
 > 
-> What do you think?
+>     // SPDX-License-Identifier: GPL-2.0-or-later
+>     /*
+>      * INET          An implementation of the TCP/IP protocol suite for the LINUX
 > 
+> rsults in an unnecessary warning
+> 
+>     WARNING: networking block comments don't use an empty /* line, use /* Comment...
+>     +/*
+>     + * INET                An implementation of the TCP/IP protocol suite for the LINUX
+> 
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
 
-My two cents, we might want to make use of this in some cases of
-alloc_contig_range() soon ("try hard mode"). So I'd love to see a
-synchronized mechanism. However, that can be factored out into a
-separate patch, so this patch gets significantly simpler.
+Thank Lukasz.  Andrew, can you please pick this up?
 
-
--- 
-Thanks,
-
-David / dhildenb
+> ---
+>  scripts/checkpatch.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Changes in v2:
+>   - added example warning in the commit description
+>   - added a comment in the code
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index a213cdb82ab0..3555ac812c99 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3460,7 +3460,7 @@ sub process {
+>  		if ($realfile =~ m@^(drivers/net/|net/)@ &&
+>  		    $prevrawline =~ /^\+[ \t]*\/\*[ \t]*$/ &&
+>  		    $rawline =~ /^\+[ \t]*\*/ &&
+> -		    $realline > 2) {
+> +		    $realline > 3) { # Do not warn about the initial copyright comment block after SPDX-License-Identifier
+>  			WARN("NETWORKING_BLOCK_COMMENT_STYLE",
+>  			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
+>  		}
 
