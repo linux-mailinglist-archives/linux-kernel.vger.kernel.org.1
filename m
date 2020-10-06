@@ -2,114 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1081284365
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79777284366
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgJFAet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFAes (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:34:48 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB396C0613CE;
-        Mon,  5 Oct 2020 17:34:48 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id g3so11500834qtq.10;
-        Mon, 05 Oct 2020 17:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BC+Sg9HWCWkWpUC1Bzc2G/+Jd/qZ/kelvEvSs6pcygY=;
-        b=ibuCy+u5v9dpSLfj0DVMWS2aVgXgFfYmW+QLQ5dkIRbF1qDIy6Knwo0swgB8sAwJU1
-         8v3VTWh8RAcxV3imLQ3oc09SZMBU2ooOsr634pzNjjEPweSltVZdWeZ2Q77y/8NQBTfe
-         Ypl7bQP00/I88eNQgof4aby7AuiAMutsnVyXQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BC+Sg9HWCWkWpUC1Bzc2G/+Jd/qZ/kelvEvSs6pcygY=;
-        b=cQHU98oGuKeuobVl7HiHWvGSXLt4fZX0lGbyK59Ojz7nllA7JLKzvYExG2vnwsGfB0
-         32rE8gPrYh7yc6lWRjCG4j15Ap23UWUOkW99W4HW7ao7AOLY42wfM6IAOMJ8XDrqRJUP
-         SVaI8kd6itx/2QeQIUpxINZEicC3WKf0lM7XxFF+wOfRlStT7NaNHYWNKvSv2+OOmIXV
-         bMt9ihhvPtmtRZAjQOSdFY1erW2RYhU1GNRjo7Tdk/jtwfEnOxHsKXu5ajE/96Y+W2h4
-         iJp2xneyPllrW+RkHImjk46M1DLT55BwZk8xxsExvY5+y2y8lFkH0MlWpPSwbX6xZnKM
-         pi1Q==
-X-Gm-Message-State: AOAM5312UXGcOF2jXWfJn1o88Lq4cEdntkkXXRKeu/S4/RhD+9LwACcW
-        746QPmFKeNaJKwOdkhEhkQm8G4zprVYmybLjBJo=
-X-Google-Smtp-Source: ABdhPJzgP3hgjixz3aD2KNSFT9xsH6N9pOYQ2fTX0rS0HIiHOh5cIG9MdVHCKM+lkeXQGNgCcrV+6WHi4MIcxkqgBFw=
-X-Received: by 2002:ac8:5b82:: with SMTP id a2mr2722902qta.176.1601944487836;
- Mon, 05 Oct 2020 17:34:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200929192549.501516-1-ndesaulniers@google.com>
- <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
- <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
- <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
- <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
- <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
- <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
- <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
- <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
- <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
- <20201001193937.GM28786@gate.crashing.org> <61445711991c2d6eb7c8fb05bed2814458e2593b.camel@perches.com>
-In-Reply-To: <61445711991c2d6eb7c8fb05bed2814458e2593b.camel@perches.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 6 Oct 2020 00:34:35 +0000
-Message-ID: <CACPK8XdwX=1T8WrsVYurL+JedEsb1ZTyrWtJXDLXycu-qu4UTg@mail.gmail.com>
-Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
- __section(foo) to __section("foo")
-To:     Joe Perches <joe@perches.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726753AbgJFAfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:35:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725865AbgJFAfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 20:35:40 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F7542074A;
+        Tue,  6 Oct 2020 00:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601944539;
+        bh=z2WQFganH31foJ4iNkkZl1ET6PM+YBNa0ZXpQ29c990=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gP6hRbcXwksMMPfdO5nHFfAIPOS215+uHEf5VJBxMftLDwB3ZDXjvm6esBt0GKZ/Y
+         dCtB97jae3fCDhNz1wYhhfUU+F2HYEI/d5udzJs+kL2CiN5DpYFG3ypw1gdEIC9cLW
+         +GSU4C0+YfYR32k9LfqTlQgTzXHa3/QYW5pzDKRE=
+Date:   Tue, 6 Oct 2020 09:35:36 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Julien Grall <julien@xen.org>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Alex =?UTF-8?B?QmVubsOpZQ==?= <alex.bennee@linaro.org>,
+        takahiro.akashi@linaro.org
+Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
+ correctly
+Message-Id: <20201006093536.5f7ad9e1bc3e2fea2494c229@kernel.org>
+In-Reply-To: <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
+References: <160190516028.40160.9733543991325671759.stgit@devnote2>
+        <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Oct 2020 at 20:19, Joe Perches <joe@perches.com> wrote:
->
-> On Thu, 2020-10-01 at 14:39 -0500, Segher Boessenkool wrch/ote:
-> > Hi!
-> >
-> > On Thu, Oct 01, 2020 at 12:15:39PM +0200, Miguel Ojeda wrote:
-> > > > So it looks like the best option is to exclude these
-> > > > 2 files from conversion.
-> > >
-> > > Agreed. Nevertheless, is there any reason arch/powerpc/* should not be
-> > > compiling cleanly with compiler.h? (CC'ing the rest of the PowerPC
-> > > reviewers and ML).
-> >
-> > You need to #include compiler_types.h to get this #define?
->
-> Actually no, you need to add
->
-> #include <linux/compiler_attributes.h>
->
-> to both files and then it builds properly.
->
-> Ideally though nothing should include this file directly.
+On Mon, 5 Oct 2020 19:18:47 +0100
+Julien Grall <julien@xen.org> wrote:
 
-arch/powerpc/boot is the powerpc wrapper, and it's not built with the
-same includes or flags as the rest of the kernel. It doesn't include
-any of the headers in the top level include/ directory for hysterical
-raisins.
+> Hi Masami,
+> 
+> On 05/10/2020 14:39, Masami Hiramatsu wrote:
+> > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
+> > address conversion.
+> > 
+> > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
+> > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
+> > assumes the given virtual address is in contiguous kernel memory
+> > area, it can not convert the per-cpu memory if it is allocated on
+> > vmalloc area (depends on CONFIG_SMP).
+> 
+> Are you sure about this? I have a .config with CONFIG_SMP=y where the 
+> per-cpu region for CPU0 is allocated outside of vmalloc area.
+> 
+> However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING 
+> was enabled.
 
-The straightforward fix would be to exclude this directory from your script.
+OK, I've confirmed that this depends on CONFIG_NUMA_BALANCING instead
+of CONFIG_SMP. I'll update the comment.
 
-Cheers,
+> 
+> [...]
+> 
+> > Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
+> 
+> FWIW, I think the bug was already present before 250c9af3d831.
 
-Joel
+Hm, it seems commit 9a9ab3cc00dc ("xen/arm: SMP support") has introduced
+the per-cpu code.
+
+Thank you,
+
+> 
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >   arch/arm/xen/enlighten.c |    2 +-
+> >   include/xen/arm/page.h   |    3 +++
+> >   2 files changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+> > index e93145d72c26..a6ab3689b2f4 100644
+> > --- a/arch/arm/xen/enlighten.c
+> > +++ b/arch/arm/xen/enlighten.c
+> > @@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
+> >   	pr_info("Xen: initializing cpu%d\n", cpu);
+> >   	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
+> >   
+> > -	info.mfn = virt_to_gfn(vcpup);
+> > +	info.mfn = percpu_to_gfn(vcpup);
+> >   	info.offset = xen_offset_in_page(vcpup);
+> >   
+> >   	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
+> > diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
+> > index 39df751d0dc4..ac1b65470563 100644
+> > --- a/include/xen/arm/page.h
+> > +++ b/include/xen/arm/page.h
+> > @@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
+> >   	})
+> >   #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) << XEN_PAGE_SHIFT))
+> >   
+> > +#define percpu_to_gfn(v)	\
+> > +	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
+> > +
+> >   /* Only used in PV code. But ARM guests are always HVM. */
+> >   static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
+> >   {
+> > 
+> 
+> Cheers,
+> 
+> -- 
+> Julien Grall
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
