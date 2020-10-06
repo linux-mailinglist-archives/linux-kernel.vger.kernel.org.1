@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44390284C29
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6553A284C33
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgJFNEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
+        id S1725995AbgJFNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFNEd (ORCPT
+        with ESMTP id S1725891AbgJFNFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:04:33 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A849C061755;
-        Tue,  6 Oct 2020 06:04:33 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 7ECB0299E5B
-Subject: Re: [PATCH v4 7/7] Input: Add "inhibited" property
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Barry Song <baohua@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nick Dyer <nick@shmanahar.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ferruh Yigit <fery@cypress.com>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Peter Hutterer <peter.hutterer@redhat.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        kernel@collabora.com, Patrik Fimml <patrikf@chromium.org>
-References: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
- <20200608112211.12125-1-andrzej.p@collabora.com>
- <20200608112211.12125-8-andrzej.p@collabora.com>
- <20201005181014.GL1009802@dtor-ws>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <ac4eeab7-8333-b96b-707b-eb2d6d0d8139@collabora.com>
-Date:   Tue, 6 Oct 2020 15:04:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 6 Oct 2020 09:05:52 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAD1C061755;
+        Tue,  6 Oct 2020 06:05:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5HlG0kH8z9sTK;
+        Wed,  7 Oct 2020 00:05:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601989546;
+        bh=q9mpa/0KffrcwWOYPGlh8L15Eanc/pISr+9iZYcDjTA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Z3LhaWQ63AkrZnv4Ays2nvFojIu78WkcEqwEcpcfR2TpahT2qxQhpUeye3fY6EV/W
+         osa/GG+0YVOV7nTv71lQZslfZSiQj6Ptm5zkmYzVXW0G8D0fU32eGtOhJXQCJ8x4cC
+         iW6wsPBN1sQPBlCtshTpUXjOs3jl0FAMqObGTLztYreYUUDHt0ApWTOKAxDcUeFgai
+         b/piRFkgtm508Jj4P+V+R6DUoyMr9hLRvMdJyO354YFVzzULJlmvGf37Vn68q5Vt1y
+         HvlVXnrPEHLjJ61+L03NVCKirVfH77NscHYP02QJK4C7C2iOIXsoef37YGJregrNXD
+         rfWJPGT2vmbmA==
+Date:   Wed, 7 Oct 2020 00:05:44 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the powerpc tree
+Message-ID: <20201007000544.48aabc91@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201005181014.GL1009802@dtor-ws>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/F60SFxaoty6HOU9ZG//eX4x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+--Sig_/F60SFxaoty6HOU9ZG//eX4x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-W dniu 05.10.2020 o 20:10, Dmitry Torokhov pisze:
-> Hi Andrzej,
-> 
-> On Mon, Jun 08, 2020 at 01:22:11PM +0200, Andrzej Pietrasiewicz wrote:
->> @@ -284,8 +284,11 @@ static int input_get_disposition(struct input_dev *dev,
->>   	case EV_KEY:
->>   		if (is_event_supported(code, dev->keybit, KEY_MAX)) {
->>   
->> -			/* auto-repeat bypasses state updates */
->> -			if (value == 2) {
->> +			/*
->> +			 * auto-repeat bypasses state updates but repeat
->> +			 * events are ignored if the key is not pressed
->> +			 */
->> +			if (value == 2 && test_bit(code, dev->key)) {
->>   				disposition = INPUT_PASS_TO_HANDLERS;
->>   				break;
->>   			}
-> 
-> Is this chunk really part of inhibit support? I'd think we cancel
-> autorepeat timer when we are releasing a key, no?
-> 
+Hi all,
 
-When I look at it now it seems to me the chunk might be redundant.
-But let me explain what I had in mind when adding it.
+In commit
 
-It is a matter of what we do with input events generated while a
-device is inhibited. If ->open()/->close() are not provided by the
-driver then inhibiting amounts to merely ignoring input events from
-a device while it remains active. What else can you do if the driver
-does not provide a method to prepare the device for generating events/
-to stop generating events?
+  3b6c3adbb2fa ("powerpc/perf: Exclude pmc5/6 from the irrelevant PMU group=
+ constraints")
 
-In this special case a user might trigger a repeated event while the
-device is inhibited, then the user keeps holding the key down and the
-device is uninhibited. Do we pass anything to handlers then?
+Fixes tag
 
-In my opinion we should not. Such an event is "illegal" in a sense that it
-was generated at a time when nobody wanted any events from the device.
-Hence the test to let only those auto-repeat events through for which
-a key is actually pressed.
+  Fixes: 7ffd948 ("powerpc/perf: factor out power8 pmu functions")
 
-However, what I see now is that if a device is inhibited, no key
-will ever reach neither the "1" nor "2" state because of the "if"
-in the very beginning of input_handle_event().
+has these problem(s):
 
-Regards,
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
 
-Andrzej
+Since Michael doesn't generally rebase his tree, this is more to be
+remebered for next time.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/F60SFxaoty6HOU9ZG//eX4x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98a6gACgkQAVBC80lX
+0GyhGgf/dKuWO59GS1sTLc4QQFWvP5GchwtYC0M3p6TOGGoofD6TtCvxmxR4DPG8
+DcOvgvWF5hMq4LOE0Ts2fUpGpps4HdYewvgi4SiCBr7VWYZHWNEVhSO/VQZ66gn5
+vEMVEozGw2JOwtSHvk/oNmT6sLeqpbYLzsQtdG32I5Oe+gh/odT6Eaz23T4NGW7J
+r/TINbteFZezngchveOIGyN0lb4cOuHMbu3LClivARydqzHFhftgEnh5JHhOWSAY
+ORrEHC5XkGPSv+OOTtfsWHYI6y4bjt1KkQ7vJ4IVbjxuYmQJcE7sNYy9Ku5/9kA3
+/aNNq1R8B5To65aFGwfPHxroB/uYoA==
+=oBxs
+-----END PGP SIGNATURE-----
+
+--Sig_/F60SFxaoty6HOU9ZG//eX4x--
