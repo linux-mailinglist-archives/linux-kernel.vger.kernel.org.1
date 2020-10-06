@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF6F28435C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27675284360
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726006AbgJFAcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:32:24 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:51279 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFAcY (ORCPT
+        id S1726443AbgJFAeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgJFAeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:32:24 -0400
-X-Originating-IP: 50.39.163.217
-Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id EFCD620006;
-        Tue,  6 Oct 2020 00:32:18 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 17:32:16 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201006003216.GB6553@localhost>
-References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
- <20201005081454.GA493107@localhost>
- <20201005173639.GA2311765@magnolia>
+        Mon, 5 Oct 2020 20:34:04 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412DDC0613CE;
+        Mon,  5 Oct 2020 17:34:04 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id nl2so695950pjb.1;
+        Mon, 05 Oct 2020 17:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=IXQFOUHrH8bt86SLgjOWRJ9SpW6/8NcDU5WZWejyEGs=;
+        b=hKjsXNmSEgGgBUoiWA5tATc5pz3P+Ovdzi9HDFr3sc0TA8enS3QcMiPxn/v+TUayf0
+         OmpzJm6VdjN5mlJ1gU9VGj/WqZGlYW9ebrm/GsP4Ck3vQJOhZLBpSF2FZIQ5BC9QRrSz
+         FKcZ+spZs4tA6iPPafzLANU2JvQweRRfFMDLcVN/VuucH3T4J24EzRubHw39CbRLe6Ce
+         cazuuPmfbIB/IkPTqkNjTeVe753efXzo+njkx7o0uHSvOmLPqbamsAGHBz4JVHGemTTe
+         w+4zx7sgTaHNQuYMofsjiN2ftVAI38PxYHVmVDTWZ3l47HjffULLlFNB57QfGI7tGEBp
+         FY3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IXQFOUHrH8bt86SLgjOWRJ9SpW6/8NcDU5WZWejyEGs=;
+        b=huMqdWxRoUG+mVhLJUfRh7ygtXT/Wkon3NFZUT3ayBrB/sYbzEWGMdy/iHlr1Z1DoH
+         JrOMQyX8oAFCGPbixmBstev0cFZzoS36buu5PIHBY1KloVoeV/fE4IQvfW11cuBVZWcG
+         OFz19E4EH1VLCcUZ5yh5UbR4lNKRDBW2j5+kCJKhX0aej2EjDRV8R/HxoRZ58tk9A66H
+         a1DIhyD1slvSl48gVecGchJcDTlIc8/mbaBEu9nDXevdutqwmWMIdi5VAWz4VFFx4DM0
+         Jhd5kYuOJBAa+5YuwIg9As4oBr3lsLTMPtdOzXoHr2tNN6WK6NQnxDQYz8DAp46UvDiM
+         nCiw==
+X-Gm-Message-State: AOAM533Biw9Lxu9L+qotWmynA9z2dxZEV7q7ymUUWObqXkyVU7iDTKxb
+        MZniKK2kQuqEbpnF20qRSlubdHMXJmQ=
+X-Google-Smtp-Source: ABdhPJx60QfTP8SkwhetSwFfjmOhuCp2Wgxwfoy0efqga5UqMXt7YfzCnEtpb1OAS6o5ZjHkUBbCuA==
+X-Received: by 2002:a17:90a:bf03:: with SMTP id c3mr1950157pjs.65.1601944443594;
+        Mon, 05 Oct 2020 17:34:03 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id v9sm763862pjh.2.2020.10.05.17.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 17:34:02 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 17:34:00 -0700
+From:   dmitry.torokhov@gmail.com
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: adc: exynos: do not rely on 'users' counter in ISR
+Message-ID: <20201006003400.GN1009802@dtor-ws>
+References: <20201005052420.GA3262631@dtor-ws>
+ <20201005110908.GA3243@qmqm.qmqm.pl>
+ <20201005173636.GK1009802@dtor-ws>
+ <20201005190010.GA29936@qmqm.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005173639.GA2311765@magnolia>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201005190010.GA29936@qmqm.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 10:36:39AM -0700, Darrick J. Wong wrote:
-> On Mon, Oct 05, 2020 at 01:14:54AM -0700, Josh Triplett wrote:
-> > Ran into an ext4 regression when testing upgrades to 5.9-rc kernels:
+On Mon, Oct 05, 2020 at 09:00:10PM +0200, Michał Mirosław wrote:
+> On Mon, Oct 05, 2020 at 10:36:36AM -0700, dmitry.torokhov@gmail.com wrote:
+> > Hi Michał,
 > > 
-> > Commit e7bfb5c9bb3d ("ext4: handle add_system_zone() failure in
-> > ext4_setup_system_zone()") breaks mounting of read-only ext4 filesystems
-> > with intentionally overlapping bitmap blocks.
-> > 
-> > On an always-read-only filesystem explicitly marked with
-> > EXT4_FEATURE_RO_COMPAT_SHARED_BLOCKS, prior to that commit, it's safe to
-> > point all the block and inode bitmaps to a single block
+> > On Mon, Oct 05, 2020 at 01:09:08PM +0200, Michał Mirosław wrote:
+> > > and breaking the loop will desync touch
+> > > state (I would guess this would be noticable by next user).
+> > Upon next open driver will service the interrupt and provide new set of
+> > touch coordinates. Userspace is supposed to query current state of
+> > device when opening it before starting processing events. Or you are
+> > concerned about some other state?
 > 
-> LOL, WHAT?
-> 
-> I didn't know shared blocks applied to fs metadata.  I thought that
-> "shared" only applied to file extent maps being able to share physical
-> blocks.
+> From the code I would expect that there is a slight window, wher when the
+> user releases the touch between close() and open(), the client that open()s
+> will see a 'pressed' state until the ISR runs again (probably immediately
+> because of pending interrupt). OTOH, maybe the app should be prepared
+> for that anyway?
 
-The flag isn't documented very well yet, but since it specifically
-forces the filesystem to always be mounted read-only, the bitmaps really
-shouldn't matter at all. (In an ideal world, a permanently read-only
-filesystem should be able to omit all the bitmaps entirely. Pointing
-them all to a single disk block is the next best thing.)
+I think users should be prepared for it. There could be many users, so
+anyone opening interface device (evdev or similar) can not expect that
+the hardware device is in a quiesce state; it could just happen that
+finger was on the surface and will be released as someone is opening the
+device anyway.
 
-> Could /somebody/ please document the ondisk format changes that are
-> associated with this feature?
+Thanks.
 
-I pretty much had to sort it out by looking at a combination of
-e2fsprogs and the kernel, and a lot of experimentation, until I ended up
-with something that the kernel was completely happy with without a
-single complaint.
-
-I'd be happy to write up a summary of the format.
-
-I'd still really like to see this patch applied for 5.9, to avoid having
-filesystems that an old kernel can mount but a new one can't. This still
-seems like a regression to me.
-
-> > of all 1s,
-> > because a read-only filesystem will never allocate or free any blocks or
-> > inodes.
-> 
-> All 1s?  So the inode bitmap says that every inode table slot is in use,
-> even if the inode record itself says it isn't?
-
-Yes.
-
-> What does e2fsck -n
-> think about that kind of metadata inconsistency?
-
-If you set up the rest of the metadata consistently with it (for
-instance, 0 free blocks and 0 free inodes), you'll only get a single
-complaint, from the e2fsck equivalent of block_validity. See
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=956509 for details on
-that; with that fixed, e2fsck wouldn't complain at all. The kernel,
-prior to 5.9-rc2, doesn't have a single complaint, whether at mount,
-unmount, or read of every file and directory on the filesystem.
-
-The errors you got in your e2fsck run came because you just overrode the
-bitmaps, but didn't make the rest of the metadata consistent with that.
-I can provide a sample filesystem if that would help.
-
-- Josh
+-- 
+Dmitry
