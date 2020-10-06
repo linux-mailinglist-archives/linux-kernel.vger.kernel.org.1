@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB10284BC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20F1284BC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgJFMkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:40:40 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:65069 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgJFMkj (ORCPT
+        id S1726621AbgJFMlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:41:10 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:47739 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbgJFMlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:40:39 -0400
+        Tue, 6 Oct 2020 08:41:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1601988037; x=1633524037;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gieoERz6OSpe9+PGX9t2VgspjS9k3ZJTD8jbul5Junc=;
-  b=KC79sn3kdl0/YR3eJnl7NsJJlu0A3lzsAsn/HoLBW2j2gLpRp2IYQ8bm
-   NgpqRUE9kPXUwohdwDNhvzymDXuqZhyQzDpHfv1ryZa+T7MZN3bOvExbl
-   KhEaPGNjaT4k81nU9Z888hGG/sVFklPxuBpS0sFRcLiN3aZ21trp6CSL2
-   o=;
+  t=1601988067; x=1633524067;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=uW2wVCE0fdVcJc5KeJb9HPd/tw2Lj3G+kCxi3x3dF+c=;
+  b=AtN0oKyOj2QMTQcBpo3BEa4tR/Cg8lpVCXEDTTp4/mi/jTb8AiiJIZev
+   g7FTczEA/6nWUampM9/QR5gcdRfWEjeOeKtrBDsf+0tPT59u96YLriEtP
+   sxXX0Di8tPwnCz54qzntJAF+/bx7QW43nQHWcT+HVhwK5XVJdbOGsTEqd
+   s=;
 X-IronPort-AV: E=Sophos;i="5.77,343,1596499200"; 
-   d="scan'208";a="58084298"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 06 Oct 2020 12:40:32 +0000
+   d="scan'208";a="80729222"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 06 Oct 2020 12:41:02 +0000
 Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 0507CA1D98;
-        Tue,  6 Oct 2020 12:40:29 +0000 (UTC)
+        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 7EC9DA241F;
+        Tue,  6 Oct 2020 12:40:50 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
  EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 6 Oct 2020 12:40:11 +0000
+ id 15.0.1497.2; Tue, 6 Oct 2020 12:40:32 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,13 +53,14 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v15 0/8] Implement Data Access Monitoring-based Memory Operation Schemes
-Date:   Tue, 6 Oct 2020 14:39:23 +0200
-Message-ID: <20201006123931.5847-1-sjpark@amazon.com>
+Subject: [RFC v15 1/8] mm/damon/core: Account age of target regions
+Date:   Tue, 6 Oct 2020 14:39:24 +0200
+Message-ID: <20201006123931.5847-2-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201006123931.5847-1-sjpark@amazon.com>
+References: <20201006123931.5847-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.43.161.237]
 X-ClientProxiedBy: EX13D18UWA002.ant.amazon.com (10.43.160.199) To
  EX13D31EUA004.ant.amazon.com (10.43.165.161)
@@ -69,186 +70,113 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-Changes from Previous Version
-=============================
+DAMON can be used for data access pattern aware memory management
+optimizations.  For that, users should run DAMON, read the monitoring
+results, analyze it, plan a new memory management scheme, and apply the
+new scheme by themselves.  It would not be too hard, but still require
+some level of effort.  For complicated cases, this effort is inevitable.
 
-- s/snprintf()/scnprintf() (Marco Elver)
-- Place three parts of DAMON (core, primitives, and dbgfs) in different files
+That said, in many cases, users would simply want to apply an actions to
+a memory region of a specific size having a specific access frequency
+for a specific time.  For example, "page out a memory region larger than
+100 MiB but having a low access frequency more than 10 minutes", or "Use
+THP for a memory region larger than 2 MiB having a high access frequency
+for more than 2 seconds".
 
-Introduction
-============
+For such optimizations, users will need to first account the age of each
+region themselves.  To reduce such efforts, this commit implements a
+simple age account of each region in DAMON.  For each aggregation step,
+DAMON compares the access frequency with that from last aggregation and
+reset the age of the region if the change is significant.  Else, the age
+is incremented.  Also, in case of the merge of regions, the region
+size-weighted average of the ages is set as the age of merged new
+region.
 
-DAMON[1] can be used as a primitive for data access aware memory management
-optimizations.  For that, users who want such optimizations should run DAMON,
-read the monitoring results, analyze it, plan a new memory management scheme,
-and apply the new scheme by themselves.  Such efforts will be inevitable for
-some complicated optimizations.
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ include/linux/damon.h | 10 ++++++++++
+ mm/damon/core.c       | 13 +++++++++++++
+ 2 files changed, 23 insertions(+)
 
-However, in many other cases, the users would simply want the system to apply a
-memory management action to a memory region of a specific size having a
-specific access frequency for a specific time.  For example, "page out a memory
-region larger than 100 MiB keeping only rare accesses more than 2 minutes", or
-"Do not use THP for a memory region larger than 2 MiB rarely accessed for more
-than 1 seconds".
-
-This RFC patchset makes DAMON to handle such data access monitoring-based
-Operation Schemes (DAMOS).  With this change, users can do the data access
-aware optimizations by simply specifying their schemes.
-
-[1] https://lore.kernel.org/linux-doc/20201005105522.23841-1-sjpark@amazon.com/
-
-Evaluations
-===========
-
-We evaluated DAMON's overhead, monitoring quality and usefulness using 25
-realistic workloads on my QEMU/KVM based virtual machine running a kernel that
-v12 of this patchset is applied.
-
-An experimental DAMON-based operation scheme for THP, ‘ethp’, removes 31.29% of
-THP memory overheads while preserving 60.64% of THP speedup. Another
-experimental DAMON-based ‘proactive reclamation’ implementation, ‘prcl’,
-reduces 87.95% of residential sets and 29.52% of system memory footprint while
-incurring only 2.15% runtime overhead in the best case (parsec3/freqmine).
-
-NOTE that the experimentail THP optimization and proactive reclamation are not
-for production, just only for proof of concepts.
-
-Please refer to the official document[1] or "Documentation/admin-guide/mm: Add
-a document for DAMON" patch in the latest DAMON patchset for detailed
-evaluation setup and results.
-
-[1] https://damonitor.github.io/doc/html/latest-damos
-
-More Information
-================
-
-We prepared a showcase web site[1] that you can get more information.  There
-are
-
-- the official documentations[2],
-- the heatmap format dynamic access pattern of various realistic workloads for
-  heap area[3], mmap()-ed area[4], and stack[5] area,
-- the dynamic working set size distribution[6] and chronological working set
-  size changes[7], and
-- the latest performance test results[8].
-
-[1] https://damonitor.github.io/_index
-[2] https://damonitor.github.io/doc/html/latest-damos
-[3] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.0.html
-[4] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.1.html
-[5] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.2.html
-[6] https://damonitor.github.io/test/result/visual/latest/rec.wss_sz.html
-[7] https://damonitor.github.io/test/result/visual/latest/rec.wss_time.html
-[8] https://damonitor.github.io/test/result/perf/latest/html/index.html
-
-Baseline and Complete Git Tree
-==============================
-
-The patches are based on the v5.8 plus v21 DAMON patchset[1] and Minchan's
-``do_madvise()`` patch[2], which retrieved from the -next tree.  You can also
-clone the complete git tree:
-
-    $ git clone git://github.com/sjp38/linux -b damos/rfc/v15
-
-The web is also available:
-https://github.com/sjp38/linux/releases/tag/damos/rfc/v15
-
-There are a couple of trees for entire DAMON patchset series that future
-features are included.  The first one[3] contains the changes for latest
-release, while the other one[4] contains the changes for next release.
-
-[1] https://lore.kernel.org/linux-doc/20201005105522.23841-1-sjpark@amazon.com/
-[2] https://lore.kernel.org/linux-mm/20200302193630.68771-2-minchan@kernel.org/
-[3] https://github.com/sjp38/linux/tree/damon/master
-[4] https://github.com/sjp38/linux/tree/damon/next
-
-Sequence Of Patches
-===================
-
-The 1st patch accounts age of each region.  The 2nd patch implements the
-handling of the schemes in DAMON core.  The 3rd patch makes 'damon-primitives',
-the default primitives for the virtual address spaces monitoring to support the
-schemes.  From this point, the kernel space users can use DAMOS.  The 4th patch
-implements a debugfs interface for the privileged people and user programs.
-The 5th patch implements schemes statistics feature for easier tuning of the
-schemes and runtime access pattern analysis.  The 6th patche adds selftests for
-these changes, and the 7th patch adds human friendly schemes support to the
-user space tool for DAMON.  Finally, the 8th patch documents this new feature.
-
-Patch History
-=============
-
-Changes from RFC v14
-(https://lore.kernel.org/linux-mm/20200804142430.15384-1-sjpark@amazon.com/)
-- s/snprintf()/scnprintf() (Marco Elver)
-- Place three parts of DAMON (core, primitives, and dbgfs) in different files
-
-Changes from RFC v13
-(https://lore.kernel.org/linux-mm/20200707093805.4775-1-sjpark@amazon.com/)
-- Drop loadable module support
-- Use dedicated valid action checker function
-- Rebase on v5.8 plus v19 DAMON
-
-Changes from RFC v12
-(https://lore.kernel.org/linux-mm/20200616073828.16509-1-sjpark@amazon.com/)
- - Wordsmith the document, comment, commit messages
- - Support a scheme of max access count 0
- - Use 'unsigned long' for (min|max)_sz_region
-
-Changes from RFC v11
-(https://lore.kernel.org/linux-mm/20200609065320.12941-1-sjpark@amazon.com/)
- - Refine the commit messages (David Hildenbrand)
- - Clean up debugfs code
-
-Changes from RFC v10
-(https://lore.kernel.org/linux-mm/20200603071138.8152-1-sjpark@amazon.com/)
- - Fix the wrong error handling for schemes debugfs file
- - Handle the schemes stats from the user space tool
- - Remove the schemes implementation plan from the document
-
-Changes from RFC v9
-(https://lore.kernel.org/linux-mm/20200526075702.27339-1-sjpark@amazon.com/)
- - Rebase on v5.7
- - Fix wrong comments and documents for schemes apply conditions
-
-Changes from RFC v8
-(https://lore.kernel.org/linux-mm/20200512115343.27699-1-sjpark@amazon.com/)
- - Rewrite the document (Stefan Nuernberger)
- - Make 'damon_for_each_*' argument order consistent (Leonard Foerster)
- - Implement statistics for schemes
- - Avoid races between debugfs readers and writers
- - Reset age for only significant access frequency changes
- - Add kernel-doc comments in damon.h
-
-Please refer to RFC v8 for previous history
-
-SeongJae Park (8):
-  mm/damon/core: Account age of target regions
-  mm/damon/core: Implement DAMON-based Operation Schemes (DAMOS)
-  mm/damon/primitives: Support DAMON-based Operation Schemes
-  mm/damon/dbgfs: Support DAMON-based Operation Schemes
-  mm/damon/schemes: Implement statistics feature
-  selftests/damon: Add 'schemes' debugfs tests
-  tools/damon: Support more human friendly 'schemes' control
-  Docs/admin-guide/mm/damon: Document DAMON-based Operation Schemes
-
- Documentation/admin-guide/mm/damon/guide.rst  |  41 ++++-
- Documentation/admin-guide/mm/damon/start.rst  |  11 ++
- Documentation/admin-guide/mm/damon/usage.rst  | 109 ++++++++++-
- Documentation/vm/damon/index.rst              |   1 -
- include/linux/damon.h                         |  90 +++++++++-
- mm/damon/core.c                               | 127 ++++++++++++-
- mm/damon/dbgfs.c                              | 170 +++++++++++++++++-
- mm/damon/primitives.c                         |  64 +++++++
- tools/damon/_convert_damos.py                 | 141 +++++++++++++++
- tools/damon/_damon.py                         |  28 ++-
- tools/damon/damo                              |   7 +
- tools/damon/schemes.py                        | 110 ++++++++++++
- .../testing/selftests/damon/debugfs_attrs.sh  |  29 +++
- 13 files changed, 908 insertions(+), 20 deletions(-)
- create mode 100755 tools/damon/_convert_damos.py
- create mode 100644 tools/damon/schemes.py
-
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index d675ea908a02..696f25e25d95 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -28,12 +28,22 @@ struct damon_addr_range {
+  * @sampling_addr:	Address of the sample for the next access check.
+  * @nr_accesses:	Access frequency of this region.
+  * @list:		List head for siblings.
++ * @age:		Age of this region.
++ * @last_nr_accesses:	Internal value for age calculation.
++ *
++ * @age is initially zero, increased for each aggregation interval, and reset
++ * to zero again if the access frequency is significantly changed.  If two
++ * regions are merged into a new region, both @nr_accesses and @age of the new
++ * region are set as region size-weighted average of those of the two regions.
+  */
+ struct damon_region {
+ 	struct damon_addr_range ar;
+ 	unsigned long sampling_addr;
+ 	unsigned int nr_accesses;
+ 	struct list_head list;
++
++	unsigned int age;
++	unsigned int last_nr_accesses;
+ };
+ 
+ /**
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 7c547e1022af..cf3a83509bfc 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -51,6 +51,9 @@ struct damon_region *damon_new_region(unsigned long start, unsigned long end)
+ 	region->nr_accesses = 0;
+ 	INIT_LIST_HEAD(&region->list);
+ 
++	region->age = 0;
++	region->last_nr_accesses = 0;
++
+ 	return region;
+ }
+ 
+@@ -443,6 +446,7 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 
+ 		damon_for_each_region(r, t) {
+ 			trace_damon_aggregated(t, r, damon_nr_regions(t));
++			r->last_nr_accesses = r->nr_accesses;
+ 			r->nr_accesses = 0;
+ 		}
+ 	}
+@@ -460,6 +464,7 @@ static void damon_merge_two_regions(struct damon_region *l,
+ 
+ 	l->nr_accesses = (l->nr_accesses * sz_l + r->nr_accesses * sz_r) /
+ 			(sz_l + sz_r);
++	l->age = (l->age * sz_l + r->age * sz_r) / (sz_l + sz_r);
+ 	l->ar.end = r->ar.end;
+ 	damon_destroy_region(r);
+ }
+@@ -479,6 +484,11 @@ static void damon_merge_regions_of(struct damon_target *t, unsigned int thres,
+ 	struct damon_region *r, *prev = NULL, *next;
+ 
+ 	damon_for_each_region_safe(r, next, t) {
++		if (diff_of(r->nr_accesses, r->last_nr_accesses) > thres)
++			r->age = 0;
++		else
++			r->age++;
++
+ 		if (prev && prev->ar.end == r->ar.start &&
+ 		    diff_of(prev->nr_accesses, r->nr_accesses) <= thres &&
+ 		    sz_damon_region(prev) + sz_damon_region(r) <= sz_limit)
+@@ -522,6 +532,9 @@ static void damon_split_region_at(struct damon_ctx *ctx,
+ 	new = damon_new_region(r->ar.start + sz_r, r->ar.end);
+ 	r->ar.end = new->ar.start;
+ 
++	new->age = r->age;
++	new->last_nr_accesses = r->last_nr_accesses;
++
+ 	damon_insert_region(new, r, damon_next_region(r));
+ }
+ 
 -- 
 2.17.1
 
