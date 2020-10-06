@@ -2,109 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC89128442A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FE3284430
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgJFC7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 22:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJFC7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 22:59:38 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F84C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 19:59:38 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id i3so901564pjz.4
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 19:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fiV5Hzg7ySfcqy2a5Gsazf3x115DDvbmxR7q2HrgSkI=;
-        b=O7s8q01hNdS8xPOYGpuGSbqcdPqPmFgIQrR+3UGUm8X7Td5CxH4u6VqbDj2x4FoK/Z
-         2dvl/B8/E7iZvV9lvmGP3LYl7cFjEhnp/6ICKyWhd1N1kCxT6Bp3MzmPcuVt6Gtdok9Y
-         RNOgJ/f0GspAw8zEUAN+vBos/zK5W0RLSiIesE2v9lSeSLsF3pKLEoSnpfN5eekP1s1n
-         S4McZXZnxXbnuOLzSifpKjD6qNllQ1ec34tlmord9dHh5irbpMkLw8WQKzTWMDfEzjUZ
-         kn1m7ERwgPMtCDMqyY0hEIRp7Q+sY1ujjW7VYwWKrcVcl8plP+LQGCfUuRohvmehf/Rd
-         iTGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fiV5Hzg7ySfcqy2a5Gsazf3x115DDvbmxR7q2HrgSkI=;
-        b=Kyu6TiY2Ss7F6X7RWf1fmssayrkiWOscnjeH9/MQoTt2pTmo/xrJFtI7RXtJSRfnzg
-         bDpajxvxErpTp9+iGuFAIRgfR22fUBJv72km/Ydw/4FvXb+cwbOxgIUgvhfPZxTp56ja
-         D7bZHyGZCJSp4iu2dgcnp+jfBlkz4FA1wyNzm0Ua4thjYVNZ8+ulGI5ucbQXANgkgrta
-         Ty4nCSZCmlZmCQNJ5YoLAZ0pD216oPiS094iRbLcir0E6Ct8vUSW7xY+5bl3YQwfAJ1U
-         djrUacjj2VNr0eFFa4J1RWg/jMMXB3pdiLdlzsv1/iEfyIekyuu4P307l4cVqFdeWgTe
-         Hjbg==
-X-Gm-Message-State: AOAM533sntrrrRX+Il60CCDRJvaYpF/ibYFjWP0hQc/MWSpWeUc74Jrm
-        yTQQ+Zna3UAesI9sj+CIHzQ=
-X-Google-Smtp-Source: ABdhPJwyTfIKhP32gbX9FtTKV5XJT+ZUQL2ymj4M0VrvvUC01Z/rw9RJ0tWWQ8r1AP6ypU5vXkhMZA==
-X-Received: by 2002:a17:90b:4398:: with SMTP id in24mr2198671pjb.236.1601953178033;
-        Mon, 05 Oct 2020 19:59:38 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q16sm1343999pfu.206.2020.10.05.19.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 19:59:37 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 11:59:35 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Shreyas Joshi <shreyas.joshi@biamp.com>,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-Message-ID: <20201006025935.GA597@jagdpanzerIV.localdomain>
-References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
- <20200522065306.83-1-shreyas.joshi@biamp.com>
- <20200522100046.GH3464@linux-b0ei>
+        id S1726760AbgJFDLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:11:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:36424 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725909AbgJFDLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 23:11:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F50C113E;
+        Mon,  5 Oct 2020 20:11:42 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B6773F71F;
+        Mon,  5 Oct 2020 20:11:39 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH V4 3/3] arm64/mm/hotplug: Ensure early memory sections are
+ all online
+To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+References: <1601387687-6077-1-git-send-email-anshuman.khandual@arm.com>
+ <1601387687-6077-4-git-send-email-anshuman.khandual@arm.com>
+ <471fed64-0f61-9c16-3943-2bb8f77ee810@redhat.com>
+Message-ID: <8489f045-e94c-a3cc-3fc3-a7d92d19bca6@arm.com>
+Date:   Tue, 6 Oct 2020 08:41:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200522100046.GH3464@linux-b0ei>
+In-Reply-To: <471fed64-0f61-9c16-3943-2bb8f77ee810@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc-ing Guenter,
 
-On (20/05/22 12:00), Petr Mladek wrote:
-> On Fri 2020-05-22 16:53:06, Shreyas Joshi wrote:
-> > If uboot passes a blank string to console_setup then it results in a trashed memory.
-> > Ultimately, the kernel crashes during freeing up the memory. This fix checks if there
-> > is a blank parameter being passed to console_setup from uboot.
-> > In case it detects that the console parameter is blank then
-> > it doesn't setup the serial device and it gracefully exits.
-> > 
-> > Signed-off-by: Shreyas Joshi <shreyas.joshi@biamp.com>
-> > ---
-> >  V1:
-> >     Fixed console_loglevel to default as per the review comments
-> > 
-> >  kernel/printk/printk.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> > index ad4606234545..e9ad730991e0 100644
-> > --- a/kernel/printk/printk.c
-> > +++ b/kernel/printk/printk.c
-> > @@ -2165,7 +2165,10 @@ static int __init console_setup(char *str)
-> >  	char buf[sizeof(console_cmdline[0].name) + 4]; /* 4 for "ttyS" */
-> >  	char *s, *options, *brl_options = NULL;
-> >  	int idx;
-> > -
-> > +	if (str[0] == 0) {
-> > +		return 1;
-> > +	}
-> >  	if (_braille_console_setup(&str, &brl_options))
-> >  		return 1;
+
+On 10/01/2020 06:23 AM, Gavin Shan wrote:
+> Hi Anshuman,
 > 
-> I have fixed formatting and pushed it into printk/linux.git,
-> branch for-5.8.
+> On 9/29/20 11:54 PM, Anshuman Khandual wrote:
+>> This adds a validation function that scans the entire boot memory and makes
+>> sure that all early memory sections are online. This check is essential for
+>> the memory notifier to work properly, as it cannot prevent any boot memory
+>> from offlining, if all sections are not online to begin with. The notifier
+>> registration is skipped, if this validation does not go through. Although
+>> the boot section scanning is selectively enabled with DEBUG_VM.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: Steve Capper <steve.capper@arm.com>
+>> Cc: Mark Brown <broonie@kernel.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>   arch/arm64/mm/mmu.c | 59 +++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 59 insertions(+)
+> 
+> I don't understand why this is necessary. The core already ensure the
+> corresponding section is online when trying to offline it. It's guranteed
+> that section is online when the notifier is triggered. I'm not sure if
+> there is anything I missed?
 
-Petr, this patch's causing regressions for us. We use blank console= boot
-param to bypass dts. It appears that it'd be better to revert the change.
+Current memory notifier blocks any boot memory hot removal attempt via
+blocking its offlining step itself. So if some sections in boot memory
+are not online (because of a bug or change in init sequence) by the
+time memory block device can be removed, the notifier loses the ability
+to prevent its removal. This validation here, ensures that entire boot
+memory is in online state, otherwise call out sections that are not,
+with an warning that those boot memory can be removed.  
 
-	-ss
+>  
+> 
+>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>> index 90a30f5ebfc0..b67a657ea1ad 100644
+>> --- a/arch/arm64/mm/mmu.c
+>> +++ b/arch/arm64/mm/mmu.c
+>> @@ -1522,6 +1522,62 @@ static struct notifier_block prevent_bootmem_remove_nb = {
+>>       .notifier_call = prevent_bootmem_remove_notifier,
+>>   };
+>>   +/*
+>> + * This ensures that boot memory sections on the plaltform are online
+
+Will fix.
+
+>                                                     ^^^^^^^^^
+>> + * during early boot. They could not be prevented from being offlined
+>> + * if for some reason they are not brought online to begin with. This
+>> + * help validate the basic assumption on which the above memory event
+>> + * notifier works to prevent boot memory offlining and it's possible
+>> + * removal.
+>> + */
+>> +static bool validate_bootmem_online(void)
+>> +{
+>> +    struct memblock_region *mblk;
+>> +    struct mem_section *ms;
+>> +    unsigned long pfn, end_pfn, start, end;
+>> +    bool all_online = true;
+>> +
+>> +    /*
+>> +     * Scanning across all memblock might be expensive
+>> +     * on some big memory systems. Hence enable this
+>> +     * validation only with DEBUG_VM.
+>> +     */
+>> +    if (!IS_ENABLED(CONFIG_DEBUG_VM))
+>> +        return all_online;
+>> +
+>> +    for_each_memblock(memory, mblk) {
+>> +        pfn = PHYS_PFN(mblk->base);
+>> +        end_pfn = PHYS_PFN(mblk->base + mblk->size);
+>> +
+> 
+> It's not a good idea to access @mblk->{base, size}. There are two
+> accessors: memblock_region_memory_{base, end}_pfn().
+
+Sure, will replace.
+
+> 
+>> +        for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
+>> +            ms = __pfn_to_section(pfn);
+>> +
+>> +            /*
+>> +             * All memory ranges in the system at this point
+>> +             * should have been marked early sections.
+>> +             */
+>> +            WARN_ON(!early_section(ms));
+>> +
+>> +            /*
+>> +             * Memory notifier mechanism here to prevent boot
+>> +             * memory offlining depends on the fact that each
+>> +             * early section memory on the system is intially
+>> +             * online. Otherwise a given memory section which
+>> +             * is already offline will be overlooked and can
+>> +             * be removed completely. Call out such sections.
+>> +             */
+> 
+> s/intially/initially
+
+Will change.
+
+> 
+>> +            if (!online_section(ms)) {
+>> +                start = PFN_PHYS(pfn);
+>> +                end = start + (1UL << PA_SECTION_SHIFT);
+>> +                pr_err("Memory range [%lx %lx] is offline\n", start, end);
+>> +                pr_err("Memory range [%lx %lx] can be removed\n", start, end);
+>> +                all_online = false;
+> 
+> These two error messages can be combined:
+> 
+>     pr_err("Memory range [%lx %lx] not online, can't be offlined\n",
+>            start, end);
+
+Will change but it is actually s/can't be offlined/can be removed/ instead.
+
+> 
+> I think you need to return @all_online immediately, without
+> checking if the subsequent sections are online or not? :)
+
+Thinking about this again. It might be better if the notifier registration
+does not depend on return value from validate_bootmem_online(). Instead it
+should proceed either way but after calling out all boot memory sections
+that are not online. In that case notifier will atleast prevent removal of
+some parts of boot memory which are online.
