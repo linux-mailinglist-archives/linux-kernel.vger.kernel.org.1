@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B575C2845DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893782845D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgJFGOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:14:14 -0400
-Received: from pb-smtp2.pobox.com ([64.147.108.71]:54676 "EHLO
-        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgJFGOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:14:14 -0400
-X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 02:14:12 EDT
-Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id 14A8B7EAEC;
-        Tue,  6 Oct 2020 02:08:37 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to:cc
-        :subject:references:date:in-reply-to:message-id:mime-version
-        :content-type:content-transfer-encoding; s=sasl; bh=JosSPNpjBWcb
-        KqfS+M6QynL4m+Y=; b=SRy5Ye8EoS2+BrD0ctceAn+/2pUuV+qCkn6l5/RRuKo1
-        7HpXNlsvzUmrCxtnp0gUMLeSPANB/xFQDWhUsldTY1Nh3iV7sSxG7Ku3BKmnMnWq
-        8TMYPxnYG1yOujKWBxaDiIEcXPdoyLzIg9RMAaTPFWr6zYi7rWI0WMv4HUzfkLM=
-DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:cc
-        :subject:references:date:in-reply-to:message-id:mime-version
-        :content-type:content-transfer-encoding; q=dns; s=sasl; b=kHo57j
-        rnA8Tk65fVXe5JMGpHEHwz15lHqH9C5VaB0iu/PPHXKR4J1Rp8LjlXGYFxpBpMdQ
-        RVGG+z/lSaDTPfNfw7hFSbIKcwGZdqhAqPHeR2vpuKrSYnUX7Jj5WnFjz5gUga0m
-        0jlym+OxLhjuwIZfkuhPa89Ur7BWiTeijRbBc=
-Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id 0D4157EAEA;
-        Tue,  6 Oct 2020 02:08:37 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-Received: from pobox.com (unknown [34.74.119.39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726896AbgJFGLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:11:42 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43529 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726022AbgJFGLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:11:42 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 885FB7EAE8;
-        Tue,  6 Oct 2020 02:08:36 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-From:   Junio C Hamano <gitster@pobox.com>
-To:     Martin =?utf-8?Q?=C3=85gren?= <martin.agren@gmail.com>
-Cc:     Git Mailing List <git@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-Subject: Re: [ANNOUNCE] Git v2.29.0-rc0
-References: <xmqqa6x070tn.fsf@gitster.c.googlers.com>
-        <CAN0heSrKgNSHKDL07-BWrbF9n6fyWUZVDykdHPCD6CfwgV8QNA@mail.gmail.com>
-Date:   Mon, 05 Oct 2020 23:08:30 -0700
-In-Reply-To: <CAN0heSrKgNSHKDL07-BWrbF9n6fyWUZVDykdHPCD6CfwgV8QNA@mail.gmail.com>
-        ("Martin =?utf-8?Q?=C3=85gren=22's?= message of "Tue, 6 Oct 2020 05:57:02
- +0200")
-Message-ID: <xmqqy2kj6g4h.fsf@gitster.c.googlers.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C56YN3CPLz9s1t;
+        Tue,  6 Oct 2020 17:11:36 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601964700;
+        bh=gqI9AbvxJewhMt/RdLLUY9yfsX8SKHVZlUQ9AI29Yp0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=s0AFhlDWLEHzXB/1hF9CmuuQZ4962UbrIHn3TmLbiS76zDIP/+pGv1LiHHHF7q1Gx
+         dEWeEvnsQ3P8lhnTUTMn7xPD1rTlml0X1Lgl4JdSWCHY10Qs+YX1mWWbv7ONOqNAiK
+         cjGy/O/pfshEMm2B+vz7gUFo3dvXv/gfNOxHLf8rVjNe4Q6eSfPrFPQekNKMMjIche
+         kXZX0zPuB7mrAH2VdsPDmWtRk+L1f1bDQwpX87e23M9q3d6rTzjAGuXzShycz7sNg3
+         QOCLpPB8cdTE62nU7GrtkO2ihDdnUoZ3I/hf6wxB28MN12UOqvfP4TO4B7XuPMTaS7
+         aJ7+3BHTU3IKw==
+Date:   Tue, 6 Oct 2020 17:11:35 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tip tree with the dma-mapping tree
+Message-ID: <20201006171135.3cabacbf@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-X-Pobox-Relay-ID: 5F0A4E96-079A-11EB-8A2E-74DE23BA3BAF-77302942!pb-smtp2.pobox.com
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/7WJDCTZ_7XC5/kyfbyjq9YU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Martin =C3=85gren <martin.agren@gmail.com> writes:
+--Sig_/7WJDCTZ_7XC5/kyfbyjq9YU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Minor comments follow.
-> ...
-> s/used // (without 'g' flag!)
+Hi all,
 
+Today's linux-next merge of the tip tree got a conflict in:
 
-Thanks.
+  arch/x86/kernel/setup.c
+
+between commit:
+
+  f47e22d65d08 ("dma-mapping: split <linux/dma-mapping.h>")
+
+from the dma-mapping tree and commit:
+
+  a945c8345ec0 ("static_call: Allow early init")
+
+from the tip tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/kernel/setup.c
+index 787c5ff1e7c0,fa16b906ea3f..000000000000
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@@ -20,7 -19,7 +20,8 @@@
+  #include <linux/hugetlb.h>
+  #include <linux/tboot.h>
+  #include <linux/usb/xhci-dbgp.h>
++ #include <linux/static_call.h>
+ +#include <linux/swiotlb.h>
+ =20
+  #include <uapi/linux/mount.h>
+ =20
+
+--Sig_/7WJDCTZ_7XC5/kyfbyjq9YU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98CpcACgkQAVBC80lX
+0GzcYwf9GwrKyjw3L8eROjUNQvybWf2vj8Scg2ZNixnIdo0ZqGu43iyZpZSP1Pk8
+zHOXabHhyXBaVA83wF/Jau4v5SDxL4hy20YXGELpo3/barDtBqUe4/OQEbN/i0Rd
+7tlBfjGh6/cJ9NZoHmwLZo0uB7gzj1V6VVb6xAdGKCgqEaMp/91lCVnIUMkvMxB6
+wasPLwpqnhZebf7mftS5F2y6T1yu9tYVK/2yiuuEaxUSxrOm/uVsnbjeIfYtavgf
+CKkaUCle2VlerpUxfWJo8b9Mb8puNj6bn/MgshtK+yMV8bEZ3cGZwBxOy9S8bXps
+zaeQU2t912zkyYHIKXuH3OPrl2hnIQ==
+=SOpB
+-----END PGP SIGNATURE-----
+
+--Sig_/7WJDCTZ_7XC5/kyfbyjq9YU--
