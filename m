@@ -2,219 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24DC284476
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB4E284460
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgJFD7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 23:59:06 -0400
-Received: from mga02.intel.com ([134.134.136.20]:36760 "EHLO mga02.intel.com"
+        id S1726777AbgJFDs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:48:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:36992 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726073AbgJFD7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 23:59:00 -0400
-IronPort-SDR: 2vZXNhutZWrAfxCPbMLx6sCIoGF8ZuQX+6yPPElBtbUDUSvYSRkvEopN7AiQdijbVNot9wYKiT
- RZxxkQWWIB0Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="151270021"
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="151270021"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 20:58:58 -0700
-IronPort-SDR: bujbWSfLueXkxKq2cztZb+793JlesbU9H3RPddQ/N06nD8PoX1oyo1SR7q+Em8PaVVsHmedtcv
- BckjvUByW8eg==
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="348128442"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 20:58:57 -0700
-Subject: [PATCH v10 2/2] x86/copy_mc: Introduce
- copy_mc_enhanced_fast_string()
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     bp@alien8.de
-Cc:     x86@kernel.org, stable@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        0day robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, x86@kernel.org
-Date:   Mon, 05 Oct 2020 20:40:25 -0700
-Message-ID: <160195562556.2163339.18063423034951948973.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <160195561059.2163339.8787400120285484198.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <160195561059.2163339.8787400120285484198.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1725901AbgJFDs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 23:48:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A340B113E;
+        Mon,  5 Oct 2020 20:48:56 -0700 (PDT)
+Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 960893F70D;
+        Mon,  5 Oct 2020 20:48:56 -0700 (PDT)
+From:   Jeremy Linton <jeremy.linton@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-crypto@vger.kernel.org, broonie@kernel.org, ardb@kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, davem@davemloft.net,
+        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
+        Jeremy Linton <jeremy.linton@arm.com>
+Subject: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
+Date:   Mon,  5 Oct 2020 22:48:54 -0500
+Message-Id: <20201006034854.2277538-1-jeremy.linton@arm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original copy_mc_fragile() implementation had negative performance
-implications since it did not use the fast-string instruction sequence
-to perform copies. For this reason copy_mc_to_kernel() fell back to
-plain memcpy() to preserve performance on platform that did not indicate
-the capability to recover from machine check exceptions. However, that
-capability detection was not architectural and now that some platforms
-can recover from fast-string consumption of memory errors the memcpy()
-fallback now causes these more capable platforms to fail.
+The AES code uses a 'br x7' as part of a function called by
+a macro. That branch needs a bti_j as a target. This results
+in a panic as seen below. Instead of trying to replace the branch
+target with a bti_jc, lets replace the indirect branch with a
+bl/ret, bl sequence that can target the existing bti_c.
 
-Introduce copy_mc_enhanced_fast_string() as the fast default
-implementation of copy_mc_to_kernel() and finalize the transition of
-copy_mc_fragile() to be a platform quirk to indicate 'copy-carefully'.
-With this in place copy_mc_to_kernel() is fast and recovery-ready by
-default regardless of hardware capability.
+  Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
+  CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+  pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+  pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+  lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+  sp : ffff80001052b730
 
-Thanks to Vivek for identifying that copy_user_generic() is not suitable
-as the copy_mc_to_user() backend since the #MC handler explicitly checks
-ex_has_fault_handler(). Thanks to the 0day robot for catching a
-performance bug in the x86/copy_mc_to_user implementation.
+  aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+   __xts_crypt+0xb0/0x2dc [aes_neon_bs]
+   xts_encrypt+0x28/0x3c [aes_neon_bs]
+  crypto_skcipher_encrypt+0x50/0x84
+  simd_skcipher_encrypt+0xc8/0xe0
+  crypto_skcipher_encrypt+0x50/0x84
+  test_skcipher_vec_cfg+0x224/0x5f0
+  test_skcipher+0xbc/0x120
+  alg_test_skcipher+0xa0/0x1b0
+  alg_test+0x3dc/0x47c
+  cryptomgr_test+0x38/0x60
 
-Cc: x86@kernel.org
-Cc: <stable@vger.kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reported-by: Erwin Tsaur <erwin.tsaur@intel.com>
-Tested-by: Erwin Tsaur <erwin.tsaur@intel.com>
-Reported-by: 0day robot <lkp@intel.com>
-Fixes: 92b0729c34ca ("x86/mm, x86/mce: Add memcpy_mcsafe()")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
 ---
- arch/x86/lib/copy_mc.c    |   32 +++++++++++++++++++++++---------
- arch/x86/lib/copy_mc_64.S |   36 ++++++++++++++++++++++++++++++++++++
- tools/objtool/check.c     |    1 +
- 3 files changed, 60 insertions(+), 9 deletions(-)
+ arch/arm64/crypto/aes-neonbs-core.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
-index 2633635530b7..c13e8c9ee926 100644
---- a/arch/x86/lib/copy_mc.c
-+++ b/arch/x86/lib/copy_mc.c
-@@ -45,6 +45,8 @@ void enable_copy_mc_fragile(void)
- #define copy_mc_fragile_enabled (0)
- #endif
+diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
+index b357164379f6..32f53ebe5e2c 100644
+--- a/arch/arm64/crypto/aes-neonbs-core.S
++++ b/arch/arm64/crypto/aes-neonbs-core.S
+@@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
  
-+unsigned long copy_mc_enhanced_fast_string(void *dst, const void *src, unsigned len);
-+
- /**
-  * copy_mc_to_kernel - memory copy that handles source exceptions
-  *
-@@ -52,9 +54,11 @@ void enable_copy_mc_fragile(void)
-  * @src:	source address
-  * @len:	number of bytes to copy
-  *
-- * Call into the 'fragile' version on systems that have trouble
-- * actually do machine check recovery. Everyone else can just
-- * use memcpy().
-+ * Call into the 'fragile' version on systems that benefit from avoiding
-+ * corner case poison consumption scenarios, For example, accessing
-+ * poison across 2 cachelines with a single instruction. Almost all
-+ * other uses case can use copy_mc_enhanced_fast_string() for a fast
-+ * recoverable copy, or fallback to plain memcpy.
-  *
-  * Return 0 for success, or number of bytes not copied if there was an
-  * exception.
-@@ -63,6 +67,8 @@ unsigned long __must_check copy_mc_to_kernel(void *dst, const void *src, unsigne
- {
- 	if (copy_mc_fragile_enabled)
- 		return copy_mc_fragile(dst, src, len);
-+	if (static_cpu_has(X86_FEATURE_ERMS))
-+		return copy_mc_enhanced_fast_string(dst, src, len);
- 	memcpy(dst, src, len);
- 	return 0;
- }
-@@ -72,11 +78,19 @@ unsigned long __must_check copy_mc_to_user(void *dst, const void *src, unsigned
- {
- 	unsigned long ret;
- 
--	if (!copy_mc_fragile_enabled)
--		return copy_user_generic(dst, src, len);
-+	if (copy_mc_fragile_enabled) {
-+		__uaccess_begin();
-+		ret = copy_mc_fragile(dst, src, len);
-+		__uaccess_end();
-+		return ret;
-+	}
-+
-+	if (static_cpu_has(X86_FEATURE_ERMS)) {
-+		__uaccess_begin();
-+		ret = copy_mc_enhanced_fast_string(dst, src, len);
-+		__uaccess_end();
-+		return ret;
-+	}
- 
--	__uaccess_begin();
--	ret = copy_mc_fragile(dst, src, len);
--	__uaccess_end();
--	return ret;
-+	return copy_user_generic(dst, src, len);
- }
-diff --git a/arch/x86/lib/copy_mc_64.S b/arch/x86/lib/copy_mc_64.S
-index c3b613c4544a..892d8915f609 100644
---- a/arch/x86/lib/copy_mc_64.S
-+++ b/arch/x86/lib/copy_mc_64.S
-@@ -124,4 +124,40 @@ EXPORT_SYMBOL_GPL(copy_mc_fragile)
- 	_ASM_EXTABLE(.L_write_words, .E_write_words)
- 	_ASM_EXTABLE(.L_write_trailing_bytes, .E_trailing_bytes)
- #endif /* CONFIG_X86_MCE */
-+
-+/*
-+ * copy_mc_enhanced_fast_string - memory copy with exception handling
-+ *
-+ * Fast string copy + fault / exception handling. If the CPU does
-+ * support machine check exception recovery, but does not support
-+ * recovering from fast-string exceptions then this CPU needs to be
-+ * added to the copy_mc_fragile_key set of quirks. Otherwise, absent any
-+ * machine check recovery support this version should be no slower than
-+ * standard memcpy.
-+ */
-+SYM_FUNC_START(copy_mc_enhanced_fast_string)
-+	movq %rdi, %rax
-+	movq %rdx, %rcx
-+.L_copy:
-+	rep movsb
-+	/* Copy successful. Return zero */
-+	xorl %eax, %eax
+ 0:	mov		bskey, x21
+ 	mov		rounds, x22
+-	br		x7
 +	ret
-+SYM_FUNC_END(copy_mc_enhanced_fast_string)
-+
-+	.section .fixup, "ax"
-+.E_copy:
-+	/*
-+	 * On fault %rcx is updated such that the copy instruction could
-+	 * optionally be restarted at the fault position, i.e. it
-+	 * contains 'bytes remaining'. A non-zero return indicates error
-+	 * to copy_mc_generic() users, or indicate short transfers to
-+	 * user-copy routines.
-+	 */
-+	movq %rcx, %rax
-+	ret
-+
-+	.previous
-+
-+	_ASM_EXTABLE_FAULT(.L_copy, .E_copy)
- #endif /* !CONFIG_UML */
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index cf2d076f6ba5..42ac19e0299c 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -550,6 +550,7 @@ static const char *uaccess_safe_builtin[] = {
- 	"csum_partial_copy_generic",
- 	"copy_mc_fragile",
- 	"copy_mc_fragile_handle_tail",
-+	"copy_mc_enhanced_fast_string",
- 	"ftrace_likely_update", /* CONFIG_TRACE_BRANCH_PROFILING */
- 	NULL
- };
+ SYM_FUNC_END(__xts_crypt8)
+ 
+ 	.macro		__xts_crypt, do8, o0, o1, o2, o3, o4, o5, o6, o7
+@@ -806,8 +806,8 @@ SYM_FUNC_END(__xts_crypt8)
+ 	uzp1		v30.4s, v30.4s, v25.4s
+ 	ld1		{v25.16b}, [x24]
+ 
+-99:	adr		x7, \do8
+-	bl		__xts_crypt8
++99:	bl		__xts_crypt8
++	bl 		\do8
+ 
+ 	ldp		q16, q17, [sp, #.Lframe_local_offset]
+ 	ldp		q18, q19, [sp, #.Lframe_local_offset + 32]
+-- 
+2.25.4
 
