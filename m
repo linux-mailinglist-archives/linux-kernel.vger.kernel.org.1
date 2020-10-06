@@ -2,135 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453E4285179
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131A228517D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgJFSSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 14:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgJFSSJ (ORCPT
+        id S1726844AbgJFSSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 14:18:34 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:38048 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgJFSSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:18:09 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0E1C061755;
-        Tue,  6 Oct 2020 11:18:09 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id l4so9691443ota.7;
-        Tue, 06 Oct 2020 11:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yGUnMpg/g40k6Xfq7iiBJefwXO3OrOLqTUcNICTjirY=;
-        b=dgNgnsvczsNyDdQb041ccETDY13qqqeQNjK7ehxwh512usmfY4+fjTMCe4cNGVRnWX
-         MVb2D0xyvqQYIOVm+R5z2a0YC8KypOW2DEtSA1wfVxWcRuwzatr8uzYGPh33V6J8Dvls
-         o0sAZyMfcoXuyy+1y6shPxI41m29VkSDLZjUmkQs/cC0L8m3y5TdE5JtppoV3kvt7w+6
-         MKq/G30Ki8wUmHj4UzxjQvmOY+aWuR6CvqbInOAy3qljFOSY/79q1UEVpjBW5QL4kjOk
-         nog/iAFyisCIAPrlDytAWIaEVLlUMul3JYU7wqnVlPWEBL3fOw/vhJ/v0JdiVCG+kND6
-         aWCg==
+        Tue, 6 Oct 2020 14:18:34 -0400
+Received: by mail-ot1-f66.google.com with SMTP id i12so7352239ota.5;
+        Tue, 06 Oct 2020 11:18:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=yGUnMpg/g40k6Xfq7iiBJefwXO3OrOLqTUcNICTjirY=;
-        b=iVCkubOfE/3OyjWArhFMkOoiGi4UXNIB9HkYnz88opyS+kcuww/HhXC2tOziOHqeEf
-         oZcwbxzlwwGwuG8J8CIybtxb/2pxCsGgFzFZw0FTQgjk/cKUltzoCFTHSH2aXpTLCAmG
-         srwZdxV5ToToKBWfMT9gd915dg7yhdCcrDq75wFCdLlW62DqN5MGtmmpBr9JQ3SdqiMq
-         T00q3gxktHzVJGlZ6zkyPE/MXfDV86g6/rZNAJ7F28AwclW2SYD1LRc408efUk93WdOA
-         C8bU5/oxPv4dAlJEkKoh9Hm8YrrDpIuXfLubxK20DacwP7wKpNcRXruigzw2Qe5WvvSk
-         nylw==
-X-Gm-Message-State: AOAM5325Sh28slSpHNpMv/GtdmqHBbm8Z3kzscLnBS3pz3ErpDTbrxbU
-        ZSdBW4OOYRqQXiIL+ycSg5Ru8hCSUIU=
-X-Google-Smtp-Source: ABdhPJwXrThSOx1Inn5DoaMDywFJV+tXUk2SwALXoloz3mxiUD4BmTr79MaW5hDZNqvdVmMwp9a69Q==
-X-Received: by 2002:a9d:6219:: with SMTP id g25mr3825102otj.58.1602008288728;
-        Tue, 06 Oct 2020 11:18:08 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d27sm827145otc.6.2020.10.06.11.18.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 11:18:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 5.8 00/85] 5.8.14-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-References: <20201005142114.732094228@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <da1db83d-33df-39bd-f46a-894cfa8ec583@roeck-us.net>
-Date:   Tue, 6 Oct 2020 11:18:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hy8u4oryHdrJw9k6yxuAVeerYVirHjXzT+ryq/l0sJI=;
+        b=gyrEl7BZINBtuln7tBRPfzWbI8rQVMKpfHhzNY/aDejq2Cxv8dgNj4nkJMP+1xNdtS
+         X599YKmm0IW6u+X+3hJeJDXY18FMYbuhI580z0dhsNYuwQkAbJtbMi4rkKWkAzY920ar
+         /JCfjHImsnweqYz7rSHedGt2rVTX9V18TKvNsAiq2ZEjweBYFklGwVa6WA+i6qR+HQxO
+         U89Yqx5B2+cci4+vWIlMjBqmRR76HSiFJYSjoqagcK7KSAAaF+acrH3flJvQI4jQ9+uR
+         PTUNCAcMxsLgnjkxGblJyh6L8oQanojDgT7HO6w2Yj1wBoqPimydFv+V5D3RQ6CaF7T3
+         8Gog==
+X-Gm-Message-State: AOAM531P2O6mEGWTiSzTlY33WLLzetRiK/J8i9y4WYcA1CK5uOwyqNRP
+        e1VRbaLWoLYoBjuBNUQb1A==
+X-Google-Smtp-Source: ABdhPJwG53MmjyQcM+RFl4ahPLOIQ9AtOizuvfBOaQSuAOXM6QUhNiSQCj7BeFRxNsdfSaTghhRHsA==
+X-Received: by 2002:a9d:491:: with SMTP id 17mr3859333otm.338.1602008310942;
+        Tue, 06 Oct 2020 11:18:30 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m187sm1446451oia.39.2020.10.06.11.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 11:18:29 -0700 (PDT)
+Received: (nullmailer pid 2571913 invoked by uid 1000);
+        Tue, 06 Oct 2020 18:18:28 -0000
+Date:   Tue, 6 Oct 2020 13:18:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Varadarajan Narayanan <varada@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, catalin.marinas@arm.com, will@kernel.org,
+        p.zabel@pengutronix.de, nsekar@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH 6/7] arm64: dts: Add ipq5018 SoC and MP03 board support
+Message-ID: <20201006181828.GA2554170@bogus>
+References: <1601270140-4306-1-git-send-email-varada@codeaurora.org>
+ <1601270140-4306-7-git-send-email-varada@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601270140-4306-7-git-send-email-varada@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 8:25 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.14 release.
-> There are 85 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Sep 28, 2020 at 10:45:39AM +0530, Varadarajan Narayanan wrote:
+> Add initial device tree support for the Qualcomm IPQ5018 SoC and
+> MP03.1-C2 board.
 > 
-> Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Varadarajan Narayanan <varada@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml |   7 +
+
+Bindings and dts files should be separate patches.
+
+>  arch/arm64/boot/dts/qcom/Makefile               |   1 +
+>  arch/arm64/boot/dts/qcom/ipq5018-mp03.1-c2.dts  |  30 ++++
+>  arch/arm64/boot/dts/qcom/ipq5018.dtsi           | 201 ++++++++++++++++++++++++
+>  4 files changed, 239 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/ipq5018-mp03.1-c2.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/ipq5018.dtsi
 > 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 6031aee..694063f 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -28,6 +28,7 @@ description: |
+>          apq8074
+>          apq8084
+>          apq8096
+> +        ipq5018
+>          ipq6018
+>          ipq8074
+>          mdm9615
+> @@ -49,6 +50,7 @@ description: |
+>          hk01
+>          idp
+>          liquid
+> +        mp03
+>          mtp
+>          qrd
+>          sbc
+> @@ -142,6 +144,11 @@ properties:
+>  
+>        - items:
+>            - enum:
+> +              - qcom,ipq5018-mp03
+> +          - const: qcom,ipq5018
+> +
+> +      - items:
+> +          - enum:
+>                - qcom,ipq8064-ap148
+>            - const: qcom,ipq8064
+>  
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index d8f1466..3873970 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -4,6 +4,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+>  dtb-$(CONFIG_ARCH_QCOM) += apq8096-ifc6640.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= ipq5018-mp03.1-c2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-longcheer-l8150.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-samsung-a3u-eur.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-mp03.1-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-mp03.1-c2.dts
+> new file mode 100644
+> index 00000000..41bb3b3
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/ipq5018-mp03.1-c2.dts
+> @@ -0,0 +1,30 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+Your employer is okay with GPL3 (and later)?
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+> +/*
+> + * IPQ5018 CP01 board device tree source
+> + *
+> + * Copyright (c) 2019, The Linux Foundation. All rights reserved.
 
-Guenter
+It's 2020.
+
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "ipq5018.dtsi"
+> +
+> +/ {
+> +	model = "Qualcomm Technologies, Inc. IPQ5018/AP-MP03-C2";
+> +	compatible = "qcom,ipq5018-mp03", "qcom,ipq5018";
+> +
+> +	aliases {
+> +		serial0 = &blsp1_uart1;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +		bootargs-append = " swiotlb=1";
+
+Not an upstream property.
+
+> +	};
+> +};
+> +
+> +&blsp1_uart1 {
+> +	pinctrl-0 = <&serial_1_pins>;
+> +	pinctrl-names = "default";
+> +	status = "ok";
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> new file mode 100644
+> index 00000000..12492a4
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> @@ -0,0 +1,201 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +/*
+> + * IPQ5018 SoC device tree source
+> + *
+> + * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/clock/qcom,gcc-ipq5018.h>
+> +#include <dt-bindings/reset/qcom,gcc-ipq5018.h>
+> +
+> +/ {
+> +	#address-cells = <2>;
+> +	#size-cells = <2>;
+> +	interrupt-parent = <&intc>;
+> +
+> +	clocks {
+
+Drop the container node.
+
+> +		sleep_clk: sleep-clk {
+> +			compatible = "fixed-clock";
+> +			clock-frequency = <32000>;
+> +			#clock-cells = <0>;
+> +		};
+> +
+> +		xo: xo {
+> +			compatible = "fixed-clock";
+> +			clock-frequency = <24000000>;
+> +			#clock-cells = <0>;
+> +		};
+> +	};
+> +
+> +	cpus: cpus {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		CPU0: cpu@0 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x0>;
+> +			enable-method = "psci";
+> +			next-level-cache = <&L2_0>;
+> +		};
+> +
+> +		CPU1: cpu@1 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			enable-method = "psci";
+> +			reg = <0x1>;
+> +			next-level-cache = <&L2_0>;
+> +		};
+> +
+> +		L2_0: l2-cache {
+> +			compatible = "cache";
+> +			cache-level = <0x2>;
+> +		};
+> +	};
+> +
+> +	pmuv8: pmu {
+> +		compatible = "arm,cortex-a53-pmu";
+> +		interrupts = <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(4) |
+> +					 IRQ_TYPE_LEVEL_HIGH)>;
+> +	};
+> +
+> +	psci: psci {
+
+Drop unused (and likely never needed) labels. 
+
+> +		compatible = "arm,psci-1.0";
+> +		method = "smc";
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		tz: tz@4ac00000 {
+> +			reg = <0x0 0x4ac00000 0x0 0x00400000>;
+> +			no-map;
+> +		};
+> +	};
+> +
+> +	soc: soc {
+
+soc@0
+
+Build dtbs with W=1 and fix any warnings. This should be one.
+
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0 0 0 0xffffffff>;
+> +		dma-ranges;
+> +		compatible = "simple-bus";
+> +
+> +		tlmm: pinctrl@1000000 {
+> +			compatible = "qcom,ipq5018-pinctrl";
+> +			reg = <0x01000000 0x300000>;
+> +			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> +			gpio-controller;
+> +			#gpio-cells = <2>;
+> +			gpio-ranges = <&tlmm 0 80>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +
+> +			serial_1_pins: serial1-pinmux {
+> +				pins = "gpio31", "gpio32", "gpio33", "gpio34";
+> +				function = "blsp1_uart1";
+> +				drive-strength = <8>;
+> +				bias-pull-down;
+> +			};
+> +		};
+> +
+> +		gcc: gcc@1800000 {
+
+clock-controller@...
+
+> +			compatible = "qcom,gcc-ipq5018";
+> +			reg = <0x01800000 0x80000>;
+> +			clocks = <&xo>, <&sleep_clk>;
+> +			clock-names = "xo", "sleep_clk";
+> +			#clock-cells = <1>;
+> +			#reset-cells = <1>;
+> +		};
+> +
+> +		blsp1_uart1: serial@78af000 {
+> +			compatible = "qcom,msm-uartdm-v1.4", "qcom,msm-uartdm";
+> +			reg = <0x078af000 0x200>;
+> +			interrupts = <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&gcc GCC_BLSP1_UART1_APPS_CLK>,
+> +				<&gcc GCC_BLSP1_AHB_CLK>;
+> +			clock-names = "core", "iface";
+> +			status = "disabled";
+> +		};
+> +
+> +		intc: interrupt-controller@b000000 {
+> +			compatible = "qcom,msm-qgic2";
+> +			interrupt-controller;
+> +			#interrupt-cells = <0x3>;
+> +			reg =   <0x0b000000 0x1000>,  /*GICD*/
+> +				<0x0b002000 0x1000>,  /*GICC*/
+> +				<0x0b001000 0x1000>,  /*GICH*/
+> +				<0x0b004000 0x1000>;  /*GICV*/
+> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		timer {
+
+Not memory mapped, move to top-level.
+
+> +			compatible = "arm,armv8-timer";
+> +			interrupts = <GIC_PPI 2 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +				     <GIC_PPI 3 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +				     <GIC_PPI 4 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+> +				     <GIC_PPI 1 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
+> +		};
+> +
+> +		timer@b120000 {
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges;
+> +			compatible = "arm,armv7-timer-mem";
+> +			reg = <0x0b120000 0x1000>;
+> +			clock-frequency = <19200000>;
+> +
+> +			frame@b120000 {
+> +				frame-number = <0>;
+> +				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+> +					     <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> +				reg = <0x0b121000 0x1000>,
+> +				      <0x0b122000 0x1000>;
+> +			};
+> +
+> +			frame@b123000 {
+> +				frame-number = <1>;
+> +				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +				reg = <0xb123000 0x1000>;
+> +				status = "disabled";
+> +			};
+> +
+> +			frame@b124000 {
+> +				frame-number = <2>;
+> +				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+> +				reg = <0x0b124000 0x1000>;
+> +				status = "disabled";
+> +			};
+> +
+> +			frame@b125000 {
+> +				frame-number = <3>;
+> +				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+> +				reg = <0x0b125000 0x1000>;
+> +				status = "disabled";
+> +			};
+> +
+> +			frame@b126000 {
+> +				frame-number = <4>;
+> +				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+> +				reg = <0x0b126000 0x1000>;
+> +				status = "disabled";
+> +			};
+> +
+> +			frame@b127000 {
+> +				frame-number = <5>;
+> +				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+> +				reg = <0x0b127000 0x1000>;
+> +				status = "disabled";
+> +			};
+> +
+> +			frame@b128000 {
+> +				frame-number = <6>;
+> +				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+> +				reg = <0x0b128000 0x1000>;
+> +				status = "disabled";
+> +			};
+> +		};
+> +	};
+
+No memory node...
+
+Rob
+
+
+> +};
+> -- 
+> 2.7.4
+> 
