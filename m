@@ -2,144 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B961128465F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18056284663
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgJFG4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
+        id S1727146AbgJFG42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgJFG4V (ORCPT
+        with ESMTP id S1726822AbgJFG41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:56:21 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CF7C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:56:21 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id v12so1835929wmh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:56:21 -0700 (PDT)
+        Tue, 6 Oct 2020 02:56:27 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6B3C061755;
+        Mon,  5 Oct 2020 23:56:27 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id i3so1151667pjz.4;
+        Mon, 05 Oct 2020 23:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=uefgcZJEjxyEQ9EMRE9mQWtY5FP1/cOBvuhrVucWaL4=;
-        b=mXkwBwV3uHgEOxFz+BrpkbePSh2uIiVsOL4Q8BYDAJDypvyxJYM0atdBu9izyBiklN
-         JUT7Rs3FZZcA7EGJwKM5eeigcUBVvcDfeZm83LFbXnscy1H1lahoLDUs2XAHwSXWered
-         DoiTT0h2TqAf+eoQCa+OKq1yKWTMadlruJk2Jaq03oF84s+8Isc4+roffFBG83sO+pPJ
-         QpcK3Ic1k3+Ao2UnCTjcI5+Xsv99zs8kNZPGGF7AhC+2etryShDW/guLwkZ7bHE/VSa4
-         bxTXQmucpLNCD3efMbFkW6dDT90QxhHowDxNVj2MVVRdHZvtBaYzDalinrAp5ynsnWs1
-         U3kQ==
+         :content-disposition:in-reply-to;
+        bh=zBFfKBhYyU0BtbuXx1ytS4yKHobNdT3L7z7UjpAJros=;
+        b=kgJHrKjSonX86RVyPSZeK3n/eKSf3Z5iXCkubCL03B3xjIlw1I3UVJ5Oz6oldmemu+
+         6rJaL5DsTUyCupB4FYMEDWaEzoKMDYYXIQOzUgjn5hUWTJy59aH+ZNZ62Wd5BhngbW+1
+         0t/iPMHM6DE34xJiMl00x6wskZr1nXO7FFDAXeHWWClyXlHaK4doUjutMC2RfUGt6v1H
+         aNu6t9dcg6fA8UquACGkeYCbd8l8RxkDsn0fPe19wpct/YACSiqaDcOtAkkIYP1k3T/E
+         skQ03oqS+ySD5bD1roJ9TodIimXd3IeQU7kggLi5lG4G9zbMkMHvREwF+SRpEL16PkSd
+         QQZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uefgcZJEjxyEQ9EMRE9mQWtY5FP1/cOBvuhrVucWaL4=;
-        b=G3qj+UqfR/FOdg//XMRFaKInR6zxdl/sMy/lniYqmqfQS6QAcs96Q/P0Gy/JdzzS5f
-         eO3dMrYl2F9S+bLM28hgva5+8ckj5agxbNV6IsYtyYmly27K9Elzojq+L8mfY6aNgtCO
-         xzize/8PBnS9OA9pj5111naWQ6pBanpmy7Zi84VOtZGPPjGfJPkaMr9PwTPzEiJOAvc3
-         ztRDT49oWnU1MQqGZUIZ9idQnln3F7d8zQU+9cR8sQinbCJLkatG2x/7YL+SbE19iIjW
-         TfQt4ptiisTEqmeATJCWuQ4h6VVIyy7w/pJra4VMWsb89a0Eo8NOByiCJiIKXmhBbHNf
-         Cceg==
-X-Gm-Message-State: AOAM5310ungzftofQq/GXoP4IqPfgwEGz6sTlgK3H2AGDMlBnEzbdwub
-        LMszn384xCzlex00wBVIAphuqQ==
-X-Google-Smtp-Source: ABdhPJwXGqcOK5nEDYkkUxOnDx8BbUTICgzVOqRZG+MR8mEOAOKX5hhn6oiAkfCBUvZAL7QZuAzfFQ==
-X-Received: by 2002:a7b:cb04:: with SMTP id u4mr3091764wmj.130.1601967379940;
-        Mon, 05 Oct 2020 23:56:19 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id b8sm2545643wmb.4.2020.10.05.23.56.18
+         :mime-version:content-disposition:in-reply-to;
+        bh=zBFfKBhYyU0BtbuXx1ytS4yKHobNdT3L7z7UjpAJros=;
+        b=mq88bkJ/7vRmN2lkWxa5Lm1iog5+KphQF3TqBTKIQOB1bvmPg4P5fwYPYN4CGSNBpE
+         UxKF5Nq8jW2j/AOaDC+CxCjqDuyGydPd0J5raoFdu5jKyuFjosiAIPOS8uyjtg1Z90gl
+         l9i+Y/ejTLCylTUGc4XNPmr32qXoha4YKWG/xmZfNal9vvOJhQTo/q7HKCBF8O9FrFyR
+         kwFZHJ13SbUtTqndl42LdAe3Ouk4XRUzXkyS3aTL00AnafXVjAFcS0a9eA06Vn1AGjME
+         PH91gr53mbMbslGub6PE3Krg/8ugS5ynw2J5rrFhLdCse2YT7ozpsP5t/wq7lbzDNLex
+         WLwQ==
+X-Gm-Message-State: AOAM532sTB0ZLw0mt0U3XvsdbFa7uwECs5tuGedrSffQUq8+Kd+E8iKo
+        Ho8PIJQNq6cgbqxAx0sL1i8=
+X-Google-Smtp-Source: ABdhPJyMkxuEeZ7MXGRLAPbbNrvhXEYbnB5A9eIh229n8RdwQydJJiqZO5UUjbb6Ulu9S4QCxG/8bA==
+X-Received: by 2002:a17:902:8693:b029:d3:9c6b:ca5f with SMTP id g19-20020a1709028693b02900d39c6bca5fmr1958085plo.67.1601967386593;
+        Mon, 05 Oct 2020 23:56:26 -0700 (PDT)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id h9sm2042609pfh.213.2020.10.05.23.56.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 23:56:19 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 07:56:17 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Luciano Coelho <luca@coelho.fi>
-Subject: Re: [PATCH v2 00/29] [Set 1,2,3] Rid W=1 warnings in Wireless
-Message-ID: <20201006065617.GX6148@dell>
-References: <20200910065431.657636-1-lee.jones@linaro.org>
- <20201002090353.GS6148@dell>
- <87362rdhv2.fsf@codeaurora.org>
+        Mon, 05 Oct 2020 23:56:25 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 23:56:23 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH v2] srcu: avoid escaped section names
+Message-ID: <20201006065623.GA2418984@ubuntu-m3-large-x86>
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+ <20200929192549.501516-1-ndesaulniers@google.com>
+ <20200930204044.GZ29330@paulmck-ThinkPad-P72>
+ <CAKwvOd=nabONrWyYFK7Y06TrKBOyHHfNUiiy69VJQ2NtCpbp5Q@mail.gmail.com>
+ <20201002205130.GK29330@paulmck-ThinkPad-P72>
+ <CAKwvOdkPMSwQneMLFNg3ihM5zHorFy+uGvzAL7y70+hu_1q24w@mail.gmail.com>
+ <CA+icZUW_z5nJ1c69JS7Nm1QknF+CH+sPkhF4g2+L=d=H-vxVgw@mail.gmail.com>
+ <20201005184910.GC29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87362rdhv2.fsf@codeaurora.org>
+In-Reply-To: <20201005184910.GC29330@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Oct 2020, Kalle Valo wrote:
-
-> Lee Jones <lee.jones@linaro.org> writes:
+On Mon, Oct 05, 2020 at 11:49:10AM -0700, Paul E. McKenney wrote:
+> On Mon, Oct 05, 2020 at 08:38:42PM +0200, Sedat Dilek wrote:
+> > On Mon, Oct 5, 2020 at 8:29 PM 'Nick Desaulniers' via Clang Built
+> > Linux <clang-built-linux@googlegroups.com> wrote:
+> > >
+> > > On Fri, Oct 2, 2020 at 1:51 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >
+> > > > On Wed, Sep 30, 2020 at 01:55:48PM -0700, Nick Desaulniers wrote:
+> > > > > On Wed, Sep 30, 2020 at 1:40 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > >
+> > > > > > On Tue, Sep 29, 2020 at 12:25:49PM -0700, Nick Desaulniers wrote:
+> > > > > > > The stringification operator, `#`, in the preprocessor escapes strings.
+> > > > > > > For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
+> > > > > > > they treat section names that contain \".
+> > > > > > >
+> > > > > > > The portable solution is to not use a string literal with the
+> > > > > > > preprocessor stringification operator.
+> > > > > > >
+> > > > > > > Link: https://bugs.llvm.org/show_bug.cgi?id=42950
+> > > > > > > Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
+> > > > > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > > > >
+> > > > > > I am guessing that this needs to go up with other patches.  If so:
+> > > > > >
+> > > > > > Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > >
+> > > > > > If not, let me know and I will queue it.
+> > > > >
+> > > > > I could have bundled them up as a series.  I think you can pick it up,
+> > > > > and I'll owe you a beer?
+> > > >
+> > > > It is queued, thank you!
+> > > >
+> > > > When does it need to hit mainline?  (Your default is the v5.11 merge
+> > > > window, that is, the one following the upcoming merge window.)
+> > >
+> > > No rush, this patch wasn't blocking any known issue, just a cleanup
+> > > while I was in the neighborhood.  100 years ago, I was an Eagle scout.
+> > > Pretty sure there was a motto about "leaving things better than you
+> > > found them."  Thanks for help resolving the merge conflict reported in
+> > > -next related to it.
+> > 
+> > Wasn't there a problem with your "Fixes:" tag (Fixes: *drop word
+> > "commit"* commit_hashid ("...")?
 > 
-> > On Thu, 10 Sep 2020, Lee Jones wrote:
-> >
-> >> This is a rebased/re-worked set of patches which have been
-> >> previously posted to the mailing list(s).
-> >> 
-> >> This set is part of a larger effort attempting to clean-up W=1
-> >> kernel builds, which are currently overwhelmingly riddled with
-> >> niggly little warnings.
-> >> 
-> >> There are quite a few W=1 warnings in the Wireless.  My plan
-> >> is to work through all of them over the next few weeks.
-> >> Hopefully it won't be too long before drivers/net/wireless
-> >> builds clean with W=1 enabled.
-> >> 
-> >> Lee Jones (29):
-> >>   iwlwifi: dvm: Demote non-compliant kernel-doc headers
-> >>   iwlwifi: rs: Demote non-compliant kernel-doc headers
-> >>   iwlwifi: dvm: tx: Demote non-compliant kernel-doc headers
-> >>   iwlwifi: dvm: lib: Demote non-compliant kernel-doc headers
-> >>   iwlwifi: calib: Demote seemingly unintentional kerneldoc header
-> >>   wil6210: Fix a couple of formatting issues in 'wil6210_debugfs_init'
-> >>   iwlwifi: dvm: sta: Demote a bunch of nonconformant kernel-doc headers
-> >>   iwlwifi: mvm: ops: Remove unused static struct 'iwl_mvm_debug_names'
-> >>   iwlwifi: dvm: Demote a couple of nonconformant kernel-doc headers
-> >>   iwlwifi: mvm: utils: Fix some doc-rot
-> >>   iwlwifi: dvm: scan: Demote a few nonconformant kernel-doc headers
-> >>   iwlwifi: dvm: rxon: Demote non-conformant kernel-doc headers
-> >>   iwlwifi: mvm: tx: Demote misuse of kernel-doc headers
-> >>   iwlwifi: dvm: devices: Fix function documentation formatting issues
-> >>   iwlwifi: iwl-drv: Provide descriptions debugfs dentries
-> >>   wil6210: wmi: Fix formatting and demote non-conforming function
-> >>     headers
-> >>   wil6210: interrupt: Demote comment header which is clearly not
-> >>     kernel-doc
-> >>   wil6210: txrx: Demote obvious abuse of kernel-doc
-> >>   wil6210: txrx_edma: Demote comments which are clearly not kernel-doc
-> >>   wil6210: pmc: Demote a few nonconformant kernel-doc function headers
-> >>   wil6210: wil_platform: Demote kernel-doc header to standard comment
-> >>     block
-> >>   wil6210: wmi: Correct misnamed function parameter 'ptr_'
-> >>   ath6kl: wmi: Remove unused variable 'rate'
-> >>   ath9k: ar9002_initvals: Remove unused array
-> >>     'ar9280PciePhy_clkreq_off_L1_9280'
-> >>   ath9k: ar9001_initvals: Remove unused array 'ar5416Bank6_9100'
-> >>   ath9k: ar5008_initvals: Remove unused table entirely
-> >>   ath9k: ar5008_initvals: Move ar5416Bank{0,1,2,3,7} to where they are
-> >>     used
-> >>   brcmsmac: phytbl_lcn: Remove unused array 'dot11lcn_gain_tbl_rev1'
-> >>   brcmsmac: phy_lcn: Remove unused variable
-> >>     'lcnphy_rx_iqcomp_table_rev0'
-> >
-> > What's happening with all of these iwlwifi patches?
-> >
-> > Looks like they are still not applied.
+> Indeed there was, and I have it noted to be fixed on my next rebase.
 > 
-> Luca (CCed) takes iwlwifi patches to his iwlwifi tree.
+> Perhaps another reason not to rush to mainline though.  ;-)
+> 
+> 							Thanx, Paul
 
-Thanks Kalle.
+I am replying here as well so that the relevant parties are in the know
+but I believe this patch should be fast tracked with a cc stable tag as
+this appears to be the root cause of the issue that Nick reported a few
+weeks ago:
 
-Luca,
+https://lore.kernel.org/rcu/CAKwvOdm4AQhobdkKT08bjPGb15N58QN79XWxEaQt-P5Dk4+avQ@mail.gmail.com/
+https://github.com/ClangBuiltLinux/linux/issues/1081
 
-  Do you know why these patches have not been applied yet?  Do you
-plan on applying them this week?  -rc1 is not due for release for
-nearly 3 weeks now that Linus tagged an -rc8.
+I can reproduce the issue on next-20201002 on my Raspberry Pi 4 just by
+booting it up. As soon as I apply this patch, all warnings disappear. I
+asked the original reporters to test if the patch resolves the issue for
+them but I figured more visibility on this, the sooner. The commit
+message might need to be revised if this turns out to be the case to
+make it more apparent that it has a user visible issue, rather than just
+a QoL fix.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Additionally, it seems like the patch is missing some reviewed by tags
+from Kees, Sedat, and myself. Feel free to add a
+
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+
+as well.
+
+Cheers,
+Nathan
