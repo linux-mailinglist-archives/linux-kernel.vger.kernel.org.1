@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47D4284BFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3855284BFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgJFMtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:49:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56703 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726386AbgJFMtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:49:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601988547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZBKb+A4AjD/YLqb4lLjroz5xjo40raS3WxNaMhMdzQs=;
-        b=XynzfXc5tgNrJU4Xw2ObNoLkJNP8pV/+oWScsZwgC85YhfQsqGgLNIcg2eqG8W+k68TWpe
-        xoBBPYBK5PvYMWBpMXV3yNwOWKpT6hK4hs1n6u5KTiooDbwoBO/b3x32WRoXNTa67wCpcx
-        JFgWgCrB91Y+yvYVDhyrsW3XaXEL1I8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-SuT4vETOMFe72ZN3I1sGrw-1; Tue, 06 Oct 2020 08:49:06 -0400
-X-MC-Unique: SuT4vETOMFe72ZN3I1sGrw-1
-Received: by mail-ej1-f72.google.com with SMTP id s20so5772243ejx.19
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 05:49:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=ZBKb+A4AjD/YLqb4lLjroz5xjo40raS3WxNaMhMdzQs=;
-        b=cWz1waW5zdaoppKZtOSmF+aKntsx+j2vFyoK2FgOBJufeayzpcHPO2OfxOWktXkSW3
-         J/IFJ2QWyzzhfWRvjNsO+nF8LWhNSFwgeuipVNOjbZC6Wid95VuP50zQD7sxztbMkq0b
-         8PIfgNTYqL/fI9p6xe7ZNrNm0Hr+2Ub379GXUbh+e4DE4unuHGTbUESyKIzxmTFQ3hLu
-         XEJsEywHytUSZ1DJBbswAz0Oh8opC/aCC7o/rFqzl5CWWhJZ434Afq4dSUlJ4tA/mUou
-         qWvt3ywgBN6/tIUd2vGv7D9e9iHYc3g2UNeZ2aJKeAjLloQrWel3yd9+IUCCYzMlPmt+
-         soCQ==
-X-Gm-Message-State: AOAM530W/YDtgPw4MiGW+x4FWPMlO5FHI3B3+m7qnToKeOGZnLux5DIT
-        aKbM+wlSlVVDQvUvpfPrpTfvm6Aql5w7frU4qdaGXjRNIa2Sd/Jzipx+BE4aN+gW8B9lKini1+e
-        R3FLbT9i8n732Vc4WhtOpLzge
-X-Received: by 2002:aa7:c68b:: with SMTP id n11mr5061737edq.340.1601988543297;
-        Tue, 06 Oct 2020 05:49:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/jjA5Z9ix4lK1yg5De40DAcoQzeacAmqcAPY8CNgcOSOdKWyNJHR/jV/h7IXoU5v8NSmzWg==
-X-Received: by 2002:aa7:c68b:: with SMTP id n11mr5061720edq.340.1601988543026;
-        Tue, 06 Oct 2020 05:49:03 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id m19sm2018197ejj.91.2020.10.06.05.49.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 05:49:02 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mark.gross@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] platform-drivers-x86 for 5.9-3
-Message-ID: <bbd61184-175c-f1c2-d196-70b73145891b@redhat.com>
-Date:   Tue, 6 Oct 2020 14:49:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726637AbgJFMuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:50:16 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42834 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726386AbgJFMuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:50:16 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 096Cn7rx005828;
+        Tue, 6 Oct 2020 14:49:07 +0200
+Date:   Tue, 6 Oct 2020 14:49:07 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "'Peter Zijlstra'" <peterz@infradead.org>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "j.alglave@ucl.ac.uk" <j.alglave@ucl.ac.uk>,
+        "luc.maranget@inria.fr" <luc.maranget@inria.fr>,
+        "akiyks@gmail.com" <akiyks@gmail.com>,
+        "dlustig@nvidia.com" <dlustig@nvidia.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+Subject: Re: Control Dependencies vs C Compilers
+Message-ID: <20201006124907.GA5822@1wt.eu>
+References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
+ <3dfe7daed3c44f46a6989b6513ad7bb0@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3dfe7daed3c44f46a6989b6513ad7bb0@AcuMS.aculab.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Oct 06, 2020 at 12:37:06PM +0000, David Laight wrote:
+> > Our Documentation/memory-barriers.txt has a Control Dependencies section
+> > (which I shall not replicate here for brevity) which lists a number of
+> > caveats. But in general the work-around we use is:
+> > 
+> > 	x = READ_ONCE(*foo);
+> > 	if (x > 42)
+> > 		WRITE_ONCE(*bar, 1);
+> 
+> An alternative is to 'persuade' the compiler that
+> any 'tracked' value for a local variable is invalid.
+> Rather like the way that barrier() 'invalidates' memory.
+> So you generate:
+> 
+> 	x = *foo
+> 	asm ("" : "+r" (x));
+> 	if (x > 42)
+> 		*bar = 1;
+> 
+> Since the "+r" constraint indicates that the value of 'x'
+> might have changed it can't optimise based on any
+> presumed old value.
+> (Unless it looks inside the asm opcodes...)
 
-First of all sorry for this second last-minute pdx86 pull-req.
+I'm using exactly this in userland to prevent the compiler from guessing
+what I'm doing with a variable, and it's also useful sometimes to shut up
+certain warnings when I know a condition is satisfied but can hardly be
+expressed in a way to please the compiler. Overall I find that it's no
+big deal and forces the developer to think twice before doing it, which
+is probably a good thing in general.
 
-The main reason for the first pull-req was fixing 2 regressions
-in 5.8 with Tablet Mode reporting seen on various laptop models
-which has been reported by a lot of users, because this
-regression causes the (builtin) keyboard and touchpad to not
-work on these laptops.
-
-These regressions were caused by the asus-nb-wmi and the
-intel-vbtn drivers both receiving recent patches to start
-reporting Tablet Mode / to report it on more models.
-
-Due to a miscommunication between Andy and me, Andy's
-earlier pull-req only contained the fix for the intel-vbtn
-driver and not the fix for the asus-nb-wmi code.
-
-This pull-req contains a single patch fixing the asus-nb-wmi
-code. This patch has been in use (as a downstream fix) in
-Fedora's kernels for 2 weeks now without issues.
-
-Regards,
-
-Hans
-
-The following changes since commit 720ef73d1a239e33c3ad8fac356b9b1348e68aaf:
-
-   platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse (2020-10-05 12:20:42 +0300)
-
-are available in the Git repository at:
-
-   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.9-3
-
-for you to fetch changes up to 1797d588af15174d4a4e7159dac8c800538e4f8c:
-
-   platform/x86: asus-wmi: Fix SW_TABLET_MODE always reporting 1 on many different models (2020-10-06 09:48:05 +0200)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v5.9-3
-
-One final pdx86 fix for Tablet Mode reporting regressions (which
-make the keyboard and touchpad unusable) on various Asus notebooks.
-
-This fix has been tested as a downstream patch in Fedora kernels for
-approx. 2 weeks with no problems being reported.
-
-----------------------------------------------------------------
-Hans de Goede (1):
-       platform/x86: asus-wmi: Fix SW_TABLET_MODE always reporting 1 on many different models
-
-  drivers/platform/x86/asus-nb-wmi.c | 32 ++++++++++++++++++++++++++++++++
-  drivers/platform/x86/asus-wmi.c    | 16 +++++++++-------
-  drivers/platform/x86/asus-wmi.h    |  1 +
-  3 files changed, 42 insertions(+), 7 deletions(-)
-
+Willy
