@@ -2,163 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E32D284A66
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2C3284A67
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgJFKjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:39:12 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45871 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFKjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:39:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5DV36053z9ryj;
-        Tue,  6 Oct 2020 21:39:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601980748;
-        bh=88JnpQ7C+gTPN1c0ndqW0e0KCBQd0VM16IPzZbRxXPo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Wm0KbNw5+u9sHKyC5Qs6bZAvuZS9Ybh1uu/74QvtQ5SxJewQ2C/LU+JcArcUI8oJr
-         QxZptoPonhHfDqvic4+sghrMUTdsnKYKy264fMc4uHEV60cyi7mOAzmKp7WkOAo8tm
-         zzLeyq4nK1Ez0x6ShcSja5PpCXyjKozLEXnNZRXm4FiW8enLhNFYvM6zrpdaf2cNPh
-         R4cy67ANoBHm6TzfU0KEWCwomwFdAcTj0Kw+Orx1RE2THWIRbZ8awccUbJFF/wHzdh
-         1dNUb4ic++lBq1rOCdvH+B/KHCHHkYf4lSvgVBkMSUXb/0Cx1FevlrgRFRRe7r8AKk
-         N8+EMwDMHTX5A==
-Date:   Tue, 6 Oct 2020 21:39:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: linux-next: manual merge of the akpm-current tree with the risc-v
- tree
-Message-ID: <20201006213906.08554ae2@canb.auug.org.au>
+        id S1726068AbgJFKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFKkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:40:12 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6C3C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 03:40:12 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id g7so12425975iov.13
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 03:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3N9Ir7AwETZEYchp6O5ROGzFeY+LkYxOP/aeOce9GY8=;
+        b=v+ZGeZ7ngyPegpBtGP1U2YITv72KRHzHV6PqheZNf8Y3YxEZNsnLwajHcN/CXZ38Lh
+         mMaO6lcc/ZrdYxHyUgeO5KpjijiSRTsv8SLRtlc42foWQlAFCL4UV7RDSKM9Q1e6zEff
+         O94qzK0TtuU1KTH8s22KhnmcQkUoVkRv5I3izSmOGJt1ujb1Seq9SpGPmDBYilYdw/If
+         k76OPrsW80P6LhCC5WziIuJhvAoEpmH7jPnbDAwzpjhVKHVj06oXiD4J68wHI5JyDusk
+         QrmAXtDBOH4/jUK9IcGMmF2nK+UwK0uDcHuzJ5ZgdnT94qc1HUWxLLjimShmXCX4cDUB
+         1wNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3N9Ir7AwETZEYchp6O5ROGzFeY+LkYxOP/aeOce9GY8=;
+        b=uYKJpq5lbvie2TQnKdPFY8cNo10Vh3MTCXaTm9gRjsCqAEHz2Jj1bqQ+TRxSCYJ/QF
+         QCeOGnCUwKNPf8vQHQd6m0ew4mlEijC4sZVtbrzUtpWdr+ORbftO+ylgRLuaJ25MGBsS
+         K+tIlgNe7K3dch+VUmd+8PxSycRRam9TzJwcybEq/EEjydRsGP4YWCDBexBMy0R9GePK
+         f4GaSJ4ORvzt7rHuLVmOEVOAhtqUMvlIPWpsUUvhz5QobmB6PMrZJj1V44L8LVwTEN+x
+         mL4rMep2RfOrbDmb+6YKaUWsPLyxkAy4BBUBBNWruhR4gMADNFb2LnyVpvQ6in0wcGoI
+         MxrQ==
+X-Gm-Message-State: AOAM530Wa8WSMJ6CJi/1v7c6VYhVs/bwQmFAFqM/1ztmnTHdW8xSVRDS
+        gg6p7e/rPfYbxuXQOYtbDs4PI1smCD5Uw1abcVBCCA==
+X-Google-Smtp-Source: ABdhPJwhWTs3O+CaMcTl2EcNuJJ0tMcq1w56Ab0TiptOxR/LXZbuDey/kFa6PIxz/rK0QBXSvabwU0Mp7qQPUkac7Gw=
+X-Received: by 2002:a02:6952:: with SMTP id e79mr597608jac.24.1601980811726;
+ Tue, 06 Oct 2020 03:40:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QuaTwP8UxkmkDMdTUVhTZAO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200924124526.17365-1-brgl@bgdev.pl>
+In-Reply-To: <20200924124526.17365-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 6 Oct 2020 12:40:00 +0200
+Message-ID: <CAMRc=Mcwyy7N7xFRv8BcJiGcmhKb8Ed3YYXHOX9C=uxb+VNKNw@mail.gmail.com>
+Subject: Re: [PATCH 00/12] samples: configfs: refactor the configfs sample code
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QuaTwP8UxkmkDMdTUVhTZAO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 24, 2020 at 2:45 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> Over at the GPIO sub-system we have a testing module (gpio-mockup) which
+> uses module params to instantiate simulated GPIO chips and debugfs to
+> control them. We want to switch to a more stable interface using configfs
+> to instantiate chips and sysfs to control them.
+>
+> For that we need the feature that's well defined in the docs but currently
+> unimplemented - committable items. I started working on this but it won't
+> be ready for this release cycle.
+>
+> In the meantime I also refactored the configfs samples a bit as I'll be
+> adding sample code for committable items. I thought that it won't hurt
+> to send the refactoring patches now for v5.10 so here it is. No logical
+> changes really, mostly just code quality and removing usage of deprecated
+> functions.
+>
+> Bartosz Golaszewski (12):
+>   MAINTAINERS: add the sample directory to the configfs entry
+>   samples: configfs: order includes alphabetically
+>   samples: configfs: remove redundant newlines
+>   samples: configfs: drop unnecessary ternary operators
+>   samples: configfs: improve alignment of broken lines
+>   samples: configfs: fix alignment in item struct
+>   samples: configfs: replace simple_strtoul() with kstrtoint()
+>   samples: configfs: don't reinitialize variables which are already
+>     zeroed
+>   samples: configfs: prefer sizeof(*var) to sizeof(struct var_type)
+>   samples: configfs: consolidate local variables of the same type
+>   samples: configfs: don't use spaces before tabs
+>   samples: configfs: prefer pr_err() over bare printk(KERN_ERR
+>
+>  MAINTAINERS                        |  1 +
+>  samples/configfs/configfs_sample.c | 78 +++++++++++-------------------
+>  2 files changed, 29 insertions(+), 50 deletions(-)
+>
+> --
+> 2.17.1
+>
 
-Hi all,
+Hi Joel, Christoph,
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Any comments on this? Can this still go into v5.10?
 
-  arch/riscv/mm/init.c
-
-between commit:
-
-  c29c38fa2a8b ("RISC-V: Remove any memblock representing unusable memory a=
-rea")
-
-from the risc-v tree and commits:
-
-  3520eeb79142 ("arch, drivers: replace for_each_membock() with for_each_me=
-m_range()")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-It also looks like there is a bug in that risc-v tree patch: mem_start
-is used uninitialised in setup_bootmem().
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/mm/init.c
-index 812a48c91a95,bc72bb6b5fe0..000000000000
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@@ -152,20 -141,25 +152,20 @@@ disable
-  }
-  #endif /* CONFIG_BLK_DEV_INITRD */
- =20
- -static phys_addr_t dtb_early_pa __initdata;
- -
-  void __init setup_bootmem(void)
-  {
-- 	struct memblock_region *reg;
-- 	phys_addr_t mem_start, end =3D 0;
- -	phys_addr_t mem_size =3D 0;
- -	phys_addr_t total_mem =3D 0;
-+ 	phys_addr_t mem_start, start, end =3D 0;
-  	phys_addr_t vmlinux_end =3D __pa_symbol(&_end);
-  	phys_addr_t vmlinux_start =3D __pa_symbol(&_start);
-+ 	u64 i;
- =20
-  	/* Find the memory region containing the kernel */
-- 	for_each_memblock(memory, reg) {
-- 		end =3D reg->base + reg->size;
-+ 	for_each_mem_range(i, &start, &end) {
-+ 		phys_addr_t size =3D end - start;
- -		if (!total_mem)
- +		if (!mem_start)
-- 			mem_start =3D reg->base;
-- 		if (reg->base <=3D vmlinux_start && vmlinux_end <=3D end)
-- 			BUG_ON(reg->size =3D=3D 0);
-+ 			mem_start =3D start;
-+ 		if (start <=3D vmlinux_start && vmlinux_end <=3D end)
-+ 			BUG_ON(size =3D=3D 0);
- -		total_mem =3D total_mem + size;
-  	}
- =20
-  	/*
-@@@ -542,18 -455,11 +533,18 @@@ static void __init setup_vm_final(void
-  {
-  	uintptr_t va, map_size;
-  	phys_addr_t pa, start, end;
-- 	struct memblock_region *reg;
-+ 	u64 i;
- =20
- -	/* Set mmu_enabled flag */
- -	mmu_enabled =3D true;
- -
- +	/**
- +	 * MMU is enabled at this point. But page table setup is not complete ye=
-t.
- +	 * fixmap page table alloc functions should be used at this point
- +	 */
- +	pt_ops.alloc_pte =3D alloc_pte_fixmap;
- +	pt_ops.get_pte_virt =3D get_pte_virt_fixmap;
- +#ifndef __PAGETABLE_PMD_FOLDED
- +	pt_ops.alloc_pmd =3D alloc_pmd_fixmap;
- +	pt_ops.get_pmd_virt =3D get_pmd_virt_fixmap;
- +#endif
-  	/* Setup swapper PGD for fixmap */
-  	create_pgd_mapping(swapper_pg_dir, FIXADDR_START,
-  			   __pa_symbol(fixmap_pgd_next),
-
---Sig_/QuaTwP8UxkmkDMdTUVhTZAO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98SUoACgkQAVBC80lX
-0GzL2Qf6A/4fOgFUcUt8QAulXpyS4Qe60EepexdyNkCLlcrctE3HdI4fZNUxPrge
-ch84X2RyXhM1boNXoUhDOXQWuorreWkzJai75GSE/1G6o4rymjLI5YwmHoIWRzj+
-jhpIWxtPfVEmBfOP6duNry+g0le+PEU5HcOA5AgLO9Qaf2d/l5VbtyZE+OKMyHmD
-p1QijUc7H/9XRiC4TsifNFKm7WN8QMZGcw6ZU3FNNX7YZYVze4YxDIVj2zyKFZGk
-/UTw8nkRPVTcgxcYR02UKKDIXuPtaU3i20uOOPngklVDaCbztvbbiWk9O0P8SU+E
-xXYOn1a+/X5qunRCnyp24HiOWqKpeg==
-=oWC7
------END PGP SIGNATURE-----
-
---Sig_/QuaTwP8UxkmkDMdTUVhTZAO--
+Bartosz
