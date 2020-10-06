@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78DF284BB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B51284BBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgJFMgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726267AbgJFMgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:36:20 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1356D2075A;
-        Tue,  6 Oct 2020 12:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601987779;
-        bh=4kZKdjlI1YcO8okfFppVkg2wYW38PBZcajjtjvO2oRE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XvTZ1uVf+238iD4WIBCMB2M6orfVHnZsYFJhI0iFX7my5rtXmerbRXFBvNOIq20lM
-         aBk4er9WY6Gt9lXtvrIejTxhdKcCWB5xKSZtD+d8LfenOcFHxRYpiUZ5jICfwslaiJ
-         n8f8TwxAHD5uQ+QYRqiI+boxCNEOVNX7avaysTtg=
-Received: by mail-ot1-f54.google.com with SMTP id s66so12116636otb.2;
-        Tue, 06 Oct 2020 05:36:19 -0700 (PDT)
-X-Gm-Message-State: AOAM531nTy1lM1Sr9cizh17m2wT2PgUsLWO7ag9Ao2g1cKGlcQnoII/t
-        ifbSk9M0XUHLNlVrQhoBawLks9NKS45hova8mk8=
-X-Google-Smtp-Source: ABdhPJzHgJXzYBsBKdRio0TRc/qog4T9bWYgukR/cxeMqS1guB3oBKvglOpyPiUPEA3NAlHwvF8q0xrh3zDnFqbcAG0=
-X-Received: by 2002:a9d:335:: with SMTP id 50mr2648025otv.90.1601987778324;
- Tue, 06 Oct 2020 05:36:18 -0700 (PDT)
+        id S1726536AbgJFMhM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Oct 2020 08:37:12 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:33940 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726459AbgJFMhK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:37:10 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-194-qMDTpG-TMdWdMAHSEoaX-A-1; Tue, 06 Oct 2020 13:37:07 +0100
+X-MC-Unique: qMDTpG-TMdWdMAHSEoaX-A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 6 Oct 2020 13:37:06 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 6 Oct 2020 13:37:06 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        "Will Deacon" <will@kernel.org>, Paul McKenney <paulmck@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "j.alglave@ucl.ac.uk" <j.alglave@ucl.ac.uk>,
+        "luc.maranget@inria.fr" <luc.maranget@inria.fr>,
+        "akiyks@gmail.com" <akiyks@gmail.com>,
+        "dlustig@nvidia.com" <dlustig@nvidia.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+Subject: RE: Control Dependencies vs C Compilers
+Thread-Topic: Control Dependencies vs C Compilers
+Thread-Index: AQHWm9Z2gJDHxIOMJkCFRnXrafG7EamKgJsQ
+Date:   Tue, 6 Oct 2020 12:37:06 +0000
+Message-ID: <3dfe7daed3c44f46a6989b6513ad7bb0@AcuMS.aculab.com>
+References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20201006034854.2277538-1-jeremy.linton@arm.com>
- <20201006082748.GB25305@willie-the-truck> <20201006100121.GW6642@arm.com>
- <20201006102507.GA19213@gaia> <20201006104313.GX6642@arm.com> <20201006123350.GB19213@gaia>
-In-Reply-To: <20201006123350.GB19213@gaia>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 6 Oct 2020 14:36:07 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH0jK3HQSHyAzuzzfeyvUmrWhf2dN9CLZ=hzzUxF-xuSw@mail.gmail.com>
-Message-ID: <CAMj1kXH0jK3HQSHyAzuzzfeyvUmrWhf2dN9CLZ=hzzUxF-xuSw@mail.gmail.com>
-Subject: Re: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Dave Martin <Dave.Martin@arm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 14:33, Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Tue, Oct 06, 2020 at 11:43:14AM +0100, Dave P Martin wrote:
-> > On Tue, Oct 06, 2020 at 11:25:11AM +0100, Catalin Marinas wrote:
-> > > On Tue, Oct 06, 2020 at 11:01:21AM +0100, Dave P Martin wrote:
-> > > > On Tue, Oct 06, 2020 at 09:27:48AM +0100, Will Deacon wrote:
-> > > > > On Mon, Oct 05, 2020 at 10:48:54PM -0500, Jeremy Linton wrote:
-> > > > > > The AES code uses a 'br x7' as part of a function called by
-> > > > > > a macro. That branch needs a bti_j as a target. This results
-> > > > > > in a panic as seen below. Instead of trying to replace the branch
-> > > > > > target with a bti_jc, lets replace the indirect branch with a
-> > > > > > bl/ret, bl sequence that can target the existing bti_c.
-> > > > > >
-> > > > > >   Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
-> > > > > >   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
-> > > > > >   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
-> > > > > >   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
-> > > > > >   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
-> > > > > >   sp : ffff80001052b730
-> > > > > >
-> > > > > >   aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
-> > > > > >    __xts_crypt+0xb0/0x2dc [aes_neon_bs]
-> > > > > >    xts_encrypt+0x28/0x3c [aes_neon_bs]
-> > > > > >   crypto_skcipher_encrypt+0x50/0x84
-> > > > > >   simd_skcipher_encrypt+0xc8/0xe0
-> > > > > >   crypto_skcipher_encrypt+0x50/0x84
-> > > > > >   test_skcipher_vec_cfg+0x224/0x5f0
-> > > > > >   test_skcipher+0xbc/0x120
-> > > > > >   alg_test_skcipher+0xa0/0x1b0
-> > > > > >   alg_test+0x3dc/0x47c
-> > > > > >   cryptomgr_test+0x38/0x60
-> > > > > >
-> > > > > > Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
-> > > > >
-> > > > > nit: the "commit" string shouldn't be here, and I think the linux-next
-> > > > > scripts will yell at us if we don't remove it.
-> > > > >
-> > > > > > Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> > > > > > ---
-> > > > > >  arch/arm64/crypto/aes-neonbs-core.S | 6 +++---
-> > > > > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > > > >
-> > > > > > diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
-> > > > > > index b357164379f6..32f53ebe5e2c 100644
-> > > > > > --- a/arch/arm64/crypto/aes-neonbs-core.S
-> > > > > > +++ b/arch/arm64/crypto/aes-neonbs-core.S
-> > > > > > @@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
-> > > > > >
-> > > > > >  0:   mov             bskey, x21
-> > > > > >       mov             rounds, x22
-> > > > > > -     br              x7
-> > > > > > +     ret
-> > > >
-> > > > Dang, replied on an old version.
-> > >
-> > > Which I ignored (by default, when the kbuild test robot complains ;)).
-> > >
-> > > > Since this is logically a tail call, could we simply be using br x16 or
-> > > > br x17 for this?
-> > > >
-> > > > The architecture makes special provision for that so that the compiler
-> > > > can generate tail-calls.
-> > >
-> > > So a "br x16" is compatible with a bti_c landing pad. I think it makes
-> > > more sense to keep it as a tail call.
-> >
-> > Just to be clear, I'm happy either way, but I thought it would make
-> > sense to point this out.
->
-> I'd prefer the replacement with a br x16/17, it keeps the code pretty
-> much unchanged.
->
+From: Peter Zijlstra
+> Sent: 06 October 2020 12:47
+> Hi,
+> 
+> Let's give this linux-toolchains thing a test-run...
+> 
+> As some of you might know, there's a bit of a discrepancy between what
+> compiler and kernel people consider 'valid' use of the compiler :-)
+> 
+> One area where this shows up is in implicit (memory) ordering provided
+> by the hardware, which we kernel people would like to use to avoid
+> explicit fences (expensive) but which the compiler is unaware of and
+> could ruin (bad).
+...
+> 
+> In short, the control dependency relies on the hardware never
+> speculating stores (instant OOTA) to provide a LOAD->STORE ordering.
+> That is, a LOAD must be completed to resolve a conditional branch, the
+> STORE is after the branch and cannot be made visible until the branch is
+> determined (which implies the load is complete).
+> 
+> However, our 'dear' C language has no clue of any of this.
+> 
+> So given code like:
+> 
+> 	x = *foo;
+> 	if (x > 42)
+> 		*bar = 1;
+> 
+> Which, if literally translated into assembly, would provide a
+> LOAD->STORE order between foo and bar, could, in the hands of an
+> evil^Woptimizing compiler, become:
+> 
+> 	x = *foo;
+> 	*bar = 1;
+> 
+> because it knows, through value tracking, that the condition must be
+> true.
+> 
+> Our Documentation/memory-barriers.txt has a Control Dependencies section
+> (which I shall not replicate here for brevity) which lists a number of
+> caveats. But in general the work-around we use is:
+> 
+> 	x = READ_ONCE(*foo);
+> 	if (x > 42)
+> 		WRITE_ONCE(*bar, 1);
 
-+1
+An alternative is to 'persuade' the compiler that
+any 'tracked' value for a local variable is invalid.
+Rather like the way that barrier() 'invalidates' memory.
+So you generate:
 
-> Jeremy, could you please respin this patch and give it a try?
->
-> Thanks.
->
-> --
-> Catalin
+	x = *foo
+	asm ("" : "+r" (x));
+	if (x > 42)
+		*bar = 1;
+
+Since the "+r" constraint indicates that the value of 'x'
+might have changed it can't optimise based on any
+presumed old value.
+(Unless it looks inside the asm opcodes...)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
