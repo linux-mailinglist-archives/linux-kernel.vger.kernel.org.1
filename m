@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DA628451D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319E228451F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgJFEyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 00:54:06 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:50149 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgJFEyG (ORCPT
+        id S1726729AbgJFEzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 00:55:07 -0400
+Received: from smtprelay0242.hostedemail.com ([216.40.44.242]:60730 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725912AbgJFEzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 00:54:06 -0400
-Received: by mail-il1-f207.google.com with SMTP id t25so1692473ilk.16
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 21:54:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=vbGvYHn+W+IaG2xSdpQ2NL9k7oeMNtTHRnseDsfQub8=;
-        b=GQ92SBPX84wd//C1ngOa6fQm9elujuBsf8mzie6CX+qUKjdIzJsD5D+lRkddu0rsOB
-         9KyFCEvO3/DrhRQBL7rgOpiZBOzEiWSEmTcs62UruwErhoeJO0OGLFu01xmD+6rzV2eN
-         gU5bPSD+PJNBTs8M9aTISP1cPTZ3UF1u+zrmaxg9jfe+zf+GKLw6aWbW8wVTi0+a+Z0Y
-         8SJWjx9yx1xxP1B9rcBfazKt3nf0yYiuisdjKuGfevLjpQo2mxatNxbiKRLbm1WI4rpD
-         mgNNFjSbDioFJijWJjKukfM8L/yTPHMG0KIpIhLGqLCSqPfNlNZp7BYSILArI4j7gliM
-         VnQA==
-X-Gm-Message-State: AOAM531eSkv9M/U9ZAFGTwac/0xy+ODmmspUeYrEvdmz3VCoU67dki2T
-        IRE6ow+dxw63igF+si1EksdvvZe3MElsMJxYXUuNZ0E2mmlI
-X-Google-Smtp-Source: ABdhPJyE8Iq2isWFmFTh8P9W0W6jrxjBi3DqXEcgnkgexuwpGIwXcLMRIJj5V3OQuJTBceUV8hAxFrb3GFVoXhtt8mqf10W+pd0/
+        Tue, 6 Oct 2020 00:55:07 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E8DE618025614;
+        Tue,  6 Oct 2020 04:55:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3868:3870:3874:4250:4321:5007:6120:7576:7903:10004:10400:10450:10455:10848:11026:11232:11657:11658:11914:12043:12296:12297:12740:12760:12895:13069:13149:13161:13229:13230:13255:13311:13357:13439:14181:14254:14659:14721:19904:19999:21080:21451:21627:30001:30002:30003:30004:30005:30006:30007:30008:30009:30010:30011:30012:30013:30014:30015:30016:30017:30018:30019:30020:30021:30022:30023:30024:30025:30026:30027:30028:30029:30030:30031:30032:30033:30034:30035:30036:30037:30038:30039:30040:30041:30042:30043:30044:30045:30046:30047:30048:30049:30050:30051:30052:30053:30054:30055:30057:30058:30059:30060:30061:30062:30063:30064:30065:30066:30067:30068:30069:30070:30071:30072:30073:30074:30075:30076:30077:30078:30079:30080:300
+X-HE-Tag: smell79_1c14f78271c4
+X-Filterd-Recvd-Size: 2318
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  6 Oct 2020 04:55:04 +0000 (UTC)
+Message-ID: <92c4f9bd1d43b80a424a52131fcbc6a1a416de64.camel@perches.com>
+Subject: Re: [RFC PATCH] DRM: amd: powerplay: don't undef pr_warn() {causes
+ ARC build errors}
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Cc:     kernel test robot <lkp@intel.com>, Evan Quan <evan.quan@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>
+Date:   Mon, 05 Oct 2020 21:55:03 -0700
+In-Reply-To: <9c86375d-34a9-6584-0069-452b193076d6@infradead.org>
+References: <9c86375d-34a9-6584-0069-452b193076d6@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-X-Received: by 2002:a92:c50d:: with SMTP id r13mr2291142ilg.264.1601960045445;
- Mon, 05 Oct 2020 21:54:05 -0700 (PDT)
-Date:   Mon, 05 Oct 2020 21:54:05 -0700
-In-Reply-To: <00000000000054c0d105a0328487@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000074076405b0f9632a@google.com>
-Subject: Re: INFO: trying to register non-static key in uhid_dev_destroy
-From:   syzbot <syzbot+0c601d7fbb8122d39093@syzkaller.appspotmail.com>
-To:     benjamin.tissoires@gmail.com, benjamin.tissoires@redhat.com,
-        brookebasile@gmail.com, dh.herrmann@googlemail.com,
-        jikos@kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Mon, 2020-10-05 at 21:50 -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> arch/arc/ implements BUG_ON() with BUG(). ARC has its own BUG()
+> function and that function uses pr_warn() as part of its implementation.
+> 
+> Several (8) files in amd/powerplay/ #undef various pr_xyz() functions so
+> that they won't be used by these drivers, since dev_() functions are
+> preferred here and the #undefs make the pr_() functions unavailable.
+[]
+> --- lnx-59-rc7.orig/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
+> +++ lnx-59-rc7/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
+> @@ -52,7 +52,7 @@
+>   * They are more MGPU friendly.
+>   */
+>  #undef pr_err
+> -#undef pr_warn
+> +//#undef pr_warn
+>  #undef pr_info
+>  #undef pr_debug
+>  
+> --- lnx-59-rc7.orig/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
+> +++ lnx-59-rc7/drivers/gpu/drm/amd/powerplay/sienna_cichlid_ppt.c
+> @@ -54,7 +54,7 @@
+>   * They are more MGPU friendly.
+>   */
+>  #undef pr_err
+> -#undef pr_warn
+> +//#undef pr_warn
+>  #undef pr_info
+>  #undef pr_debug 
 
-commit bce1305c0ece3dc549663605e567655dd701752c
-Author: Marc Zyngier <maz@kernel.org>
-Date:   Sat Aug 29 11:26:01 2020 +0000
+These are bad ideas as all of these pr_<level> entries
+may become functions in a near-term future.
 
-    HID: core: Correctly handle ReportSize being zero
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10b82f50500000
-start commit:   152036d1 Merge tag 'nfsd-5.7-rc-2' of git://git.linux-nfs...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=efdde85c3af536b5
-dashboard link: https://syzkaller.appspot.com/bug?extid=0c601d7fbb8122d39093
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ebad0c100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d6c21c100000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: HID: core: Correctly handle ReportSize being zero
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
