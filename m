@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EF5284F2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38558284F31
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgJFPoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:44:21 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:41931 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgJFPoS (ORCPT
+        id S1726364AbgJFPoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgJFPoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:44:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601999057; x=1633535057;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=wwHDWis+FR/uiwH2DbWAwpt249w3wbP+pJ3EliI7z/8=;
-  b=UljX1dtN8Asug+0srcRfVyW6iS1EkC57kVQQiQzVhu0a4LK7mbxZwGU9
-   N2Xn3XEDNaCMnq0JlyJinmTFE/SNXxg7DLUV950bakK5iZW5P71rn8MSk
-   hbCmd1/folun1FbMyxatoBR73IToKR+K6AqsOPV3bvlTOMF3EvCBKojnr
-   HwDg59SdNnZYVMxEbZqDJz5/xwdfEy7m3DoZcS0wjKn72ptFEz+TXKWis
-   HtT4tUS3E6B+j6QOze3Ah/MK9Ck2xYSy0SExg7ue6S2Bawp3ZucA24gvz
-   IQYkOtmb8HT0x5ICk8+Bq9E4KdL4wW5flxALuxgeB6WNQaJkkSdMbG11z
-   Q==;
-IronPort-SDR: 3xwKByHWsU8ZrzinDvsjzODa+E/mg12sRNAAO4Zcf3OAsq4S+rNi749SeYpaTfnijBmdcytgyW
- 0jsfc9JFtkyHcw147fzdGvCLL26+PZ+TnnjF4q6xdJ98IsbF5ThQaR5eYbTLCgzmw5JCntFkIf
- f7H8X+3OUpuQ0BW6AWQ4HobiHa1zefgV0abyWn7enjXdLQ5vEb0lU+nUWnqgelUa6iN0/1Y8sC
- TA5cOoEznSA5FCmA302mnB3JySo5DjgP42r4gPDUu9hEG5q4yIb+Oh6OnMaeSWrFHouxCvlee4
- BN8=
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="91627120"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Oct 2020 08:44:17 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 6 Oct 2020 08:44:16 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Tue, 6 Oct 2020 08:44:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B8AuDFlYU95rQeRFGFdNu5b83q0W/v+o8n+tVruUdLni4foR/T7OAPegZtu+W6+x0oFssC75v0qggxGwPKGpqyMRJAbTpgoPKGwQVbP88v9QcgLu1Qc8hNN4gVFHfRbzDj6W8TKp1mwgSBdNbTUVEu/tuq9279UOQGijN/Oo7kPlpyDNhfG21lUjDu4rPiBFeKR9Rij+evMvFs9Tw+9+iGC8idgH4u1tgL9VCKfkyih54vO/pdadmVIgNlrWgNp0lSuOcYbqKojSx8LXFAtAwmAvp09cdYELcmeDlE/M/uGhwhOmmKmykbGl9QinkiNfrg9UKFhw0GcnEBhxmoAihA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wwHDWis+FR/uiwH2DbWAwpt249w3wbP+pJ3EliI7z/8=;
- b=SU7j3QtdD+q7xFiZATqLOODyA7EcrvtYMh+2OiVtlIRUpzCc2wwmqQQRXvlkQ7gVK+t33m+P/jhfJQkxXBl8Rmkvjag0zaTTa0eD5H44l3WtAxl06RuR0xXRRlLFugf63XvkWRbVVNldqIjbVCJ0NU/LiQ91gzit69qTXVpCW/LTGQ7tixuwds9GZWKy7vYs8msllOWBwzH40BpgzcqEo1FEa1iDcJWDoNxL3M0zlflV/1hiHWNi9Q+r7MFHXEoo1f1T6/sucm47+3UiaSBwWFBspehdD3z+GNDWu5fQOk7Zm01tXhhH9eIZZLd9hcEJc5fJZ1LQ0p1rIowAJIQwrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Tue, 6 Oct 2020 11:44:46 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A738C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 08:44:46 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id y14so8182618pgf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 08:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wwHDWis+FR/uiwH2DbWAwpt249w3wbP+pJ3EliI7z/8=;
- b=UBokLFcbPbGENXrxKgyKHDXFnrjNu46+1fVa3fQeWeFoherXWFiRvud5yEJyxeJ/1ecxGr1DOF1lNLBibjs+VoG/CG2G0N2DzbMmt7KhfChwJnJvOCYrQL0qnV4EaLdb7f2lLEnMxd2dYf/+R7FcKsK5q8EYV+pFzxHWvMgTdbw=
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- (2603:10b6:903:b1::22) by CY4PR11MB1942.namprd11.prod.outlook.com
- (2603:10b6:903:125::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Tue, 6 Oct
- 2020 15:44:13 +0000
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e]) by CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e%7]) with mapi id 15.20.3433.045; Tue, 6 Oct 2020
- 15:44:13 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <colin.king@canonical.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <Ludovic.Desroches@microchip.com>, <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] ASoC: mchp-spdifrx: fix spelling mistake "overrrun"
- -> "overrun"
-Thread-Topic: [PATCH][next] ASoC: mchp-spdifrx: fix spelling mistake
- "overrrun" -> "overrun"
-Thread-Index: AQHWm/Q817bEwg9jYUW656J+jxiSmqmKtymA
-Date:   Tue, 6 Oct 2020 15:44:13 +0000
-Message-ID: <69436582-3b11-b063-dffa-9975773617ff@microchip.com>
-References: <20201006152024.542418-1-colin.king@canonical.com>
-In-Reply-To: <20201006152024.542418-1-colin.king@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [86.121.164.182]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b000b9b0-880d-4fb6-b1cb-08d86a0eacad
-x-ms-traffictypediagnostic: CY4PR11MB1942:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR11MB19425697B2E35C7DD02E2569E70D0@CY4PR11MB1942.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7TM758PcrHjOm8OTPEkT2l8MIt44Rqkif7QlnQLERpwUwo+7fGRLdl/8EKss97+kow4drHtC+3fCwH642Ka63Xuz/w7+O65c36IRXoIxcqkyT13LuOAF0dFcWq1aRJROPI3txQyiTqme5rNLKIzl5TmRsXNlpAI1d3AJPGAPCae7PV1Ew9AYQaOuUWmD+WZyYNMWdOq2lyh9rVxkZ1hhlWnntdKtz96Yiea5IRJE20MP7BY3MamO1+G1hdDIKAMIGxDgOZ/SLEQa+u2+HodKZ3loqbfWLwK5hGkvfyimFU+II77VhLdwQjjrR8otvLkkqarKQOmyRCsEBfzB4WbojrFn+Ixapdc3+WftJX0z9XoSR+iRa984zxvTevrDQFstkMTdrvhIoNDk4bWWi2oa3g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(396003)(366004)(39860400002)(7416002)(71200400001)(66446008)(2906002)(66476007)(64756008)(66556008)(66946007)(83380400001)(6486002)(8676002)(6506007)(26005)(36756003)(76116006)(2616005)(91956017)(478600001)(53546011)(186003)(31696002)(4326008)(316002)(8936002)(110136005)(54906003)(5660300002)(6512007)(86362001)(31686004)(4744005)(921003)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: fVjfpbkqQPi6x/K+XRXSd2FeNFfXlyZZ2JQWUANNAgdNFwoPUtIaJ9pdlUysMoXrhzvDhp9YhTuyLS2a565WUfUmB1urQgNftANCp07WwCeFAhIKHAaRQg+Nyxskp/Ei8KBeaLxIcMnQTp3MEUmRfr6Vja2CXCSK2aFRmdRKLC2ABEGzD5NFlof4egTjkKI3U+ZgdJv+fzcYdDoHj4McaQO+rmEWsFXHm4EQOEhKzp/OjIkchKt5p3MMqIntzHqNs/U5nyFqj0aUu/wpd9tVc5W8QeEnvRYme3vFFyUIYipOabCPE30KUQngbKzaXepL0zw52Ne2Q0iZjFJjZvwdOfKniwU1AKfmAdoM0R66QaSGNo3wOPRalkSluu6i6gZYjAr5d6y6pceXjWSVLc5gLd0jbUgjIxJnAIe3Amv8CyZOuzehsdUoPFmxZEii/JMxbnuYI5TerubwTWH7i2e1JwgSWWCE8RhqJmfLXnCDvI1sssxZVW3dLr6YkVyk3/BQo7r4fABHA2FgvHq3XYCO3+Lat5UDyi9mL6EyJgQYyfLdjaWkOoWH1T85igYgb90pnuin6OXw/2YYgg1ZAVHvcjOLoIL4qJtx/+KHZY6OPYQ6Ysg5dALO1uTeeTNoa6KcoJrTc88Z35X+NVC5idtdOg==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CBD31730194B6A4B8A662E6392974F78@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bvPeygSRI48grLUqNULD5W+f3mhPyObVQKrAhFQNIS8=;
+        b=vx+TAEpaWL989xTX2O3znU6AUP/8syf/G6qWeeQ9jW8jvLsF3Pa1BQJ+xVLpQx4iiM
+         NDDOjNh/uEC48cIOE2dLgKZzSwdKoEFeX7Dt7nYu+fQSB62N3F+B/WTc4B7pkUNndi9v
+         42KZvZYnrlLjmsaDZ7C9l9oE8/FTolU4RkTnKrtaEHcn3Yxts+MDm8zXw0VrafHcfhQ7
+         20y3kr1QwJ6g3KWOFhVxQMnrBilp/8YuhnfenoIdE3yiyjPLqDoy+mA6tZKcC3/sEJjm
+         kYLbUYscXFdJrULjlE4wTAEPOLnhHvsoQwB/GEVGqq3+r5+/RJhgggVgvreXOgwbCK5L
+         Y32A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bvPeygSRI48grLUqNULD5W+f3mhPyObVQKrAhFQNIS8=;
+        b=UJ+hkwRjR8xV45HJvh6f5YvYGP9KlrwFeMMTl3mdGrVXW+1bSMwYZ9mMLEE633kCZw
+         lKnQau2LJnIC7TNJVpglaz6bevfTBzy7CXMA10HAPhL+pzQA4/uEf8WQDceQQc5sAeBs
+         f81NwT5qiT1BvCnON8EZPlspcApf9t53Tuf1HkQ5PfPUjLoJkrMBw67CTgIFbyotvY6o
+         7cMBluSWbP88mJ5FVxWGW5SE/wMS9bHTmtLLJ7W3blMSHYBUHzzRub6Yr55b5T9kZPSC
+         rz6KQpCWfUIET1WcZK0tnSc1q8gRH539/dvWjnePfUq1cNWlPf6XJoMFNaQ9sBt95Ore
+         jYfw==
+X-Gm-Message-State: AOAM533h7Ndz5d9bGqMuPejkKcKIp2Qx5gj5PQ0yAY0Ya19RjIQ16zzb
+        XfYMuX/pFRZQGlUQif+GVMI32YE/tPJtXwSYXt3ieQ==
+X-Google-Smtp-Source: ABdhPJxu8epATsAnVzNpcf9DQmiAD+l96Xpgn7WIfZOTDnvcg+MTv+IsH7tnMqOinZpjj62OnUSaG8BlODYz9bVMiJs=
+X-Received: by 2002:a62:78d5:0:b029:154:ebc0:c92c with SMTP id
+ t204-20020a6278d50000b0290154ebc0c92cmr1268030pfc.24.1601999084773; Tue, 06
+ Oct 2020 08:44:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b000b9b0-880d-4fb6-b1cb-08d86a0eacad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 15:44:13.1296
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hr3p2GQqU/gQCzb20Q6MZt91hBSMPyBsHwy4jczFn1LE2TMeTb5hApVf85HwCxBvp1fKZoOTzEsgrIA6tTWXzR44ls5pHQl7MsoKwq1yVf8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1942
+References: <CAAeHK+wb4k-LGTjK9F5YbJNviF_+yU+wE_=Vpo9Rn7KFN8vG6Q@mail.gmail.com>
+ <20201005151857.GA2309511@kroah.com> <CAAeHK+zes2Y00+EJ6SVtOHj8YCADw5WSXUEFHWCRgxi=H42+4w@mail.gmail.com>
+ <20201005152540.GG376584@rowland.harvard.edu> <65b4ff62-f9c8-b9cf-50bb-c9b08cce7230@linuxfoundation.org>
+ <20201006012333.GA399825@rowland.harvard.edu>
+In-Reply-To: <20201006012333.GA399825@rowland.harvard.edu>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 6 Oct 2020 17:44:33 +0200
+Message-ID: <CAAeHK+w3hUbNO5PBcoZX2cJsmRPZ8bq+8j8-Xs7nZLFyKbdd+A@mail.gmail.com>
+Subject: Re: Is usb_hcd_giveback_urb() allowed in task context?
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMDYuMTAuMjAyMCAxODoyMCwgQ29saW4gS2luZyB3cm90ZToNCj4gRVhURVJOQUwgRU1BSUw6
-IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25vdyB0
-aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBGcm9tOiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2lu
-Z0BjYW5vbmljYWwuY29tPg0KPiANCj4gVGhlcmUgaXMgYSBzcGVsbGluZyBtaXN0YWtlIGluIGEg
-ZGV2X3dhcm4gbWVzc2FnZS4gRml4IGl0Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFu
-IEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IENvZHJpbiBD
-aXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29tPg0KDQpUaGFuayB5b3Ug
-Q29saW4hDQoNCkJlc3QgcmVnYXJkcywNCkNvZHJpbg0K
+On Tue, Oct 6, 2020 at 3:23 AM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Mon, Oct 05, 2020 at 05:38:22PM -0600, Shuah Khan wrote:
+> > On 10/5/20 9:25 AM, Alan Stern wrote:
+> > > On Mon, Oct 05, 2020 at 05:21:30PM +0200, Andrey Konovalov wrote:
+> > > No, no -- it won't work right if it's called in process context.  Not
+> > > only do the spinlock calls leave the interrupt flag unchanged, also the
+> > > driver callback routines may expect to be invoked with interrupts
+> > > disabled.  (We have tried to fix this, but I'm not at all certain that
+> > > all the cases have been updated.)
+> > >
+> >
+> > In the case of vhci case, usb_hcd_giveback_urb() is called from vhci's
+> > urb_enqueue, when it determines it doesn't need to xmit the urb and can give
+> > it back. This path runs in task context.
+> >
+> > Do you have any recommendation on how this case can be handled?
+>
+> Just call local_irq_disable() before usb_hcd_giveback_urb(), and
+> local_irq_enable() afterward.
+
+OK, so overall it's possible to call usb_hcd_giveback_urb() in task
+context, but only with irqs disabled.
+
+This means we do need a fix for kcov as well, thank you!
