@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3352845C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDED62845C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgJFGDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:03:35 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:37625 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgJFGDf (ORCPT
+        id S1727085AbgJFGDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgJFGDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:03:35 -0400
-X-Greylist: delayed 3620 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 02:03:34 EDT
-Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 2496B200006;
-        Tue,  6 Oct 2020 06:03:29 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 23:03:27 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Tue, 6 Oct 2020 02:03:48 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5C0C0613A7
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 23:03:48 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 34so7368147pgo.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 23:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o+1mE6CyvtWobK1yelGFLZic7reL9nnvtSTOf+SbuLw=;
+        b=AKn2a5gAkmOS3c6KWOCMKE3zG3Yr5UDOsY6/N8l40OaXH4y/N7DSqqkQajgy41Pdt9
+         +57NKe9lna49m7GxxMfS/mY5SlHcJ08EUO33cGnDhzLZwI13XWrO0zqTlZtNWpoikCmD
+         41q/FOv2LZz3+a3ULfrwTu2Jhj80EkzgKXHME=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o+1mE6CyvtWobK1yelGFLZic7reL9nnvtSTOf+SbuLw=;
+        b=gvip6/0xhmVxg1pBlbxKmh+ErbqLYIX1PirrWjy45QlWkRPDMT4TskgbXvPSphW7cw
+         0DOFlPQ4BWp8mcSvD+CehtGnJzbtWS95YbyCALTIt4wMvhpDooL9QrP9KBBOyWGsdKKm
+         tEK5lQ+WFbLFt4IjGXsphM/mFmimyxmrqK5qcMubn3njAcN3ew3gXpT/g0j3yU1+Hl+H
+         XJJOTj1C/EZLlFjxZbI1xlHWwjIYGDWVxYVW4FVFBYIB5WWujXzkx6Dpyo+9uCn243Hn
+         jYPCZ4zK220XYaQNIhoQ98hJI5dCHbgN3Xi48fMGzsgPlLb8H1PgSVTNIHUkELuYEs/V
+         Tpqw==
+X-Gm-Message-State: AOAM531bwXj+j/aw4/y/VUXjT+ZqnrxfVh/4ZddRc72MEyTkBierW+oP
+        dtt6KxdGVrtEG4eEXTb04NqXfA==
+X-Google-Smtp-Source: ABdhPJx7XGhq35ijTOKBA/RFWn71PBN4VOHEabH/E2FAQcBchGZPetIPIEeI1vV0ftKbbx0ldqK6uA==
+X-Received: by 2002:a05:6a00:2291:b029:142:2501:3987 with SMTP id f17-20020a056a002291b029014225013987mr3072038pfe.76.1601964228199;
+        Mon, 05 Oct 2020 23:03:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r206sm1942936pfr.91.2020.10.05.23.03.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 23:03:47 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 23:03:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201006060327.GA9227@localhost>
-References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
- <20201005081454.GA493107@localhost>
- <20201005173639.GA2311765@magnolia>
- <20201006003216.GB6553@localhost>
- <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        George Popescu <georgepope@android.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] ubsan: Force -Wno-maybe-uninitialized only for GCC
+Message-ID: <202010052301.CFBC03C72E@keescook>
+References: <20201002221527.177500-1-keescook@chromium.org>
+ <20201002221527.177500-4-keescook@chromium.org>
+ <20201004071614.GC1650@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006050306.GA8098@localhost>
+In-Reply-To: <20201004071614.GC1650@Ryzen-9-3900X.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 10:03:13PM -0700, Josh Triplett wrote:
-> On Mon, Oct 05, 2020 at 11:18:34PM -0400, Theodore Y. Ts'o wrote:
-> > What Josh is proposing I'm pretty sure would also break "e2fsck -E
-> > unshare_blocks", so that's another reason not to accept this as a
-> > valid format change.
+On Sun, Oct 04, 2020 at 12:16:14AM -0700, Nathan Chancellor wrote:
+> On Fri, Oct 02, 2020 at 03:15:26PM -0700, Kees Cook wrote:
+> > Clang handles 'maybe-uninitialized' better in the face of using UBSAN,
+> > so do not make this universally disabled for UBSAN builds.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 > 
-> The kernel already accepted this as a valid mountable filesystem format,
-> without a single error or warning of any kind, and has done so stably
-> for years.
-> 
-> > As far as I'm concerned, contrib/e2fsdroid is the canonical definition
-> > of how to create valid file systems with shared_blocks.
-> 
-> I'm not trying to create a problem here; I'm trying to address a whole
-> family of problems. I was generally under the impression that mounting
-> existing root filesystems fell under the scope of the kernel<->userspace
-> or kernel<->existing-system boundary, as defined by what the kernel
-> accepts and existing userspace has used successfully, and that upgrading
-> the kernel should work with existing userspace and systems. If there's
-> some other rule that applies for filesystems, I'm not aware of that.
-> (I'm also not trying to suggest that every random corner case of what
-> the kernel *could* accept needs to be the format definition, but rather,
-> cases that correspond to existing userspace.)
-> 
-> It wouldn't be *impossible* to work around this, this time; it may be
-> possible to adapt the existing userspace to work on the new and old
-> kernels. My concern is, if a filesystem format accepted by previous
-> kernels can be rejected by future kernels, what stops a future kernel
-> from further changing the format definition or its strictness
-> (co-evolving with one specific userspace) and causing further
-> regressions?
-> 
-> I don't *want* to rely on what apparently turned out to be an
-> undocumented bug in the kernel's validator. That's why I was trying to
-> fix the issue in what seemed like the right way, by detecting the
-> situation and turning off the validator. That seemed like it would fully
-> address the issue. If it would help, I could also supply a tiny filesystem
-> image for regression testing.
-> 
-> I'm trying to figure out what solution you'd like to see here, as long
-> as it isn't "any userspace that isn't e2fsdroid can be broken at will".
-> I'd be willing to work to adapt the userspace bits I have to work around
-> the regression, but I'd like to get this on the radar so this doesn't
-> happen again.
+> Well this patch is not strictly necessary because Clang does not support
+> -Wmaybe-uninitialized anyways :) its flags are -Wuninitialized and
+> -Wsometimes-uninitialized so the warning stays enabled for UBSAN as it
+> stands.
 
-To clarify something further: I'm genuinely not looking to push hard on
-the limits or corners of the kernel/userspace boundary here, nor do I
-want to create an imposition on development. I'm happy to attempt to be
-a little more flexible than most userspace. I'm trying to make
-substantial, non-trivial use of the userspace side of a kernel/userspace
-boundary, and within reason, I need to rely on the kernel's stability
-guarantees. I'm relying on the combination of
-Documentation/filesystems/ext4 and fs/ext4 as the format documentation.
-The first time I discovered this issue was in doing some "there's about
-to be a new kernel release" regression testing for 5.9, in which it
-created a debugging adventure to track down what the problem was. I'd
-like to find a good way to report and handle this kind of thing going
-forward, if another issue like this arises.
+Ah, yes. Heh. Well... perhaps I can just drop this patch.
 
-- Josh Triplett
+> However, something like this could still worthwhile because it would
+> save us one call to cc-disable-warning (yay micro optimizations).
+> 
+> Maybe it just does not need to have a whole new symbol, just make it
+> 
+> ubsan-cflags-$(CONFIG_CC_IS_GCC)
+> 
+> instead of
+> 
+> ubsan-cflags-$(CONFIG_UBSAN)
+
+If it gets kept, I'd still like it gated on CONFIG_UBSAN in some way
+(e.g. the patch has an implicit depends due to the "if UBSAN" section).
+
+But yes, this patch is rather a no-op.
+
+-- 
+Kees Cook
