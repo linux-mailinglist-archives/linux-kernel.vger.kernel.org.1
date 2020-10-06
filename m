@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA4028505C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C61285062
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgJFQ7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:59:25 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:41174 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgJFQ7Z (ORCPT
+        id S1726214AbgJFRAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgJFRAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:59:25 -0400
-Received: by mail-il1-f208.google.com with SMTP id f10so10496105ilj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 09:59:24 -0700 (PDT)
+        Tue, 6 Oct 2020 13:00:00 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E09C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 10:00:00 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id nl2so1650913pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 10:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W+OwvA2XgottYqNbj2m2Re63qow6EKIPKlH3dYZhaIo=;
+        b=TUIAHmCfa2ApU50+62vetEj4FJKpNKzLypA4i9rbCzgaXdTbMbdRYyWxgn2IVyarya
+         5x3/C3Yi3bBsbRSj6p4s6lVWOVqK0vD2QiR5QLaB1SRy4DfpWziqXBRb5xHjSHOXP5Zm
+         FQDevgm9fnFhCdpf+lBod5gAPIcXrbeV/XMlU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=304jVXmNKE7DcJ31leVLHnoICeijCtIU0UtX/Gik0Bg=;
-        b=RONOcCUlRLv9/FCA9I7Yh2GObbpBf22ew/ixTAqtBnsaOLlpkpJ4RR4k4lxnD+iGfS
-         qGGYspjCNFIUQyTRLWnJ3ld0FjLIZHjOTr0NVJOd0bENJw050aN0qEEubwx5hV2KvQK5
-         jxypN/aqhz5bxpHWAdcnM7HgbFQ0Imxbba8dLjhRMEu6DKvyIyMHV7TaLCkMWtCabBTm
-         2zg8aLkHeV+8r/5nXtXr6thbdVNFiQFO/lEnPR9pCFFq0sAfOp2DKskShDAJjGir658S
-         jXr8UnnQ8Ogvr7cLbMGT5Nv5dO76F5uxQmNoFvX2teofq5Q+e2pt5ABhvXjoSJhtp3yr
-         6DTw==
-X-Gm-Message-State: AOAM533WvJDKLrAyhGM6WA6y5ezQs1ouh5ileITOLushO3GUXSjknLeu
-        Bb2USUhKMmSqxzI5wwwGRkqOGgs3PV17cdRX2eKFI2bl6TTI
-X-Google-Smtp-Source: ABdhPJz9c04Q00sE+RxOF4zQdZoW4g/OtUVOWOzCJ67icok+aJgy8wPbc8ITof7OzqP/r6sQtF41Hk5DvYD8XEIkvtdGbB95kFuF
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W+OwvA2XgottYqNbj2m2Re63qow6EKIPKlH3dYZhaIo=;
+        b=SrwkcOIdvm2qDEGdkZrDC4blDTMgHeJVPwiXqPFtDYtxIHEN95qSXiV48rq37B65eK
+         Ew3x/BtFVtOeu0E1QzxYzbiB4/uN5OrgxO4Ha1Be2yGccBGYJTlh5seo25kaQ4SREzXT
+         /O9mAToOa/EL0+aPv1hQTzdYlW18wU+sPE821b0wmwvuLDe/GT0r1ImU/Tw66psanCCH
+         uLTDJJePOOUIroip08M6yAbR4O21qEvpZNdyshnap5tbT55/IpDMys2uKFQcJjx/vfgw
+         Iaq30Ts79JBWeJy39SVYpKY0JhQNMRTEwT/fYMGl2Lx0Zg9px12NOAAj80c8DjoQFGoZ
+         PtwA==
+X-Gm-Message-State: AOAM531gwRQ/81QctDc6fIF1RhRBFGQbZt3V+eFUXHPrV9xmqsTrPQ8y
+        g0yPn9vv+q8wZ6BBaryeFWJt9w==
+X-Google-Smtp-Source: ABdhPJyXK9tnuldrWA9ft1+RbKXTOVvB4cSKziqBem1JndW/z49Cbi82Gcv89qsl0Sf8CbQwswqecw==
+X-Received: by 2002:a17:902:ab88:b029:d3:b2d3:5708 with SMTP id f8-20020a170902ab88b02900d3b2d35708mr4029517plr.70.1602003599755;
+        Tue, 06 Oct 2020 09:59:59 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id a11sm3332141pju.22.2020.10.06.09.59.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 09:59:59 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 09:59:57 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201006165957.GA191572@google.com>
+References: <20200930013229.GB194665@rowland.harvard.edu>
+ <20200930124915.GA1826870@google.com>
+ <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+ <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
+ <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
+ <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
+ <CAL_JsqLWmBCjrbs2D-d+9naJAKkNhDAbmRtqvCDY8jv=L_q-xA@mail.gmail.com>
+ <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
+ <20201006004510.GD4135817@google.com>
+ <20201006141820.GA416765@rowland.harvard.edu>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a384:: with SMTP id y4mr2228794jak.63.1602003563813;
- Tue, 06 Oct 2020 09:59:23 -0700 (PDT)
-Date:   Tue, 06 Oct 2020 09:59:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000059a14005b10385d8@google.com>
-Subject: KCSAN: data-race in shmem_add_to_page_cache / shmem_getpage_gfp
-From:   syzbot <syzbot+e32fbb814c880bd90628@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201006141820.GA416765@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 06, 2020 at 10:18:20AM -0400, Alan Stern wrote:
+> On Mon, Oct 05, 2020 at 05:45:10PM -0700, Matthias Kaehlcke wrote:
+> > I did some prototyping, it seems a binding like this would work for
+> > case a) or b):
+> > 
+> > &usb_1_dwc3 {
+> >         hub_2_0: hub@1 {
+> >                 compatible = "usbbda,5411";
+> >                 reg = <1>;
+> > 	};
+> > 
+> >         hub_3_0: hub@2 {
+> >                 compatible = "usbbda,411";
+> >                 reg = <2>;
+> >                 vdd-supply = <&pp3300_hub>;
+> > 		companion-hubs = <&hub_2_0>;
+> >         };
+> > };
+> > 
+> > It still requires specifying both hubs (which reflects the actual wiring).
+> > Supporting something like "reg = <1 2>" seems more complex due to the need to
+> > obtain the hub USB device at runtime (a DT node makes that trivial), possibly
+> > this could be solved by adding new APIs.
+> > 
+> > In terms of implementation would I envision to keep a platform driver. This
+> > would keep the hubby parts out of xhci-plat (except for populating the platform
+> > devices), support systems with cascaded hubs and provide a device for the sysfs
+> > attribute.
+> 
+> What will you do if a system has more than one of these power-regulated 
+> hubs?  That is, how will the user know which platform device handles the 
+> power control for a particular hub (and vice versa)?  You'd probably 
+> have to create a pair of symlinks going back and forth in the sysfs 
+> directories.
 
-syzbot found the following issue on:
+The platform device would use the same DT node as the USB device, hence the
+sysfs path of the platform device could be derived from the DT.
 
-HEAD commit:    7575fdda Merge tag 'platform-drivers-x86-v5.9-2' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11df17ff900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8a615d4b735de050
-dashboard link: https://syzkaller.appspot.com/bug?extid=e32fbb814c880bd90628
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> Wouldn't it be easier to put the power-control attribute directly in the 
+> hub's sysfs directory (or .../power subdirectory)?
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Not sure. In terms of implementation it would be more complex (but not rocket
+science either), from a userspace perspective there are pros and cons.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e32fbb814c880bd90628@syzkaller.appspotmail.com
+A platform driver (or some other control instance) is needed anyway, to check
+the connected devices on both hubs and cut power only after the USB devices
+are suspended. With the sysfs attribute associated with the platform device
+it wouldn't even be necessary to have a separate USB driver. The platform
+driver would have to evaluate the sysfs attribute of the USB device(s), which
+can be done but is a bit odd.
 
-==================================================================
-BUG: KCSAN: data-race in shmem_add_to_page_cache / shmem_getpage_gfp
-
-write to 0xffff888109580388 of 8 bytes by task 920 on cpu 0:
- shmem_add_to_page_cache+0x5d7/0x900 mm/shmem.c:718
- shmem_getpage_gfp+0x821/0x19c0 mm/shmem.c:1920
- shmem_fault+0x16c/0x430 mm/shmem.c:2107
- __do_fault mm/memory.c:3639 [inline]
- do_read_fault+0x41f/0x760 mm/memory.c:4032
- do_fault mm/memory.c:4160 [inline]
- handle_pte_fault mm/memory.c:4400 [inline]
- __handle_mm_fault mm/memory.c:4535 [inline]
- handle_mm_fault+0x14e9/0x1af0 mm/memory.c:4633
- faultin_page mm/gup.c:878 [inline]
- __get_user_pages+0xa3d/0x1010 mm/gup.c:1090
- populate_vma_page_range mm/gup.c:1423 [inline]
- __mm_populate+0x24d/0x340 mm/gup.c:1471
- mm_populate include/linux/mm.h:2566 [inline]
- vm_mmap_pgoff+0x133/0x170 mm/util.c:511
- ksys_mmap_pgoff+0xe1/0x380 mm/mmap.c:1596
- do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-read to 0xffff888109580388 of 8 bytes by task 916 on cpu 1:
- shmem_recalc_inode mm/shmem.c:367 [inline]
- shmem_getpage_gfp+0xb7c/0x19c0 mm/shmem.c:1930
- shmem_fault+0x16c/0x430 mm/shmem.c:2107
- __do_fault mm/memory.c:3639 [inline]
- do_read_fault+0x41f/0x760 mm/memory.c:4032
- do_fault mm/memory.c:4160 [inline]
- handle_pte_fault mm/memory.c:4400 [inline]
- __handle_mm_fault mm/memory.c:4535 [inline]
- handle_mm_fault+0x14e9/0x1af0 mm/memory.c:4633
- faultin_page mm/gup.c:878 [inline]
- __get_user_pages+0xa3d/0x1010 mm/gup.c:1090
- __get_user_pages_locked mm/gup.c:1276 [inline]
- get_user_pages_unlocked+0x148/0x570 mm/gup.c:1996
- __gup_longterm_unlocked mm/gup.c:2646 [inline]
- internal_get_user_pages_fast+0xfc2/0x1240 mm/gup.c:2707
- get_user_pages_fast+0x46/0x60 mm/gup.c:2803
- iov_iter_get_pages+0x1a3/0x850 lib/iov_iter.c:1324
- af_alg_make_sg+0x45/0x250 crypto/af_alg.c:394
- hash_sendmsg+0x162/0x650 crypto/algif_hash.c:94
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- __sys_sendto+0x2ae/0x380 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto net/socket.c:2000 [inline]
- __x64_sys_sendto+0x74/0x90 net/socket.c:2000
- do_syscall_64+0x39/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 916 Comm: syz-executor.0 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For a user it might be slightly simpler if they don't have to care about the
+existence of a platform device (but it's just a matter of knowing). The
+attribute must only be associated with one of the USB devices, which might
+be confusing, however it would be messy if each hub had an attribute. The
+attribute could be only associated with the 'primary hub', i.e. the one that
+specifies 'vdd-supply' or other attributes needed by the driver.
