@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C95284C6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E57284C76
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgJFNVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgJFNVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:21:09 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11638C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 06:21:09 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c62so16592456qke.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 06:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YRYuE1oST5rCsSRo3ftJBgKrW6I4XszeRlUEeyGTNfA=;
-        b=BFD//pwAX/64KPt0LEII7XnZhATo+5u4Ci1QUGZnXAvcyoZpf216nBIukB8S0lNR+o
-         /SBnsKFNycdO4FaqhrrvOl8q9yUCUD0kMtxCFrm+T3BuOtGJqNoq/vuatu/yUwFaui3W
-         wG/q9rVWqGvQF3DH1sF8weJvvvE2/FsOJioQK368BV9SL2poAmn8GeN+if4sevucB6tf
-         8BV+2/e4V/R+9zg6ETBTYxp+Q6woapII4/lMg/2r2Ql9+NA7asVIWxgARtsMmyYoMq2K
-         YKB5J7l4MgFdsyryEbJBhC2DmC2IwuvI3od1/Cu2zgJfsaaVHr58x1zSeFV0fZQiWrdf
-         Hg/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YRYuE1oST5rCsSRo3ftJBgKrW6I4XszeRlUEeyGTNfA=;
-        b=DuRAwXLlzqg2rwiVT8QwR8E2m+rPOhOLSwm9wa3WbOG/oQb/yI2XZRIELz8vZRIlq5
-         IYJSkzkBrZV031GarH0eZDRn4ArXENKo2jlbXgJh3kfrfsW6JdVXcr3RWgaKUpJkdnIN
-         dVOPNxcG+/xGp2ofFMwjqy+SemlI2qjcVTW1MnXQVstZD8NKSzQW+3suCPKDX+mjNeBa
-         ciiyPF1BZmhBvl9FkHB9FzhRzwKnLQ51z/yXbGADcB2nLXP/hYIsYwV5HPPtCIrs9vl4
-         tkQA7gX4943lV9TX6zsLnGtnFZ2e4pZQ+cr6ulWaWgNF2rDqpQjG57Oej87XEzySiTtT
-         Vq7Q==
-X-Gm-Message-State: AOAM531ccFWcNWuZJUvZ/B2JzcAOXpBOJV5aNM09c22MddbzK2vft6j2
-        YM5g6YkYpojD+KBdKVQVas9Epw==
-X-Google-Smtp-Source: ABdhPJw4Z7YWS8t/L1IK8utu6wKe+vRmf2v1MdzI4qau8wJptX2TFHJ6aQoGZURrxgM6eCoWFpwqPw==
-X-Received: by 2002:a05:620a:1287:: with SMTP id w7mr2490783qki.335.1601990468080;
-        Tue, 06 Oct 2020 06:21:08 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id 192sm2477887qkm.110.2020.10.06.06.21.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 06:21:07 -0700 (PDT)
-Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
- cache maintenance
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20201001002709.21361-1-jonathan@marek.ca>
- <20201001002709.21361-3-jonathan@marek.ca>
- <20201002075321.GA7547@infradead.org>
- <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
- <20201005082914.GA31702@infradead.org>
- <3e0b91be-e4a4-4ea5-7d58-6e71b8d51932@marek.ca>
- <20201006072306.GA12834@infradead.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <148a1660-f0fc-7163-2240-6b94725342b5@marek.ca>
-Date:   Tue, 6 Oct 2020 09:19:32 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726364AbgJFNWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:22:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726078AbgJFNWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 09:22:05 -0400
+Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B25142078E;
+        Tue,  6 Oct 2020 13:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601990525;
+        bh=LHGrdkmby5BA4t4N23HL7SkHHxZy7yqooZ3dMT3aY2s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UfPGt9w4ExaWlstmmTjNUtHH93y5mElanmrggfILcMKUt4abJ+zea61rxv3QlNqS8
+         i/x4J8NZcOijylogzbLZIa9aYcy1hSw0kZxVfDwfQjAktPxCxt7f0jZjH3ypf2jdQy
+         1vwZVDXuv8tOjyEFsAEFi204UxM1TCTTA6JRNdZQ=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kPmuM-0018Kh-4g; Tue, 06 Oct 2020 15:21:34 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Bailu Lin <bailu.lin@vivo.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>, rcu@vger.kernel.org
+Subject: [PATCH 0/4] linu-next next-20201006 document build fixes
+Date:   Tue,  6 Oct 2020 15:21:29 +0200
+Message-Id: <cover.1601990386.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201006072306.GA12834@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/20 3:23 AM, Christoph Hellwig wrote:
-> On Mon, Oct 05, 2020 at 10:35:43AM -0400, Jonathan Marek wrote:
->> The cache synchronization doesn't have anything to do with IOMMU (for
->> example: cache synchronization would be useful in cases where drm/msm
->> doesn't use IOMMU).
-> 
-> It has to do with doing DMA.  And we have two frameworks for doing DMA:
-> either the DMA API which is for general driver use, and which as part of
-> the design includes cache maintainance hidden behind the concept of
-> ownership transfers.  And we have the much more bare bones IOMMU API.
-> 
-> If people want to use the "raw" IOMMU API with not cache coherent
-> devices we'll need a cache maintainance API that goes along with it.
-> It could either be formally part of the IOMMU API or be separate.
-> 
->> What is needed is to call arch_sync_dma_for_{cpu,device} (which is what I
->> went with initially, but then decided to re-use drm/msm's
->> sync_for_{cpu,device}). But you are also saying those functions aren't for
->> driver use, and I doubt IOMMU maintainers will want to add wrappers for
->> these functions just to satisfy this "not for driver use" requirement.
-> 
-> arch_sync_dma_for_{cpu,device} are low-level helpers (and not very
-> great ones at that).  The definitively should not be used by drivers.
-> They would be very useful buildblocks for a IOMMU cache maintainance
-> API.
-> 
-> Of course the best outcome would be if we could find a way for the MSM
-> drm driver to just use DMA API and not deal with the lower level
-> abstractions.  Do you remember why the driver went for use of the IOMMU
-> API?
-> 
+This small series fix new warnings introduced on today's linux-next.
 
-One example why drm/msm can't use DMA API is multiple page table support 
-(that is landing in 5.10), which is something that definitely couldn't 
-work with DMA API.
+Feel free to add the patches on this series at the same tree
+as the warning was introduced at the first place.
 
-Another one is being able to choose the address for mappings, which 
-AFAIK DMA API can't do (somewhat related to this: qcom hardware often 
-has ranges of allowed addresses, which the dma_mask mechanism fails to 
-represent, what I see is drivers using dma_mask as a "maximum address", 
-and since addresses are allocated from the top it generally works)
-
-But let us imagine drm/msm switches to using DMA API. a2xx GPUs have 
-their own very basic MMU (implemented by msm_gpummu.c), that will need 
-to implement dma_map_ops, which will have to call 
-arch_sync_dma_for_{cpu,device}. So drm/msm still needs to call 
-arch_sync_dma_for_{cpu,device} in that scenario.
+Thanks!
+Mauro
 
 
+Mauro Carvalho Chehab (4):
+  docs: infrastructure.rst: exclude device_link_state from device.h
+  docs: zh_CN: amu.rst: fix document title markup
+  docs: RCU: Requirements.rst: fix a list block
+  firmware_loader: fix a kernel-doc markup
 
+ Documentation/RCU/Design/Requirements/Requirements.rst | 1 +
+ Documentation/driver-api/infrastructure.rst            | 1 +
+ Documentation/translations/zh_CN/arm64/amu.rst         | 4 ++--
+ drivers/base/firmware_loader/fallback.c                | 2 ++
+ 4 files changed, 6 insertions(+), 2 deletions(-)
 
-
+-- 
+2.26.2
 
 
