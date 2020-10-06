@@ -2,125 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64489284968
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AA928496A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbgJFJeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:34:07 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:23052 "EHLO z5.mailgun.us"
+        id S1726064AbgJFJfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:35:12 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42795 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgJFJeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:34:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601976846; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=ckUBDn3d6qNMOJfUzQnYHA2hJd9PVhr0vQBnUyhLSrY=; b=csmL9xZNOttC3br4e6NJj2f8X9uL2hw198+PiIjuZckzHSDSf0mO8v1hb9VmAgbpU2xEd9V2
- k0Pt358HFz3TNejFi478yMh+PligBeC4h4/vPFs39YScytCTbA8TynQcxA0Kzz7Imj2eCoYa
- H9DExPPNPPSrxmCRTY8Hr3FsY0k=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f7c3a0dd63768e57bde3953 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Oct 2020 09:34:05
- GMT
-Sender: gkohli=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CC6D1C43382; Tue,  6 Oct 2020 09:34:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725981AbgJFJfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:35:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: gkohli)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44737C433C8;
-        Tue,  6 Oct 2020 09:34:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 44737C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-To:     rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Gaurav Kohli <gkohli@codeaurora.org>, stable@vger.kernel.org
-Subject: [PATCH v1] trace: Fix race in trace_open and buffer resize call
-Date:   Tue,  6 Oct 2020 15:03:53 +0530
-Message-Id: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5C4F28Gxz9sS8;
+        Tue,  6 Oct 2020 20:35:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601976910;
+        bh=a12/UVDR6zr+BYph3qJOSxMnY7GGVoasy0f3LxNxy2g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j6alsdsA3Uln7mQ1aTXbEIv6ck8MLWm+kik2fXDXlCvb1+f5H7f5GshceE8MR1Ntd
+         6dygfzpZ/zjhz59ckiWYO/mmODHqDg3qmrKSUT5819V0CG7rmYC2Cc84A6Hrnd58EC
+         PJd4Wy2miyf/MU0oD0gxTXBCBtJ30t86Vq5rLliMFzRxrsbHFvsaHAiXHeB6CLdUjp
+         ZVq9+lD5A0DZ1J/vHMnVoC3xNh70XqMNtzN0Pq0grjEjcb9RTHzbCpcXc8YRZnSGOy
+         IzHqdU69tALbls1TGgJWHE6ik/jSJCycjZvOOQZTq3ebf9lUJdSKztYO2W7rKDaG0V
+         +5Qwdr1Lz1wFw==
+Date:   Tue, 6 Oct 2020 20:35:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@mellanox.com>, Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the hmm tree
+Message-ID: <20201006203508.3cb3d0e3@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/6sFO0+9XXkLgtCyzVp9ZubH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below race can come, if trace_open and resize of
-cpu buffer is running parallely on different cpus
-CPUX                                CPUY
-				    ring_buffer_resize
-				    atomic_read(&buffer->resize_disabled)
-tracing_open
-tracing_reset_online_cpus
-ring_buffer_reset_cpu
-rb_reset_cpu
-				    rb_update_pages
-				    remove/insert pages
-resetting pointer
+--Sig_/6sFO0+9XXkLgtCyzVp9ZubH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This race can cause data abort or some times infinte loop in
-rb_remove_pages and rb_insert_pages while checking pages
-for sanity.
+Hi all,
 
-Take buffer lock to fix this.
+After merging the hmm tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
-Cc: stable@vger.kernel.org
+
+Caused by commit
+
+  07da1223ec93 ("lib/scatterlist: Add support in dynamic allocation of SG t=
+able from pages")
+
+interacting with commit
+
+  707d561f77b5 ("drm: allow limiting the scatter list size.")
+
+from the drm tree.
+
+I have added the following merge fix patch
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 6 Oct 2020 20:22:51 +1100
+Subject: [PATCH] lib/scatterlist: merge fix for "drm: allow limiting the
+ scatter list size."
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
-Changes since v0:
-  -Addressed Steven's review comments.
+ drivers/gpu/drm/drm_prime.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 93ef0ab..15bf28b 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -4866,6 +4866,9 @@ void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
- 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
- 		return;
- 
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
-+
- 	atomic_inc(&cpu_buffer->resize_disabled);
- 	atomic_inc(&cpu_buffer->record_disabled);
- 
-@@ -4876,6 +4879,8 @@ void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
- 
- 	atomic_dec(&cpu_buffer->record_disabled);
- 	atomic_dec(&cpu_buffer->resize_disabled);
-+
-+	mutex_unlock(&buffer->mutex);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
- 
-@@ -4889,6 +4894,9 @@ void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
- 	struct ring_buffer_per_cpu *cpu_buffer;
- 	int cpu;
- 
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
-+
- 	for_each_online_buffer_cpu(buffer, cpu) {
- 		cpu_buffer = buffer->buffers[cpu];
- 
-@@ -4907,6 +4915,8 @@ void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
- 		atomic_dec(&cpu_buffer->record_disabled);
- 		atomic_dec(&cpu_buffer->resize_disabled);
- 	}
-+
-+	mutex_unlock(&buffer->mutex);
- }
- 
- /**
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+index 11fe9ff76fd5..83ac901b65a2 100644
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -807,6 +807,7 @@ struct sg_table *drm_prime_pages_to_sg(struct drm_devic=
+e *dev,
+ 				       struct page **pages, unsigned int nr_pages)
+ {
+ 	struct sg_table *sg =3D NULL;
++	struct scatterlist *sl;
+ 	size_t max_segment =3D 0;
+ 	int ret;
+=20
+@@ -820,11 +821,13 @@ struct sg_table *drm_prime_pages_to_sg(struct drm_dev=
+ice *dev,
+ 		max_segment =3D dma_max_mapping_size(dev->dev);
+ 	if (max_segment =3D=3D 0 || max_segment > SCATTERLIST_MAX_SEGMENT)
+ 		max_segment =3D SCATTERLIST_MAX_SEGMENT;
+-	ret =3D __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
++	sl =3D __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
+ 					  nr_pages << PAGE_SHIFT,
+-					  max_segment, GFP_KERNEL);
+-	if (ret)
++					  max_segment, NULL, 0, GFP_KERNEL);
++	if (IS_ERR(sl)) {
++		ret =3D PTR_ERR(sl);
+ 		goto out;
++	}
+=20
+ 	return sg;
+ out:
+--=20
+2.28.0
 
+
+I assume that there may be more needed.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/6sFO0+9XXkLgtCyzVp9ZubH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98OkwACgkQAVBC80lX
+0GzOCQf+PBJgkIRZDEm5TYTOzNpFmT0Pl/eg915A/wCde0kLoswfxghraZDnlMwp
+AAU+CjSrdnnvYLX+AbU7+Vo281UYkyNaWhpv4DV/UZwO7xhog2EkOvZQoYuJRWdv
+fvcMIWyZ+Dyz61RmpluVOEmKapF8qRASCBlWwJc3YwQFrfiRk4Re/TDufFtlK9TE
+rTYmN7ZYW21kVHXyBRX69KhbMl2a4jTyReBFUEOB+BYytYB8CSQqEOrd1Gjs3BoB
+79gG0uh2rQhJ/ajjg+EGQBTF/YwjlB1Vqmy5gpc8q1IWZVBiWE8m6fdXUtccXSqX
+/GUbtuKVBF/MzdmMsdppRZHDIwywCw==
+=8ADh
+-----END PGP SIGNATURE-----
+
+--Sig_/6sFO0+9XXkLgtCyzVp9ZubH--
