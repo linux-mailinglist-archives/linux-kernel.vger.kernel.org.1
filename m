@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CAD284C70
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58080284C73
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 15:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgJFNVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 09:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57560 "EHLO mail.kernel.org"
+        id S1726299AbgJFNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 09:22:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFNVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 09:21:53 -0400
+        id S1726078AbgJFNVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 09:21:55 -0400
 Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 795AF2078E;
-        Tue,  6 Oct 2020 13:21:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A634F208C7;
+        Tue,  6 Oct 2020 13:21:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601990512;
-        bh=EqfKWAQVNPOktMi714ODIttN8rNb+ZlSR96IH/A99vY=;
+        s=default; t=1601990514;
+        bh=2r6oOY4xsG1EB6Z1iMtvKymMAv8zcB6pr2HFpKVhvXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GjcVFmnnyZNhVDozl9IUjUEzfZea1CI+AKKkpi1s4p04mOi49oygAOnpGUwe10wPJ
-         b1U+qsEunzCcoGvstToAnv8JIH18HWAWU6DH2cQp1W8HDrojEcUQE5H6wsZZ8PgQga
-         naea445ssPaFt4VY/ViQkLi7tmD+bGKMEZ0WRwf4=
+        b=wnceM+Pi7yJwn8uNxrah+qJ4fj4k8S+EEGvhqVGYbi5l/bgNOtr4bicFo96ILeSMb
+         gKfEkVvHAjf+d4s0dPfXWOMwhtouBvFup4aV4PNGBzEcpCdX/rJVCN2o9PmTRf4l0b
+         JN6FOBPbRp6zThS1wSwnA6yLxQW/CVnlrUKVCo8s=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kPmuM-0018Kj-5o; Tue, 06 Oct 2020 15:21:34 +0200
+        id 1kPmuM-0018Kl-6l; Tue, 06 Oct 2020 15:21:34 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] docs: infrastructure.rst: exclude device_link_state from device.h
-Date:   Tue,  6 Oct 2020 15:21:30 +0200
-Message-Id: <cacdd9cb5094c33435a8663ee151f39ab8b5721d.1601990386.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Bailu Lin <bailu.lin@vivo.com>,
+        Harry Wei <harryxiyou@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/4] docs: zh_CN: amu.rst: fix document title markup
+Date:   Tue,  6 Oct 2020 15:21:31 +0200
+Message-Id: <403816bb44e06049299e5df9f15a3a691fe7f8e6.1601990386.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601990386.git.mchehab+huawei@kernel.org>
 References: <cover.1601990386.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is already documented at device_link.rst, causing this
-warning, due to a broken cross-reference:
+As warned by Sphinx 2.4.4:
+	.../Documentation/translations/zh_CN/arm64/amu.rst:7: WARNING: Title overline too short.
 
-	.../Documentation/driver-api/device_link.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/infrastructure'.
-	Declaration is 'device_link_state'.
+Increase its size.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/infrastructure.rst | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/translations/zh_CN/arm64/amu.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/infrastructure.rst b/Documentation/driver-api/infrastructure.rst
-index e38d79be4e16..683bd460e222 100644
---- a/Documentation/driver-api/infrastructure.rst
-+++ b/Documentation/driver-api/infrastructure.rst
-@@ -6,6 +6,7 @@ The Basic Device Driver-Model Structures
+diff --git a/Documentation/translations/zh_CN/arm64/amu.rst b/Documentation/translations/zh_CN/arm64/amu.rst
+index bd875f221330..ab7180f91394 100644
+--- a/Documentation/translations/zh_CN/arm64/amu.rst
++++ b/Documentation/translations/zh_CN/arm64/amu.rst
+@@ -4,9 +4,9 @@
  
- .. kernel-doc:: include/linux/device.h
-    :internal:
-+   :no-identifiers: device_link_state
+ Translator: Bailu Lin <bailu.lin@vivo.com>
  
- Device Drivers Base
- -------------------
+-=================================
++==================================
+ AArch64 Linux 中扩展的活动监控单元
+-=================================
++==================================
+ 
+ 作者: Ionela Voinescu <ionela.voinescu@arm.com>
+ 
 -- 
 2.26.2
 
