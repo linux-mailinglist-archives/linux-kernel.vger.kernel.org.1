@@ -2,93 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA50284452
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6D128446C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgJFDgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 23:36:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:36820 "EHLO foss.arm.com"
+        id S1726954AbgJFD6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:58:47 -0400
+Received: from mga09.intel.com ([134.134.136.24]:7291 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJFDgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 23:36:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DDDB113E;
-        Mon,  5 Oct 2020 20:36:54 -0700 (PDT)
-Received: from [10.163.74.99] (unknown [10.163.74.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7045B3F71F;
-        Mon,  5 Oct 2020 20:36:51 -0700 (PDT)
-Subject: Re: [PATCH v3] arm64/mm: add fallback option to allocate virtually
- contiguous memory
-To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>
-References: <cover.1601582954.git.sudaraja@codeaurora.org>
- <9e6178d2828e9c36275487263c5842c688e5b731.1601582954.git.sudaraja@codeaurora.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <49dd60a7-25f4-8dc1-b905-088dff2a84fb@arm.com>
-Date:   Tue, 6 Oct 2020 09:06:20 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1725977AbgJFD6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 23:58:46 -0400
+IronPort-SDR: z9qayJkDs50ZYqNHXP7KRTV62KmCtooOZbh5OI890Cwik4kfqBZ/VZtWwFoxVv4VDhblB+J+pP
+ FxXSrPoTZ0cw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="164478411"
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="164478411"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 20:58:42 -0700
+IronPort-SDR: cKWN0VRgTwU820TpT6TxhC135MCOp8TbkJe/wvY9/BRBwxNybA41vDUyBD3kI1Z/aZaZ2bD/vf
+ +Tl2UqQUlDJA==
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="341825674"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 20:58:39 -0700
+Subject: [PATCH v10 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user,
+ kernel}
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     bp@alien8.de
+Cc:     Tony Luck <tony.luck@intel.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        stable@vger.kernel.org, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        0day robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, x86@kernel.org
+Date:   Mon, 05 Oct 2020 20:40:10 -0700
+Message-ID: <160195561059.2163339.8787400120285484198.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-In-Reply-To: <9e6178d2828e9c36275487263c5842c688e5b731.1601582954.git.sudaraja@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes since v9 [1]:
+
+- (Boris) Compile out the copy_mc_fragile() infrastructure in the
+  CONFIG_X86_MCE=n case.
+
+  This had several knock-on effects. The proposed x86: copy_mc_generic()
+  was internally checking for X86_FEATURE_ERMS and falling back to
+  copy_mc_fragile(), however that fallback is not possible in the
+  CONFIG_X86_MCE=n case when copy_mc_fragile() is compiled out. Instead,
+  copy_mc_to_user() is rewritten similar to copy_user_generic() that walks
+  through several fallback implementations copy_mc_fragile ->
+  copy_mc_enhanced_fast_string (new) -> copy_user_generic (no #MC
+  recovery).
+
+[1]: http://lore.kernel.org/r/160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com
+
+---
+
+Hi Boris,
+
+I gave this some soak time over the weekend for the robots to chew on
+for regressions. No reports, and the updates pass my testing. Please
+consider including this in your updates for v5.10, and thanks for
+offering to pick this up.
+
+---
+
+The motivations to go rework memcpy_mcsafe() are that the benefit of
+doing slow and careful copies is obviated on newer CPUs, and that the
+current opt-in list of cpus to instrument recovery is broken relative to
+those cpus.  There is no need to keep an opt-in list up to date on an
+ongoing basis if pmem/dax operations are instrumented for recovery by
+default. With recovery enabled by default the old "mcsafe_key" opt-in to
+careful copying can be made a "fragile" opt-out. Where the "fragile"
+list takes steps to not consume poison across cachelines.
+
+The discussion with Linus made clear that the current "_mcsafe" suffix
+was imprecise to a fault. The operations that are needed by pmem/dax are
+to copy from a source address that might throw #MC to a destination that
+may write-fault, if it is a user page. So copy_to_user_mcsafe() becomes
+copy_mc_to_user() to indicate the separate precautions taken on source
+and destination. copy_mc_to_kernel() is introduced as a non-SMAP version
+that does not expect write-faults on the destination, but is still
+prepared to abort with an error code upon taking #MC.
+
+---
+
+Dan Williams (2):
+      x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user,kernel}()
+      x86/copy_mc: Introduce copy_mc_enhanced_fast_string()
 
 
-On 10/02/2020 01:46 AM, Sudarshan Rajagopalan wrote:
-> When section mappings are enabled, we allocate vmemmap pages from physically
-> continuous memory of size PMD_SIZE using vmemmap_alloc_block_buf(). Section
-> mappings are good to reduce TLB pressure. But when system is highly fragmented
-> and memory blocks are being hot-added at runtime, its possible that such
-> physically continuous memory allocations can fail. Rather than failing the
-> memory hot-add procedure, add a fallback option to allocate vmemmap pages from
-> discontinuous pages using vmemmap_populate_basepages().
-> 
-> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Logan Gunthorpe <logang@deltatee.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Steven Price <steven.price@arm.com>
-> ---
->  arch/arm64/mm/mmu.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 75df62f..11f8639 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1121,8 +1121,15 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
->  			void *p = NULL;
->  
->  			p = vmemmap_alloc_block_buf(PMD_SIZE, node, altmap);
-> -			if (!p)
-> -				return -ENOMEM;
-> +			if (!p) {
-> +				/*
-> +				 * fallback allocating with virtually
-> +				 * contiguous memory for this section
-> +				 */
+ arch/powerpc/Kconfig                               |    2 
+ arch/powerpc/include/asm/string.h                  |    2 
+ arch/powerpc/include/asm/uaccess.h                 |   40 +++--
+ arch/powerpc/lib/Makefile                          |    2 
+ arch/powerpc/lib/copy_mc_64.S                      |    4 
+ arch/x86/Kconfig                                   |    2 
+ arch/x86/Kconfig.debug                             |    2 
+ arch/x86/include/asm/copy_mc_test.h                |   75 +++++++++
+ arch/x86/include/asm/mce.h                         |    9 +
+ arch/x86/include/asm/mcsafe_test.h                 |   75 ---------
+ arch/x86/include/asm/string_64.h                   |   32 ----
+ arch/x86/include/asm/uaccess.h                     |    9 +
+ arch/x86/include/asm/uaccess_64.h                  |   20 --
+ arch/x86/kernel/cpu/mce/core.c                     |    8 -
+ arch/x86/kernel/quirks.c                           |   10 -
+ arch/x86/lib/Makefile                              |    1 
+ arch/x86/lib/copy_mc.c                             |   96 ++++++++++++
+ arch/x86/lib/copy_mc_64.S                          |  163 ++++++++++++++++++++
+ arch/x86/lib/memcpy_64.S                           |  115 --------------
+ arch/x86/lib/usercopy_64.c                         |   21 ---
+ drivers/md/dm-writecache.c                         |   15 +-
+ drivers/nvdimm/claim.c                             |    2 
+ drivers/nvdimm/pmem.c                              |    6 -
+ include/linux/string.h                             |    9 -
+ include/linux/uaccess.h                            |   13 ++
+ include/linux/uio.h                                |   10 +
+ lib/Kconfig                                        |    7 +
+ lib/iov_iter.c                                     |   48 +++---
+ tools/arch/x86/include/asm/mcsafe_test.h           |   13 --
+ tools/arch/x86/lib/memcpy_64.S                     |  115 --------------
+ tools/objtool/check.c                              |    5 -
+ tools/perf/bench/Build                             |    1 
+ tools/perf/bench/mem-memcpy-x86-64-lib.c           |   24 ---
+ tools/testing/nvdimm/test/nfit.c                   |   49 +++---
+ .../testing/selftests/powerpc/copyloops/.gitignore |    2 
+ tools/testing/selftests/powerpc/copyloops/Makefile |    6 -
+ .../selftests/powerpc/copyloops/copy_mc_64.S       |    1 
+ .../selftests/powerpc/copyloops/memcpy_mcsafe_64.S |    1 
+ 38 files changed, 484 insertions(+), 531 deletions(-)
+ rename arch/powerpc/lib/{memcpy_mcsafe_64.S => copy_mc_64.S} (98%)
+ create mode 100644 arch/x86/include/asm/copy_mc_test.h
+ delete mode 100644 arch/x86/include/asm/mcsafe_test.h
+ create mode 100644 arch/x86/lib/copy_mc.c
+ create mode 100644 arch/x86/lib/copy_mc_64.S
+ delete mode 100644 tools/arch/x86/include/asm/mcsafe_test.h
+ delete mode 100644 tools/perf/bench/mem-memcpy-x86-64-lib.c
+ create mode 120000 tools/testing/selftests/powerpc/copyloops/copy_mc_64.S
+ delete mode 120000 tools/testing/selftests/powerpc/copyloops/memcpy_mcsafe_64.S
 
-Mapping is always virtually contiguous with or without huge pages.
-Please drop this comment here, as it's obvious.
-
-> +				if (vmemmap_populate_basepages(addr, next, node, NULL))
-> +					return -ENOMEM;
-
-Please send in the 'altmap' instead of NULL for allocation from
-device memory if and when requested.
+base-commit: a1b8638ba1320e6684aa98233c15255eb803fac7
