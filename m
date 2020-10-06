@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2BE2851FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A54285200
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgJFTBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgJFTBc (ORCPT
+        id S1726928AbgJFTD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:03:27 -0400
+Received: from outbound-smtp24.blacknight.com ([81.17.249.192]:48364 "EHLO
+        outbound-smtp24.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726791AbgJFTD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:01:32 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AF0C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 12:01:32 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id n61so13298292ota.10
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 12:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YSymH4vd/R57ZcKC0GdaMdmbsJkR/uPBbSzo5j6VwGI=;
-        b=WYCtXI6u/py4vSrocw3RaLLovCI1JxT5ISmnl3Cx2aVM2XY/kv/f/+IV2MEz3qejW5
-         CstYX+nDT2/lYjGF+onBkWGgL1k6jRJjbXI9H/t9kHWAgJ4DREu1VWnA6y98qyulp4Bc
-         5lh6t4bbo7XH9xKRzR/Zype2yl63f+eaLxFnME3uk7+llKI7qurGMhBkoMYADAe0dVxw
-         +QTYra5wUEtSupM3LdA5JkStECMvPIH4cGJatO3we+aNOGspa/mu9k+v5kA7zEHJ1Nbw
-         6Olm66WRO5BGRZ2MgDfvfk8QexwDVH3li5Wg4sMQA/YCkngCl8j3NA60NN6UFy+U9RJS
-         1Irg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YSymH4vd/R57ZcKC0GdaMdmbsJkR/uPBbSzo5j6VwGI=;
-        b=ZZCiv/FaBOn50lgZWVUorxpi1weEe9//5xgugbqNfPGXzlqn+z0/sJSmmj8LKSrDoY
-         smLi06vT5uXFcrrtriCc6CEML+vdB16sjv9IMSwjJC+511EtWFqRYDXEYcQRiF6Xk/c0
-         Pjw7gsnwqTLQbUflmU9hoBf/OQdqicL9uC1ihPSgehQFsy9yoyQWt9JPI35oiMDk4ZmU
-         mtr3nzEwQYyhXOwWY0FDGpls7aznrEKeCWXW4tWCTsZJhYmFNV7e/O/5OkHJklF/wz9n
-         G6IjYCrKe4NjhDrmOvjc4zHblcVQ2CUUXPLxZ5NsXnxaVae5D766wJG/qKw36sHgR0vF
-         /1YQ==
-X-Gm-Message-State: AOAM533VrULTUeG5CBLBs0Oyixmt6sIlEgE/l1lhxeFE712nKDT0omCc
-        oIy6OzG229spVF4qSr+Q1FVHAMJNPcObSmSG2kk=
-X-Google-Smtp-Source: ABdhPJz9lz/9PlcW/fDp6CK8frwTEfGJVwHqpkf+vqobGR9FlivLWUs9JnrTHt/RdlwgWZLE8PY/RWYaA28brxuUdl4=
-X-Received: by 2002:a9d:4b18:: with SMTP id q24mr3709804otf.265.1602010891747;
- Tue, 06 Oct 2020 12:01:31 -0700 (PDT)
+        Tue, 6 Oct 2020 15:03:26 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp24.blacknight.com (Postfix) with ESMTPS id D3AA1C0C23
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 20:03:24 +0100 (IST)
+Received: (qmail 27506 invoked from network); 6 Oct 2020 19:03:24 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Oct 2020 19:03:24 -0000
+Date:   Tue, 6 Oct 2020 20:03:22 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+Message-ID: <20201006190322.GL3227@techsingularity.net>
+References: <20201006083639.GJ3227@techsingularity.net>
+ <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
 MIME-Version: 1.0
-References: <20201006185114.168358-1-dwaipayanray1@gmail.com> <8553d6679f97ae9d285a9ffd61198f5e3c11dc35.camel@perches.com>
-In-Reply-To: <8553d6679f97ae9d285a9ffd61198f5e3c11dc35.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Wed, 7 Oct 2020 00:31:08 +0530
-Message-ID: <CABJPP5Awe=CDC7riYBBVDf9WRO4aAMXK2QROYdtGyJXNjqB-ew@mail.gmail.com>
-Subject: Re: [PATCH v4] checkpatch: add new warnings to author signoff checks.
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 12:25 AM Joe Perches <joe@perches.com> wrote:
->
-> On Wed, 2020-10-07 at 00:21 +0530, Dwaipayan Ray wrote:
-> > The author signed-off-by checks are currently very vague.
-> > Cases like same name or same address are not handled separately.
-> >
-> > For example, running checkpatch on commit be6577af0cef
-> > ("parisc: Add atomic64_set_release() define to avoid CPU soft lockups"),
-> > gives:
->
-> Aren't you still missing emitting an message for cases like
->
-> From: "J. Random Developer" <jrd@bigcorp.com>
-> [...]
-> Signed-off-by: "J. Random Developer" (BigCorp) <jrd@bigcorp.com>
->
-> Where a comment does not match?
->
->
+On Tue, Oct 06, 2020 at 06:00:18PM +0200, Rafael J. Wysocki wrote:
+> > server systems") and enable-cst is the commit. It was not fixed by 5.6 or
+> > 5.9-rc8. A lot of bisections ended up here including kernel compilation,
+> > tbench, syscall entry/exit microbenchmark, hackbench, Java workloads etc.
+> > 
+> > What I don't understand is why. The latencies for c-state exit states
+> > before and after the patch are both as follows
+> > 
+> > /sys/devices/system/cpu/cpu0/cpuidle/state0/latency:0
+> > /sys/devices/system/cpu/cpu0/cpuidle/state1/latency:2
+> > /sys/devices/system/cpu/cpu0/cpuidle/state2/latency:10
+> > /sys/devices/system/cpu/cpu0/cpuidle/state3/latency:33
+> > /sys/devices/system/cpu/cpu0/cpuidle/state4/latency:133
+> > 
+> > Perf profiles did not show up anything interesting. A diff of
+> > /sys/devices/system/cpu/cpu0/cpuidle/state0/ before and after the patch
+> > showed up nothing interesting. Any idea why exactly this patch shows up
+> > as being hazardous on Haswell in particular?
+> > 
+> Presumably, some of the idle states are disabled by default on the affected
+> machines.
+> 
+> Can you check the disable and default_status attributes of each state before
+> and after the commit in question?
+> 
 
-Yes, messages for comments were not emitted previously too
-cause the same_email_address() function just matches name
-and email (discarding name comments and email comments).
+# grep . pre-cst/cpuidle/state*/disable
+pre-cst/cpuidle/state0/disable:0
+pre-cst/cpuidle/state1/disable:0
+pre-cst/cpuidle/state2/disable:0
+pre-cst/cpuidle/state3/disable:0
+pre-cst/cpuidle/state4/disable:0
+# grep . enable-cst/cpuidle/state*/disable
+enable-cst/cpuidle/state0/disable:0
+enable-cst/cpuidle/state1/disable:0
+enable-cst/cpuidle/state2/disable:0
+enable-cst/cpuidle/state3/disable:0
+enable-cst/cpuidle/state4/disable:0
+# grep . pre-cst/cpuidle/state*/default_status
+pre-cst/cpuidle/state0/default_status:enabled
+pre-cst/cpuidle/state1/default_status:enabled
+pre-cst/cpuidle/state2/default_status:enabled
+pre-cst/cpuidle/state3/default_status:enabled
+pre-cst/cpuidle/state4/default_status:enabled
 
-So should I add it to this patch, or should I work on it in a different
-patch perhaps because it involves change on another subroutine?
+After the commit, the default_status file does not appear in /sys
 
-Thanks,
-Dwaipayan.
+-- 
+Mel Gorman
+SUSE Labs
