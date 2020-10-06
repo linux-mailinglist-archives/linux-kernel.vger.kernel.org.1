@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77250284BA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6015D284BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgJFMbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:31:55 -0400
-Received: from mailout02.rmx.de ([62.245.148.41]:57880 "EHLO mailout02.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726241AbgJFMby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:31:54 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout02.rmx.de (Postfix) with ESMTPS id 4C5H060bwnzNl5N;
-        Tue,  6 Oct 2020 14:31:50 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4C5Gzj2lCWz2xbl;
-        Tue,  6 Oct 2020 14:31:29 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.66) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 6 Oct
- 2020 14:30:56 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     David Laight <David.Laight@aculab.com>
-CC:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v3 1/3] i2c: imx: Fix reset of I2SR_IAL flag
-Date:   Tue, 6 Oct 2020 14:30:55 +0200
-Message-ID: <2080355.2eSLTprjVn@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <f8f1a9f54e0e426dbe27cc13a3b9de8d@AcuMS.aculab.com>
-References: <20201006060528.drh2yoo2dklyntez@pengutronix.de> <20201006105135.28985-2-ceggers@arri.de> <f8f1a9f54e0e426dbe27cc13a3b9de8d@AcuMS.aculab.com>
+        id S1726431AbgJFMbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:31:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36338 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbgJFMbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:31:02 -0400
+Date:   Tue, 6 Oct 2020 14:30:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601987460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RhFcoPzFYI/4m2fbtizw1MozBQgqfqg3O3LLboTR2OU=;
+        b=yMJPSpLy70AOzRFpkjeIv5NPQNhu/4FVyO17/F7hd8Q1PKxxGhEA1ujqGgebvTzf0oVrKZ
+        rcZOsC+ixjzp8uBME44whFS4e52CkD50L/i6nv3xE5DcgtP9O/035WtmqpneaVZQHTEg24
+        rd/cHIEkIgBjpmKA9qWCDT5RjhF+k4GnT9L6YwctXtvY02hnWsoT/tDeP4yQ3RaaxTjcI/
+        +eAyb9Uf5IviQCXX8B1U8rdWzAWJUfsd2IfSlAitNzkdHVAL/PrgkHCwRNIzMvNCrRRk2/
+        qWVIMDY6lc0oOAFbo8KuW3oqjJMqPBbbY0XkJEJeKPZ/zlJqARPvN+HieHMKqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601987460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RhFcoPzFYI/4m2fbtizw1MozBQgqfqg3O3LLboTR2OU=;
+        b=B5Xs0Fmobz1fgt6Qxck++p/aQBrMzfExMRzQnYnH1z4QyRdJvfTU2+TsZR1RxqLPH75xqM
+        O26bgNjM/uJfHtAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] locking/seqlock: Tweak DEFINE_SEQLOCK() kernel doc
+Message-ID: <20201006122932.o7hn7hvucbl5n6fu@linutronix.de>
+References: <20200924154851.skmswuyj322yuz4g@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.66]
-X-RMX-ID: 20201006-143135-4C5Gzj2lCWz2xbl-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200924154851.skmswuyj322yuz4g@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-
-On Tuesday, 6 October 2020, 14:06:36 CEST, David Laight wrote:
-> From: Christian Eggers
-> > +static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned
-> > int bits) +{
-> > +	unsigned int temp;
-> > +
-> > +	/*
-> > +	 * i2sr_clr_opcode is the value to clear all interrupts.
-> > +	 * Here we want to clear only <bits>, so we write
-> > +	 * ~i2sr_clr_opcode with just <bits> toggled.
-> > +	 */
-> > +	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
-> > +	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
-> > +}
+On 2020-09-24 17:48:53 [+0200], To linux-kernel@vger.kernel.org wrote:
+> ctags creates a warning:
+> |ctags: Warning: include/linux/seqlock.h:738: null expansion of name pattern "\2"
 > 
-> That looks either wrong or maybe just overcomplicated.
-Yes, it looks so.
+> The DEFINE_SEQLOCK() macro is passed to ctags and being told to expect
+> an argument.
+> 
+> Add a dummy argument to keep ctags quiet.
 
-> Why isn't:
-> 	imx_i2c_write_reg(bits, i2c_imx, IMX_I2C_I2SR);
-> enough?
-i.MX requires W1C and Vybrid requires W0C in order to clear status bits.
+ping.
 
-> More usually you just write back the read value of such
-> 'write 1 to clear' status registers and then act on all
-> the set bits.
-This pattern has been suggested by Uwe Klein-Koenig. It works because write 
-access to read-only register bits is ignored, independent whether 0 or 1 is 
-written. W0C is quite unusual, but I didn't design the hardware... The pattern 
-ensures that not accidentally more status bits are cleared than desired.
-
-> That ensures you clear all interrupts that were pending.
-I think that Uwe's intention was not clearing bits which are not handled at 
-this place. Otherwise events may get lost.
-
-> If you need to avoid writes of bits that aren't in the
-> 'clear all interrupts' value then you just need:
-> 	bits &= i2c_imx->hwdata->i2sr_clr_opcode;
-> prior to the write.
-I think this wouldn't fit the W0C case for Vybrid.
-
-Best regards
-Christian
-
-
-
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  include/linux/seqlock.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+> index 962d9768945f0..4a69e74dc7ce9 100644
+> --- a/include/linux/seqlock.h
+> +++ b/include/linux/seqlock.h
+> @@ -735,7 +735,7 @@ typedef struct {
+>  	} while (0)
+>  
+>  /**
+> - * DEFINE_SEQLOCK() - Define a statically allocated seqlock_t
+> + * DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t
+>   * @sl: Name of the seqlock_t instance
+>   */
+>  #define DEFINE_SEQLOCK(sl) \
+> -- 
+> 2.28.0
+> 
