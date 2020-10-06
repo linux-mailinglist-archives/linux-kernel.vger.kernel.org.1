@@ -2,138 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A80728494D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9977A284951
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgJFJZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFJZH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:25:07 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88885C061755;
-        Tue,  6 Oct 2020 02:25:05 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id h6so6985187pgk.4;
-        Tue, 06 Oct 2020 02:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Arg2XGQgOUZy9kvkHUgOD04aDWRkuagTYx1qx/Ums2U=;
-        b=jBnTQbzXl/6NjxH8p6vRMjVP6FIzPxQfTpEixwz7ocyu3cH/ZjSSvbwZt5P+RNuofm
-         ze+dhNwSrJ1HV3ONCPcak/IEV1g567AkbHO15Kvj4lIz3s24xd7Bz6Thcwm5xcG2lb+U
-         jwuwI5d4QE8jgbtRuWIQ62TG/BfGPW7680Qtkpd4oTkImbminskR+Ze7ehatAZSxqprt
-         r7MRYA8r2JAP+RzBxlvqPORZFdTff821T7bxwkNDN0fXfbrOmjR3vVU0BGNrxZzPIQyg
-         Ip6leXGbsIBtz9i7IOAshvKa/oo/ZtmTcx7UHPtDLSH8igHcregzbJVG4eFmbZRium72
-         nV4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Arg2XGQgOUZy9kvkHUgOD04aDWRkuagTYx1qx/Ums2U=;
-        b=LMl7Us5HseRe3hZwLiXu2FwmcmG6s19w8JfBpWfHqt+FSrxMBAypg/ghy/CNLZBcQZ
-         8tthRghs/FIHbtEG0xUFeP4T0bleojGhGxrGTbozTtlvo1t93EXCQVJWQPziHvE++qCY
-         iHAB8IsrxeDaHI+8bMW05gCly1bOaydaiAtq5LRg5PYUO9Ya1w13w0JGReuDewf6mzDj
-         ej5JgX7F/W/bUfhx1D42C3W97bNSSK6PflhPDMEoK0wTlBbDh2kGwv688DopyGarsaLo
-         S+fktqFTuPKaBZow2lpB7xjtd6g/ywsX3vxzJCVhdHozy92TS6mw07Vv2gpb3PsGigtm
-         BKiQ==
-X-Gm-Message-State: AOAM530meagup3HHPUAcyHhlqPu0OLiQguW4lzMwHc4mTZ+5Hf9/WVGj
-        f/C5qWW/62x+V/mgruRVoBw=
-X-Google-Smtp-Source: ABdhPJxl9MhfqOhhz+N2e4xau3nNbTYZT979niUAOcH4w5ghJ+7tFUxZ1Eud8RjycdHsYsF66HVGTQ==
-X-Received: by 2002:a63:5d58:: with SMTP id o24mr3306789pgm.115.1601976305170;
-        Tue, 06 Oct 2020 02:25:05 -0700 (PDT)
-Received: from syed ([117.97.226.113])
-        by smtp.gmail.com with ESMTPSA id d1sm2157635pjk.38.2020.10.06.02.25.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 02:25:04 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 14:54:49 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     linus.walleij@linaro.org, akpm@linux-foundation.org
-Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
-        rrichter@marvell.com, bgolaszewski@baylibre.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v11 3/4] gpio: thunderx: Utilize for_each_set_clump macro
-Message-ID: <4e22ffca8d55f185a1b2f9c8e35ed39f31ce8dc1.1601974764.git.syednwaris@gmail.com>
-References: <cover.1601974764.git.syednwaris@gmail.com>
+        id S1726139AbgJFJZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:25:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:42816 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgJFJZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:25:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A53D7113E;
+        Tue,  6 Oct 2020 02:25:39 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A89A23F71F;
+        Tue,  6 Oct 2020 02:25:37 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 10:25:34 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+Message-ID: <20201006092532.GU6642@arm.com>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
+ <20201005134534.GT6642@arm.com>
+ <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1601974764.git.syednwaris@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reimplements the thunderx_gpio_set_multiple function in
-drivers/gpio/gpio-thunderx.c to use the new for_each_set_clump macro.
-Instead of looping for each bank in thunderx_gpio_set_multiple
-function, now we can skip bank which is not set and save cycles.
+On Mon, Oct 05, 2020 at 10:17:06PM +0100, H.J. Lu wrote:
+> On Mon, Oct 5, 2020 at 6:45 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> >
+> > On Tue, Sep 29, 2020 at 01:57:42PM -0700, Chang S. Bae wrote:
+> > > During signal entry, the kernel pushes data onto the normal userspace
+> > > stack. On x86, the data pushed onto the user stack includes XSAVE state,
+> > > which has grown over time as new features and larger registers have been
+> > > added to the architecture.
+> > >
+> > > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+> > > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+> > > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+> > > constant indicates to userspace how much data the kernel expects to push on
+> > > the user stack, [2][3].
+> > >
+> > > However, this constant is much too small and does not reflect recent
+> > > additions to the architecture. For instance, when AVX-512 states are in
+> > > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
+> > >
+> > > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+> > > cause user stack overflow when delivering a signal.
+> > >
+> > > In this series, we suggest a couple of things:
+> > > 1. Provide a variable minimum stack size to userspace, as a similar
+> > >    approach to [5]
+> > > 2. Avoid using a too-small alternate stack
+> >
+> > I can't comment on the x86 specifics, but the approach followed in this
+> > series does seem consistent with the way arm64 populates
+> > AT_MINSIGSTKSZ.
+> >
+> > I need to dig up my glibc hacks for providing a sysconf interface to
+> > this...
+> 
+> Here is my proposal for glibc:
+> 
+> https://sourceware.org/pipermail/libc-alpha/2020-September/118098.html
 
-Cc: Robert Richter <rrichter@marvell.com>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
-Changes in v11:
- - No change.
+Thanks for the link.
 
-Changes in v10:
- - No change.
+Are there patches yet?  I already had some hacks in the works, but I can
+drop them if there's something already out there.
 
-Changes in v9:
- - No change.
 
-Changes in v8:
- - No change.
+> 1. Define SIGSTKSZ and MINSIGSTKSZ to 64KB.
 
-Changes in v7:
- - No change.
+Can we do this?  IIUC, this is an ABI break and carries the risk of
+buffer overruns.
 
-Changes in v6:
- - No change.
+The reason for not simply increasing the kernel's MINSIGSTKSZ #define
+(apart from the fact that it is rarely used, due to glibc's shadowing
+definitions) was that userspace binaries will have baked in the old
+value of the constant and may be making assumptions about it.
 
-Changes in v5:
- - No change.
+For example, the type (char [MINSIGSTKSZ]) changes if this #define
+changes.  This could be a problem if an newly built library tries to
+memcpy() or dump such an object defined by and old binary.
+Bounds-checking and the stack sizes passed to things like sigaltstack()
+and makecontext() could similarly go wrong.
 
-Changes in v4:
- - Minor change: Inline value '64' in code for better code readability.
 
-Changes in v3:
- - Change datatype of some variables from u64 to unsigned long
-   in function thunderx_gpio_set_multiple.
+> 2. Add _SC_RSVD_SIG_STACK_SIZE for signal stack size reserved by the kernel.
 
-Changes in v2:
- - No change.
+How about "_SC_MINSIGSTKSZ"?  This was my initial choice since only the
+discovery method is changing.  The meaning of the value is exactly the
+same as before.
 
- drivers/gpio/gpio-thunderx.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+If we are going to rename it though, it could make sense to go for
+something more directly descriptive, say, "_SC_SIGNAL_FRAME_SIZE".
 
-diff --git a/drivers/gpio/gpio-thunderx.c b/drivers/gpio/gpio-thunderx.c
-index 9f66deab46ea..58c9bb25a377 100644
---- a/drivers/gpio/gpio-thunderx.c
-+++ b/drivers/gpio/gpio-thunderx.c
-@@ -275,12 +275,15 @@ static void thunderx_gpio_set_multiple(struct gpio_chip *chip,
- 				       unsigned long *bits)
- {
- 	int bank;
--	u64 set_bits, clear_bits;
-+	unsigned long set_bits, clear_bits, gpio_mask;
-+	unsigned long offset;
-+
- 	struct thunderx_gpio *txgpio = gpiochip_get_data(chip);
- 
--	for (bank = 0; bank <= chip->ngpio / 64; bank++) {
--		set_bits = bits[bank] & mask[bank];
--		clear_bits = ~bits[bank] & mask[bank];
-+	for_each_set_clump(offset, gpio_mask, mask, chip->ngpio, 64) {
-+		bank = offset / 64;
-+		set_bits = bits[bank] & gpio_mask;
-+		clear_bits = ~bits[bank] & gpio_mask;
- 		writeq(set_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_SET);
- 		writeq(clear_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_CLR);
- 	}
--- 
-2.26.2
+The trouble with including "STKSZ" is that is sounds like a
+recommendation for your stack size.  While the signal frame size is
+relevant to picking a stack size, it's not the only thing to
+consider.
 
+
+Also, do we need a _SC_SIGSTKSZ constant, or should the entire concept
+of a "recommended stack size" be abandoned?  glibc can at least make a
+slightly more informed guess about suitable stack sizes than the kernel
+(and glibc already has to guess anyway, in order to determine the
+default thread stack size).
+
+
+> 3. Deprecate SIGSTKSZ and MINSIGSTKSZ if _SC_RSVD_SIG_STACK_SIZE
+> is in use.
+
+Great if we can do it.  I was concerned that this might be
+controversial.
+
+Would this just be a recommendation, or can we enforce it somehow?
+
+Cheers
+---Dave
