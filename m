@@ -2,130 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59388284BD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6203284BDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgJFMma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
+        id S1726724AbgJFMnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgJFMm3 (ORCPT
+        with ESMTP id S1726362AbgJFMnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:42:29 -0400
-Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ACBC061755;
-        Tue,  6 Oct 2020 05:42:29 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id DD3A0634C87;
-        Tue,  6 Oct 2020 15:41:48 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kPmHs-0001eV-OW; Tue, 06 Oct 2020 15:41:48 +0300
-Date:   Tue, 6 Oct 2020 15:41:48 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     trix@redhat.com
-Cc:     corbet@lwn.net, mchehab@kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: ov7670: check status of ov7670_read
-Message-ID: <20201006124148.GC5682@valkosipuli.retiisi.org.uk>
-References: <20200828145518.26324-1-trix@redhat.com>
+        Tue, 6 Oct 2020 08:43:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6A3C061755;
+        Tue,  6 Oct 2020 05:43:51 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601988230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAj9JE4eqj8FhfohvFYZxoqCcBarf5zqltsQxUiI1tk=;
+        b=VhmsWAgNyVmBH7+ZdeqYiGj1kqUi6dTRhFBV7hC8xg7Yy6GtMZ9KpR8Hai1TOsSHr0erPg
+        JPlWoQaGMAMRziJhFbs6FGfVBjJMgw7sea/7IJyc7jVAeq6efncgcJihLh73cc9vmYv5HZ
+        WuCgaEO+Dt/bfw25tmlaJNyiqX4eT4E3mnsTSxPVDNhLWD4akM5i691HI444+dlvYSjSwn
+        LmOQZogIdscqsg/gKxEadHv35+EsmcZuS8QhmvltqfwxMrdLYc66c8Lv+iD01P33KVU4IG
+        lTTtzgolBf62iwt114zQV/3I0VO85vfFbFfhSl4Ny821OdLwD9QfWRxE104x/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601988230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAj9JE4eqj8FhfohvFYZxoqCcBarf5zqltsQxUiI1tk=;
+        b=E5M0EBf6SmNEwcbN4HI+3LephINpMn63Ks6D1Mx6WzzMGDnIGpiZs3/dvGpMQRdqQynHwN
+        Ri0QaKPbjpUmUoAQ==
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "open list\:ARM\/Amlogic Meson..." 
+        <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc\@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Brad Harper <bjharper@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
+In-Reply-To: <87wo052grp.fsf@nanos.tec.linutronix.de>
+References: <20201002164915.938217-1-jbrunet@baylibre.com> <CAPDyKFo6T_P+TQQZSzFgHwLeE08f146KxKBpAutv209MXq0mjA@mail.gmail.com> <87wo052grp.fsf@nanos.tec.linutronix.de>
+Date:   Tue, 06 Oct 2020 14:43:49 +0200
+Message-ID: <87v9fn7ce2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828145518.26324-1-trix@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On Mon, Oct 05 2020 at 10:55, Thomas Gleixner wrote:
+> On Mon, Oct 05 2020 at 10:22, Ulf Hansson wrote:
+>> On Fri, 2 Oct 2020 at 18:49, Jerome Brunet <jbrunet@baylibre.com> wrote:
+>>>
+>>> IRQF_ONESHOT was added to this driver to make sure the irq was not enabled
+>>> again until the thread part of the irq had finished doing its job.
+>>>
+>>> Doing so upsets RT because, under RT, the hardirq part of the irq handler
+>>> is not migrated to a thread if the irq is claimed with IRQF_ONESHOT.
+>>> In this case, it has been reported to eventually trigger a deadlock with
+>>> the led subsystem.
+>>>
+>>> Preventing RT from doing this migration was certainly not the intent, the
+>>> description of IRQF_ONESHOT does not really reflect this constraint:
+>>>
+>>>  > IRQF_ONESHOT - Interrupt is not reenabled after the hardirq handler finished.
+>>>  >              Used by threaded interrupts which need to keep the
+>>>  >              irq line disabled until the threaded handler has been run.
+>>>
+>>> This is exactly what this driver was trying to acheive so I'm still a bit
+>>> confused whether this is a driver or an RT issue.
+>>>
+>>> Anyway, this can be solved driver side by manually disabling the IRQs
+>>> instead of the relying on the IRQF_ONESHOT. IRQF_ONESHOT may then be removed
+>>> while still making sure the irq won't trigger until the threaded part of
+>>> the handler is done.
+>>
+>> Thomas, may I have your opinion on this one.
+>>
+>> I have no problem to apply $subject patch, but as Jerome also
+>> highlights above - this kind of makes me wonder if this is an RT
+>> issue, that perhaps deserves to be solved in a generic way.
+>>
+>> What do you think?
+>
+> Let me stare at the core code. Something smells fishy.
 
-On Fri, Aug 28, 2020 at 07:55:18AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> clang static analysis flags this representative problem
-> 
-> drivers/media/i2c/ov7670.c:1463:9: warning: Assigned
->   value is garbage or undefined
->         *value = gain;
->                ^ ~~~~
-> 
-> gain is set by a successful call to ov7670_read()
-> 
-> So check that ov7670_read() is successful.
-> 
-> The remaining static analysis problems are false positives.
-> There appears to be a limitation with checking the
-> aggregated returns.
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/media/i2c/ov7670.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/ov7670.c b/drivers/media/i2c/ov7670.c
-> index b42b289faaef..001d4b09db72 100644
-> --- a/drivers/media/i2c/ov7670.c
-> +++ b/drivers/media/i2c/ov7670.c
-> @@ -929,6 +929,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
->  	ret =  ov7670_write(sd, REG_HSTART, (hstart >> 3) & 0xff);
->  	ret += ov7670_write(sd, REG_HSTOP, (hstop >> 3) & 0xff);
->  	ret += ov7670_read(sd, REG_HREF, &v);
-> +	if (ret)
-> +		return ret;
+The point is that for threaded interrupts (without a primary handler)
+the core needs to be told that the interrupt line should be masked until
+the threaded handler finished. That's what IRQF_ONESHOT is for.
 
-Thanks for the patch.
+For interrupts which have both a primary and a threaded handler that's a
+different story. The primary handler decides whether the thread should
+be woken and it decides whether to block further interrupt delivery in
+the device or keep it enabled.
 
-While the patch fixes a bug, could you also fix adding the return values?
-These are valid error codes to begin with, but it makes no sense to add
-them together.
+When forced interrupt threading is enabled (even independent of RT) then
+we have the following cases:
 
->  	v = (v & 0xc0) | ((hstop & 0x7) << 3) | (hstart & 0x7);
->  	msleep(10);
->  	ret += ov7670_write(sd, REG_HREF, v);
-> @@ -938,6 +940,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
->  	ret += ov7670_write(sd, REG_VSTART, (vstart >> 2) & 0xff);
->  	ret += ov7670_write(sd, REG_VSTOP, (vstop >> 2) & 0xff);
->  	ret += ov7670_read(sd, REG_VREF, &v);
-> +	if (ret)
-> +		return ret;
->  	v = (v & 0xf0) | ((vstop & 0x3) << 2) | (vstart & 0x3);
->  	msleep(10);
->  	ret += ov7670_write(sd, REG_VREF, v);
-> @@ -1460,6 +1464,8 @@ static int ov7670_g_gain(struct v4l2_subdev *sd, __s32 *value)
->  	unsigned char gain;
->  
->  	ret = ov7670_read(sd, REG_GAIN, &gain);
-> +	if (ret)
-> +		return ret;
->  	*value = gain;
->  	return ret;
->  }
-> @@ -1470,11 +1476,14 @@ static int ov7670_s_gain(struct v4l2_subdev *sd, int value)
->  	unsigned char com8;
->  
->  	ret = ov7670_write(sd, REG_GAIN, value & 0xff);
-> +	if (ret)
-> +		return ret;
->  	/* Have to turn off AGC as well */
-> -	if (ret == 0) {
-> -		ret = ov7670_read(sd, REG_COM8, &com8);
-> -		ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
-> -	}
-> +	ret = ov7670_read(sd, REG_COM8, &com8);
-> +	if (ret)
-> +		return ret;
-> +	ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
-> +
->  	return ret;
->  }
->  
+  1) Regular device interrupt (primary handler only)
 
--- 
-Regards,
+     The primary handler is replaced with the default 'wake up thread'
+     handler and the original primary handler becomes the threaded
+     handler. This enforces IRQF_ONESHOT so that the interupt line (for
+     level interrupts) stays masked until the thread completed handling.
 
-Sakari Ailus
+  2) Threaded interrupts
+
+     Interrupts which have been requested as threaded handler (no
+     primary handler) are not changed obvioulsy
+
+  3) Interrupts which have both a primary and a thread handler
+
+     Here IRQF_ONESHOT decides whether the primary handler will be
+     forced threaded or not.
+
+     That's a bit unfortunate and ill defined and was not intended to be
+     used that way.
+
+     We rather should make interrupts which need to have their primary
+     handler in hard interrupt context to set IRQF_NO_THREAD. That
+     should at the same time confirm that the primary handler is RT
+     safe.
+
+     Let me stare at the core code and the actual usage sites some more.
+
+Thanks,
+
+        tglx
+
+
+
+
+
+
