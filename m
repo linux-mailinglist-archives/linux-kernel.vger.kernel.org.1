@@ -2,148 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95469284B4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543B5284B51
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgJFMGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:06:30 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:33147 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726248AbgJFMG3 (ORCPT
+        id S1726602AbgJFMGm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Oct 2020 08:06:42 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:51260 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726214AbgJFMGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:06:29 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from tariqt@nvidia.com)
-        with SMTP; 6 Oct 2020 15:06:24 +0300
-Received: from dev-l-vrt-206-005.mtl.labs.mlnx (dev-l-vrt-206-005.mtl.labs.mlnx [10.234.206.5])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 096C6OXo014486;
-        Tue, 6 Oct 2020 15:06:24 +0300
-From:   Tariq Toukan <tariqt@nvidia.com>
-To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>
-Subject: [RFC PATCH] workqueue: Add support for exposing singlethread workqueues in sysfs
-Date:   Tue,  6 Oct 2020 15:06:07 +0300
-Message-Id: <20201006120607.20310-1-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.21.0
+        Tue, 6 Oct 2020 08:06:41 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-30-dldhwGBOP0u1YHu7lGqQqw-1; Tue, 06 Oct 2020 13:06:37 +0100
+X-MC-Unique: dldhwGBOP0u1YHu7lGqQqw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 6 Oct 2020 13:06:36 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 6 Oct 2020 13:06:36 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christian Eggers' <ceggers@arri.de>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v3 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Thread-Topic: [PATCH v3 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Thread-Index: AQHWm9AgZjObf1H2UEeBlb1lAcQDOamKeLbg
+Date:   Tue, 6 Oct 2020 12:06:36 +0000
+Message-ID: <f8f1a9f54e0e426dbe27cc13a3b9de8d@AcuMS.aculab.com>
+References: <20201006060528.drh2yoo2dklyntez@pengutronix.de>
+ <20201006105135.28985-1-ceggers@arri.de>
+ <20201006105135.28985-2-ceggers@arri.de>
+In-Reply-To: <20201006105135.28985-2-ceggers@arri.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the workqueue API so that singlethread workqueues can be exposed
-in sysfs. Guarantee max_active is 1 by turning it read-only.
+From: Christian Eggers
+> Sent: 06 October 2020 11:52
+> 
+> According to the "VFxxx Controller Reference Manual" (and the comment
+> block starting at line 97), Vybrid requires writing a one for clearing
+> an interrupt flag. Syncing the method for clearing I2SR_IIF in
+> i2c_imx_isr().
+> 
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/i2c/busses/i2c-imx.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index 0ab5381aa012..745f4071155a 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -412,6 +412,19 @@ static void i2c_imx_dma_free(struct imx_i2c_struct *i2c_imx)
+>  	dma->chan_using = NULL;
+>  }
+> 
+> +static void i2c_imx_clear_irq(struct imx_i2c_struct *i2c_imx, unsigned int bits)
+> +{
+> +	unsigned int temp;
+> +
+> +	/*
+> +	 * i2sr_clr_opcode is the value to clear all interrupts.
+> +	 * Here we want to clear only <bits>, so we write
+> +	 * ~i2sr_clr_opcode with just <bits> toggled.
+> +	 */
+> +	temp = ~i2c_imx->hwdata->i2sr_clr_opcode ^ bits;
+> +	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> +}
 
-This allows admins to control the cpumask of a workqueue, and apply
-the desired system cpu separation/isolation policy.
+That looks either wrong or maybe just overcomplicated.
+Why isn't:
+	imx_i2c_write_reg(bits, i2c_imx, IMX_I2C_I2SR);
+enough?
 
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c |  2 +-
- include/linux/workqueue.h                     |  4 ++++
- kernel/workqueue.c                            | 21 +++++++++++++++++--
- 3 files changed, 24 insertions(+), 3 deletions(-)
+More usually you just write back the read value of such
+'write 1 to clear' status registers and then act on all
+the set bits.
+That ensures you clear all interrupts that were pending.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index 1d91a0d0ab1d..5106820a5cd5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -2033,7 +2033,7 @@ int mlx5_cmd_init(struct mlx5_core_dev *dev)
- 	create_msg_cache(dev);
- 
- 	set_wqname(dev);
--	cmd->wq = create_singlethread_workqueue(cmd->wq_name);
-+	cmd->wq = create_singlethread_sysfs_workqueue(cmd->wq_name);
- 	if (!cmd->wq) {
- 		mlx5_core_err(dev, "failed to create command workqueue\n");
- 		err = -ENOMEM;
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index 26de0cae2a0a..d4d4ca2b041a 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -344,6 +344,7 @@ enum {
- 	__WQ_ORDERED		= 1 << 17, /* internal: workqueue is ordered */
- 	__WQ_LEGACY		= 1 << 18, /* internal: create*_workqueue() */
- 	__WQ_ORDERED_EXPLICIT	= 1 << 19, /* internal: alloc_ordered_workqueue() */
-+	__WQ_MAX_ACTIVE_RO	= 1 << 20, /* internal: make max_active read-only */
- 
- 	WQ_MAX_ACTIVE		= 512,	  /* I like 512, better ideas? */
- 	WQ_MAX_UNBOUND_PER_CPU	= 4,	  /* 4 * #cpus for unbound wq */
-@@ -432,6 +433,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
- 			WQ_MEM_RECLAIM, 1, (name))
- #define create_singlethread_workqueue(name)				\
- 	alloc_ordered_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, name)
-+#define create_singlethread_sysfs_workqueue(name)			\
-+	alloc_ordered_workqueue("%s", __WQ_MAX_ACTIVE_RO |		\
-+				__WQ_LEGACY | WQ_MEM_RECLAIM, name)
- 
- extern void destroy_workqueue(struct workqueue_struct *wq);
- 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c41c3c17b86a..a80d34726e68 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4258,6 +4258,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
- 	if ((flags & WQ_POWER_EFFICIENT) && wq_power_efficient)
- 		flags |= WQ_UNBOUND;
- 
-+	if (flags & __WQ_MAX_ACTIVE_RO)
-+		flags |= WQ_SYSFS;
-+
- 	/* allocate wq and format name */
- 	if (flags & WQ_UNBOUND)
- 		tbl_size = nr_node_ids * sizeof(wq->numa_pwq_tbl[0]);
-@@ -5401,9 +5404,11 @@ static ssize_t max_active_store(struct device *dev,
- }
- static DEVICE_ATTR_RW(max_active);
- 
-+static struct device_attribute dev_attr_max_active_ro =
-+	__ATTR(max_active, 0444, max_active_show, NULL);
-+
- static struct attribute *wq_sysfs_attrs[] = {
- 	&dev_attr_per_cpu.attr,
--	&dev_attr_max_active.attr,
- 	NULL,
- };
- ATTRIBUTE_GROUPS(wq_sysfs);
-@@ -5642,6 +5647,7 @@ static void wq_device_release(struct device *dev)
-  */
- int workqueue_sysfs_register(struct workqueue_struct *wq)
- {
-+	const struct device_attribute *max_active_entry;
- 	struct wq_device *wq_dev;
- 	int ret;
- 
-@@ -5650,7 +5656,8 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
- 	 * attributes breaks ordering guarantee.  Disallow exposing ordered
- 	 * workqueues.
- 	 */
--	if (WARN_ON(wq->flags & __WQ_ORDERED_EXPLICIT))
-+	if (WARN_ON(!(wq->flags & __WQ_MAX_ACTIVE_RO) &&
-+		    wq->flags & __WQ_ORDERED_EXPLICIT))
- 		return -EINVAL;
- 
- 	wq->wq_dev = wq_dev = kzalloc(sizeof(*wq_dev), GFP_KERNEL);
-@@ -5675,6 +5682,16 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
- 		return ret;
- 	}
- 
-+	max_active_entry = wq->flags & __WQ_MAX_ACTIVE_RO ?
-+		&dev_attr_max_active_ro : &dev_attr_max_active;
-+
-+	ret = device_create_file(&wq_dev->dev, max_active_entry);
-+	if (ret) {
-+		device_unregister(&wq_dev->dev);
-+		wq->wq_dev = NULL;
-+		return ret;
-+	}
-+
- 	if (wq->flags & WQ_UNBOUND) {
- 		struct device_attribute *attr;
- 
--- 
-2.21.0
+If you need to avoid writes of bits that aren't in the
+'clear all interrupts' value then you just need:
+	bits &= i2c_imx->hwdata->i2sr_clr_opcode;
+prior to the write.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
