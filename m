@@ -2,69 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667A0285411
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16945285414
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgJFVut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:50:49 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:43128 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgJFVut (ORCPT
+        id S1727403AbgJFVu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbgJFVuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:50:49 -0400
-Received: by mail-oi1-f195.google.com with SMTP id l85so189200oih.10;
-        Tue, 06 Oct 2020 14:50:48 -0700 (PDT)
+        Tue, 6 Oct 2020 17:50:55 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991E8C061755;
+        Tue,  6 Oct 2020 14:50:55 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k8so131686pfk.2;
+        Tue, 06 Oct 2020 14:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=8giwswfBxqLnHEu2oqSUvRPSaZxU1liNSS/lZSVFxsk=;
+        b=L9D8l+DMD8b3gpfHokXBq6EnkBSsCoHa1ex5FiK3YDyqD9csTKGz5X6SPG+z0pYZ9g
+         AbRmxL5SB6rspiy/0WAzZJfNasge3QsaBJGTV4YKmjIsuHhP39w+9vLx6keiMlSJ6JQL
+         2Y2Kgt35dkNonS79FVXRe7EhquAgADW7twnDV36+Zg4ijiZxd3xerE1StTwg9iqZGvpu
+         ZAulY4bu3xkIOKoqXMjO5PJmzoTDZLgWTm2aKfhhZhXERKk8wAgTYmbbrX6tKkxd0xYN
+         gj25QWgEvJ/bi5DQLZGRRI1AvXN9oCc8HFUkgn1WurUHQLdA0oAzErqubfOwCILMiDrO
+         cs/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MWes/yu+mBIEDEh+K26AzOE76qunRcdgTJyHBYmLCK4=;
-        b=ufaV2+zM5TJqHv20VJd/Zi4kpLcqwOXh5vRtFgYniE/N+Omr29BA10zRp/B8PtIuZq
-         yHPlZweWa0YsdS4nWarvfp8nDHb3+wbpjqFOeaA50STMXNtRbbT5SB7XblNoJ/KrEytr
-         P+KKjiUxMXjfBv/hDqCuagARuPtawLFmH7pBuozVtI3kvW4/4VN07y6D9fZs6jX4KB7d
-         lUD/g5mkRJ/iC9mTs2xiZmhbeCw3uPHSAD+GIfiu5NdjT2Z9TTevRM08Qw/j4qEep+Hy
-         bgHSsZruqrS0i4ZEr9DZ3kcxgBVWaF4QOfaoE2LG9RnJnQIT5exSF1etstjkhmHT09zx
-         G3Mg==
-X-Gm-Message-State: AOAM532gyukHcBgR6ZbNed79jBnhV3VLsPOZw7k+2RQZjqBQfDawIaqe
-        LrXVtviApl2AYXiNdqcvNg==
-X-Google-Smtp-Source: ABdhPJwdzPoK6D3j4YnvHhkFnmCr6wu/OqyYvYCdlHDIMJy2I58fyvPNewiHilM7JDJ+hTZCjj2iOQ==
-X-Received: by 2002:aca:1006:: with SMTP id 6mr214231oiq.2.1602021048280;
-        Tue, 06 Oct 2020 14:50:48 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v21sm9000oto.65.2020.10.06.14.50.47
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=8giwswfBxqLnHEu2oqSUvRPSaZxU1liNSS/lZSVFxsk=;
+        b=A+DHaiGxYzxATCvbqgigcm13YkZH54GOwfvFq8MhXAjOREoASwdOwBGDzu78fGSQww
+         lMX0Z4cN+13q/aUGPGSpqekekL1vCbRrz6BF3K6aDMX2Q6642eaS1Oi7Bt/VN8K4x/Vd
+         mMj2UjIJomoHAQKhgjMhdhy9OjfNEYspJD1n/qvA3EF1pJ7e0eN2LNSLWAs3v6EQCEOp
+         7eNH37tU3ioWGGdJu76kjuVILFvtU3vOJu3FQkUO6KhWty+DWDsacwzrH28hbmdMsXyA
+         t/Wx1HY9Hpui+Xe5JRJfQE02uG3ybhoGMRljo4s43UMUaI0RSlACgSZJAmpwgc4LMuXl
+         KbTA==
+X-Gm-Message-State: AOAM531UtPm+WJ/4NzmyHEZthEG1ul4hXkEAVN86pIKgM5Iw+y31vXyy
+        sWPrcKpms5yv/5sf8US/Y/o=
+X-Google-Smtp-Source: ABdhPJwZXFCK7tR/WRwAo960dzSlCK448GLKlYwVEJgpkwoOHU+Z6gdCqRzzRgnOSPzys+LCmVCKug==
+X-Received: by 2002:a63:d905:: with SMTP id r5mr202517pgg.300.1602021055063;
+        Tue, 06 Oct 2020 14:50:55 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id mw11sm3594019pjb.57.2020.10.06.14.50.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:50:47 -0700 (PDT)
-Received: (nullmailer pid 2911306 invoked by uid 1000);
-        Tue, 06 Oct 2020 21:50:46 -0000
-Date:   Tue, 6 Oct 2020 16:50:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, svarbanov@mm-sol.com, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 4/5] PCI: qcom: Add SM8250 SoC support
-Message-ID: <20201006215046.GB2893458@bogus>
-References: <20201005093152.13489-1-manivannan.sadhasivam@linaro.org>
- <20201005093152.13489-5-manivannan.sadhasivam@linaro.org>
+        Tue, 06 Oct 2020 14:50:54 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 14:50:51 -0700
+From:   dmitry.torokhov@gmail.com
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: exynos: do not rely on 'users' counter in
+ ISR
+Message-ID: <20201006215051.GO1009802@dtor-ws>
+References: <20201006041214.GA4145870@dtor-ws>
+ <20201006193907.GA30199@qmqm.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005093152.13489-5-manivannan.sadhasivam@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201006193907.GA30199@qmqm.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 03:01:51PM +0530, Manivannan Sadhasivam wrote:
-> The PCIe IP (rev 1.9.0) on SM8250 SoC is similar to the one used on
-> SDM845. Hence the support is added reusing the members of ops_2_7_0.
-> The key difference between ops_2_7_0 and ops_1_9_0 is the config_sid
-> callback, which will be added in successive commit.
+On Tue, Oct 06, 2020 at 09:39:07PM +0200, Michał Mirosław wrote:
+> On Mon, Oct 05, 2020 at 09:12:14PM -0700, dmitry.torokhov@gmail.com wrote:
+> > The order in which 'users' counter is decremented vs calling drivers'
+> > close() method is implementation specific, and we should not rely on
+> > it. Let's introduce driver private flag and use it to signal ISR
+> > to exit when device is being closed.
+> > 
+> > This has a side-effect of fixing issue of accessing inut->users
+> > outside of input->mutex protection.
+> [...]
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> (after with a fix mentioned below)
+> 
+> > --- a/drivers/iio/adc/exynos_adc.c
+> > +++ b/drivers/iio/adc/exynos_adc.c
+> [...]
+> > @@ -712,6 +715,7 @@ static int exynos_adc_ts_open(struct input_dev *dev)
+> >  {
+> >  	struct exynos_adc *info = input_get_drvdata(dev);
+> >  
+> > +	WRITE_ONCE(info->ts_enabled, true);
+> >  	enable_irq(info->tsirq);
+> >  
+> >  	return 0;
+> > @@ -721,6 +725,7 @@ static void exynos_adc_ts_close(struct input_dev *dev)
+> >  {
+> >  	struct exynos_adc *info = input_get_drvdata(dev);
+> >  
+> > +	WRITE_ONCE(info->ts_enabled, true);
+> >  	disable_irq(info->tsirq);
+> 
+> Shouldn't 'true' be 'false' here?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I swear if we disable cut-n-paste functionality there will be markable
+reduction in bug rates...
+
+Thanks for noticing this!
+
+-- 
+Dmitry
