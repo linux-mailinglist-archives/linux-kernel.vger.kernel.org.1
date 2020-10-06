@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3294728502E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AFE285036
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgJFQxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:53:35 -0400
-Received: from smtprelay0108.hostedemail.com ([216.40.44.108]:40662 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725769AbgJFQxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:53:35 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 6FF63180A7FCF;
-        Tue,  6 Oct 2020 16:53:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3872:4321:5007:10004:10400:10450:10455:10848:10967:11232:11658:11914:12050:12297:12663:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:19904:19999:21080:21627:21740:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: money83_04146bc271c8
-X-Filterd-Recvd-Size: 1801
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  6 Oct 2020 16:53:33 +0000 (UTC)
-Message-ID: <81ca9b814e3c7f9bac1198e8c6adb29537a5813a.camel@perches.com>
-Subject: Re: [PATCH] scripts: kernel-doc: allow passing desired Sphinx C
- domain dialect
-From:   Joe Perches <joe@perches.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Markus Heiser <markus.heiser@darmarit.de>
-Date:   Tue, 06 Oct 2020 09:53:32 -0700
-In-Reply-To: <20201006080134.07d94d26@lwn.net>
-References: <ee1f16453ad40eae2603adfde5f6dda3ab1befc7.1601798520.git.mchehab+huawei@kernel.org>
-         <20201005101736.7adf4f46@lwn.net> <20201006084207.125c88d5@coco.lan>
-         <20201006080134.07d94d26@lwn.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1726165AbgJFQz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbgJFQzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:55:25 -0400
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF8B020796;
+        Tue,  6 Oct 2020 16:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602003325;
+        bh=pzBiZFeYHRuM1MF/EG+vEY3UU0+WKZ5gBUmlAf1fZk8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p+wsizep1tpsNCv0UU0tD/SPcXCwTlcFK+FUqCnKk7fr+pu9UtVtfXz1IWM3qEzaa
+         y0Fk5u/7eFsRCZRnpExTDNzfNK8cM4b4eLkJppmqJLItT1eNgpHRq+gXi4S9CcR3by
+         LudgPKIwsY5MEcDwD+TKgpZhPREmC+Wp1lmlAk1o=
+Received: by mail-lj1-f181.google.com with SMTP id v23so11646196ljd.1;
+        Tue, 06 Oct 2020 09:55:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530P9JfkstNyCOwslGM2FkYZdaI3zIEN6WClbPJ8Pom2vuhfKvFs
+        jfMBfY2za/h+Y6VFfCam1EHskMh4LFhbY1tmn5w=
+X-Google-Smtp-Source: ABdhPJwhosMAr3iuJ1VKbEhFgz81Oros95KFySfs0kYUf49Z0cZexyRx4rKaRWsJf3NtGFrsN2s70CEiJegChyU1d9U=
+X-Received: by 2002:a2e:86c2:: with SMTP id n2mr2048844ljj.346.1602003322919;
+ Tue, 06 Oct 2020 09:55:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <87lfglt6z1.fsf@igel.home> <mhng-847e71cf-64bc-464b-8d09-3bcec40aa491@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-847e71cf-64bc-464b-8d09-3bcec40aa491@palmerdabbelt-glaptop1>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 7 Oct 2020 00:55:11 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRuQpwHvyZVjab+RMgx9BMR8gjcnGSgeP3a7L=dCcNqAg@mail.gmail.com>
+Message-ID: <CAJF2gTRuQpwHvyZVjab+RMgx9BMR8gjcnGSgeP3a7L=dCcNqAg@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Nick Hu <nickhu@andestech.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-06 at 08:01 -0600, Jonathan Corbet wrote:
-> On Tue, 6 Oct 2020 08:42:07 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > As right now we don't support Sphinx version 3.0[1], we're actually using just
-> > $sphinx_major. So, I'm wonder if it would make sense to also make <minor>
-> > optional.
-> 
-> Maybe...someday we may need it, knowing how the Sphinx folks approach
-> compatibility, but I guess we can always add it then if so.
-> 
-> > The change would be trivial, although the regex will become even more
-> > harder to read ;-)
-> 
-> 	^(\d+)(\.(\d+)){,2}
-> 
-> ?  (untested, of course)
+On Tue, Oct 6, 2020 at 12:39 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
+>
+> On Mon, 05 Oct 2020 01:25:22 PDT (-0700), schwab@linux-m68k.org wrote:
+> > On Sep 14 2020, Aurelien Jarno wrote:
+> >
+> >> How should we proceed to get that fixed in time for 5.9? For the older
+> >> branches where it has been backported (so far 5.7 and 5.8), should we
+> >> just get that commit reverted instead?
+> >
+> > Why is this still broken?
+>
+> Sorry, I hadn't seen this.  I'm not seeing a boot failure on 5.9-rc8 with just
+> CONFIG_HARDENED_USERCPOY=y in addition to defconfig (on QEMU, though I doubt
+> that's relevant here).  It looks like the fix is to essentially revert this,
+> which I'm fine with, but I'd prefer to have a failing test to make sure this
+> doesn't break again.
+>
+> Guo: I don't see an actual patch (signed off and such) posted for this, do you
+> mind posting one?  Otherwise I'll take a crack at constructing the revert
+> myself.
 
-This doesn't work as capture groups don't nest using {m, n}
+Please have a look:
+https://lore.kernel.org/linux-riscv/1602002973-92934-1-git-send-email-guoren@kernel.org/T/#u
 
+The only revert couldn't solve the static_obj problem.
 
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
