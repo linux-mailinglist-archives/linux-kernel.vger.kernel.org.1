@@ -2,103 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA04D2848B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833E52848B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJFIg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:36:27 -0400
-Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:39765 "EHLO
-        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725934AbgJFIg1 (ORCPT
+        id S1726396AbgJFIhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:37:39 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:47635 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbgJFIhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:36:27 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id A47981905
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 09:36:41 +0100 (IST)
-Received: (qmail 6665 invoked from network); 6 Oct 2020 08:36:41 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Oct 2020 08:36:41 -0000
-Date:   Tue, 6 Oct 2020 09:36:39 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-Subject: ACPI _CST introduced performance regresions on Haswll
-Message-ID: <20201006083639.GJ3227@techsingularity.net>
+        Tue, 6 Oct 2020 04:37:36 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201006083750euoutp0156bb0a38c7048b066e8ceefa99fe55f5~7WmJJcB9F1715117151euoutp01B;
+        Tue,  6 Oct 2020 08:37:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201006083750euoutp0156bb0a38c7048b066e8ceefa99fe55f5~7WmJJcB9F1715117151euoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601973470;
+        bh=TdvBo++lhM54zLH1A/JrQp3BZQVVNjq7JuuhRMXlT9M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uO0Ngoe87nDx/YBi454j3tBG1IjBK3deLoufSlUN6IadxmGR1caWa3Jnl+exnV6OY
+         G9BXe0yO9ACG9DIpRk8/P5f4VAMIHyT+kKlls5Pp4q14oWRlYcCwJ3PIqUi+nphOnu
+         2dSbIGDiRJpHPMtKsmQ6BxatEa5s2eaCjdbhl7pM=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201006083750eucas1p2464a3247610bac05f98ff689fe698260~7WmI3xM6v1792317923eucas1p23;
+        Tue,  6 Oct 2020 08:37:50 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 41.35.06318.EDC2C7F5; Tue,  6
+        Oct 2020 09:37:50 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201006083749eucas1p160a3bed4cdb67cc8e05ca4a57d8907ca~7WmIbzr_v1178011780eucas1p1x;
+        Tue,  6 Oct 2020 08:37:49 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201006083749eusmtrp13d2caf5f65551a21acfc9988bff525ca~7WmIbBHvu2257422574eusmtrp1B;
+        Tue,  6 Oct 2020 08:37:49 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-13-5f7c2cde5da3
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 39.86.06314.DDC2C7F5; Tue,  6
+        Oct 2020 09:37:49 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201006083749eusmtip159a049b94167cbb073a26456cfccab04~7WmIQPs2y2825428254eusmtip1P;
+        Tue,  6 Oct 2020 08:37:49 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, jim.cromie@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewi?= =?utf-8?Q?cz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2 0/4] AX88796C SPI Ethernet Adapter
+Date:   Tue, 06 Oct 2020 10:37:34 +0200
+In-Reply-To: <20201002194544.GH3996795@lunn.ch> (Andrew Lunn's message of
+        "Fri, 2 Oct 2020 21:45:44 +0200")
+Message-ID: <dleftj7ds3eomp.fsf%l.stelmach@samsung.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTURiAObv37l616XVavZmEDPuuVVR2ywyzftyCyPpTmGkrLyq5qZuf
+        fZCWRYnOUKO2BmqUX6nlmktNrYYosnQLdaWoRSqVFhWWZYS0eRL695z3PO/X4TCE9Cflx8Sr
+        UgS1SpEgE7uT5o6ZnvUj685Fb3yXI+VswxaCq7/1gOIMthySK2nvoTjH5yGKKxidJDib7SHN
+        2c1aijOOOiiut9kg5m7Z2kSc5UYr4mrbh2muo3QRd7m1nQ714nsdLwneVDUg4pv0wzRvrL4m
+        5h/dvcA3NU6JeK2pGvFTxmXhTIT7zhghIT5NUG/YdcI97rnjGZU04JbxpnkIZaEmJhe5McBu
+        ge7fWjIXuTNSthJBSdGgCB++I6jvnqHwYQrBkLWBnE/RD9pFLpayFQjGysKw9B7B17sNRC5i
+        GDErh9raoy7Hlw2A4q4/c4UItoaEyZnauWQfdju8yOkRu5hkl0O9vgm52I1VQv+lmrlmEnYb
+        PJnW0i5e6PRNH97QOO4NXbqxOYdw+jrbJ+RqAKyOgT7DTeQaAti9MF3vhYf2gYlOE43ZH6xF
+        eSRWLkBRYRBOzUNgNvz6t2QwDPX8FmPeDXlPZ8XY94TXn71xW08oNN8kcFgCV69IsR0IdQUt
+        /6r4Qf5EJcLMw9vSnzR+qosI+spr6OsoQP/fNvr/ttE7yxLsanjQvAGH10J52SSBOQTq6r6Q
+        pYiqRouFVI0yVtBsVgnpco1CqUlVxcpPJSqNyPkFrbOdPxpR25+TFsQySLZAkrHobLSUUqRp
+        MpUWFOis9O7hfTvyI1WJKkHmKwnrtkZJJTGKzDOCOjFanZogaCxoKUPKFks23/l4XMrGKlKE
+        04KQJKjnb0WMm18WqvYPLf/0YyrNw3/JN+tB3e2YEtKesL/ofJI5+NC69HRdb6RMKFsZV9HW
+        PJ59QxmYlV2Rv+qAMplN7veJLng1FvEsoy7Tvuqxx9b4kJHxY1WFe4qvvvRenbQv/OLAvV0j
+        Pl7hIy07Qi6ZglZEXtF+n+bzDx+R98mjErv7r5EoQjHrkJGaOMWmNYRao/gL+ElwzooDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsVy+t/xu7p3dWriDW6/NrQ4f/cQs8XGGetZ
+        Leacb2GxmH/kHKvFtbd3WC36H79mtjh/fgO7xYVtfawWmx5fY7W4vGsOm8WM8/uYLA5N3cto
+        sfbIXXaLYwvELFr3HmF34Pe4fO0is8eWlTeZPHbOusvusWlVJ5vH5iX1Hjt3fGby6NuyitHj
+        8ya5AI4oPZui/NKSVIWM/OISW6VoQwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsE
+        vYyD1w6wFtzkrLi/6w5jA+NOji5GTg4JAROJWbcuMHUxcnEICSxllPixope5i5EDKCElsXJu
+        OkSNsMSfa11sEDVPGSX27N3EBFLDJqAnsXZtBEiNiICCxJSTf1hBbGaB9SwSqydxgtjCApYS
+        Z1rOsYHYQkDlby6+YASxWQRUJTbO2glmcwrkSlxtXsMCYvMKmEvs/tbHDmKLAvVueXGfHSIu
+        KHFy5hMWiPnZEl9XP2eewCgwC0lqFpLULKDrmAU0Jdbv0ocIa0ssW/iaGcK2lVi37j3LAkbW
+        VYwiqaXFuem5xYZ6xYm5xaV56XrJ+bmbGIERvO3Yz807GC9tDD7EKMDBqMTDqyBSHS/EmlhW
+        XJl7iFEFaMyjDasvMEqx5OXnpSqJ8DqdPR0nxJuSWFmVWpQfX1Sak1p8iNEU6M+JzFKiyfnA
+        pJNXEm9oamhuYWlobmxubGahJM7bIXAwRkggPbEkNTs1tSC1CKaPiYNTqoGRqfVSfKnpOc6Q
+        tTPXlic0m7xmPl/7QZS/5WexWk8ES87shr8tDFxe9cUdG1XD/rnyP/HVzUj0m31g8q4n9SGp
+        i1Kv3M+OOD1jufz06zekxOxXxEzI7ln676Vfa0nQtqAiKbfjhn0b/8lWXV8foHxqDk9ylJr7
+        /p6S8q8/6hw/yG8pZ3vfuFyJpTgj0VCLuag4EQAFr0HdAgMAAA==
+X-CMS-MailID: 20201006083749eucas1p160a3bed4cdb67cc8e05ca4a57d8907ca
+X-Msg-Generator: CA
+X-RootMTR: 20201006083749eucas1p160a3bed4cdb67cc8e05ca4a57d8907ca
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201006083749eucas1p160a3bed4cdb67cc8e05ca4a57d8907ca
+References: <20201002194544.GH3996795@lunn.ch>
+        <CGME20201006083749eucas1p160a3bed4cdb67cc8e05ca4a57d8907ca@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Numerous workload regressions have bisected repeatedly to the commit
-6d4f08a6776 ("intel_idle: Use ACPI _CST on server systems") but only on
-a set of haswell machines that all have the same CPU.
+It was <2020-10-02 pi=C4=85 21:45>, when Andrew Lunn wrote:
+> On Fri, Oct 02, 2020 at 09:22:06PM +0200, =C5=81ukasz Stelmach wrote:
+>> This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+>> found on ARTIK5 evaluation board. The driver has been ported from a
+>> v3.10.9 vendor kernel for ARTIK5 board.
+>
+> Hi =C5=81ukasz
+>
+> Please include a brief list of changes since the previous version.
+>
 
-CPU(s):              48
-On-line CPU(s) list: 0-47
-Thread(s) per core:  2
-Core(s) per socket:  12
-Socket(s):           2
-NUMA node(s):        2
-Vendor ID:           GenuineIntel
-CPU family:          6
-Model:               63
-Model name:          Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz
-Stepping:            2
-CPU MHz:             1200.359
-CPU max MHz:         3100.0000
-CPU min MHz:         1200.0000
+It can be found at the bottom of the message.
 
-As well as being bisected in mainline, backporting the patch to a
-distribution kernel also showed the same type of problem so the patch
-is definitely suspicious. An example comparison showing the performance
-before CST was enabled and recent mainline kernels is as follow
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
 
-netperf UDP_STREAM
-                                      5.5.0              5.5.0-rc2              5.5.0-rc2                  5.6.0              5.9.0-rc8
-                                    vanilla      sle15-sp2-pre-cst   sle15-sp2-enable-cst                vanilla                vanilla
-Hmean     send-64         203.21 (   0.00%)      206.43 *   1.58%*      176.89 * -12.95%*      181.18 * -10.84%*      194.45 *  -4.31%*
-Hmean     send-128        401.40 (   0.00%)      414.19 *   3.19%*      355.84 * -11.35%*      364.13 *  -9.29%*      387.83 *  -3.38%*
-Hmean     send-256        786.69 (   0.00%)      799.70 (   1.65%)      700.65 * -10.94%*      719.82 *  -8.50%*      756.40 *  -3.85%*
-Hmean     send-1024      3059.57 (   0.00%)     3106.57 *   1.54%*     2659.62 * -13.07%*     2793.58 *  -8.69%*     3006.95 *  -1.72%*
-Hmean     send-2048      5976.66 (   0.00%)     6102.64 (   2.11%)     5249.34 * -12.17%*     5392.04 *  -9.78%*     5805.02 *  -2.87%*
-Hmean     send-3312      9145.09 (   0.00%)     9304.85 *   1.75%*     8197.25 * -10.36%*     8398.36 *  -8.17%*     9120.88 (  -0.26%)
-Hmean     send-4096     10871.63 (   0.00%)    11129.76 *   2.37%*     9667.68 * -11.07%*     9929.70 *  -8.66%*    10863.41 (  -0.08%)
-Hmean     send-8192     17747.35 (   0.00%)    17969.19 (   1.25%)    15652.91 * -11.80%*    16081.20 *  -9.39%*    17316.13 *  -2.43%*
-Hmean     send-16384    29187.16 (   0.00%)    29418.75 *   0.79%*    26296.64 *  -9.90%*    27028.18 *  -7.40%*    26941.26 *  -7.69%*
-Hmean     recv-64         203.21 (   0.00%)      206.43 *   1.58%*      176.89 * -12.95%*      181.18 * -10.84%*      194.45 *  -4.31%*
-Hmean     recv-128        401.40 (   0.00%)      414.19 *   3.19%*      355.84 * -11.35%*      364.13 *  -9.29%*      387.83 *  -3.38%*
-Hmean     recv-256        786.69 (   0.00%)      799.70 (   1.65%)      700.65 * -10.94%*      719.82 *  -8.50%*      756.40 *  -3.85%*
-Hmean     recv-1024      3059.57 (   0.00%)     3106.57 *   1.54%*     2659.62 * -13.07%*     2793.58 *  -8.69%*     3006.95 *  -1.72%*
-Hmean     recv-2048      5976.66 (   0.00%)     6102.64 (   2.11%)     5249.34 * -12.17%*     5392.00 *  -9.78%*     5805.02 *  -2.87%*
-Hmean     recv-3312      9145.09 (   0.00%)     9304.85 *   1.75%*     8197.25 * -10.36%*     8398.36 *  -8.17%*     9120.88 (  -0.26%)
-Hmean     recv-4096     10871.63 (   0.00%)    11129.76 *   2.37%*     9667.68 * -11.07%*     9929.70 *  -8.66%*    10863.38 (  -0.08%)
-Hmean     recv-8192     17747.35 (   0.00%)    17969.19 (   1.25%)    15652.91 * -11.80%*    16081.20 *  -9.39%*    17315.96 *  -2.43%*
-Hmean     recv-16384    29187.13 (   0.00%)    29418.72 *   0.79%*    26296.63 *  -9.90%*    27028.18 *  -7.40%*    26941.23 *  -7.69%*
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-pre-cst is just before commit 6d4f08a6776 ("intel_idle: Use ACPI _CST on
-server systems") and enable-cst is the commit. It was not fixed by 5.6 or
-5.9-rc8. A lot of bisections ended up here including kernel compilation,
-tbench, syscall entry/exit microbenchmark, hackbench, Java workloads etc.
+-----BEGIN PGP SIGNATURE-----
 
-What I don't understand is why. The latencies for c-state exit states
-before and after the patch are both as follows
-
-/sys/devices/system/cpu/cpu0/cpuidle/state0/latency:0
-/sys/devices/system/cpu/cpu0/cpuidle/state1/latency:2
-/sys/devices/system/cpu/cpu0/cpuidle/state2/latency:10
-/sys/devices/system/cpu/cpu0/cpuidle/state3/latency:33
-/sys/devices/system/cpu/cpu0/cpuidle/state4/latency:133
-
-Perf profiles did not show up anything interesting. A diff of
-/sys/devices/system/cpu/cpu0/cpuidle/state0/ before and after the patch
-showed up nothing interesting. Any idea why exactly this patch shows up
-as being hazardous on Haswell in particular?
-
--- 
-Mel Gorman
-SUSE Labs
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl98LM4ACgkQsK4enJil
+gBDBGwf7BniLxZulD4q6SgaXv9GawdRNFVpHg9TEqudOoo75bI7Xlr0nd8pn0xJz
+G3MF6+Kj5Z0aeAifXP0vk1GF898GGkyGnE8mefuQNLkvrAYNpDPsrBd+JXU0WIR7
+O+8VYUhdrqp4ip2153dXHtda15kplCubyGgCvDpEO8G+FOhOiHZZQMfPMD1si9F5
+IY9BVyRiACFwEbaEh7D+cyueZSINMMAy613VeavrMVlfsVAAfMbL+qlYQF5JPkld
+EtDg3OMHNYLUZs/6pXcNI1JFObqPbODGjHQTruuW2GGoy3fE5uZ27I26YxvXKOfg
+teDYJXQbyVv7gRNBPtbSUYHylUlkLA==
+=z8rr
+-----END PGP SIGNATURE-----
+--=-=-=--
