@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3564284385
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5CE28438E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgJFAt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
+        id S1726248AbgJFAxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFAt2 (ORCPT
+        with ESMTP id S1725865AbgJFAxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:49:28 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82362C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 17:49:28 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id g4so11556990edk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 17:49:28 -0700 (PDT)
+        Mon, 5 Oct 2020 20:53:09 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6EBC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 17:53:08 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gm14so722811pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 17:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DSqKb3Tej8m7nFeWjbSYdo/k6NG+xT3qX97daJHfAaE=;
-        b=deEOQpGoKw7XNYSPULzK/Fx+6FgNXN/khjYZmJenTlrPkh3dV8pR9GRMbNMshg3WBV
-         mIhmaC0prowNnpBBfAOgciFl8Aodl0rSQD0jjxo98zbVcb/lVK/w4xzZ8RH7ut5R65D4
-         8in1ydpN21OQa+pm2/egla8YAjlb0ivT9qFVlicuCHeu1OSW7e91KAVeVD8rfu51aRDF
-         qMQv329ZsWOgNyP21r8aTq6vFJInOWaztNfk0KHDhN4hKlc+rb6zcKrDeoSYKitO8zvC
-         oTJCmeqSuf2Nyq1UbdDB7JdyBRZqPMuxwo7izVmribdAB7jmHG8WWxh41wYQuF3rNl4g
-         AM2g==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=VpS7X6EIHmnMVFG8t95f4eTiEJylc/0BC3yBDzUejrM=;
+        b=lOpQopCjyEt4Ltl65nTh/NLJY26jMqDTYMrllPZw2VWtPaPoICadSHYsF7DO7J7F63
+         oWM0C2zCCdV1kRPg20jntFj067/ze5WrdoZLZYQqkxwFqFL9fv8stApj7Hy9NxIstieO
+         31uV38KLejd1JrJdu7x4DYuyK04uTmGBfbLuE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DSqKb3Tej8m7nFeWjbSYdo/k6NG+xT3qX97daJHfAaE=;
-        b=fHDJUrx432oux2k2hEh4eo/rxtaO15UzEPO29TOuszoz90vrwySu9GMMkzaCUCpxtk
-         z8fP0vTHLeSAYOAnVVZCvrlDBKqCwNGyfXX1xEKcSqBmyraCY9pLHSPBvNAo023kcu2e
-         4PkioVOlaZATB8ySsdEIQcbeVDfLGviy9MwJmcqDWjyOs5wYGh1lbctoUXpUy7BvG518
-         1dB1nFc3CnFOH+fXUB6p8Emq/TZZL5x6hDnpTrJHfrkbi3WOXDW0CN1u1ZS/1Zc/8hZd
-         RcaSsPwY1NavwCl/ntbd3WK52EdEcMSp1Oz8Hl9Bk53DWpXJrrbfQyIMWkLD0vZ3Pyge
-         /8sg==
-X-Gm-Message-State: AOAM530wf49kUxsFH64xBR7ZAxICfal2p1K4x5go1X6LxW7B9Wpm+iUU
-        2cODR6NfAlGoOO/eKh0QtgMxPChKsu9c0F3nqUWtsA==
-X-Google-Smtp-Source: ABdhPJzX5TIoNNDa3K+sA4F6j+CIm71wUpd29DPTJfqfilZUUFmdG5N8+VeVzCx8F4tg0u5dyUACMyV8sE4qgDYzfPY=
-X-Received: by 2002:a50:fe98:: with SMTP id d24mr2504183edt.223.1601945366080;
- Mon, 05 Oct 2020 17:49:26 -0700 (PDT)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=VpS7X6EIHmnMVFG8t95f4eTiEJylc/0BC3yBDzUejrM=;
+        b=cY1ZoZmOQN49Cm0hfIoVOHoF0wPEzWwQkqIvIHKr6uZdffudB57Gci6VUJSRizNNKW
+         yQQvR6T/3hjuy/wNSR/SeL9Ld34qZTRIJckIBnqVuiFKA0nqp9vuUDJb0xeq1kTAQhuT
+         sk0KspkChFpb44cK/4gSfoTI+wIlAor6IjUi4EQAE6WPnLoR64epeizAnB4+X+qu/wzq
+         J6Nn3hrrakWO1jDrwOUApB4R1weUFaz0mVtxzHWhzUjomQV2Fz425Pklx82jRAA6BCwI
+         gIih4GjA5s3KjlSjohsCKxwGq2yLJE1vAtW84nxRh47SI6HYQQJKtG93bN1vIHA51dpg
+         5iIA==
+X-Gm-Message-State: AOAM532FM+onBk2GiC8WnZD4mJShUcbTtcWq8oTvO+aFmeoUgD01VYZt
+        GjjveNh74dhEDsdT5iNsR3jy5nWjbEj0ng==
+X-Google-Smtp-Source: ABdhPJwcHOjVjxdDby4/cVjBb9nbVM6zGtxqizkwy+3JzYP2vBMd0N90sEUJqcd/RzTbya7as0iiVA==
+X-Received: by 2002:a17:90a:c302:: with SMTP id g2mr1996266pjt.173.1601945588397;
+        Mon, 05 Oct 2020 17:53:08 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id b22sm806470pjz.27.2020.10.05.17.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 17:53:07 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200929183513.380760-1-alex.popov@linux.com> <91d564a6-9000-b4c5-15fd-8774b06f5ab0@linux.com>
- <CAG48ez1tNU_7n8qtnxTYZ5qt-upJ81Fcb0P2rZe38ARK=iyBkA@mail.gmail.com> <20201006004414.GP20115@casper.infradead.org>
-In-Reply-To: <20201006004414.GP20115@casper.infradead.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 6 Oct 2020 02:48:59 +0200
-Message-ID: <CAG48ez3VKw=B14r-BeAOxGtPExc-G4FYNymRPgFKUKUMsn5Osw@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 0/6] Break heap spraying needed for exploiting use-after-free
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alexander Popov <alex.popov@linux.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Pavel Machek <pavel@denx.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        kernel list <linux-kernel@vger.kernel.org>, notify@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0de13a805820e4d73b8f906682386845@codeaurora.org>
+References: <20201002220919.17245-1-khsieh@codeaurora.org> <160169114309.310579.5033839844955785761@swboyd.mtv.corp.google.com> <0de13a805820e4d73b8f906682386845@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: fixes wrong connection state caused by failure of link train
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     khsieh@codeaurora.org
+Date:   Mon, 05 Oct 2020 17:53:06 -0700
+Message-ID: <160194558634.310579.5267169787902306024@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 2:44 AM Matthew Wilcox <willy@infradead.org> wrote:
-> On Tue, Oct 06, 2020 at 12:56:33AM +0200, Jann Horn wrote:
-> > It seems to me like, if you want to make UAF exploitation harder at
-> > the heap allocator layer, you could do somewhat more effective things
-> > with a probably much smaller performance budget. Things like
-> > preventing the reallocation of virtual kernel addresses with different
-> > types, such that an attacker can only replace a UAF object with
-> > another object of the same type. (That is not an idea I like very much
-> > either, but I would like it more than this proposal.) (E.g. some
-> > browsers implement things along those lines, I believe.)
->
-> The slab allocator already has that functionality.  We call it
-> TYPESAFE_BY_RCU, but if forcing that on by default would enhance security
-> by a measurable amount, it wouldn't be a terribly hard sell ...
+Quoting khsieh@codeaurora.org (2020-10-05 11:02:10)
+> >> +       dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+> >> +
+> >>         dp_display_disable(dp_display, 0);
+> >>=20
+> >>         rc =3D dp_display_unprepare(dp);
+> >>         if (rc)
+> >>                 DRM_ERROR("DP display unprepare failed, rc=3D%d\n", rc=
+);
+> >>=20
+> >> -       dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+> >> -
+> >>         state =3D  atomic_read(&dp_display->hpd_state);
+> >>         if (state =3D=3D ST_DISCONNECT_PENDING) {
+> >=20
+> > I don't understand the atomic nature of this hpd_state variable. Why is
+> > it an atomic variable? Is taking a spinlock bad? What is to prevent the
+> > atomic read here to not be interrupted and then this if condition check
+> > be invalid because the variable has been updated somewhere else?
+> hpd_state variable updated by multiple threads. however it was protected =
 
-TYPESAFE_BY_RCU just forces an RCU grace period before the
-reallocation; I'm thinking of something more drastic, like completely
-refusing to give back the memory, or using vmalloc for slabs where
-that's safe (reusing physical but not virtual addresses across types).
-And, to make it more effective, something like a compiler plugin to
-isolate kmalloc(sizeof(<type>)) allocations by type beyond just size
-classes.
+> by mutex.
+> in theory, it should also work as u32. since it was declared as atomic=20
+> from beginning
+> and it does not cause any negative effects, can we keep it as it is?
+>=20
+
+It does cause negative effects by generating worse code for something
+that is already protected from concurrency by a mutex. Can we make it an
+enum and name the enum and then add a comment indicating that the
+'event_mutex' lock protects this variable?
