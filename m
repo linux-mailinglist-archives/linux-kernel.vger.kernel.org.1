@@ -2,141 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E26828482C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D238C284830
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgJFINo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFINo (ORCPT
+        id S1726635AbgJFIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:14:20 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35330 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbgJFIOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:13:44 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885EFC061755;
-        Tue,  6 Oct 2020 01:13:42 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id h7so8749728wre.4;
-        Tue, 06 Oct 2020 01:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fMYP+cTwncpTLOVztv8nSpCnCd5UH8/ESLmq24XFpfc=;
-        b=UJk/CbBM9YT1AvhOT4flOc9Rqcu4jiDsq1OkLSKDM9M4RZaL3qbNXXRVGGRw7wa2RH
-         sEZCpyyc5rH9/w9ehJqsxTRmcMZE/mlrZbc2IROIr5kfLi9krph3F0DRKQn1j4iBfTD/
-         AeJ6U5wOtgcdwz0wEt/UltVPYE6bbipXc9/1oeIEN5NvTC35qZPR4HktzAEy2kxBNA0C
-         hZ9uc9XBV5ceLgqdX93uFoKzMEQGXc2h8SvLZO+oPC6VR65DuOmSMJ6V6V8uMyKO4XJy
-         AwKzSbMQikWijNl3RE3SDv0vODGrqElNIcXDaKg20BMKXh36nNpOsTNPrpJBlA6Vy1z8
-         RLBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fMYP+cTwncpTLOVztv8nSpCnCd5UH8/ESLmq24XFpfc=;
-        b=kkCw6Twv38/9C7YtmU8xm/HfYxJVMH2mCTgXBIVB/6Lo2bzViYJCkF3XLML88wqhuS
-         FU0KkCed+KnHdJoQdQPbp5GE/SGzZHkFP2V+Qrsn7jqX1fATeObJ362ifho9lj4rDsmx
-         CtivhGhCpjcX3/HtJpy37tlXk74H0rq/IXEcTrrtF2WNX+SruXPMqvElRngyNYYzSFJy
-         p+EcQPWnLg0XAO9BklCKwoZWrmppBWmatrs09S8xvCJl8MzOx1mP/S5NP0IorN2nzw/q
-         A3/u9PkZCFQuxoUg2B6ApsQT2RoDF+UYB5REvq1RzpJZdnScUVjHDXrkG8+ofOFu15PN
-         eWVw==
-X-Gm-Message-State: AOAM531BgithPGVmL/+nTtN15T3vGsgMK8xUogK/vK1S4amL4oHWxjJO
-        lBd+dE96/02lGK6k331DPr0scjbydH1BsA==
-X-Google-Smtp-Source: ABdhPJyYS3hLjZfwQwPfc0URX2t5CTl5+XXZ8ogjf78i7Ntm9CEf2LwDcK7QBClYu15RAOPPBTmGig==
-X-Received: by 2002:adf:8030:: with SMTP id 45mr3510936wrk.177.1601972021228;
-        Tue, 06 Oct 2020 01:13:41 -0700 (PDT)
-Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id b8sm2823523wmb.4.2020.10.06.01.13.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 01:13:40 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Tue, 6 Oct 2020 09:13:21 +0100
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Carl Huang <cjhuang@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org
-Subject: Re: [PATCH 2/2] ath11k: Handle errors if peer creation fails
-Message-ID: <20201006081321.e2tf5xrdhnk4j3nq@medion>
-References: <20201004100218.311653-1-alex.dewar90@gmail.com>
- <87blhfbysb.fsf@codeaurora.org>
+        Tue, 6 Oct 2020 04:14:20 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0968E6mu093407;
+        Tue, 6 Oct 2020 03:14:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601972046;
+        bh=R+hYz0n1bmLNJQrANIRZOfjNkI2Oo7acRkOE16iJCMg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=WoTEI/RBcFFGd7bW+IIZstsZfzN0qZSoWPIP/solb6kWdPY9BN3diCKvnAwWNpW/K
+         EiQ1r4ldeQbP85R3TaSa6pTmQUoNaN8i0d3EPWio7fWCMo6FvmMHhDIVRJUzJhgHrV
+         BDalHpVl1Ka03TdHDXao4D4kK2pUXYp0WDhBy6Es=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0968E6Nh016473
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 6 Oct 2020 03:14:06 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
+ 2020 03:14:05 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 6 Oct 2020 03:14:05 -0500
+Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0968E2pN018962;
+        Tue, 6 Oct 2020 03:14:03 -0500
+Subject: Re: [PATCH 0/2] Enable GPIO and I2C configs for TI's J721e platform
+To:     Nishanth Menon <nm@ti.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <t-kristo@ti.com>
+References: <20201002164535.9920-1-faiz_abbas@ti.com>
+ <20201002170211.ghzbjqt6nti6mssh@attakatha>
+From:   Faiz Abbas <faiz_abbas@ti.com>
+Message-ID: <7c45f8e1-afc7-b386-fddb-29d44326067c@ti.com>
+Date:   Tue, 6 Oct 2020 13:44:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87blhfbysb.fsf@codeaurora.org>
+In-Reply-To: <20201002170211.ghzbjqt6nti6mssh@attakatha>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 10:26:28AM +0300, Kalle Valo wrote:
-> Alex Dewar <alex.dewar90@gmail.com> writes:
-> 
-> > ath11k_peer_create() is called without its return value being checked,
-> > meaning errors will be unhandled. Add missing check and, as the mutex is
-> > unconditionally unlocked on leaving this function, simplify the exit
-> > path.
-> >
-> > Addresses-Coverity-ID: 1497531 ("Code maintainability issues")
-> > Fixes: 701e48a43e15 ("ath11k: add packet log support for QCA6390")
-> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> > ---
-> >  drivers/net/wireless/ath/ath11k/mac.c | 21 +++++++++------------
-> >  1 file changed, 9 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-> > index 7f8dd47d2333..58db1b57b941 100644
-> > --- a/drivers/net/wireless/ath/ath11k/mac.c
-> > +++ b/drivers/net/wireless/ath/ath11k/mac.c
-> > @@ -5211,7 +5211,7 @@ ath11k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
-> >  	struct ath11k *ar = hw->priv;
-> >  	struct ath11k_base *ab = ar->ab;
-> >  	struct ath11k_vif *arvif = (void *)vif->drv_priv;
-> > -	int ret;
-> > +	int ret = 0;
-> 
-> I prefer not to initialise the ret variable.
-> 
-> >  	arvif->is_started = true;
-> >  
-> >  	/* TODO: Setup ps and cts/rts protection */
-> >  
-> > -	mutex_unlock(&ar->conf_mutex);
-> > -
-> > -	return 0;
-> > -
-> > -err:
-> > +unlock:
-> >  	mutex_unlock(&ar->conf_mutex);
-> >  
-> >  	return ret;
-> 
-> So in the pending branch I changed this to:
-> 
-> 	ret = 0;
-> 
-> out:
-> 	mutex_unlock(&ar->conf_mutex);
-> 
-> 	return ret;
-> 
-> Please check.
+Nishanth,
 
-Hi Kalle,
-
-I'm afraid you've introduced a bug ;). The body of the first if-statement
-in the function doesn't set ret because no error has occurred. So now
-it'll jump to the label and the function will return ret uninitialized.
-
-With the gcc extension, ret will be initialised to zero anyway, so we're
-not saving anything by explicitly assigning to ret later in the
-function.
-
-Best,
-Alex
-
+On 02/10/20 10:32 pm, Nishanth Menon wrote:
+> On 22:15-20201002, Faiz Abbas wrote:
+>> The following patches enable configs in the arm64 defconfig to support
+>> GPIO and I2C support on TI's J721e platform.
+>>
+>> Faiz Abbas (2):
+>>   arm64: defconfig: Enable OMAP I2C driver
+>>   arm64: defconfig: Enable DAVINCI_GPIO driver
+>>
+>>  arch/arm64/configs/defconfig | 2 ++
+>>  1 file changed, 2 insertions(+)
 > 
-> -- 
-> https://patchwork.kernel.org/project/linux-wireless/list/
 > 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Could we do an audit and make sure nothing else is missing - Say ALSA /
+> DRM or something else?
+
+I'm not aware of anything that might be missing. That said, I am not
+aware of every single config in every subsystem. IMO the various driver
+owners should be responsible for adding their configs to defconfig.
+ 
+> 
+> And I don't really see the need to split these into individual patches,
+> maybe, take a hint from [1]
+> 
+> 
+> [1] https://lore.kernel.org/linux-arm-kernel/20200630171500.11438-1-geert+renesas@glider.be/
+> 
+
+Sounds good. I'll squash into a single patch and repost.
+
+Thanks,
+Faiz
