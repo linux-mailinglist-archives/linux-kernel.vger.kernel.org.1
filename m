@@ -2,133 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39138284872
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A56284882
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgJFIX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:23:59 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:60751 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgJFIX7 (ORCPT
+        id S1726391AbgJFIZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbgJFIZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:23:59 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201006082357epoutp015e342b5c62a42079fe701f595c27b2b9~7WaA-dquN1257312573epoutp01D
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 08:23:57 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201006082357epoutp015e342b5c62a42079fe701f595c27b2b9~7WaA-dquN1257312573epoutp01D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601972637;
-        bh=CEmnTgcyed9RAomU3ELyjDL9JtVQH2eE3sKWO4ZrQ1Y=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=MYUF5hgkszuuGOZX06MqHhk6NxkBGM7yGjY/8kz3iNiUT5xsVcYCZaN+8P2qOEmaP
-         O48ypcwh5ow2KXXAejKjoxBPgaLAUM/70Zj0SM1J+fDgGQjElZU97NV7WgynAs68uJ
-         Mx208jqfSA1o9XLEFctJ5C6UJS/f4cgGV05NoGI4=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201006082356epcas1p262b5c86bd40766eaf57d386c40791ddc~7WaAsR3GG0392203922epcas1p2G;
-        Tue,  6 Oct 2020 08:23:56 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4C59V41RXdzMqYkk; Tue,  6 Oct
-        2020 08:23:56 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        07.EC.10463.C992C7F5; Tue,  6 Oct 2020 17:23:56 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201006082355epcas1p1b16e3b8623ae34ea69c533da042c1326~7WZ-YAMPZ2061120611epcas1p1T;
-        Tue,  6 Oct 2020 08:23:55 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201006082355epsmtrp12a7f3bcc6fd0877d6e7ee7e9873df367~7WZ-W2UZl0812208122epsmtrp1H;
-        Tue,  6 Oct 2020 08:23:55 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-b2-5f7c299ca394
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4B.DB.08745.B992C7F5; Tue,  6 Oct 2020 17:23:55 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201006082355epsmtip28006e7cb430c79633f5783556ada8ff5~7WZ-MP1C03176531765epsmtip2_;
-        Tue,  6 Oct 2020 08:23:55 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201002060505.27449-1-kohada.t2@gmail.com>
-Subject: RE: [PATCH v3 1/2] exfat: add exfat_update_inode()
-Date:   Tue, 6 Oct 2020 17:23:55 +0900
-Message-ID: <000b01d69bba$08047320$180d5960$@samsung.com>
+        Tue, 6 Oct 2020 04:25:14 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109DAC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 01:25:12 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id a3so16324028ejy.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 01:25:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YdhpNKlTW8M5AEVFobND3IcWnRcYsnTU1ylxUOoxLOQ=;
+        b=qHporHfANLglN4o1QtjGAQRWNnN7asjRL3cjazvXjsHh09RfWeLWPhNLVvwSLhWTRD
+         dq9W25RBebcUYOBXWtFq8Xg4Jpr5iwt1eXNmqsekvon7Xl48K0UpprSPFSz88KD7f3X5
+         mVcgrKZ1Q+07rFYOZ6TaIw9SiDE9zLlxqZ10OzeIv3M1P2sRohlLAogcHVmvgwhtbxWh
+         aDv0+4vxSuOdMGAP1BZwP0BlcnNmUE37U3q6XBhiOW2IywzQSNU0oPIf35dwBbDiZGem
+         YyfEcoZuw1vq+eSTNb3BPCippk6TyfUXDjeg7Imo0qPxxzlaz4AKfZHvUV+rJldsOuzH
+         6yMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YdhpNKlTW8M5AEVFobND3IcWnRcYsnTU1ylxUOoxLOQ=;
+        b=QCmyun1AQ/xqBRpUPXvJk8P2hbvOnVkHE14uON8ouKWjX8hSDsqxwOLS2moetXDaXI
+         54pcct8AYdP9me+A/8VKCENmgzkGfHzsnZgtf7hIgrDA2ngH1x0mHr80Iv927qwBqjWG
+         lGS5hHwLDPrMRJL3C8RFxWtKiE4imZX0W/4oSKvUkPxpPlJPnl+dUZhc8oOx6O+eIkBQ
+         SnPtxmHzH7SqsRfDaF0yKZ12+pmYlFX+cZiyNo1UYx0PzrXevlSsfiY+/hpD00R8p2sW
+         pFmxF4ynxlv2SD9kydRL2X7U5xan/epcv5eKwi5FpK/WtefURxVIXowyjIWhMF5kyJK6
+         01eg==
+X-Gm-Message-State: AOAM533W1B9JoDccG0+tihH5FEt8ya6y+34B1JBLR1CWw+kNM9+efXTf
+        5Tpez+aMd26l9V6ljAUHi8fBAV7WX3LKAfhA
+X-Google-Smtp-Source: ABdhPJxsjuEumsaEtaU67N9vbg2cBftfsc/wZW21wnFzsv2BjeMFHC1JmQFLaFRJtrvHxARri2Z8Zg==
+X-Received: by 2002:a5d:6409:: with SMTP id z9mr120080wru.391.1601972710164;
+        Tue, 06 Oct 2020 01:25:10 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id y11sm3353486wrs.16.2020.10.06.01.25.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Oct 2020 01:25:09 -0700 (PDT)
+Subject: Re: [PATCH 0/4] dt-bindings: additional/unevaluatedProperties
+ clean-ups
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>, dmaengine@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Richard Weinberger <richard@nod.at>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+References: <20201005183830.486085-1-robh@kernel.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <d04c47dd-6e37-a7ac-f3c4-d6e6c308dbcd@linaro.org>
+Date:   Tue, 6 Oct 2020 09:25:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20201005183830.486085-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQG77KNAqFwZFI6Uq4r1TRBZo631DgHZ9QczqbDDbeA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMJsWRmVeSWpSXmKPExsWy7bCmnu4czZp4g03POCx+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBZb/h1hdWDz+DLnOLtH87GVbB47Z91l9+jbsorR4/MmuQDWqByb
-        jNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKALlBTKEnNK
-        gUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFhgYFesWJucWleel6yfm5VoYGBkamQJUJORk7
-        J79nKtjJVvH963K2BsYtrF2MnBwSAiYSfzsmM3YxcnEICexglJjbtokNwvnEKPF6SgcThPOZ
-        UWLzpm/MMC3d7SehWnYxSvS27mCFcF4ySuy9sJYdpIpNQFfi35/9bCC2iICexMmT18HmMgtc
-        ZJR4eXIdUBEHB6eApcTbBdUgNcIC1hJHrm0Eq2cRUJFY3/sdbBsvUMnCXRvYIWxBiZMzn7CA
-        2MwC8hLb386BukhB4ufTZawQu6wkJl59xQhRIyIxu7ONGWSvhMBEDokvf9pYIBpcJF7Nb4ey
-        hSVeHd/CDmFLSbzsbwO7TUKgWuLjfqj5HYwSL77bQtjGEjfXb2AFKWEW0JRYv0sfIqwosfP3
-        XKi1fBLvvvawQkzhlehoE4IoUZXou3SYCcKWluhq/8A+gVFpFpLHZiF5bBaSB2YhLFvAyLKK
-        USy1oDg3PbXYsMAEObI3MYJTp5bFDsa5bz/oHWJk4mA8xCjBwawkwqsXVhEvxJuSWFmVWpQf
-        X1Sak1p8iNEUGNQTmaVEk/OByTuvJN7Q1MjY2NjCxMzczNRYSZz34S2FeCGB9MSS1OzU1ILU
-        Ipg+Jg5OqQYmqZMCMW/PNcfn/VXeOjU+6vTSt4fuSlmrTq/c+plb64U8D2+fpMnV7Uu/1j8w
-        u2Oq97dy57u73SHaSwO3HroscOvVmb18X/SX7w79ekyn98JG/W8/3+eEv5XzlVr7xrjG6MjU
-        L5tNrBf2RV77NulyT9npGRLHrkpwOP433u5xj+vJJr6Ds9f/+lp1OWpq4Xkmme/Xb2VuNgqe
-        +841L956R6Uaj+O8lHtTYsR6iuTfdpf4LnYIufRjfVi8rEYJ59Wzp41fFSWaHXWfmFl+lXuB
-        74wjtmmxmU+W8GrsrFbss2q7fnql8ZOyOx9+qN6wWXhUetV2f6s8RZfV2apf5k/O/pG89NM1
-        tk/NTcW1H35EaCixFGckGmoxFxUnAgDBbhp2JgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNLMWRmVeSWpSXmKPExsWy7bCSvO5szZp4gyf/JC1+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBZb/h1hdWDz+DLnOLtH87GVbB47Z91l9+jbsorR4/MmuQDWKC6b
-        lNSczLLUIn27BK6MnZPfMxXsZKv4/nU5WwPjFtYuRk4OCQETie72k4wgtpDADkaJ23sVIOLS
-        EsdOnGHuYuQAsoUlDh8u7mLkAip5ziixYvVzFpAaNgFdiX9/9rOB2CICehInT15nAyliFrjM
-        KNHbNpEFoqOLUWJG739WkEmcApYSbxdUgzQIC1hLHLm2EayZRUBFYn3vd2YQmxeoZOGuDewQ
-        tqDEyZlPWEBamYEWtG0Eu5NZQF5i+9s5zBB3Kkj8fLqMFeIGK4mJV19B1YhIzO5sY57AKDwL
-        yaRZCJNmIZk0C0nHAkaWVYySqQXFuem5xYYFRnmp5XrFibnFpXnpesn5uZsYwfGjpbWDcc+q
-        D3qHGJk4GA8xSnAwK4nw6oVVxAvxpiRWVqUW5ccXleakFh9ilOZgURLn/TprYZyQQHpiSWp2
-        ampBahFMlomDU6qByZExyXuF39eaxRcF/mq+4LJ7rfD+7sQDayMLVjz57fSQgzdU2Ylfdf5F
-        Gb4LPyaYLIxd7cNta/9S6dEKf63JYovOqsXf8dBeVvp5b6eEc8QtxZZZ2kVKfGW3HvJPvSVR
-        c6smaMmkOROOSq8q3dt8gUVYa22gU1/Bs4ZTP14/3PeHM+d67zrtEFmNnrT3U39u6XjlYxM8
-        reKQ9tktQm0JXyeKN3rlmMSqHb/9eO554dR5earl4svaKj95yr5++/6xxdZy5QvMh95L6cWf
-        rdT8lhAk8CDP3Cd9Q6G1eL118CbGk7Vz+DlMesJrtkwyXBAbV86ZevTSfrsZppdurskO0t13
-        SEkxppVvfnHRd495SizFGYmGWsxFxYkA15U7Ng4DAAA=
-X-CMS-MailID: 20201006082355epcas1p1b16e3b8623ae34ea69c533da042c1326
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201002060529epcas1p2e05b4f565283969f4f2adc337f23a0d2
-References: <CGME20201002060529epcas1p2e05b4f565283969f4f2adc337f23a0d2@epcas1p2.samsung.com>
-        <20201002060505.27449-1-kohada.t2@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -1352,19 +1340,13 @@ static int exfat_rename(struct inode *old_dir, struct dentry *old_dentry,
->  	new_dir->i_ctime = new_dir->i_mtime = new_dir->i_atime =
->  		EXFAT_I(new_dir)->i_crtime = current_time(new_dir);
->  	exfat_truncate_atime(&new_dir->i_atime);
-> -	if (IS_DIRSYNC(new_dir))
-> -		exfat_sync_inode(new_dir);
-> -	else
-> -		mark_inode_dirty(new_dir);
-> +	exfat_update_inode(new_dir);
-> 
->  	i_pos = ((loff_t)EXFAT_I(old_inode)->dir.dir << 32) |
->  		(EXFAT_I(old_inode)->entry & 0xffffffff);
->  	exfat_unhash_inode(old_inode);
->  	exfat_hash_inode(old_inode, i_pos);
-> -	if (IS_DIRSYNC(new_dir))
-> -		exfat_sync_inode(old_inode);
-> -	else
-> -		mark_inode_dirty(old_inode);
-> +	exfat_update_inode(old_inode);
-This is checking if old_inode is IS_DIRSYNC, not new_dir.
-Is there any reason ?
 
+
+On 05/10/2020 19:38, Rob Herring wrote:
+> The default behavior for json-schema is any unknown property is allowed.
+> T
+> 
+> hat is generally not the behavior we want for DT. In order to disallow
+> extra properties, schemas need to define 'additionalProperties: false'
+> typically. Ideally, we'd just add that automatically with the tools, but
+> there are some exceptions so only making things explicit everywhere
+> really works. Missing 'additionalProperties' or 'unevaluatedProperties'
+> has been a constant source of review comments, so a meta-schema check is
+> really needed here.
+> 
+>   Documentation/devicetree/bindings/nvmem/nvmem.yaml     |  2 ++
+>   .../devicetree/bindings/nvmem/qcom,qfprom.yaml         |  2 ++
+
+for nvmem parts,
+
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+
+thanks,
+--srini
