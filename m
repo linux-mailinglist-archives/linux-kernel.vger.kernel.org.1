@@ -2,52 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622C5284D1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C20284CED
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgJFOGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33616 "EHLO mail.kernel.org"
+        id S1726749AbgJFOEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgJFOD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:03:56 -0400
+        id S1726548AbgJFOD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:03:57 -0400
 Received: from mail.kernel.org (ip5f5ad5bd.dynamic.kabel-deutschland.de [95.90.213.189])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A664A22208;
-        Tue,  6 Oct 2020 14:03:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A83E723119;
+        Tue,  6 Oct 2020 14:03:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601993034;
-        bh=Lj8LmYIDdDAeKpaYHWSshOa9hH6sWSOg/YlZHcnjBx4=;
+        s=default; t=1601993035;
+        bh=lFEzsRGazv6x3BF+7IzZhV96OJvEaoKXaQrpvpjxmPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rT7YO5mXT3SGjUM0qXRLog3cbipq+By3tZJ6+2qtUVrK0GpL1bb2QcBHOc+1OEh9q
-         O1L0bn8RYXfNetbSJvGPRZcR1ceyfhHVAQNgdw5cyom92gu0bENZBM8MxLwTXPqL7o
-         adJlfz4NWC7gmleMLmxMW+HCT551Hel0dPtUUrRw=
+        b=NJaZRNvukt2ysPBrOilsq68dO6o5dHYG8LjEX1XAAQ5cvnMGDs99NTeafRuDRPJAC
+         HYVpH1tZGlkbVlb7pZudXfBcH+6P9KhW9yDY+knV8NWvCnGrqCu9kMqbqQYJgC1Xvk
+         QRqo/4p425Mt+VVxQln0JhdM8sspNrorxCdF3Uqw=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kPnZI-0019Fk-9j; Tue, 06 Oct 2020 16:03:52 +0200
+        id 1kPnZI-0019Fm-BH; Tue, 06 Oct 2020 16:03:52 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
-        Harald Seiler <hws@denx.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Pragat Pandya <pragat.pandya@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v5 28/52] docs: remove sound API duplication
-Date:   Tue,  6 Oct 2020 16:03:25 +0200
-Message-Id: <bce75a21aa86d04a67ba784d1a7e07a40608338b.1601992016.git.mchehab+huawei@kernel.org>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 29/52] docs: basics.rst: move kernel-doc workqueue markups to workqueue.rst
+Date:   Tue,  6 Oct 2020 16:03:26 +0200
+Message-Id: <c03064a3b88d2d8e43fada8dbe38fae8ac97d1c6.1601992016.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601992016.git.mchehab+huawei@kernel.org>
 References: <cover.1601992016.git.mchehab+huawei@kernel.org>
@@ -58,106 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sound API is documented on two different parts:
-under Documentation/driver-api/sound.rst and under
-Documentation/sound/kernel-api/alsa-driver-api.rst.
+As there's already a rst file with workqueue markups, containing
+part of them, move the other definitions, in order to avoid
+warnings with Sphinx.
 
-The alsa-driver-api.rst seems more complete, and APIs
-are split per type. There's just one missing kernel-doc
-markup there.
-
-Add it and drop the duplicated one.
-
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/index.rst            |  1 -
- Documentation/driver-api/sound.rst            | 54 -------------------
- .../sound/kernel-api/alsa-driver-api.rst      |  1 +
- 3 files changed, 1 insertion(+), 55 deletions(-)
- delete mode 100644 Documentation/driver-api/sound.rst
+ Documentation/core-api/workqueue.rst | 2 ++
+ Documentation/driver-api/basics.rst  | 9 ---------
+ 2 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index 6e7c702e0268..987d6e74ea6a 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -27,7 +27,6 @@ available subsections can be seen below.
-    component
-    message-based
-    infiniband
--   sound
-    frame-buffer
-    regulator
-    iio/index
-diff --git a/Documentation/driver-api/sound.rst b/Documentation/driver-api/sound.rst
-deleted file mode 100644
-index afef6eabc073..000000000000
---- a/Documentation/driver-api/sound.rst
-+++ /dev/null
-@@ -1,54 +0,0 @@
--Sound Devices
--=============
+diff --git a/Documentation/core-api/workqueue.rst b/Documentation/core-api/workqueue.rst
+index 00a5ba51e63f..541d31de8926 100644
+--- a/Documentation/core-api/workqueue.rst
++++ b/Documentation/core-api/workqueue.rst
+@@ -396,3 +396,5 @@ Kernel Inline Documentations Reference
+ ======================================
+ 
+ .. kernel-doc:: include/linux/workqueue.h
++
++.. kernel-doc:: kernel/workqueue.c
+diff --git a/Documentation/driver-api/basics.rst b/Documentation/driver-api/basics.rst
+index 1ba88c7b3984..54f8d5ca7475 100644
+--- a/Documentation/driver-api/basics.rst
++++ b/Documentation/driver-api/basics.rst
+@@ -55,15 +55,6 @@ High-resolution timers
+ .. kernel-doc:: kernel/time/hrtimer.c
+    :export:
+ 
+-Workqueues and Kevents
+-----------------------
 -
--.. kernel-doc:: include/sound/core.h
+-.. kernel-doc:: include/linux/workqueue.h
 -   :internal:
 -
--.. kernel-doc:: sound/sound_core.c
+-.. kernel-doc:: kernel/workqueue.c
 -   :export:
 -
--.. kernel-doc:: include/sound/pcm.h
--   :internal:
--
--.. kernel-doc:: sound/core/pcm.c
--   :export:
--
--.. kernel-doc:: sound/core/device.c
--   :export:
--
--.. kernel-doc:: sound/core/info.c
--   :export:
--
--.. kernel-doc:: sound/core/rawmidi.c
--   :export:
--
--.. kernel-doc:: sound/core/sound.c
--   :export:
--
--.. kernel-doc:: sound/core/memory.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_memory.c
--   :export:
--
--.. kernel-doc:: sound/core/init.c
--   :export:
--
--.. kernel-doc:: sound/core/isadma.c
--   :export:
--
--.. kernel-doc:: sound/core/control.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_lib.c
--   :export:
--
--.. kernel-doc:: sound/core/hwdep.c
--   :export:
--
--.. kernel-doc:: sound/core/pcm_native.c
--   :export:
--
--.. kernel-doc:: sound/core/memalloc.c
--   :export:
--
-diff --git a/Documentation/sound/kernel-api/alsa-driver-api.rst b/Documentation/sound/kernel-api/alsa-driver-api.rst
-index c8cc651eccf7..d24c64df7069 100644
---- a/Documentation/sound/kernel-api/alsa-driver-api.rst
-+++ b/Documentation/sound/kernel-api/alsa-driver-api.rst
-@@ -132,3 +132,4 @@ ISA DMA Helpers
- Other Helper Macros
- -------------------
- .. kernel-doc:: include/sound/core.h
-+.. kernel-doc:: sound/sound_core.c
+ Internal Functions
+ ------------------
+ 
 -- 
 2.26.2
 
