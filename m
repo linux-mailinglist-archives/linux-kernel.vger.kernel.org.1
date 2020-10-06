@@ -2,89 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B32D284D76
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD88284D83
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgJFOSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:18:22 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:33521 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725947AbgJFOSV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:18:21 -0400
-Received: (qmail 417731 invoked by uid 1000); 6 Oct 2020 10:18:20 -0400
-Date:   Tue, 6 Oct 2020 10:18:20 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201006141820.GA416765@rowland.harvard.edu>
-References: <20200929220912.GF1621304@google.com>
- <20200930013229.GB194665@rowland.harvard.edu>
- <20200930124915.GA1826870@google.com>
- <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
- <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
- <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
- <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
- <CAL_JsqLWmBCjrbs2D-d+9naJAKkNhDAbmRtqvCDY8jv=L_q-xA@mail.gmail.com>
- <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
- <20201006004510.GD4135817@google.com>
+        id S1726431AbgJFOWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:22:21 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2960 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725902AbgJFOWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:22:20 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 44BB4C97F0EE94ABF5FB;
+        Tue,  6 Oct 2020 15:22:18 +0100 (IST)
+Received: from [127.0.0.1] (10.210.170.159) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 6 Oct 2020
+ 15:22:16 +0100
+Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
+ 23/23] perf metricgroup: remove duped metric group events)
+From:   John Garry <john.garry@huawei.com>
+To:     Ian Rogers <irogers@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+References: <20200507140819.126960-1-irogers@google.com>
+ <20200507140819.126960-24-irogers@google.com>
+ <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
+ <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
+ <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
+ <CAP-5=fXwQZVDxJM4LmEvsKW9h0HYP6t3F0EZfy0+hwAzDmBgGA@mail.gmail.com>
+ <248e8d19-8727-b403-4196-59eac1b1f305@huawei.com>
+Message-ID: <b621fdcb-9af5-bbc2-992a-ebfaa7888dc2@huawei.com>
+Date:   Tue, 6 Oct 2020 15:19:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006004510.GD4135817@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <248e8d19-8727-b403-4196-59eac1b1f305@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.210.170.159]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 05:45:10PM -0700, Matthias Kaehlcke wrote:
-> I did some prototyping, it seems a binding like this would work for
-> case a) or b):
+On 05/10/2020 19:05, John Garry wrote:
+>> Can you provide a reproduction? Looking on broadwell
+>> this metric doesn't exist.
 > 
-> &usb_1_dwc3 {
->         hub_2_0: hub@1 {
->                 compatible = "usbbda,5411";
->                 reg = <1>;
-> 	};
+> Right, I just added this test metric as my 2x x86 platform has no 
+> examples which I can find:
 > 
->         hub_3_0: hub@2 {
->                 compatible = "usbbda,411";
->                 reg = <2>;
->                 vdd-supply = <&pp3300_hub>;
-> 		companion-hubs = <&hub_2_0>;
->         };
-> };
+> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json 
+> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> index 8cdc7c13dc2a..fc6d9adf996a 100644
+> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> @@ -348,5 +348,11 @@
+>          "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
+>          "MetricGroup": "Power",
+>          "MetricName": "C7_Pkg_Residency"
+> +    },
+> +    {
+> +        "BriefDescription": "test metric",
+> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE * 
+> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
+> +        "MetricGroup": "Test",
+> +        "MetricName": "test_metric_inc"
+>      }
+> ]
 > 
-> It still requires specifying both hubs (which reflects the actual wiring).
-> Supporting something like "reg = <1 2>" seems more complex due to the need to
-> obtain the hub USB device at runtime (a DT node makes that trivial), possibly
-> this could be solved by adding new APIs.
-> 
-> In terms of implementation would I envision to keep a platform driver. This
-> would keep the hubby parts out of xhci-plat (except for populating the platform
-> devices), support systems with cascaded hubs and provide a device for the sysfs
-> attribute.
 
-What will you do if a system has more than one of these power-regulated 
-hubs?  That is, how will the user know which platform device handles the 
-power control for a particular hub (and vice versa)?  You'd probably 
-have to create a pair of symlinks going back and forth in the sysfs 
-directories.
+It seems that the code in find_evsel_group() does not properly handle 
+the scenario of event alias matching different PMUs (as I already said).
 
-Wouldn't it be easier to put the power-control attribute directly in the 
-hub's sysfs directory (or .../power subdirectory)?
+So I got it working on top of "perf metricgroup: Fix uncore metric 
+expressions" with the following change:
 
-Alan Stern
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index d948a7f910cf..6293378c019c 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -213,7 +213,8 @@ static struct evsel *find_evsel_group(struct evlist 
+*perf_evlist,
+  		/* Ignore event if already used and merging is disabled. */
+  		if (metric_no_merge && test_bit(ev->idx, evlist_used))
+  			continue;
+-		if (!has_constraint && ev->leader != current_leader) {
++		if (!has_constraint && (!current_leader || 
+strcmp(current_leader->name, ev->leader->name))) {
+  			/*
+  			 * Start of a new group, discard the whole match and
+  			 * start again.
+@@ -279,7 +280,8 @@ static struct evsel *find_evsel_group(struct evlist 
+*perf_evlist,
+  			 * when then group is left.
+  			 */
+  			if (!has_constraint &&
+-			    ev->leader != metric_events[i]->leader)
++			    strcmp(ev->leader->name, metric_events[i]->leader->name))
+  				break;
+  			if (!strcmp(metric_events[i]->name, ev->name)) {
+  				set_bit(ev->idx, evlist_used);
+
+which gives for my test metric:
+
+./perf stat -v -M test_metric_inc sleep 1
+Using CPUID GenuineIntel-6-3D-4
+metric expr unc_cbo_xsnp_response.miss_xcore / 
+unc_cbo_xsnp_response.miss_eviction for test_metric_inc
+found event unc_cbo_xsnp_response.miss_eviction
+found event unc_cbo_xsnp_response.miss_xcore
+adding 
+{unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
+unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
+unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
+unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
+unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
+Control descriptor is not initialized
+unc_cbo_xsnp_response.miss_eviction: 595175 1001021311 1001021311
+unc_cbo_xsnp_response.miss_eviction: 592516 1001020037 1001020037
+unc_cbo_xsnp_response.miss_xcore: 39139 1001021311 1001021311
+unc_cbo_xsnp_response.miss_xcore: 38718 1001020037 1001020037
+
+Performance counter stats for 'system wide':
+
+         1,187,691      unc_cbo_xsnp_response.miss_eviction #     0.07 
+test_metric_inc
+            77,857      unc_cbo_xsnp_response.miss_xcore 
+
+
+       1.001068918 seconds time elapsed
+
+John
