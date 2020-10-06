@@ -2,145 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A452845FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B20284605
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgJFG1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:27:05 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8461 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgJFG1E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:27:04 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7c0e290000>; Mon, 05 Oct 2020 23:26:49 -0700
-Received: from [10.25.78.32] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
- 2020 06:26:39 +0000
-Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "Yue Wang" <yue.wang@Amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "Neil Armstrong" <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Kunihiko Hayashi" <hayashi.kunihiko@socionext.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-CC:     "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-arm-kernel@axis.com" <linux-arm-kernel@axis.com>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20200924190421.549cb8fc@xhacker.debian>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <b977d9b4-cc98-e817-0d51-8f2c6ba1445d@nvidia.com>
-Date:   Tue, 6 Oct 2020 11:56:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        id S1727033AbgJFG31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:29:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:39454 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726022AbgJFG31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:29:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C9B71435;
+        Mon,  5 Oct 2020 23:29:26 -0700 (PDT)
+Received: from [10.163.74.99] (unknown [10.163.74.99])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B50FF3F66B;
+        Mon,  5 Oct 2020 23:29:22 -0700 (PDT)
+Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
+ mapping
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
+ <20200928203539.GA12218@willie-the-truck>
+ <09266aed-7eef-5b16-5d52-0dcb7dcb7246@arm.com>
+ <20200929152221.GA13995@willie-the-truck>
+ <f44d34df-8a21-712c-138d-f7f633b0eb6c@arm.com>
+ <CAMj1kXGhja2cxQOpnboj1mos314Nku209dkgmmz74X3wq=j8Rg@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <0784f1ec-c044-7fc8-70dc-a378c2b586fa@arm.com>
+Date:   Tue, 6 Oct 2020 11:58:51 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200924190421.549cb8fc@xhacker.debian>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <CAMj1kXGhja2cxQOpnboj1mos314Nku209dkgmmz74X3wq=j8Rg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601965609; bh=+klW06t1SRSkGS8ctt+a82sY0wQKshniw25tq0QSLaQ=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=AK0csA0Ad2YZWQjDqG6mpJBocxrJivGMWN4Ul4Khquqsz4sXDbayWAKH2+5u2Z3hb
-         Dwnnnmie9OTCA1ZI5fcvM10RVW6SwfJHdZN6r1gyuhgUp4wspP3HQiKKeaPJRlt6TS
-         ftqc47lNt61dYxJBT6XlkXDgwQYBcnZRalTTLs1O2CA9N1xHXNIzMp/9BCFgF/3j4d
-         FR/UwmF0Mrck4tf7j34h+cbH01kRo3EmTivl9RItdCJTzy1Ka9lt1SfGAsf/zUW7Wi
-         aU56gk+7gz9xzR1PbXKZ3xMUxaPWpmb7fA52h1f/jWv9XAwAZ3SE3V+Y+LHJj7Q+fE
-         l3eYB+DIUVnkA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-I would like to verify this series along with the other series "PCI: 
-dwc: fix two MSI issues" on Tegra194. I tried to apply these series on 
-both linux-next and Lorenzo's pci/dwc branches but there seem to be non 
-trivial conflicts. Could you please tell me which branch I can use and 
-apply these series cleanly?
-FWIW, I acknowledge that the existing code does leak MSI target page 
-every time system goes through suspend-resume sequence on Tegra194.
 
-Thanks,
-Vidya Sagar
 
-On 9/24/2020 4:35 PM, Jisheng Zhang wrote:
-> External email: Use caution opening links or attachments
+On 09/30/2020 04:31 PM, Ard Biesheuvel wrote:
+> On Wed, 30 Sep 2020 at 10:03, Anshuman Khandual
+> <anshuman.khandual@arm.com> wrote:
+>>
+>>
+>> On 09/29/2020 08:52 PM, Will Deacon wrote:
+>>> On Tue, Sep 29, 2020 at 01:34:24PM +0530, Anshuman Khandual wrote:
+>>>>
+>>>>
+>>>> On 09/29/2020 02:05 AM, Will Deacon wrote:
+>>>>> On Thu, Sep 17, 2020 at 02:16:42PM +0530, Anshuman Khandual wrote:
+>>>>>> During memory hotplug process, the linear mapping should not be created for
+>>>>>> a given memory range if that would fall outside the maximum allowed linear
+>>>>>> range. Else it might cause memory corruption in the kernel virtual space.
+>>>>>>
+>>>>>> Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
+>>>>>> both its ends but excluding PAGE_END. Max physical range that can be mapped
+>>>>>> inside this linear mapping range, must also be derived from its end points.
+>>>>>>
+>>>>>> When CONFIG_ARM64_VA_BITS_52 is enabled, PAGE_OFFSET is computed with the
+>>>>>> assumption of 52 bits virtual address space. However, if the CPU does not
+>>>>>> support 52 bits, then it falls back using 48 bits instead and the PAGE_END
+>>>>>> is updated to reflect this using the vabits_actual. As for PAGE_OFFSET,
+>>>>>> bits [51..48] are ignored by the MMU and remain unchanged, even though the
+>>>>>> effective start address of linear map is now slightly different. Hence, to
+>>>>>> reliably check the physical address range mapped by the linear map, the
+>>>>>> start address should be calculated using vabits_actual. This ensures that
+>>>>>> arch_add_memory() validates memory hot add range for its potential linear
+>>>>>> mapping requirement, before creating it with __create_pgd_mapping().
+>>>>>>
+>>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>>>> Cc: Will Deacon <will@kernel.org>
+>>>>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>>>>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>>>>>> Cc: Steven Price <steven.price@arm.com>
+>>>>>> Cc: Robin Murphy <robin.murphy@arm.com>
+>>>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>>> Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
+>>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>>>> ---
+>>>>>>  arch/arm64/mm/mmu.c | 27 +++++++++++++++++++++++++++
+>>>>>>  1 file changed, 27 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>>>>>> index 75df62fea1b6..d59ffabb9c84 100644
+>>>>>> --- a/arch/arm64/mm/mmu.c
+>>>>>> +++ b/arch/arm64/mm/mmu.c
+>>>>>> @@ -1433,11 +1433,38 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+>>>>>>    free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
+>>>>>>  }
+>>>>>>
+>>>>>> +static bool inside_linear_region(u64 start, u64 size)
+>>>>>> +{
+>>>>>> +  /*
+>>>>>> +   * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+>>>>>> +   * accommodating both its ends but excluding PAGE_END. Max physical
+>>>>>> +   * range which can be mapped inside this linear mapping range, must
+>>>>>> +   * also be derived from its end points.
+>>>>>> +   *
+>>>>>> +   * With CONFIG_ARM64_VA_BITS_52 enabled, PAGE_OFFSET is defined with
+>>>>>> +   * the assumption of 52 bits virtual address space. However, if the
+>>>>>> +   * CPU does not support 52 bits, it falls back using 48 bits and the
+>>>>>> +   * PAGE_END is updated to reflect this using the vabits_actual. As
+>>>>>> +   * for PAGE_OFFSET, bits [51..48] are ignored by the MMU and remain
+>>>>>> +   * unchanged, even though the effective start address of linear map
+>>>>>> +   * is now slightly different. Hence, to reliably check the physical
+>>>>>> +   * address range mapped by the linear map, the start address should
+>>>>>> +   * be calculated using vabits_actual.
+>>>>>> +   */
+>>>>>> +  return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
+>>>>>> +                  && ((start + size) <= __pa(PAGE_END - 1)));
+>>>>>> +}
+>>>>>
+>>>>> Why isn't this implemented using the existing __is_lm_address()?
+>>>>
+>>>> Not sure, if I understood your suggestion here. The physical address range
+>>>> [start..start + size] needs to be checked against maximum physical range
+>>>> that can be represented inside effective boundaries for the linear mapping
+>>>> i.e [__pa(_PAGE_OFFSET(vabits_actual)..__pa(PAGE_END - 1)].
+>>>>
+>>>> Are you suggesting [start..start + size] should be first be converted into
+>>>> a virtual address range and then checked against __is_lm_addresses() ? But
+>>>> is not deriving the physical range from from know limits of linear mapping
+>>>> much cleaner ?
+>>>
+>>> I just think having a function called "inside_linear_region()" as well as a
+>>> macro called "__is_lm_address()" is weird when they have completely separate
+>>> implementations. They're obviously trying to do the same thing, just the
+>>> first one gets given physical address as parameters.
+>>>
+>>> Implementing one in terms of the other is much better for maintenance.
+>>
+>> /*
+>>  * The linear kernel range starts at the bottom of the virtual address
+>>  * space. Testing the top bit for the start of the region is a
+>>  * sufficient check and avoids having to worry about the tag.
+>>  */
+>> #define __is_lm_address(addr)   (!(((u64)addr) & BIT(vabits_actual - 1)))
+>>
+>> __is_lm_address() currently just check the highest bit in a virtual address
+>> where the linear mapping ends i.e the lower half and all other kernel mapping
+>> starts i.e the upper half. But I would believe, it misses the blind range
+>> [_PAGE_OFFSET(VA_BITS).._PAGE_OFFSET(vabits_actual)] in some configurations,
+>> even though it does not really affect anything because it gets ignored by the
+>> MMU. Hence in current form __is_lm_address() cannot be used to derive maximum
+>> linear range and it's corresponding physical range for hotplug range check.
+>>
 > 
+> This is actually something that I brought up when the 52-bit VA
+> changes were under review: currently, we split the VA space in half,
+> and use the lower half for the linear range, and the upper half for
+> vmalloc, kernel, modules, vmemmap etc
+
+Right.
+
 > 
-> Improve the msi code:
-> 1. Add proper error handling.
-> 2. Move dw_pcie_msi_init() from each users to designware host to solve
-> msi page leakage in resume path.
+> When we run a 48-bit kernel on 52-bit capable hardware, we mostly
+> stick with the same arrangement: 2^51 bytes of linear range, but only
+> 2^47 bytes of vmalloc range (as the size is fixed), and so we are
+> wasting 15/16 of the vmalloc region (2^51 - 2^47), by not using it to
+> map anything.
+
+Right, there are unused gaps in the kernel virtual space with current
+arrangement for various sections.
+
 > 
-> Since v1:
->    - add proper error handling patches.
->    - solve the msi page leakage by moving dw_pcie_msi_init() from each
->      users to designware host
-> 
-> 
-> Jisheng Zhang (5):
->    PCI: dwc: Call dma_unmap_page() before freeing the msi page
->    PCI: dwc: Check alloc_page() return value
->    PCI: dwc: Rename dw_pcie_free_msi to dw_pcie_msi_deinit
->    PCI: dwc: Skip PCIE_MSI_INTR0* programming if MSI is disabled
->    PCI: dwc: Move dw_pcie_msi_init() from each users to designware host
-> 
->   drivers/pci/controller/dwc/pci-dra7xx.c       |  1 +
->   drivers/pci/controller/dwc/pci-exynos.c       |  2 -
->   drivers/pci/controller/dwc/pci-imx6.c         |  3 --
->   drivers/pci/controller/dwc/pci-meson.c        |  8 ----
->   drivers/pci/controller/dwc/pcie-artpec6.c     | 10 -----
->   .../pci/controller/dwc/pcie-designware-host.c | 43 +++++++++++++------
->   .../pci/controller/dwc/pcie-designware-plat.c |  3 --
->   drivers/pci/controller/dwc/pcie-designware.h  |  9 +++-
->   drivers/pci/controller/dwc/pcie-histb.c       |  3 --
->   drivers/pci/controller/dwc/pcie-kirin.c       |  3 --
->   drivers/pci/controller/dwc/pcie-qcom.c        |  3 --
->   drivers/pci/controller/dwc/pcie-spear13xx.c   |  1 -
->   drivers/pci/controller/dwc/pcie-tegra194.c    |  2 -
->   drivers/pci/controller/dwc/pcie-uniphier.c    |  9 +---
->   14 files changed, 38 insertions(+), 62 deletions(-)
-> 
-> --
-> 2.28.0
-> 
+> So it would be better to get away from this notion that the VA space
+> is divided evenly between linear and vmalloc regions, and use the
+> entire range between ~0 << 52 and ~0 << 47 for the linear region (Note
+> that the KASAN region defimnition will overlap the linear region in
+> this case, by we should be able to sort that at runtime)
+
+Right, kernel virtual space management needs rethink for optimal address
+range utilization while reducing unused areas. I have been experimenting
+with this for a while but nothing particular to propose yet. Nonetheless
+for now, we need to fix this address range problem for memory hotplug.
