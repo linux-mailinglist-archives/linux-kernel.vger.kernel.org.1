@@ -2,209 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453A12846BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B0D2846C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgJFHF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgJFHFz (ORCPT
+        id S1727170AbgJFHH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:07:29 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:7550 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726761AbgJFHH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:05:55 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C298CC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 00:05:55 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 34so7450432pgo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 00:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9GGH+/6wZEA/oHnTyMOt2NiSZdACWupFxY5AzU7RwJw=;
-        b=DcY0wqN7FAXZcepNNp/G4wJFgfFnNNPGqu9sMW1/TYLnOfczA0WXrtSHbA/2s4G4SE
-         qfyimZwkytN5Ecco6FoOV9cG9uTse1xvd09aTQrcbiNQN3CWzOQ52kHNObzpXmxqIFaK
-         xCNlTW+TT5MqE8g8vBDWTJGvfIK8cYoENEB0cclithUZomYy+d0IY4Is4mbrkDv8tFb7
-         nwWWWWBiYFoRDtl5UVd92tishb5Md2GXldFaThx0fZlU7Z97sdZh3RdcZmCEPKc0iDfc
-         qHRk2sWORELZhPe4KWPuLfU3yQnMHhk8Vg7O6KL/42T/khfhblfA9KVTHYZz7UCBACUC
-         5YAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9GGH+/6wZEA/oHnTyMOt2NiSZdACWupFxY5AzU7RwJw=;
-        b=jLH/i6R5hWyGkTHWGbK1SDtHHtUy8OimNFiM9OqnCpnysnbLoDXzPpgkOVs0pNRu2P
-         Id6HyIHlBrQKxK19DTEwIegC989UENxcSZD64mwojmWnH2O5LsA0Pfxqb8doCq6U7m2Y
-         h+cWnvhe27K9GfmTUnVcV/J+Ct6GQUH3M6YnUL6veSjnpHxn2YAadvy5SDO6YisuFDZh
-         +m9/1jNa3LZu3KF6PSMofJ9tvmA6NuxE6RJg7cTfK/wK3lPhgrWiG/wQHXa6oHpEMYLS
-         HtXtd3RbtPpcfkFKacaYKDezvd1QUBYHUS2nTNU/xIRSINRL/aoH84tQSj8jHNoWFYXW
-         0nLg==
-X-Gm-Message-State: AOAM531DSrwmWL8K0IEsVq0Qwk7BGZOIAw92b/MpcEl54P8sKMPo0vij
-        9xcDw7mjPObUP9rYmaVH9kfUmA==
-X-Google-Smtp-Source: ABdhPJzHKfU0sR4I22zl0HejKaqmSkygzGbRvVisyvd7eXbN/i1C2cva1rcAahyqqX+k0Kg88LcMtg==
-X-Received: by 2002:a63:ea4f:: with SMTP id l15mr2790621pgk.434.1601967955080;
-        Tue, 06 Oct 2020 00:05:55 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id 16sm1703324pjl.27.2020.10.06.00.05.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 00:05:54 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 12:35:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
-        linux@armlinux.org.uk, rjw@rjwysocki.net, dietmar.eggemann@arm.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] cpufreq,arm,arm64: restructure definitions of
- arch_set_freq_scale()
-Message-ID: <20201006070551.kokmnsuzyzqxqbq5@vireshk-i7>
-References: <20200924123016.13427-1-ionela.voinescu@arm.com>
- <20200924123016.13427-2-ionela.voinescu@arm.com>
+        Tue, 6 Oct 2020 03:07:28 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0966wFXG022130;
+        Tue, 6 Oct 2020 09:06:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=FxjkPnYQkvGM1UmAHc6w4pfL14faN87LhAm30HIRRnE=;
+ b=e49nVdPhjPNupETe6/U4g30ynwcqKKTHgkMelWWBoGAFOEC9lJ8XidzVX84zrLKHLGS4
+ LTDYEUezQxAHaln8YjsxkQE5P4J1w7tScTJlr+zOrHUAVmNV/8tnxs9zD/KUBE/5NsbI
+ mCBw9IOcp3le5FRgAWgM8j5OFiLYvBk0NdcAyGmQmds4af1de1jN2Z62W+xUKI4l3gNV
+ 7F7E1oeoDnJAh9fnEc/odvcJ3cGrjSzoPDutXj+ZazvhuIsXrHlBJaKQ61QQrZhKatA7
+ ilcc+T65G1iyq1kYhMwxNAa3G9sMAWQQ2N6Q352CLltmukm3bHVst4aMp+yAV2KUmyB6 uA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3402tjctq2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Oct 2020 09:06:50 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7BEE710002A;
+        Tue,  6 Oct 2020 09:06:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node1.st.com [10.75.127.4])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4FA91212FB1;
+        Tue,  6 Oct 2020 09:06:48 +0200 (CEST)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE1.st.com
+ (10.75.127.4) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
+ 2020 09:06:47 +0200
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1473.003; Tue, 6 Oct 2020 09:06:47 +0200
+From:   Patrice CHOTARD <patrice.chotard@st.com>
+To:     Alain Volmat <avolmat@me.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Olof Johansson" <olof@lixom.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Nathan Huckleberry" <nhuck15@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Enrico Weigelt <info@metux.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Kate Stewart" <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] arm: use DEBUG_UART_PHYS and DEBUG_UART_VIRT for
+ sti LL_UART
+Thread-Topic: [PATCH v2 1/2] arm: use DEBUG_UART_PHYS and DEBUG_UART_VIRT for
+ sti LL_UART
+Thread-Index: AQHWfwft1nwSe3V2OE+vyTqBVDD3damKPumA
+Date:   Tue, 6 Oct 2020 07:06:47 +0000
+Message-ID: <63b485cb-664d-f00f-8319-ad860f9e69c9@st.com>
+References: <20200830195748.30221-1-avolmat@me.com>
+ <20200830195748.30221-2-avolmat@me.com>
+In-Reply-To: <20200830195748.30221-2-avolmat@me.com>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.44]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2D593EB3D5E00B45B909EE0E40B52C8B@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924123016.13427-2-ionela.voinescu@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-06_02:2020-10-06,2020-10-06 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-09-20, 13:30, Ionela Voinescu wrote:
-> Compared to other arch_* functions, arch_set_freq_scale() has an atypical
-> weak definition that can be replaced by a strong architecture specific
-> implementation.
-> 
-> The more typical support for architectural functions involves defining
-> an empty stub in a header file if the symbol is not already defined in
-> architecture code. Some examples involve:
->  - #define arch_scale_freq_capacity	topology_get_freq_scale
->  - #define arch_scale_freq_invariant	topology_scale_freq_invariant
->  - #define arch_scale_cpu_capacity	topology_get_cpu_scale
->  - #define arch_update_cpu_topology	topology_update_cpu_topology
->  - #define arch_scale_thermal_pressure	topology_get_thermal_pressure
->  - #define arch_set_thermal_pressure	topology_set_thermal_pressure
-> 
-> Bring arch_set_freq_scale() in line with these functions by renaming it to
-> topology_set_freq_scale() in the arch topology driver, and by defining the
-> arch_set_freq_scale symbol to point to the new function for arm and arm64.
-> 
-> While there are other users of the arch_topology driver, this patch defines
-> arch_set_freq_scale for arm and arm64 only, due to their existing
-> definitions of arch_scale_freq_capacity. This is the getter function of the
-> frequency invariance scale factor and without a getter function, the
-> setter function - arch_set_freq_scale() has not purpose.
-> 
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->  arch/arm/include/asm/topology.h   |  1 +
->  arch/arm64/include/asm/topology.h |  1 +
->  drivers/base/arch_topology.c      |  4 ++--
->  drivers/cpufreq/cpufreq.c         |  7 -------
->  include/linux/arch_topology.h     |  2 ++
->  include/linux/cpufreq.h           | 11 ++++++++---
->  6 files changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
-> index 9219e67befbe..e5e3d5ce4d55 100644
-> --- a/arch/arm/include/asm/topology.h
-> +++ b/arch/arm/include/asm/topology.h
-> @@ -8,6 +8,7 @@
->  #include <linux/arch_topology.h>
->  
->  /* Replace task scheduler's default frequency-invariant accounting */
-> +#define arch_set_freq_scale topology_set_freq_scale
->  #define arch_scale_freq_capacity topology_get_freq_scale
->  #define arch_scale_freq_invariant topology_scale_freq_invariant
->  
-> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
-> index 7cb519473fbd..11a465243f66 100644
-> --- a/arch/arm64/include/asm/topology.h
-> +++ b/arch/arm64/include/asm/topology.h
-> @@ -26,6 +26,7 @@ void topology_scale_freq_tick(void);
->  #endif /* CONFIG_ARM64_AMU_EXTN */
->  
->  /* Replace task scheduler's default frequency-invariant accounting */
-> +#define arch_set_freq_scale topology_set_freq_scale
->  #define arch_scale_freq_capacity topology_get_freq_scale
->  #define arch_scale_freq_invariant topology_scale_freq_invariant
->  
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 1705c772c273..ae5a596bcf86 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -33,8 +33,8 @@ __weak bool arch_freq_counters_available(const struct cpumask *cpus)
->  }
->  DEFINE_PER_CPU(unsigned long, freq_scale) = SCHED_CAPACITY_SCALE;
->  
-> -void arch_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
-> -			 unsigned long max_freq)
-> +void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
-> +			     unsigned long max_freq)
->  {
->  	unsigned long scale;
->  	int i;
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 2ea245a6c0c0..f34d3a3d5ba6 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -160,13 +160,6 @@ u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy)
->  }
->  EXPORT_SYMBOL_GPL(get_cpu_idle_time);
->  
-> -__weak void arch_set_freq_scale(const struct cpumask *cpus,
-> -				unsigned long cur_freq,
-> -				unsigned long max_freq)
-> -{
-> -}
-> -EXPORT_SYMBOL_GPL(arch_set_freq_scale);
-> -
-
-Why can't we have this anymore ? Because it is a macro now instead of a routine
-for ARM ?
-
->  /*
->   * This is a generic cpufreq init() routine which can be used by cpufreq
->   * drivers of SMP systems. It will do following:
-> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> index 083df331a3c9..0f6cd6b73a61 100644
-> --- a/include/linux/arch_topology.h
-> +++ b/include/linux/arch_topology.h
-> @@ -30,6 +30,8 @@ static inline unsigned long topology_get_freq_scale(int cpu)
->  	return per_cpu(freq_scale, cpu);
->  }
->  
-> +void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
-> +			     unsigned long max_freq);
->  bool topology_scale_freq_invariant(void);
->  
->  bool arch_freq_counters_available(const struct cpumask *cpus);
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index 9f779fbdbe7b..fa37b1c66443 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -1011,9 +1011,14 @@ static inline void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
->  extern void arch_freq_prepare_all(void);
->  extern unsigned int arch_freq_get_on_cpu(int cpu);
->  
-> -extern void arch_set_freq_scale(const struct cpumask *cpus,
-> -				unsigned long cur_freq,
-> -				unsigned long max_freq);
-> +#ifndef arch_set_freq_scale
-> +static __always_inline
-> +void arch_set_freq_scale(const struct cpumask *cpus,
-> +			 unsigned long cur_freq,
-> +			 unsigned long max_freq)
-> +{
-> +}
-> +#endif
->  
->  /* the following are really really optional */
->  extern struct freq_attr cpufreq_freq_attr_scaling_available_freqs;
-> -- 
-> 2.17.1
-
--- 
-viresh
+SGkgQWxhaW4NCg0KT24gOC8zMC8yMCA5OjU3IFBNLCBBbGFpbiBWb2xtYXQgd3JvdGU6DQo+IFVw
+ZGF0ZSB0aGUgc3RpIHBsYXRmb3JtIExMX1VBUlQgc3VwcG9ydCB0byByZWx5IG9uDQo+IENPTkZJ
+R19ERUJVR19VQVJUX1BIWVMgYW5kIENPTkZJR19ERUJVR19VQVJUX1ZJUlQgZnJvbSBLY29uZmln
+DQo+DQo+IFNpZ25lZC1vZmYtYnk6IEFsYWluIFZvbG1hdCA8YXZvbG1hdEBtZS5jb20+DQo+IC0t
+LQ0KPiAgYXJjaC9hcm0vS2NvbmZpZy5kZWJ1ZyAgICAgICB8IDIzICsrKysrKysrKysrKy0tLS0t
+LS0tLS0tDQo+ICBhcmNoL2FybS9pbmNsdWRlL2RlYnVnL3N0aS5TIHwgMjYgKystLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0NCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgMzUg
+ZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9LY29uZmlnLmRlYnVnIGIv
+YXJjaC9hcm0vS2NvbmZpZy5kZWJ1Zw0KPiBpbmRleCA4MDAwMGE2NmE0ZTMuLmU5N2Q2ZTVjODg5
+OCAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm0vS2NvbmZpZy5kZWJ1Zw0KPiArKysgYi9hcmNoL2Fy
+bS9LY29uZmlnLmRlYnVnDQo+IEBAIC0xMTg0LDEwICsxMTg0LDkgQEAgY2hvaWNlDQo+ICAJCSAg
+U2F5IFkgaGVyZSBpZiB5b3Ugd2FudCBrZXJuZWwgbG93LWxldmVsIGRlYnVnZ2luZyBzdXBwb3J0
+DQo+ICAJCSAgb24gU1QgU1BFQXIxM3h4IGJhc2VkIHBsYXRmb3Jtcy4NCj4gIA0KPiAtCWNvbmZp
+ZyBTVElINDFYX0RFQlVHX0FTQzINCj4gKwljb25maWcgREVCVUdfU1RJSDQxWF9BU0MyDQo+ICAJ
+CWJvb2wgIlVzZSBTdGlINDE1LzQxNiBBU0MyIFVBUlQgZm9yIGxvdy1sZXZlbCBkZWJ1ZyINCj4g
+IAkJZGVwZW5kcyBvbiBBUkNIX1NUSQ0KPiAtCQlzZWxlY3QgREVCVUdfU1RJX1VBUlQNCj4gIAkJ
+aGVscA0KPiAgCQkgIFNheSBZIGhlcmUgaWYgeW91IHdhbnQga2VybmVsIGxvdy1sZXZlbCBkZWJ1
+Z2dpbmcgc3VwcG9ydA0KPiAgCQkgIG9uIFNUaUg0MTUvNDE2IGJhc2VkIHBsYXRmb3JtcyBsaWtl
+IGIyMDAwLCB3aGljaCBoYXMNCj4gQEAgLTExOTUsMTAgKzExOTQsOSBAQCBjaG9pY2UNCj4gIA0K
+PiAgCQkgIElmIHVuc3VyZSwgc2F5IE4uDQo+ICANCj4gLQljb25maWcgU1RJSDQxWF9ERUJVR19T
+QkNfQVNDMQ0KPiArCWNvbmZpZyBERUJVR19TVElINDFYX1NCQ19BU0MxDQo+ICAJCWJvb2wgIlVz
+ZSBTdGlINDE1LzQxNiBTQkMgQVNDMSBVQVJUIGZvciBsb3ctbGV2ZWwgZGVidWciDQo+ICAJCWRl
+cGVuZHMgb24gQVJDSF9TVEkNCj4gLQkJc2VsZWN0IERFQlVHX1NUSV9VQVJUDQo+ICAJCWhlbHAN
+Cj4gIAkJICBTYXkgWSBoZXJlIGlmIHlvdSB3YW50IGtlcm5lbCBsb3ctbGV2ZWwgZGVidWdnaW5n
+IHN1cHBvcnQNCj4gIAkJICBvbiBTVGlINDE1LzQxNiBiYXNlZCBwbGF0Zm9ybXMgbGlrZSBiMjAy
+MC4gd2hpY2ggaGFzDQo+IEBAIC0xNTM0LDEwICsxNTMyLDYgQEAgY29uZmlnIERFQlVHX1RFR1JB
+X1VBUlQNCj4gIAlib29sDQo+ICAJZGVwZW5kcyBvbiBBUkNIX1RFR1JBDQo+ICANCj4gLWNvbmZp
+ZyBERUJVR19TVElfVUFSVA0KPiAtCWJvb2wNCj4gLQlkZXBlbmRzIG9uIEFSQ0hfU1RJDQo+IC0N
+Cj4gIGNvbmZpZyBERUJVR19TVE0zMl9VQVJUDQo+ICAJYm9vbA0KPiAgCWRlcGVuZHMgb24gQVJD
+SF9TVE0zMg0KPiBAQCAtMTU5MSw3ICsxNTg1LDggQEAgY29uZmlnIERFQlVHX0xMX0lOQ0xVREUN
+Cj4gIAlkZWZhdWx0ICJkZWJ1Zy9zM2MyNHh4LlMiIGlmIERFQlVHX1MzQzI0WFhfVUFSVCB8fCBE
+RUJVR19TM0M2NFhYX1VBUlQNCj4gIAlkZWZhdWx0ICJkZWJ1Zy9zNXB2MjEwLlMiIGlmIERFQlVH
+X1M1UFYyMTBfVUFSVA0KPiAgCWRlZmF1bHQgImRlYnVnL3NpcmYuUyIgaWYgREVCVUdfU0lSRlNP
+Q19VQVJUDQo+IC0JZGVmYXVsdCAiZGVidWcvc3RpLlMiIGlmIERFQlVHX1NUSV9VQVJUDQo+ICsJ
+ZGVmYXVsdCAiZGVidWcvc3RpLlMiIGlmIERFQlVHX1NUSUg0MVhfQVNDMg0KPiArCWRlZmF1bHQg
+ImRlYnVnL3N0aS5TIiBpZiBERUJVR19TVElINDFYX1NCQ19BU0MxDQo+ICAJZGVmYXVsdCAiZGVi
+dWcvc3RtMzIuUyIgaWYgREVCVUdfU1RNMzJfVUFSVA0KPiAgCWRlZmF1bHQgImRlYnVnL3RlZ3Jh
+LlMiIGlmIERFQlVHX1RFR1JBX1VBUlQNCj4gIAlkZWZhdWx0ICJkZWJ1Zy91eDUwMC5TIiBpZiBE
+RUJVR19VWDUwMF9VQVJUDQo+IEBAIC0xNzIzLDcgKzE3MTgsOSBAQCBjb25maWcgREVCVUdfVUFS
+VF9QSFlTDQo+ICAJZGVmYXVsdCAweGZjMDBjMDAwIGlmIERFQlVHX0FUOTFfU0FNQTVENF9VU0FS
+VDMNCj4gIAlkZWZhdWx0IDB4ZmNiMDAwMDAgaWYgREVCVUdfSEkzNjIwX1VBUlQNCj4gIAlkZWZh
+dWx0IDB4ZmQ4ODMwMDAgaWYgREVCVUdfQUxQSU5FX1VBUlQwDQo+ICsJZGVmYXVsdCAweGZlNTMx
+MDAwIGlmIERFQlVHX1NUSUg0MVhfU0JDX0FTQzENCj4gIAlkZWZhdWx0IDB4ZmU4MDAwMDAgaWYg
+QVJDSF9JT1AzMlgNCj4gKwlkZWZhdWx0IDB4ZmVkMzIwMDAgaWYgREVCVUdfU1RJSDQxWF9BU0My
+DQo+ICAJZGVmYXVsdCAweGZmNjkwMDAwIGlmIERFQlVHX1JLMzJfVUFSVDINCj4gIAlkZWZhdWx0
+IDB4ZmZjMDIwMDAgaWYgREVCVUdfU09DRlBHQV9VQVJUMA0KPiAgCWRlZmF1bHQgMHhmZmMwMjEw
+MCBpZiBERUJVR19TT0NGUEdBX0FSUklBMTBfVUFSVDENCj4gQEAgLTE3NTIsNyArMTc0OSw4IEBA
+IGNvbmZpZyBERUJVR19VQVJUX1BIWVMNCj4gIAkJREVCVUdfUzNDNjRYWF9VQVJUIHx8IFwNCj4g
+IAkJREVCVUdfQkNNNjNYWF9VQVJUIHx8IERFQlVHX0FTTTkyNjBfVUFSVCB8fCBcDQo+ICAJCURF
+QlVHX1NJUkZTT0NfVUFSVCB8fCBERUJVR19ESUdJQ09MT1JfVUEwIHx8IFwNCj4gLQkJREVCVUdf
+QVQ5MV9VQVJUIHx8IERFQlVHX1NUTTMyX1VBUlQNCj4gKwkJREVCVUdfQVQ5MV9VQVJUIHx8IERF
+QlVHX1NUTTMyX1VBUlQgfHwgXA0KPiArCQlERUJVR19TVElINDFYX0FTQzIgfHwgREVCVUdfU1RJ
+SDQxWF9TQkNfQVNDMQ0KPiAgDQo+ICBjb25maWcgREVCVUdfVUFSVF9WSVJUDQo+ICAJaGV4ICJW
+aXJ0dWFsIGJhc2UgYWRkcmVzcyBvZiBkZWJ1ZyBVQVJUIg0KPiBAQCAtMTgxNyw3ICsxODE1LDkg
+QEAgY29uZmlnIERFQlVHX1VBUlRfVklSVA0KPiAgCWRlZmF1bHQgMHhmYzcwNTAwMCBpZiBERUJV
+R19aVEVfWlgNCj4gIAlkZWZhdWx0IDB4ZmNmZTg2MDAgaWYgREVCVUdfQkNNNjNYWF9VQVJUDQo+
+ICAJZGVmYXVsdCAweGZkMDAwMDAwIGlmIERFQlVHX1NQRUFSM1hYIHx8IERFQlVHX1NQRUFSMTNY
+WA0KPiArCWRlZmF1bHQgMHhmZDUzMTAwMCBpZiBERUJVR19TVElINDFYX1NCQ19BU0MxDQo+ICAJ
+ZGVmYXVsdCAweGZkODgzMDAwIGlmIERFQlVHX0FMUElORV9VQVJUMA0KPiArCWRlZmF1bHQgMHhm
+ZGQzMjAwMCBpZiBERUJVR19TVElINDFYX0FTQzINCj4gIAlkZWZhdWx0IDB4ZmUwMTAwMDAgaWYg
+U1RNMzJNUDFfREVCVUdfVUFSVA0KPiAgCWRlZmF1bHQgMHhmZTAxNzAwMCBpZiBERUJVR19NTVBf
+VUFSVDINCj4gIAlkZWZhdWx0IDB4ZmUwMTgwMDAgaWYgREVCVUdfTU1QX1VBUlQzDQo+IEBAIC0x
+ODYzLDcgKzE4NjMsOCBAQCBjb25maWcgREVCVUdfVUFSVF9WSVJUDQo+ICAJCURFQlVHX1MzQzY0
+WFhfVUFSVCB8fCBcDQo+ICAJCURFQlVHX0JDTTYzWFhfVUFSVCB8fCBERUJVR19BU005MjYwX1VB
+UlQgfHwgXA0KPiAgCQlERUJVR19TSVJGU09DX1VBUlQgfHwgREVCVUdfRElHSUNPTE9SX1VBMCB8
+fCBcDQo+IC0JCURFQlVHX0FUOTFfVUFSVCB8fCBERUJVR19TVE0zMl9VQVJUDQo+ICsJCURFQlVH
+X0FUOTFfVUFSVCB8fCBERUJVR19TVE0zMl9VQVJUIHx8IFwNCj4gKwkJREVCVUdfU1RJSDQxWF9B
+U0MyIHx8IERFQlVHX1NUSUg0MVhfU0JDX0FTQzENCj4gIA0KPiAgY29uZmlnIERFQlVHX1VBUlRf
+ODI1MF9TSElGVA0KPiAgCWludCAiUmVnaXN0ZXIgb2Zmc2V0IHNoaWZ0IGZvciB0aGUgODI1MCBk
+ZWJ1ZyBVQVJUIg0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vaW5jbHVkZS9kZWJ1Zy9zdGkuUyBi
+L2FyY2gvYXJtL2luY2x1ZGUvZGVidWcvc3RpLlMNCj4gaW5kZXggNmI0MmM5MWYyMTdkLi5hOTAz
+YTYwYjgxYzYgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtL2luY2x1ZGUvZGVidWcvc3RpLlMNCj4g
+KysrIGIvYXJjaC9hcm0vaW5jbHVkZS9kZWJ1Zy9zdGkuUw0KPiBAQCAtNiwyOCArNiw2IEBADQo+
+ICAgKiBDb3B5cmlnaHQgKEMpIDIwMTMgU1RNaWNyb2VsZWN0cm9uaWNzIChSJkQpIExpbWl0ZWQu
+DQo+ICAgKi8NCj4gIA0KPiAtI2RlZmluZSBTVElINDFYX0NPTU1TX0JBU0UgICAgICAgICAgICAg
+IDB4ZmVkMDAwMDANCj4gLSNkZWZpbmUgU1RJSDQxWF9BU0MyX0JBU0UgICAgICAgICAgICAgICAo
+U1RJSDQxWF9DT01NU19CQVNFKzB4MzIwMDApDQo+IC0NCj4gLSNkZWZpbmUgU1RJSDQxWF9TQkNf
+TFBNX0JBU0UgICAgICAgICAgICAweGZlNDAwMDAwDQo+IC0jZGVmaW5lIFNUSUg0MVhfU0JDX0NP
+TU1TX0JBU0UgICAgICAgICAgKFNUSUg0MVhfU0JDX0xQTV9CQVNFICsgMHgxMDAwMDApDQo+IC0j
+ZGVmaW5lIFNUSUg0MVhfU0JDX0FTQzFfQkFTRSAgICAgICAgICAgKFNUSUg0MVhfU0JDX0NPTU1T
+X0JBU0UgKyAweDMxMDAwKQ0KPiAtDQo+IC0NCj4gLSNkZWZpbmUgVklSVF9BRERSRVNTKHgpCQko
+eCAtIDB4MTAwMDAwMCkNCj4gLQ0KPiAtI2lmIElTX0VOQUJMRUQoQ09ORklHX1NUSUg0MVhfREVC
+VUdfQVNDMikNCj4gLSNkZWZpbmUgREVCVUdfTExfVUFSVF9CQVNFCVNUSUg0MVhfQVNDMl9CQVNF
+DQo+IC0jZW5kaWYNCj4gLQ0KPiAtI2lmIElTX0VOQUJMRUQoQ09ORklHX1NUSUg0MVhfREVCVUdf
+U0JDX0FTQzEpDQo+IC0jZGVmaW5lIERFQlVHX0xMX1VBUlRfQkFTRQlTVElINDFYX1NCQ19BU0Mx
+X0JBU0UNCj4gLSNlbmRpZg0KPiAtDQo+IC0jaWZuZGVmIERFQlVHX0xMX1VBUlRfQkFTRQ0KPiAt
+I2Vycm9yICJERUJVRyBVQVJUIGlzIG5vdCBDb25maWd1cmVkIg0KPiAtI2VuZGlmDQo+IC0NCj4g
+ICNkZWZpbmUgQVNDX1RYX0JVRl9PRkYgIDB4MDQNCj4gICNkZWZpbmUgQVNDX0NUUkxfT0ZGICAg
+IDB4MGMNCj4gICNkZWZpbmUgQVNDX1NUQV9PRkYgICAgIDB4MTQNCj4gQEAgLTM3LDggKzE1LDgg
+QEANCj4gIA0KPiAgDQo+ICAJCS5tYWNybwlhZGRydWFydCwgcnAsIHJ2LCB0bXANCj4gLQkJbGRy
+CVxycCwgICAgICA9REVCVUdfTExfVUFSVF9CQVNFCUAgcGh5c2ljYWwgYmFzZQ0KPiAtCQlsZHIJ
+XHJ2LCAgICAgID1WSVJUX0FERFJFU1MoREVCVUdfTExfVUFSVF9CQVNFKSBAIHZpcnQgYmFzZQ0K
+PiArCQlsZHIJXHJwLCAgICAgID1DT05GSUdfREVCVUdfVUFSVF9QSFlTCUAgcGh5c2ljYWwgYmFz
+ZQ0KPiArCQlsZHIJXHJ2LCAgICAgID1DT05GSUdfREVCVUdfVUFSVF9WSVJUCUAgdmlydCBiYXNl
+DQo+ICAJCS5lbmRtDQo+ICANCj4gICAgICAgICAgICAgICAgICAubWFjcm8gIHNlbmR1YXJ0LHJk
+LHJ4DQoNClJldmlld2VkLWJ5OiBQYXRyaWNlIENob3RhcmQgPHBhdHJpY2UuY2hvdGFyZEBzdC5j
+b20+DQoNClRoYW5rcw0KDQpQYXRyaWNlDQo=
