@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86E32850F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4282850F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgJFRjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:39:01 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44262 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgJFRjA (ORCPT
+        id S1726645AbgJFRit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:38:49 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42404 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgJFRit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:39:00 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 096HcdPf042856;
-        Tue, 6 Oct 2020 12:38:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602005919;
-        bh=N3FZH8SbixKKaMS+nxenTXpdYd5HyGtXOeg/JOiaaYI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=bnr35trwnSrqqOlvk2RCwI6M8COUKA0Vxvajl43uD9EZnVtzwdvrca8N1NvfIo3ZN
-         waScIC/kv0o4WvujVl5gKIxZeh3if626+B3SdC0Slom7GCQb7lIbPLKYuD5p1f9F73
-         dF/BCwQ8T2PqT0i+djePr+J+bbZFA8q3d6ylV72s=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 096Hcd7Q026107
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Oct 2020 12:38:39 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
- 2020 12:38:38 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 6 Oct 2020 12:38:38 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 096HccNZ006462;
-        Tue, 6 Oct 2020 12:38:38 -0500
-Date:   Tue, 6 Oct 2020 12:38:38 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        <linux-pm@vger.kernel.org>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kevin Hilman <khilman@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 4/4] power: avs: Drop the avs directory and the
- corresponding Kconfig
-Message-ID: <20201006173838.f7ylfbpakkxprzhj@mummified>
-References: <20201006160516.319830-1-ulf.hansson@linaro.org>
- <20201006160516.319830-5-ulf.hansson@linaro.org>
+        Tue, 6 Oct 2020 13:38:49 -0400
+Received: by mail-oi1-f194.google.com with SMTP id 16so5820096oix.9;
+        Tue, 06 Oct 2020 10:38:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WQtLQS/qaJ16lAKmbyiuA4X3E71wZ6EPZkBBROE4Ewo=;
+        b=IRH6W5jZXL1lYHavJWBIoJUAN9sbygflts52Fy3VOWss3n9Tggkgdc9a4aWlldOqzz
+         wHfE+Ofm/esXOgQxaTz/FGrdaHImeMBtTnxZXgse2VvkxIaFCFZavc6DyoF+YN5CPQVQ
+         QmfWagHcW5NLIjuQWfs4c4egt6hOE18sZhBRiIhY8/JV7m1BQ8RfsyVKMIsvkyCUlDBg
+         V0SyphXDpk7IxQy7sHMrFMQNbT1iuU14EeYUcmuVyld4taWBg8HhQqDAdMo8YROSiNeE
+         26i+5B9jAi6br5O7VT2twqF1QFahK+iFXwFHR3itU3qSGs7DEJg45+5E3MTnhWN0FSaP
+         xsDQ==
+X-Gm-Message-State: AOAM531/1/CbKzzcwMZo7mD3sSa0xKnKliNt/38M6LekenIDpImHFcOj
+        qq48XkGekloLaiG2u4TVyg==
+X-Google-Smtp-Source: ABdhPJxIbemUkYz9uJjI7Uv+Hp6Cxt0ZZO20t/9vSkIjEySeROSvgggh+pDoA1u0ubynNJpRF9vZPg==
+X-Received: by 2002:aca:ed90:: with SMTP id l138mr1477346oih.178.1602005928359;
+        Tue, 06 Oct 2020 10:38:48 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g26sm1280518otn.77.2020.10.06.10.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 10:38:47 -0700 (PDT)
+Received: (nullmailer pid 2506338 invoked by uid 1000);
+        Tue, 06 Oct 2020 17:38:46 -0000
+Date:   Tue, 6 Oct 2020 12:38:46 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        =?iso-8859-1?Q?S=E9bastien?= Szymanski 
+        <sebastien.szymanski@armadeus.com>, linux-kernel@vger.kernel.org,
+        Li Yang <leoyang.li@nxp.com>,
+        Robert Jones <rjones@gateworks.com>,
+        devicetree@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        linux-arm-kernel@lists.infradead.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH 01/12] dt-bindings: vendor-prefixes: add Element14
+Message-ID: <20201006173846.GA2506290@bogus>
+References: <20201001170759.9592-1-krzk@kernel.org>
+ <20201001170759.9592-2-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006160516.319830-5-ulf.hansson@linaro.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201001170759.9592-2-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18:05-20201006, Ulf Hansson wrote:
-> All avs drivers have now been moved to their corresponding soc specific
-> directories. Additionally, they don't depend on the POWER_AVS Kconfig
-> anymore. Therefore, let's simply drop the drivers/power/avs directory
-> altogether.
+On Thu, 01 Oct 2020 19:07:48 +0200, Krzysztof Kozlowski wrote:
+> Document the binding for the Element14, a Premier Farnell company.
 > 
-> Cc: Nishanth Menon <nm@ti.com>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Reviewed-by: Nishanth Menon <nm@ti.com>
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Acked-by: Rob Herring <robh@kernel.org>
