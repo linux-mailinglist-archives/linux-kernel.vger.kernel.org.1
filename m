@@ -2,87 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A383284ADD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0322D284AD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgJFL1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:27:25 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:54781 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726131AbgJFL1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:27:22 -0400
-X-IronPort-AV: E=Sophos;i="5.77,342,1596466800"; 
-   d="scan'208";a="58834759"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 06 Oct 2020 20:27:20 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1032842CD75E;
-        Tue,  6 Oct 2020 20:27:18 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 4/4] arm64: dts: renesas: Add support for MIPI Adapter V2.1 connected to HiHope RZ/G2N
-Date:   Tue,  6 Oct 2020 12:27:01 +0100
-Message-Id: <20201006112701.11800-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201006112701.11800-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20201006112701.11800-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726057AbgJFL0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 07:26:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:15831 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJFL0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 07:26:44 -0400
+IronPort-SDR: bJoaSJxzNRq/GyiiDnkmLuaBE7jywuLDROT9PXFQ2oJEZM3lmkq/R8HLDSQjII9sZmqB7PA/hM
+ ZYGi2TsqMGhQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="144359212"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="144359212"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 04:26:44 -0700
+IronPort-SDR: eWViaGj6rPWvahSYh8gVy4qS0yigTBvcTVl1GfMEgjDifJ8y9AQy9oqXBA2gwc2MQKdtUsrtIk
+ KFLGLG14FIrA==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="518237515"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 04:26:42 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kPl8D-0007J8-6r; Tue, 06 Oct 2020 14:27:45 +0300
+Date:   Tue, 6 Oct 2020 14:27:45 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     linus.walleij@linaro.org, akpm@linux-foundation.org,
+        vilhelm.gray@gmail.com, arnd@arndb.de, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 1/4] bitops: Introduce the for_each_set_clump macro
+Message-ID: <20201006112745.GG4077@smile.fi.intel.com>
+References: <cover.1601974764.git.syednwaris@gmail.com>
+ <33de236870f7d3cf56a55d747e4574cdd2b9686a.1601974764.git.syednwaris@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33de236870f7d3cf56a55d747e4574cdd2b9686a.1601974764.git.syednwaris@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for AISTARVISION MIPI Adapter V2.1 board connected to HiHope
-RZ/G2N board.
+On Tue, Oct 06, 2020 at 02:52:16PM +0530, Syed Nayyar Waris wrote:
+> This macro iterates for each group of bits (clump) with set bits,
+> within a bitmap memory region. For each iteration, "start" is set to
+> the bit offset of the found clump, while the respective clump value is
+> stored to the location pointed by "clump". Additionally, the
+> bitmap_get_value() and bitmap_set_value() functions are introduced to
+> respectively get and set a value of n-bits in a bitmap memory region.
+> The n-bits can have any size less than or equal to BITS_PER_LONG.
+> Moreover, during setting value of n-bit in bitmap, if a situation arise
+> that the width of next n-bit is exceeding the word boundary, then it
+> will divide itself such that some portion of it is stored in that word,
+> while the remaining portion is stored in the next higher word. Similar
+> situation occurs while retrieving the value from bitmap.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/Makefile             |  1 +
- .../r8a774b1-hihope-rzg2n-ex-mipi-2.1.dts        | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+)
- create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-mipi-2.1.dts
+...
 
-diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
-index 6581d19a3217..5f163af16180 100644
---- a/arch/arm64/boot/dts/renesas/Makefile
-+++ b/arch/arm64/boot/dts/renesas/Makefile
-@@ -14,6 +14,7 @@ dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-ex-idk-1110wr.dtb
- dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-rev2.dtb
- dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-rev2-ex.dtb
- dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dtb
-+dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-ex-mipi-2.1.dtb
- 
- dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-cat874.dtb
- dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-ek874.dtb
-diff --git a/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-mipi-2.1.dts b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-mipi-2.1.dts
-new file mode 100644
-index 000000000000..ce8e3bcc7dc9
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-mipi-2.1.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the HiHope RZ/G2N board
-+ * connected with aistarvision-mipi-v2-adapter board
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ */
-+
-+/dts-v1/;
-+#include "r8a774b1-hihope-rzg2n-ex.dts"
-+#include "hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi"
-+
-+/ {
-+	model = "HopeRun HiHope RZ/G2N with sub board connected with aistarvision-mipi-v2-adapter board";
-+	compatible = "hoperun,hihope-rzg2n", "renesas,r8a774b1";
-+};
+> @@ -75,7 +75,11 @@
+>   *  bitmap_from_arr32(dst, buf, nbits)          Copy nbits from u32[] buf to dst
+>   *  bitmap_to_arr32(buf, src, nbits)            Copy nbits from buf to u32[] dst
+>   *  bitmap_get_value8(map, start)               Get 8bit value from map at start
+> + *  bitmap_get_value(map, start, nbits)		Get bit value of size
+> + *						'nbits' from map at start
+>   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
+> + *  bitmap_set_value(map, value, start, nbits)	Set bit value of size 'nbits'
+> + *						of map at start
+
+Formatting here is done with solely spaces, no TABs.
+
+...
+
+> +/**
+> + * bitmap_get_value - get a value of n-bits from the memory region
+> + * @map: address to the bitmap memory region
+> + * @start: bit offset of the n-bit value
+> + * @nbits: size of value in bits (must be between 1 and BITS_PER_LONG inclusive).
+
+
+> + *	nbits less than 1 or more than BITS_PER_LONG causes undefined behaviour.
+
+Please, detach this from field description and move to a main description.
+
+> + *
+> + * Returns value of nbits located at the @start bit offset within the @map
+> + * memory region.
+> + */
+
+...
+
+> +		return (map[index] >> offset) & GENMASK(nbits - 1, 0);
+
+Have you considered to use rather BIT{_ULL}(nbits) - 1?
+It maybe better for code generation.
+
+...
+
+> +/**
+> + * bitmap_set_value - set n-bit value within a memory region
+> + * @map: address to the bitmap memory region
+> + * @value: value of nbits
+> + * @start: bit offset of the n-bit value
+> + * @nbits: size of value in bits (must be between 1 and BITS_PER_LONG inclusive).
+
+> + *	nbits less than 1 or more than BITS_PER_LONG causes undefined behaviour.
+
+Please, detach this from field description and move to a main description.
+
+> + */
+
+...
+
+> +	value &= GENMASK(nbits - 1, 0);
+
+Ditto.
+
+> +		map[index] &= ~(GENMASK(nbits + offset - 1, offset));
+
+Last time I checked such GENMASK) use, it gave a lot of code when
+GENMASK(nbits - 1, 0) << offset works much better, but see also above.
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
