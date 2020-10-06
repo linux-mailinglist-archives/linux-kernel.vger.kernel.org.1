@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4AB284468
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6A5284469
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgJFD5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 23:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51052 "EHLO
+        id S1726906AbgJFD6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgJFD5O (ORCPT
+        with ESMTP id S1725977AbgJFD6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 23:57:14 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35803C0613CE;
-        Mon,  5 Oct 2020 20:57:14 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id d125so1557558vkh.10;
-        Mon, 05 Oct 2020 20:57:14 -0700 (PDT)
+        Mon, 5 Oct 2020 23:58:09 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EA4C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 20:58:09 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 34so7216213pgo.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 20:58:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HH7xhhlnmd3Dg58XEz48SP2OGgWs2Ku3LIn7+NT7bjM=;
-        b=Ayyg2cNsss3TC8/XzOvjJfWBuW+gWaQfFYHV2Mq4P7hb7xGzJvOINM3oPb2VPA2fxF
-         8DveQoAU0vh1gBH+6y90xZGKZstXd5cdPYTzvfzu/UNgUSIC7hB5a0xwlhoob2N6wDtK
-         buP3W5ay9aIc8mEjzpRowyEWP4+DGdjlfrFRWCSDLoB0driy8YaFTyYlrtrDxGpbXQz+
-         1Psklb1Ktj5zPJrqO0MsDQdh4W1LX5Wa6PqUht0fTIoSW6Zk5J8HDzlHmAYc8WmnY5xh
-         K0rJI+zQ08PXT2cgoEE9xrdGc58RCEMRJZTvc6qrzloeFRqYR18y4K88A19crq3ZIxlq
-         aB7g==
+        bh=rnIqJFtWSAyZ19daKyHf1KC1lAEPfa765t2Rk+is77o=;
+        b=Gk510JYVA1XNNjuaIk1hZk72EbY9oWolshIm8DiF535rPbK3cqCfIFAChz4TNWeuHy
+         jsjd4i5oA8fhzJBxHtQmaTjtEZW3LXhSgklS8npTKJGLhSTM1LMwmQKokqhklQ1+DHl/
+         HpSS0EpQ+uMFilKRJb7/7Dxy2rhEmN3E042qA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HH7xhhlnmd3Dg58XEz48SP2OGgWs2Ku3LIn7+NT7bjM=;
-        b=h398eU/MVYIhhd610A2uYboA9/4ckggNw/heeR5QO8ox1JlGO2/Sz6o5nmAkjH6l8O
-         L673KKn/IjSoeu0h7AVS1DY8aKMHAFZ5ODiogdb89WGdxGVcGEJec+WrizVq0oStA3JQ
-         G4FElxHdfeRCljNqn2XtseqAR4JHjwoGp6ezD3BV0ubnfZ+/NDTCMpbvaN6UviwgyrNK
-         I43ol1idWrPlbSXmEIwIQrsVe8xE9Zh/DhfxUfYg8qtghSQkE3g5OXP7Oz4Drf8NO5XP
-         1zzzvH/ArTGGd5BobFCJ1UeM82AjCSGF7bi0oqd6G0sTuCZSZf6k7bNcGMCNL/QzU2Zo
-         ZQ/Q==
-X-Gm-Message-State: AOAM5312dV3FrVa1j/httTnxA5cqxpryLYaIOlZ0A/oyjH3I/zyO7kC9
-        e0rav9SK+6L6Qn40ts7FnPMncMaNgHxpNL86plI=
-X-Google-Smtp-Source: ABdhPJyrMJkL/lB7fMsFdh79DyNTsPpi0AcOzskikSuFaCZjatVVdBQ7wM7aU+DIflncfB9lZcpBFCQ+uutXgOVMU1o=
-X-Received: by 2002:a1f:a5d2:: with SMTP id o201mr2047770vke.15.1601956633406;
- Mon, 05 Oct 2020 20:57:13 -0700 (PDT)
+        bh=rnIqJFtWSAyZ19daKyHf1KC1lAEPfa765t2Rk+is77o=;
+        b=RkjfBNs1Cs6+kF0IbDLaTSG0VVRugZXLU/ymo3uBYRqbagl6wwvF5u/xgHmoYE9YJx
+         5QFdoa59Ad0mMc6d07qEgpEsCY3+VslxGd0J/Zog5p1wZL5OEqazPXb2rsSchdHlGpXY
+         6726Giugyo5lMLHYMS3eEQh3WfchFiEcf/48zcD7XaA/3f7LRLQATAt6cpruHHjnuvdN
+         FPhRCncjv5yAK2MW6MKAYiLpNuqAnrRhIEwWYiew9eEM7Z9j5UZ7ilRSt+eKAfyvusNK
+         lA5xjc+CIaLpswL8BBf0zYB+ea+7bYGz9kP1njpNwhKM6eu2Uwd4WG9+BEMoQZSEiTOZ
+         o++A==
+X-Gm-Message-State: AOAM531Stcyh2YjdI00fzeHJy+0IBjPmPN9gutPBTc+/5M08qJbHJBLN
+        9Gj0gURJt41MY0eXKHoDiJH6ISFF5S2PyhM3sqlorQ==
+X-Google-Smtp-Source: ABdhPJw8U2DsmZ1SvcwiAoupqxOL2Z0ez8LCiyz+B8ChVfA7yfo6FNRqB4UyUH+zJYnUh68yeTEx8oml1jziH2NDkGA=
+X-Received: by 2002:a63:e354:: with SMTP id o20mr2434905pgj.317.1601956688403;
+ Mon, 05 Oct 2020 20:58:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <xmqqa6x070tn.fsf@gitster.c.googlers.com>
-In-Reply-To: <xmqqa6x070tn.fsf@gitster.c.googlers.com>
-From:   =?UTF-8?Q?Martin_=C3=85gren?= <martin.agren@gmail.com>
-Date:   Tue, 6 Oct 2020 05:57:02 +0200
-Message-ID: <CAN0heSrKgNSHKDL07-BWrbF9n6fyWUZVDykdHPCD6CfwgV8QNA@mail.gmail.com>
-Subject: Re: [ANNOUNCE] Git v2.29.0-rc0
-To:     Junio C Hamano <gitster@pobox.com>
-Cc:     Git Mailing List <git@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
+References: <20201005225004.0d3b59a1@canb.auug.org.au>
+In-Reply-To: <20201005225004.0d3b59a1@canb.auug.org.au>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Tue, 6 Oct 2020 11:57:57 +0800
+Message-ID: <CAATdQgB6aN8-BXwTG7=u8c+Q7mPmU+A9=O=_7u_wbPkuVNhjvA@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the battery tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Junio,
-
-Thanks for the release candidate!
-
-Minor comments follow.
-
-On Tue, 6 Oct 2020 at 01:00, Junio C Hamano <gitster@pobox.com> wrote:
->  * The final leg of SHA-256 transition plus doc updates.  Note that
->    there is no inter-operability between SHA-1 and SHA-256
->    repositories yet.
-
-I suspect the dash in "inter-operability" should be dropped.
-
->  * Various callers of run_command API has been modernized.
->    (merge afbdba391e jc/run-command-use-embedded-args later to maint).
-
-s/has/have/
-
->  * List of options offered and accepted by "git add -i/-p" were
->    inconsistent, which have been corrected.
->    (merge ce910287e7 pw/add-p-allowed-options-fix later to maint).
+On Mon, Oct 5, 2020 at 7:50 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
->  * Various callers of run_command API has been modernized.
->    (merge afbdba391e jc/run-command-use-embedded-args later to maint).
+> Hi all,
+>
+> In commit
+>
+>   f9d293364b45 ("power: supply: sbs-battery: keep error code when get_property() fails")
+>
+> Fixes tag
+>
+>   Fixes: c4f382930145 (power: supply: sbs-battery: don't assume i2c errors as battery disconnect)
+>
+> has these problem(s):
+>
+>   - Target SHA1 does not exist
+>
+> Maybe you meant
+>
+> Fixes: 395a7251dc2b ("power: supply: sbs-battery: don't assume i2c errors as battery disconnect")
+>
 
-Here's that entry again from my previous comment.
+Yes, you're right. I guess I made a mistake here.
+I'll send a v2 patch.
 
->  * "git status" has trouble showing where it came from by interpreting
->    reflog entries that record certain events, e.g. "checkout @{u}", and
->    gives a hard/fatal error.  Even though it inherently is impossible
->    to give a correct answer because the reflog entries lose some
->    information (e.g. "@{u}" does not record what branch the user was
->    on hence which branch 'the upstream' needs to be computed, and even
->    if the record were available, the relationship between branches may
->    have changed), at least hide the error to allow "status" show its
->    output.
+Thank you!
 
-s/show/to &/ ?
-
->  * There is a logic to estimate how many objects are in the
->    repository, which is mean to run once per process invocation, but
-
-s/mean/meant/, I think.
-
->  * The "unshelve" subcommand of "git p4" used incorrectly used
-
-s/used // (without 'g' flag!)
-
-Martin
+> --
+> Cheers,
+> Stephen Rothwell
