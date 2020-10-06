@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8B32853FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39DB2853FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727272AbgJFVjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:39:43 -0400
-Received: from mga05.intel.com ([192.55.52.43]:34353 "EHLO mga05.intel.com"
+        id S1727331AbgJFVlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:41:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgJFVjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:39:42 -0400
-IronPort-SDR: 9XGqDjiqtrUYV0KlU8DWkVAEVJftzxGa0kKjO44Bi2//ljugVD6ra7UKMfPqYwz4f1OuC/zaTK
- HjsX4ahYA5ng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="249417694"
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="249417694"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 14:39:42 -0700
-IronPort-SDR: xwAgZuFlMjuMIPVTGKSiVBZcuPmai61VqTFeIzNfv7GhMjKrM6kvpW5vO3nPTAS5Olg7duMjw0
- 0/uopQuHPqsw==
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="527608885"
-Received: from thijsmet-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.36])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 14:39:35 -0700
-Date:   Wed, 7 Oct 2020 00:39:27 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20201006213927.GA117517@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
- <20201006025703.GG15803@linux.intel.com>
+        id S1725947AbgJFVlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 17:41:18 -0400
+Received: from localhost (cha74-h07-176-172-165-181.dsl.sta.abo.bbox.fr [176.172.165.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A895B208B6;
+        Tue,  6 Oct 2020 21:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602020477;
+        bh=9wLduu0HibYTvQ1PxET1bwvOHmceqeDnpLGd3eg73zU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2gCpOuwlb9OCrTs8XdwbsjCC4BukoUfz0Mvac17ZIGhzrZJLjfCkNYUOHOHUoqqri
+         OIOiw9PbygkXW73CcQougUiK/NjNN+08X/TVwhkLEOiN9KU6jcrRLND5yoQwFZvivV
+         kkF0BPaHRf4ooYAz0mS3oP3jWuSjTIeE9AhIWZDA=
+Date:   Tue, 6 Oct 2020 23:41:13 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Alex Belits <abelits@marvell.com>
+Cc:     "mingo@kernel.org" <mingo@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "will@kernel.org" <will@kernel.org>,
+        Prasun Kapoor <pkapoor@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v4 10/13] task_isolation: don't interrupt CPUs
+ with tick_nohz_full_kick_cpu()
+Message-ID: <20201006214113.GA38684@lothringen>
+References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
+ <5acf7502c071c0d1365ba5e5940e003a7da6521f.camel@marvell.com>
+ <20201001144454.GB6595@lothringen>
+ <ab85fd564686845648d08779b1d4ecc3ab440b2a.camel@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006025703.GG15803@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <ab85fd564686845648d08779b1d4ecc3ab440b2a.camel@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 07:57:05PM -0700, Sean Christopherson wrote:
-> On Sat, Oct 03, 2020 at 07:50:56AM +0300, Jarkko Sakkinen wrote:
-> > +	__u16 exception_vector;
-> > +	__u16 exception_error_code;
-> > +	__u64 exception_addr;
-> > +	__u8  reserved[24];
+On Sun, Oct 04, 2020 at 03:22:09PM +0000, Alex Belits wrote:
 > 
-> I also think it's a waste of space to bother with multiple reserved fields.
-> 24 bytes isn't so much that it guarantees we'll never run into problems in
-> the future.  But I care far less about this than I do about exit_reason.
+> On Thu, 2020-10-01 at 16:44 +0200, Frederic Weisbecker wrote:
+> > > @@ -268,7 +269,8 @@ static void tick_nohz_full_kick(void)
+> > >   */
+> > >  void tick_nohz_full_kick_cpu(int cpu)
+> > >  {
+> > > -	if (!tick_nohz_full_cpu(cpu))
+> > > +	smp_rmb();
+> > 
+> > What is it ordering?
+> 
+> ll_isol_flags will be read in task_isolation_on_cpu(), that accrss
+> should be ordered against writing in
+> task_isolation_kernel_enter(), fast_task_isolation_cpu_cleanup()
+> and task_isolation_start().
+> 
+> Since task_isolation_on_cpu() is often called for multiple CPUs in a
+> sequence, it would be wasteful to include a barrier inside it.
 
-For me the real problem is that there has not been "no brainer" basis
-for any size, so a one cache line worth of data is just something that
-makes sense, because would neither make much sense to have less.
+Then I think you meant a full barrier: smp_mb()
 
-I'll throw an argument to have it a bit bigger amount of reserved space
-for future use.
+> 
+> > > +	if (!tick_nohz_full_cpu(cpu) || task_isolation_on_cpu(cpu))
+> > >  		return;
+> > 
+> > You can't simply ignore an IPI. There is always a reason for a
+> > nohz_full CPU
+> > to be kicked. Something triggered a tick dependency. It can be posix
+> > cpu timers
+> > for example, or anything.
+> 
+> I realize that this is unusual, however the idea is that while the task
+> is running in isolated mode in userspace, we assume that from this CPUs
+> point of view whatever is happening in kernel, can wait until CPU is
+> back in kernel and when it first enters kernel from this mode, it
+> should "catch up" with everything that happened in its absence.
+> task_isolation_kernel_enter() is supposed to do that, so by the time
+> anything should be done involving the rest of the kernel, CPU is back
+> to normal.
 
-First, there is always some amount of unknown unknowns when it comes to
-run-time structures, given the evolution of microarchitectures. So yes,
-some more "state" might be needed in the future.
+You can't assume that. If something needs the tick, this can't wait.
+If the user did something wrong, such as setting a posix cpu timer
+to an isolated task, that's his fault and the kernel has to stick with
+correctness and kick that task out of isolation mode.
 
-Secondly, this is a bigger problem for the vDSO than it is for ioctl's
-because we can have only one. With ioctl's, in the absolute worst case,
-we can have a second version of the same ioctl.
+> 
+> It is application's responsibility to avoid triggering things that
+> break its isolation
 
-At least 256 bytes would be probably a good number, if we want to
-increase it. The reserved space zero validation that I implemented to
-this version probably does not add much to the overhead anyway.
+Precisely.
 
-I'm not sure why care about one struct field more than making sure that
-the run-time structure can stand time.
+> so the application assumes that everything that
+> involves entering kernel will not be available while it is isolated.
 
-/Jarkko
+We can't do things that way and just ignore IPIs. You need to solve the
+source of the noise, not the symptoms.
+
+Thanks.
