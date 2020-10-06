@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08143284E15
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36EA5284E21
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgJFOfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:35:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52486 "EHLO mail.kernel.org"
+        id S1726525AbgJFOgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726635AbgJFOfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:35:14 -0400
+        id S1725970AbgJFOgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:36:40 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DF3B21531;
-        Tue,  6 Oct 2020 14:35:14 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kPo3d-002zH4-46; Tue, 06 Oct 2020 10:35:13 -0400
-Message-ID: <20201006143512.983073039@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 06 Oct 2020 10:35:01 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F401204FD;
+        Tue,  6 Oct 2020 14:36:39 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 10:36:38 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [for-linus][PATCH 15/15] tracing: Remove a pointless assignment
-References: <20201006143446.182666356@goodmis.org>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] ftrace: define seq_file only for FMODE_READ
+Message-ID: <20201006103638.153e39d3@gandalf.local.home>
+In-Reply-To: <20200831031104.23322-2-richard.weiyang@linux.alibaba.com>
+References: <20200831031104.23322-1-richard.weiyang@linux.alibaba.com>
+        <20200831031104.23322-2-richard.weiyang@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+On Mon, 31 Aug 2020 11:10:59 +0800
+Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
 
-The variable 'len' has been assigned a value but is not used after that.
-So, remove the assignement.
+> The purpose of the operation is to get ftrace_iterator, which is embedded
+> in file or seq_file for FMODE_WRITE/FMODE_READ respectively. Since we
+> don't have a seq_file for FMODE_WRITE case, it is meaningless to cast
+> file->private_data to seq_file.
+> 
+> Let's move the definition when there is a valid seq_file.
 
-Link: https://lkml.kernel.org/r/20200930184303.22896-1-sudipm.mukherjee@gmail.com
+I didn't pull in this patch because I find the original more expressive,
+and there's really no benefit in changing it.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace.c | 1 -
- 1 file changed, 1 deletion(-)
+-- Steve
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 73fd0e0c0f39..0806fa9f2815 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -6667,7 +6667,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 		written = -EFAULT;
- 	} else
- 		written = cnt;
--	len = cnt;
- 
- 	if (tr->trace_marker_file && !list_empty(&tr->trace_marker_file->triggers)) {
- 		/* do not add \n before testing triggers, but add \0 */
--- 
-2.28.0
 
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+> ---
+>  kernel/trace/ftrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index edc233122598..12cb535769bc 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -5558,7 +5558,6 @@ static void __init set_ftrace_early_filters(void)
+>  
+>  int ftrace_regex_release(struct inode *inode, struct file *file)
+>  {
+> -	struct seq_file *m = (struct seq_file *)file->private_data;
+>  	struct ftrace_iterator *iter;
+>  	struct ftrace_hash **orig_hash;
+>  	struct trace_parser *parser;
+> @@ -5566,6 +5565,7 @@ int ftrace_regex_release(struct inode *inode, struct file *file)
+>  	int ret;
+>  
+>  	if (file->f_mode & FMODE_READ) {
+> +		struct seq_file *m = file->private_data;
+>  		iter = m->private;
+>  		seq_release(inode, file);
+>  	} else
 
