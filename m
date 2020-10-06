@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D578284A27
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5A0284A26
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgJFKLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726105AbgJFKLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 6 Oct 2020 06:11:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56800 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgJFKLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725891AbgJFKLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 6 Oct 2020 06:11:44 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96B61206B5;
-        Tue,  6 Oct 2020 10:11:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CF3B206CB;
+        Tue,  6 Oct 2020 10:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601979103;
-        bh=sJ1/VY9aEX3+d4vdPHyox0QqwqED1nbmWmUgzI5Gb/I=;
+        s=default; t=1601979104;
+        bh=y6sw+9UqcCw1K4zL+X8JeaJ21hZxWlVi1L/6R4CeGng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hz1S08/Yn1GBalrqs8wYvvEX3GYJ9ntC6cqgGhf4rQQHp1wgPGQ52vdfcBAk+Bklt
-         KLjso5JpDprRs3SgZkoFZ4Z0x3p1Jr62cVwZnjUO5eTz2sEhJmGGIN+vPyFGYRk1rB
-         i86R9yHbL2FZD/d+g+Hh+hE58CGdYxVbuXCilFoY=
+        b=JvI4G2qxaaicO+5U+JGcn8IDN6VXKRg87Cfsmp+1D5LsqnAXUf6pNxTyoxHfmwWf7
+         ATYRLyYv9BNWp5BK7o3G+YZmkAFyVxsZGkbLD6rRSMTZgjbXvB/mgt5eIzBwJf3gvH
+         UM3eyQSUWEjYOaWoq9PdMii1gp2cH0CLwtE9K1Yo=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1kPjwb-0002Qo-Uj; Tue, 06 Oct 2020 11:11:42 +0100
+        id 1kPjwc-0002Qo-Jx; Tue, 06 Oct 2020 11:11:42 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
@@ -37,9 +37,9 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Sowjanya Komatineni <skomatineni@nvidia.com>,
         Venkat Reddy Talla <vreddytalla@nvidia.com>,
         Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
-Subject: [PATCH v2 1/4] genirq/irqdomain: Allow partial trimming of irq_data hierarchy
-Date:   Tue,  6 Oct 2020 11:11:34 +0100
-Message-Id: <20201006101137.1393797-2-maz@kernel.org>
+Subject: [PATCH v2 2/4] gpio: tegra186: Allow optional irq parent callbacks
+Date:   Tue,  6 Oct 2020 11:11:35 +0100
+Message-Id: <20201006101137.1393797-3-maz@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201006101137.1393797-1-maz@kernel.org>
 References: <20201006101137.1393797-1-maz@kernel.org>
@@ -53,119 +53,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that some HW is ugly enough that not all the interrupts
-connected to a particular interrupt controller end up with the same
-hierarchy repth (some of them are terminated early). This leaves
-the irqchip hacker with only two choices, both equally bad:
+Make the tegra186 GPIO driver resistent to variable depth
+interrupt hierarchy, which we are about to introduce.
 
-- create discrete domain chains, one for each "hierarchy depth",
-  which is very hard to maintain
-
-- create fake hierarchy levels for the shallow paths, leading
-  to all kind of problems (what are the safe hwirq values for these
-  fake levels?)
-
-Instead, let's offer the possibility to cut short a single interrupt
-hierarchy, exactly representing the HW. This can only be done from
-the .alloc() callback, before mappings can be established.
+No functionnal change yet.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- include/linux/irqdomain.h |  3 +++
- kernel/irq/irqdomain.c    | 56 +++++++++++++++++++++++++++++++++++----
- 2 files changed, 54 insertions(+), 5 deletions(-)
+ drivers/gpio/gpio-tegra186.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index b37350c4fe37..c6901c1bb981 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -509,6 +509,9 @@ extern void irq_domain_free_irqs_parent(struct irq_domain *domain,
- 					unsigned int irq_base,
- 					unsigned int nr_irqs);
+diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
+index 178e9128ded0..9500074b1f1b 100644
+--- a/drivers/gpio/gpio-tegra186.c
++++ b/drivers/gpio/gpio-tegra186.c
+@@ -430,7 +430,18 @@ static int tegra186_irq_set_type(struct irq_data *data, unsigned int type)
+ 	else
+ 		irq_set_handler_locked(data, handle_edge_irq);
  
-+extern int irq_domain_trim_hierarchy(unsigned int virq,
-+				     struct irq_domain *domain);
-+
- static inline bool irq_domain_is_hierarchy(struct irq_domain *domain)
- {
- 	return domain->flags & IRQ_DOMAIN_FLAG_HIERARCHY;
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 76cd7ebd1178..d0adaeea70b6 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -1136,6 +1136,17 @@ static struct irq_data *irq_domain_insert_irq_data(struct irq_domain *domain,
- 	return irq_data;
- }
- 
-+static void __irq_domain_free_hierarchy(struct irq_data *irq_data)
-+{
-+	struct irq_data *tmp;
-+
-+	while (irq_data) {
-+		tmp = irq_data;
-+		irq_data = irq_data->parent_data;
-+		kfree(tmp);
-+	}
-+}
-+
- static void irq_domain_free_irq_data(unsigned int virq, unsigned int nr_irqs)
- {
- 	struct irq_data *irq_data, *tmp;
-@@ -1147,14 +1158,49 @@ static void irq_domain_free_irq_data(unsigned int virq, unsigned int nr_irqs)
- 		irq_data->parent_data = NULL;
- 		irq_data->domain = NULL;
- 
--		while (tmp) {
--			irq_data = tmp;
--			tmp = tmp->parent_data;
--			kfree(irq_data);
--		}
-+		__irq_domain_free_hierarchy(tmp);
- 	}
- }
- 
-+/**
-+ * irq_domain_trim_hierarchy - Trim the irq hierarchy from a particular
-+ *			       irq domain
-+ * @virq:	IRQ number to trim where the hierarchy is to be trimmed
-+ * @domain:	domain from which the hierarchy gets discarded for this
-+ *		interrupt
-+ *
-+ * Drop the partial irq_data hierarchy from @domain (included) onward.
-+ *
-+ * This is only meant to be called from a .alloc() callback, when no
-+ * actual mapping in the respective domains has been established yet.
-+ * Its only use is to be able to trim levels of hierarchy that do not
-+ * have any real meaning for this interrupt.
-+ */
-+int irq_domain_trim_hierarchy(unsigned int virq, struct irq_domain *domain)
-+{
-+	struct irq_data *tail, *irq_data = irq_get_irq_data(virq);
-+
-+	/* It really needs to be a hierarchy, and not a single entry */
-+	if (WARN_ON(!irq_data->parent_data))
-+		return -EINVAL;
-+
-+	/* Skip until we find the right domain */
-+	while (irq_data->parent_data && irq_data->parent_data->domain != domain)
-+		irq_data = irq_data->parent_data;
-+
-+	/* The domain doesn't exist in the hierarchy, which is pretty bad */
-+	if (WARN_ON(!irq_data->parent_data))
-+		return -ENOENT;
-+
-+	/* Sever the inner part of the hierarchy...  */
-+	tail = irq_data->parent_data;
-+	irq_data->parent_data = NULL;
-+	__irq_domain_free_hierarchy(tail);
+-	return irq_chip_set_type_parent(data, type);
++	if (data->parent_data)
++		return irq_chip_set_type_parent(data, type);
 +
 +	return 0;
 +}
 +
++static int tegra186_irq_set_wake(struct irq_data *data, unsigned int on)
++{
++	if (data->parent_data)
++		return irq_chip_set_wake_parent(data, on);
 +
- static int irq_domain_alloc_irq_data(struct irq_domain *domain,
- 				     unsigned int virq, unsigned int nr_irqs)
- {
++	return 0;
+ }
+ 
+ static void tegra186_gpio_irq(struct irq_desc *desc)
+@@ -678,7 +689,7 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
+ 	gpio->intc.irq_mask = tegra186_irq_mask;
+ 	gpio->intc.irq_unmask = tegra186_irq_unmask;
+ 	gpio->intc.irq_set_type = tegra186_irq_set_type;
+-	gpio->intc.irq_set_wake = irq_chip_set_wake_parent;
++	gpio->intc.irq_set_wake = tegra186_irq_set_wake;
+ 
+ 	irq = &gpio->gpio.irq;
+ 	irq->chip = &gpio->intc;
 -- 
 2.28.0
 
