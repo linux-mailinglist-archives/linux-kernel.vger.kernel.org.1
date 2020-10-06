@@ -2,96 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38558284F31
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFEA284F4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgJFPoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbgJFPoq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:44:46 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A738C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 08:44:46 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id y14so8182618pgf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 08:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bvPeygSRI48grLUqNULD5W+f3mhPyObVQKrAhFQNIS8=;
-        b=vx+TAEpaWL989xTX2O3znU6AUP/8syf/G6qWeeQ9jW8jvLsF3Pa1BQJ+xVLpQx4iiM
-         NDDOjNh/uEC48cIOE2dLgKZzSwdKoEFeX7Dt7nYu+fQSB62N3F+B/WTc4B7pkUNndi9v
-         42KZvZYnrlLjmsaDZ7C9l9oE8/FTolU4RkTnKrtaEHcn3Yxts+MDm8zXw0VrafHcfhQ7
-         20y3kr1QwJ6g3KWOFhVxQMnrBilp/8YuhnfenoIdE3yiyjPLqDoy+mA6tZKcC3/sEJjm
-         kYLbUYscXFdJrULjlE4wTAEPOLnhHvsoQwB/GEVGqq3+r5+/RJhgggVgvreXOgwbCK5L
-         Y32A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bvPeygSRI48grLUqNULD5W+f3mhPyObVQKrAhFQNIS8=;
-        b=UJ+hkwRjR8xV45HJvh6f5YvYGP9KlrwFeMMTl3mdGrVXW+1bSMwYZ9mMLEE633kCZw
-         lKnQau2LJnIC7TNJVpglaz6bevfTBzy7CXMA10HAPhL+pzQA4/uEf8WQDceQQc5sAeBs
-         f81NwT5qiT1BvCnON8EZPlspcApf9t53Tuf1HkQ5PfPUjLoJkrMBw67CTgIFbyotvY6o
-         7cMBluSWbP88mJ5FVxWGW5SE/wMS9bHTmtLLJ7W3blMSHYBUHzzRub6Yr55b5T9kZPSC
-         rz6KQpCWfUIET1WcZK0tnSc1q8gRH539/dvWjnePfUq1cNWlPf6XJoMFNaQ9sBt95Ore
-         jYfw==
-X-Gm-Message-State: AOAM533h7Ndz5d9bGqMuPejkKcKIp2Qx5gj5PQ0yAY0Ya19RjIQ16zzb
-        XfYMuX/pFRZQGlUQif+GVMI32YE/tPJtXwSYXt3ieQ==
-X-Google-Smtp-Source: ABdhPJxu8epATsAnVzNpcf9DQmiAD+l96Xpgn7WIfZOTDnvcg+MTv+IsH7tnMqOinZpjj62OnUSaG8BlODYz9bVMiJs=
-X-Received: by 2002:a62:78d5:0:b029:154:ebc0:c92c with SMTP id
- t204-20020a6278d50000b0290154ebc0c92cmr1268030pfc.24.1601999084773; Tue, 06
- Oct 2020 08:44:44 -0700 (PDT)
+        id S1726181AbgJFP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:56:12 -0400
+Received: from mga18.intel.com ([134.134.136.126]:32012 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbgJFP4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:56:11 -0400
+IronPort-SDR: qwi6T/PSRV0myrGFzO+7k4o7cTy/lafjmEsKK8grHuk87fA/epeRERsCSZJ+nRyGOzIxkwlVOi
+ vFWsT9yVDQfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="152314945"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="152314945"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:49:23 -0700
+IronPort-SDR: uTuShdZoDAQiz9ZeZclugbz7v7M1rBWVL7iq7A7CzeddsqJ07SwpS8cn+JzabB5zIflSQo6x5s
+ pfPMxJSLsk6g==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="527410835"
+Received: from thijsmet-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.36])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:49:17 -0700
+Date:   Tue, 6 Oct 2020 18:49:10 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Jethro Beekman <jethro@fortanix.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20201006154910.GD109815@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
+ <20201006025703.GG15803@linux.intel.com>
+ <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
 MIME-Version: 1.0
-References: <CAAeHK+wb4k-LGTjK9F5YbJNviF_+yU+wE_=Vpo9Rn7KFN8vG6Q@mail.gmail.com>
- <20201005151857.GA2309511@kroah.com> <CAAeHK+zes2Y00+EJ6SVtOHj8YCADw5WSXUEFHWCRgxi=H42+4w@mail.gmail.com>
- <20201005152540.GG376584@rowland.harvard.edu> <65b4ff62-f9c8-b9cf-50bb-c9b08cce7230@linuxfoundation.org>
- <20201006012333.GA399825@rowland.harvard.edu>
-In-Reply-To: <20201006012333.GA399825@rowland.harvard.edu>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 6 Oct 2020 17:44:33 +0200
-Message-ID: <CAAeHK+w3hUbNO5PBcoZX2cJsmRPZ8bq+8j8-Xs7nZLFyKbdd+A@mail.gmail.com>
-Subject: Re: Is usb_hcd_giveback_urb() allowed in task context?
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 3:23 AM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Mon, Oct 05, 2020 at 05:38:22PM -0600, Shuah Khan wrote:
-> > On 10/5/20 9:25 AM, Alan Stern wrote:
-> > > On Mon, Oct 05, 2020 at 05:21:30PM +0200, Andrey Konovalov wrote:
-> > > No, no -- it won't work right if it's called in process context.  Not
-> > > only do the spinlock calls leave the interrupt flag unchanged, also the
-> > > driver callback routines may expect to be invoked with interrupts
-> > > disabled.  (We have tried to fix this, but I'm not at all certain that
-> > > all the cases have been updated.)
-> > >
-> >
-> > In the case of vhci case, usb_hcd_giveback_urb() is called from vhci's
-> > urb_enqueue, when it determines it doesn't need to xmit the urb and can give
-> > it back. This path runs in task context.
-> >
-> > Do you have any recommendation on how this case can be handled?
->
-> Just call local_irq_disable() before usb_hcd_giveback_urb(), and
-> local_irq_enable() afterward.
+On Tue, Oct 06, 2020 at 10:30:16AM +0200, Jethro Beekman wrote:
+> On 2020-10-06 04:57, Sean Christopherson wrote:
+> > On Sat, Oct 03, 2020 at 07:50:56AM +0300, Jarkko Sakkinen wrote:
+> >> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> >> +	/* Validate that the reserved area contains only zeros. */
+> >> +	push	%rax
+> >> +	push	%rbx
+> >> +	mov	$SGX_ENCLAVE_RUN_RESERVED_START, %rbx
+> >> +1:
+> >> +	mov	(%rcx, %rbx), %rax
+> >> +	cmpq	$0, %rax
+> >> +	jne	.Linvalid_input
+> >> +
+> >> +	add	$8, %rbx
+> >> +	cmpq	$SGX_ENCLAVE_RUN_RESERVED_END, %rbx
+> >> +	jne	1b
+> >> +	pop	%rbx
+> >> +	pop	%rax
+> > 
+> > This can more succinctly be (untested):
+> > 
+> > 	movq	SGX_ENCLAVE_RUN_RESERVED_1(%rbp), %rbx	
+> > 	orq	SGX_ENCLAVE_RUN_RESERVED_2(%rbp), %rbx	
+> > 	orq	SGX_ENCLAVE_RUN_RESERVED_3(%rbp), %rbx	
+> > 	jnz	.Linvalid_input
+> > 
+> > Note, %rbx is getting clobbered anyways, no need to save/restore it.
+> > 
+> >> diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+> >> index b6ba036a9b82..3dd2df44d569 100644
+> >> --- a/arch/x86/include/uapi/asm/sgx.h
+> >> +++ b/arch/x86/include/uapi/asm/sgx.h
+> >> @@ -74,4 +74,102 @@ struct sgx_enclave_provision {
+> >>  	__u64 attribute_fd;
+> >>  };
+> >>  
+> >> +struct sgx_enclave_run;
+> >> +
+> >> +/**
+> >> + * typedef sgx_enclave_user_handler_t - Exit handler function accepted by
+> >> + *					__vdso_sgx_enter_enclave()
+> >> + * @run:	Pointer to the caller provided struct sgx_enclave_run
+> >> + *
+> >> + * The register parameters contain the snapshot of their values at enclave
+> >> + * exit
+> >> + *
+> >> + * Return:
+> >> + *  0 or negative to exit vDSO
+> >> + *  positive to re-enter enclave (must be EENTER or ERESUME leaf)
+> >> + */
+> >> +typedef int (*sgx_enclave_user_handler_t)(long rdi, long rsi, long rdx,
+> >> +					  long rsp, long r8, long r9,
+> >> +					  struct sgx_enclave_run *run);
+> >> +
+> >> +/**
+> >> + * struct sgx_enclave_run - the execution context of __vdso_sgx_enter_enclave()
+> >> + * @tcs:			TCS used to enter the enclave
+> >> + * @user_handler:		User provided callback run on exception
+> >> + * @user_data:			Data passed to the user handler
+> >> + * @leaf:			The ENCLU leaf we were at (EENTER/ERESUME/EEXIT)
+> >> + * @exception_vector:		The interrupt vector of the exception
+> >> + * @exception_error_code:	The exception error code pulled out of the stack
+> >> + * @exception_addr:		The address that triggered the exception
+> >> + * @reserved			Reserved for possible future use
+> >> + */
+> >> +struct sgx_enclave_run {
+> >> +	__u64 tcs;
+> >> +	__u64 user_handler;
+> >> +	__u64 user_data;
+> >> +	__u32 leaf;
+> > 
+> > I am still very strongly opposed to omitting exit_reason.  It is not at all
+> > difficult to imagine scenarios where 'leaf' alone is insufficient for the
+> > caller or its handler to deduce why the CPU exited the enclave.  E.g. see
+> > Jethro's request for intercepting interrupts.
+> 
+> Not entirely sure what this has to do with my request, I just expect
+> to see leaf=ERESUME in this case, I think? E.g. as you would see in
+> EAX when calling ENCLU.
 
-OK, so overall it's possible to call usb_hcd_giveback_urb() in task
-context, but only with irqs disabled.
+The documentation needs to be fixed but the answer is yes.
 
-This means we do need a fix for kcov as well, thank you!
+I.e.
+
+- Leaf will contain ERESUME on interrupt.
+- Leaf will contain EEXIT on normal exit.
+
+Maybe I should rename it as exit_leaf and rewrite the description to
+improve clarity?
+
+/Jarkko
