@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770A6284A49
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8086B284A4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgJFKZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:25:39 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:43798 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFKZi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:25:38 -0400
-Received: by mail-oi1-f193.google.com with SMTP id l85so12068210oih.10;
-        Tue, 06 Oct 2020 03:25:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=APNL8sIy0ozc5Oyn2Cryq8fb7C/LIEhMjOf2WGIBcb8=;
-        b=qtRwgx4cJYlp7ZTBdhnI8DFGblkPlBxJgMOSaanTcmp2i3oLujbwBYfCfw1po3hkB5
-         ai+3yTfFyLSM/OtYwd06RujAoukKj8QhqjJMPdzLKUbY5nHjT5PD3X0zO1jYCJPyjNyL
-         MuTbjHn+wRo0stLcvDk/8i1BuhuX6xrX/bxvJ26mln4Op29L1CzZbHI6G6Ve8LxcAE4C
-         20Ck7o9qAjiWYjqtzSmb9/bg7W1wZRtLD/HoaW2RXM/AoES+1MXiEJO9ZNsjs1Pyj5fC
-         3PbIrGHHXVSE9KsZrPi2tdMgVmeVpm8vPq6ZeGPoJ5ns0ZZauikhoF4o4fSP3PBgaPyt
-         ohjg==
-X-Gm-Message-State: AOAM533uxt5JCes+l5Q9ZDnGSDv5zhV1mpKpcbz7yvTBFPUk/Ge/Qm2Q
-        KvdsGGAQZu+5fpXPJepRf3dC2yVVj/Wo1jKHGZY=
-X-Google-Smtp-Source: ABdhPJzzhpC3gHLcrFC6FgWQgU2t7pcLFRSSME5NqApT10Yu/Dhhx8vlrcTmCtZEKVT9oY5rBALop96EY1SYlT3GO6w=
-X-Received: by 2002:aca:724a:: with SMTP id p71mr2285283oic.157.1601979936223;
- Tue, 06 Oct 2020 03:25:36 -0700 (PDT)
+        id S1726060AbgJFK3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:29:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJFK3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:29:10 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA15C20757;
+        Tue,  6 Oct 2020 10:29:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601980150;
+        bh=cBWCt+A2bRIWJ+VhgHRDaDIaurfO5bRRNnXpUH907KU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ojjSyzvEVSo/f69Ig7Ba0XozHpeJ2Q/EH6QfO7Z21WjRmQm/WQr+alLVFDmw0e8NE
+         JsOR/KobyvviaS+YCc4yX4u/dWd9QiX/jfAMPR1xSkmOzviX3+OiY1yYiyLWEKLHqX
+         8kJx49CZgmWOSONR6+V02O0tHq3LwhOe/B9E3NvE=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kPkDT-0002fR-No; Tue, 06 Oct 2020 11:29:07 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linus.walleij@linaro.org, evgreen@chromium.org, mka@chromium.org,
+        Maulik Shah <mkshah@codeaurora.org>, swboyd@chromium.org,
+        bjorn.andersson@linaro.org
+Cc:     ilina@codeaurora.org, linux-kernel@vger.kernel.org,
+        jason@lakedaemon.net, lsrao@codeaurora.org, tglx@linutronix.de,
+        rnayak@codeaurora.org, linux-gpio@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v6 0/6] irqchip: qcom: pdc: Introduce irq_set_wake call
+Date:   Tue,  6 Oct 2020 11:29:03 +0100
+Message-Id: <160198012786.3008417.11128455090479728901.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <1601267524-20199-1-git-send-email-mkshah@codeaurora.org>
+References: <1601267524-20199-1-git-send-email-mkshah@codeaurora.org>
 MIME-Version: 1.0
-References: <CGME20200929085610epcas1p2447455fd0bcde25f5dff466e71b7ac15@epcas1p2.samsung.com>
- <b5d67c59-90c7-6a77-7420-a8783282430f@samsung.com> <CAJZ5v0giQRQG+V=XPVMJH4aRcvZo-JQ82bgw-KHAXBGfnEkgpQ@mail.gmail.com>
- <da43236a-b44e-d4d7-97c5-37ce3c447c95@samsung.com>
-In-Reply-To: <da43236a-b44e-d4d7-97c5-37ce3c447c95@samsung.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 6 Oct 2020 12:25:24 +0200
-Message-ID: <CAJZ5v0h5uQh8iK+PDdW05ATn40NtX+8H0JGZK7R+TFtBwL7igw@mail.gmail.com>
-Subject: Re: [GIT PULL] devfreq next for v5.10
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linus.walleij@linaro.org, evgreen@chromium.org, mka@chromium.org, mkshah@codeaurora.org, swboyd@chromium.org, bjorn.andersson@linaro.org, ilina@codeaurora.org, linux-kernel@vger.kernel.org, jason@lakedaemon.net, lsrao@codeaurora.org, tglx@linutronix.de, rnayak@codeaurora.org, linux-gpio@vger.kernel.org, agross@kernel.org, dianders@chromium.org, linux-arm-msm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 9:57 AM Chanwoo Choi <cw00.choi@samsung.com> wrote:
->
-> Dear Rafael,
->
-> On 10/1/20 12:56 AM, Rafael J. Wysocki wrote:
-> > On Tue, Sep 29, 2020 at 10:56 AM Chanwoo Choi <cw00.choi@samsung.com> wrote:
-> >>
-> >> Dear Rafael,
-> >>
-> >> This is devfreq-next pull request for v5.10-rc1. I add detailed description of
-> >> this pull request on the following tag. Please pull devfreq with following updates.
-> >> - tag name : devfreq-next-for-5.10
-> >
-> > Pulled, thanks!
->
-> Thanks for pulled the request. But, I tried to check on linux-pm.git,
-> I cannot find the pull request of devfreq patches for v5.10-rc1.
+On Mon, 28 Sep 2020 10:01:58 +0530, Maulik Shah wrote:
+> Changes in v6:
+> - Update commit message more descriptive in v5 patch 1
+> - Symmetrically enable/disable wakeirqs during suspend/resume in v5 patch 3
+> - Include Acked-by and Reviewed-by tags from v5 series
+> 
+> Changes in v5:
+> - Update commit subject in v4 patch 1
+> - Add more details to commit message in v4 patch 2
+> - Add change to enable wake irqs during suspend using new flag in irqchip
+> - Use this in PDC and qcom pinctrl driver to enable wakeirqs on suspend
+> - Make for loop more readable and add more details in commit in v4 patch 7
+> 
+> [...]
 
-That's because they were not merged back into my linux-next branch and
-they should be there now.
+Applied to irq/irqchip-next, thanks!
 
-Thanks!
+[1/6] pinctrl: qcom: Set IRQCHIP_SET_TYPE_MASKED and IRQCHIP_MASK_ON_SUSPEND flags
+      commit: c5f72aeb659eb2f809b9531d759651514d42aa3a
+[2/6] pinctrl: qcom: Use return value from irq_set_wake() call
+      commit: f41aaca593377a4fe3984459fd4539481263b4cd
+[3/6] genirq/PM: Introduce IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+      commit: 90428a8eb4947f9c7c905a178f3520dc7e2ee6d2
+[4/6] pinctrl: qcom: Set IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+      commit: dd87bd09822c294a3c7c4daf11f11a9f81222f80
+[5/6] irqchip/qcom-pdc: Set IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
+      commit: 299d7890792e75065b906f83fcb0ca92e5c8c072
+[6/6] irqchip/qcom-pdc: Reset PDC interrupts during init
+      commit: d7bc63fa20b8a3b0d0645bed1887848c65c01529
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
