@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C30284F76
+	by mail.lfdr.de (Postfix) with ESMTP id 67A74284F75
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgJFQFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50436 "EHLO
+        id S1726534AbgJFQFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgJFQFc (ORCPT
+        with ESMTP id S1726469AbgJFQFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:05:32 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C07C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 09:05:32 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id v23so11491099ljd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 09:05:32 -0700 (PDT)
+        Tue, 6 Oct 2020 12:05:34 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AD8C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 09:05:34 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id p15so7182166ljj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 09:05:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NF7N2mRAW3S3z+E29H9n2GJWFQgwjLjZu6wXpmNrAjA=;
-        b=QnuSjKv9RKJSS9usSHdc3csUNh37+SWBojV0KbiqRB/uUTyHw3PUCuPMbBoNLbSxch
-         ctAIEo0CDVjKJevPf8p4VuE6HubydpRxVZc5eeZYpcPCPuuydsALWD1AsCayyx2NYnUO
-         zyaCyTWKvoPYy/StmNcDNA20FouWPO/eLpEL/w6uUaDJl/xgZVobJnAY/bclDGlibLEB
-         VhtT98t14R2Wn5t2aOyfegJrVQG58LgYY1pesyCRO2hrouJk5XVsSuFAKCVmAJa/CaGL
-         P0BTqIS0stb/5p33JCdbJ1247LON+riDWu/XaHSTEniorXOPZ7QsRmYRWlyd2qbVXntJ
-         5AMA==
+        bh=UmR0SlEWURAW2elKIdEQMMvc/1QuzUmp8HMEYH38pRg=;
+        b=XTuI/IvrPTmTwnj0muDXHYNo+Knzu3pD/1v+EPUlOhh8MomeTzxfWg9rRWDAC1wq65
+         Bofwwo8Kgj+Hk8HfSeZzbpJ+x7QwK2pe5tRbIbSScidtLDaUberFDDPilHpn96Qrwc8L
+         ziHnESuMxpDuWb0JudgWCK/8+/OlICRZsvJxcyJQNn1NkNdUNv4UHeVVzm5fP3jWzejO
+         +FU3HB866iJKKCzL3Hj7hP1uiQk53lIWWKaOLOj+y1yNcQANV1F0HPk7acpOOjFAqjAY
+         SzED3epUcCQcaZIgKJBFpfaOpjoX8RmNSRDsb/BEwCs1tw2bhnpv3m79AIEdaQoNroiJ
+         nvbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NF7N2mRAW3S3z+E29H9n2GJWFQgwjLjZu6wXpmNrAjA=;
-        b=NxV342Fx56oLK8YYexADajxfdE4wz2jU2JBcAOtOCsCv2bPB9XJakR9foKpsIqmyk/
-         kugi8YeeRP3LN7wJPBK2/SUbwLjPJuZgPvi+NefQ54KESjgUVmzddU4f5lyjcd6VZDri
-         ebQ3cy6TzGufPxS2jx9rNljxpV6nmpmq69BJaE4lSk2Hq2TBbBY6JYlwJFWmYzDRyIOf
-         JegtLnzDTdv6AWFHXIqh1KqDa2PuJxtIeJto7hb97wA+SNx/fTA5nd3gUneaQGNeSMbO
-         IharCxaWfzA6XGk1xG7mU2br8+Qjp5ZRW20DlbjMLjNpRZMjKd6V+9OQJjtnEwOCygPL
-         xq6A==
-X-Gm-Message-State: AOAM532l37fGj+RCZBtupYk+6aiyRSY8q2rFgoVLFQRUQoKnIBj7JBaP
-        UZmScOWvHM+cS2dch07rw+AExQ==
-X-Google-Smtp-Source: ABdhPJzFR1bW78+ImmzRtpoOmMSKfadbIQz9q34xFBp+SWTiAX3i+KDBgDh1vUYYVDcwMdNCwHBdFQ==
-X-Received: by 2002:a2e:97c1:: with SMTP id m1mr2005098ljj.289.1602000330485;
-        Tue, 06 Oct 2020 09:05:30 -0700 (PDT)
+        bh=UmR0SlEWURAW2elKIdEQMMvc/1QuzUmp8HMEYH38pRg=;
+        b=MCl1D4Mp/3O70kbz1RfwJXweRgFIqdj1mzai3lO8k5UOg3EQb+2rc1akE3yo4d6eNF
+         f5QulagpTSLgcp+DUJT5pmaSmoStLCyOm7e1iEXrFaI5cXfCFORjVncYFFYr/pj4Dfl9
+         +3pSkKhoaz/YyEhqUR0HTY9ZnbVEZebdGbXmVdoBZKeaZIwC5MjPrLu6dosvN/R5Gyng
+         ikAjtacPkhOfTibt6n1RMV7jdWKNn6M4YxKjnZGv2YLcll6wgosjZLPVpBZMuw2hJOHf
+         wHhO4F4BwjZqVXbdygnlLwHEk0yCEXvuzAMdnf7bQni7iVl5dMD6v1dXcvNN+Z72tw44
+         EsmQ==
+X-Gm-Message-State: AOAM5334ru2z6hRRhd/AKgt+c4RaFlFWkC8Jm8IbdE4uodr3dwXK7Jm9
+        XnyT5X0TNZHUCeC577AiMQoY8Q==
+X-Google-Smtp-Source: ABdhPJyi6RdtOBXKlyt4bbuOXMx88hSWlD9kRRFs5wMLr4ncUfI/9TRNKYoh8EIsD5SFS161i+uVkQ==
+X-Received: by 2002:a2e:7404:: with SMTP id p4mr2203467ljc.360.1602000332417;
+        Tue, 06 Oct 2020 09:05:32 -0700 (PDT)
 Received: from localhost.localdomain (h-98-128-180-91.NA.cust.bahnhof.se. [98.128.180.91])
-        by smtp.gmail.com with ESMTPSA id c16sm640925lfc.304.2020.10.06.09.05.28
+        by smtp.gmail.com with ESMTPSA id c16sm640925lfc.304.2020.10.06.09.05.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 09:05:29 -0700 (PDT)
+        Tue, 06 Oct 2020 09:05:31 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
         Nishanth Menon <nm@ti.com>, linux-pm@vger.kernel.org
@@ -60,10 +60,10 @@ Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         Kevin Hilman <khilman@kernel.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: [PATCH 2/4] power: avs: rockchip-io: Move the driver to the rockchip specific drivers
-Date:   Tue,  6 Oct 2020 18:05:14 +0200
-Message-Id: <20201006160516.319830-3-ulf.hansson@linaro.org>
+        linux-omap@vger.kernel.org
+Subject: [PATCH 3/4] power: avs: smartreflex Move driver to soc specific drivers
+Date:   Tue,  6 Oct 2020 18:05:15 +0200
+Message-Id: <20201006160516.319830-4-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201006160516.319830-1-ulf.hansson@linaro.org>
 References: <20201006160516.319830-1-ulf.hansson@linaro.org>
@@ -79,77 +79,92 @@ functionality together. From a maintenance point of view, it makes better
 sense to collect SoC specific drivers like these, into the SoC specific
 directories.
 
-Therefore, let's move the rockchip-io driver to the rockchip directory.
+Therefore, let's move the smartreflex driver for OMAP to the ti directory.
 
-Cc: Heiko Stuebner <heiko@sntech.de>
-Cc: linux-rockchip@lists.infradead.org
+Cc: Nishanth Menon <nm@ti.com>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: linux-omap@vger.kernel.org
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/power/avs/Kconfig                                 | 8 --------
- drivers/power/avs/Makefile                                | 1 -
- drivers/soc/rockchip/Kconfig                              | 8 ++++++++
- drivers/soc/rockchip/Makefile                             | 1 +
- .../avs/rockchip-io-domain.c => soc/rockchip/io-domain.c} | 0
- 5 files changed, 9 insertions(+), 9 deletions(-)
- rename drivers/{power/avs/rockchip-io-domain.c => soc/rockchip/io-domain.c} (100%)
+ MAINTAINERS                                 |  4 ++--
+ arch/arm/plat-omap/Kconfig                  |  2 +-
+ drivers/power/avs/Kconfig                   | 12 ------------
+ drivers/power/avs/Makefile                  |  1 -
+ drivers/soc/ti/Makefile                     |  1 +
+ drivers/{power/avs => soc/ti}/smartreflex.c |  0
+ 6 files changed, 4 insertions(+), 16 deletions(-)
+ rename drivers/{power/avs => soc/ti}/smartreflex.c (100%)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f51dd1944fe6..040f0506d1c6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5379,11 +5379,11 @@ F:	include/linux/debugfs.h
+ F:	include/linux/kobj*
+ F:	lib/kobj*
+ 
+-DRIVERS FOR ADAPTIVE VOLTAGE SCALING (AVS)
++DRIVERS FOR OMAP ADAPTIVE VOLTAGE SCALING (AVS)
+ M:	Nishanth Menon <nm@ti.com>
+ L:	linux-pm@vger.kernel.org
+ S:	Maintained
+-F:	drivers/power/avs/
++F:	drivers/soc/ti/smartreflex.c
+ F:	include/linux/power/smartreflex.h
+ 
+ DRM DRIVER FOR ALLWINNER DE2 AND DE3 ENGINE
+diff --git a/arch/arm/plat-omap/Kconfig b/arch/arm/plat-omap/Kconfig
+index 93fd7fc537cf..272670ef1e92 100644
+--- a/arch/arm/plat-omap/Kconfig
++++ b/arch/arm/plat-omap/Kconfig
+@@ -23,7 +23,7 @@ config OMAP_DEBUG_LEDS
+ 
+ config POWER_AVS_OMAP
+ 	bool "AVS(Adaptive Voltage Scaling) support for OMAP IP versions 1&2"
+-	depends on POWER_AVS && (ARCH_OMAP3 || ARCH_OMAP4) && PM
++	depends on (ARCH_OMAP3 || ARCH_OMAP4) && PM
+ 	select POWER_SUPPLY
+ 	help
+ 	  Say Y to enable AVS(Adaptive Voltage Scaling)
 diff --git a/drivers/power/avs/Kconfig b/drivers/power/avs/Kconfig
-index 089b6244b716..9dde5a7e75c9 100644
+index 9dde5a7e75c9..a4e40e534e6a 100644
 --- a/drivers/power/avs/Kconfig
 +++ b/drivers/power/avs/Kconfig
-@@ -11,11 +11,3 @@ menuconfig POWER_AVS
- 	  AVS is also called SmartReflex on OMAP devices.
- 
- 	  Say Y here to enable Adaptive Voltage Scaling class support.
--
--config ROCKCHIP_IODOMAIN
--	tristate "Rockchip IO domain support"
--	depends on POWER_AVS && ARCH_ROCKCHIP && OF
+@@ -1,13 +1 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-menuconfig POWER_AVS
+-	bool "Adaptive Voltage Scaling class support"
 -	help
--	  Say y here to enable support io domains on Rockchip SoCs. It is
--	  necessary for the io domain setting of the SoC to match the
--	  voltage supplied by the regulators.
+-	  AVS is a power management technique which finely controls the
+-	  operating voltage of a device in order to optimize (i.e. reduce)
+-	  its power consumption.
+-	  At a given operating point the voltage is adapted depending on
+-	  static factors (chip manufacturing process) and dynamic factors
+-	  (temperature depending performance).
+-	  AVS is also called SmartReflex on OMAP devices.
+-
+-	  Say Y here to enable Adaptive Voltage Scaling class support.
 diff --git a/drivers/power/avs/Makefile b/drivers/power/avs/Makefile
-index a1b8cd453f19..d541d436f01d 100644
+index d541d436f01d..a4e40e534e6a 100644
 --- a/drivers/power/avs/Makefile
 +++ b/drivers/power/avs/Makefile
-@@ -1,3 +1,2 @@
+@@ -1,2 +1 @@
  # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_POWER_AVS_OMAP)		+= smartreflex.o
--obj-$(CONFIG_ROCKCHIP_IODOMAIN)		+= rockchip-io-domain.o
-diff --git a/drivers/soc/rockchip/Kconfig b/drivers/soc/rockchip/Kconfig
-index b71b73bf5fc5..2c13bf4dd5db 100644
---- a/drivers/soc/rockchip/Kconfig
-+++ b/drivers/soc/rockchip/Kconfig
-@@ -14,6 +14,14 @@ config ROCKCHIP_GRF
- 	  In a lot of cases there also need to be default settings initialized
- 	  to make some of them conform to expectations of the kernel.
- 
-+config ROCKCHIP_IODOMAIN
-+	tristate "Rockchip IO domain support"
-+	depends on OF
-+	help
-+	  Say y here to enable support io domains on Rockchip SoCs. It is
-+	  necessary for the io domain setting of the SoC to match the
-+	  voltage supplied by the regulators.
-+
- config ROCKCHIP_PM_DOMAINS
-         bool "Rockchip generic power domain"
-         depends on PM
-diff --git a/drivers/soc/rockchip/Makefile b/drivers/soc/rockchip/Makefile
-index afca0a4c4b72..875032f7344e 100644
---- a/drivers/soc/rockchip/Makefile
-+++ b/drivers/soc/rockchip/Makefile
-@@ -3,4 +3,5 @@
- # Rockchip Soc drivers
- #
- obj-$(CONFIG_ROCKCHIP_GRF) += grf.o
-+obj-$(CONFIG_ROCKCHIP_IODOMAIN) += io-domain.o
- obj-$(CONFIG_ROCKCHIP_PM_DOMAINS) += pm_domains.o
-diff --git a/drivers/power/avs/rockchip-io-domain.c b/drivers/soc/rockchip/io-domain.c
+-obj-$(CONFIG_POWER_AVS_OMAP)		+= smartreflex.o
+diff --git a/drivers/soc/ti/Makefile b/drivers/soc/ti/Makefile
+index 1110e5c98685..5463431ec96c 100644
+--- a/drivers/soc/ti/Makefile
++++ b/drivers/soc/ti/Makefile
+@@ -12,3 +12,4 @@ obj-$(CONFIG_TI_SCI_PM_DOMAINS)		+= ti_sci_pm_domains.o
+ obj-$(CONFIG_TI_SCI_INTA_MSI_DOMAIN)	+= ti_sci_inta_msi.o
+ obj-$(CONFIG_TI_K3_RINGACC)		+= k3-ringacc.o
+ obj-$(CONFIG_TI_K3_SOCINFO)		+= k3-socinfo.o
++obj-$(CONFIG_POWER_AVS_OMAP)		+= smartreflex.o
+diff --git a/drivers/power/avs/smartreflex.c b/drivers/soc/ti/smartreflex.c
 similarity index 100%
-rename from drivers/power/avs/rockchip-io-domain.c
-rename to drivers/soc/rockchip/io-domain.c
+rename from drivers/power/avs/smartreflex.c
+rename to drivers/soc/ti/smartreflex.c
 -- 
 2.25.1
 
