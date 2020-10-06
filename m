@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EE7284832
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60807284835
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgJFIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:14:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32305 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgJFIOU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:14:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601972058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=3WYv1Mp0VvNRnKAiPIjAGPXvKYJUNrJ37TUk6L8shGg=;
-        b=bwa2I8Gsi9V+L5JLqCpmHgzKF6wnz8uh/YGApEZnNgHV5K502LfnBcR/SPmj8KtgyQ8HiI
-        8zQZWOugP+RzGXafcA4HE2FG4DbPBmNlLQeSUxb2qAhEFDItzaB/baIwBNkmxeuTiGFuIH
-        3KJHwpxFFdnHAWCbzvQYdW/Lptn4Ft8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-OAndu4Q0Nwam07G_XTQKqg-1; Tue, 06 Oct 2020 04:14:14 -0400
-X-MC-Unique: OAndu4Q0Nwam07G_XTQKqg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726650AbgJFIQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgJFIQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 04:16:07 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC49618C5201;
-        Tue,  6 Oct 2020 08:14:11 +0000 (UTC)
-Received: from [10.36.114.219] (ovpn-114-219.ams2.redhat.com [10.36.114.219])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 703E99CBA;
-        Tue,  6 Oct 2020 08:14:08 +0000 (UTC)
-Subject: Re: [PATCH v6 03/11] device-dax/kmem: move resource tracking to
- drvdata
-To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org
-References: <160196728453.2166475.12832711415715687418.stgit@dwillia2-desk3.amr.corp.intel.com>
- <160196730203.2166475.10332959995680506711.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <82beb6ec-b6c0-47ff-d02d-b823436ba08a@redhat.com>
-Date:   Tue, 6 Oct 2020 10:14:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F79A2078E;
+        Tue,  6 Oct 2020 08:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601972166;
+        bh=rykVwVTmBmGpcopd950wK1or7+3AVRiWL9lnV+qoF7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o77EsqhavPejEmO43Ssll9DR6fqoHpJ/c6F8EFR9+nKzkQUdXFcJVmoaiWd/8R5MZ
+         6y0ZO7lbnydq6jFBc9K5Q5YEfrMhw4YIeo68vvbHj3wha8m2AIi3EZNtxUDQZ9/pNR
+         B/wNFa6wH6pBsEhztXrqAJT2wIXhVpN9O4d+oP60=
+Date:   Tue, 6 Oct 2020 09:16:00 +0100
+From:   Will Deacon <will@kernel.org>
+To:     syzbot <syzbot+45d7c243c006f39dc55a@syzkaller.appspotmail.com>
+Cc:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
+        catalin.marinas@arm.com, davem@davemloft.net,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, mareklindner@neomailbox.ch,
+        netdev@vger.kernel.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com, will.deacon@arm.com,
+        zlim.lnx@gmail.com
+Subject: Re: WARNING in sta_info_alloc
+Message-ID: <20201006081559.GA25187@willie-the-truck>
+References: <00000000000055e16405b0fc1a90@google.com>
 MIME-Version: 1.0
-In-Reply-To: <160196730203.2166475.10332959995680506711.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000055e16405b0fc1a90@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.20 08:55, Dan Williams wrote:
-> Towards removing the mode specific @dax_kmem_res attribute from the
-> generic 'struct dev_dax', and preparing for multi-range support, move
-> resource tracking to driver data.  The memory for the resource name
-> needs to have its own lifetime separate from the device bind lifetime
-> for cases where the driver is unbound, but the kmem range could not be
-> unplugged from the page allocator.
+On Tue, Oct 06, 2020 at 01:08:23AM -0700, syzbot wrote:
+> Hello,
 > 
-> The resource reservation also needs to be released manually via
-> release_resource() given the awkward manipulation of the
-> IORESOURCE_BUSY flag.
+> syzbot found the following issue on:
 > 
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Vishal Verma <vishal.l.verma@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Brice Goglin <Brice.Goglin@inria.fr>
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jia He <justin.he@arm.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> HEAD commit:    549738f1 Linux 5.9-rc8
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15b97ba3900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=45d7c243c006f39dc55a
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bae9c0500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1099b1c0500000
+> 
+> The issue was bisected to:
+> 
+> commit 643c332d519bdfbf80d21f40d1c0aa0ccf3ec1cb
+> Author: Zi Shen Lim <zlim.lnx@gmail.com>
+> Date:   Thu Jun 9 04:18:50 2016 +0000
+> 
+>     arm64: bpf: optimize LD_ABS, LD_IND
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11d44477900000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13d44477900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15d44477900000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+45d7c243c006f39dc55a@syzkaller.appspotmail.com
+> Fixes: 643c332d519b ("arm64: bpf: optimize LD_ABS, LD_IND")
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 6879 at net/mac80211/ieee80211_i.h:1447 ieee80211_get_sband net/mac80211/ieee80211_i.h:1447 [inline]
+> WARNING: CPU: 0 PID: 6879 at net/mac80211/ieee80211_i.h:1447 sta_info_alloc+0x1900/0x1f90 net/mac80211/sta_info.c:469
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 0 PID: 6879 Comm: syz-executor071 Not tainted 5.9.0-rc8-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>  panic+0x382/0x7fb kernel/panic.c:231
+>  __warn.cold+0x20/0x4b kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+>  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> RIP: 0010:ieee80211_get_sband net/mac80211/ieee80211_i.h:1447 [inline]
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+The patch fingered by the bisection only affects arm64, but this is an x86
+box. So this is clearly bogus.
 
-Thanks!
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Will
