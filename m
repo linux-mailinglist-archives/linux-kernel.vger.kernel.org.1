@@ -2,300 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8F22854CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 00:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50742854D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 01:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727190AbgJFWzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 18:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgJFWzG (ORCPT
+        id S1727449AbgJFXJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 19:09:42 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17919 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgJFXJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 18:55:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3279C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 15:55:04 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id n18so22520wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 15:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZE/wKx/2RmNzMs8AoG4OykxIKmOmK9f6qquh+OkR+3A=;
-        b=k8l5gHBu8FLs9Pi1ZWEnxYCUxxmeO6LjSOLKBlTXhxesA30vKQZ1TbOHjgA4/Vxkiu
-         sIZCzhYXm+gsp4aTSWTbAOo3QGodZRtXsPWwjT+62xhCCfGtc9p1GtFEptQ6FIgKmCVE
-         RWo2wLMqH5IRS9hU/QluO6sQpfxOjYGXBg+D8EX9FrvnYQVEYdhem2tfI/8vOI3r79Lv
-         BzWUPsNp636ZRWg+DwQUXSGBOuw5/NZIxUAXtgr5II1G1jjx2Q5/FRzbfXddYePupuNQ
-         WCC2TqJ7L/FHzJOawmS0uel0FSEauRpWzkdNYVGfB50abXfAnmt2aKIL+RuQ3NIGZPS2
-         PKdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZE/wKx/2RmNzMs8AoG4OykxIKmOmK9f6qquh+OkR+3A=;
-        b=qR3Kj26yqnIDR0O5BbmJebLW6HVb2OjLJDOPWiBAzVWCRO1s3/SMTKE1UZfrAmmrzC
-         60WacfvHRkOrT3f3YhrdyMqzb2m7+utNiDA4iBT6O73fdy9TQKVF42RTDOnrg+UYw4eG
-         ndbbOczWKuz72TPBqgQXWgYElYOg8pls+xxFCxeEPxFfG0/L1rU/Of6KZNCyoNIU7ze6
-         1dQzvr4f0zYhK5uwVHOQOKvcBwAlFu5+ibahht9i5dO8cB87piCVmKcB6IdB93UGmOFB
-         AEH/uymFNCq/mURTSNdamu4ihI1XWBsazpd89j7q8HK66gryHGCnU+/Srzji6lxOrgDZ
-         klJw==
-X-Gm-Message-State: AOAM533xOItSooqEqnsEO9MqKJZpVQ9XT2zzvmP7n7NcHUZkWi7j0x6f
-        tv2DIIm23jYAM7M3ViOvGFN6MQ==
-X-Google-Smtp-Source: ABdhPJzjkNN/QpBwkc7ric2cIHgfEVwzyvIhc8OstjwlEId4qz1orekL0RfkqLjL7OfsBD4AfXnEzA==
-X-Received: by 2002:adf:e70a:: with SMTP id c10mr156257wrm.425.1602024903367;
-        Tue, 06 Oct 2020 15:55:03 -0700 (PDT)
-Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id y11sm310504wrs.16.2020.10.06.15.55.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 15:55:02 -0700 (PDT)
-From:   Jann Horn <jannh@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2 2/2] exec: Broadly lock nascent mm until setup_arg_pages()
-Date:   Wed,  7 Oct 2020 00:54:50 +0200
-Message-Id: <20201006225450.751742-3-jannh@google.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-In-Reply-To: <20201006225450.751742-1-jannh@google.com>
-References: <20201006225450.751742-1-jannh@google.com>
+        Tue, 6 Oct 2020 19:09:41 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7cf9280000>; Tue, 06 Oct 2020 16:09:28 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
+ 2020 23:09:37 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 6 Oct 2020 23:09:37 +0000
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-mm@kvack.org>, <linux-xfs@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Ralph Campbell" <rcampbell@nvidia.com>
+Subject: [PATCH] ext4/xfs: add page refcount helper
+Date:   Tue, 6 Oct 2020 16:09:30 -0700
+Message-ID: <20201006230930.3908-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602025768; bh=E0cxvA4vU4/wkdnPscc9MTh2dGOKgzOFQvaQ+2UKi60=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=AUgsYXGQGWBxrale+BYRsfEFTPAuUyQI9CuVa7/Ku4eOaD9ZGr7Do59J4s5qsUqml
+         1MEW+PGQbtMbc9CvXgvtAT05KeB/s2DypJO3A+zcXX3cc1XOOiBRpjQ3K9scBIH6US
+         z9RE9nEow7wQvFNvKV1cgXz/ZpsmTm/g+fzVYXtugLdA3TSQP+ABXddyx0hka75ziw
+         Jo6BbL0r7BCL7iD6Hi4ovmO8nA03mPrueqlCz3ynhmyfboKR8IatKcaxFkHKChe7Ke
+         0uDowqYmCT2Lp6wBnVK3P7Bluv/nZQVVo6beZ00BDkqWegnPQFtLT2v30XS7vdH7Um
+         epFTlUr1gBk5Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While AFAIK there currently is nothing that can modify the VMA tree of a
-new mm until userspace has started running under the mm, we should properly
-lock the mm here anyway, both to keep lockdep happy when adding locking
-assertions and to be safe in the future in case someone e.g. decides to
-permit VMA-tree-mutating operations in process_madvise_behavior_valid().
+There are several places where ZONE_DEVICE struct pages assume a reference
+count =3D=3D 1 means the page is idle and free. Instead of open coding this=
+,
+add a helper function to hide this detail.
 
-The goal of this patch is to broadly lock the nascent mm in the exec path,
-from around the time it is created all the way to the end of
-setup_arg_pages() (because setup_arg_pages() accesses bprm->vma).
-As long as the mm is write-locked, keep it around in bprm->mm, even after
-it has been installed on the task (with an extra reference on the mm, to
-reduce complexity in free_bprm()).
-After setup_arg_pages(), we have to unlock the mm so that APIs such as
-copy_to_user() will work in the following binfmt-specific setup code.
-
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Suggested-by: Michel Lespinasse <walken@google.com>
-Signed-off-by: Jann Horn <jannh@google.com>
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/exec.c               | 68 ++++++++++++++++++++---------------------
- include/linux/binfmts.h |  2 +-
- 2 files changed, 35 insertions(+), 35 deletions(-)
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 229dbc7aa61a..fe11d77e397a 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -254,11 +254,6 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
- 		return -ENOMEM;
- 	vma_set_anonymous(vma);
- 
--	if (mmap_write_lock_killable(mm)) {
--		err = -EINTR;
--		goto err_free;
--	}
--
- 	/*
- 	 * Place the stack at the largest stack address the architecture
- 	 * supports. Later, we'll move this to an appropriate place. We don't
-@@ -276,12 +271,9 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
- 		goto err;
- 
- 	mm->stack_vm = mm->total_vm = 1;
--	mmap_write_unlock(mm);
- 	bprm->p = vma->vm_end - sizeof(void *);
- 	return 0;
- err:
--	mmap_write_unlock(mm);
--err_free:
- 	bprm->vma = NULL;
- 	vm_area_free(vma);
- 	return err;
-@@ -364,9 +356,9 @@ static int bprm_mm_init(struct linux_binprm *bprm)
- 	struct mm_struct *mm = NULL;
- 
- 	bprm->mm = mm = mm_alloc();
--	err = -ENOMEM;
- 	if (!mm)
--		goto err;
-+		return -ENOMEM;
-+	mmap_write_lock_nascent(mm);
- 
- 	/* Save current stack limit for all calculations made during exec. */
- 	task_lock(current->group_leader);
-@@ -374,17 +366,12 @@ static int bprm_mm_init(struct linux_binprm *bprm)
- 	task_unlock(current->group_leader);
- 
- 	err = __bprm_mm_init(bprm);
--	if (err)
--		goto err;
--
--	return 0;
--
--err:
--	if (mm) {
--		bprm->mm = NULL;
--		mmdrop(mm);
--	}
-+	if (!err)
-+		return 0;
- 
-+	bprm->mm = NULL;
-+	mmap_write_unlock(mm);
-+	mmdrop(mm);
- 	return err;
- }
- 
-@@ -735,6 +722,7 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
- /*
-  * Finalizes the stack vm_area_struct. The flags and permissions are updated,
-  * the stack is optionally relocated, and some extra space is added.
-+ * At the end of this, the mm_struct will be unlocked on success.
-  */
- int setup_arg_pages(struct linux_binprm *bprm,
- 		    unsigned long stack_top,
-@@ -787,9 +775,6 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 		bprm->loader -= stack_shift;
- 	bprm->exec -= stack_shift;
- 
--	if (mmap_write_lock_killable(mm))
--		return -EINTR;
--
- 	vm_flags = VM_STACK_FLAGS;
- 
- 	/*
-@@ -807,7 +792,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	ret = mprotect_fixup(vma, &prev, vma->vm_start, vma->vm_end,
- 			vm_flags);
- 	if (ret)
--		goto out_unlock;
-+		return ret;
- 	BUG_ON(prev != vma);
- 
- 	if (unlikely(vm_flags & VM_EXEC)) {
-@@ -819,7 +804,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	if (stack_shift) {
- 		ret = shift_arg_pages(vma, stack_shift);
- 		if (ret)
--			goto out_unlock;
-+			return ret;
+I'm resending this as a separate patch since I think it is ready to
+merge. Originally, this was part of an RFC and is unchanged from v3:
+https://lore.kernel.org/linux-mm/20201001181715.17416-1-rcampbell@nvidia.co=
+m
+
+It applies cleanly to linux-5.9.0-rc7-mm1 but doesn't really
+depend on anything, just simple merge conflicts when applied to
+other trees.
+I'll let the various maintainers decide which tree and when to merge.
+It isn't urgent since it is a clean up patch.
+
+ fs/dax.c            |  4 ++--
+ fs/ext4/inode.c     |  5 +----
+ fs/xfs/xfs_file.c   |  4 +---
+ include/linux/dax.h | 10 ++++++++++
+ 4 files changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/fs/dax.c b/fs/dax.c
+index 5b47834f2e1b..85c63f735909 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct =
+address_space *mapping,
+ 	for_each_mapped_pfn(entry, pfn) {
+ 		struct page *page =3D pfn_to_page(pfn);
+=20
+-		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
++		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
+ 		WARN_ON_ONCE(page->mapping && page->mapping !=3D mapping);
+ 		page->mapping =3D NULL;
+ 		page->index =3D 0;
+@@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
+ 	for_each_mapped_pfn(entry, pfn) {
+ 		struct page *page =3D pfn_to_page(pfn);
+=20
+-		if (page_ref_count(page) > 1)
++		if (!dax_layout_is_idle_page(page))
+ 			return page;
  	}
- 
- 	/* mprotect_fixup is overkill to remove the temporary stack flags */
-@@ -846,11 +831,17 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	current->mm->start_stack = bprm->p;
- 	ret = expand_stack(vma, stack_base);
- 	if (ret)
--		ret = -EFAULT;
-+		return -EFAULT;
- 
--out_unlock:
-+	/*
-+	 * From this point on, anything that wants to poke around in the
-+	 * mm_struct must lock it by itself.
-+	 */
-+	bprm->vma = NULL;
- 	mmap_write_unlock(mm);
--	return ret;
-+	mmput(mm);
-+	bprm->mm = NULL;
-+	return 0;
+ 	return NULL;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 771ed8b1fadb..132620cbfa13 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3937,10 +3937,7 @@ int ext4_break_layouts(struct inode *inode)
+ 		if (!page)
+ 			return 0;
+=20
+-		error =3D ___wait_var_event(&page->_refcount,
+-				atomic_read(&page->_refcount) =3D=3D 1,
+-				TASK_INTERRUPTIBLE, 0, 0,
+-				ext4_wait_dax_page(ei));
++		error =3D dax_wait_page(ei, page, ext4_wait_dax_page);
+ 	} while (error =3D=3D 0);
+=20
+ 	return error;
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 3d1b95124744..a5304aaeaa3a 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -749,9 +749,7 @@ xfs_break_dax_layouts(
+ 		return 0;
+=20
+ 	*retry =3D true;
+-	return ___wait_var_event(&page->_refcount,
+-			atomic_read(&page->_refcount) =3D=3D 1, TASK_INTERRUPTIBLE,
+-			0, 0, xfs_wait_dax_page(inode));
++	return dax_wait_page(inode, page, xfs_wait_dax_page);
  }
- EXPORT_SYMBOL(setup_arg_pages);
- 
-@@ -1114,8 +1105,6 @@ static int exec_mmap(struct mm_struct *mm)
- 	if (ret)
- 		return ret;
- 
--	mmap_write_lock_nascent(mm);
--
- 	if (old_mm) {
- 		/*
- 		 * Make sure that if there is a core dump in progress
-@@ -1127,11 +1116,12 @@ static int exec_mmap(struct mm_struct *mm)
- 		if (unlikely(old_mm->core_state)) {
- 			mmap_read_unlock(old_mm);
- 			mutex_unlock(&tsk->signal->exec_update_mutex);
--			mmap_write_unlock(mm);
- 			return -EINTR;
- 		}
- 	}
- 
-+	/* bprm->mm stays refcounted, current->mm takes an extra reference */
-+	mmget(mm);
- 	task_lock(tsk);
- 	active_mm = tsk->active_mm;
- 	membarrier_exec_mmap(mm);
-@@ -1141,7 +1131,6 @@ static int exec_mmap(struct mm_struct *mm)
- 	tsk->mm->vmacache_seqnum = 0;
- 	vmacache_flush(tsk);
- 	task_unlock(tsk);
--	mmap_write_unlock(mm);
- 	if (old_mm) {
- 		mmap_read_unlock(old_mm);
- 		BUG_ON(active_mm != old_mm);
-@@ -1397,8 +1386,6 @@ int begin_new_exec(struct linux_binprm * bprm)
- 	if (retval)
- 		goto out;
- 
--	bprm->mm = NULL;
--
- #ifdef CONFIG_POSIX_TIMERS
- 	exit_itimers(me->signal);
- 	flush_itimer_signals();
-@@ -1545,6 +1532,18 @@ void setup_new_exec(struct linux_binprm * bprm)
- 	me->mm->task_size = TASK_SIZE;
- 	mutex_unlock(&me->signal->exec_update_mutex);
- 	mutex_unlock(&me->signal->cred_guard_mutex);
+=20
+ int
+diff --git a/include/linux/dax.h b/include/linux/dax.h
+index b52f084aa643..8909a91cd381 100644
+--- a/include/linux/dax.h
++++ b/include/linux/dax.h
+@@ -243,6 +243,16 @@ static inline bool dax_mapping(struct address_space *m=
+apping)
+ 	return mapping->host && IS_DAX(mapping->host);
+ }
+=20
++static inline bool dax_layout_is_idle_page(struct page *page)
++{
++	return page_ref_count(page) =3D=3D 1;
++}
 +
-+#ifndef CONFIG_MMU
-+	/*
-+	 * On MMU, setup_arg_pages() wants to access bprm->vma after this point,
-+	 * so we can't drop the mmap lock yet.
-+	 * On !MMU, we have neither setup_arg_pages() nor bprm->vma, so we
-+	 * should drop the lock here.
-+	 */
-+	mmap_write_unlock(bprm->mm);
-+	mmput(bprm->mm);
-+	bprm->mm = NULL;
-+#endif
- }
- EXPORT_SYMBOL(setup_new_exec);
- 
-@@ -1581,6 +1580,7 @@ static void free_bprm(struct linux_binprm *bprm)
- {
- 	if (bprm->mm) {
- 		acct_arg_size(bprm, 0);
-+		mmap_write_unlock(bprm->mm);
- 		mmput(bprm->mm);
- 	}
- 	free_arg_pages(bprm);
-diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-index 0571701ab1c5..3bf06212fbae 100644
---- a/include/linux/binfmts.h
-+++ b/include/linux/binfmts.h
-@@ -22,7 +22,7 @@ struct linux_binprm {
- # define MAX_ARG_PAGES	32
- 	struct page *page[MAX_ARG_PAGES];
- #endif
--	struct mm_struct *mm;
-+	struct mm_struct *mm; /* nascent mm, write-locked */
- 	unsigned long p; /* current top of mem */
- 	unsigned long argmin; /* rlimit marker for copy_strings() */
- 	unsigned int
--- 
-2.28.0.806.g8561365e88-goog
++#define dax_wait_page(_inode, _page, _wait_cb)				\
++	___wait_var_event(&(_page)->_refcount,				\
++		dax_layout_is_idle_page(_page),				\
++		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode))
++
+ #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
+ void hmem_register_device(int target_nid, struct resource *r);
+ #else
+--=20
+2.20.1
 
