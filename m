@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E906A284EB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1090284EBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgJFPSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:18:23 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39066 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgJFPSW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:18:22 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 096FI90q075440;
-        Tue, 6 Oct 2020 10:18:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601997489;
-        bh=cEvQkTPb5D58O6vqHt0d3zXE2tCjsask8K4wj8gkurE=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=RtTlsAu1TxRWSNrU3qD3A0ybovtKnGgzsRpKzxClmi4V/3v24A5c69ZfofbDDRemx
-         5cgWZBGzjtk7bzNhJ+XiX7jpBhmwe1LqErkMhL0l+rRQ7idzQQ4OokpsbjugK2ieuJ
-         ASnYHpUJMsfiHiDvuyCjcW/7VasZ+i6wiHdQdFVQ=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 096FI9An078136
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Oct 2020 10:18:09 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
- 2020 10:18:09 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 6 Oct 2020 10:18:09 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 096FI8wx005857;
-        Tue, 6 Oct 2020 10:18:08 -0500
-Date:   Tue, 6 Oct 2020 20:48:07 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Bert Vermeulen <bert@biot.com>
-CC:     <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-Subject: Re: [RESEND PATCH v2] mtd: spi-nor: Fix address width on flash chips
- > 16MB
-Message-ID: <20201006151807.2pckm7ncply7uomc@ti.com>
-References: <20201006132346.12652-1-bert@biot.com>
+        id S1726241AbgJFPUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:20:12 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52592 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726060AbgJFPUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:20:11 -0400
+Received: from zn.tnic (p200300ec2f0d6300cee9f1eb6b8e192c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6300:cee9:f1eb:6b8e:192c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B4A9C1EC0409;
+        Tue,  6 Oct 2020 17:20:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601997609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=22QKkbrJeWzTsKksHS4vbicwGczWEiJUoAabXc4dnIs=;
+        b=Zy3ldkWx7X1LsBXSp91c+MDSPY7Gf53Jeaibgm/IoRGiRa7QMPoye1vfR9XxtveaVHNnm5
+        4QK0F04Sb/VHf1nOPq5Hw8ZQ6XlltpN2KDZVg6q8+K4hEgyVK3wfSX53RdYs1pZDXhKFFQ
+        5ilOejPs+fGjfCF175tVW5Pma9SJhoM=
+Date:   Tue, 6 Oct 2020 17:19:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel test robot <lkp@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v4 06/13] x86/platform/uv: Add and Decode Arch Type in
+ UVsystab
+Message-ID: <20201006151959.GF27700@zn.tnic>
+References: <20201005203929.148656-1-mike.travis@hpe.com>
+ <20201005203929.148656-7-mike.travis@hpe.com>
+ <20201005212135.GL21151@zn.tnic>
+ <d2c7d3d8-3863-f15f-7ec6-ae41cf8b2657@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201006132346.12652-1-bert@biot.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <d2c7d3d8-3863-f15f-7ec6-ae41cf8b2657@hpe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/20 03:23PM, Bert Vermeulen wrote:
-> If a flash chip has more than 16MB capacity but its BFPT reports
-> BFPT_DWORD1_ADDRESS_BYTES_3_OR_4, the spi-nor framework defaults to 3.
+On Mon, Oct 05, 2020 at 02:35:58PM -0700, Mike Travis wrote:
 > 
-> The check in spi_nor_set_addr_width() doesn't catch it because addr_width
-> did get set. This fixes that check.
 > 
-> Fixes: f9acd7fa80be ("mtd: spi-nor: sfdp: default to addr_width of 3 for configurable widths")
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> On 10/5/2020 2:21 PM, Borislav Petkov wrote:
+> > On Mon, Oct 05, 2020 at 03:39:22PM -0500, Mike Travis wrote:
+> > > A patch to add and process the UV Arch Type field in the UVsystab passed
+> > > from UV BIOS to the kernel.
+> > 
+> > What does that mean?
+> > 
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 0369d98b2d12..a2c35ad9645c 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3009,13 +3009,15 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
->  		/* already configured from SFDP */
->  	} else if (nor->info->addr_width) {
->  		nor->addr_width = nor->info->addr_width;
-> -	} else if (nor->mtd.size > 0x1000000) {
-> -		/* enable 4-byte addressing if the device exceeds 16MiB */
-> -		nor->addr_width = 4;
->  	} else {
->  		nor->addr_width = 3;
->  	}
->  
-> +	if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
-Nitpick:    ^^^^^^^^^^^^^^^^^^^^^^^^ you can drop this part. But its 
-fine either way.
+> There have been recent cases where OEM's want to use the OEM_ID in the ACPI
+> tables to brand their own product.  The UV BIOS used that field to tell the
+> Linux kernel which UV arch the running system is.  The Arch Type in the
+> UVsystab (also created by UV BIOS) now carries that field in systems that
+> support it.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-
-> +		/* enable 4-byte addressing if the device exceeds 16MiB */
-> +		nor->addr_width = 4;
-> +	}
-> +
->  	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
->  		dev_dbg(nor->dev, "address width is too large: %u\n",
->  			nor->addr_width);
+I am unclear on the whole patch passing from UV BIOS to the kernel. Are
+you talking about a kernel patch here? If so, commit ID is? Or what kind
+of patch are you talking about?
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
