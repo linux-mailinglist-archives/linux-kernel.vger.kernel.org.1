@@ -2,62 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B62328515C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31BD285160
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 20:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgJFSIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 14:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgJFSIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:08:24 -0400
-Received: from gaia (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3168206F7;
-        Tue,  6 Oct 2020 18:08:22 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 19:08:20 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] arm64 fix for 5.9
-Message-ID: <20201006180818.GA25842@gaia>
+        id S1726775AbgJFSMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 14:12:49 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54319 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgJFSMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:12:49 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kPrS8-0001UQ-2u; Tue, 06 Oct 2020 18:12:44 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net/mlx5: Fix uininitialized pointer read on pointer attr
+Date:   Tue,  6 Oct 2020 19:12:43 +0100
+Message-Id: <20201006181243.546661-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Colin Ian King <colin.king@canonical.com>
 
-Please pull the arm64 fix below. Thanks.
+Currently the error exit path err_free kfree's attr. In the case where
+flow and parse_attr failed to be allocated this return path will free
+the uninitialized pointer attr, which is not correct.  In the other
+case where attr fails to allocate attr does not need to be freed. So
+in both error exits via err_free attr should not be freed, so remove
+it.
 
-The following changes since commit a509a66a9d0d4f4e304d58fad38c078d0336c445:
+Addresses-Coverity: ("Uninitialized pointer read")
+Fixes: ff7ea04ad579 ("net/mlx5e: Fix potential null pointer dereference")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-  arm64: permit ACPI core to map kernel memory used for table overrides (2020-09-30 22:27:51 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-
-for you to fetch changes up to 39e4716caa598a07a98598b2e7cd03055ce25fb9:
-
-  crypto: arm64: Use x16 with indirect branch to bti_c (2020-10-06 18:14:47 +0100)
-
-----------------------------------------------------------------
-Fix a kernel panic in the AES crypto code caused by a BR tail call not
-matching the target BTI instruction (when branch target identification
-is enabled).
-
-----------------------------------------------------------------
-Jeremy Linton (1):
-      crypto: arm64: Use x16 with indirect branch to bti_c
-
- arch/arm64/crypto/aes-neonbs-core.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index a0c356987e1a..e3a968e9e2a0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -4569,7 +4569,6 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
+ err_free:
+ 	kfree(flow);
+ 	kvfree(parse_attr);
+-	kfree(attr);
+ 	return err;
+ }
+ 
 -- 
-Catalin
+2.27.0
+
