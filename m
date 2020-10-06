@@ -2,99 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5218A28432F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D859284338
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgJFALD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgJFALD (ORCPT
+        id S1726779AbgJFAR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:17:57 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:18352 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725861AbgJFAR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:11:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D47C0613CE;
-        Mon,  5 Oct 2020 17:11:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C4yYH6yLGz9sSs;
-        Tue,  6 Oct 2020 11:10:59 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601943060;
-        bh=grlygd68bJmDQe90g/yhOmhuKH9aYwkw2nsh45pylqQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fTU0UcaYs2kVJP6dTy4qWNovjAOtvDbnXA4w0AgvoPAfm68OihSt5Dnuts8lSdX5N
-         hAnYyqu+S/HE663mHTBjWrmn/oV5Mm4SfBFfTZ/8Sjkcn+fCrYQbnxLewtHKfKyrmh
-         pdkhGwk70ZafEjqpODcLY+4t/PlL9oPGhZP3bHzvUcyTWb+GQ09Yhw3xxyooXyrBJn
-         7yHT9p5U+cBamqfnngYLpF8atBWl+/5ym52c6jPzwpmZcEXaYdxjU5wo43LbaUOqj2
-         6oTF9n2mzivWSzSe+S/s18zq8FR20fPIs817Ei+v1r7X+GzXw9KIxan/GD8/nOHTl/
-         5zORKDTVbFsyQ==
-Date:   Tue, 6 Oct 2020 11:10:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: linux-next: manual merge of the arm-soc tree with the dma-mapping
- tree
-Message-ID: <20201006111059.78dc03de@canb.auug.org.au>
+        Mon, 5 Oct 2020 20:17:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1601943476; x=1633479476;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QAwKU8lAOts2CUnPA+WBIUI5CpZVX/yVSp78aPQvNQI=;
+  b=EDxSkxFnMiaP2QAJDRxq738IKUlrxi8GF8ixzN8ajONqHdLh3uPcEFCj
+   Sd3VBPAAkYqq2LvX5RMqLyxbV0BasdUffOdfgViS9eZXyLoRQGCt9OjKs
+   5SY+ouh2LZOwstz/CcrwXfpsxI9LrhJ73sR4Pr648hDrVDQzplVQAkelp
+   AIfxfOlpCXzPi/Gxtrj0NF/r4WMSGK0V1bxO+IXK8E0m8cObciES+rork
+   STJHYHAmBpi8vkvJ5H3j6izxZ0bEcJk9zU9ogRyDUXHK5x4DzOTx7Ydt2
+   AWgevJ3NbTaNScKmme/AFSedXha+zE/uJ36AUR6ad8jieZlezqw5iPAd9
+   g==;
+IronPort-SDR: Mh2S0aqrPpRr76sU2XIuAOO/AHAyrWWm4PVVafGsxAHZwHozeDhBHRteAmB8uKwmmmrEs8EpCI
+ S7FGK0Dapx2TmawPhCvf4bzKNYmc1lBdAxeoitVkEe4KutUUZ+bZc3WVWXVx4WEQ+BSrJxkKtt
+ VCWg+F+YmLR78MOOQadcHOs8Qghlz2sAbiAsMMxpLOlBUEXVFybxh3UeHti47Wxpn63WX6dzwe
+ NP7Pl1PRl8wTcYivAL3virhY8NprdzaWk8gn4y68BMpWtI9fwGlJM3afn65MBkQwwJbzeC8IFi
+ oJ8=
+X-IronPort-AV: E=Sophos;i="5.77,341,1596470400"; 
+   d="scan'208";a="149023388"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Oct 2020 08:17:56 +0800
+IronPort-SDR: CuOLyGCnNjyKViZWrZPzXqFgImQKvokKVllYPnPp/rsiSBArv7eIzmuhJeO6zcu1KPtLviTYAL
+ b4zXC1CWvg/Q==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 17:03:48 -0700
+IronPort-SDR: Neg4gQXFt16GausLnkBfK7NTrO7uOhLbWHdiEHDf+HDtgOth4FjfITodd3H2Qum9/EAwzsM5gp
+ ULdHQ5pTY/EA==
+WDCIronportException: Internal
+Received: from b9f8262.ad.shared (HELO jedi-01.hgst.com) ([10.86.59.253])
+  by uls-op-cesaip01.wdc.com with ESMTP; 05 Oct 2020 17:17:55 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Anup Patel <anup@brainfault.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jia He <justin.he@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-arch@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/5] Unify NUMA implementation between ARM64 & RISC-V
+Date:   Mon,  5 Oct 2020 17:17:47 -0700
+Message-Id: <20201006001752.248564-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DtlBu2xnMQ3r/VCICAMJB_P";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DtlBu2xnMQ3r/VCICAMJB_P
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This series attempts to move the ARM64 numa implementation to common
+code so that RISC-V can leverage that as well instead of reimplementing
+it again.
 
-Hi all,
+RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+modified to reuse the common implementation to avoid duplication.
 
-Today's linux-next merge of the arm-soc tree got a conflict in:
+[1] https://lkml.org/lkml/2020/1/10/233
 
-  arch/arm/mach-imx/mach-mx31moboard.c
+This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+This patch series doesn't modify the maintainers list for the common code (arch_numa)
+as I am not sure if somebody from ARM64 community or Greg should take up the
+maintainership. Ganapatrao was the original author of the arm64 version.
+I would be happy to update that in the next revision once it is decided.
 
-between commit:
+# numactl --hardware
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3
+node 0 size: 486 MB
+node 0 free: 470 MB
+node 1 cpus: 4 5 6 7
+node 1 size: 424 MB
+node 1 free: 408 MB
+node distances:
+node   0   1 
+  0:  10  20 
+  1:  20  10 
+# numactl -show
+policy: default
+preferred node: current
+physcpubind: 0 1 2 3 4 5 6 7 
+cpubind: 0 1 
+nodebind: 0 1 
+membind: 0 1 
 
-  f47e22d65d08 ("dma-mapping: split <linux/dma-mapping.h>")
+The patches are also available at
+https://github.com/atishp04/linux/tree/5.10_numa_unified_v4
 
-from the dma-mapping tree and commit:
+For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
 
-  c93197b0041d ("ARM: imx: Remove i.MX31 board files")
+Testing:
+RISC-V:
+Tested in Qemu and 2 socket OmniXtend FPGA.
 
-from the arm-soc tree.
+ARM64:
+2 socket kunpeng920 (4 nodes around 250G a node)
+Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-I fixed it up (I just removed the file) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
+There may be some minor conflicts with Mike's cleanup series [2] depending on the
+order in which these two series are being accepted. I can rebase on top his series
+if required.
 
---=20
-Cheers,
-Stephen Rothwell
+[2] https://lkml.org/lkml/2020/8/18/754
 
---Sig_/DtlBu2xnMQ3r/VCICAMJB_P
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes from v3->v4:
+1. Removed redundant duplicate header.
+2. Added Reviewed-by tags.
 
------BEGIN PGP SIGNATURE-----
+Changes from v2->v3:
+1. Added Acked-by/Reviewed-by tags.
+2. Replaced asm/acpi.h with linux/acpi.h
+3. Defined arch_acpi_numa_init as static.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl97thMACgkQAVBC80lX
-0Gx54wf/dpCy7119s6iYwVQuupYwUywIl6EuY+Q9BLJ9q3kblTI7AZYAXCGXx3SM
-l8nGnUB8u/UzpbFdtZPdQSferEyMXDNFy11XTlnKWTZdDCpZoa3y3UxvkaHwnx/E
-I5JhCl2/cj/iKm4SluZ7KVF388FIMlJCtkQ6UJkEhATajM/xZdwWSMoc8nKX+3gy
-rDpLdvU4evgp2BbD0/OiEFl0hUriHY+v5KqSLd2+eQE/Rvp3RCVdkPRmyrHwiAZt
-b6MyAe0vtk25s+kPuHAMVHCOOH25CRnDJGutjxoEBJ+DZXbWPWZWMC+7GXAjGggJ
-fHbf2ZigHVwRr7lTLNeJr0ilHEGVQg==
-=a0Lo
------END PGP SIGNATURE-----
+Changes from v1->v2:
+1. Replaced ARM64 specific compile time protection with ACPI specific ones.
+2. Dropped common pcibus_to_node changes. Added required changes in RISC-V. 
+3. Fixed few typos.
 
---Sig_/DtlBu2xnMQ3r/VCICAMJB_P--
+Atish Patra (4):
+numa: Move numa implementation to common code
+arm64, numa: Change the numa init functions name to be generic
+riscv: Separate memory init from paging init
+riscv: Add numa support for riscv64 platform
+
+Greentime Hu (1):
+riscv: Add support pte_protnone and pmd_protnone if
+CONFIG_NUMA_BALANCING
+
+arch/arm64/Kconfig                            |  1 +
+arch/arm64/include/asm/numa.h                 | 45 +----------------
+arch/arm64/kernel/acpi_numa.c                 | 13 -----
+arch/arm64/mm/Makefile                        |  1 -
+arch/arm64/mm/init.c                          |  4 +-
+arch/riscv/Kconfig                            | 31 +++++++++++-
+arch/riscv/include/asm/mmzone.h               | 13 +++++
+arch/riscv/include/asm/numa.h                 |  8 +++
+arch/riscv/include/asm/pci.h                  | 14 ++++++
+arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+arch/riscv/kernel/setup.c                     | 11 ++++-
+arch/riscv/kernel/smpboot.c                   | 12 ++++-
+arch/riscv/mm/init.c                          | 10 +++-
+drivers/base/Kconfig                          |  6 +++
+drivers/base/Makefile                         |  1 +
+.../mm/numa.c => drivers/base/arch_numa.c     | 30 ++++++++++--
+include/asm-generic/numa.h                    | 49 +++++++++++++++++++
+17 files changed, 199 insertions(+), 71 deletions(-)
+create mode 100644 arch/riscv/include/asm/mmzone.h
+create mode 100644 arch/riscv/include/asm/numa.h
+rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
+create mode 100644 include/asm-generic/numa.h
+
+--
+2.25.1
+
