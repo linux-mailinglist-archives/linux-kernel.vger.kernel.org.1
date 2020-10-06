@@ -2,115 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39DB2853FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DD3285407
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727331AbgJFVlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:41:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgJFVlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:41:18 -0400
-Received: from localhost (cha74-h07-176-172-165-181.dsl.sta.abo.bbox.fr [176.172.165.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A895B208B6;
-        Tue,  6 Oct 2020 21:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602020477;
-        bh=9wLduu0HibYTvQ1PxET1bwvOHmceqeDnpLGd3eg73zU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2gCpOuwlb9OCrTs8XdwbsjCC4BukoUfz0Mvac17ZIGhzrZJLjfCkNYUOHOHUoqqri
-         OIOiw9PbygkXW73CcQougUiK/NjNN+08X/TVwhkLEOiN9KU6jcrRLND5yoQwFZvivV
-         kkF0BPaHRf4ooYAz0mS3oP3jWuSjTIeE9AhIWZDA=
-Date:   Tue, 6 Oct 2020 23:41:13 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Alex Belits <abelits@marvell.com>
-Cc:     "mingo@kernel.org" <mingo@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "will@kernel.org" <will@kernel.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
+        id S1726695AbgJFVqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:46:43 -0400
+Received: from mail-mw2nam10on2089.outbound.protection.outlook.com ([40.107.94.89]:7230
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725947AbgJFVqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 17:46:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W5jAnb5YbiRPAsbD0IdxXNeAulfKex1EDQMeqNFb/4U9UgwKr8j7DzO33MeJR+C2l3KR8c1S+GRvcqSlTlD5Rf3M7W0BcJAJKxzZf7+N93yscfQ1cMnxxNy4KlcFDxshm7idFYsngW8ZVE9obqU2Iwt5dXL0b3+6t0Im6i4x/seLk/KnDltedttNLQF2kO8o35RYZFxkoLoms6Bsw0Ss9Eyv5rQV5ukzXBt64Hmz/vbrAmkyZ6lzQBzxszsSnzfDVA0WlrZewBFurcDJfZo6GzOO6a3J+3Nih6ThhdEYMN815iFT540JXMCCLbHZXgHHwJMoraUZQEnLLhWrmSTzqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TdAD1nTQ87pa/VZRZFD0KrbHwszvwHDq8yWpbcgBG6o=;
+ b=UhcdFf79gf9OydRnOdSNdBfsAFhc1gc7p2vnIbGNCk/uEZb6wI9aZ+QDfP3VigCQzs8/inzBwFLsbxJfPadJTAsr2vCUzZgA+Kb9cmgeT7B2x9lixXua43hLf9x5D5+luuQBN+i1ewZVaUjNSldEYDKw3H7+q58PzYEye6+zUnYUz6ZsYDDloCwNn/p9tCjpSQZ5ak41sNBPsTTNz6ADEgklGYAs1JSVeUAF7g9hIsE6hl19OmPB4TCVRGUJqQh7ZizKeUka6n1CurNcLVkBsAeatB3VwfmRjhDEsAnvnSmbZoJI44va/FixeTCq6TrZPmQpuF5az1Ur/FbPIuMzQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TdAD1nTQ87pa/VZRZFD0KrbHwszvwHDq8yWpbcgBG6o=;
+ b=hg9PMRw8onkUk64OGmfQEcaLm8K0FVk6HrXpAOdHW6OE5qnKtaYDzIDws7ZTkO/Up8+l00O5LyKloB90DArfuCK7q1S39gRrU/M25w6sEOpYCTauCFBGZiHNKHW2s/5cVppDWo7UVTF6Pd+pZRb2r0npc4aP9c9QceOLtJ3+cto=
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com (2603:10b6:a03:55::31)
+ by BYAPR02MB4151.namprd02.prod.outlook.com (2603:10b6:a02:f2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.38; Tue, 6 Oct
+ 2020 21:46:39 +0000
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::113d:722:5f93:d29e]) by BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::113d:722:5f93:d29e%6]) with mapi id 15.20.3433.044; Tue, 6 Oct 2020
+ 21:46:38 +0000
+From:   Ben Levinsky <BLEVINSK@xilinx.com>
+To:     Michael Auchter <michael.auchter@ni.com>
+CC:     "Ed T. Mooring" <emooring@xilinx.com>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Michal Simek <michals@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
         "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH v4 10/13] task_isolation: don't interrupt CPUs
- with tick_nohz_full_kick_cpu()
-Message-ID: <20201006214113.GA38684@lothringen>
-References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
- <5acf7502c071c0d1365ba5e5940e003a7da6521f.camel@marvell.com>
- <20201001144454.GB6595@lothringen>
- <ab85fd564686845648d08779b1d4ecc3ab440b2a.camel@marvell.com>
+Subject: RE: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Thread-Topic: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Thread-Index: AQHWmzGLZdXOwIwjxE6bV2X+UlYToKmJZsqAgAGMKFCAACbWgIAAAZmg
+Date:   Tue, 6 Oct 2020 21:46:38 +0000
+Message-ID: <BYAPR02MB4407B356B56B9A1D561950B7B50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+References: <20201005160614.3749-1-ben.levinsky@xilinx.com>
+ <20201005160614.3749-6-ben.levinsky@xilinx.com>
+ <20201005193449.GA701433@xaphan>
+ <BYAPR02MB4407B7F06962DB30ED90761FB50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <20201006213143.GD701433@xaphan>
+In-Reply-To: <20201006213143.GD701433@xaphan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: ni.com; dkim=none (message not signed)
+ header.d=none;ni.com; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.62.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4681fa18-883b-4e78-caa3-08d86a414e25
+x-ms-traffictypediagnostic: BYAPR02MB4151:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR02MB4151C3620BA2F15343B7A5EFB50D0@BYAPR02MB4151.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AgwpODvDvDUW7ttFn0ow1MvmzuFozn5GymhcmLXNpOrzeI/c+CdXwEc5f5xSe/hkpodi1ZfRaF6Udd8yT1yULRqor7hUdsyOBm1dG9eEo5P77Ykvep79j9EdyJx69WKVnpEgTKcWWzm4JTKAWlhcTBPi2cOQOH5+ZQE/o7deH66vfPlNFPIvVwIjPpIJwFM33QUQAqa7KvtARf3r4XiS2KCNz42+Q86WsoJx0pZxcv05Zww0JY3lEe8UXjQQNUNuspOmZ+jm31tTfu+7HsK3I1RqEE4e1TlEw2UAOrg+sid6nZ10iQ9Rfi0rpuZrdP44
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4407.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(136003)(346002)(376002)(316002)(4326008)(66446008)(86362001)(76116006)(71200400001)(54906003)(478600001)(6506007)(53546011)(26005)(83380400001)(7696005)(186003)(2906002)(66556008)(66476007)(52536014)(64756008)(8676002)(9686003)(55016002)(66946007)(5660300002)(6916009)(33656002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: mNFO8cP7N2NIC9e1Hm/ba3HSxBoxzOWwR9rIa7M2GpBt13x1exp72KK9UfxVxj0VAacUgXEOI8KiqfXoDGlUMZybFpB4vNyNN5nHubN/ZP6a1sHWjktUGeJ0/f1RiYNy2llqRcZUL0Sxs1cAXdYxETiOHnM83spdsZhmVvP0zq4SfbTTwkPix/JTaEsTc1ixSJnMaQQgDtyFzHQi0yIfeTZln70u/F7FplL+d9Nw/pgslzOlDpPCHYdyexLepXU/IIQItLzESIhNVYAPJ1s4TW5TZVtfhQ2J6cqO+ZRbnkkIQBEZZSHtYUtTP7rtC0LBkZT4hkapeQ6cv6CL9f1iNgWw+62wQohMBz0BN7sKtHTSpA6YjvXeE/vtDFUNhkeg9MSghs2xrTNtKRHw0KaBRdcyxuiETTaLp76NSIE53zzsNy4elO6x/JRogjinDBhbNnbGe4mZwRluMdI5tTt0AAgnqDNfStBaV6QCpGXmvoux3t7xhVhQ8I7DSOaTdoEwJRqHeyeWvL2m2dRS7ng4GZl1XiD3N9hcDzV83QuwGTWpCe13dEwTxS7O2ypB82zBNrGtf4N2tJLp/5Lck8BPuQg1EmDby2i6B3PeG1HOWF/cWGq6YVRwqPW/7n+6oNgWecilRkxk3oAoV7Lk4sJ9UQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ab85fd564686845648d08779b1d4ecc3ab440b2a.camel@marvell.com>
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4407.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4681fa18-883b-4e78-caa3-08d86a414e25
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 21:46:38.8243
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kA0TSkQRCLOZVLG9eUatAW8J3hm5mLvXEerwQfcqYk1CqBapdmLvD9NWaAslOLZWVUKn8uAYCcQzEIJ9hnir/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4151
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 03:22:09PM +0000, Alex Belits wrote:
-> 
-> On Thu, 2020-10-01 at 16:44 +0200, Frederic Weisbecker wrote:
-> > > @@ -268,7 +269,8 @@ static void tick_nohz_full_kick(void)
-> > >   */
-> > >  void tick_nohz_full_kick_cpu(int cpu)
-> > >  {
-> > > -	if (!tick_nohz_full_cpu(cpu))
-> > > +	smp_rmb();
-> > 
-> > What is it ordering?
-> 
-> ll_isol_flags will be read in task_isolation_on_cpu(), that accrss
-> should be ordered against writing in
-> task_isolation_kernel_enter(), fast_task_isolation_cpu_cleanup()
-> and task_isolation_start().
-> 
-> Since task_isolation_on_cpu() is often called for multiple CPUs in a
-> sequence, it would be wasteful to include a barrier inside it.
 
-Then I think you meant a full barrier: smp_mb()
 
-> 
-> > > +	if (!tick_nohz_full_cpu(cpu) || task_isolation_on_cpu(cpu))
-> > >  		return;
-> > 
-> > You can't simply ignore an IPI. There is always a reason for a
-> > nohz_full CPU
-> > to be kicked. Something triggered a tick dependency. It can be posix
-> > cpu timers
-> > for example, or anything.
-> 
-> I realize that this is unusual, however the idea is that while the task
-> is running in isolated mode in userspace, we assume that from this CPUs
-> point of view whatever is happening in kernel, can wait until CPU is
-> back in kernel and when it first enters kernel from this mode, it
-> should "catch up" with everything that happened in its absence.
-> task_isolation_kernel_enter() is supposed to do that, so by the time
-> anything should be done involving the rest of the kernel, CPU is back
-> to normal.
+> -----Original Message-----
+> From: Michael Auchter <michael.auchter@ni.com>
+> Sent: Tuesday, October 6, 2020 2:32 PM
+> To: Ben Levinsky <BLEVINSK@xilinx.com>
+> Cc: Ed T. Mooring <emooring@xilinx.com>; sunnyliangjy@gmail.com;
+> punit1.agrawal@toshiba.co.jp; Stefano Stabellini <stefanos@xilinx.com>;
+> Michal Simek <michals@xilinx.com>; devicetree@vger.kernel.org;
+> mathieu.poirier@linaro.org; linux-remoteproc@vger.kernel.org; linux-
+> kernel@vger.kernel.org; robh+dt@kernel.org; linux-arm-
+> kernel@lists.infradead.org
+> Subject: Re: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5
+> remoteproc driver
+>=20
+> On Tue, Oct 06, 2020 at 07:15:49PM +0000, Ben Levinsky wrote:
+> >
+> > Hi Michael,
+> >
+> > Thanks for the review
+> >
+>=20
+> < ... snip ... >
+>=20
+> > > > +	z_rproc =3D rproc->priv;
+> > > > +	z_rproc->dev.release =3D zynqmp_r5_release;
+> > >
+> > > This is the only field of z_rproc->dev that's actually initialized, a=
+nd
+> > > this device is not registered with the core at all, so zynqmp_r5_rele=
+ase
+> > > will never be called.
+> > >
+> > > Since it doesn't look like there's a need to create this additional
+> > > device, I'd suggest:
+> > > 	- Dropping the struct device from struct zynqmp_r5_rproc
+> > > 	- Performing the necessary cleanup in the driver remove
+> > > 	  callback instead of trying to tie it to device release
+> >
+> > For the most part I agree. I believe the device is still needed for
+> > the mailbox client setup.
+> >
+> > As the call to mbox_request_channel_byname() requires its own device
+> > that has the corresponding child node with the corresponding
+> > mbox-related properties.
+> >
+> > With that in mind, is it still ok to keep the device node?
+>=20
+> Ah, I see. Thanks for the clarification!
+>=20
+> Instead of manually dealing with the device node creation for the
+> individual processors, perhaps it makes more sense to use
+> devm_of_platform_populate() to create them. This is also consistent with
+> the way the TI K3 R5F remoteproc driver does things.
+>=20
+> Cheers,
+>  Michael
 
-You can't assume that. If something needs the tick, this can't wait.
-If the user did something wrong, such as setting a posix cpu timer
-to an isolated task, that's his fault and the kernel has to stick with
-correctness and kick that task out of isolation mode.
+I've been working on this today for a way around it and found one that I th=
+ink works with your initial suggestion,
+- in z_rproc, change dev from struct device to struct device*
+	^ the above is shown the usage thereof below. It is there for the mailbox =
+setup.
+- in driver probe:
+	- add list_head to keep track of each core's z_rproc and for the driver re=
+move clean up
+	- in each core's probe (zynqmp_r5_probe) dothe following:
 
-> 
-> It is application's responsibility to avoid triggering things that
-> break its isolation
 
-Precisely.
+       rproc_ptr =3D rproc_alloc(dev, dev_name(dev), &zynqmp_r5_rproc_ops,
+                                                  NULL, sizeof(struct zynqm=
+p_r5_rproc));
+        if (!rproc_ptr)
+                return -ENOMEM;
+        z_rproc =3D rproc_ptr->priv;
+        z_rproc->dt_node =3D node;
+        z_rproc->rproc =3D rproc_ptr;
+        z_rproc->dev =3D &rproc_ptr->dev;
+        z_rproc->dev->of_node =3D node;=20
+where node is the specific R5 core's of_node/ Device tree node.
+=09
+the above preserves most of the mailbox setup code.
 
-> so the application assumes that everything that
-> involves entering kernel will not be available while it is isolated.
 
-We can't do things that way and just ignore IPIs. You need to solve the
-source of the noise, not the symptoms.
+With this, I have already successfully done the following in a v19 patch
+- move all the previous driver release code to remove
+- able to probe, start/stop r5, driver remove repeatedly
 
-Thanks.
+Also, this mimics the TI R5 driver code as each core's rproc has a list_hea=
+d and they have a structure for the cluster which among other things mainta=
+ins a linked list of the cores' specific rproc information.
+
+Thanks
+Ben
