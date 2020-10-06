@@ -2,252 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E192854F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 01:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0598E2854FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 01:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgJFXie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 19:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgJFXid (ORCPT
+        id S1726709AbgJFXoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 19:44:23 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:21578 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgJFXoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 19:38:33 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81239C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 16:38:33 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y20so421351iod.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 16:38:33 -0700 (PDT)
+        Tue, 6 Oct 2020 19:44:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1602027862; x=1633563862;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=azUc6zCPKUxBs7wESsBO0mvUWsHfExYQvwdbnS0+dts=;
+  b=nnVPaBpEW+r86yr1Gk56ChUX2+3Jue3bwxRPSlT+bHZ6PDW5nKPSJEeK
+   aT0dISk7DmqdJfY8TulZ9aaHX8PO7giZhBZQtdGYATabOFd6szkeQEqhU
+   kehxFBRK/Nx9ae1KChYax53pCs6szoDYff+6/tdp2apjt9xpLD1omQolc
+   LYx+pfnlDOK8LORSP5J5cAqNF1NqvZZFNJhpH4zBtALj7bpC2eHIYwpnX
+   AqiqIpsjSTplHJAaSuXvPw41jwYZtRHQZMaHf2WCGZQ7LlU/fLewChGrI
+   jPh8g3CrmlVPzznlWmKQTyIsAnymRmCBvNZh9T9+UAIsUV7bkJqyM//kw
+   g==;
+IronPort-SDR: gJqeKioDrCC+Xz76fLNpo8ajiVzjv9D0CKSmjLpGEPS2494IOlnLRnvIvTWS2ezUghRgJTtryL
+ YrADVDc8l0zvoXvSVaSBVvtFAYSn5gC0CYQ3dTEKwj9AM0QbnnpLT5qqqFVEmXhjwLiJ26sP53
+ p3c6WRgsL3aIWQW5EHGn0GcD6Xo1qdEU1W4rwXbfDCrliV4fELe8anOSYl3WGIqbNfJpGj81VC
+ ljC8JLiBqenMbOX0/MxLimTgMwBCGu5+FhHykCaWVbjFn4lAphapUk6Bo+0uNyBMas06oZSvo+
+ Kac=
+X-IronPort-AV: E=Sophos;i="5.77,344,1596470400"; 
+   d="scan'208";a="259009219"
+Received: from mail-dm6nam11lp2174.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.174])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Oct 2020 07:44:22 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MdmOjYiGmVNSvAT2bZtLvU5mWdtsdkChvNVQJ3zoavNzdV5xJzmbLUwRZq79nyDH9aOUna0XsfiMRRfIZDtHEhsMmuwJd++c4AxDaLzgyvPJV9hv4amseC50JtuJxmDUC8VVevUQHlUzeA4OCXCgAZP7URtyqiolSMRoBQMIHw+SItd//MHMPQcsj1UayR515BY/a3QCctr/FWEZaXEvloodizyvVqxwFG8n4YYSyPZxOyefHmj13Wcdrs3HsNdxiWdw9eSWnZQ92/8ZRMB6BgxWWIeGzv/rVaw0YDQtXLMA1Tc7b4kk10mCC0y9R76A78ttcrPDWhjqw7Ssy6t56Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LlBoIPcJGSJCd7kntsajkKusjQcmLRECox1GtfrE4q0=;
+ b=HakbkFxGfs8aKP1OBkMK0Qjy9s/I/yZN73BY8QeCFgGVsomvXmErTBwz+v09ioieQsRxIwxJyfrGk0XLRRitDztrls8LzK8HeqPonQRW30dV0qQiPDoCoXIr5lR8a44j1LaQ4Id09L3TRmi/EDBvx1qut8N7xU5lkkSBonLTFhaz252KhqA4jkdZKg/39j/0qMDukC3EIKp65cRUmkqyIomX9GoPb3OLlCd9rfXw8cEh7SoOr5QtMZO1C96Xv4xVwkfODVPmaaGaSBqhq4M1QvvsqtRvp+Wxsir2QPxgTwvboKFN2qAMzr4H0MZm4SeekmVQsOpFoGcbczO53ixUQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=13791vUhHhb6VTolXcEhezbjPTrOyYuZlnDL2mT/uMQ=;
-        b=Z0TILlPqZ0FQ24zoUNu4A+p97EWXxA2vk2dTtYWnOMYhkBG5pdkN56YHET07EOhw01
-         zefeHFOxY+Fvf3KUt68ekYAlCZWMD6CMAI/waYWKUcVrKnajcLPaKZxYWivbsU/lXx31
-         vKrKnXZDgaKbMBBeoKvbvov7VovPq8wc+bBgYn6Y1hJwruFdw0IoeGYwy1KB5OaDEMox
-         FlX/NOau1H6NRbyLoKBAhOYoyzypPoQ0n4tvPBAlrSZRb/sh1h03YbaJCIzZsE/8q3RF
-         5RahIry08OKCrrA0FExUDF4YiYAlPriEnWyWZC/SmW76TUEnCxxCHX8jrcK62m5sZbx7
-         f9Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=13791vUhHhb6VTolXcEhezbjPTrOyYuZlnDL2mT/uMQ=;
-        b=I7/ah8jR0m9SxqYTeHTWRO3/uEzJj17wlZI+Zax5QAebr4nO1zXLO4CDa9FbKO6qGE
-         J59irykBEOpTbyYQmUyLbKdHJYB6Aee4xP7tU068u0PKaEL6lTxgJ9fubm7qm5MoMCif
-         yP5tszIQHcExzrCHwdw4Ib8+gPC/MhMsVDuudZDkoAsj+URZ94rssPUMzHndnQJiF0O6
-         QbPmJdGEnTVLEDavBzTT9/96B40xY7baiYv627xK1INqN0yaGRd3Gazb0t+TJLB37dvn
-         p1mPdf2lcnhsYMseij/odDKQE5taE+N4FENYYq4sshUqq3+l0HDZ9Kpc5a022bsertvm
-         s4Ow==
-X-Gm-Message-State: AOAM532e5E8BYS6XD2KY6Vi6jMh/dvqjoB90hT+stX7m4zFaAQ7f+VeQ
-        27dTWrZ2M/NmPfQyPQpDHUU6jaCKiHD28FLs+IxBfg==
-X-Google-Smtp-Source: ABdhPJy0QFpgEbn5qaxrXcNidTKYH6eoTq2t3Gq67KtBcx1bfyw4/0qrqfnqrvxWwxEP7NECeLhP/F2XG6gveqqzo0Y=
-X-Received: by 2002:a05:6602:2d55:: with SMTP id d21mr209338iow.134.1602027512355;
- Tue, 06 Oct 2020 16:38:32 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LlBoIPcJGSJCd7kntsajkKusjQcmLRECox1GtfrE4q0=;
+ b=RuplAx7+EQOVQkvEU0tc79vxUox1A0NkPKyHvoERYWiVgs4Un9mtOI2OuqAP7x6gahDIpLK6CJKCCNH5XyMsFJ7U0elZ+D8mnhRNDG5ci3s/xH08iQFDo7wygQo/HKEU61rgau1T2/5yfDV8qLz5IumlG5Ap8wqj8h7fpe1yr34=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BYAPR04MB4325.namprd04.prod.outlook.com (2603:10b6:a02:fe::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Tue, 6 Oct
+ 2020 23:44:21 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::3974:3107:df66:7698]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::3974:3107:df66:7698%7]) with mapi id 15.20.3433.044; Tue, 6 Oct 2020
+ 23:44:21 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Logan Gunthorpe <logang@deltatee.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+CC:     Sagi Grimberg <sagi@grimberg.me>,
+        Stephen Bates <sbates@raithlin.com>
+Subject: Re: [PATCH blktests v2 02/11] common/xfs: Create common helper to
+ check for XFS support
+Thread-Topic: [PATCH blktests v2 02/11] common/xfs: Create common helper to
+ check for XFS support
+Thread-Index: AQHWl1sou8OL2CxeA0mV1a+SBBjD2A==
+Date:   Tue, 6 Oct 2020 23:44:20 +0000
+Message-ID: <BYAPR04MB4965388F1D0E70EDCEDD57E2860D0@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20200930185422.11494-1-logang@deltatee.com>
+ <20200930185422.11494-3-logang@deltatee.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: deltatee.com; dkim=none (message not signed)
+ header.d=none;deltatee.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b2946aa9-cd3e-4279-2021-08d86a51bf8c
+x-ms-traffictypediagnostic: BYAPR04MB4325:
+x-microsoft-antispam-prvs: <BYAPR04MB4325204860729529A7DBAF1C860D0@BYAPR04MB4325.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1923;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7xyCKWu1t+Zs4olYyDogqNJM7sB78FM3zzsTdPk+mJONKH/1o4QY1DFY8eDbXLWcnDqOecQNRBPdLYRVmLdstX78aU9RmOxYdvb5IYZqg+G9kRBm9/1XGFOvfcsdR8+94typE+XHnsHig7kCVS0awBolfKBC0okZh2FVtvtR8/369yjw7tV7448gtYE1eHhzR/ei2Yr8VumJOZKBM9rev9x1UjDrkgPul3SvQtYofcAUe7GSd/tX24ej91hbjcyGQ4IiEEEuokO69o2pww73yuABgTTUdG9Z31hPL9G1LOpsSutFRpS3aATx/nwqEHME
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(66446008)(2906002)(66476007)(66946007)(64756008)(66556008)(76116006)(8676002)(6506007)(53546011)(186003)(26005)(558084003)(498600001)(7696005)(52536014)(4326008)(54906003)(8936002)(110136005)(5660300002)(55016002)(9686003)(33656002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: OeUB8vQwtUf+7UtUnE5MuHCjrtfGccztnki6zJRxrx84TjOJa7j8OiK3Jq7I4hgZNn/uw9xK6/fxUssYxKDAX8NmD2fEAa3Gun3j3QUkRSLOSPyiUpq1bMHF13j9boMcYpjGAmN208gUpbO+ldXxSu+BrvuieXS490kSx8UnniBt9aJe/SF3pyR4Ddxq6Wx+z7j7/gkVvuvnQOic8iZyx8M2+BTGEtcsmZv348Sg0TgERKrSQsXmREiCf//hG7VMjTbfrKrb/itONeH65Rt97fckKlnQH0vOS70igM6kTFcKSDkQw6ME39JxA5FGgbfDXwlNH+ihpsetvykwb58RwuGpo5CvuYaF+DuNGSdphJhSUk/6ejf2TULKAk2Bgb/DpTeMuh+yc4W+sq/TLs0dKC4P6/XDxyu+bKw8yE3CrwQY6CpV5yNg3iRayCM4VcNXTzB5IoUJX5vPUt5WzlUGry9sGQjCytn7zRaTSM9HeUX2MmOufWA16Sa3j225hBtQAcUhuMBGt+IanVMkbRRHkD1i5v3uS8QYjSCDH/u6AZBC1m5sCUrSmaQFIh96M6rzO1VqxtqhcqkrmaKbctC+zp29n6qvYscRqqEP+UgR9sDSbJ1XNvMgAskv1euCLmcTm3gEFSP4H21W2+LzBAX89A==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-15-bgardon@google.com>
- <20200930174858.GG32672@linux.intel.com>
-In-Reply-To: <20200930174858.GG32672@linux.intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 6 Oct 2020 16:38:21 -0700
-Message-ID: <CANgfPd8u5-Lzj0Mb58cU8so4ZeHCmTG8DCAvkL2uPWeK6rDBfA@mail.gmail.com>
-Subject: Re: [PATCH 14/22] kvm: mmu: Add access tracking for tdp_mmu
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2946aa9-cd3e-4279-2021-08d86a51bf8c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 23:44:20.9842
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MaTniBC/tTLy7RwpurfJrubVTcRfRJJCawNAUvMZTsPMSkv4Ds/5ppxJ1XcuiHcPzi23NFsgDVcxIHopeh9ODkMWYueVEvKV8FeArK2NdYk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4325
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:49 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Fri, Sep 25, 2020 at 02:22:54PM -0700, Ben Gardon wrote:
-> > @@ -1945,12 +1944,24 @@ static void rmap_recycle(struct kvm_vcpu *vcpu, u64 *spte, gfn_t gfn)
-> >
-> >  int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end)
-> >  {
-> > -     return kvm_handle_hva_range(kvm, start, end, 0, kvm_age_rmapp);
-> > +     int young = false;
-> > +
-> > +     young = kvm_handle_hva_range(kvm, start, end, 0, kvm_age_rmapp);
-> > +     if (kvm->arch.tdp_mmu_enabled)
->
-> If we end up with a per-VM flag, would it make sense to add a static key
-> wrapper similar to the in-kernel lapic?  I assume once this lands the vast
-> majority of VMs will use the TDP MMU.
->
-> > +             young |= kvm_tdp_mmu_age_hva_range(kvm, start, end);
-> > +
-> > +     return young;
-> >  }
->
-> ...
->
-> > +
-> > +/*
-> > + * Mark the SPTEs range of GFNs [start, end) unaccessed and return non-zero
-> > + * if any of the GFNs in the range have been accessed.
-> > + */
-> > +static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
-> > +                      struct kvm_mmu_page *root, gfn_t start, gfn_t end,
-> > +                      unsigned long unused)
-> > +{
-> > +     struct tdp_iter iter;
-> > +     int young = 0;
-> > +     u64 new_spte = 0;
-> > +     int as_id = kvm_mmu_page_as_id(root);
-> > +
-> > +     for_each_tdp_pte_root(iter, root, start, end) {
->
-> Ah, I think we should follow the existing shadow iterates by naming this
->
->         for_each_tdp_pte_using_root()
->
-> My first reaction was that this was iterating over TDP roots, which was a bit
-> confusing.  I suspect others will make the same mistake unless they look at the
-> implementation of for_each_tdp_pte_root().
->
-> Similar comments on the _vcpu() variant.  For that one I think it'd be
-> preferable to take the struct kvm_mmu, i.e. have for_each_tdp_pte_using_mmu(),
-> as both kvm_tdp_mmu_page_fault() and kvm_tdp_mmu_get_walk() explicitly
-> reference vcpu->arch.mmu in the surrounding code.
->
-> E.g. I find this more intuitive
->
->         struct kvm_mmu *mmu = vcpu->arch.mmu;
->         int leaf = mmu->shadow_root_level;
->
->         for_each_tdp_pte_using_mmu(iter, mmu, gfn, gfn + 1) {
->                 leaf = iter.level;
->                 sptes[leaf - 1] = iter.old_spte;
->         }
->
->         return leaf
->
-> versus this, which makes me want to look at the implementation of for_each().
->
->
->         int leaf = vcpu->arch.mmu->shadow_root_level;
->
->         for_each_tdp_pte_vcpu(iter, vcpu, gfn, gfn + 1) {
->                 ...
->         }
-
-I will change these macros as you suggested. I agree adding _using_
-makes them clearer.
-
->
-> > +             if (!is_shadow_present_pte(iter.old_spte) ||
-> > +                 !is_last_spte(iter.old_spte, iter.level))
-> > +                     continue;
-> > +
-> > +             /*
-> > +              * If we have a non-accessed entry we don't need to change the
-> > +              * pte.
-> > +              */
-> > +             if (!is_accessed_spte(iter.old_spte))
-> > +                     continue;
-> > +
-> > +             new_spte = iter.old_spte;
-> > +
-> > +             if (spte_ad_enabled(new_spte)) {
-> > +                     clear_bit((ffs(shadow_accessed_mask) - 1),
-> > +                               (unsigned long *)&new_spte);
-> > +             } else {
-> > +                     /*
-> > +                      * Capture the dirty status of the page, so that it doesn't get
-> > +                      * lost when the SPTE is marked for access tracking.
-> > +                      */
-> > +                     if (is_writable_pte(new_spte))
-> > +                             kvm_set_pfn_dirty(spte_to_pfn(new_spte));
-> > +
-> > +                     new_spte = mark_spte_for_access_track(new_spte);
-> > +             }
-> > +
-> > +             *iter.sptep = new_spte;
-> > +             __handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
-> > +                                   new_spte, iter.level);
-> > +             young = true;
->
-> young is an int, not a bool.  Not really your fault as KVM has a really bad
-> habit of using ints instead of bools.
-
-Yeah, I saw that too. In mmu.c young ends up being set to true as
-well, just though a function return so it's less obvious. Do you think
-it would be preferable to set young to 1 or convert it to a bool?
-
->
-> > +     }
-> > +
-> > +     return young;
-> > +}
-> > +
-> > +int kvm_tdp_mmu_age_hva_range(struct kvm *kvm, unsigned long start,
-> > +                           unsigned long end)
-> > +{
-> > +     return kvm_tdp_mmu_handle_hva_range(kvm, start, end, 0,
-> > +                                         age_gfn_range);
-> > +}
-> > +
-> > +static int test_age_gfn(struct kvm *kvm, struct kvm_memory_slot *slot,
-> > +                     struct kvm_mmu_page *root, gfn_t gfn, gfn_t unused,
-> > +                     unsigned long unused2)
-> > +{
-> > +     struct tdp_iter iter;
-> > +     int young = 0;
-> > +
-> > +     for_each_tdp_pte_root(iter, root, gfn, gfn + 1) {
-> > +             if (!is_shadow_present_pte(iter.old_spte) ||
-> > +                 !is_last_spte(iter.old_spte, iter.level))
-> > +                     continue;
-> > +
-> > +             if (is_accessed_spte(iter.old_spte))
-> > +                     young = true;
->
-> Same bool vs. int weirdness here.  Also, |= doesn't short circuit for ints
-> or bools, so this can be
->
->                 young |= is_accessed_spte(...)
->
-> Actually, can't we just return true immediately?
-
-Great point, I'll do that.
-
->
-> > +     }
-> > +
-> > +     return young;
-> > +}
-> > +
-> > +int kvm_tdp_mmu_test_age_hva(struct kvm *kvm, unsigned long hva)
-> > +{
-> > +     return kvm_tdp_mmu_handle_hva_range(kvm, hva, hva + 1, 0,
-> > +                                         test_age_gfn);
-> > +}
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> > index ce804a97bfa1d..f316773b7b5a8 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> > @@ -21,4 +21,8 @@ int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu, int write, int map_writable,
-> >
-> >  int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
-> >                             unsigned long end);
-> > +
-> > +int kvm_tdp_mmu_age_hva_range(struct kvm *kvm, unsigned long start,
-> > +                           unsigned long end);
-> > +int kvm_tdp_mmu_test_age_hva(struct kvm *kvm, unsigned long hva);
-> >  #endif /* __KVM_X86_MMU_TDP_MMU_H */
-> > --
-> > 2.28.0.709.gb0816b6eb0-goog
-> >
+On 9/30/20 11:54, Logan Gunthorpe wrote:=0A=
+>  =0A=
+>  requires() {=0A=
+>  	_nvme_requires=0A=
+> -	_have_program mkfs.xfs && _have_fio=0A=
+> +	_have_xfs=0A=
+> +	_have_fio=0A=
+Can you make _have_xfs return true false ? so it can be used with && ?=0A=
