@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF186284FE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80107284FEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgJFQbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52352 "EHLO mail.kernel.org"
+        id S1726317AbgJFQd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:33:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:51804 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgJFQbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:31:42 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A795206D4;
-        Tue,  6 Oct 2020 16:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602001902;
-        bh=UpTHNxjdnsj8TgKoTSSXVTK2r7XIFDxf771SyhlBE+U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=003U3PkvGOfhsJOMBHouRbSNQ669xi3ttbviOpgNQfrtVRhCa1j6GHyxLxSIRph21
-         pPF8gFu8fDUG6v3g8A9aEY+38e0BRSxPyWPKAnDFascx1OZaVPDKeqIKK7sgzpnQTf
-         JDwbNwMh6NqJuz+HrEnFpxLqZ9X8v2dVWQWOXo0E=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id BE4283520A8C; Tue,  6 Oct 2020 09:31:41 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 09:31:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Willy Tarreau' <w@1wt.eu>, 'Nick Clifton' <nickc@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "j.alglave@ucl.ac.uk" <j.alglave@ucl.ac.uk>,
-        "luc.maranget@inria.fr" <luc.maranget@inria.fr>,
-        "akiyks@gmail.com" <akiyks@gmail.com>,
-        "dlustig@nvidia.com" <dlustig@nvidia.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
-Subject: Re: Control Dependencies vs C Compilers
-Message-ID: <20201006163141.GK29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
- <3dfe7daed3c44f46a6989b6513ad7bb0@AcuMS.aculab.com>
- <20201006133115.GT2628@hirez.programming.kicks-ass.net>
- <20201006142324.GB416765@rowland.harvard.edu>
- <20201006144302.GY2628@hirez.programming.kicks-ass.net>
- <47bfda8f-304e-5283-c6d6-0753037b0b2c@redhat.com>
- <1dabfd1939f348198678121f94d6c9b2@AcuMS.aculab.com>
- <20201006155052.GJ29330@paulmck-ThinkPad-P72>
- <20201006161039.GF5822@1wt.eu>
- <e31a06a9c1e04b6c8c054b1fed3f897b@AcuMS.aculab.com>
+        id S1725769AbgJFQd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:33:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69DBBD6E;
+        Tue,  6 Oct 2020 09:33:27 -0700 (PDT)
+Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 608393F66B;
+        Tue,  6 Oct 2020 09:33:27 -0700 (PDT)
+From:   Jeremy Linton <jeremy.linton@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-crypto@vger.kernel.org, broonie@kernel.org, ardb@kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, davem@davemloft.net,
+        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
+        dave.martin@arm.com, Jeremy Linton <jeremy.linton@arm.com>
+Subject: [BUG][PATCH v3] crypto: arm64: Use x16 with indirect branch to bti_c
+Date:   Tue,  6 Oct 2020 11:33:26 -0500
+Message-Id: <20201006163326.2780619-1-jeremy.linton@arm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e31a06a9c1e04b6c8c054b1fed3f897b@AcuMS.aculab.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:22:10PM +0000, David Laight wrote:
-> From: Willy Tarreau
-> > Sent: 06 October 2020 17:11
-> > 
-> > On Tue, Oct 06, 2020 at 08:50:52AM -0700, Paul E. McKenney wrote:
-> > > Comparing 25+ assembly languages to but two compilers most definitely
-> > > motivates looking hard at doing something with the compilers.
-> > 
-> > +1, especially since the kernel is not special; anyone working with
-> > threads faces the same issues in userland, which are often hidden
-> > behind the implicit whole-memory clobbers of certain operations or
-> > the call to mutex manipulation functions, but which become a reality
-> > again as soon as you go slightly away from these and try to use
-> > lockless mechanisms.
-> 
-> AFAICT most windows and android apps completely ignore the problem
-> of thread locking - which is why the crash and lock up all the time :-)
-> 
-> I've spent most of the day looking at some library traces from a
-> customer bug.
-> I almost suspect a bug in the pthread mutex code on their system.
-> They are using a nice, modern, 3.10.0-957.el7.x86_64 kernel.
+The AES code uses a 'br x7' as part of a function called by
+a macro. That branch needs a bti_j as a target. This results
+in a panic as seen below. Using x16 (or x17) with an indirect
+branch keeps the target bti_c.
 
-It would be good if the compiler were more helpful!  Failing that, if
--something- could be more helpful!!!
+  Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
+  CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+  pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+  pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+  lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+  sp : ffff80001052b730
 
-							Thanx, Paul
+  aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+   __xts_crypt+0xb0/0x2dc [aes_neon_bs]
+   xts_encrypt+0x28/0x3c [aes_neon_bs]
+  crypto_skcipher_encrypt+0x50/0x84
+  simd_skcipher_encrypt+0xc8/0xe0
+  crypto_skcipher_encrypt+0x50/0x84
+  test_skcipher_vec_cfg+0x224/0x5f0
+  test_skcipher+0xbc/0x120
+  alg_test_skcipher+0xa0/0x1b0
+  alg_test+0x3dc/0x47c
+  cryptomgr_test+0x38/0x60
+
+Fixes: 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
+Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+---
+ arch/arm64/crypto/aes-neonbs-core.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
+index b357164379f6..63a52ad9a75c 100644
+--- a/arch/arm64/crypto/aes-neonbs-core.S
++++ b/arch/arm64/crypto/aes-neonbs-core.S
+@@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
+ 
+ 0:	mov		bskey, x21
+ 	mov		rounds, x22
+-	br		x7
++	br		x16
+ SYM_FUNC_END(__xts_crypt8)
+ 
+ 	.macro		__xts_crypt, do8, o0, o1, o2, o3, o4, o5, o6, o7
+@@ -806,7 +806,7 @@ SYM_FUNC_END(__xts_crypt8)
+ 	uzp1		v30.4s, v30.4s, v25.4s
+ 	ld1		{v25.16b}, [x24]
+ 
+-99:	adr		x7, \do8
++99:	adr		x16, \do8
+ 	bl		__xts_crypt8
+ 
+ 	ldp		q16, q17, [sp, #.Lframe_local_offset]
+-- 
+2.25.4
+
