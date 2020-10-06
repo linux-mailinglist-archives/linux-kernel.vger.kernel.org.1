@@ -2,151 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F3E284A7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010E8284A83
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgJFKwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:52:49 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:41065 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFKws (ORCPT
+        id S1726012AbgJFKza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFKza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601981584; x=1633517584;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XWe73CyLKuuLoicTnYzhkWc7m8Pv7TxMKAoB74+Eo5I=;
-  b=dm6tXuKG9eXeRgxCt8P+ehlXmfBTFbPL0m4MYZPOtviUfXI072oWMgTG
-   jGEcZ3g5fnklQR4/pRAl5Y9zmSTCcW3xpr8GGCkkZ+E+Y74Mh54ldrJ+u
-   r+yKbTpD9GQRtDyB6IAYmkTNtE8XjxJikfvt+fex2T+4GYkNhGZ4Qyo16
-   SZ6knGm1OUbKBvZWv5yT/vpoH7xAkZKGFmSA8UMXPebI4u9bcgRWnQrFX
-   3lAgXXiPbWcdWeehYzLcR1n172Q7YNfBpwYGFGSQYO+HAidqSIbWR+RRi
-   vjU7uevym0B3wBWtsAaiSGnPzIwhqJFIDc9dKceNttuXXBX80bzq/blid
-   Q==;
-IronPort-SDR: 5+pWw0P3bETXIx220LLQz2A70U3JP4Ta3/3lvJJM7Z9FmDE3d5qTe0x1ddvEmVEU4EM0+0KVMA
- P3n2uBOzj3btpYOPVqFjV7tvadbJDvgy5AIGYhN8UlJMKfvNwXqF9owzNMOoRoclrAoaUnjWQq
- dAjE/DlulZLNf0+iMTJAf9wHKD7WZ4vwuYrVHNIRgSHEQvvJ6vAMsRcyxtd8vcThoH2rxkam46
- KNwEmj7O1GzQpRdnu/majVzBE56MG8c2pyUxlZAuWQgDYqM2qXJZLDoMCLxBta9y2ifJdCevq8
- 8c4=
-X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
-   d="scan'208";a="91592415"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Oct 2020 03:53:03 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 6 Oct 2020 03:52:54 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 6 Oct 2020 03:53:03 -0700
-Date:   Tue, 6 Oct 2020 12:53:02 +0200
-From:   "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-CC:     "jiri@resnulli.us" <jiri@resnulli.us>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
-Subject: Re: [net-next v2 10/11] bridge: switchdev: cfm: switchdev interface
- implementation
-Message-ID: <20201006105302.gk4yur5ztgwgbbzu@ws.localdomain>
-References: <20201001103019.1342470-1-henrik.bjoernlund@microchip.com>
- <20201001103019.1342470-11-henrik.bjoernlund@microchip.com>
- <20201001124929.GM8264@nanopsycho>
- <20201005130712.ybbgiddb7bnbkz6h@ws.localdomain>
- <fb313c83e6ac750d4bcdf96d2b2d7ebe4ae98dd6.camel@nvidia.com>
+        Tue, 6 Oct 2020 06:55:30 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A87BC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 03:55:46 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id h2so1029939pll.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 03:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=03FxLy90dLlLdrAAQm3bmUMCLJ3zRxRqIshsWPg0LL4=;
+        b=TkT/yuufBBokd8h2BzoIWB93ui00fd28ni8qqg6tLLuXpmoaFi9R4xyj6rpUdgeGRV
+         dBtD3dBy4PumVMk3j4KD8s2bFfmNop79iBaaK6+oYelWNQIxGrAHznZejGcj9IqsGM1S
+         HXbsejAFBk9/1rC49P9LI+zscgI6jMlzSj3jPGL4zmBdoMz8Rcjp8zGVdEKs7gfC8VCb
+         ifoqdavvu1c9Ome03GibZwh5g2VcjTHOYLWtNbacVeGUOEf+p7n/RTlG7y4WSYHgcufy
+         tEhJwRIGLfnKjVcZG+bbOdLpYO76+pXCQsYLyZdg8YVE68UMACEBGaRiVD4FuhIH75iu
+         6KvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=03FxLy90dLlLdrAAQm3bmUMCLJ3zRxRqIshsWPg0LL4=;
+        b=mA6/KAgh4DdNH2bPh1+tyHFugPhkLqK4sQLCv8DVPuTUCFRUyi/UQqipdkCd0mS6YG
+         ZxS9zM7zaGmRqqj+3WnGEdOymbYxoF8HRM99rFOa3NJW/MLnPgM0XWQnQOttiwWGiPkn
+         /GZwldNhHI+7ci7s3pBRZWQlAZGJ1VSR9hXMlqJv6FsrxGvIOLmi6SDQxbMXttxCY0KX
+         HEyyGHr82yXgDgUi3Oj8PsXb4FR5teCHBN3BkpUOBYLfyJKtCaITKbBQXuXaOdt7UFK6
+         r0rwZhc84fgPpkLTkoEBbGN78cE/IUQrrGGXzP+90DRmtWyofxf2rO6wWwAbjCZB6MKn
+         DIkg==
+X-Gm-Message-State: AOAM530Ku68sdzog3dBhqq98BW7p7sBalQYr00DNEdlS9krrzMlsCVpU
+        apZa7EprmQQGtuaPTUVknRB5WFaax3IRpO82rBA=
+X-Google-Smtp-Source: ABdhPJxY9Nt4tCnCIUP3YRDSAD1ONohVGSw8CrlgZt3qj/rKA/K7LdprfSGkBDvpWsj3xUcfRuHzgNbwhgON8G8PThQ=
+X-Received: by 2002:a17:90a:1149:: with SMTP id d9mr3889350pje.227.1601981745837;
+ Tue, 06 Oct 2020 03:55:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <fb313c83e6ac750d4bcdf96d2b2d7ebe4ae98dd6.camel@nvidia.com>
+Received: by 2002:a05:6a10:f55b:0:0:0:0 with HTTP; Tue, 6 Oct 2020 03:55:45
+ -0700 (PDT)
+Reply-To: sgtkaylam28@gmail.com
+From:   SgtKayla Manthey <baldemaimouna01@gmail.com>
+Date:   Tue, 6 Oct 2020 03:55:45 -0700
+Message-ID: <CAC5XXA6gZnw3Ag7yhurDQo1QR5Cx8ZMOC3qDqJvDSz=PtoWqng@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.2020 10:50, Nikolay Aleksandrov wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->On Mon, 2020-10-05 at 15:07 +0200, Allan W. Nielsen wrote:
->> Hi Jiri
->>
->> On 01.10.2020 14:49, Jiri Pirko wrote:
->> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->> >
->> > Thu, Oct 01, 2020 at 12:30:18PM CEST, henrik.bjoernlund@microchip.com wrote:
->> > > This is the definition of the CFM switchdev interface.
->> > >
->> > > The interface consist of these objects:
->> > >    SWITCHDEV_OBJ_ID_MEP_CFM,
->> > >    SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM,
->> > >    SWITCHDEV_OBJ_ID_CC_CONFIG_CFM,
->> > >    SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM,
->> > >    SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM,
->> > >    SWITCHDEV_OBJ_ID_MEP_STATUS_CFM,
->> > >    SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM
->> > >
->> > > MEP instance add/del
->> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CFM)
->> > >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_MEP_CFM)
->> > >
->> > > MEP cofigure
->> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM)
->> > >
->> > > MEP CC cofigure
->> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CONFIG_CFM)
->> > >
->> > > Peer MEP add/del
->> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
->> > >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
->> > >
->> > > Start/stop CCM transmission
->> > >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM)
->> > >
->> > > Get MEP status
->> > >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_MEP_STATUS_CFM)
->> > >
->> > > Get Peer MEP status
->> > >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM)
->> > >
->> > > Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
->> > > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
->> >
->> > You have to submit the driver parts as a part of this patchset.
->> > Otherwise it is no good.
->> Fair enough.
->>
->> With MRP we did it like this, and after Nik asked for details on what is
->> being offload, we thought that adding this would help.
->>
->> The reason why we did not include the implementation of this interface
->> is that it is for a new SoC which is still not fully available which is
->> why we have not done the basic SwitchDev driver for it yet. But the
->> basic functionality clearly needs to come first.
->>
->> Our preference is to continue fixing the comments we got on the pure SW
->> implementation and then get back to the SwitchDev offloading.
->>
->> This will mean dropping the last 2 patches in the serie.
->>
->> Does that work for you Jiri, and Nik?
->>
->> /Allan
->>
->
->Sounds good to me. Sorry I was unresponsive last week, but I was sick and
->couldn't get to netdev@. I'll review the set today.
-
-Perfect. Thanks for the support.
-
-/Allan
-
-
+2KrYrdmK2Kkg2LfZitio2KnYjA0K2KfYs9mF2Yog2YPYp9mK2YTYpyDZhdmGINmB2LbZhNmDINmH
+2YQg2YjYtdmE2KrZgyDYp9mE2LHYs9in2YTYqSDYp9mE2LPYp9io2YLYqdifINin2YPYqtioINmE
+2YoNCtin2YTYudmI2K/YqSDYtNmD2LHYpyDZhNmDLg0K
