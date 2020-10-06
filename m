@@ -2,144 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC3A285431
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53673285433
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgJFVzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
+        id S1726955AbgJFVzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgJFVzO (ORCPT
+        with ESMTP id S1726759AbgJFVza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:55:14 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADA8C061755;
-        Tue,  6 Oct 2020 14:55:13 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 22so82834pgv.6;
-        Tue, 06 Oct 2020 14:55:13 -0700 (PDT)
+        Tue, 6 Oct 2020 17:55:30 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDD6C061755;
+        Tue,  6 Oct 2020 14:55:30 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id o8so330158otl.4;
+        Tue, 06 Oct 2020 14:55:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=41YT6TynwC5ufFrllX6VSGwwbv2gFzlUh+XiHKPl8Cw=;
-        b=E/mD8rmbsDDo0cpmH1IH4aR36Q480W6RiT1EjMo0xNVCmJCrLqkyefbsVcFAPQ13wW
-         rfp6ynKON679HDFU5wV/6U9Kzspa4gC2XrcDlm8Wr88QtINQ3b/LZC+gj8jE6Zpb9ZZW
-         Gm9pFXYJOEIftZ+rXnxLlxWa0kJDsMxEuv6gFmUUDrHRY5RtQ0pSyDwLQHCYw1ge8q6D
-         gEtoBFyo9tpOjtAR935+wSy+zRHM9Y4yf9Na3O2rTcPMvH2DlMJUxZ4+cVaGvkvW86dI
-         eOIOenLZrUQ9bGrIWIYth6HNzmvbJYkWERKz98YDguzDrLpF16MWQhqQKo4MG7UrBpP9
-         JLlg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Fw9scDYwnYqh9lbjj7y9Lc0xhOLikf4SJcoavRTek4Q=;
+        b=gMqlMI06RHSy3yXaV56ZpYv8TOaGKyxn2nNGzbYeV55t3749MjsHL3BImSZOd+hYu3
+         +Fz9h3vOOCsZq4DGMKDhYEorZRd80LGZN7xMgvxqb2Q7P6sg8nh13SJ1sppuS+8lAPs3
+         HZ3BIj/eUNfwPJod2LDfCbACzKOK2bh6FwGgaKclpqyY4VHp8PwQaNxaG179UJKb3X2f
+         /851F+n4f40dkONdHT20xbb5kxIxt0UDyYNSTZmQyTOv9+KFxSNDxjLfJ7g9U9UJ/ZKf
+         WrxsqBG+MRcK0z2lpKhbqdbKbAZGVKMEN6EDlv6H6SbJU7h9PaM6Jmk6+uXSRO2ecaUW
+         A1cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=41YT6TynwC5ufFrllX6VSGwwbv2gFzlUh+XiHKPl8Cw=;
-        b=negntRDU7oPY5/8C0Y3kbIJSfswdcQKVkgZYnCG00HgxCPDG9MohDNSETKu0qh8XKu
-         RwiKOMBFWg+RCVwPM0AW37iVmHnxx2zlOv6yCvMoIVWhfbI992mlkZNlh3fI/8IzyVzU
-         Dn6ip33EdBbsRRPQhHQYwkxqhrkWfqq6iXZWQ3Q1fv7cWTUvn+kXhOfmdqHwvAHqTJJ1
-         yL/I4gQnVlDGWEmePPz+MjO6mEJejaWbLT+YO9iaBXbo33vrp31KAFbpJEIw/7w4YxhR
-         BjE6H8XeAxT5A9a5ZU5ROqyEtGJsMNV34zvM0E6hqgaGCpK2QJ008t6cQjxpe0hkl++t
-         zIdA==
-X-Gm-Message-State: AOAM531fLSwaxrwj1sLULGQfobXNZqTFDwFWZUF9ZdhmENnCHVNRl2+H
-        ayXNmcW7gZbUHckDXqTtU3w=
-X-Google-Smtp-Source: ABdhPJzpyBKLQjvXEkHl4oYJaVQUu5wfHAeN9KmD8z/Sqd3e/fEN1+fU+i4L5I0H2iYxucDQe9nn0g==
-X-Received: by 2002:a62:7749:0:b029:152:9d3b:c85e with SMTP id s70-20020a6277490000b02901529d3bc85emr35858pfc.16.1602021313034;
-        Tue, 06 Oct 2020 14:55:13 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id c67sm148242pfa.209.2020.10.06.14.55.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:55:12 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 14:55:09 -0700
-From:   dmitry.torokhov@gmail.com
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] iio: adc: exynos: do not rely on 'users' counter in ISR
-Message-ID: <20201006215509.GA2556081@dtor-ws>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Fw9scDYwnYqh9lbjj7y9Lc0xhOLikf4SJcoavRTek4Q=;
+        b=D7btILMnyf4D4uQ5RIBsU2z2W/usMQa7wlRZ/vkT6iwyBOSvStsXPCoY8scn3YDoIh
+         tDuu76wf2hi+3e+3S7MW7HwOu5dhIrO/cbC3hpe+CmJbS45Fk9IvBTLlb3j+TWMyH45y
+         /uZ74bmM6iOmw004QDTb0gQ5x8RkzoSyd4JqZPeuYDuG5qVMJ1jtV+1eH11miV50r6ND
+         S1U2cabcxrwsOCa5OsPMNETJ3h469LN7sXdHoa8C/269GHN6aM4qg6JgYsKLekT2yIqk
+         0w+0k3VzgzTB8HNN48g9UxRRspH2oMXuutUTx2JAxoACDGErmSs5ZHB1HkD6InHUA9n6
+         01bg==
+X-Gm-Message-State: AOAM531hRmBnGvJmzr4APS7ZX3uyt27Wa5mly5MUY/S4eykTC9BbL+n5
+        rLNpcsAIiJxaKjtxyhr/TZo=
+X-Google-Smtp-Source: ABdhPJzSq3b2SMqKWooMwB5wh0tPNLsf3olhKGtTimJFE/AkqNsaNGf+lwbYNpUMO4bsqq10sXqNEw==
+X-Received: by 2002:a05:6830:14cb:: with SMTP id t11mr33379otq.74.1602021330242;
+        Tue, 06 Oct 2020 14:55:30 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b17sm201482oog.25.2020.10.06.14.55.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 06 Oct 2020 14:55:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 6 Oct 2020 14:55:28 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chu Lin <linchuyuan@google.com>
+Cc:     jdelvare@suse.com, robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: hwmon: max20730: adding device tree
+ doc for max20730
+Message-ID: <20201006215528.GA96892@roeck-us.net>
+References: <20201004031445.2321090-1-linchuyuan@google.com>
+ <20201004031445.2321090-2-linchuyuan@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201004031445.2321090-2-linchuyuan@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The order in which 'users' counter is decremented vs calling drivers'
-close() method is implementation specific, and we should not rely on
-it. Let's introduce driver private flag and use it to signal ISR
-to exit when device is being closed.
+On Sun, Oct 04, 2020 at 03:14:44AM +0000, Chu Lin wrote:
+> max20730 Integrated, Step-Down Switching Regulator with PMBus
+> 
+> Signed-off-by: Chu Lin <linchuyuan@google.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-This has a side-effect of fixing issue of accessing inut->users
-outside of input->mutex protection.
+Applied to hwmon-next.
 
-Reported-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
+Thanks,
+Guenter
 
-v3: fixed typo in exynos_adc_ts_close() per Michał Mirosław
-v2: switched from ordinary read/write to READ_ONCE/WRITE_ONCE per Michał
-Mirosław
-
- drivers/iio/adc/exynos_adc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
-index 22131a677445..908df4b9b93c 100644
---- a/drivers/iio/adc/exynos_adc.c
-+++ b/drivers/iio/adc/exynos_adc.c
-@@ -7,6 +7,7 @@
-  *  Copyright (C) 2013 Naveen Krishna Chatradhi <ch.naveen@samsung.com>
-  */
- 
-+#include <linux/compiler.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/interrupt.h>
-@@ -135,6 +136,8 @@ struct exynos_adc {
- 	u32			value;
- 	unsigned int            version;
- 
-+	bool			ts_enabled;
-+
- 	bool			read_ts;
- 	u32			ts_x;
- 	u32			ts_y;
-@@ -633,7 +636,7 @@ static irqreturn_t exynos_ts_isr(int irq, void *dev_id)
- 	bool pressed;
- 	int ret;
- 
--	while (info->input->users) {
-+	while (READ_ONCE(info->ts_enabled)) {
- 		ret = exynos_read_s3c64xx_ts(dev, &x, &y);
- 		if (ret == -ETIMEDOUT)
- 			break;
-@@ -712,6 +715,7 @@ static int exynos_adc_ts_open(struct input_dev *dev)
- {
- 	struct exynos_adc *info = input_get_drvdata(dev);
- 
-+	WRITE_ONCE(info->ts_enabled, true);
- 	enable_irq(info->tsirq);
- 
- 	return 0;
-@@ -721,6 +725,7 @@ static void exynos_adc_ts_close(struct input_dev *dev)
- {
- 	struct exynos_adc *info = input_get_drvdata(dev);
- 
-+	WRITE_ONCE(info->ts_enabled, false);
- 	disable_irq(info->tsirq);
- }
- 
--- 
-2.28.0.806.g8561365e88-goog
-
-
--- 
-Dmitry
+> ---
+> ChangeLog v1 -> v2
+>   hwmon: pmbus: max20730:
+>   - Don't do anything to the ret if an error is returned from pmbus_read_word
+>   - avoid overflow when doing multiplication
+> 
+> ChangeLog v2 -> v3
+>   dt-bindings: hwmon: max20730:
+>   - Provide the binding documentation in yaml format
+>   hwmon: pmbus: max20730:
+>   - No change
+> 
+> ChangeLog v3 -> v4
+>   dt-bindings: hwmon: max20730:
+>   - Fix highefficiency to high efficiency in description
+>   - Fix presents to present in vout-voltage-divider
+>   - Add additionalProperties: false
+>   hwmon: pmbus: max20730:
+>   - No change
+> 
+>  .../bindings/hwmon/maxim,max20730.yaml        | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml
+> new file mode 100644
+> index 000000000000..93e86e3b4602
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max20730.yaml
+> @@ -0,0 +1,65 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/maxim,max20730.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Maxim max20730
+> +
+> +maintainers:
+> +  - Jean Delvare <jdelvare@suse.com>
+> +  - Guenter Roeck <linux@roeck-us.net>
+> +
+> +description: |
+> +  The MAX20730 is a fully integrated, highly efficient switching regulator
+> +  with PMBus for applications operating from 4.5V to 16V and requiring
+> +  up to 25A (max) load. This single-chip regulator provides extremely
+> +  compact, high efficiency power-delivery solutions with high-precision
+> +  output voltages and excellent transient response.
+> +
+> +  Datasheets:
+> +    https://datasheets.maximintegrated.com/en/ds/MAX20730.pdf
+> +    https://datasheets.maximintegrated.com/en/ds/MAX20734.pdf
+> +    https://datasheets.maximintegrated.com/en/ds/MAX20743.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - maxim,max20730
+> +      - maxim,max20734
+> +      - maxim,max20743
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vout-voltage-divider:
+> +    description: |
+> +      If voltage divider present at vout, the voltage at voltage sensor pin
+> +      will be scaled. The properties will convert the raw reading to a more
+> +      meaningful number if voltage divider present. It has two numbers,
+> +      the first number is the output resistor, the second number is the total
+> +      resistance. Therefore, the adjusted vout is equal to
+> +      Vout = Vout * output_resistance / total resistance.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 2
+> +    maxItems: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      max20730@10 {
+> +        compatible = "maxim,max20730";
+> +        reg = <0x10>;
+> +        vout-voltage-divider = <1000 2000>; // vout would be scaled to 0.5
+> +      };
+> +    };
