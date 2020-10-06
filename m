@@ -2,143 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E822854E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 01:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAEB2854E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 01:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgJFXUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 19:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJFXUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 19:20:04 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C711AC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 16:20:02 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q63so566556qkf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 16:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IWB1ebee9pteOb/1MXVwCCrbMEWDB3ppGDM3SA6pBOI=;
-        b=RhcyxEe1FSxdVyWWjik5L8oP0dlBRmNhl8eHTKZPcwOmfonQ13IokUdXJRuKCJ6SPh
-         dHxp7bXBRxe79JznPcgush7ktPkgNsiGgO2fACJlaqwsTwroLQAgYh28Qv7Xk9Iqr4NM
-         y4NzZw/l+Zf7ndDdCnCkPHptsNmLIhBOzvef0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IWB1ebee9pteOb/1MXVwCCrbMEWDB3ppGDM3SA6pBOI=;
-        b=efk5n2hRs8eMe+CILVCb2QSfZZY/NTHNS2CiO3xdShvR+oQbRVJhgpgunMqt4XAic2
-         nlPS8GF4ZsLMgtDsQJmryv+6l+wBSPuVGfftaspF2chCmIe3UxuRGpfnlF09xIT1FVVC
-         gspixEdUUnMtorCiMW+LvTIzFHzFnVgT8pY3JlJ5v7KlVlJPIToYArtAMULIvVRTNRYU
-         HRl9zzjPUMC6u4ItLHbQ871X7WrUHgSqxcPMK9Hj6ENfytD7n6Tg9atA0FTb6pvBDaoF
-         H8+0wPEJVdjwxP1d1SDzEltd52pzfHm8AmQ73biDPPPowflDmjWxRHB+/MdKqxYQ2QUi
-         qCwg==
-X-Gm-Message-State: AOAM531iQNanCzZKOfuUTlgBFVM9cYTRRYA+5WNOIGWEFtEOl53FpCMJ
-        1LtueCB+ZJx+8tkm3U5Tfey9Dkj2tmUIEre5ZaQ=
-X-Google-Smtp-Source: ABdhPJwr2Fnlr684SJmgZQPRnrOuC932FRlVujDc1a96wpgQ80hGE45C/QVYuxFsMyeJJ11qvjuGrYXtSqY1Td3/YtE=
-X-Received: by 2002:a37:48cc:: with SMTP id v195mr242091qka.66.1602026401689;
- Tue, 06 Oct 2020 16:20:01 -0700 (PDT)
+        id S1727060AbgJFXVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 19:21:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:45308 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725947AbgJFXVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 19:21:42 -0400
+IronPort-SDR: oTjR/tg3RZ3fuDK5RbXcivp25K3kTtT29un0Tfok06aZjiUv5sJbGefDuw2OwZx2Db5IjngrHv
+ 2UtZo2LOUL/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="163971200"
+X-IronPort-AV: E=Sophos;i="5.77,344,1596524400"; 
+   d="scan'208";a="163971200"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 16:21:41 -0700
+IronPort-SDR: nGZniwxEmqi/lMBui8HRqMXCRtFJM4GYrhrMd/Fh9FxlRnNwDcRU9loum9YQ4Mdfh2o62Ax6aI
+ IhXwfCGe5rYA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,344,1596524400"; 
+   d="scan'208";a="527659263"
+Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 06 Oct 2020 16:21:40 -0700
+Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kPwH5-0001Ms-Ds; Tue, 06 Oct 2020 23:21:39 +0000
+Date:   Wed, 07 Oct 2020 07:20:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ 5da8e4a658109e3b7e1f45ae672b7c06ac3e7158
+Message-ID: <5f7cfbcd.fxJsIaTMuerJ0Tn1%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200930235611.6355-1-bert@biot.com> <20201001063421.qcjdikj2tje3jn6k@ti.com>
- <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
-In-Reply-To: <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 6 Oct 2020 23:19:49 +0000
-Message-ID: <CACPK8XfBqLA0e+tx6WN16G-v8+PY6UFH4jvP_YmOjiK8EhZ8Cg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Oct 2020 at 22:23, Bert Vermeulen <bert@biot.com> wrote:
->
-> On 10/1/20 8:34 AM, Pratyush Yadav wrote:
-> > So using an address width of 4 here is not necessarily the right thing
-> > to do. This change would break SMPT parsing for all flashes that use
-> > 3-byte addressing by default because SMPT parsing can involve register
-> > reads/writes. One such device is the Cypress S28HS flash. In fact, this
-> > was what prompted me to write the patch [0].
-> >
-> > Before that patch, how did MX25L25635F decide to use 4-byte addressing?
->
-> The SoCs I'm dealing with have an SPI_ADDR_SEL pin, indicating whether it
-> should be in 3 or 4-byte mode. The vendor's hacked-up U-Boot sets the mode
-> accordingly, as does their BSP. It seems to me like a misfeature, and I want
-> to just ignore it and do reasonable JEDEC things, but I have the problem
-> that the flash chip can be in 4-byte mode by the time it gets to my spi-nor
-> driver.
->
-> > Coming out of BFPT parsing addr_width would still be 0. My guess is that
-> > it would go into spi_nor_set_addr_width() with addr_width still 0 and
-> > then the check for (nor->mtd.size > 0x1000000) would set it to 4. Do I
-> > guess correctly?
->
-> No, it comes out of that with addr_width=3 because the chip publishes 3_OR_4
-> and hence gets 3, even if that's nonsensical for a 32MB chip to publish.
->
-> Certainly that's the problem, I just want to solve it in a more general case
-> than just a fixup for this chip.
->
-> > In that case maybe we can do a better job of deciding what gets priority
-> > in the if-else chain. For example, giving addr_width from nor->info
-> > precedence over the one configured by SFDP can solve this problem. Then
-> > all you have to do is set the addr_width in the info struct, which is
-> > certainly easier than adding a fixup hook. There may be a more elegant
-> > solution to this but I haven't given it much thought.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
+branch HEAD: 5da8e4a658109e3b7e1f45ae672b7c06ac3e7158  x86/copy_mc: Introduce copy_mc_enhanced_fast_string()
 
-Thanks for starting this conversation Bert. I had intended on
-mentioning this broke our systems but didn't get to it. It broke a few
-different Aspeed platforms where the flashes are >= 32MB.
+elapsed time: 721m
 
-We are running with a revert of the 3_OR_4 patch in OpenBMC kernels:
+configs tested: 227
+configs skipped: 3
 
- https://github.com/openbmc/linux/commit/ee41b2b489259f01585e49327377f62b76a24748
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> Since Tudor doesn't want the order of sfdp->info changed, how about
-> something like this instead?
->
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3028,13 +3028,15 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
->          /* already configured from SFDP */
->      } else if (nor->info->addr_width) {
->          nor->addr_width = nor->info->addr_width;
-> -   } else if (nor->mtd.size > 0x1000000) {
-> -       /* enable 4-byte addressing if the device exceeds 16MiB */
-> -       nor->addr_width = 4;
->      } else {
->          nor->addr_width = 3;
->      }
->
-> +   if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
-> +       /* enable 4-byte addressing if the device exceeds 16MiB */
-> +       nor->addr_width = 4;
-> +   }
-> +
->
-> Still fixes the general case, but I'm not sure what the SMPT parsing problem
-> is -- would this still trigger it?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                            qcom_defconfig
+sh                               j2_defconfig
+mips                  cavium_octeon_defconfig
+sh                           se7724_defconfig
+mips                      pic32mzda_defconfig
+m68k                       m5275evb_defconfig
+powerpc                     rainier_defconfig
+arm                          ixp4xx_defconfig
+mips                        bcm63xx_defconfig
+sh                        apsh4ad0a_defconfig
+mips                           ip28_defconfig
+mips                        omega2p_defconfig
+mips                      pistachio_defconfig
+sh                           se7721_defconfig
+sh                                  defconfig
+arm                             mxs_defconfig
+mips                          malta_defconfig
+arm                         assabet_defconfig
+arm                          collie_defconfig
+mips                           ci20_defconfig
+powerpc                  mpc885_ads_defconfig
+openrisc                         alldefconfig
+arm                         at91_dt_defconfig
+arm                         s5pv210_defconfig
+powerpc                     mpc5200_defconfig
+arm                            zeus_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      obs600_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                     sh7710voipgw_defconfig
+mips                         bigsur_defconfig
+arm                           stm32_defconfig
+arm                          iop32x_defconfig
+arm                          tango4_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                        nlm_xlp_defconfig
+sh                   sh7724_generic_defconfig
+arm64                            alldefconfig
+powerpc                          g5_defconfig
+arm                           sunxi_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                        magician_defconfig
+arm                         lpc32xx_defconfig
+arm                         hackkit_defconfig
+mips                 pnx8335_stb225_defconfig
+arm                         s3c6400_defconfig
+sh                           se7619_defconfig
+mips                 decstation_r4k_defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arm                       versatile_defconfig
+powerpc                     skiroot_defconfig
+arm                          moxart_defconfig
+sh                          urquell_defconfig
+arm                            mmp2_defconfig
+m68k                         amcore_defconfig
+sparc64                          alldefconfig
+microblaze                      mmu_defconfig
+powerpc                 mpc8560_ads_defconfig
+arc                           tb10x_defconfig
+powerpc                         wii_defconfig
+h8300                            alldefconfig
+powerpc                    sam440ep_defconfig
+sh                          kfr2r09_defconfig
+m68k                            mac_defconfig
+sh                           se7343_defconfig
+arm                        spear3xx_defconfig
+arm                       imx_v6_v7_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                     tqm8555_defconfig
+mips                            e55_defconfig
+mips                        vocore2_defconfig
+c6x                        evmc6474_defconfig
+openrisc                    or1ksim_defconfig
+sh                          lboxre2_defconfig
+arm                         lpc18xx_defconfig
+arm                          exynos_defconfig
+powerpc                     ppa8548_defconfig
+m68k                            q40_defconfig
+sh                          r7780mp_defconfig
+sparc                               defconfig
+sparc64                             defconfig
+h8300                     edosk2674_defconfig
+parisc                generic-64bit_defconfig
+sh                   secureedge5410_defconfig
+mips                           ip32_defconfig
+arc                              allyesconfig
+sh                         apsh4a3a_defconfig
+arc                            hsdk_defconfig
+arm                        multi_v5_defconfig
+xtensa                           alldefconfig
+mips                          ath79_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                      malta_kvm_defconfig
+csky                             alldefconfig
+parisc                generic-32bit_defconfig
+powerpc                         ps3_defconfig
+sh                          rsk7269_defconfig
+powerpc                     tqm8540_defconfig
+sh                           se7705_defconfig
+sh                               alldefconfig
+arm                      footbridge_defconfig
+c6x                        evmc6472_defconfig
+sh                         ecovec24_defconfig
+arm                           efm32_defconfig
+mips                           ip27_defconfig
+powerpc                   lite5200b_defconfig
+arm                           omap1_defconfig
+m68k                          hp300_defconfig
+arm                         mv78xx0_defconfig
+sh                        edosk7705_defconfig
+nios2                            alldefconfig
+m68k                       m5208evb_defconfig
+powerpc                       eiger_defconfig
+mips                         tb0226_defconfig
+mips                        nlm_xlr_defconfig
+sh                           se7722_defconfig
+m68k                        m5272c3_defconfig
+m68k                                defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                     redwood_defconfig
+arm                              alldefconfig
+arm                    vt8500_v6_v7_defconfig
+sh                             espt_defconfig
+m68k                       bvme6000_defconfig
+arm                         palmz72_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arc                          axs101_defconfig
+sh                          landisk_defconfig
+arm                           sama5_defconfig
+sh                        sh7785lcr_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                       maple_defconfig
+arm                         ebsa110_defconfig
+arm                            u300_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201006
+x86_64               randconfig-a002-20201006
+x86_64               randconfig-a001-20201006
+x86_64               randconfig-a005-20201006
+x86_64               randconfig-a003-20201006
+x86_64               randconfig-a006-20201006
+i386                 randconfig-a006-20201005
+i386                 randconfig-a005-20201005
+i386                 randconfig-a001-20201005
+i386                 randconfig-a004-20201005
+i386                 randconfig-a003-20201005
+i386                 randconfig-a002-20201005
+x86_64               randconfig-a012-20201005
+x86_64               randconfig-a015-20201005
+x86_64               randconfig-a014-20201005
+x86_64               randconfig-a013-20201005
+x86_64               randconfig-a011-20201005
+x86_64               randconfig-a016-20201005
+i386                 randconfig-a014-20201005
+i386                 randconfig-a015-20201005
+i386                 randconfig-a013-20201005
+i386                 randconfig-a016-20201005
+i386                 randconfig-a011-20201005
+i386                 randconfig-a012-20201005
+i386                 randconfig-a014-20201007
+i386                 randconfig-a013-20201007
+i386                 randconfig-a015-20201007
+i386                 randconfig-a016-20201007
+i386                 randconfig-a011-20201007
+i386                 randconfig-a012-20201007
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I tested this change you proposed and it fixed the issue for me.
+clang tested configs:
+x86_64               randconfig-a004-20201005
+x86_64               randconfig-a002-20201005
+x86_64               randconfig-a001-20201005
+x86_64               randconfig-a003-20201005
+x86_64               randconfig-a005-20201005
+x86_64               randconfig-a006-20201005
+x86_64               randconfig-a012-20201006
+x86_64               randconfig-a015-20201006
+x86_64               randconfig-a014-20201006
+x86_64               randconfig-a013-20201006
+x86_64               randconfig-a011-20201006
+x86_64               randconfig-a016-20201006
 
-Cheers,
-
-Joel
-
->
->
-> --
-> Bert Vermeulen
-> bert@biot.com
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
