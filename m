@@ -2,86 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55828284D70
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E90284D74
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgJFOPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:15:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49248 "EHLO
+        id S1726087AbgJFORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:17:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41383 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725906AbgJFOPJ (ORCPT
+        by vger.kernel.org with ESMTP id S1725902AbgJFORQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:15:09 -0400
+        Tue, 6 Oct 2020 10:17:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601993708;
+        s=mimecast20190719; t=1601993834;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qierp6TmZvlqYsC8Xw2Zd9AVjsf7lgKlqdSsuItngyI=;
-        b=dCxyMi/IY0av42Bd+0g2Y9fTILcSN/qkbfWglo3eZ1pX/h+akzQAvOqB5gX7HAoOOlVgus
-        Hce6NN5m3RPTGEMpEhrrk9O1FMEZ45Bj7uR+Uz3kSvLe9Dgo2XEsRUmaEOKsXwsh9CgUig
-        /hq3R4Jt26/fU9/e142kOcxyiht+4rQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-X0pYrsl5MgipFxSkDkPWPg-1; Tue, 06 Oct 2020 10:15:06 -0400
-X-MC-Unique: X0pYrsl5MgipFxSkDkPWPg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 245F218A8225;
-        Tue,  6 Oct 2020 14:15:05 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-117-72.rdu2.redhat.com [10.10.117.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ED9BA18E3C;
-        Tue,  6 Oct 2020 14:15:01 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 6CB52220AD7; Tue,  6 Oct 2020 10:15:01 -0400 (EDT)
-Date:   Tue, 6 Oct 2020 10:15:01 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-Message-ID: <20201006141501.GC5306@redhat.com>
-References: <20201002153854.GC3119@redhat.com>
- <20201002183036.GB24460@linux.intel.com>
- <20201002192734.GD3119@redhat.com>
- <20201002194517.GD24460@linux.intel.com>
- <20201002200214.GB10232@redhat.com>
- <20201002211314.GE24460@linux.intel.com>
- <20201005153318.GA4302@redhat.com>
- <20201005161620.GC11938@linux.intel.com>
- <20201006134629.GB5306@redhat.com>
- <877ds38n6r.fsf@vitty.brq.redhat.com>
+        bh=JhLZhQb3+y6eB2aR8dzGqs7Nd3D3OpNsxn6FaEOC/B0=;
+        b=Q1bbXpVwP2oKe4BY8ElJBQDDHAJoLyyjVtPPJFd+xeVBmA6/0HTKPJHPoAncb4YB5Gr+mw
+        9/bLLM/F2rjiwsJ76TyYSHmEMzxF9AsS+ZGgABXpKUr+T3AKnvGA2UgLVXFNo7iflla1Yd
+        eG62q4uZJFLHgB1IrVQ4YDTaNTcqiXA=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-81-vSJ8ynvpNoivLmhSfiDwew-1; Tue, 06 Oct 2020 10:17:13 -0400
+X-MC-Unique: vSJ8ynvpNoivLmhSfiDwew-1
+Received: by mail-qv1-f72.google.com with SMTP id de12so8166594qvb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 07:17:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JhLZhQb3+y6eB2aR8dzGqs7Nd3D3OpNsxn6FaEOC/B0=;
+        b=mXDPHLwnZi+prf+Va/B2bqUP8DdCxG9nyL7mBg2Tpib9bsl37FrNxf0R8fBEal67od
+         AEgwrU+xcugkna3pdf4wVlie4ZijmKhK9vAp6FGI2qXcwP2OpqCOtFwYDQPvr99iRGgd
+         4kBctreDwBt/JUI3pBxGn6jZG5HHVaatugV1u4nipRZdBJNuZ7vlrUL3Lf4hSi/NlESQ
+         HlEJHzRE08EgqIOHiUhtNN3pSij2AOzLx35KDSyJsbyZ8hGd5t5vvlHsEC1s5/b4QmiU
+         KAQ8m+cQRqVVOa776zxeWJDqF8K000YWmUehDwW73rQp8Rjk4Pb9ZDHVtjp7WWuc81PY
+         +S8A==
+X-Gm-Message-State: AOAM531dmNW7L5G/9MSv95mg7BwBGwgOEBpEhddjlf/Vua90kUSlWTqB
+        KqpPeCa1MtKOh0NVr8mtaiJn/3v6tXd5tjTegsO1HEpjdRut+Xems+zXM1le33ETkHUywY3mNIz
+        1KlQSYCd7/Kw14gBFlL0osu+N
+X-Received: by 2002:a37:5145:: with SMTP id f66mr5141998qkb.299.1601993832784;
+        Tue, 06 Oct 2020 07:17:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyUSqEiEH7YBQAtV1vnjzeCQgciC3SYxxwZQIl+PhhsLf3/7kDYv9cTPfeUHJWTP0ggGOmWPw==
+X-Received: by 2002:a37:5145:: with SMTP id f66mr5141966qkb.299.1601993832487;
+        Tue, 06 Oct 2020 07:17:12 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a66sm2453737qkc.52.2020.10.06.07.17.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 07:17:11 -0700 (PDT)
+Subject: Re: [PATCH] media: ov7670: check status of ov7670_read
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     corbet@lwn.net, mchehab@kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200828145518.26324-1-trix@redhat.com>
+ <20201006124148.GC5682@valkosipuli.retiisi.org.uk>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <75462c9b-afc0-aeb7-018a-573db59192f4@redhat.com>
+Date:   Tue, 6 Oct 2020 07:17:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877ds38n6r.fsf@vitty.brq.redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20201006124148.GC5682@valkosipuli.retiisi.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:05:16PM +0200, Vitaly Kuznetsov wrote:
-> Vivek Goyal <vgoyal@redhat.com> writes:
-> 
-> > A. Just exit to user space with -EFAULT (using kvm request) and don't
-> >    wait for the accessing task to run on vcpu again. 
-> 
-> What if we also save the required information (RIP, GFN, ...) in the
-> guest along with the APF token
 
-Can you elaborate a bit more on this. You mean save GFN on stack before
-it starts waiting for PAGE_READY event?
+On 10/6/20 5:41 AM, Sakari Ailus wrote:
+> Hi Tom,
+>
+> On Fri, Aug 28, 2020 at 07:55:18AM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> clang static analysis flags this representative problem
+>>
+>> drivers/media/i2c/ov7670.c:1463:9: warning: Assigned
+>>   value is garbage or undefined
+>>         *value = gain;
+>>                ^ ~~~~
+>>
+>> gain is set by a successful call to ov7670_read()
+>>
+>> So check that ov7670_read() is successful.
+>>
+>> The remaining static analysis problems are false positives.
+>> There appears to be a limitation with checking the
+>> aggregated returns.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>  drivers/media/i2c/ov7670.c | 17 +++++++++++++----
+>>  1 file changed, 13 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/ov7670.c b/drivers/media/i2c/ov7670.c
+>> index b42b289faaef..001d4b09db72 100644
+>> --- a/drivers/media/i2c/ov7670.c
+>> +++ b/drivers/media/i2c/ov7670.c
+>> @@ -929,6 +929,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
+>>  	ret =  ov7670_write(sd, REG_HSTART, (hstart >> 3) & 0xff);
+>>  	ret += ov7670_write(sd, REG_HSTOP, (hstop >> 3) & 0xff);
+>>  	ret += ov7670_read(sd, REG_HREF, &v);
+>> +	if (ret)
+>> +		return ret;
+> Thanks for the patch.
+>
+> While the patch fixes a bug, could you also fix adding the return values?
+> These are valid error codes to begin with, but it makes no sense to add
+> them together.
 
-> so in case of -EFAULT we can just 'crash'
-> the guest and the required information can easily be obtained from
-> kdump? This will solve the debugging problem even for TDX/SEV-ES (if
-> kdump is possible there).
+Yes. That is a problem, a general problem with this file.
 
-Just saving additional info in guest will not help because there might
-be many tasks waiting and you don't know which GFN is problematic one.
+I count 10+
 
-Thanks
-Vivek
+I'll see if fixing the general problem also fixes this problem.
+
+Tom
+
+>
+>>  	v = (v & 0xc0) | ((hstop & 0x7) << 3) | (hstart & 0x7);
+>>  	msleep(10);
+>>  	ret += ov7670_write(sd, REG_HREF, v);
+>> @@ -938,6 +940,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
+>>  	ret += ov7670_write(sd, REG_VSTART, (vstart >> 2) & 0xff);
+>>  	ret += ov7670_write(sd, REG_VSTOP, (vstop >> 2) & 0xff);
+>>  	ret += ov7670_read(sd, REG_VREF, &v);
+>> +	if (ret)
+>> +		return ret;
+>>  	v = (v & 0xf0) | ((vstop & 0x3) << 2) | (vstart & 0x3);
+>>  	msleep(10);
+>>  	ret += ov7670_write(sd, REG_VREF, v);
+>> @@ -1460,6 +1464,8 @@ static int ov7670_g_gain(struct v4l2_subdev *sd, __s32 *value)
+>>  	unsigned char gain;
+>>  
+>>  	ret = ov7670_read(sd, REG_GAIN, &gain);
+>> +	if (ret)
+>> +		return ret;
+>>  	*value = gain;
+>>  	return ret;
+>>  }
+>> @@ -1470,11 +1476,14 @@ static int ov7670_s_gain(struct v4l2_subdev *sd, int value)
+>>  	unsigned char com8;
+>>  
+>>  	ret = ov7670_write(sd, REG_GAIN, value & 0xff);
+>> +	if (ret)
+>> +		return ret;
+>>  	/* Have to turn off AGC as well */
+>> -	if (ret == 0) {
+>> -		ret = ov7670_read(sd, REG_COM8, &com8);
+>> -		ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
+>> -	}
+>> +	ret = ov7670_read(sd, REG_COM8, &com8);
+>> +	if (ret)
+>> +		return ret;
+>> +	ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
+>> +
+>>  	return ret;
+>>  }
+>>  
 
