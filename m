@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB4228470B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D05D284711
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgJFHUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 03:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        id S1727038AbgJFHXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgJFHUX (ORCPT
+        with ESMTP id S1725912AbgJFHXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 03:20:23 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90072C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 00:20:22 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o25so7506094pgm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 00:20:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:mime-version
-         :content-transfer-encoding;
-        bh=rxAgGOnSp5xOsvFWw6q8lz/Ct2uhAJkdx7TguqBlof8=;
-        b=F4WNRrKBKMcxU+n0nc4dkanncDiXPL/ee8GnugHv1N24B0UhktyHf/9Iu413xLq5OI
-         6VELsmsoRfB9B1ijm+X/74ew8aD/Tdm9ahgm4sHvORS8XjaPn3Q+3RFpfGINGQWaDT+8
-         anAbUBW5CWTSrodFiXxo9FT867C7JW1jd6d5628LVpUje4qyaEE+g9DlOcX4M7fEId+v
-         W8Z53x3vdgJelEeyn1S++eSHd6zh/Gt+x8cu9Il+7txxQ30oECUzMB2c+YusC3P0hQYv
-         z+jLWgSkio71KxMZ4/uXvRuStv+fY3Jc/ZdR7KWvJwHoGknAlFcnmVZa+MCU7h3czH1/
-         kYYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:mime-version
-         :content-transfer-encoding;
-        bh=rxAgGOnSp5xOsvFWw6q8lz/Ct2uhAJkdx7TguqBlof8=;
-        b=YMaWjyunneZUigQltKj2s8af8Frb6YrkXMDxLFi1HW5/mRN0VYsXKPfdA1KkXocNLO
-         CdlVXHqtS94OCSHTU3M34DKSxfStiPNU0sThPYy/Q8E2H3N6dJEV2C71DTrymmUzlOLm
-         U9ouT9vNKuK79ll3E43XL3Mk66c7XmCzi+BVUSXWJ2BUwrLEyiFAapMKbJA3ftSjpP4K
-         ZHU20r/IsX+kVcuT4G2VHeM5OZtYuzB0x97XbaQPS/Z8QGre0sUevpo9ct1qI0drtDAs
-         YbN4SkOsSOnn9vgxkki2ZJImY83nwT+6v80JlPeVkJRGIjMlvuNxQm6EES1rHBT+Vy57
-         IRPA==
-X-Gm-Message-State: AOAM5303Nl2TV6+JUu9x+w6mUVgCBDaTNdmQqaXJYQiJ5Sjoh5q2+1A7
-        Q64qIyM/XOtFgk4Fp8RHYTiy1Q==
-X-Google-Smtp-Source: ABdhPJwFixwHBWx7FZbq4mDm9X1o+f9+TAKkQxezHJdX1AtJAI7MPnznxBsp8EZFQ4Y8Rt+/Fs+n5A==
-X-Received: by 2002:aa7:9201:0:b029:13e:d13d:a10c with SMTP id 1-20020aa792010000b029013ed13da10cmr3081378pfo.40.1601968822143;
-        Tue, 06 Oct 2020 00:20:22 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id j6sm2238910pfi.129.2020.10.06.00.20.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 00:20:21 -0700 (PDT)
-Message-ID: <c065aef85fd477f3d3e17b8d095d563226e568dd.camel@areca.com.tw>
-Subject: [PATCH 0/1] scsi: arcmsr: fix warning: right shift count >= width
- of type
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     kbuild test robot <lkp@intel.com>
-Date:   Tue, 06 Oct 2020 15:20:20 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 6 Oct 2020 03:23:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DF8C061755;
+        Tue,  6 Oct 2020 00:23:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LZfRYo0iMKJHueffgm2fjDYL1qbPK90x4hNzewCnXZs=; b=QkbHf2XS7gOCf6VcB4CwAg4WTX
+        ZKNz9Mwa2uhEt7YTFSBhxhIxj9Ze+fqhQ908UWmw15vjNqyL+/zQFFqn5fLVvKx4AHr9HKR4foXQm
+        mq15b26NFHcMPISJL6ZazHo9U5i0KmNLEB4pe6czynTOXoOB8xY0ZjRwj+4ZxYAoK+jd91Moqm9Ls
+        oko46zYe78Om+J3adUAisoN/iGlvEcI5Y8yshjTzq4Eoj2soQEmYVGFD4cYIG+iEvM9UTQM1qDhlU
+        ZGhgPAm5i2vLhcYF4aT/PTq5Hs5HFr7Ue6hjXpKsgkmuKzHoqX6RFO3BcL5o62MVhGnoefKJjmKYn
+        9rlQRDlg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPhJS-0003cQ-N4; Tue, 06 Oct 2020 07:23:06 +0000
+Date:   Tue, 6 Oct 2020 08:23:06 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
+ cache maintenance
+Message-ID: <20201006072306.GA12834@infradead.org>
+References: <20201001002709.21361-1-jonathan@marek.ca>
+ <20201001002709.21361-3-jonathan@marek.ca>
+ <20201002075321.GA7547@infradead.org>
+ <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
+ <20201005082914.GA31702@infradead.org>
+ <3e0b91be-e4a4-4ea5-7d58-6e71b8d51932@marek.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e0b91be-e4a4-4ea5-7d58-6e71b8d51932@marek.ca>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is against to mkp's 5.10/scsi-staging.
+On Mon, Oct 05, 2020 at 10:35:43AM -0400, Jonathan Marek wrote:
+> The cache synchronization doesn't have anything to do with IOMMU (for
+> example: cache synchronization would be useful in cases where drm/msm
+> doesn't use IOMMU).
 
-1. fix warning: right shift count >= width of type.
----
+It has to do with doing DMA.  And we have two frameworks for doing DMA:
+either the DMA API which is for general driver use, and which as part of
+the design includes cache maintainance hidden behind the concept of
+ownership transfers.  And we have the much more bare bones IOMMU API.
 
+If people want to use the "raw" IOMMU API with not cache coherent
+devices we'll need a cache maintainance API that goes along with it.
+It could either be formally part of the IOMMU API or be separate.
+
+> What is needed is to call arch_sync_dma_for_{cpu,device} (which is what I
+> went with initially, but then decided to re-use drm/msm's
+> sync_for_{cpu,device}). But you are also saying those functions aren't for
+> driver use, and I doubt IOMMU maintainers will want to add wrappers for
+> these functions just to satisfy this "not for driver use" requirement.
+
+arch_sync_dma_for_{cpu,device} are low-level helpers (and not very
+great ones at that).  The definitively should not be used by drivers.
+They would be very useful buildblocks for a IOMMU cache maintainance
+API.
+
+Of course the best outcome would be if we could find a way for the MSM
+drm driver to just use DMA API and not deal with the lower level
+abstractions.  Do you remember why the driver went for use of the IOMMU
+API?
