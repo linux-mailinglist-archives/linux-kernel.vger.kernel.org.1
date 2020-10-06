@@ -2,107 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BABC28441A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4593F28441C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgJFCjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 22:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbgJFCjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 22:39:55 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE63C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 19:39:55 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id m15so485527pls.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 19:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c3o9BUJSdFDURbaPvsof0q2JaknWm3G4aaqwgKCf2g8=;
-        b=DG4XoTuh3p+Gu9D+F4OrW8MmuZMiwdugoe8gCTuSW2EAHLAYjp0QzV6qSHIwnv+Bw/
-         j9/ziaaxnpTalar8341DTcd1+dDFVaRgZeJJswl5+AEBFrn/XrWOWsVsX5/+3iDHcNeN
-         fC6PwWhCffpOlFJ1H2C78yhYpehXu2QIcvRBm+j0HkfD8yc2IpGHH3bbuox4PZB0efST
-         He7Rm0rUuci63zVs/aW8XWaw3VHehiCEA/bpNxreh//S9imo1/td8bSW+7tKMfBQYjpX
-         MewXO43m5sxkcDNL2KE0HBdzGFbF6M+IaNReOcG6TwD5/oUU5p8ZKCPaARtX0FE2OoCB
-         dxJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=c3o9BUJSdFDURbaPvsof0q2JaknWm3G4aaqwgKCf2g8=;
-        b=FLdS9j5tpX1/MYhlqiiPMXr9wKaICOnex58MMxv9BNCJL6GuYO3GXAeLjBFY8oDio9
-         moOGTAlC30ziVve92HtodjmVoKuQ1yUc0sWQ4BGD3q4QV0NBGJkgg5cpDWtTBWwiYs71
-         6Y4fWT636q8JS2rCbJMA9olDpSBrlSCsGohwNAd/ds8JUeJ4qFx2nyi6obSUKVrUfmLo
-         dJElueQXFin4QpbD5/DG5A9jxxvhaHXMAi1s4CPVVJNPvjjqB/FIEDeMHk9fHnn/cfpr
-         /cLOk2qEcrO8LGlXENo+A1WLw5yh5wakX7sK3xxh3EiKbRVeJcmZzPimj5DeWYju+t7A
-         riUA==
-X-Gm-Message-State: AOAM5306gfgXMiYh2e9wy0CGZJaJ+6azhvdtP2O8X0qWabmWv+8JSilE
-        Opi2i+8NLTDlbYXZ+dqzWuVYNpzZ3hg=
-X-Google-Smtp-Source: ABdhPJyoA2rNfNgXfiEakT8m5+n/maXmEGc7hzE9htqNhwDYNo7a+jKttNing57tGgEtttaqdCKGyw==
-X-Received: by 2002:a17:902:14f:b029:d2:562d:e84 with SMTP id 73-20020a170902014fb02900d2562d0e84mr1270355plb.64.1601951994603;
-        Mon, 05 Oct 2020 19:39:54 -0700 (PDT)
-Received: from google.com ([112.159.19.5])
-        by smtp.gmail.com with ESMTPSA id x4sm1372073pfm.86.2020.10.05.19.39.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 19:39:53 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-Date:   Tue, 6 Oct 2020 11:39:49 +0900
-From:   namhyung@kernel.org
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Al Grant <al.grant@foss.arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH] perf inject: Flush ordered events on FINISHED_ROUND
-Message-ID: <20201006023949.GA1682192@google.com>
-References: <20201002130317.1356440-1-namhyung@kernel.org>
- <20201004195239.GA217601@krava>
- <CAM9d7cgsxkefHAgyMf-GoP4-OdSsaRmhSGLwPMoYn=-c9YXxDw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cgsxkefHAgyMf-GoP4-OdSsaRmhSGLwPMoYn=-c9YXxDw@mail.gmail.com>
+        id S1726693AbgJFClE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 22:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725973AbgJFClD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 22:41:03 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F413720870;
+        Tue,  6 Oct 2020 02:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601952063;
+        bh=RT53DXGsHP6mxMsu1xLBOr3O2f5KnWOs09NJYXjdP8E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k+xXsmZ0Wa/Ps5DOMLo5I95NWB68B22HN7YE7x8hO8Ew9x3aRydRmVssZC/TqSEDp
+         rltuOQu+90Uee7aVnqOH29pcZriUfAqNERqRspEE/CO4KQuWFrDoUtoZLy000kdEU3
+         5CgEDjtn7ifHGl3SH43Jsis7nn8zMt3ucuOt4R7A=
+Date:   Tue, 6 Oct 2020 11:40:58 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Julien Grall <julien@xen.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Alex =?UTF-8?B?QmVubsOpZQ==?= <alex.bennee@linaro.org>,
+        takahiro.akashi@linaro.org, jgross@suse.com,
+        boris.ostrovsky@oracle.com
+Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
+ correctly
+Message-Id: <20201006114058.b93839b1b8f35a470874572b@kernel.org>
+In-Reply-To: <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s>
+References: <160190516028.40160.9733543991325671759.stgit@devnote2>
+        <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
+        <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > On Fri, Oct 02, 2020 at 10:03:17PM +0900, Namhyung Kim wrote:
-> > > Below measures time and memory usage during the perf inject and
-> > > report using ~190MB data file.
-> > >
-> > > Before:
-> > >   perf inject:  11.09 s,  382148 KB
-> > >   perf report:   8.05 s,  397440 KB
-> > >
-> > > After:
-> > >   perf inject:  16.24 s,   83376 KB
-> > >   perf report:   7.96 s,  216184 KB
-> > >
-> > > As you can see, it used 2x memory of the input size.  I guess it's
-> > > because it needs to keep the copy for the whole input.  But I don't
-> > > understand why processing time of perf inject increased..
+On Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
+Stefano Stabellini <sstabellini@kernel.org> wrote:
 
-Measuring it with time shows:
+> On Mon, 5 Oct 2020, Julien Grall wrote:
+> > Hi Masami,
+> > 
+> > On 05/10/2020 14:39, Masami Hiramatsu wrote:
+> > > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
+> > > address conversion.
+> > > 
+> > > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
+> > > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
+> > > assumes the given virtual address is in contiguous kernel memory
+> > > area, it can not convert the per-cpu memory if it is allocated on
+> > > vmalloc area (depends on CONFIG_SMP).
+> > 
+> > Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
+> > region for CPU0 is allocated outside of vmalloc area.
+> > 
+> > However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
+> > enabled.
+> 
+> I cannot reproduce the issue with defconfig, but I can with Masami's
+> kconfig.
+> 
+> If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
+> problem still appears.
+> 
+> If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
+> strange because CONFIG_NUMA is enabled in defconfig, and defconfig
+> works.
 
-           before       after
-  real    11.309s     17.040s
-  user     8.084s     13.940s
-  sys      6.535s      6.732s
+Hmm, strange, because when I disabled CONFIG_NUMA_BALANCING, the issue
+disappeared.
 
-So it's user space to make the difference.  I've run perf record on
-both (with cycles:U) and the dominant function is same: queue_event.
-(46.98% vs 65.87%)
+--- config-5.9.0-rc4+   2020-10-06 11:36:20.620107129 +0900
++++ config-5.9.0-rc4+.buggy     2020-10-05 21:04:40.369936461 +0900
+@@ -131,7 +131,8 @@
+ CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
+ CONFIG_CC_HAS_INT128=y
+ CONFIG_ARCH_SUPPORTS_INT128=y
+-# CONFIG_NUMA_BALANCING is not set
++CONFIG_NUMA_BALANCING=y
++CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
+ CONFIG_CGROUPS=y
+ CONFIG_PAGE_COUNTER=y
+ CONFIG_MEMCG=y
 
-It seems the flushing the queue makes more overhead on sorting.
+So buggy config just enabled NUMA_BALANCING (and default enabled)
 
-Thanks
-Namhyung
+> > [...]
+> > 
+> > > Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
+> > 
+> > FWIW, I think the bug was already present before 250c9af3d831.
+> 
+> Yeah, I bet 250c9af3d831 is not what introduced the issue. Whatever
+> caused virt_to_phys to stop working on vmalloc'ed addresses is the cause
+> of the problem. It is something that went in 5.9 (5.8 works) but I don't
+> know what for sure.
+
+OK.
+
+> 
+> 
+> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > ---
+> > >   arch/arm/xen/enlighten.c |    2 +-
+> > >   include/xen/arm/page.h   |    3 +++
+> > >   2 files changed, 4 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+> > > index e93145d72c26..a6ab3689b2f4 100644
+> > > --- a/arch/arm/xen/enlighten.c
+> > > +++ b/arch/arm/xen/enlighten.c
+> > > @@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
+> > >   	pr_info("Xen: initializing cpu%d\n", cpu);
+> > >   	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
+> > >   -	info.mfn = virt_to_gfn(vcpup);
+> > > +	info.mfn = percpu_to_gfn(vcpup);
+> > >   	info.offset = xen_offset_in_page(vcpup);
+> > >     	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
+> > > diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
+> > > index 39df751d0dc4..ac1b65470563 100644
+> > > --- a/include/xen/arm/page.h
+> > > +++ b/include/xen/arm/page.h
+> > > @@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
+> > >   	})
+> > >   #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) <<
+> > > XEN_PAGE_SHIFT))
+> > >   +#define percpu_to_gfn(v)	\
+> > > +	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
+> > > +
+> > >   /* Only used in PV code. But ARM guests are always HVM. */
+> > >   static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
+> > >   {
+> 
+> 
+> The fix is fine for me. I tested it and it works. We need to remove the
+> "Fixes:" line from the commit message. Ideally, replacing it with a
+> reference to what is the source of the problem.
+
+OK, as I said, it seems commit 9a9ab3cc00dc ("xen/arm: SMP support") has
+introduced the per-cpu code. So note it instead of Fixes tag.
+
+> 
+> Aside from that:
+> 
+> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+
+Thank you!
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
