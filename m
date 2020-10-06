@@ -2,121 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E6D284F49
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAB6284F50
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgJFPzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:55:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:50822 "EHLO foss.arm.com"
+        id S1726128AbgJFP7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:59:09 -0400
+Received: from mga06.intel.com ([134.134.136.31]:56023 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgJFPzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:55:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4393411B3;
-        Tue,  6 Oct 2020 08:55:32 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 43F3F3F66B;
-        Tue,  6 Oct 2020 08:55:30 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 16:55:27 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, swood@redhat.com,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
-Subject: Re: [PATCH -v2 12/17] sched,rt: Use cpumask_any*_distribute()
-Message-ID: <20201006155527.w6jck2rgk64t45wm@e107158-lin.cambridge.arm.com>
-References: <20201005145717.346020688@infradead.org>
- <20201005150922.156231026@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201005150922.156231026@infradead.org>
-User-Agent: NeoMutt/20171215
+        id S1725970AbgJFP7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:59:09 -0400
+IronPort-SDR: m7ErqUHY5zAZeMmsZTOs7yXR6/57StugHOayHdGbZu4wBTP3imMQ12Afoq9URnhtVxj9fYKI4c
+ i/h8/WOSTfmA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="226148683"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="226148683"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 08:59:01 -0700
+IronPort-SDR: DUDxLrhbtUVWop6V/UBF7oro5N3R60Y7kgXItwEN5ZQNXgTaBl6AoYa5iu2XUyPD7UASrxu1EB
+ p36BMe9hWtwg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="343826665"
+Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
+  by orsmga008.jf.intel.com with ESMTP; 06 Oct 2020 08:58:55 -0700
+From:   muhammad.husaini.zulkifli@intel.com
+To:     adrian.hunter@intel.com, michal.simek@xilinx.com,
+        sudeep.holla@arm.com, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     lakshmi.bai.raja.subramanian@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com,
+        muhammad.husaini.zulkifli@intel.com, arnd@arndb.de
+Subject: [PATCH v3 0/2] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+Date:   Tue,  6 Oct 2020 23:55:47 +0800
+Message-Id: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05/20 16:57, Peter Zijlstra wrote:
-> Replace a bunch of cpumask_any*() instances with
-> cpumask_any*_distribute(), by injecting this little bit of random in
-> cpu selection, we reduce the chance two competing balance operations
-> working off the same lowest_mask pick the same CPU.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  include/linux/cpumask.h |    6 ++++++
->  kernel/sched/cpupri.c   |    4 ++--
->  kernel/sched/deadline.c |    2 +-
->  kernel/sched/rt.c       |    6 +++---
->  lib/cpumask.c           |   18 ++++++++++++++++++
->  5 files changed, 30 insertions(+), 6 deletions(-)
-> 
+From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-[...]
+Hi.
 
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -1752,8 +1752,8 @@ static int find_lowest_rq(struct task_st
->  				return this_cpu;
->  			}
->  
-> -			best_cpu = cpumask_first_and(lowest_mask,
-> -						     sched_domain_span(sd));
-> +			best_cpu = cpumask_any_and_distribute(lowest_mask,
-> +							      sched_domain_span(sd));
+The first patch is to enable UHS-1 Support for Keem Bay EVM.
 
-I guess I should have done this 6 months ago and just got done with it :)
+The second patch is the header file to handle ATF call.
 
-	20200414150556.10920-1-qais.yousef@arm.com
+These 2 patches was tested with Keem Bay evaluation module board.
 
->  			if (best_cpu < nr_cpu_ids) {
->  				rcu_read_unlock();
->  				return best_cpu;
-> @@ -1770,7 +1770,7 @@ static int find_lowest_rq(struct task_st
->  	if (this_cpu != -1)
->  		return this_cpu;
->  
-> -	cpu = cpumask_any(lowest_mask);
-> +	cpu = cpumask_any_distribute(lowest_mask);
->  	if (cpu < nr_cpu_ids)
->  		return cpu;
->  
-> --- a/lib/cpumask.c
-> +++ b/lib/cpumask.c
-> @@ -267,3 +267,21 @@ int cpumask_any_and_distribute(const str
->  	return next;
->  }
->  EXPORT_SYMBOL(cpumask_any_and_distribute);
-> +
-> +int cpumask_any_distribute(const struct cpumask *srcp)
-> +{
-> +	int next, prev;
-> +
-> +	/* NOTE: our first selection will skip 0. */
-> +	prev = __this_cpu_read(distribute_cpu_mask_prev);
+Kindly help to review this patch set.
 
-We had a discussion then that __this_cpu*() variant assumes preemption being
-disabled and it's safer to use this_cpu*() variant instead. Still holds true
-here?
+Thank you.
 
-Thanks
+Changes since v2:
+- Removed Document DT Bindings for Keembay Firmware.
+- Removed Firmware Driver to handle ATF Service call.
+- Add header file to handle API function for device driver to communicate with Arm Trusted Firmware.
+
+Changes since v1:
+- Add Document DT Bindings for Keembay Firmware.
+- Created Firmware Driver to handle ATF Service call
+- Provide API for arasan driver for sd card voltage changes
+
+Muhammad Husaini Zulkifli (2):
+  mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+  firmware: Keem Bay: Add support for Arm Trusted Firmware Service call
+
+ drivers/mmc/host/sdhci-of-arasan.c            | 127 ++++++++++++++++++
+ .../linux/firmware/intel/keembay_firmware.h   |  46 +++++++
+ 2 files changed, 173 insertions(+)
+ create mode 100644 include/linux/firmware/intel/keembay_firmware.h
 
 --
-Qais Yousef
+2.17.1
 
-> +
-> +	next = cpumask_next(prev, srcp);
-> +	if (next >= nr_cpu_ids)
-> +		next = cpumask_first(srcp);
-> +
-> +	if (next < nr_cpu_ids)
-> +		__this_cpu_write(distribute_cpu_mask_prev, next);
-> +
-> +	return next;
-> +}
-> +EXPORT_SYMBOL(cpumask_any_distribute);
-> 
-> 
