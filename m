@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D002852A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86732852A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 21:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgJFTrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 15:47:48 -0400
-Received: from outbound-smtp27.blacknight.com ([81.17.249.195]:47372 "EHLO
-        outbound-smtp27.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725943AbgJFTrs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 15:47:48 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp27.blacknight.com (Postfix) with ESMTPS id EF8E81620A6
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 20:47:46 +0100 (IST)
-Received: (qmail 11003 invoked from network); 6 Oct 2020 19:47:46 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Oct 2020 19:47:46 -0000
-Date:   Tue, 6 Oct 2020 20:47:45 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-Message-ID: <20201006194745.GM3227@techsingularity.net>
-References: <20201006083639.GJ3227@techsingularity.net>
- <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
- <20201006190322.GL3227@techsingularity.net>
+        id S1727170AbgJFTtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 15:49:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgJFTtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 15:49:11 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8579D206F4;
+        Tue,  6 Oct 2020 19:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602013751;
+        bh=R2q/mfvkScKT8OF+sG32Zftoq0jL1opdo71Jm2tm6gU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AYWhfzovLnaDoIyndpCrBOUxSQyNlQSAFCLRlEms+6kZoAV8uLVyIqUC4F5p7jSAI
+         w9/ufh9r33ywM76TkqwTM6KAt2/vumW66BkuTos0A0rpYDVGugqmTqbbdRhTcLGeHw
+         LlERyMUyFLKErJU/PNnMP7ukojHvj7mWmk7tPEAM=
+Date:   Tue, 6 Oct 2020 20:48:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] arm64: random: Remove no longer needed prototypes
+Message-ID: <20201006194806.GE5259@sirena.org.uk>
+References: <20201006194453.36519-1-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="J4XPiPrVK1ev6Sgr"
 Content-Disposition: inline
-In-Reply-To: <20201006190322.GL3227@techsingularity.net>
+In-Reply-To: <20201006194453.36519-1-andre.przywara@arm.com>
+X-Cookie: Will it improve my CASH FLOW?
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 08:03:22PM +0100, Mel Gorman wrote:
-> On Tue, Oct 06, 2020 at 06:00:18PM +0200, Rafael J. Wysocki wrote:
-> > > server systems") and enable-cst is the commit. It was not fixed by 5.6 or
-> > > 5.9-rc8. A lot of bisections ended up here including kernel compilation,
-> > > tbench, syscall entry/exit microbenchmark, hackbench, Java workloads etc.
-> > > 
-> > > What I don't understand is why. The latencies for c-state exit states
-> > > before and after the patch are both as follows
-> > > 
-> > > /sys/devices/system/cpu/cpu0/cpuidle/state0/latency:0
-> > > /sys/devices/system/cpu/cpu0/cpuidle/state1/latency:2
-> > > /sys/devices/system/cpu/cpu0/cpuidle/state2/latency:10
-> > > /sys/devices/system/cpu/cpu0/cpuidle/state3/latency:33
-> > > /sys/devices/system/cpu/cpu0/cpuidle/state4/latency:133
-> > > 
-> > > Perf profiles did not show up anything interesting. A diff of
-> > > /sys/devices/system/cpu/cpu0/cpuidle/state0/ before and after the patch
-> > > showed up nothing interesting. Any idea why exactly this patch shows up
-> > > as being hazardous on Haswell in particular?
-> > > 
-> > Presumably, some of the idle states are disabled by default on the affected
-> > machines.
-> > 
-> > Can you check the disable and default_status attributes of each state before
-> > and after the commit in question?
-> > 
-> 
-> # grep . pre-cst/cpuidle/state*/disable
 
-Sorry, second attempt after thinking the results made no sense at all.
-Turns out I fat fingered setting up the enable-cst kernel the second time
-to collect what you asked for and the patch was not applied at all.
+--J4XPiPrVK1ev6Sgr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-# grep . pre-cst/cpuidle/state*/disable
-pre-cst/cpuidle/state0/disable:0
-pre-cst/cpuidle/state1/disable:0
-pre-cst/cpuidle/state2/disable:0
-pre-cst/cpuidle/state3/disable:0
-pre-cst/cpuidle/state4/disable:0
-# grep . pre-cst/cpuidle/state*/default_status
-pre-cst/cpuidle/state0/default_status:enabled
-pre-cst/cpuidle/state1/default_status:enabled
-pre-cst/cpuidle/state2/default_status:enabled
-pre-cst/cpuidle/state3/default_status:enabled
-pre-cst/cpuidle/state4/default_status:enabled
-# grep . enable-cst/cpuidle/state*/disable
-enable-cst/cpuidle/state0/disable:0
-enable-cst/cpuidle/state1/disable:0
-enable-cst/cpuidle/state2/disable:0
-enable-cst/cpuidle/state3/disable:1
-enable-cst/cpuidle/state4/disable:1
-# grep . enable-cst/cpuidle/state*/default_status
-enable-cst/cpuidle/state0/default_status:enabled
-enable-cst/cpuidle/state1/default_status:enabled
-enable-cst/cpuidle/state2/default_status:enabled
-enable-cst/cpuidle/state3/default_status:disabled
-enable-cst/cpuidle/state4/default_status:disabled
+On Tue, Oct 06, 2020 at 08:44:53PM +0100, Andre Przywara wrote:
+> Commit 9bceb80b3cc4 ("arm64: kaslr: Use standard early random
+> function") removed the direct calls of the __arm64_rndr() and
+> __early_cpu_has_rndr() functions, but left the dummy prototypes in the
+>  #else branch of the #ifdef CONFIG_ARCH_RANDOM guard.
 
-That looks like C3 and C6 are disabled after the patch.
+> Remove the redundant prototypes, as they have no users outside of
+> this header file.
 
-# grep . enable-cst/cpuidle/state*/name
-enable-cst/cpuidle/state0/name:POLL
-enable-cst/cpuidle/state1/name:C1
-enable-cst/cpuidle/state2/name:C1E
-enable-cst/cpuidle/state3/name:C3
-enable-cst/cpuidle/state4/name:C6
+Reviewed-by: Mark Brown <broonie@kernel.org>
 
--- 
-Mel Gorman
-SUSE Labs
+--J4XPiPrVK1ev6Sgr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl98yfUACgkQJNaLcl1U
+h9B1Pwf+OLhjyzRF2lkNPf4Y+CmWvzZjq2ZGfpjlevCMeaCDlTeh85Chgwj2pJW+
+ztEAboFon7CZnnWWL0AQfzRr55U7uIAiXZXXmGYYSQDO3R5vfwYrwH5UvuhfWCVv
+f0Cgep/Alq1dBn6GFnArnrwj6g8o7+OPlG3oQdCKSd7Ul/PLu8mH9oleyKTJQdm1
+InpofV8Msi/tae39UBg78+nb8Wbr3qK2J8o8mRpS3h2Q/dyDn1WzBYPjzzMuZtLk
+G6acrHYZVnbINeLrXFWbpdy8kKHNy4aEIUiJqjlTJGAxXwf3UDfwkEVBy0TfwE/j
+31uKdjOf6kbzAaEAi9puyKEeJ8nAuA==
+=fAYO
+-----END PGP SIGNATURE-----
+
+--J4XPiPrVK1ev6Sgr--
