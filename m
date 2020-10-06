@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1624D285115
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E44D285118
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgJFRnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:43:31 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:42219 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgJFRna (ORCPT
+        id S1726742AbgJFRoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:44:07 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:37486 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgJFRoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:43:30 -0400
-Received: by mail-oi1-f195.google.com with SMTP id 16so5836749oix.9;
-        Tue, 06 Oct 2020 10:43:29 -0700 (PDT)
+        Tue, 6 Oct 2020 13:44:06 -0400
+Received: by mail-oi1-f194.google.com with SMTP id t77so9972631oie.4;
+        Tue, 06 Oct 2020 10:44:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mwAcsiPg8kwb9a2fJ4IXgeAamkL2NpRZhg1FCasjBn8=;
-        b=OkjiSQ6ScBXg5rTOJXkWp1c1aVdWsqUCjXlnYdtKdadz27f1ZpYWz2bSI3yNfeggk5
-         90n+/i/n7oClD6OhKxTOVtgYfM3UZfLhIK+tvWULWzUqNfgz2P6ZKxg5qUkSD0r4y+ma
-         SfshNEaJWEbJUHHXt66HSXu88/DcNP+mYpJaFaf09Dw5ys0Q+QJM2x3QlhmgtODwJB1E
-         NWD3+Q8upmU3KEwvR8EM3iDyB9UHl1JqvAOI7ShPhEiTYRvgdvauW+1hARF/9MIpmKHX
-         /AUb7NbQ2oGBZhuXIFaArKINXEQ0xOWNfsZW2uZ7pY66IRdc/+JH4Bc/4HvgYEYl+eRh
-         yGZw==
-X-Gm-Message-State: AOAM531dYVdYzPbnLdfWOdg/wYVqfzqhh533+0jz38+sIM5BD6TWWYYG
-        X+wlbHov9WwcM9eOhIt39A==
-X-Google-Smtp-Source: ABdhPJzEAfdu96Dl64sjSquL2WUtdR+miWORqszYxAlQD+J1TOAaB4hdyaGuYoRdcPTfNaLs79EAkg==
-X-Received: by 2002:aca:54c3:: with SMTP id i186mr760333oib.35.1602006209056;
-        Tue, 06 Oct 2020 10:43:29 -0700 (PDT)
+        bh=3qBY/l7SF+xhkZcFU4RRfNWWr30Jq3atxwWLx22F+9c=;
+        b=hBmLgh0GtGHTyEvwSVL1pvCjtle9+XOGBVs8ZPggzRGF1JSYoWvyZxymXtb0W8peew
+         VdEOKxvNxCMJuqv36y7eiDhCbRBpSfTqcadfTWvbAV1SOGDTV8y2/BqheM7jAcTwDbot
+         g7A2wI/yL6U53cpV1DUUf+7Sz9CO04wFJlaGCNTF6Ulb4MKUhbVSLsTRZe2SLW4uylU/
+         PQvxu5eo+Ipt8OMwh+rrloxJ1XJKgAveRsV9FDRILyjNJd8Sldvph1gr7KRXmyhAWogy
+         KT2gwTFQnDnduQBpnHQFq26kWw88FT9dEIXjijbHDZHomputzzH5Wr02samY9TGieWtb
+         7zBQ==
+X-Gm-Message-State: AOAM532FqX7Qmxz22sgWzWj94BzgvfssBOhY5bdJ7YDr2cWZDxvD1dW0
+        HA8/UNbmG9CYLdFwaKZiGsk4XxrNj7dY
+X-Google-Smtp-Source: ABdhPJyqU4G8ncampr1FXlDqvnEh1N64eA81gz+H8WNGpLZ2QNStQOL/yOPJnhIDRvaF10ilnZg4Rg==
+X-Received: by 2002:aca:ef03:: with SMTP id n3mr3410908oih.67.1602006246025;
+        Tue, 06 Oct 2020 10:44:06 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k2sm1354047oiw.20.2020.10.06.10.43.27
+        by smtp.gmail.com with ESMTPSA id k13sm1277449ood.31.2020.10.06.10.44.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 10:43:28 -0700 (PDT)
-Received: (nullmailer pid 2514544 invoked by uid 1000);
-        Tue, 06 Oct 2020 17:43:27 -0000
-Date:   Tue, 6 Oct 2020 12:43:27 -0500
+        Tue, 06 Oct 2020 10:44:05 -0700 (PDT)
+Received: (nullmailer pid 2515696 invoked by uid 1000);
+        Tue, 06 Oct 2020 17:44:04 -0000
+Date:   Tue, 6 Oct 2020 12:44:04 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        =?iso-8859-1?Q?S=E9bastien?= Szymanski 
-        <sebastien.szymanski@armadeus.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
+Cc:     Fabio Estevam <festevam@gmail.com>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        Li Yang <leoyang.li@nxp.com>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree@vger.kernel.org, Krzysztof Halasa <khalasa@piap.pl>,
+        Shawn Guo <shawnguo@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-gpio@vger.kernel.org, Linus Walleij <linusw@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/12] dt-bindings: arm: fsl: document i.MX7D boards
-Message-ID: <20201006174327.GA2514455@bogus>
-References: <20201001170759.9592-1-krzk@kernel.org>
- <20201001170759.9592-10-krzk@kernel.org>
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: vendor-prefixes: favor "gateworks" over "gw"
+Message-ID: <20201006174404.GA2515615@bogus>
+References: <20201003103335.23404-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201001170759.9592-10-krzk@kernel.org>
+In-Reply-To: <20201003103335.23404-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Oct 2020 19:07:56 +0200, Krzysztof Kozlowski wrote:
-> Document and adjust the compatibles for i.MX7D based boards.
+On Sat, 03 Oct 2020 12:33:35 +0200, Krzysztof Kozlowski wrote:
+> There are two vendor prefixes for Gateworks: "gw" and "gateworks".
+> Favor the longer one (more descriptive) and mark "gw" as deprecated so
+> it will not be used in new bindings.
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> 
+> "gw" is still used in multiple DTS and bindings. I could fix them up as
+> well, although maybe this is unnecessary churn and compatibility
+> breakage.
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
