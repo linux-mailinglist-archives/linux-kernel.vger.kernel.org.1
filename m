@@ -2,80 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495DD2850D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CE72850D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgJFRaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:30:18 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40834 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgJFRaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:30:17 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 096HUE9L126688;
-        Tue, 6 Oct 2020 12:30:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602005414;
-        bh=AzvZBRhmRABDkqrfilxWWOPhcvOL4CGtB+8gJlGQV3A=;
-        h=From:To:CC:Subject:Date;
-        b=XQws8qD+TtfYln3P9kDmtrWXWge8ViVw1rgYesKsaqO/nvcsnj1Cf/LaPvjmHY99E
-         VoWNLykARPRbyhqgyLCK2Dn54MZhIO0e2DwqbZpX3DLsWTAY1pTZNetTQ9pidN247u
-         7ZUpv72PXN7kcjBvHiYPRd62BeOAucaS5c3iqUFo=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 096HUESg086451
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 6 Oct 2020 12:30:14 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 6 Oct
- 2020 12:30:13 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 6 Oct 2020 12:30:13 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 096HUDux109037;
-        Tue, 6 Oct 2020 12:30:13 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <sre@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>, kernel test robot <lkp@intel.com>
-Subject: [PATCH] power: supply: bq25980: Fix uninitialized wd_reg_val
-Date:   Tue, 6 Oct 2020 12:30:07 -0500
-Message-ID: <20201006173007.17385-1-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726469AbgJFRbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:31:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgJFRbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 13:31:19 -0400
+Received: from localhost.localdomain (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F5A820674;
+        Tue,  6 Oct 2020 17:31:17 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        Jeremy Linton <jeremy.linton@arm.com>
+Cc:     Will Deacon <will@kernel.org>, davem@davemloft.net,
+        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
+        dave.martin@arm.com, ardb@kernel.org, linux-crypto@vger.kernel.org,
+        broonie@kernel.org
+Subject: Re: [PATCH v3] crypto: arm64: Use x16 with indirect branch to bti_c
+Date:   Tue,  6 Oct 2020 18:31:15 +0100
+Message-Id: <160200545502.18883.1273632867328038422.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201006163326.2780619-1-jeremy.linton@arm.com>
+References: <20201006163326.2780619-1-jeremy.linton@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the uninitialized wd_reg_val if the for..loop was not successful in
-finding an appropriate match.
+On Tue, 6 Oct 2020 11:33:26 -0500, Jeremy Linton wrote:
+> The AES code uses a 'br x7' as part of a function called by
+> a macro. That branch needs a bti_j as a target. This results
+> in a panic as seen below. Using x16 (or x17) with an indirect
+> branch keeps the target bti_c.
+> 
+>   Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
+>   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+>   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+>   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+>   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+>   sp : ffff80001052b730
+> 
+> [...]
 
-Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259xx family")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/power/supply/bq25980_charger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to arm64 (for-next/fixes), thanks!
 
-diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/supply/bq25980_charger.c
-index 3995fb7cf060..24b9c0c8b25d 100644
---- a/drivers/power/supply/bq25980_charger.c
-+++ b/drivers/power/supply/bq25980_charger.c
-@@ -1099,7 +1099,7 @@ static int bq25980_power_supply_init(struct bq25980_device *bq,
- static int bq25980_hw_init(struct bq25980_device *bq)
- {
- 	struct power_supply_battery_info bat_info = { };
--	int wd_reg_val;
-+	int wd_reg_val = 0;
- 	int ret = 0;
- 	int curr_val;
- 	int volt_val;
+[1/1] crypto: arm64: Use x16 with indirect branch to bti_c
+      https://git.kernel.org/arm64/c/39e4716caa59
+
 -- 
-2.28.0.585.ge1cfff676549
+Catalin
 
