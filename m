@@ -2,131 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F382850E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4142850E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgJFRgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgJFRgV (ORCPT
+        id S1726624AbgJFRg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:36:26 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:42800 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgJFRgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:36:21 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC29C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 10:36:21 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x62so9001264oix.11
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 10:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mazb5p/CVINtUGXj46lnFOxfjQtw41l3/+VIi18FkLw=;
-        b=E/PxT/QY9txUSAaodb4r9PU1yFxoQB8DUFXg7mPwcRbdpYpMNWJsJemOTSHPhrdR9w
-         pVN7xGtz5uShbPDtIqGfccYEXA71CJ3ijXoKu70FQjCdt3xsNz6aHH+YaroUlrbxfkZE
-         oFo0YTjKAtwO/Ig5OS/QEW9iPlOvE9p29P7/Kd9Py5KbvnFKusWfav03RsDOHuCubYpg
-         1JVymeyRhermYVz3C0u5VZa0PuDL7W0IfW+4TkmQi7JSSmctqWlrcr2oIY8q1lhy5FIN
-         27dm9BoU9WVGMHYe5dSNc93XDVB4x1FWYsPpA+sEbMhoVsNiSWVQWLCFsGjD7/Kd9mMP
-         7DWw==
+        Tue, 6 Oct 2020 13:36:24 -0400
+Received: by mail-oo1-f67.google.com with SMTP id l18so2261631ooa.9;
+        Tue, 06 Oct 2020 10:36:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mazb5p/CVINtUGXj46lnFOxfjQtw41l3/+VIi18FkLw=;
-        b=kvZmMZ0CbX+1HNXrc47nw//RGHC9EIwr0SSWo/9KGia7SHyepW8nPz/FZDLmwjemTl
-         KNBFZeQZeb6CzBsDt6YIM+PrvDfnfOIHiqwcoQtzw+j+kuYsI/NZMEhZi4nIfuqAWCL/
-         h7SOgNW+yOMqNN6UiSLydiOINaMlbux3EnnqZyljDfMPHK9lnzex7txa93/JUc1pi5JB
-         06TfI3PthpD5OYZ29eQxCVPKKDH/v/nswFTswQpz9n1UpgeEgtoadOWSAgrTBdp+qwA2
-         xKhRrdHK8Yoabknys9rJqa/VuJo01iRPoVn0UNrYs/tNM9wOIsNfPyXwny1nO8NpjTwT
-         gxjw==
-X-Gm-Message-State: AOAM531c+hcxoR3uzt2jhDsA71JIelqZomY6oX4YBV9wWXOR9+x0xRKH
-        7THZqbDyyMNkrmeawCX8Wc3ZkwK3/04gr1s8xBM+Pw==
-X-Google-Smtp-Source: ABdhPJyKZ1uYnyMjkzt69ciMheqHv/JFAvfxq8TFacleYotNjpffENQEBZV1uIVcpJwo1DjZrIhsZwzpNhn96/r0e8I=
-X-Received: by 2002:aca:5b05:: with SMTP id p5mr3259808oib.6.1602005780792;
- Tue, 06 Oct 2020 10:36:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zab/6vlgKQv5s8OglqXpbzcgQo7SHEbrINSkhUR0UNk=;
+        b=uZVYrDwR1eT21Q3rgmexir35FVADL/6aWpZJrJbtFSy/rBvHQ9Ek77GeWqjy+tHY9E
+         W2bySwLmoxIFFjgzrrVP6bhNrdeHxeJWIKI1Pu2gd5/sBJBsDX8J4PTy5XoRcoiw4tiD
+         SgCQFlID6L9cDoYtDvu+jpt0EdcWrAd3LhH3MhaPXeYZNM5zhWp0nCnz6+sVacXk8Okq
+         qF6OYdkNHxBzeyt5rc0vBz3Igu0Bsy/Nt5OM53mMTEaIwN/HfhEFszi0Jw42A1pMcfQ0
+         EBLXUdh9YZ6jIjEFt5qjZZzpTny8wj1bdJsg8tjGi+A5A3N9twXLup1iDwhWmEBaxjui
+         brRw==
+X-Gm-Message-State: AOAM532zdvynZBuUPS1ydnyecF7eNdVBb2H2Wp/KuMbuYpCKWaMmRGnZ
+        4D+4QDwSftYMvQXCsiEcmw==
+X-Google-Smtp-Source: ABdhPJyXyc9tFRer/0yizocvLpctx+GNLOQGNj3t0xAR0Q9jwdpdhuV0zAGEGWARM/wmg2FvQMilpA==
+X-Received: by 2002:a4a:c011:: with SMTP id v17mr733100oop.89.1602005783118;
+        Tue, 06 Oct 2020 10:36:23 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p20sm1245961oth.48.2020.10.06.10.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 10:36:22 -0700 (PDT)
+Received: (nullmailer pid 2502055 invoked by uid 1000);
+        Tue, 06 Oct 2020 17:36:21 -0000
+Date:   Tue, 6 Oct 2020 12:36:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
+        devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Li Yang <leoyang.li@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Anson Huang <Anson.Huang@nxp.com>
+Subject: Re: [PATCH v2 02/12] dt-bindings: vendor-prefixes: add Revotics
+Message-ID: <20201006173621.GA2502026@bogus>
+References: <20200930190143.27032-1-krzk@kernel.org>
+ <20200930190143.27032-3-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20200812175129.12172-1-sean.j.christopherson@intel.com>
-In-Reply-To: <20200812175129.12172-1-sean.j.christopherson@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 6 Oct 2020 10:36:09 -0700
-Message-ID: <CALMp9eTc9opgQ4pU92wmKSM6gUv6AEKZRqSnv_Q+rzixOLOZiw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: nVMX: Morph notification vector IRQ on nested
- VM-Enter to pending PI
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Liran Alon <liran.alon@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930190143.27032-3-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 10:51 AM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On successful nested VM-Enter, check for pending interrupts and convert
-> the highest priority interrupt to a pending posted interrupt if it
-> matches L2's notification vector.  If the vCPU receives a notification
-> interrupt before nested VM-Enter (assuming L1 disables IRQs before doing
-> VM-Enter), the pending interrupt (for L1) should be recognized and
-> processed as a posted interrupt when interrupts become unblocked after
-> VM-Enter to L2.
->
-> This fixes a bug where L1/L2 will get stuck in an infinite loop if L1 is
-> trying to inject an interrupt into L2 by setting the appropriate bit in
-> L2's PIR and sending a self-IPI prior to VM-Enter (as opposed to KVM's
-> method of manually moving the vector from PIR->vIRR/RVI).  KVM will
-> observe the IPI while the vCPU is in L1 context and so won't immediately
-> morph it to a posted interrupt for L2.  The pending interrupt will be
-> seen by vmx_check_nested_events(), cause KVM to force an immediate exit
-> after nested VM-Enter, and eventually be reflected to L1 as a VM-Exit.
-> After handling the VM-Exit, L1 will see that L2 has a pending interrupt
-> in PIR, send another IPI, and repeat until L2 is killed.
->
-> Note, posted interrupts require virtual interrupt deliveriy, and virtual
-> interrupt delivery requires exit-on-interrupt, ergo interrupts will be
-> unconditionally unmasked on VM-Enter if posted interrupts are enabled.
->
-> Fixes: 705699a13994 ("KVM: nVMX: Enable nested posted interrupt processing")
-> Cc: stable@vger.kernel.org
-> Cc: Liran Alon <liran.alon@oracle.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+On Wed, 30 Sep 2020 21:01:33 +0200, Krzysztof Kozlowski wrote:
+> Document vendor prefix for Revotics (Revolution Robotics, Inc.).
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
 > ---
-I don't think this is the best fix.
+> 
+> Changes since v1:
+> 1. New patch
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-I believe the real problem is the way that external and posted
-interrupts are handled in vmx_check_nested_events().
-
-First of all, I believe that the existing call to
-vmx_complete_nested_posted_interrupt() at the end of
-vmx_check_nested_events() is far too aggressive. Unless I am missing
-something in the SDM, posted interrupt processing is *only* triggered
-when the notification vector is received in VMX non-root mode. It is
-not triggered on VM-entry.
-
-Looking back one block, we have:
-
-if (kvm_cpu_has_interrupt(vcpu) && !vmx_interrupt_blocked(vcpu)) {
-    if (block_nested_events)
-        return -EBUSY;
-    if (!nested_exit_on_intr(vcpu))
-        goto no_vmexit;
-    nested_vmx_vmexit(vcpu, EXIT_REASON_EXTERNAL_INTERRUPT, 0, 0);
-    return 0;
-}
-
-If nested_exit_on_intr() is true, we should first check to see if
-"acknowledge interrupt on exit" is set. If so, we should acknowledge
-the interrupt right here, with a call to kvm_cpu_get_interrupt(),
-rather than deep in the guts of nested_vmx_vmexit(). If the vector we
-get is the notification vector from VMCS12, then we should call
-vmx_complete_nested_posted_interrupt(). Otherwise, we should call
-nested_vmx_vmexit(EXIT_REASON_EXTERNAL_INTERRUPT) as we do now.
-
-Furthermore, vmx_complete_nested_posted_interrupt() should write to
-the L1 EOI register, as indicated in step 4 of the 7-step sequence
-detailed in section 29.6 of the SDM, volume 3. It skips this step
-today.
+Acked-by: Rob Herring <robh@kernel.org>
