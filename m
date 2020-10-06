@@ -2,191 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B20284605
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E50928461A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 08:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgJFG31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 02:29:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:39454 "EHLO foss.arm.com"
+        id S1727154AbgJFGdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 02:33:36 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:25402 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgJFG31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 02:29:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C9B71435;
-        Mon,  5 Oct 2020 23:29:26 -0700 (PDT)
-Received: from [10.163.74.99] (unknown [10.163.74.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B50FF3F66B;
-        Mon,  5 Oct 2020 23:29:22 -0700 (PDT)
-Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
- mapping
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
- <20200928203539.GA12218@willie-the-truck>
- <09266aed-7eef-5b16-5d52-0dcb7dcb7246@arm.com>
- <20200929152221.GA13995@willie-the-truck>
- <f44d34df-8a21-712c-138d-f7f633b0eb6c@arm.com>
- <CAMj1kXGhja2cxQOpnboj1mos314Nku209dkgmmz74X3wq=j8Rg@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <0784f1ec-c044-7fc8-70dc-a378c2b586fa@arm.com>
-Date:   Tue, 6 Oct 2020 11:58:51 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <CAMj1kXGhja2cxQOpnboj1mos314Nku209dkgmmz74X3wq=j8Rg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726822AbgJFGdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 02:33:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601966015; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=5xFc9x9ZvdtmXRnb3aRKi6VRwlLNCRyrivsJzoEtGM8=; b=VHnmcxYQkT7OiabviFLsQFgQ6xQh4hzPt2pz5XEMLMiV0dF/v+qMxK/fRek0+qE49xkerVdD
+ jv9saWPYmWkERapOtWolahq2k5i9pOxh29e5xZEgPcotcNuEBA6WxxY0HEXeYz0yfXyKM9w/
+ M/T6usE1N37LgKBN2ym3j8grTwI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f7c0fb4bfed2afaa651fcc7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 06 Oct 2020 06:33:24
+ GMT
+Sender: bgodavar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 429F9C433FE; Tue,  6 Oct 2020 06:33:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from bgodavar-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bgodavar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3F6F8C433CA;
+        Tue,  6 Oct 2020 06:33:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3F6F8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bgodavar@codeaurora.org
+From:   Balakrishna Godavarthi <bgodavar@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        gubbaven@codeaurora.org, hemantg@codeaurora.org,
+        abhishekpandit@chromium.org, rjliao@codeaurora.org,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>
+Subject: [PATCH v1] Bluetooth: hci_qca: Enhance retry logic in qca_setup
+Date:   Tue,  6 Oct 2020 11:59:27 +0530
+Message-Id: <1601965767-18796-1-git-send-email-bgodavar@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently driver only retries to download FW if FW downloading
+is failed. Sometimes observed command timeout for version request
+command, if this happen on some platforms during boot time, then
+a reboot is needed to turn ON BT. Instead to avoid a reboot, now
+extended retry logic for version request command too.
 
+Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+---
+ drivers/bluetooth/hci_qca.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
-On 09/30/2020 04:31 PM, Ard Biesheuvel wrote:
-> On Wed, 30 Sep 2020 at 10:03, Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->>
->>
->> On 09/29/2020 08:52 PM, Will Deacon wrote:
->>> On Tue, Sep 29, 2020 at 01:34:24PM +0530, Anshuman Khandual wrote:
->>>>
->>>>
->>>> On 09/29/2020 02:05 AM, Will Deacon wrote:
->>>>> On Thu, Sep 17, 2020 at 02:16:42PM +0530, Anshuman Khandual wrote:
->>>>>> During memory hotplug process, the linear mapping should not be created for
->>>>>> a given memory range if that would fall outside the maximum allowed linear
->>>>>> range. Else it might cause memory corruption in the kernel virtual space.
->>>>>>
->>>>>> Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
->>>>>> both its ends but excluding PAGE_END. Max physical range that can be mapped
->>>>>> inside this linear mapping range, must also be derived from its end points.
->>>>>>
->>>>>> When CONFIG_ARM64_VA_BITS_52 is enabled, PAGE_OFFSET is computed with the
->>>>>> assumption of 52 bits virtual address space. However, if the CPU does not
->>>>>> support 52 bits, then it falls back using 48 bits instead and the PAGE_END
->>>>>> is updated to reflect this using the vabits_actual. As for PAGE_OFFSET,
->>>>>> bits [51..48] are ignored by the MMU and remain unchanged, even though the
->>>>>> effective start address of linear map is now slightly different. Hence, to
->>>>>> reliably check the physical address range mapped by the linear map, the
->>>>>> start address should be calculated using vabits_actual. This ensures that
->>>>>> arch_add_memory() validates memory hot add range for its potential linear
->>>>>> mapping requirement, before creating it with __create_pgd_mapping().
->>>>>>
->>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>>>> Cc: Will Deacon <will@kernel.org>
->>>>>> Cc: Mark Rutland <mark.rutland@arm.com>
->>>>>> Cc: Ard Biesheuvel <ardb@kernel.org>
->>>>>> Cc: Steven Price <steven.price@arm.com>
->>>>>> Cc: Robin Murphy <robin.murphy@arm.com>
->>>>>> Cc: David Hildenbrand <david@redhat.com>
->>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>>>> Cc: linux-arm-kernel@lists.infradead.org
->>>>>> Cc: linux-kernel@vger.kernel.org
->>>>>> Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
->>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>>>> ---
->>>>>>  arch/arm64/mm/mmu.c | 27 +++++++++++++++++++++++++++
->>>>>>  1 file changed, 27 insertions(+)
->>>>>>
->>>>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->>>>>> index 75df62fea1b6..d59ffabb9c84 100644
->>>>>> --- a/arch/arm64/mm/mmu.c
->>>>>> +++ b/arch/arm64/mm/mmu.c
->>>>>> @@ -1433,11 +1433,38 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
->>>>>>    free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
->>>>>>  }
->>>>>>
->>>>>> +static bool inside_linear_region(u64 start, u64 size)
->>>>>> +{
->>>>>> +  /*
->>>>>> +   * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
->>>>>> +   * accommodating both its ends but excluding PAGE_END. Max physical
->>>>>> +   * range which can be mapped inside this linear mapping range, must
->>>>>> +   * also be derived from its end points.
->>>>>> +   *
->>>>>> +   * With CONFIG_ARM64_VA_BITS_52 enabled, PAGE_OFFSET is defined with
->>>>>> +   * the assumption of 52 bits virtual address space. However, if the
->>>>>> +   * CPU does not support 52 bits, it falls back using 48 bits and the
->>>>>> +   * PAGE_END is updated to reflect this using the vabits_actual. As
->>>>>> +   * for PAGE_OFFSET, bits [51..48] are ignored by the MMU and remain
->>>>>> +   * unchanged, even though the effective start address of linear map
->>>>>> +   * is now slightly different. Hence, to reliably check the physical
->>>>>> +   * address range mapped by the linear map, the start address should
->>>>>> +   * be calculated using vabits_actual.
->>>>>> +   */
->>>>>> +  return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
->>>>>> +                  && ((start + size) <= __pa(PAGE_END - 1)));
->>>>>> +}
->>>>>
->>>>> Why isn't this implemented using the existing __is_lm_address()?
->>>>
->>>> Not sure, if I understood your suggestion here. The physical address range
->>>> [start..start + size] needs to be checked against maximum physical range
->>>> that can be represented inside effective boundaries for the linear mapping
->>>> i.e [__pa(_PAGE_OFFSET(vabits_actual)..__pa(PAGE_END - 1)].
->>>>
->>>> Are you suggesting [start..start + size] should be first be converted into
->>>> a virtual address range and then checked against __is_lm_addresses() ? But
->>>> is not deriving the physical range from from know limits of linear mapping
->>>> much cleaner ?
->>>
->>> I just think having a function called "inside_linear_region()" as well as a
->>> macro called "__is_lm_address()" is weird when they have completely separate
->>> implementations. They're obviously trying to do the same thing, just the
->>> first one gets given physical address as parameters.
->>>
->>> Implementing one in terms of the other is much better for maintenance.
->>
->> /*
->>  * The linear kernel range starts at the bottom of the virtual address
->>  * space. Testing the top bit for the start of the region is a
->>  * sufficient check and avoids having to worry about the tag.
->>  */
->> #define __is_lm_address(addr)   (!(((u64)addr) & BIT(vabits_actual - 1)))
->>
->> __is_lm_address() currently just check the highest bit in a virtual address
->> where the linear mapping ends i.e the lower half and all other kernel mapping
->> starts i.e the upper half. But I would believe, it misses the blind range
->> [_PAGE_OFFSET(VA_BITS).._PAGE_OFFSET(vabits_actual)] in some configurations,
->> even though it does not really affect anything because it gets ignored by the
->> MMU. Hence in current form __is_lm_address() cannot be used to derive maximum
->> linear range and it's corresponding physical range for hotplug range check.
->>
-> 
-> This is actually something that I brought up when the 52-bit VA
-> changes were under review: currently, we split the VA space in half,
-> and use the lower half for the linear range, and the upper half for
-> vmalloc, kernel, modules, vmemmap etc
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 2d3f1f1..1c9a2d46 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1672,7 +1672,7 @@ static int qca_setup(struct hci_uart *hu)
+ retry:
+ 	ret = qca_power_on(hdev);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+ 	clear_bit(QCA_SSR_TRIGGERED, &qca->flags);
+ 
+@@ -1681,7 +1681,7 @@ static int qca_setup(struct hci_uart *hu)
+ 
+ 		ret = qca_read_soc_version(hdev, &soc_ver, soc_type);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 	} else {
+ 		qca_set_speed(hu, QCA_INIT_SPEED);
+ 	}
+@@ -1691,7 +1691,7 @@ static int qca_setup(struct hci_uart *hu)
+ 	if (speed) {
+ 		ret = qca_set_speed(hu, QCA_OPER_SPEED);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 
+ 		qca_baudrate = qca_get_baudrate_value(speed);
+ 	}
+@@ -1700,7 +1700,7 @@ static int qca_setup(struct hci_uart *hu)
+ 		/* Get QCA version information */
+ 		ret = qca_read_soc_version(hdev, &soc_ver, soc_type);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 	}
+ 
+ 	bt_dev_info(hdev, "QCA controller version 0x%08x", soc_ver);
+@@ -1721,20 +1721,22 @@ static int qca_setup(struct hci_uart *hu)
+ 		 * patch/nvm-config is found, so run with original fw/config.
+ 		 */
+ 		ret = 0;
+-	} else {
+-		if (retries < MAX_INIT_RETRIES) {
+-			qca_power_shutdown(hu);
+-			if (hu->serdev) {
+-				serdev_device_close(hu->serdev);
+-				ret = serdev_device_open(hu->serdev);
+-				if (ret) {
+-					bt_dev_err(hdev, "failed to open port");
+-					return ret;
+-				}
++	}
++
++out:
++	if (ret && retries < MAX_INIT_RETRIES) {
++		bt_dev_warn(hdev, "Retry BT power ON:%d", retries);
++		qca_power_shutdown(hu);
++		if (hu->serdev) {
++			serdev_device_close(hu->serdev);
++			ret = serdev_device_open(hu->serdev);
++			if (ret) {
++				bt_dev_err(hdev, "failed to open port");
++				return ret;
+ 			}
+-			retries++;
+-			goto retry;
+ 		}
++		retries++;
++		goto retry;
+ 	}
+ 
+ 	/* Setup bdaddr */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Right.
-
-> 
-> When we run a 48-bit kernel on 52-bit capable hardware, we mostly
-> stick with the same arrangement: 2^51 bytes of linear range, but only
-> 2^47 bytes of vmalloc range (as the size is fixed), and so we are
-> wasting 15/16 of the vmalloc region (2^51 - 2^47), by not using it to
-> map anything.
-
-Right, there are unused gaps in the kernel virtual space with current
-arrangement for various sections.
-
-> 
-> So it would be better to get away from this notion that the VA space
-> is divided evenly between linear and vmalloc regions, and use the
-> entire range between ~0 << 52 and ~0 << 47 for the linear region (Note
-> that the KASAN region defimnition will overlap the linear region in
-> this case, by we should be able to sort that at runtime)
-
-Right, kernel virtual space management needs rethink for optimal address
-range utilization while reducing unused areas. I have been experimenting
-with this for a while but nothing particular to propose yet. Nonetheless
-for now, we need to fix this address range problem for memory hotplug.
