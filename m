@@ -2,244 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607B32853D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA8F2853D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727424AbgJFVWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:22:38 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:38662 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727301AbgJFVWh (ORCPT
+        id S1727513AbgJFVWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727418AbgJFVWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:22:37 -0400
-Received: by mail-oi1-f194.google.com with SMTP id 26so134868ois.5;
-        Tue, 06 Oct 2020 14:22:36 -0700 (PDT)
+        Tue, 6 Oct 2020 17:22:49 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0B8C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 14:22:48 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b22so16635027lfs.13
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 14:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kqf0mfPbDxUJw+w6TI82pAryJKbZXD6ERc1Br897awA=;
+        b=FVUrmxNSnwxfguQIoLwhB3PwdpdxFvlIvs7dmFxZEFRTNZoW/rhfFleYV0ZKhMLZB0
+         +09XmvwJTp2Fvz6umhz3jUcC9+lFcx5t//ysmFtqT2zBHlMGEDPtpTc8O84R2tH0wKmF
+         JIm6IRLP/+1wSUsC2H/vUfMizhs/HCKrSyq2ULOT3LvG1fJKxBrkum5INBXF5T1qgnyl
+         zL73DYY0CIujLPhx0haxCU00wxNNA5BZnUzDq+UIzBvp5vJzU+Zn9nAI6M0ubx7j+SYK
+         rVON5EqLho0hbxs5mvEZ3LKqwJszdwE+qU34S34yH1KcI579XxJQsemZ1AFM+QoqDUbg
+         x0QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pASNyciRlJQ+q1SzlU48duaPR4kwkXsTon5RTlA14jM=;
-        b=ZouZg3/bUTt+zUBi3sShwB9nyjdUhGhEtM4zp7HcnIOFNTIVTq99cjTzE9ZnQO0xmt
-         +Cke6dvxFiyCqH9zfIajMVR2kAEEhwb0zPUZEkffnwO83g8W6JqxdcXlqM/3EfealK7x
-         1qvhrBpHq3yXXtAKibhu3TamUNj4fdQhXfXrpQCRNmc0rwmBotJLERCPllZgMq+PVZLh
-         DPy5uu5NyOXdZk0nuktoWEKlH5lHOd+3FgHL4dP5ch3BvupHXTqAXOY61FrFfCgtJbAB
-         Erz8aEU1JLPW8vRlrxxrTLWDmA8qB15dLg/VPqtJxpzN3OLxWoxh6bIAqP2uPO+TfKDx
-         5vFg==
-X-Gm-Message-State: AOAM533PYwfCiGsgvdY38+w86rwU+TaJxoKCLCuRz1AvPtUdVabB5/4z
-        WnUjrB1rMj3FLZ7D8ltqhSudFBMnew8J
-X-Google-Smtp-Source: ABdhPJwRbbc/2hD4U7BeLiJcL89GybUd1U3xNfN+SBpnmP60+6EL6BYBiite05NMzOXUMvCHt+iieQ==
-X-Received: by 2002:aca:5b45:: with SMTP id p66mr152878oib.39.1602019356282;
-        Tue, 06 Oct 2020 14:22:36 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l15sm27113oil.24.2020.10.06.14.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:22:35 -0700 (PDT)
-Received: (nullmailer pid 2866684 invoked by uid 1000);
-        Tue, 06 Oct 2020 21:22:34 -0000
-Date:   Tue, 6 Oct 2020 16:22:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Vladimir Lypak <junak.pub@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: qcom: add msm8953 pinctrl
- bindings
-Message-ID: <20201006212234.GA2858909@bogus>
-References: <20201004081644.323858-1-junak.pub@gmail.com>
- <20201004081644.323858-2-junak.pub@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kqf0mfPbDxUJw+w6TI82pAryJKbZXD6ERc1Br897awA=;
+        b=ECEGkBPMVKJbDznQawktNBUd1LAvYSqf+KnZjJvifidR4DuxKVdSwlwvGvQBQtsKlr
+         3dwI7fTAf6mNiV66RZMKVNpNb/biu1Cpi2CbH+tc4AaN0fKgBBia2wTMPkW8rYGnFwwM
+         MuOKfUkX/E+niUKIPvmql/fyGDGJPSCugpIdJsLaC42Q/xJitaTS3LL+5pZdtKoqepNn
+         tRLg86rH3nKyhhlcqLP5gz36mgNDZET0TySPWUde5X84eDkkbk0ZF43aRHaU2047sH3a
+         dgFOBRreMcBOl+O01C+mLPbQ5EJLuDH7EFyaRdqrsc8+k2rZD5lRYTPbTR3ck5JR0t1l
+         Q2VQ==
+X-Gm-Message-State: AOAM531Q7+k7EA46tQJ2BUiW8EvW6yF0a0fvgNYJ7S+m3/GSUzk88a3i
+        /Xb060c+WrCShbP6DqMAKrv45SrDHfXuyQ4MCFEs9g==
+X-Google-Smtp-Source: ABdhPJzDVu79X2bMHe1wvPdya0pCa53aKeq61U6EVOSzv1ylR6iO7CRJesyo+0hXqfdtsNs6ZWvtr6Nf0LrbXRMyMGU=
+X-Received: by 2002:ac2:4316:: with SMTP id l22mr1047155lfh.310.1602019366938;
+ Tue, 06 Oct 2020 14:22:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201004081644.323858-2-junak.pub@gmail.com>
+References: <20200812175129.12172-1-sean.j.christopherson@intel.com>
+ <CALMp9eTc9opgQ4pU92wmKSM6gUv6AEKZRqSnv_Q+rzixOLOZiw@mail.gmail.com> <20201006183501.GD17610@linux.intel.com>
+In-Reply-To: <20201006183501.GD17610@linux.intel.com>
+From:   Oliver Upton <oupton@google.com>
+Date:   Tue, 6 Oct 2020 14:22:35 -0700
+Message-ID: <CAOQ_Qsgycf+p1=XfWVdG+2qpECcMWvPP7L5hM-AJN-V-_brv7g@mail.gmail.com>
+Subject: Re: [PATCH] KVM: nVMX: Morph notification vector IRQ on nested
+ VM-Enter to pending PI
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Liran Alon <liran.alon@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 11:16:44AM +0300, Vladimir Lypak wrote:
-> Add device tree bindings documentation for Qualcomm MSM8953
-> pinctrl driver.
-> 
-> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
-> ---
->  .../pinctrl/qcom,msm8953-pinctrl.yaml         | 160 ++++++++++++++++++
->  1 file changed, 160 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..e539149834b6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
-> @@ -0,0 +1,160 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,msm8953-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. MSM8953 TLMM block
-> +
-> +maintainers:
-> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
-> +
-> +description: |
-> +  This binding describes the Top Level Mode Multiplexer block found in the
-> +  MSM8953 platform.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,msm8953-pinctrl
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: Specifies the TLMM summary IRQ
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  '#interrupt-cells':
-> +    description:
-> +      Specifies the PIN numbers and Flags, as defined in defined in
-> +      include/dt-bindings/interrupt-controller/irq.h
-> +    const: 2
-> +
-> +  gpio-controller: true
-> +
-> +  '#gpio-cells':
-> +    description: Specifying the pin number and flags, as defined in
-> +      include/dt-bindings/gpio/gpio.h
-> +    const: 2
-> +
-> +  gpio-ranges:
-> +    maxItems: 1
-> +
-> +  wakeup-parent:
-> +    maxItems: 1
-> +
-> +#PIN CONFIGURATION NODES
-> +patternProperties:
-> +  '^.*$':
-> +    if:
-> +      type: object
-> +    then:
+On Tue, Oct 6, 2020 at 11:35 AM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Tue, Oct 06, 2020 at 10:36:09AM -0700, Jim Mattson wrote:
+> > On Wed, Aug 12, 2020 at 10:51 AM Sean Christopherson
+> > <sean.j.christopherson@intel.com> wrote:
+> > >
+> > > On successful nested VM-Enter, check for pending interrupts and convert
+> > > the highest priority interrupt to a pending posted interrupt if it
+> > > matches L2's notification vector.  If the vCPU receives a notification
+> > > interrupt before nested VM-Enter (assuming L1 disables IRQs before doing
+> > > VM-Enter), the pending interrupt (for L1) should be recognized and
+> > > processed as a posted interrupt when interrupts become unblocked after
+> > > VM-Enter to L2.
+> > >
+> > > This fixes a bug where L1/L2 will get stuck in an infinite loop if L1 is
+> > > trying to inject an interrupt into L2 by setting the appropriate bit in
+> > > L2's PIR and sending a self-IPI prior to VM-Enter (as opposed to KVM's
+> > > method of manually moving the vector from PIR->vIRR/RVI).  KVM will
+> > > observe the IPI while the vCPU is in L1 context and so won't immediately
+> > > morph it to a posted interrupt for L2.  The pending interrupt will be
+> > > seen by vmx_check_nested_events(), cause KVM to force an immediate exit
+> > > after nested VM-Enter, and eventually be reflected to L1 as a VM-Exit.
+> > > After handling the VM-Exit, L1 will see that L2 has a pending interrupt
+> > > in PIR, send another IPI, and repeat until L2 is killed.
+> > >
+> > > Note, posted interrupts require virtual interrupt deliveriy, and virtual
+> > > interrupt delivery requires exit-on-interrupt, ergo interrupts will be
+> > > unconditionally unmasked on VM-Enter if posted interrupts are enabled.
+> > >
+> > > Fixes: 705699a13994 ("KVM: nVMX: Enable nested posted interrupt processing")
+> > > Cc: stable@vger.kernel.org
+> > > Cc: Liran Alon <liran.alon@oracle.com>
+> > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > > ---
+> > I don't think this is the best fix.
+>
+> I agree, even without any more explanantion :-)
+>
+> > I believe the real problem is the way that external and posted
+> > interrupts are handled in vmx_check_nested_events().
+> >
+> > First of all, I believe that the existing call to
+> > vmx_complete_nested_posted_interrupt() at the end of
+> > vmx_check_nested_events() is far too aggressive. Unless I am missing
+> > something in the SDM, posted interrupt processing is *only* triggered
+> > when the notification vector is received in VMX non-root mode. It is
+> > not triggered on VM-entry.
+>
+> That's my understanding as well.  Virtual interrupt delivery is evaluated
+> on VM-Enter, but not posted interrupts.
+>
+>   Evaluation of pending virtual interrupts is caused only by VM entry, TPR
+>   virtualization, EOI virtualization, self-IPI virtualization, and posted-
+>   interrupt processing.
+>
+> > Looking back one block, we have:
+> >
+> > if (kvm_cpu_has_interrupt(vcpu) && !vmx_interrupt_blocked(vcpu)) {
+> >     if (block_nested_events)
+> >         return -EBUSY;
+> >     if (!nested_exit_on_intr(vcpu))
+> >         goto no_vmexit;
+> >     nested_vmx_vmexit(vcpu, EXIT_REASON_EXTERNAL_INTERRUPT, 0, 0);
+> >     return 0;
+> > }
+> >
+> > If nested_exit_on_intr() is true, we should first check to see if
+> > "acknowledge interrupt on exit" is set. If so, we should acknowledge
+> > the interrupt right here, with a call to kvm_cpu_get_interrupt(),
+> > rather than deep in the guts of nested_vmx_vmexit(). If the vector we
+> > get is the notification vector from VMCS12, then we should call
+> > vmx_complete_nested_posted_interrupt(). Otherwise, we should call
+> > nested_vmx_vmexit(EXIT_REASON_EXTERNAL_INTERRUPT) as we do now.
+>
+> That makes sense.  And we can pass in exit_intr_info instead of computing
+> it in nested_vmx_vmexit() since this is the only path that does a nested
+> exit with EXIT_REASON_EXTERNAL_INTERRUPT.
+>
+> > Furthermore, vmx_complete_nested_posted_interrupt() should write to
+> > the L1 EOI register, as indicated in step 4 of the 7-step sequence
+> > detailed in section 29.6 of the SDM, volume 3. It skips this step
+> > today.
+>
+> Yar.
+>
+> Thanks Jim!  I'll get a series out.
 
-For new bindings, please define a node name pattern you can match on 
-and avoid this if/then. '-pins$' is my preference.
+Hey Sean,
 
-> +      properties:
-> +        pins:
-> +          description:
-> +            List of gpio pins affected by the properties specified in this
-> +            subnode.
-> +          items:
-> +            oneOf:
-> +              - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-7][0-9])$"
-> +              - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc1_rclk, sdc2_clk,
-> +                        sdc2_cmd, sdc2_data, qdsd_clk, qdsd_cmd, qdsd_data0,
-> +                        qdsd_data1, qdsd_data2, qdsd_data3 ]
-> +          minItems: 1
-> +          maxItems: 16
-> +
-> +        function:
-> +          description:
-> +            Specify the alternative function to be configured for the specified
-> +            pins.
-> +
-> +          enum: [ accel_int, adsp_ext, alsp_int, atest_bbrx0, atest_bbrx1,
-> +                  atest_char, atest_char0, atest_char1, atest_char2, atest_char3,
-> +                  atest_gpsadc_dtest0_native, atest_gpsadc_dtest1_native, atest_tsens,
-> +                  atest_wlan0, atest_wlan1, bimc_dte0, bimc_dte1, blsp1_spi,
-> +                  blsp3_spi, blsp6_spi, blsp7_spi, blsp_i2c1, blsp_i2c2, blsp_i2c3,
-> +                  blsp_i2c4, blsp_i2c5, blsp_i2c6, blsp_i2c7, blsp_i2c8, blsp_spi1,
-> +                  blsp_spi2, blsp_spi3, blsp_spi4, blsp_spi5, blsp_spi6, blsp_spi7,
-> +                  blsp_spi8, blsp_uart2, blsp_uart4, blsp_uart5, blsp_uart6, cam0_ldo,
-> +                  cam1_ldo, cam1_rst, cam1_standby, cam2_rst, cam2_standby, cam3_rst,
-> +                  cam3_standby, cam_irq, cam_mclk, cap_int, cci_async, cci_i2c,
-> +                  cci_timer0, cci_timer1, cci_timer2, cci_timer3, cci_timer4,
-> +                  cdc_pdm0, codec_int1, codec_int2, codec_reset, cri_trng, cri_trng0,
-> +                  cri_trng1, dac_calib0, dac_calib1, dac_calib10, dac_calib11,
-> +                  dac_calib12, dac_calib13, dac_calib14, dac_calib15, dac_calib16,
-> +                  dac_calib17, dac_calib18, dac_calib19, dac_calib2, dac_calib20,
-> +                  dac_calib21, dac_calib22, dac_calib23, dac_calib24, dac_calib25,
-> +                  dac_calib3, dac_calib4, dac_calib5, dac_calib6, dac_calib7,
-> +                  dac_calib8, dac_calib9, dbg_out, ddr_bist, dmic0_clk, dmic0_data,
-> +                  ebi_cdc, ebi_ch0, ext_lpass, flash_strobe, fp_int, gcc_gp1_clk_a,
-> +                  gcc_gp1_clk_b, gcc_gp2_clk_a, gcc_gp2_clk_b, gcc_gp3_clk_a,
-> +                  gcc_gp3_clk_b, gcc_plltest, gcc_tlmm, gpio, gsm0_tx, gsm1_tx,
-> +                  gyro_int, hall_int, hdmi_int, key_focus, key_home, key_snapshot,
-> +                  key_volp, ldo_en, ldo_update, lpass_slimbus, lpass_slimbus0,
-> +                  lpass_slimbus1, m_voc, mag_int, mdp_vsync, mipi_dsi0, modem_tsync,
-> +                  mss_lte, nav_pps, nav_pps_in_a, nav_pps_in_b, nav_tsync,
-> +                  nfc_disable, nfc_dwl, nfc_irq, ois_sync, pa_indicator, pbs0, pbs1,
-> +                  pbs2, pressure_int, pri_mi2s, pri_mi2s_mclk_a, pri_mi2s_mclk_b,
-> +                  pri_mi2s_ws, prng_rosc, pwr_crypto_enabled_a, pwr_crypto_enabled_b,
-> +                  pwr_down, pwr_modem_enabled_a, pwr_modem_enabled_b,
-> +                  pwr_nav_enabled_a, pwr_nav_enabled_b, qdss_cti_trig_in_a0,
-> +                  qdss_cti_trig_in_a1, qdss_cti_trig_in_b0, qdss_cti_trig_in_b1,
-> +                  qdss_cti_trig_out_a0, qdss_cti_trig_out_a1, qdss_cti_trig_out_b0,
-> +                  qdss_cti_trig_out_b1, qdss_traceclk_a, qdss_traceclk_b,
-> +                  qdss_tracectl_a, qdss_tracectl_b, qdss_tracedata_a,
-> +                  qdss_tracedata_b, sd_write, sdcard_det, sec_mi2s, sec_mi2s_mclk_a,
-> +                  sec_mi2s_mclk_b, smb_int, ss_switch, ssbi_wtr1, ts_resout,
-> +                  ts_sample, ts_xvdd, tsens_max, uim1_clk, uim1_data, uim1_present,
-> +                  uim1_reset, uim2_clk, uim2_data, uim2_present, uim2_reset,
-> +                  uim_batt, us_emitter, us_euro, wcss_bt, wcss_fm, wcss_wlan,
-> +                  wcss_wlan0, wcss_wlan1, wcss_wlan2, wsa_en, wsa_io, wsa_irq ]
-> +
-> +        drive-strength:
-> +          enum: [2, 4, 6, 8, 10, 12, 14, 16]
-> +          default: 2
-> +          description:
-> +            Selects the drive strength for the specified pins, in mA.
-> +
-> +        bias-pull-down: true
-> +
-> +        bias-pull-up: true
-> +
-> +        bias-disable: true
-> +
-> +        output-high: true
-> +
-> +        output-low: true
-> +
-> +      required:
-> +        - pins
-> +        - function
-> +
-> +      additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - '#interrupt-cells'
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - gpio-ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +        tlmm: pinctrl@1000000 {
-> +              compatible = "qcom,msm8953-pinctrl";
-> +              reg = <0x01000000 0x300000>;
-> +              interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> +              interrupt-controller;
-> +              #interrupt-cells = <2>;
-> +              gpio-controller;
-> +              #gpio-cells = <2>;
-> +              gpio-ranges = <&tlmm 0 0 142>;
+I actually ran into this issue as well before noticing your patch. I
+have a repro kvm-unit-test that I'll send out shortly.
 
-Please show at least 1 child node.
+Thanks for looking into this!
 
-> +        };
-> -- 
-> 2.24.1
-> 
+--
+Oliver
