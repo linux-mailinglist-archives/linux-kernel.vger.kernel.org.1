@@ -2,116 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83D12853CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607B32853D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbgJFVUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:20:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39849 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727301AbgJFVUR (ORCPT
+        id S1727424AbgJFVWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:22:38 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:38662 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727301AbgJFVWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:20:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602019216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JNBCHKIIUAK6GMtL6RxhuqViZ7dVLOsyPe4fpK0/CX0=;
-        b=CdH746+Ec3ZrwooTmXfoSm4g62L91jTmPYZasNxPEJhZOXbJej6s9oVNQjwbW0ScDdOD/f
-        esYY1FPZgKnFxBiWrO8G4R0YCbLwwGGrQ1vLw7GvRa7zVi9nPlq62EpVpl1BZlWG+RUbes
-        7/BoPv6d0LieVUmmZOSMM/NXcIwVYI4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-Nxs8XvEZMwqHpGeuTbpfJg-1; Tue, 06 Oct 2020 17:20:10 -0400
-X-MC-Unique: Nxs8XvEZMwqHpGeuTbpfJg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B49E804039;
-        Tue,  6 Oct 2020 21:20:07 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-154.ams2.redhat.com [10.36.113.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A7F886EF42;
-        Tue,  6 Oct 2020 21:20:03 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        torvalds@linux-foundation.org
-Subject: Re: Control Dependencies vs C Compilers
-References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
-Date:   Tue, 06 Oct 2020 23:20:01 +0200
-In-Reply-To: <20201006114710.GQ2628@hirez.programming.kicks-ass.net> (Peter
-        Zijlstra's message of "Tue, 6 Oct 2020 13:47:10 +0200")
-Message-ID: <875z7nm4qm.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Tue, 6 Oct 2020 17:22:37 -0400
+Received: by mail-oi1-f194.google.com with SMTP id 26so134868ois.5;
+        Tue, 06 Oct 2020 14:22:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pASNyciRlJQ+q1SzlU48duaPR4kwkXsTon5RTlA14jM=;
+        b=ZouZg3/bUTt+zUBi3sShwB9nyjdUhGhEtM4zp7HcnIOFNTIVTq99cjTzE9ZnQO0xmt
+         +Cke6dvxFiyCqH9zfIajMVR2kAEEhwb0zPUZEkffnwO83g8W6JqxdcXlqM/3EfealK7x
+         1qvhrBpHq3yXXtAKibhu3TamUNj4fdQhXfXrpQCRNmc0rwmBotJLERCPllZgMq+PVZLh
+         DPy5uu5NyOXdZk0nuktoWEKlH5lHOd+3FgHL4dP5ch3BvupHXTqAXOY61FrFfCgtJbAB
+         Erz8aEU1JLPW8vRlrxxrTLWDmA8qB15dLg/VPqtJxpzN3OLxWoxh6bIAqP2uPO+TfKDx
+         5vFg==
+X-Gm-Message-State: AOAM533PYwfCiGsgvdY38+w86rwU+TaJxoKCLCuRz1AvPtUdVabB5/4z
+        WnUjrB1rMj3FLZ7D8ltqhSudFBMnew8J
+X-Google-Smtp-Source: ABdhPJwRbbc/2hD4U7BeLiJcL89GybUd1U3xNfN+SBpnmP60+6EL6BYBiite05NMzOXUMvCHt+iieQ==
+X-Received: by 2002:aca:5b45:: with SMTP id p66mr152878oib.39.1602019356282;
+        Tue, 06 Oct 2020 14:22:36 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l15sm27113oil.24.2020.10.06.14.22.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 14:22:35 -0700 (PDT)
+Received: (nullmailer pid 2866684 invoked by uid 1000);
+        Tue, 06 Oct 2020 21:22:34 -0000
+Date:   Tue, 6 Oct 2020 16:22:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Vladimir Lypak <junak.pub@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: qcom: add msm8953 pinctrl
+ bindings
+Message-ID: <20201006212234.GA2858909@bogus>
+References: <20201004081644.323858-1-junak.pub@gmail.com>
+ <20201004081644.323858-2-junak.pub@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004081644.323858-2-junak.pub@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra:
+On Sun, Oct 04, 2020 at 11:16:44AM +0300, Vladimir Lypak wrote:
+> Add device tree bindings documentation for Qualcomm MSM8953
+> pinctrl driver.
+> 
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+> ---
+>  .../pinctrl/qcom,msm8953-pinctrl.yaml         | 160 ++++++++++++++++++
+>  1 file changed, 160 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..e539149834b6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
+> @@ -0,0 +1,160 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,msm8953-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. MSM8953 TLMM block
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description: |
+> +  This binding describes the Top Level Mode Multiplexer block found in the
+> +  MSM8953 platform.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,msm8953-pinctrl
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Specifies the TLMM summary IRQ
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    description:
+> +      Specifies the PIN numbers and Flags, as defined in defined in
+> +      include/dt-bindings/interrupt-controller/irq.h
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: Specifying the pin number and flags, as defined in
+> +      include/dt-bindings/gpio/gpio.h
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  wakeup-parent:
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '^.*$':
+> +    if:
+> +      type: object
+> +    then:
 
-> Our Documentation/memory-barriers.txt has a Control Dependencies section
-> (which I shall not replicate here for brevity) which lists a number of
-> caveats. But in general the work-around we use is:
->
-> 	x = READ_ONCE(*foo);
-> 	if (x > 42)
-> 		WRITE_ONCE(*bar, 1);
->
-> Where READ/WRITE_ONCE() cast the variable volatile. The volatile
-> qualifier dissuades the compiler from assuming it knows things and we
-> then hope it will indeed emit the branch like we'd expect.
->
->
-> Now, hoping the compiler generates correct code is clearly not ideal and
-> very dangerous indeed. Which is why my question to the compiler folks
-> assembled here is:
->
->   Can we get a C language extention for this?
+For new bindings, please define a node name pattern you can match on 
+and avoid this if/then. '-pins$' is my preference.
 
-For what exactly?
+> +      properties:
+> +        pins:
+> +          description:
+> +            List of gpio pins affected by the properties specified in this
+> +            subnode.
+> +          items:
+> +            oneOf:
+> +              - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-7][0-9])$"
+> +              - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc1_rclk, sdc2_clk,
+> +                        sdc2_cmd, sdc2_data, qdsd_clk, qdsd_cmd, qdsd_data0,
+> +                        qdsd_data1, qdsd_data2, qdsd_data3 ]
+> +          minItems: 1
+> +          maxItems: 16
+> +
+> +        function:
+> +          description:
+> +            Specify the alternative function to be configured for the specified
+> +            pins.
+> +
+> +          enum: [ accel_int, adsp_ext, alsp_int, atest_bbrx0, atest_bbrx1,
+> +                  atest_char, atest_char0, atest_char1, atest_char2, atest_char3,
+> +                  atest_gpsadc_dtest0_native, atest_gpsadc_dtest1_native, atest_tsens,
+> +                  atest_wlan0, atest_wlan1, bimc_dte0, bimc_dte1, blsp1_spi,
+> +                  blsp3_spi, blsp6_spi, blsp7_spi, blsp_i2c1, blsp_i2c2, blsp_i2c3,
+> +                  blsp_i2c4, blsp_i2c5, blsp_i2c6, blsp_i2c7, blsp_i2c8, blsp_spi1,
+> +                  blsp_spi2, blsp_spi3, blsp_spi4, blsp_spi5, blsp_spi6, blsp_spi7,
+> +                  blsp_spi8, blsp_uart2, blsp_uart4, blsp_uart5, blsp_uart6, cam0_ldo,
+> +                  cam1_ldo, cam1_rst, cam1_standby, cam2_rst, cam2_standby, cam3_rst,
+> +                  cam3_standby, cam_irq, cam_mclk, cap_int, cci_async, cci_i2c,
+> +                  cci_timer0, cci_timer1, cci_timer2, cci_timer3, cci_timer4,
+> +                  cdc_pdm0, codec_int1, codec_int2, codec_reset, cri_trng, cri_trng0,
+> +                  cri_trng1, dac_calib0, dac_calib1, dac_calib10, dac_calib11,
+> +                  dac_calib12, dac_calib13, dac_calib14, dac_calib15, dac_calib16,
+> +                  dac_calib17, dac_calib18, dac_calib19, dac_calib2, dac_calib20,
+> +                  dac_calib21, dac_calib22, dac_calib23, dac_calib24, dac_calib25,
+> +                  dac_calib3, dac_calib4, dac_calib5, dac_calib6, dac_calib7,
+> +                  dac_calib8, dac_calib9, dbg_out, ddr_bist, dmic0_clk, dmic0_data,
+> +                  ebi_cdc, ebi_ch0, ext_lpass, flash_strobe, fp_int, gcc_gp1_clk_a,
+> +                  gcc_gp1_clk_b, gcc_gp2_clk_a, gcc_gp2_clk_b, gcc_gp3_clk_a,
+> +                  gcc_gp3_clk_b, gcc_plltest, gcc_tlmm, gpio, gsm0_tx, gsm1_tx,
+> +                  gyro_int, hall_int, hdmi_int, key_focus, key_home, key_snapshot,
+> +                  key_volp, ldo_en, ldo_update, lpass_slimbus, lpass_slimbus0,
+> +                  lpass_slimbus1, m_voc, mag_int, mdp_vsync, mipi_dsi0, modem_tsync,
+> +                  mss_lte, nav_pps, nav_pps_in_a, nav_pps_in_b, nav_tsync,
+> +                  nfc_disable, nfc_dwl, nfc_irq, ois_sync, pa_indicator, pbs0, pbs1,
+> +                  pbs2, pressure_int, pri_mi2s, pri_mi2s_mclk_a, pri_mi2s_mclk_b,
+> +                  pri_mi2s_ws, prng_rosc, pwr_crypto_enabled_a, pwr_crypto_enabled_b,
+> +                  pwr_down, pwr_modem_enabled_a, pwr_modem_enabled_b,
+> +                  pwr_nav_enabled_a, pwr_nav_enabled_b, qdss_cti_trig_in_a0,
+> +                  qdss_cti_trig_in_a1, qdss_cti_trig_in_b0, qdss_cti_trig_in_b1,
+> +                  qdss_cti_trig_out_a0, qdss_cti_trig_out_a1, qdss_cti_trig_out_b0,
+> +                  qdss_cti_trig_out_b1, qdss_traceclk_a, qdss_traceclk_b,
+> +                  qdss_tracectl_a, qdss_tracectl_b, qdss_tracedata_a,
+> +                  qdss_tracedata_b, sd_write, sdcard_det, sec_mi2s, sec_mi2s_mclk_a,
+> +                  sec_mi2s_mclk_b, smb_int, ss_switch, ssbi_wtr1, ts_resout,
+> +                  ts_sample, ts_xvdd, tsens_max, uim1_clk, uim1_data, uim1_present,
+> +                  uim1_reset, uim2_clk, uim2_data, uim2_present, uim2_reset,
+> +                  uim_batt, us_emitter, us_euro, wcss_bt, wcss_fm, wcss_wlan,
+> +                  wcss_wlan0, wcss_wlan1, wcss_wlan2, wsa_en, wsa_io, wsa_irq ]
+> +
+> +        drive-strength:
+> +          enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> +          default: 2
+> +          description:
+> +            Selects the drive strength for the specified pins, in mA.
+> +
+> +        bias-pull-down: true
+> +
+> +        bias-pull-up: true
+> +
+> +        bias-disable: true
+> +
+> +        output-high: true
+> +
+> +        output-low: true
+> +
+> +      required:
+> +        - pins
+> +        - function
+> +
+> +      additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        tlmm: pinctrl@1000000 {
+> +              compatible = "qcom,msm8953-pinctrl";
+> +              reg = <0x01000000 0x300000>;
+> +              interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> +              interrupt-controller;
+> +              #interrupt-cells = <2>;
+> +              gpio-controller;
+> +              #gpio-cells = <2>;
+> +              gpio-ranges = <&tlmm 0 0 142>;
 
-Do you want a compiler that never simplifies conditional expressions
-(like some people want compilers that never re-associate floating point
-operations)?
+Please show at least 1 child node.
 
-With a bit of effort, we could prototype such a compiler and run
-benchmarks against a kernel that was built using it.  But I'm not sure
-if that's a good use of resources.
-
-> And while we have a fair number (and growing) existing users of this in
-> the kernel, I'd not be adverse to having to annotate them.
-
-But not using READ_ONCE and WRITE_ONCE?
-
-I think in GCC, they are called __atomic_load_n(foo, __ATOMIC_RELAXED)
-and __atomic_store_n(foo, __ATOMIC_RELAXED).  GCC can't optimize relaxed
-MO loads and stores because the C memory model is defective and does not
-actually guarantee the absence of out-of-thin-air values (a property it
-was supposed to have).  Obviously, actual implementations want to
-provide this guarantee.  So it's really impossible right now to argue
-about this in any formal way and determine the validity of optimizations
-(which is why there are none, hopefully).
-
-In standard C, there is <stdatomic.h>, but its relaxed MO loads and
-stores can of course be optimized, so you'll need a compiler extension
-here.
-
-A different way of annotating this would be a variant of _Atomic where
-plain accesses have relaxed MO, not seq-cst MO.
-
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
-
+> +        };
+> -- 
+> 2.24.1
+> 
