@@ -2,142 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475412848C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CB02848BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgJFImn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:42:43 -0400
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:2676 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbgJFImn (ORCPT
+        id S1726412AbgJFIiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 04:38:24 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:39735 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725996AbgJFIiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:42:43 -0400
-Received: from pps.filterd (m0170397.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0968fiQu004125;
-        Tue, 6 Oct 2020 04:42:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=plXhWIhjHa+vUc+1SBJv/T19h/1N8DTp70vAk1yVfQs=;
- b=dLu3pnoBsTYbiS2qGyqVPZm7Ee4Hn4ycrfGre5pgy4AgmniaUCWiGnBufZ9QxRtl8X1M
- 5F3M6aa0M4vKBExAzAX6vRrGc/GR4cZ4rWcgPmWWRUanfFXOgQylBjot+U47Cq+7QvWu
- wuxv2HZV9hdxG83G7egSGQVD0CDcypnV32Fai2mKL9lskT2pZg+aOvoGOMUqAOs0eCl3
- lRf1iYD2jb2u4kGDYMVi8VT2jE/BruMp356jWGdstYPl+klCjTP2Q11NGENdzlnl/myd
- bFkX3Y/kiVBOFJfo7ydT41USkKxCnK9yF9HW+PbNtF3mVKTq2Aym2V40Z50wTqHdgezu PQ== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com with ESMTP id 33y8mcppav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Oct 2020 04:42:41 -0400
-Received: from pps.filterd (m0133268.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0968gX8n080106;
-        Tue, 6 Oct 2020 04:42:40 -0400
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
-        by mx0a-00154901.pphosted.com with ESMTP id 340mg7gmk3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Oct 2020 04:42:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kPtNAaXJn1UBlk+eUq/Q62hiCqB95Jz0JhgLNcU+4VOV9t7bbTcGT1uVV8CpWg49uzWCQ59ZNiehQdWCX0LmyjS/3SePNLcJ4+AXuAGmEfqCSKxsLOOQqcGYFEw1Eg/SHXpHHTysiLcs7uQDC7Zr9l1f3++tLO0O2HSapqWUqye5WwS1tP3xopZm4/hKJkvpvUM0uYFZwHb/1UpYqlzg9x2CJJ0rHjdAZCIrK54vfD9LLgzYfAfyO3lsF4Z2DCDFyk6BAPZ1DqTefWBYmBKg7YfNqK9otc35icTI3xc9eNUZYI6CjbI2jmKokEz3xPGG2FJRfAT2GCv+tk5C5Nsy5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=plXhWIhjHa+vUc+1SBJv/T19h/1N8DTp70vAk1yVfQs=;
- b=jRaXY8ww246OYi4AxyVfsEJjqTXGAu9Q1a6Bf34RoGOmJcm7QQRVPygz0r6Svz4Z4xHm8/eYRr9rIZvnQBrf8iZwRwhcwUE44RH/PlymvsFMOa44ivieNpyJiHdmWJ7uLVka/TN4nLzerYT7e8GhvyzPToI3QUkS8d9f59ej8EUayTjVdvHX+2Jxl9GeqSoXUG33zSw/c8YxMsd8etMOp6vfyfKMY1ajd+krJx7GObpAN3aLSThlfTZlEZfDbtsk/8Zfx8h3eRZ+U+JkTgG9tnx+/G2trE8D6h3oVSFRlNIDhApRfGPhdxZ+8BlRKTEpsVMG2ll4gDS480MxSzmAiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=plXhWIhjHa+vUc+1SBJv/T19h/1N8DTp70vAk1yVfQs=;
- b=GMNuWrztFRkp/pRXyOfSjTU1Jyw9CuoFXhEzT4EilBW/0tfvvrpmsgpt5AbjjnO2JnA83U7XAEeQqVtKiCRJbpuUDccViKHkREX8ddCD9Eaj9q0jtLdRCOBDVdR6sM/5RlpmVtfQDeZCGuim424ItkBxPnwr217izT+AhmL3MAQ=
-Received: from CY4PR19MB1254.namprd19.prod.outlook.com (2603:10b6:903:109::19)
- by CY4PR19MB1557.namprd19.prod.outlook.com (2603:10b6:903:14d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Tue, 6 Oct
- 2020 08:37:51 +0000
-Received: from CY4PR19MB1254.namprd19.prod.outlook.com
- ([fe80::28f2:1ae1:8ba:4bfc]) by CY4PR19MB1254.namprd19.prod.outlook.com
- ([fe80::28f2:1ae1:8ba:4bfc%11]) with mapi id 15.20.3433.044; Tue, 6 Oct 2020
- 08:37:51 +0000
-From:   "Bharathi, Divya" <Divya.Bharathi@Dell.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Divya Bharathi <divya27392@gmail.com>,
-        "dvhart@infradead.org" <dvhart@infradead.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        mark gross <mgross@linux.intel.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
-Subject: RE: [PATCH v5] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-Thread-Topic: [PATCH v5] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-Thread-Index: AQHWlgw8iScoxjhp9kO1Bw1J0X/FTKmDEwiAgAc2tbA=
-Date:   Tue, 6 Oct 2020 08:37:51 +0000
-Message-ID: <CY4PR19MB1254A852F16CD347C38E742E850D0@CY4PR19MB1254.namprd19.prod.outlook.com>
-References: <20200929025521.59573-1-divya.bharathi@dell.com>
- <7015e6d5-3c1e-e07e-572f-d5d47a9b0191@redhat.com>
-In-Reply-To: <7015e6d5-3c1e-e07e-572f-d5d47a9b0191@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [223.226.93.245]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1993261f-a47e-4aff-4bd1-08d869d31caf
-x-ms-traffictypediagnostic: CY4PR19MB1557:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR19MB155729727DC251D1F95E537D850D0@CY4PR19MB1557.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:741;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qftkazHgXkeHAcaP2g0+9oToycnzYxrpH6kG/StJVRLqiEFlOGv7h5vGTpCxv4a0N8MQWR0UuBZ4s4RAh3PeI4xxgyM/M2VQL+uPsOQywM0H5IUOLfCUqKy+0uFoTAjjdhloTeDs4dRbQ6NedmFjHgCZ/w9tyIhrRpcx6MP9srRgij+EDZG78FO2zNtwE1S4AWdqfv65XXvNRk1Fvo0vYYlEh5CfhzDvktY0lpUR/+V0FKm4Gnrz0ooMsaXqbxuNQrS6dinP0S8AJsK9geelAYE21dSqIAHwV9DelZozJQJz4DdbAt2VE0pDg7UEKtjs
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR19MB1254.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(376002)(39860400002)(366004)(7696005)(76116006)(186003)(66556008)(66476007)(478600001)(8676002)(71200400001)(54906003)(2906002)(4744005)(66446008)(83380400001)(110136005)(64756008)(66946007)(52536014)(786003)(5660300002)(4326008)(33656002)(316002)(107886003)(26005)(6506007)(86362001)(9686003)(55236004)(8936002)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 0AFd4dhp/f5PNLTvPkw3qynviUxBWG/r3lJ6A9G8vRml0GNG+adjoMQmP1Ksrad3IpMQ7fE97+2D113QSpdAOwX2Z1m2HLC0AUugZGYFLUIs4MN0y8UHLF9FwopsNcfbu2s+VSSo7GH9sjCtLyJtnXtZgpHt5HsbWgz8wKca5TBH7LVYMSh4gUlsn1jKKMNg8I4P3LkNC0z9TYxcGom8mNGL86GX1sUVlzugUyrkYjI906IOTe/t6cjZ8RY6U5+c4lN7NvetSQdMmfmZ1n9LdOxqQhOMW2GXlToMT/HhWdX/n7G9a8ex6cDBZulEcRnC1AZLfyznQ6sZxFapTSCstZmwHo/dvvWJr09Kf8TCaJkJziv2/oQXG790IbdgqgBBnMxteUxIL80gNfv/8OWT62WiCurdz4cs7A671++KgPUt/OKvdwtMucw12KGJhtRVrcytgHsTVf6Is3M0X0xt9GwYwds92LRzYeI8Yy7SBjrNUt34RhIE6v/ZpjnVpz0qb/cfOvxFdwREt5Jmq6PTIHWSetT60GDoBDppxAmwtcNgOTSnwG3xBDEbp2G3y5yDDj0lBcgas3F5ebfS6shBQt/UUPaX6nE+HGePpZmpV6CW09h8j2nWEhFWsgUXav9xi+AGDmbjVdPbJObZwaV8lA==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 6 Oct 2020 04:38:24 -0400
+Received: by mail-oo1-f66.google.com with SMTP id c4so2996791oou.6;
+        Tue, 06 Oct 2020 01:38:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xkyFSVeXPFcsbuoieeW0AUnHq5y84+TIhXt/1+fuFLg=;
+        b=cK6h4Anqa0Qh61h0YPNeYzo1WEyJp6bBawNeUMXkA479q6ekTan5hf8GEbVWElvSYE
+         ntK00lj4YXqcWG8j+/3QYaH8JKPS8e9VTHE33cFsUkxxFTyZ40qjAQBHouOYPKArd/Rc
+         JXROiQJshdRtsa+DkD4/712Tdpxj5j9QaHnV+nBH++/xJjY0SIJkfNBRilmcxxDNw2x6
+         CFFZQJUCJbHCFQ1OWfYC8BNGGVQFwgGjAwwsU0NbbwxDircwusnTOkkPpgzXyiHkVYpx
+         H2WCJyr9RhU4oOulm+UE5eAW/+CzvL9nPX81UodiJQk06bXZVmYCdhjXYYhLaj/P8CYJ
+         BpDw==
+X-Gm-Message-State: AOAM532BJPQ/iBP81egM7VjodsRA+pKxBEUB0os1+EMDwh3eS7oNPmTL
+        cUEcX8rskaw9x6yLgvg7NoqEgdnv8x8lHFij10Y=
+X-Google-Smtp-Source: ABdhPJxKTdpVt2S29hcgjSF7YwOIEIpSgvR01nL/7DU7cwnmD5WMdO5cvi7neBjVDf6QrDPfqECOAzeUzfznhiANCFg=
+X-Received: by 2002:a4a:4f17:: with SMTP id c23mr2463324oob.11.1601973519305;
+ Tue, 06 Oct 2020 01:38:39 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR19MB1254.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1993261f-a47e-4aff-4bd1-08d869d31caf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 08:37:51.1252
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fhNDmZhJmp4eZQJeXAUiE/rxTc20elU6/YouzLRjbDZ5pRdSFFvhDQzobvDDpPbq8EB/w4WWqxQVd/gLJNXVCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR19MB1557
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-06_03:2020-10-06,2020-10-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 clxscore=1011 spamscore=0 malwarescore=0
- priorityscore=1501 suspectscore=0 adultscore=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010060054
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010060055
+References: <20200923120817.1667149-0-mholenko@antmicro.com>
+ <20200923120817.1667149-3-mholenko@antmicro.com> <CAMuHMdUBCf8DsRBvXxxrfrQsab3kOwy95u-KwkdvaSY0vXQnXQ@mail.gmail.com>
+ <CAPk366TxFJa-rqY6eFoGuMoc_r_=CFQgDMC-j2Pv0=dUR06b9A@mail.gmail.com>
+In-Reply-To: <CAPk366TxFJa-rqY6eFoGuMoc_r_=CFQgDMC-j2Pv0=dUR06b9A@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 6 Oct 2020 10:38:28 +0200
+Message-ID: <CAMuHMdUXxGGHmsUNhuwGPOk1horTs9OWSZa2u0B4pb8zTuUw-Q@mail.gmail.com>
+Subject: Re: [PATCH v11 3/5] drivers/soc/litex: add LiteX SoC Controller driver
+To:     Mateusz Holenko <mholenko@antmicro.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gabriel L. Somlo" <gsomlo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PHNuaXA+DQoNCj4gDQo+IEhtbSwgY2hlY2twYXRjaCBpcyBzYXlpbmc6DQo+IA0KPiBXQVJOSU5H
-OiBNaXNzaW5nIFNpZ25lZC1vZmYtYnk6IGxpbmUgYnkgbm9taW5hbCBwYXRjaCBhdXRob3IgJ0Rp
-dnlhDQo+IEJoYXJhdGhpIDxkaXZ5YTI3MzkyQGdtYWlsLmNvbT4nDQo+IA0KPiBJIGFzc3VtZSB0
-aGUgZGVsbCBhZGRyZXNzIGlzIHRoZSBvbmUgeW91IHdhbnQgdG8gdXNlID8NCj4gDQo+IElmIHNv
-IHRyeSBzZXR0aW5nIHRoZSBmb2xsb3dpbmcgaW4gfi8uZ2l0Y29uZmlnOg0KPiANCj4gW3VzZXJd
-DQo+ICAgICAgICAgIGVtYWlsID0gZGl2eWEuYmhhcmF0aGlAZGVsbC5jb20NCj4gDQo+IEFuZCB0
-aGVuIGRvOg0KPiANCj4gZ2l0IGNvbW1pdCAtLWFtZW5kIC0tcmVzZXQtYXV0aG9yDQo+IA0KPiBU
-byBjaGFuZ2UgdGhlIGF1dGhvciB3aGljaCBnaXQgaXMgdXNpbmcgZm9yIHRoZSBwYXRjaC4NCj4g
-DQo+ID4gLS0tDQo+ID4NCg0KVGhhbmtzLCBJIHVzZWQgLS1yZXNldC1hdXRob3Igd2hpbGUgY3Jl
-YXRpbmcgcGF0Y2gtdjYuIA0KDQpBbmQgSSBoYWQgYWRkZWQgbXkgZGVsbCBhZGRyZXNzIGluIGdp
-dGNvbmZpZyBmb3IgcHJldmlvdXMgcGF0Y2hlcyANCmFzIHdlbGwuIEFsc28sIGxvY2FsIGNoZWNr
-cGF0Y2gucGwgc2NyaXB0IGRpZCBub3QgdGhyb3cgbWUgdGhpcyB3YXJuaW5nLg0KDQpIb3BlLCBu
-ZXh0IHBhdGNoIHdpbGwgbm90IGhpdCB0aGlzIHdhcm5pbmcuDQoNClJlZ2FyZHMsDQpEaXZ5YQ0K
+Hi Mateusz,
+
+On Tue, Oct 6, 2020 at 10:02 AM Mateusz Holenko <mholenko@antmicro.com> wrote:
+> On Fri, Sep 25, 2020 at 3:16 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Sep 23, 2020 at 12:10 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
+> > > From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+> > >
+> > > This commit adds driver for the FPGA-based LiteX SoC
+> > > Controller from LiteX SoC builder.
+> > >
+> > > Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
+> > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
+> > > Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+
+> > > --- /dev/null
+> > > +++ b/drivers/soc/litex/Kconfig
+> > > @@ -0,0 +1,15 @@
+> > > +# SPDX-License_Identifier: GPL-2.0
+> > > +
+> > > +menu "Enable LiteX SoC Builder specific drivers"
+> > > +
+> > > +config LITEX_SOC_CONTROLLER
+> > > +       tristate "Enable LiteX SoC Controller driver"
+> > > +       depends on OF || COMPILE_TEST
+> > > +       help
+> > > +         This option enables the SoC Controller Driver which verifies
+> > > +         LiteX CSR access and provides common litex_get_reg/litex_set_reg
+> > > +         accessors.
+> > > +         All drivers that use functions from litex.h must depend on
+> > > +         LITEX_SOC_CONTROLLER.
+> >
+> > I'm wondering if it makes sense to have them depend on a "simpler"
+> > symbol instead, e.g. LITEX?
+> >
+> > Currently the SoC controller is limited to I/O accessors and a simple
+> > register compatibility check, but you may want to extend it with more
+> > features later, so you probably want to keep the LITEX_SOC_CONTROLLER.
+> > Hence you could add
+> >
+> >     config LITEX
+> >         bool
+> >
+> > and let LITEX_SOC_CONTROLLER select LITEX.
+>
+> But then if other drivers depend just on LITEX, it would not automatically
+> mean that the LITEX_SOC_CONTROLLER is selected, right?. And if it's not selected
+> litex_{g,s}et_reg() are not available and the compilation would fail.
+
+As the LITEX config symbol above uses plain "bool", without a
+description, it is invisible.  Hence it cannot be enabled by the user,
+only be selected by other symbols.
+If LITEX_SOC_CONTROLLER is the only symbol selecting LITEX, the
+dependency is met.
+
+> I could move the implementation of those functions directly to the
+> litex.h header
+> and avoid this KConfig dependency, but I'm not sure if they are not
+> too big to become a static inline.
+> What do you think?
+
+With the spinlock and the loop, they're too large to be inlined, IMHO.
+
+> > > --- /dev/null
+> > > +++ b/drivers/soc/litex/litex_soc_ctrl.c
+
+> > > + */
+> > > +#define LITEX_REG_SIZE             0x4
+> > > +#define LITEX_SUBREG_SIZE          0x1
+> > > +#define LITEX_SUBREG_SIZE_BIT      (LITEX_SUBREG_SIZE * 8)
+> > > +
+> > > +static DEFINE_SPINLOCK(csr_lock);
+> > > +
+> > > +/*
+> > > + * LiteX SoC Generator, depending on the configuration,
+> > > + * can split a single logical CSR (Control & Status Register)
+> > > + * into a series of consecutive physical registers.
+> > > + *
+> > > + * For example, in the configuration with 8-bit CSR Bus,
+> > > + * 32-bit aligned (the default one for 32-bit CPUs) a 32-bit
+> > > + * logical CSR will be generated as four 32-bit physical registers,
+> > > + * each one containing one byte of meaningful data.
+> > > + *
+> > > + * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
+> > > + *
+> > > + * The purpose of `litex_set_reg`/`litex_get_reg` is to implement
+> > > + * the logic of writing to/reading from the LiteX CSR in a single
+> > > + * place that can be then reused by all LiteX drivers.
+> > > + */
+> > > +void litex_set_reg(void __iomem *reg, unsigned long reg_size,
+> > > +                   unsigned long val)
+> > > +{
+> > > +       unsigned long shifted_data, shift, i;
+> > > +       unsigned long flags;
+> > > +
+> > > +       spin_lock_irqsave(&csr_lock, flags);
+> > > +
+> > > +       for (i = 0; i < reg_size; ++i) {
+> > > +               shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+> > > +               shifted_data = val >> shift;
+> > > +
+> > > +               writel((u32 __force)cpu_to_le32(shifted_data), reg + (LITEX_REG_SIZE * i));
+> > > +       }
+> > > +
+> > > +       spin_unlock_irqrestore(&csr_lock, flags);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(litex_set_reg);
+> >
+> > I'm still wondering about the overhead of loops and multiple accesses,
+> > and the need for them (see also BenH's earlier comment).
+> > If e.g. the register widths change for LiteUART (currently they're
+> > hardcoded to one), would you still consider it using the same
+> > programming interface, and thus compatible with "litex,liteuart"?
+>
+> Since the amount of possible `reg_size` is practically limited we could
+> add explicit 8/32/64/128 accessors to eliminate loops.
+
+Good.
+
+(assuming 32-bit physical reg accesses below)
+
+> As for multiple writel/readl I don't really see an option to avoid
+> them for the 8-bit bus width.
+
+Sure, 64-bit register accesses consist of two 32-bit accesses on other
+32-bit platforms, too.
+
+> > The spinlock access will probably become the source of lock contention
+> > later, especially when considering SMP variants.
+>
+> Do you have any suggestions on how to handle this?
+> Dropping locks could lead to the situation when two cores write at the
+> same time leaving a wrong (mixed) value in the CSR.
+
+Is this due to the CSR bus or due to the CSR register?
+I mean can two 64-bit accesses to different CSR registers be done as
+four interleaved 32-bit accesses, or must they not be interleaved?
+
+If (hopefully) they can be interleaved, you just need serialization of
+accesses to the same 64-bit register.  As the same register is usually
+not accessed from multiple drivers, you can handle the serialization
+inside the driver, if it can ever happen at all (e.g. main driver
+operation and interrupt handler accessing the same register).
+That avoids the need for the spinlock in the generic register accessors.
+
+If they must not be interleaved, you indeed need serialization at the
+bus level, but only for the 64-bit accesses?  And I would strongly
+suggest to look into changing the CSR bus behavior at the hardware
+level, if possible...
+
+> > > +/*
+> > > + * Check LiteX CSR read/write access
+> > > + *
+> > > + * This function reads and writes a scratch register in order
+> > > + * to verify if CSR access works.
+> > > + *
+> > > + * In case any problems are detected, the driver should panic.
+> > > + *
+> > > + * Access to the LiteX CSR is, by design, done in CPU native
+> > > + * endianness. The driver should not dynamically configure
+> > > + * access functions when the endianness mismatch is detected.
+> > > + * Such situation indicates problems in the soft SoC design
+> > > + * and should be solved at the LiteX generator level,
+> > > + * not in the software.
+> > > + */
+> > > +static int litex_check_csr_access(void __iomem *reg_addr)
+> > > +{
+> > > +       unsigned long reg;
+> > > +
+> > > +       reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
+> > > +
+> > > +       if (reg != SCRATCH_REG_VALUE) {
+> > > +               panic("Scratch register read error! Expected: 0x%x but got: 0x%lx",
+> > > +                       SCRATCH_REG_VALUE, reg);
+> >
+> > Do you think the user will ever see this panic message? (see below)
+>
+> On UART most probably not, as broken CSRs mean broken UART driver as well.
+> But I believe you can retrieve logs from the memory and analyze them
+> post-mortem, isn't that right?
+
+Sure. Been there, done that ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
