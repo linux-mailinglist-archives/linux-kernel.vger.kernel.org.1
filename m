@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DC6284467
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4AB284468
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgJFD4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 23:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
+        id S1726894AbgJFD5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgJFD4v (ORCPT
+        with ESMTP id S1726858AbgJFD5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 23:56:51 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA04CC0613CE;
-        Mon,  5 Oct 2020 20:56:50 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C53Yg5Ynsz9sSs;
-        Tue,  6 Oct 2020 14:56:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601956607;
-        bh=fs47VFkN5SJjvHvLpni591wkIF9hZauOUCb5aevTnvk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tfvHGPoaYFDskfbiet3P8vdxaJY8KjvlMdGvoJkbt3nESQ8KN6ywkEpYSb3dbFAsK
-         FbHsYgoDhAOr7DvxwGlJDlnl2qxB8LccRzKpaMwJAamVaVbtEtobIoGDp4KJNKIXjH
-         aOf9Qc7E6OfrtN2IuR1h6r+NyVw+uGsKOO1nZXZk6W1o61NlbwfYc5l7tVfy8i11Dz
-         dgN+CQ7zGPfzvlYIpUC+LLx/rJnmn798hwcpN87r0KAWqVE+UcX67rBrK4VoaEKY1h
-         GCLjHBmsF2L+8geb4lMgvHF76fHbYbyWU9IwTDwuVXNwzjVPHXC1nxYVBDc6H11HDi
-         NFvFPstRM/iGQ==
-Date:   Tue, 6 Oct 2020 14:56:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Yangtao Li <frank@allwinnertech.com>
-Subject: linux-next: manual merge of the sunxi tree with the arm-soc tree
-Message-ID: <20201006145637.57d20ba1@canb.auug.org.au>
+        Mon, 5 Oct 2020 23:57:14 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35803C0613CE;
+        Mon,  5 Oct 2020 20:57:14 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id d125so1557558vkh.10;
+        Mon, 05 Oct 2020 20:57:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HH7xhhlnmd3Dg58XEz48SP2OGgWs2Ku3LIn7+NT7bjM=;
+        b=Ayyg2cNsss3TC8/XzOvjJfWBuW+gWaQfFYHV2Mq4P7hb7xGzJvOINM3oPb2VPA2fxF
+         8DveQoAU0vh1gBH+6y90xZGKZstXd5cdPYTzvfzu/UNgUSIC7hB5a0xwlhoob2N6wDtK
+         buP3W5ay9aIc8mEjzpRowyEWP4+DGdjlfrFRWCSDLoB0driy8YaFTyYlrtrDxGpbXQz+
+         1Psklb1Ktj5zPJrqO0MsDQdh4W1LX5Wa6PqUht0fTIoSW6Zk5J8HDzlHmAYc8WmnY5xh
+         K0rJI+zQ08PXT2cgoEE9xrdGc58RCEMRJZTvc6qrzloeFRqYR18y4K88A19crq3ZIxlq
+         aB7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HH7xhhlnmd3Dg58XEz48SP2OGgWs2Ku3LIn7+NT7bjM=;
+        b=h398eU/MVYIhhd610A2uYboA9/4ckggNw/heeR5QO8ox1JlGO2/Sz6o5nmAkjH6l8O
+         L673KKn/IjSoeu0h7AVS1DY8aKMHAFZ5ODiogdb89WGdxGVcGEJec+WrizVq0oStA3JQ
+         G4FElxHdfeRCljNqn2XtseqAR4JHjwoGp6ezD3BV0ubnfZ+/NDTCMpbvaN6UviwgyrNK
+         I43ol1idWrPlbSXmEIwIQrsVe8xE9Zh/DhfxUfYg8qtghSQkE3g5OXP7Oz4Drf8NO5XP
+         1zzzvH/ArTGGd5BobFCJ1UeM82AjCSGF7bi0oqd6G0sTuCZSZf6k7bNcGMCNL/QzU2Zo
+         ZQ/Q==
+X-Gm-Message-State: AOAM5312dV3FrVa1j/httTnxA5cqxpryLYaIOlZ0A/oyjH3I/zyO7kC9
+        e0rav9SK+6L6Qn40ts7FnPMncMaNgHxpNL86plI=
+X-Google-Smtp-Source: ABdhPJyrMJkL/lB7fMsFdh79DyNTsPpi0AcOzskikSuFaCZjatVVdBQ7wM7aU+DIflncfB9lZcpBFCQ+uutXgOVMU1o=
+X-Received: by 2002:a1f:a5d2:: with SMTP id o201mr2047770vke.15.1601956633406;
+ Mon, 05 Oct 2020 20:57:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/e0Q7Ztg09gC+KDrNArzZYmB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <xmqqa6x070tn.fsf@gitster.c.googlers.com>
+In-Reply-To: <xmqqa6x070tn.fsf@gitster.c.googlers.com>
+From:   =?UTF-8?Q?Martin_=C3=85gren?= <martin.agren@gmail.com>
+Date:   Tue, 6 Oct 2020 05:57:02 +0200
+Message-ID: <CAN0heSrKgNSHKDL07-BWrbF9n6fyWUZVDykdHPCD6CfwgV8QNA@mail.gmail.com>
+Subject: Re: [ANNOUNCE] Git v2.29.0-rc0
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     Git Mailing List <git@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/e0Q7Ztg09gC+KDrNArzZYmB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Junio,
 
-Hi all,
+Thanks for the release candidate!
 
-Today's linux-next merge of the sunxi tree got a conflict in:
+Minor comments follow.
 
-  arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+On Tue, 6 Oct 2020 at 01:00, Junio C Hamano <gitster@pobox.com> wrote:
+>  * The final leg of SHA-256 transition plus doc updates.  Note that
+>    there is no inter-operability between SHA-1 and SHA-256
+>    repositories yet.
 
-between commit:
+I suspect the dash in "inter-operability" should be dropped.
 
-  0dea1794f3b4 ("arm64: allwinner: A100: add the basical Allwinner A100 DTS=
-I file")
+>  * Various callers of run_command API has been modernized.
+>    (merge afbdba391e jc/run-command-use-embedded-args later to maint).
 
-from the arm-soc tree and commit:
+s/has/have/
 
-  7e66a778cb8b ("arm64: allwinner: A100: add the basical Allwinner A100 DTS=
-I file")
+>  * List of options offered and accepted by "git add -i/-p" were
+>    inconsistent, which have been corrected.
+>    (merge ce910287e7 pw/add-p-allowed-options-fix later to maint).
+>
+>  * Various callers of run_command API has been modernized.
+>    (merge afbdba391e jc/run-command-use-embedded-args later to maint).
 
-from the sunxi tree.
+Here's that entry again from my previous comment.
 
-These are 2 versions of the same patch.  For now I am just using the
-version in the arm-soc tree ... please sort this out.
+>  * "git status" has trouble showing where it came from by interpreting
+>    reflog entries that record certain events, e.g. "checkout @{u}", and
+>    gives a hard/fatal error.  Even though it inherently is impossible
+>    to give a correct answer because the reflog entries lose some
+>    information (e.g. "@{u}" does not record what branch the user was
+>    on hence which branch 'the upstream' needs to be computed, and even
+>    if the record were available, the relationship between branches may
+>    have changed), at least hide the error to allow "status" show its
+>    output.
 
-I fixed it up (see above) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+s/show/to &/ ?
 
---=20
-Cheers,
-Stephen Rothwell
+>  * There is a logic to estimate how many objects are in the
+>    repository, which is mean to run once per process invocation, but
 
---Sig_/e0Q7Ztg09gC+KDrNArzZYmB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+s/mean/meant/, I think.
 
------BEGIN PGP SIGNATURE-----
+>  * The "unshelve" subcommand of "git p4" used incorrectly used
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl976vUACgkQAVBC80lX
-0GxooggAnOftleaedfL1YdmpaEc9eObEeLx2rfR353dsQfTfJ+u2BizE7+Zjx3w1
-FdSwp6R/jh2/fIjG6aiXxCqD0iWiipvbTOoJJhVp9gLV16DH5zsjw83whm4deDv8
-Eqpc67S5RbgEqgN09/cZx/MkCGqjapXlqKYpcioh19Cy9fOYtJ+k4vHADZ6DJoER
-UOJPxyKtnMQ+bn7tRFLxKBUF/eUNxjOxwf/ITuJS/S0FZBpW/Ukf63AFH75VyxT8
-ghDwmGqrG9rIx5AuxEIuIApp/FysXbX5XUNO08YPLiPE8vCAU258mV9CTuI74Qj9
-Kh40+ZNFiMOdrIp5RbMXd8DfBu8VBA==
-=x5SO
------END PGP SIGNATURE-----
+s/used // (without 'g' flag!)
 
---Sig_/e0Q7Ztg09gC+KDrNArzZYmB--
+Martin
