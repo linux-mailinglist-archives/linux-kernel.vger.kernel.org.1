@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AB2285383
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3F7285393
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbgJFU4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        id S1727370AbgJFVEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727333AbgJFU4U (ORCPT
+        with ESMTP id S1727176AbgJFVEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:56:20 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1195C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 13:56:19 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id p13so9136543edi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kZ33m0een3FmBO5zM6YS30Fhun5lzxt8LRsuBmJ9np8=;
-        b=Qfg5p3wmaIK8FSiIu4IdCn4X7nejDPhFFZhUVBVUejoaklw0Xl8abJMx/NPlE+GAYD
-         GFFRBTXhLKiSTLhMEWACUyrBty03El/kGu4Ye5XJJWvvK/JT9MZ2EHl/BwOPsWpbvWqd
-         6hSErfchiydyFBZt3FeeoxPWw3eNiC6MJ1Mv4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kZ33m0een3FmBO5zM6YS30Fhun5lzxt8LRsuBmJ9np8=;
-        b=C28QhRaqk8BDbHFVv8g3aE8ZlIG6GDJYaUd2U1RCjWrk7PucvOtU1aIRHqjB8NOeUO
-         89+7oqgdvcjrSv9noS56PVxi7/yQDGXMc/2huCWwNsxRPn6ThyOoctjQG49Xka0huiOO
-         H8UnHIXWjkCHVlZEkI8zPsZTn1BJnTG4IqcW1ZHmjJnPMoyq6kGSRQFiISR4iGy4cVwH
-         uV7S5Xhp1j4BZWSl7VXj15U3K1WevymjLm0xhbkoFeCZ1MSvchK4xVk74BlCBdUQ0vAC
-         NdeVXj5W/VvhEFAF6CbhtSeP1qqiWw2pJsCpYYDzEC9eoeL12637zZCPvIznxN5CO5QF
-         aRpw==
-X-Gm-Message-State: AOAM5304p7T3Evr5eJyyURLF0WWouGaEz25S3TWi7rp3lKv+QS6lNTkB
-        d7PvBVikrQzHnIaWoKgjFj70WXTLVifvbA==
-X-Google-Smtp-Source: ABdhPJwJfS6uNbsVFArZNDIsICVQ6k47r05nghoZPMrc2Tenpt9V2sy7d9Y2KAxUZ0M29HzpBGUn9Q==
-X-Received: by 2002:a05:6402:1515:: with SMTP id f21mr7909613edw.175.1602017778160;
-        Tue, 06 Oct 2020 13:56:18 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id s25sm1941786ejc.29.2020.10.06.13.56.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 13:56:16 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id n18so7180828wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 13:56:16 -0700 (PDT)
-X-Received: by 2002:adf:df8e:: with SMTP id z14mr6756108wrl.32.1602017775603;
- Tue, 06 Oct 2020 13:56:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200930160917.1234225-1-hch@lst.de> <20200930160917.1234225-9-hch@lst.de>
- <20201002175040.GA1131147@chromium.org> <20201005082629.GA13850@lst.de>
-In-Reply-To: <20201005082629.GA13850@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 6 Oct 2020 22:56:04 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5DcFjTUpOYkaz4nGxozgOc9oGf9QngjbpXWdcwXTT=kmw@mail.gmail.com>
-Message-ID: <CAAFQd5DcFjTUpOYkaz4nGxozgOc9oGf9QngjbpXWdcwXTT=kmw@mail.gmail.com>
-Subject: Re: [PATCH 8/8] WIP: add a dma_alloc_contiguous API
-To:     Christoph Hellwig <hch@lst.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Tue, 6 Oct 2020 17:04:12 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC20C061755;
+        Tue,  6 Oct 2020 14:04:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5VMB4TBRz9sSG;
+        Wed,  7 Oct 2020 08:04:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602018248;
+        bh=D2iFk0l3U3wTXzKFLPsxu6P3eYTdYFtCQAuJJJjQmWM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bhEpNiegpLUy5hin7ka+43scdjV2WhMgQCBbVXvFrfwKX1BP5/XB/JE0j40XVhdcy
+         C/kwnRaTuf/P++D19+HT+V9tWz3THk6kFfVbKCuDAfs0rd3rXAkavHZDNpTwR2qUF0
+         7PW29aSHtIbMBzKNm02UvtoIyksCP13GicsTGy2hY2V253vIl7KAGYSsLysQVYSJmN
+         2HHy5qUj6NZTQSqduNjshB2shOSMa4VqHtNY/eY5TruCfVRvgQcwqfiN3b6Pn61kSH
+         MYmJLL3Fu99Ahv919Mb3IXzJvxcYCwpqYeMWVTi8UkaIpXVYtL1jImJoA9FLJ29aoh
+         VU2F0M6czV7+A==
+Date:   Wed, 7 Oct 2020 08:04:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: linux-next: build failure after merge of the vfs tree
+Message-ID: <20201007080405.5e90a579@canb.auug.org.au>
+In-Reply-To: <20201006143012.fgpyujguzvcwszp4@treble>
+References: <20200924183038.3c6da86e@canb.auug.org.au>
+        <20200924200807.GU3421308@ZenIV.linux.org.uk>
+        <20200925220128.1604f09b@canb.auug.org.au>
+        <20200925133820.GW3421308@ZenIV.linux.org.uk>
+        <20200929041056.uj6gedgm6hfjaxrx@treble>
+        <20201006143012.fgpyujguzvcwszp4@treble>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/mGAqYt=bD6yUtK69wl=vzGF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 10:26 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Oct 02, 2020 at 05:50:40PM +0000, Tomasz Figa wrote:
-> > Hi Christoph,
-> >
-> > On Wed, Sep 30, 2020 at 06:09:17PM +0200, Christoph Hellwig wrote:
-> > > Add a new API that returns a virtually non-contigous array of pages
-> > > and dma address.  This API is only implemented for dma-iommu and will
-> > > not be implemented for non-iommu DMA API instances that have to allocate
-> > > contiguous memory.  It is up to the caller to check if the API is
-> > > available.
-> >
-> > Would you mind scheding some more light on what made the previous attempt
-> > not work well? I liked the previous API because it was more consistent with
-> > the regular dma_alloc_coherent().
->
-> The problem is that with a dma_alloc_noncoherent that can return pages
-> not in the kernel mapping we can't just use virt_to_page to fill in
-> scatterlists or mmap the buffer to userspace, but would need new helpers
-> and another two methods.
->
-> > >  - no kernel mapping or only temporary kernel mappings are required.
-> > >    That is as a better replacement for DMA_ATTR_NO_KERNEL_MAPPING
-> > >  - a kernel mapping is required for cached and DMA mapped pages, but
-> > >    the driver also needs the pages to e.g. map them to userspace.
-> > >    In that sense it is a replacement for some aspects of the recently
-> > >    removed and never fully implemented DMA_ATTR_NON_CONSISTENT
-> >
-> > What's the expected allocation and mapping flow with the latter? Would that be
-> >
-> > pages = dma_alloc_noncoherent(...)
-> > vaddr = vmap(pages, ...);
-> >
-> > ?
->
-> Yes.  Witht the vmap step optional for replacements of
-> DMA_ATTR_NO_KERNEL_MAPPING, which is another nightmare to deal with.
->
-> > Would one just use the usual dma_sync_for_{cpu,device}() for cache
-> > invallidate/clean, while keeping the mapping in place?
->
-> Yes.  And make sure the API isn't implemented when VIVT caches are
-> used, but that isn't really different from the current interface.
+--Sig_/mGAqYt=bD6yUtK69wl=vzGF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Okay, thanks. Let's see if we can make necessary changes to the videobuf2.
+Hi Josh,
 
-+Sergey Senozhatsky for awareness too.
+On Tue, 6 Oct 2020 09:30:12 -0500 Josh Poimboeuf <jpoimboe@redhat.com> wrot=
+e:
+>
+> On Mon, Sep 28, 2020 at 11:10:56PM -0500, Josh Poimboeuf wrote:
+> > > Josh, any ideas?  We could, of course, make it "r"(size), but that wo=
+uld
+> > > be unpleasant in all existing callers... =20
+> >=20
+> > Sorry, I've been traveling.  I'd just vote for making it "r".
+> >=20
+> > array_index_nospec() is always called after a usercopy.  I don't think
+> > anyone will notice the extra mov, for the cases where it would be
+> > propagated as an immediate.  And the argument *is* an unsigned long
+> > after all.
+> >=20
+> > Stephen, can you confirm this fixes it? =20
+>=20
+> Still traveling, I didn't see an update on this.  Any objections to the
+> below?  I assume it fixes Stephen's build issue.
 
-Best regrards,
-Tomasz
+Yes, it does fix my x86_64 allnoconfig build.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/mGAqYt=bD6yUtK69wl=vzGF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9828UACgkQAVBC80lX
+0GzjMAf+NGlPx9YrXuvL8HEllDlG5h8Jjq6l+IOkat5XF5yPIOycUzr4ER118JO3
+5+yMxO3WH2y8dzXv8qScrWRFPHbMFM3JsZe6OCx+HS6WWKY5DqafsAoauuBPJGu2
+dbMcSYGrZWSA5sfiZ+qKVkoLHTxRf5GO0z7hg+ARD42AGsjiAxuF6KXb0cRUdAXl
+Gzhh2v8UW/fvF19E2AwoiVtR7EbtRSZaMd+yFFW50/boqBIERr3/y/mzuCeQpWgn
+YtMzGAsIqVE3m1hxoL6oqFmNRHCJCgYqq/HzoO1jeMru1ePd95l7vIxRbxNBpDBD
+vATKKYJO06BrL6X7OL9Z0cc439Rp0w==
+=YPrC
+-----END PGP SIGNATURE-----
+
+--Sig_/mGAqYt=bD6yUtK69wl=vzGF--
