@@ -2,96 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70B0284346
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC68284348
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 02:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgJFATC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 20:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726973AbgJFATA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 20:19:00 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8066FC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 17:18:58 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id z26so10694068oih.12
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 17:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iCNS2Mt7RYa/vQIW1MgM7dt2+SlfEcRtrJHzkHPD78E=;
-        b=BEb24k9fKVTYev/Kp8u/prxqYADD3/O4fgpmhFwNY/aexp+3mte7L2rXaWxWytw+9E
-         fD4tn6u761/Zqjmog+h1LAP/eG9HkDGdcgvatftwyXgKhWPxqpHbP/46YhzDMMzQuxy8
-         FU5QltJ7M4F5FWpp6wTtPxlJDSaG5c0Npfm40=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iCNS2Mt7RYa/vQIW1MgM7dt2+SlfEcRtrJHzkHPD78E=;
-        b=Wx2ZWNTxGlEt0UNbRQu+zKVVDk3HCm/f96/x7XRsbzvCmn4M4fpwP30ZXwGoyhz/lj
-         37eW5IfZETk3fgBkCcn1cYHvbVHnVpeZyXQJAjzIGlYMB2K+FOI+gqE9AKPa51VB2oqF
-         7BwQxo/43zlJ+6z28hhQf61yMeHW1Rv0iNbCkb9InIOcEoxU1IKy+gVvR/30X5+9YpVI
-         Di5Pkj6/g8bWMV/3JosizltmMJMOoeyAk42raNVfxx4OXNv9i2F1qXXgtkJATEteRMEY
-         qP4oqpfKlEjhazOK5BSHIoyMLieK60zmYI84L8dKL5N0iyixvdhUPFmcuIOhGrF3afKH
-         GFEw==
-X-Gm-Message-State: AOAM533jlbicJoQRKQEsBpoLT60GhSgPz5QkwtZQ9va75xA9ltfvfE4B
-        W0LEvGks8dlNCEyKM56lrnsHYw==
-X-Google-Smtp-Source: ABdhPJwMZCFpEf4HT4YvHBdN+JfpItjBRX6d5IetZVjAU46i/+HFWKHv8Mdve7RDGkgHhQR2sU9nCQ==
-X-Received: by 2002:aca:c546:: with SMTP id v67mr1211518oif.24.1601943537954;
-        Mon, 05 Oct 2020 17:18:57 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u2sm402757oig.48.2020.10.05.17.18.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 17:18:57 -0700 (PDT)
-Subject: Re: [PATCH 5.8 00/85] 5.8.14-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <796191d0-b72a-296d-1fa9-ea9384597024@linuxfoundation.org>
-Date:   Mon, 5 Oct 2020 18:18:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726793AbgJFATd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 20:19:33 -0400
+Received: from mga01.intel.com ([192.55.52.88]:4481 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726337AbgJFATc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 20:19:32 -0400
+IronPort-SDR: aVsSHVFW/EiEuqQ7ig6tkbbSxh8ngC9RjbWyO/Yke7u5W3aObLAMcQvhTsaTDa0Kemkl5AF+sx
+ C68mb5vyIAPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="181728110"
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="181728110"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 17:19:31 -0700
+IronPort-SDR: kPyl5uQwkHKITjzSTyz+g8GIGYXmZebx9jOz1mw4FgMbnqcvwRw8S+avdifpEkX9uXXZrPaRo4
+ X8fqJ3sB2VhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="296754851"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga008.fm.intel.com with ESMTP; 05 Oct 2020 17:19:31 -0700
+Date:   Mon, 5 Oct 2020 17:21:30 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Luck, Tony" <tony.luck@intel.com>, x86@kernel.org,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH 0/3] x86: Add initial support to discover Intel hybrid
+ CPUs
+Message-ID: <20201006002130.GA6041@ranerica-svr.sc.intel.com>
+References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
+ <87r1qgccku.fsf@nanos.tec.linutronix.de>
+ <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
+ <87lfgnd1tm.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfgnd1tm.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 9:25 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.14 release.
-> There are 85 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Sat, Oct 03, 2020 at 12:46:29PM +0200, Thomas Gleixner wrote:
+> On Fri, Oct 02 2020 at 19:17, Tony Luck wrote:
 > 
-> Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
-> Anything received after that time might be too late.
+> > On Sat, Oct 03, 2020 at 03:39:29AM +0200, Thomas Gleixner wrote:
+> >> On Fri, Oct 02 2020 at 13:19, Ricardo Neri wrote:
+> >> > Add support to discover and enumerate CPUs in Intel hybrid parts. A hybrid
+> >> > part has CPUs with more than one type of micro-architecture. Thus, certain
+> >> > features may only be present in a specific CPU type.
+> >> >
+> >> > It is useful to know the type of CPUs present in a system. For instance,
+> >> > perf may need to handle CPUs differently depending on the type of micro-
+> >> > architecture. Decoding machine check error logs may need the additional
+> >> > micro-architecture type information, so include that in the log.
+> >> 
+> >> 'It is useful' as justification just makes me barf.
+> >
+> > This isn't "hetero" ... all of the cores are architecturally the same.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> and the diffstat can be found below.
+> The above clearly says:
 > 
-> thanks,
+> >> > A hybrid part has CPUs with more than one type of micro-architecture.
 > 
-> greg k-h
+> Can you folks talk to each other and chose non-ambigous wording in
+> changelogs and cover letters?
 > 
+> > If CPUID says that some feature is supported, then it will be supported
+> > on all of the cores.
+> 
+> That's a different story.
 
-Compiled and booted on my test system. No dmesg regressions.
+Thank you for the quick reply, Thomas.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+I am sorry if my cover letter was not sufficiently clear. I see now that
+I should have done a more detailed discussion of the terminology.
 
-thanks,
--- Shuah
+Yes, all features and instructions as enumerated in CPUID will be
+supported in all CPUs. Thus, the kernel will not have to check if a
+feature is supported before running. The hetero/hybrid part means to
+reflect that more than one types of CPUs will be present in the package,
+and the main difference is power and performance. The same kernel and user code
+will run on all CPUs without any other further check.
+
+> 
+> > There might be some model specific performance counter events that only
+> > apply to some cores. Or a machine check error code that is logged in the
+> > model specific MSCOD field of IA32_MCi_STATUS. But any and all code can run
+> > on any core.
+> 
+> Ok. The perf side should be doable, IIRC we already have something like
+> that, but Peter should know better.
+> 
+> > Sure there will be some different power/performance tradeoffs on some
+> > cores. But we already have that with some cores able to achieve higher
+> > turbo frequencies than others.
+> 
+> Right, that's not a problem.
+
+We are also working this front.
+
+Thanks and BR,
+Ricardo
