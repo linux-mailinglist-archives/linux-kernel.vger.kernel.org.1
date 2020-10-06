@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697E828481E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 10:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262E82847F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 09:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgJFIIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 04:08:30 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:51889 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgJFIIZ (ORCPT
+        id S1727209AbgJFH5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 03:57:00 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:49211 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726991AbgJFH5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 04:08:25 -0400
-Received: by mail-il1-f205.google.com with SMTP id e3so9351261ilq.18
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 01:08:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vsr+coIcVgClKoMDt/6umhRFqiKF3X7GLy13qBxsSLY=;
-        b=rrOvy0eL2ZsihsxpSPbTGUuzT8/auLs7GkUSz0uX+jA4or8N9kT7fzsuNSuURJD5Vn
-         vy/X5NFrWXqy1XRDH69fkx4sUDTFisoCkHE0n/2gddWO3OPipXb9dMCDgNuZmaUoEZwJ
-         y9nank7cd5f6UNr3chtEjYpTh6al8ddKI/4BbuqcBqxLpR/ZshqjpLDtefXowuxVkefn
-         MDgh58RGEMpm/Oc/fuFgFFoDkk3/dmMdgj5m6fUZN52TpT1XYdgi26iZVWvnAWqw6QUy
-         H3LPPgn5EKGDe0lVCNhiKVBjNHbMH+gHQQHJdQ1EJstmmD4XcO6wQCfgqWvrpKVX0apV
-         oaaA==
-X-Gm-Message-State: AOAM532v0VXGJseY+Mx6hxDYlJkjU0TleKXbtnHtJtqx7axxNJfHVo8G
-        n8ws+1PqW0qpuGwlGFEXoLCifXNmNxRhZyxPOVkdbz6IS9Ap
-X-Google-Smtp-Source: ABdhPJwkcuklznSh8d1ENaTIB5adIDKUraspGVNC3cc2nSICp4wdmBfo9/Uss/WSm6WrakPgBuYzdmk9xBnTZjiUcjhs7FewyqNH
+        Tue, 6 Oct 2020 03:57:00 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201006075656epoutp04f187b96e0375c1a24f3acfb17d091abb~7WCb8hBiY1667216672epoutp04N
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 07:56:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201006075656epoutp04f187b96e0375c1a24f3acfb17d091abb~7WCb8hBiY1667216672epoutp04N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601971016;
+        bh=eGJ/o/4mHLr8azDiSIfZgtOCa4YXD3Uyr1TeR5gmAUw=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=K05jsex6CZ//NkIMIgyPhxM7kplqo0mi966D8H8lSwhJ8Ke/0VnpEVvCPorF07LK3
+         yD0nSgLGDVWWDH+DjKlVYMSb9MKXQ9k3/Ks43vK7wLcB9e9371S4vcjyR+EQhh1TKa
+         WdjHWOxMNfLOxnLS+JvYEKc5Jc+TA267WOt18V+c=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201006075656epcas1p141f361f953fb4227d6d1810fc3510718~7WCbbgwr22887328873epcas1p1l;
+        Tue,  6 Oct 2020 07:56:56 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.154]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4C58ts1dMjzMqYlp; Tue,  6 Oct
+        2020 07:56:53 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B7.4B.09543.5432C7F5; Tue,  6 Oct 2020 16:56:53 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201006075652epcas1p46e5781a799c2782c9f9fa61b0d1f3ebe~7WCX7QWHP3158031580epcas1p4L;
+        Tue,  6 Oct 2020 07:56:52 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201006075652epsmtrp1b3dc79eea2bb85b6e5411b144e11dcc7~7WCX6sIH22802928029epsmtrp1d;
+        Tue,  6 Oct 2020 07:56:52 +0000 (GMT)
+X-AuditID: b6c32a35-35dff70000002547-d4-5f7c2345c9d1
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        45.29.08745.4432C7F5; Tue,  6 Oct 2020 16:56:52 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201006075652epsmtip29934adc2804d8ca34c520cc65efb6f5a~7WCXmXszN1963719637epsmtip2R;
+        Tue,  6 Oct 2020 07:56:52 +0000 (GMT)
+Subject: Re: [GIT PULL] devfreq next for v5.10
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
+        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <da43236a-b44e-d4d7-97c5-37ce3c447c95@samsung.com>
+Date:   Tue, 6 Oct 2020 17:10:15 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e714:: with SMTP id b20mr127393ioh.109.1601971704270;
- Tue, 06 Oct 2020 01:08:24 -0700 (PDT)
-Date:   Tue, 06 Oct 2020 01:08:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005f92b905b0fc1a5d@google.com>
-Subject: WARNING in ieee80211_check_rate_mask
-From:   syzbot <syzbot+be0e03ca215b06199629@syzkaller.appspotmail.com>
-To:     clang-built-linux@googlegroups.com, davem@davemloft.net,
-        johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0giQRQG+V=XPVMJH4aRcvZo-JQ82bgw-KHAXBGfnEkgpQ@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMJsWRmVeSWpSXmKPExsWy7bCmrq6rck28wdot7BYTb1xhsTjb9Ibd
+        4vKuOWwWn3uPMFrcblzBZjH3y1RmizOnL7E6sHtsWtXJ5rHlajuLR9+WVYwenzfJBbBEZdtk
+        pCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAF2gpFCWmFMK
+        FApILC5W0rezKcovLUlVyMgvLrFVSi1IySmwLNArTswtLs1L10vOz7UyNDAwMgUqTMjO+DH3
+        OEvBXpaK5fsfszQwnmTuYuTgkBAwkeg5F9fFyMUhJLCDUeLagd+sEM4nRonla9sYIZzPjBKH
+        384C6uAE67i/8DsTRGIXo8T7J81sEM57RomfHbPZQKqEBfQkzqy+xApiiwhoSyxZdJUZpIhZ
+        4DqTROPFxUwgCTYBLYn9L26ANfALKEpc/fGYEcTmFbCTePtsPtg6FgEViU9bXoHViwqESZzc
+        1gJVIyhxcuYTFhCbUyBQ4uyq+2BzmAXEJW49mc8EYctLbH87B+rsqRwSLduTIWwXiYnf5zBC
+        2MISr45vYYewpSRe9rdB2dUSK08eAftMQqCDUWLL/gusEAljif1LJzOBQo9ZQFNi/S59iLCi
+        xM7fcxkh9vJJvPvawwoJYF6JjjYhiBJlicsP7jJB2JISi9s72SYwKs1C8s0sJB/MQvLBLIRl
+        CxhZVjGKpRYU56anFhsWGCLH9iZGcOrUMt3BOPHtB71DjEwcjIcYJTiYlUR49cIq4oV4UxIr
+        q1KL8uOLSnNSiw8xmgLDdyKzlGhyPjB555XEG5oaGRsbW5gYmpkaGiqJ8z68pRAvJJCeWJKa
+        nZpakFoE08fEwSnVwFR6/OPSDQtO/wx8wfM0Y6tlZu2+q3qmapHuKzWXeXIFlzxw+Bbz7atD
+        +bZMfec9n+I66jM1735rvD5dd7PPjqN1DtY7XO7GnJ7zw+U8q+TT3RvDbQWfn9RZoP/k6NnM
+        nmm/psp4/tPevTgme9HfroPWIre7VwkKNL05JTTHJniz9X6LI2dL/QQfikrcPXl1z9Gvc7xk
+        b9jlL2Bi8wxZZcNQFt0XcZFtm9G5wk6bx1Kv/55ZYpETOc27Qr9nI7N+k45W6oyLzm9m7BK/
+        dvp5fu8NpkcW90UXflVY5Vo8XUK96OA8wxsTtyYudrq6b0vXAyOhvcGa2v+2zqy+albY5pPq
+        WCLatXXLtnjviBQvRVUlluKMREMt5qLiRADWm1bVJgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWy7bCSvK6Lck28wdq3shYTb1xhsTjb9Ibd
+        4vKuOWwWn3uPMFrcblzBZjH3y1RmizOnL7E6sHtsWtXJ5rHlajuLR9+WVYwenzfJBbBEcdmk
+        pOZklqUW6dslcGX8mHucpWAvS8Xy/Y9ZGhhPMncxcnJICJhI3F/4namLkYtDSGAHo8SauXeY
+        IBKSEtMuHgUq4gCyhSUOHy6GqHnLKNHy6RVYjbCAnsSZ1ZdYQWwRAW2JJYuuMoMUMQvcZJJ4
+        9q2PDaLjJqPEuxvPWECq2AS0JPa/uMEGYvMLKEpc/fGYEcTmFbCTePtsPthJLAIqEp+2QGwQ
+        FQiT2LnkMRNEjaDEyZlPwOZwCgRKnF11H2wOs4C6xJ95l5ghbHGJW0/mM0HY8hLb385hnsAo
+        PAtJ+ywkLbOQtMxC0rKAkWUVo2RqQXFuem6xYYFRXmq5XnFibnFpXrpecn7uJkZwHGlp7WDc
+        s+qD3iFGJg7GQ4wSHMxKIrx6YRXxQrwpiZVVqUX58UWlOanFhxilOViUxHm/zloYJySQnliS
+        mp2aWpBaBJNl4uCUamDitxHawsfY5PUz9bKlxDTmGIFlH15efxRxT+fPBHdej4CaeYatQaYL
+        ioudtC/zPXV6XvbOxrOrUM9z5pk9Wat2p/vvyzygHTFd5pvmthTDyAYXYeU359hXH/1hOSer
+        5jmbzYxTGj+aZh9n/aW4Iku1RWipi/ReVdPOI20Pz9hZ9ZTvD5IzuFd4edb8Rzu22cTFn3Ov
+        YdYS7r6lIRIrtflusZJNfeqGOY+aZFY/v3CJ24H3qv2W5TapkjnHynN/GBq8v+P8Jk5FTV90
+        vnJAQqNL2vqLu9ZsLfkfvLBQ63R9Cb+K4MIXhi36l5d27m41Utxu7aC+QmdN+nbWwyvv3Azd
+        0r4i4onWUZcPP0xatymxFGckGmoxFxUnAgBQstvdEgMAAA==
+X-CMS-MailID: 20201006075652epcas1p46e5781a799c2782c9f9fa61b0d1f3ebe
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200929085610epcas1p2447455fd0bcde25f5dff466e71b7ac15
+References: <CGME20200929085610epcas1p2447455fd0bcde25f5dff466e71b7ac15@epcas1p2.samsung.com>
+        <b5d67c59-90c7-6a77-7420-a8783282430f@samsung.com>
+        <CAJZ5v0giQRQG+V=XPVMJH4aRcvZo-JQ82bgw-KHAXBGfnEkgpQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Dear Rafael,
 
-syzbot found the following issue on:
+On 10/1/20 12:56 AM, Rafael J. Wysocki wrote:
+> On Tue, Sep 29, 2020 at 10:56 AM Chanwoo Choi <cw00.choi@samsung.com> wrote:
+>>
+>> Dear Rafael,
+>>
+>> This is devfreq-next pull request for v5.10-rc1. I add detailed description of
+>> this pull request on the following tag. Please pull devfreq with following updates.
+>> - tag name : devfreq-next-for-5.10
+> 
+> Pulled, thanks!
 
-HEAD commit:    c2568c8c Merge branch 'net-Constify-struct-genl_small_ops'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e2fb4d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6c5266df853ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=be0e03ca215b06199629
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1790e83b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111a5bc7900000
+Thanks for pulled the request. But, I tried to check on linux-pm.git,
+I cannot find the pull request of devfreq patches for v5.10-rc1.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+be0e03ca215b06199629@syzkaller.appspotmail.com
+Best Regards,
+Chanwoo Choi
 
-netlink: 20 bytes leftover after parsing attributes in process `syz-executor823'.
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6878 at net/mac80211/rate.c:281 ieee80211_check_rate_mask+0x1af/0x220 net/mac80211/rate.c:281
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 6878 Comm: syz-executor823 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:ieee80211_check_rate_mask+0x1af/0x220 net/mac80211/rate.c:281
-Code: 45 85 ff 0f 84 86 0c 00 00 48 83 c4 10 5b 5d 41 5c 41 5d 41 5e 41 5f e9 bf 8c a1 f9 e8 ba 8c a1 f9 0f 0b eb e4 e8 b1 8c a1 f9 <0f> 0b eb db e8 e8 4f e3 f9 e9 f6 fe ff ff 48 89 ef e8 db 4f e3 f9
-RSP: 0018:ffffc900055274b0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88808a7d0c00 RCX: ffffffff87d4fa14
-RDX: ffff888091b2e000 RSI: ffffffff87d4faff RDI: 0000000000000005
-RBP: 0000000000000000 R08: ffff88808a7d1e58 R09: ffff888091b2e900
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 00000000ffffffff R14: ffff88808a7d0c00 R15: 0000000000000000
- ieee80211_change_bss+0x53c/0xc20 net/mac80211/cfg.c:2314
- rdev_change_bss net/wireless/rdev-ops.h:394 [inline]
- nl80211_set_bss+0x76c/0xc70 net/wireless/nl80211.c:7009
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2489
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4419c9
-Code: e8 dc 05 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdbf57fbe8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004419c9
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000004
-RBP: 000000306e616c77 R08: 0000000000000000 R09: 0000002000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
