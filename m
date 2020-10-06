@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4662849D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF6E2848F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJFJ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:58:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59576 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgJFJ65 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:58:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601978335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7LV4W7glSecH78sK1+Pn5RbohOXK+OKpDxoa9IzxyOE=;
-        b=U6B5y5V7IZkwM9ScCiOE82tX/IRSP3p1f+UuEr/GOhXhcXKlaGyH/cRDLcvGmu4yvlKDyI
-        aJlYHciB2ammab0iZS4rbX9tKFhgjK7unqRV83L5vxMvyVmGLYfpewSU0L7Vz/rpQWNOsV
-        7yCobW2yFk22ZAwXAykoAXh6QOWAv8w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-178-lLK2Aw8zM5Wouy5X8P0zEw-1; Tue, 06 Oct 2020 05:58:51 -0400
-X-MC-Unique: lLK2Aw8zM5Wouy5X8P0zEw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BB7D1084D61;
-        Tue,  6 Oct 2020 09:58:50 +0000 (UTC)
-Received: from localhost (ovpn-112-180.ams2.redhat.com [10.36.112.180])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CE3F10013BD;
-        Tue,  6 Oct 2020 09:58:44 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 10:04:27 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Qian Cai <cai@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com
-Subject: Re: virtiofs: WARN_ON(out_sgs + in_sgs != total_sgs)
-Message-ID: <20201006090427.GA41482@stefanha-x1.localdomain>
-References: <5ea77e9f6cb8c2db43b09fbd4158ab2d8c066a0a.camel@redhat.com>
- <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
- <20201004143119.GA58616@redhat.com>
-MIME-Version: 1.0
-In-Reply-To: <20201004143119.GA58616@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
-Content-Disposition: inline
+        id S1725977AbgJFJFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:05:34 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:23981 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJFJFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:05:33 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C5BQ06pGGz9tyfM;
+        Tue,  6 Oct 2020 11:05:28 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id y2ldzfHjWUF4; Tue,  6 Oct 2020 11:05:28 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C5BQ05l2rz9tyfQ;
+        Tue,  6 Oct 2020 11:05:28 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id ECA1D8B7C7;
+        Tue,  6 Oct 2020 11:05:27 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4yQoLA5Np6I4; Tue,  6 Oct 2020 11:05:27 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4AE288B7C3;
+        Tue,  6 Oct 2020 11:05:26 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1AB5B65DE8; Tue,  6 Oct 2020 09:05:26 +0000 (UTC)
+Message-Id: <319d379f696412681c66a987cc75e6abf8f958d2.1601975100.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/2] powerpc/32s: Rename head_32.S to head_book3s_32.S
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue,  6 Oct 2020 09:05:26 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Unlike PPC64 which had a single head_64.S, PPC32 are multiple ones.
+There is the head_32.S, selected by default based on the value of BITS
+and overridden based on some CONFIG_ values. This leads to thinking
+that it may be selected by different types of PPC32 platform but
+indeed it ends up being selected by book3s/32 only.
 
-On Sun, Oct 04, 2020 at 10:31:19AM -0400, Vivek Goyal wrote:
-> On Fri, Oct 02, 2020 at 10:44:37PM -0400, Qian Cai wrote:
-> > On Fri, 2020-10-02 at 12:28 -0400, Qian Cai wrote:
-> > > Running some fuzzing on virtiofs from a non-privileged user could tri=
-gger a
-> > > warning in virtio_fs_enqueue_req():
-> > >=20
-> > > WARN_ON(out_sgs + in_sgs !=3D total_sgs);
-> >=20
-> > Okay, I can reproduce this after running for a few hours:
-> >=20
-> > out_sgs =3D 3, in_sgs =3D 2, total_sgs =3D 6
->=20
-> Thanks. I can also reproduce it simply by calling.
->=20
-> ioctl(fd, 0x5a004000, buf);
->=20
-> I think following WARN_ON() is not correct.
->=20
-> WARN_ON(out_sgs + in_sgs !=3D total_sgs)
->=20
-> toal_sgs should actually be max sgs. It looks at ap->num_pages and
-> counts one sg for each page. And it assumes that same number of
-> pages will be used both for input and output.
->=20
-> But there are no such guarantees. With above ioctl() call, I noticed
-> we are using 2 pages for input (out_sgs) and one page for output (in_sgs)=
-.
->=20
-> So out_sgs=3D4, in_sgs=3D3 and total_sgs=3D8 and warning triggers.
->=20
-> I think total sgs is actually max number of sgs and warning
-> should probably be.
->=20
-> WARN_ON(out_sgs + in_sgs >  total_sgs)
->=20
-> Stefan, WDYT?
+Make that explicit by:
+- Not doing any default selection based on BITS.
+- Renaming head_32.S to head_book3s_32.S.
+- Get head_book3s_32.S selected only by CONFIG_PPC_BOOK3S_32.
 
-It should be possible to calculate total_sgs precisely (not a maximum).
-Treating it as a maximum could hide bugs.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/Makefile                        | 3 ++-
+ arch/powerpc/kernel/{head_32.S => head_book3s_32.S} | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+ rename arch/powerpc/kernel/{head_32.S => head_book3s_32.S} (99%)
 
-Maybe sg_count_fuse_req() should count in_args/out_args[numargs -
-1].size pages instead of adding ap->num_pages.
-
-Do you have the details of struct fuse_req and struct fuse_args_pages
-fields for the ioctl in question?
-
-Thanks,
-Stefan
-
---Qxx1br4bt0+wmkIi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl98MxsACgkQnKSrs4Gr
-c8gfnwf+MqC6BshRLBrYU+tLmXR6WJwbG8X0i6P2g42yuD/GJ4WOYHVPw2oEdnc/
-OwEMYJ9LWwFiYmhT5DeapDx9XmVJVMlPeQ6GjkRilgo53OGu3IMi3T3JIOHKN4ZZ
-nCwWqrE1CA4bVx7sX6HUKOqGwLhOIs1DrAen/sNjEtbKi2Bum1OTpo5uWDQuGEIn
-BwYfQmuuSL/lBpz2Um+le97b8YskkC01oJAMONlNtQZqhYyZKl67Xbqq219Mnyzv
-O0uePL5gPQr1pNOknKXmgOsZUSHn5XamPiNz2LbHFVGRswIUM0BCNFVTnfOeRi7r
-Zm0jNqFLkavBPraEY08HjFnbBTwLDQ==
-=Ol2A
------END PGP SIGNATURE-----
-
---Qxx1br4bt0+wmkIi--
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index a5550c2b24c4..bf0bf1b900d2 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -95,7 +95,8 @@ obj-$(CONFIG_PPC_FSL_BOOK3E)	+= cpu_setup_fsl_booke.o
+ obj-$(CONFIG_PPC_DOORBELL)	+= dbell.o
+ obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o
+ 
+-extra-y				:= head_$(BITS).o
++extra-$(CONFIG_PPC64)		:= head_64.o
++extra-$(CONFIG_PPC_BOOK3S_32)	:= head_book3s_32.o
+ extra-$(CONFIG_40x)		:= head_40x.o
+ extra-$(CONFIG_44x)		:= head_44x.o
+ extra-$(CONFIG_FSL_BOOKE)	:= head_fsl_booke.o
+diff --git a/arch/powerpc/kernel/head_32.S b/arch/powerpc/kernel/head_book3s_32.S
+similarity index 99%
+rename from arch/powerpc/kernel/head_32.S
+rename to arch/powerpc/kernel/head_book3s_32.S
+index 35627693c2a4..e07a2c07ffe4 100644
+--- a/arch/powerpc/kernel/head_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -61,7 +61,7 @@
+ 
+ 	__HEAD
+ 	.stabs	"arch/powerpc/kernel/",N_SO,0,0,0f
+-	.stabs	"head_32.S",N_SO,0,0,0f
++	.stabs	"head_book3s_32.S",N_SO,0,0,0f
+ 0:
+ _ENTRY(_stext);
+ 
+-- 
+2.25.0
 
