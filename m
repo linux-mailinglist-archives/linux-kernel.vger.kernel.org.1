@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239A5284E1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE6B284E10
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgJFOfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:35:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726624AbgJFOfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:35:14 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8588212CC;
-        Tue,  6 Oct 2020 14:35:13 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kPo3c-002zG6-QF; Tue, 06 Oct 2020 10:35:12 -0400
-Message-ID: <20201006143512.642141492@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 06 Oct 2020 10:34:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-linus][PATCH 13/15] ftrace: Format variable declarations of ftrace_allocate_records
-References: <20201006143446.182666356@goodmis.org>
+        id S1726330AbgJFOfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:35:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35272 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgJFOfF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:35:05 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 0B6C4296252
+Subject: Re: [PATCH] ARM: dts: cros-ec-keyboard: Add alternate keymap for
+ KEY_LEFTMETA
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Benson Leung <bleung@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Douglas Anderson <dianders@chromium.org>
+References: <20200925162604.2311841-1-swboyd@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <fba1a3ea-ddbb-d0cf-9ec5-b7c8832cb668@collabora.com>
+Date:   Tue, 6 Oct 2020 16:35:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+In-Reply-To: <20200925162604.2311841-1-swboyd@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Hi Stephen,
 
-I hate when unrelated variables are declared on the same line.
-Split them.
+On 25/9/20 18:26, Stephen Boyd wrote:
+> On newer keyboards this key is in a different place. Add both options to
+> the keymap so that both new and old keyboards work.
+> 
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ftrace.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Queued for 5.10.
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index c3be18b4f27b..4833b6a82ce7 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3129,7 +3129,8 @@ static int ftrace_update_code(struct module *mod, struct ftrace_page *new_pgs)
- static int ftrace_allocate_records(struct ftrace_page *pg, int count)
- {
- 	int order;
--	int pages, cnt;
-+	int pages;
-+	int cnt;
- 
- 	if (WARN_ON(!count))
- 		return -EINVAL;
--- 
-2.28.0
+Thanks,
+ Enric
 
-
+>  arch/arm/boot/dts/cros-ec-keyboard.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm/boot/dts/cros-ec-keyboard.dtsi b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
+> index 4a0c1037fbc0..165c5bcd510e 100644
+> --- a/arch/arm/boot/dts/cros-ec-keyboard.dtsi
+> +++ b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
+> @@ -46,6 +46,7 @@ MATRIX_KEY(0x02, 0x08, KEY_LEFTBRACE)
+>  			MATRIX_KEY(0x02, 0x09, KEY_F8)
+>  			MATRIX_KEY(0x02, 0x0a, KEY_YEN)
+>  
+> +			MATRIX_KEY(0x03, 0x00, KEY_LEFTMETA)
+>  			MATRIX_KEY(0x03, 0x01, KEY_GRAVE)
+>  			MATRIX_KEY(0x03, 0x02, KEY_F2)
+>  			MATRIX_KEY(0x03, 0x03, KEY_5)
+> 
