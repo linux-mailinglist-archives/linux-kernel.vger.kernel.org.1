@@ -2,151 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE00284E28
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B23284E2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgJFOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:40:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:48972 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgJFOkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:40:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01EE8113E;
-        Tue,  6 Oct 2020 07:40:03 -0700 (PDT)
-Received: from [10.57.54.147] (unknown [10.57.54.147])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E34B03F71F;
-        Tue,  6 Oct 2020 07:39:59 -0700 (PDT)
-Subject: Re: [PATCH] thermal: power_allocate: add upper and lower limits
-To:     Michael Kao <michael.kao@mediatek.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
-        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200424071601.2636-1-michael.kao@mediatek.com>
- <accb83e0-ffbe-b6e3-6bf9-e7cc8b9fe19c@arm.com>
- <1588156776.3573.1.camel@mtksdccf07>
- <03286571-c110-7f5e-a911-24f8c3e4fd42@arm.com>
- <1598347775.16267.0.camel@mtksdccf07>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <25cb2d5b-0d87-8a22-a881-a5b6e46307ec@arm.com>
-Date:   Tue, 6 Oct 2020 15:39:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726164AbgJFOlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:41:08 -0400
+Received: from mail-proxyout-mua-31.websupport.eu ([37.9.172.181]:49126 "EHLO
+        mail-proxyout-mua-31.websupport.eu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725906AbgJFOlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 10:41:07 -0400
+Received: from in-6.websupport.sk (unknown [10.10.2.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail-proxyout-mua-31.websupport.eu (Postfix) with ESMTPS id B178DCDC33;
+        Tue,  6 Oct 2020 16:41:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackhole.sk;
+        s=mail; t=1601995263;
+        bh=HVuRcObe/WcynJYb+0SjRL2iu5zit4FnU3qAmOrgHFI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=IkuGIUXQMQSq+dWFkTjOTIEuxEecQsZ/C5BiaadYYZ71gmDlrAIYiyoc5+E3xl+al
+         QdGrrIONUN5zCNzU+XWBUWeEnqbDxTn/0x9x0zWY5HkNTxkdLm3hr2mxdeYEO5XZC+
+         USbuDeYk/R/YcSH+HPGJhMssAlzRukKaEsUeO+OA=
+Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kabel@blackhole.sk)
+        by in-6.websupport.sk (Postfix) with ESMTPSA id 4C5KsC2VCSz12Mc4;
+        Tue,  6 Oct 2020 16:41:03 +0200 (CEST)
+Date:   Tue, 6 Oct 2020 16:41:01 +0200
+From:   Marek Behun <kabel@blackhole.sk>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     <ultracoolguy@tutanota.com>, Pavel <pavel@ucw.cz>,
+        Linux Leds <linux-leds@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
+Message-ID: <20201006164101.2c3fa0d7@blackhole.sk>
+In-Reply-To: <144aa75a-4369-cd81-d7dc-2354a9afd7c5@ti.com>
+References: <20201005141334.36d9441a@blackhole.sk>
+        <MIt2NiS--3-2@tutanota.com>
+        <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com>
+        <MItBqjy--3-2@tutanota.com>
+        <966c3f39-1310-dd60-6f33-0d9464ed2ff1@ti.com>
+        <MItOR9Z--3-2@tutanota.com>
+        <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de>
+        <MItjEho--3-2@tutanota.com>
+        <20201005173227.GA6431@duo.ucw.cz>
+        <20201006093356.6d25b280@blackhole.sk>
+        <MIxm3uX--3-2@tutanota.com>
+        <144aa75a-4369-cd81-d7dc-2354a9afd7c5@ti.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1598347775.16267.0.camel@mtksdccf07>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Out-Rspamd-Queue-Id: 4C5KsC2VCSz12Mc4
+Authentication-Results: in-6.websupport.sk;
+        auth=pass smtp.auth=kabel@blackhole.sk smtp.mailfrom=kabel@blackhole.sk
+X-Out-Rspamd-Server: mail-antispam-5
+X-Out-Spamd-Result: default: False [-1.60 / 24.00];
+         ARC_NA(0.00)[];
+         GENERIC_REPUTATION(0.00)[-0.58211997437997];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:2852, ipnet:78.128.128.0/17, country:CZ];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Adding Rob to Cc, Rob, could we have your opinion on this? Mine is below.
 
-On 8/25/20 10:29 AM, Michael Kao wrote:
-> On Wed, 2020-04-29 at 21:24 +0100, Lukasz Luba wrote:
->>
->> On 4/29/20 11:39 AM, Michael Kao wrote:
->>> On Fri, 2020-04-24 at 10:22 +0100, Lukasz Luba wrote:
->>>> Hi Michael,
->>>>
->>>> On 4/24/20 8:16 AM, Michael Kao wrote:
->>>>> The upper and lower limits of thermal throttle state in the
->>>>> device tree do not apply to the power_allocate governor.
->>>>> Add the upper and lower limits to the power_allocate governor.
->>>>>
->>>>> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
->>>>> ---
->>>>>     drivers/thermal/thermal_core.c | 2 +-
->>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
->>>>> index 9a321dc548c8..f6feed2265bd 100644
->>>>> --- a/drivers/thermal/thermal_core.c
->>>>> +++ b/drivers/thermal/thermal_core.c
->>>>> @@ -598,7 +598,7 @@ int power_actor_set_power(struct thermal_cooling_device *cdev,
->>>>>     	if (ret)
->>>>>     		return ret;
->>>>>     
->>>>> -	instance->target = state;
->>>>> +	instance->target = clamp_val(state, instance->lower, instance->upper);
->>>>>     	mutex_lock(&cdev->lock);
->>>>>     	cdev->updated = false;
->>>>>     	mutex_unlock(&cdev->lock);
->>>>>
->>>>
->>>> Thank you for the patch and having to look at it. I have some concerns
->>>> with this approach. Let's analyze it further.
->>>>
->>>> In default the cooling devices in the thermal zone which is used by IPA
->>>> do not have this 'lower' and 'upper' limits. They are set to
->>>> THERMAL_NO_LIMIT in DT to give full control to IPA over the states.
->>>>
->>>> This the function 'power_actor_set_power' actually translates granted
->>>> power to the state that device will run for the next period.
->>>> The IPA algorithm has already split the power budget.
->>>> Now what happen when the 'lower' value will change the state to a state
->>>> which consumes more power than was calculated in the IPA alg... It will
->>>> became unstable.
->>>>
->>>> I would rather see a change which uses these 'lower' and 'upper' limits
->>>> before the IPA do the calculation of the power budget. But this wasn't
->>>> a requirement and we assumed that IPA has full control over the cooling
->>>> device (which I described above with this DT THERMAL_NO_LIMIT).
->>>>
->>>> Is there a problem with your platform that it has to provide some
->>>> minimal performance, so you tried to introduce this clamping?
->>>>
->>>> Regards,
->>>> Lukasz
->>>
->>>
->>> Hi Lukasz,
->>>
->>> I refer to the documentation settings of the thermal device tree
->>> (Documentation / devicetree / bindings / thermal / thermal.txt).
->>>
->>> It shows that cooling-device is a mandatory property, so max/min cooling
->>> state should be able to support in framework point of view.
->>> Otherwise, the limitation should be added in binding document.
->>>
->>> Different hardware mechanisms have different heat dissipation
->>> capabilities.
->>> Limiting the input heat source can slow down the heat accumulation and
->>> temperature burst.
->>> We want to reduce the accumulation of heat at high temperature by
->>> limiting the minimum gear of thermal throttle.
->>
->> I agree that these 'lower' and 'upper' limits shouldn't be just
->> ignored as is currently. This patch clamps the value at late stage,
->> though.
->>
->> Let me have a look how it could be taken into account in the early
->> stage, before the power calculation and split are done. Maybe there
->> is a clean way to inject this.
->>
->> Regards,
->> Lukasz
-> Hi Lukasz,
+On Tue, 6 Oct 2020 07:21:14 -0500
+Dan Murphy <dmurphy@ti.com> wrote:
+
+> >> By the way I just realized that the DT binding in this driver seems
+> >> incorrect to me.
+> >>
+> >> The controller logically supports 3 LED strings, each having
+> >> configurable control bank.  
 > 
-> After the research, do you have any ideas or suggestions?
+> There are two control banks. You can connect the HVLED outputs to either 
+> control bank A or B there is no individual control of the LED strings.
 > 
-> Best Regards,
-> Michael
+> 
+> >> But the DT binding supports 2 DT nodes, one for each control bank
+> >> (identified by the `reg` property) and then `led-sources` says which
+> >> string should be controlled by given bank.
+> >>
+> >> But taking in mind that DT should describe how devices are connected to
+> >> each other, I think the child nodes in the binding should instead
+> >> describe the 3 supported LED strings...  
+> 
+> The outputs in this case are virtual outputs which are the banks (A and B).
+> 
+> Since the device is bank controlled the actual current sinks are not 
+> defined thus making the the banks the actual outputs.
+> 
+> This is why the 'reg' property defines the control bank either A or B 
+> and the led-sources indicates the strings associated with the control bank.
+> 
+> Dan
 > 
 
-My apologies for the delay. I have done some experiments.
-Could you resend the patch, please make sure it is not encoded in base64
-like this one.
+Dan, I looked at the datasheet, I understand this.
 
-I am going to take your patch together with some other changes.
+Nonetheless, device tree should describe how devices are connected to
+each other. The chip has 3 pins for 3 LED strings.
 
-Regards,
-Lukasz
+If this controller should be able to support 3 LED strings via 3
+outputs, the device tree binding nodes should, in my opinion, describe
+each pin connected string. The nodes should maybe even be called
+'led-string@N' where N is from [0, 1, 2].
+
+The fact that the device is bank controlled and there are only two
+banks (and it is configurable by which bank each LED string is
+controlled) is more relevant to the driver, not as much to device tree
+binding.
+
+But yes, I do realize that if we had 3 child nodes, and the driver
+created 3 LEDs, then changing brithrness on one of the 3 LEDs would
+change brightness on at least another one, which we do not want.
+
+Maybe this driver could parse these 3 `led-string` nodes, each having
+defined bank via `led-sources`, and then register LED classdevs for
+each bank that is mentioned. This way the device tree would be more
+correct, IMO, and the driver would not have the problem mentioned in
+the paragraph above.
+
+Marek
