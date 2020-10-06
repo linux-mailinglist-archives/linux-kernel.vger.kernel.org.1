@@ -2,137 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D382848EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F0B2848EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 11:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgJFJAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 05:00:15 -0400
-Received: from ozlabs.org ([203.11.71.1]:34613 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgJFJAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 05:00:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5BHm6nJYz9sT6;
-        Tue,  6 Oct 2020 20:00:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601974812;
-        bh=8CfOUIbMt8fnTJfPAaJni1imQZSSTLb8IdHxm/8lC9A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EM5mBZ22SlHV3CHVixJkaN3v3ud9mmjXLADtHfAOEvwKw7p7+DCFrTjSJQKktY2Iz
-         3v2N7Ldue/9u51p2lZ0RLyOpxeM2Gro17oot2pnj25rtDOk+pzC/ulC8TixhZZkCwG
-         AS5UWYwHwwZ5ZBODbSL69s+T4HKqb+KnhoJQf3wVXBSdRsy0Gj7ArgfU0Omj8WJ8SQ
-         Zkf+PeKurTftZGSJVbXz3axeeU3mILyI+qcQLrd9r8pGaV99ypbeQVE9jUJ7lIr9V3
-         zAn2bUdsK8gA5hVi9I9lanz2WAJm8Cs/+5dkFJqWK44J0OfxmUwBMQSCMwIJSgkPSs
-         m4jwhgVhidXPg==
-Date:   Tue, 6 Oct 2020 20:00:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>, Greg KH <greg@kroah.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the extcon tree with the drm-misc
- tree
-Message-ID: <20201006200003.1be00223@canb.auug.org.au>
-In-Reply-To: <20200910141854.1d4b1b10@canb.auug.org.au>
-References: <20200910141854.1d4b1b10@canb.auug.org.au>
+        id S1726105AbgJFJCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 05:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgJFJCG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 05:02:06 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2E0C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 02:02:05 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g12so7097672wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 02:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ELTOM63/E69ypngcYfw/PJPfhYd4cEJ7an+k4N3B6b0=;
+        b=g9wi81nrJ6UmEn/MRqwSU3xumhiaQ0GlcaOw6xhEiKsSlmdZGbw38cKNFRTONJfpMI
+         rShanLIbCvxjdhkiYNqPKi8Vup+zyqcTTnfz4QRxI2fGoVF/BXzxdheJLLdkAm12bFyk
+         3kBeDptyUMuaNkrhRSTcA1A/T6L6yWAM6n5FeSKYE2zaV/4ekUktD7m6gzftaKqCslQR
+         huR7AcNlYvOew6KNi+AYhIHETRnDzB8NwQj18Wh7qqEdGSSm3mOuAbvbqWH4Ba7Xfwi+
+         fgpsN7r8/tS8zIrrqQMGr7zwKzIZg+cN6IJHlSWnWOoGC6fYbIhpRIsIOTcTbuR/xJfb
+         1jtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ELTOM63/E69ypngcYfw/PJPfhYd4cEJ7an+k4N3B6b0=;
+        b=MlyzDdQrlHiUnq5xJ4y1akt8r3qyMnkIKNDoYKG2uUZGgrJEhYW5XZgtw1QPh7hThX
+         l0ZexNmXvKzAsM06N7K9KiKamFn+bqEU0i1vu+bUqqb1f0KZFtuJxNXUKOrlnMoSCk8Y
+         +QaeTxHeLDv/QPfwd6+IyZ2xUPiMfTINsa7gPgF5Lfg/9O/IW/HHheMbvggu0DnGL71y
+         F7PISooz1ZIrv/EWpkYJYFmYd2l51beZpsGDaY0YQsjUFFAMFq6nlFZf8Grpf5UaIbsZ
+         /dekRarh4h32oJz+C0r3H4NrVG/tpJgB1C90Xol5RMqGB9drZy36pVOfDOj/44KHMN3i
+         i92w==
+X-Gm-Message-State: AOAM533aD/n8S5hYk/RZCme7XsxdGhz490GQXyhOYFjvAUBilNsd+jNa
+        9/ijAbEwPVDhiTdCxof64YF1Zw==
+X-Google-Smtp-Source: ABdhPJw9C14n0661BEnE2zEAj/ACDnuST1NwREigggn7nJYJ/4H739MpvIQh/+WmIXOHfrDVMm5QuA==
+X-Received: by 2002:adf:9541:: with SMTP id 59mr3734807wrs.396.1601974924384;
+        Tue, 06 Oct 2020 02:02:04 -0700 (PDT)
+Received: from localhost ([85.163.43.78])
+        by smtp.gmail.com with ESMTPSA id q15sm3609684wrr.8.2020.10.06.02.02.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 02:02:03 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 11:02:03 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     "Allan W. Nielsen" <allan.nielsen@microchip.com>
+Cc:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>,
+        davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
+        nikolay@nvidia.com, jiri@mellanox.com, idosch@mellanox.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bridge@lists.linux-foundation.org, UNGLinuxDriver@microchip.com,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [net-next v2 10/11] bridge: switchdev: cfm: switchdev interface
+ implementation
+Message-ID: <20201006090203.GA3336@nanopsycho>
+References: <20201001103019.1342470-1-henrik.bjoernlund@microchip.com>
+ <20201001103019.1342470-11-henrik.bjoernlund@microchip.com>
+ <20201001124929.GM8264@nanopsycho>
+ <20201005130712.ybbgiddb7bnbkz6h@ws.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HrwGoabrIGrrkf8jEjgNMeZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005130712.ybbgiddb7bnbkz6h@ws.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HrwGoabrIGrrkf8jEjgNMeZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Thu, 10 Sep 2020 14:18:54 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+Mon, Oct 05, 2020 at 03:07:12PM CEST, allan.nielsen@microchip.com wrote:
+>Hi Jiri
 >
-> Today's linux-next merge of the extcon tree got a conflict in:
->=20
->   MAINTAINERS
->=20
-> between commit:
->=20
->   f61249dddecc ("MAINTAINERS: Add entry for i.MX 8MQ DCSS driver")
->=20
-> from the drm-misc tree and commit:
->=20
->   d0e3c25150dd ("MAINTAINERS: Add entry for NXP PTN5150A CC driver")
->=20
-> from the extcon tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc MAINTAINERS
-> index 623c53ab5bd5,da94c9b12f1b..000000000000
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@@ -12496,14 -12430,13 +12496,21 @@@ F:	drivers/iio/gyro/fxas21002c_core.
->   F:	drivers/iio/gyro/fxas21002c_i2c.c
->   F:	drivers/iio/gyro/fxas21002c_spi.c
->  =20
->  +NXP i.MX 8MQ DCSS DRIVER
->  +M:	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
->  +R:	Lucas Stach <l.stach@pengutronix.de>
->  +L:	dri-devel@lists.freedesktop.org
->  +S:	Maintained
->  +F:	Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
->  +F:	drivers/gpu/drm/imx/dcss/
->  +
-> + NXP PTN5150A CC LOGIC AND EXTCON DRIVER
-> + M:	Krzysztof Kozlowski <krzk@kernel.org>
-> + L:	linux-kernel@vger.kernel.org
-> + S:	Maintained
-> + F:	Documentation/devicetree/bindings/extcon/extcon-ptn5150.yaml
-> + F:	drivers/extcon/extcon-ptn5150.c
-> +=20
->   NXP SGTL5000 DRIVER
->   M:	Fabio Estevam <festevam@gmail.com>
->   L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+>On 01.10.2020 14:49, Jiri Pirko wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>> 
+>> Thu, Oct 01, 2020 at 12:30:18PM CEST, henrik.bjoernlund@microchip.com wrote:
+>> > This is the definition of the CFM switchdev interface.
+>> > 
+>> > The interface consist of these objects:
+>> >    SWITCHDEV_OBJ_ID_MEP_CFM,
+>> >    SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM,
+>> >    SWITCHDEV_OBJ_ID_CC_CONFIG_CFM,
+>> >    SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM,
+>> >    SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM,
+>> >    SWITCHDEV_OBJ_ID_MEP_STATUS_CFM,
+>> >    SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM
+>> > 
+>> > MEP instance add/del
+>> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CFM)
+>> >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_MEP_CFM)
+>> > 
+>> > MEP cofigure
+>> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM)
+>> > 
+>> > MEP CC cofigure
+>> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CONFIG_CFM)
+>> > 
+>> > Peer MEP add/del
+>> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
+>> >    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
+>> > 
+>> > Start/stop CCM transmission
+>> >    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM)
+>> > 
+>> > Get MEP status
+>> >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_MEP_STATUS_CFM)
+>> > 
+>> > Get Peer MEP status
+>> >       switchdev_port_obj_get(SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM)
+>> > 
+>> > Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
+>> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
+>> 
+>> You have to submit the driver parts as a part of this patchset.
+>> Otherwise it is no good.
+>Fair enough.
+>
+>With MRP we did it like this, and after Nik asked for details on what is
+>being offload, we thought that adding this would help.
+>
+>The reason why we did not include the implementation of this interface
+>is that it is for a new SoC which is still not fully available which is
+>why we have not done the basic SwitchDev driver for it yet. But the
+>basic functionality clearly needs to come first.
+>
+>Our preference is to continue fixing the comments we got on the pure SW
+>implementation and then get back to the SwitchDev offloading.
+>
+>This will mean dropping the last 2 patches in the serie.
+>
+>Does that work for you Jiri, and Nik?
 
-This is now a conflict between the char-misc tree and the drm tree.
+Sure.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/HrwGoabrIGrrkf8jEjgNMeZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl98MhMACgkQAVBC80lX
-0GxtOQf/Qsg+ZvC10zGeMGUucLd6WO1c+qikncq8KpWaOiPfL+qcfJylSpDAwF26
-soTu4wodcX1Mmz5jtKURs9tF4p25YmHN5C49v+1WVLlSznSS7a1qa5SUz4KIfyNz
-PftRDbswJPE5V4L/G1TGreoK8dcsfF6/zjlBkAvHGxugfwn+1xAloWwzUIH53hiK
-RIBPF1QLF9tpRyHNlSF0nGHFrjAyW98hhqapLze1Tgv95bb1w9Tuw/2HS+FODY54
-BDE8irKOz+qBNoQ4rqsVumQQpQyB6nZnIeP6aLGH3rKey1zUCx9VJuck+OGuUCZw
-arSyIx4vrOy5irLITAtJPU8nZXWeiw==
-=EzTU
------END PGP SIGNATURE-----
-
---Sig_/HrwGoabrIGrrkf8jEjgNMeZ--
+>
+>/Allan
+>
