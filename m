@@ -2,206 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF9F2843C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6243C2843C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgJFBOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 21:14:25 -0400
-Received: from mga02.intel.com ([134.134.136.20]:13990 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgJFBOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 21:14:24 -0400
-IronPort-SDR: BSKDBuSKNVHBbkngJZ/Ft7GopyjTQQEOiIfwYYywLsKfoe9nN0Qz7rUE/un3fv68bbGU/3bOUP
- CeY6rns1fPMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="151233468"
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="151233468"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 18:14:22 -0700
-IronPort-SDR: jPib0xyUASDOOz/mmfj6IS7fhaJdRnGThk3z1uApZwHBZ8syAUhDmZfbiDj9hSC4zWQBNlDMtT
- yucRcHbENGPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
-   d="scan'208";a="517554051"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Oct 2020 18:14:21 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 5 Oct 2020 18:14:21 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 5 Oct 2020 18:14:21 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Mon, 5 Oct 2020 18:14:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DQwe7cL6ueQv/Sg6b/h+/GZLNK09rEz+bqDw/EGqpnPV5vM9UEiYIczr0wTxDrlaxRRbEY+Os/TpKRxFOJYt00yuLJmzE4fPiw2lwzvzZ5PVXeoa/XDpa5CXXsHmJOfsyJY9v0d2VAfrRunZ3rfBvQ+wg/vP3OKWaPc/LZ2xA/6tyzW7FtQIrw75GAYceCrGKstZY7F0EGwnRNIwLhIeN2I4tWglkdBZtXTG0iR/XN4E3hTsn1BrT3fKQi04zl8z1+0JNR2q4OGLqToVklC09TOb+z/fnau/xgYh9NqKMD+7fO4cmSiM36tTe3006EYVAoF5OrChB4+zmn7UpVVC1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JOzyAGYe7tIe7i2TTvcjADtek4Y0WrEagN+o2o67X4o=;
- b=ZwZGexfVLw7N0MN2p0Z8hCZMC9GzTMDEKD4Cax82VemsAoq++bDJ8/SgXLImMzS9dG7NnjFJM7+NcI/bK/FzHYD8pDVKawNExy9mnm6VkdyLCftL0XEEMHZR+6I7JpB3V1sKJ7QIkNncW3eZ3CUm3xKJk9R5dmeYqP664UpQdYi3blXxg4DrADKFOvWR0sgxji7IdcA7H0HrYTedpbQE/Y9owHplMGhuUB2vVLbT8ZaD/WvAD5ZExV/oAyf9Nieyhuiq/zYfsHINUsiF5rALnO7yKLVyhZsSe1Ml2+XotvkEm22OkDsWPN0I/GdO5zYE0K6FtKFvdx5uBst3TSPYgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JOzyAGYe7tIe7i2TTvcjADtek4Y0WrEagN+o2o67X4o=;
- b=C/MyJUDU3pIcTTclg72mOi569CiEiUgvG42N/PX3/iSiWBVzWN0B7cNxUN/zbL93joCSbA2N52FfAMEy1sfoe54pGi45HESfGCg4xvZ0Z6MZj8OvMQwVkM6kv9cL4Q61kffxHVNAk9S+fuxkO/r8llmVeb0oS6dtSfiF7WVajCM=
-Received: from BYAPR11MB3015.namprd11.prod.outlook.com (2603:10b6:a03:86::14)
- by BYAPR11MB2696.namprd11.prod.outlook.com (2603:10b6:a02:c5::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Tue, 6 Oct
- 2020 01:14:16 +0000
-Received: from BYAPR11MB3015.namprd11.prod.outlook.com
- ([fe80::e1af:b9b8:7e60:e77c]) by BYAPR11MB3015.namprd11.prod.outlook.com
- ([fe80::e1af:b9b8:7e60:e77c%4]) with mapi id 15.20.3433.043; Tue, 6 Oct 2020
- 01:14:16 +0000
-From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-CC:     "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: RE: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Thread-Topic: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Thread-Index: AQHWl/61fFIKn6YDxkK/M5PRzKZE1amC4PoAgAEZhQCAACt8AIAAMNyAgAAQH4CABEzPQIAAA8WAgACDndCAADs7AIAAVOyg
-Date:   Tue, 6 Oct 2020 01:14:16 +0000
-Message-ID: <BYAPR11MB3015E2B23C0CBC2EBB26C29FB80D0@BYAPR11MB3015.namprd11.prod.outlook.com>
-References: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
- <20201001142149.23445-3-muhammad.husaini.zulkifli@intel.com>
- <20201001153526.GD906@bogus>
- <ce2bcac9-8341-d7c1-0652-309ca4e9413c@xilinx.com>
- <20201002105840.GE906@bogus>
- <1b714566-d6dd-ead1-322e-f92847b923f3@xilinx.com>
- <20201002145115.GA6520@bogus>
- <BYAPR11MB30151480E71BBA232E9B0ADEB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
- <20201005084441.znou7licvvtomva4@bogus>
- <BYAPR11MB3015F4E8FDF3CB1273A35EFAB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
- <20201005200744.robd42nkt6ahg52x@bogus>
-In-Reply-To: <20201005200744.robd42nkt6ahg52x@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: xilinx.com; dkim=none (message not signed)
- header.d=none;xilinx.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.220]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 436e3bdd-fedb-46eb-b1d6-08d8699524fa
-x-ms-traffictypediagnostic: BYAPR11MB2696:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2696C24A109D13DA8BAC8379B80D0@BYAPR11MB2696.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 99cRhTik6HCaQuRCSIDtgt7+jyTV7S8LFUCK/tjZfXMTjqwgtmi/9ZQZuBmiAhI2gY6fuIfseW+LPlWE166e8OaddHzexeZFNxArJlv6EfytQs/tWw4TK1sMMeI6wgpUALrtehbjsvj4sPj+PnXiZjQKAzg3B5Qg6AtkNeBYeYXbHtoaeCv3uDFEkuXz14fWeRvewOSfMbWH3RhioiMcWv2pjRwFDAxDAGaVRkP04JuU9z1BF1djS9n2CEwfPULt/CRQZ7ifAPXqEIVkEbxCTz6QqifuuHVQppVen7dnhf9eVjyilGSVrjxcN6hxfQWTi31Uk4VrFj8K46ZPySBgmA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3015.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(366004)(396003)(376002)(52536014)(6916009)(86362001)(71200400001)(33656002)(5660300002)(9686003)(55016002)(2906002)(66946007)(54906003)(66556008)(7696005)(64756008)(8676002)(478600001)(4326008)(66446008)(66476007)(76116006)(316002)(26005)(8936002)(186003)(83380400001)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: JP9vOpYHAWgvrxVSTlk6yav5J9OgbSwFmY4DWc1jAnU4aSxhXnWEksbw8Ukz/+aQ0/3bnZqUo0AUpp3/XzNbl4OkzheiK7+ienUFEP4/o/t7y9Ne/+okKFKSQ/Fp5q0sBwwHduBUzKlUuDTA8Ad7tpK6wsuJF5W0zEHnOOElv3cJDbBkP733ihAhBUi9OZri44dbFuAIocMMJ4v9dRGSHp7Ufa6n0t1itpapSa0BFDoYAmYT3LRhHWxkTbK1mkQspAMAm3AOktQKQSlvUwWwRszbXtLeWOkiVzIcsKTFXhRRcQO+Qwz9rO1wVMWCIoKikquQOHAoiuHQG+sBfHAaRR/7/AI/AXwNGD4E8Zx2JzyCuGvHtfbyF0jc5mN2AfaSnqMaH+I0rlUjarZMZFt1vkHB2dNieJtkxfXIdYq0AD9HaHlqLuEdSiUu7UNtPomvkfuMcmoef80H37pl+7JI60ZCwWXQuP7MkrofdjpeUjMRfPWWwVa5VVcTZ90OSdlciVqpLgvjgaZ+uQ3U+MciDreBCKqQwqcTDo3iM8P5vC7I18LaWhDlMXLX9ENboVmJI4bG1kPRn8RjZcRHOiyr/bHfVkWj41wrVLZHYEq8/hLSCUJ9bNrdt0gZ2Q88mvbxVPze7cTmMtEUFkhYSUbc8Q==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1725942AbgJFBVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 21:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgJFBVI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 21:21:08 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85867C0613CE;
+        Mon,  5 Oct 2020 18:21:08 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so8062456pff.6;
+        Mon, 05 Oct 2020 18:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=0yWXKrqXMFP3HPBRZ+yjO3u40MSxEa60RyZK91ANWVM=;
+        b=IR2segjEJ+qR4NMC1gYN941vKF3ypk6RnWcPXyMrNE4vaUcV6vlM++CMQo+qS6pcWt
+         voww5nAAvAGxSqSW1u3KPkqNqT2J4TRkKf6OI9m7VITITXKlgpbDd2sbHSaZG7zSUO7D
+         WWUeu6P4x3+FWuC12b4SLzEp1RfY/nHE5l+tf5qD/MlPRSRxbiuNnN7Vdf1LL/AH1IjZ
+         OUkuhRSZ/+FpnT6KiqemDn3RY7xoT5qLEtMFxkhPNCSqjUFRZRAHCDjd2BvZOylmyoM3
+         RNmH0K4LTk6mjGpWKoA+8ruiBRszLQ/7En+bg/l5oAIKGgDdFDFuNURnRcNS2p7wjikH
+         u22w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=0yWXKrqXMFP3HPBRZ+yjO3u40MSxEa60RyZK91ANWVM=;
+        b=FSxAGw+bQLVd6HRLrKIpg5+oyLdSRev8eKpBbKcNv6ixYuKndvBh4WLodMUSvi6Zv4
+         mFLx06a8GCCuTRA8nyYxN4Y1AStPk+u/1/3FySlc2YASTofBsnS9x62hFQa6xEovKs71
+         iKbhyWG8Xb4FOtgxG5OM+PDDEZj39hBEPuo4hptgfoSy7FR5Qiw/UYNHRj4d35mrdhvv
+         9EtZ+xkrojQ5xm7IG693DgwRg20Tw/6dfsH1T10YDH4Mux5k6Ut0sReLbZs2Jl3WNRJ6
+         0vShnQ++y3BXlfnbwbZml8Ha1lMNXx7K913LpoQn5MGJoXZfpktXsD9a+oJJGh2kQ1Po
+         7QtQ==
+X-Gm-Message-State: AOAM53272pRNCgLoDw4R8e2B/hpneH3rnijDfhUkKUSbh/14nN3AQQjB
+        4/ELiP45BHNpAeoFjbQAHfLQnkfl0Qw=
+X-Google-Smtp-Source: ABdhPJz++fvdW5BO+Yg+ry6Xixb6SSNf9AXvvqMX3oHryM90ksPOZMbv+p4+XqyTLnKWNS9FnSUgEA==
+X-Received: by 2002:a63:e212:: with SMTP id q18mr1900863pgh.356.1601947267951;
+        Mon, 05 Oct 2020 18:21:07 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id v205sm1283135pfc.110.2020.10.05.18.21.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 05 Oct 2020 18:21:07 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 18:14:34 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+Message-ID: <20201006011434.GC28640@Asurada-Nvidia>
+References: <20201003065947.18671-1-nicoleotsuka@gmail.com>
+ <20201003065947.18671-3-nicoleotsuka@gmail.com>
+ <4a5a5b1c-080a-327a-1e2f-dc087948e1a1@gmail.com>
+ <20201004215731.GA21420@Asurada-Nvidia>
+ <689c3d90-e05c-d36a-bf37-0bec100040f5@gmail.com>
+ <20201005105638.GO425362@ulmo>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3015.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 436e3bdd-fedb-46eb-b1d6-08d8699524fa
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2020 01:14:16.2319
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Mau7XgCUh5wOB52itddPCJOnXwugUY1CIhDwV3nq3uVyMEoAX+ueN50CxKUPeH+rRuLnjjc2Ti1/uMiPPS0bG8lsggBRm+6ZBYx2F8vztRWUy3saCI3OZXYhnBbUDyLq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2696
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201005105638.GO425362@ulmo>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Mon, Oct 05, 2020 at 12:56:38PM +0200, Thierry Reding wrote:
+> On Mon, Oct 05, 2020 at 11:41:08AM +0300, Dmitry Osipenko wrote:
+> > 05.10.2020 00:57, Nicolin Chen пишет:
+> > > On Sat, Oct 03, 2020 at 05:06:42PM +0300, Dmitry Osipenko wrote:
+> > >> 03.10.2020 09:59, Nicolin Chen пишет:
+> > >>>  static int tegra_smmu_of_xlate(struct device *dev,
+> > >>>  			       struct of_phandle_args *args)
+> > >>>  {
+> > >>> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
+> > >>> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
+> > >>>  	u32 id = args->args[0];
+> > >>>  
+> > >>> +	put_device(&iommu_pdev->dev);
+> > >>> +
+> > >>> +	if (!mc || !mc->smmu)
+> > >>> +		return -EPROBE_DEFER;
+> > >>
+> > >> I'm not very excited by seeing code in the patches that can't be
+> > >> explained by the patch authors and will appreciate if you could provide
+> > >> a detailed explanation about why this NULL checking is needed because I
+> > >> think it is unneeded, especially given that other IOMMU drivers don't
+> > >> have such check.
+> > > 
+> > > This function could be called from of_iommu_configure(), which is
+> > > a part of other driver's probe(). So I think it's safer to have a
+> > > check. Yet, given mc driver is added to the "arch_initcall" stage,
+> > > you are probably right that there's no really need at this moment
+> > > because all clients should be called after mc/smmu are inited. So
+> > > I'll resend a v6, if that makes you happy.
+> > 
+> > I wanted to get the explanation :) I'm very curious why it's actually
+> > needed because I'm not 100% sure whether it's not needed at all.
+> > 
+> > I'd assume that the only possible problem could be if some device is
+> > created in parallel with the MC probing and there is no locking that
+> > could prevent this in the drivers core. It's not apparent to me whether
+> > this situation could happen at all in practice.
+> > 
+> > The MC is created early and at that time everything is sequential, so
+> > it's indeed should be safe to remove the check.
+> 
+> I think I now remember exactly why the "hack" in tegra_smmu_probe()
+> exists. The reason is that the MC driver does this:
+> 
+> 	mc->smmu = tegra_smmu_probe(...);
+> 
+> That means that mc->smmu is going to be NULL until tegra_smmu_probe()
+> has finished. But tegra_smmu_probe() calls bus_set_iommu() and that in
+> turn calls ->probe_device(). So the purpose of the "hack" in the
+> tegra_smmu_probe() function was to make sure mc->smmu was available at
+> that point, because, well, it is already known, but we haven't gotten
+> around to storing it yet.
 
->-----Original Message-----
->From: Sudeep Holla <sudeep.holla@arm.com>
->Sent: Tuesday, October 6, 2020 4:08 AM
->To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
->Cc: Michal Simek <michal.simek@xilinx.com>; Hunter, Adrian
-><adrian.hunter@intel.com>; ulf.hansson@linaro.org; linux-
->mmc@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
->kernel@vger.kernel.org; Raja Subramanian, Lakshmi Bai
-><lakshmi.bai.raja.subramanian@intel.com>; arnd@arndb.de; Wan Mohamad,
->Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
->Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Truste=
-d
->Firmware Service call
->
->On Mon, Oct 05, 2020 at 05:04:10PM +0000, Zulkifli, Muhammad Husaini wrote=
-:
->
->> To be clarify keembay_sd_voltage_selection function as Michal's
->> prefers is actually using the firmware driver. This function located
->> in firmware driver.
->
->OK, it can be just one function place it in any file you think is more app=
-ropriate
->need not be arasan controller driver. Any reasons why this can't work ? Ca=
-n even
->be in some header.
->
->int keembay_sd_voltage_selection(int volt) {
->	int res;
->
->	arm_smccc_1_1_invoke(KEEMBAY_SET_SD_VOLTAGE_FUNC_ID, volt,
->&res)
->
->	/* appropriate error check if needed here */
->
->	return res;
->}
->
->> I will call this func during voltage switching from arasan controller.
->> I believe this implementation require DT to specify the compatible
->> name and method use either smc/hvc.
->
->No, use the standard one as detected by arm_smccc_1_1_invoke (It calls
->arm_smccc_get_conduit internally and use SMC/HVC based on that)
->
->>
->> Are you saying that by using simple smcc based function library I
->> should call below func() in arasan controller. For example
->> 1) arm_smccc_get_version(void)
->> 2) arm_smccc_version_init(arm_smccc_get_version(),
->SMCCC_CONDUIT_SMC);
->
->Nope
->
->> 3) arm_smccc_1_1_invoke(KEEMBAY_SET_SD_VOLTAGE_FUNC_ID,
->voltage_value
->> ,  &res);
->
->Just this.
-Is it ok not using the centralize firmware drivers?=20
-I would just revert back everything as in V1 by directly call the arm_smccc=
-_1_1_invoke in arasan controller.
-=20
->
->--
->Regards,
->Sudeep
+Yea, that's exactly what I described in the commit message of a
+later version of this patch. Yet, we can drop it now as a device
+will probe() and call ->probe_device() again.
+
+> ->of_xlate() can theoretically be called as early as right after
+> bus_set_iommu() via of_iommu_configure() if that is called in parallel
+> with tegra_smmu_probe(). I think that's very unlikely, but I'm not 100%
+> sure that it can't happen.
+
+As my previous reply to Dmitry above, I don't think it'd happen,
+given that mc/smmu drivers are inited during arch_initcall stage
+while all clients should be probed during device_initcall stage,
+once this rework patch gets merged.
+
+> In any case, I do agree with Dmitry that we should have a comment here
+> explaining why this is necessary. Even if we're completely certain that
+> this is necessary, it's not obvious and therefore should get that
+> comment. And if we're not certain that it's necessary, it's probably
+> also good to mention that in the comment so that eventually it can be
+> determined or the check removed if it proves to be unnecessary.
+
+Well, I have answered him, and also removed the mc/smmu check in
+v6 already.
