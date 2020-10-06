@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18852843F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA152843F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgJFCJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 22:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgJFCJ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 22:09:27 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE62C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 19:09:27 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id y14so7103045pgf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 19:09:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5uyUjU81WTaoePaJ6pjDUCkELEhzyE83H9lRZhP1V5g=;
-        b=jDfIYFTbm5fkMc29R8o9ZHzX7Pte5RCT8w+9F5TNDpMHIl3zGQzp4q/T71oiQgb/Si
-         k1O/y8IqkbJWAFT7y97YeQ6EIsYzITVWj2oBZvzYlLyMjwb8Wu46wKdTHdqb5EdpdpIe
-         2MJyTF338pNoHuKyl4uFjC7Li4Vt/hvBkHZ6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5uyUjU81WTaoePaJ6pjDUCkELEhzyE83H9lRZhP1V5g=;
-        b=eD2pJH9ApWx5hyE5Sf53+tDqOxCCl1Pfx/hRYf++DiKI8L+WW7gHWuH3PLsO6StXv5
-         7CRC61Z/njs+A1kVuqjntQoxrRZsK1CFtKbYQ6ltzEaWhG7ZzCjcz6Pk3yDNNCTUpxaL
-         X4CHTwt2KXJx6rr6tDITDYT/BG/bt+oKIDFpeJQyQXv0JdGj1JmJa3dQOlIQpogWU04q
-         aYbiJfl3bTkMH/JDVG8/S5OaKKB4vz4T4o7CY7wkQBv/fRysP/lrTWD/MZdr8MyBUwi+
-         3k4v9eTJzuX+UDt0nkSbxWmJToyGmzLipFDVxikgedGyGt2EQPszLQn8ce+7PGpcvtgT
-         3unw==
-X-Gm-Message-State: AOAM532sDyZliOv1P2YTEKdVz2XXdjBKQXTtvzJEv3k8fgg0EG3A9FCZ
-        sNCIxr5otdseTKDojtHgizlx4g==
-X-Google-Smtp-Source: ABdhPJw1yy34c+6y9kLpMI11/8Zi779s/k+fdqtafVTUPFWsVg2uuJr39pC14FmoS/i8HTu+80T8OQ==
-X-Received: by 2002:aa7:8249:0:b029:142:2501:3964 with SMTP id e9-20020aa782490000b029014225013964mr2373840pfn.41.1601950167029;
-        Mon, 05 Oct 2020 19:09:27 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c9sm941792pgl.92.2020.10.05.19.09.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 19:09:25 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 19:09:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jann Horn <jannh@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Pavel Machek <pavel@denx.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        kernel list <linux-kernel@vger.kernel.org>, notify@kernel.org
-Subject: Re: [PATCH RFC v2 0/6] Break heap spraying needed for exploiting
- use-after-free
-Message-ID: <202010051905.62D79560@keescook>
-References: <20200929183513.380760-1-alex.popov@linux.com>
- <91d564a6-9000-b4c5-15fd-8774b06f5ab0@linux.com>
- <CAG48ez1tNU_7n8qtnxTYZ5qt-upJ81Fcb0P2rZe38ARK=iyBkA@mail.gmail.com>
- <20201006004414.GP20115@casper.infradead.org>
+        id S1726701AbgJFCLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 22:11:07 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14803 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725901AbgJFCLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 22:11:06 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 879D627ED37AAE9DC2C4;
+        Tue,  6 Oct 2020 10:11:04 +0800 (CST)
+Received: from [10.174.176.61] (10.174.176.61) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 6 Oct 2020 10:10:55 +0800
+Subject: Re: [PATCH v12 9/9] kdump: update Documentation about crashkernel
+To:     Catalin Marinas <catalin.marinas@arm.com>
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
+ <20200907134745.25732-10-chenzhou10@huawei.com> <20201005171936.GD14576@gaia>
+CC:     <will@kernel.org>, <james.morse@arm.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <dyoung@redhat.com>, <bhe@redhat.com>,
+        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
+        <prabhakar.pkin@gmail.com>, <bhsharma@redhat.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <8644712d-1331-1efc-1cd2-6da8640145b7@huawei.com>
+Date:   Tue, 6 Oct 2020 10:10:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006004414.GP20115@casper.infradead.org>
+In-Reply-To: <20201005171936.GD14576@gaia>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 01:44:14AM +0100, Matthew Wilcox wrote:
-> On Tue, Oct 06, 2020 at 12:56:33AM +0200, Jann Horn wrote:
-> > It seems to me like, if you want to make UAF exploitation harder at
-> > the heap allocator layer, you could do somewhat more effective things
-> > with a probably much smaller performance budget. Things like
-> > preventing the reallocation of virtual kernel addresses with different
-> > types, such that an attacker can only replace a UAF object with
-> > another object of the same type. (That is not an idea I like very much
-> > either, but I would like it more than this proposal.) (E.g. some
-> > browsers implement things along those lines, I believe.)
-> 
-> The slab allocator already has that functionality.  We call it
-> TYPESAFE_BY_RCU, but if forcing that on by default would enhance security
-> by a measurable amount, it wouldn't be a terribly hard sell ...
+Hi Catalin,
 
-Isn't the "easy" version of this already controlled by slab_merge? (i.e.
-do not share same-sized/flagged kmem_caches between different caches)
 
-The large trouble are the kmalloc caches, which don't have types
-associated with them. Having implicit kmem caches based on the type
-being allocated there would need some pretty extensive plumbing, I
-think?
+On 2020/10/6 1:19, Catalin Marinas wrote:
+> On Mon, Sep 07, 2020 at 09:47:45PM +0800, Chen Zhou wrote:
+>> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+>> index 2da65fef2a1c..549611abc581 100644
+>> --- a/Documentation/admin-guide/kdump/kdump.rst
+>> +++ b/Documentation/admin-guide/kdump/kdump.rst
+> [...]
+>> @@ -316,8 +325,18 @@ Boot into System Kernel
+>>     kernel will automatically locate the crash kernel image within the
+>>     first 512MB of RAM if X is not given.
+>>  
+>> -   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
+>> -   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
+>> +   On arm64, use "crashkernel=X" to try low allocation in DMA zone, and
+>> +   fall back to high allocation if it fails. And go for high allocation
+>> +   directly if the required size is too large.
+>> +   We can also use "crashkernel=X,high" to select a high region above
+>> +   DMA zone, which also tries to allocate at least 256M low memory in
+>> +   DMA zone automatically.
+>> +   "crashkernel=Y,low" can be used to allocate specified size low memory
+>> +   in DMA zone.
+>> +   For non-RPi4 platforms, change DMA zone memtioned above to DMA32 zone.
+> I don't think we should mention non-RPi4 explicitly here. I don't even
+> understand what the suggestion is since the only way is to disable
+> ZONE_DMA in the kernel config. I'd just stick to ZONE_DMA description
+> here.
+How about like this:
+If the kernel config ZONE_DMA is disabled, just try low allocation in DMA32 zone
+and high allocation above DMA32 zone.
 
--- 
-Kees Cook
+Thanks,
+Chen Zhou
+>
+>> +   Use "crashkernel=Y@X" if you really have to reserve memory from
+>> +   specified start address X. Note that the start address of the kernel,
+>> +   X if explicitly specified, must be aligned to 2MiB (0x200000).
+>>  
+>>  Load the Dump-capture Kernel
+>>  ============================
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>> index a1068742a6df..f7df572d8f64 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> @@ -727,6 +727,10 @@
+>>  			[KNL, X86-64] Select a region under 4G first, and
+>>  			fall back to reserve region above 4G when '@offset'
+>>  			hasn't been specified.
+>> +			[KNL, arm64] Try low allocation in DMA zone, fall back
+>> +			to high allocation if it fails when '@offset' hasn't been
+>> +			specified. For non-RPi4 platforms, change DMA zone to
+>> +			DMA32 zone.
+> Same here, unclear what "change DMA zone to DMA32 zone" means.
+>
+>>  			See Documentation/admin-guide/kdump/kdump.rst for further details.
+>>  
+>>  	crashkernel=range1:size1[,range2:size2,...][@offset]
+>> @@ -743,6 +747,8 @@
+>>  			Otherwise memory region will be allocated below 4G, if
+>>  			available.
+>>  			It will be ignored if crashkernel=X is specified.
+>> +			[KNL, arm64] range in high memory.
+>> +			Allow kernel to allocate physical memory region from top.
+>>  	crashkernel=size[KMG],low
+>>  			[KNL, X86-64] range under 4G. When crashkernel=X,high
+>>  			is passed, kernel could allocate physical memory region
+>> @@ -751,13 +757,16 @@
+>>  			requires at least 64M+32K low memory, also enough extra
+>>  			low memory is needed to make sure DMA buffers for 32-bit
+>>  			devices won't run out. Kernel would try to allocate at
+>> -			at least 256M below 4G automatically.
+>> +			least 256M below 4G automatically.
+>>  			This one let user to specify own low range under 4G
+>>  			for second kernel instead.
+>>  			0: to disable low allocation.
+>>  			It will be ignored when crashkernel=X,high is not used
+>>  			or memory reserved is below 4G.
+>> -
+>> +			[KNL, arm64] range in low memory.
+>> +			This one let user to specify a low range in DMA zone for
+>> +			crash dump kernel. For non-RPi4 platforms, change DMA zone
+>> +			to DMA32 zone.
+> And again here.
+>
+
