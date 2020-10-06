@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D917284A69
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01377284A6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 12:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgJFKl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 06:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJFKl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 06:41:27 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F68FC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 03:41:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l11so2410997wmh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 03:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ppdxET2PA0gOKIN5kGGdI9KhczoNu7DgS5stoBevgQE=;
-        b=V9XsMoIGLC/zsM/kB8TOxJcs8Wrjs8fplUDZpxD92KTCEB9eoX1HguQq42evSkJ7AV
-         0KeRvG+PIbroLnhtt9D9K1B1lDy7QPScKp3kzisQomTGD6k1N6er6Davt9ehntA0gMIu
-         DIViALks5h9F35p6DpaRdqeZ6gdNUqgwAoWT0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ppdxET2PA0gOKIN5kGGdI9KhczoNu7DgS5stoBevgQE=;
-        b=F1k13UAP1T8MIsb5494i9xp0GUWiVepCYCWCH4rT5iyfmQ6cKI1hXTavf7ictiNdzk
-         XCdDXH7cfOyEmlRXDXAAUkyIkPSRYwzpbFZwNn8YVJcQcowOijqvKbw5TXR6daya/EaS
-         9IOx2dkgx44YWCYGC3ppSPStz75/aaLeYj6Gu4r3BG2BSizTxlC5XwKsbj7nvF2G3V//
-         syP9reEN61G2xqKKwRl77hsxNFnJWiuNhJ8bjKLac+1w7hrA13TzP18RF0oYBURZmTuu
-         /M92F2lurxWPas3eOEEuEGvsmk9BCpP+dF/usK7e2ZlwhAu/omsitPMzREO11lJjMrOu
-         3XJQ==
-X-Gm-Message-State: AOAM533XxKij3Grs2oy7/NyrGLAWQpgwF0kVJ7kp/JAFIJftXuedaK0J
-        7YDRGZQuFFsUkoTANkMb5gTKzg==
-X-Google-Smtp-Source: ABdhPJxmO06kzG4QQ1I3HEy61YhwUV447sv+LJYvQUMAmYEWxdffDW/wKWdF9BfEUBoKO6E7SGa0Tg==
-X-Received: by 2002:a1c:5f54:: with SMTP id t81mr4261579wmb.142.1601980885754;
-        Tue, 06 Oct 2020 03:41:25 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g83sm3384495wmf.15.2020.10.06.03.41.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 03:41:24 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 12:41:22 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v5 0/4] Dynamicaly allocate SG table from the
- pages
-Message-ID: <20201006104122.GA438822@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-References: <20201004154340.1080481-1-leon@kernel.org>
- <20201005235650.GA89159@nvidia.com>
+        id S1726064AbgJFKnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 06:43:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:44316 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725891AbgJFKnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 06:43:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D0BD113E;
+        Tue,  6 Oct 2020 03:43:18 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD5AF3F66B;
+        Tue,  6 Oct 2020 03:43:16 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 11:43:14 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
+        Jeremy Linton <jeremy.linton@arm.com>, davem@davemloft.net,
+        broonie@kernel.org, linux-crypto@vger.kernel.org,
+        Will Deacon <will@kernel.org>, ardb@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
+Message-ID: <20201006104313.GX6642@arm.com>
+References: <20201006034854.2277538-1-jeremy.linton@arm.com>
+ <20201006082748.GB25305@willie-the-truck>
+ <20201006100121.GW6642@arm.com>
+ <20201006102507.GA19213@gaia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005235650.GA89159@nvidia.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20201006102507.GA19213@gaia>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 08:56:50PM -0300, Jason Gunthorpe wrote:
-> On Sun, Oct 04, 2020 at 06:43:36PM +0300, Leon Romanovsky wrote:
-> > This series extends __sg_alloc_table_from_pages to allow chaining of
-> > new pages to already initialized SG table.
+On Tue, Oct 06, 2020 at 11:25:11AM +0100, Catalin Marinas wrote:
+> On Tue, Oct 06, 2020 at 11:01:21AM +0100, Dave P Martin wrote:
+> > On Tue, Oct 06, 2020 at 09:27:48AM +0100, Will Deacon wrote:
+> > > On Mon, Oct 05, 2020 at 10:48:54PM -0500, Jeremy Linton wrote:
+> > > > The AES code uses a 'br x7' as part of a function called by
+> > > > a macro. That branch needs a bti_j as a target. This results
+> > > > in a panic as seen below. Instead of trying to replace the branch
+> > > > target with a bti_jc, lets replace the indirect branch with a
+> > > > bl/ret, bl sequence that can target the existing bti_c.
+> > > > 
+> > > >   Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
+> > > >   CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
+> > > >   pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
+> > > >   pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+> > > >   lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
+> > > >   sp : ffff80001052b730
+> > > > 
+> > > >   aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
+> > > >    __xts_crypt+0xb0/0x2dc [aes_neon_bs]
+> > > >    xts_encrypt+0x28/0x3c [aes_neon_bs]
+> > > >   crypto_skcipher_encrypt+0x50/0x84
+> > > >   simd_skcipher_encrypt+0xc8/0xe0
+> > > >   crypto_skcipher_encrypt+0x50/0x84
+> > > >   test_skcipher_vec_cfg+0x224/0x5f0
+> > > >   test_skcipher+0xbc/0x120
+> > > >   alg_test_skcipher+0xa0/0x1b0
+> > > >   alg_test+0x3dc/0x47c
+> > > >   cryptomgr_test+0x38/0x60
+> > > > 
+> > > > Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
+> > > 
+> > > nit: the "commit" string shouldn't be here, and I think the linux-next
+> > > scripts will yell at us if we don't remove it.
+> > > 
+> > > > Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> > > > ---
+> > > >  arch/arm64/crypto/aes-neonbs-core.S | 6 +++---
+> > > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
+> > > > index b357164379f6..32f53ebe5e2c 100644
+> > > > --- a/arch/arm64/crypto/aes-neonbs-core.S
+> > > > +++ b/arch/arm64/crypto/aes-neonbs-core.S
+> > > > @@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
+> > > >  
+> > > >  0:	mov		bskey, x21
+> > > >  	mov		rounds, x22
+> > > > -	br		x7
+> > > > +	ret
 > > 
-> > This allows for the drivers to utilize the optimization of merging contiguous
-> > pages without a need to pre allocate all the pages and hold them in
-> > a very large temporary buffer prior to the call to SG table initialization.
-> > 
-> > The second patch changes the Infiniband driver to use the new API. It
-> > removes duplicate functionality from the code and benefits the
-> > optimization of allocating dynamic SG table from pages.
-> > 
-> > In huge pages system of 2MB page size, without this change, the SG table
-> > would contain x512 SG entries.
-> > E.g. for 100GB memory registration:
-> > 
-> >              Number of entries      Size
-> >     Before        26214400          600.0MB
-> >     After            51200            1.2MB
-> > 
-> > Thanks
-> > 
-> > Maor Gottlieb (2):
-> >   lib/scatterlist: Add support in dynamic allocation of SG table from
-> >     pages
-> >   RDMA/umem: Move to allocate SG table from pages
-> > 
-> > Tvrtko Ursulin (2):
-> >   tools/testing/scatterlist: Rejuvenate bit-rotten test
-> >   tools/testing/scatterlist: Show errors in human readable form
+> > Dang, replied on an old version.
 > 
-> This looks OK, I'm going to send it into linux-next on the hmm tree
-> for awhile to see if anything gets broken. If there is more
-> remarks/tags/etc please continue
+> Which I ignored (by default, when the kbuild test robot complains ;)).
+> 
+> > Since this is logically a tail call, could we simply be using br x16 or
+> > br x17 for this?
+> > 
+> > The architecture makes special provision for that so that the compiler
+> > can generate tail-calls.
+> 
+> So a "br x16" is compatible with a bti_c landing pad. I think it makes
+> more sense to keep it as a tail call.
 
-An idea that just crossed my mind: A pin_user_pages_sgt might be useful
-for both rdma and drm, since this would avoid the possible huge interim
-struct pages array for thp pages. Or anything else that could be coalesced
-down into a single sg entry.
+Just to be clear, I'm happy either way, but I thought it would make
+sense to point this out.
 
-Not sure it's worth it, but would at least give a slightly neater
-interface I think.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Normally, "bti j" would be used just for weird stuff like jump tables,
+but .S files all count as "weird stuff" to some extent -- so there are
+no hard and fast rules.
+
+Cheers
+---Dave
