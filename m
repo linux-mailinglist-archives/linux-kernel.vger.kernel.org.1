@@ -2,70 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9C5284AAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D921284AB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 13:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726012AbgJFLNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 07:13:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:44940 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFLNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 07:13:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DA091435;
-        Tue,  6 Oct 2020 04:13:52 -0700 (PDT)
-Received: from bogus (unknown [10.57.54.133])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC94C3F66B;
-        Tue,  6 Oct 2020 04:13:49 -0700 (PDT)
-Date:   Tue, 6 Oct 2020 12:13:46 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>
-Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Message-ID: <20201006111346.fhowlesbi4hfaquf@bogus>
-References: <20201001153526.GD906@bogus>
- <ce2bcac9-8341-d7c1-0652-309ca4e9413c@xilinx.com>
- <20201002105840.GE906@bogus>
- <1b714566-d6dd-ead1-322e-f92847b923f3@xilinx.com>
- <20201002145115.GA6520@bogus>
- <BYAPR11MB30151480E71BBA232E9B0ADEB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
- <20201005084441.znou7licvvtomva4@bogus>
- <BYAPR11MB3015F4E8FDF3CB1273A35EFAB80C0@BYAPR11MB3015.namprd11.prod.outlook.com>
- <20201005200744.robd42nkt6ahg52x@bogus>
- <BYAPR11MB301505B60397A083050E962EB80D0@BYAPR11MB3015.namprd11.prod.outlook.com>
+        id S1726060AbgJFLRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 07:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFLRH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 07:17:07 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A945C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 04:17:06 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id m7so12223921oie.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 04:17:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ed4CPpQf2+RS5LGSULcGr/f7sf1iuf28SM1PWzcx72Y=;
+        b=S9Iv2gxHQxCWFzsKU5ve77A1mu78ohX8tt7S9aE4yMhxrsnpeDAPCCndSXgGymqJfw
+         wX91olia87cpZ+9MzKEfiXklRhOBR2/8NT9XAhRCk8C5ON248m+V/HV7vDXlS/0D0MFp
+         1uv0Ytj266rZbxoMJlKJUmVugE/CKKZlM80ZFRmj7UArMShJzxvfVLEFIVV4ZWPuwjc2
+         5OQ8OecrCgjTbCTwJAcxp3znIv0fZL85kuSe7OanlUUskWg3u05DPg+Jp3nEGhP5wQL5
+         c/P029Y71IfGUJ5raRJBpRsMpGQmFvkS9D7b3NwIWXM/8i0C4/MvrZRQmZ+lAcRLVk8R
+         xYQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Ed4CPpQf2+RS5LGSULcGr/f7sf1iuf28SM1PWzcx72Y=;
+        b=ok/Gt4HP64jxa99HloelQbg2bTIaVnw7hA+9JCE4G1Yv8wc/akgYQSCBNgUc1Gkkgq
+         iDRQemZNGVCmwivJnz0yuPA6GCGHq0nv0AGakitkvNIi1at7yWgdknnLmVj28szTWtRp
+         E7HK0q7jnjTidFWFGlTGyiGEqMGcRtc0pYpsV9GvalJPX8R7NmucUzHUaG0obuLv9zg9
+         tK3asLDaiVHA41dFCa/F82s+/OlEP7yuxLNl0frpUbdb/6AprVYyod42ZruiJPYemRf+
+         vyxyK1wzBlQ5zAhD6DRudZKN7bGsyHqyZcKR847vHohZCrP1cOEx2mLFQVEHvTy9kt4j
+         ml1Q==
+X-Gm-Message-State: AOAM532Bf/v9K24n5LmYH/cX2PY0ZUsP6AFojRRSNeZYpdgI0NXPHuKN
+        EX9yj8JrquzyJRLxoLnYJ2g=
+X-Google-Smtp-Source: ABdhPJzMytdQqi1EXWTkhLvnBAz48cDfurcOKox6wkRveVL6Dbb6b6i5JQCoSGldySeCjIt77bFJFw==
+X-Received: by 2002:aca:abc7:: with SMTP id u190mr2281532oie.146.1601983025551;
+        Tue, 06 Oct 2020 04:17:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v76sm782096oif.58.2020.10.06.04.17.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 04:17:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] printk: handle blank console arguments passed in.
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
+        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
+ <20200522065306.83-1-shreyas.joshi@biamp.com>
+ <20200522100046.GH3464@linux-b0ei>
+ <20201006025935.GA597@jagdpanzerIV.localdomain>
+ <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+ <20201006050820.GA274215@kroah.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <055bbf1a-8eb7-7f77-5ea8-31d2ecaf1d4b@roeck-us.net>
+Date:   Tue, 6 Oct 2020 04:17:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR11MB301505B60397A083050E962EB80D0@BYAPR11MB3015.namprd11.prod.outlook.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20201006050820.GA274215@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 01:22:31AM +0000, Zulkifli, Muhammad Husaini wrote:
-> HI Sudeep and Michal,
->
-> Yeah I believe it can work. I will create one header file in include/linux/firmware/intel/Keembay_firmware.h
-> To handle this func and arasan controller can call this func.
-> Are you guys ok with this?
->
+On 10/5/20 10:08 PM, Greg Kroah-Hartman wrote:
+> On Mon, Oct 05, 2020 at 08:35:59PM -0700, Guenter Roeck wrote:
+>> On 10/5/20 7:59 PM, Sergey Senozhatsky wrote:
+>>> Cc-ing Guenter,
+>>>
+>>> On (20/05/22 12:00), Petr Mladek wrote:
+>>>> On Fri 2020-05-22 16:53:06, Shreyas Joshi wrote:
+>>>>> If uboot passes a blank string to console_setup then it results in a trashed memory.
+>>>>> Ultimately, the kernel crashes during freeing up the memory. This fix checks if there
+>>>>> is a blank parameter being passed to console_setup from uboot.
+>>>>> In case it detects that the console parameter is blank then
+>>>>> it doesn't setup the serial device and it gracefully exits.
+>>>>>
+>>>>> Signed-off-by: Shreyas Joshi <shreyas.joshi@biamp.com>
+>>>>> ---
+>>>>>  V1:
+>>>>>     Fixed console_loglevel to default as per the review comments
+>>>>>
+>>>>>  kernel/printk/printk.c | 5 ++++-
+>>>>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>>>>> index ad4606234545..e9ad730991e0 100644
+>>>>> --- a/kernel/printk/printk.c
+>>>>> +++ b/kernel/printk/printk.c
+>>>>> @@ -2165,7 +2165,10 @@ static int __init console_setup(char *str)
+>>>>>  	char buf[sizeof(console_cmdline[0].name) + 4]; /* 4 for "ttyS" */
+>>>>>  	char *s, *options, *brl_options = NULL;
+>>>>>  	int idx;
+>>>>> -
+>>>>> +	if (str[0] == 0) {
+>>>>> +		return 1;
+>>>>> +	}
+>>>>>  	if (_braille_console_setup(&str, &brl_options))
+>>>>>  		return 1;
+>>>>
+>>>> I have fixed formatting and pushed it into printk/linux.git,
+>>>> branch for-5.8.
+>>>
+>>> Petr, this patch's causing regressions for us. We use blank console= boot
+>>> param to bypass dts. It appears that it'd be better to revert the change.
+>>>
+>>
+>> Not just to bypass dts, it was also possible to use console= to disable consoles
+>> passed as config option, as well as other default console options. A quick test
+>> confirms that this affects all platforms/architectures, not just Chromebooks.
+>> Prior to this patch, it was possible to disable a default console with an
+>> empty "console=" parameter. This is no longer possible. This means that
+>> this patch results in a substantial (and, as far as I can see, completely
+>> undiscussed) functionality change.
+>>
+>> I don't understand why (yet), but the patch also causes regressions with
+>> seemingly unrelated functionality, specifically with dm-verity on at least
+>> one Chromebook platform. I filed crbug.com/1135157 to track the problem,
+>> and reverted the patch from all our stable releases immediately after
+>> the last round of stable release merges.
+>>
+>> On a side note, I don't see the problem presumably fixed with this
+>> patch in any of my tests.
+> 
+> I have no problem reverting this in the stable trees, but are you going
+> to hit this issue in Linus's tree in the next release?
+> 
 
-Sounds good to me. No change w.r.t arasan controller as it still needs
-to call the same api(keembay_sd_voltage_selection), just w/o a firmware
-driver for it.
+Not sure what you mean with "next release". As mentioned, I already reverted
+the patch from all Chrome OS stable branches. We have already seen the problem
+in the top-of-tree test branch (which is presumably why Sergey brought it up
+back in May), so we'll definitely have to either revert this patch in the next
+Chrome OS stable branch (presumably based on 5.10 unless that changes), or
+we'll have to find find some other (backward-compatible) solution to disable
+the default console on Chromebooks.
 
---
-Regards,
-Sudeep
+Since the patch is already reverted in our branches, it is not an urgent
+problem for us. But we will need some solution - I really don't want to
+carry reverts of upstream patches in our trees.
+
+Guenter
