@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023F82843BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD34B28439E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 03:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbgJFBMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 21:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgJFBMU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 21:12:20 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646C2C0613CE;
-        Mon,  5 Oct 2020 18:12:20 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n136so2088704pfd.11;
-        Mon, 05 Oct 2020 18:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=imTCIXq15ZpJ5OmxGTdYsT7lvQK/QATisA5P9vMs8x0=;
-        b=YkLC/GI/dYo71KtwLzR8kFLfW+MvUAE2BUVCxmKpasHP75UyE9bTW8Pnj5oD7qyUFf
-         K61uuE0WMBsVVkpv9Ld5pgIpCQ68nFyuttpTuBG4vsa9H3JhRATp/yFiGC8sUmduHT7W
-         M09VwRO7dEJ34FxLtHe9mpN4SOdoxNSbH3bQfcuQOUJkdwBkTcNBxtMJWvVMQjSTetn4
-         44c4BVtyTNMwJzOmurmVqza0WpmauJV+zKFLGms4+f2YQEzFN94YcCRdgiejtQinhsdg
-         CBJ91lWiCqBHfR/50soHRkQzUJBU2+1Dqc0k9cryApXffnKV+WrHGuit423vZQc+nRYh
-         WcdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=imTCIXq15ZpJ5OmxGTdYsT7lvQK/QATisA5P9vMs8x0=;
-        b=JJ4LGhDbzXRxvy6lgtmsyxWWwPIfCEd7Xd84xZF96UXvoqB5BxIjhg3D/xTHOjiF0B
-         p0XM23eeL1grsbIfkc2uqq2mmZgxAnO588Oa/V+w6+r169UHCL1YPNa2KJA77ald6Z+q
-         OjLaCkFGB22Uj0STpOgL8bsOqWo6mEQNWFkRhDSsMOqSlZATdCWMkhYLYSiUDFoUJvd7
-         /V03z6kRpZcoVbHGWM2hgBwWjZxw5kwc+NdTVd5sIYgWvve27yBp/QqsyZuqcwqZBPvL
-         eM+65jHOcQYh5XBpcZo0rAdajwU3/XotnZfva2b68ppE3RQD3cYRRGmHDIhYRQljwTlG
-         KDoQ==
-X-Gm-Message-State: AOAM53204IbAF7yZpbxjFQF+qK2G654GJdog71gPlTU+2pCLssLE0lmW
-        vvP7nN4qFXdXqaIe+qHUoRc=
-X-Google-Smtp-Source: ABdhPJzyQodL+KRlo6JhOJ13FjfVK1Cw/lwkgMZs3x1nYk7bQSdKtQS38iBW+0IDF5yfC+QTAVmRKA==
-X-Received: by 2002:a63:4959:: with SMTP id y25mr1979680pgk.206.1601946738447;
-        Mon, 05 Oct 2020 18:12:18 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id w5sm899955pgf.61.2020.10.05.18.12.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Oct 2020 18:12:18 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 18:05:46 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-Message-ID: <20201006010546.GB28640@Asurada-Nvidia>
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
- <5542b314-f414-1e83-8cf6-2bf22a41ae9c@gmail.com>
- <20201002185828.GC29706@Asurada-Nvidia>
- <20201005095754.GJ425362@ulmo>
+        id S1725934AbgJFBGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 21:06:37 -0400
+Received: from mga05.intel.com ([192.55.52.43]:44650 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725785AbgJFBGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 21:06:37 -0400
+IronPort-SDR: suNcF+wd2X9sCieTtc93tF4KeXHIR2GJyABPJg2UO9fkql3j53KZWxVKjCOOA+IFJ9CNppfAAg
+ 2Ys/2hZqJPmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="248999147"
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="248999147"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 18:06:36 -0700
+IronPort-SDR: ffBB7t+xNXiv8KMGFiiIMOi5s2eA6Y4WZE1hFXaawbbF8MKbCjYe8YUQhB36VzTPHK/HcwaLBq
+ degP0k/ldI5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,341,1596524400"; 
+   d="scan'208";a="353188958"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Oct 2020 18:06:36 -0700
+Date:   Mon, 5 Oct 2020 18:08:35 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+Message-ID: <20201006010835.GF6041@ranerica-svr.sc.intel.com>
+References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+ <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
+ <20201003085345.GA114893@kroah.com>
+ <20201003110548.GA145099@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201005095754.GJ425362@ulmo>
+In-Reply-To: <20201003110548.GA145099@kroah.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 11:57:54AM +0200, Thierry Reding wrote:
-> On Fri, Oct 02, 2020 at 11:58:29AM -0700, Nicolin Chen wrote:
-> > On Fri, Oct 02, 2020 at 06:02:18PM +0300, Dmitry Osipenko wrote:
-> > > 02.10.2020 09:08, Nicolin Chen пишет:
-> > > >  static int tegra_smmu_of_xlate(struct device *dev,
-> > > >  			       struct of_phandle_args *args)
-> > > >  {
-> > > > +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
-> > > > +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
-> > > >  	u32 id = args->args[0];
-> > > >  
-> > > > +	of_node_put(args->np);
-> > > 
-> > > of_find_device_by_node() takes device reference and not the np
-> > > reference. This is a bug, please remove of_node_put().
+On Sat, Oct 03, 2020 at 01:05:48PM +0200, Greg Kroah-Hartman wrote:
+> On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
+> > > +/**
+> > > + * arch_get_cpu_type_name() - Get the CPU type name
+> > > + * @cpu_type:	Type of CPU micro-architecture.
+> > > + *
+> > > + * Returns a string name associated with the CPU micro-architecture type as
+> > > + * indicated in @cpu_type. The format shall be <vendor>_<cpu_type>. Returns
+> > > + * NULL if the CPU type is not known.
+> > > + */
+> > > +const char __weak *arch_get_cpu_type_name(u32 cpu_type)
+> > > +{
+> > > +	return NULL;
+> > > +}
 > > 
-> > Looks like so. Replacing it with put_device(&iommu_pdev->dev);
+> > Why is vendor part of this?  Shouldn't it just be arch?
+> > 
+> > I say this as "vendor" is kind of "interesting" when it comes to other
+> > arches...
+> > 
+> > Speaking of other arches, we all know that other arches have this
+> > feature as well, have you worked with any other groups to verify that
+> > this interface will also work with them?
 > 
-> Putting the put_device() here is wrong, though. You need to make sure
-> you keep a reference to it as long as you keep accessing the data that
-> is owned by it.
+> Here's one set of patches for ARM64 for much the same type of cpu
+> design:
+> 	https://android-review.googlesource.com/c/kernel/common/+/1437098/3
+> Yes, it's not been posted to any kernel lists, but this is public so you
+> need to work with the ARM developers to come up with an interface that
+> works for everyone please.
 
-I am confused. You said in the other reply (to Dmitry) that we do
-need to put_device(mc->dev), where mc->dev should be the same as
-iommu_pdev->dev. But here your comments sounds that we should not
-put_device at all since ->probe_device/group_device/attach_dev()
-will use it later.
+Thanks for the pointer, Greg! I will study this proposal and work with
+the ARM engineers.
 
-> Like I said earlier, this is a bit weird in this case because we're
-> self-referencing, so iommu_pdev->dev is going to stay around as long as
-> the SMMU is. However, it might be worth to properly track the lifetime
-> anyway just so that the code can serve as a good example of how to do
-> things.
-
-What's this "track-the-lifetime"?
-
-> If you decide to go for the shortcut and not track this reference
-> properly, then at least you need to add a comment as to why it is safe
-> to do in this case. This ensures that readers are away of the
-> circumstances and don't copy this bad code into a context where the
-> circumstances are different.
-
-I don't quite get this "shortcut" here either...mind elaborating?
+BR,
+Ricardo
