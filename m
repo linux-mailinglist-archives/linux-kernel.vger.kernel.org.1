@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829B7284480
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AF2284484
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 06:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbgJFEKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 00:10:44 -0400
-Received: from smtprelay0024.hostedemail.com ([216.40.44.24]:40432 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725874AbgJFEKo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 00:10:44 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 393D91DF1;
-        Tue,  6 Oct 2020 04:10:43 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3871:3872:3874:4250:4321:4605:5007:7576:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12740:12760:12895:13019:13069:13161:13229:13311:13357:13439:14181:14659:14721:21080:21627:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: view38_5e06219271c3
-X-Filterd-Recvd-Size: 2228
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  6 Oct 2020 04:10:41 +0000 (UTC)
-Message-ID: <50eab5822b5c0557a5e7a8f5ab8ee42f5bdea0ec.camel@perches.com>
-Subject: Re: [PATCH] rtlwifi: rtl8192se: remove duplicated
- legacy_httxpowerdiff
-From:   Joe Perches <joe@perches.com>
-To:     Chris Chiu <chiu@endlessos.org>, pkshih@realtek.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 05 Oct 2020 21:10:40 -0700
-In-Reply-To: <20201006035928.5566-1-chiu@endlessm.com>
-References: <20201006035928.5566-1-chiu@endlessm.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
+        id S1726807AbgJFELx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 00:11:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgJFELx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 00:11:53 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE5EF208A9;
+        Tue,  6 Oct 2020 04:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601957512;
+        bh=eX8rve6HxwI2nYREP/V5u420GCVH7dLvjYOErIjpC2k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TSZDzh1NqvIKkuuXh23GCAVV4bbk8DDnoE8f7FdveBiMASMNiLefK8vV1MaBkpnFY
+         BFiZ0Ef0IPKDHiuGlEjSEhlScxIjuTX+2NfG9iVWwgWpw9988CfF+AIqQNk5+vOaWU
+         RewyZePi8kttZp0dUeL8zT/Ly1Fce4l7skSyNQ7o=
+Date:   Tue, 6 Oct 2020 13:11:48 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org,
+        Alex =?UTF-8?B?QmVubsOpZQ==?= <alex.bennee@linaro.org>,
+        takahiro.akashi@linaro.org, jgross@suse.com,
+        boris.ostrovsky@oracle.com
+Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
+ correctly
+Message-Id: <20201006131148.1f7b63b688eae7b1e0eb2228@kernel.org>
+In-Reply-To: <20201006114058.b93839b1b8f35a470874572b@kernel.org>
+References: <160190516028.40160.9733543991325671759.stgit@devnote2>
+        <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
+        <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s>
+        <20201006114058.b93839b1b8f35a470874572b@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-06 at 11:59 +0800, Chris Chiu wrote:
-> From: Chris Chiu <chiu@endlessos.org>
+On Tue, 6 Oct 2020 11:40:58 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> On Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
+> Stefano Stabellini <sstabellini@kernel.org> wrote:
 > 
-> The legacy_httxpowerdiff in rtl8192se is pretty much the same as
-> the legacy_ht_txpowerdiff for other chips. Use the same name to
-> keep the consistency.
+> > On Mon, 5 Oct 2020, Julien Grall wrote:
+> > > Hi Masami,
+> > > 
+> > > On 05/10/2020 14:39, Masami Hiramatsu wrote:
+> > > > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
+> > > > address conversion.
+> > > > 
+> > > > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
+> > > > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
+> > > > assumes the given virtual address is in contiguous kernel memory
+> > > > area, it can not convert the per-cpu memory if it is allocated on
+> > > > vmalloc area (depends on CONFIG_SMP).
+> > > 
+> > > Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
+> > > region for CPU0 is allocated outside of vmalloc area.
+> > > 
+> > > However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
+> > > enabled.
+> > 
+> > I cannot reproduce the issue with defconfig, but I can with Masami's
+> > kconfig.
+> > 
+> > If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
+> > problem still appears.
+> > 
+> > If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
+> > strange because CONFIG_NUMA is enabled in defconfig, and defconfig
+> > works.
 > 
-> Signed-off-by: Chris Chiu <chiu@endlessos.org>
-> ---
->  drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c | 2 +-
->  drivers/net/wireless/realtek/rtlwifi/rtl8192se/rf.c | 2 +-
->  drivers/net/wireless/realtek/rtlwifi/wifi.h         | 1 -
->  3 files changed, 2 insertions(+), 3 deletions(-)
+> Hmm, strange, because when I disabled CONFIG_NUMA_BALANCING, the issue
+> disappeared.
 
-Then can't all the struct definitions that include legacy_ht_txpowerdiff
-other than wifi.h delete it too?
+Ah, OK. It depends on NUMA. On arm64, CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK
+is enabled if CONFIG_NUMA=y.
 
-$ git grep -P -n '\blegacy_ht_?txpower' -- '*.h'
-drivers/net/wireless/realtek/rtlwifi/rtl8188ee/phy.h:162:       u8 legacy_ht_txpowerdiff;
-drivers/net/wireless/realtek/rtlwifi/rtl8192c/phy_common.h:155: u8 legacy_ht_txpowerdiff;
-drivers/net/wireless/realtek/rtlwifi/rtl8723ae/phy.h:140:       u8 legacy_ht_txpowerdiff;
-drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.h:170:       u8 legacy_ht_txpowerdiff;
-drivers/net/wireless/realtek/rtlwifi/wifi.h:1969:       u8 legacy_httxpowerdiff;        /* Legacy to HT rate power diff */
-drivers/net/wireless/realtek/rtlwifi/wifi.h:1980:       u8 legacy_ht_txpowerdiff;       /*Legacy to HT rate power diff */
+Since per-cpu first chunk has been allocated by memblock if the
+CONFIG_NEED_PER_CPU_EMBED_FIRST_CHUNK is enabled(See
+pcpu_embed_first_chunk()), when the kernel allocate the xen_vcpu_info
+on the first chunk, it will be in the linear address space.
+However, if we disable CONFIG_NUMA, it will be on vmalloc page.
+
+And if the first chunk has been filled up before initializing xen,
+the xen_vcpu_info will be allocated on the 2nd chunk which is has been
+allocated by the backend allocator (kernel memory or vmalloc, depends
+on CONFIG_SMP).
+
+So anyway we have to check it carefully with a special function, which is
+per_cpu_ptr_to_phys(). 
+
+Thank you,
 
 
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
