@@ -2,76 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B39F284B6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C132C284B71
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 14:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgJFMLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 08:11:11 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:33896 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgJFMLJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:11:09 -0400
-Received: by mail-il1-f206.google.com with SMTP id f89so6862711ill.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 05:11:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=EhCOsm/XwK9KhdukuQOyPPhHwiTYn0fSo6dMXBzIANg=;
-        b=IX1IR0clMWxHMEriN+PiugKPfd2uAk3v8HNJQTzyipdsBBEGtgE/yMuqM9IgGvgZ3P
-         3kdWWE1NVtrjSjOIVPcCiZKHPjXcAcwfB9dVanqvtnrlWqTrLJtMhnry4nyTAJTUoQrq
-         mB/m7fKzJmsXHfmQVRfckxMD3ntQiqSj+e0jCEK7stWm//bDEWAScwG3FYWdGKHeX0dI
-         FXxxOBlfqMrsImheblhuAXqlkCMiV/rBpwTBCvFZp1riWm1cCAUM3xqFP5HgWENBJfiP
-         KHnxWJM7kFVAoStq7K279krFpuEs/IjhFW5+FkrXYox75PMvg98Oe6E0Ot4rYOKH3H+c
-         p+zQ==
-X-Gm-Message-State: AOAM533jKlHy6qsgNMlZhHVmtQIzIrM9es8tSK8rjMXyWH5S7utdgKxj
-        1VRLU80Mnz+NnzBb9jrccykcXrbbMrtSpUTP45V5C55aBawY
-X-Google-Smtp-Source: ABdhPJw+2KHWj8oxMC2Me2es2RQkss+2IPVOYHE5N1uYrNZ/tX99ER7MjGnPIDOC6uyhLER6SZk8Yb5UPmwHtKfBCzr0BFKu+SWq
+        id S1726525AbgJFMM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 08:12:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43986 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726214AbgJFMM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:12:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601986346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mAU57Ek0qHw3pvzhn1nGqMRGEvP+BHT9YA55QmaOE0c=;
+        b=PfznraKzbDoQ+43ul+fCEC6Ow3fb+GPiDyy0YheRdIEd5y093LGzF7+HryEbkAFwWyjGkf
+        3zKDdTUHNT8nvpwqTgFG24rVLdFSOubG2Rg7qJL6FAxG7SZPG47/y6+D3GDFw0LRMABnKQ
+        ReFcS00OGqBMBevTFcg7tcZbt8VllnQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8F2FAB95;
+        Tue,  6 Oct 2020 12:12:26 +0000 (UTC)
+Date:   Tue, 6 Oct 2020 14:12:24 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH v2 3/5] mm/page_alloc: move pages to tail in
+ move_to_free_list()
+Message-ID: <20201006121224.GE29020@dhcp22.suse.cz>
+References: <20201005121534.15649-1-david@redhat.com>
+ <20201005121534.15649-4-david@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:9fcc:: with SMTP id z73mr3339261ilk.234.1601986266354;
- Tue, 06 Oct 2020 05:11:06 -0700 (PDT)
-Date:   Tue, 06 Oct 2020 05:11:06 -0700
-In-Reply-To: <0000000000005f92b905b0fc1a5d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000575a2e05b0ff7e79@google.com>
-Subject: Re: WARNING in ieee80211_check_rate_mask
-From:   syzbot <syzbot+be0e03ca215b06199629@syzkaller.appspotmail.com>
-To:     blogic@openwrt.org, clang-built-linux@googlegroups.com,
-        coreteam@netfilter.org, davem@davemloft.net,
-        johannes@sipsolutions.net, kaber@trash.net,
-        kadlec@blackhole.kfki.hu, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-wireless@vger.kernel.org,
-        matthias.bgg@gmail.com, natechancellor@gmail.com, nbd@openwrt.org,
-        ndesaulniers@google.com, nelson.chang@mediatek.com,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005121534.15649-4-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Mon 05-10-20 14:15:32, David Hildenbrand wrote:
+> Whenever we move pages between freelists via move_to_free_list()/
+> move_freepages_block(), we don't actually touch the pages:
+> 1. Page isolation doesn't actually touch the pages, it simply isolates
+>    pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
+>    When undoing isolation, we move the pages back to the target list.
+> 2. Page stealing (steal_suitable_fallback()) moves free pages directly
+>    between lists without touching them.
+> 3. reserve_highatomic_pageblock()/unreserve_highatomic_pageblock() moves
+>    free pages directly between freelists without touching them.
+> 
+> We already place pages to the tail of the freelists when undoing isolation
+> via __putback_isolated_page(), let's do it in any case (e.g., if order <=
+> pageblock_order) and document the behavior. To simplify, let's move the
+> pages to the tail for all move_to_free_list()/move_freepages_block() users.
+> 
+> In 2., the target list is empty, so there should be no change. In 3.,
+> we might observe a change, however, highatomic is more concerned about
+> allocations succeeding than cache hotness - if we ever realize this
+> change degrades a workload, we can special-case this instance and add a
+> proper comment.
+> 
+> This change results in all pages getting onlined via online_pages() to
+> be placed to the tail of the freelist.
+> 
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Scott Cheloha <cheloha@linux.ibm.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-commit 983e1a6c95abf8058d26149a928578b720c77bce
-Author: Nelson Chang <nelson.chang@mediatek.com>
-Date:   Thu Oct 6 11:44:02 2016 +0000
+Much simpler!
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-    net: ethernet: mediatek: get hw lro capability by the chip id instead of by the dtsi
+Thanks!
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1639e0d0500000
-start commit:   c2568c8c Merge branch 'net-Constify-struct-genl_small_ops'
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1539e0d0500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1139e0d0500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6c5266df853ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=be0e03ca215b06199629
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1790e83b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111a5bc7900000
+> ---
+>  mm/page_alloc.c     | 10 +++++++---
+>  mm/page_isolation.c |  5 +++++
+>  2 files changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index df5ff0cd6df1..b187e46cf640 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -901,13 +901,17 @@ static inline void add_to_free_list_tail(struct page *page, struct zone *zone,
+>  	area->nr_free++;
+>  }
+>  
+> -/* Used for pages which are on another list */
+> +/*
+> + * Used for pages which are on another list. Move the pages to the tail
+> + * of the list - so the moved pages won't immediately be considered for
+> + * allocation again (e.g., optimization for memory onlining).
+> + */
+>  static inline void move_to_free_list(struct page *page, struct zone *zone,
+>  				     unsigned int order, int migratetype)
+>  {
+>  	struct free_area *area = &zone->free_area[order];
+>  
+> -	list_move(&page->lru, &area->free_list[migratetype]);
+> +	list_move_tail(&page->lru, &area->free_list[migratetype]);
+>  }
+>  
+>  static inline void del_page_from_free_list(struct page *page, struct zone *zone,
+> @@ -2340,7 +2344,7 @@ static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
+>  #endif
+>  
+>  /*
+> - * Move the free pages in a range to the free lists of the requested type.
+> + * Move the free pages in a range to the freelist tail of the requested type.
+>   * Note that start_page and end_pages are not aligned on a pageblock
+>   * boundary. If alignment is required, use move_freepages_block()
+>   */
+> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> index abfe26ad59fd..83692b937784 100644
+> --- a/mm/page_isolation.c
+> +++ b/mm/page_isolation.c
+> @@ -106,6 +106,11 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>  	 * If we isolate freepage with more than pageblock_order, there
+>  	 * should be no freepage in the range, so we could avoid costly
+>  	 * pageblock scanning for freepage moving.
+> +	 *
+> +	 * We didn't actually touch any of the isolated pages, so place them
+> +	 * to the tail of the freelist. This is an optimization for memory
+> +	 * onlining - just onlined memory won't immediately be considered for
+> +	 * allocation.
+>  	 */
+>  	if (!isolated_page) {
+>  		nr_pages = move_freepages_block(zone, page, migratetype, NULL);
+> -- 
+> 2.26.2
 
-Reported-by: syzbot+be0e03ca215b06199629@syzkaller.appspotmail.com
-Fixes: 983e1a6c95ab ("net: ethernet: mediatek: get hw lro capability by the chip id instead of by the dtsi")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Michal Hocko
+SUSE Labs
