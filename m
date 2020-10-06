@@ -2,112 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4017B284F21
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E16284F2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 17:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgJFPlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 11:41:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36721 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725769AbgJFPlh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 11:41:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601998895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c1hC8pyEeVJeN5O+RBkwX/g7tx41qIl2D0l8V0M7ZJk=;
-        b=UyjqsJnEL+HSQ4GelMpBbXMiFAGAS4g6L8xHpeKG5kRf5V/lzRd/GCj0bii9R6yLR9Ogqf
-        I8wGst6V4adtWAYQzI3VejRt1olM7l+ik7n6/t3FNNmEZxGXxxzH4JZSMofzbUnyNW71Vs
-        1oQ2EN5Q6UG2rBVo+vX/BFrbAEiMV+Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-r-pNAetkOuCBgRY3acUVMw-1; Tue, 06 Oct 2020 11:41:31 -0400
-X-MC-Unique: r-pNAetkOuCBgRY3acUVMw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3E0D1084C90;
-        Tue,  6 Oct 2020 15:41:25 +0000 (UTC)
-Received: from [10.36.113.210] (ovpn-113-210.ams2.redhat.com [10.36.113.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EF9975C1C4;
-        Tue,  6 Oct 2020 15:41:19 +0000 (UTC)
-Subject: Re: [RFC 0/3] iommu: Reserved regions for IOVAs beyond dma_mask and
- iommu aperture
-To:     Christoph Hellwig <hch@lst.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, robin.murphy@arm.com,
-        dwmw2@infradead.org, eric.auger.pro@gmail.com,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <20200928195037.22654-1-eric.auger@redhat.com>
- <20200928164224.12350d84@w520.home>
- <1cbaf3e7-cf88-77f6-4cc4-46dcd60eb649@redhat.com>
- <20200929121849.455af184@w520.home>
- <20201005104410.GA12138@e121166-lin.cambridge.arm.com>
- <20201005130852.GB2163@lst.de>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <1b5102d6-2a85-e73a-4676-63b1228f7144@redhat.com>
-Date:   Tue, 6 Oct 2020 17:41:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726138AbgJFPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 11:44:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:50574 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbgJFPoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 11:44:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E5CA113E;
+        Tue,  6 Oct 2020 08:43:59 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 405293F71F;
+        Tue,  6 Oct 2020 08:43:57 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 16:43:54 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+Message-ID: <20201006154353.GZ6642@arm.com>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
+ <20201005134534.GT6642@arm.com>
+ <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
+ <20201006092532.GU6642@arm.com>
+ <CAMe9rOq_nKa6xjHju3kVZephTiO+jEW3PqxgAhU9+RdLTo-jgg@mail.gmail.com>
+ <CAMe9rOreJzDZxh8HDDRBvOVZ0Zp_UuoZsenhynh1jjxNNsgTKw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005130852.GB2163@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMe9rOreJzDZxh8HDDRBvOVZ0Zp_UuoZsenhynh1jjxNNsgTKw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-On 10/5/20 3:08 PM, Christoph Hellwig wrote:
-> On Mon, Oct 05, 2020 at 11:44:10AM +0100, Lorenzo Pieralisi wrote:
->>> I see that there are both OF and ACPI hooks in pci_dma_configure() and
->>> both modify dev->dma_mask, which is what pci-sysfs is exposing here,
->>> but I'm not convinced this even does what it's intended to do.  The
->>> driver core calls this via the bus->dma_configure callback before
->>> probing a driver, but then what happens when the driver calls
->>> pci_set_dma_mask()?  This is just a wrapper for dma_set_mask() and I
->>> don't see anywhere that would take into account the existing
->>> dev->dma_mask.  It seems for example that pci_dma_configure() could
->>> produce a 42 bit mask as we have here, then the driver could override
->>> that with anything that the dma_ops.dma_supported() callback finds
->>> acceptable, and I don't see any instances where the current
->>> dev->dma_mask is considered.  Am I overlooking something? 
->>
->> I don't think so but Christoph and Robin can provide more input on
->> this - it is a long story.
->>
->> ACPI and OF bindings set a default dma_mask (and dev->bus_dma_limit),
->> this does not prevent a driver from overriding the dev->dma_mask but DMA
->> mapping code still takes into account the dev->bus_dma_limit.
->>
->> This may help:
->>
->> git log -p 03bfdc31176c
-
-Thank you Lorenzo for the pointer.
+On Tue, Oct 06, 2020 at 08:18:03AM -0700, H.J. Lu wrote:
+> On Tue, Oct 6, 2020 at 5:12 AM H.J. Lu <hjl.tools@gmail.com> wrote:
+> >
+> > On Tue, Oct 6, 2020 at 2:25 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> > >
+> > > On Mon, Oct 05, 2020 at 10:17:06PM +0100, H.J. Lu wrote:
+> > > > On Mon, Oct 5, 2020 at 6:45 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> > > > >
+> > > > > On Tue, Sep 29, 2020 at 01:57:42PM -0700, Chang S. Bae wrote:
+> > > > > > During signal entry, the kernel pushes data onto the normal userspace
+> > > > > > stack. On x86, the data pushed onto the user stack includes XSAVE state,
+> > > > > > which has grown over time as new features and larger registers have been
+> > > > > > added to the architecture.
+> > > > > >
+> > > > > > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+> > > > > > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+> > > > > > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+> > > > > > constant indicates to userspace how much data the kernel expects to push on
+> > > > > > the user stack, [2][3].
+> > > > > >
+> > > > > > However, this constant is much too small and does not reflect recent
+> > > > > > additions to the architecture. For instance, when AVX-512 states are in
+> > > > > > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
+> > > > > >
+> > > > > > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+> > > > > > cause user stack overflow when delivering a signal.
+> > > > > >
+> > > > > > In this series, we suggest a couple of things:
+> > > > > > 1. Provide a variable minimum stack size to userspace, as a similar
+> > > > > >    approach to [5]
+> > > > > > 2. Avoid using a too-small alternate stack
+> > > > >
+> > > > > I can't comment on the x86 specifics, but the approach followed in this
+> > > > > series does seem consistent with the way arm64 populates
+> > > > > AT_MINSIGSTKSZ.
+> > > > >
+> > > > > I need to dig up my glibc hacks for providing a sysconf interface to
+> > > > > this...
+> > > >
+> > > > Here is my proposal for glibc:
+> > > >
+> > > > https://sourceware.org/pipermail/libc-alpha/2020-September/118098.html
+> > >
+> > > Thanks for the link.
+> > >
+> > > Are there patches yet?  I already had some hacks in the works, but I can
+> > > drop them if there's something already out there.
+> >
+> > I am working on it.
+> >
+> > >
+> > > > 1. Define SIGSTKSZ and MINSIGSTKSZ to 64KB.
+> > >
+> > > Can we do this?  IIUC, this is an ABI break and carries the risk of
+> > > buffer overruns.
+> > >
+> > > The reason for not simply increasing the kernel's MINSIGSTKSZ #define
+> > > (apart from the fact that it is rarely used, due to glibc's shadowing
+> > > definitions) was that userspace binaries will have baked in the old
+> > > value of the constant and may be making assumptions about it.
+> > >
+> > > For example, the type (char [MINSIGSTKSZ]) changes if this #define
+> > > changes.  This could be a problem if an newly built library tries to
+> > > memcpy() or dump such an object defined by and old binary.
+> > > Bounds-checking and the stack sizes passed to things like sigaltstack()
+> > > and makecontext() could similarly go wrong.
+> >
+> > With my original proposal:
+> >
+> > https://sourceware.org/pipermail/libc-alpha/2020-September/118028.html
+> >
+> > char [MINSIGSTKSZ] won't compile.  The feedback is to increase the
+> > constants:
+> >
+> > https://sourceware.org/pipermail/libc-alpha/2020-September/118092.html
+> >
+> > >
+> > > > 2. Add _SC_RSVD_SIG_STACK_SIZE for signal stack size reserved by the kernel.
+> > >
+> > > How about "_SC_MINSIGSTKSZ"?  This was my initial choice since only the
+> > > discovery method is changing.  The meaning of the value is exactly the
+> > > same as before.
+> > >
+> > > If we are going to rename it though, it could make sense to go for
+> > > something more directly descriptive, say, "_SC_SIGNAL_FRAME_SIZE".
+> > >
+> > > The trouble with including "STKSZ" is that is sounds like a
+> > > recommendation for your stack size.  While the signal frame size is
+> > > relevant to picking a stack size, it's not the only thing to
+> > > consider.
+> >
+> > The problem is that AT_MINSIGSTKSZ is the signal frame size used by
+> > kernel.   The minimum stack size for a signal handler is more likely
+> > AT_MINSIGSTKSZ + 1.5KB unless AT_MINSIGSTKSZ returns the signal
+> > frame size used by kernel + 6KB for user application.
+> >
+> > >
+> > > Also, do we need a _SC_SIGSTKSZ constant, or should the entire concept
+> > > of a "recommended stack size" be abandoned?  glibc can at least make a
+> > > slightly more informed guess about suitable stack sizes than the kernel
+> > > (and glibc already has to guess anyway, in order to determine the
+> > > default thread stack size).
+> >
+> > Glibc should try to deduct signal frame size if AT_MINSIGSTKSZ isn't
+> > available.
+> >
+> > >
+> > > > 3. Deprecate SIGSTKSZ and MINSIGSTKSZ if _SC_RSVD_SIG_STACK_SIZE
+> > > > is in use.
+> > >
+> > > Great if we can do it.  I was concerned that this might be
+> > > controversial.
+> > >
+> > > Would this just be a recommendation, or can we enforce it somehow?
+> >
+> > It is just an idea.  We need to move away from constant SIGSTKSZ and
+> > MINSIGSTKSZ.
+> >
 > 
-> This is at best a historic artefact.  Bus drivers have no business
-> messing with the DMA mask, dev->bus_dma_limit is the way to communicate
-> addressing limits on the bus (or another interconnect closer to the CPU).
+> Here is the glibc patch:
 > 
-Then could I envision to use the dev->bus_dma_limit instead of the
-dev->dma_mask?
+> https://gitlab.com/x86-glibc/glibc/-/commits/users/hjl/AT_MINSIGSTKSZ
+> 
+> AT_MINSIGSTKSZ should return the signal frame size used by kernel + 6KB
+> for user application.
 
-Nevertheless, I would need a way to let the userspace know that the
-usable IOVA ranges reported by VFIO_IOMMU_TYPE1_INFO_CAP_IOVA_RANGE
-takes into account the addressing limits of the bus.
+I'm not sure about the 6K here.
 
-Thanks
+We a few fundamental parameters:
 
-Eric
+ * the actual maximum size of the kernel-allocated signal frame (which
+   we'll report via AT_MINSIGSTKSZ);
 
+ * the size of additional userspace stack frame required to execute the
+   minimal (i.e., empty) signal handler.  (On AArch64, this is 0.  In
+   environments where the C lirbrary calls signal handlers through some
+   sort of wrapper, this would need to include the wrapper's stack
+   needs also);
+
+ * additional userspace stack needs for the actual signal handler code.
+   This is completely unknown.
+
+
+_SC_MINSIGSTKSZ (however named) should certainly include the first two,
+but I'm not sure about the third.  It will at least be architecture-
+dependent.
+
+
+This is one reason why I still favor having more than one constant here:
+the fundamental system properties should be discoverable for software
+that knows how to calculate its own stack needs accurately.
+
+Since calculating stack needs is hard and most software doesn't bother
+to do it, we could also give a "recommended" stack size which
+incorporates a guess of typical handler stack needs (similarly to the
+legacy SIGSTKSZ constant), but I think that should be a separate
+parameter.
+
+Cheers
+---Dave
