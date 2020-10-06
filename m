@@ -2,138 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15766285014
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7438028500F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 18:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbgJFQl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 12:41:28 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:16214 "EHLO nat-hk.nvidia.com"
+        id S1726363AbgJFQlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 12:41:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFQl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 12:41:27 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7c9e350000>; Wed, 07 Oct 2020 00:41:25 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
- 2020 16:41:24 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 6 Oct 2020 16:41:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ik++/tIKMONf8soxqZWTru6PiAx3JVwfLmlv8r6lNMULjW24rzFLY35ZwSQlW04qvc12w4dCwGwa+nrFGRa1NOjYkmB+l7efyFtt4okI+BtnW6Tldq6sRyk+Pmx8pIFJEgsDQmkr1jspPWgati+KPiFsuCdek63lDDvhxs2FTOBUSURBJW5WdDGu3O7XJYK7ZKqKylOHcAZfWmTTgeLUi+8nYrLN6R8pMQM/UPB1wX0k39lDbmK0WL2lhHGtm98oOG5deQmy1zVFkf6V0pytYd399j4EJtLsl+AH6a5vCSqUgAYIId9SN8n+Jen+cov9jQiEGPePSLPL9mHpQoIQbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rTw7KivUQK98FPt1sICh7RNiaGw7fjOYW8Vux1i0+uA=;
- b=c0opHwMBpXPnWkwyuhH/MOB9r0EQd4rkCzD1YcCXGTaxRfipW2Wk05cxB21oUKFJiSFjvezVU/ZB35StxV+AN5vNsJa7qivxXCThlzQb8pKCd2S0ywgMO8wGxyQPIm+1Ha/Pnm4jb3t/W+1uvQxBnNFfFbLH3WJG/MP6L8za2H8j/xJKhSzs1XuZwTEroXRVH3E1X+cYVJQvWccBP0w5Scy8I7lS2xTds6upxPNfi0WnJHv6A4j2Auk46e9Gk7vnIsPqk36WbGCQvyuX8Ul7nOLDc+7cMmQMg8bmSFkR46e5rtoqpX8U/9Iqvg3pFaxhT5JHffzI8qW0i7m3uhlSOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB2490.namprd12.prod.outlook.com (2603:10b6:3:e3::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.38; Tue, 6 Oct
- 2020 16:41:22 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.044; Tue, 6 Oct 2020
- 16:41:22 +0000
-Date:   Tue, 6 Oct 2020 13:41:20 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the hmm tree
-Message-ID: <20201006164120.GI4734@nvidia.com>
-References: <20201006203508.3cb3d0e3@canb.auug.org.au>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201006203508.3cb3d0e3@canb.auug.org.au>
-X-ClientProxiedBy: BL0PR02CA0114.namprd02.prod.outlook.com
- (2603:10b6:208:35::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1725902AbgJFQlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 12:41:08 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18F01206D4;
+        Tue,  6 Oct 2020 16:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602002466;
+        bh=rDLLCAfcpbKWcjiDraDDSN94bLOF55Woeg1qUpEpZss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1XMM2DnEL0suZYEsKoQ4gvHK221+DNjzTkhDb/jC68bGBPrpJ47KmZGY2Dhmaz9XA
+         FTLdSzUXsJbqwg5/8kCi8kMUuiG2QmvADxuduTSykB/Dd179CGtmxw8jo2YYzEa+GA
+         608bhe780TJ8H8CeosB+67BzvasTbDhIVpDDq1Oc=
+Date:   Tue, 6 Oct 2020 18:41:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Satya Tangirala <satyat@google.com>,
+        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
+        alsa-devel@alsa-project.org, linux-fpga@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mm@kvack.org,
+        Takashi Iwai <tiwai@suse.de>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v5 22/52] docs: get rid of :c:type explicit declarations
+ for structs
+Message-ID: <20201006164152.GB36638@kroah.com>
+References: <cover.1601992016.git.mchehab+huawei@kernel.org>
+ <1f9d7dfd5e8557b55218af01045331939f1add28.1601992016.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0114.namprd02.prod.outlook.com (2603:10b6:208:35::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21 via Frontend Transport; Tue, 6 Oct 2020 16:41:22 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kPq1g-000b5t-Fl; Tue, 06 Oct 2020 13:41:20 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602002485; bh=rTw7KivUQK98FPt1sICh7RNiaGw7fjOYW8Vux1i0+uA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=o1AtKfVah4ZkmENh33BXicfgkRgyV/wRAciwyIHyhkWqM0Yi75/Ej12Y5UurgEl6H
-         icPlXe8CZ+IrR9ruFmMYbJhkaCPOf5YMpZkq3OYS5/Iz/1uRT9m9G0p3V9925AuOI/
-         8bh91FaPJsPcH1IOVJD6O6eW+b7QyRSzqYsfXmY0OBhPZGmmAJUT0rac4xdER9Rmac
-         dsAjpJ+jwqyQIM5u8NfAAkhDPZZ33qj6wV6t2hQ3bxQW61N2eZB0wDXMUPPR9mgEcz
-         sDEW00ePjg6J18bHvDTYJKqZMRgnY8RW6X2COvwu4tnFIIty4+M1oVIrhz6jjYLNv4
-         Et9aBqrQVoohA==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f9d7dfd5e8557b55218af01045331939f1add28.1601992016.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 08:35:08PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Oct 06, 2020 at 04:03:19PM +0200, Mauro Carvalho Chehab wrote:
+> The :c:type:`foo` only works properly with structs before
+> Sphinx 3.x.
 > 
-> After merging the hmm tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
+> On Sphinx 3.x, structs should now be declared using the
+> .. c:struct, and referenced via :c:struct tag.
 > 
+> As we now have the automarkup.py macro, that automatically
+> convert:
+> 	struct foo
 > 
-> Caused by commit
+> into cross-references, let's get rid of that, solving
+> several warnings when building docs with Sphinx 3.x.
 > 
->   07da1223ec93 ("lib/scatterlist: Add support in dynamic allocation of SG table from pages")
-> 
-> interacting with commit
-> 
->   707d561f77b5 ("drm: allow limiting the scatter list size.")
-> 
-> from the drm tree.
-> 
-> I have added the following merge fix patch
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 6 Oct 2020 20:22:51 +1100
-> Subject: [PATCH] lib/scatterlist: merge fix for "drm: allow limiting the
->  scatter list size."
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
->  drivers/gpu/drm/drm_prime.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> index 11fe9ff76fd5..83ac901b65a2 100644
-> +++ b/drivers/gpu/drm/drm_prime.c
-> @@ -807,6 +807,7 @@ struct sg_table *drm_prime_pages_to_sg(struct drm_device *dev,
->  				       struct page **pages, unsigned int nr_pages)
->  {
->  	struct sg_table *sg = NULL;
-> +	struct scatterlist *sl;
->  	size_t max_segment = 0;
->  	int ret;
->  
-> @@ -820,11 +821,13 @@ struct sg_table *drm_prime_pages_to_sg(struct drm_device *dev,
->  		max_segment = dma_max_mapping_size(dev->dev);
->  	if (max_segment == 0 || max_segment > SCATTERLIST_MAX_SEGMENT)
->  		max_segment = SCATTERLIST_MAX_SEGMENT;
-> -	ret = __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
-> +	sl = __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
->  					  nr_pages << PAGE_SHIFT,
-> -					  max_segment, GFP_KERNEL);
-> -	if (ret)
-> +					  max_segment, NULL, 0, GFP_KERNEL);
-> +	if (IS_ERR(sl)) {
-> +		ret = PTR_ERR(sl);
->  		goto out;
-> +	}
->  
->  	return sg;
->  out:
+> Reviewed-by: André Almeida <andrealmeid@collabora.com> # blk-mq.rst
+> Reviewed-by: Takashi Iwai <tiwai@suse.de> # sound
+> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
-This looks OK to me, thanks
-
-Jason
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
