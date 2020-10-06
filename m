@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB4E284460
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DC6284467
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 05:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgJFDs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 23:48:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:36992 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbgJFDs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 23:48:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A340B113E;
-        Mon,  5 Oct 2020 20:48:56 -0700 (PDT)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 960893F70D;
-        Mon,  5 Oct 2020 20:48:56 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-crypto@vger.kernel.org, broonie@kernel.org, ardb@kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        Jeremy Linton <jeremy.linton@arm.com>
-Subject: [BUG][PATCH] crypto: arm64: Avoid indirect branch to bti_c
-Date:   Mon,  5 Oct 2020 22:48:54 -0500
-Message-Id: <20201006034854.2277538-1-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726839AbgJFD4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 23:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgJFD4v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 23:56:51 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA04CC0613CE;
+        Mon,  5 Oct 2020 20:56:50 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C53Yg5Ynsz9sSs;
+        Tue,  6 Oct 2020 14:56:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601956607;
+        bh=fs47VFkN5SJjvHvLpni591wkIF9hZauOUCb5aevTnvk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tfvHGPoaYFDskfbiet3P8vdxaJY8KjvlMdGvoJkbt3nESQ8KN6ywkEpYSb3dbFAsK
+         FbHsYgoDhAOr7DvxwGlJDlnl2qxB8LccRzKpaMwJAamVaVbtEtobIoGDp4KJNKIXjH
+         aOf9Qc7E6OfrtN2IuR1h6r+NyVw+uGsKOO1nZXZk6W1o61NlbwfYc5l7tVfy8i11Dz
+         dgN+CQ7zGPfzvlYIpUC+LLx/rJnmn798hwcpN87r0KAWqVE+UcX67rBrK4VoaEKY1h
+         GCLjHBmsF2L+8geb4lMgvHF76fHbYbyWU9IwTDwuVXNwzjVPHXC1nxYVBDc6H11HDi
+         NFvFPstRM/iGQ==
+Date:   Tue, 6 Oct 2020 14:56:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Yangtao Li <frank@allwinnertech.com>
+Subject: linux-next: manual merge of the sunxi tree with the arm-soc tree
+Message-ID: <20201006145637.57d20ba1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/e0Q7Ztg09gC+KDrNArzZYmB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AES code uses a 'br x7' as part of a function called by
-a macro. That branch needs a bti_j as a target. This results
-in a panic as seen below. Instead of trying to replace the branch
-target with a bti_jc, lets replace the indirect branch with a
-bl/ret, bl sequence that can target the existing bti_c.
+--Sig_/e0Q7Ztg09gC+KDrNArzZYmB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-  Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
-  CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
-  pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
-  pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
-  lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
-  sp : ffff80001052b730
+Hi all,
 
-  aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
-   __xts_crypt+0xb0/0x2dc [aes_neon_bs]
-   xts_encrypt+0x28/0x3c [aes_neon_bs]
-  crypto_skcipher_encrypt+0x50/0x84
-  simd_skcipher_encrypt+0xc8/0xe0
-  crypto_skcipher_encrypt+0x50/0x84
-  test_skcipher_vec_cfg+0x224/0x5f0
-  test_skcipher+0xbc/0x120
-  alg_test_skcipher+0xa0/0x1b0
-  alg_test+0x3dc/0x47c
-  cryptomgr_test+0x38/0x60
+Today's linux-next merge of the sunxi tree got a conflict in:
 
-Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- arch/arm64/crypto/aes-neonbs-core.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+  arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
 
-diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
-index b357164379f6..32f53ebe5e2c 100644
---- a/arch/arm64/crypto/aes-neonbs-core.S
-+++ b/arch/arm64/crypto/aes-neonbs-core.S
-@@ -788,7 +788,7 @@ SYM_FUNC_START_LOCAL(__xts_crypt8)
- 
- 0:	mov		bskey, x21
- 	mov		rounds, x22
--	br		x7
-+	ret
- SYM_FUNC_END(__xts_crypt8)
- 
- 	.macro		__xts_crypt, do8, o0, o1, o2, o3, o4, o5, o6, o7
-@@ -806,8 +806,8 @@ SYM_FUNC_END(__xts_crypt8)
- 	uzp1		v30.4s, v30.4s, v25.4s
- 	ld1		{v25.16b}, [x24]
- 
--99:	adr		x7, \do8
--	bl		__xts_crypt8
-+99:	bl		__xts_crypt8
-+	bl 		\do8
- 
- 	ldp		q16, q17, [sp, #.Lframe_local_offset]
- 	ldp		q18, q19, [sp, #.Lframe_local_offset + 32]
--- 
-2.25.4
+between commit:
 
+  0dea1794f3b4 ("arm64: allwinner: A100: add the basical Allwinner A100 DTS=
+I file")
+
+from the arm-soc tree and commit:
+
+  7e66a778cb8b ("arm64: allwinner: A100: add the basical Allwinner A100 DTS=
+I file")
+
+from the sunxi tree.
+
+These are 2 versions of the same patch.  For now I am just using the
+version in the arm-soc tree ... please sort this out.
+
+I fixed it up (see above) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/e0Q7Ztg09gC+KDrNArzZYmB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl976vUACgkQAVBC80lX
+0GxooggAnOftleaedfL1YdmpaEc9eObEeLx2rfR353dsQfTfJ+u2BizE7+Zjx3w1
+FdSwp6R/jh2/fIjG6aiXxCqD0iWiipvbTOoJJhVp9gLV16DH5zsjw83whm4deDv8
+Eqpc67S5RbgEqgN09/cZx/MkCGqjapXlqKYpcioh19Cy9fOYtJ+k4vHADZ6DJoER
+UOJPxyKtnMQ+bn7tRFLxKBUF/eUNxjOxwf/ITuJS/S0FZBpW/Ukf63AFH75VyxT8
+ghDwmGqrG9rIx5AuxEIuIApp/FysXbX5XUNO08YPLiPE8vCAU258mV9CTuI74Qj9
+Kh40+ZNFiMOdrIp5RbMXd8DfBu8VBA==
+=x5SO
+-----END PGP SIGNATURE-----
+
+--Sig_/e0Q7Ztg09gC+KDrNArzZYmB--
