@@ -2,151 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E4D284404
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C0928440A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 04:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgJFCRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 22:17:40 -0400
-Received: from mail-dm6nam12on2049.outbound.protection.outlook.com ([40.107.243.49]:37344
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725870AbgJFCRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 22:17:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D/h1BWTNuokU7YggvlMnVMq2m955hxdWbCPqWf2LsD7KrLaZvvnVIKl+P9dmiHtK/DJ6ES00//WFwpY/vMjYUG3IZslMEYEwY0k0Nw7uWcszSjid6Gu8WILxe1nFCVptuf85/IqLroZwFiTp+ppjfyr399EOYudkSWvhn80syI19Cb9JxBRMTBc2kO9fW859Q/e05rKmhYc/tnlGqgKHfS195RqyFxY9Do7dg4YtYLD1W8jpmLqb0y5arptJcN8F6ysWSbp+6BavLtZKyuGi0a/JM6cvRVldpGQzMbprStm//TQQK+KwbFZzOnSFcaoEdnuHp4W+coN6vwC8JGASUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wsgKR+uTTyEDf4YuDPnotldBpHzN9BpUWfW/G54U1YE=;
- b=FjuQmlBqnTS1GD8mk2vtegtgqYV3qIW+Bb7uTLP2dI96BAluzxvbmLCZ81FxdpfHjk/m/Lk/y+ARrfKoYA3lRxBllImfiI5XtbHqV3PTSSYWyDYmjDpR8zT8zcCjI7Bfpz2TllBpgnbu+88FOB38uCe1ZWUdXVZf6m4gl1EuiYFIkoiUeSDn+a100uKq7SEpgIU6EtS6H4GmRDVjas0+icIFzj3OYFZ3my80mq7cBCRT83Hnona1GGL4oMhtsoDtNPZ7gkZvPreAHDdc0lr6x52LKrlWS4D5Ry5cc1JR4pQbmuC2ZdTITYAMrLYLDGyapkZO6YqjzomemtP7JXq/cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
- dkim=pass header.d=labundy.com; arc=none
+        id S1726299AbgJFCTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 22:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgJFCTt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 22:19:49 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD27C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 19:19:48 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id c22so13871592ejx.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 19:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wsgKR+uTTyEDf4YuDPnotldBpHzN9BpUWfW/G54U1YE=;
- b=eNFIMgmqXXbaSCK/NyTw7LBI6PBX4/0P6kTqjt4uag0BQ7vaXkIDRjV8TM5lQx+V523x5KOjHLI5R/Wiht36U1p3OH6MmEao1AB2f5R7/pgsa3VIjE9lSRp2K8UaCUfcMURVALQh/Mx4uwmttDYKDCW/UGyN1kMQM4R8MHYHFWo=
-Authentication-Results: lespocky.de; dkim=none (message not signed)
- header.d=none;lespocky.de; dmarc=none action=none header.from=labundy.com;
-Received: from SN6PR08MB5517.namprd08.prod.outlook.com (2603:10b6:805:fb::32)
- by SN6PR08MB3856.namprd08.prod.outlook.com (2603:10b6:805:1e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Tue, 6 Oct
- 2020 02:17:36 +0000
-Received: from SN6PR08MB5517.namprd08.prod.outlook.com
- ([fe80::c989:9cea:baa6:8254]) by SN6PR08MB5517.namprd08.prod.outlook.com
- ([fe80::c989:9cea:baa6:8254%7]) with mapi id 15.20.3433.044; Tue, 6 Oct 2020
- 02:17:36 +0000
-Date:   Mon, 5 Oct 2020 21:17:29 -0500
-From:   Jeff LaBundy <jeff@labundy.com>
-To:     Alexander Dahl <post@lespocky.de>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexander Dahl <ada@thorsis.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v7 03/12] dt-bindings: mfd: Fix schema warnings for
- pwm-leds
-Message-ID: <20201006021729.GA4822@labundy.com>
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-4-post@lespocky.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005203451.9985-4-post@lespocky.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [136.49.227.119]
-X-ClientProxiedBy: DM5PR04CA0056.namprd04.prod.outlook.com
- (2603:10b6:3:ef::18) To SN6PR08MB5517.namprd08.prod.outlook.com
- (2603:10b6:805:fb::32)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5RQGQQnzUDnv0mOraeBJTeR9VvHirvaV4JaPm4c+FnM=;
+        b=XhNVw1+TBfKHXDS9ILNRhsKTwQkADm6bKZt0zmGoCf9RgtxlAMSHmVejVLnM+hlQ92
+         9h1bZRhd7XNx+Pyw4umW8tO3rsbDSYAT7TFN/BzcPFURPd/PbJaqRc0mm9uvXokDH8UD
+         twLL6dA+UDImJ+xLxiFncIkwWOcVKLiIe+8/9fcDubmIl8YA6uqSmPA/Wop8j+DGiOzn
+         fGXMDXhS5LJFaU/q4N03ythlCP8rgQPXyZn2wsuvvHKD6yWdvHdfCyoIUA5mgHl+16us
+         9bIcRZ+VPstpHqmqgrQIz0bq7JqtPJa7d80mrw+1cbzqCm/yjj5Nqh6LXLQdB0eZfSqU
+         kSxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5RQGQQnzUDnv0mOraeBJTeR9VvHirvaV4JaPm4c+FnM=;
+        b=a6cDktZnqj8WIa6H9sSXiCcXirPg9fwV/y01kp5bOwOQVqPKjOFbzXY46aUYXKt2J1
+         hz5TYVEQBqAez7Sxuveuq/hrWkqTVSVBaYgZlWQnhffHsf7Zl8uOe2wFqpq4HwH7rDGs
+         ST1I/jeNDwutTgZsEHL6Ir8NXnsCug95MCVs8HBH93dhOcp5W8WIWkNTwcGz3iksdnl1
+         z87iXJfxEZG5FAQSwRj356r5Bldaer5+1QYkXh+BCiPe+RpzeBbdZk2DfMdAvjaY0yuI
+         +MTXHrWSeLSH0wOPsZfhcgUDedabUHu9yF+E0behUz1L0g5s7uALmlhmJOO3pJM1WJdg
+         ofLg==
+X-Gm-Message-State: AOAM531uWrPc/nf8IS3My8CmLzOeR+MCU2P0UaHBRoLhHm4ifXHdCzOl
+        7skJwF/Fg1ygTdbebowREdULUkCnqlPby2js90E=
+X-Google-Smtp-Source: ABdhPJxdtW1KHo9nm8XsftaIlbJ6Jt+UypzA4SMemizIx7+yhJ4RSe/qGU0OzOwdpL5vrNU/i9b2ut1DDWsxfYGMJEE=
+X-Received: by 2002:a17:906:7d52:: with SMTP id l18mr2771101ejp.220.1601950787443;
+ Mon, 05 Oct 2020 19:19:47 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from labundy.com (136.49.227.119) by DM5PR04CA0056.namprd04.prod.outlook.com (2603:10b6:3:ef::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Tue, 6 Oct 2020 02:17:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 42d59d84-e4bb-4172-853e-08d8699dfddf
-X-MS-TrafficTypeDiagnostic: SN6PR08MB3856:
-X-Microsoft-Antispam-PRVS: <SN6PR08MB3856E6365371B15C3BF3324FD30D0@SN6PR08MB3856.namprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yyWpBj2mKGtt8BKZ+zMzO4L2kPZS3zA88g8PWH8LfuNPWKz1+wUeQxsHi+ym11FuTnhdbYKCwZJiAO7y48XSViARLIj6dhX1LI6MWHiUOVtHhH5M5axL5LXzG+AvNaBKwv/kP8E22B0WeqpOpfC/DsmWI6sy5dzISQnwfzQTUidHUAMepCOAtL6zOvlovhsl1SbgQvjd+F8sIu2EmE8tn4BTWoPjREwEFpUV2zBM81p7IXG2inaGgMBDU+4IX49NFAmRj742UuVwX2bUu/nnaitB1HpVzn/S1FZVwDsQuP1hOq4iRjwPY0XTtILyfVxV
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB5517.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(136003)(39830400003)(376002)(66556008)(7416002)(66476007)(66946007)(86362001)(54906003)(1076003)(36756003)(6666004)(5660300002)(2906002)(316002)(4326008)(8886007)(83380400001)(8676002)(2616005)(7696005)(55016002)(16526019)(186003)(6916009)(26005)(33656002)(8936002)(52116002)(956004)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 1G4pMmpTRQhiz06Dk9nZXscYgIAY4eoGOeHpzrqRT6ls3Tqv6mCfPPv81RPhrIjxIXHbeSp2LqLWtFfO8I3ibA+TrJdDf682M08O5Gxhzb9vTaQob8oQsYffyv1IticXuPTP5RKhYun9VVEMzMTDF+hKP2f+QyMwuBGrenbBJIE8ipRAoF6GEeeijx0gCfIejQZCRvuDZApZcHXU/NCWvR4pq3mDhisGTU7rQiAgLmO2IQcZu6zlMKQR1ZPD8ltEloMiqCjq/iwWxP9d1RFZLr9/CHyp4RUchzpIXKtJr7RGixjDbO9WNr2QIcEjAPVQSXlqrcE+GJodeO0C+MwGxQ+YQLW3AEVV6ugT7oFs5bT+1+IX2df3ge46004vQonU0PB7rtJLY0/3ol785dRjROFfMt/1XDuxWqnSGo7Ll6GTz6RDNol6yBaR7ZPm4sE91VbA44N3PLZEB5cL9fTc850ZV/pzvg7lmvJ6fslOLHA8bw6qmE9F6tuxvUPDDA39nkX9HfH774quACmLhLzAKkUQv3YviZjOym6w4ugWx4qhyT+13lt10rhJMgZengDhlCS0JV/JBF0WFvIeh0cpoKgpHAzy35sd+vL07/El3l6DlvB5hpJRa3wxBfK+p3WhchFC22V2QUBOxOwvSgg9Zw==
-X-OriginatorOrg: labundy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42d59d84-e4bb-4172-853e-08d8699dfddf
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR08MB5517.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2020 02:17:36.5979
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k2tWd4LckH+4fBsoSEKuig9Vj7+GHsRT7FGleNnuRf6jwF2ylZKHh13YSzxXrchqoaOKV4GFRfFw1ruxLCd7Kg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB3856
+References: <20200929183513.380760-1-alex.popov@linux.com> <91d564a6-9000-b4c5-15fd-8774b06f5ab0@linux.com>
+ <CAG48ez1tNU_7n8qtnxTYZ5qt-upJ81Fcb0P2rZe38ARK=iyBkA@mail.gmail.com>
+ <20201006004414.GP20115@casper.infradead.org> <202010051905.62D79560@keescook>
+In-Reply-To: <202010051905.62D79560@keescook>
+From:   Daniel Micay <danielmicay@gmail.com>
+Date:   Mon, 5 Oct 2020 22:19:10 -0400
+Message-ID: <CA+DvKQ+-k9pk1mUrEiTRKzSsz1ugCiv1A3Owd97dop0HPXa6MA@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 0/6] Break heap spraying needed for exploiting use-after-free
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jann Horn <jannh@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        David Howells <dhowells@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Pavel Machek <pavel@denx.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        kernel list <linux-kernel@vger.kernel.org>, notify@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
-
-On Mon, Oct 05, 2020 at 10:34:42PM +0200, Alexander Dahl wrote:
-> The node names for devices using the pwm-leds driver follow a certain
-> naming scheme (now).  Parent node name is not enforced, but recommended
-> by DT project.
-> 
->   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
->   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
-> /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
->         From schema: /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/leds-pwm.yaml
-> 
-> Signed-off-by: Alexander Dahl <post@lespocky.de>
-> ---
-> 
-> Notes:
->     v6 -> v7:
->       * added warning message to commit message (Krzysztof Kozlowski)
->     
->     v6:
->       * added this patch to series
-> 
->  Documentation/devicetree/bindings/mfd/iqs62x.yaml | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/iqs62x.yaml b/Documentation/devicetree/bindings/mfd/iqs62x.yaml
-> index 541b06d80e73..92dc48a8dfa7 100644
-> --- a/Documentation/devicetree/bindings/mfd/iqs62x.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/iqs62x.yaml
-> @@ -90,10 +90,11 @@ examples:
->              };
->      };
->  
-> -    pwmleds {
-> +    led-controller {
->              compatible = "pwm-leds";
->  
-> -            panel {
-> +            led-1 {
-> +                    label = "panel";
->                      pwms = <&iqs620a_pwm 0 1000000>;
->                      max-brightness = <255>;
->              };
-> -- 
-> 2.20.1
-> 
-
-I like the consistency this brings. My only feedback is that in the other
-examples I found (common.yaml and leds-gpio.yaml), the children count off
-from 0 (e.g. led-0) instead of 1 as your series appears to.
-
-That's not a huge deal; it simply seems more consistent to count from the
-first index allowed by the regex (0). The patch is still fine, and so:
-
-Acked-by: Jeff LaBundy <jeff@labundy.com>
-
-Kind regards,
-Jeff LaBundy
+It will reuse the memory for other things when the whole slab is freed
+though. Not really realistic to change that without it being backed by
+virtual memory along with higher-level management of regions to avoid
+intense fragmentation and metadata waste. It would depend a lot on
+having much finer-grained slab caches, otherwise it's not going to be
+much of an alternative to a quarantine feature. Even then, a
+quarantine feature is still useful, but is less suitable for a
+mainstream feature due to performance cost. Even a small quarantine
+has a fairly high performance cost.
