@@ -2,132 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEB72853B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F902853BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgJFVLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
+        id S1727397AbgJFVQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727176AbgJFVLv (ORCPT
+        with ESMTP id S1727301AbgJFVQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:11:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CBDC061755;
-        Tue,  6 Oct 2020 14:11:51 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a200so49159pfa.10;
-        Tue, 06 Oct 2020 14:11:51 -0700 (PDT)
+        Tue, 6 Oct 2020 17:16:20 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E84C061755;
+        Tue,  6 Oct 2020 14:16:20 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l24so15126201edj.8;
+        Tue, 06 Oct 2020 14:16:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2tqJkBGJARHw0fisbVFNUFYK1tY9kLS6Zh35Q++bpoc=;
-        b=hrbCklgzpYH5awrwrrE3PsY2AVZbXUZCxoXi6hUDTIv4xb4bs4hcZBBnlF6tWVhWou
-         wX1FRs7vh9C8QB5lzSeO+rZtZ2ZKLs9csrIzYIP0seS0y1pHTa/A9kuu8mJZ9NomMfG7
-         MUvuZRNRjH1dV+bYREfJ60lw7pnSimPL+0SJXLMlak5yGJXSYoWTt7tj77EMmqBfVBsC
-         GzZEBrH9+6fgQMzswZzytanpbFFHZlMUwaIKSplHrhlcWDS4wGadWQnsFmOdqcUfHFqU
-         QNVG+vJL9R/ZJuZqgnQBZ8yqHBJ8jmxROnuhrs+7ZqnR/n6ZnRBPEd955vka3TbuT3RO
-         wL/Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OUkZ8Np/B9A5Tr2kvzOhcQInYr++ig9zgQwFFSAu5tQ=;
+        b=B174AjMWaVkO+6KTLUNvwpCBr7+lgVZQ8qWbkXUHz0/+M+xToZFzJBph0HD4WkF6w8
+         6ozCOwRRcFGwIQE15f74mYCFidd++dbwpD6x/FTKS1JMocfWzn8yIeDA2FkmeWjsMSW9
+         B3Zaq/pTLKbq/qzcgD+7oQsDUsrKhrO4oRG+qZNtXO7m0qs+kaa+9EGFm/Umq3Q8KDBk
+         JGYRz2UrXKgEmxZ7Peie1qDurKMUH6zc8KI82o/vAH3yjU62EJXQGTxvTGo+WdjArslf
+         gFN47emE+HQprl9Wtjmubxxg2SXrvAnhLssEVOP/ebY1zpNw+QyGMzplimP2g3jBgcGM
+         C3CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2tqJkBGJARHw0fisbVFNUFYK1tY9kLS6Zh35Q++bpoc=;
-        b=jyPK4ctMBGFlgB8Ftu3/OSIbD7PuDID65h25keSvYG/JveKSXenewSFZGcPc+nYkss
-         zXuUarjvGf8JdoXgeQPg41L+sw6gIwvEG2UeTBFnHMCcGQlIRXPcz9Yv7LG1/kowNlnV
-         N4hnvqrmVMv9AxSay7+Cpb20n6iV1wHiQ3JYA1TDCnqGeGEIFim7AUAf3llhpHBZWYTV
-         r/N6IU9Qdn6LSqGrfays7UPIc4w7zZmmmcBciycX8yEAcq5ktewPJVKCGQ4QKm8kan5H
-         2zks5nhOuLeSo4Uwjrc1QqA2ri52K8w0d5PSe4OGWiwzaEsQsVTeCXtmyw6weNaqojCT
-         r/GQ==
-X-Gm-Message-State: AOAM530n5iQe6O9ns7qc1xtvdas/OiOtJbrLAkHZIRMQPTmqcrEiI1Iu
-        7+vUFr2A9+1aIfZ1h+FVQsI=
-X-Google-Smtp-Source: ABdhPJwQ7h4I2JibCyvrjDaoC8dqkF4Gm/PbNbnwlnIJtnayOi1FJHbZ5uc+lWHTY8tQGtWpq6GaYg==
-X-Received: by 2002:a63:dc4f:: with SMTP id f15mr102197pgj.332.1602018711026;
-        Tue, 06 Oct 2020 14:11:51 -0700 (PDT)
-Received: from [10.230.29.112] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h15sm83588pfo.194.2020.10.06.14.11.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 14:11:50 -0700 (PDT)
-To:     Marek Vasut <marex@denx.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de
-References: <20201006080424.GA6988@pengutronix.de>
- <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
- <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: PHY reset question
-Message-ID: <0687984c-5768-7c71-5796-8e16169f5192@gmail.com>
-Date:   Tue, 6 Oct 2020 14:11:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OUkZ8Np/B9A5Tr2kvzOhcQInYr++ig9zgQwFFSAu5tQ=;
+        b=R+NbmFrnneazgk/ACZ7cfSSzde9Wq2fgMHoWX304X8DoyzF5ymC354ee2Sbe7WGvci
+         o5CBd8nYyjcG79Id/WfNgp05yAY5AbU9BzwF8/Avf+TMD4wemMKfyDIZhPtwdCBQpvEg
+         U2Y8oAmJ9IlTQOKD2k1O3OmDxzmltCnnBxu1A2BSwtSTP7kCfFWDAAgSJY3h0q6HbMyY
+         w5tlv/MGyrk9TXMYiUUuqy4CtT7srsuJI0azOZP1lp7Bk52oBUIIV9HbGG5YEk9vEsYw
+         7mdhYnncqmOHP+Nm5pOBZ7NR8xZnR2iePoncUl2JgVq+3IpJJUg8y98UWoPp18Tnf5ub
+         2AXQ==
+X-Gm-Message-State: AOAM5332n5/0VNDZQdL+5OGmg3IdmanaNtgsatWM9pCPcSgBjz9X+1CB
+        aikZ/qiQ/ov15yqD0FMRts6A75P49f7oqr8lIoY=
+X-Google-Smtp-Source: ABdhPJw/6Zfp8xcXnJLtHO8aGQ2XkYGNMbuzpVQDOmwKNeknUVV9pO1fIsyCNinlHc/7TjB3cs54SvDo9UNfvzkm2NE=
+X-Received: by 2002:a50:9e87:: with SMTP id a7mr18518edf.297.1602018978939;
+ Tue, 06 Oct 2020 14:16:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201005150313.149754-7-konradybcio@gmail.com> <202010062217.7j4tkUkR-lkp@intel.com>
+In-Reply-To: <202010062217.7j4tkUkR-lkp@intel.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Tue, 6 Oct 2020 23:15:43 +0200
+Message-ID: <CAMS8qEWM8oMnPx7=c3=toQ0quUbbFRWXHf=eTMNXtRdORLSMJA@mail.gmail.com>
+Subject: Re: [PATCH 06/11] arm64: dts: qcom: msm8994: Add SDHCI2 node
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Please note that the bot is correct (this patch does not build if
+applied on its own), but I mentioned its dependence on a clk patch in
+the cover letter.
 
-
-On 10/6/2020 1:24 PM, Marek Vasut wrote:
-> On 10/6/20 9:36 PM, Florian Fainelli wrote:
-> [...]
->>> - Use compatible ("compatible = "ethernet-phy-id0022.1560") in the
->>> devicetree,
->>>     so that reading the PHYID is not needed
->>>     - easy to solve.
->>>     Disadvantage:
->>>     - losing PHY auto-detection capability
->>>     - need a new devicetree if different PHY is used (for example in
->>> different
->>>       board revision)
->>
->> Or you can punt that to the boot loader to be able to tell the
->> difference and populate different compatible, or even manage the PHY
->> reset to be able to read the actual PHY OUI. To me that is still the
->> best solution around.
-> 
-> Wasn't there some requirement for Linux to be bootloader-independent ?
-
-What kind of dependency does this create here? The fact that Linux is 
-capable of parsing a compatible string of the form 
-"ethernet-phyAAAA.BBBB" is not something that is exclusively applicable 
-to Linux. Linux just so happens to support that, but so could FreeBSD or 
-any OS for that matter.
-
-This is exactly the way firmware should be going, that is to describe 
-accurately the hardware, while making the life of the OS much easier 
-when it can. If we supported ACPI that is exactly what would have to 
-happen IMHO.
-
-> Some systems cannot replace their bootloaders, e.g. if the bootloader is
-> in ROM, so this might not be a solution.
-
-It is always possible to chain load a field updateable boot loader, and 
-even when that is not desirable you could devise a solution that allows 
-to utilize say a slightly different DTB that you could append to the 
-kernel. Again, if you want to use strictly the same DTB, then you have 
-to do what I just suggested and have the boot loader absorb some of this 
-complexit
-
-> 
->>> - modify PHY framework to deassert reset before identifying the PHY.
->>>     Disadvantages?
-> 
-> If this happens on MX6 with FEC, can you please try these two patches?
-> 
-> https://patchwork.ozlabs.org/project/netdev/patch/20201006135253.97395-1-marex@denx.de/
-> 
-> https://patchwork.ozlabs.org/project/netdev/patch/20201006202029.254212-1-marex@denx.de/
-
-Your patches are not scaling across multiple Ethernet MAC drivers 
-unfortunately, so I am not sure this should be even remotely considered 
-a viable solution.
--- 
-Florian
+Konrad
