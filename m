@@ -2,157 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65F628532B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5473128532D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 22:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727291AbgJFUeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 16:34:37 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:39557 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgJFUeh (ORCPT
+        id S1727303AbgJFUel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 16:34:41 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1832 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgJFUej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 16:34:37 -0400
-Received: by mail-ot1-f65.google.com with SMTP id f10so62056otb.6;
-        Tue, 06 Oct 2020 13:34:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Bl8Ef7MsrCUl5Y6fQNE2hvCJzehQ4qg3g3ESvM80Lc=;
-        b=qJWiwuSfJsuTEo5/0ZdGXdjgyhCqQyXoP595ntYK/0Agz93Cjasu4+J4h9ZKdLbCvq
-         huQZq/OC8v6qKyxrgqxXfdNxsWyDVrc/uaSjb4Nms772Ue/mbLQxfl8QBHxzhDyxtJf5
-         MbVbnKXNOIugmz08VJU6LszEmDIP2ufONk1QLVgG7osNAdlUN9GovgUJJv0vpyJ/Wq1L
-         ZlwewHzYB51PkO4UuFx7Q+SR2fq937siea7n8z9AZSFN9IG1JB7ZQMf7ZXOss90ynCu2
-         z9tj8rZHQq84/7x9hLC4hp+vdCiq7iI58LkDdCunVq9YXJi0fC1zRCHeuuPtML2Xxbum
-         1S1A==
-X-Gm-Message-State: AOAM533d98fVbPVcvwG32UhXnLQGGwsrolKeR1uRRMC9bwVdX48Te4DZ
-        3NUQbWeqMsNugiCKylRldtWyMa8paBfP
-X-Google-Smtp-Source: ABdhPJysTVo6aPJYaCescnoWvcltcz2t7AvkaOwyZJCnYE7pLEiVUUXMPN/uFUEiRDTj2GvBxcP5TQ==
-X-Received: by 2002:a9d:77d1:: with SMTP id w17mr3473086otl.27.1602016475621;
-        Tue, 06 Oct 2020 13:34:35 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v21sm1605218ots.29.2020.10.06.13.34.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 13:34:34 -0700 (PDT)
-Received: (nullmailer pid 2790213 invoked by uid 1000);
-        Tue, 06 Oct 2020 20:34:33 -0000
-Date:   Tue, 6 Oct 2020 15:34:33 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com,
-        kuninori.morimoto.gx@renesas.com,
-        pierre-louis.bossart@linux.intel.com, perex@perex.cz,
-        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sharadg@nvidia.com, mkumard@nvidia.com, viswanathl@nvidia.com,
-        rlokhande@nvidia.com, dramesh@nvidia.com, atalambedu@nvidia.com,
-        nwartikar@nvidia.com, swarren@nvidia.com, nicoleotsuka@gmail.com
-Subject: Re: [PATCH v3 09/13] ASoC: dt-bindings: tegra: Add schema for audio
- graph card
-Message-ID: <20201006203433.GA2786434@bogus>
-References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
- <1601573587-15288-10-git-send-email-spujar@nvidia.com>
+        Tue, 6 Oct 2020 16:34:39 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7cd4d20001>; Tue, 06 Oct 2020 13:34:26 -0700
+Received: from [10.2.60.163] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Oct
+ 2020 20:34:38 +0000
+Subject: Re: [PATCH] selftests/vm: 10x speedup for hmm-tests
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        Ralph Campbell <rcampbell@nvidia.com>
+References: <20201003011721.44238-1-jhubbard@nvidia.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <6c07b012-4cfc-e89c-43f0-13266d71bf8c@nvidia.com>
+Date:   Tue, 6 Oct 2020 13:34:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601573587-15288-10-git-send-email-spujar@nvidia.com>
+In-Reply-To: <20201003011721.44238-1-jhubbard@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602016466; bh=vC8aiUH6oYwpjzYwxS+gKtqylCBpiarACXAaIkYiZEM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=RJqfGKZik3ODyVLBzBTsrfS8Ull/oAJzjTHXWBol2ruz4L0FZz+Ogjy59v5S2krPl
+         7De2UB+2JGx6/UakGY6TkoWvFeXLIWqmqP0RTdIcfMDqkGAX1sBjuaUDHgWJlZ3Afo
+         ZK1YFB046OAsqA3bPfoK5u8wQACge6BR0Sa0nLPCS+4cCbAKuShr+2omayaZ8nqyov
+         yck6z2dupJU6iLTBQUTa2UhDYPMP/YkNg4y+zPtUlBdHGrDnECQRe90KNtLj5OjaZf
+         /5nceadIEVfO74PyAk7+BkcfcyGzrxyex91Q43Zf7vuQn4WybLM19EDGRbPeQO2xft
+         3py58OHcDr3jg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:03:03PM +0530, Sameer Pujar wrote:
-> Add YAML schema for Tegra audio graph sound card DT bindings. It uses the
-> same DT bindings provided by generic audio graph driver. Along with this
-> few standard clock DT bindings are added which are specifically required
-> for Tegra audio.
+On 10/2/20 6:17 PM, John Hubbard wrote:
+> This patch reduces the running time for hmm-tests from about 10+
+> seconds, to just under 1.0 second, for an approximately 10x speedup.
+> That brings it in line with most of the other tests in selftests/vm,
+> which mostly run in < 1 sec.
 > 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> This is done with a one-line change that simply reduces the number of
+> iterations of several tests, from 256, to 10. Thanks to Ralph Campbell
+> for suggesting changing NTIMES as a way to get the speedup.
+> 
+> Suggested-by: Ralph Campbell <rcampbell@nvidia.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 > ---
->  .../sound/nvidia,tegra-audio-graph-card.yaml       | 70 ++++++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-> new file mode 100644
-> index 0000000..b73fbe5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-graph-card.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Audio Graph based Tegra sound card driver
-> +
-> +description: |
-> +  This is based on generic audio graph card driver along with additional
-> +  customizations for Tegra platforms. It uses the same bindings with
-> +  additional standard clock DT bindings required for Tegra.
-> +
-> +  See{LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-> +
-> +maintainers:
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Sameer Pujar <spujar@nvidia.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: nvidia,tegra210-audio-graph-card
-> +      - const: nvidia,tegra186-audio-graph-card
-> +
-> +  clocks:
-> +   minItems: 2
-> +
-> +  clock-names:
-> +   minItems: 2
-> +   items:
-> +     - const: pll_a
-> +     - const: plla_out0
-> +
-> +  assigned-clocks:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  assigned-clock-parents:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  assigned-clock-rates:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-parents
 
-Where's the graph? You need to define the ports and reference the common 
-schema.
+Andrew, do you think we can get this one merged into mmotm? I think it's
+pretty low risk.
 
-> +
-> +examples:
-> +  - |
-> +    #include<dt-bindings/clock/tegra210-car.h>
-> +
-> +    tegra_sound {
-> +        compatible = "nvidia,tegra210-audio-graph-card";
-> +        clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-> +                 <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-> +        clock-names = "pll_a", "plla_out0";
-> +        assigned-clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-> +                          <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
-> +                          <&tegra_car TEGRA210_CLK_EXTERN1>;
-> +        assigned-clock-parents = <0>, <0>, <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-> +        assigned-clock-rates = <368640000>, <49152000>, <12288000>;
-> +    };
-> +
-> +...
-> -- 
-> 2.7.4
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
 > 
+> This is based on mmotm.
+> 
+>   tools/testing/selftests/vm/hmm-tests.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftests/vm/hmm-tests.c
+> index 6b79723d7dc6..5d1ac691b9f4 100644
+> --- a/tools/testing/selftests/vm/hmm-tests.c
+> +++ b/tools/testing/selftests/vm/hmm-tests.c
+> @@ -49,7 +49,7 @@ struct hmm_buffer {
+>   #define TWOMEG		(1 << 21)
+>   #define HMM_BUFFER_SIZE (1024 << 12)
+>   #define HMM_PATH_MAX    64
+> -#define NTIMES		256
+> +#define NTIMES		10
+>   
+>   #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
+>   
+> 
+
