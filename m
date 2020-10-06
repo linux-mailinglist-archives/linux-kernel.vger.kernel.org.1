@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3F7285393
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6642853A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbgJFVEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727176AbgJFVEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:04:12 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC20C061755;
-        Tue,  6 Oct 2020 14:04:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C5VMB4TBRz9sSG;
-        Wed,  7 Oct 2020 08:04:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602018248;
-        bh=D2iFk0l3U3wTXzKFLPsxu6P3eYTdYFtCQAuJJJjQmWM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bhEpNiegpLUy5hin7ka+43scdjV2WhMgQCBbVXvFrfwKX1BP5/XB/JE0j40XVhdcy
-         C/kwnRaTuf/P++D19+HT+V9tWz3THk6kFfVbKCuDAfs0rd3rXAkavHZDNpTwR2qUF0
-         7PW29aSHtIbMBzKNm02UvtoIyksCP13GicsTGy2hY2V253vIl7KAGYSsLysQVYSJmN
-         2HHy5qUj6NZTQSqduNjshB2shOSMa4VqHtNY/eY5TruCfVRvgQcwqfiN3b6Pn61kSH
-         MYmJLL3Fu99Ahv919Mb3IXzJvxcYCwpqYeMWVTi8UkaIpXVYtL1jImJoA9FLJ29aoh
-         VU2F0M6czV7+A==
-Date:   Wed, 7 Oct 2020 08:04:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: linux-next: build failure after merge of the vfs tree
-Message-ID: <20201007080405.5e90a579@canb.auug.org.au>
-In-Reply-To: <20201006143012.fgpyujguzvcwszp4@treble>
-References: <20200924183038.3c6da86e@canb.auug.org.au>
-        <20200924200807.GU3421308@ZenIV.linux.org.uk>
-        <20200925220128.1604f09b@canb.auug.org.au>
-        <20200925133820.GW3421308@ZenIV.linux.org.uk>
-        <20200929041056.uj6gedgm6hfjaxrx@treble>
-        <20201006143012.fgpyujguzvcwszp4@treble>
+        id S1727477AbgJFVJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:09:24 -0400
+Received: from mga11.intel.com ([192.55.52.93]:44603 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727407AbgJFVJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 17:09:20 -0400
+IronPort-SDR: s8S1DFo6AWVDgeVryre1ZS4OYUwH/1YdbxH1KtGGC7Ro46cf1eG1O58xu0J4GWYd5yBratgbfZ
+ Q2SXTq9Y+edA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="161302104"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="161302104"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 14:09:18 -0700
+IronPort-SDR: t3z6pK2g2s2+tfI7Ch0wFyomltUGOQBNkUnFhBmlpDHyWAVVrG97apkDM5RQw+kFjo84pS8HPo
+ 8qNQrZ7eozAg==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="527590579"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 14:09:18 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Youquan Song <youquan.song@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] Add machine check recovery when copying from user space
+Date:   Tue,  6 Oct 2020 14:09:04 -0700
+Message-Id: <20201006210910.21062-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20201005163130.GD21151@zn.tnic>
+References: <20201005163130.GD21151@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mGAqYt=bD6yUtK69wl=vzGF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mGAqYt=bD6yUtK69wl=vzGF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Machine check recovery from uncorrected memory errors currently focusses
+primarily on errors that are detected while running in user mode. There
+is a mechanism for recovering from errors in kernel code, but it is
+currently only used for memcpy_mcsafe().
 
-Hi Josh,
+The existing recover actions for errors found in user mode (unmap the
+page and send SIGBUS to the task) can also be applied when the error is
+found while copying data from user space to the kernel.
 
-On Tue, 6 Oct 2020 09:30:12 -0500 Josh Poimboeuf <jpoimboe@redhat.com> wrot=
-e:
->
-> On Mon, Sep 28, 2020 at 11:10:56PM -0500, Josh Poimboeuf wrote:
-> > > Josh, any ideas?  We could, of course, make it "r"(size), but that wo=
-uld
-> > > be unpleasant in all existing callers... =20
-> >=20
-> > Sorry, I've been traveling.  I'd just vote for making it "r".
-> >=20
-> > array_index_nospec() is always called after a usercopy.  I don't think
-> > anyone will notice the extra mov, for the cases where it would be
-> > propagated as an immediate.  And the argument *is* an unsigned long
-> > after all.
-> >=20
-> > Stephen, can you confirm this fixes it? =20
->=20
-> Still traveling, I didn't see an update on this.  Any objections to the
-> below?  I assume it fixes Stephen's build issue.
+Roadmap to this series:
 
-Yes, it does fix my x86_64 allnoconfig build.
+Series is based on top of tip ras/core branch because original part 0001
+has already been applied to tip ras/core branch:
+13c877f4b48b ("x86/mce: Stop mce_reign() from re-computing severity for every CPU")
+so new part 0001 below used to be part 0002 in v1 series.
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/mGAqYt=bD6yUtK69wl=vzGF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+In v3 part 0005 has been merged with the final part, so now just 6 parts.
 
------BEGIN PGP SIGNATURE-----
+0001:   First piece of infrastructure update. Severity calculations need
+        access to the saved registers. So pass pointer down the call
+        chain.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9828UACgkQAVBC80lX
-0GzjMAf+NGlPx9YrXuvL8HEllDlG5h8Jjq6l+IOkat5XF5yPIOycUzr4ER118JO3
-5+yMxO3WH2y8dzXv8qScrWRFPHbMFM3JsZe6OCx+HS6WWKY5DqafsAoauuBPJGu2
-dbMcSYGrZWSA5sfiZ+qKVkoLHTxRf5GO0z7hg+ARD42AGsjiAxuF6KXb0cRUdAXl
-Gzhh2v8UW/fvF19E2AwoiVtR7EbtRSZaMd+yFFW50/boqBIERr3/y/mzuCeQpWgn
-YtMzGAsIqVE3m1hxoL6oqFmNRHCJCgYqq/HzoO1jeMru1ePd95l7vIxRbxNBpDBD
-vATKKYJO06BrL6X7OL9Z0cc439Rp0w==
-=YPrC
------END PGP SIGNATURE-----
+0002:   Need to know what type of exception handler is present
+        for a given kernel instruction. Rather than proliferate more
+        functions like ex_has_fault_handler() for each type, replace
+        with a function that looks up the handler and returns an enum
+        describing the type.
 
---Sig_/mGAqYt=bD6yUtK69wl=vzGF--
+0003:   Need slightly different handling for *copy_user*() faults from
+        get_user() faults. Create a new exception table tag and apply
+        to the copy functions.
+
+Change since v2: Reword commit message to avoid use of "we".
+
+0004:   In fixup path of copy functions avoid dealing with the tail
+        when the copy took a machine check by returning that there
+        are no bytes left to be copied.
+
+0005:   Changes to do_machine_check() to support the new recovery flow.
+        Some re-factoring to avoid code duplication (since the flows
+        for "error in user mode" and "error while copying from user
+        mode" are almost identical). Couple of new fields added to the
+        task structure.
+
+Change since v2: Boris supplied a helper function to make the re-factor
+	much simpler. Use it instead of the spaghetti code in v2.
+
+0006:	Finally the keystone patch that pulls all the parts together.
+	An instruction decoder figures out whether an instruction
+	tagged as accessing user space is reading from or writing
+	to user space. The instructions in the switch were found
+	experimentally by looking at what instructions in the base
+	kernel are tagged in the exception table. I didn't add the
+	atomic operations (0x87 = XCHG etc.) that both read and write
+	user addresses. I think they should be safe, but I need a test
+	case where a futex has been poisoned to check. Probably this
+	switch should be expanded with all the instructions that the
+	compiler could possibly generate that read from user space.
+
+Change since v2: Merged old part 0005 into this piece since this is
+	where function fault_in_kernel_space() is used.
+	Check modrm.got and sib.got fields in "insn" were set before
+	calling insn_get_addr()
+	Change type of constant from ~0ul to -1l when checking whether
+	address returned by insn_get_addr() is valid.
+
+
+Tony Luck (4):
+  x86/mce: Provide method to find out the type of exception handle
+  x86/mce: Avoid tail copy when machine check terminated a copy from
+    user
+  x86/mce: Recover from poison found while copying from user space
+  x86/mce: Decode a kernel instruction to determine if it is copying
+    from user
+
+Youquan Song (2):
+  x86/mce: Pass pointer to saved pt_regs to severity calculation
+    routines
+  x86/mce: Add _ASM_EXTABLE_CPY for copy user access
+
+ arch/x86/include/asm/asm.h         |   6 ++
+ arch/x86/include/asm/extable.h     |   9 ++-
+ arch/x86/include/asm/mce.h         |  15 ++++
+ arch/x86/include/asm/traps.h       |   2 +
+ arch/x86/kernel/cpu/mce/core.c     |  52 +++++++++-----
+ arch/x86/kernel/cpu/mce/internal.h |   3 +-
+ arch/x86/kernel/cpu/mce/severity.c |  70 ++++++++++++++++--
+ arch/x86/lib/copy_user_64.S        | 111 ++++++++++++++++-------------
+ arch/x86/mm/extable.c              |  24 +++++--
+ arch/x86/mm/fault.c                |   2 +-
+ include/linux/sched.h              |   2 +
+ 11 files changed, 217 insertions(+), 79 deletions(-)
+
+
+base-commit: 5da8e4a658109e3b7e1f45ae672b7c06ac3e7158
+-- 
+2.21.1
+
