@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8992850C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CC82850C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 19:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgJFR03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 13:26:29 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55150 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgJFR02 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:26:28 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 08C401C0B8B; Tue,  6 Oct 2020 19:26:26 +0200 (CEST)
-Date:   Tue, 6 Oct 2020 19:26:10 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Marek Behun <kabel@blackhole.sk>
-Cc:     Dan Murphy <dmurphy@ti.com>, ultracoolguy@tutanota.com,
-        Linux Leds <linux-leds@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
-Message-ID: <20201006172610.GA1836@duo.ucw.cz>
-References: <MItBqjy--3-2@tutanota.com>
- <966c3f39-1310-dd60-6f33-0d9464ed2ff1@ti.com>
- <MItOR9Z--3-2@tutanota.com>
- <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de>
- <MItjEho--3-2@tutanota.com>
- <20201005173227.GA6431@duo.ucw.cz>
- <20201006093356.6d25b280@blackhole.sk>
- <MIxm3uX--3-2@tutanota.com>
- <144aa75a-4369-cd81-d7dc-2354a9afd7c5@ti.com>
- <20201006164101.2c3fa0d7@blackhole.sk>
+        id S1726197AbgJFR2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 13:28:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13774 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725946AbgJFR2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 13:28:40 -0400
+IronPort-SDR: ht2XY8ORkQN7pTz06QQjfGPGZxLy7lpHTroFqekyqFNh5QI4SiNtRIYpl/E0QScyHTl/UrvjZ/
+ cWJZrrh72q+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="144503239"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="144503239"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 10:28:32 -0700
+IronPort-SDR: gny4smbUyRrvUpDUcAsr72YK0XvbiHMtGYtthfWbb7Y5LhHl9yv5JWGGosj6KAGxC4GwMbR+Lj
+ i4bN0ankIRow==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="527462681"
+Received: from thijsmet-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.36])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 10:28:25 -0700
+Date:   Tue, 6 Oct 2020 20:28:19 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20201006172819.GA114208@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
+ <20201006025703.GG15803@linux.intel.com>
+ <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
+ <20201006151532.GA17610@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201006164101.2c3fa0d7@blackhole.sk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201006151532.GA17610@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 06, 2020 at 08:15:32AM -0700, Sean Christopherson wrote:
+> On Tue, Oct 06, 2020 at 10:30:16AM +0200, Jethro Beekman wrote:
+> > On 2020-10-06 04:57, Sean Christopherson wrote:
+> > > On Sat, Oct 03, 2020 at 07:50:56AM +0300, Jarkko Sakkinen wrote:
+> > >> +struct sgx_enclave_run {
+> > >> +  __u64 tcs;
+> > >> +  __u64 user_handler;
+> > >> +  __u64 user_data;
+> > >> +  __u32 leaf;
+> > >
+> > > I am still very strongly opposed to omitting exit_reason.  It is not at all
+> > > difficult to imagine scenarios where 'leaf' alone is insufficient for the
+> > > caller or its handler to deduce why the CPU exited the enclave.  E.g. see
+> > > Jethro's request for intercepting interrupts.
+> >
+> > Not entirely sure what this has to do with my request, I just expect to see
+> > leaf=ERESUME in this case, I think? E.g. as you would see in EAX when calling
+> > ENCLU.
+> 
+> But how would you differentiate from the case that an exception occured in
+> the enclave?  That will also transfer control with leaf=ERESUME.  If there
+> was a prior exception and userspace didn't zero out the struct, there would
+> be "valid" data in the exception fields.
+> 
+> An exit_reason also would allow retrofitting the exception fields into a
+> union, i.e. the fields are valid if and only if exit_reason is exception.
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Let's purge this a bit. Please remark where my logic goes wrong. I'm
+just explaining how I've deduced the whole thing.
 
-Hi!
+The information was encoded in v38 version of the vDSO was exactly this:
 
-> > >> By the way I just realized that the DT binding in this driver seems
-> > >> incorrect to me.
-> > >>
-> > >> The controller logically supports 3 LED strings, each having
-> > >> configurable control bank. =20
-> >=20
-> > There are two control banks. You can connect the HVLED outputs to eithe=
-r=20
-> > control bank A or B there is no individual control of the LED strings.
-> >=20
-> >=20
-> > >> But the DT binding supports 2 DT nodes, one for each control bank
-> > >> (identified by the `reg` property) and then `led-sources` says which
-> > >> string should be controlled by given bank.
-> > >>
-> > >> But taking in mind that DT should describe how devices are connected=
- to
-> > >> each other, I think the child nodes in the binding should instead
-> > >> describe the 3 supported LED strings... =20
-> >=20
-> > The outputs in this case are virtual outputs which are the banks (A and=
- B).
-> >=20
-> > Since the device is bank controlled the actual current sinks are not=20
-> > defined thus making the the banks the actual outputs.
-> >=20
-> > This is why the 'reg' property defines the control bank either A or B=
-=20
-> > and the led-sources indicates the strings associated with the control b=
-ank.
+- On normal EEXIT, it got the value 0.
+- Otherwise, it got the value 1.
 
-> Dan, I looked at the datasheet, I understand this.
->=20
-> Nonetheless, device tree should describe how devices are connected to
-> each other. The chip has 3 pins for 3 LED strings.
+The leaf, then embdded to struct sgx_exception but essentially the same
+field got the value from EAX, and the value that EAX had was only
+written on exception path.
 
-Well, device tree is not a device schematics...
+Thus, I deduced that if you write $EEXIT to leaf on synchrous exit you
+get the same information content, nothing gets overwritten. I.e. you
+can make same conclusions as you would with those two struct fields.
 
-> If this controller should be able to support 3 LED strings via 3
-> outputs, the device tree binding nodes should, in my opinion, describe
-> each pin connected string. The nodes should maybe even be called
-> 'led-string@N' where N is from [0, 1, 2].
->=20
-> The fact that the device is bank controlled and there are only two
-> banks (and it is configurable by which bank each LED string is
-> controlled) is more relevant to the driver, not as much to device tree
-> binding.
-
-Seems to me like two independend LEDs, and I'd describe it as
-such. The fact that it goes over 3 wires is just a implementation
-detail. Lets keep it simple...
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---2oS5YaxWCcQjTEyO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3yosgAKCRAw5/Bqldv6
-8sF6AJ9djAsB19pw03xFkkLaSd7uT/tGFQCgoXaT2KSu0s7VLgQyScGaV1t+698=
-=4/S2
------END PGP SIGNATURE-----
-
---2oS5YaxWCcQjTEyO--
+/Jarkko
