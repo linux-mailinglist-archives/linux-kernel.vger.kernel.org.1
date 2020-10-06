@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E90284D74
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B32D284D76
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 16:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgJFORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 10:17:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41383 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgJFORQ (ORCPT
+        id S1726139AbgJFOSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 10:18:22 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:33521 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725947AbgJFOSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:17:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601993834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JhLZhQb3+y6eB2aR8dzGqs7Nd3D3OpNsxn6FaEOC/B0=;
-        b=Q1bbXpVwP2oKe4BY8ElJBQDDHAJoLyyjVtPPJFd+xeVBmA6/0HTKPJHPoAncb4YB5Gr+mw
-        9/bLLM/F2rjiwsJ76TyYSHmEMzxF9AsS+ZGgABXpKUr+T3AKnvGA2UgLVXFNo7iflla1Yd
-        eG62q4uZJFLHgB1IrVQ4YDTaNTcqiXA=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-81-vSJ8ynvpNoivLmhSfiDwew-1; Tue, 06 Oct 2020 10:17:13 -0400
-X-MC-Unique: vSJ8ynvpNoivLmhSfiDwew-1
-Received: by mail-qv1-f72.google.com with SMTP id de12so8166594qvb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 07:17:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=JhLZhQb3+y6eB2aR8dzGqs7Nd3D3OpNsxn6FaEOC/B0=;
-        b=mXDPHLwnZi+prf+Va/B2bqUP8DdCxG9nyL7mBg2Tpib9bsl37FrNxf0R8fBEal67od
-         AEgwrU+xcugkna3pdf4wVlie4ZijmKhK9vAp6FGI2qXcwP2OpqCOtFwYDQPvr99iRGgd
-         4kBctreDwBt/JUI3pBxGn6jZG5HHVaatugV1u4nipRZdBJNuZ7vlrUL3Lf4hSi/NlESQ
-         HlEJHzRE08EgqIOHiUhtNN3pSij2AOzLx35KDSyJsbyZ8hGd5t5vvlHsEC1s5/b4QmiU
-         KAQ8m+cQRqVVOa776zxeWJDqF8K000YWmUehDwW73rQp8Rjk4Pb9ZDHVtjp7WWuc81PY
-         +S8A==
-X-Gm-Message-State: AOAM531dmNW7L5G/9MSv95mg7BwBGwgOEBpEhddjlf/Vua90kUSlWTqB
-        KqpPeCa1MtKOh0NVr8mtaiJn/3v6tXd5tjTegsO1HEpjdRut+Xems+zXM1le33ETkHUywY3mNIz
-        1KlQSYCd7/Kw14gBFlL0osu+N
-X-Received: by 2002:a37:5145:: with SMTP id f66mr5141998qkb.299.1601993832784;
-        Tue, 06 Oct 2020 07:17:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUSqEiEH7YBQAtV1vnjzeCQgciC3SYxxwZQIl+PhhsLf3/7kDYv9cTPfeUHJWTP0ggGOmWPw==
-X-Received: by 2002:a37:5145:: with SMTP id f66mr5141966qkb.299.1601993832487;
-        Tue, 06 Oct 2020 07:17:12 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a66sm2453737qkc.52.2020.10.06.07.17.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 07:17:11 -0700 (PDT)
-Subject: Re: [PATCH] media: ov7670: check status of ov7670_read
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     corbet@lwn.net, mchehab@kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200828145518.26324-1-trix@redhat.com>
- <20201006124148.GC5682@valkosipuli.retiisi.org.uk>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <75462c9b-afc0-aeb7-018a-573db59192f4@redhat.com>
-Date:   Tue, 6 Oct 2020 07:17:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 6 Oct 2020 10:18:21 -0400
+Received: (qmail 417731 invoked by uid 1000); 6 Oct 2020 10:18:20 -0400
+Date:   Tue, 6 Oct 2020 10:18:20 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201006141820.GA416765@rowland.harvard.edu>
+References: <20200929220912.GF1621304@google.com>
+ <20200930013229.GB194665@rowland.harvard.edu>
+ <20200930124915.GA1826870@google.com>
+ <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+ <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
+ <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
+ <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
+ <CAL_JsqLWmBCjrbs2D-d+9naJAKkNhDAbmRtqvCDY8jv=L_q-xA@mail.gmail.com>
+ <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
+ <20201006004510.GD4135817@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201006124148.GC5682@valkosipuli.retiisi.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006004510.GD4135817@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 05, 2020 at 05:45:10PM -0700, Matthias Kaehlcke wrote:
+> I did some prototyping, it seems a binding like this would work for
+> case a) or b):
+> 
+> &usb_1_dwc3 {
+>         hub_2_0: hub@1 {
+>                 compatible = "usbbda,5411";
+>                 reg = <1>;
+> 	};
+> 
+>         hub_3_0: hub@2 {
+>                 compatible = "usbbda,411";
+>                 reg = <2>;
+>                 vdd-supply = <&pp3300_hub>;
+> 		companion-hubs = <&hub_2_0>;
+>         };
+> };
+> 
+> It still requires specifying both hubs (which reflects the actual wiring).
+> Supporting something like "reg = <1 2>" seems more complex due to the need to
+> obtain the hub USB device at runtime (a DT node makes that trivial), possibly
+> this could be solved by adding new APIs.
+> 
+> In terms of implementation would I envision to keep a platform driver. This
+> would keep the hubby parts out of xhci-plat (except for populating the platform
+> devices), support systems with cascaded hubs and provide a device for the sysfs
+> attribute.
 
-On 10/6/20 5:41 AM, Sakari Ailus wrote:
-> Hi Tom,
->
-> On Fri, Aug 28, 2020 at 07:55:18AM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> clang static analysis flags this representative problem
->>
->> drivers/media/i2c/ov7670.c:1463:9: warning: Assigned
->>   value is garbage or undefined
->>         *value = gain;
->>                ^ ~~~~
->>
->> gain is set by a successful call to ov7670_read()
->>
->> So check that ov7670_read() is successful.
->>
->> The remaining static analysis problems are false positives.
->> There appears to be a limitation with checking the
->> aggregated returns.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  drivers/media/i2c/ov7670.c | 17 +++++++++++++----
->>  1 file changed, 13 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/media/i2c/ov7670.c b/drivers/media/i2c/ov7670.c
->> index b42b289faaef..001d4b09db72 100644
->> --- a/drivers/media/i2c/ov7670.c
->> +++ b/drivers/media/i2c/ov7670.c
->> @@ -929,6 +929,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
->>  	ret =  ov7670_write(sd, REG_HSTART, (hstart >> 3) & 0xff);
->>  	ret += ov7670_write(sd, REG_HSTOP, (hstop >> 3) & 0xff);
->>  	ret += ov7670_read(sd, REG_HREF, &v);
->> +	if (ret)
->> +		return ret;
-> Thanks for the patch.
->
-> While the patch fixes a bug, could you also fix adding the return values?
-> These are valid error codes to begin with, but it makes no sense to add
-> them together.
+What will you do if a system has more than one of these power-regulated 
+hubs?  That is, how will the user know which platform device handles the 
+power control for a particular hub (and vice versa)?  You'd probably 
+have to create a pair of symlinks going back and forth in the sysfs 
+directories.
 
-Yes. That is a problem, a general problem with this file.
+Wouldn't it be easier to put the power-control attribute directly in the 
+hub's sysfs directory (or .../power subdirectory)?
 
-I count 10+
-
-I'll see if fixing the general problem also fixes this problem.
-
-Tom
-
->
->>  	v = (v & 0xc0) | ((hstop & 0x7) << 3) | (hstart & 0x7);
->>  	msleep(10);
->>  	ret += ov7670_write(sd, REG_HREF, v);
->> @@ -938,6 +940,8 @@ static int ov7670_set_hw(struct v4l2_subdev *sd, int hstart, int hstop,
->>  	ret += ov7670_write(sd, REG_VSTART, (vstart >> 2) & 0xff);
->>  	ret += ov7670_write(sd, REG_VSTOP, (vstop >> 2) & 0xff);
->>  	ret += ov7670_read(sd, REG_VREF, &v);
->> +	if (ret)
->> +		return ret;
->>  	v = (v & 0xf0) | ((vstop & 0x3) << 2) | (vstart & 0x3);
->>  	msleep(10);
->>  	ret += ov7670_write(sd, REG_VREF, v);
->> @@ -1460,6 +1464,8 @@ static int ov7670_g_gain(struct v4l2_subdev *sd, __s32 *value)
->>  	unsigned char gain;
->>  
->>  	ret = ov7670_read(sd, REG_GAIN, &gain);
->> +	if (ret)
->> +		return ret;
->>  	*value = gain;
->>  	return ret;
->>  }
->> @@ -1470,11 +1476,14 @@ static int ov7670_s_gain(struct v4l2_subdev *sd, int value)
->>  	unsigned char com8;
->>  
->>  	ret = ov7670_write(sd, REG_GAIN, value & 0xff);
->> +	if (ret)
->> +		return ret;
->>  	/* Have to turn off AGC as well */
->> -	if (ret == 0) {
->> -		ret = ov7670_read(sd, REG_COM8, &com8);
->> -		ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
->> -	}
->> +	ret = ov7670_read(sd, REG_COM8, &com8);
->> +	if (ret)
->> +		return ret;
->> +	ret = ov7670_write(sd, REG_COM8, com8 & ~COM8_AGC);
->> +
->>  	return ret;
->>  }
->>  
-
+Alan Stern
