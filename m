@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04072853F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8B32853FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Oct 2020 23:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727239AbgJFVjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 17:39:24 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:44961 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgJFVjY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 17:39:24 -0400
-Received: by mail-oi1-f196.google.com with SMTP id x62so146667oix.11;
-        Tue, 06 Oct 2020 14:39:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZrSS0+QA6SNr5YkM/sCDvi3ZoWN6MrRR/tWnHfJPYsc=;
-        b=eLlPimz70JC19WWiYRWpbjVD1Scp3hDHIMqIbHOWAw4SBYAniaVrXWpEwoFUBbgVhq
-         utX8j5i+Uq3t+JmVVkvITbDsw4YX1pLGFBxdY4PQ3qjCK+IantHypu6i/sZiT5oJko9q
-         X+5zwfxSB0UtpPFn4gSHyaX4IeYKzXTs/xSbt8X5+xEy/rJdbBqTVTGN+Lp70IB7zaw9
-         Ok/TDxiT+TdAlX2QtziujfX9FQyZ5/OvTCMWBwBHy2l8w8NcerZGmNgUGuuGCydFeMkm
-         37ptXooq8fruBB20KzF7HWL4o4KmR/d8a0VuMVH0FgrLRm3t5apnWKDckwHLu42AXxWa
-         R29Q==
-X-Gm-Message-State: AOAM531wxoNsumADE4ipQCEYQpQNpoSHP2OAOAvubiXPLMOh1cRmu0Ab
-        2GWA2kjf7DOtm+Z3qj09uA==
-X-Google-Smtp-Source: ABdhPJwsnzKRCQYibfSwzKqDk2bS+ldxmbO7twZNaDWJpTLRoyFHNMfakBisAntt56WcG70/DzLvdg==
-X-Received: by 2002:aca:b9c4:: with SMTP id j187mr185204oif.48.1602020363483;
-        Tue, 06 Oct 2020 14:39:23 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i205sm65333oih.23.2020.10.06.14.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 14:39:22 -0700 (PDT)
-Received: (nullmailer pid 2893359 invoked by uid 1000);
-        Tue, 06 Oct 2020 21:39:21 -0000
-Date:   Tue, 6 Oct 2020 16:39:21 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, svarbanov@mm-sol.com,
-        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kishon@ti.com, bhelgaas@google.com, mgautam@codeaurora.org,
-        vkoul@kernel.org
-Subject: Re: [PATCH v4 1/5] dt-bindings: phy: qcom,qmp: Add SM8250 PCIe PHY
- bindings
-Message-ID: <20201006213921.GA2893306@bogus>
-References: <20201005093152.13489-1-manivannan.sadhasivam@linaro.org>
- <20201005093152.13489-2-manivannan.sadhasivam@linaro.org>
+        id S1727272AbgJFVjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 17:39:43 -0400
+Received: from mga05.intel.com ([192.55.52.43]:34353 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725947AbgJFVjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 17:39:42 -0400
+IronPort-SDR: 9XGqDjiqtrUYV0KlU8DWkVAEVJftzxGa0kKjO44Bi2//ljugVD6ra7UKMfPqYwz4f1OuC/zaTK
+ HjsX4ahYA5ng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="249417694"
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="249417694"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 14:39:42 -0700
+IronPort-SDR: xwAgZuFlMjuMIPVTGKSiVBZcuPmai61VqTFeIzNfv7GhMjKrM6kvpW5vO3nPTAS5Olg7duMjw0
+ 0/uopQuHPqsw==
+X-IronPort-AV: E=Sophos;i="5.77,343,1596524400"; 
+   d="scan'208";a="527608885"
+Received: from thijsmet-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.36])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 14:39:35 -0700
+Date:   Wed, 7 Oct 2020 00:39:27 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20201006213927.GA117517@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
+ <20201006025703.GG15803@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005093152.13489-2-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20201006025703.GG15803@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020 15:01:48 +0530, Manivannan Sadhasivam wrote:
-> Add the below three PCIe PHYs found in SM8250 to the QMP binding:
+On Mon, Oct 05, 2020 at 07:57:05PM -0700, Sean Christopherson wrote:
+> On Sat, Oct 03, 2020 at 07:50:56AM +0300, Jarkko Sakkinen wrote:
+> > +	__u16 exception_vector;
+> > +	__u16 exception_error_code;
+> > +	__u64 exception_addr;
+> > +	__u8  reserved[24];
 > 
-> QMP GEN3x1 PHY - 1 lane
-> QMP GEN3x2 PHY - 2 lanes
-> QMP Modem PHY - 2 lanes
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+> I also think it's a waste of space to bother with multiple reserved fields.
+> 24 bytes isn't so much that it guarantees we'll never run into problems in
+> the future.  But I care far less about this than I do about exit_reason.
 
-Acked-by: Rob Herring <robh@kernel.org>
+For me the real problem is that there has not been "no brainer" basis
+for any size, so a one cache line worth of data is just something that
+makes sense, because would neither make much sense to have less.
+
+I'll throw an argument to have it a bit bigger amount of reserved space
+for future use.
+
+First, there is always some amount of unknown unknowns when it comes to
+run-time structures, given the evolution of microarchitectures. So yes,
+some more "state" might be needed in the future.
+
+Secondly, this is a bigger problem for the vDSO than it is for ioctl's
+because we can have only one. With ioctl's, in the absolute worst case,
+we can have a second version of the same ioctl.
+
+At least 256 bytes would be probably a good number, if we want to
+increase it. The reserved space zero validation that I implemented to
+this version probably does not add much to the overhead anyway.
+
+I'm not sure why care about one struct field more than making sure that
+the run-time structure can stand time.
+
+/Jarkko
