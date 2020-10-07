@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8053728559D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2568D2855A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgJGAvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 20:51:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726779AbgJGAvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:51:21 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E63C2078E;
-        Wed,  7 Oct 2020 00:51:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602031880;
-        bh=i8I4wCGU4c5vQJVMhh90gjLnO/BjDbzPHoYO2I3rz+Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=OUgBiL8D4O68b1nQY4R/mN4/qMpwpG01E9VVwcBt+QZYPpTtu87bP7WC0XadViHzh
-         AbHBI9A6ss6lwF/OI/gvMdVdLMp4xYTZKGFJD011IKhRR9GkGn2WeGiXwm7FNPq43U
-         aMfDjensh0hWhIBx9VrRi1R9RnxFuj0Cy+GApKPA=
-Date:   Tue, 6 Oct 2020 19:51:18 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, dvhart@infradead.org, andy@infradead.org,
-        bhelgaas@google.com, hdegoede@redhat.com,
-        alexey.budankov@linux.intel.com,
-        Andy Shevchenko <andy.shevchenko@gmail.com>, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH V8 1/5] PCI: Add defines for Designated Vendor-Specific
- Extended Capability
-Message-ID: <20201007005118.GA3230211@bjorn-Precision-5520>
+        id S1726860AbgJGA4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbgJGA4c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 20:56:32 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCAFC061755;
+        Tue,  6 Oct 2020 17:56:31 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id 67so555911ybt.6;
+        Tue, 06 Oct 2020 17:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V3zqpSMPS8gtKxeX3TbkFq5u4mIeEj4U3nOHYlCoGeo=;
+        b=vGg+OypGRkCqFLX2djYv0TqEfRRV5vwCvcmreBa0IP6X4OCUNlzLbPZGt7kqBJRhP8
+         NA0aeHDYnnC7+NYpdXdTK3xpLrhK5I5yBLyIeomDUM2Ku2FObiInUTYvEb6Aw67l28rR
+         PQXcksLDGdbMvWZ3zInbLnE2ifSjyzT2cHtioqywwrmToBz4fbzN51OnJdQItyjOfOIz
+         thbUgt/T2M0KpZhQyEpsOtZQ4LQN8TzfIeBkbXyodKw85XAzOH8wqAm0hq/a8/+i9lyC
+         rJ1wXjh0K4LJVR95wmDfzhvSJNo2uDymq23u6Ykvx39FFUFn7+47tI5pHv1UrE0vtunK
+         NIoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V3zqpSMPS8gtKxeX3TbkFq5u4mIeEj4U3nOHYlCoGeo=;
+        b=G+IqccQwAxl1EzgxDl9tEFLEraLr2EyhT49KDf6Qwopvp1U+TIWko2JGAhwik74K2U
+         7rL+bbavHYd3ex+uV41qPSB/I4plZNO+isZi9kH9gwEnHKnwfJ1HupDIjU50rNOxpyh/
+         Xae1TiYujUQ8XSxldth7RFs94jRGtmlOLGvmyHsOH4+K64Bnp8fk6y1k6H1dCkzJsfmp
+         ctfty4eP5ymndxXQHiiJEc72R0XBtn43BmQR0k4FzSj1IPIOwecCH86LbkxWU4kmp3Jb
+         x0l1edFrMWlJwuzDYqXBsaALKU4q6T3CABJGJUSxnhnzNLcjJPDQzgacoyb7CtZP6wVC
+         z2BA==
+X-Gm-Message-State: AOAM533BtKg68zJxNiFhessJaCsc4CSS2IfTo/xyjPJ2pAqKvW8Dk7K2
+        p1FGvUK5W+xeyY/mu+7SCgQahYpjgL9jxdnNGcM=
+X-Google-Smtp-Source: ABdhPJwtV3QALkbyCX1DdAt++HauBCU2BBlMN7Ar7/rvkWYaWmdUHQs74Ixqo8P6GBcdptOpS+zttr1maEotqb+NfzM=
+X-Received: by 2002:a25:730a:: with SMTP id o10mr1235486ybc.403.1602032190986;
+ Tue, 06 Oct 2020 17:56:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b75c3ff53dbe26ee0c6825e8d1f5f10489a5722c.camel@linux.intel.com>
+References: <20201006231706.2744579-1-haoluo@google.com> <CAEf4BzY1ggHq6UGkHQ_S=0_US=bLPc9u+9pyeUP2hWb_3kWN+w@mail.gmail.com>
+ <CA+khW7hVh4PJHtZSNG-_ZPxthQdvKSxoL4P17GZn5NdQxjnHxA@mail.gmail.com>
+In-Reply-To: <CA+khW7hVh4PJHtZSNG-_ZPxthQdvKSxoL4P17GZn5NdQxjnHxA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 6 Oct 2020 17:56:20 -0700
+Message-ID: <CAEf4BzakCTkR2E1EPgAKEgdBqwLif3HOZWCypE0h-Z9oS5zrkg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix test_verifier after introducing resolve_pseudo_ldimm64
+To:     Hao Luo <haoluo@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 03:45:54PM -0700, David E. Box wrote:
-> Hi Bjorn,
-> 
-> This patch has been acked and unchanged for weeks. Is it possible to
-> get this pulled into next? We have SIOV and CXL related work that is
-> using these definitions. Thanks.
+On Tue, Oct 6, 2020 at 5:51 PM Hao Luo <haoluo@google.com> wrote:
+>
+> On Tue, Oct 6, 2020 at 5:43 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Oct 6, 2020 at 4:45 PM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > Commit 4976b718c355 ("bpf: Introduce pseudo_btf_id") switched
+> > > the order of check_subprogs() and resolve_pseudo_ldimm() in
+> > > the verifier. Now an empty prog and the prog of a single
+> > > invalid ldimm expect to see the error "last insn is not an
+> > > exit or jmp" instead, because the check for subprogs comes
+> > > first. Fix the expection of the error message.
+> > >
+> > > Tested:
+> > >  # ./test_verifier
+> > >  Summary: 1130 PASSED, 538 SKIPPED, 0 FAILED
+> > >  and the full set of bpf selftests.
+> > >
+> > > Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
+> > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > ---
+> [...]
+> > > diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> > > index 3856dba733e9..f300ba62edd0 100644
+> > > --- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> > > +++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> > > @@ -55,7 +55,7 @@
+> > >         .insns = {
+> > >         BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
+> > >         },
+> > > -       .errstr = "invalid bpf_ld_imm64 insn",
+> > > +       .errstr = "last insn is not an exit or jmp",
+> >
+> > but this completely defeats the purpose of the test; better add
+> > BPF_EXIT_INSN() after ldimm64 instruction to actually get to
+> > validation of ldimm64
+> >
+>
+> Actually there is already a test (test4) that covers this case. So it
+> makes sense to remove it, I think. I will resend with this change.
 
-I acked it because I expected you to merge it along with the rest of
-the series.
+ah, this test validates that half of ldimm64 at the very end won't
+cause any troubles to verifier... Yeah, I guess now it's pointless
+because it can never be the very last instruction.
 
-I guess I could merge this patch via the PCI tree if you really want,
-but that ends up being a hassle because we have to worry about which
-order things get merged to Linus' tree.  Better if the whole series is
-merged via the same tree.
-
-> On Fri, 2020-10-02 at 18:31 -0700, David E. Box wrote:
-> > Add PCIe Designated Vendor-Specific Extended Capability (DVSEC) and
-> > defines
-> > for the header offsets. Defined in PCIe r5.0, sec 7.9.6.
-> > 
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > ---
-> >  include/uapi/linux/pci_regs.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/pci_regs.h
-> > b/include/uapi/linux/pci_regs.h
-> > index f9701410d3b5..beafeee39e44 100644
-> > --- a/include/uapi/linux/pci_regs.h
-> > +++ b/include/uapi/linux/pci_regs.h
-> > @@ -720,6 +720,7 @@
-> >  #define PCI_EXT_CAP_ID_DPC	0x1D	/* Downstream Port
-> > Containment */
-> >  #define PCI_EXT_CAP_ID_L1SS	0x1E	/* L1 PM Substates */
-> >  #define PCI_EXT_CAP_ID_PTM	0x1F	/* Precision Time Measurement
-> > */
-> > +#define PCI_EXT_CAP_ID_DVSEC	0x23	/* Designated Vendor-Specific 
-> > */
-> >  #define PCI_EXT_CAP_ID_DLF	0x25	/* Data Link Feature */
-> >  #define PCI_EXT_CAP_ID_PL_16GT	0x26	/* Physical Layer
-> > 16.0 GT/s */
-> >  #define PCI_EXT_CAP_ID_MAX	PCI_EXT_CAP_ID_PL_16GT
-> > @@ -1062,6 +1063,10 @@
-> >  #define  PCI_L1SS_CTL1_LTR_L12_TH_SCALE	0xe0000000  /*
-> > LTR_L1.2_THRESHOLD_Scale */
-> >  #define PCI_L1SS_CTL2		0x0c	/* Control 2 Register
-> > */
-> >  
-> > +/* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
-> > +#define PCI_DVSEC_HEADER1		0x4 /* Designated Vendor-
-> > Specific Header1 */
-> > +#define PCI_DVSEC_HEADER2		0x8 /* Designated Vendor-
-> > Specific Header2 */
-> > +
-> >  /* Data Link Feature */
-> >  #define PCI_DLF_CAP		0x04	/* Capabilities Register */
-> >  #define  PCI_DLF_EXCHANGE_ENABLE	0x80000000  /* Data Link
-> > Feature Exchange Enable */
-> 
+>
+> > >         .result = REJECT,
+> > >  },
+> > >  {
+> > > --
+> > > 2.28.0.806.g8561365e88-goog
+> > >
