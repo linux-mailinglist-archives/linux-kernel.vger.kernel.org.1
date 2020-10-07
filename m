@@ -2,62 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896AF2858E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D722858F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgJGG7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:59:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39983 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgJGG7f (ORCPT
+        id S1727514AbgJGHBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgJGHBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:59:35 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kQ3Q9-00076g-HE; Wed, 07 Oct 2020 06:59:30 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/dp: HP DreamColor panel brigntness fix
-Date:   Wed,  7 Oct 2020 14:58:21 +0800
-Message-Id: <20201007065915.13883-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201007065915.13883-1-kai.heng.feng@canonical.com>
-References: <20201007065915.13883-1-kai.heng.feng@canonical.com>
+        Wed, 7 Oct 2020 03:01:05 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489ADC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:01:03 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e2so1131191wme.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=2qXBCI2e+b/giZ/fbDsezNblcifBg39XCg3D+hIB9y0=;
+        b=yJ1SgiDXaACkYrASBm0+vEF1uFvnw6hj6TdL6wlMfBGxGK60lHWWm2GFVp2ZSKM+SC
+         0yNcyz0h0ECRYABG6jT94YTtynx1mx4ePIJdBfjKmq/Uv6Dwf2AERofPueNtJ2qibzO1
+         lp2Pg30DAh8epIf3Ob+pwGf2IYlEtMsk+COatDSexN2pzhTjGFRnGAe3uXhoAZP34d6h
+         +InIgFRTim4X4TDiOgG/sKxPwghx+n4vKnB4AK2yxmJV5R08MMp3SfWpjFADk5jsn9QF
+         qUlyfFdCZGHtQu9pg1rmJziDM5j3Jo2Wua52ihqcApHMlpIkGNPSKD72dw3X4J6ehCYZ
+         h2mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=2qXBCI2e+b/giZ/fbDsezNblcifBg39XCg3D+hIB9y0=;
+        b=rB49q8skmOjEi3AytWoBxOhHoPPgH0ZSfunqmO2sJ5+RsoSIFfrvDHkPL4kuAFNSMK
+         8lVxmmQiYhvsMpemeNgTBaDepv0nzhlc8Cbz3bJ6i0ghhl/d4KLEgaiXTHT8nbv529cb
+         WCR+C7WQDdbYt7nvKNDAOtFxrAFrYYqBW28RLG9T61M8adfScUaT7J3iWOS0ONW0EJlh
+         tkQ8X8Ygzl5c/arxJfvm8EEZZ+NUl45cBceMFY3NFB7Y8g7V7kwfsgXLRlQmO5c4yAdZ
+         VukbTJx4kp5EWSFbOUWr8tjbecozsXtJ4hN58UEKz3mAOE3C3oLTYF013JE5SqdOz+3R
+         OQng==
+X-Gm-Message-State: AOAM532WyL6FW6SVbYr9kXMWRvP6Xn8K7WfSjqmeEd0NkINn2CfqzRvY
+        HBarghgt3DS9myk/gcrAExB4Bg==
+X-Google-Smtp-Source: ABdhPJwWBhy5OqM2JNVdxgjil0NRMXCJsX1dxkkKsUQr/S/ldM3Pg/UfsBvVOzS24rCrOZU8AZrhZQ==
+X-Received: by 2002:a1c:3bd4:: with SMTP id i203mr1016900wma.28.1602054061897;
+        Wed, 07 Oct 2020 00:01:01 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id y23sm1524512wra.55.2020.10.07.00.01.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 00:01:01 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 08:00:59 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v2 1/6] mfd: intel-m10-bmc: support for MAX10 BMC
+ Security Engine
+Message-ID: <20201007070059.GB1763265@dell>
+References: <20201003012412.16831-1-russell.h.weight@intel.com>
+ <20201003012412.16831-2-russell.h.weight@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201003012412.16831-2-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HP DreamColor panel, which is used by new HP ZBook Studio, needs to use
-DPCD to control brightness.
+On Fri, 02 Oct 2020, Russ Weight wrote:
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/drm_dp_helper.c | 1 +
- 1 file changed, 1 insertion(+)
+> Add macros and definitions required by the MAX10 BMC
+> Security Engine driver.
+> 
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> v2:
+>   - These functions and macros were previously distributed among
+>     the patches that needed them. They are now grouped together
+>     in a single patch containing changes to the Intel MAX10 BMC
+>     driver.
+>   - Added DRBL_ prefix to some definitions
+>   - Some address definitions were moved here from the .c files that
+>     use them.
+> ---
+>  include/linux/mfd/intel-m10-bmc.h | 134 ++++++++++++++++++++++++++++++
+>  1 file changed, 134 insertions(+)
+> 
+> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+> index c8ef2f1654a4..880f907302eb 100644
+> --- a/include/linux/mfd/intel-m10-bmc.h
+> +++ b/include/linux/mfd/intel-m10-bmc.h
+> @@ -13,6 +13,9 @@
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 092c8c985911..b3d0ea1b082b 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -1321,6 +1321,7 @@ static const struct edid_quirk edid_quirk_list[] = {
- 	 */
- 	{ MFG(0x06, 0xaf), PROD_ID(0x9b, 0x32), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
- 	{ MFG(0x06, 0xaf), PROD_ID(0xeb, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
-+	{ MFG(0x30, 0xe4), PROD_ID(0x61, 0x06), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
- 	{ MFG(0x4d, 0x10), PROD_ID(0xc7, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
- 	{ MFG(0x4d, 0x10), PROD_ID(0xe6, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
- 	{ MFG(0x4c, 0x83), PROD_ID(0x47, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+>   * m10bmc_raw_read - read m10bmc register per addr
+> + * m10bmc_raw_bulk_read - bulk read max10 registers per addr
+> + * m10bmc_raw_bulk_write - bulk write max10 registers per addr
+> + * m10bmc_raw_update_bits - update max10 register per addr
+>   * m10bmc_sys_read - read m10bmc system register per offset
+> + * m10bmc_sys_update_bits - update max10 system register per offset
+>   */
+
+FWIW, I *hate* abstraction for the sake of abstraction.
+
+Please just use the Regmap API in-place instead.
+
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
