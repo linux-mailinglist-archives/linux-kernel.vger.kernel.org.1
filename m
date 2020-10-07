@@ -2,97 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2107285ED5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B340285EDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgJGMMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbgJGMMa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:12:30 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C70CC061755;
-        Wed,  7 Oct 2020 05:12:30 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d6so885104plo.13;
-        Wed, 07 Oct 2020 05:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/XaZlHDNH/DSELiM8FQZNAJ3/IW+tUlDn4zzRGRnH5E=;
-        b=Fl4hpCsAEngY8IJGeqjY3EKl6MJbBmYK0z33+89yl6/WeooBLy+UV6dFHLtuYyEFQf
-         2K6+lobQcWzRm8Y/T/HbMgwuEwFY1TAD7lxga7kfOHTsMWxT7xwhJdEOFeOj56YT2TUN
-         jvjwNPuk4kM8ws4iTY1eKtmsaJJO2ewe5pfQ2vW/7101npJpdxNfRFCa8PK+LTzaqRzF
-         RKlaNW4nIqFhcpQVHo3mLQQm8Z7YfG4P0Y/yCsb+GyvEiwjJIz4OxYjHHPDdeOpFkEtB
-         ff/EZd1pOYB5WajN1sgbS1y4S8t/mXtRng6xXFp62TqlsY6NDr8OkMEUVImtk2/2DpOz
-         sMpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/XaZlHDNH/DSELiM8FQZNAJ3/IW+tUlDn4zzRGRnH5E=;
-        b=YQ3w1F69jKAMbafLvBuns++WcjEGZ625cn88eOLwCuXnfqEQgQV2LAk2VsH4t9xvKH
-         Eo3ZzvRrgTmaA8pqXM21j6czRWRJ4oAl/BM4Xy9t+7UiDaijkLAmhe9yqjB+hS5+dDop
-         eSKfWdc6BInfF156EeOK9Nnfxjb+YCoo7DYpMXJ8sxzD0FuFtj7dzM6wjwGOsAZbfAQW
-         YUzDaUcbrflIR59dPQyBTqSM/Kvz4Vpfmd0CCT+sz4P619eHlt7dg5pdiPAL8jO6pNym
-         Ps54rrlCFb6/AeqL7xpwbo6QiX8Nxxsy69hw1B1HIcfU9+aJ2EYQwHrVPNFgyGiIswST
-         iQEw==
-X-Gm-Message-State: AOAM532nyzCRhJJRR03QGQR7Sh1kCXIbioZxkxTf2tKgHonrTE8HBa3O
-        GhzbFW3Lmycq/0jcBp3PoBxgvMmADVzGG3M+OhE=
-X-Google-Smtp-Source: ABdhPJxvGc6tR2mwP+Ya40OEpjEHY+M1J09weAEkl/PrK23yB2bwBxq6HK+JaK2jsK8ZohS/JS/UfecmuIiEYLnS4do=
-X-Received: by 2002:a17:902:ea8c:b029:d2:8abd:c8de with SMTP id
- x12-20020a170902ea8cb02900d28abdc8demr2677302plb.21.1602072749621; Wed, 07
- Oct 2020 05:12:29 -0700 (PDT)
+        id S1728146AbgJGMOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:14:07 -0400
+Received: from verein.lst.de ([213.95.11.211]:37161 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727253AbgJGMOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:14:07 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id CBDE26736F; Wed,  7 Oct 2020 14:14:03 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 14:14:03 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stefan Haberland <sth@linux.ibm.com>, axboe@kernel.dk,
+        hoeppner@linux.ibm.com, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] s390/dasd: remove ioctl_by_bdev calls
+Message-ID: <20201007121403.GA30795@lst.de>
+References: <20200519142259.102279-1-sth@linux.ibm.com> <20200519142259.102279-3-sth@linux.ibm.com> <5c815b8a-7d77-5c69-9191-d09cc433f5ff@de.ibm.com> <20201007103936.GA24327@lst.de> <ca1bad1e-6d4b-7e86-4a98-b9ba12e2bef2@de.ibm.com> <20201007120005.GA29788@lst.de> <e1e4afa1-faa2-aa19-a973-ee1286288802@de.ibm.com>
 MIME-Version: 1.0
-References: <20201007035108.31078-1-david.e.box@linux.intel.com>
-In-Reply-To: <20201007035108.31078-1-david.e.box@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 7 Oct 2020 15:13:19 +0300
-Message-ID: <CAHp75Vd8byvCZw6Ls4uqGVQ77Cd2bZRK0GJKVfHtdeQE5ET-Cw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] pmc_core: Add RocketLake and other changes
-To:     "David E. Box" <david.e.box@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     irenic.rajneesh@gmail.com, "Box, David E" <david.e.box@intel.com>,
-        Andy Shevchenko <andy@infradead.org>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1e4afa1-faa2-aa19-a973-ee1286288802@de.ibm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 6:51 AM David E. Box <david.e.box@linux.intel.com> wrote:
->
-> Add RocketLake platform support and other driver maintainance.
+On Wed, Oct 07, 2020 at 02:09:18PM +0200, Christian Borntraeger wrote:
+> Unfortunately not. On insmodding virtio_blk I do get:
 
-Hans, Mark, this series has been internally reviewed and tested on
-affected hardware, I think it's ready to go for v5.10.
+Yeah, the symbol_put needs to be conditional as well.  New version below:
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-David, I'm not a maintainer anymore here.
-
-> Gayatri Kammela (4):
->   platform/x86: intel_pmc_core: Clean up: Remove the duplicate comments
->     and reorganize
->   platform/x86: intel_pmc_core: Add Intel RocketLake (RKL) support
->   platform/x86: intel_pmc_core: fix: Replace dev_dbg macro with
->     dev_info()
->   MAINTAINERS: Update maintainers for pmc_core driver
->
->  MAINTAINERS                           |  4 +--
->  drivers/platform/x86/intel_pmc_core.c | 39 ++++++++++++++++-----------
->  2 files changed, 26 insertions(+), 17 deletions(-)
->
-> --
-> 2.20.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+diff --git a/block/partitions/ibm.c b/block/partitions/ibm.c
+index d6e18df9c53c6d..4b044e620d3534 100644
+--- a/block/partitions/ibm.c
++++ b/block/partitions/ibm.c
+@@ -305,8 +305,6 @@ int ibm_partition(struct parsed_partitions *state)
+ 	if (!disk->fops->getgeo)
+ 		goto out_exit;
+ 	fn = symbol_get(dasd_biodasdinfo);
+-	if (!fn)
+-		goto out_exit;
+ 	blocksize = bdev_logical_block_size(bdev);
+ 	if (blocksize <= 0)
+ 		goto out_symbol;
+@@ -326,7 +324,7 @@ int ibm_partition(struct parsed_partitions *state)
+ 	geo->start = get_start_sect(bdev);
+ 	if (disk->fops->getgeo(bdev, geo))
+ 		goto out_freeall;
+-	if (fn(disk, info)) {
++	if (!fn || fn(disk, info)) {
+ 		kfree(info);
+ 		info = NULL;
+ 	}
+@@ -370,7 +368,8 @@ int ibm_partition(struct parsed_partitions *state)
+ out_nogeo:
+ 	kfree(info);
+ out_symbol:
+-	symbol_put(dasd_biodasdinfo);
++	if (fn)
++		symbol_put(dasd_biodasdinfo);
+ out_exit:
+ 	return res;
+ }
