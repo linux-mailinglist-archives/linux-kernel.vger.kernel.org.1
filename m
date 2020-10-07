@@ -2,107 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B897285999
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C1428599B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727739AbgJGHdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        id S1727743AbgJGHeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727647AbgJGHdU (ORCPT
+        with ESMTP id S1727570AbgJGHeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:33:20 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B79C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:33:19 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id h6so1159093lfj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:33:19 -0700 (PDT)
+        Wed, 7 Oct 2020 03:34:00 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAA8C061755;
+        Wed,  7 Oct 2020 00:33:59 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id b12so1076437edz.11;
+        Wed, 07 Oct 2020 00:33:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wirenboard-ru.20150623.gappssmtp.com; s=20150623;
-        h=date:from:message-id:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H+yhAtKBkJAhd84Dg7hmzBchD0bnksTdEsvNNdIrfzU=;
-        b=r86zR5CSiSdiaQOjoa/A8EDooKjhNyFIVPPxIsH0NcfFkcCH2wGYXZvgMw4WNpUfjN
-         wp+WYl6jQ5qPOHnH+HO7tgxbr0PfbKGYJcBmUn4m4sDf3JU5OuSdypBT3U2P3uhj43nD
-         Wjv2GArTiOxtr0UjpGuyWCkDdsn+VHfaIUulqXlbXYooq29TR5Y7SHk5O2aX3GWKaPDO
-         fHDn8Kv0Ec2RFIdZ6T0qwpH/JzAD9qkzj5fjD2S6y++H9i9DRd5cPAGyv3aH4HPI2QT/
-         XOizhVEn8nlG4WF6EZ92FXpBOWnfncOXnUUMDYmQcs+U2tt9Z6r4bkP6ipbbFAU5gEjt
-         gw8Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BOwACkyD8dEtsrUHuldNDeZjoZsGRiveXSWhLCbbCV4=;
+        b=dP79MDkd6MgzJF1q/AtCcrvFV98Hp4azX/2FgqgeE/hidSKPgCcpGlOhJEaEhnha2k
+         05+kNxOCYZF23LhCyFDA9AHv/298dvpowB6rL99MGqyNUmTE1H1BVn1Wo0kqevfFF+ly
+         tBn/E+C4Cgwm1mIafrXTQ+ifw9JrFeXmSq4ksHqfJKklfCDr8QKv/zhMlSk6EsBjP6bR
+         1urCqTU24IHjbPdh9PkGo0aW+F6hmr4U/WOgdfgGyLqCzEXm2N1P0B4v8E0/7J4Tqa5k
+         00zlHz7pnxKYsPo091W3LXVP+s+d9zzy2QjtCFZovjtU5CZuur1JwgECetHc0P3sNbtp
+         SmjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:message-id:to:cc:subject:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H+yhAtKBkJAhd84Dg7hmzBchD0bnksTdEsvNNdIrfzU=;
-        b=KicJ9JYxfPkiOUdck7dOomvfk9fYw00/JXJDxEL1mwo3GWUK0tMODVg5+QLzMgFn+8
-         huobsIrOfwCc52leMdq/bKdu6XDGZpXbPpf99v96aZNtj+aAoHDh1kvv1jSL2/2sGrfx
-         ElQ3SFLx+m0Yjk2/cRcRy9IwnXAXVbM+4HZO/yj1juQTW6L5JkGHq1l0CNiQzJ4JB2UP
-         CiL1i2tyV8t6bMYWMMHcqP5gdIeG4Ayd1hZXB3mSfh682WJ6/95hL3ZBjS9/Ly1Umvx/
-         CKWqqipvy1Au0rmcBIq1GI308yy/YBwMSMW49dw8n8tPaOOwsLPfbJ2eh8r7QmQChE5x
-         W9Jg==
-X-Gm-Message-State: AOAM533+G8c6fx9diZMcIhVoR2mLC/IfO9iNJ5k8TYJGaYQdrck7oXmX
-        3sjKOz45hW6p8ZwfWfMeyiepSg==
-X-Google-Smtp-Source: ABdhPJyO4JVtlsxVmVera4axbDrjS/Qfw7ukoANOngtFtqjd/hzKbeyjxyppntyjZG4oAWKR1LpSqA==
-X-Received: by 2002:a19:68a:: with SMTP id 132mr494362lfg.429.1602055998298;
-        Wed, 07 Oct 2020 00:33:18 -0700 (PDT)
-Received: from [192.168.1.25] (128-70-41-239.broadband.corbina.ru. [128.70.41.239])
-        by smtp.gmail.com with ESMTPSA id o18sm200728lfl.282.2020.10.07.00.33.17
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Wed, 07 Oct 2020 00:33:17 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 10:32:27 +0300
-From:   Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
-X-Priority: 3 (Normal)
-Message-ID: <1561045277.20201007103227@wirenboard.ru>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     Evgeniy Polyakov <zbr@ioremap.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        Evgeny Boger <boger@wirenboard.com>
-Subject: Re: [PATCH 2/2] w1: w1_therm: Add support for GXCAS GX20MH01 device.
-In-Reply-To: <20201006151915.77d044a4@coco.lan>
-References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru> <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru> <20201006151915.77d044a4@coco.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BOwACkyD8dEtsrUHuldNDeZjoZsGRiveXSWhLCbbCV4=;
+        b=iu2b7SAmhL1J88Xvb/rmtIOU3lHxU+dnCC+JSKQ5ooaTaUxEGzy8P/3EBROLoVK6Mk
+         VYPGHwZLN4eX3HFdjCqz6+yIoqsDYOGLPEVVqUOq9oklAGCWyhtjxuJ1rBElx5nrSQah
+         ym1VMoZdv7u0kRP9xzUTelKTTVZOfKrujHCYTlho4Dx+6JRzp5nU6jXBcVDImFdGSZ4f
+         GIss7JvFX+N1667qwX9/kbScCpldpTCb1bxx3zWZbKNWfCL6DFgYpDq4bH95U1iCkp76
+         EAg45PyPJhBIoyp/tDCuyIIMLrkaVuMa3i7867rVSFEBBrXGMgTov9L3n27HThszTMQz
+         FRUQ==
+X-Gm-Message-State: AOAM532SZiNOTTEXXV5QDXnTrfqiez8SnwF1dVWKMPSlbGbQwOcDNegN
+        uXvXijJbIkNsCU08FpgFZNgfQuCzoiPFNqsOifw=
+X-Google-Smtp-Source: ABdhPJyor7ZwQ947NcEp3PAlytPlCemU5zOUicZRxlJEWmnOQgkBjGxyY1pQsRHgezaxJNB6m41NZ6h/Hv0c+FRcOP8=
+X-Received: by 2002:a50:9f66:: with SMTP id b93mr2163710edf.201.1602056038619;
+ Wed, 07 Oct 2020 00:33:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201003075514.32935-1-haifeng.zhao@intel.com> <20201004045745.GA3207@araj-mobl1.jf.intel.com>
+In-Reply-To: <20201004045745.GA3207@araj-mobl1.jf.intel.com>
+From:   Ethan Zhao <xerces.zhao@gmail.com>
+Date:   Wed, 7 Oct 2020 15:33:47 +0800
+Message-ID: <CAKF3qh2WyqAsCMZ5MueUfJtQPbWOCDH1eJNf6bu5G96mx+PqQg@mail.gmail.com>
+Subject: Re: [PATCH v7 0/5] Fix DPC hotplug race and enhance error handling
+To:     "Raj, Ashok" <ashok.raj@linux.intel.com>
+Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
+Raj,
 
->> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
->> index f1148181f53e..00376501a5ef 100644
->> --- a/Documentation/w1/slaves/w1_therm.rst
->> +++ b/Documentation/w1/slaves/w1_therm.rst
+On Sun, Oct 4, 2020 at 12:57 PM Raj, Ashok <ashok.raj@linux.intel.com> wrote:
+>
+> Hi Ethan
+>
+> On Sat, Oct 03, 2020 at 03:55:09AM -0400, Ethan Zhao wrote:
+> > Hi,folks,
+> >
+> > This simple patch set fixed some serious security issues found when DPC
+> > error injection and NVMe SSD hotplug brute force test were doing -- race
+> > condition between DPC handler and pciehp, AER interrupt handlers, caused
+> > system hang and system with DPC feature couldn't recover to normal
+> > working state as expected (NVMe instance lost, mount operation hang,
+> > race PCIe access caused uncorrectable errors reported alternatively etc).
+>
+> I think maybe picking from other commit messages to make this description in
+> cover letter bit clear. The fundamental premise is that when due to error
+> conditions when events are processed by both DPC handler and hotplug handling of
+> DLLSC both operating on the same device object ends up with crashes.
 
->>  
->> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
->>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
->>  conversion completion (normal power only) by generating read cycles on the bus
->>  after conversion starts. In parasite power mode this feature is not available.
->> -Feature bit masks may be combined (OR).
->> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
->> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
->> +
+Yep, that's right.
 
-> As warned by Sphinx, this cross-reference is broken:
-
->         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
-> undefined label: w1_therm (if the link has no caption the label must precede a section header)
-
-Would this be ok?
-
-"More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
-
-> Not sure what you wanted to point here.
-
-A link to a driver's sysfs interface, but sysfs docs are text
-files and seem to not be included in Sphynx Docs.
-
--- 
-Best regards,
- Ivan                            mailto:ivan.zaentsev@wirenboard.ru
-
+Thanks,
+Ethan
+>
+>
+> >
+> > With this patch set applied, stable 5.9-rc6 on ICS (Ice Lake SP platform,
+> > see
+> > https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server))
+> >
+> > could pass the PCIe Gen4 NVMe SSD brute force hotplug test with any time
+> > interval between hot-remove and plug-in operation tens of times without
+> > any errors occur and system works normal.
+>
+> >
+> > With this patch set applied, system with DPC feature could recover from
+> > NON-FATAL and FATAL errors injection test and works as expected.
+> >
+> > System works smoothly when errors happen while hotplug is doing, no
+> > uncorrectable errors found.
+> >
+> > Brute DPC error injection script:
+> >
+> > for i in {0..100}
+> > do
+> >         setpci -s 64:02.0 0x196.w=000a
+> >         setpci -s 65:00.0 0x04.w=0544
+> >         mount /dev/nvme0n1p1 /root/nvme
+> >         sleep 1
+> > done
+> >
+> > Other details see every commits description part.
+> >
+> > This patch set could be applied to stable 5.9-rc6/rc7 directly.
+> >
+> > Help to review and test.
+> >
+> > v2: changed according to review by Andy Shevchenko.
+> > v3: changed patch 4/5 to simpler coding.
+> > v4: move function pci_wait_port_outdpc() to DPC driver and its
+> >    declaration to pci.h. (tip from Christoph Hellwig <hch@infradead.org>).
+> > v5: fix building issue reported by lkp@intel.com with some config.
+> > v6: move patch[3/5] as the first patch according to Lukas's suggestion.
+> >     and rewrite the comment part of patch[3/5].
+> > v7: change the patch[4/5], based on Bjorn's code and truth table.
+> >     change the patch[5/5] about the debug output information.
+> >
+> > Thanks,
+> > Ethan
+> >
+> >
+> > Ethan Zhao (5):
+> >   PCI/ERR: get device before call device driver to avoid NULL pointer
+> >     dereference
+> >   PCI/DPC: define a function to check and wait till port finish DPC
+> >     handling
+> >   PCI: pciehp: check and wait port status out of DPC before handling
+> >     DLLSC and PDC
+> >   PCI: only return true when dev io state is really changed
+> >   PCI/ERR: don't mix io state not changed and no driver together
+> >
+> >  drivers/pci/hotplug/pciehp_hpc.c |  4 ++-
+> >  drivers/pci/pci.h                | 55 +++++++++++++-------------------
+> >  drivers/pci/pcie/dpc.c           | 27 ++++++++++++++++
+> >  drivers/pci/pcie/err.c           | 18 +++++++++--
+> >  4 files changed, 68 insertions(+), 36 deletions(-)
+> >
+> >
+> > base-commit: a1b8638ba1320e6684aa98233c15255eb803fac7
+> > --
+> > 2.18.4
+> >
