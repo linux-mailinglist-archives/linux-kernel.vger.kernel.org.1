@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7207D2867DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9822867DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgJGS4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:56:46 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40898 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728336AbgJGS4m (ORCPT
+        id S1728413AbgJGS47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728344AbgJGS4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:56:42 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097IY4Ni003339;
-        Wed, 7 Oct 2020 14:56:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=6bue6gCnLABqCjxx30Stygv432t7bosA5Uvr4BsgLJo=;
- b=VFYJMtl8nxY8D14xjelRZKFXPheaqZcmUoIkGBQeH7vo+1BvaSPEFMdeh9NK26kk5Gax
- EYF9m9B/NMY95RZtBUPsCcth411ghKJWozu6wjlRnwKgpJ1IgY/sMbAUFHx8n44r458v
- LDOk5RuWfPDBpZJ4SM/HV3e/dvME9DlQc+ILkK6QAZ7EygwQJ23WK1lXFMOmDnahqAKf
- 8D0w+ejR0fzk5JeSe8wnfjoXRGImXMRm23iSk4i+VwRF8du1JyVpNIygOhzh8kFJNDQ3
- CdGzKLMLRgf/ZRDJhHjoBHlvMZD5aYefSnWEZpJOerbH1ppHO+uO5jCb7aGTkHRkxrtf 7w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 341hb2uw9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 14:56:40 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 097IYDmQ004112;
-        Wed, 7 Oct 2020 14:56:40 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 341hb2uw9d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 14:56:40 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 097IlajX010740;
-        Wed, 7 Oct 2020 18:56:39 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 33xgx9sjuw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 18:56:39 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 097IuauF28049910
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Oct 2020 18:56:36 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 699147805F;
-        Wed,  7 Oct 2020 18:56:36 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 15F107805C;
-        Wed,  7 Oct 2020 18:56:35 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.60.106])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Oct 2020 18:56:34 +0000 (GMT)
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-To:     alex.williamson@redhat.com, cohuck@redhat.com,
-        schnelle@linux.ibm.com
-Cc:     pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] MAINTAINERS: Add entry for s390 vfio-pci
-Date:   Wed,  7 Oct 2020 14:56:24 -0400
-Message-Id: <1602096984-13703-6-git-send-email-mjrosato@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1602096984-13703-1-git-send-email-mjrosato@linux.ibm.com>
-References: <1602096984-13703-1-git-send-email-mjrosato@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- impostorscore=0 suspectscore=0 mlxlogscore=971 malwarescore=0
- clxscore=1015 bulkscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070116
+        Wed, 7 Oct 2020 14:56:55 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F22C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:56:55 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id s4so4135440qkf.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hucdKobXaHk9Vpk01VjxDQUEIlu6eYASN/jiLFuXijg=;
+        b=SNkiDcXhf8oV4GnEFwXCA2JkCI8lfRTYqFFI/i51g8N8R9CMI0TLBvayUFl3SPq2jE
+         fcMBGnU5zBGw+fPNTEvGuPiKJFEEyMNXu7k+4unLOmcVu4eCgetSTtZ8jFXMRmCGPaLo
+         PREcWEoNr8RjWrB0C4j2LZZmhL4snf9R0wNOAzoLdnx063EiJJxnvdvs9hpHlhLDgDDQ
+         X3mGARCYDHY+PLKwsJAAuEvXBOMcY7QPKDH0UppnRh0xkwc/U8t1eg/pVQZUA9JpjtUM
+         x+sQM85MfhjwFOaVpJRbWwamKLS38YjHa8En0TsrQW8Od14MZCS3GTLGvxwbipIrUlJ0
+         HdNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hucdKobXaHk9Vpk01VjxDQUEIlu6eYASN/jiLFuXijg=;
+        b=mNf26VbHqj0lFavWutM0w0f9xV8/Ua5L1fGjVTyY7lZhylLZQOtYDrxm6PriIXSC/3
+         Pu8T4h7YcuOHooDLutE5DpxxkPN46+HngKVVXQHDRzQFapIpkhKB74RDNtBiFo5Gx+Ii
+         6sySE4uaxF2bXYtm7E/Qf8CSLUIe8UlU4OeDonMhIWDJ5PGpXFyFR5OukXPtQRPnZzBF
+         Loo8PoqEsUq0kL3VCuGVF3tntkJrh/4vVPw6ghI8hP+mSXWebzqH9UG+ByXZ4ltX3O+j
+         6IzlcQ46npUbEMDaRx2EWRYlgC5LFowDlkQNe40MoYY8z43GwcXHiUUWMm/bMA0clUxW
+         vPuQ==
+X-Gm-Message-State: AOAM5326jRPbFUPtYXD1zdT6odwJ1tEVWiMU2E3lYmkaNF/wwI7Lkq9e
+        xlb4OxWAoNHbYTC02RHucm0oCw==
+X-Google-Smtp-Source: ABdhPJyv+pscj1uQm5l+2rGwyvNUTf34cKVOEz/9CM7hN75mUBaLoHOL+AJEukAuUIBhiCDVla6C7Q==
+X-Received: by 2002:a37:dc85:: with SMTP id v127mr4365223qki.107.1602097014467;
+        Wed, 07 Oct 2020 11:56:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id j88sm2115558qte.96.2020.10.07.11.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 11:56:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQEcP-001EtS-3Q; Wed, 07 Oct 2020 15:56:53 -0300
+Date:   Wed, 7 Oct 2020 15:56:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] mm: Use sysfs_emit functions not sprintf
+Message-ID: <20201007185653.GZ5177@ziepe.ca>
+References: <8a0d4fc9a4e372b125249b186689f247312d4387.camel@perches.com>
+ <202010070014.76AA763CE@keescook>
+ <20201007125330.GO5177@ziepe.ca>
+ <a334b30e7b617eb6b0ea22f2bf00e0f188c4ae42.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a334b30e7b617eb6b0ea22f2bf00e0f188c4ae42.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself to cover s390-specific items related to vfio-pci.
+On Wed, Oct 07, 2020 at 11:04:42AM -0700, Joe Perches wrote:
+> On Wed, 2020-10-07 at 09:53 -0300, Jason Gunthorpe wrote:
+> > On Wed, Oct 07, 2020 at 12:16:01AM -0700, Kees Cook wrote:
+> > > On Tue, Oct 06, 2020 at 09:28:17AM -0700, Joe Perches wrote:
+> > > > Convert the various uses of sprintf/snprintf/scnprintf to
+> > > > format sysfs output to sysfs_emit and sysfs_emit_at to make
+> > > > clear the output is sysfs related and to avoid any possible
+> > > > buffer overrun of the PAGE_SIZE buffer.
+> > > > 
+> > > > Done with cocci scripts and some typing.
+> > > 
+> > > Can you include the cocci script in the commit log? It might be nicer to
+> > > split the "manual" changes from the cocci changes, as that makes review
+> > > much easier too.
+> > > 
+> > > Regardless, yes, I'm a fan of switching these all around to
+> > > sysfs_emit*(). :)
+> > 
+> > Yah, +1, I'd welcome patches for drivers/infiniband as well next cycle
+> 
+> The script to change <foo>_show(struct device *, ...)
+> function uses of
+> sprintf to sysfs_emit is attached.
 
-Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Acked-by: Cornelia Huck <cohuck@redhat.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> $ git diff --shortstat drivers/infiniband
+>  25 files changed, 322 insertions(+), 303 deletions(-)
+> 
+> Because it touches a lot of drivers, the 'cc' list is
+> pretty large for the diff.
+> 
+> Given the size of the cc list, unless there's a single
+> acceptable patch, I will not submit individual patches as
+> I really dislike the back and forth of this sub-maintainer
+> will but this sub-maintainer will not apply a patch.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9a54806..a0e8d14 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15170,6 +15170,14 @@ F:	Documentation/s390/vfio-ccw.rst
- F:	drivers/s390/cio/vfio_ccw*
- F:	include/uapi/linux/vfio_ccw.h
- 
-+S390 VFIO-PCI DRIVER
-+M:	Matthew Rosato <mjrosato@linux.ibm.com>
-+L:	linux-s390@vger.kernel.org
-+L:	kvm@vger.kernel.org
-+S:	Supported
-+F:	drivers/vfio/pci/vfio_pci_zdev.c
-+F:	include/uapi/linux/vfio_zdev.h
-+
- S390 ZCRYPT DRIVER
- M:	Harald Freudenberger <freude@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
--- 
-1.8.3.1
+This size looks not too bad, we regularly do all driver updates. Up to
+you if you want split per driver. In rdma land something like this
+will go ahead unless someone points to technical errors in the
+conversion.
 
+Thanks,
+Jason
