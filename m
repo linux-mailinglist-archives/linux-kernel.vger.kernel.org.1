@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E7E285EE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14048285EF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgJGMQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:16:33 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48128 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbgJGMQb (ORCPT
+        id S1728136AbgJGMTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbgJGMTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:16:31 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kQ8Mu-0004w5-Ev; Wed, 07 Oct 2020 12:16:28 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "nibble . max" <nibble.max@gmail.com>, linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: m88rs6000t: avoid potential out-of-bounds reads on arrays
-Date:   Wed,  7 Oct 2020 13:16:28 +0100
-Message-Id: <20201007121628.20676-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 7 Oct 2020 08:19:48 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4787EC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 05:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GxyJCysyyUFn2SBni14w9VVCXVN2WYHlRgV6TdcztK4=; b=CzL4xp9rIsOOHuuO3kmXgeKOm0
+        edC731oH5PJfuVz1WVFhQABbEWd+1LrcIjGvTJjs0gE734g5BFImGd+u8Df+DGeODmYDT8XgXvEGG
+        Ji6+QzQrvv/k4nlv07rWcTPWFd33nWq8n+rK9kBp9qSBAl4Ti4OWKhvo18+NB+x31/DOhnmsKZJnv
+        7alVKUQCX9wPk0CiLvyVly9J72pJxJQMQLRhyaHOaOSLe8B4zMTNh4lE2uqIA873+oBjmPisjA16W
+        x0IVmX1IHtK63QDoIXpJ1mNw00sMxYzdWWHkqI3RdWQNJsrIJYeLr7vD9prGK5Np4gJfqVQsOCPcV
+        1LqNhaFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQ8Q0-0007vd-Ow; Wed, 07 Oct 2020 12:19:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 758D7300B22;
+        Wed,  7 Oct 2020 14:19:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6026029AD6647; Wed,  7 Oct 2020 14:19:39 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 14:19:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <fweisbecker@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
+ PREEMPT_VOLUNTARY on kernel command line
+Message-ID: <20201007121939.GE2628@hirez.programming.kicks-ass.net>
+References: <20201007120401.11200-1-mhocko@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007120401.11200-1-mhocko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Oct 07, 2020 at 02:04:01PM +0200, Michal Hocko wrote:
+> From: Michal Hocko <mhocko@suse.com>
+> 
+> Many people are still relying on pre built distribution kernels and so
+> distributions have to provide mutliple kernel flavors to offer different
+> preemption models. Most of them are providing PREEMPT_NONE for typical
+> server deployments and PREEMPT_VOLUNTARY for desktop users.
 
-There a 3 array for-loops that don't check the upper bounds of the
-index into arrays and this may lead to potential out-of-bounds
-reads.  Fix this by adding array size upper bounds checks to be
-full safe.
+Is there actually a benefit to NONE? We were recently talking about
+removing it.
 
-Addresses-Coverity: ("Out-of-bounds read")
-Fixes: 333829110f1d ("[media] m88rs6000t: add new dvb-s/s2 tuner for integrated chip M88RS6000")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/tuners/m88rs6000t.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/tuners/m88rs6000t.c b/drivers/media/tuners/m88rs6000t.c
-index b3505f402476..8647c50b66e5 100644
---- a/drivers/media/tuners/m88rs6000t.c
-+++ b/drivers/media/tuners/m88rs6000t.c
-@@ -525,7 +525,7 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
- 	PGA2_cri = PGA2_GC >> 2;
- 	PGA2_crf = PGA2_GC & 0x03;
- 
--	for (i = 0; i <= RF_GC; i++)
-+	for (i = 0; i <= RF_GC && i < ARRAY_SIZE(RFGS); i++)
- 		RFG += RFGS[i];
- 
- 	if (RF_GC == 0)
-@@ -537,12 +537,12 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
- 	if (RF_GC == 3)
- 		RFG += 100;
- 
--	for (i = 0; i <= IF_GC; i++)
-+	for (i = 0; i <= IF_GC && i < ARRAY_SIZE(IFGS); i++)
- 		IFG += IFGS[i];
- 
- 	TIAG = TIA_GC * TIA_GS;
- 
--	for (i = 0; i <= BB_GC; i++)
-+	for (i = 0; i <= BB_GC && i < ARRAY_SIZE(BBGS); i++)
- 		BBG += BBGS[i];
- 
- 	PGA2G = PGA2_cri * PGA2_cri_GS + PGA2_crf * PGA2_crf_GS;
--- 
-2.27.0
-
+The much more interesting (runtime) switch (IMO) would be between
+VOLUNTARY and PREEMPT.
