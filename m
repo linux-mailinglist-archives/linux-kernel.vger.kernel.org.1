@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE51628638E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F2728639D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgJGQUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:20:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44636 "EHLO
+        id S1728143AbgJGQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:20:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44648 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgJGQUQ (ORCPT
+        with ESMTP id S1727111AbgJGQUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:20:16 -0400
-Date:   Wed, 07 Oct 2020 16:20:13 -0000
+        Wed, 7 Oct 2020 12:20:17 -0400
+Date:   Wed, 07 Oct 2020 16:20:14 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602087614;
+        s=2020; t=1602087615;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KOs0I47O69gIocdsK/+LvMx1GEKrs8VHdsFCSNTJt1o=;
-        b=bvDXTybUKGanfdMe9p2JGJWU6fm8D0NgTmf90OGFpDn74e013mJRKH742LUwoUwFRKtobY
-        85xyDqOn47qlRcG+c24J9olPrX1zUQbo9fQY8s+AJYDY6lQdqzz9DSk2lQunMfsd4eZpPq
-        rpnG1+NMSaw1QcAy7NuCc+5iTNIkNdwH2bplekEsl/L4d4JXLxXE/PZ9unnzxbLCqT9qZB
-        689TLMJRUtLGQBPgJPDOsrXB5IYacCEob6kFk8p9jzPzKdb2vErIlgkA2NBv+9IiqYYcg6
-        IHZ+fbAt3B9z1d8Gp0Qz6tejlOx0uQxAY2Zz0NLVh5oM+bOIywqBzfUr9Lynww==
+        bh=GtesYXCkhmcRFxqS24YUDba/2YoegbDjbo/a+wYh34w=;
+        b=LXgJ+oZkWbE1r7HXL9E6hZZgzgZZQ7GVtW+ruYbCUYRVYLNrVOdDAsBKMHWKb01tp5gy05
+        IR049Rjl9lXv2Hz4Y+SVdBMbGfGeCq7Cx0iQFUynqLDqhLbN1NFj6X7aV3VGYjHPsI4k/G
+        EtzA/3sLE4slQZKKcsZgRbHBzk8FFaz96COU96+ZNzWAK5lSmoXjixNBgfAlj+17gSYOe4
+        jW4/oFPcIZvYY/eeJZO8Xx+Gvp7XeIOCNG0kiAdkj5xqXIHTyVVzPB3JH9B/8Q0OT9r4nx
+        8HENkHhnylkjZ2vJSEe0PU5I+wBVxMuJqehBLFcLOSbCzt+mnpgVT5TrDQ5ALQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602087614;
+        s=2020e; t=1602087615;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KOs0I47O69gIocdsK/+LvMx1GEKrs8VHdsFCSNTJt1o=;
-        b=ynb06beTtpSaH6DhxGBlZaZV0Lot28FOJrgoBDbK7OUdZEisMn0+AXQrZEEgmyf4QA5F4P
-        XEoT+EranzmaEmCg==
-From:   "tip-bot2 for Paul Bolle" <tip-bot2@linutronix.de>
+        bh=GtesYXCkhmcRFxqS24YUDba/2YoegbDjbo/a+wYh34w=;
+        b=LwNtZTKTStyKdmYFJFKdPZiZzqqQAeMEuARsvOSJxmQ5bJwAMSEz074DHIve1t2MVhFz0S
+        a6DvwNt03OpLGMCw==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/atomics: Check atomic-arch-fallback.h too
-Cc:     Paul Bolle <pebolle@tiscali.nl>,
+Subject: [tip: locking/core] locking/seqlock: Tweak DEFINE_SEQLOCK() kernel doc
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>, x86 <x86@kernel.org>,
+        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201001202028.1048418-1-pebolle@tiscali.nl>
-References: <20201001202028.1048418-1-pebolle@tiscali.nl>
+In-Reply-To: <20200924154851.skmswuyj322yuz4g@linutronix.de>
+References: <20200924154851.skmswuyj322yuz4g@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160208761381.7002.4634156458963200039.tip-bot2@tip-bot2>
+Message-ID: <160208761426.7002.2119481322411806116.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,35 +59,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     d89d5f855f84ccf3f7e648813b4bb95c780bd7cd
-Gitweb:        https://git.kernel.org/tip/d89d5f855f84ccf3f7e648813b4bb95c780bd7cd
-Author:        Paul Bolle <pebolle@tiscali.nl>
-AuthorDate:    Thu, 01 Oct 2020 22:20:28 +02:00
+Commit-ID:     24a1877286822293684ef3f7bada4ea48a6e129e
+Gitweb:        https://git.kernel.org/tip/24a1877286822293684ef3f7bada4ea48a6e129e
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Thu, 24 Sep 2020 17:48:51 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 07 Oct 2020 18:14:14 +02:00
 
-locking/atomics: Check atomic-arch-fallback.h too
+locking/seqlock: Tweak DEFINE_SEQLOCK() kernel doc
 
-The sha1sum of include/linux/atomic-arch-fallback.h isn't checked by
-check-atomics.sh. It's not clear why it's skipped so let's check it too.
+ctags creates a warning:
+|ctags: Warning: include/linux/seqlock.h:738: null expansion of name pattern "\2"
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+The DEFINE_SEQLOCK() macro is passed to ctags and being told to expect
+an argument.
+
+Add a dummy argument to keep ctags quiet.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lkml.kernel.org/r/20201001202028.1048418-1-pebolle@tiscali.nl
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lkml.kernel.org/r/20200924154851.skmswuyj322yuz4g@linutronix.de
 ---
- scripts/atomic/check-atomics.sh | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/seqlock.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/atomic/check-atomics.sh b/scripts/atomic/check-atomics.sh
-index 8378c63..82748d4 100755
---- a/scripts/atomic/check-atomics.sh
-+++ b/scripts/atomic/check-atomics.sh
-@@ -16,6 +16,7 @@ fi
- cat <<EOF |
- asm-generic/atomic-instrumented.h
- asm-generic/atomic-long.h
-+linux/atomic-arch-fallback.h
- linux/atomic-fallback.h
- EOF
- while read header; do
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index 76e44e6..ac5b07f 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -821,7 +821,7 @@ typedef struct {
+ 	} while (0)
+ 
+ /**
+- * DEFINE_SEQLOCK() - Define a statically allocated seqlock_t
++ * DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t
+  * @sl: Name of the seqlock_t instance
+  */
+ #define DEFINE_SEQLOCK(sl) \
