@@ -2,195 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD412868F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F252868FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgJGUWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:22:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53022 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726463AbgJGUWB (ORCPT
+        id S1727724AbgJGU1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgJGU1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:22:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602102119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZDrXh4cE65yGFS+V0oC4Ce+GkKCDRoNl54roC654jNU=;
-        b=AH7hhy1firtKrBSSe+Y8XmqdmOff7htEcBcDRr6te4pDgSTlw5A1KaEE9X5uWH14Fm/HBq
-        iE/vPo6C4+QnZAUpUQaMoysdyQL/HzwebDgrDi/iQn6t7H1OyCtJpvpceIgRIFLGFPM5m9
-        DS+DcCyhdML9SjYcdf+3anm+wZ5dezY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-FOuCiWzlNRyN4XHwLZNBSA-1; Wed, 07 Oct 2020 16:21:54 -0400
-X-MC-Unique: FOuCiWzlNRyN4XHwLZNBSA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 193678070FD;
-        Wed,  7 Oct 2020 20:21:52 +0000 (UTC)
-Received: from w520.home (ovpn-113-244.phx2.redhat.com [10.3.113.244])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 60D245D9DD;
-        Wed,  7 Oct 2020 20:21:51 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 14:21:50 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     cohuck@redhat.com, schnelle@linux.ibm.com, pmorel@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] vfio: Introduce capability definitions for
- VFIO_DEVICE_GET_INFO
-Message-ID: <20201007142150.44773a1f@w520.home>
-In-Reply-To: <1602096984-13703-4-git-send-email-mjrosato@linux.ibm.com>
-References: <1602096984-13703-1-git-send-email-mjrosato@linux.ibm.com>
-        <1602096984-13703-4-git-send-email-mjrosato@linux.ibm.com>
+        Wed, 7 Oct 2020 16:27:08 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2299FC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 13:27:08 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id d20so3870041iop.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 13:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jsu69see/ykpRTWpB/TurSUR1RWSN5aWLuA2sK2xflc=;
+        b=I7WbYcmyJqf8fv/sv7FMD8j8itfvYnuusksGD+fa2j5dPcuvcMJFl4mQ1HyoTPytJC
+         UqVSY/VgsrZlIQ/iXu0PwnBXzxyLZvOu8hpMxPpZBIhGoJj2OsURX6RzFuH6mIYogMfj
+         qg6FhAx0LkZTiLOZzedL+IOz76GtKuR/ybyzOalLQxcef9+6n047D6e5qkRapSIFwc9X
+         9lEpi9BR3nwh3thvrqZ6sMQDtXc6cRD209iglZDhXizbzZhRjThD8RI9e6TFVQFWx/P8
+         pd8n+Kl5SVn3VvqWXMXJJJIPNXy2KPuw2UrfIjitOLnCRtl8YwkANiKk1iNjPK72gq3D
+         xasw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jsu69see/ykpRTWpB/TurSUR1RWSN5aWLuA2sK2xflc=;
+        b=Ud1A69Al3om0mjO71sgmsfQ56sL4jaYGZ2ny7Gssmi5t6IxUJt/G9CM9gMSBrocu/2
+         myAxeB20Mak8LdEoZBmcn5qGiGo+d96OJrZl4s/TaGJ3rKfF+2E39fo+6cOxZWIzyJTH
+         6frOM3jnfzQeLY/OYdBqFvECipYyQbwrtxGYjnhDixeW548dM2lGMnH6aSVEUc3XPJBH
+         EU3lR7f0d6CqP5iBJlF1Qo+Qcf5Cg1OLFvoEa8qbXX7Nn8+SVeiky8ABOftdxxEqQwzq
+         lIczWgnZmVwOmj4BnpRccnhM0u/iN6fNYfEH0WrLuomj9mlpJvyiVg5poZ3ZdftFASLF
+         5lLQ==
+X-Gm-Message-State: AOAM532wre/5broQ6NKccgczSeOyzOUXe2knf2E0lrCRGWz4oYa9iaSY
+        8PYTLVwezw7vtAuRRwrWggkWMj7aF8bU2c/UQYYhPA==
+X-Google-Smtp-Source: ABdhPJwKDITkhtnb1bBPjzzWzphT/6zII4nnHVHrCMzFx5QFoNu7CLkAp0eVioGGpDu77ns5Mh22d719nbzC3MM/+Oo=
+X-Received: by 2002:a6b:fa0e:: with SMTP id p14mr3646512ioh.208.1602102426919;
+ Wed, 07 Oct 2020 13:27:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200924065606.3351177-1-lokeshgidra@google.com>
+In-Reply-To: <20200924065606.3351177-1-lokeshgidra@google.com>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Wed, 7 Oct 2020 13:26:55 -0700
+Message-ID: <CA+EESO7kCqtJf+ApoOcceFT+NX8pBwGmOr0q0PVnJf9Dnkrp6A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Control over userfaultfd kernel-fault handling
+To:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Nick Kralevich <nnk@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  7 Oct 2020 14:56:22 -0400
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On Wed, Sep 23, 2020 at 11:56 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>
+> This patch series is split from [1]. The other series enables SELinux
+> support for userfaultfd file descriptors so that its creation and
+> movement can be controlled.
+>
+> It has been demonstrated on various occasions that suspending kernel
+> code execution for an arbitrary amount of time at any access to
+> userspace memory (copy_from_user()/copy_to_user()/...) can be exploited
+> to change the intended behavior of the kernel. For instance, handling
+> page faults in kernel-mode using userfaultfd has been exploited in [2, 3].
+> Likewise, FUSE, which is similar to userfaultfd in this respect, has been
+> exploited in [4, 5] for similar outcome.
+>
+> This small patch series adds a new flag to userfaultfd(2) that allows
+> callers to give up the ability to handle kernel-mode faults with the
+> resulting UFFD file object. It then adds a 'user-mode only' option to
+> the unprivileged_userfaultfd sysctl knob to require unprivileged
+> callers to use this new flag.
+>
+> The purpose of this new interface is to decrease the chance of an
+> unprivileged userfaultfd user taking advantage of userfaultfd to
+> enhance security vulnerabilities by lengthening the race window in
+> kernel code.
+>
+> [1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+> [2] https://duasynt.com/blog/linux-kernel-heap-spray
+> [3] https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit
+> [4] https://googleprojectzero.blogspot.com/2016/06/exploiting-recursion-in-linux-kernel_20.html
+> [5] https://bugs.chromium.org/p/project-zero/issues/detail?id=808
+>
+> Changes since v3:
+>
+>   - Modified the meaning of value '0' of unprivileged_userfaultfd
+>     sysctl knob. Setting this knob to '0' now allows unprivileged users
+>     to use userfaultfd, but can handle page faults in user-mode only.
+>   - The default value of unprivileged_userfaultfd sysctl knob is changed
+>     to '0'.
+>
+Request reviewers and maintainers to please take a look.
 
-> Allow the VFIO_DEVICE_GET_INFO ioctl to include a capability chain.
-> Add a flag indicating capability chain support, and introduce the
-> definitions for the first set of capabilities which are specified to
-> s390 zPCI devices.
-> 
-> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> ---
->  include/uapi/linux/vfio.h      | 11 ++++++
->  include/uapi/linux/vfio_zdev.h | 78 ++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 89 insertions(+)
->  create mode 100644 include/uapi/linux/vfio_zdev.h
-> 
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 9204705..836a25b 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -201,8 +201,10 @@ struct vfio_device_info {
->  #define VFIO_DEVICE_FLAGS_AMBA  (1 << 3)	/* vfio-amba device */
->  #define VFIO_DEVICE_FLAGS_CCW	(1 << 4)	/* vfio-ccw device */
->  #define VFIO_DEVICE_FLAGS_AP	(1 << 5)	/* vfio-ap device */
-> +#define VFIO_DEVICE_FLAGS_CAPS	(1 << 6)	/* Info supports caps */
-
-
-FYI, I'm going to change this to (1 << 7) because the new fsl-mc bus
-driver patches are claiming a new device type with (1 << 6) and I don't
-want the conflict to be magically resolved on merge.  Thanks,
-
-Alex
-
->  	__u32	num_regions;	/* Max region index + 1 */
->  	__u32	num_irqs;	/* Max IRQ index + 1 */
-> +	__u32   cap_offset;	/* Offset within info struct of first cap */
->  };
->  #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
->  
-> @@ -218,6 +220,15 @@ struct vfio_device_info {
->  #define VFIO_DEVICE_API_CCW_STRING		"vfio-ccw"
->  #define VFIO_DEVICE_API_AP_STRING		"vfio-ap"
->  
-> +/*
-> + * The following capabilities are unique to s390 zPCI devices.  Their contents
-> + * are further-defined in vfio_zdev.h
-> + */
-> +#define VFIO_DEVICE_INFO_CAP_ZPCI_BASE		1
-> +#define VFIO_DEVICE_INFO_CAP_ZPCI_GROUP		2
-> +#define VFIO_DEVICE_INFO_CAP_ZPCI_UTIL		3
-> +#define VFIO_DEVICE_INFO_CAP_ZPCI_PFIP		4
-> +
->  /**
->   * VFIO_DEVICE_GET_REGION_INFO - _IOWR(VFIO_TYPE, VFIO_BASE + 8,
->   *				       struct vfio_region_info)
-> diff --git a/include/uapi/linux/vfio_zdev.h b/include/uapi/linux/vfio_zdev.h
-> new file mode 100644
-> index 0000000..b430939
-> --- /dev/null
-> +++ b/include/uapi/linux/vfio_zdev.h
-> @@ -0,0 +1,78 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * VFIO Region definitions for ZPCI devices
-> + *
-> + * Copyright IBM Corp. 2020
-> + *
-> + * Author(s): Pierre Morel <pmorel@linux.ibm.com>
-> + *            Matthew Rosato <mjrosato@linux.ibm.com>
-> + */
-> +
-> +#ifndef _VFIO_ZDEV_H_
-> +#define _VFIO_ZDEV_H_
-> +
-> +#include <linux/types.h>
-> +#include <linux/vfio.h>
-> +
-> +/**
-> + * VFIO_DEVICE_INFO_CAP_ZPCI_BASE - Base PCI Function information
-> + *
-> + * This capability provides a set of descriptive information about the
-> + * associated PCI function.
-> + */
-> +struct vfio_device_info_cap_zpci_base {
-> +	struct vfio_info_cap_header header;
-> +	__u64 start_dma;	/* Start of available DMA addresses */
-> +	__u64 end_dma;		/* End of available DMA addresses */
-> +	__u16 pchid;		/* Physical Channel ID */
-> +	__u16 vfn;		/* Virtual function number */
-> +	__u16 fmb_length;	/* Measurement Block Length (in bytes) */
-> +	__u8 pft;		/* PCI Function Type */
-> +	__u8 gid;		/* PCI function group ID */
-> +};
-> +
-> +/**
-> + * VFIO_DEVICE_INFO_CAP_ZPCI_GROUP - Base PCI Function Group information
-> + *
-> + * This capability provides a set of descriptive information about the group of
-> + * PCI functions that the associated device belongs to.
-> + */
-> +struct vfio_device_info_cap_zpci_group {
-> +	struct vfio_info_cap_header header;
-> +	__u64 dasm;		/* DMA Address space mask */
-> +	__u64 msi_addr;		/* MSI address */
-> +	__u64 flags;
-> +#define VFIO_DEVICE_INFO_ZPCI_FLAG_REFRESH 1 /* Program-specified TLB refresh */
-> +	__u16 mui;		/* Measurement Block Update Interval */
-> +	__u16 noi;		/* Maximum number of MSIs */
-> +	__u16 maxstbl;		/* Maximum Store Block Length */
-> +	__u8 version;		/* Supported PCI Version */
-> +};
-> +
-> +/**
-> + * VFIO_DEVICE_INFO_CAP_ZPCI_UTIL - Utility String
-> + *
-> + * This capability provides the utility string for the associated device, which
-> + * is a device identifier string made up of EBCDID characters.  'size' specifies
-> + * the length of 'util_str'.
-> + */
-> +struct vfio_device_info_cap_zpci_util {
-> +	struct vfio_info_cap_header header;
-> +	__u32 size;
-> +	__u8 util_str[];
-> +};
-> +
-> +/**
-> + * VFIO_DEVICE_INFO_CAP_ZPCI_PFIP - PCI Function Path
-> + *
-> + * This capability provides the PCI function path string, which is an identifier
-> + * that describes the internal hardware path of the device. 'size' specifies
-> + * the length of 'pfip'.
-> + */
-> +struct vfio_device_info_cap_zpci_pfip {
-> +	struct vfio_info_cap_header header;
-> +	__u32 size;
-> +	__u8 pfip[];
-> +};
-> +
-> +#endif
-
+> Changes since v2:
+>
+>   - Removed 'uffd_flags' and directly used 'UFFD_USER_MODE_ONLY' in
+>     userfaultfd().
+>
+> Changes since v1:
+>
+>   - Added external references to the threats from allowing unprivileged
+>     users to handle page faults from kernel-mode.
+>   - Removed the new sysctl knob restricting handling of page
+>     faults from kernel-mode, and added an option for the same
+>     in the existing 'unprivileged_userfaultfd' knob.
+>
+> Lokesh Gidra (2):
+>   Add UFFD_USER_MODE_ONLY
+>   Add user-mode only option to unprivileged_userfaultfd sysctl knob
+>
+>  Documentation/admin-guide/sysctl/vm.rst | 15 ++++++++++-----
+>  fs/userfaultfd.c                        | 12 +++++++++---
+>  include/uapi/linux/userfaultfd.h        |  9 +++++++++
+>  3 files changed, 28 insertions(+), 8 deletions(-)
+>
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
