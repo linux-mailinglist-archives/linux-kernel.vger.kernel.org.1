@@ -2,103 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2C32861AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BAA2861B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728756AbgJGO6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728737AbgJGO6R (ORCPT
+        id S1728762AbgJGO7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:59:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25726 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728694AbgJGO7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:58:17 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF2CC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 07:58:17 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id w5so1277142qvn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:58:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P2gM9yMWULW8Gy0X53Dd8f+mRA7vL7mt4JQg7J+CsJg=;
-        b=EkrWq1MrrRrhX94tY4shxt2sLz9reBBnaXPgSxaBe8tilDqy+2IS1g570qnI6q2Bwb
-         VTZx0T7ukCpH2KhVpGwAlcgwN+08jcdBryOAUJsnrCoQ3sDIRGhbR49CMNFI4tETADRf
-         CS4ynbPfqQ+EfaUNE0vtblxsA5wAfc6seY0Is0oCap6lr3N+S8vvfmpnh7Yelpm1c7B0
-         mLinWmmY747mC1qpUt2odZnzr8hLQog7wTcAPIaeK9bsSbxe6JHWZE+fIEJVz+CJIgTt
-         1IeH4KA8rzkLIgg5NfFox6GHYfwfLa/83FQ+yNgrLHAOFw09XKpj880UZUJDvOWgo7iE
-         wzdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P2gM9yMWULW8Gy0X53Dd8f+mRA7vL7mt4JQg7J+CsJg=;
-        b=da61tLJE+prwkSA7O5jAd7MLzUMj978zgy2DdeZLDYRqXfTsYqOLLvGRWg4NaF970E
-         ZJuMfd1RfGYAW5tPpX3SEwdVjL2TrPS/hz+CPhVdEQDdwqH6OqpDIsdXL8vu4Fe9etXW
-         ZwdS1ll/xggE2GOZtANs1Whl8rNr0kxFoWAqC1VnllxzsyGRnYUPe5MwdMz47Ic0J6YE
-         DOCmrKjFRh4lpgCicjuUzYNITn2jniqqTXlFk5b6PLSmOEfMrF+yWS7au0w2w6Ysrp1N
-         x8tBiv56g/OXCpjfGTMqEcMbYFpBTZ8Ys3mcy67Ga9oJPHGHk2BIhqTo4DunDhsTUEvT
-         QB2A==
-X-Gm-Message-State: AOAM533+XFEGVOTndcuDqQVGAVzo7EkQLooo6R1yO8gQdf21PcQl6asb
-        xTAYEHHxBC1dNHhCABUng9Fubw==
-X-Google-Smtp-Source: ABdhPJyjY3nHEt0ctmWulUEEoQC0sv3v89EPil6229gZRAfJaFF/qKe7nim9Rza8tp1X2JRL4Y6Eww==
-X-Received: by 2002:a05:6214:945:: with SMTP id dn5mr3776857qvb.56.1602082696901;
-        Wed, 07 Oct 2020 07:58:16 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id n7sm1705722qtp.93.2020.10.07.07.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 07:58:16 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQAtT-000wnC-KC; Wed, 07 Oct 2020 11:58:15 -0300
-Date:   Wed, 7 Oct 2020 11:58:15 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Message-ID: <20201007145815.GS5177@ziepe.ca>
-References: <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com>
- <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
- <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com>
- <20201007124409.GN5177@ziepe.ca>
- <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
- <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com>
- <20201007130610.GP5177@ziepe.ca>
- <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
- <CAKMK7uFSTrULTE-o+vHU-81dJpKJ5cHAAb8qkpQtcz6KrhvPzg@mail.gmail.com>
- <CAAFQd5ArKWR8f4XO73UB7tyeq3ZCYJb4OD_K=2hxOgputRY=Rw@mail.gmail.com>
+        Wed, 7 Oct 2020 10:59:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602082782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7N51+8sQh2H8W9MnGonUz2RHvBYt0K/Eby2kep8UCRc=;
+        b=CzBtHOJoPIqbn6/G7RsUJFBNrI5+uMV8r8+YaZo9yY7J6sW6ZS2A/wML3Q3OhHqx3vQylr
+        IFYqMvrw92N7T8GNqGjSxhpA77ILeD3FL1BYw3YNf4y2jYk8aSvKmE/4mmjjNSMDtAPx9Q
+        Pxmz9l3WGquI/kRBAsx/S0Mt0fqzhcw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-B_T5IR5CNSmQWc6bIYMBCw-1; Wed, 07 Oct 2020 10:59:38 -0400
+X-MC-Unique: B_T5IR5CNSmQWc6bIYMBCw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 652AE191E2A0;
+        Wed,  7 Oct 2020 14:59:37 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-196.rdu2.redhat.com [10.10.116.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C0B96EF42;
+        Wed,  7 Oct 2020 14:59:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <160207693283.3934207.6150787285715868358.stgit@warthog.procyon.org.uk>
+References: <160207693283.3934207.6150787285715868358.stgit@warthog.procyon.org.uk>
+To:     torvalds@linux-foundation.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] afs: Fix deadlock between writeback and truncate
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAFQd5ArKWR8f4XO73UB7tyeq3ZCYJb4OD_K=2hxOgputRY=Rw@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4013287.1602082775.1@warthog.procyon.org.uk>
+Date:   Wed, 07 Oct 2020 15:59:35 +0100
+Message-ID: <4013288.1602082775@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 04:11:59PM +0200, Tomasz Figa wrote:
+David Howells <dhowells@redhat.com> wrote:
 
-> We also need to bring back the vma_open() that somehow disappeared
-> around 4.2, as Marek found.
+>  (1) Use the vnode validate_lock to mediate access between afs_setattr()
+>      and afs_writepages():
 
-No
+Hmmm...  I wonder if the problem can occur between afs_setattr() and
+afs_writepage() too.
 
-Jason
+David
+
