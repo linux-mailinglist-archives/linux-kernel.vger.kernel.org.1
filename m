@@ -2,95 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C0828630B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BB92862BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgJGQDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:03:04 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:32504 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728968AbgJGQDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:03:03 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097FqHOv002178;
-        Wed, 7 Oct 2020 18:02:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=snx0Oa29078S9y9lMCQN0QJqA70oMqn0JX8nnG1uIiA=;
- b=0aJcimBLb8uJkvEtylFHqEekUjiwQDJ1mT0kMku3f3qouIbV+PJ7I3PzXNfouKcqAs6V
- cHqS+Jpy+o+/6DEssPI7nQhTngOf7oQH3LNVpZGGqoMXoqNKtoSs5bQGOxVzU2t8O/rf
- 4deaof5EGfPSrsY6QBBxfQLB3iWD46iEshkp//gecM9WFrMmFOyxW5fJBkDXaswxgid8
- AtuUFJOn6ucb6rT5WxXVgHSKSrpGxLoxNRXOwGMa2lpROTeXOBQc4Tml5ytSnih+pXEn
- NoISfkQ/UXSHvyxEZDNWb1Mj0m6MFXLzhg5xylxi9nxaYq3XsJoDrcr6yH6zwOgOH7d9 ig== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3402tjwktd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 18:02:52 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A6F4100034;
-        Wed,  7 Oct 2020 18:02:52 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3967C2BA2C6;
-        Wed,  7 Oct 2020 18:02:52 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG1NODE1.st.com (10.75.127.1)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct 2020 18:02:24
- +0200
-From:   Hugues Fruchet <hugues.fruchet@st.com>
-To:     Etienne Carriere <etienne.carriere@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-CC:     <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>
-Subject: [PATCH] media: stm32-dcmi: don't print an error on probe deferral
-Date:   Wed, 7 Oct 2020 18:02:10 +0200
-Message-ID: <1602086530-24646-1-git-send-email-hugues.fruchet@st.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728797AbgJGP41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728251AbgJGP41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:56:27 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E10E20789;
+        Wed,  7 Oct 2020 15:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602086186;
+        bh=9KvHvObxnkiLqVCFdBl2Uwtt1o9NsUDBlzUyaonBWUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wTDNJ8LOZg5Gzgjz9n5LENJFUS+a+8BKaSnuAlx8ZvfRybtPHn9w71c16ecM7RTZu
+         xO06P/7ck+CC1vp6TP1lj+rnA3dAPc/2Kuma1p5U/vLKGdONeedFqARTYyeXKuLoOx
+         f8NzZ2oQZwpBSZySALyYme9Lw5XmVXm8qVvvb86c=
+Date:   Wed, 7 Oct 2020 11:02:26 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-hardening@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 01/14] drm/amd/pm: Replace one-element array with
+ flexible-array member
+Message-ID: <069289d62f5cf464f607d33582c9e5826393b0f1.1602020074.git.gustavoars@kernel.org>
+References: <cover.1602020074.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG1NODE1.st.com
- (10.75.127.1)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_10:2020-10-06,2020-10-07 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1602020074.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Etienne Carriere <etienne.carriere@st.com>
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Change stm32-dcmi driver to not print an error message when the
-device probe operation is deferred.
+Refactor the code according to the use of a flexible-array member in
+struct phm_clock_voltage_dependency_table, instead of a one-element
+array, and use the struct_size() helper to calculate the size for the
+allocation.
 
-Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
-Acked-by: Hugues Fruchet <hugues.fruchet@st.com>
-Tested-by: Alexandre TORGUE <alexandre.torgue@st.com>
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+
+Build-tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/5f7c295c.8iqp1Ifc6oiVDq%2F%2F%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/media/platform/stm32/stm32-dcmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/pm/inc/hwmgr.h                       | 4 ++--
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c | 9 +++------
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c      | 2 +-
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c      | 5 ++---
+ 4 files changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/media/platform/stm32/stm32-dcmi.c b/drivers/media/platform/stm32/stm32-dcmi.c
-index fd1c41c..720534e 100644
---- a/drivers/media/platform/stm32/stm32-dcmi.c
-+++ b/drivers/media/platform/stm32/stm32-dcmi.c
-@@ -1851,7 +1851,9 @@ static int dcmi_probe(struct platform_device *pdev)
+diff --git a/drivers/gpu/drm/amd/pm/inc/hwmgr.h b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
+index 3898a95ec28b..a1dbfd5636e6 100644
+--- a/drivers/gpu/drm/amd/pm/inc/hwmgr.h
++++ b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
+@@ -122,8 +122,8 @@ struct phm_acpclock_voltage_dependency_record {
+ };
  
- 	dcmi->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 	if (IS_ERR(dcmi->rstc)) {
--		dev_err(&pdev->dev, "Could not get reset control\n");
-+		if (PTR_ERR(dcmi->rstc) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Could not get reset control\n");
-+
- 		return PTR_ERR(dcmi->rstc);
- 	}
+ struct phm_clock_voltage_dependency_table {
+-	uint32_t count;										/* Number of entries. */
+-	struct phm_clock_voltage_dependency_record entries[1];		/* Dynamically allocate count entries. */
++	uint32_t count;							/* Number of entries. */
++	struct phm_clock_voltage_dependency_record entries[];		/* Dynamically allocate count entries. */
+ };
  
+ struct phm_phase_shedding_limits_record {
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
+index 719597c5d27d..d94a7d8e0587 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
+@@ -377,14 +377,11 @@ static int get_clock_voltage_dependency_table(struct pp_hwmgr *hwmgr,
+ 		const ATOM_PPLIB_Clock_Voltage_Dependency_Table *table)
+ {
+ 
+-	unsigned long table_size, i;
++	unsigned long i;
+ 	struct phm_clock_voltage_dependency_table *dep_table;
+ 
+-	table_size = sizeof(unsigned long) +
+-		sizeof(struct phm_clock_voltage_dependency_table)
+-		* table->ucNumEntries;
+-
+-	dep_table = kzalloc(table_size, GFP_KERNEL);
++	dep_table = kzalloc(struct_size(dep_table, entries, table->ucNumEntries),
++			    GFP_KERNEL);
+ 	if (NULL == dep_table)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c
+index 35ed47ebaf09..ed9b89980184 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c
+@@ -276,7 +276,7 @@ static int smu8_init_dynamic_state_adjustment_rule_settings(
+ {
+ 	struct phm_clock_voltage_dependency_table *table_clk_vlt;
+ 
+-	table_clk_vlt = kzalloc(struct_size(table_clk_vlt, entries, 7),
++	table_clk_vlt = kzalloc(struct_size(table_clk_vlt, entries, 8),
+ 				GFP_KERNEL);
+ 
+ 	if (NULL == table_clk_vlt) {
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c
+index 60b5ca974356..b485f8b1d6f2 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu_helper.c
+@@ -492,13 +492,12 @@ int phm_get_sclk_for_voltage_evv(struct pp_hwmgr *hwmgr,
+  */
+ int phm_initializa_dynamic_state_adjustment_rule_settings(struct pp_hwmgr *hwmgr)
+ {
+-	uint32_t table_size;
+ 	struct phm_clock_voltage_dependency_table *table_clk_vlt;
+ 	struct phm_ppt_v1_information *pptable_info = (struct phm_ppt_v1_information *)(hwmgr->pptable);
+ 
+ 	/* initialize vddc_dep_on_dal_pwrl table */
+-	table_size = sizeof(uint32_t) + 4 * sizeof(struct phm_clock_voltage_dependency_record);
+-	table_clk_vlt = kzalloc(table_size, GFP_KERNEL);
++	table_clk_vlt = kzalloc(struct_size(table_clk_vlt, entries, 4),
++				GFP_KERNEL);
+ 
+ 	if (NULL == table_clk_vlt) {
+ 		pr_err("Can not allocate space for vddc_dep_on_dal_pwrl! \n");
 -- 
-2.7.4
+2.27.0
 
