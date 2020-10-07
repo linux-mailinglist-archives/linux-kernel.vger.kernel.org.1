@@ -2,139 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D435285A1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D17287094
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 10:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgJGIIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726323AbgJGIIO (ORCPT
+        id S1728447AbgJHIQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 04:16:36 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33056 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgJHIQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:08:14 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8484CC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 01:08:13 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id v19so1184967edx.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 01:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N9BB7E4iGMc/0xci5wMPtXbQzs5kI/9VbBMLqTlLSE8=;
-        b=QE5wCYvx8kvJMvIBqPW3Xjj5S68geqga477qq7uif1HkyevhmAtFMOt/buaJVFfpEH
-         jiijKBMvzIka7KNi7BK8/tuFS6+UEIjCz9fz7+Ypbka0repb8XQcAI5hXq6nDoDXhU2z
-         tx0IDqrog0nbwdZ2tKtSI05lEYppygDek+j8xKBsG1lX7hEhXlVAb8G6A7QzqDayzsj+
-         G+LFf+r8Qsiy1PGjAifRuvdNj8l2eVQW5lgd+i+bfJAc5aq8whixyfoXHtzRKvz8gy3T
-         o8eefN8FkN6922LvF5PWy+Xu+VDfrvq0YyNM9t210jFSd2lH0yciRdcWJAmjuGH/q3hm
-         QdEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N9BB7E4iGMc/0xci5wMPtXbQzs5kI/9VbBMLqTlLSE8=;
-        b=Sf2ANpi3vE5uraKViCfI3mBlklCHxCjk7tGcHNyTM0q1CZX7bEdArBHSTTZudI+TBw
-         QUXRAWEu/5cLmGQUidTup3FD4nuveJi6KQGurliU8mYOgR08V02Xn1qp69OStgi3YcXq
-         VvLZZdcSI2D2rv7iT8wjV3zsufi0xOmc8e98pvwkntlVaR2W/A5i2PREA9bRM/8f8mAx
-         CrcQMnlv3PLEMK/mgvnyq9JhDONaTrLkc7IZs/g1TItAgi9CFRYJq2XG4G5mg7EyHvDq
-         jLydMTBMGVq1dGTeU/FzC0oCrkTY6qVM+kqj0jI1CR90HkmQPKSwiOc2OtSYWbHoJSDJ
-         /7pg==
-X-Gm-Message-State: AOAM532daZs88S1VO56ma+zuW8BfdZxqWPqAxj4vNzgXe5yQoPAwwjmf
-        62fwcLaNdBwGN1GXTWBDC5MeiAdeElLWVw==
-X-Google-Smtp-Source: ABdhPJypq5afOnV5h1ZSBHO4fnEsWDyM831RAyRh/f+UBTgfm4W7zKgvvkr6dtv2ORMIalObWbBJLQ==
-X-Received: by 2002:a05:6402:1612:: with SMTP id f18mr2253541edv.166.1602058092223;
-        Wed, 07 Oct 2020 01:08:12 -0700 (PDT)
-Received: from starbuck.lan (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.googlemail.com with ESMTPSA id p11sm888645edu.93.2020.10.07.01.08.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 01:08:11 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Wolfram Sang <wsa@kernel.org>, Kevin Hilman <khilman@baylibre.com>
-Cc:     Nicolas Belin <nbelin@baylibre.com>, linux-i2c@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 3/3] i2c: meson: fixup rate calculation with filter delay
-Date:   Wed,  7 Oct 2020 10:07:51 +0200
-Message-Id: <20201007080751.1259442-4-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201007080751.1259442-1-jbrunet@baylibre.com>
-References: <20201007080751.1259442-1-jbrunet@baylibre.com>
+        Thu, 8 Oct 2020 04:16:35 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09787mQJ058891;
+        Wed, 7 Oct 2020 03:07:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602058068;
+        bh=HBdm4jMYOIuFapa+zEYL7vDmmKD8A9YuA8HzW2ojmgQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=gESAPEWJbVi7NFAK+NpiJIg1oKLvWNHCfXRImxDjfMXErUyg9yRkIHtoUduq+tGmR
+         leUgKvW8EnBo1t0dCKiaggeZQm9+hme8PSuI4S+F8vZu/D3LGbAa24j7IgigjmpTRv
+         ASye8b1mWpVKnohV4uLRCyjSuTC6eHDQ8MVN5yaA=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09787mfk056031
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 03:07:48 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 03:07:48 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 03:07:48 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09787jjn059638;
+        Wed, 7 Oct 2020 03:07:45 -0500
+Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
+ configuration callback
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>,
+        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-2-peter.ujfalusi@ti.com>
+ <20201007054404.GR2968@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
+Date:   Wed, 7 Oct 2020 11:08:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+In-Reply-To: <20201007054404.GR2968@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Belin <nbelin@baylibre.com>
 
-Apparently, 15 cycles of the peripheral clock are used by the controller
-for sampling and filtering. Because this was not known before, the rate
-calculation is slightly off.
 
-Clean up and fix the calculation taking this filtering delay into account.
+On 07/10/2020 8.44, Vinod Koul wrote:
+> Hi Peter,
+> 
+> On 30-09-20, 12:13, Peter Ujfalusi wrote:
+>> Additional configuration for the DMA event router might be needed for a
+>> channel which can not be done during device_alloc_chan_resources callback
+>> since the router information is not yet present for the drivers.
+>>
+>> If there is a need for additional configuration for the channel if DMA
+>> router is in use, then the driver can implement the device_router_config
+>> callback.
+> 
+> So what is the additional information you need, I am looking at the code
+> below and xlate invokes device_router_config() which driver will
+> implement..
 
-Fixes: 30021e3707a7 ("i2c: add support for Amlogic Meson I2C controller")
-Signed-off-by: Nicolas Belin <nbelin@baylibre.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- drivers/i2c/busses/i2c-meson.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+The router driver is not yet ready due to external dependencies, it will
+come a bit later.
 
-diff --git a/drivers/i2c/busses/i2c-meson.c b/drivers/i2c/busses/i2c-meson.c
-index e7ec2ab2a220..ef73a42577cc 100644
---- a/drivers/i2c/busses/i2c-meson.c
-+++ b/drivers/i2c/busses/i2c-meson.c
-@@ -34,10 +34,8 @@
- #define REG_CTRL_ACK_IGNORE	BIT(1)
- #define REG_CTRL_STATUS		BIT(2)
- #define REG_CTRL_ERROR		BIT(3)
--#define REG_CTRL_CLKDIV_SHIFT	12
--#define REG_CTRL_CLKDIV_MASK	GENMASK(21, 12)
--#define REG_CTRL_CLKDIVEXT_SHIFT 28
--#define REG_CTRL_CLKDIVEXT_MASK	GENMASK(29, 28)
-+#define REG_CTRL_CLKDIV		GENMASK(21, 12)
-+#define REG_CTRL_CLKDIVEXT	GENMASK(29, 28)
- 
- #define REG_SLV_ADDR		GENMASK(7, 0)
- #define REG_SLV_SDA_FILTER	GENMASK(10, 8)
-@@ -46,6 +44,7 @@
- #define REG_SLV_SCL_LOW_EN	BIT(28)
- 
- #define I2C_TIMEOUT_MS		500
-+#define FILTER_DELAY		15
- 
- enum {
- 	TOKEN_END = 0,
-@@ -140,19 +139,21 @@ static void meson_i2c_set_clk_div(struct meson_i2c *i2c, unsigned int freq)
- 	unsigned long clk_rate = clk_get_rate(i2c->clk);
- 	unsigned int div;
- 
--	div = DIV_ROUND_UP(clk_rate, freq * i2c->data->div_factor);
-+	div = DIV_ROUND_UP(clk_rate, freq);
-+	div -= FILTER_DELAY;
-+	div = DIV_ROUND_UP(div, i2c->data->div_factor);
- 
- 	/* clock divider has 12 bits */
--	if (div >= (1 << 12)) {
-+	if (div > GENMASK(11, 0)) {
- 		dev_err(i2c->dev, "requested bus frequency too low\n");
--		div = (1 << 12) - 1;
-+		div = GENMASK(11, 0);
- 	}
- 
--	meson_i2c_set_mask(i2c, REG_CTRL, REG_CTRL_CLKDIV_MASK,
--			   (div & GENMASK(9, 0)) << REG_CTRL_CLKDIV_SHIFT);
-+	meson_i2c_set_mask(i2c, REG_CTRL, REG_CTRL_CLKDIV,
-+			   FIELD_PREP(REG_CTRL_CLKDIV, div & GENMASK(9, 0)));
- 
--	meson_i2c_set_mask(i2c, REG_CTRL, REG_CTRL_CLKDIVEXT_MASK,
--			   (div >> 10) << REG_CTRL_CLKDIVEXT_SHIFT);
-+	meson_i2c_set_mask(i2c, REG_CTRL, REG_CTRL_CLKDIVEXT,
-+			   FIELD_PREP(REG_CTRL_CLKDIVEXT, div >> 10));
- 
- 	/* Disable HIGH/LOW mode */
- 	meson_i2c_set_mask(i2c, REG_SLAVE_ADDR, REG_SLV_SCL_LOW_EN, 0);
--- 
-2.25.4
+> Are you using this to configure channels based on info from DT?
 
+Not really. In DT an event triggered channel can be requested via router
+(when this is used) for example:
+
+dmas = <&inta_l2g a b c>;
+a - the input number of the DMA request in l2g
+b - edge or level trigger to be selected
+c - ASEL number for the channel for coherency
+
+The l2g router driver then translate this to:
+<&main_bcdma 1 0 c>
+1 - Global trigger 0 is used by the DMA
+0 - ignored
+c - ASEL number.
+
+The router needs to send an event which is going to be received by the
+channel we have picked up, this event number can only be known when we
+do have the channel.
+
+So the flow in this case:
+router converts the dma_spec for the DMA, but it does not yet know what
+is the event number it has to use.
+The BCDMA driver will pick an available bchan and notes that the
+transfers will be triggered by global event 0.
+When we have the channel, the core saves the router information and
+calls the device_router_config of BCDMA.
+In there we call back to the router and give the event number it has to
+use to send the trigger for the channel.
+
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>>  drivers/dma/of-dma.c      | 10 ++++++++++
+>>  include/linux/dmaengine.h |  2 ++
+>>  2 files changed, 12 insertions(+)
+>>
+>> diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
+>> index 8a4f608904b9..ec00b20ae8e4 100644
+>> --- a/drivers/dma/of-dma.c
+>> +++ b/drivers/dma/of-dma.c
+>> @@ -75,8 +75,18 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
+>>  		ofdma->dma_router->route_free(ofdma->dma_router->dev,
+>>  					      route_data);
+>>  	} else {
+>> +		int ret = 0;
+>> +
+>>  		chan->router = ofdma->dma_router;
+>>  		chan->route_data = route_data;
+>> +
+>> +		if (chan->device->device_router_config)
+>> +			ret = chan->device->device_router_config(chan);
+>> +
+>> +		if (ret) {
+>> +			dma_release_channel(chan);
+>> +			chan = ERR_PTR(ret);
+>> +		}
+>>  	}
+>>  
+>>  	/*
+>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+>> index dd357a747780..d6197fe875af 100644
+>> --- a/include/linux/dmaengine.h
+>> +++ b/include/linux/dmaengine.h
+>> @@ -800,6 +800,7 @@ struct dma_filter {
+>>   *	by tx_status
+>>   * @device_alloc_chan_resources: allocate resources and return the
+>>   *	number of allocated descriptors
+>> + * @device_router_config: optional callback for DMA router configuration
+>>   * @device_free_chan_resources: release DMA channel's resources
+>>   * @device_prep_dma_memcpy: prepares a memcpy operation
+>>   * @device_prep_dma_xor: prepares a xor operation
+>> @@ -874,6 +875,7 @@ struct dma_device {
+>>  	enum dma_residue_granularity residue_granularity;
+>>  
+>>  	int (*device_alloc_chan_resources)(struct dma_chan *chan);
+>> +	int (*device_router_config)(struct dma_chan *chan);
+>>  	void (*device_free_chan_resources)(struct dma_chan *chan);
+>>  
+>>  	struct dma_async_tx_descriptor *(*device_prep_dma_memcpy)(
+>> -- 
+>> Peter
+>>
+>> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+>> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
