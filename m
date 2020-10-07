@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3E1285974
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39646285980
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgJGHXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:23:47 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42136 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgJGHXr (ORCPT
+        id S1727693AbgJGH0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgJGH0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:23:47 -0400
-Received: by mail-wr1-f67.google.com with SMTP id e18so894412wrw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:23:45 -0700 (PDT)
+        Wed, 7 Oct 2020 03:26:55 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE28C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:26:53 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id s19so564368plp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=FPB7OOQl4IYhU+HU218GOVBRq9NfyKJiihhmcpJ2Hao=;
+        b=oxZ9aBBpkvOvdgr2CrqMxbh+tb9oWDoEjkUWOAV7zx1x45otIdu0jTGj6y6nkL9WfS
+         83ncVldNuP0AIzasgpAL+hE8845xe6QEViCK5skmnbfjgNKKJtLikVLMaRix0RT4L/Hb
+         Rpgmrcn23wZnkmsolZ5xRGGEc5PyosU1awEHsTwHrDUSxKR9zRV6VPVAp1QpaFwtJEbg
+         v1fiA1kn21yUceRFI3MQkAvxIiTafFcxx32ICjJ9qlWxd2x8cFZnjuBT4obe/P2mrA+r
+         KUUSZ1LURs7GGAvF6yaE1zNfMwIViXeeSpK8qS2NYX+4qy7v8lNDF/h2MPTySi+u0LQF
+         9iGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vm13Z3HWwFFOXzAYg9vXSvr/1kojOsqrdIrCgv8M87U=;
-        b=QdpWMGznDkim71teTKnuNeEf2ndCLnrUbK+6fWboH8ZqC5WBv0CTmxip4vBXZ4W8dZ
-         IH8rijrzDlioXR279Qe5iRcRz722gwS847f+0xkPEcXNADrKgDF2JivVA8X0SaU+Oric
-         YX6WgHM+BgGCvsG90vv+hlNQu6toFnj8Kvgu0YOFqBf0kEX46TRgFeG3CeEtA9UspHYZ
-         nPoZjMvy9CivQM+VjCDYJiFUG+DeOQst7seKwMCcpe65CcLegYSbYlMgkftZNt0KPCQb
-         k20LLOEPeYzpSj4A8q1zZ6P7HQPH8L3L44zsraXHmoBZDIybna3UpNmVlHDe1MFO+a4F
-         nlKw==
-X-Gm-Message-State: AOAM531p+63EbIa4ebyrxNo+w66bRKDOphiOYKxGd/NUz+GAvNqZNsKX
-        cbTRj4RA0w1hU5bDx5BygIQNxQuc0HNr3OhrDSU=
-X-Google-Smtp-Source: ABdhPJweoPfZc7kZOQggtHMZvSTiohk4kLP3Yjk8tVRBNClNeAGziq7dJleJ1EduuVx+3h3mkQ6bv7aWKjT14Y6DNnM=
-X-Received: by 2002:adf:8b48:: with SMTP id v8mr1878671wra.21.1602055424968;
- Wed, 07 Oct 2020 00:23:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201001115729.27116-1-song.bao.hua@hisilicon.com>
- <20201001230653.GM50079@tassilo.jf.intel.com> <dc9c24dcc58d477fa7e9c1a2ea246791@hisilicon.com>
- <CAM9d7cjM262j4ixjayz+M1BqYDuiqRmrd9ifx++XBxT830ymRQ@mail.gmail.com>
- <41a3e45d558242f79f9e10a8d9ca92f1@hisilicon.com> <20201006111113.GB249615@krava>
-In-Reply-To: <20201006111113.GB249615@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 7 Oct 2020 16:23:10 +0900
-Message-ID: <CAM9d7cjWQWC6ECw2OYz_Qpv3iE6aG5V9qff_P2v9YXfsozZnGg@mail.gmail.com>
-Subject: Re: [PATCH] perf evlist: fix memory corruption for Kernel PMU event
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
+        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=FPB7OOQl4IYhU+HU218GOVBRq9NfyKJiihhmcpJ2Hao=;
+        b=d+3Z5zrQP/ZFGp05dVoiFA9tz2tbTYf2GhmeFgk6Rq42n2oPRSljxW2oJi10aP30R0
+         p3QpPL3hOlJQSI8yautQaE9E9Pp0oCNSb5PVSeEh+i9V/bBnyOaNVm9FVZGB6ArXAJL+
+         QvSsL5dnM6Ddw4oWiD/dttUkM3JC6vd2CIuKlgzBR3f3J+MmEglFnobytQ1hPU3/u6cJ
+         sBSVfzzYFixDe5aZpYvO2Cl6bPG9p/lbniUFnpkfTw/WS7yvO2ef3DJtNZnKQvtOK9Yv
+         Xxrc6kU/xGscUV68lI4FipXenT+A7kxv2FSOme75vpTDTXOtX5doDIxe3wS0GOoCPDiw
+         tP/w==
+X-Gm-Message-State: AOAM5315t3swsBwVuAjlh0jw4M2Zv0kmholWigddptsnqR2fHqShNh/d
+        kviebCiMCKGln5WDV4lz/Ha1Eu0BRPPUYA==
+X-Google-Smtp-Source: ABdhPJwAi4sXCxn4b1gEkyDCnbA9nQFAQCJhRdmvlBsdMzYZrTzT1FL5quT1Kgb5UMe2aahzbCj2Ww==
+X-Received: by 2002:a17:90a:5c83:: with SMTP id r3mr1767359pji.112.1602055613222;
+        Wed, 07 Oct 2020 00:26:53 -0700 (PDT)
+Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
+        by smtp.gmail.com with ESMTPSA id s11sm1844594pgm.36.2020.10.07.00.26.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Oct 2020 00:26:52 -0700 (PDT)
+Message-ID: <7dc957d8e16d04cb9605bef10e474acc52235190.camel@areca.com.tw>
+Subject: [PATCH v3 1/2] scsi: arcmsr: Use upper_32_bits() instead of
+ dma_addr_hi32()
+From:   ching Huang <ching2048@areca.com.tw>
+To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
+        linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 07 Oct 2020 15:26:52 +0800
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: ching Huang <ching2048@areca.com.tw>
 
-On Tue, Oct 6, 2020 at 8:11 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Oct 06, 2020 at 06:39:44AM +0000, Song Bao Hua (Barry Song) wrote:
->
-> SNIP
->
-> > > > Andi, thanks! Could you share the link or the commit ID? I'd like to take a
-> > > look at the fix.
-> > > > I could still reproduce this issue in the latest linus' tree and I didn't find any
-> > > commit
-> > > > related to this issue in linux-next and tip/perf/core.
-> > >
-> > > I think Andi was referring to this discussion which is not merged yet:
-> > >
-> > > https://lore.kernel.org/lkml/20200922031346.15051-2-liwei391@huawei.co
-> > > m/
-> > >
-> > > I suggested a patch at the end.  Can you please try it?
-> >
-> > I tried the patch you suggested.
-> >
-> > diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-> > index 2208444ecb44..cfcdbd7be066 100644
-> > --- a/tools/lib/perf/evlist.c
-> > +++ b/tools/lib/perf/evlist.c
-> > @@ -45,6 +45,9 @@ static void __perf_evlist__propagate_maps(struct perf_evlist *evlist,
-> >          if (!evsel->own_cpus || evlist->has_user_cpus) {
-> >                  perf_cpu_map__put(evsel->cpus);
-> >                 evsel->cpus = perf_cpu_map__get(evlist->cpus);
-> > +       } else if (!evsel->system_wide && perf_cpu_map__empty(evlist->cpus)) {
-> > +               perf_cpu_map__put(evsel->cpus);
-> > +               evsel->cpus = perf_cpu_map__get(evlist->cpus);
-> >         } else if (evsel->cpus != evsel->own_cpus) {
-> >                 perf_cpu_map__put(evsel->cpus);
-> >                 evsel->cpus = perf_cpu_map__get(evsel->own_cpus);
-> >
-> > it did fix the crash I have seen on arm64. I'd prefer you put the below fixes tag in the commit log.
-> > Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
-> > Perf stat began to crash from v5.4 kernel, so the fix should be backported to stable trees.
->
-> awesome.. Namhyung, could you please send full patch?
+Use upper_32_bits() instead of dma_addr_hi32().
 
-Sure, I'll do!
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
+---
 
-Thanks
-Namhyung
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index d13d672..55d85c9 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -653,9 +653,9 @@ static void arcmsr_hbaF_assign_regAddr(struct AdapterControlBlock *acb)
+ 		3) >> 2) << 2;
+ 	pmuF = acb->pmuF;
+ 	/* host buffer low address, bit0:1 all buffer active */
+-	writel((uint32_t)(host_buffer_dma | 1), &pmuF->inbound_msgaddr0);
++	writel(lower_32_bits(host_buffer_dma | 1), &pmuF->inbound_msgaddr0);
+ 	/* host buffer high address */
+-	writel(dma_addr_hi32(host_buffer_dma), &pmuF->inbound_msgaddr1);
++	writel(upper_32_bits(host_buffer_dma), &pmuF->inbound_msgaddr1);
+ 	/* set host buffer physical address */
+ 	writel(ARCMSR_HBFMU_DOORBELL_SYNC1, &pmuF->iobound_doorbell);
+ }
+@@ -4057,11 +4057,8 @@ static int arcmsr_iop_confirm(struct AdapterControlBlock *acb)
+ 		writel(cdb_phyaddr, &reg->msgcode_rwbuffer[2]);
+ 		writel(cdb_phyaddr_hi32, &reg->msgcode_rwbuffer[3]);
+ 		writel(acb->ccbsize, &reg->msgcode_rwbuffer[4]);
+-		dma_coherent_handle = acb->dma_coherent_handle2;
+-		cdb_phyaddr = (uint32_t)(dma_coherent_handle & 0xffffffff);
+-		cdb_phyaddr_hi32 = (uint32_t)((dma_coherent_handle >> 16) >> 16);
+-		writel(cdb_phyaddr, &reg->msgcode_rwbuffer[5]);
+-		writel(cdb_phyaddr_hi32, &reg->msgcode_rwbuffer[6]);
++		writel(lower_32_bits(acb->dma_coherent_handle2), &reg->msgcode_rwbuffer[5]);
++		writel(upper_32_bits(acb->dma_coherent_handle2), &reg->msgcode_rwbuffer[6]);
+ 		writel(acb->ioqueue_size, &reg->msgcode_rwbuffer[7]);
+ 		writel(ARCMSR_INBOUND_MESG0_SET_CONFIG, &reg->inbound_msgaddr0);
+ 		acb->out_doorbell ^= ARCMSR_HBEMU_DRV2IOP_MESSAGE_CMD_DONE;
+@@ -4081,11 +4078,8 @@ static int arcmsr_iop_confirm(struct AdapterControlBlock *acb)
+ 		acb->msgcode_rwbuffer[2] = cdb_phyaddr;
+ 		acb->msgcode_rwbuffer[3] = cdb_phyaddr_hi32;
+ 		acb->msgcode_rwbuffer[4] = acb->ccbsize;
+-		dma_coherent_handle = acb->dma_coherent_handle2;
+-		cdb_phyaddr = (uint32_t)dma_coherent_handle;
+-		cdb_phyaddr_hi32 = dma_addr_hi32(dma_coherent_handle);
+-		acb->msgcode_rwbuffer[5] = cdb_phyaddr;
+-		acb->msgcode_rwbuffer[6] = cdb_phyaddr_hi32;
++		acb->msgcode_rwbuffer[5] = lower_32_bits(acb->dma_coherent_handle2);
++		acb->msgcode_rwbuffer[6] = upper_32_bits(acb->dma_coherent_handle2);
+ 		acb->msgcode_rwbuffer[7] = acb->completeQ_size;
+ 		writel(ARCMSR_INBOUND_MESG0_SET_CONFIG, &reg->inbound_msgaddr0);
+ 		acb->out_doorbell ^= ARCMSR_HBEMU_DRV2IOP_MESSAGE_CMD_DONE;
+
