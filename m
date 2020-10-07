@@ -2,124 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724F4286957
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6049286964
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgJGUqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:46:07 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4378 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727817AbgJGUqH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:46:07 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7e28d60001>; Wed, 07 Oct 2020 13:45:10 -0700
-Received: from [10.2.85.86] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
- 2020 20:46:04 +0000
-Subject: Re: [PATCH 04/13] misc/habana: Use FOLL_LONGTERM for userptr
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        "Omer Shpigelman" <oshpigelman@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        "Tomer Tayar" <ttayar@habana.ai>,
-        Moti Haimovski <mhaimovski@habana.ai>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Pawel Piskorski <ppiskorski@habana.ai>
-References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
- <20201007164426.1812530-5-daniel.vetter@ffwll.ch>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <ce781e05-044f-b62b-6a39-952d73ed1597@nvidia.com>
-Date:   Wed, 7 Oct 2020 13:46:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727937AbgJGUwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:52:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726013AbgJGUwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:52:24 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACAD92083B;
+        Wed,  7 Oct 2020 20:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602103943;
+        bh=VufgeyZMr7Y0Kns1vtQDfROiMEQ0QhTW56WCGxEQqpU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ESyIq4FFaT8J3wqUHZHHJCs9U924JFwIsExeqJbr/CFte4AxXjMR72emHGiLRiKn0
+         4G5wbBVTq6wX1DBv6sDyGcZINuY0TG3dBpBfdXOH+vbDd5JOt0hpnrMV35zDmCu+iv
+         OfTNjJo5ZC/yMcc0bRVgtkbuCAsSGWOylnlBpyS4=
+Date:   Wed, 7 Oct 2020 13:52:21 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 2/3] fscrypt: Add metadata encryption support
+Message-ID: <20201007205221.GA1530638@gmail.com>
+References: <20201005073606.1949772-1-satyat@google.com>
+ <20201005073606.1949772-3-satyat@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201007164426.1812530-5-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602103510; bh=7gGgalGDQ5Ct6e6oxVX0GKF6fkHgYYKPLymOR6tYzGU=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=hDjrDWj3freRp1ybK4xKGh41JWbS/a33PUUY+OIWq7wCWr+gCw+Y7YWb5GlTFEByE
-         06K89H4PC9BMZJaiw+BZP5M8S63s07IUAQmo5lhkpnjZjEHyuHCRX/mEyfrbv2RBi5
-         uJ6DJLDc5KN5KysnSSFAUMzyEIRMWCHps09MbLSPAmKyksOETypirPJ00zDDmc2NCZ
-         lJPmgPC8cvOAyzelVuiBvVdtaxIZHAi58+kUse68GpdmUNRj3f+Wze2ZUsmO23bUkK
-         9BmqvzTyBGOaJd5NV2EhoHkVJltdEz8lMfwvWRt1wL0j/5/KzKm43UEdXWpjm7rSjF
-         Pm1sw+83JPf1g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005073606.1949772-3-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 9:44 AM, Daniel Vetter wrote:
-> These are persistent, not just for the duration of a dma operation.
->=20
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: Oded Gabbay <oded.gabbay@gmail.com>
-> Cc: Omer Shpigelman <oshpigelman@habana.ai>
-> Cc: Ofir Bitton <obitton@habana.ai>
-> Cc: Tomer Tayar <ttayar@habana.ai>
-> Cc: Moti Haimovski <mhaimovski@habana.ai>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Pawel Piskorski <ppiskorski@habana.ai>
+On Mon, Oct 05, 2020 at 07:36:05AM +0000, Satya Tangirala wrote:
+> Introduces functions that help with metadata encryption.
+> 
+> In particular, we introduce:
+> 
+> fscrypt_setup_metadata_encryption() - filesystems should call this function
+> to set up metadata encryption on a super block with the encryption
+> algorithm (the desired FSCRYPT_MODE_*) and the key descriptor of the
+> encryption key. The key descriptor is looked up in the logon keyring of the
+> current session using "fscrypt:" as the descriptor prefix.
+> 
+> fscrypt_metadata_crypt_bio() - filesystems should call this function on a
+> bio that it wants metadata crypted. This function will set a bio-crypt-ctx
+> on the bio if the metadata key was set up with
+> fscrypt_setup_metadata_encryption(). The DUN for the first block in the bio
+> is the offset of that block from the start of the filesystem.
+> 
+> fscrypt_free_metadata_encryption() - this function should be called when
+> the super block is being freed. It ensures that the metadata encryption key
+> is evicted, if necessary, from devices.
+> 
+> Note that the filesystem (rather than fscrypt) controls precisely which
+> blocks are encrypted with the metadata encryption key and which blocks are
+> encrypted with other keys/not encrypted at all. Fscrypt only provides some
+> convenience functions that ultimately help encrypt a bio with the metadata
+> encryption key when desired.
+> 
+> Signed-off-by: Satya Tangirala <satyat@google.com>
 > ---
->   drivers/misc/habanalabs/common/memory.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/haban=
-alabs/common/memory.c
-> index ef89cfa2f95a..94bef8faa82a 100644
-> --- a/drivers/misc/habanalabs/common/memory.c
-> +++ b/drivers/misc/habanalabs/common/memory.c
-> @@ -1288,7 +1288,8 @@ static int get_user_memory(struct hl_device *hdev, =
-u64 addr, u64 size,
->   		return -ENOMEM;
->   	}
->  =20
-> -	rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE,
-> +	rc =3D pin_user_pages_fast(start, npages,
-> +				 FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
->   				 userptr->pages);
->  =20
->   	if (rc !=3D npages) {
->=20
+>  fs/crypto/Kconfig           |   6 +
+>  fs/crypto/Makefile          |   1 +
+>  fs/crypto/fscrypt_private.h |  19 ++++
+>  fs/crypto/inline_crypt.c    |  18 ---
+>  fs/crypto/metadata_crypt.c  | 220 ++++++++++++++++++++++++++++++++++++
+>  include/linux/fs.h          |   3 +
+>  include/linux/fscrypt.h     |  47 ++++++++
+>  7 files changed, 296 insertions(+), 18 deletions(-)
+>  create mode 100644 fs/crypto/metadata_crypt.c
+> 
+> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
+> index a5f5c30368a2..3010e91f6659 100644
+> --- a/fs/crypto/Kconfig
+> +++ b/fs/crypto/Kconfig
+> @@ -30,3 +30,9 @@ config FS_ENCRYPTION_INLINE_CRYPT
+>  	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
+>  	help
+>  	  Enable fscrypt to use inline encryption hardware if available.
+> +
+> +config FS_ENCRYPTION_METADATA
+> +	bool "Enable metadata encryption with fscrypt"
+> +	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
+> +	help
+> +	  Enable fscrypt to encrypt metadata.
 
-Again, from a pin_user_pages_fast() point of view, and not being at all fam=
-iliar
-with the habana driver (but their use of this really does seem clearly _LON=
-GTERM!):
+This needs Kconfig help text to describe what this feature is and why anyone
+would want to enable it.  It also needs an update to
+Documentation/filesystems/fscrypt.rst, and a test in xfstests that tests that
+the encryption is being done correctly.
 
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> diff --git a/fs/crypto/metadata_crypt.c b/fs/crypto/metadata_crypt.c
+> new file mode 100644
+> index 000000000000..5e16df130509
+> --- /dev/null
+> +++ b/fs/crypto/metadata_crypt.c
+> @@ -0,0 +1,220 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Metadata encryption support for fscrypt
+> + *
+> + * Copyright 2020 Google LLC
+> + */
+> +
+> +#include <keys/user-type.h>
+> +#include <linux/blk-crypto.h>
+> +#include <linux/blkdev.h>
+> +#include <linux/buffer_head.h>
+> +#include <linux/sched/mm.h>
+> +
+> +#include "fscrypt_private.h"
+> +
+> +/* TODO: mostly copied from keysetup_v1.c - maybe refactor this function */
+> +static int fscrypt_metadata_get_key_from_id(const char *prefix,
+> +					    char *descriptor_hex,
+> +					    unsigned int min_keysize,
+> +					    char *raw_key)
+> +{
+> +	char *description;
+> +	struct key *key;
+> +	const struct user_key_payload *ukp;
+> +	const struct fscrypt_key *payload;
+> +	int err = -ENOKEY;
+> +
+> +	if (strlen(descriptor_hex) != FSCRYPT_KEY_DESCRIPTOR_SIZE * 2)
+> +		return -EINVAL;
+> +
+> +	description = kasprintf(GFP_NOFS, "%s%s", prefix, descriptor_hex);
+> +	if (!description)
+> +		return -ENOMEM;
+> +
+> +	key = request_key(&key_type_logon, description, NULL);
+> +	kfree(description);
+> +	if (IS_ERR(key))
+> +		return PTR_ERR(key);
+> +
+> +	down_read(&key->sem);
+> +	ukp = user_key_payload_locked(key);
+> +
+> +	if (!ukp) /* was the key revoked before we acquired its semaphore? */
+> +		goto out;
+> +
+> +	payload = (const struct fscrypt_key *)ukp->data;
 
-thanks,
---=20
-John Hubbard
-NVIDIA
+'struct fscrypt_key' was a mistake.  How about having the key payload just be
+the raw key?
+
+Or are you thinking that reserved fields will be needed?
+
+> +/**
+> + * fscrypt_setup_metadata_encryption() - prepare a super_block for metadata
+> + *					 encryption
+> + * @sb: The super_block to set up metadata encryption for
+> + * @key_desc_hex: The key descriptor (in hex) to look for in the logon keyring.
+
+There's no such thing as a "logon keyring".  I think you mean "look for a logon
+key in the process-subscribed keyrings".
+
+> + * @fscrypt_mode_num: The FSCRYPT_MODE_* to use as the encryption algorithm.
+> + *
+> + * Return: 0 on success, negative number on error.
+> + */
+> +int fscrypt_setup_metadata_encryption(struct super_block *sb,
+> +				      char *key_desc_hex,
+> +				      int fscrypt_mode_num)
+> +{
+> +	int err = 0;
+> +	enum blk_crypto_mode_num crypto_mode;
+> +	unsigned int lblk_bits = 64;
+> +	unsigned int dun_bytes;
+> +	unsigned int dummy;
+> +	char raw_key[FSCRYPT_MAX_KEY_SIZE];
+
+For binary data, prefer 'u8' to 'char'.
+
+> +
+> +	if (fscrypt_mode_num > __FSCRYPT_MODE_MAX || fscrypt_mode_num < 0 ||
+> +	    !fscrypt_modes[fscrypt_mode_num].cipher_str) {
+> +		fscrypt_warn(NULL, "Invalid fscrypt mode %d specified for metadata encryption.",
+> +			     fscrypt_mode_num);
+> +		return -EOPNOTSUPP;
+> +	}
+
+The filenames-only encryption modes (FSCRYPT_MODE_AES_256_CTS and
+FSCRYPT_MODE_AES_128_CTS) will pass this check, which seems undesired.
+
+> +
+> +	if (sb->s_cop->get_ino_and_lblk_bits)
+> +		sb->s_cop->get_ino_and_lblk_bits(sb, &dummy, &lblk_bits);
+> +	dun_bytes = DIV_ROUND_UP(lblk_bits, 8);
+> +
+> +	if (fscrypt_modes[fscrypt_mode_num].ivsize < dun_bytes) {
+> +		fscrypt_warn(NULL, "The fscrypt mode only supports %d DUN bytes, but FS requires support for %d DUN bytes.",
+> +			     fscrypt_modes[fscrypt_mode_num].ivsize, dun_bytes);
+> +		return -EOPNOTSUPP;
+> +	}
+
+lblk_bits is the number of bits used to represent file logical block numbers
+(e.g. ext4_lblk_t).  That's different from the filesystem-wide block number
+(e.g. ext4_fsblk_t), which is what metadata encryption will use.
+
+> +	crypto_mode = fscrypt_modes[fscrypt_mode_num].blk_crypto_mode;
+> +
+> +	err = fscrypt_metadata_get_key_from_id(
+> +					FSCRYPT_KEY_DESC_PREFIX,
+> +					key_desc_hex,
+> +					fscrypt_modes[fscrypt_mode_num].keysize,
+> +					raw_key);
+> +	if (err)
+> +		goto out;
+
+This is allowing for the key to be longer than the provided keysize, in which
+case only a prefix of the key is used.
+
+It should require the exact keysize instead.
+
+> +
+> +	sb->s_metadata_key = kzalloc(sizeof(*sb->s_metadata_key), GFP_NOFS);
+
+No need for GFP_NOFS here.
+
+> +/**
+> + * fscrypt_free_metadata_encryption() - free metadata encryption fields in
+> + *					super_block.
+> + * @sb: The super_block to free metatdata encryption fields from
+> + */
+> +void fscrypt_free_metadata_encryption(struct super_block *sb)
+> +{
+> +	int num_devices;
+> +	int i;
+> +	struct request_queue *q;
+> +
+> +	if (!sb->s_metadata_key)
+> +		return;
+> +
+> +	num_devices = fscrypt_get_num_devices(sb);
+> +
+> +	for (i = 0; i < num_devices; i++) {
+> +		q = fscrypt_get_device(sb, i);
+> +		if (WARN_ON(!q))
+> +			continue;
+> +		blk_crypto_evict_key(q, sb->s_metadata_key);
+> +	}
+> +
+> +	memzero_explicit(sb->s_metadata_key, sizeof(*sb->s_metadata_key));
+> +	kzfree(sb->s_metadata_key);
+> +	sb->s_metadata_key = NULL;
+> +}
+
+kfree_sensitive(), not kzfree().
+
+Also, memzero_explicit() is redundant.
+
+> +/**
+> + * fscrypt_metadata_crypt_bio() - Add metadata encryption context to bio.
+> + *
+> + * @bio: The bio to add the encryption context to
+> + * @lblk: The logical block number within the filesystem at which this bio
+> + *	  starts reading/writing data.
+
+Should be:
+
+   @fsblk: The block number within the filesystem ...
+
+> + * @sb: The superblock of the filesystem
+> + * @gfp_mask: gfp_mask for bio_crypt_context allocation
+> + */
+> +void fscrypt_metadata_crypt_bio(struct bio *bio, u64 lblk,
+> +				struct super_block *sb, gfp_t gfp_mask)
+> +{
+> +	u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE] = { 0 };
+> +
+> +	if (!sb->s_metadata_key)
+> +		return;
+> +
+> +	dun[0] = lblk;
+> +	bio_crypt_set_ctx(bio, sb->s_metadata_key, dun, gfp_mask);
+> +}
+
+Perhaps fscrypt_set_bio_crypt_ctx() should call this?  It seems there should be
+a single function that filesystems can call that handles setting the
+bio_crypt_ctx for both file contents and metadata encryption.
+
+- Eric
