@@ -2,153 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D157D2868C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BC22868CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgJGUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:01:15 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:53173 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgJGUBN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:01:13 -0400
-Received: from weisslap.m4st3rnet.de ([178.27.102.19]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MGxYh-1kCnD23hRL-00E6t7; Wed, 07 Oct 2020 22:01:03 +0200
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Subject: [PATCH 4/4] selftests/timens: added selftest for /proc/stat btime
-Date:   Wed,  7 Oct 2020 22:00:15 +0200
-Message-Id: <20201007200015.30868-5-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201007200015.30868-1-michael.weiss@aisec.fraunhofer.de>
-References: <20201007200015.30868-1-michael.weiss@aisec.fraunhofer.de>
+        id S1728156AbgJGUEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:04:00 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:44533 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726138AbgJGUEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:04:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602101039; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=StpMkHqz702M9TNRAosRWVwfnSKbRhnK2lan3cAXz80=;
+ b=VS8r0uelWz+7VPb/8VXNOf567YGibVBUesUYjyELffK+EZbO8vE3AM6XyeTzTEEcaY0lA0X0
+ /rhb7ecHBgvZfOZYF7vP9hzPzo9nwaXMviaY+7ZkQ/Hh/bOGiHIfKwxtRYrOKkw10UpTtvyW
+ aiOnSGm4cs7TAWCdwZJTz2wOrIc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f7e1f2fd63768e57be82e61 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Oct 2020 20:03:59
+ GMT
+Sender: vgarodia=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D365FC433C8; Wed,  7 Oct 2020 20:03:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: vgarodia)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0DF09C433CA;
+        Wed,  7 Oct 2020 20:03:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:FgTrGpeHQrRfG65lLTx+YffpR+XLlCqQ4sYTOqKpip06j+yKXBy
- CDRt0dMtSPpPb8JN55tROQaQ7nEjgVBqASUn3yX30zuQXDMEhJuwk3Bhn1bsUlqXqY2QSZM
- U5AEg04h3kHKOeNmSiXMTp4CJBz0oY0hg2xjrtbCcLpzidZYVQzq0A6SkSLtWhhqa5jg/ia
- C3d07uVtl7NXJ2Nc6V5Ww==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dVkN4KU9ANI=:8GoHeJ5nbLUOx6LIlWQXpZ
- Gd1f+yBtYv45dPRH31Idv+W193bzuK4q0MTFROwDPCdJuXVXwDQCLyXeFBQOx2sRqz5WFTlKZ
- AxGE7uyLtu/QCHczDvmnHf+eWu2pIONGKgRy1nNU1WIBIqZoG6K5GPieUNat6dGmBENNf0/Sj
- 9fvbyIvfA8nroAu5tAq/MfxLLuJ81/CUr68LfZxa0DAJ8P5jbkXrlnP0TETqp9XekOEFLhIW7
- Ln3ooAr0SC7cL7ghJ39LNle0uSYAQAVSbspzTGheFffU3vLtuVU190vv3KB3pxqtd5omw7hwZ
- 5VIztQZrljpsF5oEfRNV5iDEDfvdCXlxI/staTQXrOAa8Jp/SzVcPZt9oms+/fbc65o/4PcGl
- JQchuVfJVBUm3rfQsSZqSyioSAxRUBk/TBvDnRZpLKZu2YuYKoTe9F+6E40xSijYnFIV3uUyZ
- ptDhEvfqqgDfmb4MlgiRy3t/7j9MIuq4+TcVhYAojH2ZFY1FZMKMuM9KGIvSt0MpdjgFuppjA
- W4DDM2sAx64SiciMBEH+00AgxyPx2d5rOk5bkzbPkAIUrPn6fAETU7cTl/G+maqNMjQyywzSQ
- /Ia0B4mVsLwShFP76gv9G6kVbPxCk6m8/Zd5CMUYcuKk62FW9wtH8nHoZCUPX2JkxdZw2xFpP
- VLNPRdE0yK6T/QC3VkUZKo36rUiW9MZOyt7D0lTGdAxNbH+SkOB4/gMHuU8ZLvPRBt5NG33Hy
- TpJ9Wcs4gxP2HFIlqXU+DKES1Wb3GSC0n0bHOLDhNpFdkWukeFksWanYetuAH/DOWouEqIoPe
- 8U2wsJ6Ju06/cFZXNbMWt990vkkJQOh+dc+83cvDHJgJW9zFI8k0Ezr6Y39h/lynohO2SmiDY
- xI97DTYAPB0/t+VgnsBA==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 08 Oct 2020 01:33:56 +0530
+From:   vgarodia@codeaurora.org
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: Re: [PATCH 0/3] Venus dynamic resolution change fixes
+In-Reply-To: <20200928164431.21884-1-stanimir.varbanov@linaro.org>
+References: <20200928164431.21884-1-stanimir.varbanov@linaro.org>
+Message-ID: <cd91071c76f8f2151fdcd70a16c19edf@codeaurora.org>
+X-Sender: vgarodia@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test that btime value of /proc/stat is as expected in the time namespace
-using a simple parser to get btime from /proc/stat.
+Hi Stan,
 
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
----
- tools/testing/selftests/timens/procfs.c | 58 ++++++++++++++++++++++++-
- 1 file changed, 57 insertions(+), 1 deletion(-)
+On 2020-09-28 22:14, Stanimir Varbanov wrote:
+> Hi all,
+> 
+> Those three patches are needed to fix setting of LAST buffer flag 
+> during
+> dynamic-resolution-change state.
+> 
+> The first patch in this series fix the LAST buffer flag setting, the 
+> second
+> unify the driver behavior no matter the event from firmware is 
+> sufficient or
+> insufficient resources and the third one is moving the locking from 
+> buf_queue
+> helper function to encoder and decoder buf_queue vb2 ops.
+> 
+> Comments are welcome!
+> 
+> Stanimir Varbanov (3):
+>   venus: vdec: Fix non reliable setting of LAST flag
+>   venus: vdec: Make decoder return LAST flag for sufficient event
+>   venus: helpers: Lock outside of buffer queue helper
+> 
+>  drivers/media/platform/qcom/venus/core.h    |  5 +-
+>  drivers/media/platform/qcom/venus/helpers.c | 15 ++--
+>  drivers/media/platform/qcom/venus/vdec.c    | 92 +++++++++++++--------
+>  drivers/media/platform/qcom/venus/venc.c    | 11 ++-
+>  4 files changed, 76 insertions(+), 47 deletions(-)
 
-diff --git a/tools/testing/selftests/timens/procfs.c b/tools/testing/selftests/timens/procfs.c
-index 7f14f0fdac84..f2519154208a 100644
---- a/tools/testing/selftests/timens/procfs.c
-+++ b/tools/testing/selftests/timens/procfs.c
-@@ -93,6 +93,33 @@ static int read_proc_uptime(struct timespec *uptime)
- 	return 0;
- }
- 
-+static int read_proc_stat_btime(unsigned long long *boottime_sec)
-+{
-+	FILE *proc;
-+	char line_buf[2048];
-+
-+	proc = fopen("/proc/stat", "r");
-+	if (proc == NULL) {
-+		pr_perror("Unable to open /proc/stat");
-+		return -1;
-+	}
-+
-+	while (fgets(line_buf, 2048, proc)) {
-+		if (sscanf(line_buf, "btime %llu", boottime_sec) != 1)
-+			continue;
-+		fclose(proc);
-+		return 0;
-+	}
-+	if (errno) {
-+		pr_perror("fscanf");
-+		fclose(proc);
-+		return -errno;
-+	}
-+	pr_err("failed to parse /proc/stat");
-+	fclose(proc);
-+	return -1;
-+}
-+
- static int check_uptime(void)
- {
- 	struct timespec uptime_new, uptime_old;
-@@ -123,18 +150,47 @@ static int check_uptime(void)
- 	return 0;
- }
- 
-+static int check_stat_btime(void)
-+{
-+	unsigned long long btime_new, btime_old;
-+	unsigned long long btime_expected;
-+
-+	if (switch_ns(parent_ns))
-+		return pr_err("switch_ns(%d)", parent_ns);
-+
-+	if (read_proc_stat_btime(&btime_old))
-+		return 1;
-+
-+	if (switch_ns(child_ns))
-+		return pr_err("switch_ns(%d)", child_ns);
-+
-+	if (read_proc_stat_btime(&btime_new))
-+		return 1;
-+
-+	btime_expected = btime_old - TEN_DAYS_IN_SEC;
-+	if (btime_new != btime_expected) {
-+		pr_fail("btime in /proc/stat: old %llu, new %llu [%llu]",
-+			btime_old, btime_new, btime_expected);
-+		return 1;
-+	}
-+
-+	ksft_test_result_pass("Passed for /proc/stat btime\n");
-+	return 0;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int ret = 0;
- 
- 	nscheck();
- 
--	ksft_set_plan(1);
-+	ksft_set_plan(2);
- 
- 	if (init_namespaces())
- 		return 1;
- 
- 	ret |= check_uptime();
-+	ret |= check_stat_btime();
- 
- 	if (ret)
- 		ksft_exit_fail();
--- 
-2.20.1
+I have made some comments which are more towards optimizing the reconfig 
+event
+handling in the driver. I would leave that up to you to either update in 
+this series
+or take it separately. Either way, i am good with this series.
 
+Reviewed-by: Vikash Garodia <vgarodia@codeaurora.org>
