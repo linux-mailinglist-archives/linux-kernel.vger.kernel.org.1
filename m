@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0954D2860E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B082860F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgJGOFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:05:20 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:48979 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728578AbgJGOFU (ORCPT
+        id S1728560AbgJGOJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728469AbgJGOJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:05:20 -0400
-Received: by mail-il1-f197.google.com with SMTP id g1so1629838iln.15
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:05:19 -0700 (PDT)
+        Wed, 7 Oct 2020 10:09:07 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC1AC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 07:09:06 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id w7so645567oow.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F5NtGNV4UXqtob/Dy8Wfu3ZnV2YG7ZTF8Dz7SU/MRuA=;
+        b=B4PLpburyCDHIfOP25bhhP5r9tO+rxb3oufGcc1bi7vBgcrdV+TGTIhDv3iLTdW/e3
+         oIr3r8n5BHeowIpG4G2PtYVK0pjnuwRKRa5QxkdhF8GSBqXvOSF2jkGXbTBeRECcAImq
+         DchpU/Y/YQ235XjHuiSdLX0FDwNJ1FnUf5B4s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=9N4t1zZ/BgXswdt8rkaONIwjFjMlU8nOCAQhp6K8GdM=;
-        b=NkrGFA9OOenfXfiVSvG+MwWKFzgQ5OKfWTum4FTqJ6j/70pxZ/UEiu7VsOzqKwwgW6
-         Eu6Skm0pq2I42F8XmhYpHtXy/yw8WQOZi4WI1fF56RMdoqOEcltlbLuQboIqAavgTB+l
-         9fsJVHij5MkuKSWoAh7zM2zcHiqrB4Vny+BXr1J10U6/joJ8gFXvVnGz4qPqKSxWhV60
-         g3WnboKCM7jopOBqQ/ZBkhfQyg1Mdxvt0+qxWzOW32xeMUxXd21yrheJ3AYZPbeLdUG/
-         B8awktld5mTIC1GJ4ITzwQ0eGE2JRWbRLnaXzNI2s8yGjyPRlxix7By78/63ZPMkuQxc
-         jGhA==
-X-Gm-Message-State: AOAM5320RoKjZl7aJBfqL2mHxmDwe+fffj9JxAruUvxRGLWN3iRhHzYa
-        hKe4bATPuoOcMkKjCuaA4FS5XYEkRCPY8Ngvbx+Yo4TUhsh9
-X-Google-Smtp-Source: ABdhPJxyxhA2CKhBEp8yYRdtLB4N3yig4Q81IcjCGr6KySsABUKmscx8ep35DXpTIQfOxEWVwcAiuqe8qCjVPM98I2nuTkJjDh5d
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F5NtGNV4UXqtob/Dy8Wfu3ZnV2YG7ZTF8Dz7SU/MRuA=;
+        b=ToEU9Oo9CMGReAy1CV4nsmCT4yLj0bPSUpnmRdnHth02XISEqSTetSCmD8VmmLN5e7
+         JSOW6g3U4KAyFYAuc5x1qHsrCnqb9t3SnnJGnNmKULdO7eINf038ZPJK+bVQjShZnhyF
+         22J8c0Htdjftys6FMG3QX/gRhvL/6vEiwGSezVy8H2aIorNxPjMMUO1FsEprCFcp5lX3
+         xAY0pFHizMWTF4coVPS67wTZVVc8Uel4sy77BYcIAICVJNudKEVzPyMCJTcbjxZCHcnR
+         W8ZJM3xwvF+tSDg7S8eSq2gv6qHe92EWkSqfYUAFU0JDiG/EUhP66wpSbXzPyT4B8XNa
+         kFYg==
+X-Gm-Message-State: AOAM532IgAX/RMlx6BTh2Kldg09Cgus/kq8xNgon2hJvkQx8a1KybxSG
+        6V3yd7m1N+YP/wYzpFcDcB+uZQjoovZ5hGiq5gLcNw==
+X-Google-Smtp-Source: ABdhPJw2MxOMsCCHLuA0B2aXMY51PcMyywibrKXkCKUzUw6tJNpIcvbizXHrg3fACcDmzezaL+tQ7uy44dIyRAnAIS8=
+X-Received: by 2002:a4a:e592:: with SMTP id o18mr2184941oov.28.1602079746086;
+ Wed, 07 Oct 2020 07:09:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:da8e:: with SMTP id u14mr2835314iln.235.1602079518913;
- Wed, 07 Oct 2020 07:05:18 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 07:05:18 -0700
-In-Reply-To: <0000000000004a0d5e05b1110e86@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a07b5405b1153450@google.com>
-Subject: Re: WARNING in ieee80211_free_ack_frame
-From:   syzbot <syzbot+a063bbf0b15737362592@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
+ <20201002233118.GM9916@ziepe.ca> <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
+ <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
+ <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com> <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
+ <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com> <20201007124409.GN5177@ziepe.ca>
+ <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
+ <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com>
+ <20201007130610.GP5177@ziepe.ca> <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
+In-Reply-To: <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 7 Oct 2020 16:08:54 +0200
+Message-ID: <CAKMK7uFSTrULTE-o+vHU-81dJpKJ5cHAAb8qkpQtcz6KrhvPzg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Oct 7, 2020 at 3:34 PM Tomasz Figa <tfiga@chromium.org> wrote:
+>
+> On Wed, Oct 7, 2020 at 3:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 02:58:33PM +0200, Daniel Vetter wrote:
+> > > On Wed, Oct 7, 2020 at 2:48 PM Tomasz Figa <tfiga@chromium.org> wrote:
+> > > >
+> > > > On Wed, Oct 7, 2020 at 2:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > >
+> > > > > On Wed, Oct 07, 2020 at 02:33:56PM +0200, Marek Szyprowski wrote:
+> > > > > > Well, it was in vb2_get_vma() function, but now I see that it has been
+> > > > > > lost in fb639eb39154 and 6690c8c78c74 some time ago...
+> > > > >
+> > > > > There is no guarentee that holding a get on the file says anthing
+> > > > > about the VMA. This needed to check that the file was some special
+> > > > > kind of file that promised the VMA layout and file lifetime are
+> > > > > connected.
+> > > > >
+> > > > > Also, cloning a VMA outside the mm world is just really bad. That
+> > > > > would screw up many assumptions the drivers make.
+> > > > >
+> > > > > If it is all obsolete I say we hide it behind a default n config
+> > > > > symbol and taint the kernel if anything uses it.
+> > > > >
+> > > > > Add a big comment above the follow_pfn to warn others away from this
+> > > > > code.
+> > > >
+> > > > Sadly it's just verbally declared as deprecated and not formally noted
+> > > > anyway. There are a lot of userspace applications relying on user
+> > > > pointer support.
+> > >
+> > > userptr can stay, it's the userptr abuse for zerocpy buffer sharing
+> > > which doesn't work anymore. At least without major surgery (you'd need
+> > > an mmu notifier to zap mappings and recreate them, and that pretty
+> > > much breaks the v4l model of preallocating all buffers to make sure we
+> > > never underflow the buffer queue). And static mappings are not coming
+> > > back I think, we'll go ever more into the direction of dynamic
+> > > mappings and moving stuff around as needed.
+> >
+> > Right, and to be clear, the last time I saw a security flaw of this
+> > magnitude from a subsystem badly mis-designing itself, Linus's
+> > knee-jerk reaction was to propose to remove the whole subsystem.
+> >
+> > Please don't take status-quo as acceptable, V4L community has to work
+> > to resolve this, uABI breakage or not. The follow_pfn related code
+> > must be compiled out of normal distro kernel builds.
+>
+> I think the userptr zero-copy hack should be able to go away indeed,
+> given that we now have CMA that allows having carveouts backed by
+> struct pages and having the memory represented as DMA-buf normally.
 
-HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16933627900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
-dashboard link: https://syzkaller.appspot.com/bug?extid=a063bbf0b15737362592
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157d194f900000
+Not sure whether there's a confusion here: dma-buf supports memory not
+backed by struct page.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a063bbf0b15737362592@syzkaller.appspotmail.com
+> How about the regular userptr use case, though?
+>
+> The existing code resolves the user pointer into pages by following
+> the get_vaddr_frames() -> frame_vector_to_pages() ->
+> sg_alloc_table_from_pages() / vm_map_ram() approach.
+> get_vaddr_frames() seems to use pin_user_pages() behind the scenes if
+> the vma is not an IO or a PFNMAP, falling back to follow_pfn()
+> otherwise.
 
-------------[ cut here ]------------
-Have pending ack frames!
-WARNING: CPU: 0 PID: 37 at net/mac80211/main.c:1396 ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1396
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 37 Comm: kworker/u4:2 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1396
-Code: e8 5d 43 b8 f9 48 89 ef e8 b5 dc a8 fe 31 c0 5b 5d c3 e8 4b 43 b8 f9 48 c7 c7 00 c0 5e 89 c6 05 66 b5 96 03 01 e8 3a 80 88 f9 <0f> 0b eb d2 0f 1f 40 00 41 57 41 56 41 55 49 89 d5 41 54 49 89 f4
-RSP: 0018:ffffc90000ea79c8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8880a91b8380 RSI: ffffffff815f5a55 RDI: fffff520001d4f2b
-RBP: ffff888092f26540 R08: 0000000000000001 R09: ffff8880ae4318e7
-R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffffffff87bdfb90 R14: 0000000000000000 R15: 0000000000000000
- idr_for_each+0x113/0x220 lib/idr.c:208
- ieee80211_free_hw+0x9b/0x2a0 net/mac80211/main.c:1412
- mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3285 [inline]
- hwsim_exit_net+0x5bc/0xc90 drivers/net/wireless/mac80211_hwsim.c:4037
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:186
- cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Yeah pin_user_pages is fine, it's just the VM_IO | VM_PFNMAP vma that
+don't work.
+>
+> Is your intention to drop get_vaddr_frames() or we could still keep
+> using it and if vec->is_pfns is true:
+> a) if CONFIG_VIDEO_LEGACY_PFN_USERPTR is set, taint the kernel
+> b) otherwise just undo and fail?
 
+I'm typing that patch series (plus a pile more) right now.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
