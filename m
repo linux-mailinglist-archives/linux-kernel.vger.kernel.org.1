@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B237285B96
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19482285B97
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbgJGJJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:09:18 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:40425 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726103AbgJGJJS (ORCPT
+        id S1727074AbgJGJJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:09:21 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:50395 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgJGJJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Oct 2020 05:09:18 -0400
-Received: by mail-il1-f208.google.com with SMTP id p17so1049103ilg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:09:17 -0700 (PDT)
+Received: by mail-il1-f207.google.com with SMTP id u20so1030015ilk.17
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:09:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RPbi0L3LEGQCHC9LzRoxc05o9gWfsGlWtHMxECXs/j0=;
-        b=VPA3vW2sZEVU5GGYmXGCCoE3SeHNUtAl7ewgSAsEhgIYRfFgMWbb9YWlKNUBS7pid5
-         LLoud2Sxv8WA9xwMLIEy1Rb+Rje09JcsjHkXjX/6fRVannRhyG/HesjI/ApZoXfM9GDQ
-         zsAKauJKH2ONphZtOF+XPhiHIMqjtX+P6b4Xbot0ZS32eBScci5WagbFPIf1ygu4YGoI
-         2Pwqvsf9hjKKc+vF6NnDtQCC/RzNk0UsihwdPU5VndCThe2GImFRmYb+vQYlRwmf0mLh
-         9ukNeBvOrLRqayt8oRSsBEUQKEJpUX8Jqb838e/rz5vadvvvaNTAX4d8Nr+ysPRB8tp5
-         aYew==
-X-Gm-Message-State: AOAM532fkLGN7Ob634tviQ3ZGrsP5xWzrYk4F1TgfKHd5CdtorhwbsSL
-        CyyvDWjuTEVuXKGU6Wxw7IbLEf/5IO/DBadendyiQ9ojZFES
-X-Google-Smtp-Source: ABdhPJxi8ofKiwLGzpqK2O4TH2TRf5qP5OEMTv34ulrZiHIKeN6M+iadC52W0fKznvmsqU9abdbUqybbtYmF8D/AXttebEca1lWC
+        bh=gjt5a7t5G0GfobNHig+44qsKG0BT7BoaxNCvBIm3TkU=;
+        b=VyxQpCbo1laqw2ihf8VS0hHMuds0FqeLy5k40cADjGv45g3uLvJDRWtov5osx/JrnZ
+         xQ/2zZyY2mlA5s/N+kDuy+TfamIEiD8tRnsloLjm7UhOSW9F+gLyt9+IL6Xa+ZthkMxL
+         wxTaKgMtlNLCdHzE+YE3kvq/MYVoG129gsY1aBNgivu3ZkebHzf4k8Tz5oLvpnLZrEti
+         Q/LaKpeg2s96eiB5rO0dN7Iol40lQOWa1BvcqabDB08P/Vbnu+6ikgkGNsyow2rPJGgs
+         OCELAgqCfKZSo8H801InOer87dmknROiUz24/UEfLpVqynNqPwoKp9qwPwjnEg6YysBx
+         AATg==
+X-Gm-Message-State: AOAM531J9rWfJrFZFojIm85G4QakF2DumRFLfRiR3v6fvkS7bhoqKKck
+        +7Aa0WaGI8LBuu9xSLl+cq6SHJBSpGKGmuE9uiZomdOna8vL
+X-Google-Smtp-Source: ABdhPJyE065X85vepOdRHdgasS67W6CExJ2Q77ctqNi5BraeqXZMsTCX8ZFps3jg8VFj8XwSpJ3bL5hFqQJcfaa1kAe7Im6rhpph
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca92:: with SMTP id t18mr1987198ilo.287.1602061757300;
+X-Received: by 2002:a6b:3f88:: with SMTP id m130mr1584454ioa.78.1602061757744;
  Wed, 07 Oct 2020 02:09:17 -0700 (PDT)
 Date:   Wed, 07 Oct 2020 02:09:17 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f3c7f005b11111c9@google.com>
-Subject: WARNING in pin_user_pages_locked
-From:   syzbot <syzbot+542e00ce34515318e08e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, daniel.vetter@ffwll.ch,
-        daniel.vetter@intel.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000fa89dc05b11111b7@google.com>
+Subject: general protection fault in ieee80211_key_free
+From:   syzbot <syzbot+847ae671fe8522d3491a@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,77 +48,78 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    a804ab08 Add linux-next specific files for 20201006
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1688db0b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
-dashboard link: https://syzkaller.appspot.com/bug?extid=542e00ce34515318e08e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15ab0c77900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d2c33f900000
-
-The issue was bisected to:
-
-commit d53807afc288c71eb9374f102d49cc01f6b6c760
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Sat Oct 3 08:01:38 2020 +0000
-
-    mm/frame-vec: use FOLL_LONGTERM
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164d7c68500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=154d7c68500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=114d7c68500000
+HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10e6e93f900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=847ae671fe8522d3491a
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102e1cbf900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1671821b900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+542e00ce34515318e08e@syzkaller.appspotmail.com
-Fixes: d53807afc288 ("mm/frame-vec: use FOLL_LONGTERM")
+Reported-by: syzbot+847ae671fe8522d3491a@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6893 at mm/gup.c:2992 pin_user_pages_locked+0x60d/0x780 mm/gup.c:2992
-Modules linked in:
-CPU: 0 PID: 6893 Comm: syz-executor513 Not tainted 5.9.0-rc8-next-20201006-syzkaller #0
+netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+general protection fault, probably for non-canonical address 0xdffffe7100000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x0000138800000008-0x000013880000000f]
+CPU: 0 PID: 6852 Comm: syz-executor045 Not tainted 5.9.0-rc8-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:pin_user_pages_locked+0x60d/0x780 mm/gup.c:2992
-Code: cf ff 49 83 c7 08 e8 22 2e cf ff 48 8b 44 24 10 c6 44 24 10 01 48 05 00 10 00 00 48 89 44 24 08 e9 65 fb ff ff e8 03 2e cf ff <0f> 0b 49 c7 c4 ea ff ff ff e9 8a fe ff ff e8 f0 2d cf ff 0f 0b 49
-RSP: 0018:ffffc900011c7648 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000010000 RCX: ffffffff81a61358
-RDX: ffff8880a6822000 RSI: ffffffff81a6192d RDI: 0000000000000005
-RBP: ffffc900011c7728 R08: ffffc900011c7728 R09: ffff88808e116307
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000110 R14: 0000000000000110 R15: ffff888092918010
-FS:  00000000024e4880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+RIP: 0010:ieee80211_key_free+0x34/0x320 net/mac80211/key.c:893
+Code: 50 89 f3 49 89 fc e8 9b 44 81 f9 4d 85 e4 0f 84 ae 00 00 00 48 bd 00 00 00 00 00 fc ff df 4d 8d 7c 24 08 4d 89 fe 49 c1 ee 03 <41> 80 3c 2e 00 74 08 4c 89 ff e8 1d 2b c1 f9 4d 8b 2f 4d 85 ed 0f
+RSP: 0018:ffffc90005377880 EFLAGS: 00010202
+RAX: ffffffff87f3b955 RBX: 0000000000000000 RCX: ffff88808f2fa000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000138800000000
+RBP: dffffc0000000000 R08: ffffffff87ece20b R09: fffffbfff135f936
+R10: fffffbfff135f936 R11: 0000000000000000 R12: 0000138800000000
+R13: dffffc0000000000 R14: 0000027100000001 R15: 0000138800000008
+FS:  000000000155f940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f91c63cc028 CR3: 00000000a7259000 CR4: 00000000001506f0
+CR2: 0000000020000040 CR3: 000000009e0b0000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- get_vaddr_frames+0x788/0x960 mm/frame_vector.c:75
- vb2_create_framevec+0x55/0xc0 drivers/media/common/videobuf2/videobuf2-memops.c:50
- vb2_vmalloc_get_userptr+0xce/0x4c0 drivers/media/common/videobuf2/videobuf2-vmalloc.c:90
- __prepare_userptr+0x342/0x15f0 drivers/media/common/videobuf2/videobuf2-core.c:1117
- __buf_prepare+0x635/0x7d0 drivers/media/common/videobuf2/videobuf2-core.c:1356
- vb2_core_qbuf+0xa9d/0x11c0 drivers/media/common/videobuf2/videobuf2-core.c:1647
- vb2_qbuf+0x135/0x1a0 drivers/media/common/videobuf2/videobuf2-v4l2.c:826
- vb2_ioctl_qbuf+0xfb/0x140 drivers/media/common/videobuf2/videobuf2-v4l2.c:1056
- v4l_qbuf drivers/media/v4l2-core/v4l2-ioctl.c:2066 [inline]
- v4l_qbuf+0x92/0xc0 drivers/media/v4l2-core/v4l2-ioctl.c:2060
- __video_do_ioctl+0xb94/0xe20 drivers/media/v4l2-core/v4l2-ioctl.c:2990
- video_usercopy+0x207/0xe50 drivers/media/v4l2-core/v4l2-ioctl.c:3306
- v4l2_ioctl+0x1b3/0x250 drivers/media/v4l2-core/v4l2-dev.c:360
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ ieee80211_del_key+0x30c/0x360 net/mac80211/cfg.c:531
+ rdev_del_key net/wireless/rdev-ops.h:107 [inline]
+ nl80211_del_key+0x437/0x6f0 net/wireless/nl80211.c:4201
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0xaf5/0xd70 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2470
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443ff9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd1306b5e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 0000000000443ff9
-RDX: 0000000020000140 RSI: 00000000c058560f RDI: 0000000000000003
-RBP: 00000000006ce018 R08: 00000000004002e0 R09: 00000000004002e0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c80
-R13: 0000000000401d10 R14: 0000000000000000 R15: 0000000000000000
+RIP: 0033:0x44a339
+Code: e8 dc 18 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffeac18b158 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007ffeac18b1c0 RCX: 000000000044a339
+RDX: 0000000000000000 RSI: 0000000020000380 RDI: 0000000000000003
+RBP: 0000000000000032 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+R13: 0000000000000000 R14: 0000000000000048 R15: 0000000000000004
+Modules linked in:
+---[ end trace 1b70266a49263a4c ]---
+RIP: 0010:ieee80211_key_free+0x34/0x320 net/mac80211/key.c:893
+Code: 50 89 f3 49 89 fc e8 9b 44 81 f9 4d 85 e4 0f 84 ae 00 00 00 48 bd 00 00 00 00 00 fc ff df 4d 8d 7c 24 08 4d 89 fe 49 c1 ee 03 <41> 80 3c 2e 00 74 08 4c 89 ff e8 1d 2b c1 f9 4d 8b 2f 4d 85 ed 0f
+RSP: 0018:ffffc90005377880 EFLAGS: 00010202
+RAX: ffffffff87f3b955 RBX: 0000000000000000 RCX: ffff88808f2fa000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000138800000000
+RBP: dffffc0000000000 R08: ffffffff87ece20b R09: fffffbfff135f936
+R10: fffffbfff135f936 R11: 0000000000000000 R12: 0000138800000000
+R13: dffffc0000000000 R14: 0000027100000001 R15: 0000138800000008
+FS:  000000000155f940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2b37de36c0 CR3: 000000009e0b0000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -129,6 +129,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
