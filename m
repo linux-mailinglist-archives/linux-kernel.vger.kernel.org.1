@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268072862E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FB228632E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728929AbgJGP7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:59:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728425AbgJGP7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:59:23 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62B7120789;
-        Wed,  7 Oct 2020 15:59:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602086362;
-        bh=hJslUfi5rxFoAmtR6R3uKnAvE+gdWHluNs09jV3jZg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KrtFOIzP21KalR8ZHk3BCgbUZNnv2AH75XI7f5mpgy7Oifo8EVpV8Bbj2UJwxiSG7
-         Oo8WcS2SOOOMdTGIbXW5qE4svUn34BrVGGxE+Ihl+yC/aLg9GKQGUovRuuGkrycs+R
-         sT/x+XmuuRS10wBy64mQ0OAEfF3lPFpDOzSAOGbs=
-Date:   Wed, 7 Oct 2020 11:05:22 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-hardening@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 05/14] drm/amd/pm: Replace one-element array with
- flexible-array in struct phm_acp_clock_voltage_dependency_table
-Message-ID: <92351e6a3328d31e61927462edac3b8dcbcd41b9.1602020074.git.gustavoars@kernel.org>
-References: <cover.1602020074.git.gustavoars@kernel.org>
+        id S1729050AbgJGQGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:06:04 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:49540 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728177AbgJGQGD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:06:03 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097Fprpj028954;
+        Wed, 7 Oct 2020 18:05:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=AMt0mdBSuzkiudzNdejXkVPMDzES74v23TlSkvD5yGA=;
+ b=EjvhFnOer2kuZB5HcDFz6In7XD7IcVzIcKyoPKNPRZcbYTYuO882kR3pa5N+2d1lz3xY
+ M1lgloOTvqaazW1mQ2Z/tLMVBK3v1Xum6TbReapQvXFba5mPNVtgtftC9I7+j5F1Lhqa
+ 2kr5W/DM5jjmj0eR7mVtgQq4bWD2W7pVV+U7Q/mgF4ptmQYh9sLBCnoVKhYDWV54Isia
+ sAlfGRmygekPw0bme8wm9ii83XVFNPg/EUs5fyWYAtmMUe/QFOPklWHTPpuUN6crsxzc
+ BL4ntExCVvRnBwSbJSCtkL06VumB0diHRCExnXWVGEcwlSm2kXbiY3FJYaLAusyowWaP 7A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3402tk5ums-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 18:05:55 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6CDD710002A;
+        Wed,  7 Oct 2020 18:05:55 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 57B9D2BA2C7;
+        Wed,  7 Oct 2020 18:05:55 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG1NODE1.st.com (10.75.127.1)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct 2020 18:05:54
+ +0200
+From:   Hugues Fruchet <hugues.fruchet@st.com>
+To:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+CC:     <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>
+Subject: [PATCH] media: stm32-dcmi: remove deprecated dmaengine_terminate_all()
+Date:   Wed, 7 Oct 2020 18:05:52 +0200
+Message-ID: <1602086752-8987-1-git-send-email-hugues.fruchet@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1602020074.git.gustavoars@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG1NODE1.st.com
+ (10.75.127.1)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_10:2020-10-06,2020-10-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+Replace dmaengine_terminate_all() by dmaengine_terminate_sync()
+to ensure that all pending dma operations are really finished.
+This is not ensured by dmaengine_terminate_all() and this API
+is deprecated, so better to use the _sync() variant.
 
-Refactor the code according to the use of a flexible-array member in
-struct phm_acp_clock_voltage_dependency_table, instead of a one-element
-array, and use the struct_size() helper to calculate the size for the
-allocation.
-
-Also, save some heap space as the original code is multiplying
-table->numEntries by sizeof(struct phm_acp_clock_voltage_dependency_table)
-when it should have multiplied it by sizeof(phm_acp_clock_voltage_dependency_record)
-instead.
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
-
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/5f7c5d3c.TyfOhg%2FA6JycL6ZN%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@st.com>
 ---
- drivers/gpu/drm/amd/pm/inc/hwmgr.h                    |  2 +-
- .../gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c  | 11 ++++-------
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ drivers/media/platform/stm32/stm32-dcmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/inc/hwmgr.h b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
-index 2f1886bc5535..361cb1125351 100644
---- a/drivers/gpu/drm/amd/pm/inc/hwmgr.h
-+++ b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
-@@ -150,7 +150,7 @@ struct phm_acp_clock_voltage_dependency_record {
+diff --git a/drivers/media/platform/stm32/stm32-dcmi.c b/drivers/media/platform/stm32/stm32-dcmi.c
+index fd1c41c..3283337 100644
+--- a/drivers/media/platform/stm32/stm32-dcmi.c
++++ b/drivers/media/platform/stm32/stm32-dcmi.c
+@@ -324,7 +324,7 @@ static int dcmi_start_dma(struct stm32_dcmi *dcmi,
+ 	}
  
- struct phm_acp_clock_voltage_dependency_table {
- 	uint32_t count;
--	struct phm_acp_clock_voltage_dependency_record entries[1];
-+	struct phm_acp_clock_voltage_dependency_record entries[];
- };
+ 	/*
+-	 * Avoid call of dmaengine_terminate_all() between
++	 * Avoid call of dmaengine_terminate_sync() between
+ 	 * dmaengine_prep_slave_single() and dmaengine_submit()
+ 	 * by locking the whole DMA submission sequence
+ 	 */
+@@ -438,7 +438,7 @@ static void dcmi_process_jpeg(struct stm32_dcmi *dcmi)
+ 	}
  
- struct phm_vce_clock_voltage_dependency_record {
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
-index 305d95c4162d..a1b198045978 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
-@@ -1194,15 +1194,12 @@ static int get_acp_clock_voltage_limit_table(struct pp_hwmgr *hwmgr,
- 		struct phm_acp_clock_voltage_dependency_table **ptable,
- 		const ATOM_PPLIB_ACPClk_Voltage_Limit_Table *table)
- {
--	unsigned table_size, i;
-+	unsigned long i;
- 	struct phm_acp_clock_voltage_dependency_table *acp_table;
+ 	/* Abort DMA operation */
+-	dmaengine_terminate_all(dcmi->dma_chan);
++	dmaengine_terminate_sync(dcmi->dma_chan);
  
--	table_size = sizeof(unsigned long) +
--		sizeof(struct phm_acp_clock_voltage_dependency_table) *
--		table->numEntries;
--
--	acp_table = kzalloc(table_size, GFP_KERNEL);
--	if (NULL == acp_table)
-+	acp_table = kzalloc(struct_size(acp_table, entries, table->numEntries),
-+			    GFP_KERNEL);
-+	if (!acp_table)
- 		return -ENOMEM;
+ 	/* Restart capture */
+ 	if (dcmi_restart_capture(dcmi))
+@@ -882,7 +882,7 @@ static void dcmi_stop_streaming(struct vb2_queue *vq)
  
- 	acp_table->count = (unsigned long)table->numEntries;
+ 	/* Stop all pending DMA operations */
+ 	mutex_lock(&dcmi->dma_lock);
+-	dmaengine_terminate_all(dcmi->dma_chan);
++	dmaengine_terminate_sync(dcmi->dma_chan);
+ 	mutex_unlock(&dcmi->dma_lock);
+ 
+ 	pm_runtime_put(dcmi->dev);
 -- 
-2.27.0
+2.7.4
 
