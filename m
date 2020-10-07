@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD34B285D26
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5777285D45
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgJGKsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728158AbgJGKsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:48:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DC7C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 03:48:02 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1kQ6zG-0000iq-Ac; Wed, 07 Oct 2020 12:47:58 +0200
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1kQ6zF-00053K-EB; Wed, 07 Oct 2020 12:47:57 +0200
-Date:   Wed, 7 Oct 2020 12:47:57 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Marek Vasut <marex@denx.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>
-Subject: Re: PHY reset question
-Message-ID: <20201007104757.fntgjiwt4tst3w3f@pengutronix.de>
-References: <20201006080424.GA6988@pengutronix.de>
- <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
- <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
- <0687984c-5768-7c71-5796-8e16169f5192@gmail.com>
- <20201007081410.jk5fi6x5w3ab3726@pengutronix.de>
- <7edb2e01-bec5-05b0-aa47-caf6e214e5a0@denx.de>
- <20201007090636.t5rsus3tnkwuekjj@pengutronix.de>
- <2b6a1616-beb8-fd12-9932-1e7d1ef04769@denx.de>
+        id S1728212AbgJGKtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:49:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728204AbgJGKtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:49:42 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C902C20870;
+        Wed,  7 Oct 2020 10:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602067782;
+        bh=1wuWrBxTStM0az/awlDUjLP9jEWZ5Wpim0mWksWSOUA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cPmVZRUwByaoivWI1uqYU7zS5g9j5p/qV2QRVTG29W6uwF5tMLyYP3nNpY1J4NUTX
+         7JMG/znA/bnbXIHJWikzQM73gt6MQd5pa/TdAklZizIUrmK5f7cYYxo0S/43gypMtr
+         +jKrye872fH2qRyuYsmcN8LAF434DjiLsK9L6arg=
+Date:   Wed, 7 Oct 2020 11:48:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm64: Add support for SMCCC TRNG firmware interface
+Message-ID: <20201007104838.GA5030@sirena.org.uk>
+References: <20201006201808.37665-1-andre.przywara@arm.com>
+ <20201006201808.37665-3-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
 Content-Disposition: inline
-In-Reply-To: <2b6a1616-beb8-fd12-9932-1e7d1ef04769@denx.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:15:08 up 327 days,  1:33, 362 users,  load average: 0.26, 0.20,
- 0.10
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201006201808.37665-3-andre.przywara@arm.com>
+X-Cookie: Two heads are more numerous than one.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-07 11:20, Marek Vasut wrote:
-> On 10/7/20 11:06 AM, Marco Felsch wrote:
 
-...
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > You're right, just wanted to provide you a link :)
-> 
-> Can you CC me on the next version of those patches ? I seems the LAN8710
-> is causing grief to many.
+On Tue, Oct 06, 2020 at 09:18:08PM +0100, Andre Przywara wrote:
+> The ARM architected TRNG firmware interface, described in ARM spec
+> DEN0098[1], defines an ARM SMCCC based interface to a true random number
+> generator, provided by firmware.
+> This can be discovered via the SMCCC >=v1.1 interface, and provides
+> up to 192 bits of entropy per call.
 
-No need to since this serie was already applied.
+Reviewed-by: Mark Brown <broonie@kernel.org>
 
-> >> but isn't the
-> >> last patch 5/5 breaking existing setups ?
-> > 
-> > IMHO the solution proposed using the PHY_RST_AFTER_CLK_EN was wrong so
-> > we needed to fix that. Yes we need to take care of DT backward
-> > compatibility but we still must be able to fix wrong behaviours within
-> > the driver. I could also argue that PHY_RST_AFTER_CLK_EN solution was
-> > breaking exisitng setups too.
-> > 
-> >> The LAN8710 surely does need
-> >> clock enabled before the reset line is toggled.
-> > 
-> > Yep and therefore you can specify it yet within the DT.
-> 
-> So the idea is that the PHY enables the clock for itself . And if the
-> MAC doesn't export these clock as clk to which you can refer to in DT,
-> then you still need the PHY_RST_AFTER_CLK_EN flag, so the MAC can deal
-> with enabling the clock ? Or is the idea to fix the MAC drivers too ?
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-First we need to consider that the PHY_RST_AFTER_CLK_EN flag gets only
-handled by the imx-fec driver currently. This particular MAC driver
-don't provide clks instead it is just a clock consumer. The clock is
-coming from the clock driver and the clk-id is IMX6QDL_CLK_ENET_REF. If
-the imx host is the clock provider for smsc-phy you need to specify that
-clock-id. There are other phy-drivers using the same mechanism currently.
-But yes, you need at least one clock provider. My solution is not
-complete as Florian proposal [1] since it rely on the fact that the MAC
-enables all clocks before probing the mdio bus. Luckily the imx-fec
-driver has this behaviour and my patches are valid till Florian's
-patches are merged. Resetting the phy should only be done within the phy
-state machine and not from outside without respecting the phy state
-since this can cause undefined behaviours.
+-----BEGIN PGP SIGNATURE-----
 
-Florian did you send a new version of those patches?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl99nQUACgkQJNaLcl1U
+h9ALVAf/RE8cMKM1nbggP3489Btap0JuTt7uhwVRspEJ7WG/WHEeSWvW6tTQZhCf
+A+HVamghoOcekfVOT9QFFiN1Z8WdMsXcFOkmdAb6IonVGL7qz+d3f47wbjk2LnE6
+Fucf5tZ3VKJ0FePTC3CkFu3zPnJYqGtEi5DX0krnTWy3hXDcVk+KeJsaK4g9VUak
+Jh6YZvzVbZPgtvN06klk30W40cN1mFTpuiF+vx/tjh24cAkOZ0hSwNAzsd0ZxyMO
+DYA5stPpUTa9WDqPTura3byuDUvhwWy7Xktb//zC6aJcg1bCoblr8x/SNbXNgeHu
+3X8l7zZx0VwsECUOUe9jqc5bh2Lh2Q==
+=QBrs
+-----END PGP SIGNATURE-----
 
-[1] https://www.spinics.net/lists/netdev/msg680412.html
+--wRRV7LY7NUeQGEoC--
