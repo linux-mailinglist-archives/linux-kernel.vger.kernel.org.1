@@ -2,119 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06935286B88
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 01:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26B5286B8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 01:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgJGXby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 19:31:54 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15464 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgJGXbx (ORCPT
+        id S1728239AbgJGXki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 19:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgJGXkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 19:31:53 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7e4f7c0000>; Wed, 07 Oct 2020 16:30:04 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
- 2020 23:31:53 +0000
-Received: from sandstorm.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 7 Oct 2020 23:31:53 +0000
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-CC:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>,
-        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH] Documentation: filesystems: better locations for sysfs-pci, sysfs-tagging
-Date:   Wed, 7 Oct 2020 16:31:51 -0700
-Message-ID: <20201007233151.490953-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
+        Wed, 7 Oct 2020 19:40:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C57C061755;
+        Wed,  7 Oct 2020 16:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=amvhMCFH/JEIzDR6sopUyHJKq5Cz3j6B99MCLm4PLCs=; b=NzEuf1QYXkIppO+WmF/yTipZAi
+        HKPLikcTWXOLOg3cY1DMoHSipFfv8e1TMgGGqR/p3AqSYcjqk2d4bpKV7sNG2fnmRQoNsJcHhNK3z
+        XCU77xWWMp6pN4hjUPUfHZiU+aP87ljxdgtQHdk64r8TT/d/3wxW1/Y26PNXgqzRW1kfHUqMBBMqK
+        ecuTASwF8BGrNN7v+H2f2buhDg9n3mPT5TFJbVTgcig57nvuoRibQ1j/xvQhHzpnw+KN3fCBGOP5o
+        c+tKKwLVmlGz6HjZ6HJyS1ddzOdYrTpnhBboFY3JHRPZIfz0ggFb4tbmxkWt4hHclq10pEZ+8YZBo
+        wrdmrN9Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQJ2n-0004oB-20; Wed, 07 Oct 2020 23:40:25 +0000
+Date:   Thu, 8 Oct 2020 00:40:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@protonmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Subject: Re: [PATCH] docs: Make automarkup ready for Sphinx 3.1+
+Message-ID: <20201007234024.GY20115@casper.infradead.org>
+References: <20201007231214.326456-1-nfraprado@protonmail.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602113404; bh=E7vpDOD4gxqXLsuZsi7hTD94dOIXP2RUKkySHzQpRT8=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=bB7+fcU3Jtj5cwQqrmHTz9zotIY3TwJMuEMq5n6trsRShAKCX2QlL/x0mw8RGe/9C
-         QmYkDu9iLWJDYsanChxjkYnCTKy9aDuRKniRX5RNxiXXahMm334qDeDaCJM61BaK8Q
-         7uOHJUtyaqp6AwaDUC8uRIuAaGrKZtufpItk0gHHPOI2fMbDC79QIsNr+IAvCoSMwG
-         /EZv2FhCTw8wEazFQkArh9OrxqYrbcVDNL+5Lix906F17uzA1JXGpECrNHC1Ut1nfG
-         7TOzcPhF6YOTSAc3ippwjqQn45XaM0VnkbMmyTe0vWK03yZKMJLCq/sGnK7+Xl3Af5
-         krIMxddp/YZHQ==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201007231214.326456-1-nfraprado@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sysfs-pci and sysfs-tagging were mis-filed: their locations with
-Documentation/ implied that they were related to file systems. Actually,
-each topic is about a very specific *use* of sysfs, and sysfs *happens*
-to be a (virtual) filesystem, so this is not really the right place.
+On Wed, Oct 07, 2020 at 11:12:25PM +0000, Nícolas F. R. A. Prado wrote:
+> While Sphinx 2 used a single c:type role for struct, union, enum and
+> typedef, Sphinx 3 uses a specific role for each one.
+> To keep backward compatibility, detect the Sphinx version and use the
+> correct roles for that version.
+> 
+> Also, Sphinx 3 is more strict with its C domain and generated warnings,
+> exposing issues in the parsing.
+> To fix the warnings, make the C regexes use ASCII, ensure the
+> expressions only match the beginning of words and skip trying to
+> cross-reference C reserved words.
 
-It's jarring to be reading about filesystems in general and then come
-across these specific details about PCI, and tagging...and then back to
-general filesystems again.
+Thank you for doing this!
 
-Move sysfs-pci and sysfs-tagging to a location under the sysfs topic.
-
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
-
-Hi,
-
-I'm not sure if the "toctree, maxdepth: 1" is the ideal way to do this,=20
-but the output in the browser looks about right to me, anyway.
-
-thanks,
-John Hubbard
-NVIDIA
-
- Documentation/filesystems/index.rst |  2 --
- Documentation/filesystems/sysfs.rst | 14 ++++++++++++++
- 2 files changed, 14 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystem=
-s/index.rst
-index 4c536e66dc4c..98f59a864242 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -34,8 +34,6 @@ algorithms work.
-    quota
-    seq_file
-    sharedsubtree
--   sysfs-pci
--   sysfs-tagging
-=20
-    automount-support
-=20
-diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystem=
-s/sysfs.rst
-index ab0f7795792b..39da2f5c235f 100644
---- a/Documentation/filesystems/sysfs.rst
-+++ b/Documentation/filesystems/sysfs.rst
-@@ -416,3 +416,17 @@ ABI between the kernel and user space. As for any ABI,=
- it is important that
- this ABI is stable and properly documented. All new sysfs attributes must =
-be
- documented in Documentation/ABI. See also Documentation/ABI/README for mor=
-e
- information.
-+
-+sysfs and PCI
-+~~~~~~~~~~~~~
-+.. toctree::
-+   :maxdepth: 1
-+
-+   sysfs-pci
-+
-+sysfs and tagging
-+~~~~~~~~~~~~~~~~~
-+.. toctree::
-+   :maxdepth: 1
-+
-+   sysfs-tagging
---=20
-2.28.0
-
+I have a feature request ... could you automarkup NULL as being :c:macro?
+Or maybe just anything matching \<[[:upper:]_[:digit:]]*\>
+(i may have my regex syntax confused ... a word composed of any
+arrangement of upper-case, digits and underscores.)
