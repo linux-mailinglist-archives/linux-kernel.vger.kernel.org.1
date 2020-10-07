@@ -2,106 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E359F286861
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329CD286868
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728377AbgJGTdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S1727958AbgJGTiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbgJGTdp (ORCPT
+        with ESMTP id S1727858AbgJGTiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:33:45 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F682C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 12:33:45 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id c5so3405206ilr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 12:33:45 -0700 (PDT)
+        Wed, 7 Oct 2020 15:38:55 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE95C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 12:38:55 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m13so3305539otl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 12:38:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5tsGx1C3M8k1XOAUr8ZBwF76yg1FVkRlYjDJ/ypWZnw=;
-        b=gPb2p8W0O7YirEDJZl5Y+VFIN+vcdha6G88ff/GonZ0jKruvoA3AoOewa/sDRL/LI/
-         aL+SMGT5/5kDNIIX7g6XviztX5fepJOmgH1wjVgFmPDhuOZ18cRJmjl+cVeWffFcAVvu
-         yvXoz/hyPu4eS9LTHIM4xNoMaNOcaITVrcwZ4=
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LsElbMcFzN96yl2Sl/ziA41uXCCImdpCgv4KLFFd2jg=;
+        b=JEKQ8k7fkmwZeYrlUlz3G8hZps3ExQiyKA2OwomgnwTekQBi+F0d7wOTziCheDkGKC
+         Sop2Gdre551T94df2v7y1eMTnQHiWe0yUTDZjm+ZgzFXM8oxuELLqSnmw/X2wHY81Oiq
+         NO4qJN6wk378wM9u+QS2uUvJPNszvveexmpPQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5tsGx1C3M8k1XOAUr8ZBwF76yg1FVkRlYjDJ/ypWZnw=;
-        b=eVLuEMLg8+xYhzZQGA3Fdrg1UoVzo9YB1OF7Kpg0nYAj2QO28UEaUBDft4aamQeXBl
-         GLBCGzJw3c221o62IQEHcbrpr3nfjUb9JUpGCtHbxAc+cI4q0YlZlq5I1U0InYXZGqxl
-         /vdPmwa0jQVwImS2mVGZeo7Ty8SS6jqWiuSEjqGBIzBLegc6ukXGJaWkC7mSvGreat4o
-         XTPFhQFn7BBa4tS4BnYULxWP+TE/tgIYyyOvlI2TyBgzJw+OhVn17q3TSedaQ8wErqDJ
-         1EAvTfEm0T5KtsIXRhsW+csB7fs9GeZh8rcIPzMSJuwm58gzm/KSGksi2Ds8lDPz0Y/E
-         Gcaw==
-X-Gm-Message-State: AOAM533l+2YIYYZBiQqpRwHQo0VJvPTE4zi6JxUh8Q5EQ0t4c5rdehoF
-        OiwzvOkaqA4xqnKdZxWpWG5m+5ca7C0f9A==
-X-Google-Smtp-Source: ABdhPJwaP08uxae1WxBovYDz8kN+RKGaUs91K9fEcq4edhWiCbpMqgyMRlgVfye/MqPcFbdHyUK6ig==
-X-Received: by 2002:a92:6811:: with SMTP id d17mr3964192ilc.145.1602099224892;
-        Wed, 07 Oct 2020 12:33:44 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id q16sm1451758ilj.71.2020.10.07.12.33.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 12:33:44 -0700 (PDT)
-Subject: Re: [PATCH v2 04/11] drivers/base/devcoredump: convert devcd_count to
- counter_atomic32
-To:     Kees Cook <keescook@chromium.org>, gregkh@linuxfoundation.org
-Cc:     johannes@sipsolutions.net, rafael@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1602011710.git.skhan@linuxfoundation.org>
- <462fd514dfe2afbb8faa1dea4cdb4b0e75d8e8da.1602011710.git.skhan@linuxfoundation.org>
- <202010071114.EE9A2A47C@keescook>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <cb86761a-5531-cbb2-3987-0897771949b8@linuxfoundation.org>
-Date:   Wed, 7 Oct 2020 13:33:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LsElbMcFzN96yl2Sl/ziA41uXCCImdpCgv4KLFFd2jg=;
+        b=UatM/Xi+ib7mGi1e1LdxVCEcxnO6FtfiqnDXtJUUk4XeYzQJM/F5OEcTIWuJEzoq04
+         aKiAdHMWDgjgkV0eiVT1Iz3tuXWxy6o9zyTcbahrfmZX0s8IGlY4u6BXWBhLBcwxJgGW
+         B8W9Zlf775n83oUBsXLUDlvpRRECrl+S9nW58Ez8k+VobXjzbvm4FU/JSk6j+otbJMM0
+         TN2q2U7FeEktspJt2TUwIrSyTDg9P68QcPB7CCO/ecDCseixPL7shQgV9Q6AbvyZBnD5
+         MWJYuUOP+ThufgrdQ2wCuB2VFvlC40U7ByDKUOyykdpHe4Nfp5DV0ZHxfFZJ7Xlde64D
+         Dedw==
+X-Gm-Message-State: AOAM531CuXka0UUxD/aWAn/Plgu5bZ1hofGD/YxIk9tOVVyKVLEe9nHQ
+        O1zazkY8QbdL9RYGIqn3EKKEb9gXZxJFUFR6eGgiAg==
+X-Google-Smtp-Source: ABdhPJzDeUcXRqAYmdWYWg9wJA+fWIrvGfY9TAWXYdC/GYct5kjchJ6t7F5Fbz0UZkTJcUSkSz7+OQDzNSm6p86bNJU=
+X-Received: by 2002:a05:6830:1c3c:: with SMTP id f28mr3008000ote.188.1602099533763;
+ Wed, 07 Oct 2020 12:38:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202010071114.EE9A2A47C@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-12-daniel.vetter@ffwll.ch> <20201007173647.GW5177@ziepe.ca>
+ <CAKMK7uE9sbK_tGhJbsnHgD9rOnx-dr=2xmpMw7RvvvpPLnjVVA@mail.gmail.com> <20201007190023.GA5177@ziepe.ca>
+In-Reply-To: <20201007190023.GA5177@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 7 Oct 2020 21:38:42 +0200
+Message-ID: <CAKMK7uHNV7di+J10_JyLY6ctdsAGNnGhF7qrFzRCWFnXsQSEwQ@mail.gmail.com>
+Subject: Re: [PATCH 11/13] mm: add unsafe_follow_pfn
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 12:15 PM, Kees Cook wrote:
-> On Tue, Oct 06, 2020 at 02:44:35PM -0600, Shuah Khan wrote:
->> counter_atomic* is introduced to be used when a variable is used as
->> a simple counter and doesn't guard object lifetimes. This clearly
->> differentiates atomic_t usages that guard object lifetimes.
->>
->> counter_atomic* variables will wrap around to 0 when it overflows and
->> should not be used to guard resource lifetimes, device usage and
->> open counts that control state changes, and pm states.
->>
->> devcd_count is used to track dev_coredumpm device count and used in
->> device name string. It doesn't guard object lifetimes, device usage
->> counts, device open counts, and pm states. There is very little chance
->> of this counter overflowing. Convert it to use counter_atomic32.
->>
->> This conversion doesn't change the overflow wrap around behavior.
->>
->> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> 
-> I actually wonder if this should use refcount_t just because it is
-> designed to be an alway-unique value. It is hard to imagine ever causing
-> this to overflow, but why not let it be protected?
-> 
+On Wed, Oct 7, 2020 at 9:00 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Oct 07, 2020 at 08:10:34PM +0200, Daniel Vetter wrote:
+> > On Wed, Oct 7, 2020 at 7:36 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Wed, Oct 07, 2020 at 06:44:24PM +0200, Daniel Vetter wrote:
+> > > > Way back it was a reasonable assumptions that iomem mappings never
+> > > > change the pfn range they point at. But this has changed:
+> > > >
+> > > > - gpu drivers dynamically manage their memory nowadays, invalidatin=
+g
+> > > > ptes with unmap_mapping_range when buffers get moved
+> > > >
+> > > > - contiguous dma allocations have moved from dedicated carvetouts t=
+o
+> > > > cma regions. This means if we miss the unmap the pfn might contain
+> > > > pagecache or anon memory (well anything allocated with GFP_MOVEABLE=
+)
+> > > >
+> > > > - even /dev/mem now invalidates mappings when the kernel requests t=
+hat
+> > > > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> > > > ("/dev/mem: Revoke mappings when a driver claims the region")
+> > > >
+> > > > Accessing pfns obtained from ptes without holding all the locks is
+> > > > therefore no longer a good idea.
+> > > >
+> > > > Unfortunately there's some users where this is not fixable (like v4=
+l
+> > > > userptr of iomem mappings) or involves a pile of work (vfio type1
+> > > > iommu). For now annotate these as unsafe and splat appropriately.
+> > > >
+> > > > This patch adds an unsafe_follow_pfn, which later patches will then
+> > > > roll out to all appropriate places.
+> > > >
+> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > > Cc: Kees Cook <keescook@chromium.org>
+> > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > > > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > > > Cc: Jan Kara <jack@suse.cz>
+> > > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > > Cc: linux-mm@kvack.org
+> > > > Cc: linux-arm-kernel@lists.infradead.org
+> > > > Cc: linux-samsung-soc@vger.kernel.org
+> > > > Cc: linux-media@vger.kernel.org
+> > > > Cc: kvm@vger.kernel.org
+> > > >  include/linux/mm.h |  2 ++
+> > > >  mm/memory.c        | 32 +++++++++++++++++++++++++++++++-
+> > > >  mm/nommu.c         | 17 +++++++++++++++++
+> > > >  security/Kconfig   | 13 +++++++++++++
+> > > >  4 files changed, 63 insertions(+), 1 deletion(-)
+> > >
+> > > Makes sense to me.
+> > >
+> > > I wonder if we could change the original follow_pfn to require the
+> > > ptep and then lockdep_assert_held() it against the page table lock?
+> >
+> > The safe variant with the pagetable lock is follow_pte_pmd. The only
+> > way to make follow_pfn safe is if you have an mmu notifier and
+> > corresponding retry logic. That is not covered by lockdep (it would
+> > splat if we annotate the retry side), so I'm not sure how you'd check
+> > for that?
+>
+> Right OK.
+>
+> > Checking for ptep lock doesn't work here, since the one leftover safe
+> > user of this (kvm) doesn't need that at all, because it has the mmu
+> > notifier.
+>
+> Ah, so a better name and/or function kdoc for follow_pfn is probably a
+> good iead in this patch as well.
 
-This is one of the cases where devcd_count doesn't guard lifetimes,
-however if it ever overflows, refcount_t is a better choice.
+I did change that already to mention that you need an mmu notifier,
+and that follow_pte_pmd respectively unsafe_follow_pfn are the
+alternatives. Do you want more or something else here?
 
-If we decide refcount_t is a better choice, I can drop this patch
-and send refcount_t conversion patch instead.
+Note that I left the kerneldoc for the nommu.c case unchanged, since
+without an mmu all bets are off anyway.
 
-Greg! Any thoughts on refcount_t for this being a better choice?
+> > So I think we're as good as it gets, since I really have no idea how
+> > to make sure follow_pfn callers do have an mmu notifier registered.
+>
+> Yah, can't be done. Most mmu notifier users should be using
+> hmm_range_fault anyhow, kvm is really very special here.
 
+We could pass an mmu notifier to follow_pfn and check that it has a
+registration for vma->vm_mm, but that feels like overkill when kvm is
+the only legit user for this.
 
-thanks,
--- Shuah
+> > I've followed the few other CONFIG_STRICT_FOO I've seen, which are all
+> > explicit enables and default to "do not break uapi, damn the
+> > (security) bugs". Which is I think how this should be done. It is in
+> > the security section though, so hopefully competent distros will
+> > enable this all.
+>
+> I thought the strict ones were more general and less clear security
+> worries, not bugs like this.
+>
+> This is "allow a user triggerable use after free bug to exist in the
+> kernel"
+
+Since at most you get at GFP_MOVEABLE stuff I'm not sure you can use
+this to pull the kernel over the table. Maybe best way is if you get a
+gpu pagetable somehow into your pfn and then use that to access
+abitrary stuff, but there's still an iommu. I think leveraging this is
+going to be very tricky, and pretty much has to be device or driver
+specific somehow.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
