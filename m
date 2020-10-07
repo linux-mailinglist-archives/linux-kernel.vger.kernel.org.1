@@ -2,172 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C423285776
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DF028577B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgJGEDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 00:03:11 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:35930 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725970AbgJGEDK (ORCPT
+        id S1726202AbgJGEMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 00:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJGEMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 00:03:10 -0400
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0973jLDi009034;
-        Tue, 6 Oct 2020 21:03:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=TLum/5dsjyhbfLR7hoMnq/P/ZJjSJf/BTwLtrsfK26g=;
- b=AnW9Pkx14XFHHbewc++2gP3YShKJqARIVo3OKxh+O590L49gYPmYwqe8WFZhk9eDDpyI
- LZqsBPob/08EAyv5BSKEu7n3g5RnKroIw3UNbA/VvQgp84UjKZkc6eqh9FKWnOSAQxCc
- UhUl/7IxZYwdpD2BwqwqUHZIW0uPa05NW8o47FI0qCloFclXJmsHegr9HtlV1UwO/7uS
- H0nJYDvr3/4dQKLR+Gege9w7LxDr8av311XQsc1NjKfDooEe04YtXjMs33HTKCC4TjQg
- Y6XmBi/Lj9Qs0q8w6h2wjl2W4GW3+0f6vd+CZJ9rTix7MWMIMy8lt+1N+n04n8Gmth+W dA== 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2170.outbound.protection.outlook.com [104.47.58.170])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 33xmvyc5gr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Oct 2020 21:03:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EfVFfPUlVXk7UFdnMSzCUWMZjrkJo3wG1MedrC+l1LHA+CUcZNgQ3S87vRUlcYXrVGj8KpsBxgBIPcQj7LKQqaCN3zazOrMjtSIA+dBsTgEGpHHeoRRW5ByDwEQDfP8488cMK77GaGTSjyz5pJGAEBMrKLf7LZFc12Xe237oqrEejXZerDtVvMgIW3DXiiRrrztKgKmWWhVWTCTKSRliXxzJxJFis2GU2O94Oy7lZGvtRAQ8EvOR4EbU6LlYdbI4kUznKh55XjI0djGhiKXztZdHe1OIsn4RU0OmCOCGbVIStqGoScwDwlXqgw8YCQZhZ4NK3/XYrP8/riH+VURZwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TLum/5dsjyhbfLR7hoMnq/P/ZJjSJf/BTwLtrsfK26g=;
- b=dUNn2klIBZOnbun7QKoHweGUYPhzpe2ark51WIcCnJZzuEdjJY63ond7vwgabnxJj6K/BauO5EaTY0GYg+y/Otz3w4dTnu+a9R0221yvxaxT9N2bnLWXF22v+p3+aTqbBcIBFcJek3b7WjTNVWKslunpO6OPRiP0yKI59DW09UYIIOv1/hp9XTWakFcbEMK/JOXdhAOecYBBdTjc/DfNi7aPGt25yoFQr7D/cweRb0So0ywVmu3R1Xg6IBOORevxhEk3ux6O+3to753G+wOohyPApvy4XoFq6jbuPPfAj3dC/6RrBSOZR+gWWm7T5QECHyYOgzP749uMR0ZTYZZobw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.147) smtp.rcpttodomain=ti.com smtp.mailfrom=cadence.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=cadence.com; dkim=none
- (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TLum/5dsjyhbfLR7hoMnq/P/ZJjSJf/BTwLtrsfK26g=;
- b=WfIn4aTm8ZCNaKbtj0VhGtaExHHt8boI4Rp0DdPr5etq8fezN4jTl3+5h/EhQ63hYVfZtvGoODASd4xd67ugwE+pVydCZndQOlPdQgvrdeZiAi/Nuz5DhWjioDkR9W3lPJi73ZB1GtgLsRDXMxq3/eN/QsLGfWSB2/mDL0mwZiw=
-Received: from BN6PR16CA0033.namprd16.prod.outlook.com (2603:10b6:405:14::19)
- by BN7PR07MB4372.namprd07.prod.outlook.com (2603:10b6:406:b6::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Wed, 7 Oct
- 2020 04:03:00 +0000
-Received: from BN8NAM12FT051.eop-nam12.prod.protection.outlook.com
- (2603:10b6:405:14:cafe::d6) by BN6PR16CA0033.outlook.office365.com
- (2603:10b6:405:14::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22 via Frontend
- Transport; Wed, 7 Oct 2020 04:03:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
- smtp.mailfrom=cadence.com; ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- BN8NAM12FT051.mail.protection.outlook.com (10.13.182.230) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3455.13 via Frontend Transport; Wed, 7 Oct 2020 04:02:59 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 097430J3001157
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Tue, 6 Oct 2020 21:03:01 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Wed, 7 Oct 2020 06:02:55 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Wed, 7 Oct 2020 06:02:55 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 09742t7a025789;
-        Wed, 7 Oct 2020 06:02:55 +0200
-Received: (from pawell@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 09742tPc025787;
-        Wed, 7 Oct 2020 06:02:55 +0200
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     <balbi@kernel.org>
-CC:     <peter.chen@nxp.com>, <rogerq@ti.com>, <nsekhar@ti.com>,
-        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>,
-        Pawel Laszczak <pawell@cadence.com>
-Subject: [PATCH] usb: cdns3: Add static to  cdns3_gadget_exit function
-Date:   Wed, 7 Oct 2020 06:02:30 +0200
-Message-ID: <20201007040230.25741-1-pawell@cadence.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 549a9342-7818-41df-895f-08d86a75e159
-X-MS-TrafficTypeDiagnostic: BN7PR07MB4372:
-X-Microsoft-Antispam-PRVS: <BN7PR07MB4372DA5D47CB75DDEB352CB3DD0A0@BN7PR07MB4372.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dc0D1bUmf/OlLMa3FdKNP3o3TPee8TjJRJymMXpZavNVimUrJ5KpacgfZPFZ2vwXBpT4c85RGt7Lw3ew1l9rsqKgctLcS/b9BB2DORA0/YX6roV16y58B6jfTFolW7i/jh08LdZ2+SNxBu9KS+KI3tu2zyvPD94tINrug6y67jdG1FwKK9/b01wcnB1RBQ+CEU3LsnnMUBocQKSFP05zB8g2GL19UK4wAakqC2Nx9BRhHOViNGTKqOTG5gd4yBku1mgZiXMHXquYAIT+noUOlgDVfJZhQT9Jp17/jhKsmQdFD5Q12kQolTpsTrll60iWwpdziz2oe/FcQSA5kzzEKHcMrsTyy5mtdIczYauxP1Y1VAXMun18NNgv9yZ5k/VW9B0l8A/OiN4O4EoWtf9u6WTGYDskZS2ZKvReexjCxCo=
-X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(36092001)(46966005)(8676002)(1076003)(86362001)(2616005)(5660300002)(36756003)(70586007)(70206006)(478600001)(426003)(336012)(6666004)(6916009)(8936002)(26005)(186003)(7636003)(42186006)(316002)(54906003)(36906005)(2906002)(107886003)(4326008)(356005)(82310400003)(47076004)(83380400001)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 04:02:59.6025
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 549a9342-7818-41df-895f-08d86a75e159
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT051.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR07MB4372
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_03:2020-10-06,2020-10-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 impostorscore=0
- malwarescore=0 clxscore=1015 priorityscore=1501 phishscore=0 spamscore=0
- bulkscore=0 suspectscore=1 adultscore=0 mlxlogscore=677 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070023
+        Wed, 7 Oct 2020 00:12:16 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EDAC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 21:12:15 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t23so2249385pji.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 21:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y42f+xCeFC9aJfaprUfLKsV1W6cjiDKd4zVBYm3so2c=;
+        b=Am626B1mMSzKkJtKZO1KtVxoCrwhVXv6gfab3stoZ4ewy7b5+MYDP5R7eYl4JXL9kX
+         ngSMaYqPVKvRv6wfttCJyW7VySrZdpDbLVd7OXy+XZCkdwvcmrH1JLH8ZQ0zqNwHMdhZ
+         RZ3ankVeIu7omdFnqWFsJolMHytMcIUGg66DgJJxck6zBkvtdO8i2MrZAocOAIq3aHsp
+         5iLjQ/pLIF+y0LHaRinPO/bNl9vZoIsTNCOKSfB3ekqC+P+gxY4eSuLt5B6wI3DOSxb0
+         oXGMvUdklTynf3UE5QGClSGXUMnp/GW7uNrd+7RMirJIs1rUp948JKc47+jePxPQJnkc
+         1E9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Y42f+xCeFC9aJfaprUfLKsV1W6cjiDKd4zVBYm3so2c=;
+        b=oyUiG2U9oMPnMUlCxkSMeCX0SEVFIcGO7G87q/fCGltzq9r+W4bsUV/5KYdRchhAhQ
+         vZHOz1HXzZD/CxgNuuXz1pY45h0vOlYljZuy+VUGJL2vVk1g//NUc+mntBXWDBg4beyz
+         VuWWKyHdrdRtcjWk9r3cuhL9XWj1FO8xDU4MOjns69PAmlg4Tf7CIjQwTO/EGXhdy9Du
+         cDyjCCkhM1bb9j8ttDQdUuu2v+OLP3G2PuL888Z181c/8zxZjHx8BjdpmMSgFRUD65Mb
+         d/WSqp0c8Oy4cXEAdLSjKBk61VkQfpaQ6/8ekZD9/8p130N1C7rl2+2ytIa9iIhTL/VX
+         h+1g==
+X-Gm-Message-State: AOAM533PWMT2uGXCa89BD5AoysPftkSjrzahx07REgluMlHtWRIJbLbG
+        VF6mYN1l3NkD/G3Xe1UBHIjL3FNE0ht9Ng==
+X-Google-Smtp-Source: ABdhPJyYQFQrTMby8WlVHEvFCUzvT2Fa9HBpYH785CXECo64okrkWsmHHRBwGUcT1huT8BhMIW8nMA==
+X-Received: by 2002:a17:90b:698:: with SMTP id m24mr1227870pjz.154.1602043935036;
+        Tue, 06 Oct 2020 21:12:15 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id h9sm810241pgk.52.2020.10.06.21.12.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 21:12:14 -0700 (PDT)
+Date:   Tue, 06 Oct 2020 21:12:14 -0700 (PDT)
+X-Google-Original-Date: Tue, 06 Oct 2020 20:22:44 PDT (-0700)
+Subject:     Re: [PATCH] riscv: Fixup bootup failure with HARDENED_USERCOPY
+In-Reply-To: <1602002973-92934-1-git-send-email-guoren@kernel.org>
+CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        guoren@linux.alibaba.com, atishp@atishpatra.org,
+        schwab@linux-m68k.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     guoren@kernel.org
+Message-ID: <mhng-405fa3f3-74ce-4a03-958e-d0a6c42de3f6@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function cdns3_gadget_exit is used only in gadget.c file.
-This patch removes declaration and definition of this
-function from gadget-export.h file and makes it static.
+On Tue, 06 Oct 2020 09:49:33 PDT (-0700), guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> As Aurelien has reported:
+>
+> [    3.484586] AppArmor: AppArmor sha1 policy hashing enabled
+> [    4.749835] Freeing unused kernel memory: 492K
+> [    4.752017] Run /init as init process
+> [    4.753571] usercopy: Kernel memory overwrite attempt detected to kernel text (offset 507879, size 11)!
+> [    4.754838] ------------[ cut here ]------------
+> [    4.755651] kernel BUG at mm/usercopy.c:99!
+> [    4.756445] Kernel BUG [#1]
+> [    4.756815] Modules linked in:
+> [    4.757542] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.8.0-1-riscv64 #1 Debian 5.8.7-1
+> [    4.758372] epc: ffffffe0003b5120 ra : ffffffe0003b5120 sp : ffffffe07f783ca0
+> [    4.758960]  gp : ffffffe000cc7230 tp : ffffffe07f77cec0 t0 : ffffffe000cdafc0
+> [    4.759772]  t1 : 0000000000000064 t2 : 0000000000000000 s0 : ffffffe07f783cf0
+> [    4.760534]  s1 : ffffffe00095d780 a0 : 000000000000005b a1 : 0000000000000020
+> [    4.761309]  a2 : 0000000000000005 a3 : 0000000000000000 a4 : ffffffe000c1f340
+> [    4.761848]  a5 : ffffffe000c1f340 a6 : 0000000000000000 a7 : 0000000000000087
+> [    4.762684]  s2 : ffffffe000941848 s3 : 000000000007bfe7 s4 : 000000000000000b
+> [    4.763500]  s5 : 0000000000000000 s6 : ffffffe00091cc00 s7 : fffffffffffff000
+> [    4.764376]  s8 : 0000003ffffff000 s9 : ffffffe0769f3200 s10: 000000000000000b
+> [    4.765208]  s11: ffffffe07d548c40 t3 : 0000000000000000 t4 : 000000000001dcd0
+> [    4.766059]  t5 : ffffffe000cc8510 t6 : ffffffe000cd64aa
+> [    4.766712] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
+> [    4.768308] ---[ end trace 1f8e733e834d4c3e ]---
+> [    4.769129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> [    4.770070] SMP: stopping secondary CPUs
+> [    4.771110] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+>
+> Above failure is relate to commit: a0fa4027dc911 (riscv: Fixup
 
-Signed-off-by: Pawel Laszczak <pawell@cadence.com>
----
- drivers/usb/cdns3/gadget-export.h | 3 ---
- drivers/usb/cdns3/gadget.c        | 2 +-
- 2 files changed, 1 insertion(+), 4 deletions(-)
+That commit isn't in Linus' tree (at least, as far as I see it).  I have
+6184358da000 ("riscv: Fixup static_obj() fail"), so I'm going to fix that -- in
+fact, I'm going to essentially just replace most of this rationale with what I
+wrote up in my revert as this is all a bit too long for a commit message.
 
-diff --git a/drivers/usb/cdns3/gadget-export.h b/drivers/usb/cdns3/gadget-export.h
-index 577469eee961..702c5a267a92 100644
---- a/drivers/usb/cdns3/gadget-export.h
-+++ b/drivers/usb/cdns3/gadget-export.h
-@@ -13,7 +13,6 @@
- #ifdef CONFIG_USB_CDNS3_GADGET
- 
- int cdns3_gadget_init(struct cdns3 *cdns);
--void cdns3_gadget_exit(struct cdns3 *cdns);
- #else
- 
- static inline int cdns3_gadget_init(struct cdns3 *cdns)
-@@ -21,8 +20,6 @@ static inline int cdns3_gadget_init(struct cdns3 *cdns)
- 	return -ENXIO;
- }
- 
--static inline void cdns3_gadget_exit(struct cdns3 *cdns) { }
--
- #endif
- 
- #endif /* __LINUX_CDNS3_GADGET_EXPORT */
-diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
-index 692acf7b9b14..6ff3aa3db497 100644
---- a/drivers/usb/cdns3/gadget.c
-+++ b/drivers/usb/cdns3/gadget.c
-@@ -3069,7 +3069,7 @@ static void cdns3_gadget_release(struct device *dev)
- 	kfree(priv_dev);
- }
- 
--void cdns3_gadget_exit(struct cdns3 *cdns)
-+static void cdns3_gadget_exit(struct cdns3 *cdns)
- {
- 	struct cdns3_device *priv_dev;
- 
--- 
-2.17.1
+I was kind of worried the initdata move was a bit too risky, but after reading
+the users of __init_{begin,end} I think it's safe.  Here's what I ended up with
+on fixes.
 
+Thanks!
+
+commit 84814460eef9af0fb56a4698341c9cb7996a6312 (HEAD -> fixes, riscv/fixes)
+gpg: Signature made Tue 06 Oct 2020 09:11:35 PM PDT
+gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
+gpg:                issuer "palmer@dabbelt.com"
+gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
+gpg:                 aka "Palmer Dabbelt <palmerdabbelt@google.com>" [ultimate]
+Author: Guo Ren <guoren@linux.alibaba.com>
+Date:   Tue Oct 6 16:49:33 2020 +0000
+
+    riscv: Fixup bootup failure with HARDENED_USERCOPY
+    
+    6184358da000 ("riscv: Fixup static_obj() fail") attempted to elide a lockdep
+    failure by rearranging our kernel image to place all initdata within [_stext,
+    _end], thus triggering lockdep to treat these as static objects.  These objects
+    are released and eventually reallocated, causing check_kernel_text_object() to
+    trigger a BUG().
+    
+    This backs out the change to make [_stext, _end] all-encompassing, instead just
+    moving initdata.  This results in initdata being outside of [__init_begin,
+    __init_end], which means initdata can't be freed.
+    
+    Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
+    Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+    Reported-by: Aurelien Jarno <aurelien@aurel32.net>
+    Tested-by: Aurelien Jarno <aurelien@aurel32.net>
+    [Palmer: Clean up commit text]
+    Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+
+> static_obj() fail). When we expand static_obj include INIT_DATA,
+> we also include INIT_TEXT into usercopy check kernel text:
+>
+> /* Is this address range in the kernel text area? */
+> static inline void check_kernel_text_object(const unsigned long ptr,
+>                                             unsigned long n, bool to_user)
+> {
+>         unsigned long textlow = (unsigned long)_stext;
+>         unsigned long texthigh = (unsigned long)_etext;
+>         unsigned long textlow_linear, texthigh_linear;
+>
+>         if (overlaps(ptr, n, textlow, texthigh))
+>                 usercopy_abort("kernel text", NULL, to_user, ptr - textlow, n);
+>
+> When INIT_TEXT/DATA are freed, new allocation will reuse these
+> memory and overlaps check will be triggered.
+>
+> The patch met static_obj and check_kernel_text_object requirements.
+>
+> Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Reported-by: Aurelien Jarno <aurelien@aurel32.net>
+> Tested-by: Aurelien Jarno <aurelien@aurel32.net>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> Cc: Atish Patra <atishp@atishpatra.org>
+> Cc: Andreas Schwab <schwab@linux-m68k.org>
+> ---
+>  arch/riscv/kernel/vmlinux.lds.S | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> index f3586e3..34d00d9 100644
+> --- a/arch/riscv/kernel/vmlinux.lds.S
+> +++ b/arch/riscv/kernel/vmlinux.lds.S
+> @@ -22,13 +22,11 @@ SECTIONS
+>  	/* Beginning of code and text segment */
+>  	. = LOAD_OFFSET;
+>  	_start = .;
+> -	_stext = .;
+>  	HEAD_TEXT_SECTION
+>  	. = ALIGN(PAGE_SIZE);
+>
+>  	__init_begin = .;
+>  	INIT_TEXT_SECTION(PAGE_SIZE)
+> -	INIT_DATA_SECTION(16)
+>  	. = ALIGN(8);
+>  	__soc_early_init_table : {
+>  		__soc_early_init_table_start = .;
+> @@ -55,6 +53,7 @@ SECTIONS
+>  	. = ALIGN(SECTION_ALIGN);
+>  	.text : {
+>  		_text = .;
+> +		_stext = .;
+>  		TEXT_TEXT
+>  		SCHED_TEXT
+>  		CPUIDLE_TEXT
+> @@ -67,6 +66,8 @@ SECTIONS
+>  		_etext = .;
+>  	}
+>
+> +	INIT_DATA_SECTION(16)
+> +
+>  	/* Start of data section */
+>  	_sdata = .;
+>  	RO_DATA(SECTION_ALIGN)
