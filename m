@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F171C286199
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A04B28619E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728716AbgJGOzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:55:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34972 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728677AbgJGOzA (ORCPT
+        id S1728718AbgJGO45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:56:57 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42256 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728637AbgJGO44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:55:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602082499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YfwhkGiRrOH1PcwmIuFTvVZZYAlXa4jhrjm0JixaXmc=;
-        b=DkQgQbPw1YDjt242yuYHWzgy7sYUUf5ZJSmKRPwPhUBZk0yt0MHkZnJ4hInUIfqMcg/qil
-        RroW9N/fwuElMaQkycDL00+tN/GqgRtm6wwDQZI5nkv3CeyVFEMqmcjLqjWYoA17FXysNK
-        gtWELB+2Nb92cURCTLoQYnKPVpnl3jc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-138-QylDYpxLMG2OMX3mEuDZTg-1; Wed, 07 Oct 2020 10:54:55 -0400
-X-MC-Unique: QylDYpxLMG2OMX3mEuDZTg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92C0F108E1A1;
-        Wed,  7 Oct 2020 14:54:54 +0000 (UTC)
-Received: from treble (ovpn-113-148.rdu2.redhat.com [10.10.113.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D2DC5C1BD;
-        Wed,  7 Oct 2020 14:54:53 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 09:54:50 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH] x86/unwind/orc: fix inactive tasks with sp in sp
-Message-ID: <20201007145450.32yrrq75csmq7vgo@treble>
-References: <20201007081909.29226-1-jslaby@suse.cz>
+        Wed, 7 Oct 2020 10:56:56 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 097EuO0G077454;
+        Wed, 7 Oct 2020 09:56:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602082584;
+        bh=67uOMzd2/z5aPdWJGGmYdVbEfaUxAlC1A5+y2mSmvPQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=LTkReH9J+vm3PZMYumPiso2D3wzau/eZ3an1mRAWyurw4GfeGQryumuYBo/N7daL+
+         feZN+EhXPdX/VLpjtm5C29hrInlFIlfx/X161fXphTGGiefbau5zVh8H5IVleu0U9S
+         VBfWqR4qk9IpzQ7NEaZKHmxqVd1OG0aIGhObWnQg=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 097EuObl085587
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 09:56:24 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 09:56:24 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 09:56:24 -0500
+Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 097EuNEU020180;
+        Wed, 7 Oct 2020 09:56:23 -0500
+Subject: Re: [PATCH] lm3697: Rename struct into more appropiate name
+To:     <ultracoolguy@tutanota.com>, Marek Behun <kabel@blackhole.sk>
+CC:     Pavel <pavel@ucw.cz>, Linux Leds <linux-leds@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+References: <MIuPIKy--3-2@tutanota.com> <20201007012600.3b3e7779@blackhole.sk>
+ <MJ2-gcy----2@tutanota.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <346621c1-757e-d182-d290-877fccc8b4aa@ti.com>
+Date:   Wed, 7 Oct 2020 09:56:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201007081909.29226-1-jslaby@suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <MJ2-gcy----2@tutanota.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--ENOPARSE on $SUBJECT.
+Gabriel
 
-Also please address it to x86@kernel.org, I think the tip maintainers
-can pick up the fix directly.
+On 10/7/20 7:21 AM, ultracoolguy@tutanota.com wrote:
+> The reason I didn't use git send-mail earlier is because Tutanota doesn't supports SMTP and Protonmail requires a paid account for using SMTP/IMAP. However, I made an account creation request for Disroot(which does support SMTP for free), so when/if the account gets created I'll send future patches through there.
+> Oct 6, 2020, 23:26 by kabel@blackhole.sk:
+>
+>
+Also please note top posting on emails is not preferred. As you will 
+find in the LED domain bottom posts and trimming emails to what is being 
+commented on is preferred.
 
-Also it might be a good idea to Cc the live-patching mailing list, I
-presume this causes a livepatch stall?
+As demonstrated.
 
-On Wed, Oct 07, 2020 at 10:19:09AM +0200, Jiri Slaby wrote:
-> gcc-10 optimizes the scheduler code differently than its predecessors,
-> depending on DEBUG_SECTION_MISMATCH=y config -- the config sets
-> -fno-inline-functions-called-once.
-
-Weird.  Was GCC ignoring this flag before?
-
-> @@ -663,7 +656,13 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
->  	} else {
->  		struct inactive_task_frame *frame = (void *)task->thread.sp;
->  
-> -		state->sp = task->thread.sp;
-> +		/*
-> +		 * @ret_addr is in __schedule _before_ the @frame is pushed to
-> +		 * the stack, but @thread.sp is saved in __switch_to_asm only
-> +		 * _after_ saving the @frame, so subtract the @frame size, i.e.
-> +		 * add it to @thread.sp.
-> +		 */
-> +		state->sp = task->thread.sp + sizeof(*frame);
-
-IMO, the code speaks for itself and the comment may be superfluous.
-
-Otherwise it looks good to me.  Thanks for fixing it!
-
--- 
-Josh
+Dan
 
