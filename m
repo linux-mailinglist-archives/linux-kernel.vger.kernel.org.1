@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAB628622C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3262228622D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbgJGPen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
+        id S1727746AbgJGPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727560AbgJGPen (ORCPT
+        with ESMTP id S1727560AbgJGPer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:34:43 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9644C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 08:34:41 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id n6so2752306ioc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 08:34:41 -0700 (PDT)
+        Wed, 7 Oct 2020 11:34:47 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DB2C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 08:34:46 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t9so2690916wrq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 08:34:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ya7VWW85tr07dUTeRZTezqwQZIwntrhwkmNOB9LGjRw=;
-        b=y1it3yQwwu+6/Q7iVX+3YIAgjmbQvFbL8X5O/fMg0DJ9tn6j9aI42HIpH/ufPPwLm2
-         1C2qBNhTyjnvWbFbI7Xw3//PQSOrZjeMdrhap3y0GY+WMupRqKYYIIP1DZfqajopN9Id
-         TQRqpOukGXGpYSkrjNpCgV2ic5YVS1Nu0VNUmxKqczot6ucPPfoEFpP1MBwKxjcMnt1F
-         dbDoxMevsRqI6bJ32DsNUwHQRCBhcIyW1MoTPBBOi+pup8ED46YkDA3bMn3RRpgm8oSo
-         7Luiqqejczur58QZgL/QJSZUKSQHQNfGjMO0AgzXMdVIqU0CO/dH1nsCVXDC3UMGWaXy
-         irNA==
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+XHpDefsBIm2Wcc7l0A0wAeXuSoeHx4lJ/xyRHbCKCg=;
+        b=MZIoX+EX3cuOi3WuU1lL5WA2iLCEE61m/usYjvBnstLFDugdB5GoFxTY2LbDmj8qiE
+         rXP/I2ABb0GsBXR17uBboT/sAy6E94KRqoBI7M8B40plqBx5xfZR6CRTEoySO4pK0N0v
+         29evrmQHFbqA47QyR9zimpyqpE1HjvRsisqmpfkyz/r54HJgJ8WaeQsoWu1qKQ2LNgGG
+         7xFKt2Ag5gM08crdcyw4iN8LzXgwMAKCyim/AZMFW0BdnVXWuaN7IvvLcD8LXRBU88B6
+         34eoL0KaR5G5Q17g+BfeklFJOFz2yFh6+28XzPwXwNw36aEEyb1/H191b27pax/hj0/2
+         dMGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ya7VWW85tr07dUTeRZTezqwQZIwntrhwkmNOB9LGjRw=;
-        b=t4hir3O+1AILPKDYSpCqeDWV5jlDvd0j/IkYPFU+Hk+v4hwg7cv/59IiEdRnbScmFN
-         CZt/HZ09XEOs4ZQScGoKflsccbWNPu6nExS5a0IuPHHNOm8DnfQcBRZaLJQLEJoV93Nn
-         TQlVKesSftwt8ytU8fEb97tw5ZcAjo7cwpda8qoZVb8CcbD/hewAVfIyVv72OpD0wVub
-         iEZpye08kNzkbanAJXMpby/a3vMtGQWcGiP45gJP4dPcnf9Nm4E48wLVEv2nsmPZ0FMI
-         2lMSkT8qoDi+U5AmALrRS1mX0FT2zXTUQTT2ec2MTAToNeOhu97h1yNM4Zn0S+Vh9LvW
-         3AKQ==
-X-Gm-Message-State: AOAM531RzCv/ORQ62dXTdvbkf1hPeFXB8lDaBGMGVUlAwjQDNJTxCwGD
-        ZbyWkRktMdtEZ5Y4Z00MTV6aXA==
-X-Google-Smtp-Source: ABdhPJyKFvzczFsef+5fwv+Ry0OVFkulUT/UILsWQHUOH/WuZS4OS4UdGvRuqGf2GscMXJAr4Mw3nA==
-X-Received: by 2002:a6b:610c:: with SMTP id v12mr2788528iob.101.1602084880944;
-        Wed, 07 Oct 2020 08:34:40 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id x13sm1012910iox.31.2020.10.07.08.34.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 08:34:40 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] io_uring: Fix async workqueue is not canceled on
- some corner case
-To:     Muchun Song <songmuchun@bytedance.com>, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhuyinyin@bytedance.com
-References: <20201007031635.65295-1-songmuchun@bytedance.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e3333abd-6e06-60ee-a8f9-7b7c586484f0@kernel.dk>
-Date:   Wed, 7 Oct 2020 09:34:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+XHpDefsBIm2Wcc7l0A0wAeXuSoeHx4lJ/xyRHbCKCg=;
+        b=XXTmXMCGUumflNw9qltTEPKogKnNYCeXNMSH3B2ZJ+ZS++1Btfr0AsRXo6nkTo1eeS
+         01wiSrEhWbKzmzoF2/2A4qFWs6VDN8JCd4JdDbJ3pd2LaqrEb6avGxNBPWVIpsTnnqu7
+         0l2Q8sGSs2SmAMzA/yEcz/N/yMMa3lkgVJPUnnaj/pQlQkjQjMenGPQ9VB610P4aBYTS
+         lkB8fPOiW5FTdry2t6KZDV6dq7MMeNiLlemDEPPy2T5VZ4et0eGoRKDDhjhfJwKp/Uc/
+         FNAmfGjLCgIKHg8vvG2tZWXMvizawrP8WSnA6RVksr7yzpHbmIs0fqSBI6MMYepPtRjX
+         PIfg==
+X-Gm-Message-State: AOAM5313EzlEV7dXVF/nqHtGGYMF8u7aAuQ/o7Dt/P/qngs9Iec1/hiO
+        TmOx5FocAM7kdhQRUGYbF1zbRA==
+X-Google-Smtp-Source: ABdhPJx1DMuOtEbdBBSv/OykWRlla0M47n4Zd0oyrTdowQSBvswRHUyoxe6fBa5XHm1CDpATIXU2dw==
+X-Received: by 2002:adf:fc0d:: with SMTP id i13mr4332489wrr.156.1602084885509;
+        Wed, 07 Oct 2020 08:34:45 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id t6sm3914101wre.30.2020.10.07.08.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 08:34:44 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 17:34:43 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 02/16] devlink: Add reload action option to
+ devlink reload command
+Message-ID: <20201007153443.GA3064@nanopsycho>
+References: <1602050457-21700-1-git-send-email-moshe@mellanox.com>
+ <1602050457-21700-3-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <20201007031635.65295-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602050457-21700-3-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/20 9:16 PM, Muchun Song wrote:
-> We should make sure that async workqueue is canceled on exit, but on
-> some corner case, we found that the async workqueue is not canceled
-> on exit in the linux-5.4. So we started an in-depth investigation.
-> Fortunately, we finally found the problem. The commit:
-> 
->   1c4404efcf2c ("io_uring: make sure async workqueue is canceled on exit")
-> 
-> did not completely solve this problem. This patch series to solve this
-> problem completely. And there's no upstream variant of this commit, so
-> this patch series is just fix the linux-5.4.y stable branch.
+Wed, Oct 07, 2020 at 08:00:43AM CEST, moshe@mellanox.com wrote:
+>Add devlink reload action to allow the user to request a specific reload
+>action. The action parameter is optional, if not specified then devlink
+>driver re-init action is used (backward compatible).
+>Note that when required to do firmware activation some drivers may need
+>to reload the driver. On the other hand some drivers may need to reset
+>the firmware to reinitialize the driver entities. Therefore, the devlink
+>reload command returns the actions which were actually performed.
+>Reload actions supported are:
+>driver_reinit: driver entities re-initialization, applying devlink-param
+>               and devlink-resource values.
+>fw_activate: firmware activate.
+>
+>command examples:
+>$devlink dev reload pci/0000:82:00.0 action driver_reinit
+>reload_actions_performed:
+>  driver_reinit
+>
+>$devlink dev reload pci/0000:82:00.0 action fw_activate
+>reload_actions_performed:
+>  driver_reinit fw_activate
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+>Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
-Thanks, I'll review/test these and pass them on if good.
-
--- 
-Jens Axboe
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
