@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BC22868CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA522868CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgJGUEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:04:00 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:44533 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726138AbgJGUEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:04:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602101039; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=StpMkHqz702M9TNRAosRWVwfnSKbRhnK2lan3cAXz80=;
- b=VS8r0uelWz+7VPb/8VXNOf567YGibVBUesUYjyELffK+EZbO8vE3AM6XyeTzTEEcaY0lA0X0
- /rhb7ecHBgvZfOZYF7vP9hzPzo9nwaXMviaY+7ZkQ/Hh/bOGiHIfKwxtRYrOKkw10UpTtvyW
- aiOnSGm4cs7TAWCdwZJTz2wOrIc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f7e1f2fd63768e57be82e61 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Oct 2020 20:03:59
- GMT
-Sender: vgarodia=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D365FC433C8; Wed,  7 Oct 2020 20:03:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: vgarodia)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0DF09C433CA;
-        Wed,  7 Oct 2020 20:03:56 +0000 (UTC)
+        id S1727776AbgJGUH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:07:56 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:49265 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726105AbgJGUH4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:07:56 -0400
+Received: (qmail 471050 invoked by uid 1000); 7 Oct 2020 16:07:55 -0400
+Date:   Wed, 7 Oct 2020 16:07:55 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>
+Subject: Re: [PATCH] kcov, usb, vhost: specify contexts for remote coverage
+ sections
+Message-ID: <20201007200755.GD468921@rowland.harvard.edu>
+References: <8c71349c3cd9698b8edcfbfc9631c5dcc3b29a37.1602091732.git.andreyknvl@google.com>
+ <20201007192945.GB468921@rowland.harvard.edu>
+ <CAAeHK+yV=mmrgyor=AeYq6SpLaqvpieHP51iTMrjNHLBhKDzyQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 08 Oct 2020 01:33:56 +0530
-From:   vgarodia@codeaurora.org
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: Re: [PATCH 0/3] Venus dynamic resolution change fixes
-In-Reply-To: <20200928164431.21884-1-stanimir.varbanov@linaro.org>
-References: <20200928164431.21884-1-stanimir.varbanov@linaro.org>
-Message-ID: <cd91071c76f8f2151fdcd70a16c19edf@codeaurora.org>
-X-Sender: vgarodia@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+yV=mmrgyor=AeYq6SpLaqvpieHP51iTMrjNHLBhKDzyQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stan,
+On Wed, Oct 07, 2020 at 09:54:57PM +0200, Andrey Konovalov wrote:
+> On Wed, Oct 7, 2020 at 9:29 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 07:30:51PM +0200, Andrey Konovalov wrote:
+> > > Currently there's a KCOV remote coverage collection section in
+> > > __usb_hcd_giveback_urb(). Initially that section was added based on the
+> > > assumption that usb_hcd_giveback_urb() can only be called in interrupt
+> > > context as indicated by a comment before it.
+> > >
+> > > As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
+> > > context, provided that the caller turned off the interrupts; USB/IP actually
+> > > does that. This can lead to a nested KCOV remote coverage collection
+> > > sections both trying to collect coverage in task context. This isn't
+> > > supported by KCOV, and leads to a WARNING.
+> > >
+> > > The approach this patch takes is to annotate every call of kcov_remote_*()
+> > > callbacks with the context those callbacks are supposed to be executed in.
+> > > If the current context doesn't match the mask provided to a callback,
+> > > that callback is ignored. KCOV currently only supports collecting remote
+> > > coverage in two contexts: task and softirq.
+> > >
+> > > As the result, the coverage from USB/IP related usb_hcd_giveback_urb() calls
+> > > won't be collected, but the WARNING is fixed.
+> > >
+> > > A potential future improvement would be to support nested remote coverage
+> > > collection sections, but this patch doesn't address that.
+> > >
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > ---
+> >
+> > > --- a/drivers/usb/core/hcd.c
+> > > +++ b/drivers/usb/core/hcd.c
+> > > @@ -1646,9 +1646,9 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
+> > >
+> > >       /* pass ownership to the completion handler */
+> > >       urb->status = status;
+> > > -     kcov_remote_start_usb((u64)urb->dev->bus->busnum);
+> > > +     kcov_remote_start_usb((u64)urb->dev->bus->busnum, KCOV_CONTEXT_SOFTIRQ);
+> > >       urb->complete(urb);
+> > > -     kcov_remote_stop();
+> > > +     kcov_remote_stop(KCOV_CONTEXT_SOFTIRQ);
+> >
+> > This isn't right.  __usb_hcd_giveback_urb() can execute in pretty much
+> > any context; its constraint is that interrupts must be disabled.
+> 
+> You're right, but here we constraint kcov to only collect coverage in
+> case __usb_hcd_giveback_urb() is  executed in softirq context. This is
+> what happens when we're fuzzing USB with the dummy driver, which is
+> the case we currently take care of. Whenever someone has a desire to
+> collect coverage in other contexts, it will need to be implemented
+> separately.
 
-On 2020-09-28 22:14, Stanimir Varbanov wrote:
-> Hi all,
-> 
-> Those three patches are needed to fix setting of LAST buffer flag 
-> during
-> dynamic-resolution-change state.
-> 
-> The first patch in this series fix the LAST buffer flag setting, the 
-> second
-> unify the driver behavior no matter the event from firmware is 
-> sufficient or
-> insufficient resources and the third one is moving the locking from 
-> buf_queue
-> helper function to encoder and decoder buf_queue vb2 ops.
-> 
-> Comments are welcome!
-> 
-> Stanimir Varbanov (3):
->   venus: vdec: Fix non reliable setting of LAST flag
->   venus: vdec: Make decoder return LAST flag for sufficient event
->   venus: helpers: Lock outside of buffer queue helper
-> 
->  drivers/media/platform/qcom/venus/core.h    |  5 +-
->  drivers/media/platform/qcom/venus/helpers.c | 15 ++--
->  drivers/media/platform/qcom/venus/vdec.c    | 92 +++++++++++++--------
->  drivers/media/platform/qcom/venus/venc.c    | 11 ++-
->  4 files changed, 76 insertions(+), 47 deletions(-)
+Oh, sorry.  I thought the constraint meant that it would be an error
+if kcov observed __usb_hcd_giveback_urb() executing in anything other
+than softirq context.
 
-I have made some comments which are more towards optimizing the reconfig 
-event
-handling in the driver. I would leave that up to you to either update in 
-this series
-or take it separately. Either way, i am good with this series.
-
-Reviewed-by: Vikash Garodia <vgarodia@codeaurora.org>
+Alan Stern
