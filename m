@@ -2,84 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB22E285FAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E54285FB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgJGNBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:01:43 -0400
-Received: from mga02.intel.com ([134.134.136.20]:58172 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728390AbgJGNBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:01:43 -0400
-IronPort-SDR: ykzXiWQZkktRn7tS09wRlemDnS4bhRuogj290Zy0Js1SPZ5dpwyM7Qeq/041+d9hK0Om8tysua
- HLGPjF+zz/tA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="151860409"
-X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
-   d="scan'208";a="151860409"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 06:01:41 -0700
-IronPort-SDR: Bt/ncahIGGI1x+byZ3tWuAUkQFB8AfPPmWAoZqQtYaFLENPzoLzBz4QoWT6dyvYMar3RUZmAs7
- 7m9t3QG31DHw==
-X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
-   d="scan'208";a="328045288"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 06:01:38 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kQ95d-0010Nw-8C; Wed, 07 Oct 2020 16:02:41 +0300
-Date:   Wed, 7 Oct 2020 16:02:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paul Bolle <pebolle@tiscali.nl>
-Cc:     Richard Weinberger <richard.weinberger@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Subject: Re: Build regressions/improvements in v5.9-rc8
-Message-ID: <20201007130241.GA4077@smile.fi.intel.com>
-References: <20201005093024.16032-1-geert@linux-m68k.org>
- <CAMuHMdVqpgro9Qzn39fK9R2-2xDm6LDe6uOB5gSTrdRxbecNXQ@mail.gmail.com>
- <20201005125840.GP3956970@smile.fi.intel.com>
- <d1457a75d5f38002c063c3801af7819af43e0bfc.camel@tiscali.nl>
- <CAFLxGvyvgSvcizZFZxezFKhZCP79yyMuM7izFbcUtzRTpiOb6A@mail.gmail.com>
- <5f5c303d30eaa32c21131502cc6f28db9d655329.camel@tiscali.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f5c303d30eaa32c21131502cc6f28db9d655329.camel@tiscali.nl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1728341AbgJGNFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:05:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728177AbgJGNFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:05:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602075949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fzzYwvnRkrY3q9cauoayqyN5TYt/xYOuYyfAOguTrUY=;
+        b=Os66LS1PIR9LVKLI6VZYwO5LAZ0XSo4vbRhbB3smTNyUulu3/nKJw0SHrjOTM6YK4qZkFu
+        N9wiMQuGe45OFMqRE/mBhMyJ68pVMRUOUlVC+77uHA+dFpRI7p8sTOD1/Ug6JXm3mxr6LX
+        Cc3Pua+Bb5S/OkFH6WEH1wDghuCEDAM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-xBoHtIPSM3a9S4XvbTk6nw-1; Wed, 07 Oct 2020 09:05:47 -0400
+X-MC-Unique: xBoHtIPSM3a9S4XvbTk6nw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B98A108BD06;
+        Wed,  7 Oct 2020 13:05:45 +0000 (UTC)
+Received: from ovpn-66-195.rdu2.redhat.com (unknown [10.10.67.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BE3819C4F;
+        Wed,  7 Oct 2020 13:05:43 +0000 (UTC)
+Message-ID: <f848a6761de05d655d847130e77b23b2bb39aa26.camel@redhat.com>
+Subject: Re: [PATCH v2 09/11] powerpc/smp: Optimize update_mask_by_l2
+From:   Qian Cai <cai@redhat.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Ingo Molnar <mingo@kernel.org>
+Date:   Wed, 07 Oct 2020 09:05:42 -0400
+In-Reply-To: <20200921095653.9701-10-srikar@linux.vnet.ibm.com>
+References: <20200921095653.9701-1-srikar@linux.vnet.ibm.com>
+         <20200921095653.9701-10-srikar@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 02:45:30PM +0200, Paul Bolle wrote:
-> Richard Weinberger schreef op wo 07-10-2020 om 14:08 [+0200]:
-> > UML has no ia32 emulation and therefore no in_ia32_syscall().
-> > Maybe you can check for CONFIG_IA32_EMULATION too?
+On Mon, 2020-09-21 at 15:26 +0530, Srikar Dronamraju wrote:
+> All threads of a SMT4 core can either be part of this CPU's l2-cache
+> mask or not related to this CPU l2-cache mask. Use this relation to
+> reduce the number of iterations needed to find all the CPUs that share
+> the same l2-cache.
 > 
-> The pending fix is:
->     #if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+> Use a temporary mask to iterate through the CPUs that may share l2_cache
+> mask. Also instead of setting one CPU at a time into cpu_l2_cache_mask,
+> copy the SMT4/sub mask at one shot.
 > 
-> Since this check guards in_ia32_syscall() just checking CONFIG_IA32_EMULATION
-> should do too.
-> 
-> (Way outside my limited expertise, but anyway: is does look odd to see a call
-> to in_ia32_syscall() in drivers/. All other calls are in arch/x86/. Isn't this
-> a bit too x86 specific for an arch independent driver?)
+...
+>  static bool update_mask_by_l2(int cpu)
+>  {
+> +	struct cpumask *(*submask_fn)(int) = cpu_sibling_mask;
+>  	struct device_node *l2_cache, *np;
+> +	cpumask_var_t mask;
+>  	int i;
+>  
+>  	l2_cache = cpu_to_l2cache(cpu);
+> @@ -1240,22 +1264,37 @@ static bool update_mask_by_l2(int cpu)
+>  		return false;
+>  	}
+>  
+> -	cpumask_set_cpu(cpu, cpu_l2_cache_mask(cpu));
+> -	for_each_cpu_and(i, cpu_online_mask, cpu_cpu_mask(cpu)) {
+> +	alloc_cpumask_var_node(&mask, GFP_KERNEL, cpu_to_node(cpu));
 
-According to Arnd who suggested that fix the problem is basically appears on
-x86. He also mentioned the new approach that Christoph Hellwig is working on.
-But we decided to go the ifdeffery for better backporting.
+Shouldn't this be GFP_ATOMIC? Otherwise, during the CPU hotplugging, we have,
 
--- 
-With Best Regards,
-Andy Shevchenko
+(irqs were disabled in do_idle())
 
+[  335.420001][    T0] BUG: sleeping function called from invalid context at mm/slab.h:494
+[  335.420003][    T0] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/88
+[  335.420005][    T0] no locks held by swapper/88/0.
+[  335.420007][    T0] irq event stamp: 18074448
+[  335.420015][    T0] hardirqs last  enabled at (18074447): [<c0000000001a2a7c>] tick_nohz_idle_enter+0x9c/0x110
+[  335.420019][    T0] hardirqs last disabled at (18074448): [<c000000000106798>] do_idle+0x138/0x3b0
+do_idle at kernel/sched/idle.c:253 (discriminator 1)
+[  335.420023][    T0] softirqs last  enabled at (18074440): [<c0000000000bbec4>] irq_enter_rcu+0x94/0xa0
+[  335.420026][    T0] softirqs last disabled at (18074439): [<c0000000000bbea0>] irq_enter_rcu+0x70/0xa0
+[  335.420030][    T0] CPU: 88 PID: 0 Comm: swapper/88 Tainted: G        W         5.9.0-rc8-next-20201007 #1
+[  335.420032][    T0] Call Trace:
+[  335.420037][    T0] [c00020000a4bfcf0] [c000000000649e98] dump_stack+0xec/0x144 (unreliable)
+[  335.420043][    T0] [c00020000a4bfd30] [c0000000000f6c34] ___might_sleep+0x2f4/0x310
+[  335.420048][    T0] [c00020000a4bfdb0] [c000000000354f94] slab_pre_alloc_hook.constprop.82+0x124/0x190
+[  335.420051][    T0] [c00020000a4bfe00] [c00000000035e9e8] __kmalloc_node+0x88/0x3a0
+slab_alloc_node at mm/slub.c:2817
+(inlined by) __kmalloc_node at mm/slub.c:4013
+[  335.420054][    T0] [c00020000a4bfe80] [c0000000006494d8] alloc_cpumask_var_node+0x38/0x80
+kmalloc_node at include/linux/slab.h:577
+(inlined by) alloc_cpumask_var_node at lib/cpumask.c:116
+[  335.420060][    T0] [c00020000a4bfef0] [c00000000003eedc] start_secondary+0x27c/0x800
+update_mask_by_l2 at arch/powerpc/kernel/smp.c:1267
+(inlined by) add_cpu_to_masks at arch/powerpc/kernel/smp.c:1387
+(inlined by) start_secondary at arch/powerpc/kernel/smp.c:1420
+[  335.420063][    T0] [c00020000a4bff90] [c00000000000c468] start_secondary_resume+0x10/0x14
+
+> +	cpumask_and(mask, cpu_online_mask, cpu_cpu_mask(cpu));
+> +
+> +	if (has_big_cores)
+> +		submask_fn = cpu_smallcore_mask;
+> +
+> +	/* Update l2-cache mask with all the CPUs that are part of submask */
+> +	or_cpumasks_related(cpu, cpu, submask_fn, cpu_l2_cache_mask);
+> +
+> +	/* Skip all CPUs already part of current CPU l2-cache mask */
+> +	cpumask_andnot(mask, mask, cpu_l2_cache_mask(cpu));
+> +
+> +	for_each_cpu(i, mask) {
+>  		/*
+>  		 * when updating the marks the current CPU has not been marked
+>  		 * online, but we need to update the cache masks
+>  		 */
+>  		np = cpu_to_l2cache(i);
+> -		if (!np)
+> -			continue;
+>  
+> -		if (np == l2_cache)
+> -			set_cpus_related(cpu, i, cpu_l2_cache_mask);
+> +		/* Skip all CPUs already part of current CPU l2-cache */
+> +		if (np == l2_cache) {
+> +			or_cpumasks_related(cpu, i, submask_fn,
+> cpu_l2_cache_mask);
+> +			cpumask_andnot(mask, mask, submask_fn(i));
+> +		} else {
+> +			cpumask_andnot(mask, mask, cpu_l2_cache_mask(i));
+> +		}
+>  
+>  		of_node_put(np);
+>  	}
+>  	of_node_put(l2_cache);
+> +	free_cpumask_var(mask);
+>  
+>  	return true;
+>  }
 
