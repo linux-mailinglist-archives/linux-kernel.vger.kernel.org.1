@@ -2,156 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC681286038
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E2F28603F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgJGNeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgJGNeT (ORCPT
+        id S1728479AbgJGNfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:35:11 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51246 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728177AbgJGNfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:34:19 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDD4C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:34:17 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id g4so2222741edk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ey5jQVqWMq7tqWUNxbxQD0XiFyWsfkNlQHb48MNv2aU=;
-        b=nAjkJUUBJHWrdRcj/JQF4tgMcf+DJFpLnYSCmmlIuprUdgoLEBWSV6qYfpXkufV58D
-         1ygy8Ye8eM0wJiy3NaQOx+HxxjLP1n4qD/B0tg3UGVaIeTzAyknxIF1gbeXP60pMqvpc
-         Vp+0RCZyupp2cXXYh4nhaFWBwRptD1ctUWClM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ey5jQVqWMq7tqWUNxbxQD0XiFyWsfkNlQHb48MNv2aU=;
-        b=EtcYCrgjQ+PhCYCzIkP1F1eD7NdR7jMX5NNSjh7iZ8EsP4x6VH5VJ9qKfHTq7V4095
-         tdkajpmFxwzqqZ8LpVYIYWVq7w0JGvZRdocghaxPJsYa9CV5nMGE5eYUlzr4ZwPHwZru
-         fQQ86xTatM6B/Vvw2kAzVruJ2g54Dm/8PXt8CWduXljX49HMb34EQfnooeANqZlA9+gH
-         aW4cb5jTLTOqT2cvyHSG6SRem5aS086zI4i5nxORoBkqJu/+sKfrBb5Jtt3qI5GvQGPF
-         BunRcT8oM09fSfS/Rew5XgsqpbfBkudVSG7LQeQkrAi4Gk7ZSituEo7Tbzymjn8APhZd
-         e8dA==
-X-Gm-Message-State: AOAM532wOZkKArbctYvc+hLYqkSSL1C7Sxo2lve+QANNSeEZt3YVgtcx
-        bqE2OaepsIaKdm7Ut270NMlggK0pfKoScg==
-X-Google-Smtp-Source: ABdhPJxiri1ibp87BLIzTYzOgLZJc/wFjh9Hbo2avNH7gI0yFa6s7Yd8hxZSqz3R1p75jfN+wWTnZQ==
-X-Received: by 2002:a50:9e49:: with SMTP id z67mr3492051ede.183.1602077655911;
-        Wed, 07 Oct 2020 06:34:15 -0700 (PDT)
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
-        by smtp.gmail.com with ESMTPSA id n25sm1523378ejd.114.2020.10.07.06.34.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 06:34:14 -0700 (PDT)
-Received: by mail-wm1-f43.google.com with SMTP id d81so2339020wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:34:14 -0700 (PDT)
-X-Received: by 2002:a1c:3bd4:: with SMTP id i203mr2678118wma.28.1602077653530;
- Wed, 07 Oct 2020 06:34:13 -0700 (PDT)
+        Wed, 7 Oct 2020 09:35:09 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kQ9b2-0002RT-1J; Wed, 07 Oct 2020 13:35:08 +0000
+Subject: Re: tracing: Add support for dynamic strings to synthetic events
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <d34dccd5-96ba-a2d9-46ea-de8807525deb@canonical.com>
+ <20201007093036.423a1b72@gandalf.local.home>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <cfcfa79c-580c-7e36-3b23-072d7e105eaf@canonical.com>
+Date:   Wed, 7 Oct 2020 14:35:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
- <20201002233118.GM9916@ziepe.ca> <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
- <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
- <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com> <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
- <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com> <20201007124409.GN5177@ziepe.ca>
- <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
- <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com> <20201007130610.GP5177@ziepe.ca>
-In-Reply-To: <20201007130610.GP5177@ziepe.ca>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 7 Oct 2020 15:34:01 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
-Message-ID: <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201007093036.423a1b72@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 3:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Oct 07, 2020 at 02:58:33PM +0200, Daniel Vetter wrote:
-> > On Wed, Oct 7, 2020 at 2:48 PM Tomasz Figa <tfiga@chromium.org> wrote:
-> > >
-> > > On Wed, Oct 7, 2020 at 2:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > On Wed, Oct 07, 2020 at 02:33:56PM +0200, Marek Szyprowski wrote:
-> > > > > Well, it was in vb2_get_vma() function, but now I see that it has been
-> > > > > lost in fb639eb39154 and 6690c8c78c74 some time ago...
-> > > >
-> > > > There is no guarentee that holding a get on the file says anthing
-> > > > about the VMA. This needed to check that the file was some special
-> > > > kind of file that promised the VMA layout and file lifetime are
-> > > > connected.
-> > > >
-> > > > Also, cloning a VMA outside the mm world is just really bad. That
-> > > > would screw up many assumptions the drivers make.
-> > > >
-> > > > If it is all obsolete I say we hide it behind a default n config
-> > > > symbol and taint the kernel if anything uses it.
-> > > >
-> > > > Add a big comment above the follow_pfn to warn others away from this
-> > > > code.
-> > >
-> > > Sadly it's just verbally declared as deprecated and not formally noted
-> > > anyway. There are a lot of userspace applications relying on user
-> > > pointer support.
-> >
-> > userptr can stay, it's the userptr abuse for zerocpy buffer sharing
-> > which doesn't work anymore. At least without major surgery (you'd need
-> > an mmu notifier to zap mappings and recreate them, and that pretty
-> > much breaks the v4l model of preallocating all buffers to make sure we
-> > never underflow the buffer queue). And static mappings are not coming
-> > back I think, we'll go ever more into the direction of dynamic
-> > mappings and moving stuff around as needed.
->
-> Right, and to be clear, the last time I saw a security flaw of this
-> magnitude from a subsystem badly mis-designing itself, Linus's
-> knee-jerk reaction was to propose to remove the whole subsystem.
->
-> Please don't take status-quo as acceptable, V4L community has to work
-> to resolve this, uABI breakage or not. The follow_pfn related code
-> must be compiled out of normal distro kernel builds.
+On 07/10/2020 14:30, Steven Rostedt wrote:
+> On Wed, 7 Oct 2020 14:08:38 +0100
+> Colin Ian King <colin.king@canonical.com> wrote:
+> 
+>> Hi,
+>>
+>> Static analysis with Coverity has detected a duplicated condition in an
+>> if statement in the following commit in source
+>> kernel/trace/trace_events_synth.c
+>>
+>> commit bd82631d7ccdc894af2738e47abcba2cb6e7dea9
+>> Author: Tom Zanussi <zanussi@kernel.org>
+>> Date:   Sun Oct 4 17:14:06 2020 -0500
+>>
+>>     tracing: Add support for dynamic strings to synthetic events
+>>
+>> Analysis is as follows:
+>>
+>> 493        for (i = 0; i < event->n_fields; i++) {
+>>
+>> Same on both sides (CONSTANT_EXPRESSION_RESULT)
+>> pointless_expression: The expression event->fields[i]->is_dynamic &&
+>> event->fields[i]->is_dynamic does not accomplish anything because it
+>> evaluates to either of its identical operands, event->fields[i]->is_dynamic.
+>>
+>>    Did you intend the operands to be different?
+>>
+>> 494                if (event->fields[i]->is_dynamic &&
+>> 495                    event->fields[i]->is_dynamic)
+> 
+> Bah, I believe that was suppose to be:
+> 
+> 		if (event->fields[i]->is_string &&
+> 		    event->fields[i]->is_dynamic)
+> 
+> I'll go and fix that.
 
-I think the userptr zero-copy hack should be able to go away indeed,
-given that we now have CMA that allows having carveouts backed by
-struct pages and having the memory represented as DMA-buf normally.
+Ah, makes sense. Thanks!
 
-How about the regular userptr use case, though?
+> 
+> -- Steve
+> 
+>> 496                        pos += snprintf(buf + pos, LEN_OR_ZERO,
+>> 497                                ", __get_str(%s)",
+>> event->fields[i]->name);
+>> 498                else
+>> 499                        pos += snprintf(buf + pos, LEN_OR_ZERO,
+>> 500                                        ", REC->%s",
+>> event->fields[i]->name);
+>> 501        }
+>>
+>> Colin
+> 
 
-The existing code resolves the user pointer into pages by following
-the get_vaddr_frames() -> frame_vector_to_pages() ->
-sg_alloc_table_from_pages() / vm_map_ram() approach.
-get_vaddr_frames() seems to use pin_user_pages() behind the scenes if
-the vma is not an IO or a PFNMAP, falling back to follow_pfn()
-otherwise.
-
-Is your intention to drop get_vaddr_frames() or we could still keep
-using it and if vec->is_pfns is true:
-a) if CONFIG_VIDEO_LEGACY_PFN_USERPTR is set, taint the kernel
-b) otherwise just undo and fail?
-
-Best regards,
-Tomasz
