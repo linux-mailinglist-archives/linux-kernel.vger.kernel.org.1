@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A8128637E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA4128637F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgJGQSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:18:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:4779 "EHLO mga04.intel.com"
+        id S1729232AbgJGQSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:18:04 -0400
+Received: from mga07.intel.com ([134.134.136.100]:54623 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727717AbgJGQR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:17:58 -0400
-IronPort-SDR: 2rTIpSTO2WTEZmGcK/7d1IxVFRO3QI/2x+lnKPUwdfuSN6TKNpfVC4eUW7jy/sJIpYlxlt/912
- 7a3zBdiMqTeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="162388019"
+        id S1727873AbgJGQR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:17:59 -0400
+IronPort-SDR: X/3w0mnAiuWYDvSos2E+JKvGcs5lugtirID6BjsPMi0CbLx5UEK69piI4Q9Au8iCOh6bsQortv
+ UKwg3i8Wv8Pg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="229142601"
 X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="162388019"
+   d="scan'208";a="229142601"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:17:58 -0700
-IronPort-SDR: LZw/E6HmWncdT9wAseE8RuL19wYmYRoj0c/GHSXxCYNkh/Dv2rE5g2cD989oLIT8YookNH91wC
- 3eijvHzMCfxA==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:17:59 -0700
+IronPort-SDR: r3PwdlDNxIUz73BRtbmu5/pVS2rWzzHDnfEMrs/BS9mM4kYe9ii7mpS5MDGKE/jSibjqouBUta
+ /aQiwnpNLCug==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="328125603"
+   d="scan'208";a="388424802"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga002.jf.intel.com with ESMTP; 07 Oct 2020 09:17:57 -0700
-Subject: [RFC][PATCH 8/9] mm/vmscan: never demote for memcg reclaim
+  by orsmga001.jf.intel.com with ESMTP; 07 Oct 2020 09:17:59 -0700
+Subject: [RFC][PATCH 9/9] mm/migrate: new zone_reclaim_mode to enable reclaim migration
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
         yang.shi@linux.alibaba.com, rientjes@google.com,
         ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Wed, 07 Oct 2020 09:17:50 -0700
+Date:   Wed, 07 Oct 2020 09:17:52 -0700
 References: <20201007161736.ACC6E387@viggo.jf.intel.com>
 In-Reply-To: <20201007161736.ACC6E387@viggo.jf.intel.com>
-Message-Id: <20201007161750.74CE9FA2@viggo.jf.intel.com>
+Message-Id: <20201007161752.11E81B0E@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -44,118 +44,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-Global reclaim aims to reduce the amount of memory used on
-a given node or set of nodes.  Migrating pages to another
-node serves this purpose.
+Some method is obviously needed to enable reclaim-based migration.
 
-memcg reclaim is different.  Its goal is to reduce the
-total memory consumption of the entire memcg, across all
-nodes.  Migration does not assist memcg reclaim because
-it just moves page contents between nodes rather than
-actually reducing memory consumption.
+Just like traditional autonuma, there will be some workloads that
+will benefit like workloads with more "static" configurations where
+hot pages stay hot and cold pages stay cold.  If pages come and go
+from the hot and cold sets, the benefits of this approach will be
+more limited.
+
+The benefits are truly workload-based and *not* hardware-based.
+We do not believe that there is a viable threshold where certain
+hardware configurations should have this mechanism enabled while
+others do not.
+
+To be conservative, earlier work defaulted to disable reclaim-
+based migration and did not include a mechanism to enable it.
+This propses extending the existing "zone_reclaim_mode" (now
+now really node_reclaim_mode) as a method to enable it.
+
+We are open to any alternative that allows end users to enable
+this mechanism or disable it it workload harm is detected (just
+like traditional autonuma).
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Suggested-by: Yang Shi <yang.shi@linux.alibaba.com>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Huang Ying <ying.huang@intel.com>
 Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: David Hildenbrand <david@redhat.com>
 ---
 
- b/mm/vmscan.c |   33 +++++++++++++++++++++++++--------
- 1 file changed, 25 insertions(+), 8 deletions(-)
+ b/Documentation/admin-guide/sysctl/vm.rst |    9 +++++++++
+ b/include/linux/swap.h                    |    3 ++-
+ b/include/uapi/linux/mempolicy.h          |    1 +
+ b/mm/vmscan.c                             |    6 ++++--
+ 4 files changed, 16 insertions(+), 3 deletions(-)
 
-diff -puN mm/vmscan.c~never-demote-for-memcg-reclaim mm/vmscan.c
---- a/mm/vmscan.c~never-demote-for-memcg-reclaim	2020-10-07 09:15:34.546642433 -0700
-+++ b/mm/vmscan.c	2020-10-07 09:15:34.554642433 -0700
-@@ -291,8 +291,11 @@ static bool writeback_throttling_sane(st
- #endif
+diff -puN Documentation/admin-guide/sysctl/vm.rst~RECLAIM_MIGRATE Documentation/admin-guide/sysctl/vm.rst
+--- a/Documentation/admin-guide/sysctl/vm.rst~RECLAIM_MIGRATE	2020-10-07 09:15:35.622642430 -0700
++++ b/Documentation/admin-guide/sysctl/vm.rst	2020-10-07 09:15:35.640642430 -0700
+@@ -969,6 +969,7 @@ This is value OR'ed together of
+ 1	Zone reclaim on
+ 2	Zone reclaim writes dirty pages out
+ 4	Zone reclaim swaps pages
++8	Zone reclaim migrates pages
+ =	===================================
  
- static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
--					  int node_id)
-+					  int node_id,
-+					  struct scan_control *sc)
+ zone_reclaim_mode is disabled by default.  For file servers or workloads
+@@ -993,3 +994,11 @@ of other processes running on other node
+ Allowing regular swap effectively restricts allocations to the local
+ node unless explicitly overridden by memory policies or cpuset
+ configurations.
++
++Page migration during reclaim is intended for systems with tiered memory
++configurations.  These systems have multiple types of memory with varied
++performance characteristics instead of plain NUMA systems where the same
++kind of memory is found at varied distances.  Allowing page migration
++during reclaim enables these systems to migrate pages from fast tiers to
++slow tiers when the fast tier is under pressure.  This migration is
++performed before swap.
+diff -puN include/linux/swap.h~RECLAIM_MIGRATE include/linux/swap.h
+--- a/include/linux/swap.h~RECLAIM_MIGRATE	2020-10-07 09:15:35.624642430 -0700
++++ b/include/linux/swap.h	2020-10-07 09:15:35.640642430 -0700
+@@ -385,7 +385,8 @@ extern int sysctl_min_slab_ratio;
+ static inline bool node_reclaim_enabled(void)
  {
-+	bool in_cgroup_reclaim = false;
-+
- 	/* Always age anon pages when we have swap */
- 	if (memcg == NULL) {
- 		if (get_nr_swap_pages() > 0)
-@@ -302,8 +305,18 @@ static inline bool can_reclaim_anon_page
- 			return true;
- 	}
+ 	/* Is any node_reclaim_mode bit set? */
+-	return node_reclaim_mode & (RECLAIM_ZONE|RECLAIM_WRITE|RECLAIM_UNMAP);
++	return node_reclaim_mode & (RECLAIM_ZONE |RECLAIM_WRITE|
++				    RECLAIM_UNMAP|RECLAIM_MIGRATE);
+ }
  
--	/* Also age anon pages if we can auto-migrate them */
--	if (next_demotion_node(node_id) >= 0)
-+	/* Can only be in memcg reclaim in paths with valid 'sc': */
-+	if (sc && cgroup_reclaim(sc))
-+		in_cgroup_reclaim = true;
-+
-+	/*
-+	 * Also age anon pages if we can auto-migrate them.
-+	 *
-+	 * Migrating a page does not reduce comsumption of a
-+	 * memcg so should not be performed when in memcg
-+	 * reclaim.
-+	 */
-+	if (!in_cgroup_reclaim && (next_demotion_node(node_id) >= 0))
- 		return true;
+ extern void check_move_unevictable_pages(struct pagevec *pvec);
+diff -puN include/uapi/linux/mempolicy.h~RECLAIM_MIGRATE include/uapi/linux/mempolicy.h
+--- a/include/uapi/linux/mempolicy.h~RECLAIM_MIGRATE	2020-10-07 09:15:35.628642430 -0700
++++ b/include/uapi/linux/mempolicy.h	2020-10-07 09:15:35.640642430 -0700
+@@ -69,5 +69,6 @@ enum {
+ #define RECLAIM_ZONE	(1<<0)	/* Run shrink_inactive_list on the zone */
+ #define RECLAIM_WRITE	(1<<1)	/* Writeout pages during reclaim */
+ #define RECLAIM_UNMAP	(1<<2)	/* Unmap pages during reclaim */
++#define RECLAIM_MIGRATE	(1<<3)	/* Migrate to other nodes during reclaim */
  
- 	/* No way to reclaim anon pages */
-@@ -321,7 +334,7 @@ unsigned long zone_reclaimable_pages(str
- 
- 	nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
- 		zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
--	if (can_reclaim_anon_pages(NULL, zone_to_nid(zone)))
-+	if (can_reclaim_anon_pages(NULL, zone_to_nid(zone), NULL))
- 		nr += zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_ANON) +
- 			zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_ANON);
- 
-@@ -1064,6 +1077,10 @@ bool migrate_demote_page_ok(struct page
+ #endif /* _UAPI_LINUX_MEMPOLICY_H */
+diff -puN mm/vmscan.c~RECLAIM_MIGRATE mm/vmscan.c
+--- a/mm/vmscan.c~RECLAIM_MIGRATE	2020-10-07 09:15:35.630642430 -0700
++++ b/mm/vmscan.c	2020-10-07 09:15:35.641642430 -0700
+@@ -1077,6 +1077,9 @@ bool migrate_demote_page_ok(struct page
  	VM_BUG_ON_PAGE(PageHuge(page), page);
  	VM_BUG_ON_PAGE(PageLRU(page), page);
  
-+	/* It is pointless to do demotion in memcg reclaim */
-+	if (cgroup_reclaim(sc))
++	if (!(node_reclaim_mode & RECLAIM_MIGRATE))
 +		return false;
 +
- 	if (next_nid == NUMA_NO_NODE)
+ 	/* It is pointless to do demotion in memcg reclaim */
+ 	if (cgroup_reclaim(sc))
  		return false;
+@@ -1086,8 +1089,7 @@ bool migrate_demote_page_ok(struct page
  	if (PageTransHuge(page) && !thp_migration_supported())
-@@ -2368,7 +2385,7 @@ static void get_scan_count(struct lruvec
- 	enum lru_list lru;
+ 		return false;
  
- 	/* If we have no swap space, do not bother scanning anon pages. */
--	if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id)) {
-+	if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id, sc)) {
- 		scan_balance = SCAN_FILE;
- 		goto out;
- 	}
-@@ -2653,7 +2670,7 @@ static void shrink_lruvec(struct lruvec
- 	 * rebalance the anon lru active/inactive ratio.
- 	 */
- 	if (can_reclaim_anon_pages(lruvec_memcg(lruvec),
--			       lruvec_pgdat(lruvec)->node_id) &&
-+			       lruvec_pgdat(lruvec)->node_id, sc) &&
- 	    inactive_is_low(lruvec, LRU_INACTIVE_ANON))
- 		shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
- 				   sc, LRU_ACTIVE_ANON);
-@@ -2724,7 +2741,7 @@ static inline bool should_continue_recla
- 	 */
- 	pages_for_compaction = compact_gap(sc->order);
- 	inactive_lru_pages = node_page_state(pgdat, NR_INACTIVE_FILE);
--	if (can_reclaim_anon_pages(NULL, pgdat->node_id))
-+	if (can_reclaim_anon_pages(NULL, pgdat->node_id, sc))
- 		inactive_lru_pages += node_page_state(pgdat, NR_INACTIVE_ANON);
+-	// FIXME: actually enable this later in the series
+-	return false;
++	return true;
+ }
  
- 	return inactive_lru_pages > pages_for_compaction;
-@@ -3483,7 +3500,7 @@ static void age_active_anon(struct pglis
- 	struct mem_cgroup *memcg;
- 	struct lruvec *lruvec;
  
--	if (!can_reclaim_anon_pages(NULL, pgdat->node_id))
-+	if (!can_reclaim_anon_pages(NULL, pgdat->node_id, sc))
- 		return;
- 
- 	lruvec = mem_cgroup_lruvec(NULL, pgdat);
 _
