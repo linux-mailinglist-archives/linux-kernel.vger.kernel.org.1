@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75358285522
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09413285527
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgJGAKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 20:10:14 -0400
-Received: from a27-61.smtp-out.us-west-2.amazonses.com ([54.240.27.61]:40760
-        "EHLO a27-61.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725925AbgJGAKN (ORCPT
+        id S1726777AbgJGAK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726645AbgJGAK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:10:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=2nz3jy4edhd5smbjctxaus57ph3tmkzv; d=squareup.com; t=1602029412;
-        h=From:To:Cc:Subject:Date:Message-Id:Reply-To;
-        bh=muKSLnvOgIDXZ5YdsvIDagaTt5Oh30c5xCs5kUab1yk=;
-        b=IH1GMGASAWCWWpWUsmP2uMEmfwkH+ymrtKJMlPnEhZL8a/ONiiMAx4so8jc8XEPY
-        ckrDwpj9VvSONR2MUfC0NJQ7VRuRqxd7lwX9VAqbkJjQRb0tTvAbDtBDS69fvRAg1S+
-        jNf5Kl1xrKWMkCMVopp0tN/Bzo213dTLeXlf/L6c=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1602029412;
-        h=From:To:Cc:Subject:Date:Message-Id:Reply-To:Feedback-ID;
-        bh=muKSLnvOgIDXZ5YdsvIDagaTt5Oh30c5xCs5kUab1yk=;
-        b=iwVoXV2+EJVtY5/Z81dvaXDwmhB0ZfX1GhpwYDmj63SVhP3f4elF27iz4CG/XKXy
-        s8pN/Fhi+vljQTLLu1i2Fl0pZL3ce5qo7i3kqTKyWcTDGUNMplg3q0vy7XAyrz/nmza
-        /J60oSJnKk0ULImbMtdyyQLO5hjquiuv9tyoVdyU=
-From:   benl-kernelpatches@squareup.com
-To:     robdclark@gmail.com, sean@poorly.run
-Cc:     Benjamin Li <benl@squareup.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Harigovindan P <harigovi@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        zhengbin <zhengbin13@huawei.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dsi: save PLL registers across first PHY reset
-Date:   Wed, 7 Oct 2020 00:10:12 +0000
-Message-ID: <010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com>
-X-Mailer: git-send-email 2.17.1
-Reply-To: benl@squareup.com
-X-SES-Outgoing: 2020.10.07-54.240.27.61
-Feedback-ID: 1.us-west-2.z+Qxlzaf/1x39VmnWQZn7Gs4WPNjZe3NO2QR/Gz0OyM=:AmazonSES
+        Tue, 6 Oct 2020 20:10:28 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6BCC0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 17:10:28 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id f10so609574otb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wi1jcDUXhmUJVWSN8u8P6C9eTibLrPPcR6pQHLdgOfs=;
+        b=OJxmq0s8FOKsNlNTy4Qsr91aFes6ycErtqR6aokbT0gMY+jAIwaiFGbu/PsfCHXJBv
+         3QcuCmB8P2knzLs8Km9ZfRItJdwOgmlsBnPUqE1W764JyJC79HUJI+HRxTSIp+qqorHp
+         /jkIJXVDio3Gnonuf1nevnlnVzY2lIkbZ0tQpLPoDIcHzZzDO5VfvTHte8RqqacpWssG
+         cLrDRa2lHDQiZW9oxF8S/uc+lJ/Dc+2KeyUH8C1Y/qLYXEgcqM+Xpooj4cpNYqeoo2LH
+         /nQGnP+yL5WC90OddOKb91erO4fPrFvm6BKY4I0U8KLFmc3BZkatyKtPTgz6VGzK8P3T
+         9TZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wi1jcDUXhmUJVWSN8u8P6C9eTibLrPPcR6pQHLdgOfs=;
+        b=qw7+4IYkoophfFTFnrQTg3yTN/+9mAFTiDXjYdSDzUs4Khv4tYxztpQ6tQEvUByRlL
+         2CWPpCACURS6dDPWraLfHHGCyMtc/4syXuuJOLrnodX9se0ZrI0BrKCKSn07DxPyXy4u
+         BVnypO9s2SIp/HZEIM9b3Ox0SFKxAIjQxS9RmkUyLoJnmHq14EScSbD405HNQte/1NGu
+         sRQTp5SCMlUmIu7W+zJXcIfKvd2k3EwYobZz2HhPaG6hAQ3Uy8unj62ZFoMk0tZCVE1Q
+         DviqhJeLR40BW8jdhklMu6hAgb50XePoF0tZIyBvxW26knzKaE5A9bxNmTAijOrgVy5X
+         Eqpw==
+X-Gm-Message-State: AOAM5325OVkQ604HUmwW9L5kdsP1IqN1bTejo36AM4QczisK/X9J/0lC
+        Io1cBSmfHxSQcBdoZfSCCoF36reCWiGzZJR0XMa+qg==
+X-Google-Smtp-Source: ABdhPJyxAvneJRD04IOXKzjRKHPbeKdB69oCmF9vNJuvEgBkwACc05hjNXkE/uZ6k1q/4vsdBkZXBLsDJgaAeSx1WZ4=
+X-Received: by 2002:a05:6830:196:: with SMTP id q22mr265996ota.221.1602029427384;
+ Tue, 06 Oct 2020 17:10:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201006231234.701591b5@canb.auug.org.au> <73bc372f-8896-d363-8832-193999296054@infradead.org>
+In-Reply-To: <73bc372f-8896-d363-8832-193999296054@infradead.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 6 Oct 2020 17:10:15 -0700
+Message-ID: <CALAqxLU672fOHudfvZWDEoO=fHYt79isz35e9EaJAsvTCg5How@mail.gmail.com>
+Subject: Re: linux-next: Tree for Oct 6 (drivers/misc/hisi_hikey_usb.c)
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Chen <chenyu56@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Li <benl@squareup.com>
+On Tue, Oct 6, 2020 at 12:29 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 10/6/20 5:12 AM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Changes since 20201002:
+> >
+>
+> on x86_64:
+> CONFIG_USB_ROLE_SWITCH=m
+> and HISI_HIKEY_USB=y.
+>
+> ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_remove':
+> hisi_hikey_usb.c:(.text+0x61): undefined reference to `usb_role_switch_unregister'
+> ld: hisi_hikey_usb.c:(.text+0xa4): undefined reference to `usb_role_switch_put'
+> ld: drivers/misc/hisi_hikey_usb.o: in function `hub_usb_role_switch_set':
+> hisi_hikey_usb.c:(.text+0xd3): undefined reference to `usb_role_switch_get_drvdata'
+> ld: drivers/misc/hisi_hikey_usb.o: in function `relay_set_role_switch':
+> hisi_hikey_usb.c:(.text+0x54d): undefined reference to `usb_role_switch_set_role'
+> ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_probe':
+> hisi_hikey_usb.c:(.text+0x8a5): undefined reference to `usb_role_switch_get'
+> ld: hisi_hikey_usb.c:(.text+0xa08): undefined reference to `usb_role_switch_register'
+> ld: hisi_hikey_usb.c:(.text+0xa6e): undefined reference to `usb_role_switch_put'
+>
+>
+> Full randconfig file is attached.
+>
 
-Take advantage of previously-added support for persisting PLL
-registers across DSI PHY disable/enable cycles (see 328e1a6
-'drm/msm/dsi: Save/Restore PLL status across PHY reset') to
-support persisting across the very first DSI PHY enable at
-boot.
+Adding Mauro to the thread, as he's the one submitting that patch upstream.
 
-The bootloader may have left the PLL registers in a non-default
-state. For example, for dsi_pll_28nm.c on 8x16/8x39, the byte
-clock mux's power-on reset configuration is to bypass DIV1, but
-depending on bandwidth requirements[1] the bootloader may have
-set the DIV1 path.
+Looks like we need to tweak the kconfig so it depends on CONFIG_USB_ROLE_SWITCH.
 
-When the byte clock mux is registered with the generic clock
-framework at probe time, the framework reads & caches the value
-of the mux bit field (the initial clock parent). After PHY enable,
-when clk_set_rate is called on the byte clock, the framework
-assumes there is no need to reparent, and doesn't re-write the
-mux bit field. But PHY enable resets PLL registers, so the mux
-bit field actually silently reverted to the DIV1 bypass path.
-This causes the byte clock to be off by a factor of e.g. 2 for
-our tested WXGA panel.
-
-The above issue manifests as the display not working and a
-constant stream of FIFO/LP0 contention errors.
-
-[1] The specific requirement for triggering the DIV1 path (and
-thus this issue) on 28nm is a panel with pixel clock <116.7MHz
-(one-third the minimum VCO setting). FHD/1080p (~145MHz) is fine,
-WXGA/1280x800 (~75MHz) is not.
-
-Signed-off-by: Benjamin Li <benl@squareup.com>
----
- drivers/gpu/drm/msm/dsi/phy/dsi_phy.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
-index 009f5b843dd1..139b4a5aaf86 100644
---- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
-+++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
-@@ -621,6 +621,22 @@ static int dsi_phy_driver_probe(struct platform_device *pdev)
- 		phy->pll = NULL;
- 	}
- 
-+	/*
-+	 * As explained in msm_dsi_phy_enable, resetting the DSI PHY (as done
-+	 * in dsi_mgr_phy_enable) silently changes its PLL registers to power-on
-+	 * defaults, but the generic clock framework manages and caches several
-+	 * of the PLL registers. It initializes these caches at registration
-+	 * time via register read.
-+	 *
-+	 * As a result, we need to save DSI PLL registers once at probe in order
-+	 * for the first call to msm_dsi_phy_enable to successfully bring PLL
-+	 * registers back in line with what the generic clock framework expects.
-+	 *
-+	 * Subsequent PLL restores during msm_dsi_phy_enable will always be
-+	 * paired with PLL saves in msm_dsi_phy_disable.
-+	 */
-+	msm_dsi_pll_save_state(phy->pll);
-+
- 	dsi_phy_disable_resource(phy);
- 
- 	platform_set_drvdata(pdev, phy);
--- 
-2.17.1
-
+thanks
+-john
