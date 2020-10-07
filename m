@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2935F2863FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E93428640E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgJGQaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:30:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:46648 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgJGQaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:30:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63A661FB;
-        Wed,  7 Oct 2020 09:30:14 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 094943F66B;
-        Wed,  7 Oct 2020 09:30:12 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 17:30:10 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
-Message-ID: <20201007163010.bfgst6xfvkn2lzrk@e107158-lin.cambridge.arm.com>
-References: <20200930211723.3028059-1-robdclark@gmail.com>
- <20201002110105.e56qrvzoqfioi4hs@e107158-lin.cambridge.arm.com>
- <CAF6AEGvWMvZuy7CcGhzUSbwGtEkrNkzWHu_BN1cbdBJdZtvevA@mail.gmail.com>
- <20201005150024.mchfdtd62rlkuh4s@e107158-lin.cambridge.arm.com>
- <CAF6AEGs7NmCPyLdg+gg5jTTe-wgi2myRQ80tum6odv6tLLQ0DQ@mail.gmail.com>
- <20201006105918.v3xspb6xasjyy5ky@e107158-lin.cambridge.arm.com>
- <CAF6AEGu_V_EGcPQ+F_Z73cMCAcFPoM-GuiGWUPr+=6GD4Om=zg@mail.gmail.com>
- <20201007103653.qjohhta7douhlb22@e107158-lin.cambridge.arm.com>
- <CAF6AEGsA_enFOUkV4Rw=Sxyjf=_oFLjwbz-Y4jTO=TUraOCzVQ@mail.gmail.com>
+        id S1727969AbgJGQaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727978AbgJGQai (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:30:38 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9D5C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:30:36 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id j13so2847362ilc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 09:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UYMk+BlOXeIbztTTmOGtrLRWb7ewhHw6QepmeLnJlMQ=;
+        b=Y4+NKXdlYiaTxkXT9l/2+Nk56HfwQ2izplaW+tMW3d0vI4hwfIC5V8T2ruDvM0wUNb
+         yAPjVLoCd3dSKe2CMd6GozDwwbjRFayGNqlAb00cDAldU9bBDMLQfDJNr1gfV5cHAAaf
+         /Z77J4+EhN66Oxu7/U6S2CevfxJwD8Y/meciKSGT0YiMbOeBYXIyiKiYjReB102VMaQ2
+         pk01mw9bZbvbUxpipQXJIWIZ8X+p311eE3aTLuxeb5hV41N5AtMTbTX46pfwersSs8SQ
+         IxEnrPM5BvSJ9lgamii7Kt//gXnrI3fPFKGpbt95RQHe2+2TJ2LX0CESU0s2JRmQ1an/
+         IxRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UYMk+BlOXeIbztTTmOGtrLRWb7ewhHw6QepmeLnJlMQ=;
+        b=mvsDoW1/Mgs4+h6VHjWYSOEon519v/qhOoALKVy772Wza/jqcD/cYE7gVyGjQbFlVE
+         d8rySAZ4X9q0lr4YLrbnwRTIW0ccTi0y6itR8m+yfoMxO3O5cpKtfqPZC2wiTXo9iAAB
+         zvBaWLt9KaujDY/YmvlbEkqOF+Rm+AK5Hj9As2jmPc0N7MDHj5QaFvlwgzUunnj771a/
+         PPtUSI2YONRsPDjju5nNirs5xrIkzlVsO9/2I8cqxmeNb16Tof15Xh36/HU3ZbiL8d6T
+         sziQiojdF6c10zmCL2X4/fc5h4K7eWSfoEPFq3ofGMjTbKKE9R60jO+Mxji3K4onYwSL
+         o2mg==
+X-Gm-Message-State: AOAM532TqwLEP/DlOgqoUEJOEdBVPDlp1u7dU11Gim5VdmW54E3PV93k
+        NzeE392SpeKXr86s616zPTxdehyaA4zc9ZG7AUn1cuRXFXeTPxF1olE=
+X-Google-Smtp-Source: ABdhPJz1pivHDuMpRIp1ymbBND8FIwBI+9YWjqbDyuFQsSBKh6gKtzo/VQ/hpFczpGrC3Z/Fe1wNF06wJy3f0eJ9Kos=
+X-Received: by 2002:a92:cbcd:: with SMTP id s13mr3157728ilq.306.1602088235893;
+ Wed, 07 Oct 2020 09:30:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGsA_enFOUkV4Rw=Sxyjf=_oFLjwbz-Y4jTO=TUraOCzVQ@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-19-bgardon@google.com>
+ <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com>
+In-Reply-To: <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 7 Oct 2020 09:30:24 -0700
+Message-ID: <CANgfPd_dQ19sZz2wzSfz7-RzdbQrfP6cYJLpSYbyNyQW6Uf09Q@mail.gmail.com>
+Subject: Re: [PATCH 18/22] kvm: mmu: Support disabling dirty logging for the
+ tdp MMU
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/20 08:57, Rob Clark wrote:
-> Yeah, I think we will end up making some use of uclamp.. there is
-> someone else working on that angle
-> 
-> But without it, this is a case that exposes legit prioritization
-> problems with commit_work which we should fix ;-)
+On Fri, Sep 25, 2020 at 6:09 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 25/09/20 23:22, Ben Gardon wrote:
+> > +     for_each_tdp_pte_root(iter, root, start, end) {
+> > +             if (!is_shadow_present_pte(iter.old_spte) ||
+> > +                 is_last_spte(iter.old_spte, iter.level))
+> > +                     continue;
+> > +
+>
+> I'm starting to wonder if another iterator like
+> for_each_tdp_leaf_pte_root would be clearer, since this idiom repeats
+> itself quite often.  The tdp_iter_next_leaf function would be easily
+> implemented as
+>
+>         while (likely(iter->valid) &&
+>                (!is_shadow_present_pte(iter.old_spte) ||
+>                 is_last_spte(iter.old_spte, iter.level))
+>                 tdp_iter_next(iter);
 
-I wasn't suggesting this as an alternative to fixing the other problem. But it
-seemed you had a different problem here that I thought I could help with :-)
+Do you see a substantial efficiency difference between adding a
+tdp_iter_next_leaf and building on for_each_tdp_pte_using_root with
+something like:
 
-I did give my opinion about how to handle that priority issue. If the 2 threads
-are kernel threads and by design they need relative priorities IMO the kernel
-need to be taught to set this relative priority. It seemed the vblank worker
-could run as SCHED_DEADLINE. If this works, then the priority problem for
-commit_work disappears as SCHED_DEADLINE will preempt RT. If commit_work uses
-sched_set_fifo(), its priority will be 50, hence your SF threads can no longer
-preempt it. And you can manage the SF threads to be any value you want relative
-to 50 anyway without having to manage commit_work itself.
+#define for_each_tdp_leaf_pte_using_root(_iter, _root, _start, _end)    \
+        for_each_tdp_pte_using_root(_iter, _root, _start, _end)         \
+                if (!is_shadow_present_pte(_iter.old_spte) ||           \
+                    !is_last_spte(_iter.old_spte, _iter.level))         \
+                        continue;                                       \
+                else
 
-I'm not sure if you have problems with RT tasks preempting important CFS
-tasks. My brain registered two conflicting statements.
+I agree that putting those checks in a wrapper makes the code more concise.
 
-Thanks
-
---
-Qais Yousef
+>
+> Paolo
+>
