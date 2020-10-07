@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F0F28574B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7E9285732
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbgJGDso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 23:48:44 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38790 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727341AbgJGDsi (ORCPT
+        id S1727069AbgJGDsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 23:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJGDsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 23:48:38 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0973ldQp168232;
-        Wed, 7 Oct 2020 03:48:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=NghnnTiQ04L/eDU1fIJD4zEfn8ioaRXq80X7lbFGSYE=;
- b=xcP7cfdKoc5T0+WpNrkZMbu9TIjSDhHnrjbe+cFU6M84OE2e1YfuVttYLHrkEhKItU8J
- 8wg8gYitphW56Rc7YSc8vOlBo/dr70d8uj00/aD8E2uYWkcEWH+MI2N5+R0ETJPtBgVa
- RZ8l3cbi3p4Ig+YSqf5EwdZzYMmnXtkYgW3hZmXgievCstNEQSNboQ76aAeBppaNa5Sa
- LLZWZ99Yfbn9UZ6HK/8aocaj7rdasw+AWicXNoND78fYNxvrsGxbnvrgKRZ5dyN1uW9G
- HiJqyVLOqrllWZGj+FfNi/Zj0TpG2tgE7mytLo8ZaQdr6gnJ9W0BXoE4avBlrPLopxQ6 7A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33xhxmydcn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 03:48:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0973ircW194801;
-        Wed, 7 Oct 2020 03:48:26 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 3410jy2s77-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Oct 2020 03:48:26 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0973mOL7012544;
-        Wed, 7 Oct 2020 03:48:24 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 06 Oct 2020 20:48:23 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Pujin Shi <shipujin.t@gmail.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Satya Tangirala <satyat@google.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        linux-scsi@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
-        linux-kernel@vger.kernel.org, hankinsea@gmail.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH v2] scsi: ufs: fix missing brace warning for old compilers
-Date:   Tue,  6 Oct 2020 23:48:01 -0400
-Message-Id: <160204240575.16940.8613402806893286457.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201002063538.1250-1-shipujin.t@gmail.com>
-References: <20201002063538.1250-1-shipujin.t@gmail.com>
+        Tue, 6 Oct 2020 23:48:14 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636B6C061755;
+        Tue,  6 Oct 2020 20:48:14 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id p11so318328pld.5;
+        Tue, 06 Oct 2020 20:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Qdx62KWZf1nPo9Ih2aKKNk8LPzzmbhXJHycwoOuA94=;
+        b=sQhdUYRDBs+nsw5SJqm5Q2foj91zdZpv1W/j4vfiedoA/PfPCnbPG7OXVuMuF6Kwr3
+         uSxwR9Xkp1HYKXlchub92cPfqpseYSI1MAnE4ODpSYF/B/joerweJ1w38V/AxcGE91OW
+         RdoatsmerFtzvht9u4MwhVk48nUhu76DYS3RVaEJNHDooQK4mYLX5DNH/kLqfakP9o5q
+         XYzDXd0XWE+SvYFS5BUf87Cgr8XpwtMuqRkOm42EgNy00fU+Fn5jY5ycrwWzsyxmah+U
+         7B3pEN2Y+fA7/vD+TQF3O7Izte3W73b4ttksh/A/Qko/blrJ3gVouQd2jvz7b9K1ahwe
+         JmRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Qdx62KWZf1nPo9Ih2aKKNk8LPzzmbhXJHycwoOuA94=;
+        b=dQSC4olyRGmd5Rz6cClyl5sdkl1OMw3IcDCVBBT5Yl9oh1xfJJmGlmUxAm7nANoiiy
+         3gIVC1Vft7w7C5gR2TOC9VcwnWBQmUB+k43JYSqFuNarCrgrlztRrpLPbvJc4n3w/7WS
+         Xmvo5eZIrI8NySupz7zyTpnOs5++oZI05sE++0ygdmk4kaM3eJTPKM0ZDFT0m2VomZyN
+         Gd2y4xQdkUr3Z7mbaDOxqhz7HP4UmPu9F4eFMiMNgB5vEAj+Zg3tKsBZIzeUJCXEhPWA
+         My9b24/8wuVI9IpjbtRbWA+wetPLj3L2MlntV8RAEQvEj1rQK81fCSOmK7/uw0zFhudh
+         RFjg==
+X-Gm-Message-State: AOAM533d38rffw37s0j9ABROtCpOGDw2uBrk6Kkv//CftV6bDOEALDIp
+        TqKBvtJuOkp0pm9RoNBUMyA=
+X-Google-Smtp-Source: ABdhPJxOc5OSXQScJCLtc+Envon1PPr2mfos8ODF5ioLMG+tMdMiIhiZss/3wC1NRmm9HXJ/g8sW4Q==
+X-Received: by 2002:a17:902:a9cc:b029:d3:77f7:3ca9 with SMTP id b12-20020a170902a9ccb02900d377f73ca9mr1051026plr.75.1602042493511;
+        Tue, 06 Oct 2020 20:48:13 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.207.135])
+        by smtp.gmail.com with ESMTPSA id k206sm867586pfd.126.2020.10.06.20.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 20:48:12 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] bluetooth: hci_h5: fix memory leak in h5_close
+Date:   Wed,  7 Oct 2020 09:18:03 +0530
+Message-Id: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- adultscore=0 bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070023
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070023
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 14:35:38 +0800, Pujin Shi wrote:
+If h5_close is called when !hu->serdev, h5 is directly freed.
+However, h5->rx_skb is not freed, which causes a memory leak.
 
-> For older versions of gcc, the array = {0}; will cause warnings:
-> 
-> drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_crypto_keyslot_program':
-> drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: missing braces around initializer [-Wmissing-braces]
->   union ufs_crypto_cfg_entry cfg = { 0 };
->         ^
-> drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]
-> drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_clear_keyslot':
-> drivers/scsi/ufs/ufshcd-crypto.c:103:8: warning: missing braces around initializer [-Wmissing-braces]
->   union ufs_crypto_cfg_entry cfg = { 0 };
->         ^
-> 2 warnings generated
+Freeing h5->rx_skb fixes this memory leak.
 
-Applied to 5.10/scsi-queue, thanks!
+In case hu->serdev exists, h5->rx_skb is then set to NULL,
+since we do not want to risk a potential NULL pointer 
+dereference.
 
-[1/1] scsi: ufs: Fix missing brace warning for old compilers
-      https://git.kernel.org/mkp/scsi/c/6500251e5906
+Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
+Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>h5_close v4
+---
+Changes in v4:
+	* Free h5->rx_skb even when hu->serdev
+	(Suggested by Hans de Goede <hdegoede@redhat.com>)
+	* If hu->serdev, then assign h5->rx_skb = NULL
 
+Changes in v3:
+	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
+	* Do not incorrectly and unnecessarily call serdev_device_close()
+
+Changes in v2:
+	* Fixed the Fixes tag
+
+ drivers/bluetooth/hci_h5.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index e41854e0d79a..39f9553caa5c 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -245,11 +245,15 @@ static int h5_close(struct hci_uart *hu)
+ 	skb_queue_purge(&h5->rel);
+ 	skb_queue_purge(&h5->unrel);
+ 
++	kfree_skb(h5->rx_skb);
++
+ 	if (h5->vnd && h5->vnd->close)
+ 		h5->vnd->close(h5);
+ 
+ 	if (!hu->serdev)
+ 		kfree(h5);
++	else
++		h5->rx_skb = NULL;
+ 
+ 	return 0;
+ }
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.25.1
+
