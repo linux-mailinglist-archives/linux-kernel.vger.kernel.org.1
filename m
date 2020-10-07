@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9343285B8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B50285B8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgJGJFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:05:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726103AbgJGJFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:05:36 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B688020789;
-        Wed,  7 Oct 2020 09:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602061535;
-        bh=42RhLHhep8milANosAI5Nau1e18GjKFGz66AsIO6JMU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wZFTtaczrJZawEoTP9QnsqHrkJkv08bjAP9AuD6t1/X60ifioT4VhKev2sTPuUCbW
-         t1+XgmO8aKMj0qAMoTAoRutFtl9yd5963n5vGr/oTJE6d4egUx5QedpVYQHfYkv7B4
-         Vprk1nNZhDZivHvtn4u3IE4+rjlMEtcJC6ILYKK0=
-Date:   Wed, 7 Oct 2020 11:06:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Evgeny Boger <boger@wirenboard.com>
-Subject: Re: [PATCH 2/2] w1: w1_therm: Add support for GXCAS GX20MH01 device.
-Message-ID: <20201007090619.GA613204@kroah.com>
-References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru>
- <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru>
- <20201006151915.77d044a4@coco.lan>
- <1561045277.20201007103227@wirenboard.ru>
- <20201007105702.67988846@coco.lan>
+        id S1726849AbgJGJGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgJGJGl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 05:06:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F66BC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 02:06:41 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1kQ5PB-0004Zl-6b; Wed, 07 Oct 2020 11:06:37 +0200
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1kQ5PA-00010R-Eh; Wed, 07 Oct 2020 11:06:36 +0200
+Date:   Wed, 7 Oct 2020 11:06:36 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Marek Vasut <marex@denx.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        kernel@pengutronix.de, David Jander <david@protonic.nl>
+Subject: Re: PHY reset question
+Message-ID: <20201007090636.t5rsus3tnkwuekjj@pengutronix.de>
+References: <20201006080424.GA6988@pengutronix.de>
+ <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
+ <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
+ <0687984c-5768-7c71-5796-8e16169f5192@gmail.com>
+ <20201007081410.jk5fi6x5w3ab3726@pengutronix.de>
+ <7edb2e01-bec5-05b0-aa47-caf6e214e5a0@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007105702.67988846@coco.lan>
+In-Reply-To: <7edb2e01-bec5-05b0-aa47-caf6e214e5a0@denx.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:55:55 up 327 days, 14 min, 363 users,  load average: 0.16, 0.09,
+ 0.06
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:
-> Em Wed, 7 Oct 2020 10:32:27 +0300
-> Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
+On 20-10-07 10:23, Marek Vasut wrote:
+> On 10/7/20 10:14 AM, Marco Felsch wrote:
+> > Hi Marek,
 > 
-> > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
-> > 
-> > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
-> > >> index f1148181f53e..00376501a5ef 100644
-> > >> --- a/Documentation/w1/slaves/w1_therm.rst
-> > >> +++ b/Documentation/w1/slaves/w1_therm.rst  
-> > 
-> > >>  
-> > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
-> > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
-> > >>  conversion completion (normal power only) by generating read cycles on the bus
-> > >>  after conversion starts. In parasite power mode this feature is not available.
-> > >> -Feature bit masks may be combined (OR).
-> > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
-> > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
-> > >> +  
-> > 
-> > > As warned by Sphinx, this cross-reference is broken:  
-> > 
-> > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
-> > > undefined label: w1_therm (if the link has no caption the label must precede a section header)  
-> > 
-> > Would this be ok?
+> Hi,
 > 
-> Yeah, sure!
+> [...]
 > 
+> > On 20-10-06 14:11, Florian Fainelli wrote:
+> >> On 10/6/2020 1:24 PM, Marek Vasut wrote:
 > > 
-> > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
+> > ...
 > > 
-> > > Not sure what you wanted to point here.  
+> >>> If this happens on MX6 with FEC, can you please try these two patches?
+> >>>
+> >>> https://patchwork.ozlabs.org/project/netdev/patch/20201006135253.97395-1-marex@denx.de/
+> >>>
+> >>> https://patchwork.ozlabs.org/project/netdev/patch/20201006202029.254212-1-marex@denx.de/
+> >>
+> >> Your patches are not scaling across multiple Ethernet MAC drivers
+> >> unfortunately, so I am not sure this should be even remotely considered a
+> >> viable solution.
 > > 
-> > A link to a driver's sysfs interface, but sysfs docs are text
-> > files and seem to not be included in Sphynx Docs.
+> > Recently I added clk support for the smcs driver [1] and dropped the
+> > PHY_RST_AFTER_CLK_EN flag for LAN8710/20 devices because I had the same
+> > issues. Hope this will help you too.
+> > 
+> > [1] https://www.spinics.net/lists/netdev/msg682080.html
 > 
-> I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
-> was not merged, not sure why:
-> 
-> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6
+> I feel this might be starting to go a bit off-topic here,
 
-I think the raft of different patches floating around at the time made
-me totally confused as to what was, and was not, the latest versions.
+You're right, just wanted to provide you a link :)
 
-I'll be glad to look at them again, if you want to rebase after 5.10-rc1
-is out and resend them, as I think this should be showing up in the
-documentation.
+> but isn't the
+> last patch 5/5 breaking existing setups ?
 
-thanks,
+IMHO the solution proposed using the PHY_RST_AFTER_CLK_EN was wrong so
+we needed to fix that. Yes we need to take care of DT backward
+compatibility but we still must be able to fix wrong behaviours within
+the driver. I could also argue that PHY_RST_AFTER_CLK_EN solution was
+breaking exisitng setups too.
 
-greg k-h
+> The LAN8710 surely does need
+> clock enabled before the reset line is toggled.
+
+Yep and therefore you can specify it yet within the DT.
+
+Regards,
+  Marco
