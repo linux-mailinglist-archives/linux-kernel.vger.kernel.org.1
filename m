@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489B0285F8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29015285F97
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgJGM45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:56:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:43404 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbgJGM44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:56:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C7121042;
-        Wed,  7 Oct 2020 05:56:56 -0700 (PDT)
-Received: from [10.57.14.1] (unknown [10.57.14.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33CD43F66B;
-        Wed,  7 Oct 2020 05:56:54 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org,
-        morten.rasmussen@arm.com, chris.redpath@arm.com
-References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
- <20200924095347.32148-3-nicola.mazzucato@arm.com>
- <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
-Date:   Wed, 7 Oct 2020 13:58:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728355AbgJGM6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728177AbgJGM6p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:58:45 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C537C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 05:58:45 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id f37so2026992otf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 05:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RqJhQ9wl4HnfFJba5qafgVA83HvKuODOv14/VuzQKBc=;
+        b=HLP5cVy/+ivPAr8S6VW2DODWQvroNZFg7BttjeOcbezz6CNNniUIHSIARYKF8Ijk1T
+         rmy9z7yE9flAapP4YSBu9HIymzY2iBki4HzaALq9rM2UBFkXQlEaW3TvVZzqH2LSayDe
+         1rPcp7GgFX99YVk0vI8HYbxifKX0pBDMeSfv0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RqJhQ9wl4HnfFJba5qafgVA83HvKuODOv14/VuzQKBc=;
+        b=emuGd80gKgVwTUv6kxN+iq1XWj4rb8Q5jt3EtuZtFWgMvW8Yy+08Gyvki7m+W1i+/1
+         S9U6qtUlglzgEJXQfts0Xhu505lB75pm9ToPdaavWYdnzZrLtj6/ISyl+UvCk385qC1l
+         4UyH58YbzLSwoSnBOeE/QCoNd1Fe+nJ51mun+X2sIDimgMOUQyv1nli1Rg9tFZSG2t+h
+         +m3ND/aSRAPsfHfRtNjRV63IEYkwQ/MpZlVJxAOeJ20hk3l+zqjsgocvvXRYi2e7f4ak
+         tGMN6RDU3s8bpimFFgfWShpx6GzeMZbzt1UY87xEinxS+KAs6CBgrdP2yZ/HN9DlQ6Al
+         BBXA==
+X-Gm-Message-State: AOAM530qQLnzUwQPlXpCU04aIJ33OKPuQa6ALgkDrbadRpEg/D8+b4sO
+        XZAPGaTKalRPbrDfoCDdcpHwkfPbvBvA3IpHuCDv1A==
+X-Google-Smtp-Source: ABdhPJwvOqDF0PtNvyjRy9NUPdpqckHeo5Pb4aBKzEFyLCyusu6A+MJ6CRQQIQu70npKdaR3NW8xVD0BDZv4+5HBzkA=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr1696603otj.303.1602075524433;
+ Wed, 07 Oct 2020 05:58:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+ <20201002175303.390363-2-daniel.vetter@ffwll.ch> <20201002180603.GL9916@ziepe.ca>
+ <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
+ <20201002233118.GM9916@ziepe.ca> <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
+ <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
+ <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com> <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
+ <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com> <20201007124409.GN5177@ziepe.ca>
+ <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
+In-Reply-To: <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 7 Oct 2020 14:58:33 +0200
+Message-ID: <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On Wed, Oct 7, 2020 at 2:48 PM Tomasz Figa <tfiga@chromium.org> wrote:
+>
+> On Wed, Oct 7, 2020 at 2:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 02:33:56PM +0200, Marek Szyprowski wrote:
+> > > Well, it was in vb2_get_vma() function, but now I see that it has been
+> > > lost in fb639eb39154 and 6690c8c78c74 some time ago...
+> >
+> > There is no guarentee that holding a get on the file says anthing
+> > about the VMA. This needed to check that the file was some special
+> > kind of file that promised the VMA layout and file lifetime are
+> > connected.
+> >
+> > Also, cloning a VMA outside the mm world is just really bad. That
+> > would screw up many assumptions the drivers make.
+> >
+> > If it is all obsolete I say we hide it behind a default n config
+> > symbol and taint the kernel if anything uses it.
+> >
+> > Add a big comment above the follow_pfn to warn others away from this
+> > code.
+>
+> Sadly it's just verbally declared as deprecated and not formally noted
+> anyway. There are a lot of userspace applications relying on user
+> pointer support.
 
-performance controls is what is exposed by the firmware through a protocol that
-is not capable of describing hardware (say SCMI). For example, the firmware can
-tell that the platform has N controls, but it can't say to which hardware they
-are "wired" to. This is done in dt, where, for example, we map these controls
-to cpus, gpus, etc.
-
-Let's focus on cpus.
-
-Normally we would have N of performance controls (what comes from f/w)
-that that correspond to hardware clock/dvfs domains.
-
-However, some firmware implementations might benefit from having finer
-grained information about the performance requirements (e.g.
-per-CPU) and therefore choose to present M performance controls to the
-OS. DT would be adjusted accordingly to "wire" these controls to cpus
-or set of cpus.
-In this scenario, the f/w will make aggregation decisions based on the
-requests it receives on these M controls.
-
-Here we would have M cpufreq policies which do not necessarily reflect the
-underlying clock domains, thus some s/w components will underperform
-(EAS and thermal, for example).
-
-A real example would be a platform in which the firmware describes the system
-having M per-cpu control, and the cpufreq subsystem will have M policies while
-in fact these cpus are "performance-dependent" each other (e.g. are in the same
-clock domain). This performance dependency information is essential for some
-components that take information from the cpufreq policy.
-
-To restore functionality we can use the optional node
-'cpu-performance-dependencies' in dt which will provide such dependency
-information and we can add a new cpumask 'dependency_cpus' in policy.
-
-Hope it gives some clarity.
-
-Nicola
-
-On 10/6/20 8:19 AM, Viresh Kumar wrote:
-> On 24-09-20, 10:53, Nicola Mazzucato wrote:
->> I am seeking some feedback/comments on the following approach.
->>
->> Intro:
->> Info of performance depency for cpus will be beneficial for systems
->> where f/w description of the CPU performance control domain is different
->> from the clock domain, e.g. per-CPU control with multiple CPUs sharing
->> clock, and kernel OSPM s/w components need to take CPU performance
->> dependency into account.
->> Essentially these s/w components will have to be provided with
->> this information from dt and this RFC is presenting a possible way
->> to do so.
-> 
-> I am not sure I understand what performance control mean here. Can you please
-> elaborate a bit more on that ? For example, with current code and understanding,
-> a cpufreq policy belongs to a group of CPUs which change their frequency
-> together, which also mean that they change their performance level together and
-> so I am not able to understand what's going on here. Sorry about that.
-> 
-> What kind of hardware configuration doesn't work with this ?
-> 
+userptr can stay, it's the userptr abuse for zerocpy buffer sharing
+which doesn't work anymore. At least without major surgery (you'd need
+an mmu notifier to zap mappings and recreate them, and that pretty
+much breaks the v4l model of preallocating all buffers to make sure we
+never underflow the buffer queue). And static mappings are not coming
+back I think, we'll go ever more into the direction of dynamic
+mappings and moving stuff around as needed.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
