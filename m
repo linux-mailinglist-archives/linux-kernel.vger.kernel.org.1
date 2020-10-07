@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F354E28669A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00E928669E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgJGSME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727304AbgJGSME (ORCPT
+        id S1728819AbgJGSMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:12:42 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6009 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbgJGSMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:12:04 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13907C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:12:04 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o9so1390384plx.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U51R3R0x1HlDU/rwfEcnqrw14Df1DxhtYwUuphhicTo=;
-        b=HD/l7WlDsgTbjiMNQseskrrD3WamWgf+2tA58r3lFd72ZBZ4ncrD3IWyow15G+CJhg
-         Y7naLw1dtmz4H13LtnKtTtXr5tFXOJ/OAJUnM1drGRS7MrOr22aFhGLSgDaESWo8ZNr6
-         cyLCWLelwiKdaT4+U4LRUez+2R3Li2Fz5/BUs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U51R3R0x1HlDU/rwfEcnqrw14Df1DxhtYwUuphhicTo=;
-        b=ZVAflkksMom0cuStUxhJyj6MkfGKVN92tgFYLVZ4RnCvtD0fFq0R+815NWWI+gxRPE
-         Oc3aw1IbNgc5LLr4MF7aDDKBYPJhR2xsToW4gyxAuUMhw1GDzaxaVlfdGzTCWyXYSaEo
-         fnqTZ2sQBFCHkTz914o/x+B9k9xt6TQNmGyRLZTaW/xNNIrp6ocJ53A6pjpMHCWZcvZl
-         bt62pbsUoGa7y3JhQa2h6lyVWIG6w0Gcc/IGz4XfpgoPYjqUe8lFuBRTUuTiY2PprnZU
-         c+m3WtWQktPMXcx0r1XwXw+/EqnyKWOW+euI8i6qaq4dHI6dglUjz5AYBu2VESD2YoHA
-         snKw==
-X-Gm-Message-State: AOAM5311RMrVikMH5AE34KOAZ2mX5RqgovroXP3UhSF8rq5X/g3BmRMp
-        XfHb1SqYZTSIhwYhKxjJpIvSULSPNYAj4VIk
-X-Google-Smtp-Source: ABdhPJybWHoqusi93W9Aq6yodO08L83RzLwuH6q440Ymxn5QdLI/Kyd7aRpJaYbzEXCVsMdsAl0y+w==
-X-Received: by 2002:a17:902:c3c5:b029:d3:df24:1ffb with SMTP id j5-20020a170902c3c5b02900d3df241ffbmr3979932plj.35.1602094323642;
-        Wed, 07 Oct 2020 11:12:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q2sm3810459pfu.193.2020.10.07.11.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 11:12:02 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 11:12:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     shuah@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 02/11] selftests:lib:test_counters: add new test for
- counters
-Message-ID: <202010071111.F3968C04@keescook>
-References: <cover.1602011710.git.skhan@linuxfoundation.org>
- <dd751c3ecedef23f3bd12c043863a6233fceb0d9.1602011710.git.skhan@linuxfoundation.org>
+        Wed, 7 Oct 2020 14:12:42 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7e04e20002>; Wed, 07 Oct 2020 11:11:46 -0700
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 18:12:40 +0000
+Subject: Re: [PATCH] ext4/xfs: add page refcount helper
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-mm@kvack.org>, <linux-xfs@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20201006230930.3908-1-rcampbell@nvidia.com>
+ <20201007082517.GC6984@quack2.suse.cz>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <f8aff11f-3913-a0ac-b8cd-5380738a8e3c@nvidia.com>
+Date:   Wed, 7 Oct 2020 11:12:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd751c3ecedef23f3bd12c043863a6233fceb0d9.1602011710.git.skhan@linuxfoundation.org>
+In-Reply-To: <20201007082517.GC6984@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602094306; bh=lUvgpT2dTAjc7L2GQJN23iB+8LFxnscOP+RQUFKZzSU=;
+        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=o+FdvXOp7EzIyvwJEGGRsWIIvAKdYxiUjP4FaudBCF5tqtRlUM5mSnvldVEx36PfR
+         1aWjXJX3cbuJ7Atpubl/0AHI642RUHyderrltQL3vMBrDg8gwiwV7U9TzPMU/ZJHwL
+         Q8ZSz2uk/NvYwAsL3dgNttmxAQlPr1SM/DIUjacJVlS/BWCCGPh0LfkAt0rILq8Ydx
+         9WXnyAZ3kmgVCXUpIpyKRfB7115WfJo9GwBDm0wtRxubW5SSlC6khrlAyfPqtAwipT
+         xKAu+/xSyEM++gga5LHl6KFTQoOC1yVE4sPLYQHQ8enCOgH/tllJl9uOy2ayx+RLbP
+         5Q+o0MZ9gWpQA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 02:44:33PM -0600, Shuah Khan wrote:
-> Add a new selftest for testing counter_atomic* Counters API. This test
-> load test_counters test modules and unloads.
-> 
-> The test module runs tests and prints results in dmesg.
-> 
-> There are a number of atomic_t usages in the kernel where atomic_t api
-> is used strictly for counting and not for managing object lifetime. In
-> some cases, atomic_t might not even be needed.
-> 
-> The purpose of these counters is to clearly differentiate atomic_t
-> counters from atomic_t usages that guard object lifetimes, hence prone
-> to overflow and underflow errors. It allows tools that scan for underflow
-> and overflow on atomic_t usages to detect overflow and underflows to scan
-> just the cases that are prone to errors.
-> 
-> Simple atomic counters api provides interfaces for simple atomic counters
-> that just count, and don't guard resource lifetimes. Counter will wrap
-> around to 0 when it overflows and should not be used to guard resource
-> lifetimes, device usage and open counts that control state changes, and
-> pm states.
-> 
-> Using counter_atomic* to guard lifetimes could lead to use-after free
-> when it overflows and undefined behavior when used to manage state
-> changes and device usage/open states.
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+On 10/7/20 1:25 AM, Jan Kara wrote:
+> On Tue 06-10-20 16:09:30, Ralph Campbell wrote:
+>> There are several places where ZONE_DEVICE struct pages assume a reference
+>> count == 1 means the page is idle and free. Instead of open coding this,
+>> add a helper function to hide this detail.
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> Looks as sane direction but if we are going to abstract checks when
+> ZONE_DEVICE page is idle, we should also update e.g.
+> mm/swap.c:put_devmap_managed_page() or
+> mm/gup.c:__unpin_devmap_managed_user_page() (there may be more places like
+> this but I found at least these two...). Maybe Dan has more thoughts about
+> this.
+> 
+> 								Honza
 
--- 
-Kees Cook
+I think this is a good point but I would like to make that a follow on
+patch rather than add to this one.
