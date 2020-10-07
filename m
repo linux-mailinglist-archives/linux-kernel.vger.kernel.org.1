@@ -2,96 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3112869FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0731286A15
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgJGVUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:20:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727798AbgJGVUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:20:54 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C08952083B;
-        Wed,  7 Oct 2020 21:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602105654;
-        bh=zenTSMmmb5eoRKiXCYgBR26ANJMtA08lFO4cBuL9ebw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mBsJfroYtovwhJx/hZzE6EiVmQp8z2bwboXPwbY3mPrt7JG9O2mySDQHT+Tm5qxzP
-         O674Ww+cCnufqlNRk6YUyA9CXZj6VKEJkOqik4Qa/nQ9+xpWDXFfZyBueAKFMCTKE/
-         7zImGzySs7JGLKEhB9Zm41gorW65f8m9A46g8EwI=
-Date:   Wed, 7 Oct 2020 14:20:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 3/3] f2fs: Add metadata encryption support
-Message-ID: <20201007212052.GC1530638@gmail.com>
-References: <20201005073606.1949772-1-satyat@google.com>
- <20201005073606.1949772-4-satyat@google.com>
+        id S1728593AbgJGVaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727798AbgJGVaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 17:30:13 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531E6C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 14:30:13 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id e20so3195349otj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 14:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nNtozmj/MGUZLHZxI3A6qXOhVAeMPho+2jjUlqwzPiY=;
+        b=BaAFboFhzjSDkIsRiKkVY5HnY80F0qFikzkwGLzbiZiDPe/NeBFe6zpt+tRZBXwSlf
+         cldboSnNlcSz1Qnd+/D1yNqcLjwz5qLQP01nnTJ9te1SLWuuX0nGjEu12aT61tF+abrF
+         VMjcmWsESAMRsIG40QQOk22zLTky3pJD0lB9E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nNtozmj/MGUZLHZxI3A6qXOhVAeMPho+2jjUlqwzPiY=;
+        b=HWJFxvVLsq+hncW61VGitwmFQAcWRfat5XD7lBTu63CRSkmW5DhCbYmdOaVLp8AZac
+         CANmy1k4PgV11jMa0CFOg90KcYKOMn8NgW0haRFXcaaeIBQ8NJKUGV0Jt+6gReldkoWj
+         ECB4qHWrSKo7JOyek6HZy6yKRO3uNfL+9heSTAAH+K1TPz3aF/wnUYJ33RCCZepe7WOu
+         axONCWCRr5buNnCpzsZ1feW4gwHgbQETtaeexBoEUMzqcA0AZPE37ejQd34NVr/ZN/v8
+         HVhnfqD0iRMw5AFjr5Yt1EDvJgAX4wjfh8kE8eWNbdqoRLBeQL0ERDYaQIYCr1r5KHcH
+         FNyA==
+X-Gm-Message-State: AOAM530a1jYdmQPrzp9oenalx2pFFgFvbL68DNmIOJkM+MRelkBvZPQX
+        kA3HMYS4kQNC+tGiaWALxhHdTxHZp2gn7206vw/FJw==
+X-Google-Smtp-Source: ABdhPJzDIRAj53qXn+wCstFj7fFAXvpqHS6peJb8d7VCpx3oiEDiFkz29m0ZVMR9QW+s4BR0BiMsr7SeQunifX3iVl4=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr2939594otj.303.1602106212518;
+ Wed, 07 Oct 2020 14:30:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005073606.1949772-4-satyat@google.com>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-6-daniel.vetter@ffwll.ch> <fc0ac3fb-2758-bef1-76b4-8ac2449f5743@nvidia.com>
+In-Reply-To: <fc0ac3fb-2758-bef1-76b4-8ac2449f5743@nvidia.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 7 Oct 2020 23:30:01 +0200
+Message-ID: <CAKMK7uF7QBksDRsWhpuv-QhM3CN3+Gzg0-o-O-3rCsMWtr48xQ@mail.gmail.com>
+Subject: Re: [PATCH 05/13] mm/frame-vector: Use FOLL_LONGTERM
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 07:36:06AM +0000, Satya Tangirala wrote:
-> Wire up metadata encryption support with the fscrypt metadata crypt
-> additions.
-> 
-> Introduces a new mount option for metadata encryption -
-> metadata_crypt_key=%s. The argument to this option is the key descriptor of
-> the metadata encryption key in hex. 
+On Wed, Oct 7, 2020 at 11:13 PM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> On 10/7/20 9:44 AM, Daniel Vetter wrote:
+> > This is used by media/videbuf2 for persistent dma mappings, not just
+> > for a single dma operation and then freed again, so needs
+> > FOLL_LONGTERM.
+> >
+> > Unfortunately current pup_locked doesn't support FOLL_LONGTERM due to
+> > locking issues. Rework the code to pull the pup path out from the
+> > mmap_sem critical section as suggested by Jason.
+> >
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Pawel Osciak <pawel@osciak.com>
+> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> > Cc: Tomasz Figa <tfiga@chromium.org>
+> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > ---
+> >   mm/frame_vector.c | 36 +++++++++++-------------------------
+> >   1 file changed, 11 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+> > index 10f82d5643b6..39db520a51dc 100644
+> > --- a/mm/frame_vector.c
+> > +++ b/mm/frame_vector.c
+> > @@ -38,7 +38,6 @@ int get_vaddr_frames(unsigned long start, unsigned in=
+t nr_frames,
+> >       struct vm_area_struct *vma;
+> >       int ret =3D 0;
+> >       int err;
+> > -     int locked;
+> >
+> >       if (nr_frames =3D=3D 0)
+> >               return 0;
+> > @@ -48,35 +47,22 @@ int get_vaddr_frames(unsigned long start, unsigned =
+int nr_frames,
+> >
+> >       start =3D untagged_addr(start);
+> >
+> > +     ret =3D pin_user_pages_fast(start, nr_frames,
+> > +                               FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM=
+,
+> > +                               (struct page **)(vec->ptrs));
+> > +     if (ret > 0) {
+> > +             vec->got_ref =3D true;
+> > +             vec->is_pfns =3D false;
+> > +             goto out_unlocked;
+> > +     }
+>
+> This part looks good, and changing to _fast is a potential performance im=
+provement,
+> too.
+>
+> > +
+> >       mmap_read_lock(mm);
+> > -     locked =3D 1;
+> >       vma =3D find_vma_intersection(mm, start, start + 1);
+> >       if (!vma) {
+> >               ret =3D -EFAULT;
+> >               goto out;
+> >       }
+> >
+> > -     /*
+> > -      * While get_vaddr_frames() could be used for transient (kernel
+> > -      * controlled lifetime) pinning of memory pages all current
+> > -      * users establish long term (userspace controlled lifetime)
+> > -      * page pinning. Treat get_vaddr_frames() like
+> > -      * get_user_pages_longterm() and disallow it for filesystem-dax
+> > -      * mappings.
+> > -      */
+> > -     if (vma_is_fsdax(vma)) {
+> > -             ret =3D -EOPNOTSUPP;
+> > -             goto out;
+> > -     }
+>
+> Are you sure we don't need to check vma_is_fsdax() anymore?
 
-It's unclear what "key descriptor in hex" means in this context.  Keys in the
-Linux keyrings subsystem can be specified either by an integer ID or by a string
-"description".
+Since FOLL_LONGTERM checks for this and can only return struct page
+backed memory, and explicitly excludes VM_IO | VM_PFNMAP, was assuming
+this is not needed for follow_pfn. And the get_user_pages_locked this
+used back then didn't have the same check, hence why it was added (and
+FOLL_LONGTERM still doesn't work for the _locked versions, as you
+pointed out on the last round of this discussion).
 
-fscrypt_policy_v1 has an 8-byte binary master_key_descriptor, which specifies a
-keyring key with description "fscrypt:" + ToHex(master_key_descriptor).  So I'm
-guessing that's where this terminology is coming from.
+But now that you're asking, I have no idea whether fsdax vma can also
+be of VM_IO | VM_PFNMAP type. I'm not seeing that set anywhere in
+fs/dax.c, but that says nothing :-)
 
-However, here the value passed to metadata_crypt_key is just a key description
-that's passed directly to the Linux keyrings subsystem.  I don't see why it has
-to be a hex string (and it fact, it seems it's not enforced?).
+Dan, you added this check originally, do we need it for VM_SPECIAL vmas too=
+?
 
-The current proposal is also missing any sort of key verification.  The
-filesystem will use any key that is provided, even if a different key was used
-at format time.
+Thanks, Daniel
 
-In "fscrypt v2", we solved the equivalent problem by making the keys be
-specified by a HKDF-derived master_key_identifier.
+>
+> > -
+> > -     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> > -             vec->got_ref =3D true;
+> > -             vec->is_pfns =3D false;
+> > -             ret =3D pin_user_pages_locked(start, nr_frames,
+> > -                     gup_flags, (struct page **)(vec->ptrs), &locked);
+> > -             goto out;
+> > -     }
+> > -
+> >       vec->got_ref =3D false;
+> >       vec->is_pfns =3D true;
+> >       do {
+> > @@ -101,8 +87,8 @@ int get_vaddr_frames(unsigned long start, unsigned i=
+nt nr_frames,
+> >               vma =3D find_vma_intersection(mm, start, start + 1);
+> >       } while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
+> >   out:
+> > -     if (locked)
+> > -             mmap_read_unlock(mm);
+> > +     mmap_read_unlock(mm);
+> > +out_unlocked:
+> >       if (!ret)
+> >               ret =3D -EFAULT;
+> >       if (ret > 0)
+> >
+>
+> All of the error handling still looks accurate there.
+>
+> thanks,
+> --
+> John Hubbard
+> NVIDIA
 
-How about doing something similar for the metadata encryption key?  I.e. the
-metadata encryption key could be used as input to HKDF to derive two subkeys:
-metadata_key_identifier and the real metadata encryption key.  Then
-metadata_key_identifier could be stored in the superblock.  Then the filesystem
-could request the keyring key "fscrypt:" + ToHex(metadata_key_identifier) at
-mount time, which would eliminate the need for a mount option.
 
-> Direct I/O with metadata encryption is also not supported for now.
-> Attempts to do direct I/O on a metadata encrypted F2FS filesystem will fall
-> back to using buffered I/O (just as attempts to do direct I/O on fscrypt
-> encrypted files also fall back to buffered I/O).
 
-What would it take to get direct I/O working?
-
-> +#ifdef CONFIG_FS_ENCRYPTION_METADATA
-> +	if (metadata_crypt_alg &&
-> +	    !fscrypt_metadata_crypted(sb)) {
-> +		f2fs_err(sbi, "Filesystem has metadata encryption. Please provide metadata encryption key to mount filesystem");
-> +		return -EINVAL;
-> +	}
-> +#endif
-
-Please try to avoid #ifdefs.  It looks like some of these could be replaced with
-IS_ENABLED() or the use of stub functions.
-
-- Eric
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
