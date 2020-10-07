@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A739F2865F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBEF2865F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgJGRaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728456AbgJGRaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 7 Oct 2020 13:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgJGRaX (ORCPT
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43787 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726009AbgJGRaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Oct 2020 13:30:23 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC093C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:30:22 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id m17so3262238ioo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pQ3RmkMpjXxSLR81pkKdGt+TZH44v4hpamp0wM2Tbvs=;
-        b=Se9nw5FgHFtKsm8GMYSImWv2wXIqCCOCv6pqlrWzBIvY0KyFKYLSgBJbdclE74rN0V
-         L0OzzCyXjwmzqY5CvOwmW1s23GoVCPICapYUZFiSyQ3VzyBQJpfZ+6B7eKkncs8IsvXR
-         slEUoHEbK3sqOXSRrw0ZRR2s39x9H1sNI4Ysl2tET0kOXOHkex1NPPywMNawv3w1f+sB
-         c6lulPb33S1fRXiAC5OZMKjd4VOO5Q3jJ7RhTgSz7ELXfAEp8rJq7zc0JWvoRTDpcC0Q
-         cTGuo3+wxAiYN9Cg6g/Jn6XY557RX4qkZ2GxwutbY+LCvSQ633tA4zpsHUJpBQTsLVbR
-         lMZw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602091821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mn8qhkF/UQEJzqV3x7unCgeZITrfss35bxaFGr6YI30=;
+        b=TTNsOeRynSbjyfUb0zUCx5c/Y5bZs+QhwFxzMTrYwWzoh/CZxRyrzjuOCL4OJT0FDUVpBk
+        uqfwRDjr1v4NrkmyoREW6hdiapnD31VnQc7HGv0wZNL/yMuQS59PcguYRtDgfpl7c3HCbX
+        waxuz0HhfMlyCZl27M8Umv95rRYmxFE=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-O5i6Vr24MIWKzO8XF_31zQ-1; Wed, 07 Oct 2020 13:30:19 -0400
+X-MC-Unique: O5i6Vr24MIWKzO8XF_31zQ-1
+Received: by mail-ej1-f71.google.com with SMTP id c10so1078592ejm.15
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:30:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pQ3RmkMpjXxSLR81pkKdGt+TZH44v4hpamp0wM2Tbvs=;
-        b=gMFikUQnXQrdyR9do6Z0L0sifGCpUTK9ihRIdp5IiP2MfqRuDtPBzc6kgo5YxGfpHD
-         nCmdSzcxD4Nwj9Z1zr0sOZ9ZDp6lOPt8G6pGcLMDWdqDX6HnAWUFhrA+/WiYr03t4zK7
-         MiCtbUu/NkKo0YwOAf9IGZMO+fou7JMgMkmXqTKNdPq1QcI+5S1FTsNxSvUMEx9jn8do
-         x0c4SGx2666x3voYQfN6yDPm8uzJS/6wYyIFCe9ZyVoyiXSv1jc1WVB0E0a0HeCNEhcB
-         8eBMfyhlswT+i1aTbCd5vPajQpkpiTUzprZKKRqDZStP+mqRQ5rKM7aMTOBZT6/avZUR
-         Iahw==
-X-Gm-Message-State: AOAM530fJdmNgu3dqIEynJQiqd8g2mO2P6g148vCI3B/veKcpOgYdhZo
-        3Lg6VnY6s97AJDOvZvh4HkebFnNVDXukDGadoTb6Tw==
-X-Google-Smtp-Source: ABdhPJytlhBgnWm3jW2tGSy64WkRj5mYfdnZRMLgkPXFNiRl5vrEqOTNvUu8Lz/HHEZVJWadIix3VN17uQKF1IQZXao=
-X-Received: by 2002:a6b:1646:: with SMTP id 67mr3090555iow.189.1602091821740;
- Wed, 07 Oct 2020 10:30:21 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mn8qhkF/UQEJzqV3x7unCgeZITrfss35bxaFGr6YI30=;
+        b=a8lQ+a8nuiY3kWCgW2MISWkg/gPQNe6h3qsdp8ZIlDO/x9xcvTHodVt8aL/j15yfiB
+         JwG4PzmygmBl9r1rK2RUP6ZrE9Qr97kq4UfFPoTCEf6WGlBk9MfLvpoD7hmR4zWEIOED
+         Y+kkBiORTg4f5RZ4CAhUPAPsT7re1xcJqWb2YCr2PFBZ3trRIefLCFsG9p4ssVV+XNBt
+         9Hg2UmETG+E5FU8VdhIeHZ2gxscWwNHRfyu8mVs6v17qco0CypUb7bFyf9ROnPhrck8L
+         WNRAskxQYqvUohOskJnkzCX7rVySFqu0p2RSHsaS7gtKcg0mEx3TGGby3twkD+r87J7L
+         +hIA==
+X-Gm-Message-State: AOAM5314lhO61YTNk+AS+7TOl1yNqAKsIOu4oOC24msasP6yuyF2afDj
+        S+kY9/dGMjLGO6wdFvGk1+lz2DIcGSh2U53QkBLYHpYOnOW3O8I1RKfeL0vnepvfCPsLc/25FAY
+        0w2LbURGYCBG0X5rLXVGguMzb
+X-Received: by 2002:a05:6402:2073:: with SMTP id bd19mr4618272edb.127.1602091818265;
+        Wed, 07 Oct 2020 10:30:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjJHPa3INkuheoMTk446PsJmwdW/gSEDi1ZRRxEU+gBCBe4Nr92QxJI6odQucdV4YA52cmPg==
+X-Received: by 2002:a05:6402:2073:: with SMTP id bd19mr4618253edb.127.1602091818075;
+        Wed, 07 Oct 2020 10:30:18 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id bt16sm1950049ejb.89.2020.10.07.10.30.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 10:30:16 -0700 (PDT)
+Subject: Re: [PATCH v2] platform/x86: hp-wmi: add support for thermal policy
+To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Elia Devito <eliadevito@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200917214957.GD29136@mtg-dev.jf.intel.com>
+ <20201004211305.11628-1-eliadevito@gmail.com>
+ <CAHp75VfbK226a-SsNj=Bnpfc3wWyT9K_D4XzAMOu9of1_g+8-A@mail.gmail.com>
+ <5d60709b-e3cb-685f-2b3e-07381b9855e5@redhat.com>
+ <zm1oBveg0S9L-MagzWnleGj5ZfQg8cV95Ugbzz6WZbnv-nzpF8_9Fghwj8P8V-ZAmVF6kRBWF-blVcOFirhSN3xxmE_8cOUycONWZMJP5xE=@protonmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <37a0a8b8-6792-8ed7-2e66-da0fa1d6302a@redhat.com>
+Date:   Wed, 7 Oct 2020 19:30:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-16-bgardon@google.com>
- <622ffc59-d914-c718-3f2f-952f714ac63c@redhat.com> <CANgfPd_8SpHkCd=NyBKtRFWKkczx4SMxPLRon-kx9Oc6P7b=Ew@mail.gmail.com>
- <7636707a-b622-90a3-e641-18662938f6dd@redhat.com>
-In-Reply-To: <7636707a-b622-90a3-e641-18662938f6dd@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 7 Oct 2020 10:30:10 -0700
-Message-ID: <CANgfPd_F_EurkfGquC79cEHa=4A2AMfnCAfMHPpAXa-6w4+bsg@mail.gmail.com>
-Subject: Re: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <zm1oBveg0S9L-MagzWnleGj5ZfQg8cV95Ugbzz6WZbnv-nzpF8_9Fghwj8P8V-ZAmVF6kRBWF-blVcOFirhSN3xxmE_8cOUycONWZMJP5xE=@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 10:18 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 07/10/20 18:53, Ben Gardon wrote:
-> >> in addition to the previously-mentioned cleanup of always calling
-> >> handle_changed_spte instead of special-casing calls to two of the
-> >> three functions.  It would be a nice place to add the
-> >> trace_kvm_mmu_set_spte tracepoint, too.
-> > I'm not sure we can avoid special casing calls to the access tracking
-> > and dirty logging handler functions. At least in the past that's
-> > created bugs with things being marked dirty or accessed when they
-> > shouldn't be. I'll revisit those assumptions. It would certainly be
-> > nice to get rid of that complexity.
-> >
-> > I agree that putting the SPTE assignment and handler functions in a
-> > helper function would clean up the code. I'll do that.
->
-> Well that's not easy if you have to think of which functions have to be
-> called.
->
-> I'll take a closer look at the access tracking and dirty logging cases
-> to try and understand what those bugs can be.  Apart from that I have my
-> suggested changes and I can probably finish testing them and send them
-> out tomorrow.
+Hi,
 
-Awesome, thank you. I'll look forward to seeing them. Will you be
-applying those changes to the tdp_mmu branch you created as well?
+On 10/7/20 6:21 PM, Barnabás Pőcze wrote:
+> Hi
+> 
+> 2020. október 7., szerda 16:02 keltezéssel, Hans de Goede írta:
+>> [...]
+>> Elia, Thank you for your patch, I've applied this patch to me review-hans branch:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+>> [...]
+> 
+> I don't know if the problem is on my end, but opening that url
+> results in an "Invalid branch: review-hans" error.
 
->
-> Paolo
->
-> > I got some
-> > feedback on the RFC I sent last year which led me to open-code a lot
-> > more, but I think this is still a good cleanup.
->
+Since I'm just getting up2speed in my new role today, I have never pushed
+that branch out yet, hence the error.
+
+I've pushed it out now, the mirrors which actually serve
+the http interface can lag a bit, so give it 10 minutes and
+then it should be there.
+
+Regards,
+
+Hans
+
