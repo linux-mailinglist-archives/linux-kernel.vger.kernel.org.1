@@ -2,90 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151C7285A62
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC5B285A6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgJGIXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgJGIXV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:23:21 -0400
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D22C061755;
-        Wed,  7 Oct 2020 01:23:21 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4C5nQt4mBFz1rtMh;
-        Wed,  7 Oct 2020 10:23:17 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4C5nQs42wZz1qrg7;
-        Wed,  7 Oct 2020 10:23:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id tQTGD6EF-HpS; Wed,  7 Oct 2020 10:23:15 +0200 (CEST)
-X-Auth-Info: YXCZjV5dOMn4jgIRwSTJvLxhPaV22tlJrmyTW7fudiU=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed,  7 Oct 2020 10:23:15 +0200 (CEST)
-Subject: Re: PHY reset question
-To:     Marco Felsch <m.felsch@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>
-References: <20201006080424.GA6988@pengutronix.de>
- <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
- <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
- <0687984c-5768-7c71-5796-8e16169f5192@gmail.com>
- <20201007081410.jk5fi6x5w3ab3726@pengutronix.de>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <7edb2e01-bec5-05b0-aa47-caf6e214e5a0@denx.de>
-Date:   Wed, 7 Oct 2020 10:23:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727923AbgJGIZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:25:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52014 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725976AbgJGIZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:25:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 96FFBABD1;
+        Wed,  7 Oct 2020 08:25:21 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E96721E1305; Wed,  7 Oct 2020 10:25:17 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 10:25:17 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] ext4/xfs: add page refcount helper
+Message-ID: <20201007082517.GC6984@quack2.suse.cz>
+References: <20201006230930.3908-1-rcampbell@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20201007081410.jk5fi6x5w3ab3726@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006230930.3908-1-rcampbell@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 10:14 AM, Marco Felsch wrote:
-> Hi Marek,
-
-Hi,
-
-[...]
-
-> On 20-10-06 14:11, Florian Fainelli wrote:
->> On 10/6/2020 1:24 PM, Marek Vasut wrote:
+On Tue 06-10-20 16:09:30, Ralph Campbell wrote:
+> There are several places where ZONE_DEVICE struct pages assume a reference
+> count == 1 means the page is idle and free. Instead of open coding this,
+> add a helper function to hide this detail.
 > 
-> ...
-> 
->>> If this happens on MX6 with FEC, can you please try these two patches?
->>>
->>> https://patchwork.ozlabs.org/project/netdev/patch/20201006135253.97395-1-marex@denx.de/
->>>
->>> https://patchwork.ozlabs.org/project/netdev/patch/20201006202029.254212-1-marex@denx.de/
->>
->> Your patches are not scaling across multiple Ethernet MAC drivers
->> unfortunately, so I am not sure this should be even remotely considered a
->> viable solution.
-> 
-> Recently I added clk support for the smcs driver [1] and dropped the
-> PHY_RST_AFTER_CLK_EN flag for LAN8710/20 devices because I had the same
-> issues. Hope this will help you too.
-> 
-> [1] https://www.spinics.net/lists/netdev/msg682080.html
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-I feel this might be starting to go a bit off-topic here, but isn't the
-last patch 5/5 breaking existing setups ? The LAN8710 surely does need
-clock enabled before the reset line is toggled.
+Looks as sane direction but if we are going to abstract checks when
+ZONE_DEVICE page is idle, we should also update e.g.
+mm/swap.c:put_devmap_managed_page() or
+mm/gup.c:__unpin_devmap_managed_user_page() (there may be more places like
+this but I found at least these two...). Maybe Dan has more thoughts about
+this.
+
+								Honza
+
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 5b47834f2e1b..85c63f735909 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct address_space *mapping,
+>  	for_each_mapped_pfn(entry, pfn) {
+>  		struct page *page = pfn_to_page(pfn);
+>  
+> -		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
+> +		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
+>  		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
+>  		page->mapping = NULL;
+>  		page->index = 0;
+> @@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
+>  	for_each_mapped_pfn(entry, pfn) {
+>  		struct page *page = pfn_to_page(pfn);
+>  
+> -		if (page_ref_count(page) > 1)
+> +		if (!dax_layout_is_idle_page(page))
+>  			return page;
+>  	}
+>  	return NULL;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 771ed8b1fadb..132620cbfa13 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3937,10 +3937,7 @@ int ext4_break_layouts(struct inode *inode)
+>  		if (!page)
+>  			return 0;
+>  
+> -		error = ___wait_var_event(&page->_refcount,
+> -				atomic_read(&page->_refcount) == 1,
+> -				TASK_INTERRUPTIBLE, 0, 0,
+> -				ext4_wait_dax_page(ei));
+> +		error = dax_wait_page(ei, page, ext4_wait_dax_page);
+>  	} while (error == 0);
+>  
+>  	return error;
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 3d1b95124744..a5304aaeaa3a 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -749,9 +749,7 @@ xfs_break_dax_layouts(
+>  		return 0;
+>  
+>  	*retry = true;
+> -	return ___wait_var_event(&page->_refcount,
+> -			atomic_read(&page->_refcount) == 1, TASK_INTERRUPTIBLE,
+> -			0, 0, xfs_wait_dax_page(inode));
+> +	return dax_wait_page(inode, page, xfs_wait_dax_page);
+>  }
+>  
+>  int
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b52f084aa643..8909a91cd381 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -243,6 +243,16 @@ static inline bool dax_mapping(struct address_space *mapping)
+>  	return mapping->host && IS_DAX(mapping->host);
+>  }
+>  
+> +static inline bool dax_layout_is_idle_page(struct page *page)
+> +{
+> +	return page_ref_count(page) == 1;
+> +}
+> +
+> +#define dax_wait_page(_inode, _page, _wait_cb)				\
+> +	___wait_var_event(&(_page)->_refcount,				\
+> +		dax_layout_is_idle_page(_page),				\
+> +		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode))
+> +
+>  #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
+>  void hmem_register_device(int target_nid, struct resource *r);
+>  #else
+> -- 
+> 2.20.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
