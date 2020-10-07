@@ -2,82 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155E22858D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C882858D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727215AbgJGGxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45854 "EHLO
+        id S1727379AbgJGGx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 02:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJGGxh (ORCPT
+        with ESMTP id S1725970AbgJGGx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:53:37 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB6CC061755;
-        Tue,  6 Oct 2020 23:53:36 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z1so827353wrt.3;
-        Tue, 06 Oct 2020 23:53:36 -0700 (PDT)
+        Wed, 7 Oct 2020 02:53:57 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4127C061755;
+        Tue,  6 Oct 2020 23:53:56 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f21so1118663wml.3;
+        Tue, 06 Oct 2020 23:53:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=cc:subject:to:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DkMe7edW+O0Q0nEcrMIpxynBYLmdvAjyQDcYd3ELTdk=;
-        b=jJctRa2dKtxrbbDeeWyi6xtSVmO/xZjShDuS9CGvsnUpkbvxlAtco/1AdJd4FU0k5s
-         A9iyqW/AwtXICf1c32QCdn3knHsNNDMVWscX+F7xeDbdqh85jh6c5aHGie4sXwabwrXQ
-         mLTdQHqrIdy/P7L1E0K45VOftJRfby1ree6So26lHy9VQ1bvsMMP0LoegOyY2rEa/PFa
-         zV5yVZzzm2+6NSuX/xCrEfSAGISZO+zf6dVbF9eMKv43bwSdw/mDvEDljx6KJjCeFmzv
-         fAYeI8ASrwvR72E/Du1GP/BAQHqYH6x+q/GsjVuGKJCq+G5kFLkYLfd71v4GIwerk6kX
-         QeKg==
+        bh=z3XB1xSaIVxoCVFV+AIEHdeC2vRDuyX8I/AvqLi7N88=;
+        b=H2L+THlTzRfz5/3byTG37OmbuDrd0ZgYdwhG5F7zp1ezKqDAso825mZMJrkB6GLTuf
+         0e1PfBnifQN7LAy6EgPWJH5c3wyE4xUgVd+2+FPV5qV0MZprS2EdVMqGgV4rl+wm6mCj
+         tiHdTLERFygeWrEaFsp5wLlV0uLXZ9Gbggx2AFjTsDWmLGGpAs8P2KR6WwhqgC+zpCav
+         4xUGl8G8c7NlnW1x49QfTLBfxJ91tx+XnMOYD7nYnT7CGhTNxYEBoldGpiLbiP1/cdAm
+         6rn+o/waQIazqFm3iRo0BCCXpSpXRdONzYJv/If5FTeNplPMWW50XeHZyfHv/x8ck/JZ
+         VWrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:cc:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=DkMe7edW+O0Q0nEcrMIpxynBYLmdvAjyQDcYd3ELTdk=;
-        b=iwQc0VoEhjyBimgQoUol2ymxiNOwdeSdhTN1A/DjnKjwoFNkD6GauodjoJ7XC18xXb
-         jAc0vA7DQyjtQ+qYCj35GkyX1uj1aOy0yQdmmbBUYwEGC46zbsuqkaL02OqPKam1Tmdt
-         R+wNOmRWHEa+/BfwCWRE4hRa7RS7tiAN7O8N3PDKvA2AJs8TMwXzquIJ+ZT1Y/MO5oco
-         BfmppcsFkZTRHAHZ5KaPPFKRKQAFfDqHplBl5d18AmTmJlQOVA0yyK3V8xDN0cb/uT27
-         tKMqsYigd0ylkn6dZ12ANJe6hj/DVcvFuNYd0IOFWnJhW4QHoeuMJ7yzP1sicsQn3yJM
-         TBqQ==
-X-Gm-Message-State: AOAM532PjAe5CyNUkLhBw0mQ9ZyiUzY0ht2+/Ci/U494dm0xtuetYJOW
-        V8JgG7bhEABcpLqlLX0ZDoo=
-X-Google-Smtp-Source: ABdhPJzproDvRTShcdC9xBjS2LpkNgWrBPln23BlRfjfbqmP0jEFD77qxLk94zVGNBFPSVLShUoh3A==
-X-Received: by 2002:a5d:568a:: with SMTP id f10mr1749547wrv.30.1602053614820;
-        Tue, 06 Oct 2020 23:53:34 -0700 (PDT)
+        bh=z3XB1xSaIVxoCVFV+AIEHdeC2vRDuyX8I/AvqLi7N88=;
+        b=oDM5Avt5ZEqV8gLLSEk9k96LJVzr7nKXXgdi2wP5as9frnC3aS4Fz7FZA5mUsVDg7O
+         VRaAtH9prK6LcRqZHdjKiRrF56S6NB+j0joSVrEv7ArYLpvTUU1xSC3z+YXkowWzDAHy
+         yV2stjh9WYNBYxih1CmH62y9MRmVGvMQ6cYzBojVn0hfzVct3TGjrXwuJH7HJDigqxAB
+         1NoMqkTnXYRV1ZXTsWN/nF8XBZ07q5MwcuclG/zubucJbcocNEGAnB25wUsp2TyHt7/L
+         DoyMa/TSZVsVdRxiTrHELBk7e/Lj65tPy4voqYvVA8UrIhvatzF8NL8+3nRWxiaZ5+RL
+         3cRQ==
+X-Gm-Message-State: AOAM533nQg9O9KmLlq8an8LY9fhJ13mr/uc62XjkgZj/CZuuuPUAtJUO
+        pW5GxtFlxgIMKYAcMHPtkVYoj0EP7bFvwA==
+X-Google-Smtp-Source: ABdhPJwJq72/bBf9D8rLb782aBEYIY6MXK33Uf83vsHI80STDbhIjSQlKpejF4CPAgNDDbnhf1znew==
+X-Received: by 2002:a7b:c0d8:: with SMTP id s24mr1571629wmh.156.1602053635461;
+        Tue, 06 Oct 2020 23:53:55 -0700 (PDT)
 Received: from [192.168.43.156] (dynamic-046-114-000-081.46.114.pool.telefonica.de. [46.114.0.81])
-        by smtp.gmail.com with ESMTPSA id o14sm1311642wmc.36.2020.10.06.23.53.33
+        by smtp.gmail.com with ESMTPSA id o6sm1447830wrm.69.2020.10.06.23.53.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 23:53:34 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, Jonathan Wakely <jwakely.gcc@gmail.com>,
-        Paul Eggert <eggert@cs.ucla.edu>,
-        linux-man <linux-man@vger.kernel.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>, David.Laight@ACULAB.COM
-Subject: Re: Navigational corrections
+        Tue, 06 Oct 2020 23:53:54 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
+        libc-alpha@sourceware.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] system_data_types.7: Add 'off_t'
 To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <41affebd-3354-9420-0048-bffd14535e95@gmail.com>
- <20201001154946.104626-2-colomar.6.4.3@gmail.com>
- <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
- <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
- <CAH6eHdSLbaqTyXaPnBxnR4n+WVHJCBDF=C9RXa6To1rSuv0D4w@mail.gmail.com>
- <CAKgNAkiHbK4RU_a_165yg3O6W0-GZMNLQoBNbut6ME=bW7pvCw@mail.gmail.com>
- <CAH6eHdQrmsHxZbk3+JxRVZ5qH1fhFzLxyigs+DtEzSg2cet+kw@mail.gmail.com>
- <63826e82-7a19-0ecc-f73c-56aa560a842f@gmail.com>
- <CAH6eHdTpzNk4+Rg-+kUCRDZPLHe7MBBf2PK5i1WqD4VeEs60oQ@mail.gmail.com>
- <4422e4bc-f54c-02cf-9b47-808d07ce8ba5@gmail.com>
- <297e304a-758e-f703-d1e2-6708be3ffca8@gmail.com>
- <9c8f90c5-0f34-609f-8001-a61f90e05849@gmail.com>
- <4c8a8fbf-3577-a242-94db-3044b57f6570@gmail.com>
- <d38a7cf8-6abb-c581-c877-8de7a35befe3@gmail.com>
+References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
 From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <48edf022-3f20-b334-afd6-4e2bfc4955ba@gmail.com>
-Date:   Wed, 7 Oct 2020 08:53:30 +0200
+Message-ID: <b24d9f74-d07c-5d07-0788-eb8f1711d71d@gmail.com>
+Date:   Wed, 7 Oct 2020 08:53:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <d38a7cf8-6abb-c581-c877-8de7a35befe3@gmail.com>
+In-Reply-To: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -85,35 +68,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/20 12:08 AM, Alejandro Colomar wrote:
-> Hi Michael,
-> 
-> On 2020-10-03 13:39, Michael Kerrisk (man-pages) wrote:
->> Hi Alex,
-> [...]
->>
->> off_t would be great.
->>
->> In case you are looking for some other candidates, some others
->> that I would be interested to see go into the page would be
->>
->> fd_set
->> clock_t
->> clockid_t
->> and probably dev_t
-> 
-> Great!
-> 
-> off_t is almost done.  I think I have too many references in "See also".
-> 
-> I'll send you the patch, and trim as you want :)
+On 10/6/20 12:12 AM, Alejandro Colomar wrote:
+> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
 
-Thanks, Alex. I'm teaching a course this week, so less active, 
-I'm sorry.
+Hi Alex,
+
+Thanks, patch applied. And I trimmed the "See also" a little.
+I'd hold off on documenting loff_t and off64_t for the 
+moment. As you note in another mail, the *lseek* man page
+situation is a bit of a mess. I'm not yet sure what to do.
 
 Thanks,
 
 Michael
+
+> ---
+>  man7/system_data_types.7 | 50 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+> 
+> diff --git a/man7/system_data_types.7 b/man7/system_data_types.7
+> index b8cbc8ffe..916efef08 100644
+> --- a/man7/system_data_types.7
+> +++ b/man7/system_data_types.7
+> @@ -629,6 +629,56 @@ C99 and later; POSIX.1-2001 and later.
+>  See also:
+>  .BR lldiv (3)
+>  .RE
+> +.\"------------------------------------- off_t ------------------------/
+> +.TP
+> +.I off_t
+> +.RS
+> +Include:
+> +.IR <sys/types.h> .
+> +Alternatively,
+> +.IR <aio.h> ,
+> +.IR <fcntl.h> ,
+> +.IR <stdio.h> ,
+> +.IR <sys/mman.h> ,
+> +.IR <sys/stat.h.h> ,
+> +or
+> +.IR <unistd.h> .
+> +.PP
+> +Used for file sizes.
+> +According to POSIX,
+> +this shall be a signed integer type.
+> +.PP
+> +Versions:
+> +.I <aio.h>
+> +and
+> +.I <stdio.h>
+> +define
+> +.I off_t
+> +since POSIX.1-2008.
+> +.PP
+> +Conforming to:
+> +POSIX.1-2001 and later.
+> +.PP
+> +See also:
+> +.BR fallocate (2),
+> +.BR lseek (2),
+> +.BR mmap (2),
+> +.BR mmap2 (2),
+> +.BR posix_fadvise (2),
+> +.BR pread (2),
+> +.BR preadv (2),
+> +.BR truncate (2),
+> +.BR fseeko (3),
+> +.BR getdirentries (3),
+> +.BR lockf (3),
+> +.BR posix_fallocate (3)
+> +.\".PP		TODO: loff_t, off64_t
+> +.\"See also the
+> +.\".I loff_t
+> +.\"and
+> +.\".I off64_t
+> +.\"types in this page.
+> +.RE
+>  .\"------------------------------------- pid_t ------------------------/
+>  .TP
+>  .I pid_t
+> 
 
 
 -- 
