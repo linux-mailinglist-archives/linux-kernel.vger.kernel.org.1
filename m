@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C3A286588
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9A228658A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgJGRNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:13:01 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:57386 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726707AbgJGRNB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:13:01 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097HA0PT015296;
-        Wed, 7 Oct 2020 10:12:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=WD7AvrZGYpLFK/U5aqrNMVal8DD23I37slU+OojZ1cA=;
- b=fMd0VwgwLSpwdHrCKXGb4kP1Erqjklh9FRVQpAZ3UkwvIdDNXKO69BBtv8NFKnAqkEuB
- SK/GlSSQdh/NZ/Bgf7DKCVdeR1ymVTJOvNVsMznrCSnP663N19U2clSs6wLYVf6Mcm+j
- CvRGa1pHB60BQqy3pwk2TivD5BDnlWJIIS/4sQkWQFLH59X5TKELkPx7pK7SLJAKOOmw
- PktQl0Q9XikusehSsAFEJOn2zUjR+GrCXys60u5Hx1RvD2v0RhM5ZWF6+DvRIRKhWy0S
- uip7TotJnE6S4rO+GHiL9dES9/9bp/MD1qXoWt/t/whgA+po+oqpvZweJO4qulRxEhTx 1Q== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 33xpnpwqva-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 10:12:51 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
- 2020 10:12:50 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
- 2020 10:12:49 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 7 Oct 2020 10:12:49 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id 6C31D3F703F;
-        Wed,  7 Oct 2020 10:12:49 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 097HCmxc031270;
-        Wed, 7 Oct 2020 10:12:49 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Wed, 7 Oct 2020 10:12:48 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-CC:     Nilesh Javali <njavali@marvell.com>,
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next v2] scsi: qla2xxx: Convert to
- DEFINE_SHOW_ATTRIBUTE
-In-Reply-To: <20200919025202.17531-1-miaoqinglang@huawei.com>
-Message-ID: <alpine.LRH.2.21.9999.2010071009280.28578@irv1user01.caveonetworks.com>
-References: <20200919025202.17531-1-miaoqinglang@huawei.com>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        id S1728000AbgJGRNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:13:37 -0400
+Received: from mga07.intel.com ([134.134.136.100]:1539 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726168AbgJGRNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:13:36 -0400
+IronPort-SDR: zDcwdFoQJAPj/U/Zq6r1lPvtKAHcAONP+xi5hrEcEvq1xv34m77Yr1vieXApWY38YfZSk/jdbL
+ vMbf5iuqN15w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="229180102"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="229180102"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:13:36 -0700
+IronPort-SDR: uq+ehLW7EhgsAAI5A6AXPSZWsdHzpY6vAGGpcTrWPJrkmq71vHLWKgGp73StACevklOxkf3S63
+ 0t5zw16LCKxg==
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="528059100"
+Received: from dumser-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.51.100])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:13:22 -0700
+Date:   Wed, 7 Oct 2020 20:13:18 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20201007171318.GC3885@linux.intel.com>
+References: <20201006151532.GA17610@linux.intel.com>
+ <20201006172819.GA114208@linux.intel.com>
+ <20201006232129.GB28981@linux.intel.com>
+ <20201007002236.GA139112@linux.intel.com>
+ <20201007011738.GE28981@linux.intel.com>
+ <20201007031402.GA143690@linux.intel.com>
+ <20201007043418.GG28981@linux.intel.com>
+ <20201007073923.GA3632@linux.intel.com>
+ <20201007152545.GB758@linux.intel.com>
+ <20201007170818.GB3885@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007170818.GB3885@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020, 7:52pm, Qinglang Miao wrote:
-
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+On Wed, Oct 07, 2020 at 08:08:32PM +0300, Jarkko Sakkinen wrote:
+> On Wed, Oct 07, 2020 at 08:25:45AM -0700, Sean Christopherson wrote:
+> > On Wed, Oct 07, 2020 at 10:39:23AM +0300, Jarkko Sakkinen wrote:
+> > > On Tue, Oct 06, 2020 at 09:34:19PM -0700, Sean Christopherson wrote:
+> > > > > Even if that was in place, you'd need to separate normal and interrupt.
+> > > > > Tristate is useless here. 
+> > > > 
+> > > > Huh?  You mean like adding SGX_INTERRUPT_EXIT and SGX_EXCEPTION_EXIT?
+> > > 
+> > > OK, so I'll throw something.
+> > > 
+> > > 1. "normal" is either exception from either EENTER or ERESUME,
+> > >    or just EEXIT.
+> > > 2. "interrupt" is something where you want to tailor AEP path.
+> > 
+> > Manipulating the behavior of the vDSO, as in #2, would be done via an input
+> > flag.  It may be related to the exit reason, e.g. the flag may also opt-in to
+> > a new exit reason, but that has no bearing on whether or not a dedicated exit
+> > reason is valuable.
 > 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
-> v2: based on linux-next(20200917), and can be applied to
->     mainline cleanly now.
+> The fact is that AEP path is not actual right now.
 > 
->  drivers/scsi/qla2xxx/qla_dfs.c | 68 ++++------------------------------
->  1 file changed, 8 insertions(+), 60 deletions(-)
+> I'm not even interested to go further on discussing about feature that
+> does not exist. Perhaps if/when it exist it turns out that we want a
+> variable lets say 'exit_reason' to present something in that context.
 > 
+> I'm neither against that or for it because it is all speculative.
+> 
+> > > > I'm not arguing that any of the above is even remotely likely.  I just don't
+> > > > understand why we'd want an API that at best requires heuristics in userspace
+> > > > to determine why the enclave stopped running, and at worst will saddle us with
+> > > > an ugly mess in the future.  All to save 4 bytes that no one cares about (they
+> > > > literally cost nothing), and a single MOV in a flow that is hundreds, if not
+> > > > thousands, of cycles.
+> > > 
+> > > I don't care as much as saving bytes as defining API, which has zero
+> > > ambiguous state variables.
+> > 
+> > How is exit_reason ambiguous?
+> 
+> I rather pick the word redundant:
+> 
+> 1. 'leaf' exist anyway.
+> 2. It can represent all the state we need right now.
+> 3. It does not block anything.,
+> 
+> I care deeply about wasting 4 bytes in a fixed size struct for
+> absolutely nothing.
 
-Looks good. Thanks Qinglang.
+And I do care about what to pick for the struct size. My remarks on
+that are lost somewhere in this thread. I absoutely do not have any
+interest whether 'exit_reason' in some future situation is useful
+or not.
 
-Regards,
--Arun
+/Jarkko
