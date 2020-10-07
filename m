@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83D628591C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB748285903
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbgJGHMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727628AbgJGHME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727646AbgJGHME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 7 Oct 2020 03:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbgJGHMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 03:12:03 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC80C0613D4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEBDC061755;
         Wed,  7 Oct 2020 00:12:03 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 07:12:00 -0000
+Date:   Wed, 07 Oct 2020 07:12:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602054721;
+        s=2020; t=1602054722;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dXBKwDORBnSpivPnl1Mrpdd83AE9tAl9lbmGfsXzByc=;
-        b=ywKlcUo1g+xvtop54XvNKyPSZcr8z+dknO80sWTFt8wsHVoB/OKY7zStQuVcSBv45Qi8yM
-        4yBEFurFIfz4zwa4IgR2KE14KaArvbJC04xo2ZNruzydysyyaJdW9VJTt92W05ZjH3kuCM
-        w98COxlceZWPeyaio0WpeCOSFCxeKZ3C1jECiAcTkMWgkrOSFzxl9XxbLd/syeq7VbafGm
-        vzWipd4mY7bN0iq+7z/UacMyRAaRXLnW1KpfhZgsZ/MpElULCebY/jPYtZbbISq2ZiASe0
-        PGs19dDW2WaHOueoiuHDZ425iNsKuEHelY3SUsKAyuF1P4XcEvdKUeS1lOydJQ==
+        bh=XYRV1PLfwBf6rP9T+9D3DHBJfp4eS5t0VT1vWVHNe0M=;
+        b=zIePvRPLps4kY/LiPrWg6MCsFwGxOfkq4txvw8pdxyzoR28Gm+ub7eDCk3/zQKcbcvxkk/
+        PXD9lAwS4L3UGNllPpfv69jQ7EC2iKFaVBjW5udQQDgCeUE2XuFaLb4V0N98ZhnuWPf2lM
+        m8tkKTb7+xC+BY4b85ZeoZdWx8ePaMUnvVePmHHTmXN0YRyBVAmWoPwTRoYUKCgKNYgPRF
+        tiT+UuzTijgZK0vYlhteXWQB3znIzSKon99fUBfcYjNKj8T95NQB9Um1QU7Wec7nq2BXfm
+        B1hBoaR7AQD6WZQQ/kL1uSgv5TZoZgO7wwPA6BnFNfcnqD7MJ23DA3y2RkfxAw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602054721;
+        s=2020e; t=1602054722;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dXBKwDORBnSpivPnl1Mrpdd83AE9tAl9lbmGfsXzByc=;
-        b=gdZy5oZ693m2kR4ZtOuI0F8T0SP97yhdrGmRhU4Bucl+lgNpUs+PwU0+E8xF1pfL4mzSjf
-        +utSQZh6cSxY05AQ==
+        bh=XYRV1PLfwBf6rP9T+9D3DHBJfp4eS5t0VT1vWVHNe0M=;
+        b=DjJwTOjkovm4JwdW4N1vpxhq/kUXTcVzwkmJDWII6OJm3ALRa/7xqqg7Inq7GILntxrHQ0
+        J1mpeMTMwRtl5dAA==
 From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Update for UV5 NMI MMR changes
+Subject: [tip: x86/platform] x86/platform/uv: Update node present counting
 Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
         Dimitri Sivanich <dimitri.sivanich@hpe.com>,
         Steve Wahl <steve.wahl@hpe.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201005203929.148656-13-mike.travis@hpe.com>
-References: <20201005203929.148656-13-mike.travis@hpe.com>
+In-Reply-To: <20201005203929.148656-11-mike.travis@hpe.com>
+References: <20201005203929.148656-11-mike.travis@hpe.com>
 MIME-Version: 1.0
-Message-ID: <160205472033.7002.14164903565017374344.tip-bot2@tip-bot2>
+Message-ID: <160205472130.7002.9651855394776094338.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,144 +62,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/platform branch of tip:
 
-Commit-ID:     ae5f8ce3c247b8d937782e76802a9036c09998ad
-Gitweb:        https://git.kernel.org/tip/ae5f8ce3c247b8d937782e76802a9036c09998ad
+Commit-ID:     d6922effe4f3d5c643c8c05d51a572d6db4c9cb3
+Gitweb:        https://git.kernel.org/tip/d6922effe4f3d5c643c8c05d51a572d6db4c9cb3
 Author:        Mike Travis <mike.travis@hpe.com>
-AuthorDate:    Mon, 05 Oct 2020 15:39:28 -05:00
+AuthorDate:    Mon, 05 Oct 2020 15:39:26 -05:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 07 Oct 2020 09:09:50 +02:00
+CommitterDate: Wed, 07 Oct 2020 09:08:35 +02:00
 
-x86/platform/uv: Update for UV5 NMI MMR changes
+x86/platform/uv: Update node present counting
 
-The UV NMI MMR addresses and fields moved between UV4 and UV5
-necessitating a rewrite of the UV NMI handler.  Adjust references
-to accommodate those changes.
+The changes in the UV5 arch shrunk the NODE PRESENT table to just 2x64
+entries (128 total) so are in to 64 bit MMRs instead of a depth of 64
+bits in an array.  Adjust references when counting up the nodes present.
 
 Signed-off-by: Mike Travis <mike.travis@hpe.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
 Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Link: https://lkml.kernel.org/r/20201005203929.148656-13-mike.travis@hpe.com
+Link: https://lkml.kernel.org/r/20201005203929.148656-11-mike.travis@hpe.com
 ---
- arch/x86/include/asm/uv/uv_hub.h | 13 +------
- arch/x86/platform/uv/uv_nmi.c    | 64 ++++++++++++++++++++++++++-----
- 2 files changed, 54 insertions(+), 23 deletions(-)
+ arch/x86/kernel/apic/x2apic_uv_x.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/include/asm/uv/uv_hub.h b/arch/x86/include/asm/uv/uv_hub.h
-index 07079b5..610bda2 100644
---- a/arch/x86/include/asm/uv/uv_hub.h
-+++ b/arch/x86/include/asm/uv/uv_hub.h
-@@ -734,19 +734,6 @@ extern void uv_nmi_setup_hubless(void);
- #define UVH_NMI_MMR_SHIFT	63
- #define UVH_NMI_MMR_TYPE	"SCRATCH5"
- 
--/* Newer SMM NMI handler, not present in all systems */
--#define UVH_NMI_MMRX		UVH_EVENT_OCCURRED0
--#define UVH_NMI_MMRX_CLEAR	UVH_EVENT_OCCURRED0_ALIAS
--#define UVH_NMI_MMRX_SHIFT	UVH_EVENT_OCCURRED0_EXTIO_INT0_SHFT
--#define UVH_NMI_MMRX_TYPE	"EXTIO_INT0"
--
--/* Non-zero indicates newer SMM NMI handler present */
--#define UVH_NMI_MMRX_SUPPORTED	UVH_EXTIO_INT0_BROADCAST
--
--/* Indicates to BIOS that we want to use the newer SMM NMI handler */
--#define UVH_NMI_MMRX_REQ	UVH_BIOS_KERNEL_MMR_ALIAS_2
--#define UVH_NMI_MMRX_REQ_SHIFT	62
--
- struct uv_hub_nmi_s {
- 	raw_spinlock_t	nmi_lock;
- 	atomic_t	in_nmi;		/* flag this node in UV NMI IRQ */
-diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-index 9d08ff5..eac26fe 100644
---- a/arch/x86/platform/uv/uv_nmi.c
-+++ b/arch/x86/platform/uv/uv_nmi.c
-@@ -2,8 +2,8 @@
- /*
-  * SGI NMI support routines
-  *
-- *  Copyright (c) 2009-2013 Silicon Graphics, Inc.  All Rights Reserved.
-- *  Copyright (c) Mike Travis
-+ * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-+ * Copyright (c) Mike Travis
-  */
- 
- #include <linux/cpu.h>
-@@ -54,6 +54,20 @@ static struct uv_hub_nmi_s **uv_hub_nmi_list;
- 
- DEFINE_PER_CPU(struct uv_cpu_nmi_s, uv_cpu_nmi);
- 
-+/* Newer SMM NMI handler, not present in all systems */
-+static unsigned long uvh_nmi_mmrx;		/* UVH_EVENT_OCCURRED0/1 */
-+static unsigned long uvh_nmi_mmrx_clear;	/* UVH_EVENT_OCCURRED0/1_ALIAS */
-+static int uvh_nmi_mmrx_shift;			/* UVH_EVENT_OCCURRED0/1_EXTIO_INT0_SHFT */
-+static int uvh_nmi_mmrx_mask;			/* UVH_EVENT_OCCURRED0/1_EXTIO_INT0_MASK */
-+static char *uvh_nmi_mmrx_type;			/* "EXTIO_INT0" */
-+
-+/* Non-zero indicates newer SMM NMI handler present */
-+static unsigned long uvh_nmi_mmrx_supported;	/* UVH_EXTIO_INT0_BROADCAST */
-+
-+/* Indicates to BIOS that we want to use the newer SMM NMI handler */
-+static unsigned long uvh_nmi_mmrx_req;		/* UVH_BIOS_KERNEL_MMR_ALIAS_2 */
-+static int uvh_nmi_mmrx_req_shift;		/* 62 */
-+
- /* UV hubless values */
- #define NMI_CONTROL_PORT	0x70
- #define NMI_DUMMY_PORT		0x71
-@@ -227,13 +241,43 @@ static inline bool uv_nmi_action_is(const char *action)
- /* Setup which NMI support is present in system */
- static void uv_nmi_setup_mmrs(void)
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 64a1c59..9b44f45 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -1436,20 +1436,32 @@ static int __init decode_uv_systab(void)
+ /* Set up physical blade translations from UVH_NODE_PRESENT_TABLE */
+ static __init void boot_init_possible_blades(struct uv_hub_info_s *hub_info)
  {
--	if (uv_read_local_mmr(UVH_NMI_MMRX_SUPPORTED)) {
--		uv_write_local_mmr(UVH_NMI_MMRX_REQ,
--					1UL << UVH_NMI_MMRX_REQ_SHIFT);
--		nmi_mmr = UVH_NMI_MMRX;
--		nmi_mmr_clear = UVH_NMI_MMRX_CLEAR;
--		nmi_mmr_pending = 1UL << UVH_NMI_MMRX_SHIFT;
--		pr_info("UV: SMI NMI support: %s\n", UVH_NMI_MMRX_TYPE);
-+	/* First determine arch specific MMRs to handshake with BIOS */
-+	if (UVH_EVENT_OCCURRED0_EXTIO_INT0_MASK) {
-+		uvh_nmi_mmrx = UVH_EVENT_OCCURRED0;
-+		uvh_nmi_mmrx_clear = UVH_EVENT_OCCURRED0_ALIAS;
-+		uvh_nmi_mmrx_shift = UVH_EVENT_OCCURRED0_EXTIO_INT0_SHFT;
-+		uvh_nmi_mmrx_mask = UVH_EVENT_OCCURRED0_EXTIO_INT0_MASK;
-+		uvh_nmi_mmrx_type = "OCRD0-EXTIO_INT0";
-+
-+		uvh_nmi_mmrx_supported = UVH_EXTIO_INT0_BROADCAST;
-+		uvh_nmi_mmrx_req = UVH_BIOS_KERNEL_MMR_ALIAS_2;
-+		uvh_nmi_mmrx_req_shift = 62;
-+
-+	} else if (UVH_EVENT_OCCURRED1_EXTIO_INT0_MASK) {
-+		uvh_nmi_mmrx = UVH_EVENT_OCCURRED1;
-+		uvh_nmi_mmrx_clear = UVH_EVENT_OCCURRED1_ALIAS;
-+		uvh_nmi_mmrx_shift = UVH_EVENT_OCCURRED1_EXTIO_INT0_SHFT;
-+		uvh_nmi_mmrx_mask = UVH_EVENT_OCCURRED1_EXTIO_INT0_MASK;
-+		uvh_nmi_mmrx_type = "OCRD1-EXTIO_INT0";
-+
-+		uvh_nmi_mmrx_supported = UVH_EXTIO_INT0_BROADCAST;
-+		uvh_nmi_mmrx_req = UVH_BIOS_KERNEL_MMR_ALIAS_2;
-+		uvh_nmi_mmrx_req_shift = 62;
-+
-+	} else {
-+		pr_err("UV:%s:cannot find EVENT_OCCURRED*_EXTIO_INT0\n",
-+			__func__);
-+		return;
++	unsigned long np;
+ 	int i, uv_pb = 0;
+ 
+-	pr_info("UV: NODE_PRESENT_DEPTH = %d\n", UVH_NODE_PRESENT_TABLE_DEPTH);
+-	for (i = 0; i < UVH_NODE_PRESENT_TABLE_DEPTH; i++) {
+-		unsigned long np;
+-
+-		np = uv_read_local_mmr(UVH_NODE_PRESENT_TABLE + i * 8);
+-		if (np)
++	if (UVH_NODE_PRESENT_TABLE) {
++		pr_info("UV: NODE_PRESENT_DEPTH = %d\n",
++			UVH_NODE_PRESENT_TABLE_DEPTH);
++		for (i = 0; i < UVH_NODE_PRESENT_TABLE_DEPTH; i++) {
++			np = uv_read_local_mmr(UVH_NODE_PRESENT_TABLE + i * 8);
+ 			pr_info("UV: NODE_PRESENT(%d) = 0x%016lx\n", i, np);
+-
++			uv_pb += hweight64(np);
++		}
 +	}
++	if (UVH_NODE_PRESENT_0) {
++		np = uv_read_local_mmr(UVH_NODE_PRESENT_0);
++		pr_info("UV: NODE_PRESENT_0 = 0x%016lx\n", np);
++		uv_pb += hweight64(np);
++	}
++	if (UVH_NODE_PRESENT_1) {
++		np = uv_read_local_mmr(UVH_NODE_PRESENT_1);
++		pr_info("UV: NODE_PRESENT_1 = 0x%016lx\n", np);
+ 		uv_pb += hweight64(np);
+ 	}
+ 	if (uv_possible_blades != uv_pb)
+ 		uv_possible_blades = uv_pb;
 +
-+	/* Then find out if new NMI is supported */
-+	if (likely(uv_read_local_mmr(uvh_nmi_mmrx_supported))) {
-+		uv_write_local_mmr(uvh_nmi_mmrx_req,
-+					1UL << uvh_nmi_mmrx_req_shift);
-+		nmi_mmr = uvh_nmi_mmrx;
-+		nmi_mmr_clear = uvh_nmi_mmrx_clear;
-+		nmi_mmr_pending = 1UL << uvh_nmi_mmrx_shift;
-+		pr_info("UV: SMI NMI support: %s\n", uvh_nmi_mmrx_type);
- 	} else {
- 		nmi_mmr = UVH_NMI_MMR;
- 		nmi_mmr_clear = UVH_NMI_MMR_CLEAR;
-@@ -1049,5 +1093,5 @@ void __init uv_nmi_setup_hubless(void)
- 	/* Ensure NMI enabled in Processor Interface Reg: */
- 	uv_reassert_nmi();
- 	uv_register_nmi_notifier();
--	pr_info("UV: Hubless NMI enabled\n");
-+	pr_info("UV: PCH NMI enabled\n");
++	pr_info("UV: number nodes/possible blades %d\n", uv_pb);
  }
+ 
+ static void __init build_socket_tables(void)
