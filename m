@@ -2,127 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0FC286526
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4782864FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728865AbgJGQqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:46:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727990AbgJGQoh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:44:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602089075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uqaEw5icSFdPDojtd3NVaf6pvOb3q0DRVRJSpbduobU=;
-        b=Rz3JzNAUHn2tzOKQruLg3bVXuzOaF1RwjC44uAkR+Jsr+oq2dWkHXsBGB03L5QBf8BhRi9
-        Fc/yESoXq9/1sHEnKPEUlre+lcj1eyjEh5Vt67UQAwrMZDFXs7wi2NJImg7NjhI5XFF2+Q
-        sGfZiwj/6AV38EfDuJlCf1telBrzsU4=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-G89gfKYAND6-xJMfGFjgEQ-1; Wed, 07 Oct 2020 12:44:34 -0400
-X-MC-Unique: G89gfKYAND6-xJMfGFjgEQ-1
-Received: by mail-qt1-f199.google.com with SMTP id e19so1715702qtq.17
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 09:44:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uqaEw5icSFdPDojtd3NVaf6pvOb3q0DRVRJSpbduobU=;
-        b=pfvh83fl4Cm0XaRcdHoB6Xea0RHQp2SfAkKPCIJiblaNdj7FNJNdxDH2qgFWcKCfIz
-         fnmOxiCDcc5w1mUJ/dhGEptyJ8vS6C7UebWf/jF4wcYj45btyr804kTRxpHW6EKpeAMj
-         HrMMgZcebMMLLRnQDC7vHPyonh3y+S/0K9h6dvAtHru+FgjWJ+vdr7EhBep/ew2yIzKk
-         aEk/PKsPtwoChY7NRaSYKBWtG9ObuQhaBBMunfRRsUzfSodmz7IRpbk9eVIzzXrf4eAZ
-         31AmKd2lBDEl1YxSm9nWOAVvAeHeqhpqevfeG5amGpMl1Zr1vw2PhkONYkzuM4aKVdjW
-         NijA==
-X-Gm-Message-State: AOAM532ghckiamHFN3ZItlIeOkGxYviS15+QDOnXjRPeovHlqwWloQ5W
-        QxLMdFqCZn8peT9xY5ScNqHgya0DWQcxVISuLqRXbLP/kMBPixsCMu7sDbas5Sgh/d55pfxtuGH
-        elvyrUKPm9UHE1uIGGsTxHk6b
-X-Received: by 2002:a37:7c3:: with SMTP id 186mr3673393qkh.417.1602089073609;
-        Wed, 07 Oct 2020 09:44:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx26wMk2ONL7Bqk1khWS1xBde3IYp73x2D7hRvH7JN+dhfsPVuudkRiYhJQo4g04aEYuSjKew==
-X-Received: by 2002:a37:7c3:: with SMTP id 186mr3673359qkh.417.1602089073195;
-        Wed, 07 Oct 2020 09:44:33 -0700 (PDT)
-Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
-        by smtp.gmail.com with ESMTPSA id f64sm1836783qkj.124.2020.10.07.09.44.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 09:44:32 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 12:44:31 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alexander Graf <graf@amazon.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [PATCH 2/2] KVM: VMX: Ignore userspace MSR filters for x2APIC
- when APICV is enabled
-Message-ID: <20201007164431.GE6026@xz-x1>
-References: <20201005195532.8674-1-sean.j.christopherson@intel.com>
- <20201005195532.8674-3-sean.j.christopherson@intel.com>
- <bcb15eb1-8d3e-ff6d-d11f-667884584f1f@amazon.com>
+        id S1728727AbgJGQp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:45:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:46888 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728779AbgJGQpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:45:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83FAB30E;
+        Wed,  7 Oct 2020 09:45:18 -0700 (PDT)
+Received: from [172.16.1.113] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F34DD3F66B;
+        Wed,  7 Oct 2020 09:45:16 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/7] RAS/CEC: Extend CEC for errors count check on
+ short time period
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+References: <20201002122235.1280-1-shiju.jose@huawei.com>
+ <20201002124352.GC17436@zn.tnic>
+ <19a8cc62b11c49e9b584857a6a6664e5@huawei.com>
+ <59950d44-906b-684f-c876-e09c76e5f827@arm.com>
+ <8d826b53a3fc453ba1c468aaf8eb2e75@huawei.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <7d15f48a-3380-6b43-04c7-7f9e67564519@arm.com>
+Date:   Wed, 7 Oct 2020 17:45:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <8d826b53a3fc453ba1c468aaf8eb2e75@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <bcb15eb1-8d3e-ff6d-d11f-667884584f1f@amazon.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 04:01:59PM +0200, Alexander Graf wrote:
-> 
-> 
-> On 05.10.20 21:55, Sean Christopherson wrote:
-> > 
-> > Rework the resetting of the MSR bitmap for x2APIC MSRs to ignore
-> > userspace filtering when APICV is enabled.  Allowing userspace to
-> > intercept reads to x2APIC MSRs when APICV is fully enabled for the guest
-> > simply can't work.   The LAPIC and thus virtual APIC is in-kernel and
-> > cannot be directly accessed by userspace.  If userspace wants to
-> > intercept x2APIC MSRs, then it should first disable APICV.
-> > 
-> > Opportunistically change the behavior to reset the full range of MSRs if
-> > and only if APICV is enabled for KVM.  The MSR bitmaps are initialized
-> > to intercept all reads and writes by default, and enable_apicv cannot be
-> > toggled after KVM is loaded.  I.e. if APICV is disabled, simply toggle
-> > the TPR MSR accordingly.
-> > 
-> > Note, this still allows userspace to intercept reads and writes to TPR,
-> > and writes to EOI and SELF_IPI.  It is at least plausible userspace
-> > interception could work for those registers, though it is still silly.
-> > 
-> > Cc: Alexander Graf <graf@amazon.com>
-> > Cc: Aaron Lewis <aaronlewis@google.com>
-> > Cc: Peter Xu <peterx@redhat.com>
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> 
-> I'm not opposed in general to leaving APICV handled registers out of the
-> filtering logic. However, this really needs a note in the documentation
-> then, no?
+Hi Shiju,
 
-If we want to forbid apicv msrs, should we even fail KVM_X86_SET_MSR_FILTER
-directly then?
+On 06/10/2020 17:13, Shiju Jose wrote:
 
-I've no strong opinion on whether these msrs should be restricted. I'm not sure
-whether my understanding is correct here - to me, kvm should always depend on
-the userspace to do the right thing to make the vm work.  To me, as long as the
-error is self-contained and it does not affect kvm as a whole or the host, then
-it seems still fine.
+[...]
 
-However I do agree that I also worried about vmx_update_msr_bitmap_x2apic()
-being slower.  Majorly I see calls from vmx_refresh_apicv_exec_ctrl() or
-nested, so I'm not sure whether that could make sense for some workload.  Btw,
-that seems to be another change corresponds to the idea to restrict msr
-filitering on apicv regs.
+> Please find following pseudo code we added for the kernel side to make sure
+> we correctly understand your suggestions.
+> 
+> 1. Create edac device and edac device sysfs entries for the online CPU caches.
+> /drivers/edac/edac_device.c
+> struct edac_device_ctl_info  *edac_device_add_cache(unsigned int id, u8 level, u8 type) {
+
+Eh? Ah, you are adding helpers for devices that are a cache. As far as I can see, edac
+only cares about 'devices', I don't think this is needed unless there are multiple users,
+or it makes a visible difference to user-space.
+
+Otherwise this could just go into ghes_edac.c
+
+
+How this looks to user-space probably needs discussing. We should avoid inventing anything
+new. I'd expect user-space to see something like the structure described at the top of
+edac_device.h... but I can't spot a driver using this.
+(its a shame its not the other way up, to avoid duplicating shared caches)
+
+Some archaeology may be needed!
+
+(if there is some existing structure, I agree it should be wrapped up in helpers to ensure
+its easiest to be the same. This may be what a edac_device_block is...)
+
+
+>  }
+
+
+> /drivers/base/cacheinfo.c
+> int cache_create_edac_entries(u64 mpidr, u8 cache_level, u8 cache_type)
+> { 
+> 	...
+> 	/* Get cacheinfo for each online cpus */
+> 	for_each_online_cpu(i) {
+> 		struct cpu_cacheinfo *cpu_ci = get_cpu_cacheinfo(i);
+
+I agree the structure of the caches should come from cacheinfo, and you spotted it only
+works for online CPUs!. This means there is an interaction with cpuhp here)
+
+
+> 		if (!cpu_ci || !cpu_ci->id)
+
+cpu->id?  0 is a valid id, there is an attribute flag to say this is valid.
+This field exists in struct cacheinfo, not struct cpu_cacheinfo.
+
+
+> 			continue;
+>         		... 
+> 		/*Add  the edac entry for the CPU cache */
+> 		edev_cache = edac_device_add_cache(cpu_ci->id, cpu_ci ->level, cpu_ci ->type)
+> 		if (!edev_cache)
+> 			break;
+
+This would break all other edac users.
+The edac driver for the platform should take care of creating this stuff, not the core
+cacheinfo code.
+
+The edac driver for the platform may know that L2 doesn't report RAS errors, so there is
+no point exposing it.
+
+For firmware-first, we can't know this until an error shows up, so have to create
+everything. This stuff should only be created/exported when ghes_edac.c is determined to
+be this platforms edac driver. This code should live in ghes_edac.c.
+
+
+> 		...
+> 	}
+> 	...	
+> }
+
+> unsigned int cache_get_cache_id(u64 proc_id, u8 cache_level, u8 cache_type)
+
+See get_cpu_cacheinfo_id(int cpu, int level) in next. (something very similar to this
+lived in arch/x86, bits of the MPAM tree that moved it got queued for next)
+
+
+> { 
+> 	unsigned int cache_id = 0;
+> 	...
+> 	/* Walk looking for matching cache node */   
+> 	for_each_online_cpu(i) {
+
+(there is an interaction with cpuhp here)
+
+
+> 		struct cpu_cacheinfo *cpu_ci = get_cpu_cacheinfo(i);
+> 		if (!cpu_ci || !cpu_ci->id)
+> 			continue;
+
+
+> 		id = CONV(proc_id);  /* need to check */
+
+No idea what is going on here.
+
+(Deriving an ID from the CPU_s_ that are attached to the cache is arm64 specific. This has
+to work for x86 too.
+The MPAM out-of-tree code does this as we don't have anything else. Feedback when it was
+posted as RFC was that the id values should be compacted, I was hoping we would get
+something like an id from the PPTT before needing this value as resctrl ABI for MPAM)
+
+
+> 		if((id == cpu_ci->id) && (cache_level == cpu_ci->level) && (cache_type == cpu_ci->type))  {
+> 			cache_id = cpu_ci->id;
+> 			break;
+> 		}
+> 	}
+> 	return cache_id;
+> }
+
+
+> 2. Store CPU CE count in the edac sysfs entry for the CPU cache.
+> 
+> drivers/edac/ghes_edac.c
+> void ghes_edac_report_cpu_error(int cache_id, u8 cache_level, u8 cache_type , uint32 ce_count)
+> {
+> 	...
+> 	/* Check edac entry for cache already present, if not add new entry */       
+
+You can't create devices at runtime! The notification comes in irq context, and
+edac_device_add_device() takes a mutex, and you need to allocate memory.
+
+This could be deferred to process context - but I bet its a nuisance for user-space to now
+know what counters are available until errors show up.
+
+
+> 	edev_cache = find_edac_device_cache(cache_id, cache_level, cache_type);
+> 	if (!edev_cache) {
+> 		/*Add  the edac entry for the cache */
+> 		edev_cache = edac_device_add_cache(cache_id, cache_level, cache_type);
+> 		if (!edev_cache)
+> 			return;
+> 	}
+
+Better would be to lookup the device based on the CPER. (It already looks up the DIMM
+based on the CPER)
+
+
+> 	/* Store the ce_count to /sys/devices/system/edac/ cpu/cpu<no>/L<N>cache/ce_count */
+> 	edac_device_handle_ce_count(edev_cache, ce_count, ...)
+> }
+>  
+> drivers/acpi/apei/ghes.c
+> void ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata) {
+>  	...
+>  	if (sec_sev != GHES_SEV_CORRECTED)
+>  		return;
+
+(Xiaofei Tan is looking at supporting some other of these, so you need to interact with
+that work too)
+
+
+>  	mpidr = cper_sec_proc_arm->mpidr;    
+
+You want an arch-specific call to convert this to the linux CPU number, and then use that
+everywhere. This makes the code more re-usable, and less surprising to other readers.
+
+arm64's get_logical_index() looks like it does what you want.
+
+
+>  	for(i = 0; i < cper_sec_proc_arm->err_info_num; i++) {
+>  		if(cper_sec_proc_info->type != CPER_ARM_CACHE_ERROR) 
+>  			continue; 
+>  		ce_count = cper_arm_err_info->multiple_error + 1;
+> 		cache_type = cper_arm_err_info->type;
+> 		cache_level = cper_arm_err_info->error_info<24: 22>;  
+
+> 		cache_id = cache_get_cache_id(mpidr, cache_level, cache_type);
+
+This needs to be architecture agnostic, it must take the cpu number.
+
+
+>  		if (!cache_id)
+>  			return;
+
+0 is a valid id.
+
+
+> 		ghes_edac_report_cpu_error(cache_id, cache_level, cache_type , ce_count);
+> 	}
+>               ...
+> 	return;	
+> }
+
 
 Thanks,
 
--- 
-Peter Xu
-
+James
