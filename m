@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214CA286797
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67502866EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgJGSn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:43:27 -0400
-Received: from mga04.intel.com ([192.55.52.120]:26830 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbgJGSn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:43:27 -0400
-IronPort-SDR: CP1Gl9nTcB5RFHVXbr5oQsqvS4rhh34KuG+LB/pohmpSkuy48yq+37pfDPFOwkYVJfGhP4MeT3
- ypcaJRLLiMnA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="162443739"
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="162443739"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 11:43:26 -0700
-IronPort-SDR: 28VHoGOndfRnWTasoHT1hQdzfg/1H2hWmZA8KwIuABiy+4waKFUCmBCW10nvcxycazrmxxsp0F
- uzTinV6I+Ylg==
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="297604799"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 11:43:02 -0700
-Subject: [PATCH] x86/mce: Gate copy_mc_fragile() export by
- CONFIG_COPY_MC_TEST=y
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     bp@alien8.de
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
-Date:   Wed, 07 Oct 2020 11:24:32 -0700
-Message-ID: <160209507277.2768223.9933672492157583642.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <20201007111447.GA23257@zn.tnic>
-References: <20201007111447.GA23257@zn.tnic>
-User-Agent: StGit/0.18-3-g996c
+        id S1727242AbgJGS1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:27:09 -0400
+Received: from smtprelay0145.hostedemail.com ([216.40.44.145]:36068 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726152AbgJGS1J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 14:27:09 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id D3A08100E7B49;
+        Wed,  7 Oct 2020 18:27:07 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2894:3138:3139:3140:3141:3142:3352:3622:3865:3866:3868:3870:3871:3872:4321:5007:8603:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21212:21611:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: point10_6007cd0271d1
+X-Filterd-Recvd-Size: 1995
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  7 Oct 2020 18:27:06 +0000 (UTC)
+Message-ID: <55ae0b6152c84013d483b1bbecb28a425801c408.camel@perches.com>
+Subject: Re: [PATCH] ima: Fix sizeof mismatches
+From:   Joe Perches <joe@perches.com>
+To:     Colin King <colin.king@canonical.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Roberto Sassu <roberto.sassu@polito.it>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 07 Oct 2020 11:27:04 -0700
+In-Reply-To: <20201007110243.19033-1-colin.king@canonical.com>
+References: <20201007110243.19033-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that modpost is not happy about exporting assembly symbols
-that are not consumed in the same build. As Boris reports:
+On Wed, 2020-10-07 at 12:02 +0100, Colin King wrote:
+> An incorrect sizeof is being used, sizeof(*fields) is not correct,
+> it should be sizeof(**fields). This is not causing a problem since
+> the size of these is the same. Fix this in the kmalloc_array and
+> memcpy calls.
+[]
+> diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
+[]
+> @@ -216,11 +216,11 @@ int template_desc_init_fields(const char *template_fmt,
+>  	}
+>  
+>  	if (fields && num_fields) {
+> -		*fields = kmalloc_array(i, sizeof(*fields), GFP_KERNEL);
+> +		*fields = kmalloc_array(i, sizeof(**fields), GFP_KERNEL);
+>  		if (*fields == NULL)
+>  			return -ENOMEM;
+>  
+> -		memcpy(*fields, found_fields, i * sizeof(*fields));
+> +		memcpy(*fields, found_fields, i * sizeof(**fields));
 
-    WARNING: modpost: EXPORT symbol "copy_mc_fragile" [vmlinux] version generation failed, symbol will not be versioned.
+Maybe use kmemdup instead.
 
-The export is only consumed in the CONFIG_COPY_MC_TEST=y case, and even
-then not in a way that modpost could see. CONFIG_COPY_MC_TEST uses a
-module built in tools/testing/nvdimm/ to exercise the copy_mc_fragile()
-corner cases.  Given the test already requires manually editing the
-config entry for CONFIG_COPY_MC_TEST to make it "def_bool y" the
-additional dependency to require is CONFIG_MODVERSIONS=n is not too
-onerous.
+	if (fields && num_fields) {
+		*fields = kmemdup(found_fields, i * sizeof(**fields), GFP_KERNEL);
+		etc...
 
-Alternatively, COPY_MC_TEST and its related infrastructure could just be
-ripped out because it has served its purpose. For now, just stop
-exporting the symbol by default, and add the MODVERSIONS dependency to
-the test.
-
-Fixes: ec6347bb4339 ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()")
-Reported-by: Borislav Petkov <bp@suse.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- arch/x86/Kconfig.debug    |    1 +
- arch/x86/lib/copy_mc_64.S |    2 ++
- 2 files changed, 3 insertions(+)
-
-diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
-index 27b5e2bc6a01..6f0f5d8ac62e 100644
---- a/arch/x86/Kconfig.debug
-+++ b/arch/x86/Kconfig.debug
-@@ -63,6 +63,7 @@ config EARLY_PRINTK_USB_XDBC
- 	  crashes or need a very simple printk logging facility.
- 
- config COPY_MC_TEST
-+	depends on !MODVERSIONS
- 	def_bool n
- 
- config EFI_PGT_DUMP
-diff --git a/arch/x86/lib/copy_mc_64.S b/arch/x86/lib/copy_mc_64.S
-index 892d8915f609..50fb05256751 100644
---- a/arch/x86/lib/copy_mc_64.S
-+++ b/arch/x86/lib/copy_mc_64.S
-@@ -88,7 +88,9 @@ SYM_FUNC_START(copy_mc_fragile)
- .L_done:
- 	ret
- SYM_FUNC_END(copy_mc_fragile)
-+#ifdef CONFIG_COPY_MC_TEST
- EXPORT_SYMBOL_GPL(copy_mc_fragile)
-+#endif
- 
- 	.section .fixup, "ax"
- 	/*
 
