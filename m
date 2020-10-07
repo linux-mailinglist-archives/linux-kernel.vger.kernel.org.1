@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407CE28592B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2782828592D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbgJGHPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:15:17 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:52470 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727684AbgJGHPR (ORCPT
+        id S1727729AbgJGHPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:15:39 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:17050 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727624AbgJGHPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:15:17 -0400
+        Wed, 7 Oct 2020 03:15:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1602054916; x=1633590916;
+  t=1602054938; x=1633590938;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=OxApDNVBe9qJrgKMXpVHXXem1zXkEyX41XgSrJ5ico4=;
-  b=izglYSq4Ixoe7yY7ZGzN5swP1eOo/D22sXd38EY5B823NCNIMoVFVqcG
-   TsIE7BQf8rdok08kyOMAE9vl3rb+meLkx4NcvWdsrFA4Nx8eJtTEJJ9S2
-   PkBRoLJPCTqxVbu57Eouxqg+okwCaqB+kOyevV7Qi8X2lg+z8OkQtQhiM
-   U=;
+  bh=eFQ5FjEXjCcRqP315OtcZTEl8DRR0ETd5Jfrqerv8aI=;
+  b=QfvDMQeJkfjjTbw3o/0qGiDqcac86yVeecaZJiVDWask6qqU716BUE7B
+   gH+HCUQlbYHMXKeVX5t3PeYWplihno4y5sm5Nv7yWLml0G6LHfxVSKh4a
+   rtRTxaA9Z7zf0WijpfbbgIeDVTrbFh7QQojNfrDP5Jr2RwILQeiBrcAiO
+   I=;
 X-IronPort-AV: E=Sophos;i="5.77,345,1596499200"; 
-   d="scan'208";a="58523428"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 07 Oct 2020 07:15:15 +0000
+   d="scan'208";a="74032911"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 07 Oct 2020 07:15:35 +0000
 Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id CC8FAC09AE;
-        Wed,  7 Oct 2020 07:15:03 +0000 (UTC)
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 42A03A1D5B;
+        Wed,  7 Oct 2020 07:15:21 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.73) by
  EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 7 Oct 2020 07:14:47 +0000
+ id 15.0.1497.2; Wed, 7 Oct 2020 07:15:05 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,9 +53,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v9 01/10] damon/dbgfs: Allow users to set initial monitoring target regions
-Date:   Wed, 7 Oct 2020 09:14:00 +0200
-Message-ID: <20201007071409.12174-2-sjpark@amazon.com>
+Subject: [RFC v9 02/10] tools/damon: Support init target regions specification
+Date:   Wed, 7 Oct 2020 09:14:01 +0200
+Message-ID: <20201007071409.12174-3-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201007071409.12174-1-sjpark@amazon.com>
 References: <20201007071409.12174-1-sjpark@amazon.com>
@@ -70,207 +70,207 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-Some 'damon-dbgfs' users would want to monitor only a part of the entire
-virtual memory address space.  The framework users in the kernel space
-could use '->init_target_regions' callback or even set the regions
-inside the context struct as they want, but 'damon-dbgfs' users cannot.
-
-For the reason, this commit introduces a new debugfs file,
-'init_region'.  'damon-dbgfs' users can specify which initial monitoring
-target address regions they want by writing special input to the file.
-The input should describe each region in each line in below form:
-
-    <pid> <start address> <end address>
-
-Note that the regions will be updated to cover entire memory mapped
-regions after 'regions update interval'.  If you want the regions to not
-be updated after the initial setting, you could set the interval as a
-very long time, say, a few decades.
+This commit updates the damon user space tool to support the initial
+monitoring target regions specification.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon/dbgfs.c | 154 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 151 insertions(+), 3 deletions(-)
+ tools/damon/_damon.py  | 39 +++++++++++++++++++++++++++++++++++++++
+ tools/damon/record.py  | 12 +++++++-----
+ tools/damon/schemes.py | 12 +++++++-----
+ 3 files changed, 53 insertions(+), 10 deletions(-)
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index 9390ed9b9304..28076557ea86 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -523,6 +523,147 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
- 	return ret;
- }
+diff --git a/tools/damon/_damon.py b/tools/damon/_damon.py
+index a4f6c03c23e4..a22ec3777c16 100644
+--- a/tools/damon/_damon.py
++++ b/tools/damon/_damon.py
+@@ -12,12 +12,25 @@ debugfs_attrs = None
+ debugfs_record = None
+ debugfs_schemes = None
+ debugfs_target_ids = None
++debugfs_init_regions = None
+ debugfs_monitor_on = None
  
-+static ssize_t sprint_init_regions(struct damon_ctx *c, char *buf, ssize_t len)
-+{
-+	struct damon_target *t;
-+	struct damon_region *r;
-+	int written = 0;
-+	int rc;
-+
-+	damon_for_each_target(t, c) {
-+		damon_for_each_region(r, t) {
-+			rc = scnprintf(&buf[written], len - written,
-+					"%lu %lu %lu\n",
-+					t->id, r->ar.start, r->ar.end);
-+			if (!rc)
-+				return -ENOMEM;
-+			written += rc;
-+		}
-+	}
-+	return written;
-+}
-+
-+static ssize_t dbgfs_init_regions_read(struct file *file, char __user *buf,
-+		size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = file->private_data;
-+	char *kbuf;
-+	ssize_t len;
-+
-+	kbuf = kmalloc(count, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		mutex_unlock(&ctx->kdamond_lock);
-+		return -EBUSY;
-+	}
-+
-+	len = sprint_init_regions(ctx, kbuf, count);
-+	mutex_unlock(&ctx->kdamond_lock);
-+	if (len < 0)
-+		goto out;
-+	len = simple_read_from_buffer(buf, count, ppos, kbuf, len);
-+
-+out:
-+	kfree(kbuf);
-+	return len;
-+}
-+
-+static int add_init_region(struct damon_ctx *c,
-+			 unsigned long target_id, struct damon_addr_range *ar)
-+{
-+	struct damon_target *t;
-+	struct damon_region *r, *prev;
-+	int rc = -EINVAL;
-+
-+	if (ar->start >= ar->end)
-+		return -EINVAL;
-+
-+	damon_for_each_target(t, c) {
-+		if (t->id == target_id) {
-+			r = damon_new_region(ar->start, ar->end);
-+			if (!r)
-+				return -ENOMEM;
-+			damon_add_region(r, t);
-+			if (damon_nr_regions(t) > 1) {
-+				prev = damon_prev_region(r);
-+				if (prev->ar.end > r->ar.start) {
-+					damon_destroy_region(r);
-+					return -EINVAL;
-+				}
-+			}
-+			rc = 0;
-+		}
-+	}
-+	return rc;
-+}
-+
-+static int set_init_regions(struct damon_ctx *c, const char *str, ssize_t len)
-+{
-+	struct damon_target *t;
-+	struct damon_region *r, *next;
-+	int pos = 0, parsed, ret;
-+	unsigned long target_id;
-+	struct damon_addr_range ar;
-+	int err;
-+
-+	damon_for_each_target(t, c) {
-+		damon_for_each_region_safe(r, next, t)
-+			damon_destroy_region(r);
-+	}
-+
-+	while (pos < len) {
-+		ret = sscanf(&str[pos], "%lu %lu %lu%n",
-+				&target_id, &ar.start, &ar.end, &parsed);
-+		if (ret != 3)
-+			break;
-+		err = add_init_region(c, target_id, &ar);
-+		if (err)
-+			goto fail;
-+		pos += parsed;
-+	}
-+
-+	return 0;
-+
-+fail:
-+	damon_for_each_target(t, c) {
-+		damon_for_each_region_safe(r, next, t)
-+			damon_destroy_region(r);
-+	}
-+	return err;
-+}
-+
-+static ssize_t dbgfs_init_regions_write(struct file *file,
-+					  const char __user *buf, size_t count,
-+					  loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = file->private_data;
-+	char *kbuf;
-+	ssize_t ret = count;
-+	int err;
-+
-+	kbuf = user_input_str(buf, count, ppos);
-+	if (IS_ERR(kbuf))
-+		return PTR_ERR(kbuf);
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		ret = -EBUSY;
-+		goto unlock_out;
-+	}
-+
-+	err = set_init_regions(ctx, kbuf, ret);
-+	if (err)
-+		ret = err;
-+
-+unlock_out:
-+	mutex_unlock(&ctx->kdamond_lock);
-+	kfree(kbuf);
-+	return ret;
-+}
-+
- static ssize_t dbgfs_kdamond_pid_read(struct file *file,
- 		char __user *buf, size_t count, loff_t *ppos)
- {
-@@ -584,6 +725,13 @@ static const struct file_operations target_ids_fops = {
- 	.write = dbgfs_target_ids_write,
- };
+ def set_target_id(tid):
+     with open(debugfs_target_ids, 'w') as f:
+         f.write('%s\n' % tid)
  
-+static const struct file_operations init_regions_fops = {
-+	.owner = THIS_MODULE,
-+	.open = damon_dbgfs_open,
-+	.read = dbgfs_init_regions_read,
-+	.write = dbgfs_init_regions_write,
-+};
++def set_target(tid, init_regions=[]):
++    rc = set_target_id(tid)
++    if rc:
++        return rc
 +
- static const struct file_operations kdamond_pid_fops = {
- 	.owner = THIS_MODULE,
- 	.open = damon_dbgfs_open,
-@@ -593,9 +741,9 @@ static const struct file_operations kdamond_pid_fops = {
- static int dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
- {
- 	const char * const file_names[] = {"attrs", "record", "schemes",
--		"target_ids", "kdamond_pid"};
--	const struct file_operations *fops[] = {&attrs_fops,
--		&record_fops, &schemes_fops, &target_ids_fops,
-+		"target_ids", "init_regions", "kdamond_pid"};
-+	const struct file_operations *fops[] = {&attrs_fops, &record_fops,
-+		&schemes_fops, &target_ids_fops, &init_regions_fops,
- 		&kdamond_pid_fops};
- 	int i;
++    if not os.path.exists(debugfs_init_regions):
++        return 0
++
++    string = ' '.join(['%s %d %d' % (tid, r[0], r[1]) for r in init_regions])
++    return subprocess.call('echo "%s" > %s' % (string, debugfs_init_regions),
++            shell=True, executable='/bin/bash')
++
+ def turn_damon(on_off):
+     return subprocess.call("echo %s > %s" % (on_off, debugfs_monitor_on),
+             shell=True, executable="/bin/bash")
+@@ -97,6 +110,7 @@ def chk_update_debugfs(debugfs):
+     global debugfs_record
+     global debugfs_schemes
+     global debugfs_target_ids
++    global debugfs_init_regions
+     global debugfs_monitor_on
  
+     debugfs_damon = os.path.join(debugfs, 'damon')
+@@ -104,6 +118,7 @@ def chk_update_debugfs(debugfs):
+     debugfs_record = os.path.join(debugfs_damon, 'record')
+     debugfs_schemes = os.path.join(debugfs_damon, 'schemes')
+     debugfs_target_ids = os.path.join(debugfs_damon, 'target_ids')
++    debugfs_init_regions = os.path.join(debugfs_damon, 'init_regions')
+     debugfs_monitor_on = os.path.join(debugfs_damon, 'monitor_on')
+ 
+     if not os.path.isdir(debugfs_damon):
+@@ -131,6 +146,26 @@ def cmd_args_to_attrs(args):
+     return Attrs(sample_interval, aggr_interval, regions_update_interval,
+             min_nr_regions, max_nr_regions, rbuf_len, rfile_path, schemes)
+ 
++def cmd_args_to_init_regions(args):
++    regions = []
++    for arg in args.regions.split():
++        addrs = arg.split('-')
++        try:
++            if len(addrs) != 2:
++                raise Exception('two addresses not given')
++            start = int(addrs[0])
++            end = int(addrs[1])
++            if start >= end:
++                raise Exception('start >= end')
++            if regions and regions[-1][1] > start:
++                raise Exception('regions overlap')
++        except Exception as e:
++            print('Wrong \'--regions\' argument (%s)' % e)
++            exit(1)
++
++        regions.append([start, end])
++    return regions
++
+ def set_attrs_argparser(parser):
+     parser.add_argument('-d', '--debugfs', metavar='<debugfs>', type=str,
+             default='/sys/kernel/debug', help='debugfs mounted path')
+@@ -144,3 +179,7 @@ def set_attrs_argparser(parser):
+             default=10, help='minimal number of regions')
+     parser.add_argument('-m', '--maxr', metavar='<# regions>', type=int,
+             default=1000, help='maximum number of regions')
++
++def set_init_regions_argparser(parser):
++    parser.add_argument('-r', '--regions', metavar='"<start>-<end> ..."',
++            type=str, default='', help='monitoring target address regions')
+diff --git a/tools/damon/record.py b/tools/damon/record.py
+index 6d1cbe593b94..11fd54001472 100644
+--- a/tools/damon/record.py
++++ b/tools/damon/record.py
+@@ -24,7 +24,7 @@ def pidfd_open(pid):
+ 
+     return syscall(NR_pidfd_open, pid, 0)
+ 
+-def do_record(target, is_target_cmd, attrs, old_attrs, pidfd):
++def do_record(target, is_target_cmd, init_regions, attrs, old_attrs, pidfd):
+     if os.path.isfile(attrs.rfile_path):
+         os.rename(attrs.rfile_path, attrs.rfile_path + '.old')
+ 
+@@ -48,8 +48,8 @@ def do_record(target, is_target_cmd, attrs, old_attrs, pidfd):
+         # only for reference of the pidfd usage.
+         target = 'pidfd %s' % fd
+ 
+-    if _damon.set_target_id(target):
+-        print('target id setting (%s) failed' % target)
++    if _damon.set_target(target, init_regions):
++        print('target setting (%s, %s) failed' % (target, init_regions))
+         cleanup_exit(old_attrs, -2)
+     if _damon.turn_damon('on'):
+         print('could not turn on damon' % target)
+@@ -91,6 +91,7 @@ def chk_permission():
+ 
+ def set_argparser(parser):
+     _damon.set_attrs_argparser(parser)
++    _damon.set_init_regions_argparser(parser)
+     parser.add_argument('target', type=str, metavar='<target>',
+             help='the target command or the pid to record')
+     parser.add_argument('--pidfd', action='store_true',
+@@ -117,19 +118,20 @@ def main(args=None):
+     args.schemes = ''
+     pidfd = args.pidfd
+     new_attrs = _damon.cmd_args_to_attrs(args)
++    init_regions = _damon.cmd_args_to_init_regions(args)
+     target = args.target
+ 
+     target_fields = target.split()
+     if not subprocess.call('which %s &> /dev/null' % target_fields[0],
+             shell=True, executable='/bin/bash'):
+-        do_record(target, True, new_attrs, orig_attrs, pidfd)
++        do_record(target, True, init_regions, new_attrs, orig_attrs, pidfd)
+     else:
+         try:
+             pid = int(target)
+         except:
+             print('target \'%s\' is neither a command, nor a pid' % target)
+             exit(1)
+-        do_record(target, False, new_attrs, orig_attrs, pidfd)
++        do_record(target, False, init_regions, new_attrs, orig_attrs, pidfd)
+ 
+ if __name__ == '__main__':
+     main()
+diff --git a/tools/damon/schemes.py b/tools/damon/schemes.py
+index 9095835f6133..cfec89854a08 100644
+--- a/tools/damon/schemes.py
++++ b/tools/damon/schemes.py
+@@ -14,7 +14,7 @@ import time
+ import _convert_damos
+ import _damon
+ 
+-def run_damon(target, is_target_cmd, attrs, old_attrs):
++def run_damon(target, is_target_cmd, init_regions, attrs, old_attrs):
+     if os.path.isfile(attrs.rfile_path):
+         os.rename(attrs.rfile_path, attrs.rfile_path + '.old')
+ 
+@@ -27,8 +27,8 @@ def run_damon(target, is_target_cmd, attrs, old_attrs):
+     if is_target_cmd:
+         p = subprocess.Popen(target, shell=True, executable='/bin/bash')
+         target = p.pid
+-    if _damon.set_target_pid(target):
+-        print('pid setting (%s) failed' % target)
++    if _damon.set_target(target, init_regions):
++        print('target setting (%s, %s) failed' % (target, init_regions))
+         cleanup_exit(old_attrs, -2)
+     if _damon.turn_damon('on'):
+         print('could not turn on damon' % target)
+@@ -68,6 +68,7 @@ def chk_permission():
+ 
+ def set_argparser(parser):
+     _damon.set_attrs_argparser(parser)
++    _damon.set_init_regions_argparser(parser)
+     parser.add_argument('target', type=str, metavar='<target>',
+             help='the target command or the pid to record')
+     parser.add_argument('-c', '--schemes', metavar='<file>', type=str,
+@@ -92,19 +93,20 @@ def main(args=None):
+     args.out = 'null'
+     args.schemes = _convert_damos.convert(args.schemes, args.sample, args.aggr)
+     new_attrs = _damon.cmd_args_to_attrs(args)
++    init_regions = _damon.cmd_args_to_init_regions(args)
+     target = args.target
+ 
+     target_fields = target.split()
+     if not subprocess.call('which %s &> /dev/null' % target_fields[0],
+             shell=True, executable='/bin/bash'):
+-        run_damon(target, True, new_attrs, orig_attrs)
++        run_damon(target, True, init_regions, new_attrs, orig_attrs)
+     else:
+         try:
+             pid = int(target)
+         except:
+             print('target \'%s\' is neither a command, nor a pid' % target)
+             exit(1)
+-        run_damon(target, False, new_attrs, orig_attrs)
++        run_damon(target, False, init_regions, new_attrs, orig_attrs)
+ 
+ if __name__ == '__main__':
+     main()
 -- 
 2.17.1
 
