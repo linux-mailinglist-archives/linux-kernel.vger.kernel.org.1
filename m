@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3CD28632A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4ECC28634E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgJGQFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:05:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728428AbgJGQFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:05:34 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45201216C4;
-        Wed,  7 Oct 2020 16:05:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602086733;
-        bh=vXNBYzjXxgbdXR2tBuhidFU6GMj6pIUq/B/IITpLXDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dcc2vXHJQISo+MwSjajQGEZC9HEuZFgDht6Yeoio+aDQTnlvGn4WsTjAa5wbfw7PC
-         XHBPXDOTxGKwiAMAirMa8q5iOO18gG0fT1b34FQu5S7R3tWuwpVnMsyFAaZpR9thGS
-         dWimx005lmeEE8n8GzjfAeeTvMs22MTTa64KLvFM=
-Date:   Wed, 7 Oct 2020 11:11:33 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-hardening@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 14/14] drm/amd/pm: Replace one-element array with
- flexible-array in struct ATOM_Vega10_GFXCLK_Dependency_Table
-Message-ID: <00a464a7e2141dc3117720784d76048e7e3dbed6.1602020074.git.gustavoars@kernel.org>
-References: <cover.1602020074.git.gustavoars@kernel.org>
+        id S1729091AbgJGQL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:11:59 -0400
+Received: from mail.efficios.com ([167.114.26.124]:51206 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgJGQL6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:11:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 1A58D2B8651;
+        Wed,  7 Oct 2020 12:11:58 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id tBzGdLgqvcCu; Wed,  7 Oct 2020 12:11:57 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D21952B85E4;
+        Wed,  7 Oct 2020 12:11:57 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D21952B85E4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1602087117;
+        bh=hfE8xoMzk2rZlGNiZfezrG3s6wNnQmV27IkPLpxJX+o=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Df92b7JbHZYlYzoF5l73loGU4v0wQv9ewtE8xQ0RnxNcJNuaFdd7GCUuTtFQ9Z7g2
+         tT1Hb1QZp+OtmMlGvyCtqSot03hNrWbJ8C5VZYNbrOs6gF0y5WGixezKMN8ZyVBGeu
+         y9c1Q5VpH0LTwUAYLaf+tDRkVvLNXvQKXMJpijDofsi1Wiw2ehIFn+idrRXUVbdiBC
+         jMUHsg8dQsbx+CZjqyX+CkFx/T8LqE7rWB0s8bH5dTfjq4EJrFiRieaL6e70BmuSVl
+         UrGGqioz1gZooHBpEp8Xj7Daf81FX4loh7S9fugnP0vgyqpzzxoEnC0QTV7MgtmpJx
+         eRrv5wLeVylpQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qBWwDoFmoCjl; Wed,  7 Oct 2020 12:11:57 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id C398A2B8374;
+        Wed,  7 Oct 2020 12:11:57 -0400 (EDT)
+Date:   Wed, 7 Oct 2020 12:11:57 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <1870892799.11183.1602087117694.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201007160820.GK2628@hirez.programming.kicks-ass.net>
+References: <20200924172508.8724-1-mathieu.desnoyers@efficios.com> <20200924172508.8724-3-mathieu.desnoyers@efficios.com> <20201007150704.GH2628@hirez.programming.kicks-ass.net> <1286784649.11153.1602085170586.JavaMail.zimbra@efficios.com> <20201007160820.GK2628@hirez.programming.kicks-ass.net>
+Subject: Re: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v3)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1602020074.git.gustavoars@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
+Thread-Topic: sched: membarrier: cover kthread_use_mm (v3)
+Thread-Index: 2DSJ/AySq6n0r6bebLjBXfA3B0Au8Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+----- On Oct 7, 2020, at 12:08 PM, Peter Zijlstra peterz@infradead.org wrote:
 
-Use a flexible-array member in struct ATOM_Vega10_GFXCLK_Dependency_Table
-instead of a one-element array.
+> On Wed, Oct 07, 2020 at 11:39:30AM -0400, Mathieu Desnoyers wrote:
+>> Moving the membarrier_switch_mm to cover kthread cases was to ensure (2), but if
+>> we
+>> add a p->mm NULL check in the global expedited iteration, I think we would be OK
+>> leaving the stale runqueue's membarrier state while in lazy tlb state.
+>> 
+>> As far as (1) is concerned, I think your idea would work, because as you say we
+>> will
+>> have the proper barriers in kthread use/unuse mm.
+>> 
+>> I just wonder whether having this stale membarrier state for lazy tlb is
+>> warranted
+>> performance-wise, as it adds complexity: the rq membarrier state will therefore
+>> not be
+>> relevant when we are in lazy tlb mode.
+>> 
+>> Thoughts ?
+> 
+> Well, the way I got here was that I considered the membarrier state
+> update tied to switch_mm(), and in that regard my proposal is a
+> simplification.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+Sounds good.
 
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/5f7d61dd.O8jxxI5C6P9FOb%2Fd%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So for the loop check, do we need it to be:
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
-index c934e9612c1b..a6968009acc4 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
-@@ -163,7 +163,7 @@ typedef struct _ATOM_Vega10_MCLK_Dependency_Record {
- typedef struct _ATOM_Vega10_GFXCLK_Dependency_Table {
-     UCHAR ucRevId;
-     UCHAR ucNumEntries;                                         /* Number of entries. */
--    ATOM_Vega10_GFXCLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
-+    ATOM_Vega10_GFXCLK_Dependency_Record entries[];             /* Dynamically allocate entries. */
- } ATOM_Vega10_GFXCLK_Dependency_Table;
- 
- typedef struct _ATOM_Vega10_MCLK_Dependency_Table {
+                if ((p->flags & PF_KTHREAD) && !p->mm)
+                        continue;
+
+Or can it simply become:
+
+                if (!p->mm)
+                        continue;
+
+Because AFAIU only PF_KTHREAD can have NULL p->mm (?)
+
+Thanks,
+
+Mathieu
+
 -- 
-2.27.0
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
