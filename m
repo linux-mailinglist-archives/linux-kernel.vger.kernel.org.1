@@ -2,576 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1542A285FFF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD2528600D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728476AbgJGNWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:22:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37628 "EHLO mail.kernel.org"
+        id S1728423AbgJGN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:26:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:32691 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728271AbgJGNWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:22:40 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E17920870;
-        Wed,  7 Oct 2020 13:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602076957;
-        bh=xSM/bftSFTQDkFevWfhJ8DAVoRRGu8guCSKn93QhX94=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=16WwxGok+UP4tDhgaRSvBf11/qhAceQcv+78JmKony5zefEPL59VkzQUhjls1iOay
-         dHAQH6LsiNjuY0hymF8mA1C8ACq7eUeJp0TdC8ATN98Sq1iG7ujUL5CCMiWBOkgBGx
-         KrSvq99rBwg+dkslWkP9Zm/t+NSkuXh1LyB/DBoQ=
-Date:   Wed, 7 Oct 2020 15:23:21 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Sathish Narsimman <sathish.narasimman@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
- whitelist"
-Message-ID: <20201007132321.GA2466@kroah.com>
-References: <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
- <20201005083624.GA2442@kroah.com>
- <220D3B4E-D73E-43AD-8FF8-887D1A628235@holtmann.org>
- <20201005124018.GA800868@kroah.com>
- <824BC92C-5035-4B80-80E7-298508E4ADD7@holtmann.org>
- <20201005161149.GA2378402@kroah.com>
- <0C92E812-BF43-46A6-A069-3F7F3278FBB4@holtmann.org>
- <20201005173835.GB2388217@kroah.com>
- <20201005180208.GA2739@kroah.com>
- <D577711C-4AF5-4E82-8A17-E766B64E15A9@holtmann.org>
+        id S1728271AbgJGN0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:26:07 -0400
+IronPort-SDR: d51DlWzLwdHwff4l4jbIUEdTpMUmXpGIUcxFecNoD0j9UNdhbL2ayWH2ExadsabAzOwiq+0PWi
+ bwjc9DZ92rcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="165070901"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="165070901"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 06:26:06 -0700
+IronPort-SDR: m3JBm4Oj06IH9RAUHIMWyxieRr09/l5Uwf6QnXDgF22ns82tMKWS7MufSxjP8wWBIlBJVJGw3O
+ okR1YKOeHRcg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="518833417"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga005.fm.intel.com with ESMTP; 07 Oct 2020 06:26:06 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 06:26:05 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 06:26:05 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 7 Oct 2020 06:26:05 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.109)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 7 Oct 2020 06:26:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J3oHzVBRn3Dv2EggXqjR7dPrD2vLWdlUT+PNTRMq/P3cteotrA2RwsM9fJT6mcyH8XhyaLfAveQdPNsuTbUSEYlTYfe+4k/tYAUHugsYMOu2Y8qJFHYVzfQlVTmbhCSefXTn0fy2qurBHIAurLIiJeyYbG+kUgRNq5rnKgqNN0cgGZeYy198ayULR2Rww3W595dXH3sRaPBowLGXT903ZRfDlPhxyTJV92Alj0MYZy7Sd1/kj+EFx2qRRr9qKq5FzIVrBZeexwUnZetf3+gyZGHfUr6rrVgYayT/eWPdg8b2TEMKOKjcAN2DigVTeKVGW98wkNGgM8koPpLwRK/HWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EcbY9iSfy/cgLUqHrL4L7nbBVraf5kbc+RyAqnNMEk8=;
+ b=YYyj9h8xZrfTZLZYJ7dw8fQ1EJMUx1EaHUKeECX2sttzqJcEqeumwfiww3YdrgdVlYqF31ucWs95vsyaZeJ1kiGYo3inr3TpIwwIC2pGthkSrpOSIkEIlvz9ejjmStR89smPSvqu5gcPXS8QbY8BpKdbbTCc72cb83jHYZs7zMkz98Vy4FFH7t0GvbJYG8TE06fIh9knjW0pmvn6eOIFL0Hyp58KnBFJrTSia8MtuLPTBBZfz36EyozrgoKF8J+5OCkBJIA1H/FzQ9n/ZPxns24VMxDiZ2/yAM9WpxxRI5f2LjJRje5iEfkEKAGqcdVchcXZOHezKLn/Zif8Hlji1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EcbY9iSfy/cgLUqHrL4L7nbBVraf5kbc+RyAqnNMEk8=;
+ b=DsJRNAoAvLtgzZeMSuayBgKEvnRsKPxVpbj+zW8X+ahuyjqyn/06jiey7WThQNb+gfJkrPA65sHfLziJA+RAifHmmDCFHpKUSZh6M1mIQ9HWUFSmjDpZSnvZvU7WWU7oOkXmPf3LEyeEX0t+l5+NCdzqGvPsdtgU9YiVtmQZuaQ=
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com (2603:10b6:5:c1::16) by
+ DM6PR11MB2620.namprd11.prod.outlook.com (2603:10b6:5:c8::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.21; Wed, 7 Oct 2020 13:25:54 +0000
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c]) by DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c%5]) with mapi id 15.20.3433.045; Wed, 7 Oct 2020
+ 13:25:54 +0000
+From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+To:     Michal Simek <michal.simek@xilinx.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>
+Subject: RE: [PATCH v3 1/2] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+Thread-Topic: [PATCH v3 1/2] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+Thread-Index: AQHWm/miHZrYTgP7dkS6mFSOGlc+ZqmL0SmAgABQnzA=
+Date:   Wed, 7 Oct 2020 13:25:54 +0000
+Message-ID: <DM6PR11MB28769EDDD494D8647A82527CB80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
+References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+ <20201006155549.3595-2-muhammad.husaini.zulkifli@intel.com>
+ <49c9fe27-ee82-f490-482b-365101d3b6cf@xilinx.com>
+In-Reply-To: <49c9fe27-ee82-f490-482b-365101d3b6cf@xilinx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [42.189.177.181]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99d32d0a-e5dd-4201-fd82-08d86ac484d5
+x-ms-traffictypediagnostic: DM6PR11MB2620:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB2620A5C521A889E939FB27B5B80A0@DM6PR11MB2620.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: s2hwW4YM/COLNsQMMOxiDx7i72k5TAPN/KbslkWgZj4EGtq8C/y+1mk/ySvyWgkRVsRRP/uddJGPUvUs6JR+JrpjzP+hElmOs7wqwmTQ2wiURAdFMYkvG8DUspYLpwyXIT3dshIHm15ROQgh28WdsOG5I4PRL0skug3BAiKmqt/gH5D+l7skH9MqxZ8InSASrLxd8v04Q84Y6W2ScDtbkwrhv4ytOyxvixEBJox0QiZFr6geqRKLcec/p2V4L1ftb8+Jc06wdWVWEtObJqKG1HvRiOkMg0nQEwStmg/JjEdlpsVznSYzF5vjwbAdFxGbEL0vdjR7u4SUo2X73S4Www==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2876.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(83380400001)(76116006)(64756008)(66476007)(2906002)(478600001)(66946007)(66556008)(9686003)(66446008)(4326008)(52536014)(71200400001)(5660300002)(33656002)(110136005)(54906003)(26005)(186003)(86362001)(8676002)(6506007)(8936002)(316002)(7696005)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: X5lRTgBdHNceIu6anA2vXbTinc+y7+QlE5k1XQvVrk97Im829yCyhIwwnhSI81ZFyrwAC9FM1LSjSRJejjwU7Z6BzqQHU5pAJQWjErKqp+URMn1KnkcFe236etZG9lJtg1dzQS5sYfy1PkzSGlg7fvRcn5BDM+AzQzePKNqSg8uYUGC0rJX1H0CrqT8KDYtzQBU+E90BhMShLhHkZUaY/Dc3awyFiiiwJGb5nPEl9ZmaI3fkNR7jHK91i8BRGBI8LFhDRhbf1acZdoFSrX6+nZ/3/bJYwgYjE3/5THkpLYRD/p7ZI4Mrsx0PNbPNMk03NpoEuJZszbd3jI2nwjOQpK/GeYwfTg718za5EehTa1POxm7u5yJVe/TM7OGKDx8zRDoNHgCacFmU8EAfdcEkLlIJRBxodDDCBczIlAHwfesIEXDLDpUoNAWT5Dc6B3BqRpJblzsoxf0EuYz2K/utcpkQzSbkMCZDiDFCulT20FTnScQJSz55C/BIKzAiII/NBtP6SklrLtuJsaQxzlVdwvoj21LNYLVCaJFBSTZQt54k12yt1FZlC5bkMLvxuKEuQuqUDGhiekxIkfOxO8SukqUaEYvJBocsj0JZoqlA0d7QlT0SIUQsI6Ww3IJ/8DqMCZ93QtnTmIjCpZsc5diotg==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="wac7ysb48OaltWcw"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D577711C-4AF5-4E82-8A17-E766B64E15A9@holtmann.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2876.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99d32d0a-e5dd-4201-fd82-08d86ac484d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2020 13:25:54.6956
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: de0saUJk9SmJSzexUdSVJQbeafxzDuvDYiY0tORSf+nftygvh3ruL2xmnZGBT6UdG5SwQd1zrMZx+ul4PnlGJBnTiuOTNTlOWiHYlH9ey6ZjeEk8RJ5qJUhDwHtY3aVU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2620
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---wac7ysb48OaltWcw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-On Mon, Oct 05, 2020 at 08:58:33PM +0200, Marcel Holtmann wrote:
-> Hi Greg,
-> 
-> >>>>>>>>>>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
-> >>>>>>>>>>>>>> breaks all bluetooth connections on my machine.
-> >>>>>>>>>>>>>> 
-> >>>>>>>>>>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
-> >>>>>>>>>>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
-> >>>>>>>>>>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
-> >>>>>>>>>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>>>>>>>>>>>>> ---
-> >>>>>>>>>>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
-> >>>>>>>>>>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
-> >>>>>>>>>>>>>> 
-> >>>>>>>>>>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
-> >>>>>>>>>>>>>> stopped working on my desktop system.  I finally got the time to do
-> >>>>>>>>>>>>>> bisection today, and it came down to this patch.  Reverting it on top of
-> >>>>>>>>>>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
-> >>>>>>>>>>>>>> work.
-> >>>>>>>>>>>>>> 
-> >>>>>>>>>>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
-> >>>>>>>>>>>>>> issue?
-> >>>>>>>>>>>>> 
-> >>>>>>>>>>>>> can you be specific what breaks since our guys and I also think the
-> >>>>>>>>>>>>> ChromeOS guys have been testing these series of patches heavily.
-> >>>>>>>>>>>> 
-> >>>>>>>>>>>> My bluetooth trackball does not connect at all.  With this reverted, it
-> >>>>>>>>>>>> all "just works".
-> >>>>>>>>>>>> 
-> >>>>>>>>>>>> Same I think for a Bluetooth headset, can check that again if you really
-> >>>>>>>>>>>> need me to, but the trackball is reliable here.
-> >>>>>>>>>>>> 
-> >>>>>>>>>>>>> When you run btmon does it indicate any errors?
-> >>>>>>>>>>>> 
-> >>>>>>>>>>>> How do I run it and where are the errors displayed?
-> >>>>>>>>>>> 
-> >>>>>>>>>>> you can do btmon -w trace.log and just let it run like tcdpump.
-> >>>>>>>>>> 
-> >>>>>>>>>> Ok, attached.
-> >>>>>>>>>> 
-> >>>>>>>>>> The device is not connecting, and then I open the gnome bluetooth dialog
-> >>>>>>>>>> and it scans for devices in the area, but does not connect to my
-> >>>>>>>>>> existing devices at all.
-> >>>>>>>>>> 
-> >>>>>>>>>> Any ideas?
-> >>>>>>>>> 
-> >>>>>>>>> the trace file is from -rc7 or from -rc7 with this patch reverted?
-> >>>>>>>>> 
-> >>>>>>>>> I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
-> >>>>>>>>> 
-> >>>>>>>>> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-> >>>>>>>>> index e0269192f2e5..94c0daa9f28d 100644
-> >>>>>>>>> --- a/net/bluetooth/hci_request.c
-> >>>>>>>>> +++ b/net/bluetooth/hci_request.c
-> >>>>>>>>> @@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
-> >>>>>>>>>             return -1;
-> >>>>>>>>> 
-> >>>>>>>>>     /* White list can not be used with RPAs */
-> >>>>>>>>> -       if (!allow_rpa && !use_ll_privacy(hdev) &&
-> >>>>>>>>> +       if (!allow_rpa &&
-> >>>>>>>>>         hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
-> >>>>>>>>>             return -1;
-> >>>>>>>>>     }
-> >>>>>>>>> @@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
-> >>>>>>>>>             }
-> >>>>>>>>> 
-> >>>>>>>>>             /* White list can not be used with RPAs */
-> >>>>>>>>> -               if (!allow_rpa && !use_ll_privacy(hdev) &&
-> >>>>>>>>> +               if (!allow_rpa &&
-> >>>>>>>>>                 hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
-> >>>>>>>>>                     return 0x00;
-> >>>>>>>>>             }
-> >>>>>>>>> 
-> >>>>>>>>> 
-> >>>>>>>>> If you just do the above, does thing work for you again?
-> >>>>>>>> 
-> >>>>>>>> Corrupted white-space issues aside, yes, it works!
-> >>>>>>> 
-> >>>>>>> I just pasted it from a different terminal ;)
-> >>>>>>> 
-> >>>>>>>> I am running 5.9-rc8 with just this change on it and my tracball works
-> >>>>>>>> just fine.
-> >>>>>>>> 
-> >>>>>>>>> My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
-> >>>>>>>> 
-> >>>>>>>> How would one go about enabling such a hardware feature if they wanted
-> >>>>>>>> to?  :)
-> >>>>>>> 
-> >>>>>>> I need to understand what is going wrong for you. I have a suspicion,
-> >>>>>>> but first I need to understand what kind of device you have. I hope
-> >>>>>>> the trace file is enough.
-> >>>>>> 
-> >>>>>> If you need any other information, just let me know, this is a USB
-> >>>>>> Bluetooth controller from Intel:
-> >>>>>> 
-> >>>>>> 	$ lsusb | grep Blue
-> >>>>>> 	Bus 009 Device 002: ID 8087:0029 Intel Corp. AX200 Bluetooth
-> >>>>>> 
-> >>>>>> And the output of usb-devices for it:
-> >>>>>> 	T:  Bus=09 Lev=01 Prnt=01 Port=04 Cnt=01 Dev#=  2 Spd=12  MxCh= 0
-> >>>>>> 	D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-> >>>>>> 	P:  Vendor=8087 ProdID=0029 Rev=00.01
-> >>>>>> 	C:  #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-> >>>>>> 	I:  If#=0x0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> >>>>>> 	I:  If#=0x1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> >>>>> 
-> >>>>> I already figured out that it is one of our controllers. The trace file gives it away.
-> >>>>> 
-> >>>>> So my suspicion is that the device you want to connect to uses RPA (aka random addresses). And we added support for resolving them in the firmware. Your hardware does support that, but the host side is not fully utilizing it and thus your device is filtered out.
-> >>>> 
-> >>>> Dude, get an email client that line-wraps :)
-> >>>> 
-> >>>>> If I am not mistaken, then the use_ll_privacy() check in these two specific places need to be replaced with LL Privacy Enabled check. And then the allow_rpa condition will do its job as expected.
-> >>>>> 
-> >>>>> We can confirm this if you send me a trace with the patch applied.
-> >>>> 
-> >>>> Want me to disconnect the device and then reconnect it using
-> >>>> bluetootctl?  I'll go do that now...
-> >>>> 
-> >>>> Ok, it's attached, I did:
-> >>>> 
-> >>>> $ bluetoothctl disconnect F1:85:91:79:73:70
-> >>>> Attempting to disconnect from F1:85:91:79:73:70
-> >>>> [CHG] Device F1:85:91:79:73:70 ServicesResolved: no
-> >>>> Successful disconnected
-> >>>> 
-> >>>> And then the gnome bluetooth daemon (or whatever it has) reconnected it
-> >>>> automatically, so you can see the connection happen, and some movements
-> >>>> in the log.
-> >>>> 
-> >>>> If there's anything else you need, just let me know.
-> >>> 
-> >>> so the trace file indicates that you are using static addresses and not RPAs. Now I am confused.
-> >>> 
-> >>> What is the content of /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys?
-> >> 
-> >> f1:85:91:79:73:70 (type 1) f02567096e8537e5dac1cadf548fa750 00:00:00:00:00:00
-> > 
-> > I rebooted, and the same value was there.
-> > 
-> >>> The only way I can explain this if you have an entry in that file, but the device is not using it.
-> >>> 
-> >>> If you have btmgmt (from bluez.git) you can try "./tools/btmgmt irks” to clear that list and try again.
-> >> 
-> >> Ok, I did that, and reconnected, this is still with the kernel that has
-> >> the patch.  Want me to reboot to a "clean" 5.9-rc8?
-> > 
-> > I rebooted into a clean 5.9-rc8 and the device does not connect.
-> > 
-> > So I did the following to trace this:
-> > 
-> > $ sudo btmgmt irks
-> > Identity Resolving Keys successfully loaded
-> > $ sudo cat /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys
-> > $ bluetoothctl connect F1:85:91:79:73:70
-> > Attempting to connect to F1:85:91:79:73:70
-> > Failed to connect: org.bluez.Error.Failed
-> > 
-> > and ran another btmon session to see this, it is attached.
-> 
-> this is confusing and makes no sense :(
-> 
-> What is the content of debug/bluetooth/hci0/whitelist and
-
-# cat white_list
-f1:85:91:79:73:70 (type 1)
-
-> debug/bluetooth/hci0/device_list?
-
-# cat device_list
-2c:41:a1:4d:f2:2c (type 0)
-f1:85:91:79:73:70 (type 1) 3
-
-> The only way I can explain this is that somehow the whitelist filter doesn’t
-> get programmed correctly and thus the scan will not find your device. Why
-> this points to use_ll_privacy() is totally unclear to me.
-> 
-> Btw. reboots won’t help since bluetoothd will restore from settings. You
-> need to go into the files in /var/lib/bluetooth/ and look for an entry of
-> IdentityResolvingKey for your device and remove it and then restart
-> bluetoothd.
-
-I see that entry in there, let me remove it...
-
-> You can run btmon and will even show you what bluetoothd loads during start.
-> 
-> Can you try to do systemctl stop bluetooth, then start btmon and then
-> systemctl start bluetooth. It should reprogram the controller and I could
-> see the complete trace on how it sets up your hardware.
-
-Ok, I remove the entry for IdentityResolvingKey and restarted bluetoothd
-and now it works on a clean 5.9-rc8!
-
-I'll stop it again and run the monitor and attach it below when it
-starts back up.
-
-Ah, I did just that, and it did not connect this time.  Attached is the
-trace.  No IdentityResolvingKey entries anywhere...
-
-> If this really breaks for your, it should have been broken for weeks for
-> everybody. So this is the part that is confusing to me. And my original
-> suspicion turned out to be wrong.
-
-Some bluetoothd interaction?
-
-thanks,
-
-greg k-h
-
---wac7ysb48OaltWcw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="trace.log"
-Content-Transfer-Encoding: quoted-printable
-
-btsnoop=00=00=00=00=01=00=00=07=D1=00=00=00!=00=00=00!=FF=FF=00=0C=00=00=00=
-=00=00=E2=8E=C7=A5=AA=A88Linux version 5.9.0-rc8 (x86_64)=00=00=00=00!=00=
-=00=00!=FF=FF=00=0C=00=00=00=00=00=E2=8E=C7=A5=AA=A8:Bluetooth subsystem ve=
-rsion 2.22=00=00=00=00=10=00=00=00=10=00=00=00=00=00=00=00=00=00=E2=8E=C7=
-=A5=AA=A8;=00=01pe=F6=85=E0Phci0=00=00=00=00=00=00=00#=00=00=00#=FF=FF=00=
-=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA#=06=0Bbluetoothd=00Bluetooth daemon 5.=
-55=00=00=00=00|=00=00=00|=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA|=04=
-=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not have=
- key =E2=80=9CBRPageScanType=E2=80=9D in group =E2=80=9CController=E2=80=9D=
-=00=00=00=00=80=00=00=00=80=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=89=
-=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
-ave key =E2=80=9CBRPageScanInterval=E2=80=9D in group =E2=80=9CController=
-=E2=80=9D=00=00=00=00~=00=00=00~=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=
-=FA=93=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does=
- not have key =E2=80=9CBRPageScanWindow=E2=80=9D in group =E2=80=9CControll=
-er=E2=80=9D=00=00=00=00=7F=00=00=00=7F=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
-=A6=01=FA=9C=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key fil=
-e does not have key =E2=80=9CBRInquiryScanType=E2=80=9D in group =E2=80=9CC=
-ontroller=E2=80=9D=00=00=00=00=83=00=00=00=83=FF=FF=00=0D=00=00=00=00=00=E2=
-=8E=C7=A6=01=FA=A5=04=0Bbluetoothd=00src/main.c:parse_controller_config() K=
-ey file does not have key =E2=80=9CBRInquiryScanInterval=E2=80=9D in group =
-=E2=80=9CController=E2=80=9D=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=00=
-=00=00=00=E2=8E=C7=A6=01=FA=AF=04=0Bbluetoothd=00src/main.c:parse_controlle=
-r_config() Key file does not have key =E2=80=9CBRInquiryScanWindow=E2=80=9D=
- in group =E2=80=9CController=E2=80=9D=00=00=00=00=86=00=00=00=86=FF=FF=00=
-=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=B8=04=0Bbluetoothd=00src/main.c:parse_=
-controller_config() Key file does not have key =E2=80=9CBRLinkSupervisionTi=
-meout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00{=00=00=00{=
-=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=C1=04=0Bbluetoothd=00src/main=
-=2Ec:parse_controller_config() Key file does not have key =E2=80=9CBRPageTi=
-meout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=80=00=00=
-=00=80=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=CB=04=0Bbluetoothd=00sr=
-c/main.c:parse_controller_config() Key file does not have key =E2=80=9CBRMi=
-nSniffInterval=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=
-=80=00=00=00=80=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=D4=04=0Bblueto=
-othd=00src/main.c:parse_controller_config() Key file does not have key =E2=
-=80=9CBRMaxSniffInterval=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=
-=00=00=00=88=00=00=00=88=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=DD=04=
-=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not have=
- key =E2=80=9CLEMinAdvertisementInterval=E2=80=9D in group =E2=80=9CControl=
-ler=E2=80=9D=00=00=00=00=88=00=00=00=88=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
-=A6=01=FA=E6=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key fil=
-e does not have key =E2=80=9CLEMaxAdvertisementInterval=E2=80=9D in group =
-=E2=80=9CController=E2=80=9D=00=00=00=00=92=00=00=00=92=FF=FF=00=0D=00=00=
-=00=00=00=E2=8E=C7=A6=01=FA=EF=04=0Bbluetoothd=00src/main.c:parse_controlle=
-r_config() Key file does not have key =E2=80=9CLEMultiAdvertisementRotation=
-Interval=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=87=00=
-=00=00=87=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=F8=04=0Bbluetoothd=
-=00src/main.c:parse_controller_config() Key file does not have key =E2=80=
-=9CLEScanIntervalAutoConnect=E2=80=9D in group =E2=80=9CController=E2=80=9D=
-=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB=01=
-=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
-ave key =E2=80=9CLEScanWindowAutoConnect=E2=80=9D in group =E2=80=9CControl=
-ler=E2=80=9D=00=00=00=00=83=00=00=00=83=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
-=A6=01=FB
-=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
-ave key =E2=80=9CLEScanIntervalSuspend=E2=80=9D in group =E2=80=9CControlle=
-r=E2=80=9D=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
-=A6=01=FB=13=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key fil=
-e does not have key =E2=80=9CLEScanWindowSuspend=E2=80=9D in group =E2=80=
-=9CController=E2=80=9D=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=
-=00=E2=8E=C7=A6=01=FB=1D=04=0Bbluetoothd=00src/main.c:parse_controller_conf=
-ig() Key file does not have key =E2=80=9CLEScanIntervalDiscovery=E2=80=9D i=
-n group =E2=80=9CController=E2=80=9D=00=00=00=00=83=00=00=00=83=FF=FF=00=0D=
-=00=00=00=00=00=E2=8E=C7=A6=01=FB%=04=0Bbluetoothd=00src/main.c:parse_contr=
-oller_config() Key file does not have key =E2=80=9CLEScanWindowDiscovery=E2=
-=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=86=00=00=00=86=FF=
-=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB.=04=0Bbluetoothd=00src/main.c:pa=
-rse_controller_config() Key file does not have key =E2=80=9CLEScanIntervalA=
-dvMonitor=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=84=00=
-=00=00=84=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB6=04=0Bbluetoothd=00s=
-rc/main.c:parse_controller_config() Key file does not have key =E2=80=9CLES=
-canWindowAdvMonitor=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=
-=00=83=00=00=00=83=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB?=04=0Bbluet=
-oothd=00src/main.c:parse_controller_config() Key file does not have key =E2=
-=80=9CLEScanIntervalConnect=E2=80=9D in group =E2=80=9CController=E2=80=9D=
-=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FBG=
-=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
-ave key =E2=80=9CLEScanWindowConnect=E2=80=9D in group =E2=80=9CController=
-=E2=80=9D=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=
-=01=FBP=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file doe=
-s not have key =E2=80=9CLEMinConnectionInterval=E2=80=9D in group =E2=80=9C=
-Controller=E2=80=9D=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=00=
-=E2=8E=C7=A6=01=FBY=04=0Bbluetoothd=00src/main.c:parse_controller_config() =
-Key file does not have key =E2=80=9CLEMaxConnectionInterval=E2=80=9D in gro=
-up =E2=80=9CController=E2=80=9D=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=
-=00=00=00=00=E2=8E=C7=A6=01=FBq=04=0Bbluetoothd=00src/main.c:parse_controll=
-er_config() Key file does not have key =E2=80=9CLEConnectionLatency=E2=80=
-=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=8C=00=00=00=8C=FF=FF=
-=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FBz=04=0Bbluetoothd=00src/main.c:parse=
-_controller_config() Key file does not have key =E2=80=9CLEConnectionSuperv=
-isionTimeout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=82=
-=00=00=00=82=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB=83=04=0Bbluetooth=
-d=00src/main.c:parse_controller_config() Key file does not have key =E2=80=
-=9CLEAutoconnecttimeout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=
-=00=00=00=1E=00=00=00=1E=FF=FF=00=0E=00=00=00=00=00=E2=8E=C7=A6=01=FFa=01=
-=00=00=00=02=00=01=12=00=01=00=00=00=10bluetoothd=00=00=00=00=00=00=00=00=
-=00!=00=00=00!=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FF=A6=06=0Bbluetoo=
-thd=00Starting SDP server=00=00=00=00=06=00=00=00=06=FF=FF=00=10=00=00=00=
-=00=00=E2=8E=C7=A6=02=0B=94=01=00=00=00=01=00=00=00=00=0C=00=00=00=0C=FF=FF=
-=00=11=00=00=00=00=00=E2=8E=C7=A6=02=0B=9A=01=00=00=00=01=00=01=00=00=01=12=
-=00=00=00=00=3D=00=00=00=3D=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02=0B=F1=
-=06=0Bbluetoothd=00Bluetooth management interface 1.18 initialized=00=00=00=
-=00=06=00=00=00=06=FF=FF=00=10=00=00=00=00=00=E2=8E=C7=A6=02=0B=C2=01=00=00=
-=00=02=00=00=00=00=F7=00=00=00=F7=FF=FF=00=11=00=00=00=00=00=E2=8E=C7=A6=02=
-=0B=C4=01=00=00=00=01=00=02=00=00O=00&=00=03=00=04=00=05=00=06=00=07=00=08=
-=00	=00
-=00=0B=00=0C=00=0D=00=0E=00=0F=00=10=00=11=00=12=00=13=00=14=00=15=00=16=00=
-=17=00=18=00=19=00=1A=00=1B=00=1C=00=1D=00=1E=00=1F=00 =00!=00"=00#=00$=00%=
-=00&=00'=00(=00)=00*=00+=00,=00-=00.=00/=000=001=002=003=004=005=006=007=00=
-8=009=00:=00;=00<=00=3D=00>=00?=00@=00A=00B=00C=00F=00G=00H=00I=00J=00K=00L=
-=00M=00N=00O=00P=00Q=00R=00S=00=03=00=04=00=05=00=06=00=07=00=08=00	=00
-=00=0B=00=0C=00=0D=00=0E=00=0F=00=10=00=11=00=12=00=13=00=14=00=15=00=16=00=
-=17=00=18=00=19=00=1A=00=1B=00=1C=00=1D=00=1E=00=1F=00 =00!=00"=00#=00$=00%=
-=00&=00'=00*=00=00=00=00=06=00=00=00=06=FF=FF=00=10=00=00=00=00=00=E2=8E=C7=
-=A6=02=0B=D0=01=00=00=00=03=00=00=00=00=0D=00=00=00=0D=FF=FF=00=11=00=00=00=
-=00=00=E2=8E=C7=A6=02=0B=D2=01=00=00=00=01=00=03=00=00=01=00=00=00=00=00=00=
-=06=00=00=00=06=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=0B=E0=01=00=00=00=
-=04=00=00=00=01!=00=00=01!=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=0B=E2=
-=01=00=00=00=01=00=04=00=00pe=F6=85=E0P
-=02=00=FF=FF=03=00=CA
-=00=00=00=00=00thread=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=16=00=00=00=16=00=00=00=10=00=00=
-=00=00=00=E2=8E=C7=A6=02=10=C9=01=00=00=00=11=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=
-=8E=C7=A6=02=10=D2=01=00=00=00=01=00=11=00=00=00=00=00=00=00=00=0D=00=00=00=
-=0D=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=10=E7=01=00=00=004=00=00=00=
-=00=00=00=00=00=00=00=00=10=00=00=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=
-=A6=02=10=EE=01=00=00=00=01=004=00=00=00=00=00=00=00=00=00=00=00=00=17=00=
-=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=04=01=00=00=00/=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=0D=00=00=00=0D=
-=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=06=01=00=00=00=01=00/=00=00=CA
-=00=00=00=00=00=06=00=00=00=06=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=
-=1C=01=00=00=00I=00=00=00=003=00=00=003=00=00=00=11=00=00=00=00=00=E2=8E=C7=
-=A6=02=11=1E=01=00=00=00=01=00I=00=00=02=00=D6I=B0=D1(=EB'=92=96F=C0B=B5=10=
-=1Bg=00=00=00=00=04=00=13=ACB=02=DE=B3=EA=11s=C2H=A1=C0=15=02=00=00=00=00=
-=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=114=01=00=
-=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=00=18=00=00=00=00=00=00=0C=00=
-=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=116=01=00=00=00=01=00=
-=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=
-=C7=A6=02=11N=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=01=18=00=00=
-=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11P=
-=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=
-=00=00=00=00=E2=8E=C7=A6=02=11g=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=
-=00=00
-=18=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=
-=02=11i=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=06=00=00=00=06=00=00=
-=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=81=01=00=00=00=3D=00=00=00=00=11=00=
-=00=00=11=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=83=01=00=00=00=01=00=
-=3D=00=00=FF=03=00=00=1F=1F=05=00=00=00=00=08=00=00=00=08=00=00=00=10=00=00=
-=00=00=00=E2=8E=C7=A6=02=11=9B=01=00=00=00=0E=00=01=04=00=00=00=0C=00=00=00=
-=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=9C=01=00=00=00=01=00=0E=00=
-=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=
-=02=11=B3=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=0E=11=00=00=00=
-=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=B5=01=
-=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=
-=00=00=00=E2=8E=C7=A6=02=11=CC=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=
-=00=00=0C=11=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=
-=8E=C7=A6=02=11=CD=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=0D=00=00=00=
-=0D=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=E4=01=00=00=00'=00=00=00=
-=00=00=00=00=00=00=00=00=10=00=00=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=
-=A6=02=11=E7=01=00=00=00=01=00'=00=00=00=00=00=00=00=00=00=00=00=00=0E=00=
-=00=00=0E=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=FE=01=00=00=003=00,=
-=F2M=A1A,=00=01=00=00=00=15=00=00=00=15=00=00=00=11=00=00=00=00=00=E2=8E=C7=
-=A6=02=12=02=01=00=00=00*=00,=F2M=A1A,=00=01=00=00=00=00=00=00=00=00=00=00=
-=10=00=00=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=04=01=00=00=00=
-=01=003=00=00,=F2M=A1A,=00=00=00=00"=00=00=00"=00=00=00=10=00=00=00=00=00=
-=E2=8E=C7=A6=02=12(=01=00=00=00=12=00=00=01=00,=F2M=A1A,=00=04M=B6=80=A6=F8=
-=EA=1D=17=83R=0Ct=B1=A8*=F7=00=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=
-=00=E2=8E=C7=A6=02=12,=01=00=00=00=01=00=12=00=00=00=00=00,=00=00=00,=00=00=
-=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12C=01=00=00=00=13=00=01=00psy=91=85=
-=F1=02=00=01=10=A1C=D1=FD=EES=CE=A1=981=EDA=88:=A4=F9+~,G=B8=D5=0C]$\=00=00=
-=00	=00=00=00	=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12D=01=00=00=00=01=
-=00=13=00=00=00=00=00=08=00=00=00=08=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=
-=02=12\=01=00=00=000=00=00=00=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=
-=00=E2=8E=C7=A6=02=12^=01=00=00=00=01=000=00=00=00=00=00=17=00=00=00=17=00=
-=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12t=01=00=00=005=00=01=00psy=91=85=
-=F1=02=06=00	=00,=00=D8=00=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=00=
-=E2=8E=C7=A6=02=12v=01=00=00=00=01=005=00=00=00=00=00=0E=00=00=00=0E=00=00=
-=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12=8C=01=00=00=003=00psy=91=85=F1=02=
-=02=00=00=00=15=00=00=00=15=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=90=
-=01=00=00=00*=00psy=91=85=F1=02=01=00=00=00=00=00=00=00=00=00=00=10=00=00=
-=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=91=01=00=00=00=01=003=
-=00=00psy=91=85=F1=02=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=
-=8E=C7=A6=02=12=B4=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=00=12=
-=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=
-=12=B6=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=0E=00=00=00=0E=00=00=00=
-=10=00=00=00=00=00=E2=8E=C7=A6=02=12=CD=01=00=00=00(=00=02=00k=1DF=027=05=
-=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=CF=01=00=
-=00=00=01=00(=00=00=00=00=00=08=00=00=00=08=00=00=00=10=00=00=00=00=00=E2=
-=8E=C7=A6=02=12=E5=01=00=00=00=0E=00=01=04=00=00=00=0C=00=00=00=0C=00=00=00=
-=11=00=00=00=00=00=E2=8E=C7=A6=02=12=E7=01=00=00=00=01=00=0E=00=00=00=00=00=
-=00=00=01
-=00=00=01
-=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12=FE=01=00=00=00=0F=00BlueZ 5.5=
-5=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=01=0D=00=00=01=0D=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=13=00=
-=01=00=00=00=01=00=0F=00=00BlueZ 5.55=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00*=00=00=00*=00=00=00=10=00=
-=00=00=00=00=E2=8E=C7=A6=02=13=1B=01=00=00=00F=00=02=00=01=BF=01=FB=9DN=F3=
-=BC6=D8t=F59A8hL=02=A5=99=BA=E4=E1|=A6=18"=8E=07V=B4=E8_=01=00=00=00	=00=00=
-=00	=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=13=1D=01=00=00=00=01=00F=00=
-=00=00=00=00=07=00=00=00=07=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=133=
-=01=00=00=00=07=00=00=00=00=00=0D=00=00=00=0D=00=00=00=11=00=00=00=00=00=E2=
-=8E=C7=A6=02=135=01=00=00=00=01=00=07=00=00=C0
-=00=00=00=00=00=07=00=00=00=07=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02%=
-=0C=01=00=00=00=07=00=01=00=00=00=0D=00=00=00=0D=00=00=00=11=00=00=00=00=00=
-=E2=8E=C7=A6=02%=15=01=00=00=00=01=00=07=00=00=C2
-=00=00=00=00=00	=00=00=00	=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02%.=01=
-=00=00=00=06=00=01=00=00=00=00=00=0D=00=00=00=0D=00=00=00=11=00=00=00=00=00=
-=E2=8E=C7=A6=02%0=01=00=00=00=01=00=06=00=00=CA
-=00=00=00=00=00=11=00=00=00=11=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=024[=
-=01=00=00=00P=00psy=91=85=F1=02=01=00=00=00=00=00=00=10=00=00=00=10=00=00=
-=00=11=00=00=00=00=00=E2=8E=C7=A6=024f=01=00=00=00=01=00P=00=00psy=91=85=F1=
-=02=00=00=00Z=00=00=00Z=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02Xh=06=0Bbl=
-uetoothd=00Endpoint registered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSo=
-urce/VENDOR/LDAC=00=00=00=00\=00=00=00\=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
-=A6=02X=89=06=0Bbluetoothd=00Endpoint registered: sender=3D:1.76 path=3D/Me=
-diaEndpoint/A2DPSource/VENDOR/APTXHD=00=00=00=00Z=00=00=00Z=FF=FF=00=0D=00=
-=00=00=00=00=E2=8E=C7=A6=02X=94=06=0Bbluetoothd=00Endpoint registered: send=
-er=3D:1.76 path=3D/MediaEndpoint/A2DPSource/VENDOR/APTX=00=00=00=00R=00=00=
-=00R=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02X=9D=06=0Bbluetoothd=00Endpoi=
-nt registered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSource/AAC=00=00=00=
-=00R=00=00=00R=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02X=A6=06=0Bbluetooth=
-d=00Endpoint registered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSource/SB=
-C=00=00=00=00Z=00=00=00Z=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02X=D5=06=
-=0Bbluetoothd=00Endpoint registered: sender=3D:1.76 path=3D/MediaEndpoint/A=
-2DPSink/VENDOR/APTXHD=00=00=00=00X=00=00=00X=FF=FF=00=0D=00=00=00=00=00=E2=
-=8E=C7=A6=02X=EB=06=0Bbluetoothd=00Endpoint registered: sender=3D:1.76 path=
-=3D/MediaEndpoint/A2DPSink/VENDOR/APTX=00=00=00=00P=00=00=00P=FF=FF=00=0D=
-=00=00=00=00=00=E2=8E=C7=A6=02Y=01=06=0Bbluetoothd=00Endpoint registered: s=
-ender=3D:1.76 path=3D/MediaEndpoint/A2DPSink/AAC=00=00=00=00P=00=00=00P=FF=
-=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02Y=18=06=0Bbluetoothd=00Endpoint regi=
-stered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSink/SBC=00=00=00=00=17=00=
-=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02Y=E4=01=00=00=00=10=00=
-=FB4=9B_=80=00=00=80=00=10=00=00
-=11=00=00=08=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=
-=02Y=EB=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=
-=00=10=00=00=00=00=00=E2=8E=C7=A6=02Z=05=01=00=00=00=10=00=FB4=9B_=80=00=00=
-=80=00=10=00=00=0B=11=00=00=04=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=
-=00=00=E2=8E=C7=A6=02Z=06=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=
-=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02Z=1C=01=00=00=00=10=
-=00=FB4=9B_=80=00=00=80=00=10=00=00=12=11=00=00=00=00=00=00=0C=00=00=00=0C=
-=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02Z=1E=01=00=00=00=01=00=10=00=00=
-=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=
-Z7=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=08=11=00=00 =00=00=00=
-=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02Z9=01=00=00=00=01=
-=00=10=00=00=00=00=00=00=00=01
-=00=00=01
-=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=05f=00=01=00=00=00=0F=00thread=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=01=0D=00=00=01=0D=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=05=
-f=0C=01=00=00=00=01=00=0F=00=00thread=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00
---wac7ysb48OaltWcw--
+SGkgTWljaGFsLA0KDQpUaGFua3MgYWdhaW4gZm9yIHRoZSBmZWVkYmFjay4gSSByZXBsaWVkIGlu
+bGluZQ0KDQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5Gcm9tOiBNaWNoYWwgU2ltZWsg
+PG1pY2hhbC5zaW1la0B4aWxpbnguY29tPg0KPlNlbnQ6IFdlZG5lc2RheSwgT2N0b2JlciA3LCAy
+MDIwIDQ6MzQgUE0NCj5UbzogWnVsa2lmbGksIE11aGFtbWFkIEh1c2FpbmkgPG11aGFtbWFkLmh1
+c2FpbmkuenVsa2lmbGlAaW50ZWwuY29tPjsNCj5IdW50ZXIsIEFkcmlhbiA8YWRyaWFuLmh1bnRl
+ckBpbnRlbC5jb20+OyBtaWNoYWwuc2ltZWtAeGlsaW54LmNvbTsNCj5zdWRlZXAuaG9sbGFAYXJt
+LmNvbTsgdWxmLmhhbnNzb25AbGluYXJvLm9yZzsgbGludXgtbW1jQHZnZXIua2VybmVsLm9yZzsN
+Cj5saW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmcNCj5DYzogUmFqYSBTdWJyYW1hbmlhbiwgTGFrc2htaSBCYWkgPGxha3NobWku
+YmFpLnJhamEuc3VicmFtYW5pYW5AaW50ZWwuY29tPjsNCj5XYW4gTW9oYW1hZCwgV2FuIEFobWFk
+IFphaW5pZQ0KPjx3YW4uYWhtYWQuemFpbmllLndhbi5tb2hhbWFkQGludGVsLmNvbT47IGFybmRA
+YXJuZGIuZGUNCj5TdWJqZWN0OiBSZTogW1BBVENIIHYzIDEvMl0gbW1jOiBzZGhjaS1vZi1hcmFz
+YW46IEVuYWJsZSBVSFMtMSBzdXBwb3J0IGZvcg0KPktlZW0gQmF5IFNPQw0KPg0KPg0KPg0KPk9u
+IDA2LiAxMC4gMjAgMTc6NTUsIG11aGFtbWFkLmh1c2FpbmkuenVsa2lmbGlAaW50ZWwuY29tIHdy
+b3RlOg0KPj4gRnJvbTogTXVoYW1tYWQgSHVzYWluaSBadWxraWZsaSA8bXVoYW1tYWQuaHVzYWlu
+aS56dWxraWZsaUBpbnRlbC5jb20+DQo+Pg0KPj4gVm9sdGFnZSBzd2l0Y2hpbmcgc2VxdWVuY2Ug
+aXMgbmVlZGVkIHRvIHN1cHBvcnQgVUhTLTEgaW50ZXJmYWNlLg0KPj4gVGhlcmUgYXJlIDIgcGxh
+Y2VzIHRvIGNvbnRyb2wgdGhlIHZvbHRhZ2UuDQo+PiAxKSBCeSBzZXR0aW5nIHRoZSBBT04gcmVn
+aXN0ZXIgdXNpbmcgZmlybXdhcmUgZHJpdmVyIGNhbGxpbmcNCj4+IHN5c3RlbS1sZXZlbCBwbGF0
+Zm9ybSBtYW5hZ2VtZW50IGxheWVyIChTTUMpIHRvIHNldCB0aGUgcmVnaXN0ZXIuDQo+PiAyKSBC
+eSBjb250cm9sbGluZyB0aGUgR1BJTyBleHBhbmRlciB2YWx1ZSB0byBkcml2ZSBlaXRoZXIgMS44
+ViBvciAzLjNWDQo+PiBmb3IgcG93ZXIgbXV4IGlucHV0Lg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6
+IE11aGFtbWFkIEh1c2FpbmkgWnVsa2lmbGkNCj4+IDxtdWhhbW1hZC5odXNhaW5pLnp1bGtpZmxp
+QGludGVsLmNvbT4NCj4+IFJldmlld2VkLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2
+Y2hlbmtvQGludGVsLmNvbT4NCj4+IFJldmlld2VkLWJ5OiBBZHJpYW4gSHVudGVyIDxhZHJpYW4u
+aHVudGVyQGludGVsLmNvbT4NCj4+IC0tLQ0KPj4gIGRyaXZlcnMvbW1jL2hvc3Qvc2RoY2ktb2Yt
+YXJhc2FuLmMgfCAxMjcNCj4+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+PiAgMSBm
+aWxlIGNoYW5nZWQsIDEyNyBpbnNlcnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbW1jL2hvc3Qvc2RoY2ktb2YtYXJhc2FuLmMNCj4+IGIvZHJpdmVycy9tbWMvaG9zdC9zZGhj
+aS1vZi1hcmFzYW4uYw0KPj4gaW5kZXggZjE4NmZiZDAxNmIxLi5lNjgxZTZmODYwYmEgMTAwNjQ0
+DQo+PiAtLS0gYS9kcml2ZXJzL21tYy9ob3N0L3NkaGNpLW9mLWFyYXNhbi5jDQo+PiArKysgYi9k
+cml2ZXJzL21tYy9ob3N0L3NkaGNpLW9mLWFyYXNhbi5jDQo+PiBAQCAtMTYsNiArMTYsNyBAQA0K
+Pj4gICAqLw0KPj4NCj4+ICAjaW5jbHVkZSA8bGludXgvY2xrLXByb3ZpZGVyLmg+DQo+PiArI2lu
+Y2x1ZGUgPGxpbnV4L2dwaW8vY29uc3VtZXIuaD4NCj4+ICAjaW5jbHVkZSA8bGludXgvbWZkL3N5
+c2Nvbi5oPg0KPj4gICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4+ICAjaW5jbHVkZSA8bGlu
+dXgvb2ZfZGV2aWNlLmg+DQo+PiBAQCAtMjMsNiArMjQsNyBAQA0KPj4gICNpbmNsdWRlIDxsaW51
+eC9yZWdtYXAuaD4NCj4+ICAjaW5jbHVkZSA8bGludXgvb2YuaD4NCj4+ICAjaW5jbHVkZSA8bGlu
+dXgvZmlybXdhcmUveGxueC16eW5xbXAuaD4NCj4+ICsjaW5jbHVkZSA8bGludXgvZmlybXdhcmUv
+aW50ZWwva2VlbWJheV9maXJtd2FyZS5oPg0KPj4NCj4+ICAjaW5jbHVkZSAiY3FoY2kuaCINCj4+
+ICAjaW5jbHVkZSAic2RoY2ktcGx0Zm0uaCINCj4+IEBAIC0xNTAsNiArMTUyLDcgQEAgc3RydWN0
+IHNkaGNpX2FyYXNhbl9kYXRhIHsNCj4+ICAJc3RydWN0IHJlZ21hcAkqc29jX2N0bF9iYXNlOw0K
+Pj4gIAljb25zdCBzdHJ1Y3Qgc2RoY2lfYXJhc2FuX3NvY19jdGxfbWFwICpzb2NfY3RsX21hcDsN
+Cj4+ICAJdW5zaWduZWQgaW50CXF1aXJrczsNCj4+ICsJc3RydWN0IGdwaW9fZGVzYyAqdWhzX2dw
+aW87DQo+Pg0KPj4gIC8qIENvbnRyb2xsZXIgZG9lcyBub3QgaGF2ZSBDRCB3aXJlZCBhbmQgd2ls
+bCBub3QgZnVuY3Rpb24gbm9ybWFsbHkgd2l0aG91dA0KPiovDQo+PiAgI2RlZmluZSBTREhDSV9B
+UkFTQU5fUVVJUktfRk9SQ0VfQ0RURVNUCUJJVCgwKQ0KPj4gQEAgLTM2MSw2ICszNjQsMTEzIEBA
+IHN0YXRpYyBpbnQgc2RoY2lfYXJhc2FuX3ZvbHRhZ2Vfc3dpdGNoKHN0cnVjdA0KPm1tY19ob3N0
+ICptbWMsDQo+PiAgCXJldHVybiAtRUlOVkFMOw0KPj4gIH0NCj4+DQo+PiArc3RhdGljIGludCBz
+ZGhjaV9hcmFzYW5fa2VlbWJheV92b2x0YWdlX3N3aXRjaChzdHJ1Y3QgbW1jX2hvc3QgKm1tYywN
+Cj4+ICsJCQkJICAgICAgIHN0cnVjdCBtbWNfaW9zICppb3MpDQo+PiArew0KPj4gKwlzdHJ1Y3Qg
+c2RoY2lfaG9zdCAqaG9zdCA9IG1tY19wcml2KG1tYyk7DQo+PiArCXN0cnVjdCBzZGhjaV9wbHRm
+bV9ob3N0ICpwbHRmbV9ob3N0ID0gc2RoY2lfcHJpdihob3N0KTsNCj4+ICsJc3RydWN0IHNkaGNp
+X2FyYXNhbl9kYXRhICpzZGhjaV9hcmFzYW4gPQ0KPnNkaGNpX3BsdGZtX3ByaXYocGx0Zm1faG9z
+dCk7DQo+PiArCXUxNiBjdHJsXzI7DQo+PiArCXUxNiBjbGs7DQo+DQo+bml0OiBwdXQgaXQgdG8g
+b25lIGxpbmUuDQpOb3RlZC4gRG9uZSB0aGUgY2hhbmdlcy4NCj4NCj4+ICsJaW50IHJldDsNCj4+
+ICsNCj4+ICsJc3dpdGNoIChpb3MtPnNpZ25hbF92b2x0YWdlKSB7DQo+PiArCWNhc2UgTU1DX1NJ
+R05BTF9WT0xUQUdFXzE4MDoNCj4+ICsJCWNsayAgPSBzZGhjaV9yZWFkdyhob3N0LCBTREhDSV9D
+TE9DS19DT05UUk9MKTsNCj4NCj5uaXQ6IGRvdWJsZSBzcGFjZQ0KTm90ZWQuIERvbmUgdGhlIGNo
+YW5nZXMuDQo+DQo+PiArCQljbGsgJj0gflNESENJX0NMT0NLX0NBUkRfRU47DQo+PiArCQlzZGhj
+aV93cml0ZXcoaG9zdCwgY2xrLCBTREhDSV9DTE9DS19DT05UUk9MKTsNCj4+ICsNCj4+ICsJCWNs
+ayAgPSBzZGhjaV9yZWFkdyhob3N0LCBTREhDSV9DTE9DS19DT05UUk9MKTsNCj4NCj5uaXQ6IGRv
+dWJsZSBzcGFjZSBhZ2Fpbi4NCk5vdGVkLiBEb25lIHRoZSBjaGFuZ2VzLg0KPg0KPj4gKwkJaWYg
+KGNsayAmIFNESENJX0NMT0NLX0NBUkRfRU4pDQo+PiArCQkJcmV0dXJuIC1FQUdBSU47DQo+PiAr
+DQo+PiArCQlzZGhjaV93cml0ZWIoaG9zdCwgU0RIQ0lfUE9XRVJfT04gfCBTREhDSV9QT1dFUl8x
+ODAsDQo+PiArCQkJCSAgIFNESENJX1BPV0VSX0NPTlRST0wpOw0KPj4gKw0KPj4gKwkJLyoNCj4+
+ICsJCSAqIFNldCBWRERJT19CIHZvbHRhZ2UgdG8gTG93IGZvciAxLjhWDQo+PiArCQkgKiB3aGlj
+aCBpcyBjb250cm9sbGluZyBieSBHUElPIEV4cGFuZGVyLg0KPj4gKwkJICovDQo+PiArCQlncGlv
+ZF9zZXRfdmFsdWVfY2Fuc2xlZXAoc2RoY2lfYXJhc2FuLT51aHNfZ3BpbywgMCk7DQo+PiArDQo+
+PiArCQkvKg0KPj4gKwkJICogVGhpcyBpcyBsaWtlIGZpbmFsIGdhdGVrZWVwZXIuIE5lZWQgdG8g
+ZW5zdXJlIGNoYW5nZWQgdm9sdGFnZQ0KPj4gKwkJICogaXMgc2V0dGxlZCBiZWZvcmUgYW5kIGFm
+dGVyIHR1cm4gb24gdGhpcyBiaXQuDQo+PiArCQkgKi8NCj4+ICsJCXVzbGVlcF9yYW5nZSgxMDAw
+LCAxMTAwKTsNCj4+ICsNCj4+ICsJCXJldCA9DQo+a2VlbWJheV9zZF92b2x0YWdlX3NlbGVjdGlv
+bihLRUVNQkFZX1NFVF8xVjhfVk9MVCk7DQo+PiArCQlpZiAocmV0KQ0KPj4gKwkJCXJldHVybiBy
+ZXQ7DQo+PiArDQo+PiArCQl1c2xlZXBfcmFuZ2UoMTAwMCwgMTEwMCk7DQo+PiArDQo+PiArCQlj
+dHJsXzIgPSBzZGhjaV9yZWFkdyhob3N0LCBTREhDSV9IT1NUX0NPTlRST0wyKTsNCj4+ICsJCWN0
+cmxfMiB8PSBTREhDSV9DVFJMX1ZERF8xODA7DQo+PiArCQlzZGhjaV93cml0ZXcoaG9zdCwgY3Ry
+bF8yLCBTREhDSV9IT1NUX0NPTlRST0wyKTsNCj4+ICsNCj4+ICsJCS8qIFNsZWVwIGZvciA1bXMg
+dG8gc3RhYmlsaXplIDEuOFYgcmVndWxhdG9yICovDQo+PiArCQl1c2xlZXBfcmFuZ2UoNTAwMCwg
+NTUwMCk7DQo+PiArDQo+PiArCQkvKiAxLjhWIHJlZ3VsYXRvciBvdXRwdXQgc2hvdWxkIGJlIHN0
+YWJsZSB3aXRoaW4gNSBtcyAqLw0KPj4gKwkJY3RybF8yID0gc2RoY2lfcmVhZHcoaG9zdCwgU0RI
+Q0lfSE9TVF9DT05UUk9MMik7DQo+PiArCQlpZiAoIShjdHJsXzIgJiBTREhDSV9DVFJMX1ZERF8x
+ODApKQ0KPj4gKwkJCXJldHVybiAtRUFHQUlOOw0KPj4gKw0KPj4gKwkJY2xrICA9IHNkaGNpX3Jl
+YWR3KGhvc3QsIFNESENJX0NMT0NLX0NPTlRST0wpOw0KPj4gKwkJY2xrIHw9IFNESENJX0NMT0NL
+X0NBUkRfRU47DQo+PiArCQlzZGhjaV93cml0ZXcoaG9zdCwgY2xrLCBTREhDSV9DTE9DS19DT05U
+Uk9MKTsNCj4+ICsJCWJyZWFrOw0KPj4gKwljYXNlIE1NQ19TSUdOQUxfVk9MVEFHRV8zMzA6DQo+
+PiArCQkvKg0KPj4gKwkJICogU2V0IFZERElPX0Igdm9sdGFnZSB0byBIaWdoIGZvciAzLjNWDQo+
+PiArCQkgKiB3aGljaCBpcyBjb250cm9sbGluZyBieSBHUElPIEV4cGFuZGVyLg0KPj4gKwkJICov
+DQo+PiArCQlncGlvZF9zZXRfdmFsdWVfY2Fuc2xlZXAoc2RoY2lfYXJhc2FuLT51aHNfZ3Bpbywg
+MSk7DQo+PiArDQo+PiArCQkvKg0KPj4gKwkJICogVGhpcyBpcyBsaWtlIGZpbmFsIGdhdGVrZWVw
+ZXIuIE5lZWQgdG8gZW5zdXJlIGNoYW5nZWQgdm9sdGFnZQ0KPj4gKwkJICogaXMgc2V0dGxlZCBi
+ZWZvcmUgYW5kIGFmdGVyIHR1cm4gb24gdGhpcyBiaXQuDQo+PiArCQkgKi8NCj4+ICsJCXVzbGVl
+cF9yYW5nZSgxMDAwLCAxMTAwKTsNCj4+ICsNCj4+ICsJCXJldCA9DQo+a2VlbWJheV9zZF92b2x0
+YWdlX3NlbGVjdGlvbihLRUVNQkFZX1NFVF8zVjNfVk9MVCk7DQo+PiArCQlpZiAocmV0KQ0KPj4g
+KwkJCXJldHVybiByZXQ7DQo+PiArDQo+PiArCQl1c2xlZXBfcmFuZ2UoMTAwMCwgMTEwMCk7DQo+
+PiArDQo+PiArCQkvKiBTZXQgMS44ViBTaWduYWwgRW5hYmxlIGluIHRoZSBIb3N0IENvbnRyb2wy
+IHJlZ2lzdGVyIHRvIDAgKi8NCj4+ICsJCWN0cmxfMiA9IHNkaGNpX3JlYWR3KGhvc3QsIFNESENJ
+X0hPU1RfQ09OVFJPTDIpOw0KPj4gKwkJY3RybF8yICY9IH5TREhDSV9DVFJMX1ZERF8xODA7DQo+
+PiArCQlzZGhjaV93cml0ZXcoaG9zdCwgY3RybF8yLCBTREhDSV9IT1NUX0NPTlRST0wyKTsNCj4+
+ICsNCj4+ICsJCS8qIFNsZWVwIGZvciA1bXMgdG8gc3RhYmlsaXplIDMuM1YgcmVndWxhdG9yICov
+DQo+PiArCQl1c2xlZXBfcmFuZ2UoNTAwMCwgNTUwMCk7DQo+PiArDQo+PiArCQkvKiAzLjNWIHJl
+Z3VsYXRvciBvdXRwdXQgc2hvdWxkIGJlIHN0YWJsZSB3aXRoaW4gNSBtcyAqLw0KPj4gKwkJY3Ry
+bF8yID0gc2RoY2lfcmVhZHcoaG9zdCwgU0RIQ0lfSE9TVF9DT05UUk9MMik7DQo+PiArCQlpZiAo
+Y3RybF8yICYgU0RIQ0lfQ1RSTF9WRERfMTgwKQ0KPj4gKwkJCXJldHVybiAtRUFHQUlOOw0KPj4g
+Kw0KPj4gKwkJYnJlYWs7DQo+PiArCWRlZmF1bHQ6DQo+PiArCQlyZXR1cm4gLUVJTlZBTDsNCj4+
+ICsJfQ0KPj4gKw0KPj4gKwlyZXR1cm4gMDsNCj4+ICt9DQo+PiArDQo+PiArc3RhdGljIGludCBz
+ZGhjaV9hcmFzYW5fa2VlbWJheV9zZWxlY3RfZHJpdmVfc3RyZW5ndGgoc3RydWN0IG1tY19jYXJk
+DQo+KmNhcmQsDQo+PiArCQkJCQl1bnNpZ25lZCBpbnQgbWF4X2R0ciwgaW50IGhvc3RfZHJ2LA0K
+Pj4gKwkJCQkJaW50IGNhcmRfZHJ2LCBpbnQgKmRydl90eXBlKQ0KPj4gK3sNCj4+ICsJaWYgKGNh
+cmQtPmhvc3QtPmlvcy5zaWduYWxfdm9sdGFnZSA9PSBNTUNfU0lHTkFMX1ZPTFRBR0VfMTgwKQ0K
+Pj4gKwkJKmRydl90eXBlID0gTU1DX1NFVF9EUklWRVJfVFlQRV9DOw0KPj4gKw0KPj4gKwlyZXR1
+cm4gMDsNCj4+ICt9DQo+PiArDQo+PiAgc3RhdGljIGNvbnN0IHN0cnVjdCBzZGhjaV9vcHMgc2Ro
+Y2lfYXJhc2FuX29wcyA9IHsNCj4+ICAJLnNldF9jbG9jayA9IHNkaGNpX2FyYXNhbl9zZXRfY2xv
+Y2ssDQo+PiAgCS5nZXRfbWF4X2Nsb2NrID0gc2RoY2lfcGx0Zm1fY2xrX2dldF9tYXhfY2xvY2ss
+IEBAIC0xNTIxLDYgKzE2MzEsNw0KPj4gQEAgc3RhdGljIGludCBzZGhjaV9hcmFzYW5fcHJvYmUo
+c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4+ICAJc3RydWN0IHNkaGNpX3BsdGZtX2hv
+c3QgKnBsdGZtX2hvc3Q7DQo+PiAgCXN0cnVjdCBzZGhjaV9hcmFzYW5fZGF0YSAqc2RoY2lfYXJh
+c2FuOw0KPj4gIAlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wID0gcGRldi0+ZGV2Lm9mX25vZGU7DQo+
+PiArCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7DQo+DQo+bml0OiBJIGdvdCB0aGlz
+IGJ1dCBhcyBJIHNlZSAzIGxpbmVzIGJlbG93IG1heWJlIHdvdWxkIGJlIGJldHRlciB0byB1c2Ug
+aXQNCj5ldmVyeXdoZXJlIGJ1dCBpdCBjYW4gYmUgZG9uZSBpbiBzZXBhcmF0ZSBwYXRjaC4NCj4N
+Cj4+ICAJY29uc3Qgc3RydWN0IHNkaGNpX2FyYXNhbl9vZl9kYXRhICpkYXRhOw0KPj4NCj4+ICAJ
+bWF0Y2ggPSBvZl9tYXRjaF9ub2RlKHNkaGNpX2FyYXNhbl9vZl9tYXRjaCwgcGRldi0+ZGV2Lm9m
+X25vZGUpOw0KPkBADQo+PiAtMTYwMCw2ICsxNzExLDIyIEBAIHN0YXRpYyBpbnQgc2RoY2lfYXJh
+c2FuX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4qcGRldikNCj4+ICAJCWhvc3QtPm1t
+Yy0+Y2FwcyB8PSBNTUNfQ0FQX1dBSVRfV0hJTEVfQlVTWTsNCj4+ICAJfQ0KPj4NCj4+ICsJaWYg
+KG9mX2RldmljZV9pc19jb21wYXRpYmxlKG5wLCAiaW50ZWwsa2VlbWJheS1zZGhjaS01LjEtc2Qi
+KSkgew0KPj4gKwkJc3RydWN0IGdwaW9fZGVzYyAqdWhzOw0KPj4gKw0KPj4gKwkJdWhzID0gZGV2
+bV9ncGlvZF9nZXRfb3B0aW9uYWwoZGV2LCAidWhzIiwNCj5HUElPRF9PVVRfSElHSCk7DQo+DQo+
+SSBjYW4ndCBzZWUgY2hhbmdlIGluIGR0IGJpbmRpbmcgdG8gcmVjb3JkIHVocyBncGlvLg0KTm90
+ZWQuIERvbmUgdGhlIGNoYW5nZXMuIFdpbGwgYWRkIGJpbmRpbmcgZm9yIHRoaXMNCj4NCj4NCj5C
+ZXR0ZXINCj5zZGhjaV9hcmFzYW4tPnVoc19ncGlvID0gZGV2bV9ncGlvZF9nZXRfb3B0aW9uYWwo
+ZGV2LCAidWhzIiwNCj5HUElPRF9PVVRfSElHSCk7DQo+DQo+dGhlbiB5b3UgY2FuIGF2b2lkIHVo
+cyB2YXJpYWJsZS4NCldpbGwgcmVtYWluIGFzIGl0IGlzIHRvIG1ha2UgaXQgbW9yZSByZWFkYWJs
+ZS4NCj4NCj4+ICsJCWlmIChJU19FUlIodWhzKSkNCj4+ICsJCQlyZXR1cm4gZGV2X2Vycl9wcm9i
+ZShkZXYsIFBUUl9FUlIodWhzKSwgImNhbid0IGdldA0KPnVocyBncGlvXG4iKTsNCj4+ICsNCj4+
+ICsJCXNkaGNpX2FyYXNhbi0+dWhzX2dwaW8gPSB1aHM7DQo+PiArDQo+PiArCQlob3N0LT5tbWNf
+aG9zdF9vcHMuc3RhcnRfc2lnbmFsX3ZvbHRhZ2Vfc3dpdGNoID0NCj4+ICsJCQlzZGhjaV9hcmFz
+YW5fa2VlbWJheV92b2x0YWdlX3N3aXRjaDsNCj4+ICsNCj4+ICsJCWhvc3QtPm1tY19ob3N0X29w
+cy5zZWxlY3RfZHJpdmVfc3RyZW5ndGggPQ0KPj4gKwkJCXNkaGNpX2FyYXNhbl9rZWVtYmF5X3Nl
+bGVjdF9kcml2ZV9zdHJlbmd0aDsNCj4+ICsJfQ0KPj4gKw0KPj4gIAlzZGhjaV9hcmFzYW5fdXBk
+YXRlX2Jhc2VjbGtmcmVxKGhvc3QpOw0KPj4NCj4+ICAJcmV0ID0gc2RoY2lfYXJhc2FuX3JlZ2lz
+dGVyX3NkY2xrKHNkaGNpX2FyYXNhbiwgY2xrX3hpbiwNCj4+ICZwZGV2LT5kZXYpOw0KPj4NCj4N
+Cj5UaGFua3MsDQo+TWljaGFsDQo=
