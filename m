@@ -2,187 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008DC2868D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EEB2868D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgJGUJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:09:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32684 "EHLO
+        id S1728234AbgJGUKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:10:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49359 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727929AbgJGUJD (ORCPT
+        by vger.kernel.org with ESMTP id S1727657AbgJGUKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:09:03 -0400
+        Wed, 7 Oct 2020 16:10:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602101340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Z+/oOj0baWV0RSAtFxHWl1u8yWXLZEvgiiY2lKgmr7Y=;
-        b=ebtc7mTNEOyubn+q1BdOOsVo5NNNsZSVjbYh+H5VcFmL4gslg4ZXlOZ6aLz7fwuUzM8Byr
-        7PzZvOkPE1AxRONzvGgTeKAu5Cchbltz+/W5A2VzCY4W1E51fG4YqHpUwVlvxGj0AO3Ih1
-        HNilq4PwHlgRJC1O/f/E67EBPl05q0M=
+        s=mimecast20190719; t=1602101428;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BVhXhk+iF6o3RlOlKVnrK9GRKRrzsNTDLNFpzDWY1gw=;
+        b=QysUbag67WNfOVsexGWZg+8I920WyGJc0UyiZh4HcD+DFsqOVAyil4ZEPhbXMMCD7VDaVv
+        DOvheAHc8A7M340v3sF8QJXH3YvxQxzL6Jug/NzRyleh+5VkTAJeP43yS5XMpfrDx0qJo+
+        FghL8+8KZyC8iBwzgm+XPq+Ea9wxWVg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-cJgi5oy-N-SNSBOEjolWmw-1; Wed, 07 Oct 2020 16:08:58 -0400
-X-MC-Unique: cJgi5oy-N-SNSBOEjolWmw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-425-FhXR8f0oOuC8yvhwtOO24Q-1; Wed, 07 Oct 2020 16:10:24 -0400
+X-MC-Unique: FhXR8f0oOuC8yvhwtOO24Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AB2B57001;
-        Wed,  7 Oct 2020 20:08:57 +0000 (UTC)
-Received: from ovpn-66-246.rdu2.redhat.com (ovpn-66-246.rdu2.redhat.com [10.10.66.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C3A960BEC;
-        Wed,  7 Oct 2020 20:08:51 +0000 (UTC)
-Message-ID: <c4cb4b41655bc890b9dbf40bd2c133cbcbef734d.camel@redhat.com>
-Subject: WARN_ON(fuse_insert_writeback(root, wpa)) in tree_insert()
-From:   Qian Cai <cai@redhat.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com
-Date:   Wed, 07 Oct 2020 16:08:50 -0400
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DD4957050;
+        Wed,  7 Oct 2020 20:10:21 +0000 (UTC)
+Received: from [10.10.110.48] (unknown [10.10.110.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 09D7F1002C01;
+        Wed,  7 Oct 2020 20:10:17 +0000 (UTC)
+Reply-To: tasleson@redhat.com
+Subject: Re: [v5 01/12] struct device: Add function callback durable_name
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-scsi@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>, pmladek@suse.com,
+        David Lehman <dlehman@redhat.com>,
+        sergey.senozhatsky@gmail.com, jbaron@akamai.com,
+        James.Bottomley@HansenPartnership.com,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        martin.petersen@oracle.com, kbusch@kernel.org, axboe@fb.com,
+        sagi@grimberg.me, akpm@linux-foundation.org, orson.zhai@unisoc.com,
+        viro@zeniv.linux.org.uk
+References: <20200925161929.1136806-1-tasleson@redhat.com>
+ <20200925161929.1136806-2-tasleson@redhat.com>
+ <20200929175102.GA1613@infradead.org> <20200929180415.GA1400445@kroah.com>
+ <20e220a6-4bde-2331-6e5e-24de39f9aa3b@redhat.com>
+ <20200930073859.GA1509708@kroah.com>
+ <c6b031b8-f617-0580-52a5-26532da4ee03@redhat.com>
+ <20201001114832.GC2368232@kroah.com>
+From:   Tony Asleson <tasleson@redhat.com>
+Organization: Red Hat
+Message-ID: <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
+Date:   Wed, 7 Oct 2020 15:10:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201001114832.GC2368232@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running some fuzzing by a unprivileged user on virtiofs could trigger the
-warning below. The warning was introduced not long ago by the commit
-c146024ec44c ("fuse: fix warning in tree_insert() and clean up writepage
-insertion").
+On 10/1/20 6:48 AM, Greg Kroah-Hartman wrote:
+> On Wed, Sep 30, 2020 at 09:35:52AM -0500, Tony Asleson wrote:
+>> On 9/30/20 2:38 AM, Greg Kroah-Hartman wrote:
+>>> On Tue, Sep 29, 2020 at 05:04:32PM -0500, Tony Asleson wrote:
+>>>> I'm trying to figure out a way to positively identify which storage
+>>>> device an error belongs to over time.
+>>>
+>>> "over time" is not the kernel's responsibility.
+>>>
+>>> This comes up every 5 years or so. The kernel provides you, at runtime,
+>>> a mapping between a hardware device and a "logical" device.  It can
+>>> provide information to userspace about this mapping, but once that
+>>> device goes away, the kernel is free to reuse that logical device again.
+>>>
+>>> If you want to track what logical devices match up to what physical
+>>> device, then do it in userspace, by parsing the log files.
+>>
+>> I don't understand why people think it's acceptable to ask user space to
+>> parse text that is subject to change.
+> 
+> What text is changing? The format of of the prefix of dev_*() is well
+> known and has been stable for 15+ years now, right?  What is difficult
+> in parsing it?
 
-From the logs, the last piece of the fuzzing code is:
+Many of the storage layer messages are using printk, not dev_printk.
 
-fgetxattr(fd=426, name=0x7f39a69af000, value=0x7f39a8abf000, size=1)
+>>>> Thank you for supplying some feedback and asking questions.  I've been
+>>>> asking for suggestions and would very much like to have a discussion on
+>>>> how this issue is best solved.  I'm not attached to what I've provided.
+>>>> I'm just trying to get towards a solution.
+>>>
+>>> Again, solve this in userspace, you have the information there at
+>>> runtime, why not use it?
+>>
+>> We usually don't have the needed information if you remove the
+>> expectation that user space should parse the human readable portion of
+>> the error message.
+> 
+> I don't expect that userspace should have to parse any human readable
+> portion, if they don't want to.  But if you do want it to, it is pretty
+> trivial to parse what you have today:
+> 
+> 	scsi 2:0:0:0: Direct-Access     Generic  STORAGE DEVICE   1531 PQ: 0 ANSI: 6
+> 
+> If you really have a unique identifier, then great, parse it today:
+> 
+> 	usb 4-1.3.1: Product: USB3.0 Card Reader
+> 	usb 4-1.3.1: Manufacturer: Generic
+> 	usb 4-1.3.1: SerialNumber: 000000001531
+> 
+> What's keeping that from working now?
 
-[main]  testfile fd:426 filename:trinity-testfile2 flags:2 fopened:1 fcntl_flags:42c00 global:1
-[main]   start: 0x7f39a58e6000 size:4KB  name: trinity-testfile2 global:1
+I believe these examples are using dev_printk.  With dev_printk we don't
+need to parse the text, we can use the meta data.
 
-[15969.175004][T179559] WARNING: CPU: 0 PID: 179559 at fs/fuse/file.c:1732 tree_insert.part.40+0x0/0x10 [fuse]
-[15969.180644][T179559] Modules linked in: loop isofs kvm_intel kvm irqbypass nls_ascii nls_cp437 vfat fat ip_tables x_tables virtiofs fuse sr_mod sd_mod cdrom ata_piix virtio_pci virtio_ring e1000 virtio libat]
-[15969.197671][T179559] CPU: 0 PID: 179559 Comm: trinity-c24 Tainted: G           O      5.9.0-rc8-next-20201007+ #1
-[15969.204027][T179559] Hardware name: Red Hat KVM, BIOS 1.13.0-2.module+el8.3.0+7353+9de0a3cc 04/01/2014
-[15969.208993][T179559] RIP: 0010:tree_insert.part.40+0x0/0x10 [fuse]
-[15969.213593][T179559] Code: 44 24 10 48 8b 74 24 08 48 8b 0c 24 e9 40 fc ff ff 66 0f 1f 84 00 00 00 00 00 0f 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 <0f> 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 48 b0
-[15969.224348][T179559] RSP: 0018:ffffc90007fc77f8 EFLAGS: 00010286
-[15969.227798][T179559] RAX: ffff8884b8f73500 RBX: ffff8884b8f76900 RCX: ffff8889e45ff910
-[15969.233572][T179559] RDX: 0000000000000000 RSI: ffff8884b8f76900 RDI: ffff8884b8f735b0
-[15969.238282][T179559] RBP: ffffea000550c880 R08: ffff8884b8f769f8 R09: fffff52000ff8ef2
-[15969.243394][T179559] R10: 0000000000000003 R11: fffff52000ff8ef2 R12: ffff8889e45ff480
-[15969.247845][T179559] R13: ffffea0004d71380 R14: ffff88818285c000 R15: ffff8889e45ff9b0
-[15969.252884][T179559] FS:  00007f39a8ab7740(0000) GS:ffff888bcc600000(0000) knlGS:0000000000000000
-[15969.258385][T179559] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[15969.262647][T179559] CR2: 000000000000008f CR3: 0000000557d56005 CR4: 0000000000770ef0
-[15969.268492][T179559] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[15969.273773][T179559] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-[15969.278030][T179559] PKRU: 55555554
-[15969.279920][T179559] Call Trace:
-[15969.282279][T179559]  fuse_writepage_locked+0xa20/0xd10 [fuse]
-[15969.285587][T179559]  fuse_launder_page+0x5b/0xc0 [fuse]
-[15969.288303][T179559]  invalidate_inode_pages2_range+0x709/0xa90
-invalidate_inode_pages2_range at mm/truncate.c:765
-[15969.292495][T179559]  ? truncate_exceptional_pvec_entries.part.18+0x460/0x460
-[15969.296605][T179559]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[15969.301015][T179559]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[15969.304427][T179559]  ? rcu_read_unlock+0x40/0x40
-[15969.306759][T179559]  ? _raw_spin_unlock+0x1a/0x30
-[15969.309124][T179559]  ? fuse_change_attributes+0x237/0x540 [fuse]
-[15969.313701][T179559]  fuse_do_getattr+0x28b/0xd50 [fuse]
-fuse_do_getattr at fs/fuse/dir.c:962
-[15969.316774][T179559]  ? do_syscall_64+0x33/0x40
-[15969.319617][T179559]  ? fuse_dentry_revalidate+0x6c0/0x6c0 [fuse]
-[15969.323498][T179559]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[15969.326591][T179559]  ? find_held_lock+0x33/0x1c0
-[15969.328989][T179559]  ? rwlock_bug.part.1+0x90/0x90
-[15969.332202][T179559]  fuse_permission+0x29c/0x3c0 [fuse]
-[15969.335564][T179559]  ? __kasan_kmalloc.constprop.11+0xc1/0xd0
-[15969.338445][T179559]  inode_permission+0x2c1/0x390
-[15969.342187][T179559]  vfs_getxattr+0x43/0x80
-[15969.344605][T179559]  getxattr+0xe5/0x210
-[15969.347120][T179559]  ? path_listxattr+0x100/0x100
-[15969.350019][T179559]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[15969.354014][T179559]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[15969.356977][T179559]  ? find_held_lock+0x33/0x1c0
-[15969.359631][T179559]  ? __task_pid_nr_ns+0x127/0x3a0
-[15969.363099][T179559]  ? lock_downgrade+0x730/0x730
-[15969.365714][T179559]  ? syscall_enter_from_user_mode+0x17/0x50
-[15969.369104][T179559]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[15969.374492][T179559]  __x64_sys_fgetxattr+0xd9/0x140
-[15969.377317][T179559]  do_syscall_64+0x33/0x40
-[15969.380588][T179559]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[15969.384059][T179559] RIP: 0033:0x7f39a83ca78d
-[15969.386559][T179559] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8
-[15969.399200][T179559] RSP: 002b:00007ffe920f3778 EFLAGS: 00000246 ORIG_RAX: 00000000000000c1
-[15969.405661][T179559] RAX: ffffffffffffffda RBX: 00000000000000c1 RCX: 00007f39a83ca78d
-[15969.411274][T179559] RDX: 00007f39a8abf000 RSI: 00007f39a69af000 RDI: 00000000000001aa
-[15969.415813][T179559] RBP: 00000000000000c1 R08: 0000000004800000 R09: 000000000000003e
-[15969.421984][T179559] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000002
-[15969.426794][T179559] R13: 00007f39a8a08058 R14: 00007f39a8ab76c0 R15: 00007f39a8a08000
-[15969.432779][T179559] CPU: 0 PID: 179559 Comm: trinity-c24 Tainted: G           O      5.9.0-rc8-next-20201007+ #1
-[15969.439042][T179559] Hardware name: Red Hat KVM, BIOS 1.13.0-2.module+el8.3.0+7353+9de0a3cc 04/01/2014
-[15969.442756][T179559] Call Trace:
-[15969.442756][T179559]  dump_stack+0x99/0xcb
-[15969.448559][T179559]  __warn.cold.13+0xe/0x55
-[15969.450606][T179559]  ? fuse_write_file_get.isra.35.part.36+0x10/0x10 [fuse]
-[15969.450606][T179559]  report_bug+0x1af/0x260
-[15969.460111][T179559]  handle_bug+0x44/0x80
-[15969.462805][T179559]  exc_invalid_op+0x13/0x40
-[15969.462805][T179559]  asm_exc_invalid_op+0x12/0x20
-[15969.462805][T179559] RIP: 0010:tree_insert.part.40+0x0/0x10 [fuse]
-[15969.474710][T179559] Code: 44 24 10 48 8b 74 24 08 48 8b 0c 24 e9 40 fc ff ff 66 0f 1f 84 00 00 00 00 00 0f 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 <0f> 0b c3 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 48 b0
-[15969.474710][T179559] RSP: 0018:ffffc90007fc77f8 EFLAGS: 00010286
-[15969.497893][T179559] RAX: ffff8884b8f73500 RBX: ffff8884b8f76900 RCX: ffff8889e45ff910
-[15969.497893][T179559] RDX: 0000000000000000 RSI: ffff8884b8f76900 RDI: ffff8884b8f735b0
-[15969.497893][T179559] RBP: ffffea000550c880 R08: ffff8884b8f769f8 R09: fffff52000ff8ef2
-[15969.510577][T179559] R10: 0000000000000003 R11: fffff52000ff8ef2 R12: ffff8889e45ff480
-[15969.516419][T179559] R13: ffffea0004d71380 R14: ffff88818285c000 R15: ffff8889e45ff9b0
-[15969.516419][T179559]  fuse_writepage_locked+0xa20/0xd10 [fuse]
-[15969.516419][T179559]  fuse_launder_page+0x5b/0xc0 [fuse]
-[15969.532794][T179559]  invalidate_inode_pages2_range+0x709/0xa90
-[15969.532794][T179559]  ? truncate_exceptional_pvec_entries.part.18+0x460/0x460
-[15969.541808][T179559]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[15969.544178][T179559]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[15969.544178][T179559]  ? rcu_read_unlock+0x40/0x40
-[15969.552839][T179559]  ? _raw_spin_unlock+0x1a/0x30
-[15969.552839][T179559]  ? fuse_change_attributes+0x237/0x540 [fuse]
-[15969.552839][T179559]  fuse_do_getattr+0x28b/0xd50 [fuse]
-[15969.552839][T179559]  ? do_syscall_64+0x33/0x40
-[15969.552839][T179559]  ? fuse_dentry_revalidate+0x6c0/0x6c0 [fuse]
-[15969.552839][T179559]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[15969.552839][T179559]  ? find_held_lock+0x33/0x1c0
-[15969.552839][T179559]  ? rwlock_bug.part.1+0x90/0x90
-[15969.552839][T179559]  fuse_permission+0x29c/0x3c0 [fuse]
-[15969.552839][T179559]  ? __kasan_kmalloc.constprop.11+0xc1/0xd0
-[15969.590685][T179559]  inode_permission+0x2c1/0x390
-[15969.590685][T179559]  vfs_getxattr+0x43/0x80
-[15969.590685][T179559]  getxattr+0xe5/0x210
-[15969.590685][T179559]  ? path_listxattr+0x100/0x100
-[15969.600479][T179559]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[15969.600479][T179559]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[15969.600479][T179559]  ? find_held_lock+0x33/0x1c0
-[15969.600479][T179559]  ? __task_pid_nr_ns+0x127/0x3a0
-[15969.600479][T179559]  ? lock_downgrade+0x730/0x730
-[15969.600479][T179559]  ? syscall_enter_from_user_mode+0x17/0x50
-[15969.600479][T179559]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[15969.600479][T179559]  __x64_sys_fgetxattr+0xd9/0x140
-[15969.630463][T179559]  do_syscall_64+0x33/0x40
-[15969.630463][T179559]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[15969.630463][T179559] RIP: 0033:0x7f39a83ca78d
-[15969.630463][T179559] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8
-[15969.650571][T179559] RSP: 002b:00007ffe920f3778 EFLAGS: 00000246 ORIG_RAX: 00000000000000c1
-[15969.650571][T179559] RAX: ffffffffffffffda RBX: 00000000000000c1 RCX: 00007f39a83ca78d
-[15969.650571][T179559] RDX: 00007f39a8abf000 RSI: 00007f39a69af000 RDI: 00000000000001aa
-[15969.672210][T179559] RBP: 00000000000000c1 R08: 0000000004800000 R09: 000000000000003e
-[15969.672418][T179559] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000002
-[15969.680577][T179559] R13: 00007f39a8a08058 R14: 00007f39a8ab76c0 R15: 00007f39a8a08000
-[15969.689364][T179559] irq event stamp: 2861013
-[15969.692445][T179559] hardirqs last  enabled at (2861023): [<ffffffff84c2aecf>] console_unlock+0x81f/0xa20
-[15969.698923][T179559] hardirqs last disabled at (2861030): [<ffffffff84c2addb>] console_unlock+0x72b/0xa20
-[15969.706311][T179559] softirqs last  enabled at (2860498): [<ffffffff8600061b>] __do_softirq+0x61b/0x95d
-[15969.713236][T179559] softirqs last disabled at (2860383): [<ffffffff85e00ec2>] asm_call_irq_on_stack+0x12/0x20
-[15969.720777][T179559] ---[ end trace b6274835e0c14c38 ]---
+> In fact, I would argue that it does seem to work, as there are many
+> commercial tools out there that seem to handle it just fine...
+
+I'm trying to get something that's works for journalctl.
+
+>>>> We've looked at user space quite a bit and there is an inherit race
+>>>> condition with trying to fetch the unique hardware id for a message when
+>>>> it gets emitted from the kernel as udev rules haven't even run (assuming
+>>>> we even have the meta-data to make the association).
+>>>
+>>> But one moment later you do have the information, so you can properly
+>>> correlate it, right?
+>>
+>> We could have the information if all the storage paths went through
+>> dev_printk.  Here is what we get today when we encounter a read error
+>> which uses printk in the block layer:
+>>
+>> {
+>>         "_HOSTNAME" : "pn",
+>>         "_TRANSPORT" : "kernel",
+>>         "__MONOTONIC_TIMESTAMP" : "1806379233",
+>>         "SYSLOG_IDENTIFIER" : "kernel",
+>>         "_SOURCE_MONOTONIC_TIMESTAMP" : "1805611354",
+>>         "SYSLOG_FACILITY" : "0",
+>>         "MESSAGE" : "blk_update_request: critical medium error, dev
+>> nvme0n1, sector 10000 op 0x0:(READ) flags 0x80700 phys_seg 3 prio class 0",
+>>         "PRIORITY" : "3",
+>>         "_MACHINE_ID" : "3f31a0847cea4c95b7a9cec13d07deeb",
+>>         "__REALTIME_TIMESTAMP" : "1601471260802301",
+>>         "_BOOT_ID" : "b03ed610f21d46ab8243a495ba5a0058",
+>>         "__CURSOR" :
+>> "s=a063a22bbb384da0b0412e8f652deabb;i=23c2;b=b03ed610f21d46ab8243a495ba5a0058;m=6bab28e1;t=5b087959e3cfd;x=20528862f8f765c9"
+>> }
+> 
+> Ok, messy stuff, don't do that :)
+> 
+>> Unless you parse the message text you cannot make the association.  If
+>> the same message was changed to dev_printk we would get:
+>>
+>>
+>> {
+>>         "__REALTIME_TIMESTAMP" : "1589401901093443",
+>>         "__CURSOR" :
+>> "s=caac9703b34a48fd92f7875adae55a2f;i=1c713;b=e2ae14a9def345aa803a13648b95429c;m=7d25b4f;t=5a58d77b85243;x=b034c2d3fb853870",
+>>         "SYSLOG_IDENTIFIER" : "kernel",
+>>         "_KERNEL_DEVICE" : "b259:917504",
+>>         "__MONOTONIC_TIMESTAMP" : "131226447",
+>>         "_UDEV_SYSNAME" : "nvme0n1",
+>>         "PRIORITY" : "3",
+>>         "_KERNEL_SUBSYSTEM" : "block",
+>>         "_SOURCE_MONOTONIC_TIMESTAMP" : "130941917",
+>>         "_TRANSPORT" : "kernel",
+>>         "_MACHINE_ID" : "3f31a0847cea4c95b7a9cec13d07deeb",
+>>         "_HOSTNAME" : "pn",
+>>         "SYSLOG_FACILITY" : "0",
+>>         "_BOOT_ID" : "e2ae14a9def345aa803a13648b95429c",
+>>         "_UDEV_DEVLINK" : [
+>>                 "/dev/disk/by-uuid/22fc262a-d621-452a-a951-7761d9fcf0dc",
+>>                 "/dev/disk/by-path/pci-0000:00:05.0-nvme-1",
+>>
+>> "/dev/disk/by-id/nvme-nvme.8086-4445414442454546-51454d55204e564d65204374726c-00000001",
+>>                 "/dev/disk/by-id/nvme-QEMU_NVMe_Ctrl_DEADBEEF"
+>>         ],
+>>         "MESSAGE" : "block nvme0n1: blk_update_request: critical medium
+>> error, dev nvme0n1, sector 10000 op 0x0:(READ) flags 0x0 phys_seg 1 prio
+>> class 0",
+>>         "_UDEV_DEVNODE" : "/dev/nvme0n1"
+>> }
+> 
+> Great, you have a udev sysname, a kernel subsystem and a way to
+> associate that with a real device, what more are you wanting?
+
+Did you miss in my example where it's currently a printk?  I showed what
+it would look like if it was a dev_printk.
+
+Journald is using _KERNEL_DEVICE to add the _UDEV_DEVLINK information to
+the journal entry, it's not parsing the prefix of the message.
+
+The above json is outputted from journalctl when you specify "-o
+json-pretty".
+
+>> Journald already knows how to utilize the dev_printk meta data.
+> 
+> And if you talk to the printk developers (which you seem to be keeping
+> out of the loop here), they are ripping out the meta data facility as
+> fast as possible.  So don't rely on extending that please.
+
+Again, I'm not trying to keep anyone out of the loop.  Last I knew the
+meta data capability wasn't being removed, maybe this has changed?
+
+Ref.
+
+https://lore.kernel.org/lkml/20191007120134.ciywr3wale4gxa6v@pathway.suse.cz/
+
+
+>> One idea that I've suggested along the way is creating a dev_printk
+>> function that doesn't change the message text.  We then avoid breaking
+>> people that are parsing.  Is this something that would be acceptable to
+>> folks?  It doesn't solve early boot where udev rules haven't even run,
+>> but it's better.
+> 
+> I still fail to understand the root problem here.
+
+IMHO one of the root problems is that many storage messages are still
+using printk.  Changing messages to dev_printk has been met with resistance.
+
+
+> Ok, no, I think I understand what you think the problem is, I just don't
+> see why it is up to the kernel to change what we have today when there
+> are lots of tools out there working just fine without any kernel changes
+> needed.
+> 
+> So try explaining the problem as you see it please, so we all know where
+> to work from.
+
+To me the problem today is the kernel logs information to identify how a
+storage device is attached, not what is attached.  I think you agree
+with this statement.  The log information is not helpful without the
+information to correlate to the actual device.  I think you also agree
+with this too as you have mentioned it's user space's responsibility to
+collect this so that the correlation can be done.
+
+If the following are *both* true, we have a usable message that has the
+correlated data with it in the journal.
+
+1. The storage related kernel message goes through dev_printk
+2. At the time of the message being emitted the device symlinks are present.
+
+When those two things are both true, journalctl can do the following
+(today):
+
+$ journalctl /dev/disk/by-id/wwn-0x5002538844584d30
+
+
+However, it usually can't because the above two things are rarely both
+true at the same time for a given message for journald when it logs to
+the journal.
+
+You keep saying this is a user space issue, but I believe we still need
+a bit of help from the kernel at the very least by migrating to
+dev_printk or something similar that adds the same meta data without
+changing the message text.
+
+Yes, my patch series went one step further and added the device ID as
+structured data to the log message, but I was also trying to minimize
+the race condition between the kernel emitting a message and journald
+not having the information to associate it to the hardware device.
+
+If people have other suggestions please let them be known.
+
+> But again, cutting out the developers of the subsystems you were wanting
+> to modify might just be making me really grumpy about this whole
+> thing...
+
+Again, I'm sorry I didn't reach out to the correct people.  Hopefully
+I've CC'd everyone that is appropriate for this discussion.
+
+
+Thanks,
+Tony
 
