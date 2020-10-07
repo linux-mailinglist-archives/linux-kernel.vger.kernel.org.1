@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA35285847
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC3E285845
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbgJGFyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 01:54:54 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:16549 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJGFyy (ORCPT
+        id S1727175AbgJGFxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 01:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJGFxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 01:54:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1602050090;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=C8o//TEedE15rHNz3cZ8YSVaRQEVoqX8N3cKiUWpx3A=;
-        b=Cahzp4hql1BlWFD8i7MdGROyeIHe7HYTSIcVV/gTE0bv2cpj2rrFlzxj3vYZGt/+ka
-        XKS3c6c6glT64dABcdQIfJRJLTsjsk6Bnn99gLifMyrwQH7TLslcE3ntYdpgL2jYa71r
-        UA+yIqVLjVzZJGxTk+UPa8a4Xn7zItml92n+OSdclICKjshV4axuVcS8P+s3Enh4Mk1l
-        cq03Pgy+Smp/A1RJw2KOzv1WOm0i89KRAmh4lWrAh1Gpclyp5c8qNZyguMSNgYFbOW+c
-        PnNR9NXPMU2Vljz9WRm0Wq2MT4e7fYNDC/nwOdG2FryCRWcifvgrdtZSMbSDhAL3JGP2
-        tmlw==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZIvSfY6w+"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
-        with ESMTPSA id C0b627w975qwOcC
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 7 Oct 2020 07:52:58 +0200 (CEST)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Torsten Duwe <duwe@lst.de>, Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-crypto@vger.kernel.org,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Wed, 7 Oct 2020 01:53:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A038C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 22:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=dMgDek2qfxDXt5KRIJzWX8HE5kLI0vm+FklHHFh5l6E=; b=BfORlm65MZZQ9xnzTcsxhPUfnk
+        ynTHhCXSkDcPqNG/RPbEVo9l2ueTeOonbPlbaqNCnwcYUx/Z0OWy+wsyAXqrCbgsa1uICiNe9TiSj
+        Tkn37VQKPjEaDQiGGw2HZMaZPPi6LMI6G6paho9T+2d0nD8tjmJvV2gq1S/Kn31QT0JbW9kxsxG+4
+        DX3t5QKZ9s6ScI34s239ujhJVY13VkFRzDwFqAIDXjrWarKGQtyKGqnB/k3ST8NBzpASmhW7fCyPA
+        uXu5LH89BCgbRaEk/QjUB70KVeC4yqBrOocK8IVbX/iJmQDBrnZ+V0n4W5cQp+N9Q93co07OxCxgH
+        MJ5CKe7A==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQ2O5-0004aj-Et; Wed, 07 Oct 2020 05:53:17 +0000
+Subject: Re: [PATCH] misc: Kconfig: add a new dependency for HISI_HIKEY_USB
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>
-Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST SP800-90B compliance
-Date:   Wed, 07 Oct 2020 07:52:58 +0200
-Message-ID: <5285278.e8GPZlJvtg@tauon.chronox.de>
-In-Reply-To: <20201007042409.GE912@sol.localdomain>
-References: <20200921075857.4424-1-nstange@suse.de> <20201002123836.GA14807@lst.de> <20201007042409.GE912@sol.localdomain>
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        linux-kernel@vger.kernel.org
+References: <CALAqxLU672fOHudfvZWDEoO=fHYt79isz35e9EaJAsvTCg5How@mail.gmail.com>
+ <0e49432d0db9ee8429a9923a1d995935b6b83552.1602047370.git.mchehab+huawei@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9baa3873-d5c7-20c9-4ab1-6dfe2f3a82af@infradead.org>
+Date:   Tue, 6 Oct 2020 22:53:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <0e49432d0db9ee8429a9923a1d995935b6b83552.1602047370.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 7. Oktober 2020, 06:24:09 CEST schrieb Eric Biggers:
-
-Hi Eric,
+On 10/6/20 10:09 PM, Mauro Carvalho Chehab wrote:
+> As warned by Randy:
 > 
-> Note that having multiple RNG implementations would cause fragmentation,
-> more maintenance burden, etc.  So IMO, that should be a last resort. 
-> Instead we should try to find an implementation that works for everyone. 
-> I.e., at least to me, Nicolai's patchset seems more on the right track than
-> Stephan's patchset...
+> 	on x86_64:
+> 	CONFIG_USB_ROLE_SWITCH=m
+> 	and HISI_HIKEY_USB=y.
+> 
+> 	ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_remove':
+> 	hisi_hikey_usb.c:(.text+0x61): undefined reference to `usb_role_switch_unregister'
+> 	ld: hisi_hikey_usb.c:(.text+0xa4): undefined reference to `usb_role_switch_put'
+> 	ld: drivers/misc/hisi_hikey_usb.o: in function `hub_usb_role_switch_set':
+> 	hisi_hikey_usb.c:(.text+0xd3): undefined reference to `usb_role_switch_get_drvdata'
+> 	ld: drivers/misc/hisi_hikey_usb.o: in function `relay_set_role_switch':
+> 	hisi_hikey_usb.c:(.text+0x54d): undefined reference to `usb_role_switch_set_role'
+> 	ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_probe':
+> 	hisi_hikey_usb.c:(.text+0x8a5): undefined reference to `usb_role_switch_get'
+> 	ld: hisi_hikey_usb.c:(.text+0xa08): undefined reference to `usb_role_switch_register'
+> 	ld: hisi_hikey_usb.c:(.text+0xa6e): undefined reference to `usb_role_switch_put'
+> 
+> Make it dependent on CONFIG_USB_ROLE_SWITCH.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Thank you for sharing your considerations.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-If you say that only one implementation should be there, I am wondering why 
-not considering an implementation that as significant advantages over the 
-existing implementation as outlined in my cover letter to patch v35. In the 
-default configuration, it compiles no code at all that has any bearing on 
-government standards. Yet it has a more cryptographic sound approach to handle 
-entropy. In addition is meant to be extensible allowing each user to pick and 
-chose what he wants. Yet, users who do not want these extensions should not 
-suffer from it (neither performance-wise, nor should they suffer from an 
-unnecessary complex code that builds all options into one C file).
+Thanks.
 
-And speaking of fragmentation, if it is not *possible* to allow users to pick 
-what they want and need (and yes, in some parts of the world or for some users 
-these government standards are simply a necessity), we surely invite 
-fragmentation. In the LRNG, I tried to have all operations critical to entropy 
-compression and random number generation modularized so that the a can be 
-replaced or extended if needed without fragmentation.
-
-PS: The reason why I started the LRNG was not government standards, but the 
-result of performing two studies. The one study was about entropy in 
-virtualized environment which showed that we have significant entropy in 
-virtual environments and yet the existing /dev/random implementation thinks 
-there is much less available. Another study I maintain for years also shows 
-that the entire entropy collection and heuristic on bare metal systems is also 
-in need of advancements. Initially I provided patches to the existing /dev/
-random implementation, but basically all were silently ignored.
-
-Ciao
-Stephan
+> ---
+>  drivers/misc/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index e19e1dcceb41..7cee2b72c09e 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -459,6 +459,7 @@ config PVPANIC
+>  config HISI_HIKEY_USB
+>  	tristate "USB GPIO Hub on HiSilicon Hikey 960/970 Platform"
+>  	depends on (OF && GPIOLIB) || COMPILE_TEST
+> +	depends on CONFIG_USB_ROLE_SWITCH
+>  	help
+>  	  If you say yes here this adds support for the on-board USB GPIO hub
+>  	  found on HiKey 960/970 boards, which is necessary to support
+> 
 
 
+-- 
+~Randy
