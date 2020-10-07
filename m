@@ -2,179 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BEC2860D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B917A2860D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728562AbgJGOCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:02:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728543AbgJGOCP (ORCPT
+        id S1728564AbgJGODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728513AbgJGODJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:02:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602079333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1zo6+paFpMvAWB6kLrQqb+o76jYRxz9NTomhjj2qdiU=;
-        b=jNHGfcl+SZa1A+6JWEXP1ntcwQUIVNWMaOY5UB1lWTtL+6/1AxJfgmGN738XcXGhI67hie
-        nFrgTFrHnhr2+2EI2+8L2cKFt2wm/KqiWRxkjP7+93F48iUqwE3YIpew9X9TZN7cl49edq
-        ed0B4GnVy/IVCmhPMP8TeG3GXeQq9xE=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-Q1piFI-BOHC-x6H6HsnNOA-1; Wed, 07 Oct 2020 10:02:12 -0400
-X-MC-Unique: Q1piFI-BOHC-x6H6HsnNOA-1
-Received: by mail-ej1-f69.google.com with SMTP id gh22so823052ejb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:02:11 -0700 (PDT)
+        Wed, 7 Oct 2020 10:03:09 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA435C061755;
+        Wed,  7 Oct 2020 07:03:09 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id n14so1385781pff.6;
+        Wed, 07 Oct 2020 07:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kcre7S3hG+2gwKHv0fg1VaZeGAhDiM7oeN3iSNcC4bE=;
+        b=o9oILw3r8M24NA5FfiRfZxc3sHsBi32p80nejeXcja6UUYIgNXqN3zU/rC3AZrdS7g
+         RZjYQgY+njMATnutNNoTHVjCJBe9xjjucsrSjS7WtOHYxfAPGdKo7TY4W7B5/sWd5EkF
+         ZMVDbmHIq18rUaXJgUb4JDn6NXvzSn+jNUmNM9nrk+NNugD5X/5+uWK+mY1y2BNSICJe
+         XbRfUFWD4YbE265/tIuvYFMS7C7BIAEzRwfBEPe8J2F/UbeHfVI25V9T8W7OM3gYLstf
+         i0UGL1CNyKpEWa9ILoxK40ILPhIEoaJ8N2mKSeSw2I3JK68qrAyMykj+stPoIF/e1byW
+         us6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1zo6+paFpMvAWB6kLrQqb+o76jYRxz9NTomhjj2qdiU=;
-        b=NwjxSUJSRqVYrBI+RkddSEJA+t532K5iUlmZFaWSIDN2AnWDdrF8eXLsy5G77RohHj
-         4RKeLUtr2CKCXgkJWPrZvs6gk931dfwH268BZezPnxMYPGdXYABvKVsq2J5d1a5+eNzx
-         PpiSG4crGmQRVfYIFG5W3Hmcb5e5tQVpLPXh5mYDN5bAflnZ8wUCzQr5itR7w7Ud/K8r
-         ScDYDlqJEf7wxSYJyQkYPqXpWhHky86hpOG1hJf+vJKVYVuNUfSIAeI509GbEDOzYb0C
-         0oXj3fZPbUF7eeDOfRitMW8h2zjdusGKYbKTVecNVygDTwtP0tKfdWASqNiZXalyh15O
-         GKZw==
-X-Gm-Message-State: AOAM532iOKBVXFJ/jJB+nvnJaq/PGYzsYMRdTUTAfk2MDVGuBz+X1SJc
-        qqKNCk1+9SSHPot6LxCgJgR6E2hPvsGsueHcqFqzMVqa0GyrA3clI2+Pj+xTON3vVD7eGb5PaDJ
-        Xlsw+C4K7X8PmLxrpebzCnqrG
-X-Received: by 2002:aa7:cd4f:: with SMTP id v15mr3526781edw.243.1602079329882;
-        Wed, 07 Oct 2020 07:02:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/PT4lCPIXivWIXpR++SRl2M+Cb9ETU5mfjtp+kkWEj7GDNfwMX43yD3IEAhajiAMcAv4soQ==
-X-Received: by 2002:aa7:cd4f:: with SMTP id v15mr3526757edw.243.1602079329551;
-        Wed, 07 Oct 2020 07:02:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id n15sm1535614edv.34.2020.10.07.07.02.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 07:02:08 -0700 (PDT)
-Subject: Re: [PATCH v2] platform/x86: hp-wmi: add support for thermal policy
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Elia Devito <eliadevito@gmail.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200917214957.GD29136@mtg-dev.jf.intel.com>
- <20201004211305.11628-1-eliadevito@gmail.com>
- <CAHp75VfbK226a-SsNj=Bnpfc3wWyT9K_D4XzAMOu9of1_g+8-A@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <5d60709b-e3cb-685f-2b3e-07381b9855e5@redhat.com>
-Date:   Wed, 7 Oct 2020 16:02:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kcre7S3hG+2gwKHv0fg1VaZeGAhDiM7oeN3iSNcC4bE=;
+        b=mmgac4UlJM6MiJckyspBLLP6SrJ+aMIMKOrt8Y33rBeekjSaETR826M9xNl1QVTQ3U
+         Dux2f1jySReFwwO2XFbv1024oMCuCCo0JfpsOqd/LiGTfD2NRmOnr5qV1Seoh/C7+7dW
+         DsxgIrqCbo6OjVFw92kqjprHjMFEQEOY6qFQayugfZLVQPhkAlGqPuk+g10mp+byXu5F
+         oPLvh/JO/eRhnp2PNH/7ftwEw12wCG1emqc0SZAxGGl/1pIQfPF4vOvw+VznBaI+7H7S
+         Vr6IL+Rhoil7KCoA1yxtKbNZwQQ2GnXFeIRcAeAIqH8X6iAJxxTGAEL9vPEQ4Ptj7KsH
+         KkHQ==
+X-Gm-Message-State: AOAM533GqCuv8uH8Kln+F34Ix4WKT/ywGPpCJK1bxpfzfLfVC9qaHgey
+        HfMRk2sHlauzr0dx3IY/B8NoP9kP9qn97e2BOJPswh9ceWmmQA==
+X-Google-Smtp-Source: ABdhPJyUs7vkbnKA03on8TlPzRFApNgoAZ5pHdsgH7cpauF8O/Ew0E/ch5gSWSCVHYbAJ0TRKjrkHjJYZrIJJKsQgR8=
+X-Received: by 2002:a63:4c1d:: with SMTP id z29mr3220846pga.203.1602079389356;
+ Wed, 07 Oct 2020 07:03:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfbK226a-SsNj=Bnpfc3wWyT9K_D4XzAMOu9of1_g+8-A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201005140217.1390851-1-maz@kernel.org> <CACRpkdbctO9cWZZhVQHWkA1DN7YRTsLRo4Ub9g2x7q6BBSD=Ug@mail.gmail.com>
+ <CAHp75Vdb3y_r_+Mq8K=Jog21wiFH54F18ED8eBwT4rM_zxcCUA@mail.gmail.com>
+ <0175d3ce84ea0aa938a3ce9b3731762e@kernel.org> <CAHp75VdQixJStuVj_aMZ9PhkWXk4RoUa13wAMDj4KGwm2t9nFQ@mail.gmail.com>
+ <bab5b8d99b57710030955c3924c9fca5@kernel.org>
+In-Reply-To: <bab5b8d99b57710030955c3924c9fca5@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 7 Oct 2020 17:03:58 +0300
+Message-ID: <CAHp75VdZxU67P9RPAmw=hnToR2H-8bfHvzeU4UCwKCpV5xEKNg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: pca953x: Survive spurious interrupts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 7, 2020 at 4:20 PM Marc Zyngier <maz@kernel.org> wrote:
+> On 2020-10-07 14:10, Andy Shevchenko wrote:
+> > On Wed, Oct 7, 2020 at 3:09 PM Marc Zyngier <maz@kernel.org> wrote:
+> >> On 2020-10-07 13:02, Andy Shevchenko wrote:
+> >> > On Wed, Oct 7, 2020 at 12:49 PM Linus Walleij
+> >> > <linus.walleij@linaro.org> wrote:
+> >> >> On Mon, Oct 5, 2020 at 4:02 PM Marc Zyngier <maz@kernel.org> wrote:
+> >> >>
+> >> >> > The pca953x driver never checks the result of irq_find_mapping(),
+> >> >> > which returns 0 when no mapping is found. When a spurious interrupt
+> >> >> > is delivered (which can happen under obscure circumstances), the
+> >> >> > kernel explodes as it still tries to handle the error code as
+> >> >> > a real interrupt.
+> >> >> >
+> >> >> > Handle this particular case and warn on spurious interrupts.
+> >> >> >
+> >> >> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> >> >
+> >> > Wait, doesn't actually [1]  fix the reported issue?
+> >>
+> >> Not at all.
+> >>
+> >> > Marc, can you confirm this?
+> >> >
+> >> > [1]: e43c26e12dd4 ("gpio: pca953x: Fix uninitialized pending variable")
+> >>
+> >> Different bug, really. If an interrupt is *really* pending, and no
+> >> mapping established yet, feeding the result of irq_find_mapping() to
+> >> handle_nested_irq() will lead to a panic.
+> >
+> > I don't understand. We have plenty of drivers doing exactly the way
+> > without checking this returned code.
+>
+> I'm sure we do. Most driver code is buggy as hell, but I don't see that
+> as a reason to cargo-cult the crap. The API is crystal clear that it can
+> return 0 for no mapping, and 0 isn't a valid interrupt.
 
-On 10/5/20 10:57 AM, Andy Shevchenko wrote:
-> On Mon, Oct 5, 2020 at 12:14 AM Elia Devito <eliadevito@gmail.com> wrote:
->>
->> HP Spectre notebooks (and probably other model as well)
->> support up to 4 thermal policy:
->>   - HP Recommended
->>   - Performance
->>   - Cool
->>   - Quiet
->>
->> at least on HP Spectre x360 Convertible 15-df0xxx the firmware sets the
->> thermal policy to default but hardcode the odvp0 variable to 1, this causes
->> thermald to choose the wrong DPTF profile witch result in low performance
->> when notebook is on AC, calling thermal policy write command allow firmware
->> to correctly set the odvp0 variable.
->>
->> Signed-off-by: Elia Devito <eliadevito@gmail.com>
->> ---
->>   drivers/platform/x86/hp-wmi.c | 23 +++++++++++++++++++++++
->>   1 file changed, 23 insertions(+)
->>
->> diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.c
->> index 1762f335bac9..6e448a79caee 100644
->> --- a/drivers/platform/x86/hp-wmi.c
->> +++ b/drivers/platform/x86/hp-wmi.c
->> @@ -81,6 +81,7 @@ enum hp_wmi_commandtype {
->>          HPWMI_FEATURE2_QUERY            = 0x0d,
->>          HPWMI_WIRELESS2_QUERY           = 0x1b,
->>          HPWMI_POSTCODEERROR_QUERY       = 0x2a,
-> 
->> +       HPWMI_THERMAL_POLICY_QUERY      = 0x4c
-> 
-> Usually we leave a comma that next change won't add any unnecessary churn.
-> I don't think this comment requires a v2 right now (may be satisfied
-> when applied), but if any other comments come and need to be
-> addressed, then this should be included as well.
+Yes, and the problem here is that we got this response from IRQ core,
+which we shouldn't.
 
-I've fixed this up while applying this to my review-hans branch, so
-there is no need to send out a new version.
+> > What circumstances makes the mapping be absent?
+>
+> Other bugs in the system ([1]), spurious interrupts (which can *always*
+> happen).
+>
+> > Shouldn't we rather change this:
+> >
+> >         girq->handler = handle_simple_irq;
+> > to this:
+> >         girq->handler = handle_bad_irq;
+> > ?
+>
+> I don't understand what you are trying to achieve with that, apart from
+> maybe breaking the driver. The right way to handle spurious interrupts
+> is by telling the core code that the interrupt wasn't handled, and to
+> let
+> the spurious interrupt code do its magic.
 
-Elia, Thank you for your patch, I've applied this patch to me review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+handle_bad_irq() is exactly for handling spurious IRQs as far as we
+believe documentation. So, by default the driver assigns (should
+assign) handle_bad_irq() to all IRQs as a default handler. If, by any
+chance, we got it, we already have a proper handler in place. The read
+handler is assigned whenever the IRQ core is called to register it (by
+means of ->irq_set_type() callback). My understanding that GPIO IRQ
+drivers are designed (should be designed) in this way.  The approach
+will make us sure that we don't have spurious interrupts with assigned
+handlers.
 
-Once I've run some tests on this branch the patches there will be added
-to the platform-drivers-x86/for-next branch and eventually will be
-included in the pdx86 pull-request to Linus for the next merge-window.
-
-Regards,
-
-Hans
+> [1] https://lore.kernel.org/r/20201005111443.1390096-1-maz@kernel.org
 
 
-
-> 
->>   };
->>
->>   enum hp_wmi_command {
->> @@ -861,6 +862,26 @@ static int __init hp_wmi_rfkill2_setup(struct platform_device *device)
->>          return err;
->>   }
->>
->> +static int thermal_policy_setup(struct platform_device *device)
->> +{
->> +       int err, tp;
->> +
->> +       tp = hp_wmi_read_int(HPWMI_THERMAL_POLICY_QUERY);
->> +       if (tp < 0)
->> +               return tp;
->> +
->> +       /*
->> +        * call thermal policy write command to ensure that the firmware correctly
->> +        * sets the OEM variables for the DPTF
->> +        */
->> +       err = hp_wmi_perform_query(HPWMI_THERMAL_POLICY_QUERY, HPWMI_WRITE, &tp,
->> +                                                          sizeof(tp), 0);
->> +       if (err)
->> +               return err;
->> +
->> +       return 0;
->> +}
->> +
->>   static int __init hp_wmi_bios_setup(struct platform_device *device)
->>   {
->>          /* clear detected rfkill devices */
->> @@ -872,6 +893,8 @@ static int __init hp_wmi_bios_setup(struct platform_device *device)
->>          if (hp_wmi_rfkill_setup(device))
->>                  hp_wmi_rfkill2_setup(device);
->>
->> +       thermal_policy_setup(device);
->> +
->>          return 0;
->>   }
->>
->> --
->> 2.26.2
->>
-> 
-> 
-
+-- 
+With Best Regards,
+Andy Shevchenko
