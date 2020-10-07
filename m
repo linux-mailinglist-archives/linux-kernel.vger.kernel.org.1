@@ -2,142 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC447286685
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA42E286689
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgJGSF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728652AbgJGSFt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:05:49 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23841C061755;
-        Wed,  7 Oct 2020 11:05:49 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id e2so3482480wme.1;
-        Wed, 07 Oct 2020 11:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8/E0E86V4qlrZqRVabn3V9YxZrtSiuCT+gPTjZhmgR0=;
-        b=el+wTqBuLl7i6DNDUwkJJPoio0xSSkwDERpuSW2YCDZ+TIOR+TbTxdrfAG6bV1L1R8
-         oSk5LbCNvetkOnDO80eAUnFhlSzGATRqFn8rxxFVYBT72HU2syRkSwp15Q5sMUAgZ9w6
-         d9xcbDKB+H+FZ+Yr4TL0pa1g01nT+zFjNVJc9GCN3s1YFfLZYy2zSjuhYCCX2psxzDti
-         PUyCT2Rue7hwC3+UbZxUmUBdx2KR6Tosc9AC9vZ8CGDjOPqVB29YCTkVQKty2Z8ikXUd
-         AczWxpX70BBTUhaRsq1M8x3Bf/bcOhZhdqzH+KFs8SCVMAyum84kY0kLHp20BbinsWQL
-         VPtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8/E0E86V4qlrZqRVabn3V9YxZrtSiuCT+gPTjZhmgR0=;
-        b=e6s+ovT00q7e/hUJIjvXswEKq6+x4HQ3+xrVXiDamImKiNHCFSd9iNlxXelBhUzgp0
-         7J0+4oU1mC0dbxIt4r6+6xyhnjFo8ke38fWlkkYYUBJSfDK1amGrA8700VZFA2gMBAiZ
-         FhIYjS1tB16K2XaQmhZgbbEJEevQMNNdBQDWvNEIq0sDm29egWIqVWy4fAOaqca9gqlE
-         h3iQrUmRQBITrh6ALnvZvTeSdTNe45olnlNM6gQuuKRb17UHg72JYW8ZL6LiD0EqslFO
-         adAAiQi0xN2oqIXPh6o4XBSXGb0pDYlaAvRCg74XcKLnNoe/sih5ngmEneWPPJVsE/+X
-         cydA==
-X-Gm-Message-State: AOAM531l6+zeuhjK0Aq0nxx4IqR4PLcTl8cr32oLmnjN6GvcQGqTwSpI
-        ikceHIhfY4tKnSidaCJtghJ4LNt/HhXEnQ==
-X-Google-Smtp-Source: ABdhPJwdS6sp3VKVidmda8KeJeB8mQzj+55i0oqRb3hbsjV1jSOuHmwe2tJ4ErpJCClKG4iiotsheg==
-X-Received: by 2002:a1c:f005:: with SMTP id a5mr4595433wmb.160.1602093947675;
-        Wed, 07 Oct 2020 11:05:47 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id a17sm3814496wra.29.2020.10.07.11.05.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 11:05:47 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     dmitry.torokhov@gmail.com
-Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org
-Subject: [PATCH v3 3/3] dt-bindings: touchscreen: Add binding for Novatek NT36xxx series driver
-Date:   Wed,  7 Oct 2020 20:05:40 +0200
-Message-Id: <20201007180540.322257-4-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201007180540.322257-1-kholk11@gmail.com>
-References: <20201007180540.322257-1-kholk11@gmail.com>
+        id S1728370AbgJGSIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:08:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47622 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727765AbgJGSIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 14:08:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A84E7AF9C;
+        Wed,  7 Oct 2020 18:08:11 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 07 Oct 2020 20:08:10 +0200
+From:   osalvador@suse.de
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com
+Subject: Re: [RFC][PATCH 3/9] mm/migrate: update migration order during on
+ hotplug events
+In-Reply-To: <20201007161741.DDC85648@viggo.jf.intel.com>
+References: <20201007161736.ACC6E387@viggo.jf.intel.com>
+ <20201007161741.DDC85648@viggo.jf.intel.com>
+User-Agent: Roundcube Webmail
+Message-ID: <8acf3637996d5c72709a3143f41165f8@suse.de>
+X-Sender: osalvador@suse.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On 2020-10-07 18:17, Dave Hansen wrote:
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+> 
+> Reclaim-based migration is attempting to optimize data placement in
+> memory based on the system topology.  If the system changes, so must
+> the migration ordering.
+> 
+> The implementation here is pretty simple and entirely unoptimized.  On
+> any memory or CPU hotplug events, assume that a node was added or
+> removed and recalculate all migration targets.  This ensures that the
+> node_demotion[] array is always ready to be used in case the new
+> reclaim mode is enabled.
+> 
+> This recalculation is far from optimal, most glaringly that it does
+> not even attempt to figure out if nodes are actually coming or going.
+> But, given the expected paucity of hotplug events, this should be
+> fine.
 
-Add binding for the Novatek NT36xxx series touchscreen driver.
+Hi Dave,
 
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
----
- .../input/touchscreen/novatek,nt36xxx.yaml    | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+I am still going through all the details, but just wanted to comment 
+early on this one.
+Could not you hook into __try_online_node/try_offline_node?
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-new file mode 100644
-index 000000000000..9f350f4e6d6a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Novatek NT36xxx series touchscreen controller Bindings
-+
-+maintainers:
-+  - TBD
-+
-+allOf:
-+  - $ref: touchscreen.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - novatek,nt36xxx
-+
-+  reg:
-+    enum: [ 0x62 ]
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpio:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Power supply regulator for VDD pin
-+
-+  vio-reg-name:
-+    description: Power supply regulator on VDD-IO pin
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      nt36xxx@62 {
-+        compatible = "novatek,nt36xxx";
-+        reg = <0x62>;
-+        interrupt-parent = <&tlmm>;
-+        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
-+        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-+      };
-+    };
-+
-+...
--- 
-2.28.0
+In there we check whether a node should be brought up or removed due to 
+lack of cpus and memory.
+That is being checked during hot-remove operations.
+
+We also have node_states_check_changes_{offline,online} and their pair 
+node_states_{set,clear}_node, that checks during online/offline stages 
+which states should be removed from the node, but that is only wrt. 
+memory (I guess we would only be interested in N_MEMORY).
+
+Thanks
 
