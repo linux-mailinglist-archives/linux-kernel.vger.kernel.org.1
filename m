@@ -2,113 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20371286583
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C3A286588
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgJGRMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgJGRMg (ORCPT
+        id S1728108AbgJGRNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:13:01 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:57386 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726707AbgJGRNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:12:36 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4168C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:12:36 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id s66so2955590otb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:12:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ds2b6pt8mpuSnK1WqusZcK5IPcMpzyRXiJsNhW5qyYM=;
-        b=XywxnLHwupjUJptE/EVD6sBBvmwp1LZdLWVQN7sGbbfMYl92hBOlZr7ZFS4X+E/amg
-         opzvB15wo+wkKlQcyzXYRqNCcc6ZTwDvf0ncSkJzjaY9dJ7cef2oaD3bBKharNZqlUDk
-         SK2SYwy12YuTYhWzjRrLHd7+bMmqCT/EcoV/4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ds2b6pt8mpuSnK1WqusZcK5IPcMpzyRXiJsNhW5qyYM=;
-        b=p+PtgMYuYFmgdHfZzD8LShY0k5E2SJb1PENURy78H/81nm3l95m5wBH6aQYgD/N9hj
-         gJf5DPUppOd5CXFGnUqUShclCNcimkMLNz4QWbyOZ3YiIfIWgeMD5uPFDf4NhSPPa/UU
-         8rUwiT2V0wERlKJInoiWx3s1ek9h8uswJIRodnGKt77KeU2gKyZLWpam9orITOQsVlGV
-         QGMMzPLUJAk9OvwsE+2zHNayZ+KRBb7LWaTBPjN267lLXsNuPXcT0titUrH7tqEN+O0q
-         gMGLt7qLm1W7S0LeGeevHXVyJFDRnSGXfPi5eSA9XcDnnqlpGHOiAJclW+OWX/m/KOvX
-         zeBg==
-X-Gm-Message-State: AOAM531XyAvEkRGHa+Iy6hN2EW0QDVtYcGEe5Ug2+t0Zaw7bzSNG4Dls
-        5lqo9aeW3NFWdxl3HUvRyViGGnSEQAPW0fbADsNLnQ==
-X-Google-Smtp-Source: ABdhPJzTO+z2ObbheXgto8t7rJhDCsKMuOtKVLpylgXo93WqdqDznkfE8ic3+XhZYxCrctCNbkyO32BPlJ+tqH+Wfoo=
-X-Received: by 2002:a05:6830:1c3c:: with SMTP id f28mr2639345ote.188.1602090755973;
- Wed, 07 Oct 2020 10:12:35 -0700 (PDT)
+        Wed, 7 Oct 2020 13:13:01 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097HA0PT015296;
+        Wed, 7 Oct 2020 10:12:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
+ cc : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=pfpt0220; bh=WD7AvrZGYpLFK/U5aqrNMVal8DD23I37slU+OojZ1cA=;
+ b=fMd0VwgwLSpwdHrCKXGb4kP1Erqjklh9FRVQpAZ3UkwvIdDNXKO69BBtv8NFKnAqkEuB
+ SK/GlSSQdh/NZ/Bgf7DKCVdeR1ymVTJOvNVsMznrCSnP663N19U2clSs6wLYVf6Mcm+j
+ CvRGa1pHB60BQqy3pwk2TivD5BDnlWJIIS/4sQkWQFLH59X5TKELkPx7pK7SLJAKOOmw
+ PktQl0Q9XikusehSsAFEJOn2zUjR+GrCXys60u5Hx1RvD2v0RhM5ZWF6+DvRIRKhWy0S
+ uip7TotJnE6S4rO+GHiL9dES9/9bp/MD1qXoWt/t/whgA+po+oqpvZweJO4qulRxEhTx 1Q== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 33xpnpwqva-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 10:12:51 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
+ 2020 10:12:50 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
+ 2020 10:12:49 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 7 Oct 2020 10:12:49 -0700
+Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
+        by maili.marvell.com (Postfix) with ESMTP id 6C31D3F703F;
+        Wed,  7 Oct 2020 10:12:49 -0700 (PDT)
+Received: from localhost (aeasi@localhost)
+        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 097HCmxc031270;
+        Wed, 7 Oct 2020 10:12:49 -0700
+X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
+Date:   Wed, 7 Oct 2020 10:12:48 -0700
+From:   Arun Easi <aeasi@marvell.com>
+X-X-Sender: aeasi@irv1user01.caveonetworks.com
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+CC:     Nilesh Javali <njavali@marvell.com>,
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next v2] scsi: qla2xxx: Convert to
+ DEFINE_SHOW_ATTRIBUTE
+In-Reply-To: <20200919025202.17531-1-miaoqinglang@huawei.com>
+Message-ID: <alpine.LRH.2.21.9999.2010071009280.28578@irv1user01.caveonetworks.com>
+References: <20200919025202.17531-1-miaoqinglang@huawei.com>
+User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
 MIME-Version: 1.0
-References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
- <20201007164426.1812530-6-daniel.vetter@ffwll.ch> <20201007165316.GT5177@ziepe.ca>
-In-Reply-To: <20201007165316.GT5177@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 7 Oct 2020 19:12:24 +0200
-Message-ID: <CAKMK7uGTpZcHwrBNQOXwzDAzyfSgoLSt_Dae_3hMRE2xwGx+GA@mail.gmail.com>
-Subject: Re: [PATCH 05/13] mm/frame-vector: Use FOLL_LONGTERM
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 6:53 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Oct 07, 2020 at 06:44:18PM +0200, Daniel Vetter wrote:
-> >
-> > -     /*
-> > -      * While get_vaddr_frames() could be used for transient (kernel
-> > -      * controlled lifetime) pinning of memory pages all current
-> > -      * users establish long term (userspace controlled lifetime)
-> > -      * page pinning. Treat get_vaddr_frames() like
-> > -      * get_user_pages_longterm() and disallow it for filesystem-dax
-> > -      * mappings.
-> > -      */
-> > -     if (vma_is_fsdax(vma)) {
-> > -             ret = -EOPNOTSUPP;
-> > -             goto out;
-> > -     }
-> > -
-> > -     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
-> > -             vec->got_ref = true;
-> > -             vec->is_pfns = false;
-> > -             ret = pin_user_pages_locked(start, nr_frames,
-> > -                     gup_flags, (struct page **)(vec->ptrs), &locked);
-> > -             goto out;
-> > -     }
->
-> The vm_flags still need to be checked before going into the while
-> loop. If the break is taken then nothing would check vm_flags
+On Fri, 18 Sep 2020, 7:52pm, Qinglang Miao wrote:
 
-Hm right that's a bin inconsistent. follow_pfn also checks for this,
-so I think we can just ditch this entirely both here and in the do {}
-while () check, simplifying the latter to just while (vma). Well, just
-make it a real loop with less confusing control flow probably.
+> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+> 
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+> v2: based on linux-next(20200917), and can be applied to
+>     mainline cleanly now.
+> 
+>  drivers/scsi/qla2xxx/qla_dfs.c | 68 ++++------------------------------
+>  1 file changed, 8 insertions(+), 60 deletions(-)
+> 
 
-Or prefer I keep this and touch the code less?
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Looks good. Thanks Qinglang.
+
+Regards,
+-Arun
