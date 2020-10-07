@@ -2,169 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5744D28668B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59153286693
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgJGSJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:09:16 -0400
-Received: from mga07.intel.com ([134.134.136.100]:12302 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgJGSJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:09:15 -0400
-IronPort-SDR: svaI1SWYEQGMy54XnoLrs0JwN5GAYb8lTdwbfwkMsSDdGkji3UR74wxUJhwgpkAsL2DvolaabX
- 2fP7Lw+ahHAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="229216216"
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="229216216"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 11:09:09 -0700
-IronPort-SDR: 5PNCETrDiwQy2/t4785lrTEzbxUpmB04/ke5g7I8guUsNIo2ozeFzyvsKhUTusdLmznvN5cU6L
- fNNS37/u73XA==
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="528080810"
-Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.255.33.155])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 07 Oct 2020 11:09:03 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Greg KH" <gregkh@linuxfoundation.org>,
-        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Jethro Beekman" <jethro@fortanix.com>,
-        "Chunyang Hui" <sanqian.hcy@antfin.com>,
-        "Jordan Hand" <jorhand@linux.microsoft.com>,
-        "Nathaniel McCallum" <npmccallum@redhat.com>,
-        "Seth Moore" <sethmo@google.com>,
-        "Darren Kenny" <darren.kenny@oracle.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        "Suresh Siddha" <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com> <20201004143246.GA3561@linux.intel.com>
- <20201005094246.GB151835@kroah.com> <20201005124221.GA191854@linux.intel.com>
-Date:   Wed, 07 Oct 2020 13:09:01 -0500
+        id S1728783AbgJGSKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728656AbgJGSKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 14:10:47 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08BBC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:10:45 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m13so3073480otl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:10:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xxzMWzZDg+VcRWGQ/c2kzQrjqzz9Zr/vQmYEu/FEsRY=;
+        b=JHHbdSa3yjRCRnWpyNRhKKiSEOBUKxgo2tfjYtBvhCHpORb0ALeU5M+5x5K5yNzCHm
+         lADTYYQR32EHxoVtfzUaalEzZmnDh6DAaDz8LEVrvhIFw/92GoGYNABw2nQYniRBDjZZ
+         trEXtjVKX20MlR66/aUzrdTZc9L9Ye/bFneWk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xxzMWzZDg+VcRWGQ/c2kzQrjqzz9Zr/vQmYEu/FEsRY=;
+        b=sI0zZYSKskN91wQsc9EXtKKXw183YGuu3SEse3JoyXPUQ7zUTA4FwYV/NtlPhGvLAY
+         8k6cUfUoUufe/TRl9hWL0yuYIpjGabFABD2JRfV39V/8ovMg2af0S7dOTkE2tICp/pqW
+         TVAsDRAhWvdpREY56A9IWsJ6Uk1kfl4OkfxeLxAhycdZnImWRDvKyzIL4V8RRZ0AyotL
+         xCZUfDffGgNXbp0oOhauoHckQD6d2S0InlecR4nEFDh0EFn3C/GXFKarg3YzNcbdSmQA
+         3Gqc7pWt7rBsmpYr/M5xUfKYttqZd4Z1/SYacSeVPbZYFZsj/lMy7iWEdioxy2PNesFg
+         IPyw==
+X-Gm-Message-State: AOAM532xVOWHNtyR53GTICWutUFqoJNQQ5WLpg2MIZdu6ssfcT6nRJNI
+        9WQktIbzf0XwEDsdwv/ibVc6lGcxQYDY3jg7Q5w4jQ==
+X-Google-Smtp-Source: ABdhPJw9fFZN/ovuisic7f8Uj9KPXiMNmYYqtFH7SfVt9HtB4IgG/AqVfKw/vHLMcJ5OwO7pnRxjiIvlLFeiVdztT+E=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr2510412otj.303.1602094245171;
+ Wed, 07 Oct 2020 11:10:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel Corp
-Message-ID: <op.0r4p1bn7wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
-In-Reply-To: <20201005124221.GA191854@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-12-daniel.vetter@ffwll.ch> <20201007173647.GW5177@ziepe.ca>
+In-Reply-To: <20201007173647.GW5177@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 7 Oct 2020 20:10:34 +0200
+Message-ID: <CAKMK7uE9sbK_tGhJbsnHgD9rOnx-dr=2xmpMw7RvvvpPLnjVVA@mail.gmail.com>
+Subject: Re: [PATCH 11/13] mm: add unsafe_follow_pfn
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2020 07:42:21 -0500, Jarkko Sakkinen  
-<jarkko.sakkinen@linux.intel.com> wrote:
+On Wed, Oct 7, 2020 at 7:36 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Oct 07, 2020 at 06:44:24PM +0200, Daniel Vetter wrote:
+> > Way back it was a reasonable assumptions that iomem mappings never
+> > change the pfn range they point at. But this has changed:
+> >
+> > - gpu drivers dynamically manage their memory nowadays, invalidating
+> > ptes with unmap_mapping_range when buffers get moved
+> >
+> > - contiguous dma allocations have moved from dedicated carvetouts to
+> > cma regions. This means if we miss the unmap the pfn might contain
+> > pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> >
+> > - even /dev/mem now invalidates mappings when the kernel requests that
+> > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> > ("/dev/mem: Revoke mappings when a driver claims the region")
+> >
+> > Accessing pfns obtained from ptes without holding all the locks is
+> > therefore no longer a good idea.
+> >
+> > Unfortunately there's some users where this is not fixable (like v4l
+> > userptr of iomem mappings) or involves a pile of work (vfio type1
+> > iommu). For now annotate these as unsafe and splat appropriately.
+> >
+> > This patch adds an unsafe_follow_pfn, which later patches will then
+> > roll out to all appropriate places.
+> >
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: kvm@vger.kernel.org
+> > ---
+> >  include/linux/mm.h |  2 ++
+> >  mm/memory.c        | 32 +++++++++++++++++++++++++++++++-
+> >  mm/nommu.c         | 17 +++++++++++++++++
+> >  security/Kconfig   | 13 +++++++++++++
+> >  4 files changed, 63 insertions(+), 1 deletion(-)
+>
+> Makes sense to me.
+>
+> I wonder if we could change the original follow_pfn to require the
+> ptep and then lockdep_assert_held() it against the page table lock?
 
-> On Mon, Oct 05, 2020 at 11:42:46AM +0200, Greg KH wrote:
->> > > You use gpl-only header files in this file, so how in the world can  
->> it
->> > > be bsd-3 licensed?
->> > >
->> > > Please get your legal department to agree with this, after you  
->> explain
->> > > to them how you are mixing gpl2-only code in with this file.
->> >
->> > I'll do what I already stated that I will do. Should I do something
->> > more?
->>
->> This was written before your previous response.
->
-> OK, that is weird, I got this one some time later.
->
->> > > > +	mutex_lock(&encl->lock);
->> > > > +	atomic_or(SGX_ENCL_DEAD, &encl->flags);
->> > >
->> > > So you set a flag that this is dead, and then instantly delete it?   
->> Why
->> > > does that matter?  I see you check for this flag elsewhere, but as  
->> you
->> > > are just about to delete this structure, how can this be an issue?
->> >
->> > It matters because ksgxswapd (sgx_reclaimer_*) might be processing it.
->>
->> I don't see that happening in this patch, did I miss it?
->
-> It's implemented in 16/24:
->
-> https://lore.kernel.org/linux-sgx/20201004223921.GA48517@linux.intel.com/T/#u
->
->> > It will use the flag to skip the operations that it would do to a  
->> victim
->> > page, when the enclave is still alive.
->>
->> Again, why are you adding flags when the patch does not use them?
->> Please put new functionality in the specific patch that uses it.
->>
->> And can you really rely on this?  How did sgx_reclaimer_* (whatever that
->> is), get the reference on this object in the first place?  Again, I
->> don't see that happening at all in here, and at a quick glance in the
->> other patches I don't see it there either.  What am I missing?
->
-> I went through the patch, and yes, they can be migrated to 16/24.
-> I agree with this, no excuses.
->
-> In 16/24 pages are added to sgx_active_page_list from which they are
-> swapped by the reclaimer to the main memory when Enclave Page Cache
-> (EPC), the memory where enclave pages reside, gets full.
->
-> When a reclaimer thread takes a victim page from that list, it will also
-> get a kref to the enclave so that struct sgx_encl instance does not
-> get wiped while it's doing its job.
->
->> > Because ksgxswapd needs the alive enclave instance while it is in the
->> > process of swapping a victim page. The reason for this is the
->> > hierarchical nature of the enclave pages.
->> >
->> > As an example, a write operation to main memory, EWB (SDM vol 3D  
->> 40-79)
->>
->> What is that referencing?
->
-> https://software.intel.com/content/dam/develop/public/us/en/documents/332831-sdm-vol-3d.pdf
->
->> > needs to access SGX Enclave Control Structure (SECS) page, which is
->> > contains global data for an enclave, like the unswapped child count.
->>
->> Ok, but how did it get access to this structure in the first place, like
->> I ask above?
->
-> I guess I answered that, and I also fully agree with your suggestions.
->
-> It used to be many iterations ago that enclaves were not file based but
-> just memory mappings (long story short: was not great way to make them
-> multiprocess, that's why file centered now), and then refcount played a
-> bigger role. Having those "extras" in this patch is by no means
-> intentional but more like cruft of many iterations of refactoring.
->
-> Sometimes when you work long with this kind of pile of code, which has
-> converged through many iterations, you really need someone else to point
-> some of the simple and obvious things out.
->
->> > There is a patch that adds "sgx/provision".
->>
->> What number in this series?
->
-> It's 15/24.
->
+The safe variant with the pagetable lock is follow_pte_pmd. The only
+way to make follow_pfn safe is if you have an mmu notifier and
+corresponding retry logic. That is not covered by lockdep (it would
+splat if we annotate the retry side), so I'm not sure how you'd check
+for that?
 
-Don't know if this is critical. I'd prefer to keep them as is. Directory  
-seems natural to me and makes sense to add more under the same dir in case  
-there are more to come.
+Checking for ptep lock doesn't work here, since the one leftover safe
+user of this (kvm) doesn't need that at all, because it has the mmu
+notifier.
 
-Thanks
-Haitao
+Also follow_pte_pmd will splat with lockdep if you get it wrong, since
+the function leaves you with the right ptlock lock when it returns. If
+you forget to unlock that, lockdep will complain.
+
+So I think we're as good as it gets, since I really have no idea how
+to make sure follow_pfn callers do have an mmu notifier registered.
+
+> > +int unsafe_follow_pfn(struct vm_area_struct *vma, unsigned long addres=
+s,
+> > +     unsigned long *pfn)
+> > +{
+> > +#ifdef CONFIG_STRICT_FOLLOW_PFN
+> > +     pr_info("unsafe follow_pfn usage rejected, see
+> > CONFIG_STRICT_FOLLOW_PFN\n");
+>
+> Wonder if we can print something useful here, like the current
+> PID/process name?
+
+Yeah adding comm/pid here makes sense.
+
+> > diff --git a/security/Kconfig b/security/Kconfig
+> > index 7561f6f99f1d..48945402e103 100644
+> > --- a/security/Kconfig
+> > +++ b/security/Kconfig
+> > @@ -230,6 +230,19 @@ config STATIC_USERMODEHELPER_PATH
+> >         If you wish for all usermode helper programs to be disabled,
+> >         specify an empty string here (i.e. "").
+> >
+> > +config STRICT_FOLLOW_PFN
+> > +     bool "Disable unsafe use of follow_pfn"
+> > +     depends on MMU
+>
+> I would probably invert this CONFIG_ALLOW_UNSAFE_FOLLOW_PFN
+> default n
+
+I've followed the few other CONFIG_STRICT_FOO I've seen, which are all
+explicit enables and default to "do not break uapi, damn the
+(security) bugs". Which is I think how this should be done. It is in
+the security section though, so hopefully competent distros will
+enable this all.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
