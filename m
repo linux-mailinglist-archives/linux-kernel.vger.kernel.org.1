@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39646285980
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3875D285987
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727693AbgJGH0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgJGH0z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:26:55 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE28C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:26:53 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id s19so564368plp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=FPB7OOQl4IYhU+HU218GOVBRq9NfyKJiihhmcpJ2Hao=;
-        b=oxZ9aBBpkvOvdgr2CrqMxbh+tb9oWDoEjkUWOAV7zx1x45otIdu0jTGj6y6nkL9WfS
-         83ncVldNuP0AIzasgpAL+hE8845xe6QEViCK5skmnbfjgNKKJtLikVLMaRix0RT4L/Hb
-         Rpgmrcn23wZnkmsolZ5xRGGEc5PyosU1awEHsTwHrDUSxKR9zRV6VPVAp1QpaFwtJEbg
-         v1fiA1kn21yUceRFI3MQkAvxIiTafFcxx32ICjJ9qlWxd2x8cFZnjuBT4obe/P2mrA+r
-         KUUSZ1LURs7GGAvF6yaE1zNfMwIViXeeSpK8qS2NYX+4qy7v8lNDF/h2MPTySi+u0LQF
-         9iGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=FPB7OOQl4IYhU+HU218GOVBRq9NfyKJiihhmcpJ2Hao=;
-        b=d+3Z5zrQP/ZFGp05dVoiFA9tz2tbTYf2GhmeFgk6Rq42n2oPRSljxW2oJi10aP30R0
-         p3QpPL3hOlJQSI8yautQaE9E9Pp0oCNSb5PVSeEh+i9V/bBnyOaNVm9FVZGB6ArXAJL+
-         QvSsL5dnM6Ddw4oWiD/dttUkM3JC6vd2CIuKlgzBR3f3J+MmEglFnobytQ1hPU3/u6cJ
-         sBSVfzzYFixDe5aZpYvO2Cl6bPG9p/lbniUFnpkfTw/WS7yvO2ef3DJtNZnKQvtOK9Yv
-         Xxrc6kU/xGscUV68lI4FipXenT+A7kxv2FSOme75vpTDTXOtX5doDIxe3wS0GOoCPDiw
-         tP/w==
-X-Gm-Message-State: AOAM5315t3swsBwVuAjlh0jw4M2Zv0kmholWigddptsnqR2fHqShNh/d
-        kviebCiMCKGln5WDV4lz/Ha1Eu0BRPPUYA==
-X-Google-Smtp-Source: ABdhPJwAi4sXCxn4b1gEkyDCnbA9nQFAQCJhRdmvlBsdMzYZrTzT1FL5quT1Kgb5UMe2aahzbCj2Ww==
-X-Received: by 2002:a17:90a:5c83:: with SMTP id r3mr1767359pji.112.1602055613222;
-        Wed, 07 Oct 2020 00:26:53 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id s11sm1844594pgm.36.2020.10.07.00.26.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Oct 2020 00:26:52 -0700 (PDT)
-Message-ID: <7dc957d8e16d04cb9605bef10e474acc52235190.camel@areca.com.tw>
-Subject: [PATCH v3 1/2] scsi: arcmsr: Use upper_32_bits() instead of
- dma_addr_hi32()
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 07 Oct 2020 15:26:52 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727669AbgJGH24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:28:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54188 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727569AbgJGH24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 03:28:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602055734;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9tgNdkoIql/aHv1CAWmmBdC3fKzgtAi5ow9FlHidozE=;
+        b=J42+yA/N6vGRJDjEcBLH4SvL0rlLOpWDStub0hxTsiSEAadDsKH8Dorlop6iV0c9zLs1g5
+        zLox6oHb9JUzx8G2g5rE4aJuvY7bPWjSLncUnqRkAHWpPStIOAt9XNfrPLObWweozcUq0D
+        LUHA6whsmLm18sb+LsL58+dG1aRyr5Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 61472AC2F;
+        Wed,  7 Oct 2020 07:28:54 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 09:28:53 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
+        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] printk: handle blank console arguments passed in.
+Message-ID: <20201007072853.GF32369@alley>
+References: <MN2PR17MB31979437E605257461AC003DFCF60@MN2PR17MB3197.namprd17.prod.outlook.com>
+ <20200522065306.83-1-shreyas.joshi@biamp.com>
+ <20200522100046.GH3464@linux-b0ei>
+ <20201006025935.GA597@jagdpanzerIV.localdomain>
+ <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+ <20201006095226.GB32369@alley>
+ <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
+ <20201006134328.GD32369@alley>
+ <20201006163514.GE32369@alley>
+ <20201006171504.GA64770@jagdpanzerIV.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006171504.GA64770@jagdpanzerIV.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+On Wed 2020-10-07 02:15:04, Sergey Senozhatsky wrote:
+> On (20/10/06 18:35), Petr Mladek wrote:
+> > > > Whatever is decided, I'd like to have it made official and documented to
+> > > > avoid a similar problem in the future.
+> > 
+> > Sigh, it is even bigger mess than I expected. There is a magic
+> > variable "console_set_on_cmdline". It used, for example, in
+> > of_console_check() to prevent using the default console from dts.
+> 
+> I wonder if we can do something like:
+> 
+> ---
+> @@ -2200,6 +2200,9 @@ static int __init console_setup(char *str)
+>         char *s, *options, *brl_options = NULL;
+>         int idx;
+>  
+>         if (str[0] == 0) {
+> +		console_set_on_cmdline = 1;
 
-Use upper_32_bits() instead of dma_addr_hi32().
+Unfortunately, this is not enough. We will also need to prevent
+enabling the fallback console when has_preferred_console is not set.
+The following might work:
 
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
+		/*
+		 * Dirty hack to prevent using any console with tty
+		 * binding as a fallback and adding the empty
+		 * name into console_cmdline array.
+		 */
+		preferred_console = MAX_CMDLINECONSOLES;
 
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index d13d672..55d85c9 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -653,9 +653,9 @@ static void arcmsr_hbaF_assign_regAddr(struct AdapterControlBlock *acb)
- 		3) >> 2) << 2;
- 	pmuF = acb->pmuF;
- 	/* host buffer low address, bit0:1 all buffer active */
--	writel((uint32_t)(host_buffer_dma | 1), &pmuF->inbound_msgaddr0);
-+	writel(lower_32_bits(host_buffer_dma | 1), &pmuF->inbound_msgaddr0);
- 	/* host buffer high address */
--	writel(dma_addr_hi32(host_buffer_dma), &pmuF->inbound_msgaddr1);
-+	writel(upper_32_bits(host_buffer_dma), &pmuF->inbound_msgaddr1);
- 	/* set host buffer physical address */
- 	writel(ARCMSR_HBFMU_DOORBELL_SYNC1, &pmuF->iobound_doorbell);
- }
-@@ -4057,11 +4057,8 @@ static int arcmsr_iop_confirm(struct AdapterControlBlock *acb)
- 		writel(cdb_phyaddr, &reg->msgcode_rwbuffer[2]);
- 		writel(cdb_phyaddr_hi32, &reg->msgcode_rwbuffer[3]);
- 		writel(acb->ccbsize, &reg->msgcode_rwbuffer[4]);
--		dma_coherent_handle = acb->dma_coherent_handle2;
--		cdb_phyaddr = (uint32_t)(dma_coherent_handle & 0xffffffff);
--		cdb_phyaddr_hi32 = (uint32_t)((dma_coherent_handle >> 16) >> 16);
--		writel(cdb_phyaddr, &reg->msgcode_rwbuffer[5]);
--		writel(cdb_phyaddr_hi32, &reg->msgcode_rwbuffer[6]);
-+		writel(lower_32_bits(acb->dma_coherent_handle2), &reg->msgcode_rwbuffer[5]);
-+		writel(upper_32_bits(acb->dma_coherent_handle2), &reg->msgcode_rwbuffer[6]);
- 		writel(acb->ioqueue_size, &reg->msgcode_rwbuffer[7]);
- 		writel(ARCMSR_INBOUND_MESG0_SET_CONFIG, &reg->inbound_msgaddr0);
- 		acb->out_doorbell ^= ARCMSR_HBEMU_DRV2IOP_MESSAGE_CMD_DONE;
-@@ -4081,11 +4078,8 @@ static int arcmsr_iop_confirm(struct AdapterControlBlock *acb)
- 		acb->msgcode_rwbuffer[2] = cdb_phyaddr;
- 		acb->msgcode_rwbuffer[3] = cdb_phyaddr_hi32;
- 		acb->msgcode_rwbuffer[4] = acb->ccbsize;
--		dma_coherent_handle = acb->dma_coherent_handle2;
--		cdb_phyaddr = (uint32_t)dma_coherent_handle;
--		cdb_phyaddr_hi32 = dma_addr_hi32(dma_coherent_handle);
--		acb->msgcode_rwbuffer[5] = cdb_phyaddr;
--		acb->msgcode_rwbuffer[6] = cdb_phyaddr_hi32;
-+		acb->msgcode_rwbuffer[5] = lower_32_bits(acb->dma_coherent_handle2);
-+		acb->msgcode_rwbuffer[6] = upper_32_bits(acb->dma_coherent_handle2);
- 		acb->msgcode_rwbuffer[7] = acb->completeQ_size;
- 		writel(ARCMSR_INBOUND_MESG0_SET_CONFIG, &reg->inbound_msgaddr0);
- 		acb->out_doorbell ^= ARCMSR_HBEMU_DRV2IOP_MESSAGE_CMD_DONE;
+>                 return 1;
+>  	}
 
+It might be the minimal change that would fix the regression and keep
+the original fix. But it would make the code even more hairy.
+
+It might be acceptable as a hotfix. But we really should somehow clean
+up the code and try to make the behavior more consistent.
+
+Best Regards,
+Petr
