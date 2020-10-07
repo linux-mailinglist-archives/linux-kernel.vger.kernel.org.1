@@ -2,93 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A28F28653D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE99128654B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgJGQuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:50:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:9895 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727958AbgJGQuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:50:20 -0400
-IronPort-SDR: 7SKj03YEsZi8siPJ2A1AVVwwOLGlDr3+9+Du9rjDk13OLA2WrbiqCW1gaijhiCcAJoLyy+OhwI
- ZNw4srPX4WQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="162398123"
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="162398123"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:50:19 -0700
-IronPort-SDR: JrC6QF5/odrbn7CHDLJIcwmsP3AqDxNK02WJ+trXcOUzbJi0697Tne5mMaR9MpX4PfTWVixQ51
- Qwd/An4C/C6A==
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="311818876"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.241.84]) ([10.212.241.84])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:50:18 -0700
-Subject: Re: [PATCH v7 0/5] Add shared workqueue support for idxd driver
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     bp@alien8.de, dan.j.williams@intel.com, tony.luck@intel.com,
-        ashok.raj@intel.com, kevin.tian@intel.com, fenghua.yu@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201005151126.657029-1-dave.jiang@intel.com>
- <20201007070132.GT2968@vkoul-mobl>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <c25b11ce-4588-6663-c9d6-b1177c627c98@intel.com>
-Date:   Wed, 7 Oct 2020 09:50:17 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728151AbgJGQx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:53:29 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:41754 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbgJGQx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:53:29 -0400
+Received: by mail-ot1-f66.google.com with SMTP id q21so2852483ota.8;
+        Wed, 07 Oct 2020 09:53:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0A+i/MnG7ofk1/uow7Ro700CbvukkHEpDKrbjreJTRc=;
+        b=QHWWg0b8jTnc9x1ukbEWEcd0ak2+6OsQiKET89hEQni5yX3hKHdkuCd1H1+3ioUcN0
+         Gz9l9V20p+SUR5wmncysfoYoQf+hk97iyCkrIWNKF5AAROVfnfONOetp2fOXi7wk9/79
+         4hdHY44nh1zMyYjRxmAML99por+CTqQBmrEXoxVC5Nic1rrDoHwTqgQ3iuEjQ8FqPAl7
+         Y2oheFDKDkxso5hHHIAl1mgpbwl9kolslEF+hOEe8VZv0RjS9Kfp8SShALFMsCdvuqEO
+         eaeOywcnKwNJxzSabcISDKifqQUImggOYDQZCaTEwa8UcsiIjPhHA8UkNfVQ8A7fDuof
+         4uxQ==
+X-Gm-Message-State: AOAM530ppGilp+870PRVH/jZOrNkl6g1zQXnxhJPldqgAB3Nevdm2hYn
+        A+B4XTGbdbS0t92MU2JWFLEOXeT2GZXupXKcTKKxuLW/
+X-Google-Smtp-Source: ABdhPJw4S694LNMITp3AqYQCdCiM9gQ1FgdvqLSxqsYd0Y4fue2dbiG3/bedis6HuatQ8Q8D2nJgp+iE5QSoLHuT9C8=
+X-Received: by 2002:a9d:3626:: with SMTP id w35mr2533946otb.206.1602089607809;
+ Wed, 07 Oct 2020 09:53:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201007070132.GT2968@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201007164851.1218-1-david.e.box@linux.intel.com>
+In-Reply-To: <20201007164851.1218-1-david.e.box@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 7 Oct 2020 18:53:16 +0200
+Message-ID: <CAJZ5v0gRph3UMffWqUVqTnDE149Ai-SbzmhjzZU1x=QOzAZeZA@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Disable PTM during suspend on Intel PCI bridges
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 7, 2020 at 6:49 PM David E. Box <david.e.box@linux.intel.com> wrote:
+>
+> On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
+> Time Measurement (PTM) capability can prevent PCIe root ports from power
+> gating during suspend-to-idle, causing increased power consumption on
+> systems that suspend using Low Power S0 Idle [1]. The issue is yet to be
+> root caused but believed to be coming from a race condition in the suspend
+> flow as the incidence rate varies for different platforms on Linux but the
+> issue does not occur at all in other operating systems. For now, disable
+> the feature on suspend on all Intel root ports and enable again on resume.
 
+IMV it should also be noted that there is no particular reason why PTM
+would need to be enabled while the whole system is suspended.  At
+least it doesn't seem to be particularly useful in that state.
 
-On 10/7/2020 12:01 AM, Vinod Koul wrote:
-> On 05-10-20, 08:11, Dave Jiang wrote:
-> 
->> == Background ==
->> A typical DMA device requires the driver to translate application buffers to hardware addresses,
->> and a kernel-user transition to notify the hardware of new work. Shared Virtual Addressing (SVA)
->> allows the processor and device to use the same virtual addresses without requiring software to
->> translate between the address spaces. ENQCMD is a new instruction on Intel Platforms that allows
->> user applications to directly notify hardware of new work, much like how doorbells are used in
->> some hardware, but it carries a payload along with it. ENQCMDS is the supervisor version (ring0)
->> of ENQCMD.
->>
->> == ENQCMDS ==
->> Introduce enqcmds(), a helper funciton that copies an input payload to a 64B aligned
->> destination and confirms whether the payload was accepted by the device or not.
->> enqcmds() wraps the new ENQCMDS CPU instruction. The ENQCMDS is a ring 0 CPU instruction that
->> performs similar to the ENQCMD instruction. Descriptor submission must use ENQCMD(S) for shared
->> workqueues (swq) on an Intel DSA device.
->>
->> == Shared WQ support ==
->> Introduce shared workqueue (swq) support for the idxd driver. The current idxd driver contains
->> dedicated workqueue (dwq) support only. A dwq accepts descriptors from a MOVDIR64B instruction.
->> MOVDIR64B is a posted instruction on the PCIe bus, it does not wait for any response from the
->> device. If the wq is full, submitted descriptors are dropped. A swq utilizes the ENQCMDS in
->> ring 0, which is a non-posted instruction. The zero flag would be set to 1 if the device rejects
->> the descriptor or if the wq is full. A swq can be shared between multiple users
->> (kernel or userspace) due to not having to keep track of the wq full condition for submission.
->> A swq requires PASID and can only run with SVA support.
->>
->> == IDXD SVA support ==
->> Add utilization of PASID to support Shared Virtual Addressing (SVA). With PASID support,
->> the descriptors can be programmed with host virtual address (HVA) rather than IOVA.
->> The hardware will work with the IOMMU in fulfilling page requests. With SVA support,
->> a user app using the char device interface can now submit descriptors without having to pin the
->> virtual memory range it wants to DMA in its own address space.
->>
->> The series does not add SVA support for the dmaengine subsystem. That support is coming at a
->> later time.
-> 
-> Applied, thanks
-> 
-
-Thanks Vinod!
+> Link: https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf
+> Bug: https://bugzilla.kernel.org/show_bug.cgi?id=209361
+> Tested-by: Len Brown <len.brown@intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  drivers/pci/quirks.c | 57 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index bdf9b52567e0..e82b1f60c7a1 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -5632,3 +5632,60 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
+>  }
+>  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
+>                                PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
+> +
+> +#ifdef CONFIG_PCIE_PTM
+> +/*
+> + * On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
+> + * Time Measurement (PTM) capability can prevent the PCIe root port from
+> + * power gating during suspend-to-idle, causing increased power consumption.
+> + * So disable the feature on suspend on all Intel root ports and enable
+> + * again on resume.
+> + */
+> +static void quirk_intel_ptm_disable_suspend(struct pci_dev *dev)
+> +{
+> +       int pos;
+> +       u32 ctrl;
+> +
+> +       if (!(dev->ptm_enabled && dev->ptm_root))
+> +               return;
+> +
+> +       pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
+> +       if (!pos)
+> +               return;
+> +
+> +       pci_dbg(dev, "quirk: disabling PTM\n");
+> +
+> +       dev->ptm_enabled = 0;
+> +       dev->ptm_root = 0;
+> +
+> +       pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
+> +       ctrl &= ~(PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT);
+> +       pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
+> +}
+> +
+> +static void quirk_intel_ptm_enable_resume(struct pci_dev *dev)
+> +{
+> +       int pos;
+> +       u32 ctrl;
+> +
+> +       pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
+> +       if (!pos)
+> +               return;
+> +
+> +       pci_dbg(dev, "quirk: re-enabling PTM\n");
+> +
+> +       pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
+> +       ctrl |= PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT;
+> +       pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
+> +
+> +       dev->ptm_enabled = 1;
+> +       dev->ptm_root = 1;
+> +}
+> +
+> +DECLARE_PCI_FIXUP_CLASS_SUSPEND(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
+> +                               PCI_CLASS_BRIDGE_PCI, 8,
+> +                               quirk_intel_ptm_disable_suspend)
+> +DECLARE_PCI_FIXUP_CLASS_RESUME(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
+> +                              PCI_CLASS_BRIDGE_PCI, 8,
+> +                              quirk_intel_ptm_enable_resume)
+> +#endif
+> --
+> 2.20.1
+>
