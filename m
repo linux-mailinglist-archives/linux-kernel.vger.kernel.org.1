@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AB8286787
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D383286793
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727765AbgJGSlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726197AbgJGSle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:41:34 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E5DE2168B;
-        Wed,  7 Oct 2020 18:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602096093;
-        bh=jybj9lxB9HDSUiFTDfX0tbqIYHCI2WD8V2Srcj/Y2q0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fvTSDoaSFaR5f+GW+1VfPgc/eLGyZstXFPM0Pbbd72KBA+ecoTEtBddTdYZhtlYj3
-         bsFSSKkvJi72PjhGp9tmM7ZEtUUSjRP9PU6yME2u3FWvCct89TVsvj/po3TnsMWfeR
-         J1+3vx2h0ip+tE/J1MK3LQud3yRzf+O7RxgCuZrk=
-Date:   Wed, 7 Oct 2020 13:41:31 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 10/13] PCI: revoke mappings like devmem
-Message-ID: <20201007184131.GA3259154@bjorn-Precision-5520>
+        id S1727969AbgJGSmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726323AbgJGSmc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 14:42:32 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBEEC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:42:32 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id w7so874062oow.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=YDpBXnJoTerx8+T5jAMHnGbQNOboeXlSHACsmk65W7I=;
+        b=jfiLkb7t0ApgrVp87Unp47OP6fC9a17SDr+nE37Ypa/GvxVr+yueHMScts1wKkBFQ7
+         vQpnp2mGKv7Ab5NA6hnC/fmPvoDSGTKmCh45AjAgqmNvZh6oZCCE4+xq1WLgziT41kgG
+         SoogZQ962Rm7LHW23OTUIRciVSotap8BuMCcURUkDitJYqAGM2j6Xp+FIa1IKXNketk1
+         TL3wPf79DsgPKloaMtGiCUO6pPNIXVnY5D6ug+w7zI1slIrZDnVI+sAkPHWSN9Eu4Hkc
+         e4qjyTbpvBDOo1clxIcBFy4N9pcvFODf76VnHx+w+4MF4MmiC67qwO251KMXTLBPvDGb
+         s+Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=YDpBXnJoTerx8+T5jAMHnGbQNOboeXlSHACsmk65W7I=;
+        b=k7PgX3YXpdRIlhiWKxCXpWdnfRAcb8KyjQuoIUrLGEXX6sdwoIN4EaQk4j5nKJmGWV
+         0LDb0RFawa22FQ2YPFP5a10WFY+WOuX5micByAE2oSJqJqFaTCac9lv7V3EjEvep6cz1
+         iPEsnUcGlZS2OgkSQeCPyGCNlP+Z6e6mMP+X7ZWXIQI9WppxcdkV2YCj2+0e5amiXmyT
+         gi/lhKX5XoqHbC2mmM2errCchzmK38A065/49giqBoRs+xiH7CcRG7F/CDjpOCaYoY4c
+         IcA1A9rITGGkTcu9LdHtYOzXd46w+PZA+Kp87ilpCE1uwrhJWJGuErQT3CAQ1074oXsS
+         ErAg==
+X-Gm-Message-State: AOAM530wS8b3xRkniUybn1oJjerp0HxhslTu4J+hB+sIUWreQdyujCiG
+        trrVN8Y7SQoEsgcUEGynZw==
+X-Google-Smtp-Source: ABdhPJwM18zBXzINVtDgaExWbXrJakXdeMycV6E2znfAWhO2S08XGD/MxzZAho7n6PwgFrLkxm9P6Q==
+X-Received: by 2002:a4a:4301:: with SMTP id k1mr2906764ooj.92.1602096151671;
+        Wed, 07 Oct 2020 11:42:31 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.170.156])
+        by smtp.gmail.com with ESMTPSA id t22sm2122070otk.24.2020.10.07.11.42.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 11:42:30 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b::80])
+        by serve.minyard.net (Postfix) with ESMTPSA id 40CE518003E;
+        Wed,  7 Oct 2020 18:42:29 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 13:42:28 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     "Boehme, Markus" <markubo@amazon.de>
+Cc:     "Park, Seongjae" <sjpark@amazon.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Nuernberger, Stefan" <snu@amazon.de>,
+        "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "Shah, Amit" <aams@amazon.de>
+Subject: Re: [Openipmi-developer] [PATCH 3/3] ipmi: Add timeout waiting for
+ channel information
+Message-ID: <20201007184228.GH3038@minyard.net>
+Reply-To: minyard@acm.org
+References: <1599495937-10654-1-git-send-email-markubo@amazon.com>
+ <1599495937-10654-3-git-send-email-markubo@amazon.com>
+ <20200908003412.GD15602@minyard.net>
+ <1599736120.29234.12.camel@amazon.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201007164426.1812530-11-daniel.vetter@ffwll.ch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1599736120.29234.12.camel@amazon.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Capitalize subject, like other patches in this series and previous
-drivers/pci history.
-
-On Wed, Oct 07, 2020 at 06:44:23PM +0200, Daniel Vetter wrote:
-> Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
-> the region") /dev/kmem zaps ptes when the kernel requests exclusive
-> acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
-> the default for all driver uses.
+On Thu, Sep 10, 2020 at 11:08:40AM +0000, Boehme, Markus via Openipmi-developer wrote:
+> > > -                         && ipmi_version_minor(id) >= 5)) {
+> > > -             unsigned int set;
+> > > +     if (ipmi_version_major(id) == 1 && ipmi_version_minor(id) < 5) {
+> > This is incorrect, it will not correctly handle IPMI 0.x BMCs.  Yes,
+> > they exist.
 > 
-> Except there's two more ways to access pci bars: sysfs and proc mmap
-> support. Let's plug that hole.
+> Interesting! I wasn't aware of those. Searching the web doesn't turn up
+> much and the spec doesn't mention them either. Are these pre-release
+> implementations of the IPMI 1.0 spec or some kind of "IPMI light"?
 
-s/pci/PCI/ in commit logs and comments.
+There was an 0.9 version of the spec that some machines implemented.
+It's not really a "light" version, it's just a really early version.  I
+don't know how many machine out there still implement it, but I try to
+keep them working if I can.
 
-> For revoke_devmem() to work we need to link our vma into the same
-> address_space, with consistent vma->vm_pgoff. ->pgoff is already
-> adjusted, because that's how (io_)remap_pfn_range works, but for the
-> mapping we need to adjust vma->vm_file->f_mapping. Usually that's done
-> at ->open time, but that's a bit tricky here with all the entry points
-> and arch code. So instead create a fake file and adjust vma->vm_file.
+Thanks,
+
+-corey
+
 > 
-> Note this only works for ARCH_GENERIC_PCI_MMAP_RESOURCE. But that
-> seems to be a subset of architectures support STRICT_DEVMEM, so we
-> should be good.
-> 
-> The only difference in access checks left is that sysfs pci mmap does
-> not check for CAP_RAWIO. But I think that makes some sense compared to
-> /dev/mem and proc, where one file gives you access to everything and
-> no ownership applies.
-
-> --- a/drivers/char/mem.c
-> +++ b/drivers/char/mem.c
-> @@ -810,6 +810,7 @@ static loff_t memory_lseek(struct file *file, loff_t offset, int orig)
->  }
->  
->  static struct inode *devmem_inode;
-> +static struct vfsmount *devmem_vfs_mount;
->  
->  #ifdef CONFIG_IO_STRICT_DEVMEM
->  void revoke_devmem(struct resource *res)
-> @@ -843,6 +844,20 @@ void revoke_devmem(struct resource *res)
->  
->  	unmap_mapping_range(inode->i_mapping, res->start, resource_size(res), 1);
->  }
-> +
-> +struct file *devmem_getfile(void)
-> +{
-> +	struct file *file;
-> +
-> +	file = alloc_file_pseudo(devmem_inode, devmem_vfs_mount, "devmem",
-> +				 O_RDWR, &kmem_fops);
-> +	if (IS_ERR(file))
-> +		return NULL;
-> +
-> +	file->f_mapping = devmem_indoe->i_mapping;
-
-"devmem_indoe"?  Obviously not compiled, I guess?
-
-> --- a/include/linux/ioport.h
-> +++ b/include/linux/ioport.h
-> @@ -304,8 +304,10 @@ struct resource *request_free_mem_region(struct resource *base,
->  
->  #ifdef CONFIG_IO_STRICT_DEVMEM
->  void revoke_devmem(struct resource *res);
-> +struct file *devm_getfile(void);
->  #else
->  static inline void revoke_devmem(struct resource *res) { };
-> +static inline struct file *devmem_getfile(void) { return NULL; };
-
-I guess these names are supposed to match?
-
->  #endif
->  
->  #endif /* __ASSEMBLY__ */
-> -- 
-> 2.28.0
-> 
+> Markus
