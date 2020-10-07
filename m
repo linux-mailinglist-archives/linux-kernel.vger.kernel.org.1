@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C242867B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EEC286833
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgJGSrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728119AbgJGSre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:47:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D2CC061755;
-        Wed,  7 Oct 2020 11:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Fd9c7NnGlZlQsPoX32Y7E0H7T+E2rrcfUhUeaY9NVV4=; b=ZTQCinhxmjer2B4rWKjYH5Zt45
-        jkp9CrbpI7giGfDFPrQO8yS1DANnlbqytLhjgJ6zCKxt4PPjzryYAjRdzaIjwIqteaaegdVmBd3rh
-        7l2GniIcTZNK7ZOgUdn8kgeSejFLP89v0sDQhBWa0B+LyRp8CYVQzwzreuLIG8oa5X+HzvwVn+qaD
-        NwkEw5W7uMFUQTWmuuNHkHtJjIyJWCRIET5Rf5PfhTb4wBbqN/64JntPZtIkBQ7TPsh4vfIUgqVsx
-        7qdChRAM994JJ0YjxFO5EKOdi3LaeniRItdUqu9KH5Q0BRuHkEErw5JKLkv9RZ67yFfYET6J96ebw
-        oesKFOSQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQETK-0004O9-Q8; Wed, 07 Oct 2020 18:47:30 +0000
-Date:   Wed, 7 Oct 2020 19:47:30 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
-        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, stable@vger.kernel.org
-Subject: Re: [PATCH 1/7] 9P: Cast to loff_t before multiplying
-Message-ID: <20201007184730.GW20115@casper.infradead.org>
-References: <20201004180428.14494-1-willy@infradead.org>
- <20201004180428.14494-2-willy@infradead.org>
- <20201007054849.GA16556@infradead.org>
+        id S1728172AbgJGTYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:24:43 -0400
+Received: from mga11.intel.com ([192.55.52.93]:32207 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728092AbgJGTYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 15:24:42 -0400
+IronPort-SDR: tDyrU7U75mfKPhjmxC85Rc3MajOtYhk9SpLH2g0JnB1OiyRAKe4aKUwxH9VKVicI48w2wX2IL5
+ /m9vaFNl3Ajg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="161655064"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="161655064"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 11:50:01 -0700
+IronPort-SDR: 7RKU4VJvSnzh5FnxL9EOGyi7kDMW7aLBr1K+QfsdxGwtGYyzsxirl3jqBQkWOlwU2icRJ/SE2L
+ UOM+9hroVSRg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="343017228"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga004.fm.intel.com with ESMTP; 07 Oct 2020 11:49:52 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 11:49:52 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 7 Oct 2020 11:49:51 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Wed, 7 Oct 2020 11:49:51 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Borislav Petkov <bp@alien8.de>
+CC:     "Song, Youquan" <youquan.song@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 4/6] x86/mce: Avoid tail copy when machine check
+ terminated a copy from user
+Thread-Topic: [PATCH v3 4/6] x86/mce: Avoid tail copy when machine check
+ terminated a copy from user
+Thread-Index: AQHWnCT17+9Ws/dhkkin3XtBvwzdU6mMQ0IAgAA1M7A=
+Date:   Wed, 7 Oct 2020 18:49:51 +0000
+Message-ID: <c0791688c58f434ca9e413630504d22d@intel.com>
+References: <20201005163130.GD21151@zn.tnic>
+ <20201006210910.21062-1-tony.luck@intel.com>
+ <20201006210910.21062-5-tony.luck@intel.com>
+ <c994091cdc9d42718769f584b7d4a134@AcuMS.aculab.com>
+In-Reply-To: <c994091cdc9d42718769f584b7d4a134@AcuMS.aculab.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007054849.GA16556@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 06:48:49AM +0100, Christoph Hellwig wrote:
-> > -		.range_start = vma->vm_pgoff * PAGE_SIZE,
-> > +		.range_start = (loff_t)vma->vm_pgoff * PAGE_SIZE,
-> 
-> Given the may places where this issue shows up I think we really need
-> a vma_offset or similar helper for it.  Much better than chasing missing
-> casts everywhere.
-
-Good point.  I think these patches need to go in to fix the bugs in
-the various stable releases, but we should definitely have a helper
-for the future.  Also, several of these patches are for non-VMA
-pgoff_t.
-
-vma_offset() is a bit weird for me -- vmas have all kinds of offsets.
-vma_file_offset() would work or vma_fpos().  I tend to prefer the shorter
-function name ;-)
-
-A quick grep shows we probably want a vmf_fpos() too:
-
-arch/powerpc/platforms/cell/spufs/file.c:       unsigned long area, offset = vmf->pgoff << PAGE_SHIFT;
-arch/x86/entry/vdso/vma.c:      sym_offset = (long)(vmf->pgoff << PAGE_SHIFT) +
-drivers/gpu/drm/gma500/framebuffer.c:   address = vmf->address - (vmf->pgoff << PAGE_SHIFT);
-drivers/scsi/cxlflash/ocxl_hw.c:        offset = vmf->pgoff << PAGE_SHIFT;
-
-I'm sure a lot of this will never run on a 32-bit kernel or with a 4GB
-file, but it's not good to have bad code around for people to copy from.
-
+Pj4gTWFjaGluZSBjaGVja3MgYXJlIG1vcmUgc2VyaW91cy4gSnVzdCBnaXZlIHVwIGF0IHRoZSBw
+b2ludCB3aGVyZSB0aGUNCj4+IG1haW4gY29weSBsb29wIHRyaWdnZXJlZCB0aGUgI01DIGFuZCBy
+ZXR1cm4gZnJvbSB0aGUgY29weSBjb2RlIGFzIGlmDQo+PiB0aGUgY29weSBzdWNjZWVkZWQuIFRo
+ZSBtYWNoaW5lIGNoZWNrIGhhbmRsZXIgd2lsbCB1c2UgdGFza193b3JrX2FkZCgpIHRvDQo+PiBt
+YWtlIHN1cmUgdGhhdCB0aGUgdGFzayBpcyBzZW50IGEgU0lHQlVTLg0KPg0KPiBJc24ndCB0aGF0
+IGp1c3QgcGxhaW4gd3Jvbmc/DQoNCkl0IGlzbid0IHByZXR0eS4gSSdtIG5vdCBzdXJlIGhvdyB3
+cm9uZyBpdCBpcy4NCg0KPiBJZiBjb3B5IGlzIHJlcG9ydGVkIGFzIHN1Y2NlZWRpbmcgdGhlIGtl
+cm5lbCBjb2RlIHdpbGwgdXNlIHRoZSAnb2xkJw0KPiBkYXRhIHRoYXQgaXMgaW4gdGhlIGJ1ZmZl
+ciBhcyBpZiBpdCBoYWQgYmVlbiByZWFkIGZyb20gdXNlcnNwYWNlLg0KPiBUaGlzIGNvdWxkIGVu
+ZCB1cCB3aXRoIGtlcm5lbCBzdGFjayBkYXRhIGJlaW5nIHdyaXR0ZW4gdG8gYSBmaWxlLg0KDQpJ
+IHJhbiBhIHRlc3Qgd2l0aDoNCg0KCXdyaXRlKGZkLCBidWYsIDUxMikNCg0KV2l0aCBwb2lzb24g
+aW5qZWN0ZWQgaW50byBidWZbMjU2XSB0byBmb3JjZSBhIG1hY2hpbmUgY2hlY2sgbWlkLWNvcHku
+DQoNClRoZSBzaXplIG9mIHRoZSBmaWxlIGRpZCBnZXQgaW5jcmVtZW50ZWQgYnkgNTEyIHJhdGhl
+ciB0aGFuIDI1Ni4gV2hpY2ggaXNuJ3QgZ29vZC4NCg0KVGhlIGRhdGEgaW4gdGhlIGZpbGUgdXAg
+dG8gdGhlIDI1NiBieXRlIG1hcmsgd2FzIHRoZSB1c2VyIGRhdGEgZnJvbSBidWZbMCAuLi4gMjU1
+XS4NCg0KVGhlIGRhdGEgaW4gdGhlIGZpbGUgcGFzdCBvZmZzZXQgMjU2IHdhcyBhbGwgemVyb2Vz
+LiBJIHN1c3BlY3QgdGhhdCBpc24ndCBieSBjaGFuY2UuDQpUaGUga2VybmVsIGhhcyB0byBkZWZl
+bmQgYWdhaW5zdCBhIHVzZXIgd3JpdGluZyBhIHBhcnRpYWwgcGFnZSBhbmQgdXNpbmcgbW1hcCgy
+KQ0Kb24gdGhlIHNhbWUgZmlsZSB0byBwZWVrIGF0IGRhdGEgcGFzdCBFT0YgYW5kIHVwIHRvIHRo
+ZSBuZXh0IFBBR0VfU0laRSBib3VuZGFyeS4NClNvIEkgdGhpbmsgaXQgbXVzdCB6ZXJvIG5ldyBw
+YWdlcyBhbGxvY2F0ZWQgaW4gcGFnZSBjYWNoZSBhcyB0aGV5IGFyZSBhbGxvY2F0ZWQgdG8NCmEg
+ZmlsZS4NCg0KPiBFdmVuIHplcm9pbmcgdGhlIHJlc3Qgb2YgdGhlIGtlcm5lbCBidWZmZXIgaXMg
+d3JvbmcuDQoNCkl0IHdvdWxkbid0IGhlbHAvY2hhbmdlIGFueXRoaW5nLg0KDQo+IElJUkMgdGhl
+IGNvZGUgdG8gdHJ5IHRvIG1heGltaXNlIHRoZSBjb3B5IGhhcyBiZWVuIHJlbW92ZWQuDQo+IFNv
+IHRoZSAnc2xvdycgcmV0cnkgd29udCBoYXBwZW4gYW55IG1vcmUuDQoNCldoaWNoIGNvZGUgaGFz
+IGJlZW4gcmVtb3ZlZCAoYW5kIHdoZW4gLi4uIFRJUCwgYW5kIG15IHRlc3RpbmcsIGlzIGJhc2Vk
+IG9uIDUuOS1yYzEpDQoNCi1Ub255DQoNCg==
