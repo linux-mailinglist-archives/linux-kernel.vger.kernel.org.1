@@ -2,69 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F402862AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4112F2862B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgJGPyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:54:47 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:37608 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgJGPyr (ORCPT
+        id S1728857AbgJGPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:55:20 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:38954 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgJGPzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:54:47 -0400
-Received: by mail-oi1-f195.google.com with SMTP id t77so2956851oie.4;
-        Wed, 07 Oct 2020 08:54:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QftSWzeT4fIRyrSr9QwWFstQOe+QpsylxaS1/K6kB0o=;
-        b=rCkpLBebFALPSWZpmW93857DnRXDkhheSVpGFeXxQmL6t+Utmfi3tfBZZdzeyFKio3
-         x9pwy8syayA1KUguFmoQ7Zi6/ltSfXjR0/tAlCLK86vFVKe3AQufIyJbHg820fp/XeYB
-         aBdoP9Vj8Y6fqola2s50EGrfvVQgwW9s+R8Nw4kLrZzTVtjixRy7Pgr7Yz1DJLNMKpvz
-         XLw+HHhw/x5iQS+jal6xS9n+CiSBhwz/UrSyyU0otEt95w1IPTgZXNph97NDDSXLj27V
-         mjJhND6KSFbuIp5S3qBxNfFhT7IfvTwX2AMWHVCxvX2EPb8BifEeUp90rtq5dmYfankm
-         ixyg==
-X-Gm-Message-State: AOAM532QoffsfaY4aXzfiBV6Mw4Yjh4nL5WsH+xLMcIgezNownke3xQJ
-        OSRD4tIXg5pI2HN+yoQvgA==
-X-Google-Smtp-Source: ABdhPJw6jB0Jnw0jFNu8VUlaFNtbg3ekOxu3PYHTfvu0vTtxChrGCPYpDjJ+ABkEQVKZvtXdoMMCdQ==
-X-Received: by 2002:a05:6808:8f3:: with SMTP id d19mr2256431oic.36.1602086086748;
-        Wed, 07 Oct 2020 08:54:46 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u125sm2267392oif.21.2020.10.07.08.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 08:54:46 -0700 (PDT)
-Received: (nullmailer pid 290182 invoked by uid 1000);
-        Wed, 07 Oct 2020 15:54:45 -0000
-Date:   Wed, 7 Oct 2020 10:54:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        devicetree@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: reset: ocelot: Add Sparx5 support
-Message-ID: <20201007155445.GA290129@bogus>
-References: <20201006200316.2261245-1-lars.povlsen@microchip.com>
- <20201006200316.2261245-2-lars.povlsen@microchip.com>
+        Wed, 7 Oct 2020 11:55:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=z5udLltffkLJI9drucFdIqOZx1b8+mVHzFbzJoFwRjY=; b=WXydZ7GBEWK47T6TzK1Ygl7ZLD
+        XJpRfRj7nQ8y95YWRPJ8rSMDbithPdnei+IbZAZV88PQg+pdC9eLUqC2Ilk74agTD9c8y6teLM0rS
+        H70jpSMtJmcnvH27CgZAvJyMAi3jUYgu+nRyTaHcRYa9/LcvGViT2F20MWlmihXjvYD77Eo5v/+qb
+        qwxfw9DUtFgICIZn+38Vh64w4roruEtmkkCDbc6Z7rFFX2rL2hN3Mb6KVWdgZMwhK+aTyIX21hy85
+        GsnczW5aVnTHnEKtExl6qpkzYgOsDF3vpfA+TXsn7n4Kynjgpva4uuxaLdfDnQ5IRytwtKpYA8Ezk
+        36jhqs2g==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kQBmf-0000Ah-KX; Wed, 07 Oct 2020 09:55:18 -0600
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Omar Sandoval <osandov@osandov.com>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20200930185422.11494-1-logang@deltatee.com>
+ <20200930185422.11494-5-logang@deltatee.com>
+ <BYAPR04MB49657A481271ADC1F576377B860D0@BYAPR04MB4965.namprd04.prod.outlook.com>
+ <517a5fd9-50eb-eb5e-5911-093dc5d1a759@deltatee.com>
+ <BYAPR04MB49650C6419A84705D04FFE63860A0@BYAPR04MB4965.namprd04.prod.outlook.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <39ab50dd-b117-2e53-a7ca-b390ade7dd1e@deltatee.com>
+Date:   Wed, 7 Oct 2020 09:55:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006200316.2261245-2-lars.povlsen@microchip.com>
+In-Reply-To: <BYAPR04MB49650C6419A84705D04FFE63860A0@BYAPR04MB4965.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, sagi@grimberg.me, osandov@osandov.com, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, Chaitanya.Kulkarni@wdc.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_FREE,NICE_REPLY_A autolearn=no autolearn_force=no version=3.4.2
+Subject: Re: [PATCH blktests v2 04/11] nvme: Search for specific subsysnqn in
+ _find_nvme_loop_dev
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Oct 2020 22:03:14 +0200, Lars Povlsen wrote:
-> This adds the support for the Sparx5 SoC.
-> 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> ---
->  .../devicetree/bindings/power/reset/ocelot-reset.txt       | 7 +++++--
->  MAINTAINERS                                                | 1 +
->  2 files changed, 6 insertions(+), 2 deletions(-)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On 2020-10-06 6:24 p.m., Chaitanya Kulkarni wrote:
+> On 10/6/20 17:10, Logan Gunthorpe wrote:
+>>> With this patch or this series will I be able to write the testcase ?
+>> This patch helps with that but other helpers introduced in this series
+>> would require minor changes.
+>>
+>> As far as I can see, you'd only have to adjust _create_nvmet_passthru()
+>> to take an optional argument because, presently, it always uses
+>> $_test_dev_nvme_ctrl for the backing device.
+>>
+>> This can easily be done if and when someone writes such a test.
+>>
+>> However, I'm not even sure right now if that test would pass in the
+>> kernel as is -- it seems like an odd thing to do.
+>>
+>> Logan
+>>
+> This test should pass if I remember the code correctly where we don't
+> 
+> have any PCIe specific checks for the passthru controller and it is an
+
+Yes, there's no explicit restrictions, but that doesn't mean there are no bugs
+with that particular stack.
+
+> important to support this scenario in order to write device independent
+> 
+> testcases as rest of the testcases are.
+
+Ok, feel free to write a test for this. It's not important to me.
+
+Logan
+
