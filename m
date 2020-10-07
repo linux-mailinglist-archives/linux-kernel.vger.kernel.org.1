@@ -2,131 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A51285B83
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1FA285B88
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgJGJDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:03:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:40512 "EHLO foss.arm.com"
+        id S1726671AbgJGJEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:04:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726269AbgJGJDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:03:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 887C0113E;
-        Wed,  7 Oct 2020 02:03:37 -0700 (PDT)
-Received: from [10.57.52.96] (unknown [10.57.52.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C9A63F71F;
-        Wed,  7 Oct 2020 02:03:34 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
- with abstract scale
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        amitk@kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <20201002114426.31277-4-lukasz.luba@arm.com>
- <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com>
- <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
- <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <e80dc3ac-c115-887f-6c72-e0f3d8cd9c76@arm.com>
-Date:   Wed, 7 Oct 2020 10:03:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726131AbgJGJEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 05:04:11 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75A9820789;
+        Wed,  7 Oct 2020 09:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602061448;
+        bh=lthtb4Tph377Vrs5ebAldUjiHsBiqJyX4WsbJjFwh3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uwOkT5dvqzL/bNc9WrknEtckonG22shP0Ea4S4YvTyckzmRUqCIasY6bu2Ea5ZYZH
+         DR0yGR+pvSIem3lU9Y7clPEwxJGEaLHmZL61mi/0wX8eXMg5I4qlsMw+3uWCXBcJ7b
+         5Bjbr/cMHp7gBKsA7Bdnx3rI8KYjQ9DvtSwCu2sc=
+Date:   Wed, 7 Oct 2020 11:04:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/11] counters: Introduce counter_atomic* counters
+Message-ID: <20201007090451.GD547609@kroah.com>
+References: <cover.1602011710.git.skhan@linuxfoundation.org>
+ <cbace4e3f504359bd017a7fc2aab62178a1550ed.1602011710.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cbace4e3f504359bd017a7fc2aab62178a1550ed.1602011710.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+On Tue, Oct 06, 2020 at 02:44:32PM -0600, Shuah Khan wrote:
+> Introduce Simple atomic counters.
+> 
+> There are a number of atomic_t usages in the kernel where atomic_t api
+> is used strictly for counting and not for managing object lifetime. In
+> some cases, atomic_t might not even be needed.
+> 
+> The purpose of these counters is to clearly differentiate atomic_t
+> counters from atomic_t usages that guard object lifetimes, hence prone
+> to overflow and underflow errors. It allows tools that scan for underflow
+> and overflow on atomic_t usages to detect overflow and underflows to scan
+> just the cases that are prone to errors.
+> 
+> Simple atomic counters api provides interfaces for simple atomic counters
+> that just count, and don't guard resource lifetimes. Counter will wrap
+> around to 0 when it overflows and should not be used to guard resource
+> lifetimes, device usage and open counts that control state changes, and
+> pm states.
+> 
+> Using counter_atomic* to guard lifetimes could lead to use-after free
+> when it overflows and undefined behavior when used to manage state
+> changes and device usage/open states.
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  Documentation/core-api/counters.rst | 103 +++++++++++++++++
+>  MAINTAINERS                         |   7 ++
+>  include/linux/counters.h            | 173 ++++++++++++++++++++++++++++
+>  lib/Kconfig                         |  10 ++
+>  lib/Makefile                        |   1 +
+>  lib/test_counters.c                 | 157 +++++++++++++++++++++++++
+>  6 files changed, 451 insertions(+)
+>  create mode 100644 Documentation/core-api/counters.rst
+>  create mode 100644 include/linux/counters.h
+>  create mode 100644 lib/test_counters.c
+> 
+> diff --git a/Documentation/core-api/counters.rst b/Documentation/core-api/counters.rst
+> new file mode 100644
+> index 000000000000..ba1ce325b639
+> --- /dev/null
+> +++ b/Documentation/core-api/counters.rst
+> @@ -0,0 +1,103 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +======================
+> +Simple atomic counters
+> +======================
+> +
+> +:Author: Shuah Khan
+> +
+> +There are a number of atomic_t usages in the kernel where atomic_t api
+> +is used strictly for counting and not for managing object lifetime. In
+> +some cases, atomic_t might not even be needed.
+> +
+> +The purpose of these counters is to clearly differentiate atomic_t counters
+> +from atomic_t usages that guard object lifetimes, hence prone to overflow
+> +and underflow errors. It allows tools that scan for underflow and overflow
+> +on atomic_t usages to detect overflow and underflows to scan just the cases
+> +that are prone to errors.
+> +
+> +Simple atomic counters api provides interfaces for simple atomic counters
+> +that just count, and don't guard resource lifetimes. Counter will wrap
+> +around to 0 when it overflows and should not be used to guard resource
+> +lifetimes, device usage and open counts that control state changes, and
+> +pm states.
+> +
+> +Using counter_atomic32_* to guard lifetimes could lead to use-after free
+> +when it overflows and undefined behavior when used to manage state
+> +changes and device usage/open states.
+> +
+> +Use refcount_t interfaces for guarding resources.
+> +
+> +.. warning::
+> +        Counter will wrap around to 0 when it overflows.
+> +        Should not be used to guard resource lifetimes.
+> +        Should not be used to manage device state and pm state.
+> +
+> +Test Counters Module and selftest
+> +---------------------------------
+> +
+> +Please see :ref:`lib/test_counters.c <Test Counters Module>` for how to
+> +use these interfaces and also test them.
+> +
+> +Selftest for testing:
+> +:ref:`testing/selftests/lib/test_counters.sh <selftest for counters>`
+> +
+> +Atomic counter interfaces
+> +=========================
+> +
+> +counter_atomic32 and counter_atomic64 types use atomic_t and atomic64_t
+> +underneath to leverage atomic_t api,  providing a small subset of atomic_t
+> +interfaces necessary to support simple counters. ::
+> +
+> +        struct counter_atomic32 { atomic_t cnt; };
+> +        struct counter_atomic64 { atomic64_t cnt; };
+> +
+> +Please see :ref:`Documentation/core-api/atomic_ops.rst <atomic_ops>` for
+> +information on the Semantics and Behavior of Atomic operations.
+> +
+> +.. warning::
+> +        It is important to keep the ops to a very small subset to ensure
+> +        that the Counter API will never be used for guarding resource
+> +        lifetimes and state management.
+> +
+> +        inc_return() is added to support current atomic_inc_return()
+> +        usages and avoid forcing the use of _inc() followed by _read().
+> +
+> +Initializers
+> +------------
+> +
+> +Interfaces for initializing counters are write operations which in turn
+> +invoke their ``ATOMIC_INIT() and atomic_set()`` counterparts ::
+> +
+> +        #define COUNTER_ATOMIC_INIT(i)    { .cnt = ATOMIC_INIT(i) }
+> +        counter_atomic32_set() --> atomic_set()
+> +
+> +        static struct counter_atomic32 acnt = COUNTER_ATOMIC_INIT(0);
+> +        counter_atomic32_set(0);
+> +
+> +        static struct counter_atomic64 acnt = COUNTER_ATOMIC_INIT(0);
+> +        counter_atomic64_set(0);
+> +
+> +Increment interface
+> +-------------------
+> +
+> +Increments counter and doesn't return the new counter value. ::
+> +
+> +        counter_atomic32_inc() --> atomic_inc()
+> +        counter_atomic64_inc() --> atomic64_inc()
+> +
+> +Increment and return new counter value interface
+> +------------------------------------------------
+> +
+> +Increments counter and returns the new counter value. ::
+> +
+> +        counter_atomic32_inc_return() --> atomic_inc_return()
+> +        counter_atomic64_inc_return() --> atomic64_inc_return()
+> +
+> +Decrement interface
+> +-------------------
+> +
+> +Decrements counter and doesn't return the new counter value. ::
+> +
+> +        counter_atomic32_dec() --> atomic_dec()
+> +        counter_atomic64_dec() --> atomic64_dec()
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 33b27e62ce19..4e82d0ffcab0 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15839,6 +15839,13 @@ S:	Maintained
+>  F:	Documentation/fb/sm712fb.rst
+>  F:	drivers/video/fbdev/sm712*
+>  
+> +SIMPLE ATOMIC and NON-ATOMIC COUNTERS
+> +M:	Shuah Khan <skhan@linuxfoundation.org>
+> +L:	linux-kernel@vger.kernel.org
+> +S:	Maintained
+> +F:	include/linux/counters.h
+> +F:	lib/test_counters.c
+> +
+>  SIMPLE FIRMWARE INTERFACE (SFI)
+>  S:	Obsolete
+>  W:	http://simplefirmware.org/
+> diff --git a/include/linux/counters.h b/include/linux/counters.h
+> new file mode 100644
+> index 000000000000..c0c26a13f768
+> --- /dev/null
+> +++ b/include/linux/counters.h
+> @@ -0,0 +1,173 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Interface for simple atomic counters that just count.
+> + *
+> + * Counter will wrap around to 0 when it overflows and should not be
+> + * used to guard resource lifetimes, device usage and open counts that
+> + * control state changes, and pm states. Using counter_atomic to guard
+> + * lifetimes could lead to use-after free when it overflows and undefined
+> + * behavior when used to manage state changes and device usage/open states.
+> + *
+> + * Use refcount_t interfaces for guarding resources.
+> + *
+> + * The interface provides:
+> + * atomic32 & atomic64 functions:
+> + *	increment and no return
+> + *	increment and return value
+> + *	decrement and no return
+> + *	read
+> + *	set
+> + *
+> + * counter_atomic32 unctions leverage/use atomic_t interfaces.
+> + * counter_atomic64 functions leverage/use atomic64_t interfaces.
+> + * The counter will wrap around to 0 when it overflows.
+> + * These interfaces should not be used to guard resource lifetimes.
+> + *
+> + * Reference and API guide:
+> + *	Documentation/core-api/counters.rst for more information.
+> + *
+> + */
+> +
+> +#ifndef __LINUX_COUNTERS_H
+> +#define __LINUX_COUNTERS_H
+> +
+> +#include <linux/atomic.h>
+> +
+> +/**
+> + * struct counter_atomic32 - Simple atomic counter
+> + * @cnt: int
+> + *
+> + * The counter wraps around to 0, when it overflows. Should not
+> + * be used to guard object lifetimes.
+> + **/
+> +struct counter_atomic32 {
+> +	atomic_t cnt;
+> +};
+> +
+> +#define COUNTER_ATOMIC_INIT(i)		{ .cnt = ATOMIC_INIT(i) }
+> +
+> +/*
+> + * counter_atomic32_inc() - increment counter value
+> + * @cntr: struct counter_atomic32 pointer
+> + *
+> + */
+> +static inline void counter_atomic32_inc(struct counter_atomic32 *cntr)
+> +{
+> +	atomic_inc(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic32_inc_return() - increment counter value and return it
+> + * @cntr: struct counter_atomic32 pointer
+> + *
+> + * Return: returns the new counter value after incrementing it
+> + */
+> +static inline int counter_atomic32_inc_return(struct counter_atomic32 *cntr)
+> +{
+> +	return atomic_inc_return(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic32_dec() - decrement counter value
+> + * @cntr: struct counter_atomic32 pointer
+> + *
+> + */
+> +static inline void counter_atomic32_dec(struct counter_atomic32 *cntr)
+> +{
+> +	atomic_dec(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic32_read() - read counter value
+> + * @cntr: struct counter_atomic32 pointer
+> + *
+> + * Return: return the counter value
+> + */
+> +static inline int counter_atomic32_read(const struct counter_atomic32 *cntr)
+> +{
+> +	return atomic_read(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic32_set() - set counter value
+> + * @cntr: struct counter_atomic32 pointer
+> + * @val:  new counter value to set
+> + *
+> + */
+> +static inline void
+> +counter_atomic32_set(struct counter_atomic32 *cntr, int val)
+> +{
+> +	atomic_set(&cntr->cnt, val);
+> +}
+> +
+> +#ifdef CONFIG_64BIT
+> +/*
+> + * struct counter_atomic64 - Simple atomic counter
+> + * @cnt: atomic64_t
+> + *
+> + * The counter wraps around to 0, when it overflows. Should not
+> + * be used to guard object lifetimes.
+> + */
+> +struct counter_atomic64 {
+> +	atomic64_t cnt;
+> +};
+> +
+> +/*
+> + * counter_atomic64_inc() - increment counter value
+> + * @cntr: struct counter_atomic64 pointer
+> + *
+> + */
+> +static inline void counter_atomic64_inc(struct counter_atomic64 *cntr)
+> +{
+> +	atomic64_inc(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic64_inc_return() - increment counter value and return it
+> + * @cntr: struct counter_atomic64 pointer
+> + *
+> + * Return: return the new counter value after incrementing it
+> + */
+> +static inline s64
+> +counter_atomic64_inc_return(struct counter_atomic64 *cntr)
+> +{
+> +	return atomic64_inc_return(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic64_dec() - decrement counter value
+> + * @cntr: struct counter_atomic64 pointer
+> + *
+> + */
+> +static inline void counter_atomic64_dec(
+> +				struct counter_atomic64 *cntr)
+> +{
+> +	atomic64_dec(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic64_read() - read counter value
+> + * @cntr: struct counter_atomic64 pointer
+> + *
+> + * Return: return the counter value
+> + */
+> +static inline s64
+> +counter_atomic64_read(const struct counter_atomic64 *cntr)
+> +{
+> +	return atomic64_read(&cntr->cnt);
+> +}
+> +
+> +/*
+> + * counter_atomic64_set() - set counter value
+> + * @cntr: struct counter_atomic64 pointer
+> + * &val:  new counter value to set
+> + *
+> + */
+> +static inline void
+> +counter_atomic64_set(struct counter_atomic64 *cntr, s64 val)
+> +{
+> +	atomic64_set(&cntr->cnt, val);
+> +}
+> +
+> +#endif /* CONFIG_64BIT */
+> +#endif /* __LINUX_COUNTERS_H */
+> diff --git a/lib/Kconfig b/lib/Kconfig
+> index b4b98a03ff98..00cb4264bd8b 100644
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -658,6 +658,16 @@ config OBJAGG
+>  config STRING_SELFTEST
+>  	tristate "Test string functions"
+>  
+> +config TEST_COUNTERS
+> +	tristate "Test Simple Atomic counter functions"
+> +	default n
 
-On 10/2/20 4:47 PM, Doug Anderson wrote:
-> Hi,
-> 
-> On Fri, Oct 2, 2020 at 8:13 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Hi Doug,
->>
->> On 10/2/20 3:31 PM, Doug Anderson wrote:
->>> Hi,
->>>
->>> On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>
->>>> Update the documentation for the binding 'sustainable-power' and allow
->>>> to provide values in an abstract scale. It is required when the cooling
->>>> devices use an abstract scale for their power values.
->>>>
->>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>> ---
->>>>    .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
->>>>    1 file changed, 9 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->>>> index 3ec9cc87ec50..4d8f2e37d1e6 100644
->>>> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->>>> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->>>> @@ -99,10 +99,15 @@ patternProperties:
->>>>          sustainable-power:
->>>>            $ref: /schemas/types.yaml#/definitions/uint32
->>>>            description:
->>>> -          An estimate of the sustainable power (in mW) that this thermal zone
->>>> -          can dissipate at the desired control temperature. For reference, the
->>>> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
->>>> -          10-inch tablet is around 4500mW.
->>>> +          An estimate of the sustainable power (in mW or in an abstract scale)
->>>> +         that this thermal zone can dissipate at the desired control
->>>> +         temperature. For reference, the sustainable power of a 4-inch phone
->>>> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
->>>> +
->>>> +         It is possible to express the sustainable power in an abstract
->>>> +         scale. This is the case when the related cooling devices use also
->>>> +         abstract scale to express their power usage. The scale must be
->>>> +         consistent.
->>>
->>> Two thoughts:
->>>
->>> 1. If we're going to allow "sustainable-power" to be in abstract
->>> scale, why not allow "dynamic-power-coefficient" to be in abstract
->>> scale too?  I assume that the whole reason against that originally was
->>> the idea of device tree purity, but if we're allowing the abstract
->>> scale here then there seems no reason not to allow it for
->>> "dynamic-power-coefficient".
->>
->> With this binding it's a bit more tricky.
->> I also have to discuss a few things internally. This requirement of
->> uW/MHz/V^2 makes the code easier also for potential drivers
->> like GPU (which are going to register the devfreq cooling with EM).
->>
->> Let me think about it, but for now I would just update these bits.
->> These are required to proper IPA operation, the dyn.-pow.-coef. is a
->> nice to have and possible next step.
-> 
-> I guess the problem is that Rajendra is currently planning to remove
-> all the "dynamic-power-coefficient" values from device tree right now
-> and move them to the source code because the numbers we currently have
-> in the device tree _are_ in abstract scale and thus violate the
-> bindings.  Moving this to source code won't help us get to more real
-> power numbers (since it'll still be abstract scale), it'll just be
-> pure churn.  If we're OK with the abstract scale in general then we
-> should allow it everywhere and not add churn for no reason.
-> 
-> 
+Nit, if you end up doing another version, this "default n" isn't needed,
+it's the default already :)
 
-I just want to notify you that I had internal conversation about this
-'dynamic-power-coefficient' binding and abstract scale. We would
-change it as well, similarly to 'sustainable-power'. It must pass
-internal review and I will send the v3 of this series.
+Other than that tiny thing, still looks good to me, thanks for doing
+this work.
 
-Regards,
-Lukasz
+greg k-h
