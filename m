@@ -2,41 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8345B285A54
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F75285A48
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgJGIV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:21:57 -0400
-Received: from 103-200-211-130.ip4.readyserver.sg ([103.200.211.130]:55423
-        "EHLO visi.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725976AbgJGIV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:21:57 -0400
-X-Greylist: delayed 353 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Oct 2020 04:21:56 EDT
-Received: from [188.206.107.253] (account robiate@visi.com HELO User)
-  by visi.com (CommuniGate Pro SMTP 6.1.9 _community_)
-  with ESMTPA id 20102; Wed, 07 Oct 2020 01:15:45 -0700
-Reply-To: <vpetrus443@gmail.com>
-From:   "Petrus Vermeulen" <info70510@gmail.com>
-Subject: Urgent Investment
-Date:   Wed, 7 Oct 2020 10:15:43 +0200
+        id S1727696AbgJGISM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:18:12 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:49432 "EHLO mailout08.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725976AbgJGISL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:18:11 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4C5nJt4PySzMnHB;
+        Wed,  7 Oct 2020 10:18:06 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4C5nJT6bdXz2TTHp;
+        Wed,  7 Oct 2020 10:17:45 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.126) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 7 Oct
+ 2020 10:17:13 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "David Laight" <David.Laight@aculab.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v4 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Date:   Wed, 7 Oct 2020 10:17:11 +0200
+Message-ID: <5729679.lNAy7qQNGU@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <CAJKOXPctS2DGkQW3EhP5Tg0y39oVF0xhEcmbs=T0vHmUsMgsQw@mail.gmail.com>
+References: <20201006160814.22047-1-ceggers@arri.de> <20201006160814.22047-2-ceggers@arri.de> <CAJKOXPctS2DGkQW3EhP5Tg0y39oVF0xhEcmbs=T0vHmUsMgsQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2800.1081
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2800.1081
-Message-ID: <auto-000000020102@visi.com>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.126]
+X-RMX-ID: 20201007-101751-4C5nJT6bdXz2TTHp-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
-I want to inform you that my principal's family wishes to make huge financial investment in your home Country on areas of oil and gas, real estate, tourism and hotel,manufacturing and production company,agriculture,fishing, Mining & Trading of natural resources such as crude oil, coal, graphite, coke,refinery,energy etc.
-We needs a capable, trust worthy and understanding business partner. Highly confidential and trusted partner to manage funds in proxy Three Hundred Million US Dollars(US$300M) for investment purposes. Must be a dedicated and honest business person Please, I will provide more details about the transaction if you are Willing to handle such project and also let you know your entitlement for the solicited role I shall be expecting your quick reply. Email:
-vpetrus443@gmail.com 
-Best Regards,
-Petrus Vermeulen.
+On Wednesday, 7 October 2020, 09:50:23 CEST, Krzysztof Kozlowski wrote:
+> I replied to your v2 with testing, so what happened with all my tested tags?
+
+I am quite new to the kernel development process. Seems that I should 
+integrate all "Tested-by" tags into following version of my patches.
+
+In which cases shall the tested tags be kept and in which cases they become 
+invalid?
+
+Best regards
+Christian
+
+
+
