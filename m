@@ -2,63 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654F2285C5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556DE285C61
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgJGKEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:04:37 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37832 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727257AbgJGKEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:04:36 -0400
-Received: from zn.tnic (p200300ec2f091000acdeda0e0c7556d4.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1000:acde:da0e:c75:56d4])
+        id S1727610AbgJGKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727014AbgJGKGA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:06:00 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C51EC061755;
+        Wed,  7 Oct 2020 03:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I5Etf9qEHTemyyx/AreDTAuwCMLmW2nSmju3sgma8Yk=; b=oDbrnmP6AupW3Ru7dXb9IEq/lg
+        XSj9zp5GcMzkL3uMSR87apqdlU/zYGzAmUNfF+ESRKast3WvX8AJycao/XC1B/QaWIHQAH/6lF2zn
+        yzHTIfQYnMUyht1oeOh3shHtiJaQeeLCqqXaRP0KaUiplQgP0R5hRYMeUGOmFCVkpnZ1+h+NApqCj
+        BSgHXWGfv1Uxgz2oufRl/Cfq/Q+2uuP6qM2GZ58nOTBLdCklwOz5LaND/RrZrS7kPRoHwAd9Au9/7
+        VyS5qWhiqA8XakUjQlUIfdBgLEX68lgqgI7gdDtOXVfLo73tZYCbiQ/Syj8JjA/fSquZzWw2mdUs6
+        RDYNdz9w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQ6KY-00085z-Qk; Wed, 07 Oct 2020 10:05:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9927F1EC0266;
-        Wed,  7 Oct 2020 12:04:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602065075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/hE/7UxzjG6+51BYRJlMG+kD5c521uFN7WfItXkkBhs=;
-        b=rpgL/fpc7TTly62n08xRcjjX1BRQOBViwB74t41qFbilaVR25FEubsTwpN2seurCtbGlev
-        3gTSqJtKDdudagSYYnHNhYxKwRpjdA1zfbYFndARKqHK/4vDp/6h9vs/Q7l0kGrFIARU+a
-        2+ETgnM/5QDYmUW4xEAQUBpDsm6eOBY=
-Date:   Wed, 7 Oct 2020 12:04:26 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Dave Jiang <dave.jiang@intel.com>, dan.j.williams@intel.com,
-        tony.luck@intel.com, ashok.raj@intel.com, kevin.tian@intel.com,
-        fenghua.yu@intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/5] Add shared workqueue support for idxd driver
-Message-ID: <20201007100426.GF5607@zn.tnic>
-References: <20201005151126.657029-1-dave.jiang@intel.com>
- <20201007070132.GT2968@vkoul-mobl>
- <20201007084856.GE5607@zn.tnic>
- <20201007095313.GV2968@vkoul-mobl>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A77293006D0;
+        Wed,  7 Oct 2020 12:05:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6B50F2BA0366F; Wed,  7 Oct 2020 12:05:51 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 12:05:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     hca@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, rafael.j.wysocki@intel.com
+Subject: Re: [PATCH] s390/idle: Fix suspicious RCU usage
+Message-ID: <20201007100551.GC2628@hirez.programming.kicks-ass.net>
+References: <20200908133031.GT1362448@hirez.programming.kicks-ass.net>
+ <yt9dimbm79qi.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007095313.GV2968@vkoul-mobl>
+In-Reply-To: <yt9dimbm79qi.fsf@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 03:23:13PM +0530, Vinod Koul wrote:
-> Right my build failed for x86 and I have dropped these now. I would have
-> expected the dependency to be a signed tag to be cross merged when I was
-> asked to merge this.
+On Wed, Oct 07, 2020 at 09:53:25AM +0200, Sven Schnelle wrote:
+> Hi Peter,
+> 
+> peterz@infradead.org writes:
+> 
+> > After commit eb1f00237aca ("lockdep,trace: Expose tracepoints") the
+> > lock tracepoints are visible to lockdep and RCU-lockdep is finding a
+> > bunch more RCU violations that were previously hidden.
+> >
+> > Switch the idle->seqcount over to using raw_write_*() to avoid the
+> > lockdep annotation and thus the lock tracepoints.
+> >
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > [..]
+> 
+> I'm still seeing the splat below on s390 when irq tracing is enabled:
 
-I can give you a signed tag is you prefer but that's usually not
-necessary. You can simply merge tip's x86/pasid branch, then apply those
-ontop and test.
+Damn... :/
 
-HTH.
+This one is tricky, trouble seems to be that arch_cpu_idle() is defined
+to enable interrupts (no doubt because ot x86 :/), but we call it before
+rcu_exit_idle().
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+What a mess... let me rummage around the various archs to see what makes
+most sense here.
