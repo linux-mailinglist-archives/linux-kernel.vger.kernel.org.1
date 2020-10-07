@@ -2,304 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5632858C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB672858C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgJGGjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgJGGjF (ORCPT
+        id S1727536AbgJGGkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 02:40:18 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10169 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJGGkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:39:05 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4485C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 23:39:05 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 60so1270319otw.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 23:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65wdk22RjIWoWBAAwwVf87Vz5k90m0lNrkyZZlukbas=;
-        b=AC3ZS5wjwlkpoaJpEXgLXDYSjewMbryGkPvbrTzGb0hkzoK50+4TazN6AmjZzX8/Ik
-         GkcirNPR6kOV9Q37ivs+uN55UgoZkADZs/r2oQqgbrUS/UI8ZcIhdf5yDPIcBFaZM2Hx
-         F1OAndoWfG9nfoT/1RyJkxET4i/bfqW5fDwYL085hvGW8NPcVZmXlzH0jUFFzYD3Ebh0
-         eAiLXuT530DKDxRLkdLS8c9RKUXBwc3AYAxGqKkgAQPI4Ib2wILvBUHR9HQ9mhwHyAeR
-         HmoBOaj1BSVbiyechD2Yrtujn2nWcotr0ghc3sHttsWKVWFvM1HcQ5voyqGrFKjnQ2r2
-         21Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65wdk22RjIWoWBAAwwVf87Vz5k90m0lNrkyZZlukbas=;
-        b=MBuQmYHaQ0F+Bgf+o9PRgGMWyyWzBRrhH9LL4/EN6oLb19fCZX2TxuXlYIjYLmw6/X
-         8KFZ1GdsMyIokWqwm9xM5KWKEDcddNleDqbAVtSnTZN3vLPveSKfH9CRkcnWoDKbBAXE
-         njz6zjD636YcpwClh0co8h6kS4rVNDjnhwnkDwKt0sa4/dpJ4a1xm5iSnT8jOHpSSmV3
-         DyF06KNPWJq0rxgDBSN5gJnUzDKSH1qCjmnAL22Yf1lBHPsM//T1Q4E6Pbc+jgKMiSW5
-         impKajrsraqUEcMzhhxf7oBfDsT6NM/urHJXxrKokDS1Kkui0rfeBRIduguHScYsdij5
-         lBAg==
-X-Gm-Message-State: AOAM531r5TNrNGivMD+oMVabdYO003dPFP8h9Mhcmd/TUQ2XBwABIxJg
-        wagQubtgkJqrwoPwpDVq3NrzRhaSXv2FuMylvEc=
-X-Google-Smtp-Source: ABdhPJx7bBjdXGYknoGBdkdYHAQ9Fhfp8QfvR5RRX5bvxUp4jahS00i77Lx6HV9Z3zHbCEWo7EvFz9PJYTirXDQczwk=
-X-Received: by 2002:a9d:53cc:: with SMTP id i12mr924413oth.215.1602052744828;
- Tue, 06 Oct 2020 23:39:04 -0700 (PDT)
+        Wed, 7 Oct 2020 02:40:17 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7d62650000>; Tue, 06 Oct 2020 23:38:29 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 06:40:15 +0000
+Date:   Wed, 7 Oct 2020 09:40:11 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <saeedm@nvidia.com>, <elic@nvidia.com>
+Subject: [PATCH] vdpa/mlx5: Fix dependency on MLX5_CORE
+Message-ID: <20201007064011.GA50074@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-References: <20201007063315.41585-1-dwaipayanray1@gmail.com>
-In-Reply-To: <20201007063315.41585-1-dwaipayanray1@gmail.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Wed, 7 Oct 2020 12:08:42 +0530
-Message-ID: <CABJPP5AEELQz0t2+34xYQOJ5e5nQzTUUU6UT8ZH0fqm-tacOmg@mail.gmail.com>
-Subject: Re: [PATCH v5] checkpatch: add new warnings to author signoff checks.
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602052709; bh=vnyinnQREiRArIfp9ytJFBUdYLsYXb3A1DrGRuaZsM4=;
+        h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+         Content-Disposition:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=fSu6d00xpIVylKDqerp4ILMfXST/wTc2zMCzjFsmRs7EbfzdKVGNNriu53B+tNuha
+         Q/oWXt5CPbLcW9tB7vJKMyPJW0SrgIEEtqVI3m8dw7AktszlKM6NB5eF8KMppYdb+V
+         9ZfNTtuNZfZvdY14rNwOs2MQlHrOwFcjSy+xdfvJMEqr1IO3PsPyHPpsO47J+L2qgL
+         wrUmvoHpLJ9gdcoKhCuJiQDNNDRopGM2mlexTZmoAT48GaI0tcmWfAsHNzBj/BRVkl
+         9QMjoPARinmOOrjUaOLvgBqhn2RvpUuE+Kzz0kyuLzYgob/fVRCQmC+ySWSsn/uzpa
+         T4rmHQl+HH5HA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 12:03 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
->
-> The author signed-off-by checks are currently very vague.
-> Cases like same name or same address are not handled separately.
->
-> For example, running checkpatch on commit be6577af0cef
-> ("parisc: Add atomic64_set_release() define to avoid CPU soft lockups"),
-> gives:
->
-> WARNING: Missing Signed-off-by: line by nominal patch author
-> 'John David Anglin <dave.anglin@bell.net>'
->
-> The signoff line was:
-> "Signed-off-by: Dave Anglin <dave.anglin@bell.net>"
->
-> Clearly the author has signed off but with a slightly different version
-> of his name. A more appropriate warning would have been to point out
-> at the name mismatch instead.
->
-> Previously, the values assumed by $authorsignoff were either 0 or 1
-> to indicate whether a proper sign off by author is present.
-> Extended the checks to handle four new cases.
->
-> $authorsignoff values now denote the following:
->
-> 0: Missing sign off by patch author.
->
-> 1: Sign off present and identical.
->
-> 2: Addresses and names match, but comments differ.
->    "James Watson(JW) <james@gmail.com>", "James Watson <james@gmail.com>"
->
-> 3: Addresses match, but names are different.
->    "James Watson <james@gmail.com>", "James <james@gmail.com>"
->
-> 4: Names match, but addresses are different.
->    "James Watson <james@watson.com>", "James Watson <james@gmail.com>"
->
-> 5: Names match, addresses excluding subaddress details (RFC 5233) match.
->    "James Watson <james@gmail.com>", "James Watson <james+a@gmail.com>"
->
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> ---
->  scripts/checkpatch.pl | 93 +++++++++++++++++++++++++++++++++++--------
->  1 file changed, 77 insertions(+), 16 deletions(-)
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 31624bbb342e..6e0a0d4603d0 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -1163,10 +1163,10 @@ sub parse_email {
->                 }
->         }
->
-> +       $comment = trim($comment);
->         $name = trim($name);
->         $name =~ s/^\"|\"$//g;
-> -       $name =~ s/(\s*\([^\)]+\))\s*//;
-> -       if (defined($1)) {
-> +       if ($name =~ s/(\s*\([^\)]+\))\s*//) {
->                 $name_comment = trim($1);
->         }
->         $address = trim($address);
-> @@ -1181,10 +1181,12 @@ sub parse_email {
->  }
->
->  sub format_email {
-> -       my ($name, $address) = @_;
-> +       my ($name, $name_comment, $address, $comment) = @_;
->
->         my $formatted_email;
->
-> +       $name_comment = trim($name_comment);
-> +       $comment = trim($comment);
->         $name = trim($name);
->         $name =~ s/^\"|\"$//g;
->         $address = trim($address);
-> @@ -1197,9 +1199,9 @@ sub format_email {
->         if ("$name" eq "") {
->                 $formatted_email = "$address";
->         } else {
-> -               $formatted_email = "$name <$address>";
-> +               $formatted_email = "$name$name_comment <$address>";
->         }
-> -
-> +       $formatted_email .= "$comment";
->         return $formatted_email;
->  }
->
-> @@ -1207,17 +1209,23 @@ sub reformat_email {
->         my ($email) = @_;
->
->         my ($email_name, $name_comment, $email_address, $comment) = parse_email($email);
-> -       return format_email($email_name, $email_address);
-> +       return format_email($email_name, $name_comment, $email_address, $comment);
->  }
->
->  sub same_email_addresses {
-> -       my ($email1, $email2) = @_;
-> +       my ($email1, $email2, $match_comment) = @_;
->
->         my ($email1_name, $name1_comment, $email1_address, $comment1) = parse_email($email1);
->         my ($email2_name, $name2_comment, $email2_address, $comment2) = parse_email($email2);
->
-> +       if ($match_comment != 1) {
-> +               return $email1_name eq $email2_name &&
-> +                      $email1_address eq $email2_address;
-> +       }
->         return $email1_name eq $email2_name &&
-> -              $email1_address eq $email2_address;
-> +              $email1_address eq $email2_address &&
-> +              $name1_comment eq $name2_comment &&
-> +              $comment1 eq $comment2;
->  }
->
->  sub which {
-> @@ -2347,6 +2355,7 @@ sub process {
->         my $signoff = 0;
->         my $author = '';
->         my $authorsignoff = 0;
-> +       my $author_sob = '';
->         my $is_patch = 0;
->         my $is_binding_patch = -1;
->         my $in_header_lines = $file ? 0 : 1;
-> @@ -2674,9 +2683,37 @@ sub process {
->                 if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
->                         $signoff++;
->                         $in_commit_log = 0;
-> -                       if ($author ne '') {
-> -                               if (same_email_addresses($1, $author)) {
-> +                       if ($author ne ''  && $authorsignoff != 1) {
-> +                               if (same_email_addresses($1, $author, 1)) {
->                                         $authorsignoff = 1;
-> +                               } else {
-> +                                       my $ctx = $1;
-> +                                       my ($email_name, $email_comment, $email_address, $comment1) = parse_email($ctx);
-> +                                       my ($author_name, $author_comment, $author_address, $comment2) = parse_email($author);
-> +
-> +                                       if ($email_address eq $author_address && $email_name eq $author_name) {
-> +                                               $author_sob = $ctx;
-> +                                               $authorsignoff = 2;
-> +                                       } elsif ($email_address eq $author_address) {
-> +                                               $author_sob = $ctx;
-> +                                               $authorsignoff = 3;
-> +                                       } elsif ($email_name eq $author_name) {
-> +                                               $author_sob = $ctx;
-> +                                               $authorsignoff = 4;
-> +
-> +                                               my $address1 = $email_address;
-> +                                               my $address2 = $author_address;
-> +
-> +                                               if ($address1 =~ /(\S+)\+\S+(\@.*)/) {
-> +                                                       $address1 = "$1$2";
-> +                                               }
-> +                                               if ($address2 =~ /(\S+)\+\S+(\@.*)/) {
-> +                                                       $address2 = "$1$2";
-> +                                               }
-> +                                               if ($address1 eq $address2) {
-> +                                                       $authorsignoff = 5;
-> +                                               }
-> +                                       }
->                                 }
->                         }
->                 }
-> @@ -2733,7 +2770,7 @@ sub process {
->                         }
->
->                         my ($email_name, $name_comment, $email_address, $comment) = parse_email($email);
-> -                       my $suggested_email = format_email(($email_name, $email_address));
-> +                       my $suggested_email = format_email(($email_name, $name_comment, $email_address, $comment));
->                         if ($suggested_email eq "") {
->                                 ERROR("BAD_SIGN_OFF",
->                                       "Unrecognized email address: '$email'\n" . $herecurr);
-> @@ -2743,9 +2780,9 @@ sub process {
->                                 $dequoted =~ s/" </ </;
->                                 # Don't force email to have quotes
->                                 # Allow just an angle bracketed address
-> -                               if (!same_email_addresses($email, $suggested_email)) {
-> +                               if (!same_email_addresses($email, $suggested_email, 0)) {
->                                         WARN("BAD_SIGN_OFF",
-> -                                            "email address '$email' might be better as '$suggested_email$comment'\n" . $herecurr);
-> +                                            "email address '$email' might be better as '$suggested_email'\n" . $herecurr);
->                                 }
->                         }
->
-> @@ -6891,9 +6928,33 @@ sub process {
->                 if ($signoff == 0) {
->                         ERROR("MISSING_SIGN_OFF",
->                               "Missing Signed-off-by: line(s)\n");
-> -               } elsif (!$authorsignoff) {
-> -                       WARN("NO_AUTHOR_SIGN_OFF",
-> -                            "Missing Signed-off-by: line by nominal patch author '$author'\n");
-> +               } elsif ($authorsignoff != 1) {
-> +                       # authorsignoff values:
-> +                       # 0 -> missing sign off
-> +                       # 1 -> sign off identical
-> +                       # 2 -> names and addresses match, comments mismatch
-> +                       # 3 -> addresses match, names different
-> +                       # 4 -> names match, addresses different
-> +                       # 5 -> names match, addresses excluding subaddress details (refer RFC 5233) match
-> +
-> +                       my $sob_msg = "'From: $author' != 'Signed-off-by: $author_sob'";
-> +
-> +                       if ($authorsignoff == 0) {
-> +                               ERROR("NO_AUTHOR_SIGN_OFF",
-> +                                     "Missing Signed-off-by: line by nominal patch author '$author'\n");
-> +                       } elsif ($authorsignoff == 2) {
-> +                               CHK("NO_AUTHOR_SIGN_OFF",
-> +                                   "From:/Signed-off-by: email comments mismatch: $sob_msg\n");
-> +                       } elsif ($authorsignoff == 3) {
-> +                               WARN("NO_AUTHOR_SIGN_OFF",
-> +                                    "From:/Signed-off-by: email name mismatch: $sob_msg\n");
-> +                       } elsif ($authorsignoff == 4) {
-> +                               WARN("NO_AUTHOR_SIGN_OFF",
-> +                                    "From:/Signed-off-by: email address mismatch: $sob_msg\n");
-> +                       } elsif ($authorsignoff == 5) {
-> +                               WARN("NO_AUTHOR_SIGN_OFF",
-> +                                    "From:/Signed-off-by: email subaddress mismatch: $sob_msg\n");
-> +                       }
->                 }
->         }
->
-> --
-> 2.27.0
->
+Remove propmt for selecting MLX5_VDPA by the user and modify
+MLX5_VDPA_NET to select MLX5_VDPA. Also modify MLX5_VDPA_NET to depend
+on mlx5_core.
 
-Hi,
-I needed to change a bit in a few subroutines which trimmed off
-the comments. Comments now appear in the formatted email.
-The usage is also refactored so that it doesn't cause any undesired
-effects.
+This fixes an issue where configuration sets 'y' for MLX5_VDPA_NET while
+MLX5_CORE is compiled as a module causing link errors.
 
-Coming back to the signoff check, now email comments are also
-compared.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 device")s
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+---
+ drivers/vdpa/Kconfig | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Cases like:
-"Dwaipayan Ray(Dwai) <dwaipayanray1@gmail.com>" and
-"Dwaipayan Ray <dwaipayanray1@gmail.com>", now generate
-a --strict CHK.
+diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+index a8c7607fdc90..1872dff1d3c6 100644
+--- a/drivers/vdpa/Kconfig
++++ b/drivers/vdpa/Kconfig
+@@ -29,9 +29,7 @@ config IFCVF
+ 	  be called ifcvf.
+ 
+ config MLX5_VDPA
+-	bool "MLX5 VDPA support library for ConnectX devices"
+-	depends on MLX5_CORE
+-	default n
++	bool
+ 	help
+ 	  Support library for Mellanox VDPA drivers. Provides code that is
+ 	  common for all types of VDPA drivers. The following drivers are planned:
+@@ -39,7 +37,8 @@ config MLX5_VDPA
+ 
+ config MLX5_VDPA_NET
+ 	tristate "vDPA driver for ConnectX devices"
+-	depends on MLX5_VDPA
++	select MLX5_VDPA
++	depends on MLX5_CORE
+ 	default n
+ 	help
+ 	  VDPA network driver for ConnectX6 and newer. Provides offloading
+-- 
+2.28.0
 
-Thanks,
-Dwaipayan.
