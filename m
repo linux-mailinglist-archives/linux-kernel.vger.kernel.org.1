@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9CF285F82
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82696285F83
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728279AbgJGMvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
+        id S1728271AbgJGMxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbgJGMvM (ORCPT
+        with ESMTP id S1727253AbgJGMxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:51:12 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A874DC061755;
-        Wed,  7 Oct 2020 05:51:12 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y20so2197072iod.5;
-        Wed, 07 Oct 2020 05:51:12 -0700 (PDT)
+        Wed, 7 Oct 2020 08:53:32 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78983C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 05:53:32 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w12so2481684qki.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 05:53:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xuyPM+5n8HvacuwfQXH2nPR1KoE4Q6Cygm65UlTUnT0=;
-        b=ZhArK0B2FrVv+8U+Om519V2tR6SQH9RzvUgpDQL5agbDQKHVbnbYs2xsESze2IaRJe
-         PDAZvAgAs/+lMQERxpAaMzMg/Bro5mpXNhvQwwgz++FP7A0LtjwV2hV5lZgIHRJpRtLt
-         qHKPi8V8NBoYROgSU/WV0fYIO/bCUJY3L8sf1WJF3ryxvr+MKyE8Im2JcHPGABTtNlqB
-         E/jGFji2Eyt6v7CDgiMrAFdQ47CMfA7GPnbndi4iiTfx/re0ka7XAb515AAeMxTNUl74
-         QB7MujMj9VBQuQCxcELWhlULWqxZBC1/ypes5TcnGqavKYWSiSBdEJrpRkY+NoltJJvc
-         MpPQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KlA515YbaSqlZ5HdNJAxX67ZQ8wURO94VZx2F3akvw4=;
+        b=dA67AYL8tGOQlFUOvo+QfRF/rl708XyhW4ispHSDIjZUKoGwkNntK7W2xWj9iBaHJ/
+         x0xkBYLHJjl3a5eqM7H7qoi85DQQsYG/ryEuhELpzixIFzbeD+0b74najSwroNNHv6KQ
+         8KLYcVfT80YrOBoXHWS4mmVeWM5CyAJB/I+Dd1XYR+SFCOIE9eWrMZFnHZSLOt2h5z6b
+         wdlJ9aIV+yR+uzmrApUfnNMI+ESMAYSyuF6cI6bMj3w2RrNx2b9djiIsffeY07kizVIx
+         UZ3M90hqFaR76BzpxUy3pJtEIdNRElC69aB9VWMbcXpy/NXxCyaLaZuuZp0UdU7jdbsr
+         qSAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xuyPM+5n8HvacuwfQXH2nPR1KoE4Q6Cygm65UlTUnT0=;
-        b=o+cvzBPuHzTMD1+RnX5WN5bA/GzEyPfFp4RBTbJkd4TXpRTNk2BjISBhG1KirjMRYI
-         J2dLesENBdKA0kZ4woIzrnUGZsAEzE0qMVzRUGawzxsraOP/TjcFKgQe8G6EJZU3q7xx
-         R+lUlz47X7OMyAlc43rOb5mQhyJ1jS3ynlw/WHbXyaXET33d2VXDysTSJ/oDqKyoqpY4
-         2ZpHbibC6xOxvGDWM620p1mhM8mnnroL/olKHYKb0ZvOuU6DU180tLbAglJ6xFhQ7JP/
-         tKTDyDAH30VyKuSN2dHiU+TEGuj4OTCmky71kJ4Zf71Ju4NiVH8qamVCYFvLfmjHd8pX
-         eKBA==
-X-Gm-Message-State: AOAM532qBpbhqHcHXFzyv1oUF9STtY5Zd4Y3TKl88Q6SMKiJuLnC9i3Z
-        qUIykscI3n/WQjqhmgvjRcudcve6l0n6Ms/H9s8=
-X-Google-Smtp-Source: ABdhPJzbTtymyK2BytkcLsYPVerJz5EfsN0MXMbm4oGq2ge0ii0q6b52cO18HufirvAxF90Wi+ZD9mAb4YI01Hc1vb0=
-X-Received: by 2002:a5e:c70a:: with SMTP id f10mr2159772iop.178.1602075071583;
- Wed, 07 Oct 2020 05:51:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KlA515YbaSqlZ5HdNJAxX67ZQ8wURO94VZx2F3akvw4=;
+        b=qVfmc2nUtq1wd+Ki5f6tlCZ+EGPA0zDjFkOuhNfsJ6GOKDG29O7Hod9F2K1cW2z/aw
+         Idd0zq0cpJHdio6YoWHbIdfS6Z3yPVz7onFdJWIfpqpREr0O4ekvO9Y6jHVNsWhc2vdE
+         5u8OR24dgi9kX5v8uxpYC3IWNaJBVAatgWABLSEghvq4MBGdTlU+RjrjgkmxHpv7ZozT
+         nv64ak6bl8Jb18xvTKbrRPxC9ptCf2leVd4Cs9deQq4QiyGao9UQjl2ECznlQdW6KPt6
+         EjvQ3B+0LLhoNTYfrbdQk9IsT3rt/aNMRYuOSex2iB14ySi4EiHuFfXtHoft5cA3gV9e
+         mA5A==
+X-Gm-Message-State: AOAM532lOS6e9l4LdEQBtRlfKvPp4CDUJ1+y0T7FlAZEGWvvL36PQi5c
+        RtF0kwmWzUEHe/DFzgO3Ozvapw==
+X-Google-Smtp-Source: ABdhPJzv+HysSfOnyOeXJ3JMJvf8YUeslpFrIcXI9E6+9Z0oxuRHxXjv/IG/ZBeSCeIiFaDb8EawUg==
+X-Received: by 2002:a05:620a:159b:: with SMTP id d27mr2639025qkk.28.1602075211631;
+        Wed, 07 Oct 2020 05:53:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id z69sm1370364qkb.7.2020.10.07.05.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 05:53:30 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQ8wk-000tgl-9U; Wed, 07 Oct 2020 09:53:30 -0300
+Date:   Wed, 7 Oct 2020 09:53:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH -next] mm: Use sysfs_emit functions not sprintf
+Message-ID: <20201007125330.GO5177@ziepe.ca>
+References: <8a0d4fc9a4e372b125249b186689f247312d4387.camel@perches.com>
+ <202010070014.76AA763CE@keescook>
 MIME-Version: 1.0
-References: <20200927165947.7317-1-krzk@kernel.org> <20200927165947.7317-2-krzk@kernel.org>
-In-Reply-To: <20200927165947.7317-2-krzk@kernel.org>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 7 Oct 2020 07:51:00 -0500
-Message-ID: <CAHCN7xL2uda0OvkSvZ3tCBGT=WU9OxMqeXvmJaeBSpwb--4=zQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] arm64: dts: imx8mm-beacon-som: fix missing PMIC's
- interrupt line pull-up
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202010070014.76AA763CE@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 12:00 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> The PMIC's interrupt is level low and should be pulled up.  The PMIC's
-> device node had pinctrl-0 property but it lacked pinctrl-names which
-> is required to apply the pin configuration.
->
+On Wed, Oct 07, 2020 at 12:16:01AM -0700, Kees Cook wrote:
+> On Tue, Oct 06, 2020 at 09:28:17AM -0700, Joe Perches wrote:
+> > Convert the various uses of sprintf/snprintf/scnprintf to
+> > format sysfs output to sysfs_emit and sysfs_emit_at to make
+> > clear the output is sysfs related and to avoid any possible
+> > buffer overrun of the PAGE_SIZE buffer.
+> > 
+> > Done with cocci scripts and some typing.
+> 
+> Can you include the cocci script in the commit log? It might be nicer to
+> split the "manual" changes from the cocci changes, as that makes review
+> much easier too.
+> 
+> Regardless, yes, I'm a fan of switching these all around to
+> sysfs_emit*(). :)
 
-Thanks for the fixes!
+Yah, +1, I'd welcome patches for drivers/infiniband as well next cycle
 
-> Fixes: 5f67317bd967 ("arm64: dts: imx8mm: correct interrupt flags")
-> Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Tested-by: Adam Ford <aford173@gmail.com>
-
-> ---
->  arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> index 6de86a4f0ec4..55b36bddd513 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> @@ -72,6 +72,7 @@
->         pmic@4b {
->                 compatible = "rohm,bd71847";
->                 reg = <0x4b>;
-> +               pinctrl-names = "default";
->                 pinctrl-0 = <&pinctrl_pmic>;
->                 interrupt-parent = <&gpio1>;
->                 interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-> --
-> 2.17.1
->
+Thanks,
+Jason
