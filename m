@@ -2,172 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54552285B5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B06285B5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgJGI4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:56:17 -0400
-Received: from mailout10.rmx.de ([94.199.88.75]:44944 "EHLO mailout10.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726218AbgJGI4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:56:16 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout10.rmx.de (Postfix) with ESMTPS id 4C5p8r19lqz31fP;
-        Wed,  7 Oct 2020 10:56:12 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4C5p832qV1z2TTL1;
-        Wed,  7 Oct 2020 10:55:31 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.119) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 7 Oct
- 2020 10:55:31 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
-Subject: [net v3] net: dsa: microchip: fix race condition
-Date:   Wed, 7 Oct 2020 10:55:23 +0200
-Message-ID: <20201007085523.11757-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
+        id S1727923AbgJGIzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgJGIzv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:55:51 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1DDC061755;
+        Wed,  7 Oct 2020 01:55:50 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w21so957408pfc.7;
+        Wed, 07 Oct 2020 01:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wBSwN6CySi9VXctdQH39fe1z7EMm/ePFjoVWaHKSbZM=;
+        b=NLxI4KqmbygpJjxMAQrlyuRtpTCOTOOLLmCjz3P4vwS7w85TVTfZYauKXfPMslhfI2
+         pKaMmCv8tdVEwRFe37uzDubQive+VmXbV9K7v7Ty+RPdt1AhARwzYNxTNmbBY3F5n3qF
+         Ko8qmPDsqjMNq6UcuA/HQZvad5uy2IzOr1VobIJjpFXt5xlZGv2TGwFr+htmk8d1MPv6
+         hJR8YyqlVpcuz5sVNQvU+gIBmMptlyLXYRIN/Wpz8exOtndjZxeFuOhAG45iYBL3vgZR
+         Zs538Ow/OSZQNOsX2xasq765zLVyH+evkcRoQyFX6fCen2uS9wXYG4xufFwZK6ge4eD6
+         5vfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wBSwN6CySi9VXctdQH39fe1z7EMm/ePFjoVWaHKSbZM=;
+        b=DWrbIEj/xTyJ1qX/27AnmBw1gC12UZakp5BPwZTNCMf435SVpseG0seilExmi3rjs1
+         Bl9MgaOuaf3RmTxw9xETI4WAZurz7FZCo9ZCFm+tXYg+JavXht+REvQujyDbHfxyq55u
+         bUuQ6Q3TaYddDlEzL5Z232v7RC5dVjmNJZK7wV9+NIqa5rk4xSq0L3EuZzQ0jWVoERAT
+         rtlLgYUPrTZTY0Ob93kIrWbSzcuJJ+n+ASkddfN07K1jSNtNS53dbYy1GP7vgblIocJe
+         ZngX65sayLNn6jZZNPf4A4ZP+VOuqkkAvyPlaUdiuQB12+tsHfe6E2icrp+ENaFOx7m0
+         7GeQ==
+X-Gm-Message-State: AOAM531Ps1k/hFResUNd8Ohpp7/NENbbVR6dam50BDTiLY2JWlEIbWsB
+        MykRLJNhr70V/71MPN1ZdXs7sfDOTmeCz/wybAo=
+X-Google-Smtp-Source: ABdhPJyEvCXOeL/H/lWIGF5FDFaKJS+D0Ie0L8/uGypdH+G6PKeAb37lNqqlZ0iLRQs3nHIy5AkPX3X1XAIgkSh7vuI=
+X-Received: by 2002:a63:4c1d:: with SMTP id z29mr2157070pga.203.1602060950488;
+ Wed, 07 Oct 2020 01:55:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.119]
-X-RMX-ID: 20201007-105531-4C5p832qV1z2TTL1-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+ <20201006155549.3595-2-muhammad.husaini.zulkifli@intel.com> <49c9fe27-ee82-f490-482b-365101d3b6cf@xilinx.com>
+In-Reply-To: <49c9fe27-ee82-f490-482b-365101d3b6cf@xilinx.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 7 Oct 2020 11:55:34 +0300
+Message-ID: <CAHp75VfXe=dwbNEdUfwmMnZCkSTRH_6HjGD0MUs=GY0en4f0sw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     muhammad.husaini.zulkifli@intel.com,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lakshmi.bai.raja.subramanian@intel.com,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Between queuing the delayed work and finishing the setup of the dsa
-ports, the process may sleep in request_module() (via
-phy_device_create()) and the queued work may be executed prior to the
-switch net devices being registered. In ksz_mib_read_work(), a NULL
-dereference will happen within netof_carrier_ok(dp->slave).
+On Wed, Oct 7, 2020 at 11:38 AM Michal Simek <michal.simek@xilinx.com> wrote:
+> On 06. 10. 20 17:55, muhammad.husaini.zulkifli@intel.com wrote:
 
-Not queuing the delayed work in ksz_init_mib_timer() makes things even
-worse because the work will now be queued for immediate execution
-(instead of 2000 ms) in ksz_mac_link_down() via
-dsa_port_link_register_of().
+...
 
-Call tree:
-ksz9477_i2c_probe()
-\--ksz9477_switch_register()
-   \--ksz_switch_register()
-      +--dsa_register_switch()
-      |  \--dsa_switch_probe()
-      |     \--dsa_tree_setup()
-      |        \--dsa_tree_setup_switches()
-      |           +--dsa_switch_setup()
-      |           |  +--ksz9477_setup()
-      |           |  |  \--ksz_init_mib_timer()
-      |           |  |     |--/* Start the timer 2 seconds later. */
-      |           |  |     \--schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
-      |           |  \--__mdiobus_register()
-      |           |     \--mdiobus_scan()
-      |           |        \--get_phy_device()
-      |           |           +--get_phy_id()
-      |           |           \--phy_device_create()
-      |           |              |--/* sleeping, ksz_mib_read_work() can be called meanwhile */
-      |           |              \--request_module()
-      |           |
-      |           \--dsa_port_setup()
-      |              +--/* Called for non-CPU ports */
-      |              +--dsa_slave_create()
-      |              |  +--/* Too late, ksz_mib_read_work() may be called beforehand */
-      |              |  \--port->slave = ...
-      |             ...
-      |              +--Called for CPU port */
-      |              \--dsa_port_link_register_of()
-      |                 \--ksz_mac_link_down()
-      |                    +--/* mib_read must be initialized here */
-      |                    +--/* work is already scheduled, so it will be executed after 2000 ms */
-      |                    \--schedule_delayed_work(&dev->mib_read, 0);
-      \-- /* here port->slave is setup properly, scheduling the delayed work should be safe */
+> > +             /*
+> > +              * This is like final gatekeeper. Need to ensure changed voltage
 
-Solution:
-1. Do not queue (only initialize) delayed work in ksz_init_mib_timer().
-2. Only queue delayed work in ksz_mac_link_down() if init is completed.
-3. Queue work once in ksz_switch_register(), after dsa_register_switch()
-has completed.
+like a final
 
-Fixes: 7c6ff470aa86 ("net: dsa: microchip: add MIB counter reading support")
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
-v3:
----------
-- Use 12 digts for commit id in "Fixes:" tag
+> > +              * is settled before and after turn on this bit.
+> > +              */
 
-v2:
----------
-- no changes in the patch itself
-- use correct subject-prefix
-- changed wording of commit description
-- added call tree to commit description
-- added "Fixes:" tag
+...
 
- drivers/net/dsa/microchip/ksz_common.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+> > +             /*
+> > +              * This is like final gatekeeper. Need to ensure changed voltage
 
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 8e755b50c9c1..a94d2278b95c 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -103,14 +103,8 @@ void ksz_init_mib_timer(struct ksz_device *dev)
- 
- 	INIT_DELAYED_WORK(&dev->mib_read, ksz_mib_read_work);
- 
--	/* Read MIB counters every 30 seconds to avoid overflow. */
--	dev->mib_read_interval = msecs_to_jiffies(30000);
--
- 	for (i = 0; i < dev->mib_port_cnt; i++)
- 		dev->dev_ops->port_init_cnt(dev, i);
--
--	/* Start the timer 2 seconds later. */
--	schedule_delayed_work(&dev->mib_read, msecs_to_jiffies(2000));
- }
- EXPORT_SYMBOL_GPL(ksz_init_mib_timer);
- 
-@@ -143,7 +137,9 @@ void ksz_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
- 
- 	/* Read all MIB counters when the link is going down. */
- 	p->read = true;
--	schedule_delayed_work(&dev->mib_read, 0);
-+	/* timer started */
-+	if (dev->mib_read_interval)
-+		schedule_delayed_work(&dev->mib_read, 0);
- }
- EXPORT_SYMBOL_GPL(ksz_mac_link_down);
- 
-@@ -446,6 +442,12 @@ int ksz_switch_register(struct ksz_device *dev,
- 		return ret;
- 	}
- 
-+	/* Read MIB counters every 30 seconds to avoid overflow. */
-+	dev->mib_read_interval = msecs_to_jiffies(30000);
-+
-+	/* Start the MIB timer. */
-+	schedule_delayed_work(&dev->mib_read, 0);
-+
- 	return 0;
- }
- EXPORT_SYMBOL(ksz_switch_register);
+Likewise.
+
+> > +              * is settled before and after turn on this bit.
+> > +              */
+
+...
+
+> > +     struct device *dev = &pdev->dev;
+>
+> nit: I got this but as I see 3 lines below maybe would be better to use
+> it everywhere but it can be done in separate patch.
+
+In that case I think it would be better to have that patch first. It
+make follow up code cleaner.
+
+...
+
+> > +     if (of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sd")) {
+> > +             struct gpio_desc *uhs;
+> > +
+> > +             uhs = devm_gpiod_get_optional(dev, "uhs", GPIOD_OUT_HIGH);
+>
+> I can't see change in dt binding to record uhs gpio.
+>
+>
+> Better
+> sdhci_arasan->uhs_gpio = devm_gpiod_get_optional(dev, "uhs",
+> GPIOD_OUT_HIGH);
+>
+> then you can avoid uhs variable.
+
+Actually it's readability vs. additional variable. It was my
+suggestion to have a variable to make readability better.
+Are you insisting on this change?
+
 -- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-
+With Best Regards,
+Andy Shevchenko
