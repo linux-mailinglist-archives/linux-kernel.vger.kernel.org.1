@@ -2,295 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6049286964
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A009286967
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgJGUwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:52:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
+        id S1728140AbgJGUxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:53:03 -0400
+Received: from ozlabs.org ([203.11.71.1]:57155 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgJGUwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:52:24 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726013AbgJGUxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:53:03 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACAD92083B;
-        Wed,  7 Oct 2020 20:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602103943;
-        bh=VufgeyZMr7Y0Kns1vtQDfROiMEQ0QhTW56WCGxEQqpU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ESyIq4FFaT8J3wqUHZHHJCs9U924JFwIsExeqJbr/CFte4AxXjMR72emHGiLRiKn0
-         4G5wbBVTq6wX1DBv6sDyGcZINuY0TG3dBpBfdXOH+vbDd5JOt0hpnrMV35zDmCu+iv
-         OfTNjJo5ZC/yMcc0bRVgtkbuCAsSGWOylnlBpyS4=
-Date:   Wed, 7 Oct 2020 13:52:21 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 2/3] fscrypt: Add metadata encryption support
-Message-ID: <20201007205221.GA1530638@gmail.com>
-References: <20201005073606.1949772-1-satyat@google.com>
- <20201005073606.1949772-3-satyat@google.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C663x0k8Jz9sSf;
+        Thu,  8 Oct 2020 07:53:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602103981;
+        bh=6On4I/lPQImdHo2JDVbFdEInIVX2xUyLpHkwtMClg/I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vFWXRighcPC3w6R90VdXugAczl6KKNmhEuBwRNEe0BRNjirmgVCEZZp2vkBYVN19K
+         fbsleaxqZrGEgVkkt9mifwQpzoiNjSGWHVRVJ0Do9sExWUAjyAwS8lQr4l53oMTIzv
+         LXmykfwGr6eG46KcLOa73MpW61jFCoyOMpLogbMDdGXnSwMXeiy9duvTMUzJHt0Xea
+         B3nz/kCGD4h1k/yL6PhHaytmb2+N53MUBvr7f6/m2oSbhti4jvIslifJigeYaOUJMm
+         QavccieupVYYDZ0XUybdX6G0yugkh7l9WAB5mwc/rn9SZUh8V2gy87IGw133pOV7sw
+         cOe51LdCV9oOg==
+Date:   Thu, 8 Oct 2020 07:52:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the gpio tree
+Message-ID: <20201008075259.3523669c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005073606.1949772-3-satyat@google.com>
+Content-Type: multipart/signed; boundary="Sig_/wFuAdb4w9bIXluHEu8aLUk4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 07:36:05AM +0000, Satya Tangirala wrote:
-> Introduces functions that help with metadata encryption.
-> 
-> In particular, we introduce:
-> 
-> fscrypt_setup_metadata_encryption() - filesystems should call this function
-> to set up metadata encryption on a super block with the encryption
-> algorithm (the desired FSCRYPT_MODE_*) and the key descriptor of the
-> encryption key. The key descriptor is looked up in the logon keyring of the
-> current session using "fscrypt:" as the descriptor prefix.
-> 
-> fscrypt_metadata_crypt_bio() - filesystems should call this function on a
-> bio that it wants metadata crypted. This function will set a bio-crypt-ctx
-> on the bio if the metadata key was set up with
-> fscrypt_setup_metadata_encryption(). The DUN for the first block in the bio
-> is the offset of that block from the start of the filesystem.
-> 
-> fscrypt_free_metadata_encryption() - this function should be called when
-> the super block is being freed. It ensures that the metadata encryption key
-> is evicted, if necessary, from devices.
-> 
-> Note that the filesystem (rather than fscrypt) controls precisely which
-> blocks are encrypted with the metadata encryption key and which blocks are
-> encrypted with other keys/not encrypted at all. Fscrypt only provides some
-> convenience functions that ultimately help encrypt a bio with the metadata
-> encryption key when desired.
-> 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  fs/crypto/Kconfig           |   6 +
->  fs/crypto/Makefile          |   1 +
->  fs/crypto/fscrypt_private.h |  19 ++++
->  fs/crypto/inline_crypt.c    |  18 ---
->  fs/crypto/metadata_crypt.c  | 220 ++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h          |   3 +
->  include/linux/fscrypt.h     |  47 ++++++++
->  7 files changed, 296 insertions(+), 18 deletions(-)
->  create mode 100644 fs/crypto/metadata_crypt.c
-> 
-> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-> index a5f5c30368a2..3010e91f6659 100644
-> --- a/fs/crypto/Kconfig
-> +++ b/fs/crypto/Kconfig
-> @@ -30,3 +30,9 @@ config FS_ENCRYPTION_INLINE_CRYPT
->  	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
->  	help
->  	  Enable fscrypt to use inline encryption hardware if available.
-> +
-> +config FS_ENCRYPTION_METADATA
-> +	bool "Enable metadata encryption with fscrypt"
-> +	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
-> +	help
-> +	  Enable fscrypt to encrypt metadata.
+--Sig_/wFuAdb4w9bIXluHEu8aLUk4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This needs Kconfig help text to describe what this feature is and why anyone
-would want to enable it.  It also needs an update to
-Documentation/filesystems/fscrypt.rst, and a test in xfstests that tests that
-the encryption is being done correctly.
+Hi all,
 
-> diff --git a/fs/crypto/metadata_crypt.c b/fs/crypto/metadata_crypt.c
-> new file mode 100644
-> index 000000000000..5e16df130509
-> --- /dev/null
-> +++ b/fs/crypto/metadata_crypt.c
-> @@ -0,0 +1,220 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Metadata encryption support for fscrypt
-> + *
-> + * Copyright 2020 Google LLC
-> + */
-> +
-> +#include <keys/user-type.h>
-> +#include <linux/blk-crypto.h>
-> +#include <linux/blkdev.h>
-> +#include <linux/buffer_head.h>
-> +#include <linux/sched/mm.h>
-> +
-> +#include "fscrypt_private.h"
-> +
-> +/* TODO: mostly copied from keysetup_v1.c - maybe refactor this function */
-> +static int fscrypt_metadata_get_key_from_id(const char *prefix,
-> +					    char *descriptor_hex,
-> +					    unsigned int min_keysize,
-> +					    char *raw_key)
-> +{
-> +	char *description;
-> +	struct key *key;
-> +	const struct user_key_payload *ukp;
-> +	const struct fscrypt_key *payload;
-> +	int err = -ENOKEY;
-> +
-> +	if (strlen(descriptor_hex) != FSCRYPT_KEY_DESCRIPTOR_SIZE * 2)
-> +		return -EINVAL;
-> +
-> +	description = kasprintf(GFP_NOFS, "%s%s", prefix, descriptor_hex);
-> +	if (!description)
-> +		return -ENOMEM;
-> +
-> +	key = request_key(&key_type_logon, description, NULL);
-> +	kfree(description);
-> +	if (IS_ERR(key))
-> +		return PTR_ERR(key);
-> +
-> +	down_read(&key->sem);
-> +	ukp = user_key_payload_locked(key);
-> +
-> +	if (!ukp) /* was the key revoked before we acquired its semaphore? */
-> +		goto out;
-> +
-> +	payload = (const struct fscrypt_key *)ukp->data;
+In commit
 
-'struct fscrypt_key' was a mistake.  How about having the key payload just be
-the raw key?
+  62ba77749ead ("docs: gpio: add a new document to its index.rst")
 
-Or are you thinking that reserved fields will be needed?
+Fixes tag
 
-> +/**
-> + * fscrypt_setup_metadata_encryption() - prepare a super_block for metadata
-> + *					 encryption
-> + * @sb: The super_block to set up metadata encryption for
-> + * @key_desc_hex: The key descriptor (in hex) to look for in the logon keyring.
+  Fixes: fd1abe99e5fb ("Documentation: gpio: add documentation for gpio-moc=
+kup")
 
-There's no such thing as a "logon keyring".  I think you mean "look for a logon
-key in the process-subscribed keyrings".
+has these problem(s):
 
-> + * @fscrypt_mode_num: The FSCRYPT_MODE_* to use as the encryption algorithm.
-> + *
-> + * Return: 0 on success, negative number on error.
-> + */
-> +int fscrypt_setup_metadata_encryption(struct super_block *sb,
-> +				      char *key_desc_hex,
-> +				      int fscrypt_mode_num)
-> +{
-> +	int err = 0;
-> +	enum blk_crypto_mode_num crypto_mode;
-> +	unsigned int lblk_bits = 64;
-> +	unsigned int dun_bytes;
-> +	unsigned int dummy;
-> +	char raw_key[FSCRYPT_MAX_KEY_SIZE];
+  - Target SHA1 does not exist
 
-For binary data, prefer 'u8' to 'char'.
+Maybe you ment
 
-> +
-> +	if (fscrypt_mode_num > __FSCRYPT_MODE_MAX || fscrypt_mode_num < 0 ||
-> +	    !fscrypt_modes[fscrypt_mode_num].cipher_str) {
-> +		fscrypt_warn(NULL, "Invalid fscrypt mode %d specified for metadata encryption.",
-> +			     fscrypt_mode_num);
-> +		return -EOPNOTSUPP;
-> +	}
+Fixes: 2fd1abe99e5f ("Documentation: gpio: add documentation for gpio-mocku=
+p")
 
-The filenames-only encryption modes (FSCRYPT_MODE_AES_256_CTS and
-FSCRYPT_MODE_AES_128_CTS) will pass this check, which seems undesired.
+--=20
+Cheers,
+Stephen Rothwell
 
-> +
-> +	if (sb->s_cop->get_ino_and_lblk_bits)
-> +		sb->s_cop->get_ino_and_lblk_bits(sb, &dummy, &lblk_bits);
-> +	dun_bytes = DIV_ROUND_UP(lblk_bits, 8);
-> +
-> +	if (fscrypt_modes[fscrypt_mode_num].ivsize < dun_bytes) {
-> +		fscrypt_warn(NULL, "The fscrypt mode only supports %d DUN bytes, but FS requires support for %d DUN bytes.",
-> +			     fscrypt_modes[fscrypt_mode_num].ivsize, dun_bytes);
-> +		return -EOPNOTSUPP;
-> +	}
+--Sig_/wFuAdb4w9bIXluHEu8aLUk4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-lblk_bits is the number of bits used to represent file logical block numbers
-(e.g. ext4_lblk_t).  That's different from the filesystem-wide block number
-(e.g. ext4_fsblk_t), which is what metadata encryption will use.
+-----BEGIN PGP SIGNATURE-----
 
-> +	crypto_mode = fscrypt_modes[fscrypt_mode_num].blk_crypto_mode;
-> +
-> +	err = fscrypt_metadata_get_key_from_id(
-> +					FSCRYPT_KEY_DESC_PREFIX,
-> +					key_desc_hex,
-> +					fscrypt_modes[fscrypt_mode_num].keysize,
-> +					raw_key);
-> +	if (err)
-> +		goto out;
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9+KqsACgkQAVBC80lX
+0GyRAQf+LqNLB4tb5lYsmKjVAZM0leW1t++XeZbNp62kIuFl+vQekm6COUhdBhHO
+jHrIoTEN+kVCKR7HbdFJyPBRUAsEL5RQOFo1Vh7V8csBZT8B5IbzGjjgaTJhr548
+NNZ10uwZrhMaaPSR2ZXk14Ls1+oTK/rj6e91N7zxCG/Lcff7mqiMgmutP5FeJ6UQ
+qWkho3ABUTWutBd9QVXD646FWPDmvSER1WSiRpsOnhe49zvX4lPK1Qt5plIh9GeY
+jyxkJOIDJPEpezHW0wfB9hYHodvVIf6jLsjGJQSya4Xj2o24o0K7mlgEFsGItC6v
+rxlHPxr7uT4/EVtM8GzKJPjLiFcS8w==
+=pS6W
+-----END PGP SIGNATURE-----
 
-This is allowing for the key to be longer than the provided keysize, in which
-case only a prefix of the key is used.
-
-It should require the exact keysize instead.
-
-> +
-> +	sb->s_metadata_key = kzalloc(sizeof(*sb->s_metadata_key), GFP_NOFS);
-
-No need for GFP_NOFS here.
-
-> +/**
-> + * fscrypt_free_metadata_encryption() - free metadata encryption fields in
-> + *					super_block.
-> + * @sb: The super_block to free metatdata encryption fields from
-> + */
-> +void fscrypt_free_metadata_encryption(struct super_block *sb)
-> +{
-> +	int num_devices;
-> +	int i;
-> +	struct request_queue *q;
-> +
-> +	if (!sb->s_metadata_key)
-> +		return;
-> +
-> +	num_devices = fscrypt_get_num_devices(sb);
-> +
-> +	for (i = 0; i < num_devices; i++) {
-> +		q = fscrypt_get_device(sb, i);
-> +		if (WARN_ON(!q))
-> +			continue;
-> +		blk_crypto_evict_key(q, sb->s_metadata_key);
-> +	}
-> +
-> +	memzero_explicit(sb->s_metadata_key, sizeof(*sb->s_metadata_key));
-> +	kzfree(sb->s_metadata_key);
-> +	sb->s_metadata_key = NULL;
-> +}
-
-kfree_sensitive(), not kzfree().
-
-Also, memzero_explicit() is redundant.
-
-> +/**
-> + * fscrypt_metadata_crypt_bio() - Add metadata encryption context to bio.
-> + *
-> + * @bio: The bio to add the encryption context to
-> + * @lblk: The logical block number within the filesystem at which this bio
-> + *	  starts reading/writing data.
-
-Should be:
-
-   @fsblk: The block number within the filesystem ...
-
-> + * @sb: The superblock of the filesystem
-> + * @gfp_mask: gfp_mask for bio_crypt_context allocation
-> + */
-> +void fscrypt_metadata_crypt_bio(struct bio *bio, u64 lblk,
-> +				struct super_block *sb, gfp_t gfp_mask)
-> +{
-> +	u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE] = { 0 };
-> +
-> +	if (!sb->s_metadata_key)
-> +		return;
-> +
-> +	dun[0] = lblk;
-> +	bio_crypt_set_ctx(bio, sb->s_metadata_key, dun, gfp_mask);
-> +}
-
-Perhaps fscrypt_set_bio_crypt_ctx() should call this?  It seems there should be
-a single function that filesystems can call that handles setting the
-bio_crypt_ctx for both file contents and metadata encryption.
-
-- Eric
+--Sig_/wFuAdb4w9bIXluHEu8aLUk4--
