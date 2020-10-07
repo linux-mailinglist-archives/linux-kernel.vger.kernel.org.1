@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F88285CE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA9C285CE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgJGK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbgJGK2p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:28:45 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B97C061755;
-        Wed,  7 Oct 2020 03:28:44 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id a7so601064lfk.9;
-        Wed, 07 Oct 2020 03:28:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=H2N8UG6dic65TiBzlWgQu1CisgZIiaE0Rlzl4pcozag=;
-        b=dQZAzOpLSe+lUXEaHN6i1aw7a5TaOeFrdXOH2fNI2pe6gMyFxHCoX25QpUjcmwtSff
-         SqhLOXoXM5nmrEmv/gkd8R79Oe2MU4SnwRyzKBg9QN0pvUTMjMRFOzQda266SPjRJuCD
-         rOku4rtjcbgptU43sta5UXoalx33PAsqNisO/dA2x05z3Rgfvpy3fUZrdqcMJy3zn3pP
-         lvTbI5fSElsHhLyjBtR8uTLE1TNZmD2Fk5bC2EltQ7fSJDh6EP6mTqXtrvriABmsawGz
-         EKCt+0sig1cn70EJ8vKfsAMK5Ic92jUFl8J1qJVqE6b0bMRlhKljp2aZ5zJ6cV4lEqAg
-         IhIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=H2N8UG6dic65TiBzlWgQu1CisgZIiaE0Rlzl4pcozag=;
-        b=SPV3QDtSo30h4KEiR7qkLQv3v04swWw4FToP/RwZ/mhnqbhHlzx5hMKWlZi8RJyklC
-         Pd2cI87yEKq6DVT/MDpEg+nfTlLARzJS4CxETLOjUVgjylM2fEyf6ab/NOuNkK4tEyo5
-         +DJ+SSIha/EJqsH8wWyC/cjEQTU6MUnIentrku5VRq79kNcqPpJNC/sRyJmAwnpXM6+O
-         BNE5fYNzDIyoAmLQUrW489Bo480ZCaJEy4pz3qKTq3cQFbeVVFKUuYCZWwERY9/8XULl
-         AeB/L+6tQsk89bXkOQUDeYeMibcWlOSTdONdLNyM9+Agmm1KiJaUH/c3itUyPwnF93Jj
-         yd/Q==
-X-Gm-Message-State: AOAM533HWSvuhbQoq5n5NciVXT9r/ROUeNS7p30GkHkNrB6ZF4AdxBP9
-        N2YHjZpOquQem0HfYHOYsp4=
-X-Google-Smtp-Source: ABdhPJzuS/fxGr0bBPYvubbiVZY9aJgTugLhxEnxd2+B2P4zw8n4WX1edPzG52Mqq3TE4dwGb5/H4A==
-X-Received: by 2002:a19:4151:: with SMTP id o78mr694102lfa.408.1602066523199;
-        Wed, 07 Oct 2020 03:28:43 -0700 (PDT)
-Received: from wasted.omprussia.ru ([2a00:1fa0:826:1518:6ea7:4f6b:1e21:3742])
-        by smtp.gmail.com with ESMTPSA id c20sm271406lfg.15.2020.10.07.03.28.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 03:28:42 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCAyLzJdIHVzYjogY2RuczM6IFZhcmlhYmxlIOKAmGxl?=
- =?UTF-8?Q?ngth=e2=80=99_set_but_not_used?=
-To:     Roger Quadros <rogerq@ti.com>, Pawel Laszczak <pawell@cadence.com>,
-        balbi@kernel.org
-Cc:     peter.chen@nxp.com, nsekhar@ti.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kurahul@cadence.com
-References: <20201007033932.23050-1-pawell@cadence.com>
- <8994106d-2cc5-fa2c-bbcc-6526632ff80b@ti.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <18bf46b7-d86a-fbf0-9ce7-c2d0765758f1@gmail.com>
-Date:   Wed, 7 Oct 2020 13:28:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727958AbgJGKbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:31:08 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42971 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726219AbgJGKbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:31:07 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 097AUXEr006622;
+        Wed, 7 Oct 2020 12:30:33 +0200
+Date:   Wed, 7 Oct 2020 12:30:33 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        torvalds@linux-foundation.org
+Subject: Re: Control Dependencies vs C Compilers
+Message-ID: <20201007103033.GB6550@1wt.eu>
+References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
+ <875z7nm4qm.fsf@oldenburg2.str.redhat.com>
+ <20201007093243.GB2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <8994106d-2cc5-fa2c-bbcc-6526632ff80b@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007093243.GB2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 10/7/20 11:15 AM, Roger Quadros wrote:
-
-[...]
->> Patch removes not used variable 'length' from
->> cdns3_wa2_descmiss_copy_data function.
->>
->> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+On Wed, Oct 07, 2020 at 11:32:43AM +0200, Peter Zijlstra wrote:
+> A branch that cannot be optimized away and prohibits lifting stores
+> over. One possible suggestion would be allowing the volatile keyword as
+> a qualifier to if.
 > 
-> Fixes: commit 141e70fef4ee ("usb: cdns3: gadget: need to handle sg case for workaround 2 case")
+> 	x = *foo;
+> 	volatile if (x > 42)
+> 		*bar = 1;
+> 
+> This would tell the compiler that the condition is special in that it
+> must emit a conditional branch instruction and that it must not lift
+> stores (or sequence points) over it.
 
-   No "commit" is needed here.
+This test is interesting, because if foo and bar are of the same type,
+nothing prevents them from aliasing and the compiler cannot make wild
+guesses on them (i.e. they may be plain memory as well as memory-mapped
+registers).
 
-> Acked-by: Roger Quadros <rogerq@ti.com>
-[...]
+Extending it like this shows a difference between the use of volatile
+and __atomic_{load,store}_n. While both are correct in that each access
+is properly performed, for an unknown reason the compiler decided to
+implement two distinct branches in the atomic case and to inflate the
+code:
 
-MBR, Sergei
+$ gcc -v
+gcc version 9.3.0 (GCC)
+
+$ cat foo-volatile.c
+long foobar(long *foo, long *bar)
+{
+        *(volatile long *)bar = 10;
+        if (*(volatile long *)foo <= 42)
+                *(volatile long *)bar = 64;
+        if (*(volatile long *)foo > 42)
+                *(volatile long *)bar = 0;
+        return *(volatile long *)bar;
+}
+$ gcc -c -O2 foo-volatile.c
+$ objdump -dr foo-volatile.o 
+0000000000000000 <foobar>:
+   0:   48 c7 06 0a 00 00 00    movq   $0xa,(%rsi)
+   7:   48 8b 07                mov    (%rdi),%rax
+   a:   48 83 f8 2a             cmp    $0x2a,%rax
+   e:   7f 07                   jg     17 <foobar+0x17>
+  10:   48 c7 06 40 00 00 00    movq   $0x40,(%rsi)
+  17:   48 8b 07                mov    (%rdi),%rax
+  1a:   48 83 f8 2a             cmp    $0x2a,%rax
+  1e:   7e 07                   jle    27 <foobar+0x27>
+  20:   48 c7 06 00 00 00 00    movq   $0x0,(%rsi)
+  27:   48 8b 06                mov    (%rsi),%rax
+  2a:   c3                      retq   
+
+
+$ cat foo-atomic.c  
+long foobar(long *foo, long *bar)
+{
+        __atomic_store_n(bar, 10, __ATOMIC_RELAXED);
+        if (__atomic_load_n(foo, __ATOMIC_RELAXED) <= 42)
+                __atomic_store_n(bar, 64, __ATOMIC_RELAXED);
+        if (__atomic_load_n(foo, __ATOMIC_RELAXED) > 42)
+                __atomic_store_n(bar, 0, __ATOMIC_RELAXED);
+        return __atomic_load_n(bar, __ATOMIC_RELAXED);
+}
+$ objdump -dr foo-atomic.o 
+0000000000000000 <foobar>:
+   0:   48 c7 06 0a 00 00 00    movq   $0xa,(%rsi)
+   7:   48 8b 07                mov    (%rdi),%rax
+   a:   48 83 f8 2a             cmp    $0x2a,%rax
+   e:   7e 10                   jle    20 <foobar+0x20>
+  10:   48 8b 07                mov    (%rdi),%rax
+  13:   48 83 f8 2a             cmp    $0x2a,%rax
+  17:   7f 17                   jg     30 <foobar+0x30>
+  19:   48 8b 06                mov    (%rsi),%rax
+  1c:   c3                      retq   
+  1d:   0f 1f 00                nopl   (%rax)
+  20:   48 c7 06 40 00 00 00    movq   $0x40,(%rsi)
+  27:   48 8b 07                mov    (%rdi),%rax
+  2a:   48 83 f8 2a             cmp    $0x2a,%rax
+  2e:   7e e9                   jle    19 <foobar+0x19>
+  30:   48 c7 06 00 00 00 00    movq   $0x0,(%rsi)
+  37:   48 8b 06                mov    (%rsi),%rax
+  3a:   c3                      retq   
+
+When building at -Os both produce the same code as the volatile version
+above. It *seems* to me that the volatile version always produces more
+optimal code, but is it always correct ? This is just an illustration of
+how tricky this can currently be and how confusing it can sometimes be
+for the developer to make sure the desired code is emitted in a few
+special cases. And just for this, having the compiler support more easily
+predictable constructs would be a nice improvement.
+
+Willy
