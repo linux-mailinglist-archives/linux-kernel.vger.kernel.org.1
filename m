@@ -2,69 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3087B2869C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEC12869CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbgJGVAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:00:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37258 "EHLO mail.kernel.org"
+        id S1728282AbgJGVBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:01:38 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:48716 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgJGVAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:00:42 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F1C120782;
-        Wed,  7 Oct 2020 21:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602104442;
-        bh=GWys9lwjFwn3y2WLSz7/9gklVnm2rLZvAo9opNCFNxw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wsIcdJkx02/Jqxk4lgxxNghmKWKmf7nGpPUem6SwFDSBheWQD2Hi1eC7x3BHLBFxf
-         ei/Is0gGRbQ4qXTA7QMZXG5EhehNR+eiAStKtP0JMC1lR6Hdz9O3poFMWmF42JxCWl
-         O1fI67OYgM3d+jCQ6RDECZAN1PTZ/wiBPZopnKSA=
-Date:   Wed, 7 Oct 2020 14:00:40 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
-Message-ID: <20201007210040.GB1530638@gmail.com>
-References: <20201005073606.1949772-1-satyat@google.com>
+        id S1726013AbgJGVBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 17:01:37 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kQGZ4-000bBm-A7; Wed, 07 Oct 2020 23:01:34 +0200
+Date:   Wed, 7 Oct 2020 23:01:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vivek Unune <npcomplete13@gmail.com>
+Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] ARM: dts: BCM5301X: Linksys EA9500 make use of
+ pinctrl
+Message-ID: <20201007210134.GD112961@lunn.ch>
+References: <cover.1601655904.git.npcomplete13@gmail.com>
+ <6687de05226dd055ee362933d4841a12b038792d.1601655904.git.npcomplete13@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201005073606.1949772-1-satyat@google.com>
+In-Reply-To: <6687de05226dd055ee362933d4841a12b038792d.1601655904.git.npcomplete13@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 07:36:03AM +0000, Satya Tangirala wrote:
-> This patch series adds support for metadata encryption to F2FS using
-> blk-crypto.
+On Wed, Oct 07, 2020 at 03:01:50PM -0400, Vivek Unune wrote:
+> Forgo the use of mmioreg mdio mux infavor of the pinctrl
 
-This patch series needs more explanation about what "metadata encryption" is,
-why people will want to use it (as opposed to either not using it, or using
-fscrypt + dm-crypt instead), and why this is the best implementation of it.
+Hi Vivek
 
-> Patch 2 introduces some functions to fscrypt that help filesystems perform
-> metadata encryption. Any filesystem that wants to use metadata encryption
-> can call fscrypt_setup_metadata_encryption() with the super_block of the
-> filesystem, the encryption algorithm and the descriptor of the encryption
-> key. The descriptor is looked up in the logon keyring of the current
-> session with "fscrypt:" as the prefix of the descriptor.
+Could you add some more details please. I don't know this
+hardware. I'm assuming there are two MDIO busses, external as talked
+about in the comments, and an internal one? And for this hardware you
+only need one of them? But i don't see what pinmux has to do with
+this?
 
-I notice this is missing the step I suggested to include the metadata encryption
-key in the HKDF application-specific info string when deriving subkeys from the
-fscrypt master keys.
-
-The same effect could also be achieved by adding an additional level to the key
-hierarchy: each HKDF key would be derived from a fscrypt master key and the
-metadata encryption key.
-
-We need one of those, to guarantee that the file contents encryption is at least
-as strong as the "metadata encryption".
-
-- Eric
+Thanks
+	Andrew
+ 
