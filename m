@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14B2285C90
+	by mail.lfdr.de (Postfix) with ESMTP id 5293B285C8F
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgJGKJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728024AbgJGKJA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:09:00 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58DAC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 03:08:59 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id p21so800179pju.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 03:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4zAlyHu3ozVwhIdc8JuhpCI5T47/aq9qR52/3xNtzoE=;
-        b=d1bLEP6O8l2t1teQ7OtLJS+0E8nkTe4PSCUUuOi8LhwThHSIAzScvJJxVNWwrTjFsw
-         gdVnXX/RvkS5FQdDXh5QsPAU9t34495bbhsaG1Uj8fmoQXfHBDs6y7aIdCdydpdkkqHk
-         3luI89zlBE5reHz/ChyEZqGsWv6eUg3Nx6wEE3meDopsZAHLDsz+licI2O9yQ5/cXmwU
-         thz2o/oKpepvkGme3St/tEkOKeFGLWa/uG3rIm5gVjmLlyjW4ucCKDYGtZI4mIkp7tf1
-         T7mGJUmx6TWOZowJk7qtg3IyZS2RqICYvcduRI71MXqhsQHwEQnITTZD5XEP1kg6i2ql
-         KwBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=4zAlyHu3ozVwhIdc8JuhpCI5T47/aq9qR52/3xNtzoE=;
-        b=tHZKFk9Iim51DSQSuCZKnEkPlJwqDCMQKgrV6uoDr2x/m8fx7XsBOvYeRwFM4GApbY
-         +QnaY8Gp0WekWSjOfoRF0qIFtgo4c4m8K0Av3GSyjszyII+D6cn8EAqf3Uz/sOj/VMEi
-         pzGy3KzPcCh1WsAyR+2XLt9ZWlcpz3FO5p7COywcZuwtWnO6yaZT1MBbyWIAsKLeorm2
-         5RdmkwY0i1JhBpXE+kSkn0SHfkuSbRFWwB+M/umhvNkfbUlZA67WTi9dhLv2gOBxO/O9
-         nwRnEm2NVFO1AZi5melk+C8lmyz70SL2ULfmQwT0LnTYbUmUoSMxJxTCtAB4FFPu/FMI
-         fMEw==
-X-Gm-Message-State: AOAM530xOmTK/tvRx14M8VPugpeRiVW/W2NtCWiyncJJbJ/IKG7Vihsu
-        JxEIYB0MDAESuPCYTUiQbconow==
-X-Google-Smtp-Source: ABdhPJwG4XN+q49MZ9O4RWqa8DonZxPxMTXdW7QbCKNxEz+y6bUBf5dxXAl3AwAwgmIowjHCWTfLTQ==
-X-Received: by 2002:a17:90a:6787:: with SMTP id o7mr2224342pjj.125.1602065339238;
-        Wed, 07 Oct 2020 03:08:59 -0700 (PDT)
-Received: from localhost.localdomain ([117.252.65.235])
-        by smtp.gmail.com with ESMTPSA id m4sm2322174pgv.87.2020.10.07.03.08.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Oct 2020 03:08:58 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
-        jejb@linux.ibm.com
-Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
-        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
-        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
-        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
-        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        id S1728040AbgJGKJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:09:02 -0400
+Received: from mail.thorsis.com ([92.198.35.195]:35513 "EHLO mail.thorsis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727996AbgJGKI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:08:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.thorsis.com (Postfix) with ESMTP id 0C54D3579;
+        Wed,  7 Oct 2020 12:08:55 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id a5gx01CScUQn; Wed,  7 Oct 2020 12:08:54 +0200 (CEST)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+        id D21B536BC; Wed,  7 Oct 2020 12:08:54 +0200 (CEST)
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.2
+From:   Alexander Dahl <ada@thorsis.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Alexander Dahl <post@lespocky.de>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v7 4/4] MAINTAINERS: Add entry for TEE based Trusted Keys
-Date:   Wed,  7 Oct 2020 15:37:48 +0530
-Message-Id: <1602065268-26017-5-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
-References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Jeff LaBundy <jeff@labundy.com>
+Subject: Re: [PATCH v7 03/12] dt-bindings: mfd: Fix schema warnings for pwm-leds
+Date:   Wed, 07 Oct 2020 12:08:46 +0200
+Message-ID: <2640582.VKub60Wb7X@ada>
+In-Reply-To: <20201007100359.GC12224@duo.ucw.cz>
+References: <20201005203451.9985-1-post@lespocky.de> <20201005203451.9985-4-post@lespocky.de> <20201007100359.GC12224@duo.ucw.cz>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for TEE based Trusted Keys framework.
+Hei Pavel,
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Am Mittwoch, 7. Oktober 2020, 12:03:59 CEST schrieb Pavel Machek:
+> > The node names for devices using the pwm-leds driver follow a certain
+> > naming scheme (now).  Parent node name is not enforced, but recommended
+> > by DT project.
+> > 
+> >   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> >   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
+> > 
+> > /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.exampl
+> > e.dt.yaml: pwmleds: 'panel' does not match any of the regexes:
+> > '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'> 
+> >         From schema:
+> >         /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/
+> >         leds-pwm.yaml> 
+> > Signed-off-by: Alexander Dahl <post@lespocky.de>
+> 
+> Okay, so I need Rob's ack here, I guess... and rest of the series is
+> not really for my tree.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 48aff80..eb3d889 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9663,6 +9663,14 @@ F:	include/keys/trusted-type.h
- F:	include/keys/trusted_tpm.h
- F:	security/keys/trusted-keys/
- 
-+KEYS-TRUSTED-TEE
-+M:	Sumit Garg <sumit.garg@linaro.org>
-+L:	linux-integrity@vger.kernel.org
-+L:	keyrings@vger.kernel.org
-+S:	Supported
-+F:	include/keys/trusted_tee.h
-+F:	security/keys/trusted-keys/trusted_tee.c
-+
- KEYS/KEYRINGS
- M:	David Howells <dhowells@redhat.com>
- M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
--- 
-2.7.4
+I think so, too.
+
+I saw you applied patch number 1, all the other patches are DT and from my 
+side those can wait for the Acks required and maybe I change the indexes again 
+and I'm fine resending all that after the 5.10 merge window.
+
+Thanks for applying the non-DT patches for leds subsystem, the rest will be 
+sorted out without hurry.
+
+Greets
+Alex
+
+
 
