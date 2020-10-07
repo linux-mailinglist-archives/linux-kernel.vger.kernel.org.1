@@ -2,113 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9822867DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0832867EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgJGS47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45208 "EHLO
+        id S1727242AbgJGTA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728344AbgJGS4z (ORCPT
+        with ESMTP id S1726312AbgJGTAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:56:55 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F22C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:56:55 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id s4so4135440qkf.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:56:55 -0700 (PDT)
+        Wed, 7 Oct 2020 15:00:25 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AAAC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 12:00:25 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id ev17so1792767qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 12:00:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hucdKobXaHk9Vpk01VjxDQUEIlu6eYASN/jiLFuXijg=;
-        b=SNkiDcXhf8oV4GnEFwXCA2JkCI8lfRTYqFFI/i51g8N8R9CMI0TLBvayUFl3SPq2jE
-         fcMBGnU5zBGw+fPNTEvGuPiKJFEEyMNXu7k+4unLOmcVu4eCgetSTtZ8jFXMRmCGPaLo
-         PREcWEoNr8RjWrB0C4j2LZZmhL4snf9R0wNOAzoLdnx063EiJJxnvdvs9hpHlhLDgDDQ
-         X3mGARCYDHY+PLKwsJAAuEvXBOMcY7QPKDH0UppnRh0xkwc/U8t1eg/pVQZUA9JpjtUM
-         x+sQM85MfhjwFOaVpJRbWwamKLS38YjHa8En0TsrQW8Od14MZCS3GTLGvxwbipIrUlJ0
-         HdNg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gwCbc+E55rt8fvg0Z5RrVkUNpQiUldF+rgqAtNMU+jY=;
+        b=cMpNZVJG4K3eU3P6Jrd5CX0FOMJ/Il/vK4/7K8PoeJK7lgtOlsvjUxgy6GDWgBQ9D2
+         Aw5daoxRX/jrMpwNlaXAoNbojcae9A3GOXghtCpRVV9HiqHG68GEdYZUDKJSzv88i+3p
+         aFkcGAX3Swzr2MMkwPQxIHr1Vh0HtpCatuWCeA2XXODcHpk/xTpMM82sPz7LoWoj7YYW
+         Luz6GqqQzWzkcXY5HEYy6sj4zsu7Bc3sA+CDzGGX0SAXYkf0OGAbHVxxlJGYn7JBpuJm
+         7XOCU2H2Wb2aAXJ06fg5h12CT15LqHGmR1WX6xifpDWK1MH5EARIEabM4b4xkoRgWTA0
+         GO+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hucdKobXaHk9Vpk01VjxDQUEIlu6eYASN/jiLFuXijg=;
-        b=mNf26VbHqj0lFavWutM0w0f9xV8/Ua5L1fGjVTyY7lZhylLZQOtYDrxm6PriIXSC/3
-         Pu8T4h7YcuOHooDLutE5DpxxkPN46+HngKVVXQHDRzQFapIpkhKB74RDNtBiFo5Gx+Ii
-         6sySE4uaxF2bXYtm7E/Qf8CSLUIe8UlU4OeDonMhIWDJ5PGpXFyFR5OukXPtQRPnZzBF
-         Loo8PoqEsUq0kL3VCuGVF3tntkJrh/4vVPw6ghI8hP+mSXWebzqH9UG+ByXZ4ltX3O+j
-         6IzlcQ46npUbEMDaRx2EWRYlgC5LFowDlkQNe40MoYY8z43GwcXHiUUWMm/bMA0clUxW
-         vPuQ==
-X-Gm-Message-State: AOAM5326jRPbFUPtYXD1zdT6odwJ1tEVWiMU2E3lYmkaNF/wwI7Lkq9e
-        xlb4OxWAoNHbYTC02RHucm0oCw==
-X-Google-Smtp-Source: ABdhPJyv+pscj1uQm5l+2rGwyvNUTf34cKVOEz/9CM7hN75mUBaLoHOL+AJEukAuUIBhiCDVla6C7Q==
-X-Received: by 2002:a37:dc85:: with SMTP id v127mr4365223qki.107.1602097014467;
-        Wed, 07 Oct 2020 11:56:54 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gwCbc+E55rt8fvg0Z5RrVkUNpQiUldF+rgqAtNMU+jY=;
+        b=Rq2XhBhMvxzVuCb/JGrTUz/UGn4YvtCewhZT85Y3+5woPJXxieir6zEB41IR1CGiUV
+         s5TDmYxzS1GcaCDpKAaNcp2QrZ0gWfcVaZYBUKZRfvig3i3l+06XMNT46LmKu3zkDhs1
+         yYf9slNB/2Oy6IkiTVh0Cqt7ndAqxAM8G90CwKlj1mfImG8XQdT5HOVFdPobsCp2Lg/j
+         duKVMD9cbocLVpKNJPQb2TpKzHa5QjqvzlWW0a5XbeuV9HXmtMVyVHghZY4H2iblTECP
+         e2IiGAqZSi4AIhxfedy1gA5SGnMcGMxbts1AxOGunmVjto/bVJUILEPY86HbX41ox4IM
+         AmFQ==
+X-Gm-Message-State: AOAM530dU0tO3YdkUimjOuncM2Hukt2jLcr7OPejyTDnqgpk90+V6hTG
+        qMy7bgFto87nuGhQ9TVv2HulzQ==
+X-Google-Smtp-Source: ABdhPJzTPvAeI7la8FWGJoa8jqCaN28XQwmJorKlewk43J8Zj2TVezuTxCVG7tggprHbo9uup+dLjQ==
+X-Received: by 2002:a0c:9d03:: with SMTP id m3mr4454155qvf.54.1602097224984;
+        Wed, 07 Oct 2020 12:00:24 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id j88sm2115558qte.96.2020.10.07.11.56.53
+        by smtp.gmail.com with ESMTPSA id v65sm2143675qkb.88.2020.10.07.12.00.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 11:56:53 -0700 (PDT)
+        Wed, 07 Oct 2020 12:00:24 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1kQEcP-001EtS-3Q; Wed, 07 Oct 2020 15:56:53 -0300
-Date:   Wed, 7 Oct 2020 15:56:53 -0300
+        id 1kQEfn-001EwU-Q3; Wed, 07 Oct 2020 16:00:23 -0300
+Date:   Wed, 7 Oct 2020 16:00:23 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] mm: Use sysfs_emit functions not sprintf
-Message-ID: <20201007185653.GZ5177@ziepe.ca>
-References: <8a0d4fc9a4e372b125249b186689f247312d4387.camel@perches.com>
- <202010070014.76AA763CE@keescook>
- <20201007125330.GO5177@ziepe.ca>
- <a334b30e7b617eb6b0ea22f2bf00e0f188c4ae42.camel@perches.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 11/13] mm: add unsafe_follow_pfn
+Message-ID: <20201007190023.GA5177@ziepe.ca>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-12-daniel.vetter@ffwll.ch>
+ <20201007173647.GW5177@ziepe.ca>
+ <CAKMK7uE9sbK_tGhJbsnHgD9rOnx-dr=2xmpMw7RvvvpPLnjVVA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a334b30e7b617eb6b0ea22f2bf00e0f188c4ae42.camel@perches.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uE9sbK_tGhJbsnHgD9rOnx-dr=2xmpMw7RvvvpPLnjVVA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:04:42AM -0700, Joe Perches wrote:
-> On Wed, 2020-10-07 at 09:53 -0300, Jason Gunthorpe wrote:
-> > On Wed, Oct 07, 2020 at 12:16:01AM -0700, Kees Cook wrote:
-> > > On Tue, Oct 06, 2020 at 09:28:17AM -0700, Joe Perches wrote:
-> > > > Convert the various uses of sprintf/snprintf/scnprintf to
-> > > > format sysfs output to sysfs_emit and sysfs_emit_at to make
-> > > > clear the output is sysfs related and to avoid any possible
-> > > > buffer overrun of the PAGE_SIZE buffer.
-> > > > 
-> > > > Done with cocci scripts and some typing.
-> > > 
-> > > Can you include the cocci script in the commit log? It might be nicer to
-> > > split the "manual" changes from the cocci changes, as that makes review
-> > > much easier too.
-> > > 
-> > > Regardless, yes, I'm a fan of switching these all around to
-> > > sysfs_emit*(). :)
-> > 
-> > Yah, +1, I'd welcome patches for drivers/infiniband as well next cycle
+On Wed, Oct 07, 2020 at 08:10:34PM +0200, Daniel Vetter wrote:
+> On Wed, Oct 7, 2020 at 7:36 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 06:44:24PM +0200, Daniel Vetter wrote:
+> > > Way back it was a reasonable assumptions that iomem mappings never
+> > > change the pfn range they point at. But this has changed:
+> > >
+> > > - gpu drivers dynamically manage their memory nowadays, invalidating
+> > > ptes with unmap_mapping_range when buffers get moved
+> > >
+> > > - contiguous dma allocations have moved from dedicated carvetouts to
+> > > cma regions. This means if we miss the unmap the pfn might contain
+> > > pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> > >
+> > > - even /dev/mem now invalidates mappings when the kernel requests that
+> > > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> > > ("/dev/mem: Revoke mappings when a driver claims the region")
+> > >
+> > > Accessing pfns obtained from ptes without holding all the locks is
+> > > therefore no longer a good idea.
+> > >
+> > > Unfortunately there's some users where this is not fixable (like v4l
+> > > userptr of iomem mappings) or involves a pile of work (vfio type1
+> > > iommu). For now annotate these as unsafe and splat appropriately.
+> > >
+> > > This patch adds an unsafe_follow_pfn, which later patches will then
+> > > roll out to all appropriate places.
+> > >
+> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: John Hubbard <jhubbard@nvidia.com>
+> > > Cc: Jérôme Glisse <jglisse@redhat.com>
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: linux-mm@kvack.org
+> > > Cc: linux-arm-kernel@lists.infradead.org
+> > > Cc: linux-samsung-soc@vger.kernel.org
+> > > Cc: linux-media@vger.kernel.org
+> > > Cc: kvm@vger.kernel.org
+> > >  include/linux/mm.h |  2 ++
+> > >  mm/memory.c        | 32 +++++++++++++++++++++++++++++++-
+> > >  mm/nommu.c         | 17 +++++++++++++++++
+> > >  security/Kconfig   | 13 +++++++++++++
+> > >  4 files changed, 63 insertions(+), 1 deletion(-)
+> >
+> > Makes sense to me.
+> >
+> > I wonder if we could change the original follow_pfn to require the
+> > ptep and then lockdep_assert_held() it against the page table lock?
 > 
-> The script to change <foo>_show(struct device *, ...)
-> function uses of
-> sprintf to sysfs_emit is attached.
+> The safe variant with the pagetable lock is follow_pte_pmd. The only
+> way to make follow_pfn safe is if you have an mmu notifier and
+> corresponding retry logic. That is not covered by lockdep (it would
+> splat if we annotate the retry side), so I'm not sure how you'd check
+> for that?
 
-> $ git diff --shortstat drivers/infiniband
->  25 files changed, 322 insertions(+), 303 deletions(-)
-> 
-> Because it touches a lot of drivers, the 'cc' list is
-> pretty large for the diff.
-> 
-> Given the size of the cc list, unless there's a single
-> acceptable patch, I will not submit individual patches as
-> I really dislike the back and forth of this sub-maintainer
-> will but this sub-maintainer will not apply a patch.
+Right OK.
 
-This size looks not too bad, we regularly do all driver updates. Up to
-you if you want split per driver. In rdma land something like this
-will go ahead unless someone points to technical errors in the
-conversion.
+> Checking for ptep lock doesn't work here, since the one leftover safe
+> user of this (kvm) doesn't need that at all, because it has the mmu
+> notifier.
 
-Thanks,
+Ah, so a better name and/or function kdoc for follow_pfn is probably a
+good iead in this patch as well.
+
+> So I think we're as good as it gets, since I really have no idea how
+> to make sure follow_pfn callers do have an mmu notifier registered.
+
+Yah, can't be done. Most mmu notifier users should be using
+hmm_range_fault anyhow, kvm is really very special here.
+ 
+> I've followed the few other CONFIG_STRICT_FOO I've seen, which are all
+> explicit enables and default to "do not break uapi, damn the
+> (security) bugs". Which is I think how this should be done. It is in
+> the security section though, so hopefully competent distros will
+> enable this all.
+
+I thought the strict ones were more general and less clear security
+worries, not bugs like this.
+
+This is "allow a user triggerable use after free bug to exist in the
+kernel"
+
 Jason
