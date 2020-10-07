@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BFC2866D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214CA286797
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgJGSVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgJGSVc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:21:32 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5943BC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:21:31 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d6so1400422plo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dG6Pgx/Z9y+pOCfqUIFqdfuAZFEij0fF75ctt2BQqBk=;
-        b=a7iDeZjsKaTEY/BiOzObBqqX9n3Dzzfs/KHGqaicIMR3Vbh1OhdAioF5svR2RzoUKd
-         nOsreW5t5/4lueFad8DoK3CGPmzEXTYEy4p9DLX1h3Lzr0AFXS2BEZa3YRX00EAAyEHq
-         XyE19Vebvee8aWMkPoFILYFpR0e3zNEucAAwY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dG6Pgx/Z9y+pOCfqUIFqdfuAZFEij0fF75ctt2BQqBk=;
-        b=aY0nGb02hwZP1M20N5MYpnLbHY9SOIbYTzHZ1H1jTgnuj19K0LJSACD5L9gLbAWO3M
-         zFL7uRsv0/31iB0SyTLrZyfnQISh4v4xI62qb2U2XDLUrxkIoM+s5QvwQSLYqy7E/FYo
-         Eezzm91e5+GB+ahGjyUvD0NW8/Y9+zCjddmq0X9L+9TViRqaYVvNllUNhTU4r3zK1FTb
-         SNPaOsc5/OxS7uHLVuvVE1NtWad5OmQTHbhLwsub/f6xZYgnMunTiTHEi2Wt7PxwOMSD
-         gzfLsv76s12BdMwciIcz5wVArvCFt4AshMG6L0KSUM5w7e3Lf3cv1tyd38ssQILdGnx/
-         h/aA==
-X-Gm-Message-State: AOAM533KvhyBSxJOZu4lS+qIYVel8Mq0xBlrY0g6BMdTCCoiWZtEeWlH
-        Mx22MTKuv6/RVD7LnH4DE23BrA==
-X-Google-Smtp-Source: ABdhPJwx5SPC2AB77nIV2f5dVxirmq93hteJVobZaULnIUZ810ab0rDWkEpGuoPBMumBkRsJ7ak9GQ==
-X-Received: by 2002:a17:902:b191:b029:d2:6277:3898 with SMTP id s17-20020a170902b191b02900d262773898mr4105693plr.10.1602094890958;
-        Wed, 07 Oct 2020 11:21:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m13sm3299757pjl.45.2020.10.07.11.21.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 11:21:29 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 11:21:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     minyard@acm.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Corey Minyard <cminyard@mvista.com>
-Subject: Re: [PATCH v2 09/11] drivers/char/ipmi: convert stats to use
- counter_atomic32
-Message-ID: <202010071121.1BA120D@keescook>
-References: <cover.1602011710.git.skhan@linuxfoundation.org>
- <46fcf1d28532868abd1c2dedaab221be56736db9.1602011710.git.skhan@linuxfoundation.org>
+        id S1728108AbgJGSn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:43:27 -0400
+Received: from mga04.intel.com ([192.55.52.120]:26830 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727033AbgJGSn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 14:43:27 -0400
+IronPort-SDR: CP1Gl9nTcB5RFHVXbr5oQsqvS4rhh34KuG+LB/pohmpSkuy48yq+37pfDPFOwkYVJfGhP4MeT3
+ ypcaJRLLiMnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="162443739"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="162443739"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 11:43:26 -0700
+IronPort-SDR: 28VHoGOndfRnWTasoHT1hQdzfg/1H2hWmZA8KwIuABiy+4waKFUCmBCW10nvcxycazrmxxsp0F
+ uzTinV6I+Ylg==
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="297604799"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 11:43:02 -0700
+Subject: [PATCH] x86/mce: Gate copy_mc_fragile() export by
+ CONFIG_COPY_MC_TEST=y
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     bp@alien8.de
+Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org
+Date:   Wed, 07 Oct 2020 11:24:32 -0700
+Message-ID: <160209507277.2768223.9933672492157583642.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <20201007111447.GA23257@zn.tnic>
+References: <20201007111447.GA23257@zn.tnic>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46fcf1d28532868abd1c2dedaab221be56736db9.1602011710.git.skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 02:44:40PM -0600, Shuah Khan wrote:
-> counter_atomic* is introduced to be used when a variable is used as
-> a simple counter and doesn't guard object lifetimes. This clearly
-> differentiates atomic_t usages that guard object lifetimes.
-> 
-> counter_atomic* variables will wrap around to 0 when it overflows and
-> should not be used to guard resource lifetimes, device usage and
-> open counts that control state changes, and pm states.
-> 
-> atomic_t variables used for stats are atomic counters. Overflow will
-> wrap around and reset the stats and no change with the conversion.
-> 
-> Convert them to use counter_atomic32.
-> 
-> Reviewed-by: Corey Minyard <cminyard@mvista.com>
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+It appears that modpost is not happy about exporting assembly symbols
+that are not consumed in the same build. As Boris reports:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+    WARNING: modpost: EXPORT symbol "copy_mc_fragile" [vmlinux] version generation failed, symbol will not be versioned.
 
--- 
-Kees Cook
+The export is only consumed in the CONFIG_COPY_MC_TEST=y case, and even
+then not in a way that modpost could see. CONFIG_COPY_MC_TEST uses a
+module built in tools/testing/nvdimm/ to exercise the copy_mc_fragile()
+corner cases.  Given the test already requires manually editing the
+config entry for CONFIG_COPY_MC_TEST to make it "def_bool y" the
+additional dependency to require is CONFIG_MODVERSIONS=n is not too
+onerous.
+
+Alternatively, COPY_MC_TEST and its related infrastructure could just be
+ripped out because it has served its purpose. For now, just stop
+exporting the symbol by default, and add the MODVERSIONS dependency to
+the test.
+
+Fixes: ec6347bb4339 ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()")
+Reported-by: Borislav Petkov <bp@suse.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ arch/x86/Kconfig.debug    |    1 +
+ arch/x86/lib/copy_mc_64.S |    2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
+index 27b5e2bc6a01..6f0f5d8ac62e 100644
+--- a/arch/x86/Kconfig.debug
++++ b/arch/x86/Kconfig.debug
+@@ -63,6 +63,7 @@ config EARLY_PRINTK_USB_XDBC
+ 	  crashes or need a very simple printk logging facility.
+ 
+ config COPY_MC_TEST
++	depends on !MODVERSIONS
+ 	def_bool n
+ 
+ config EFI_PGT_DUMP
+diff --git a/arch/x86/lib/copy_mc_64.S b/arch/x86/lib/copy_mc_64.S
+index 892d8915f609..50fb05256751 100644
+--- a/arch/x86/lib/copy_mc_64.S
++++ b/arch/x86/lib/copy_mc_64.S
+@@ -88,7 +88,9 @@ SYM_FUNC_START(copy_mc_fragile)
+ .L_done:
+ 	ret
+ SYM_FUNC_END(copy_mc_fragile)
++#ifdef CONFIG_COPY_MC_TEST
+ EXPORT_SYMBOL_GPL(copy_mc_fragile)
++#endif
+ 
+ 	.section .fixup, "ax"
+ 	/*
+
