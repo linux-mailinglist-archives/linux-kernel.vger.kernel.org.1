@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C053E2869F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220ED2869E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgJGVPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:15:46 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53430 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727821AbgJGVPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:15:46 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097L9wBI146673;
-        Wed, 7 Oct 2020 21:15:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=JPMWL4bTVnMXu+B6HCp8FDYPYl29laP2NiOsFFNS9QQ=;
- b=WGXPcwhBqra3r34fdmj2xTjTiiUtavQUyyv8t5oMMOoUDEPyghSyV6iBb+d3ispKtFmx
- MPzuM3HiJ0a1msA4SRyTRdNZV7rxFJjTF5m+EHxhobYPQipTTOsAxe517iy99bs/v6Ox
- 2qlG49kEYwgIxRMtjrk7as3Adn7WyGVZ0Nq/ILuLmXEZ4dep0rIEP8QLt2yC+R/ALhEj
- q2uR53OjmSm7N9A3eEIKUXXprTkvxqARVAkAQPzKOGd8Kqcv5rOgzMmnqGYkQP/RXQh2
- Ai56OmPwrqCYkZAALrEzGOYS/oBK8XmoXV2djklH7arEv10e5HqFkwaYjV8jqeWDRgbA hA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33ym34sgtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 21:15:01 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097LBKZG037135;
-        Wed, 7 Oct 2020 21:13:01 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 33y2vq0gpt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Oct 2020 21:13:01 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 097LCnQm031393;
-        Wed, 7 Oct 2020 21:12:49 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 14:12:49 -0700
-Subject: Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap pages of hugetlb
- page
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <31eac1d8-69ba-ed2f-8e47-d957d6bb908c@oracle.com>
-Message-ID: <9d220de0-f06d-cb5b-363f-6ae97d5b4146@oracle.com>
-Date:   Wed, 7 Oct 2020 14:12:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728613AbgJGVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:13:38 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:54434 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727948AbgJGVNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 17:13:38 -0400
+Received: from zn.tnic (p200300ec2f091000329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1000:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B85551EC047E;
+        Wed,  7 Oct 2020 23:13:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602105216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/Yh+wbC0gePra/fHYoDJBYHzwvAnC3odlqyeb1eRkS0=;
+        b=Ahf9g86lq4umgnClS2SgAlXjH3q8p/EGeW3E/h1y+n2Z2C36gTb4SS2luUWONCEkQxF1y3
+        uY/Ic3KwuleaXauo/4WodNuPropBofqVWw8PcZNDIeoE0hbOqLegth9TMiKN1QIjmZdCgJ
+        TY2FWjueaW0HRiDyieoy+76tHexnF28=
+Date:   Wed, 7 Oct 2020 23:13:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Michael Matz <matz@suse.de>, Dave Jiang <dave.jiang@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
+        x86 <x86@kernel.org>
+Subject: Re: [tip: x86/pasid] x86/asm: Carve out a generic movdir64b() helper
+ for general usage
+Message-ID: <20201007211327.GN5607@zn.tnic>
+References: <20201005151126.657029-2-dave.jiang@intel.com>
+ <160208728972.7002.18130814269550766361.tip-bot2@tip-bot2>
+ <20201007170835.GM2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <31eac1d8-69ba-ed2f-8e47-d957d6bb908c@oracle.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=2 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070137
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0
- malwarescore=0 phishscore=0 suspectscore=2 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070137
+Content-Disposition: inline
+In-Reply-To: <20201007170835.GM2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 2:58 PM, Mike Kravetz wrote:
-> On 9/15/20 5:59 AM, Muchun Song wrote:
->> Hi all,
->>
->> This patch series will free some vmemmap pages(struct page structures)
->> associated with each hugetlbpage when preallocated to save memory.
-> ...
->> The mapping of the first page(index 0) and the second page(index 1) is
->> unchanged. The remaining 6 pages are all mapped to the same page(index
->> 1). So we only need 2 pages for vmemmap area and free 6 pages to the
->> buddy system to save memory. Why we can do this? Because the content
->> of the remaining 7 pages are usually same except the first page.
->>
->> When a hugetlbpage is freed to the buddy system, we should allocate 6
->> pages for vmemmap pages and restore the previous mapping relationship.
->>
->> If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
->> substantial gain. On our server, run some SPDK applications which will
->> use 300GB hugetlbpage. With this feature enabled, we can save 4797MB
->> memory.
+On Wed, Oct 07, 2020 at 07:08:35PM +0200, Peter Zijlstra wrote:
+> (%rdx), %rax, surely?
 
-I had a hard time going through the patch series as it is currently
-structured, and instead examined all the code together.  Muchun put in
-much effort and the code does reduce memory usage.
-- For 2MB hugetlb pages, we save 5 pages of struct pages
-- For 1GB hugetlb pages, we save 4086 pages of struct pages
+Right, later. Already tagged the branch so that Vinod can base stuff ontop.
 
-Code is even in pace to handle poisoned pages, although I have not looked
-at this closely.  The code survives the libhugetlbfs and ltp huge page tests.
+> Also, that's a horrible convention, but I suppose (%rdx), (%rax) was
+> out?
 
-To date, nobody has asked the important question "Is the added complexity
-worth the memory savings?".  I suppose it all depends on one's use case.
-Obviously, the savings are more significant when one uses 1G huge pages but
-that may not be the common case today.
+See the end of this mail:
 
-> At a high level this seems like a reasonable optimization for hugetlb
-> pages.  It is possible because hugetlb pages are 'special' and mostly
-> handled differently than pages in normal mm paths.
+https://lkml.kernel.org/r/alpine.LSU.2.20.2009241356020.20802@wotan.suse.de
 
-Such an optimization only makes sense for something like hugetlb pages.  One
-reason is the 'special' nature of hugetlbfs as stated above.  The other is
-that this optimization mostly makes sense for huge pages that are created
-once and stick around for a long time.  hugetlb pool pages are a perfect
-example.  This is because manipulation of struct page mappings is done when
-a huge page is created or destroyed.
+> Can we pretty please get a binutils version that knows about this
+> instruction, such that we know when we can get rid of the silly .byte
+> encoded mess?
 
-> The majority of the new code is hugetlb specific, so it should not be
-> of too much concern for the general mm code paths.
+It looks like support for this insn got introduced in this binutils commit:
 
-It is true that much of the code in this series was put in hugetlb.c.  However,
-I would argue that there is a bunch of code that only deals with remapping
-the memmap which should more generic and added to sparse-vmemmap.c.  This
-would at least allow for easier reuse.
+c0a30a9f0ab4 ("Enable Intel MOVDIRI, MOVDIR64B instructions")
 
-Before Muchun and myself put more effort into this series, I would really
-like to get feedback on the whether or not this should move forward.
-Specifically, is the memory savings worth added complexity?  Is the removing
-of struct pages going to come back and cause issues for future features?
+So I guess from 2.31 onwards:
+
+$ git tag --contains c0a30a9f0ab48
+binutils-2_31
+binutils-2_31_1
+binutils-2_32
+binutils-2_33
+binutils-2_33_1
+binutils-2_34
+binutils-2_35
+binutils-2_35_1
+gdb-8.2-release
+gdb-8.2.1-release
+gdb-8.3-release
+gdb-8.3.1-release
+gdb-9.1-release
+gdb-9.2-release
+...
+
 -- 
-Mike Kravetz
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
