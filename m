@@ -2,144 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282FC28676A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FDF286779
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgJGSdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgJGSdT (ORCPT
+        id S1727810AbgJGSim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:38:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726111AbgJGSig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:33:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014B5C061755;
-        Wed,  7 Oct 2020 11:33:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=U/c+B7T9WMrd6eL8WgkscuYEd+YykLCR9sKTV+rRDys=; b=c96dhvCXuJIi/qeyZLC5agD9yN
-        qiFHXVMZDLOSUY70PBEI000aLqDNl98m2cQDIv8FucPUdLY8SKqi19p77SRh1shbJfIRFedT1yKkM
-        utQZTINNrdvXEZ8s8b8XrmbOg8Cbi2KJvXNKvPnxKf2f2II4yiKXsBc4ef1V2NIgL4+8FgAEarRQr
-        aboaQDSsodSV5MFG+/+g/qrqPKGkAeHTtrQtE62d2Du50L6XYO4PU2k4AOA3Acn2fB/V7B2KVcPv/
-        xz3Yk/ZrzPXGQSlGIRBSHg2fo3fPFco3GvGE+WeOeRvB133K2T6KPAt+7yQH7g65faHN65J938kBj
-        JtMSiQEQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQEFY-0003Qk-33; Wed, 07 Oct 2020 18:33:16 +0000
-Date:   Wed, 7 Oct 2020 19:33:16 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jerome Glisse <jglisse@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
-        Josef Bacik <jbacik@fb.com>
-Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
-Message-ID: <20201007183316.GV20115@casper.infradead.org>
-References: <20201007010603.3452458-1-jglisse@redhat.com>
- <20201007032013.GS20115@casper.infradead.org>
- <20201007144835.GA3471400@redhat.com>
- <20201007170558.GU20115@casper.infradead.org>
- <20201007175419.GA3478056@redhat.com>
+        Wed, 7 Oct 2020 14:38:36 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097IYNKc006508;
+        Wed, 7 Oct 2020 14:38:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=TFu57K4njEYovVICwB/ESJ6eZcFWmJKCtnsfr5sOxT0=;
+ b=EiGRIwR2yDMNSPOyQPUIqAWyk/16VWkkjPgqzPKc7Ny+DvPsJfeeDFi5zbu1OEXaodDA
+ tyT5SdTRvMnh2mJlKxljdL39P28g8ezCUB1qkDzYgJQ4JiTScz31ydDPH//k148tA5RF
+ rvDWao0EIUkJMi+vLgT5BXcIwHwU+EGSOnOQgJeiTML99cyjKaWft4NPLMDePkmCIrpH
+ 9YHA2J1UreeRye3F5Pre4HMKHRM5+Y8xYkjWhAREGFGq+Rqgt2UiMkZ7R/4QdT4Azrm+
+ pOuqnGk/9vY2HiUtvvsmVAWKCHr66H2Qk8Adjw8CFv/IOgvA0s3Jwl7h1zMXuxex8QeO /A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 341jyp88nn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 14:38:14 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 097IYQEv006830;
+        Wed, 7 Oct 2020 14:38:14 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 341jyp88m5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 14:38:13 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 097IRp2v021768;
+        Wed, 7 Oct 2020 18:38:10 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 33xgx82c7k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 18:38:10 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 097Ic8ZL30474562
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Oct 2020 18:38:08 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC683A4066;
+        Wed,  7 Oct 2020 18:38:07 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2D888A405F;
+        Wed,  7 Oct 2020 18:38:04 +0000 (GMT)
+Received: from srikart450.in.ibm.com (unknown [9.85.90.101])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Oct 2020 18:38:03 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>
+Subject: [PATCH v3 00/11]  Optimization to improve CPU online/offline on Powerpc
+Date:   Thu,  8 Oct 2020 00:07:49 +0530
+Message-Id: <20201007183800.27415-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007175419.GA3478056@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 01:54:19PM -0400, Jerome Glisse wrote:
-> On Wed, Oct 07, 2020 at 06:05:58PM +0100, Matthew Wilcox wrote:
-> > On Wed, Oct 07, 2020 at 10:48:35AM -0400, Jerome Glisse wrote:
-> > > On Wed, Oct 07, 2020 at 04:20:13AM +0100, Matthew Wilcox wrote:
-> > > > On Tue, Oct 06, 2020 at 09:05:49PM -0400, jglisse@redhat.com wrote:
-> > > > > The present patchset just add mapping argument to the various vfs call-
-> > > > > backs. It does not make use of that new parameter to avoid regression.
-> > > > > I am posting this whole things as small contain patchset as it is rather
-> > > > > big and i would like to make progress step by step.
-> > > > 
-> > > > Well, that's the problem.  This patch set is gigantic and unreviewable.
-> > > > And it has no benefits.  The idea you present here was discussed at
-> > > > LSFMM in Utah and I recall absolutely nobody being in favour of it.
-> > > > You claim many wonderful features will be unlocked by this, but I think
-> > > > they can all be achieved without doing any of this very disruptive work.
-> > > 
-> > > You have any ideas on how to achieve them without such change ? I will
-> > > be more than happy for a simpler solution but i fail to see how you can
-> > > work around the need for a pointer inside struct page. Given struct
-> > > page can not grow it means you need to be able to overload one of the
-> > > existing field, at least i do not see any otherway.
-> > 
-> > The one I've spent the most time thinking about is sharing pages between
-> > reflinked files.  My approach is to pull DAX entries into the main page
-> > cache and have them reference the PFN directly.  It's not a struct page,
-> > but we can find a struct page from it if we need it.  The struct page
-> > would belong to a mapping that isn't part of the file.
-> 
-> You would need to do a lot of filesystem specific change to make sure
-> the fs understand the special mapping. It is doable but i feel it would
-> have a lot of fs specific part.
+Changelog v2->v3:
+v1 link: https://lore.kernel.org/linuxppc-dev/20200921095653.9701-1-srikar@linux.vnet.ibm.com/t/#u
+	Use GFP_ATOMIC instead of GFP_KERNEL since allocations need to
+	atomic at the time of CPU HotPlug.
+	Reported by Qian Cai <cai@redhat.com>
+	Only changes in Patch 09 and Patch 11.
 
-I can't see any way to make it work without filesystem cooperation.
+Changelog v1->v2:
+v1 link: https://lore.kernel.org/linuxppc-dev/20200727075532.30058-1-srikar@linux.vnet.ibm.com/t/#u
+	Added five more patches on top of Seven.
+	Rebased to 19th Sept 2020 powerpc/next (based on v5.9-rc2)
 
-> > For other things (NUMA distribution), we can point to something which
-> > isn't a struct page and can be distiguished from a real struct page by a
-> > bit somewhere (I have ideas for at least three bits in struct page that
-> > could be used for this).  Then use a pointer in that data structure to
-> > point to the real page.  Or do NUMA distribution at the inode level.
-> > Have a way to get from (inode, node) to an address_space which contains
-> > just regular pages.
-> 
-> How do you find all the copies ? KSM maintains a list for a reasons.
-> Same would be needed here because if you want to break the write prot
-> you need to find all the copy first. If you intend to walk page table
-> then how do you synchronize to avoid more copy to spawn while you
-> walk reverse mapping, we could lock the struct page i guess. Also how
-> do you walk device page table which are completely hidden from core mm.
+Here are some optimizations and fixes to make CPU online/offline
+faster and hence result in faster bootup.
 
-You have the inode and you iterate over each mapping, looking up the page
-that's in each mapping.  Or you use the i_mmap tree to find the pages.
+Its based on top of my v5 coregroup support patchset.
+https://lore.kernel.org/linuxppc-dev/20200810071834.92514-1-srikar@linux.vnet.ibm.com/t/#u
 
-> > Using main memory to cache DAX could be done today without any data
-> > structure changes.  It just needs the DAX entries pulled up into the
-> > main pagecache.  See earlier item.
-> > 
-> > Exclusive write access ... you could put a magic value in the pagecache
-> > for pages which are exclusively for someone else's use and handle those
-> > specially.  I don't entirely understand this use case.
-> 
-> For this use case you need a callback to break the protection and it
-> needs to handle all cases ie not only write by CPU through file mapping
-> but also file write syscall and other syscall that can write to page
-> (pipe, ...).
+Anton reported that his 4096 cpu (1024 cores in a socket) was taking too
+long to boot. He also analyzed that most of the time was being spent on
+updating cpu_core_mask.
 
-If the page can't be found in the page cache, then by definition you
-won't be able to write to them.
+The first two patches should solve Anton's immediate problem.
+On the unofficial patches, Anton reported that the boot time came from 30
+mins to 6 seconds. (Basically a high core count in a single socket
+configuration). Satheesh also reported similar numbers.
 
-> > I don't have time to work on all of these.  If there's one that
-> > particularly interests you, let's dive deep into it and figure out how
-> 
-> I care about KSM, duplicate NUMA copy (not only for CPU but also
-> device) and write protection or exclusive write access. In each case
-> you need a list of all the copy (for KSM of the deduplicated page)
-> Having a special entry in the page cache does not sound like a good
-> option in many code path you would need to re-look the page cache to
-> find out if the page is in special state. If you use a bit flag in
-> struct page how do you get to the callback or to the copy/alias,
-> walk all the page tables ?
+The rest are cleanups/optimizations.
 
-Like I said, something that _looks_ like a struct page.  At least looks
-enough like a struct page that you can pull a pointer out of the page cache and check the bit.  But since it's not actually a struct page, you can
-use the rest of the data structure for pointers to things you want to
-track.  Like the real struct page.
+Since cpu_core_mask is an exported symbol for a long duration, lets retain
+as a snapshot of cpumask_of_node.
 
-> I do not see how i am doing violence to struct page :) The basis of
-> my approach is to pass down the mapping. We always have the mapping
-> at the top of the stack (either syscall entry point on a file or
-> through the vma when working on virtual address).
+$ lscpu
+Architecture:        ppc64le
+Byte Order:          Little Endian
+CPU(s):              1024
+On-line CPU(s) list: 0-1023
+Thread(s) per core:  8
+Core(s) per socket:  8
+Socket(s):           16
+NUMA node(s):        16
+Model:               2.0 (pvr 004d 0200)
+Model name:          POWER8 (architected), altivec supported
+Hypervisor vendor:   pHyp
+Virtualization type: para
+L1d cache:           64K
+L1i cache:           32K
+L2 cache:            512K
+L3 cache:            8192K
+NUMA node0 CPU(s):   0-63
+NUMA node1 CPU(s):   64-127
+NUMA node2 CPU(s):   128-191
+NUMA node3 CPU(s):   192-255
+NUMA node4 CPU(s):   256-319
+NUMA node5 CPU(s):   320-383
+NUMA node6 CPU(s):   384-447
+NUMA node7 CPU(s):   448-511
+NUMA node8 CPU(s):   512-575
+NUMA node9 CPU(s):   576-639
+NUMA node10 CPU(s):  640-703
+NUMA node11 CPU(s):  704-767
+NUMA node12 CPU(s):  768-831
+NUMA node13 CPU(s):  832-895
+NUMA node14 CPU(s):  896-959
+NUMA node15 CPU(s):  960-1023
 
-Yes, you explained all that in Utah.  I wasn't impressed than, and I'm
-not impressed now.
+$ dmesg -k | grep -i -e Bringing -e Brought -e sysrq -e bug
+With powerp/next
+[    0.000000] printk: debug: ignoring loglevel setting.
+[    0.354971] smp: Bringing up secondary CPUs ...
+[  233.354676] smp: Brought up 16 nodes, 1024 CPUs
+[  330.023073] sysrq: Changing Loglevel
+[  330.023101] sysrq: Loglevel set to 9
+
+With +patchset
+[    0.000000] printk: debug: ignoring loglevel setting.
+[    0.351703] smp: Bringing up secondary CPUs ...
+[    4.059859] smp: Brought up 16 nodes, 1024 CPUs
+[   98.309015] sysrq: Changing Loglevel
+[   98.309044] sysrq: Loglevel set to 9
+
+Observations:
+CPU bringup time reduced to 4 seconds from 233 seconds on this 1024 CPU
+system. This resulted in System boot up time reducing to 98 seconds from
+330 seconds. The actual improvement would depend on your system topology.
+
+Topology verification post patchset on a 2 node Power9 PowerVM LPAR
+
+powerpc/next                                                        +patchset
+------------                                                        ---------
+$ lscpu
+Architecture:        ppc64le                                        Architecture:        ppc64le
+Byte Order:          Little Endian                                  Byte Order:          Little Endian
+CPU(s):              128                                            CPU(s):              128
+On-line CPU(s) list: 0-127                                          On-line CPU(s) list: 0-127
+Thread(s) per core:  8                                              Thread(s) per core:  8
+Core(s) per socket:  8                                              Core(s) per socket:  8
+Socket(s):           2                                              Socket(s):           2
+NUMA node(s):        2                                              NUMA node(s):        2
+Model:               2.2 (pvr 004e 0202)                            Model:               2.2 (pvr 004e 0202)
+Model name:          POWER9 (architected), altivec supported        Model name:          POWER9 (architected), altivec supported
+Hypervisor vendor:   pHyp                                           Hypervisor vendor:   pHyp
+Virtualization type: para                                           Virtualization type: para
+L1d cache:           32K                                            L1d cache:           32K
+L1i cache:           32K                                            L1i cache:           32K
+L2 cache:            512K                                           L2 cache:            512K
+L3 cache:            10240K                                         L3 cache:            10240K
+NUMA node0 CPU(s):   0-63                                           NUMA node0 CPU(s):   0-63
+NUMA node1 CPU(s):   64-127                                         NUMA node1 CPU(s):   64-127
+
+$ tail -f /proc/cpuinfo
+processor	: 127                                               processor	: 127
+cpu		: POWER9 (architected), altivec supported           cpu		: POWER9 (architected), altivec supported
+clock		: 3000.000000MHz                                    clock		: 3000.000000MHz
+revision	: 2.2 (pvr 004e 0202)                               revision	: 2.2 (pvr 004e 0202)
+
+timebase	: 512000000                                         timebase	: 512000000
+platform	: pSeries                                           platform	: pSeries
+model		: IBM,9008-22L                                      model		: IBM,9008-22L
+machine		: CHRP IBM,9008-22L                                 machine		: CHRP IBM,9008-22L
+MMU		: Radix                                             MMU		: Radix
+
+$ grep . /proc/sys/kernel/sched_domain/cpu0/domain*/name
+--------------------------------------------------------
+/proc/sys/kernel/sched_domain/cpu0/domain0/name:SMT                 /proc/sys/kernel/sched_domain/cpu0/domain0/name:SMT
+/proc/sys/kernel/sched_domain/cpu0/domain1/name:CACHE               /proc/sys/kernel/sched_domain/cpu0/domain1/name:CACHE
+/proc/sys/kernel/sched_domain/cpu0/domain2/name:DIE                 /proc/sys/kernel/sched_domain/cpu0/domain2/name:DIE
+/proc/sys/kernel/sched_domain/cpu0/domain3/name:NUMA                /proc/sys/kernel/sched_domain/cpu0/domain3/name:NUMA
+
+$ grep . /proc/sys/kernel/sched_domain/cpu0/domain*/flags
+---------------------------------------------------------
+/proc/sys/kernel/sched_domain/cpu0/domain0/flags:2391               /proc/sys/kernel/sched_domain/cpu0/domain0/flags:2391
+/proc/sys/kernel/sched_domain/cpu0/domain1/flags:2327               /proc/sys/kernel/sched_domain/cpu0/domain1/flags:2327
+/proc/sys/kernel/sched_domain/cpu0/domain2/flags:2071               /proc/sys/kernel/sched_domain/cpu0/domain2/flags:2071
+/proc/sys/kernel/sched_domain/cpu0/domain3/flags:12801              /proc/sys/kernel/sched_domain/cpu0/domain3/flags:12801
+
+Post ppc64_cpu --smt=1
+$ tail -f /proc/cpuinfo
+processor	: 120                                               processor	: 120
+cpu		: POWER9 (architected), altivec supported           cpu		: POWER9 (architected), altivec supported
+clock		: 3000.000000MHz                                    clock		: 3000.000000MHz
+revision	: 2.2 (pvr 004e 0202)                               revision	: 2.2 (pvr 004e 0202)
+
+timebase	: 512000000                                         timebase	: 512000000
+platform	: pSeries                                           platform	: pSeries
+model		: IBM,9008-22L                                      model	: IBM,9008-22L
+machine		: CHRP IBM,9008-22L                                 machine	: CHRP IBM,9008-22L
+MMU		: Radix                                             MMU		: Radix
+
+$ grep . /proc/sys/kernel/sched_domain/cpu0/domain*/name
+--------------------------------------------------------
+/proc/sys/kernel/sched_domain/cpu0/domain0/name:DIE                 /proc/sys/kernel/sched_domain/cpu0/domain0/name:DIE
+/proc/sys/kernel/sched_domain/cpu0/domain1/name:NUMA                /proc/sys/kernel/sched_domain/cpu0/domain1/name:NUMA
+
+$ grep . /proc/sys/kernel/sched_domain/cpu0/domain*/flags
+---------------------------------------------------------
+/proc/sys/kernel/sched_domain/cpu0/domain0/flags:2071               /proc/sys/kernel/sched_domain/cpu0/domain0/flags:2071
+/proc/sys/kernel/sched_domain/cpu0/domain1/flags:12801              /proc/sys/kernel/sched_domain/cpu0/domain1/flags:12801
+
+Performance impact post +patchset
+---------------------------------
+100 iterations of ebizzy
+Units: Records/second : higher is better
+-----------------------------------------
+kernel        N    Min     Max     Median  Avg        Stddev
+powerpc/next  100  753917  870520  819054  817636.56  22649.7
++patchset     100  746258  874984  816681  813876.74  26424.351
+
+
+100 iterations of perf bench sched pipe -l 10000000 (aka Hackbench)
+units: usec/ops: lesser is better
+--------------------------------
+kernel        N    Min        Max        Median     Avg        Stddev
+powerpc/next  100  13.845834  14.569539  14.06263   14.086167  0.17512607
++patchset     100  13.637611  18.097744  13.862656  13.9257    0.43872453
+
+
+schbench Latency percentiles (usec)
+units: usec : lesser is better
+-----------------------------------
+powerpc/next      	+patchset
+50.0000th: 48     	50.0000th: 49
+75.0000th: 65     	75.0000th: 66
+90.0000th: 77     	90.0000th: 79
+95.0000th: 84     	95.0000th: 85
+*99.0000th: 101   	*99.0000th: 99
+99.5000th: 113    	99.5000th: 104
+99.9000th: 159    	99.9000th: 129
+min=0, max=15221  	min=0, max=7666
+
+100 interations of ppc64_cpu --smt=1 / ppc64_cpu --smt=8
+Units: seconds : lesser is better
+---------------------------------
+ppc64_cpu --smt=1
+kernel        N    Min    Max    Median  Avg      Stddev
+powerpc/next  100  13.39  17.55  14.71   14.7658  0.69184745
++patchset     100  13.3   16.27  14.33   14.4179  0.5427433
+
+ppc64_cpu --smt=8
+kernel        N    Min    Max    Median  Avg      Stddev
+powerpc/next  100  21.65  26.17  23.71   23.7111  0.8589786
++patchset     100  21.88  25.79  23.16   23.2945  0.86394839
+
+
+Observations:
+Performance of ebizzy/ perf_sched_bench / schbench remain the
+same with and without the patchset.
+
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Anton Blanchard <anton@ozlabs.org>
+Cc: Oliver O'Halloran <oohall@gmail.com>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Michael Neuling <mikey@neuling.org>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Qian Cai <cai@redhat.com>
+
+Srikar Dronamraju (11):
+  powerpc/topology: Update topology_core_cpumask
+  powerpc/smp: Stop updating cpu_core_mask
+  powerpc/smp: Remove get_physical_package_id
+  powerpc/smp: Optimize remove_cpu_from_masks
+  powerpc/smp: Limit CPUs traversed to within a node.
+  powerpc/smp: Stop passing mask to update_mask_by_l2
+  powerpc/smp: Depend on cpu_l1_cache_map when adding CPUs
+  powerpc/smp: Check for duplicate topologies and consolidate
+  powerpc/smp: Optimize update_mask_by_l2
+  powerpc/smp: Move coregroup mask updation to a new function
+  powerpc/smp: Optimize update_coregroup_mask
+
+ arch/powerpc/include/asm/smp.h      |   5 -
+ arch/powerpc/include/asm/topology.h |   7 +-
+ arch/powerpc/kernel/smp.c           | 188 +++++++++++++++++++++++-------------
+ 3 files changed, 122 insertions(+), 78 deletions(-)
+
+-- 
+2.17.1
+
