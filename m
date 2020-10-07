@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECD8286550
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEE428655C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgJGQzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726956AbgJGQzv (ORCPT
+        id S1727705AbgJGRBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:01:09 -0400
+Received: from mail-io1-f77.google.com ([209.85.166.77]:54823 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgJGRBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:55:51 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B8CC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sxbkS3NRMl6rIsLLVu2DdPxndxYXSPWPV6laeejVFsU=; b=hHCdo69g1ERO0IyETSWyJVT5Gn
-        BLeZEqM1CGzKvDiaGp273w5dx+Abx7FxWkr2A1qq6zGnEZCNr2FIBXZUxDbX3UrnXT0RzltPzr/D6
-        9Z8zo+4bDSJ9oeOaizYam7gbczI0WF0Dd/N4GZSs3mHTj4vSmFYpRuV56M+WZmx4Eb6SJuvwL7kul
-        X9Xfn7mUj0Z8U30JBcyaVd+PLOZSQcCVJb5pf73KafT0byRiYj8dx51haG1ytZA/0DgX1GA7tA72b
-        HPQqgvdK2qNxUaG/x4PWhRiCTA0ZphN2ZwjTpiqZwcxuxfoVWEQ8EWyBcVCXJkFteS4EWk8RVNZQI
-        y3tf9o4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQCj1-0004Ix-Gi; Wed, 07 Oct 2020 16:55:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 997B83019CE;
-        Wed,  7 Oct 2020 18:55:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 815322B067BD9; Wed,  7 Oct 2020 18:55:33 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 18:55:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peng Liu <iwtbavbm@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, valentin.schneider@arm.com,
-        raistlin@linux.it
-Subject: Re: [PATCH v5 1/2] sched/deadline: optimize
- sched_dl_global_validate()
-Message-ID: <20201007165533.GL2628@hirez.programming.kicks-ass.net>
-References: <cover.1601993091.git.iwtbavbm@gmail.com>
- <9ad8eff54a3dd6f7f0da50e827047e4d3c4bb00a.1601993091.git.iwtbavbm@gmail.com>
+        Wed, 7 Oct 2020 13:01:09 -0400
+Received: by mail-io1-f77.google.com with SMTP id f6so1880628ion.21
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:01:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=+o4BZuu/0OdIHH6om63thYUeqrY8yyf+OMPBpQX6xY4=;
+        b=LkRbQN/bmnCXuHVgyT11f0aMDD/HhKeGHxoWVTeN/SkqXAsFsNby552JFpe7dsqKkl
+         WVv/+JhzrWk2PHzdlFj3FMJHjKHfrfTv35R5kai0et6bfyKNMSLQdseHc5vHq+gFD/JY
+         tw+p8CcQ2tyUy1xzt4xVHVB4epX/kk71m9Rr3Z5CvcyKLs24F4zvdZjXNvFo6LixwVM0
+         scP0pznfsroNkTTjgAbzI7tNo2ebGE8TRHdMGQNJDK/RbyllzCBvbT0hdS/HJMgq4lib
+         UMJMhaxAECGdf/B087rT7U3E0vuQNy0hA2G7DSU4IT7zzEtvKayKPuXYSOyup9pyHLiz
+         +1dQ==
+X-Gm-Message-State: AOAM5325V6ssvuogoSGPs461v7IlyEXh/TdX5gxYFTQ4KjGVAa72kkhW
+        LsgNNAJjNmlGg+h3OqSxUH09Op/iDEptam4i6F9ZrMpz6OiE
+X-Google-Smtp-Source: ABdhPJyoIOJDTcvlbIzi1zdUoLG+t6AoTPXU1AL58wlSRpAKdpWohslxu5jIIwXR2ywYUB1QrvwAApjesJPBI94hpaq3jvanJVxB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ad8eff54a3dd6f7f0da50e827047e4d3c4bb00a.1601993091.git.iwtbavbm@gmail.com>
+X-Received: by 2002:a92:c0cf:: with SMTP id t15mr3403899ilf.216.1602090068238;
+ Wed, 07 Oct 2020 10:01:08 -0700 (PDT)
+Date:   Wed, 07 Oct 2020 10:01:08 -0700
+In-Reply-To: <000000000000ce8d2305a03b0988@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006a67f005b117a94a@google.com>
+Subject: Re: INFO: trying to register non-static key in uhid_char_release
+From:   syzbot <syzbot+8357fbef0d7bb602de45@syzkaller.appspotmail.com>
+To:     benjamin.tissoires@gmail.com, benjamin.tissoires@redhat.com,
+        brookebasile@gmail.com, david.rheinsberg@gmail.com,
+        dh.herrmann@googlemail.com, ebiggers@kernel.org, hdanton@sina.com,
+        jikos@kernel.org, jkorsnes@cisco.com, jkosina@suse.cz,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:12:29PM +0800, Peng Liu wrote:
-> +/* Used for dl_bw check and update. */
-> +static u32 dl_generation;
+syzbot suspects this issue was fixed by commit:
 
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 28709f6b0975..53477e8b26b0 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -798,6 +798,13 @@ struct root_domain {
->  	 */
->  	cpumask_var_t		dlo_mask;
->  	atomic_t		dlo_count;
-> +
-> +	/*
-> +	 * Indicate whether a root_domain's dl_bw has been checked or
-> +	 * updated. It's monotonously increasing, then wrap around.
-> +	 */
-> +	u32 visit_gen;
-> +
->  	struct dl_bw		dl_bw;
->  	struct cpudl		cpudl;
->  
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index dd7770226086..90f3e5558fa2 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -516,6 +516,7 @@ static int init_rootdomain(struct root_domain *rd)
->  	init_irq_work(&rd->rto_push_work, rto_push_irq_work_func);
->  #endif
->  
-> +	rd->visit_gen = 0;
->  	init_dl_bw(&rd->dl_bw);
->  	if (cpudl_init(&rd->cpudl) != 0)
->  		goto free_rto_mask;
+commit bce1305c0ece3dc549663605e567655dd701752c
+Author: Marc Zyngier <maz@kernel.org>
+Date:   Sat Aug 29 11:26:01 2020 +0000
 
-I'm fairly sure I made the generation a u64, the above is susceptible to
-a false positive due to wrap-around.
+    HID: core: Correctly handle ReportSize being zero
 
-Increase the generation to -1, create a new root domain, then the next
-generation is 0 and we'll skip the new domain, even though it should be
-updated.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d19370500000
+start commit:   1127b219 Merge tag 'fallthrough-fixes-5.9-rc3' of git://gi..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
+dashboard link: https://syzkaller.appspot.com/bug?extid=8357fbef0d7bb602de45
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102c472e900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13081056900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: HID: core: Correctly handle ReportSize being zero
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
