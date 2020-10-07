@@ -2,48 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0267285AC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792D9285B0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgJGIpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:45:14 -0400
-Received: from gentwo.org ([3.19.106.255]:50500 "EHLO gentwo.org"
+        id S1728101AbgJGIqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:46:45 -0400
+Received: from mailout05.rmx.de ([94.199.90.90]:60538 "EHLO mailout05.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727863AbgJGIpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:45:12 -0400
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 36BF23F0D9; Wed,  7 Oct 2020 08:45:10 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 34D473EC1B;
-        Wed,  7 Oct 2020 08:45:10 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 08:45:10 +0000 (UTC)
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-cc:     linux-kernel@vger.kernel.org, ben.widawsky@intel.com,
-        rientjes@google.com, alex.shi@linux.alibaba.com, dwagner@suse.de,
-        tobin@kernel.org, akpm@linux-foundation.org, ying.huang@intel.com,
-        dan.j.williams@intel.com, cai@lca.pw, stable@vger.kernel.org
-Subject: Re: [RFC][PATCH 01/12] mm/vmscan: restore zone_reclaim_mode ABI
-In-Reply-To: <20201006205106.52F4D02E@viggo.jf.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2010070843540.113351@www.lameter.com>
-References: <20201006205103.268F74A9@viggo.jf.intel.com> <20201006205106.52F4D02E@viggo.jf.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1728094AbgJGIqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:46:43 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout05.rmx.de (Postfix) with ESMTPS id 4C5nxq6txmz9th2;
+        Wed,  7 Oct 2020 10:46:39 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4C5nxW23g4z2TS9q;
+        Wed,  7 Oct 2020 10:46:23 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.119) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 7 Oct
+ 2020 10:45:49 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Oleksij Rempel <linux@rempel-privat.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "David Laight" <David.Laight@ACULAB.COM>
+CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v5 0/3] i2c: imx: Fix handling of arbitration loss
+Date:   Wed, 7 Oct 2020 10:45:21 +0200
+Message-ID: <20201007084524.10835-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.119]
+X-RMX-ID: 20201007-104629-4C5nxW23g4z2TS9q-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020, Dave Hansen wrote:
+Changes in v2:
+---------------
+- Don't accidently clear additional status flags on Vybrid
+  (reported by Uwe Kleine-Koenig)
 
-> But, when the bit was removed (bit 0) the _other_ bit locations also
-> got changed.  That's not OK because the bit values are documented to
-> mean one specific thing and users surely rely on them meaning that one
-> thing and not changing from kernel to kernel.  The end result is that
-> if someone had a script that did:
+Changes in v3:
+---------------
+- dedicated function for clearing an irq
 
-Exactly right. Sorry must have missed to review that patch.
+Changes in v4:
+---------------
+- Extend comment (W1C vs. W0C)
 
-Acked-by: Christoph Lameter <cl@linux.com>
+Changes in v5:
+---------------
+- Added missing "Tested-By" tags.
+
+Best regards
+Christian
+
 
