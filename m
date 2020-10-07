@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3340B286840
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8B828683D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgJGTZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727111AbgJGTZt (ORCPT
+        id S1728268AbgJGTZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:25:43 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:44797 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726671AbgJGTZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:25:49 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E25C061755;
-        Wed,  7 Oct 2020 12:25:49 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f091000329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1000:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 883371EC04C0;
-        Wed,  7 Oct 2020 21:25:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602098746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=opw1Qn/6cTt4NpJfsBA5sd2YWek1O4FfqlhC+eyT3aM=;
-        b=cxY9OxZpm6DfnAkQUupidpmsqxSSqGyq0WMS8+fnY1iVoJmCLLGx7nWO8kNpfNFS9rHVjL
-        ZwCvPE54E4nWfuzQoqqu1IzJXYiQvI+C0zn30UTd5jaar0q2QafzjPz7JgnYC6si9/q2OT
-        aTf3xBzXCOOseh908jxiLYO5B8sILiI=
-Date:   Wed, 7 Oct 2020 21:25:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-tip-commits@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        stable <stable@vger.kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [tip: ras/core] x86, powerpc: Rename memcpy_mcsafe() to
- copy_mc_to_{user, kernel}()
-Message-ID: <20201007192528.GL5607@zn.tnic>
-References: <CAHk-=wjSqtXAqfUJxFtWNwmguFASTgB0dz1dT3V-78Quiezqbg@mail.gmail.com>
- <160197822988.7002.13716982099938468868.tip-bot2@tip-bot2>
- <20201007111447.GA23257@zn.tnic>
- <20201007164536.GJ5607@zn.tnic>
- <20201007170305.GK5607@zn.tnic>
- <CAPcyv4jgLRzDzXkbdHwA-XUwWuSoA1tZfVqgvFQ5jxq=m2P_Bg@mail.gmail.com>
+        Wed, 7 Oct 2020 15:25:43 -0400
+Received: (qmail 469681 invoked by uid 1000); 7 Oct 2020 15:25:42 -0400
+Date:   Wed, 7 Oct 2020 15:25:42 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201007192542.GA468921@rowland.harvard.edu>
+References: <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
+ <20201006004510.GD4135817@google.com>
+ <20201006141820.GA416765@rowland.harvard.edu>
+ <20201006165957.GA191572@google.com>
+ <20201006171524.GB423499@rowland.harvard.edu>
+ <20201006192536.GB191572@google.com>
+ <20201007010023.GA438733@rowland.harvard.edu>
+ <20201007160336.GA620323@google.com>
+ <20201007163838.GA457977@rowland.harvard.edu>
+ <20201007172847.GB620323@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4jgLRzDzXkbdHwA-XUwWuSoA1tZfVqgvFQ5jxq=m2P_Bg@mail.gmail.com>
+In-Reply-To: <20201007172847.GB620323@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:53:15AM -0700, Dan Williams wrote:
-> Oh nice! I just sent a patch [1] to fix this up as well,
-
-Yeah, for some reason it took you a while to see it - wondering if your
-mail servers are slow again.
-
-> but mine goes
-> after minimizing when it is exported, I think perhaps both are needed.
+On Wed, Oct 07, 2020 at 10:28:47AM -0700, Matthias Kaehlcke wrote:
+> On Wed, Oct 07, 2020 at 12:38:38PM -0400, Alan Stern wrote:
+> > On Wed, Oct 07, 2020 at 09:03:36AM -0700, Matthias Kaehlcke wrote:
+> > > Ok, I wasn't sure if the hubs suspend asynchronously from each other. If they
+> > > do it should indeed not be a problem to have the "master" wait for its peers.
+> > 
+> > Well, order of suspending is selectable by the user.  It can be either 
+> > asynchronous or reverse order of device registration, which might pose a 
+> > problem.  We don't know in advance which of two peer hubs will be 
+> > registered first.  It might be necessary to introduce some additional 
+> > explicit synchronization.
 > 
-> http://lore.kernel.org/r/160209507277.2768223.9933672492157583642.stgit@dwillia2-desk3.amr.corp.intel.com
+> I'm not sure we are understanding each other completely. I agree that
+> synchronization is needed to have the primary hub wait for its peers, that
+> was one of my initial concerns.
+> 
+> Lets use an example to clarify my secondary concern: a hub chip provides a
+> USB 3 and a USB 2 hub, lets say the USB 3 hub is the primary.
+> 
+> Here is some pseudo-code for the suspend function:
+> 
+> hub_suspend(hub)
+>   ...
+> 
+>   if (hub->primary) {
+>     device_pm_wait_for_dev(hub->peer)
+> 
+>     // check for connected devices and turn regulator off
+>   }
+> 
+>   ...
+> }
+> 
+> What I meant with 'asynchronous suspend' in this context:
+> 
+> Can hub_suspend() of the peer hub be executed (asynchronously) while the
+> primary is blocked on device_pm_wait_for_dev(),
 
-Looks like it. 
+Yes, that's exactly what would happen with async suspend.
 
-Why not rip out COPY_MC_TEST altogether though? Or you wanna do that
-after the merge window?
+>  or would the primary wait
+> forever if the peer hub isn't suspended yet?
 
-It would be good to not have that export in 5.10 final if it is not
-really needed.
+That wouldn't happen.  device_pm_wait_for_dev is smart; it will return 
+immediately if neither device uses async suspend.  But in that case you 
+could end up removing power from the peer hub before it had suspended.
 
-Thx.
+That's why I said you might need to add additional synchronization.  The 
+suspend routines for the two hubs could each check to see whether the 
+other device had suspended yet, and the last one would handle the power 
+regulator.  The additional synchronization is for the case where the two 
+checks end up being concurrent.
 
--- 
-Regards/Gruss,
-    Boris.
+> > > > And hubs would need to know their peers in any case, because you have to
+> > > > check if any devices attached to the peer have wakeup enabled.
+> > > 
+> > > My concern was about all hubs (including 'secondaries') having to know their
+> > > peers and check on each other, in the scenario we are now talking about only
+> > > the "master" hub needs to know and check on its peers, which is fine.
+> > 
+> > Not all hubs would need this.  Only ones marked in DT as having a power 
+> > regulator.
+> 
+> Sure, as long as the primary (with a power regulator) can wait for its peers
+> to suspend without the risk of blocking forever (my doubt above).
 
-https://people.kernel.org/tglx/notes-about-netiquette
+If we take this approach, we'll have to give up on the idea that the 
+primary can always suspend after the peer.
+
+Alan Stern
