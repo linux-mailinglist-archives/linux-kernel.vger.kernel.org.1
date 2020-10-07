@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E2F28603F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E36B286042
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgJGNfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:35:11 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51246 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgJGNfJ (ORCPT
+        id S1728484AbgJGNfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728450AbgJGNfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:35:09 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kQ9b2-0002RT-1J; Wed, 07 Oct 2020 13:35:08 +0000
-Subject: Re: tracing: Add support for dynamic strings to synthetic events
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tom Zanussi <zanussi@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <d34dccd5-96ba-a2d9-46ea-de8807525deb@canonical.com>
- <20201007093036.423a1b72@gandalf.local.home>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <cfcfa79c-580c-7e36-3b23-072d7e105eaf@canonical.com>
-Date:   Wed, 7 Oct 2020 14:35:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 7 Oct 2020 09:35:41 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D70C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:35:40 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 184so2307755lfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+w1W+CUXGGFXbZ34Qh5CjZMXrIFvrZ3lWXBN60hppFc=;
+        b=eH1+4bAxQ4Xw2n/zbFWwccR3SePzT0zlwNq4GU+LGKhCNA43MoCZwQdQMjjUAcMuGh
+         dsluM8ozYSNELiEQJFLaR3eiEn5++Dq8al3D8Khr1tTZPks7r68Wpt3sMEXduHALpgAH
+         cUuaTKI0v+ut5Jl+ezPoJNv9Az1p9q+Mqv5kV+gUHpQCMkPsrcmwYwyDD9bEp49cOiYr
+         u9O50ktsJyTOWWV11DouAXXAxK67iKi9Rk4kjR/SMSFQZnBr0YjP7aqLRc/FE+sVl1Ic
+         zIrd44diWdrcacEuYGR8KZyA8OSaK5fqklnFqa4WgbHRkmOYgq2U4pp3PbNa8Q/GyEAb
+         x6eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+w1W+CUXGGFXbZ34Qh5CjZMXrIFvrZ3lWXBN60hppFc=;
+        b=AgeexITDkAwv20Ov6R2kNJC2VZHuoWJ9/eNlKxKDlXrr4A8FmaKaAhO+knAKEo5LeY
+         Vkb7EFgbYHR+IdvpYZ2LfBb83K2L4phrwGHUVanS/H0HEOkc9ozQzGMTWDMyYOE3ItOF
+         8SxdC6G+6h1qq90XCRfQieMc5hF16NKjVMVzhZVMlr019Z8ewuC/BsHoMjDiO/XupngJ
+         OjSCXZ+1i21aZWbvsYI4Hy16NPDpH8O/Jp53+0hC+e3sSvoWvEWaM1AhIVjp4gVfLZn2
+         VTYOgcJmuIznnK1FC0H/FUIxgilGoRt+gKlaLUnYxuXUHVx5f/sy3c9nHPkcn+xcdr9r
+         jA/Q==
+X-Gm-Message-State: AOAM531d9946n3JbDjNUvQOucoZWvg/xA//5ptOZEwSY5nrZeCye8fxt
+        nyPvgcQTyUCsJMpR8BYmqhQ074Ekfh6xS8fRGLhXHg==
+X-Google-Smtp-Source: ABdhPJxFSWzDMt1RxkzVv4jvQRcoDe70+B0vvDwTNRVoglFOA+9S9Jcc6j31TSUtwhUg0sN0ZV0nqIu6f4fbXjVmpGE=
+X-Received: by 2002:ac2:4c11:: with SMTP id t17mr1043456lfq.260.1602077737755;
+ Wed, 07 Oct 2020 06:35:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201007093036.423a1b72@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201007111145.2306213-1-lars.povlsen@microchip.com> <20201007111145.2306213-2-lars.povlsen@microchip.com>
+In-Reply-To: <20201007111145.2306213-2-lars.povlsen@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 7 Oct 2020 15:35:26 +0200
+Message-ID: <CACRpkda0RAK2gp-ZB6LDxAnQP3=VGrsfqkfV0=3FiSFfNhOmjA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] dt-bindings: pinctrl: Add bindings for
+ pinctrl-mchp-sgpio driver
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2020 14:30, Steven Rostedt wrote:
-> On Wed, 7 Oct 2020 14:08:38 +0100
-> Colin Ian King <colin.king@canonical.com> wrote:
-> 
->> Hi,
->>
->> Static analysis with Coverity has detected a duplicated condition in an
->> if statement in the following commit in source
->> kernel/trace/trace_events_synth.c
->>
->> commit bd82631d7ccdc894af2738e47abcba2cb6e7dea9
->> Author: Tom Zanussi <zanussi@kernel.org>
->> Date:   Sun Oct 4 17:14:06 2020 -0500
->>
->>     tracing: Add support for dynamic strings to synthetic events
->>
->> Analysis is as follows:
->>
->> 493        for (i = 0; i < event->n_fields; i++) {
->>
->> Same on both sides (CONSTANT_EXPRESSION_RESULT)
->> pointless_expression: The expression event->fields[i]->is_dynamic &&
->> event->fields[i]->is_dynamic does not accomplish anything because it
->> evaluates to either of its identical operands, event->fields[i]->is_dynamic.
->>
->>    Did you intend the operands to be different?
->>
->> 494                if (event->fields[i]->is_dynamic &&
->> 495                    event->fields[i]->is_dynamic)
-> 
-> Bah, I believe that was suppose to be:
-> 
-> 		if (event->fields[i]->is_string &&
-> 		    event->fields[i]->is_dynamic)
-> 
-> I'll go and fix that.
+Hi Lars,
 
-Ah, makes sense. Thanks!
+a new version of the patch set arrives while I'm reviewing, haha :D
 
-> 
-> -- Steve
-> 
->> 496                        pos += snprintf(buf + pos, LEN_OR_ZERO,
->> 497                                ", __get_str(%s)",
->> event->fields[i]->name);
->> 498                else
->> 499                        pos += snprintf(buf + pos, LEN_OR_ZERO,
->> 500                                        ", REC->%s",
->> event->fields[i]->name);
->> 501        }
->>
->> Colin
-> 
+On Wed, Oct 7, 2020 at 1:12 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
+> This adds DT bindings for the Microsemi/Microchip SGPIO controller,
+> bindings microchip,sparx5-sgpio, mscc,ocelot-sgpio and
+> mscc,luton-sgpio.
+>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+
+(...)
+> +      reg:
+> +        description: |
+> +          The GPIO bank number. "0" is designates the input pin bank,
+> +          "1" the output bank.
+> +        maxItems: 1
+
+Excellent.
+
+> +      '#gpio-cells':
+> +        const: 3
+
+So I thought you needed three cells exactly because the
+middle cell would get you the bank. That you now have in
+reg. So what about using the standard twocell?
+
+Yours,
+Linus Walleij
