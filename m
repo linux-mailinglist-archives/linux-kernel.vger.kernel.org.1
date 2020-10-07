@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37DD28684B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044AB286852
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgJGT3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:29:46 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:46931 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726129AbgJGT3q (ORCPT
+        id S1728085AbgJGTcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:32:53 -0400
+Received: from mx.aristanetworks.com ([162.210.129.12]:28723 "EHLO
+        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgJGTcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:29:46 -0400
-Received: (qmail 469787 invoked by uid 1000); 7 Oct 2020 15:29:45 -0400
-Date:   Wed, 7 Oct 2020 15:29:45 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>
-Subject: Re: [PATCH] kcov, usb, vhost: specify contexts for remote coverage
- sections
-Message-ID: <20201007192945.GB468921@rowland.harvard.edu>
-References: <8c71349c3cd9698b8edcfbfc9631c5dcc3b29a37.1602091732.git.andreyknvl@google.com>
-MIME-Version: 1.0
+        Wed, 7 Oct 2020 15:32:53 -0400
+Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
+        by smtp.aristanetworks.com (Postfix) with ESMTP id 925304000A4;
+        Wed,  7 Oct 2020 12:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1602099172;
+        bh=C0+5yjcysMk84GoYj0z05bOXjUBeWKhioIraoOaj5pU=;
+        h=Date:To:Subject:From:From;
+        b=mXoD2Q+nkriF0p709lff2+rKBzk1REnY4s8WWlfDsdp8XssJvXd27weNqnsFx5/U/
+         sRUi67pxVPh5Y1O4b2/L1D+zOL9gmM86BSOv1xl5badSNO8lnSusEz9+dTETDN/B2P
+         yDPwY0lve2/jTMyBTnHwZM2B3zQZ1yFqXPIE+Q458cvvJ+bWR0ZKcN8LvQTzqSDKl9
+         c8HjBTU+6M9Ifi9cVezxItw69tTl98ScyOuKIrXsD0rOAjhqdMPRjsWLzgrg449rob
+         BLG0t3+vLnLsM8/zxfEgRo1tDe4Sahgq6xzk7LYcqIq14UeYcigAnEkAUCMGKhDceW
+         7zhhKeaxmY6cQ==
+Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
+        id 7009D95C169C; Wed,  7 Oct 2020 12:32:52 -0700 (PDT)
+Date:   Wed, 07 Oct 2020 12:32:52 -0700
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, fw@strlen.org,
+        kadlec@netfilter.org, pablo@netfilter.org, fruggeri@arista.com
+Subject: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+User-Agent: Heirloom mailx 12.5 7/5/10
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c71349c3cd9698b8edcfbfc9631c5dcc3b29a37.1602091732.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+Message-Id: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
+From:   fruggeri@arista.com (Francesco Ruggeri)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 07:30:51PM +0200, Andrey Konovalov wrote:
-> Currently there's a KCOV remote coverage collection section in
-> __usb_hcd_giveback_urb(). Initially that section was added based on the
-> assumption that usb_hcd_giveback_urb() can only be called in interrupt
-> context as indicated by a comment before it.
-> 
-> As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
-> context, provided that the caller turned off the interrupts; USB/IP actually
-> does that. This can lead to a nested KCOV remote coverage collection
-> sections both trying to collect coverage in task context. This isn't
-> supported by KCOV, and leads to a WARNING.
-> 
-> The approach this patch takes is to annotate every call of kcov_remote_*()
-> callbacks with the context those callbacks are supposed to be executed in.
-> If the current context doesn't match the mask provided to a callback,
-> that callback is ignored. KCOV currently only supports collecting remote
-> coverage in two contexts: task and softirq.
-> 
-> As the result, the coverage from USB/IP related usb_hcd_giveback_urb() calls
-> won't be collected, but the WARNING is fixed.
-> 
-> A potential future improvement would be to support nested remote coverage
-> collection sections, but this patch doesn't address that.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
+If the first packet conntrack sees after a re-register is an outgoing
+keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to
+SND.NXT-1.
+When the peer correctly acknowledges SND.NXT, tcp_in_window fails
+check III (Upper bound for valid (s)ack: sack <= receiver.td_end) and
+returns false, which cascades into nf_conntrack_in setting
+skb->_nfct = 0 and in later conntrack iptables rules not matching.
+In cases where iptables are dropping packets that do not match
+conntrack rules this can result in idle tcp connections to time out.
 
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
-> @@ -1646,9 +1646,9 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
->  
->  	/* pass ownership to the completion handler */
->  	urb->status = status;
-> -	kcov_remote_start_usb((u64)urb->dev->bus->busnum);
-> +	kcov_remote_start_usb((u64)urb->dev->bus->busnum, KCOV_CONTEXT_SOFTIRQ);
->  	urb->complete(urb);
-> -	kcov_remote_stop();
-> +	kcov_remote_stop(KCOV_CONTEXT_SOFTIRQ);
+v2: adjust td_end when getting the reply rather than when sending out
+    the keepalive packet.
 
-This isn't right.  __usb_hcd_giveback_urb() can execute in pretty much
-any context; its constraint is that interrupts must be disabled.
+Fixes: f94e63801ab2 ("netfilter: conntrack: reset tcp maxwin on re-register")
+Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+---
+ net/netfilter/nf_conntrack_proto_tcp.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-Alan Stern
+diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
+index e8c86ee4c1c4..c8fb2187ad4b 100644
+--- a/net/netfilter/nf_conntrack_proto_tcp.c
++++ b/net/netfilter/nf_conntrack_proto_tcp.c
+@@ -541,13 +541,20 @@ static bool tcp_in_window(const struct nf_conn *ct,
+ 			swin = win << sender->td_scale;
+ 			sender->td_maxwin = (swin == 0 ? 1 : swin);
+ 			sender->td_maxend = end + sender->td_maxwin;
+-			/*
+-			 * We haven't seen traffic in the other direction yet
+-			 * but we have to tweak window tracking to pass III
+-			 * and IV until that happens.
+-			 */
+-			if (receiver->td_maxwin == 0)
++			if (receiver->td_maxwin == 0) {
++				/* We haven't seen traffic in the other
++				 * direction yet but we have to tweak window
++				 * tracking to pass III and IV until that
++				 * happens.
++				 */
+ 				receiver->td_end = receiver->td_maxend = sack;
++			} else if (sack == receiver->td_end + 1) {
++				/* Likely a reply to a keepalive.
++				 * Needed for III.
++				 */
++				receiver->td_end++;
++			}
++
+ 		}
+ 	} else if (((state->state == TCP_CONNTRACK_SYN_SENT
+ 		     && dir == IP_CT_DIR_ORIGINAL)
+-- 
+2.28.0
+
