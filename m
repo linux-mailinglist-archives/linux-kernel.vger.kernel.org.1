@@ -2,148 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC3F285724
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC697285729
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgJGDig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 23:38:36 -0400
-Received: from mail-eopbgr770055.outbound.protection.outlook.com ([40.107.77.55]:6373
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725981AbgJGDig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 23:38:36 -0400
+        id S1726864AbgJGDlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 23:41:13 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:8134 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725970AbgJGDlN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 23:41:13 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0973RGgR024752;
+        Tue, 6 Oct 2020 20:41:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=proofpoint;
+ bh=TwXR40QDTd2h7f/veXUUEZREyv4ylgqGQOqD3DmmmUo=;
+ b=q+mE9KN55nvJE2Di4OIvbK+kYNiXaRvp5Vi5axYlNsMepab7msIzphMps2glKIEc7usj
+ 8OrubmiFVKEzAzlr06btg5P4I78LYN8j8xp+9cjY1jXlI1tOcQfmowDbXZSlo+jusg+4
+ saTkx7YFkM1iGvYgZygx4CFgOXXL9lA+KaxD+uitYeUoBWMO0ePAE0BUYhNxsTWCamKe
+ DbWlc1vLk3X2u0QUl6/WLIAE6NuHYc5RDEwgOGGJdyw/6B5RuwdXkW5EU3p6H1tPEeCn
+ 2jKqwmzDVyN519+D4pU1o+UcGqD9meliQ15gOdkLzXLAeL4Wzcsy9yGhdrkXMWWr8zC1 1w== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 33xnuxkt53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Oct 2020 20:41:05 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PPjIw77wqA6rQ7r42kqtrsuvJ8WJLwIXQKJb01eEvn6gH998YlBd69QOrZmOqi9derUfijGSDnsKdj7OxI3liyxv9H2OdMHzBTerpdefeHClwjX2VM/sPAnv0vTrh0lUZ57AY3PV+DHq+dHHyprJH6UnNWVhjggHsX9qZdnXrnjb+nvFPldDzc24jdosf48FwbAu3GVGHcepPE6WV9R7GierOd5ZZwejcIj78XDQbNEdkGi/49YskKKJZ/1a12R2CNjxuWI7dGOrYS5R6qJMqv7ZPMVHA3hDsIrzZZyGnALDtcyuopdtBhwq2gR0602ThtineIA434WtpkreaB/7gg==
+ b=ZSbXgPe0HrWX/keQTpAROFYU7C/MugRNHmfU9VMLKCvXJ817FKWk/aIJ8wRzUDfu1qtp5wbqLJZR9BKQMtkYC3id429lghp9IpAvikptzaHKTAnnBMHdzmkX3nj2i58plF25txg8bjexI8Sj4cRqAVolMd9EAKXaPHwSd2k3pAvGgF2Jdu3aSb1lZiEPRYLb4I7U6muKN0r+ij56gBdwCNS1yAAoleMPSBrHOk+iNIxtOuPvclgcZBxSXnMATM3wG5J9SfXO4s5FIZ6hzvPWhcsBgEnA3xsQ5J+oKMrIIsEIEjCB0MNjGrzzORzrUSBX5fZUISm8NYIqKFKRM7Uqgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TmdJXpH+QuLU3HRTbQ5xGn0KmliMiR+6xZpCscNTlH8=;
- b=A/uNAlrAJjyT+HinOFdtse+u3iEDZO3L6XjTaytqNt5mOF3wKQlsxa4/a/6aTVrvqtbZ5Q56A+ccRI+uRUWMjt8UEHi1BDMfxQB3OYbBV2WI4h28p+52XyZEnNoYhTCKmHKZIZES+qHqSpTBQ6M+XLq5v8gf+WuTngLOTdwBeaFVdPujki1g3YmStxgmGZRLU1CM1lKVMc1KwsslrEOv/DnpmYKyDWG8Lvkj7jVT+9pTZYql8aQBcLbYgHZ0DnBZMVPk9a7K18c7IbSU/T4jx74Cn9dBEPA2x8HDK0MJzorCq3qgh/iY3TC0yY88C5sRxNQMB/uNQPdkIl7oyKk0pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=openfive.com;
- dkim=pass header.d=openfive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=osportal.onmicrosoft.com; s=selector2-osportal-onmicrosoft-com;
+ bh=TwXR40QDTd2h7f/veXUUEZREyv4ylgqGQOqD3DmmmUo=;
+ b=RoN/hLmzp0V3iH7nXQuN5ps8nXLK32kBO9MnkGoI1sFcr8nQrdve20KPB3tfV86kfwmum9vBKa/1sIGVWYvO1495Ka39InZ6cQc1pD58dJlpA2hKN62MEyog0XwqxbIZFpnAkEzXwgCaR4j2a+ZH15PJxHHFHHYG4dQ1qYOnv+tid8U05qjCknLMPlBk8d7jr/IbnD+z2vA4TAknVwBtpJSZSn2VYlnp/SwqeneWbiBau4XPBiQJ6DPLG6Nw0dEAVqyoQMqIwu3vDe5/xRG2jWPQ3Ro57+Q0rqvP4catsLf/XN4oxoDeNue4uX+0EWiQsjeLeN/kIuB9RHZvMw9VPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.148) smtp.rcpttodomain=ti.com smtp.mailfrom=cadence.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=cadence.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TmdJXpH+QuLU3HRTbQ5xGn0KmliMiR+6xZpCscNTlH8=;
- b=ZENTqp384Hj5gqA1fdUsOhtnmdnZKP7D7/NaT77ARuVp7B08Gkg04fD/+NaF4LlCck4QxMp7ISC+t+TTN16B/CDK7PoeSrA59Ll3ncpcPshedIPcMX5i5gDxAo4wmXviFEDCHO9K4vQRbqSV5zC6QxIcYnIdjBRCDLCBta9uts8=
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com (2603:10b6:5:1c3::10)
- by DM6PR13MB2524.namprd13.prod.outlook.com (2603:10b6:5:ca::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.13; Wed, 7 Oct
- 2020 03:38:32 +0000
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::a48a:1f7c:267c:876]) by DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::a48a:1f7c:267c:876%7]) with mapi id 15.20.3455.021; Wed, 7 Oct 2020
- 03:38:32 +0000
-From:   Sagar Kadam <sagar.kadam@openfive.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "jason@lakedaemon.net" <jason@lakedaemon.net>,
-        Yash Shah <yash.shah@openfive.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "sboyd@kernel.org" <sboyd@kernel.org>
-Subject: RE: [PATCH v2 1/3] dt-bindings: fu540: prci: convert PRCI bindings to
- json-schema
-Thread-Topic: [PATCH v2 1/3] dt-bindings: fu540: prci: convert PRCI bindings
- to json-schema
-Thread-Index: AQHWlnXeXXLTxHlPR0agfuqgQBIFramK9AgAgACUlnA=
-Date:   Wed, 7 Oct 2020 03:38:32 +0000
-Message-ID: <DM6PR13MB345196DCD0894CD0C77DCFC6970A0@DM6PR13MB3451.namprd13.prod.outlook.com>
-References: <1601393531-2402-1-git-send-email-sagar.kadam@sifive.com>
- <1601393531-2402-2-git-send-email-sagar.kadam@sifive.com>
- <20201006184244.GA2610231@bogus>
-In-Reply-To: <20201006184244.GA2610231@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=openfive.com;
-x-originating-ip: [116.74.151.16]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7169d408-cc5a-414e-c4a0-08d86a7276fe
-x-ms-traffictypediagnostic: DM6PR13MB2524:
-x-ld-processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR13MB25244DF2231D452805E983E3970A0@DM6PR13MB2524.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1332;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HbY5C1zHFTvz2Gnra3wtAI5JFk/PUuogKW6aGdLPb2XqJDgRWNyn8qv+iGKISelPODXvRsHghE7oud5GSpjvDF+TY9HCVg+QR6sEv5xwNoBsjya9hGDhFhsgUdCNjVDwqpuxvxFU0FvJr99DphWuKj0HdP6rmb8FmNsEz8E5Q6tPJoV8FOP5mH6mVlNmeFGluhg1VHL77ykaFV6pwzLbjevSZAAY+IQUJJWPqXR5TF0IK9+c6H9JSA8sARpqNtN9gKNGH27RQ2cFqp8V9dxos25cc4vhZN2TCM6gLpZPTp4qSkqE346+3M2AEbylua0hAncHkdlwdzcdehTiD4ENKQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB3451.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(366004)(136003)(39850400004)(8676002)(7696005)(4326008)(86362001)(478600001)(44832011)(26005)(55236004)(6506007)(53546011)(33656002)(186003)(9686003)(64756008)(8936002)(66446008)(55016002)(316002)(71200400001)(6916009)(54906003)(52536014)(5660300002)(66556008)(66476007)(7416002)(2906002)(66946007)(83380400001)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: nby6Dx2z2LLxqwlFCU7sknVZUM4Hc1gOPxs5KAHXVt/09QOK4C9sl7HKBM1sRZwIuYJCimwJQZK6tHzdPDZO5b3A7GPf/pNh/xd+4CPxAC6zgf9Q77De1oDn43qnN1q4qLUCgOlXjpGrkGoHAfz3p6JPiGY96XLig9Hn1iZYkREpj/R8b9XGfyFn5Qf0YlZ68kBHNM6wZsRZoO3bzqLqeCCPtn+dEzSYLzLPrKahtHMfffW4ulzq1gc3+0OEgpTpnkT4Oy/PzGmWvft7XK7z3yWrfiR8Rt/DA8k19Fz4C466I5DsM5fU+EusCfq9q6bnLvXHne4ElFSXPcCHKWRHyfqH2wnpvKgaK5IHp3N6B8sobyRN1u5To0BJ9phGGlInDkLkaf+p/kikR2xuHt2g5dtIXnVzmC32c2QODfXvNtACFj/2Yd7qljxH0zVlIMmXkauDN5UN6ISTkR2QSFhfLf0JY07aImQo0DaD9TbHhGqI1UG6KFrRvPEtOXbzYJGk7DY1HyXEpQ3nS/yP/PuFTBWB4JmcTR2BLn+n66tMLAK01NGau2vCcHgK6Jm8OjCO28XnFq4/i+ewR+b0bR0YmvGbnPY6dnKmIsFRPmWiyMTxQ5EcPobY3rx2wWCoyBuG/WQipqQUcx1lW/nVExP+fQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=TwXR40QDTd2h7f/veXUUEZREyv4ylgqGQOqD3DmmmUo=;
+ b=63oaIoENRFX5v00A3ly3f5dARZALkrgG13u+0zkILXiBQyWPX7sBYSx8CuK6lS+B6w+jBZJ/aARF5uWhLWje+l+7Ymynl35EkTgWRF1PKIyVigxW1ViI8/EpIrYZM+81dPOHe3aoCF2RbgxjfWk8j1rl12dqVrsL9yIDB+KYvCU=
+Received: from BN3PR05CA0003.namprd05.prod.outlook.com (2603:10b6:400::13) by
+ MW2PR07MB7897.namprd07.prod.outlook.com (2603:10b6:302:6::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3433.35; Wed, 7 Oct 2020 03:41:00 +0000
+Received: from BN8NAM12FT054.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:400:0:cafe::c4) by BN3PR05CA0003.outlook.office365.com
+ (2603:10b6:400::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.15 via Frontend
+ Transport; Wed, 7 Oct 2020 03:40:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.148)
+ smtp.mailfrom=cadence.com; ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.148 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.148; helo=sjmaillnx2.cadence.com;
+Received: from sjmaillnx2.cadence.com (158.140.1.148) by
+ BN8NAM12FT054.mail.protection.outlook.com (10.13.183.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.13 via Frontend Transport; Wed, 7 Oct 2020 03:40:59 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 0973ewvF002155
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+        Tue, 6 Oct 2020 20:40:59 -0700
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Wed, 7 Oct 2020 05:40:56 +0200
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Wed, 7 Oct 2020 05:40:56 +0200
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0973euSD023135;
+        Wed, 7 Oct 2020 05:40:56 +0200
+Received: (from pawell@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0973euAP023134;
+        Wed, 7 Oct 2020 05:40:56 +0200
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     <balbi@kernel.org>
+CC:     <peter.chen@nxp.com>, <rogerq@ti.com>, <nsekhar@ti.com>,
+        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>,
+        Pawel Laszczak <pawell@cadence.com>
+Subject: [PATCH 2/2] =?UTF-8?q?usb:=20cdns3:=20Variable=20=E2=80=98length?= =?UTF-8?q?=E2=80=99=20set=20but=20not=20used?=
+Date:   Wed, 7 Oct 2020 05:39:32 +0200
+Message-ID: <20201007033932.23050-1-pawell@cadence.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-X-OriginatorOrg: openfive.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB3451.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7169d408-cc5a-414e-c4a0-08d86a7276fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2020 03:38:32.4361
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 378b6b33-88f4-49ae-0aa5-08d86a72ce97
+X-MS-TrafficTypeDiagnostic: MW2PR07MB7897:
+X-Microsoft-Antispam-PRVS: <MW2PR07MB7897BFB65299C5CB4BAC40EDDD0A0@MW2PR07MB7897.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:632;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: m7CVikTv2MbVf4XcKz4QCXDkjKLiS1SR5R9bDe74K67dWNFgGhd0xKWqypRfT/TnO/uIjWTx9epyNU8HrGVxqQq2gibQ4bLJof6R0uscNtirSdxpju6UH0WAOUbvFDb0/rUhdepJEXK/mlYXxvPv1iKcsjQk3cFD1VHXgTAXvLvP0lAp54gONfsx8KxmE6xkeqA6F49Hc4uCD8xYYDCCSwv5ELPoLXR0VJhdKS5ZKKeYqZDxdqSgCiieW6wL3Fn61/7KkIFmmiLlRZLtPSyIRwGB+J1HwcDF5WW8cJvCimKJBvMjehxvLIiqEA9l/WUNJDmqSvGZcy6sxcm4jrWXUP+xkIJsAv+MyGPMBvhJSL5d1pn7YFQiVFlFhByoP0UApA1D6cnMh0DMQ6j2wcei01p4Hff2M9FueZdRZB2myAU=
+X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(346002)(36092001)(46966005)(4744005)(2616005)(356005)(4326008)(186003)(336012)(6666004)(70206006)(36906005)(54906003)(70586007)(6916009)(1076003)(42186006)(7636003)(478600001)(316002)(5660300002)(83380400001)(426003)(82740400003)(8936002)(26005)(47076004)(82310400003)(2906002)(36756003)(86362001)(107886003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 03:40:59.6387
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lX4sV84yOcFmF7Fx9F5sCnrQcCK6nSghDpmgUrOR42fApFl6MlJqVRVxeIhDGGc6Y36NVBHn47MSbhShQp80nQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB2524
+X-MS-Exchange-CrossTenant-Network-Message-Id: 378b6b33-88f4-49ae-0aa5-08d86a72ce97
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT054.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR07MB7897
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_03:2020-10-06,2020-10-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
+ mlxscore=0 mlxlogscore=685 priorityscore=1501 phishscore=0 spamscore=0
+ clxscore=1015 adultscore=0 suspectscore=1 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070022
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patch removes not used variable 'length' from
+cdns3_wa2_descmiss_copy_data function.
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Wednesday, October 7, 2020 12:13 AM
-> To: Sagar Kadam <sagar.kadam@openfive.com>
-> Cc: aou@eecs.berkeley.edu; linux-riscv@lists.infradead.org;
-> tglx@linutronix.de; linux-pwm@vger.kernel.org; palmer@dabbelt.com;
-> jason@lakedaemon.net; Yash Shah <yash.shah@openfive.com>;
-> thierry.reding@gmail.com; lee.jones@linaro.org; u.kleine-
-> koenig@pengutronix.de; robh+dt@kernel.org; Paul Walmsley ( Sifive)
-> <paul.walmsley@sifive.com>; linux-kernel@vger.kernel.org; linux-
-> clk@vger.kernel.org; maz@kernel.org; mturquette@baylibre.com;
-> devicetree@vger.kernel.org; sboyd@kernel.org
-> Subject: Re: [PATCH v2 1/3] dt-bindings: fu540: prci: convert PRCI bindin=
-gs to
-> json-schema
->=20
-> [External Email] Do not click links or attachments unless you recognize t=
-he
-> sender and know the content is safe
->=20
-> On Tue, 29 Sep 2020 21:02:09 +0530, Sagar Kadam wrote:
-> > FU540-C000 SoC from SiFive has a PRCI block, here we convert the
-> > device tree bindings from txt to YAML.
-> >
-> > Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
-> > ---
-> >  .../bindings/clock/sifive/fu540-prci.txt           | 46 --------------=
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 ---
-> >  .../bindings/clock/sifive/fu540-prci.yaml          | 60
-> ++++++++++++++++++++++
-> >  2 files changed, 60 insertions(+), 46 deletions(-)  delete mode
-> > 100644 Documentation/devicetree/bindings/clock/sifive/fu540-prci.txt
-> >  create mode 100644
-> > Documentation/devicetree/bindings/clock/sifive/fu540-prci.yaml
-> >
->=20
-> Applied, thanks!
+ drivers/usb/cdns3/gadget.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks Rob for applying these patches.
+diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
+index 6e7b70a2e352..692acf7b9b14 100644
+--- a/drivers/usb/cdns3/gadget.c
++++ b/drivers/usb/cdns3/gadget.c
+@@ -506,7 +506,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
+ 
+ 	while (!list_empty(&priv_ep->wa2_descmiss_req_list)) {
+ 		int chunk_end;
+-		int length;
+ 
+ 		descmiss_priv_req =
+ 			cdns3_next_priv_request(&priv_ep->wa2_descmiss_req_list);
+@@ -517,7 +516,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
+ 			break;
+ 
+ 		chunk_end = descmiss_priv_req->flags & REQUEST_INTERNAL_CH;
+-		length = request->actual + descmiss_req->actual;
+ 		request->status = descmiss_req->status;
+ 		__cdns3_descmiss_copy_data(request, descmiss_req);
+ 		list_del_init(&descmiss_priv_req->list);
+-- 
+2.17.1
 
-BR,
-Sagar
