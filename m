@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD982858BB
+	by mail.lfdr.de (Postfix) with ESMTP id B96162858BC
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbgJGGgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:36:50 -0400
+        id S1727560AbgJGGgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 02:36:54 -0400
 Received: from mga06.intel.com ([134.134.136.31]:51460 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgJGGgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:36:46 -0400
-IronPort-SDR: YIKBxTjlL+Dvf928gDlBVA/tynBYtZFpK/3q8l2jSbqb03DVQo/2ePsAw/j1At9Ek22sta/UEO
- yEF60urLnK3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="226428508"
+        id S1727518AbgJGGgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 02:36:47 -0400
+IronPort-SDR: kjq2eig0plgkrOg07wH645uIpzL76giHPxpycIU2BxoV5A8ueJ8Rqa17Uozr/3uuoC4Wn1WY9O
+ t0D/lztS55Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="226428509"
 X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="226428508"
+   d="scan'208";a="226428509"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 23:36:45 -0700
-IronPort-SDR: HoEOa6Pqf11sYMbq1mDwW4LaBeWWDGL/MNDUDZTK8vUYIjoUP5uupkQcB2yJeQGYiXxJMBiXdL
- 1czGsR5IGA+g==
+IronPort-SDR: en8XLkbK7AWUXMB1hVXewHUOtTWvTm77en+6TwO0C/KlsSg5BcoEi85tyON5QYTpc3W8i/XhtG
+ kKiHFNzrnBLw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="316064574"
+   d="scan'208";a="353861714"
 Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 06 Oct 2020 23:36:44 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 06 Oct 2020 23:36:44 -0700
 Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kQ347-0001VT-E7; Wed, 07 Oct 2020 06:36:43 +0000
-Date:   Wed, 07 Oct 2020 14:36:13 +0800
+        id 1kQ347-0001VW-EP; Wed, 07 Oct 2020 06:36:43 +0000
+Date:   Wed, 07 Oct 2020 14:36:15 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/drm/amd/pm/ATOM_Vega10] BUILD SUCCESS
- 797ab03c31b7210c513e520b166919770cc7c6ab
-Message-ID: <5f7d61dd.O8jxxI5C6P9FOb/d%lkp@intel.com>
+Subject: [gustavoars-linux:testing/drm/amd/pm/phm_ppt_v1_vol] BUILD
+ SUCCESS a8e30a030d28c6ad94dbcec885536fd7bb8947f2
+Message-ID: <5f7d61df.jWrFfnjxGbjSkPOp%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/drm/amd/pm/ATOM_Vega10
-branch HEAD: 797ab03c31b7210c513e520b166919770cc7c6ab  drm/amd/pm: Replace one-element array with flexible-array in struct ATOM_Vega10_GFXCLK_Dependency_Table
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/drm/amd/pm/phm_ppt_v1_vol
+branch HEAD: a8e30a030d28c6ad94dbcec885536fd7bb8947f2  drm/amd/pm: Replace one-element array with flexible-array in struct phm_ppt_v1_voltage_lookup_table
 
 elapsed time: 722m
 
-configs tested: 94
+configs tested: 91
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -62,27 +62,24 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-arm                       aspeed_g4_defconfig
-powerpc                      ep88xc_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                      arches_defconfig
-arm                         palmz72_defconfig
+sh                   sh7724_generic_defconfig
+arm64                            alldefconfig
+powerpc                          g5_defconfig
+arm                           sunxi_defconfig
 arc                          axs101_defconfig
 arm                         lpc18xx_defconfig
 alpha                            allyesconfig
 arm                          exynos_defconfig
 powerpc                     ppa8548_defconfig
-arm                            zeus_defconfig
-m68k                          hp300_defconfig
-arm                         mv78xx0_defconfig
-mips                            e55_defconfig
-mips                 decstation_r4k_defconfig
-sh                        edosk7705_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                     redwood_defconfig
+sh                          rsk7269_defconfig
+arm                              alldefconfig
 mips                  cavium_octeon_defconfig
-m68k                       m5208evb_defconfig
-powerpc                        warp_defconfig
-arm                         vf610m4_defconfig
-arm                          simpad_defconfig
+sh                          landisk_defconfig
+arm                           sama5_defconfig
+sh                        sh7785lcr_defconfig
+powerpc                  iss476-smp_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -132,6 +129,12 @@ i386                 randconfig-a013-20201005
 i386                 randconfig-a016-20201005
 i386                 randconfig-a011-20201005
 i386                 randconfig-a012-20201005
+x86_64               randconfig-a004-20201006
+x86_64               randconfig-a002-20201006
+x86_64               randconfig-a001-20201006
+x86_64               randconfig-a005-20201006
+x86_64               randconfig-a003-20201006
+x86_64               randconfig-a006-20201006
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
@@ -145,14 +148,6 @@ x86_64                    rhel-7.6-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
 x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20201005
-x86_64               randconfig-a002-20201005
-x86_64               randconfig-a001-20201005
-x86_64               randconfig-a003-20201005
-x86_64               randconfig-a005-20201005
-x86_64               randconfig-a006-20201005
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
