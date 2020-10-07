@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F4028654C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECD8286550
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728222AbgJGQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
+        id S1727894AbgJGQzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728051AbgJGQxb (ORCPT
+        with ESMTP id S1726956AbgJGQzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:53:31 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4B7C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:53:30 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id n6so3044101ioc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 09:53:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nDdFpy68M4qcIzjp5XTKty3VRwf5DXuMbkrk++kW+nE=;
-        b=NJ+883kU7p70HCRlrjwPHALnKwuBGBHt5ndHWo0n/reWd61Gz99+NtoeWL1TUkeMzg
-         lhuT7M+Z13S6MZjZD0m9uVCbRSWrts7qvF32MDIGkygCzj8/vkosUGfrOCsbZMQnb/eP
-         z8AKbViiBxfxSd1TSGjNym04Z/Ma654XyzTLahNgEUwQFoS0hEEbBXFGjvROrFSZJDMP
-         InC71Do8rR55zxc83vTXNtr8MFiqCSSu2o7EzRTWYcrOwBfZ9J3kzWC20uHjYEA26/Dj
-         oyZSkNxE3W64MAm/+ZQ0ErgTRbTUBsTvbVgYvARD/mei0aehqIsUsjoCt+HnfHrs4LQc
-         HcFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nDdFpy68M4qcIzjp5XTKty3VRwf5DXuMbkrk++kW+nE=;
-        b=KfAa3MrNrg5xc+9ycDkKunn7461HwSINWaRss73m4M9s3ocohesFm7VGOgP7fV0WUj
-         N0+9KpjG5y+SzC4nJHzDj1fbEHjoiSgzoGCG+Jachydd+J0cvf9rL72GfPLiie/BONUq
-         Mtgloa/kcBE9SxzowBTF6jRRjPn6DtUFWS2F1O9vJf6AKNQFW4ZhdJ1kkaXwspUdjiF2
-         zit1BhRDCGmZpJ4MzMvjumK9MiImD7I+S3kkHAxqc1VOIaMJGZ8scMBbCtCHFSNzMJGh
-         oC4b5ray/P1uA/Laj8mozos0uodm5wajuyW2aKl6ydES+Pkpl7Vqw70yEuSX8lg/xsyW
-         /d+w==
-X-Gm-Message-State: AOAM533eTcGhLL6L7op1yDzK1zTxHO1AtnMCbJAbn5XfXE7Tcw1yinhw
-        1mw04lRCMiNZe20SfdpVYzWxtxFpg3I/tvFTjF82wTtMOnb8GP4t
-X-Google-Smtp-Source: ABdhPJwp528UTrs90kH7IE/N22tb1FxHWMWLbTdbd9+bm42WHqsss518ZxHYih9DuwjZtt8PY+Um/SGTyOmRCXwJe6I=
-X-Received: by 2002:a05:6638:1508:: with SMTP id b8mr3620771jat.25.1602089609707;
- Wed, 07 Oct 2020 09:53:29 -0700 (PDT)
+        Wed, 7 Oct 2020 12:55:51 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B8CC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sxbkS3NRMl6rIsLLVu2DdPxndxYXSPWPV6laeejVFsU=; b=hHCdo69g1ERO0IyETSWyJVT5Gn
+        BLeZEqM1CGzKvDiaGp273w5dx+Abx7FxWkr2A1qq6zGnEZCNr2FIBXZUxDbX3UrnXT0RzltPzr/D6
+        9Z8zo+4bDSJ9oeOaizYam7gbczI0WF0Dd/N4GZSs3mHTj4vSmFYpRuV56M+WZmx4Eb6SJuvwL7kul
+        X9Xfn7mUj0Z8U30JBcyaVd+PLOZSQcCVJb5pf73KafT0byRiYj8dx51haG1ytZA/0DgX1GA7tA72b
+        HPQqgvdK2qNxUaG/x4PWhRiCTA0ZphN2ZwjTpiqZwcxuxfoVWEQ8EWyBcVCXJkFteS4EWk8RVNZQI
+        y3tf9o4g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQCj1-0004Ix-Gi; Wed, 07 Oct 2020 16:55:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 997B83019CE;
+        Wed,  7 Oct 2020 18:55:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 815322B067BD9; Wed,  7 Oct 2020 18:55:33 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 18:55:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peng Liu <iwtbavbm@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, valentin.schneider@arm.com,
+        raistlin@linux.it
+Subject: Re: [PATCH v5 1/2] sched/deadline: optimize
+ sched_dl_global_validate()
+Message-ID: <20201007165533.GL2628@hirez.programming.kicks-ass.net>
+References: <cover.1601993091.git.iwtbavbm@gmail.com>
+ <9ad8eff54a3dd6f7f0da50e827047e4d3c4bb00a.1601993091.git.iwtbavbm@gmail.com>
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-16-bgardon@google.com>
- <622ffc59-d914-c718-3f2f-952f714ac63c@redhat.com>
-In-Reply-To: <622ffc59-d914-c718-3f2f-952f714ac63c@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 7 Oct 2020 09:53:18 -0700
-Message-ID: <CANgfPd_8SpHkCd=NyBKtRFWKkczx4SMxPLRon-kx9Oc6P7b=Ew@mail.gmail.com>
-Subject: Re: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ad8eff54a3dd6f7f0da50e827047e4d3c4bb00a.1601993091.git.iwtbavbm@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 8:11 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 25/09/20 23:22, Ben Gardon wrote:
-> > +             *iter.sptep = 0;
-> > +             handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
-> > +                                 new_spte, iter.level);
-> > +
->
-> Can you explain why new_spte is passed here instead of 0?
+On Wed, Oct 07, 2020 at 11:12:29PM +0800, Peng Liu wrote:
+> +/* Used for dl_bw check and update. */
+> +static u32 dl_generation;
 
-That's just a bug. Thank you for catching it.
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 28709f6b0975..53477e8b26b0 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -798,6 +798,13 @@ struct root_domain {
+>  	 */
+>  	cpumask_var_t		dlo_mask;
+>  	atomic_t		dlo_count;
+> +
+> +	/*
+> +	 * Indicate whether a root_domain's dl_bw has been checked or
+> +	 * updated. It's monotonously increasing, then wrap around.
+> +	 */
+> +	u32 visit_gen;
+> +
+>  	struct dl_bw		dl_bw;
+>  	struct cpudl		cpudl;
+>  
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index dd7770226086..90f3e5558fa2 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -516,6 +516,7 @@ static int init_rootdomain(struct root_domain *rd)
+>  	init_irq_work(&rd->rto_push_work, rto_push_irq_work_func);
+>  #endif
+>  
+> +	rd->visit_gen = 0;
+>  	init_dl_bw(&rd->dl_bw);
+>  	if (cpudl_init(&rd->cpudl) != 0)
+>  		goto free_rto_mask;
 
->
-> All calls to handle_changed_spte are preceded by "*something =
-> new_spte" except this one, so I'm thinking of having a change_spte
-> function like
->
-> static void change_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->                         u64 *sptep, u64 new_spte, int level)
-> {
->         u64 old_spte = *sptep;
->         *sptep = new_spte;
->
->         __handle_changed_spte(kvm, as_id, gfn, old_spte, new_spte, level);
->         handle_changed_spte_acc_track(old_spte, new_spte, level);
->         handle_changed_spte_dirty_log(kvm, as_id, gfn, old_spte, new_spte, level);
-> }
->
-> in addition to the previously-mentioned cleanup of always calling
-> handle_changed_spte instead of special-casing calls to two of the
-> three functions.  It would be a nice place to add the
-> trace_kvm_mmu_set_spte tracepoint, too.
+I'm fairly sure I made the generation a u64, the above is susceptible to
+a false positive due to wrap-around.
 
-I'm not sure we can avoid special casing calls to the access tracking
-and dirty logging handler functions. At least in the past that's
-created bugs with things being marked dirty or accessed when they
-shouldn't be. I'll revisit those assumptions. It would certainly be
-nice to get rid of that complexity.
-
-I agree that putting the SPTE assignment and handler functions in a
-helper function would clean up the code. I'll do that. I got some
-feedback on the RFC I sent last year which led me to open-code a lot
-more, but I think this is still a good cleanup.
-
-Re tracepoints, I was planning to just insert them all once this code
-is stabilized, if that's alright.
-
->
-> Paolo
->
+Increase the generation to -1, create a new root domain, then the next
+generation is 0 and we'll skip the new domain, even though it should be
+updated.
