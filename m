@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E876F285FE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07921285FED
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgJGNPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:15:40 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48064 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728403AbgJGNPk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:15:40 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6380E28ADDD;
-        Wed,  7 Oct 2020 14:15:37 +0100 (BST)
-Date:   Wed, 7 Oct 2020 15:15:34 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <pgaj@cadence.com>, <bbrezillon@kernel.org>,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i3c: master: Fix error return in
- cdns_i3c_master_probe()
-Message-ID: <20201007151534.6fd4d5d7@collabora.com>
-In-Reply-To: <20200911033350.23904-1-jingxiangfeng@huawei.com>
-References: <20200911033350.23904-1-jingxiangfeng@huawei.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1728385AbgJGNUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:20:01 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47966 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728177AbgJGNUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:20:01 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kQ9MF-000XU4-Qj; Wed, 07 Oct 2020 15:19:51 +0200
+Date:   Wed, 7 Oct 2020 15:19:51 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: dsa: microchip: add ksz9563 to ksz9477 I2C
+ driver
+Message-ID: <20201007131951.GF56634@lunn.ch>
+References: <20201007093049.13078-1-ceggers@arri.de>
+ <20201007122107.GA112961@lunn.ch>
+ <5079657.ehXnlxHBby@n95hx1g2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5079657.ehXnlxHBby@n95hx1g2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 11:33:50 +0800
-Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
-
-> Fix to return negative error code -ENOMEM from the error handling
-> case instead of 0.
+On Wed, Oct 07, 2020 at 03:13:15PM +0200, Christian Eggers wrote:
+> Hi Andrew,
 > 
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-
-Queued to i3c/next.
-
-Thanks,
-
-Boris
-
-> ---
->  drivers/i3c/master/i3c-master-cdns.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> > What chip_id values does it use? I don't see it listed in
+> > ksz9477_switch_chips.
 > 
-> diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
-> index 3fee8bd7fe20..3f2226928fe0 100644
-> --- a/drivers/i3c/master/i3c-master-cdns.c
-> +++ b/drivers/i3c/master/i3c-master-cdns.c
-> @@ -1635,8 +1635,10 @@ static int cdns_i3c_master_probe(struct platform_device *pdev)
->  	master->ibi.slots = devm_kcalloc(&pdev->dev, master->ibi.num_slots,
->  					 sizeof(*master->ibi.slots),
->  					 GFP_KERNEL);
-> -	if (!master->ibi.slots)
-> +	if (!master->ibi.slots) {
-> +		ret = -ENOMEM;
->  		goto err_disable_sysclk;
-> +	}
->  
->  	writel(IBIR_THR(1), master->regs + CMD_IBI_THR_CTRL);
->  	writel(MST_INT_IBIR_THR, master->regs + MST_IER);
+> here a short dump of the first chip registers:
+> 
+> >         Chip ID0     00
+> >         Chip ID1_2   9893      Chip ID      9893
+> >         Chip ID3     60        Revision ID  6              Reset         normal
+> >         Chip ID4     1C        SKU ID       1C
+> 
+> In ksz9477_switch_detect(), the 32 bit value is built from only
+> the 2 middle bytes: 0x00989300. The number of port (3) is also
+> assigned within this function:
+> 
+> > 	if ((id_lo & 0xf) == 3) {
+> > 		/* Chip is from KSZ9893 design. */
+> > 		dev->features |= IS_9893;
+> > 		/* Chip does not support gigabit. */
+> > 		if (data8 & SW_QW_ABLE)
+> > 			dev->features &= ~GBIT_SUPPORT;
+> > 		dev->mib_port_cnt = 3;
+> > 		dev->phy_port_cnt = 2;
+> > 	} ...
+> 
+> The chip id 0x00989300 does already exist in ksz9477_switch_chips:
+> 
+> > 	{
+> > 		.chip_id = 0x00989300,
+> > 		.dev_name = "KSZ9893",
 
+O.K. Thanks. This is not very clear. Maybe add a follow up patch which
+adds some comments?
+
+     Andrew
