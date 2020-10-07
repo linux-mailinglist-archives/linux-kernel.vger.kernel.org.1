@@ -2,144 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B06286823
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8998286824
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727718AbgJGTRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJGTRa (ORCPT
+        id S1728000AbgJGTSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:18:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46702 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726111AbgJGTSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:17:30 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C14C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 12:17:28 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b193so1179653pga.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 12:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EZMSE/xQ7AzIngGK3w5Ap7k+DggxMKKSrbX6SyQ019g=;
-        b=SZhSXd1ccYKVdiga/5hBcXZZesYb5d1PFbu+8OjMa7Mlg62ELjJTkWVlu8RJqyaUJm
-         J1+UqS1KPJp4raeG40fQt2RPcpJLxhr9wg0GV/IACJMhk76suxw/EvWPFEmgxUJGaoDU
-         nMm7F6eeMgAWfcYXP0d9yLsUAaSkJWomMGHs4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EZMSE/xQ7AzIngGK3w5Ap7k+DggxMKKSrbX6SyQ019g=;
-        b=FDanGRzAQy5sdYWUzrf3KDfS1jyLEor7OiCOEs1scyJVau1aix7NnqEbdq1DPOZx38
-         LpN33vFgXaYISx4T2t3xKPK+AZ0ewTHxvZ15X224QT7v+v6zB6kB/oRpxIjq+MJsUxpH
-         dQOgjlH17fc6an6b1d2jIvrg8UjGTF8E0prSa7cxxyEVf49+QEyJ3E7tz5XwH/1BgC62
-         vYgQ6Pxq7imJdHhiUZU6Hv20nhJHn7D4gGLPW7l4IYVEzb8dZg1sIUcRZMXRZFHIt0Ql
-         OmcUawORUB4lzAkbPAQyxYogKgins1NXS4WSDyN1EtSkOLQ3yinpT+gyMh307jc2w6v6
-         wnxQ==
-X-Gm-Message-State: AOAM532ayIFt/2IwAqD9kr9Z8STk6f0yK/logMEmNElFWK7baszdf3o4
-        zPVhxd5aYFZf+H4b7WwpgLBELQ==
-X-Google-Smtp-Source: ABdhPJxSZ58HQ14M6xAuImI7StMZrCjyYHvJE0/IhXi3VSO+yGRJkNFLSJFofW7GUBPqBFMkujTJog==
-X-Received: by 2002:a05:6a00:1585:b029:142:2501:35ed with SMTP id u5-20020a056a001585b0290142250135edmr4439365pfk.77.1602098247651;
-        Wed, 07 Oct 2020 12:17:27 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e19sm4428262pfl.135.2020.10.07.12.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 12:17:26 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 12:17:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     WeiXiong Liao <gmpy.liaowx@gmail.com>,
-        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org
-Subject: Re: use case for register_pstore_blk?
-Message-ID: <202010071147.F6E57A32@keescook>
-References: <20201006155220.GA11668@lst.de>
- <202010070007.8FF59EC42@keescook>
- <20201007075537.GA12531@lst.de>
- <20201007083715.GA15695@lst.de>
- <202010071130.7EA00291@keescook>
- <20201007184258.GA6157@lst.de>
+        Wed, 7 Oct 2020 15:18:30 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097JCIM8077366;
+        Wed, 7 Oct 2020 15:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JJ/LXoRz0pu4Rw1PUxwfzjwrdgbQmhPd42lBF4MfwIk=;
+ b=SR2luMIp+4HlhjlQ6SXsXo1M6FMbaQ9nbQUBuLx3RKPXqYlwB7phHnTHGs/Zyx9A8qOj
+ bmihEM3KYtO/MqSbCpH85huVLsA/gxMLqVg4RyG2Y2tMID6sKrBye89KzmhaFCl9LLAz
+ 7QrvZu9RwsUaW6dIx+FgR7A0ONPJrYOw8V0IVdmMReXJwO5SZzR0GN7E+BB28SC1C+Ro
+ KmEXBpnBOUfEd6CgODTX/pPMF15ApBUAAKGa8aXKolw+dI295CAQaETwdd8GM4/iu3q3
+ NAAR6voiZc9UEDurEnOZpTxPQp+5B/EnooYHSee8iuMnhgn0ng0YEau3MH3Zg8VFIAu9 Qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 341kmd84tc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 15:18:29 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 097JFRa6089753;
+        Wed, 7 Oct 2020 15:18:29 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 341kmd84t6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 15:18:28 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 097JHd5M020834;
+        Wed, 7 Oct 2020 19:18:28 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma02dal.us.ibm.com with ESMTP id 33xgx9sr7h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 19:18:28 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 097JIQwe54329734
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Oct 2020 19:18:26 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C9A6112061;
+        Wed,  7 Oct 2020 19:18:26 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 936F0112062;
+        Wed,  7 Oct 2020 19:18:24 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.211.60.106])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Oct 2020 19:18:24 +0000 (GMT)
+Subject: Re: [PATCH v3 0/5] Pass zPCI hardware information via VFIO
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com,
+        schnelle@linux.ibm.com
+Cc:     pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1602096984-13703-1-git-send-email-mjrosato@linux.ibm.com>
+Message-ID: <7bff9eac-2704-438a-89e8-f2f4cca60757@linux.ibm.com>
+Date:   Wed, 7 Oct 2020 15:18:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007184258.GA6157@lst.de>
+In-Reply-To: <1602096984-13703-1-git-send-email-mjrosato@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 adultscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 08:42:58PM +0200, Christoph Hellwig wrote:
-> The problem with the block code is that it is completely broken.
+On 10/7/20 2:56 PM, Matthew Rosato wrote:
+> This patchset provides a means by which hardware information about the
+> underlying PCI device can be passed up to userspace (ie, QEMU) so that
+> this hardware information can be used rather than previously hard-coded
+> assumptions. The VFIO_DEVICE_GET_INFO ioctl is extended to allow capability
+> chains and zPCI devices provide the hardware information via capabilities.
+> 
+> A form of these patches saw some rounds last year but has been back-
+> tabled for a while.  The original work for this feature was done by Pierre
+> Morel. I'd like to refresh the discussion on this and get this finished up
+> so that we can move forward with better-supporting additional types of
+> PCI-attached devices.
+> 
+> This feature is toggled via the CONFIG_VFIO_PCI_ZDEV configuration entry.
+> 
+> Changes since v2:
+> - Added ACKs (thanks!)
+> - Patch 3+4: Re-write to use VFIO_DEVICE_GET_INFO capabilities rather than
+>    a vfio device region.
 
-This seems like hyperbole.
+Link to latest QEMU patch set:
+https://lists.gnu.org/archive/html/qemu-devel/2020-10/msg01948.html
 
-> It uses on-stack structures where it can't,
+> 
+> Matthew Rosato (5):
+>    s390/pci: stash version in the zpci_dev
+>    s390/pci: track whether util_str is valid in the zpci_dev
+>    vfio: Introduce capability definitions for VFIO_DEVICE_GET_INFO
+>    vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO
+>    MAINTAINERS: Add entry for s390 vfio-pci
+> 
+>   MAINTAINERS                         |   8 ++
+>   arch/s390/include/asm/pci.h         |   4 +-
+>   arch/s390/pci/pci_clp.c             |   2 +
+>   drivers/vfio/pci/Kconfig            |  13 ++++
+>   drivers/vfio/pci/Makefile           |   1 +
+>   drivers/vfio/pci/vfio_pci.c         |  37 ++++++++++
+>   drivers/vfio/pci/vfio_pci_private.h |  12 +++
+>   drivers/vfio/pci/vfio_pci_zdev.c    | 143 ++++++++++++++++++++++++++++++++++++
+>   include/uapi/linux/vfio.h           |  11 +++
+>   include/uapi/linux/vfio_zdev.h      |  78 ++++++++++++++++++++
+>   10 files changed, 308 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/vfio/pci/vfio_pci_zdev.c
+>   create mode 100644 include/uapi/linux/vfio_zdev.h
+> 
 
-Do you mean the ones in pstore_blk_init() and pstore_blk_exit()? Those
-are fine -- they're what provide the "driverless" module-param loaded
-"best_effort" target. Do you seem something unsafe about it?
-
-> it pokes into internals of the block device read/write path for
-> absolutely no reason,
-
-Do you mean psblk_generic_blk_read() and psblk_generic_blk_write()?
-These are for writing to the block device... I'm happy to adjust this
-if you can show me the better API. (This was being developed in the
-middle of the iov_iter changes, so perhaps I missed a more appropriate
-way to do things.)
-
-> and it uses name_to_dev_t which must not be used in new code.
-
-What?
-
-include/linux/mount.h:
-extern dev_t name_to_dev_t(const char *name);
-
-init/do_mounts.c:
-/*
- *      Convert a name into device number.  We accept the following
- *      variants:
- ...
- *      If name doesn't have fall into the categories above, we return
- *      (0,0).
- *      block_class is used to check if something is a disk name. If the
- *      disk
- *      name contains slashes, the device name has them replaced with
- *      bangs.
- */
-dev_t name_to_dev_t(const char *name)
-
-There are no comments about it being deprecated.
-
-And even I had guessed to double-check, there isn't even a hit
-on lkml about it that I can easily find:
-https://lore.kernel.org/lkml/?q=name_to_dev_t+%22new+code%22
-https://lore.kernel.org/lkml/?q=name_to_dev_t+deprecated
-
-Where did this happen, where was it documented, and what should be used
-instead?
-
-> Or in other words: it is a complete piece of crap full of layering
-> violations that should never have been merged in that form.
-
-Gee thanks. I obviously don't agree with you.
-
-> It also does not happen to share code with the mtd case.
-
-What? Yes it does: it explicitly uses the pstore/blk configuration
-callback to get the details configured at boot to identify and configure
-the backing device. This is specifically designed this way to avoid
-repeating the mistake of having per-backing-device configuration that is
-essentially only actually used by the pstore storage layer. i.e. the very
-thing I'm trying to get away from in ramoops, efi-pstore, etc: storage
-configuration is tied to the pstore storage layer (i.e. pstore/blk and
-pstore/zone), not the specific backing device (i.e. MTD, blk, RAM, NVRAM,
-EFI variables, etc).
-
-So, yes, I think it'd be fine to drop the unused EXPORTs, and I welcome
-corrections to the generic read/write routines, I very specifically do
-not want to rip out having a block device as a backing device, nor do I
-want to revert the configuration management to being backing device
-specific.
-
--- 
-Kees Cook
