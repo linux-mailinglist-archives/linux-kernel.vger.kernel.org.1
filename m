@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268D4285E13
+	by mail.lfdr.de (Postfix) with ESMTP id 95411285E14
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbgJGL16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgJGL15 (ORCPT
+        id S1727702AbgJGL17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:27:59 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59568 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgJGL16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:27:57 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E393C061755;
-        Wed,  7 Oct 2020 04:27:56 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id s4so2209693qkf.7;
-        Wed, 07 Oct 2020 04:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CHSgzvUJzj+APwFwvwmmcNiA4VcGl2fPcumULSWSX8E=;
-        b=c/ECYqqttNUHkb/rdwaudk7Ge5bDGTkXWp+GuaXmR5nf2B1B7OR04YMDqmQQUcZrml
-         kyC8FbP0vVlCgoIrJmAxt6crEpI+f4zYVvEiIGAAPzn1eGkoZ7ESi/YLMUFBRpPjv+Hu
-         B+7EnimfWa4SIazl2fO5wUAkMWh4e2twcqfzw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CHSgzvUJzj+APwFwvwmmcNiA4VcGl2fPcumULSWSX8E=;
-        b=WhxXCTabdvx0VCMB7iozbgO3326q/2Fjz3kX/TcjAm6mkISTkUQhcB5XQ9myP2xwdh
-         jKvpLwm7JFwx7AKu4k5/I00vxDi4Up81JveU0rJDT0RRUSO/fsEGDly8IlzgDqYTLloC
-         wMTsmEXKodus8W8sbyux180gRx5otGxyLjHj9n905iXnAvWRZ5Dhr+PXGEox+Ua04Ixq
-         C/7zH+mbI10nzidKnkYP6GqFu5AXqLdHSm0PNdnwkJ757Tn+xMG8WngV4N7loz87Khd2
-         pW0IvcjrjReuqe74D1Let4HaASv8dFSK1N9gQ0Bh8Rncdpsa0aQkcRbppkIZc4aeZs+w
-         WrVQ==
-X-Gm-Message-State: AOAM531rA/uiU1Ob42jI54FB0fjyFEWDZ+k2Ysic/9s3e777b2ObjRlV
-        7+FBIjbO0+V+2ubXqq78/xbefIg3qu98K2QIq4g=
-X-Google-Smtp-Source: ABdhPJygdE+BClw6ls4Og5yZ5qX4nBMePZyf8d4tQiZAmni7tHPrS48fCxUgkBF3nEu7mFLoy6cRw85nRlHoGhT68vU=
-X-Received: by 2002:a37:2c06:: with SMTP id s6mr2271040qkh.55.1602070075400;
- Wed, 07 Oct 2020 04:27:55 -0700 (PDT)
+        Wed, 7 Oct 2020 07:27:58 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BB2F61C0BAE; Wed,  7 Oct 2020 13:27:56 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 13:27:56 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-leds@vger.kernel.org, lee.jones@linaro.org, dmurphy@ti.com,
+        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        marek.behun@nic.cz, luka.perkov@sartura.hr, robert.marko@sartura.hr
+Subject: Re: [PATCH v4 4/6] drivers: leds: Add the iEi WT61P803 PUZZLE LED
+ driver
+Message-ID: <20201007112756.GD12224@duo.ucw.cz>
+References: <20201007004901.39859-1-luka.kovacic@sartura.hr>
+ <20201007004901.39859-5-luka.kovacic@sartura.hr>
 MIME-Version: 1.0
-References: <20200930040823.26065-1-ryan_chen@aspeedtech.com> <20200930040823.26065-4-ryan_chen@aspeedtech.com>
-In-Reply-To: <20200930040823.26065-4-ryan_chen@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 7 Oct 2020 11:27:43 +0000
-Message-ID: <CACPK8XcmA49S4mJmkmoyTyJ=cWkgyXLrXC-mbWVSO0M_tZAZ1w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ARM: dts: add ehci uhci enable in evb dts
-To:     Ryan Chen <ryan_chen@aspeedtech.com>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-usb@vger.kernel.org, bmc-sw@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
+Content-Disposition: inline
+In-Reply-To: <20201007004901.39859-5-luka.kovacic@sartura.hr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 at 04:08, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
->
-> Add EHCI UHCI enable build in aspeed-ast2600-evb.dts
->
-> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+--fXStkuK2IQBfcDe+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  arch/arm/boot/dts/aspeed-ast2600-evb.dts | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-ast2600-evb.dts b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> index 89be13197780..2772796e215e 100644
-> --- a/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> +++ b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> @@ -237,3 +237,11 @@
->  &fsim0 {
->         status = "okay";
->  };
+Hi!
+
+> Add support for the iEi WT61P803 PUZZLE LED driver.
+> Currently only the front panel power LED is supported.
+>=20
+> This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+
+> +static int iei_wt61p803_puzzle_led_brightness_set_blocking(struct led_cl=
+assdev *cdev,
+> +							   enum led_brightness brightness)
+> +{
+> +	struct iei_wt61p803_puzzle_led *priv =3D cdev_to_iei_wt61p803_puzzle_le=
+d(cdev);
+> +	unsigned char *resp_buf =3D priv->response_buffer;
+> +	unsigned char led_power_cmd[5] =3D {
+> +		IEI_WT61P803_PUZZLE_CMD_HEADER_START,
+> +		IEI_WT61P803_PUZZLE_CMD_LED,
+> +		IEI_WT61P803_PUZZLE_CMD_LED_POWER,
+> +		(char)IEI_LED_OFF
+> +	};
+> +	size_t reply_size;
 > +
-> +&ehci1 {
-> +       status = "okay";
-> +};
-> +
-> +&uhci {
-> +       status = "okay";
-> +};
-> --
-> 2.17.1
->
+> +	mutex_lock(&priv->lock);
+> +	if (brightness =3D=3D LED_OFF) {
+> +		led_power_cmd[3] =3D (char)IEI_LED_OFF;
+> +		priv->led_power_state =3D LED_OFF;
+> +	} else {
+> +		led_power_cmd[3] =3D (char)IEI_LED_ON;
+> +		priv->led_power_state =3D LED_ON;
+> +	}
+> +	mutex_unlock(&priv->lock);
+
+Are you sure you need the mutex?
+
+> +	ret =3D devm_led_classdev_register_ext(dev, &priv->cdev, &init_data);
+> +	if (ret) {
+> +		dev_err(dev, "Could not register LED\n");
+> +		goto err_child_node;
+> +	}
+> +	return 0;
+> +err_child_node:
+> +	fwnode_handle_put(child);
+> +	return ret;
+> +}
+
+Is the fwnode_handle_put(child); missing in non-error path somewhere?
+
+> +MODULE_LICENSE("GPL");
+
+Make sure this is consistent with file header. GPLv2+, if you can.
+
+Best regards,
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--fXStkuK2IQBfcDe+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX32mPAAKCRAw5/Bqldv6
+8qoDAJsGLSdnj7pS5+jNN106nqxPCn+sIwCgjgVV9LxT/eQ1kyFjPAxMgU23t+U=
+=NwvO
+-----END PGP SIGNATURE-----
+
+--fXStkuK2IQBfcDe+--
