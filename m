@@ -2,123 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A41285A2F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04302285A30
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727557AbgJGIN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S1727621AbgJGINg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727379AbgJGINY (ORCPT
+        with ESMTP id S1727560AbgJGINd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:13:24 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497AEC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 01:13:24 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id x5so663497pjv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 01:13:24 -0700 (PDT)
+        Wed, 7 Oct 2020 04:13:33 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A274C061755;
+        Wed,  7 Oct 2020 01:13:33 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id e10so920293pfj.1;
+        Wed, 07 Oct 2020 01:13:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A0/rPY7WLJxFq++CdjdK9ATDolLJAaU6jqP2p2nJ/2E=;
-        b=RsWlB2kEZJdh066mfhAfNImRgrEK7IbchQBG6JkzAACwvBxYo5zGp8mrOnP2NUWBNe
-         KrIuwWURHDOh49SvSAo6ie9YmurLEcmyW3a799ohQPejmmD1U4mhwPL27wUK3Z7uPv6M
-         JdzCXyo/CEijQ/cc7yReH90lLe00YMTV0Q8bQD+0RKhLD09kdoMch1Fcrm+IjIezuf3k
-         ZONPOLN7PvT6M0qIqwsk1Q5MtBURNqcU/aio60DKzuDwxJYJUyO6AA6X0Cte2ZtI8g6g
-         P2sLxx6QEoasH5c2kclUqL2B5iVciTRln8q3C4OKyqjD3S31Zh7h1bKFhXbPmwUifYIg
-         aYLw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aObhDWq+952zOEk1Dbgb/RY6DzpjbMzmFP6DHRLyT8s=;
+        b=jnBgLxK8LCSMcjWVAaR8C2tTQYCen0tg7v8CvuYvCO5nqF5x792pi2vHv0mdsA9gPc
+         Ock/JjL2oh+ztPUXL5fccvfXtrIdsHBMIItEnQsNmkDni3rNZXbnX9Le42IG4NtP1cZ2
+         zoNsX4BIXbiA5K51AW5vs2MsePd9vobMcZPTa2LbkScAwQ8WakCF8fWNsIQyBLBzagBB
+         2tlIC7H/tGED8TFfMlpDbL5kIdeyuKAC3+S16v3DtZeAfA7gIBoj3cxvo8+pDOvvnYln
+         CsbuLeuoPoZkh4L0I4Wo+vwZAYFJoTlJ07Xw/7jMhQrTiXipEZJute/kvq8b8IiGqNMg
+         o7DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=A0/rPY7WLJxFq++CdjdK9ATDolLJAaU6jqP2p2nJ/2E=;
-        b=JnwPXPI7MegafWAM2EURm6KnsIwvL+uCeXlKfjhwe7HcPkZCc9AnQWDIT/eyg4ixAD
-         ADvCYxT9/Bd5vY53pAeT9rYkGuuKpJJhGsEpX0hdO4WQtxq7ktq+/QGKqWOS1yfdnEZh
-         AgZ1V0Pfxf63cXXDUoJGZ6FZC/igP/9yoI3yoTxsgmtvQQX9Bh1HWhio/U8RenIrKIGV
-         lqWQawdP0DNZVoO5bXEIORotVc0Ly4htAS9/9HHjda1EYfenYuSjeuloiBJeEVilDisY
-         eVOUPfUK/yiK7WWUZch5ykFdfmtY4ou+C3lAHLE4Gk9MbJGgsIWW2eFHdRhz0cJ72gi7
-         WhaQ==
-X-Gm-Message-State: AOAM532mnPKuH08EgQwu5mXswPZ7ccY7Oy2ocrMUtpT9U8IxBj14F2pP
-        +FHf9fGHzsxIGIbU4lkyQAQ=
-X-Google-Smtp-Source: ABdhPJwC5WPLRYSaxF2/E8PYtbltzSIRiCB4ZuGHas3RhxFsVApRkS/9mjJLovGKmuonz2WWGvdpTA==
-X-Received: by 2002:a17:902:ab88:b029:d3:b2d3:5708 with SMTP id f8-20020a170902ab88b02900d3b2d35708mr1798115plr.70.1602058403589;
-        Wed, 07 Oct 2020 01:13:23 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([106.102.129.249])
-        by smtp.gmail.com with ESMTPSA id n8sm1911329pff.188.2020.10.07.01.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 01:13:22 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Wei Li <liwei391@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH] perf stat: Fix segfault on armv8_pmu events
-Date:   Wed,  7 Oct 2020 17:13:11 +0900
-Message-Id: <20201007081311.1831003-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aObhDWq+952zOEk1Dbgb/RY6DzpjbMzmFP6DHRLyT8s=;
+        b=EObLZh00+LkHyGByeiiHMdF9lE7WUCLK0ccPQZbCptJVGhMYb+jvuo4vApNpEuq2Tr
+         0swjsqADfjYeB4VgaKxWQoSg710+8OhFyd4/G2eKUoOipB16w2IvBbzDCuwiRC6JVMIJ
+         a0DYXKLoS5d9lwCuxS1d6WiN2Dim4HGygfB/aNSFau4jZq6AeV31JOrNQeYt82qiAkvR
+         OACueVaBUr5W7R3SQVd+IC/2F8wJ8IzcRiIqzGpgKjK+7mX9p906hyH/aTYmbf68fGzm
+         yxh9skGfBsPi6Xi+nqUn6M+YNF4HLd4bnDCkEsqZV7ZdKNJai23DpGvW6gWF+SomuUuZ
+         LQlg==
+X-Gm-Message-State: AOAM530uTQae9VGtx9nKsSWyTEG3rFhDSP+v/WxRBo9xHvibywlV8drF
+        7OAe5u3oCF/7IGet8L8b10J5/iP7nyjy8A==
+X-Google-Smtp-Source: ABdhPJzi0tV/pskRbOZtxEM17LLWCXDdYbzAjsqxYzHTdy5PhRkeGbFfyzvJK/aG3g8CzgfLABHPaw==
+X-Received: by 2002:a63:4e4f:: with SMTP id o15mr1948563pgl.202.1602058412223;
+        Wed, 07 Oct 2020 01:13:32 -0700 (PDT)
+Received: from [192.168.1.200] (flh2-125-196-131-224.osk.mesh.ad.jp. [125.196.131.224])
+        by smtp.gmail.com with ESMTPSA id x22sm1869920pfp.181.2020.10.07.01.13.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 01:13:31 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] exfat: add exfat_update_inode()
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        'Sungjong Seo' <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20201002060529epcas1p2e05b4f565283969f4f2adc337f23a0d2@epcas1p2.samsung.com>
+ <20201002060505.27449-1-kohada.t2@gmail.com>
+ <000b01d69bba$08047320$180d5960$@samsung.com>
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+Message-ID: <d19ecc4d-968e-9341-aaa5-a6c2c541eefb@gmail.com>
+Date:   Wed, 7 Oct 2020 17:13:29 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <000b01d69bba$08047320$180d5960$@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was reported that perf stat crashed when using with armv8_pmu (cpu)
-events with the task mode.  As perf stat uses an empty cpu map for
-task mode but armv8_pmu has its own cpu mask, it confused which map
-should use when accessing file descriptors and caused segfaults:
+Thank you for your reply.
 
-  (gdb) bt
-  #0  0x0000000000603fc8 in perf_evsel__close_fd_cpu (evsel=<optimized out>,
-      cpu=<optimized out>) at evsel.c:122
-  #1  perf_evsel__close_cpu (evsel=evsel@entry=0x716e950, cpu=7) at evsel.c:156
-  #2  0x00000000004d4718 in evlist__close (evlist=0x70a7cb0) at util/evlist.c:1242
-  #3  0x0000000000453404 in __run_perf_stat (argc=3, argc@entry=1, argv=0x30,
-      argv@entry=0xfffffaea2f90, run_idx=119, run_idx@entry=1701998435)
-      at builtin-stat.c:929
-  #4  0x0000000000455058 in run_perf_stat (run_idx=1701998435, argv=0xfffffaea2f90,
-      argc=1) at builtin-stat.c:947
-  #5  cmd_stat (argc=1, argv=0xfffffaea2f90) at builtin-stat.c:2357
-  #6  0x00000000004bb888 in run_builtin (p=p@entry=0x9764b8 <commands+288>,
-      argc=argc@entry=4, argv=argv@entry=0xfffffaea2f90) at perf.c:312
-  #7  0x00000000004bbb54 in handle_internal_command (argc=argc@entry=4,
-      argv=argv@entry=0xfffffaea2f90) at perf.c:364
-  #8  0x0000000000435378 in run_argv (argcp=<synthetic pointer>,
-      argv=<synthetic pointer>) at perf.c:408
-  #9  main (argc=4, argv=0xfffffaea2f90) at perf.c:538
+>>   	new_dir->i_ctime = new_dir->i_mtime = new_dir->i_atime =
+>>   		EXFAT_I(new_dir)->i_crtime = current_time(new_dir);
+>>   	exfat_truncate_atime(&new_dir->i_atime);
+>> -	if (IS_DIRSYNC(new_dir))
+>> -		exfat_sync_inode(new_dir);
+>> -	else
+>> -		mark_inode_dirty(new_dir);
+>> +	exfat_update_inode(new_dir);
+>>
+>>   	i_pos = ((loff_t)EXFAT_I(old_inode)->dir.dir << 32) |
+>>   		(EXFAT_I(old_inode)->entry & 0xffffffff);
+>>   	exfat_unhash_inode(old_inode);
+>>   	exfat_hash_inode(old_inode, i_pos);
+>> -	if (IS_DIRSYNC(new_dir))
+>> -		exfat_sync_inode(old_inode);
+>> -	else
+>> -		mark_inode_dirty(old_inode);
+>> +	exfat_update_inode(old_inode);
+> This is checking if old_inode is IS_DIRSYNC, not new_dir.
+> Is there any reason ?
 
-To fix this, I simply used the given cpu map unless the evsel actually
-is not a system-wide event (like uncore events).
+To eliminate meaningless usage and simplify it.
 
-Reported-by: Wei Li <liwei391@huawei.com>
-Tested-by: Barry Song <song.bao.hua@hisilicon.com>
-Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Th exfat does not have an attribute that indicates whether each file/dir should be synced(such as ext4).
+Therefore, sync necessity cannot be set for each inode, so sync necessity of the whole FS setting(sb-> s_flags) is inherited.
+As a result, the following values ​​are all the same.
+  IS_DIRSYNC (new_dir)
+  IS_DIRSYNC (old_dir)
+  IS_DIRSYNC (old_inode)
+  sb-> s_flags & SB_SYNCHRONOUS | SB_DIRSYNC
+
+In exfat, IS_DIRSYNC only works as a shortcut to sb->s_flags.
+
+Even if S_SYNC or S_DIRSYNC were set to inode->i_flags, the current implementation is inappropriate.
+Whether to sync or not should be determined by "IS_DIRSYNC(new_dir)||IS_DIRSYNC(old_dir)", I think.
+(Syncing only old_dir is a high risk of losing file)
+
+Whatever, no one sets S_SYNC and S_DIRSYNC in exfat, so the behavior is no different.
+
+***
+Please tell me your opinion about "aggregate dir-entry updates into __exfat_write_inode()"
+
+BR
 ---
- tools/lib/perf/evlist.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-index 2208444ecb44..cfcdbd7be066 100644
---- a/tools/lib/perf/evlist.c
-+++ b/tools/lib/perf/evlist.c
-@@ -45,6 +45,9 @@ static void __perf_evlist__propagate_maps(struct perf_evlist *evlist,
- 	if (!evsel->own_cpus || evlist->has_user_cpus) {
- 		perf_cpu_map__put(evsel->cpus);
- 		evsel->cpus = perf_cpu_map__get(evlist->cpus);
-+	} else if (!evsel->system_wide && perf_cpu_map__empty(evlist->cpus)) {
-+		perf_cpu_map__put(evsel->cpus);
-+		evsel->cpus = perf_cpu_map__get(evlist->cpus);
- 	} else if (evsel->cpus != evsel->own_cpus) {
- 		perf_cpu_map__put(evsel->cpus);
- 		evsel->cpus = perf_cpu_map__get(evsel->own_cpus);
--- 
-2.28.0.806.g8561365e88-goog
-
+Tetsuhiro Kohada <kohada.t2@gmail.com>
