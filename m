@@ -2,193 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED832859AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8863E2859AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727750AbgJGHjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:39:41 -0400
-Received: from mga12.intel.com ([192.55.52.136]:49546 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGHjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:39:40 -0400
-IronPort-SDR: qRGnfQ8argRejdJlwVrMp5FLD0InJ+Kl2oiRbnQCeNP3liyekU/8kRl7L/Bzg2VovmQMJeMkoU
- BNGcgw7BRIvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="144241329"
-X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="144241329"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 00:39:40 -0700
-IronPort-SDR: bdfIgso9kHwc3Lh66Bl2jD9gFc5G8/D0Gkmz7qlpoV21MxdhnIZkKtXnPp/y+AekQGK29eegbq
- 6qH511bMUhfw==
-X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="461218859"
-Received: from juliahar-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.223])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 00:39:27 -0700
-Date:   Wed, 7 Oct 2020 10:39:23 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20201007073923.GA3632@linux.intel.com>
-References: <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
- <20201006025703.GG15803@linux.intel.com>
- <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
- <20201006151532.GA17610@linux.intel.com>
- <20201006172819.GA114208@linux.intel.com>
- <20201006232129.GB28981@linux.intel.com>
- <20201007002236.GA139112@linux.intel.com>
- <20201007011738.GE28981@linux.intel.com>
- <20201007031402.GA143690@linux.intel.com>
- <20201007043418.GG28981@linux.intel.com>
+        id S1727761AbgJGHjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGHjo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 03:39:44 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517EDC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:39:44 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t10so975185wrv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RYwEGS7gOxFlwuQRTr7QM+pg66rzdyTCfIUfekhpUBo=;
+        b=ruoXB4q0W4dOYr0HkGK3Qg2MUNaxXi9Tfm5XoN+wJuao1gaRUueT0KcnNUVdAc6i7R
+         ad7CYmcCeYVK++bMrK+3TtUU+XRMTKATzz4A0NJN3o7RmWQUbCtCU/k7VX8UmjxZCcLx
+         90FV/U6rqDEoHznYihJVKIjTp59Cgm6dxLKO0y4kB8P9aqgDO09c+9jYYxfNjQeQwLeT
+         0iJgvI4hvfuLW4QF6oH+DgdLqWEER3NlD8sgZ8ZestVegmAZlB3/yPVxiKvaoeSu1NTg
+         gTBMILXz/Q4NZ/g/+Fxx+UK5QvpWKKFVUDzwBk6TTlfiUYgu85IgWeCGYmrwbyzcKAGT
+         TBSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RYwEGS7gOxFlwuQRTr7QM+pg66rzdyTCfIUfekhpUBo=;
+        b=Y3YprW9Yjjm9SwIIaLpUXO6nnC8NminTsbaaXy+IwszZm7Hj5HSHcaGSZUQoEWtab8
+         ak94JsIwc+S/WbtY48eQyHNkmbLFj3hctwA40Fg6wO7IXJxKeZEimho9+mJ9D5aX55mS
+         fxiDBSv0/SVvwfoy3Wdv+jUfxQVzC6YQNoqa6jfJJsrPAD8nv1aE2f48G61iFXZQ2oXS
+         nWchGabSZqF67A+bLkVJJfL14NaKsLqNssCeIWPz7cE/XUlA5sSHUIQy7naaMpJJxRkh
+         JgjyRbhEEDPiMheDp4y2rB2xdP/eKkAmaf2Z7mNJQmhUJ9GHJuxurXoo/nmAdCpqwgCI
+         Oa9A==
+X-Gm-Message-State: AOAM531KPsxFWhPQFyskA4Xf1E2AAKOZfxDzlQ2TyFl/cF4f+0Y6vxNV
+        ovpEq4qqk1utGg3mhkRfad1+R+rjS2RWSQ==
+X-Google-Smtp-Source: ABdhPJx+7ke9fEecAqH/fAr9lPYggeTnVTs2kZ4YZOSai+UmsGlcT1A4NpyX9005g+lQnoEoGseTpw==
+X-Received: by 2002:adf:e88a:: with SMTP id d10mr2072440wrm.247.1602056382670;
+        Wed, 07 Oct 2020 00:39:42 -0700 (PDT)
+Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
+        by smtp.gmail.com with ESMTPSA id r3sm1639024wrm.51.2020.10.07.00.39.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 00:39:41 -0700 (PDT)
+From:   Jann Horn <jannh@google.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Khalid Aziz <khalid.aziz@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock and with length
+Date:   Wed,  7 Oct 2020 09:39:31 +0200
+Message-Id: <20201007073932.865218-1-jannh@google.com>
+X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007043418.GG28981@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 09:34:19PM -0700, Sean Christopherson wrote:
-> On Wed, Oct 07, 2020 at 06:14:02AM +0300, Jarkko Sakkinen wrote:
-> > On Tue, Oct 06, 2020 at 06:17:38PM -0700, Sean Christopherson wrote:
-> > > On Wed, Oct 07, 2020 at 03:22:36AM +0300, Jarkko Sakkinen wrote:
-> > > > > And then a third flavor comes along, e.g. Jethro's request interrupt case,
-> > > > > and exit_reason can also return '2'.  How do you handle that with only the
-> > > > > leaf?
-> > > > 
-> > > > I'm listening. How was that handled before? I saw only '0' and '1'.  Can
-> > > > you bring some context on that? I did read the emails that were swapped
-> > > > when the run structure was added but I'm not sure what is the exact
-> > > > differentiator. Maybe I'm missing something.
-> > > 
-> > > https://patchwork.kernel.org/patch/11719889/
-> > 
-> > Thank you.
-> > 
-> > There's aboslutely nothing that is blocking adding such support for such
-> > AEP handling in the current implementation. SGX_SYNCHRONOUS_EXIT is just
-> > another name for EEXIT.
-> 
-> Sure.  And SGX_EXCEPTION_EXIT is just another name for EENTER|ERESUME.
+arch_validate_prot() is a hook that can validate whether a given set of
+protection flags is valid in an mprotect() operation. It is given the set
+of protection flags and the address being modified.
 
-Kind of yes.
+However, the address being modified can currently not actually be used in
+a meaningful way because:
 
-> > Even if that was in place, you'd need to separate normal and interrupt.
-> > Tristate is useless here. 
-> 
-> Huh?  You mean like adding SGX_INTERRUPT_EXIT and SGX_EXCEPTION_EXIT?
+1. Only the address is given, but not the length, and the operation can
+   span multiple VMAs. Therefore, the callee can't actually tell which
+   virtual address range, or which VMAs, are being targeted.
+2. The mmap_lock is not held, meaning that if the callee were to check
+   the VMA at @addr, that VMA would be unrelated to the one the
+   operation is performed on.
 
-OK, so I'll throw something.
+Currently, custom arch_validate_prot() handlers are defined by
+arm64, powerpc and sparc.
+arm64 and powerpc don't care about the address range, they just check the
+flags against CPU support masks.
+sparc's arch_validate_prot() attempts to look at the VMA, but doesn't take
+the mmap_lock.
 
-1. "normal" is either exception from either EENTER or ERESUME,
-   or just EEXIT.
-2. "interrupt" is something where you want to tailor AEP path.
+Change the function signature to also take a length, and move the
+arch_validate_prot() call in mm/mprotect.c down into the locked region.
 
-> > As far as I'm concerned, no bottlenecks have been created.
-> 
-> There's no bottleneck, just an inflexible and kludgy API for userspace.
-> 
-> 	if (run->leaf == EEXIT)
-> 		return handle_eexit();
-> 
-> 	if (run->leaf == EENTER || run->leaf == ERESUME)
-> 	        return handle_exception(run->leaf);
-> 
-> 	return -EIO;
+Cc: stable@vger.kernel.org
+Fixes: 9035cf9a97e4 ("mm: Add address parameter to arch_validate_prot()")
+Suggested-by: Khalid Aziz <khalid.aziz@oracle.com>
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+ arch/arm64/include/asm/mman.h   | 4 ++--
+ arch/powerpc/include/asm/mman.h | 3 ++-
+ arch/powerpc/kernel/syscalls.c  | 2 +-
+ arch/sparc/include/asm/mman.h   | 6 ++++--
+ include/linux/mman.h            | 3 ++-
+ mm/mprotect.c                   | 6 ++++--
+ 6 files changed, 15 insertions(+), 9 deletions(-)
 
-I think that's quite intuitive to have just one state variable.
+diff --git a/arch/arm64/include/asm/mman.h b/arch/arm64/include/asm/mman.h
+index 081ec8de9ea6..0876a87986dc 100644
+--- a/arch/arm64/include/asm/mman.h
++++ b/arch/arm64/include/asm/mman.h
+@@ -23,7 +23,7 @@ static inline pgprot_t arch_vm_get_page_prot(unsigned long vm_flags)
+ #define arch_vm_get_page_prot(vm_flags) arch_vm_get_page_prot(vm_flags)
+ 
+ static inline bool arch_validate_prot(unsigned long prot,
+-	unsigned long addr __always_unused)
++	unsigned long addr __always_unused, unsigned long len __always_unused)
+ {
+ 	unsigned long supported = PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM;
+ 
+@@ -32,6 +32,6 @@ static inline bool arch_validate_prot(unsigned long prot,
+ 
+ 	return (prot & ~supported) == 0;
+ }
+-#define arch_validate_prot(prot, addr) arch_validate_prot(prot, addr)
++#define arch_validate_prot(prot, addr, len) arch_validate_prot(prot, addr, len)
+ 
+ #endif /* ! __ASM_MMAN_H__ */
+diff --git a/arch/powerpc/include/asm/mman.h b/arch/powerpc/include/asm/mman.h
+index 7cb6d18f5cd6..65dd9b594985 100644
+--- a/arch/powerpc/include/asm/mman.h
++++ b/arch/powerpc/include/asm/mman.h
+@@ -36,7 +36,8 @@ static inline pgprot_t arch_vm_get_page_prot(unsigned long vm_flags)
+ }
+ #define arch_vm_get_page_prot(vm_flags) arch_vm_get_page_prot(vm_flags)
+ 
+-static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
++static inline bool arch_validate_prot(unsigned long prot, unsigned long addr,
++				      unsigned long len)
+ {
+ 	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_SAO))
+ 		return false;
+diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/syscalls.c
+index 078608ec2e92..b1fabb97d138 100644
+--- a/arch/powerpc/kernel/syscalls.c
++++ b/arch/powerpc/kernel/syscalls.c
+@@ -43,7 +43,7 @@ static inline long do_mmap2(unsigned long addr, size_t len,
+ {
+ 	long ret = -EINVAL;
+ 
+-	if (!arch_validate_prot(prot, addr))
++	if (!arch_validate_prot(prot, addr, len))
+ 		goto out;
+ 
+ 	if (shift) {
+diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mman.h
+index f94532f25db1..e85222c76585 100644
+--- a/arch/sparc/include/asm/mman.h
++++ b/arch/sparc/include/asm/mman.h
+@@ -52,9 +52,11 @@ static inline pgprot_t sparc_vm_get_page_prot(unsigned long vm_flags)
+ 	return (vm_flags & VM_SPARC_ADI) ? __pgprot(_PAGE_MCD_4V) : __pgprot(0);
+ }
+ 
+-#define arch_validate_prot(prot, addr) sparc_validate_prot(prot, addr)
+-static inline int sparc_validate_prot(unsigned long prot, unsigned long addr)
++#define arch_validate_prot(prot, addr, len) sparc_validate_prot(prot, addr, len)
++static inline int sparc_validate_prot(unsigned long prot, unsigned long addr,
++				      unsigned long len)
+ {
++	mmap_assert_write_locked(current->mm);
+ 	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI))
+ 		return 0;
+ 	if (prot & PROT_ADI) {
+diff --git a/include/linux/mman.h b/include/linux/mman.h
+index 6f34c33075f9..5b4d554d3189 100644
+--- a/include/linux/mman.h
++++ b/include/linux/mman.h
+@@ -96,7 +96,8 @@ static inline void vm_unacct_memory(long pages)
+  *
+  * Returns true if the prot flags are valid
+  */
+-static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
++static inline bool arch_validate_prot(unsigned long prot, unsigned long addr,
++				      unsigned long len)
+ {
+ 	return (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM)) == 0;
+ }
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index ce8b8a5eacbb..e2d6b51acbf8 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -533,14 +533,16 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+ 	end = start + len;
+ 	if (end <= start)
+ 		return -ENOMEM;
+-	if (!arch_validate_prot(prot, start))
+-		return -EINVAL;
+ 
+ 	reqprot = prot;
+ 
+ 	if (mmap_write_lock_killable(current->mm))
+ 		return -EINTR;
+ 
++	error = -EINVAL;
++	if (!arch_validate_prot(prot, start, len))
++		goto out;
++
+ 	/*
+ 	 * If userspace did not allocate the pkey, do not let
+ 	 * them use it here.
 
-> Let's say we come up with a clever opt-in scheme that allows exception fixup
-> to inform the vDSO that the enclave was invalid, even on SGX1.  Now we're in
-> a scenario where we want to tell userspace that the enclave is lost, but
-> userspace assumes any exit EENTER or ERESUME is an exception.
-> 
-> 	if (run->leaf == EEXIT)
-> 		return handle_eexit();
-> 
-> 	if (run->leaf == EENTER || run->leaf == ERESUME)
-> 		return handle_invalid_enclave_or_maybe_exception();
-> 
-> 	return -EIO;
+base-commit: c85fb28b6f999db9928b841f63f1beeb3074eeca
+-- 
+2.28.0.806.g8561365e88-goog
 
-What I'd do would be to add a 'flags' field.
-
-It could have a bit for interrupt, let's call it for the sake of an
-example as SGX_ENCLAVE_RUN_FLAG_INT.
-
-Then you'd do this if you want to exit from the vDSO instead of doing
-ERESUME:
-
-	run->flags |= SGX_ENCLAVE_RUN_FLAG_INT
-
-The vDSO would check this bit on AEP and:
-
-1. If it's cleared, it would ERESUME.
-2. If it's set, it would clear it and exit from vDSO.
-
-> We could add a new exit reason, but we'd still need to ensure EENTER|ERESUME
-> means "exception" for old userspace.  Or we could add exit_reason now and end
-> up with (IMO) a sane and extensible interface.
-> 
-> 	if (run->exit_reason == SGX_ENCLAVE_INVALID)
-> 		return handle_invalid_enclave();
-> 
-> 	if (run->exit_reason == SGX_SYNCHRONOUS_EXIT)
-> 		return handle_eexit();
-> 
-> 	if (run->exit_reason == SGX_EXCEPTION)
-> 		return handle_exception();
-> 
-> 	return -EIO;
-> 
-> And maybe we get really clever and figure out a way to (deterministically)
-> redirect SIGALRM to the vDSO.  Then we'd want:
-> 
-> 	if (run->exit_reason == SGX_ENCLAVE_INVALID)
-> 		return handle_invalid_enclave();
-> 
-> 	if (run->exit_reason == SGX_SYNCHRONOUS_EXIT)
-> 		return handle_eexit();
-> 
-> 	if (run->exit_reason == SGX_ALARM)
-> 		return handle_reschedule();
-> 
-> 	if (run->exit_reason == SGX_EXCEPTION)
-> 		return handle_exception();
-> 
-> 	return -EIO;
-> 
-> Even more hypothetical would be if Andy gets one of his wishes, and EENTER2
-> comes along that doesn't allow the enclave to dictate the exit point,
-> "returns" an error code on enclave failure, and allows the kernel to
-> auto-restart the enclave on IRQs/NMIs.  That (very hypothetical) scenario
-> fits nicely into the exit_reason handling.
-> 
-> I'm not arguing that any of the above is even remotely likely.  I just don't
-> understand why we'd want an API that at best requires heuristics in userspace
-> to determine why the enclave stopped running, and at worst will saddle us with
-> an ugly mess in the future.  All to save 4 bytes that no one cares about (they
-> literally cost nothing), and a single MOV in a flow that is hundreds, if not
-> thousands, of cycles.
-
-I don't care as much as saving bytes as defining API, which has zero
-ambiguous state variables.
-
-And since the field 'leaf' is there, and was before too, no degrees of
-freedom are lost. Removing one variable does not make more of a mess.
-
-/Jarkko
