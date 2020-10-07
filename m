@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991E3285744
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F0F28574B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727463AbgJGDsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 23:48:47 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36342 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727215AbgJGDs2 (ORCPT
+        id S1727344AbgJGDso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 23:48:44 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38790 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727341AbgJGDsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 23:48:28 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0973j63s045452;
-        Wed, 7 Oct 2020 03:48:19 GMT
+        Tue, 6 Oct 2020 23:48:38 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0973ldQp168232;
+        Wed, 7 Oct 2020 03:48:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=wsE1/MNDyjUCvvmOIi6L1OuamYsld/LapsWGPILEX/E=;
- b=NZXuk4p8YMFnzapk8OIcJK0OaTK8lW7jOqXcQzfx++U/e/0qvAkJVh/wtCbxNazx2n5B
- nGkURqUputvmaSAxGKhYm5Ls4pVRd1yXHaW5Zvo+1UC51B2BKjL0CxhQB7Cq8SqKs3z+
- qdWX8TiB5p2it1mavcUbtelTmW73hHeSymkp2j9ztPYQfvCBUlKacEXW7FV8BVHzN/Sq
- 1r7HZcWXcGsYjBj6PUl6WSJ1a0IviQSImQdTLoE4gTXqAHzrRdT132lD9w2i3QCnz8KU
- vE3dU+RLxd8ojQJ1mipcL/oGFrDXSELQfuHwE1sjoHGrm+c1YZziBxZ7jUwd9w/mxZLf Hw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33ym34mjy4-1
+ bh=NghnnTiQ04L/eDU1fIJD4zEfn8ioaRXq80X7lbFGSYE=;
+ b=xcP7cfdKoc5T0+WpNrkZMbu9TIjSDhHnrjbe+cFU6M84OE2e1YfuVttYLHrkEhKItU8J
+ 8wg8gYitphW56Rc7YSc8vOlBo/dr70d8uj00/aD8E2uYWkcEWH+MI2N5+R0ETJPtBgVa
+ RZ8l3cbi3p4Ig+YSqf5EwdZzYMmnXtkYgW3hZmXgievCstNEQSNboQ76aAeBppaNa5Sa
+ LLZWZ99Yfbn9UZ6HK/8aocaj7rdasw+AWicXNoND78fYNxvrsGxbnvrgKRZ5dyN1uW9G
+ HiJqyVLOqrllWZGj+FfNi/Zj0TpG2tgE7mytLo8ZaQdr6gnJ9W0BXoE4avBlrPLopxQ6 7A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33xhxmydcn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 03:48:19 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0973j9VF041264;
-        Wed, 7 Oct 2020 03:48:19 GMT
+        Wed, 07 Oct 2020 03:48:27 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0973ircW194801;
+        Wed, 7 Oct 2020 03:48:26 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33yyjgm87f-1
+        by aserp3020.oracle.com with ESMTP id 3410jy2s77-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Oct 2020 03:48:18 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0973mIcl012540;
-        Wed, 7 Oct 2020 03:48:18 GMT
+        Wed, 07 Oct 2020 03:48:26 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0973mOL7012544;
+        Wed, 7 Oct 2020 03:48:24 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 06 Oct 2020 20:48:17 -0700
+        with ESMTP ; Tue, 06 Oct 2020 20:48:23 -0700
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
 To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Liu Shixin <liushixin2@huawei.com>
+        Pujin Shi <shipujin.t@gmail.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH -next] scsi: use module_platform_driver to simplify the code
-Date:   Tue,  6 Oct 2020 23:47:57 -0400
-Message-Id: <160204240580.16940.1304940981080248041.b4-ty@oracle.com>
+        Satya Tangirala <satyat@google.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        linux-scsi@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        linux-kernel@vger.kernel.org, hankinsea@gmail.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH v2] scsi: ufs: fix missing brace warning for old compilers
+Date:   Tue,  6 Oct 2020 23:48:01 -0400
+Message-Id: <160204240575.16940.8613402806893286457.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200914065403.3726462-1-liushixin2@huawei.com>
-References: <20200914065403.3726462-1-liushixin2@huawei.com>
+In-Reply-To: <20201002063538.1250-1-shipujin.t@gmail.com>
+References: <20201002063538.1250-1-shipujin.t@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2010070023
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0
- malwarescore=0 phishscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2010070023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 14:54:03 +0800, Liu Shixin wrote:
+On Fri, 2 Oct 2020 14:35:38 +0800, Pujin Shi wrote:
 
-> module_platform_driver() makes the code simpler by eliminating
-> boilerplate code.
+> For older versions of gcc, the array = {0}; will cause warnings:
+> 
+> drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_crypto_keyslot_program':
+> drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: missing braces around initializer [-Wmissing-braces]
+>   union ufs_crypto_cfg_entry cfg = { 0 };
+>         ^
+> drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]
+> drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_clear_keyslot':
+> drivers/scsi/ufs/ufshcd-crypto.c:103:8: warning: missing braces around initializer [-Wmissing-braces]
+>   union ufs_crypto_cfg_entry cfg = { 0 };
+>         ^
+> 2 warnings generated
 
 Applied to 5.10/scsi-queue, thanks!
 
-[1/1] scsi: sun_esp: Use module_platform_driver to simplify the code
-      https://git.kernel.org/mkp/scsi/c/ea0dc2002ef5
+[1/1] scsi: ufs: Fix missing brace warning for old compilers
+      https://git.kernel.org/mkp/scsi/c/6500251e5906
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
