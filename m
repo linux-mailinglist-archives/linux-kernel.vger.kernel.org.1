@@ -2,173 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F272867B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C316D28677E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgJGSsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:48:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18988 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727237AbgJGSsx (ORCPT
+        id S1728021AbgJGSjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728002AbgJGSjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:48:53 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097IXxl8154201;
-        Wed, 7 Oct 2020 14:48:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=3l7EmI1rLmUxp/ulwT0rD8TTtWYOCKblDswff8SjiME=;
- b=DA/TlB+Zmil9jPgrkt1Q5eTzV5cCpIkfCPkHmzwfT4kPKvyMSeymjw/tS7kRMGQx5ZcF
- K9p1XOCtkV86jjgFjgikY2Lfcs3sa1HviuGtrWtTyAGb7Fslm36oX5/YdYK1h/bJkbBJ
- GzmqK9LwWGAgZgmuRcblIVyAhf6n0CaR86O/5DWn6uqPPyOaDxeB1XCR0Ro9VvbCnnkm
- bvyyBi+NF+P3lJxciBUmq4VljO4TG2nHvQEA6IpkU1JinSJynEWAE8R7oZC6Xv0HtcVY
- cnoO9Xh7mi4p2ybGDjYBPTh5EAP42FdMhhpxg8zsVR8gYGCa1XXDbpzhLh1Upf2ng9hg IQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 341jgys91n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 14:48:39 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 097IY2TY154418;
-        Wed, 7 Oct 2020 14:48:38 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 341jgys8yb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 14:48:38 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 097ISjXR014251;
-        Wed, 7 Oct 2020 18:38:53 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 33xgjhac76-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 18:38:53 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 097IcpxJ27656648
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Oct 2020 18:38:51 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3601FA405F;
-        Wed,  7 Oct 2020 18:38:51 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DCB39A4054;
-        Wed,  7 Oct 2020 18:38:47 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.85.90.101])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Oct 2020 18:38:47 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH v3 11/11] powerpc/smp: Optimize update_coregroup_mask
-Date:   Thu,  8 Oct 2020 00:08:00 +0530
-Message-Id: <20201007183800.27415-12-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201007183800.27415-1-srikar@linux.vnet.ibm.com>
-References: <20201007183800.27415-1-srikar@linux.vnet.ibm.com>
+        Wed, 7 Oct 2020 14:39:01 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A25C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:39:01 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id q21so3159700ota.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=igZM3jEU+aFzJ/Spz32umO0y+Ys5Oai0gHignz/H8ps=;
+        b=HV7/qkVSFo835HTJxMaJ1Yw2xZr2paOJi3thR59WWzvp7EZ+VEpWbJ25x184Nvj/Bz
+         LAG1FD9gJh5zZm2KZLp1s1LxGDKOh/OHNjMS7PF7sUPgBjiaptYgDho9HwaKNKU9vAlm
+         gXPHeaF5/RaXzTpEl0pCRtlGi2UYzNWfaNZinKaXPFL8w2nz5rHCPy/fF1R9x3cgMY1L
+         zlBytLZsQqAJOKz2bhOQF1T2H9UUiBSgR3VRbHR4fMrAjGhtNDUGX2i4yGl8XdchdVg1
+         gn6OK9kh+5cwUtM1PYVOOK7n9b/Qd9LwuSvA+FwbxALrX59+iPmUeQ86KaBYaF6UMWLn
+         BjQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=igZM3jEU+aFzJ/Spz32umO0y+Ys5Oai0gHignz/H8ps=;
+        b=azFNnZ0BktllcF7FYgkeZjbalw76RHq2h3wMnaKgkhzzXzy0qVl0UrPjSzh6vAHcKa
+         J5kQnpYlNrJfU9iVTjJOXc5YABHNUgkYG5ZYNInrrz3+OAaN3ntNl7BMIAbpV6ohSSh1
+         XLQHL37nTYmiCzUOd5eJRb7u0F6/ARs5ozw7blk6c2WyZ++AowhZRJaY9tnhvoJfnLkc
+         7rXF5mG5gSP55sxiboFbQxwENPVKDm7//beUbYi4rjOAjmqx0kXUHW2+RCXFaQPl0h4U
+         n8YXnC5KkvftrdR5DzGFrh565zedTXo+dip4oSkTicPNk7YtLj+94z22ok8SfiDqMlgT
+         v+OQ==
+X-Gm-Message-State: AOAM531OQ6TWZOlPxuJIzX94ipBVnZ2nCxQqUh5BQ/Ec44BbbEB0mXE/
+        7OVZ9VT/5c28DJDqKMBaHBfZs/5qD8iH4qAl7ujb8Bdo6h5sAg==
+X-Google-Smtp-Source: ABdhPJxaCAs/Naeu9Vj+uI/q3ssAAv8bT0Us3tz2UWmFKO/fzJurNlSBU76/AscJtztybSz+guyhqNIlsylbtHrDZJc=
+X-Received: by 2002:a9d:6c4b:: with SMTP id g11mr1072527otq.265.1602095940663;
+ Wed, 07 Oct 2020 11:39:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- priorityscore=1501 adultscore=0 spamscore=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 mlxscore=0 suspectscore=2 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070116
+References: <20201007063315.41585-1-dwaipayanray1@gmail.com>
+ <CABJPP5AEELQz0t2+34xYQOJ5e5nQzTUUU6UT8ZH0fqm-tacOmg@mail.gmail.com> <a2db6d34e964bd5ca65f59d1a536a61df71fc955.camel@perches.com>
+In-Reply-To: <a2db6d34e964bd5ca65f59d1a536a61df71fc955.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 8 Oct 2020 00:08:37 +0530
+Message-ID: <CABJPP5B_nscUwm4m+PySN67Cp=i1aR8KXKRuAf2YdAj_950j2Q@mail.gmail.com>
+Subject: Re: [PATCH v5] checkpatch: add new warnings to author signoff checks.
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All threads of a SMT4/SMT8 core can either be part of CPU's coregroup
-mask or outside the coregroup. Use this relation to reduce the
-number of iterations needed to find all the CPUs that share the same
-coregroup
+On Wed, Oct 7, 2020 at 11:48 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-10-07 at 12:08 +0530, Dwaipayan Ray wrote:
+> > On Wed, Oct 7, 2020 at 12:03 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+> > > The author signed-off-by checks are currently very vague.
+> > > Cases like same name or same address are not handled separately.
+>
+> Likely now, the type should be changed from NO_AUTHOR_SIGN_OFF
+> to a single something else for all the other types of messages.
+>
+>
+Since BAD_SIGNOFF is being used for a different context, then
+probably BAD_AUTHOR_SIGNOFF.
 
-Use a temporary mask to iterate through the CPUs that may share
-coregroup mask. Also instead of setting one CPU at a time into
-cpu_coregroup_mask, copy the SMT4/SMT8/submask at one shot.
+Should this work or anything else you have in mind?
 
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Anton Blanchard <anton@ozlabs.org>
-Cc: Oliver O'Halloran <oohall@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog v2->v3:
-	Use GFP_ATOMIC instead of GFP_KERNEL since allocations need to
-	atomic at the time of CPU HotPlug
-	Reported by Qian Cai <cai@redhat.com>
-
- arch/powerpc/kernel/smp.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
-
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index b48ae4e306d3..bbaea93dc558 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1340,19 +1340,34 @@ static inline void add_cpu_to_smallcore_masks(int cpu)
- 
- static void update_coregroup_mask(int cpu)
- {
--	int first_thread = cpu_first_thread_sibling(cpu);
-+	struct cpumask *(*submask_fn)(int) = cpu_sibling_mask;
-+	cpumask_var_t mask;
- 	int coregroup_id = cpu_to_coregroup_id(cpu);
- 	int i;
- 
--	cpumask_set_cpu(cpu, cpu_coregroup_mask(cpu));
--	for_each_cpu_and(i, cpu_online_mask, cpu_cpu_mask(cpu)) {
--		int fcpu = cpu_first_thread_sibling(i);
-+	/* In CPU-hotplug path, hence use GFP_ATOMIC */
-+	alloc_cpumask_var_node(&mask, GFP_ATOMIC, cpu_to_node(cpu));
-+	cpumask_and(mask, cpu_online_mask, cpu_cpu_mask(cpu));
-+
-+	if (shared_caches)
-+		submask_fn = cpu_l2_cache_mask;
- 
--		if (fcpu == first_thread)
--			set_cpus_related(cpu, i, cpu_coregroup_mask);
--		else if (coregroup_id == cpu_to_coregroup_id(i))
--			set_cpus_related(cpu, i, cpu_coregroup_mask);
-+	/* Update coregroup mask with all the CPUs that are part of submask */
-+	or_cpumasks_related(cpu, cpu, submask_fn, cpu_coregroup_mask);
-+
-+	/* Skip all CPUs already part of coregroup mask */
-+	cpumask_andnot(mask, mask, cpu_coregroup_mask(cpu));
-+
-+	for_each_cpu(i, mask) {
-+		/* Skip all CPUs not part of this coregroup */
-+		if (coregroup_id == cpu_to_coregroup_id(i)) {
-+			or_cpumasks_related(cpu, i, submask_fn, cpu_coregroup_mask);
-+			cpumask_andnot(mask, mask, submask_fn(i));
-+		} else {
-+			cpumask_andnot(mask, mask, cpu_coregroup_mask(i));
-+		}
- 	}
-+	free_cpumask_var(mask);
- }
- 
- static void add_cpu_to_masks(int cpu)
--- 
-2.17.1
-
+Thanks,
+Dwaipayan.
