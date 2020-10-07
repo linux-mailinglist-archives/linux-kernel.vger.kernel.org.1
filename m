@@ -2,284 +2,576 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC49285FFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1542A285FFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728461AbgJGNWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:22:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728271AbgJGNWW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:22:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602076939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qdKfm8VeTTkUEHKC2yxyyIFpAIkQtVlXdOI42cjmIMc=;
-        b=AUllCUcertMZDBwe1xta1xlJfCrEKCBdcBT9Hrj39LwaxDDBY3INmMBQ8lSwpKdRD06h1U
-        B++WTR65AKxARNuSrh+S9ytUhBovI87O/UiWc25LNzlG8YEs/qJ9+7chqg6pQ50AugYIfG
-        hjh40sVu49Lb0iUSSLkzat1rumABuLs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-461-C93RWiLCN3qeLxwUP_hCxQ-1; Wed, 07 Oct 2020 09:22:16 -0400
-X-MC-Unique: C93RWiLCN3qeLxwUP_hCxQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728476AbgJGNWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728271AbgJGNWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:22:40 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7437802ED4;
-        Wed,  7 Oct 2020 13:22:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-196.rdu2.redhat.com [10.10.116.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A6F255D9DD;
-        Wed,  7 Oct 2020 13:22:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix deadlock between writeback and truncate
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 07 Oct 2020 14:22:12 +0100
-Message-ID: <160207693283.3934207.6150787285715868358.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E17920870;
+        Wed,  7 Oct 2020 13:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602076957;
+        bh=xSM/bftSFTQDkFevWfhJ8DAVoRRGu8guCSKn93QhX94=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=16WwxGok+UP4tDhgaRSvBf11/qhAceQcv+78JmKony5zefEPL59VkzQUhjls1iOay
+         dHAQH6LsiNjuY0hymF8mA1C8ACq7eUeJp0TdC8ATN98Sq1iG7ujUL5CCMiWBOkgBGx
+         KrSvq99rBwg+dkslWkP9Zm/t+NSkuXh1LyB/DBoQ=
+Date:   Wed, 7 Oct 2020 15:23:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Sathish Narsimman <sathish.narasimman@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
+ whitelist"
+Message-ID: <20201007132321.GA2466@kroah.com>
+References: <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
+ <20201005083624.GA2442@kroah.com>
+ <220D3B4E-D73E-43AD-8FF8-887D1A628235@holtmann.org>
+ <20201005124018.GA800868@kroah.com>
+ <824BC92C-5035-4B80-80E7-298508E4ADD7@holtmann.org>
+ <20201005161149.GA2378402@kroah.com>
+ <0C92E812-BF43-46A6-A069-3F7F3278FBB4@holtmann.org>
+ <20201005173835.GB2388217@kroah.com>
+ <20201005180208.GA2739@kroah.com>
+ <D577711C-4AF5-4E82-8A17-E766B64E15A9@holtmann.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/mixed; boundary="wac7ysb48OaltWcw"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D577711C-4AF5-4E82-8A17-E766B64E15A9@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The afs filesystem has a lock[*] that it uses to serialise I/O operations
-going to the server (vnode->io_lock), as the server will only perform one
-modification operation at a time on any given file or directory.  This
-prevents the the filesystem from filling up all the call slots to a server
-with calls that aren't going to be executed in parallel anyway, thereby
-allowing operations on other files to obtain slots.
 
-  [*] Note that is probably redundant for directories at least since
-      i_rwsem is used to serialise directory modifications and
-      lookup/reading vs modification.  The server does allow parallel
-      non-modification ops, however.
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-When a file truncation op completes, we truncate the in-memory copy of the
-file to match - but we do it whilst still holding the io_lock, the idea
-being to prevent races with other operations.
+On Mon, Oct 05, 2020 at 08:58:33PM +0200, Marcel Holtmann wrote:
+> Hi Greg,
+> 
+> >>>>>>>>>>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
+> >>>>>>>>>>>>>> breaks all bluetooth connections on my machine.
+> >>>>>>>>>>>>>> 
+> >>>>>>>>>>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
+> >>>>>>>>>>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
+> >>>>>>>>>>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
+> >>>>>>>>>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>>>>>>>>>>>>> ---
+> >>>>>>>>>>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
+> >>>>>>>>>>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
+> >>>>>>>>>>>>>> 
+> >>>>>>>>>>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
+> >>>>>>>>>>>>>> stopped working on my desktop system.  I finally got the time to do
+> >>>>>>>>>>>>>> bisection today, and it came down to this patch.  Reverting it on top of
+> >>>>>>>>>>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
+> >>>>>>>>>>>>>> work.
+> >>>>>>>>>>>>>> 
+> >>>>>>>>>>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
+> >>>>>>>>>>>>>> issue?
+> >>>>>>>>>>>>> 
+> >>>>>>>>>>>>> can you be specific what breaks since our guys and I also think the
+> >>>>>>>>>>>>> ChromeOS guys have been testing these series of patches heavily.
+> >>>>>>>>>>>> 
+> >>>>>>>>>>>> My bluetooth trackball does not connect at all.  With this reverted, it
+> >>>>>>>>>>>> all "just works".
+> >>>>>>>>>>>> 
+> >>>>>>>>>>>> Same I think for a Bluetooth headset, can check that again if you really
+> >>>>>>>>>>>> need me to, but the trackball is reliable here.
+> >>>>>>>>>>>> 
+> >>>>>>>>>>>>> When you run btmon does it indicate any errors?
+> >>>>>>>>>>>> 
+> >>>>>>>>>>>> How do I run it and where are the errors displayed?
+> >>>>>>>>>>> 
+> >>>>>>>>>>> you can do btmon -w trace.log and just let it run like tcdpump.
+> >>>>>>>>>> 
+> >>>>>>>>>> Ok, attached.
+> >>>>>>>>>> 
+> >>>>>>>>>> The device is not connecting, and then I open the gnome bluetooth dialog
+> >>>>>>>>>> and it scans for devices in the area, but does not connect to my
+> >>>>>>>>>> existing devices at all.
+> >>>>>>>>>> 
+> >>>>>>>>>> Any ideas?
+> >>>>>>>>> 
+> >>>>>>>>> the trace file is from -rc7 or from -rc7 with this patch reverted?
+> >>>>>>>>> 
+> >>>>>>>>> I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
+> >>>>>>>>> 
+> >>>>>>>>> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+> >>>>>>>>> index e0269192f2e5..94c0daa9f28d 100644
+> >>>>>>>>> --- a/net/bluetooth/hci_request.c
+> >>>>>>>>> +++ b/net/bluetooth/hci_request.c
+> >>>>>>>>> @@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
+> >>>>>>>>>             return -1;
+> >>>>>>>>> 
+> >>>>>>>>>     /* White list can not be used with RPAs */
+> >>>>>>>>> -       if (!allow_rpa && !use_ll_privacy(hdev) &&
+> >>>>>>>>> +       if (!allow_rpa &&
+> >>>>>>>>>         hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
+> >>>>>>>>>             return -1;
+> >>>>>>>>>     }
+> >>>>>>>>> @@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
+> >>>>>>>>>             }
+> >>>>>>>>> 
+> >>>>>>>>>             /* White list can not be used with RPAs */
+> >>>>>>>>> -               if (!allow_rpa && !use_ll_privacy(hdev) &&
+> >>>>>>>>> +               if (!allow_rpa &&
+> >>>>>>>>>                 hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
+> >>>>>>>>>                     return 0x00;
+> >>>>>>>>>             }
+> >>>>>>>>> 
+> >>>>>>>>> 
+> >>>>>>>>> If you just do the above, does thing work for you again?
+> >>>>>>>> 
+> >>>>>>>> Corrupted white-space issues aside, yes, it works!
+> >>>>>>> 
+> >>>>>>> I just pasted it from a different terminal ;)
+> >>>>>>> 
+> >>>>>>>> I am running 5.9-rc8 with just this change on it and my tracball works
+> >>>>>>>> just fine.
+> >>>>>>>> 
+> >>>>>>>>> My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
+> >>>>>>>> 
+> >>>>>>>> How would one go about enabling such a hardware feature if they wanted
+> >>>>>>>> to?  :)
+> >>>>>>> 
+> >>>>>>> I need to understand what is going wrong for you. I have a suspicion,
+> >>>>>>> but first I need to understand what kind of device you have. I hope
+> >>>>>>> the trace file is enough.
+> >>>>>> 
+> >>>>>> If you need any other information, just let me know, this is a USB
+> >>>>>> Bluetooth controller from Intel:
+> >>>>>> 
+> >>>>>> 	$ lsusb | grep Blue
+> >>>>>> 	Bus 009 Device 002: ID 8087:0029 Intel Corp. AX200 Bluetooth
+> >>>>>> 
+> >>>>>> And the output of usb-devices for it:
+> >>>>>> 	T:  Bus=09 Lev=01 Prnt=01 Port=04 Cnt=01 Dev#=  2 Spd=12  MxCh= 0
+> >>>>>> 	D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> >>>>>> 	P:  Vendor=8087 ProdID=0029 Rev=00.01
+> >>>>>> 	C:  #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+> >>>>>> 	I:  If#=0x0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> >>>>>> 	I:  If#=0x1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> >>>>> 
+> >>>>> I already figured out that it is one of our controllers. The trace file gives it away.
+> >>>>> 
+> >>>>> So my suspicion is that the device you want to connect to uses RPA (aka random addresses). And we added support for resolving them in the firmware. Your hardware does support that, but the host side is not fully utilizing it and thus your device is filtered out.
+> >>>> 
+> >>>> Dude, get an email client that line-wraps :)
+> >>>> 
+> >>>>> If I am not mistaken, then the use_ll_privacy() check in these two specific places need to be replaced with LL Privacy Enabled check. And then the allow_rpa condition will do its job as expected.
+> >>>>> 
+> >>>>> We can confirm this if you send me a trace with the patch applied.
+> >>>> 
+> >>>> Want me to disconnect the device and then reconnect it using
+> >>>> bluetootctl?  I'll go do that now...
+> >>>> 
+> >>>> Ok, it's attached, I did:
+> >>>> 
+> >>>> $ bluetoothctl disconnect F1:85:91:79:73:70
+> >>>> Attempting to disconnect from F1:85:91:79:73:70
+> >>>> [CHG] Device F1:85:91:79:73:70 ServicesResolved: no
+> >>>> Successful disconnected
+> >>>> 
+> >>>> And then the gnome bluetooth daemon (or whatever it has) reconnected it
+> >>>> automatically, so you can see the connection happen, and some movements
+> >>>> in the log.
+> >>>> 
+> >>>> If there's anything else you need, just let me know.
+> >>> 
+> >>> so the trace file indicates that you are using static addresses and not RPAs. Now I am confused.
+> >>> 
+> >>> What is the content of /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys?
+> >> 
+> >> f1:85:91:79:73:70 (type 1) f02567096e8537e5dac1cadf548fa750 00:00:00:00:00:00
+> > 
+> > I rebooted, and the same value was there.
+> > 
+> >>> The only way I can explain this if you have an entry in that file, but the device is not using it.
+> >>> 
+> >>> If you have btmgmt (from bluez.git) you can try "./tools/btmgmt irks” to clear that list and try again.
+> >> 
+> >> Ok, I did that, and reconnected, this is still with the kernel that has
+> >> the patch.  Want me to reboot to a "clean" 5.9-rc8?
+> > 
+> > I rebooted into a clean 5.9-rc8 and the device does not connect.
+> > 
+> > So I did the following to trace this:
+> > 
+> > $ sudo btmgmt irks
+> > Identity Resolving Keys successfully loaded
+> > $ sudo cat /sys/kernel/debug/bluetooth/hci0/identity_resolving_keys
+> > $ bluetoothctl connect F1:85:91:79:73:70
+> > Attempting to connect to F1:85:91:79:73:70
+> > Failed to connect: org.bluez.Error.Failed
+> > 
+> > and ran another btmon session to see this, it is attached.
+> 
+> this is confusing and makes no sense :(
+> 
+> What is the content of debug/bluetooth/hci0/whitelist and
 
-However, if writeback starts in a worker thread simultaneously with
-truncation (whilst notify_change() is called with i_rwsem locked, writeback
-pays it no heed), it may manage to set PG_writeback bits on the pages that
-will get truncated before afs_setattr_success() manages to call
-truncate_pagecache().  Truncate will then wait for those pages - whilst
-still inside io_lock:
+# cat white_list
+f1:85:91:79:73:70 (type 1)
 
-    # cat /proc/8837/stack
-    [<0>] wait_on_page_bit_common+0x184/0x1e7
-    [<0>] truncate_inode_pages_range+0x37f/0x3eb
-    [<0>] truncate_pagecache+0x3c/0x53
-    [<0>] afs_setattr_success+0x4d/0x6e
-    [<0>] afs_wait_for_operation+0xd8/0x169
-    [<0>] afs_do_sync_operation+0x16/0x1f
-    [<0>] afs_setattr+0x1fb/0x25d
-    [<0>] notify_change+0x2cf/0x3c4
-    [<0>] do_truncate+0x7f/0xb2
-    [<0>] do_sys_ftruncate+0xd1/0x104
-    [<0>] do_syscall_64+0x2d/0x3a
-    [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> debug/bluetooth/hci0/device_list?
 
-The writeback operation, however, stalls indefinitely because it needs to
-get the io_lock to proceed:
+# cat device_list
+2c:41:a1:4d:f2:2c (type 0)
+f1:85:91:79:73:70 (type 1) 3
 
-    # cat /proc/5940/stack
-    [<0>] afs_get_io_locks+0x58/0x1ae
-    [<0>] afs_begin_vnode_operation+0xc7/0xd1
-    [<0>] afs_store_data+0x1b2/0x2a3
-    [<0>] afs_write_back_from_locked_page+0x418/0x57c
-    [<0>] afs_writepages_region+0x196/0x224
-    [<0>] afs_writepages+0x74/0x156
-    [<0>] do_writepages+0x2d/0x56
-    [<0>] __writeback_single_inode+0x84/0x207
-    [<0>] writeback_sb_inodes+0x238/0x3cf
-    [<0>] __writeback_inodes_wb+0x68/0x9f
-    [<0>] wb_writeback+0x145/0x26c
-    [<0>] wb_do_writeback+0x16a/0x194
-    [<0>] wb_workfn+0x74/0x177
-    [<0>] process_one_work+0x174/0x264
-    [<0>] worker_thread+0x117/0x1b9
-    [<0>] kthread+0xec/0xf1
-    [<0>] ret_from_fork+0x1f/0x30
+> The only way I can explain this is that somehow the whitelist filter doesn’t
+> get programmed correctly and thus the scan will not find your device. Why
+> this points to use_ll_privacy() is totally unclear to me.
+> 
+> Btw. reboots won’t help since bluetoothd will restore from settings. You
+> need to go into the files in /var/lib/bluetooth/ and look for an entry of
+> IdentityResolvingKey for your device and remove it and then restart
+> bluetoothd.
 
-and thus deadlock has occurred.
+I see that entry in there, let me remove it...
 
-Note that whilst afs_setattr() calls filemap_write_and_wait(), the fact
-that the caller is holding i_rwsem doesn't preclude more pages being
-dirtied through an mmap'd region.
+> You can run btmon and will even show you what bluetoothd loads during start.
+> 
+> Can you try to do systemctl stop bluetooth, then start btmon and then
+> systemctl start bluetooth. It should reprogram the controller and I could
+> see the complete trace on how it sets up your hardware.
 
-Fix this by:
+Ok, I remove the entry for IdentityResolvingKey and restarted bluetoothd
+and now it works on a clean 5.9-rc8!
 
- (1) Use the vnode validate_lock to mediate access between afs_setattr()
-     and afs_writepages():
+I'll stop it again and run the monitor and attach it below when it
+starts back up.
 
-     (a) Exclusively lock validate_lock in afs_setattr() around the whole
-     	 RPC operation.
+Ah, I did just that, and it did not connect this time.  Attached is the
+trace.  No IdentityResolvingKey entries anywhere...
 
-     (b) If WB_SYNC_ALL isn't set on entry to afs_writepages(), trying to
-     	 shared-lock validate_lock and returning immediately if we couldn't
-     	 get it.
+> If this really breaks for your, it should have been broken for weeks for
+> everybody. So this is the part that is confusing to me. And my original
+> suspicion turned out to be wrong.
 
-     (c) If WB_SYNC_ALL is set, wait for the lock.
+Some bluetoothd interaction?
 
-     The validate_lock is also used to validate a file and to zap its cache
-     if the file was altered by a third party, so it's probably a good fit
-     for this.
+thanks,
 
- (2) Move the truncation outside of the io_lock in setattr, using the same
-     hook as is used for local directory editing.
+greg k-h
 
-     This requires the old i_size to be retained in the operation record as
-     we commit the revised status to the inode members inside the io_lock
-     still, but we still need to know if we reduced the file size.
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="trace.log"
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: d2ddc776a458 ("afs: Overhaul volume and server record caching and fileserver rotation")
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/afs/inode.c    |   47 ++++++++++++++++++++++++++++++++++++++---------
- fs/afs/internal.h |    1 +
- fs/afs/write.c    |   11 +++++++++++
- 3 files changed, 50 insertions(+), 9 deletions(-)
-
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 1d13d2e882ad..0fe8844b4bee 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -810,14 +810,32 @@ void afs_evict_inode(struct inode *inode)
- 
- static void afs_setattr_success(struct afs_operation *op)
- {
--	struct inode *inode = &op->file[0].vnode->vfs_inode;
-+	struct afs_vnode_param *vp = &op->file[0];
-+	struct inode *inode = &vp->vnode->vfs_inode;
-+	loff_t old_i_size = i_size_read(inode);
-+
-+	op->setattr.old_i_size = old_i_size;
-+	afs_vnode_commit_status(op, vp);
-+	/* inode->i_size has now been changed. */
-+
-+	if (op->setattr.attr->ia_valid & ATTR_SIZE) {
-+		loff_t size = op->setattr.attr->ia_size;
-+		if (size > old_i_size)
-+			pagecache_isize_extended(inode, old_i_size, size);
-+	}
-+}
-+
-+static void afs_setattr_edit_file(struct afs_operation *op)
-+{
-+	struct afs_vnode_param *vp = &op->file[0];
-+	struct inode *inode = &vp->vnode->vfs_inode;
- 
--	afs_vnode_commit_status(op, &op->file[0]);
- 	if (op->setattr.attr->ia_valid & ATTR_SIZE) {
--		loff_t i_size = inode->i_size, size = op->setattr.attr->ia_size;
--		if (size > i_size)
--			pagecache_isize_extended(inode, i_size, size);
--		truncate_pagecache(inode, size);
-+		loff_t size = op->setattr.attr->ia_size;
-+		loff_t i_size = op->setattr.old_i_size;
-+
-+		if (size < i_size)
-+			truncate_pagecache(inode, size);
- 	}
- }
- 
-@@ -825,6 +843,7 @@ static const struct afs_operation_ops afs_setattr_operation = {
- 	.issue_afs_rpc	= afs_fs_setattr,
- 	.issue_yfs_rpc	= yfs_fs_setattr,
- 	.success	= afs_setattr_success,
-+	.edit_dir	= afs_setattr_edit_file,
- };
- 
- /*
-@@ -863,11 +882,16 @@ int afs_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (S_ISREG(vnode->vfs_inode.i_mode))
- 		filemap_write_and_wait(vnode->vfs_inode.i_mapping);
- 
-+	/* Prevent any new writebacks from starting whilst we do this. */
-+	down_write(&vnode->validate_lock);
-+
- 	op = afs_alloc_operation(((attr->ia_valid & ATTR_FILE) ?
- 				  afs_file_key(attr->ia_file) : NULL),
- 				 vnode->volume);
--	if (IS_ERR(op))
--		return PTR_ERR(op);
-+	if (IS_ERR(op)) {
-+		ret = PTR_ERR(op);
-+		goto out_unlock;
-+	}
- 
- 	afs_op_set_vnode(op, 0, vnode);
- 	op->setattr.attr = attr;
-@@ -880,5 +904,10 @@ int afs_setattr(struct dentry *dentry, struct iattr *attr)
- 	op->file[0].update_ctime = 1;
- 
- 	op->ops = &afs_setattr_operation;
--	return afs_do_sync_operation(op);
-+	ret = afs_do_sync_operation(op);
-+
-+out_unlock:
-+	up_write(&vnode->validate_lock);
-+	_leave(" = %d", ret);
-+	return ret;
- }
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 18042b7dab6a..e5f0446f27e5 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -812,6 +812,7 @@ struct afs_operation {
- 		} store;
- 		struct {
- 			struct iattr	*attr;
-+			loff_t		old_i_size;
- 		} setattr;
- 		struct afs_acl	*acl;
- 		struct yfs_acl	*yacl;
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 4b2265cb1891..da12abd6db21 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -738,11 +738,21 @@ static int afs_writepages_region(struct address_space *mapping,
- int afs_writepages(struct address_space *mapping,
- 		   struct writeback_control *wbc)
- {
-+	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
- 	pgoff_t start, end, next;
- 	int ret;
- 
- 	_enter("");
- 
-+	/* We have to be careful as we can end up racing with setattr()
-+	 * truncating the pagecache since the caller doesn't take a lock here
-+	 * to prevent it.
-+	 */
-+	if (wbc->sync_mode == WB_SYNC_ALL)
-+		down_read(&vnode->validate_lock);
-+	else if (!down_read_trylock(&vnode->validate_lock))
-+		return 0;
-+
- 	if (wbc->range_cyclic) {
- 		start = mapping->writeback_index;
- 		end = -1;
-@@ -762,6 +772,7 @@ int afs_writepages(struct address_space *mapping,
- 		ret = afs_writepages_region(mapping, wbc, start, end, &next);
- 	}
- 
-+	up_read(&vnode->validate_lock);
- 	_leave(" = %d", ret);
- 	return ret;
- }
-
-
+btsnoop=00=00=00=00=01=00=00=07=D1=00=00=00!=00=00=00!=FF=FF=00=0C=00=00=00=
+=00=00=E2=8E=C7=A5=AA=A88Linux version 5.9.0-rc8 (x86_64)=00=00=00=00!=00=
+=00=00!=FF=FF=00=0C=00=00=00=00=00=E2=8E=C7=A5=AA=A8:Bluetooth subsystem ve=
+rsion 2.22=00=00=00=00=10=00=00=00=10=00=00=00=00=00=00=00=00=00=E2=8E=C7=
+=A5=AA=A8;=00=01pe=F6=85=E0Phci0=00=00=00=00=00=00=00#=00=00=00#=FF=FF=00=
+=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA#=06=0Bbluetoothd=00Bluetooth daemon 5.=
+55=00=00=00=00|=00=00=00|=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA|=04=
+=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not have=
+ key =E2=80=9CBRPageScanType=E2=80=9D in group =E2=80=9CController=E2=80=9D=
+=00=00=00=00=80=00=00=00=80=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=89=
+=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
+ave key =E2=80=9CBRPageScanInterval=E2=80=9D in group =E2=80=9CController=
+=E2=80=9D=00=00=00=00~=00=00=00~=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=
+=FA=93=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does=
+ not have key =E2=80=9CBRPageScanWindow=E2=80=9D in group =E2=80=9CControll=
+er=E2=80=9D=00=00=00=00=7F=00=00=00=7F=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
+=A6=01=FA=9C=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key fil=
+e does not have key =E2=80=9CBRInquiryScanType=E2=80=9D in group =E2=80=9CC=
+ontroller=E2=80=9D=00=00=00=00=83=00=00=00=83=FF=FF=00=0D=00=00=00=00=00=E2=
+=8E=C7=A6=01=FA=A5=04=0Bbluetoothd=00src/main.c:parse_controller_config() K=
+ey file does not have key =E2=80=9CBRInquiryScanInterval=E2=80=9D in group =
+=E2=80=9CController=E2=80=9D=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=00=
+=00=00=00=E2=8E=C7=A6=01=FA=AF=04=0Bbluetoothd=00src/main.c:parse_controlle=
+r_config() Key file does not have key =E2=80=9CBRInquiryScanWindow=E2=80=9D=
+ in group =E2=80=9CController=E2=80=9D=00=00=00=00=86=00=00=00=86=FF=FF=00=
+=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=B8=04=0Bbluetoothd=00src/main.c:parse_=
+controller_config() Key file does not have key =E2=80=9CBRLinkSupervisionTi=
+meout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00{=00=00=00{=
+=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=C1=04=0Bbluetoothd=00src/main=
+=2Ec:parse_controller_config() Key file does not have key =E2=80=9CBRPageTi=
+meout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=80=00=00=
+=00=80=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=CB=04=0Bbluetoothd=00sr=
+c/main.c:parse_controller_config() Key file does not have key =E2=80=9CBRMi=
+nSniffInterval=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=
+=80=00=00=00=80=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=D4=04=0Bblueto=
+othd=00src/main.c:parse_controller_config() Key file does not have key =E2=
+=80=9CBRMaxSniffInterval=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=
+=00=00=00=88=00=00=00=88=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=DD=04=
+=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not have=
+ key =E2=80=9CLEMinAdvertisementInterval=E2=80=9D in group =E2=80=9CControl=
+ler=E2=80=9D=00=00=00=00=88=00=00=00=88=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
+=A6=01=FA=E6=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key fil=
+e does not have key =E2=80=9CLEMaxAdvertisementInterval=E2=80=9D in group =
+=E2=80=9CController=E2=80=9D=00=00=00=00=92=00=00=00=92=FF=FF=00=0D=00=00=
+=00=00=00=E2=8E=C7=A6=01=FA=EF=04=0Bbluetoothd=00src/main.c:parse_controlle=
+r_config() Key file does not have key =E2=80=9CLEMultiAdvertisementRotation=
+Interval=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=87=00=
+=00=00=87=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FA=F8=04=0Bbluetoothd=
+=00src/main.c:parse_controller_config() Key file does not have key =E2=80=
+=9CLEScanIntervalAutoConnect=E2=80=9D in group =E2=80=9CController=E2=80=9D=
+=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB=01=
+=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
+ave key =E2=80=9CLEScanWindowAutoConnect=E2=80=9D in group =E2=80=9CControl=
+ler=E2=80=9D=00=00=00=00=83=00=00=00=83=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
+=A6=01=FB
+=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
+ave key =E2=80=9CLEScanIntervalSuspend=E2=80=9D in group =E2=80=9CControlle=
+r=E2=80=9D=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
+=A6=01=FB=13=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key fil=
+e does not have key =E2=80=9CLEScanWindowSuspend=E2=80=9D in group =E2=80=
+=9CController=E2=80=9D=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=
+=00=E2=8E=C7=A6=01=FB=1D=04=0Bbluetoothd=00src/main.c:parse_controller_conf=
+ig() Key file does not have key =E2=80=9CLEScanIntervalDiscovery=E2=80=9D i=
+n group =E2=80=9CController=E2=80=9D=00=00=00=00=83=00=00=00=83=FF=FF=00=0D=
+=00=00=00=00=00=E2=8E=C7=A6=01=FB%=04=0Bbluetoothd=00src/main.c:parse_contr=
+oller_config() Key file does not have key =E2=80=9CLEScanWindowDiscovery=E2=
+=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=86=00=00=00=86=FF=
+=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB.=04=0Bbluetoothd=00src/main.c:pa=
+rse_controller_config() Key file does not have key =E2=80=9CLEScanIntervalA=
+dvMonitor=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=84=00=
+=00=00=84=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB6=04=0Bbluetoothd=00s=
+rc/main.c:parse_controller_config() Key file does not have key =E2=80=9CLES=
+canWindowAdvMonitor=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=
+=00=83=00=00=00=83=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB?=04=0Bbluet=
+oothd=00src/main.c:parse_controller_config() Key file does not have key =E2=
+=80=9CLEScanIntervalConnect=E2=80=9D in group =E2=80=9CController=E2=80=9D=
+=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FBG=
+=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file does not h=
+ave key =E2=80=9CLEScanWindowConnect=E2=80=9D in group =E2=80=9CController=
+=E2=80=9D=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=
+=01=FBP=04=0Bbluetoothd=00src/main.c:parse_controller_config() Key file doe=
+s not have key =E2=80=9CLEMinConnectionInterval=E2=80=9D in group =E2=80=9C=
+Controller=E2=80=9D=00=00=00=00=85=00=00=00=85=FF=FF=00=0D=00=00=00=00=00=
+=E2=8E=C7=A6=01=FBY=04=0Bbluetoothd=00src/main.c:parse_controller_config() =
+Key file does not have key =E2=80=9CLEMaxConnectionInterval=E2=80=9D in gro=
+up =E2=80=9CController=E2=80=9D=00=00=00=00=81=00=00=00=81=FF=FF=00=0D=00=
+=00=00=00=00=E2=8E=C7=A6=01=FBq=04=0Bbluetoothd=00src/main.c:parse_controll=
+er_config() Key file does not have key =E2=80=9CLEConnectionLatency=E2=80=
+=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=8C=00=00=00=8C=FF=FF=
+=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FBz=04=0Bbluetoothd=00src/main.c:parse=
+_controller_config() Key file does not have key =E2=80=9CLEConnectionSuperv=
+isionTimeout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=00=00=00=82=
+=00=00=00=82=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FB=83=04=0Bbluetooth=
+d=00src/main.c:parse_controller_config() Key file does not have key =E2=80=
+=9CLEAutoconnecttimeout=E2=80=9D in group =E2=80=9CController=E2=80=9D=00=
+=00=00=00=1E=00=00=00=1E=FF=FF=00=0E=00=00=00=00=00=E2=8E=C7=A6=01=FFa=01=
+=00=00=00=02=00=01=12=00=01=00=00=00=10bluetoothd=00=00=00=00=00=00=00=00=
+=00!=00=00=00!=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=01=FF=A6=06=0Bbluetoo=
+thd=00Starting SDP server=00=00=00=00=06=00=00=00=06=FF=FF=00=10=00=00=00=
+=00=00=E2=8E=C7=A6=02=0B=94=01=00=00=00=01=00=00=00=00=0C=00=00=00=0C=FF=FF=
+=00=11=00=00=00=00=00=E2=8E=C7=A6=02=0B=9A=01=00=00=00=01=00=01=00=00=01=12=
+=00=00=00=00=3D=00=00=00=3D=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02=0B=F1=
+=06=0Bbluetoothd=00Bluetooth management interface 1.18 initialized=00=00=00=
+=00=06=00=00=00=06=FF=FF=00=10=00=00=00=00=00=E2=8E=C7=A6=02=0B=C2=01=00=00=
+=00=02=00=00=00=00=F7=00=00=00=F7=FF=FF=00=11=00=00=00=00=00=E2=8E=C7=A6=02=
+=0B=C4=01=00=00=00=01=00=02=00=00O=00&=00=03=00=04=00=05=00=06=00=07=00=08=
+=00	=00
+=00=0B=00=0C=00=0D=00=0E=00=0F=00=10=00=11=00=12=00=13=00=14=00=15=00=16=00=
+=17=00=18=00=19=00=1A=00=1B=00=1C=00=1D=00=1E=00=1F=00 =00!=00"=00#=00$=00%=
+=00&=00'=00(=00)=00*=00+=00,=00-=00.=00/=000=001=002=003=004=005=006=007=00=
+8=009=00:=00;=00<=00=3D=00>=00?=00@=00A=00B=00C=00F=00G=00H=00I=00J=00K=00L=
+=00M=00N=00O=00P=00Q=00R=00S=00=03=00=04=00=05=00=06=00=07=00=08=00	=00
+=00=0B=00=0C=00=0D=00=0E=00=0F=00=10=00=11=00=12=00=13=00=14=00=15=00=16=00=
+=17=00=18=00=19=00=1A=00=1B=00=1C=00=1D=00=1E=00=1F=00 =00!=00"=00#=00$=00%=
+=00&=00'=00*=00=00=00=00=06=00=00=00=06=FF=FF=00=10=00=00=00=00=00=E2=8E=C7=
+=A6=02=0B=D0=01=00=00=00=03=00=00=00=00=0D=00=00=00=0D=FF=FF=00=11=00=00=00=
+=00=00=E2=8E=C7=A6=02=0B=D2=01=00=00=00=01=00=03=00=00=01=00=00=00=00=00=00=
+=06=00=00=00=06=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=0B=E0=01=00=00=00=
+=04=00=00=00=01!=00=00=01!=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=0B=E2=
+=01=00=00=00=01=00=04=00=00pe=F6=85=E0P
+=02=00=FF=FF=03=00=CA
+=00=00=00=00=00thread=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=16=00=00=00=16=00=00=00=10=00=00=
+=00=00=00=E2=8E=C7=A6=02=10=C9=01=00=00=00=11=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=
+=8E=C7=A6=02=10=D2=01=00=00=00=01=00=11=00=00=00=00=00=00=00=00=0D=00=00=00=
+=0D=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=10=E7=01=00=00=004=00=00=00=
+=00=00=00=00=00=00=00=00=10=00=00=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=
+=A6=02=10=EE=01=00=00=00=01=004=00=00=00=00=00=00=00=00=00=00=00=00=17=00=
+=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=04=01=00=00=00/=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=0D=00=00=00=0D=
+=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=06=01=00=00=00=01=00/=00=00=CA
+=00=00=00=00=00=06=00=00=00=06=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=
+=1C=01=00=00=00I=00=00=00=003=00=00=003=00=00=00=11=00=00=00=00=00=E2=8E=C7=
+=A6=02=11=1E=01=00=00=00=01=00I=00=00=02=00=D6I=B0=D1(=EB'=92=96F=C0B=B5=10=
+=1Bg=00=00=00=00=04=00=13=ACB=02=DE=B3=EA=11s=C2H=A1=C0=15=02=00=00=00=00=
+=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=114=01=00=
+=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=00=18=00=00=00=00=00=00=0C=00=
+=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=116=01=00=00=00=01=00=
+=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=
+=C7=A6=02=11N=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=01=18=00=00=
+=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11P=
+=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=
+=00=00=00=00=E2=8E=C7=A6=02=11g=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=
+=00=00
+=18=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=
+=02=11i=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=06=00=00=00=06=00=00=
+=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=81=01=00=00=00=3D=00=00=00=00=11=00=
+=00=00=11=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=83=01=00=00=00=01=00=
+=3D=00=00=FF=03=00=00=1F=1F=05=00=00=00=00=08=00=00=00=08=00=00=00=10=00=00=
+=00=00=00=E2=8E=C7=A6=02=11=9B=01=00=00=00=0E=00=01=04=00=00=00=0C=00=00=00=
+=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=9C=01=00=00=00=01=00=0E=00=
+=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=
+=02=11=B3=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=0E=11=00=00=00=
+=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=11=B5=01=
+=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=
+=00=00=00=E2=8E=C7=A6=02=11=CC=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=
+=00=00=0C=11=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=
+=8E=C7=A6=02=11=CD=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=0D=00=00=00=
+=0D=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=E4=01=00=00=00'=00=00=00=
+=00=00=00=00=00=00=00=00=10=00=00=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=
+=A6=02=11=E7=01=00=00=00=01=00'=00=00=00=00=00=00=00=00=00=00=00=00=0E=00=
+=00=00=0E=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=11=FE=01=00=00=003=00,=
+=F2M=A1A,=00=01=00=00=00=15=00=00=00=15=00=00=00=11=00=00=00=00=00=E2=8E=C7=
+=A6=02=12=02=01=00=00=00*=00,=F2M=A1A,=00=01=00=00=00=00=00=00=00=00=00=00=
+=10=00=00=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=04=01=00=00=00=
+=01=003=00=00,=F2M=A1A,=00=00=00=00"=00=00=00"=00=00=00=10=00=00=00=00=00=
+=E2=8E=C7=A6=02=12(=01=00=00=00=12=00=00=01=00,=F2M=A1A,=00=04M=B6=80=A6=F8=
+=EA=1D=17=83R=0Ct=B1=A8*=F7=00=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=
+=00=E2=8E=C7=A6=02=12,=01=00=00=00=01=00=12=00=00=00=00=00,=00=00=00,=00=00=
+=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12C=01=00=00=00=13=00=01=00psy=91=85=
+=F1=02=00=01=10=A1C=D1=FD=EES=CE=A1=981=EDA=88:=A4=F9+~,G=B8=D5=0C]$\=00=00=
+=00	=00=00=00	=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12D=01=00=00=00=01=
+=00=13=00=00=00=00=00=08=00=00=00=08=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=
+=02=12\=01=00=00=000=00=00=00=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=
+=00=E2=8E=C7=A6=02=12^=01=00=00=00=01=000=00=00=00=00=00=17=00=00=00=17=00=
+=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12t=01=00=00=005=00=01=00psy=91=85=
+=F1=02=06=00	=00,=00=D8=00=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=00=
+=E2=8E=C7=A6=02=12v=01=00=00=00=01=005=00=00=00=00=00=0E=00=00=00=0E=00=00=
+=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12=8C=01=00=00=003=00psy=91=85=F1=02=
+=02=00=00=00=15=00=00=00=15=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=90=
+=01=00=00=00*=00psy=91=85=F1=02=01=00=00=00=00=00=00=00=00=00=00=10=00=00=
+=00=10=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=91=01=00=00=00=01=003=
+=00=00psy=91=85=F1=02=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=
+=8E=C7=A6=02=12=B4=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=00=12=
+=00=00=00=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=
+=12=B6=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=0E=00=00=00=0E=00=00=00=
+=10=00=00=00=00=00=E2=8E=C7=A6=02=12=CD=01=00=00=00(=00=02=00k=1DF=027=05=
+=00=00=00	=00=00=00	=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=12=CF=01=00=
+=00=00=01=00(=00=00=00=00=00=08=00=00=00=08=00=00=00=10=00=00=00=00=00=E2=
+=8E=C7=A6=02=12=E5=01=00=00=00=0E=00=01=04=00=00=00=0C=00=00=00=0C=00=00=00=
+=11=00=00=00=00=00=E2=8E=C7=A6=02=12=E7=01=00=00=00=01=00=0E=00=00=00=00=00=
+=00=00=01
+=00=00=01
+=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=12=FE=01=00=00=00=0F=00BlueZ 5.5=
+5=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=01=0D=00=00=01=0D=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=13=00=
+=01=00=00=00=01=00=0F=00=00BlueZ 5.55=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00*=00=00=00*=00=00=00=10=00=
+=00=00=00=00=E2=8E=C7=A6=02=13=1B=01=00=00=00F=00=02=00=01=BF=01=FB=9DN=F3=
+=BC6=D8t=F59A8hL=02=A5=99=BA=E4=E1|=A6=18"=8E=07V=B4=E8_=01=00=00=00	=00=00=
+=00	=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02=13=1D=01=00=00=00=01=00F=00=
+=00=00=00=00=07=00=00=00=07=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=133=
+=01=00=00=00=07=00=00=00=00=00=0D=00=00=00=0D=00=00=00=11=00=00=00=00=00=E2=
+=8E=C7=A6=02=135=01=00=00=00=01=00=07=00=00=C0
+=00=00=00=00=00=07=00=00=00=07=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02%=
+=0C=01=00=00=00=07=00=01=00=00=00=0D=00=00=00=0D=00=00=00=11=00=00=00=00=00=
+=E2=8E=C7=A6=02%=15=01=00=00=00=01=00=07=00=00=C2
+=00=00=00=00=00	=00=00=00	=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02%.=01=
+=00=00=00=06=00=01=00=00=00=00=00=0D=00=00=00=0D=00=00=00=11=00=00=00=00=00=
+=E2=8E=C7=A6=02%0=01=00=00=00=01=00=06=00=00=CA
+=00=00=00=00=00=11=00=00=00=11=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=024[=
+=01=00=00=00P=00psy=91=85=F1=02=01=00=00=00=00=00=00=10=00=00=00=10=00=00=
+=00=11=00=00=00=00=00=E2=8E=C7=A6=024f=01=00=00=00=01=00P=00=00psy=91=85=F1=
+=02=00=00=00Z=00=00=00Z=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02Xh=06=0Bbl=
+uetoothd=00Endpoint registered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSo=
+urce/VENDOR/LDAC=00=00=00=00\=00=00=00\=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=
+=A6=02X=89=06=0Bbluetoothd=00Endpoint registered: sender=3D:1.76 path=3D/Me=
+diaEndpoint/A2DPSource/VENDOR/APTXHD=00=00=00=00Z=00=00=00Z=FF=FF=00=0D=00=
+=00=00=00=00=E2=8E=C7=A6=02X=94=06=0Bbluetoothd=00Endpoint registered: send=
+er=3D:1.76 path=3D/MediaEndpoint/A2DPSource/VENDOR/APTX=00=00=00=00R=00=00=
+=00R=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02X=9D=06=0Bbluetoothd=00Endpoi=
+nt registered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSource/AAC=00=00=00=
+=00R=00=00=00R=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02X=A6=06=0Bbluetooth=
+d=00Endpoint registered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSource/SB=
+C=00=00=00=00Z=00=00=00Z=FF=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02X=D5=06=
+=0Bbluetoothd=00Endpoint registered: sender=3D:1.76 path=3D/MediaEndpoint/A=
+2DPSink/VENDOR/APTXHD=00=00=00=00X=00=00=00X=FF=FF=00=0D=00=00=00=00=00=E2=
+=8E=C7=A6=02X=EB=06=0Bbluetoothd=00Endpoint registered: sender=3D:1.76 path=
+=3D/MediaEndpoint/A2DPSink/VENDOR/APTX=00=00=00=00P=00=00=00P=FF=FF=00=0D=
+=00=00=00=00=00=E2=8E=C7=A6=02Y=01=06=0Bbluetoothd=00Endpoint registered: s=
+ender=3D:1.76 path=3D/MediaEndpoint/A2DPSink/AAC=00=00=00=00P=00=00=00P=FF=
+=FF=00=0D=00=00=00=00=00=E2=8E=C7=A6=02Y=18=06=0Bbluetoothd=00Endpoint regi=
+stered: sender=3D:1.76 path=3D/MediaEndpoint/A2DPSink/SBC=00=00=00=00=17=00=
+=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02Y=E4=01=00=00=00=10=00=
+=FB4=9B_=80=00=00=80=00=10=00=00
+=11=00=00=08=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=
+=02Y=EB=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=00=00=00=17=00=00=
+=00=10=00=00=00=00=00=E2=8E=C7=A6=02Z=05=01=00=00=00=10=00=FB4=9B_=80=00=00=
+=80=00=10=00=00=0B=11=00=00=04=00=00=00=0C=00=00=00=0C=00=00=00=11=00=00=00=
+=00=00=E2=8E=C7=A6=02Z=06=01=00=00=00=01=00=10=00=00=00=00=00=00=00=00=17=
+=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02Z=1C=01=00=00=00=10=
+=00=FB4=9B_=80=00=00=80=00=10=00=00=12=11=00=00=00=00=00=00=0C=00=00=00=0C=
+=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02Z=1E=01=00=00=00=01=00=10=00=00=
+=00=00=00=00=00=00=17=00=00=00=17=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=02=
+Z7=01=00=00=00=10=00=FB4=9B_=80=00=00=80=00=10=00=00=08=11=00=00 =00=00=00=
+=0C=00=00=00=0C=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=02Z9=01=00=00=00=01=
+=00=10=00=00=00=00=00=00=00=01
+=00=00=01
+=00=00=00=10=00=00=00=00=00=E2=8E=C7=A6=05f=00=01=00=00=00=0F=00thread=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=01=0D=00=00=01=0D=00=00=00=11=00=00=00=00=00=E2=8E=C7=A6=05=
+f=0C=01=00=00=00=01=00=0F=00=00thread=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00
+--wac7ysb48OaltWcw--
