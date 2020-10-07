@@ -2,136 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0614C286875
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B625C286879
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728423AbgJGTlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S1728428AbgJGTmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728412AbgJGTlX (ORCPT
+        with ESMTP id S1728336AbgJGTmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:41:23 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF35C061755;
-        Wed,  7 Oct 2020 12:41:22 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id n6so3390721wrm.13;
-        Wed, 07 Oct 2020 12:41:22 -0700 (PDT)
+        Wed, 7 Oct 2020 15:42:33 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD98C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 12:42:32 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d6so1967452pfn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 12:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BlXTl6Hst6j2ZWlhRy8AiZeKdtWqE6ffJKL4bR3bTTQ=;
-        b=kcN3zsM/ZtIXY6Z3zNNaFiikNc/iRaBZnxWvNYxoXEUtzNiHbwXZE4CR024aHVJEt3
-         dXZoZeL6K3E3uWH8Xp9tFUjWpzrtRdRM9v1kwZdo7Ed4w0h6bFcL0v1ixtz9pjUhzzkE
-         TU/3b5FJtRRkNVZVxbNiInzha9rZEHRsxWTUTlUN2rhDPp6S+3m1pN6xficRXceeERJ7
-         QCkvpeB5aJ4MuBZnnXgrkAep6Rt5RGtqj1tYUiMsArrJSipocmOvPJ0Z6gelvX/+YHaq
-         bBPMlYl0XA9kURPuUbQuH42W/milxSPmX4C/iLklEzeXB9/C12CppD3jJbhAvWIhw09i
-         a+Bg==
+        bh=+MTNsq1y/zL9otQzntOcuNP+rJZZdA/q9TeNguwjb4o=;
+        b=co2PrZHK+kSFOoCGdvqvpAnvZdvxRs6PRJq4XjX26qVaG8wxBfHLYJ8oW6D1J5HCS1
+         R6VDgIF3XUaw0xyJ6lz6Q/SmnJcF127xDDBiF0xVb12sPxhbPIyFAXAq0wQ2bZ8GJ8wo
+         I1Yl3QaqHBHr50xYVOYmub6KXmEQ+YPdTzr/M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BlXTl6Hst6j2ZWlhRy8AiZeKdtWqE6ffJKL4bR3bTTQ=;
-        b=JmmGgUb5jJhH8KXazu1Z10EHToVqUIu7kLExO/L0e7PlepPq/kIhjqVeg/AFgiqyYO
-         heZzZqp78dB92yadWJ+pDGpUa/q7T4LVkNovO2j+y4LI05jMfRkf+gLU/tMs7gMy6V8U
-         /4dab/j99xxfYGBdX1H2Wgh0x97///Bw7F1NWHgs1PR2DmJFmryROstF/sRrErg5Pjpp
-         OODRGgUOuRco9LlMb9k2Y/+VZpqpCK/8nCkiidLoQMxmgacexYdbi2/v86NJQ/jc/Q/S
-         uI4qPcLKTsLWHJT9qQwTtaIKC55290co8rKTHD0R/tb7QtQ0Ktg8aNbp2Pq3t/JXhQUK
-         Y9ng==
-X-Gm-Message-State: AOAM530qtLiA+K/nQViK/wKe4z/M8GVfclsTSkT3eP8fIrJWY6WQxwlQ
-        wss44cqzmgPd7v91qdvyMkQ=
-X-Google-Smtp-Source: ABdhPJy/7viZdAja+X9JBIUZBanX5mxDMsnzvuFIPvUeDKF3xHLhGKTLJJ0EwcgvuZBD0cR6EcQ74A==
-X-Received: by 2002:adf:ce01:: with SMTP id p1mr4928562wrn.33.1602099680845;
-        Wed, 07 Oct 2020 12:41:20 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id c1sm4156555wru.49.2020.10.07.12.41.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 12:41:19 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 21:41:17 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, mark.rutland@arm.com,
-        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, tj@kernel.org,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: WARNING: at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
-Message-ID: <20201007194117.GA4859@Red>
-References: <20200220090350.GA19858@Red>
- <20200221174223.r3y6tugavp3k5jdl@ca-dmjordan1.us.oracle.com>
- <20200228123311.GE3275@willie-the-truck>
- <20200228153331.uimy62rat2tdxxod@ca-dmjordan1.us.oracle.com>
- <20200301175351.GA11684@Red>
- <20200302172510.fspofleipqjcdxak@ca-dmjordan1.us.oracle.com>
- <e7c92da2-42c0-a97d-7427-6fdc769b41b9@arm.com>
- <20200303213017.tanczhqd3nhpeeak@ca-dmjordan1.us.oracle.com>
- <20201001175022.GA22444@Red>
- <20201005170910.vxwrdwnzlw3ahkb4@ca-dmjordan1.us.oracle.com>
+        bh=+MTNsq1y/zL9otQzntOcuNP+rJZZdA/q9TeNguwjb4o=;
+        b=pmF4OeP+cF30S0bUqXpCVrmKhMqFI1aeTudQHm/9IPOh7O911J/WMWwX+CHrq9Wrvk
+         lN+6XfnC8fUeGN6202f/w7Bf6fy/Y+zdgKnSVWjLs2anbCbI8p/tfHDeAXZXFHHg5xsV
+         p0PQencnC5rCX8k3Dc+ndHff3lYWdI/FP3kv7XwY+DOt7GkGaDCLtQ37wT7raaGDbhpY
+         7x/XM85sZunZPybuGFDOIambdkQxBHgA6TqKRgjI8ug71UkZSDGeMqbLtbjX9fDqRGOQ
+         ZjZAHKbTP/15LuizGY8AcD3SLJYvXhn0rE1F0JAO5U4HweENkRKqvZCdAqtpq8JeShpA
+         bZRg==
+X-Gm-Message-State: AOAM531NNjnUSuJ6tP/U98qBBPZVyNeWEElV+1APXHTnlMijrzmRIjAB
+        Z6icvRrwY2n7OK5h2sbCaIIaYQ==
+X-Google-Smtp-Source: ABdhPJyL2g1I4C7VbuYxHrv5bxnCSiByaTaRhewc2kNH07T06Ix7Lro8CkW5H6L2ZyQMomwa4f5Xsg==
+X-Received: by 2002:a17:90b:14d4:: with SMTP id jz20mr4143682pjb.106.1602099752450;
+        Wed, 07 Oct 2020 12:42:32 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id f15sm1521957pfk.21.2020.10.07.12.42.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 12:42:31 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 12:42:29 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201007194229.GC620323@google.com>
+References: <20201006004510.GD4135817@google.com>
+ <20201006141820.GA416765@rowland.harvard.edu>
+ <20201006165957.GA191572@google.com>
+ <20201006171524.GB423499@rowland.harvard.edu>
+ <20201006192536.GB191572@google.com>
+ <20201007010023.GA438733@rowland.harvard.edu>
+ <20201007160336.GA620323@google.com>
+ <20201007163838.GA457977@rowland.harvard.edu>
+ <20201007172847.GB620323@google.com>
+ <20201007192542.GA468921@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005170910.vxwrdwnzlw3ahkb4@ca-dmjordan1.us.oracle.com>
+In-Reply-To: <20201007192542.GA468921@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 01:09:10PM -0400, Daniel Jordan wrote:
-> On Thu, Oct 01, 2020 at 07:50:22PM +0200, Corentin Labbe wrote:
-> > On Tue, Mar 03, 2020 at 04:30:17PM -0500, Daniel Jordan wrote:
-> > > Barring other ideas, Corentin, would you be willing to boot with
+On Wed, Oct 07, 2020 at 03:25:42PM -0400, Alan Stern wrote:
+> On Wed, Oct 07, 2020 at 10:28:47AM -0700, Matthias Kaehlcke wrote:
+> > On Wed, Oct 07, 2020 at 12:38:38PM -0400, Alan Stern wrote:
+> > > On Wed, Oct 07, 2020 at 09:03:36AM -0700, Matthias Kaehlcke wrote:
+> > > > Ok, I wasn't sure if the hubs suspend asynchronously from each other. If they
+> > > > do it should indeed not be a problem to have the "master" wait for its peers.
 > > > 
-> > >     trace_event=initcall:*,module:* trace_options=stacktrace
-> > > 
-> > > and
-> > > 
-> > > diff --git a/kernel/module.c b/kernel/module.c
-> > > index 33569a01d6e1..393be6979a27 100644
-> > > --- a/kernel/module.c
-> > > +++ b/kernel/module.c
-> > > @@ -3604,8 +3604,11 @@ static noinline int do_init_module(struct module *mod)
-> > >  	 * be cleaned up needs to sync with the queued work - ie
-> > >  	 * rcu_barrier()
-> > >  	 */
-> > > -	if (llist_add(&freeinit->node, &init_free_list))
-> > > +	if (llist_add(&freeinit->node, &init_free_list)) {
-> > > +		pr_warn("%s: schedule_work for mod=%s\n", __func__, mod->name);
-> > > +		dump_stack();
-> > >  		schedule_work(&init_free_wq);
-> > > +	}
-> > >  
-> > >  	mutex_unlock(&module_mutex);
-> > >  	wake_up_all(&module_wq);
-> > > 
-> > > but not my earlier fix and share the dmesg and ftrace output to see if the
-> > > theory holds?
-> > > 
-> > > Also, could you attach your config?  Curious now what your crypto options look
-> > > like after fiddling with some of them today while trying and failing to see
-> > > this on x86.
-> > > 
-> > > thanks,
-> > > Daniel
+> > > Well, order of suspending is selectable by the user.  It can be either 
+> > > asynchronous or reverse order of device registration, which might pose a 
+> > > problem.  We don't know in advance which of two peer hubs will be 
+> > > registered first.  It might be necessary to introduce some additional 
+> > > explicit synchronization.
 > > 
-> > Hello
+> > I'm not sure we are understanding each other completely. I agree that
+> > synchronization is needed to have the primary hub wait for its peers, that
+> > was one of my initial concerns.
 > > 
-> > Sorry for the very delayed answer.
+> > Lets use an example to clarify my secondary concern: a hub chip provides a
+> > USB 3 and a USB 2 hub, lets say the USB 3 hub is the primary.
 > > 
-> > I fail to reproduce it on x86 (qemu and  real hw) and arm.
-> > It seems to only happen on arm64.
+> > Here is some pseudo-code for the suspend function:
+> > 
+> > hub_suspend(hub)
+> >   ...
+> > 
+> >   if (hub->primary) {
+> >     device_pm_wait_for_dev(hub->peer)
+> > 
+> >     // check for connected devices and turn regulator off
+> >   }
+> > 
+> >   ...
+> > }
+> > 
+> > What I meant with 'asynchronous suspend' in this context:
+> > 
+> > Can hub_suspend() of the peer hub be executed (asynchronously) while the
+> > primary is blocked on device_pm_wait_for_dev(),
 > 
-> Thanks for the config and dmesg, but there's no ftrace.  I see it's not
-> configured in your kernel, so could you boot with my earlier debug patch plus
-> this one and the kernel argument initcall_debug instead?
+> Yes, that's exactly what would happen with async suspend.
 > 
-> I'm trying to see whether it really is a request module call from the crypto
-> tests that's triggering this warning.  Preeetty likely that's what's happening,
-> but want to be sure since I can't reproduce this.  Then I can post the fix.
+> >  or would the primary wait
+> > forever if the peer hub isn't suspended yet?
 > 
+> That wouldn't happen.  device_pm_wait_for_dev is smart; it will return 
+> immediately if neither device uses async suspend.  But in that case you 
+> could end up removing power from the peer hub before it had suspended.
+> 
+> That's why I said you might need to add additional synchronization.  The 
+> suspend routines for the two hubs could each check to see whether the 
+> other device had suspended yet, and the last one would handle the power 
+> regulator.  The additional synchronization is for the case where the two 
+> checks end up being concurrent.
 
-I have added CONFIG_FTRACE=y and your second patch.
-The boot log can be seen at http://kernel.montjoie.ovh/108789.log
+That was exactly my initial concern and one of the reasons I favor(ed) a
+platform instead of a USB driver:
 
-But it seems the latest dump_stack addition flood a bit.
-I have started to read ftrace documentation, but if you have a quick what to do in /sys/kernel/debug/tracing, it will be helpfull.
+> otherwise all hubs need to know their peers and check in suspend if they
+> are the last hub standing, only then the power can be switched off.
 
+To which you replied:
+
+> you just need to make the "master" hub wait for its peer to suspend, which
+> is easy to do.
+
+However that apparently only works if async suspend is enabled, and we
+can't rely on that.
+
+With the peers checking on each other you lose effectively the notion
+of a primary.
+
+Going back to the binding:
+
+  &usb_1_dwc3 {
+    hub_2_0: hub@1 {
+      compatible = "usbbda,5411";
+      reg = <1>;
+    };
+
+    hub_3_0: hub@2 {
+      compatible = "usbbda,411";
+      reg = <2>;
+      vdd-supply = <&pp3300_hub>;
+      companion-hubs = <&hub_2_0>;
+    };
+  };
+
+How does 'hub_2_0' know that its peer is hub_3_0 and that it has a regulator
+(and potentially other resources)?
+
+All this mess can be avoided by having a single instance in control of the
+resources which is guaranteed to suspend after the USB devices.
