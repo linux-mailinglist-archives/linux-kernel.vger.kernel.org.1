@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70008285CF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BCF285CFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727719AbgJGKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:35:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24828 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726219AbgJGKfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:35:44 -0400
-IronPort-SDR: Kq3QJuDVjpYxSHCstVdl08ZtuDOe2JqHTCyaQ6CJzAhWMS6W/g/n8Y0qJ83b21VftF3UbXeNC7
- yll2ES2U45MQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="144808105"
-X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
-   d="scan'208";a="144808105"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 03:35:43 -0700
-IronPort-SDR: 8rHst02E2sEkrzvZ+k78mTWrUl74uPckDgOmsw32oJQ9+9C1PFIQrwMh1Amz282g97aQXxjyRu
- FKMfY+EyrKTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
-   d="scan'208";a="354845530"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga007.jf.intel.com with SMTP; 07 Oct 2020 03:35:40 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Wed, 07 Oct 2020 13:35:39 +0300
-Date:   Wed, 7 Oct 2020 13:35:39 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Matteo Franchin <matteo.franchin@arm.com>
-Cc:     dri-devel@lists.freedesktop.org, tzimmermann@suse.de,
-        airlied@linux.ie, liviu.dudau@arm.com,
-        linux-kernel@vger.kernel.org, nd@arm.com
-Subject: Re: [PATCH] drm/fourcc: Add AXBXGXRX106106106106 format
-Message-ID: <20201007103539.GA6112@intel.com>
-References: <20201007092725.13300-1-matteo.franchin@arm.com>
+        id S1728053AbgJGKgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727773AbgJGKgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:36:43 -0400
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1315AC061755;
+        Wed,  7 Oct 2020 03:36:43 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4C5rNk6tpzzKmh1;
+        Wed,  7 Oct 2020 12:36:38 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
+        with ESMTP id GCodGCpHNCIN; Wed,  7 Oct 2020 12:36:32 +0200 (CEST)
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>, stable@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        containers@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] openat2: reject RESOLVE_BENEATH|RESOLVE_IN_ROOT
+Date:   Wed,  7 Oct 2020 21:36:08 +1100
+Message-Id: <20201007103608.17349-1-cyphar@cyphar.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201007092725.13300-1-matteo.franchin@arm.com>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -7.86 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 94FA014AF
+X-Rspamd-UID: 962eff
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:27:25AM +0100, Matteo Franchin wrote:
-> Add ABGR format with 10-bit components packed in 64-bit per pixel.
-> This format can be used to handle
-> VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16 on little-endian
-> architectures.
-> 
-> Signed-off-by: Matteo Franchin <matteo.franchin@arm.com>
-> ---
->  drivers/gpu/drm/drm_fourcc.c  | 1 +
->  include/uapi/drm/drm_fourcc.h | 7 +++++++
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-> index 722c7ebe4e88..bba03fcb016d 100644
-> --- a/drivers/gpu/drm/drm_fourcc.c
-> +++ b/drivers/gpu/drm/drm_fourcc.c
-> @@ -202,6 +202,7 @@ const struct drm_format_info *__drm_format_info(u32 format)
->  		{ .format = DRM_FORMAT_XBGR16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1 },
->  		{ .format = DRM_FORMAT_ARGB16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
->  		{ .format = DRM_FORMAT_ABGR16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
-> +		{ .format = DRM_FORMAT_AXBXGXRX106106106106,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
->  		{ .format = DRM_FORMAT_RGB888_A8,	.depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
->  		{ .format = DRM_FORMAT_BGR888_A8,	.depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
->  		{ .format = DRM_FORMAT_XRGB8888_A8,	.depth = 32, .num_planes = 2, .cpp = { 4, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
-> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-> index 82f327801267..76eedba52b77 100644
-> --- a/include/uapi/drm/drm_fourcc.h
-> +++ b/include/uapi/drm/drm_fourcc.h
-> @@ -155,6 +155,13 @@ extern "C" {
->  #define DRM_FORMAT_ARGB16161616F fourcc_code('A', 'R', '4', 'H') /* [63:0] A:R:G:B 16:16:16:16 little endian */
->  #define DRM_FORMAT_ABGR16161616F fourcc_code('A', 'B', '4', 'H') /* [63:0] A:B:G:R 16:16:16:16 little endian */
->  
-> +/*
-> + * RGBA format with 10-bit components packed in 64-bit per pixel, with 6 bits
-> + * of unused padding per component:
-> + * [63:0] A:x:B:x:G:x:R:x 10:6:10:6:10:6:10:6 little endian
+This was an oversight in the original implementation, as it makes no
+sense to specify both scoping flags to the same openat2(2) invocation
+(before this patch, the result of such an invocation was equivalent to
+RESOLVE_IN_ROOT being ignored).
 
-I think we usually put that last bit at the end of the fourcc define.
-In theory it makes grepping a bit nicer. The exceptions are all planar
-formats where each plane can have different component packing.
+This is a userspace-visible ABI change, but the only user of openat2(2)
+at the moment is LXC which doesn't specify both flags and so no
+userspace programs will break as a result.
 
-> + */
-> +#define DRM_FORMAT_AXBXGXRX106106106106 fourcc_code('A', 'B', '1', '0')
-> +
->  /* packed YCbCr */
->  #define DRM_FORMAT_YUYV		fourcc_code('Y', 'U', 'Y', 'V') /* [31:0] Cr0:Y1:Cb0:Y0 8:8:8:8 little endian */
->  #define DRM_FORMAT_YVYU		fourcc_code('Y', 'V', 'Y', 'U') /* [31:0] Cb0:Y1:Cr0:Y0 8:8:8:8 little endian */
-> -- 
-> 2.17.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Cc: <stable@vger.kernel.org> # v5.6+
+Fixes: fddb5d430ad9 ("open: introduce openat2(2) syscall")
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+---
+ fs/open.c                                      | 4 ++++
+ tools/testing/selftests/openat2/openat2_test.c | 8 +++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/fs/open.c b/fs/open.c
+index 9af548fb841b..4d7537ae59df 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -1010,6 +1010,10 @@ inline int build_open_flags(const struct open_how *how, struct open_flags *op)
+ 	if (how->resolve & ~VALID_RESOLVE_FLAGS)
+ 		return -EINVAL;
+ 
++	/* Scoping flags are mutually exclusive. */
++	if ((how->resolve & RESOLVE_BENEATH) && (how->resolve & RESOLVE_IN_ROOT))
++		return -EINVAL;
++
+ 	/* Deal with the mode. */
+ 	if (WILL_CREATE(flags)) {
+ 		if (how->mode & ~S_IALLUGO)
+diff --git a/tools/testing/selftests/openat2/openat2_test.c b/tools/testing/selftests/openat2/openat2_test.c
+index b386367c606b..381d874cce99 100644
+--- a/tools/testing/selftests/openat2/openat2_test.c
++++ b/tools/testing/selftests/openat2/openat2_test.c
+@@ -155,7 +155,7 @@ struct flag_test {
+ 	int err;
+ };
+ 
+-#define NUM_OPENAT2_FLAG_TESTS 23
++#define NUM_OPENAT2_FLAG_TESTS 24
+ 
+ void test_openat2_flags(void)
+ {
+@@ -210,6 +210,12 @@ void test_openat2_flags(void)
+ 		  .how.flags = O_TMPFILE | O_RDWR,
+ 		  .how.mode = 0x0000A00000000000ULL, .err = -EINVAL },
+ 
++		/* ->resolve flags must not conflict. */
++		{ .name = "incompatible resolve flags (BENEATH | IN_ROOT)",
++		  .how.flags = O_RDONLY,
++		  .how.resolve = RESOLVE_BENEATH | RESOLVE_IN_ROOT,
++		  .err = -EINVAL },
++
+ 		/* ->resolve must only contain RESOLVE_* flags. */
+ 		{ .name = "invalid how.resolve and O_RDONLY",
+ 		  .how.flags = O_RDONLY,
 -- 
-Ville Syrjälä
-Intel
+2.28.0
+
