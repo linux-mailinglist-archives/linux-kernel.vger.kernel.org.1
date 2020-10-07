@@ -2,126 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB940285508
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 01:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AB828550C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgJFX7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 19:59:39 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:32836 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgJFX7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 19:59:38 -0400
-X-Greylist: delayed 486 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 19:59:38 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JHj9CUDHulvt/1dca/0kn+WWXEkB7eaUTv3vf/yi1ks=; b=lcHTIxtPiDHBVgECn9AZ9Qt3Bo
-        +IofrW10Um/Kg01wz9y25FjxYCE8gRn4GlMmNOo5wVVPdwXHMkFK8spdCeo88gqG0Xe82CXFHrPeM
-        ix4Y/+aIrHEINluE1m28LkxabWg+T4QlSU4fo9g9GHMa7MdkZcE2xlVuwew0wniUVg3gEibPXBK1q
-        jk9Oh4SN3Ghsuxrfhn7fCFb4THtoTkvUcIXzrw3Y296YAJl34KCVx1wWN7ThodL063S8nMpW/jsuR
-        HP11CkGzipf3VxAkBNdosKYbdoPX8uHqanmmSEATaDCKS/bQCLtOLEqP9EEsqd9zdV4zmexir0Dym
-        h5oZM4UA==;
-Received: from [172.16.1.162]
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kPwro-0006k3-2h; Tue, 06 Oct 2020 17:59:36 -0600
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20200930185422.11494-1-logang@deltatee.com>
- <20200930185422.11494-4-logang@deltatee.com>
- <BYAPR04MB4965C2DDD4A5FBD86A128FE9860D0@BYAPR04MB4965.namprd04.prod.outlook.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <868f8fb6-6024-d60d-a9aa-6513b9d0986f@deltatee.com>
-Date:   Tue, 6 Oct 2020 17:59:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726666AbgJGAAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:00:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725925AbgJGAAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 20:00:48 -0400
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF02121527
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602028848;
+        bh=rqrXO7Fopl32OITGJTw7mZLPQic9u3QJlABSnhaxNFQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bdZiafyzYpqXfDr7kAdeZe/afNyxaUuTJQG6Q4lXlMcyP3tBKjUMdVhctxwvtIMIU
+         Bb04TBNQ0uMhLkBavjlj6Df+63/EMx0sORvzM1mqWuVzGDGbZCUuddirQi9FWK7DAk
+         nJI5ktQoMyjDjKpj+W6kVDYOl4B7FdaHfu3SO1Cc=
+Received: by mail-ej1-f41.google.com with SMTP id u21so404732eja.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:00:47 -0700 (PDT)
+X-Gm-Message-State: AOAM530BLhOrVg8tmgasA7b6P6KgsIqtV4wQ12nf1Ry8k1kL6x92ofvj
+        HYjowjl/yN3i4y5bblTzFGFFEuFGCpwAQRGBZA==
+X-Google-Smtp-Source: ABdhPJw83HrMB8DCHstrzKiMxFwr2/SMLyYc2oSSAq4ciadRwbZbdL51SMMLL6JQdJ42XgiKaqBLMslisKatsvB0Ioo=
+X-Received: by 2002:a17:906:c293:: with SMTP id r19mr527625ejz.63.1602028846129;
+ Tue, 06 Oct 2020 17:00:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BYAPR04MB4965C2DDD4A5FBD86A128FE9860D0@BYAPR04MB4965.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, sagi@grimberg.me, osandov@osandov.com, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, Chaitanya.Kulkarni@wdc.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH blktests v2 03/11] common/xfs: Create common helper to
- verify block device with xfs
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <20201006193320.405529-1-enric.balletbo@collabora.com>
+ <20201006193320.405529-4-enric.balletbo@collabora.com> <CAAOTY_-yoptcLCg1YC-wZv+jsOKsKsYFY1xCCwqWVv7M8nNd_w@mail.gmail.com>
+In-Reply-To: <CAAOTY_-yoptcLCg1YC-wZv+jsOKsKsYFY1xCCwqWVv7M8nNd_w@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 7 Oct 2020 08:00:35 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-EBCPG9akkPvi=OJhnKQ6bFSnDufvEvgyyw-8yuqMJ5w@mail.gmail.com>
+Message-ID: <CAAOTY_-EBCPG9akkPvi=OJhnKQ6bFSnDufvEvgyyw-8yuqMJ5w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] soc: mediatek: mmsys: Create struct mtk_mmsys to
+ store context data
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=887=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=887:24=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2020=E5=
+=B9=B410=E6=9C=887=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=883:33=E5=AF=
+=AB=E9=81=93=EF=BC=9A
+> >
+> > From: CK Hu <ck.hu@mediatek.com>
+> >
+> > Apart from the driver data, in order to extend the driver to support mo=
+re
+> > and more SoCs, we will need to store other configuration data. So, crea=
+te
+> > a mtk_mmsys struct to encapsulate all that information.
+>
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@mediatek.com>
 
+Sorry for typo:
 
-On 2020-10-06 5:50 p.m., Chaitanya Kulkarni wrote:
-> On 9/30/20 11:54, Logan Gunthorpe wrote:
->> Make a common helper from the code in tests nvme/012 and nvme/013
->> to run an fio verify on a XFS file system backed by the
->> specified block device.
->>
->> While we are at it, all the output is redirected to $FULL instead of
->> /dev/null.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->> ---
->>  common/xfs     | 22 ++++++++++++++++++++++
->>  tests/nvme/012 | 14 +-------------
->>  tests/nvme/013 | 14 +-------------
->>  3 files changed, 24 insertions(+), 26 deletions(-)
-> 
-> The common namespace is getting cluttered. Can you please create
-> 
-> a subdirectory common/fs/xfs ?
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-I disagree. The common directory only has 9 files. And given there
-appear to be no other files to add to the fs directory I don't think now
-is the time to create a directory. We can do so if and when a number of
-other fs helpers show up and there's a reason to group them together.
-
->>
->> diff --git a/common/xfs b/common/xfs
->> index d1a603b8c7b5..210c924cdd41 100644
->> --- a/common/xfs
->> +++ b/common/xfs
->> @@ -9,3 +9,25 @@
->>  _have_xfs() {
->>  	_have_fs xfs && _have_program mkfs.xfs
->>  }
->> +
->> +_xfs_mkfs_and_mount() {
->> +	local bdev=$1
->> +	local mount_dir=$2
->> +
->> +	mkdir -p "${mount_dir}"
->> +	umount "${mount_dir}"
->> +	mkfs.xfs -l size=32m -f "${bdev}"
->> +	mount "${bdev}" "${mount_dir}"
->> +}
->> +
->> +_xfs_run_fio_verify_io() {
->> +	local mount_dir="/mnt/blktests"
-> 
-> The mount dir should be a parameter and not the hardcode value
-> to make it reusable.
-
-I also disagree here. It is already reusable and is used in a number of
-places; none of those places require changing the mount directory. If
-and when a use comes up that requires a different directory (not sure
-what that would be), a parameter can be added. It is typically standard
-practice in the Linux community to not add features that have no users
-as it's confusing to people reading the code.
-
-Logan
+>
+> >
+> > Signed-off-by: CK Hu <ck.hu@mediatek.com>
+> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > ---
+> >
+> >  drivers/soc/mediatek/mtk-mmsys.c | 47 ++++++++++++++++++--------------
+> >  1 file changed, 27 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mt=
+k-mmsys.c
+> > index 18f93979e14a..da2de8f6969e 100644
+> > --- a/drivers/soc/mediatek/mtk-mmsys.c
+> > +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> > @@ -101,6 +101,11 @@ static const struct mtk_mmsys_driver_data mt8183_m=
+msys_driver_data =3D {
+> >         .clk_driver =3D "clk-mt8183-mm",
+> >  };
+> >
+> > +struct mtk_mmsys {
+> > +       void __iomem *regs;
+> > +       const struct mtk_mmsys_driver_data *data;
+> > +};
+> > +
+> >  static unsigned int mtk_mmsys_ddp_mout_en(enum mtk_ddp_comp_id cur,
+> >                                           enum mtk_ddp_comp_id next,
+> >                                           unsigned int *addr)
+> > @@ -259,21 +264,21 @@ void mtk_mmsys_ddp_connect(struct device *dev,
+> >                            enum mtk_ddp_comp_id cur,
+> >                            enum mtk_ddp_comp_id next)
+> >  {
+> > -       void __iomem *config_regs =3D dev_get_drvdata(dev);
+> > +       struct mtk_mmsys *mmsys =3D dev_get_drvdata(dev);
+> >         unsigned int addr, value, reg;
+> >
+> >         value =3D mtk_mmsys_ddp_mout_en(cur, next, &addr);
+> >         if (value) {
+> > -               reg =3D readl_relaxed(config_regs + addr) | value;
+> > -               writel_relaxed(reg, config_regs + addr);
+> > +               reg =3D readl_relaxed(mmsys->regs + addr) | value;
+> > +               writel_relaxed(reg, mmsys->regs + addr);
+> >         }
+> >
+> > -       mtk_mmsys_ddp_sout_sel(config_regs, cur, next);
+> > +       mtk_mmsys_ddp_sout_sel(mmsys->regs, cur, next);
+> >
+> >         value =3D mtk_mmsys_ddp_sel_in(cur, next, &addr);
+> >         if (value) {
+> > -               reg =3D readl_relaxed(config_regs + addr) | value;
+> > -               writel_relaxed(reg, config_regs + addr);
+> > +               reg =3D readl_relaxed(mmsys->regs + addr) | value;
+> > +               writel_relaxed(reg, mmsys->regs + addr);
+> >         }
+> >  }
+> >  EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_connect);
+> > @@ -282,44 +287,46 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
+> >                               enum mtk_ddp_comp_id cur,
+> >                               enum mtk_ddp_comp_id next)
+> >  {
+> > -       void __iomem *config_regs =3D dev_get_drvdata(dev);
+> > +       struct mtk_mmsys *mmsys =3D dev_get_drvdata(dev);
+> >         unsigned int addr, value, reg;
+> >
+> >         value =3D mtk_mmsys_ddp_mout_en(cur, next, &addr);
+> >         if (value) {
+> > -               reg =3D readl_relaxed(config_regs + addr) & ~value;
+> > -               writel_relaxed(reg, config_regs + addr);
+> > +               reg =3D readl_relaxed(mmsys->regs + addr) & ~value;
+> > +               writel_relaxed(reg, mmsys->regs + addr);
+> >         }
+> >
+> >         value =3D mtk_mmsys_ddp_sel_in(cur, next, &addr);
+> >         if (value) {
+> > -               reg =3D readl_relaxed(config_regs + addr) & ~value;
+> > -               writel_relaxed(reg, config_regs + addr);
+> > +               reg =3D readl_relaxed(mmsys->regs + addr) & ~value;
+> > +               writel_relaxed(reg, mmsys->regs + addr);
+> >         }
+> >  }
+> >  EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_disconnect);
+> >
+> >  static int mtk_mmsys_probe(struct platform_device *pdev)
+> >  {
+> > -       const struct mtk_mmsys_driver_data *data;
+> >         struct device *dev =3D &pdev->dev;
+> >         struct platform_device *clks;
+> >         struct platform_device *drm;
+> > -       void __iomem *config_regs;
+> > +       struct mtk_mmsys *mmsys;
+> >         int ret;
+> >
+> > -       config_regs =3D devm_platform_ioremap_resource(pdev, 0);
+> > -       if (IS_ERR(config_regs)) {
+> > -               ret =3D PTR_ERR(config_regs);
+> > +       mmsys =3D devm_kzalloc(dev, sizeof(*mmsys), GFP_KERNEL);
+> > +       if (!mmsys)
+> > +               return -ENOMEM;
+> > +
+> > +       mmsys->regs =3D devm_platform_ioremap_resource(pdev, 0);
+> > +       if (IS_ERR(mmsys->regs)) {
+> > +               ret =3D PTR_ERR(mmsys->regs);
+> >                 dev_err(dev, "Failed to ioremap mmsys registers: %d\n",=
+ ret);
+> >                 return ret;
+> >         }
+> >
+> > -       platform_set_drvdata(pdev, config_regs);
+> > -
+> > -       data =3D of_device_get_match_data(&pdev->dev);
+> > +       mmsys->data =3D of_device_get_match_data(&pdev->dev);
+> > +       platform_set_drvdata(pdev, mmsys);
+> >
+> > -       clks =3D platform_device_register_data(&pdev->dev, data->clk_dr=
+iver,
+> > +       clks =3D platform_device_register_data(&pdev->dev, mmsys->data-=
+>clk_driver,
+> >                                              PLATFORM_DEVID_AUTO, NULL,=
+ 0);
+> >         if (IS_ERR(clks))
+> >                 return PTR_ERR(clks);
+> > --
+> > 2.28.0
+> >
