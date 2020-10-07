@@ -2,197 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1077928563C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB41285659
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgJGBXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 21:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        id S1726884AbgJGBfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 21:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgJGBXn (ORCPT
+        with ESMTP id S1725996AbgJGBfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 21:23:43 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3008C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 18:23:43 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id p15so296757plr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 18:23:43 -0700 (PDT)
+        Tue, 6 Oct 2020 21:35:38 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C168C061755;
+        Tue,  6 Oct 2020 18:35:38 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id h4so244931pjk.0;
+        Tue, 06 Oct 2020 18:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=wF2FFu1dgNpdE0yU/Yio/eWj3yPuYo+n3vLnxYeYPa8=;
-        b=C9nxvY17K2bLBW5hmhU3GQR3F27rRncCxl3H5TP9uKYbdY8lcvtNGVDBf5KHk/3iOa
-         ZJOlLe3WypysziulYiz8BMD3X/IBYbCwe5Ov6J+n6GnPLts5eR0Rda6SfvBG5ThhPtcH
-         htqvFkO5+gHYp8ClJT9GXGT1FNpeX0lp5YgRLYY//aweL+HMR5qibKkQPgM/RjLJfNFU
-         y+TgQWYTUiNH/Fq7AqVUlqRaXD/6mlLrD0WT7drS89rTCVeQANJ6gjePD2AdF983fGga
-         RUETbNEt8FgfFRq0Rg+EDle8XmymyAxAyDoj2TCCcwaaQ1rSzpdyyDFURZ9HV2lzi7CI
-         6/pg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wXmU6E7pPkGTKuI6i2a6iOAeXxZcqsnNzDeA2uG/Lbk=;
+        b=OEDfeZZ4qfVfI4VPpjddk6X+YnGrEC391f0/6Hk65592Y13Ol/mQV+BPnbn3/HQxOg
+         KpTu+o5RYip+bLEsE6Bsxmys7P5hRWQmCJItrbjaGeg3P0Lbw9inspCr5QpWPnCYjbkR
+         i437CkMNLSWOoYOG0c3uZk1Sr2Waia9K+3QkIgKOEzGvj8Y8Q4lUsgIXsKVMhZIBaWDp
+         VwVtYpHX+bLmJUoc8OFwwsQv193LiojMNDZCXDdwOKmTS/gANDC3kxc8UpV3LL19wTrq
+         pfESHzxOukYL384ojzzHqEIil5u+KrMLeeh6o6BMwmsW4wnrVSZPioHcKrlUuMpFW0BH
+         BeJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=wF2FFu1dgNpdE0yU/Yio/eWj3yPuYo+n3vLnxYeYPa8=;
-        b=YuT95/SzZD8hqJic5EttRKpofU5CaptXm1uI/JSZblYdLVnTSWcGb+R4xZtzFUtDSz
-         T4ZXhOxMmkL/tYT8SA7gOgJ2nS9EL+mtIT8k+91vn2OvkiIAM0G3ufxF1llDu1CtFYdh
-         zTT+fzufGXfxG95snUWAHLvIQQPadD1EG5PAworkO2vHfGhAVxbXl/TxbWwAlLNm/Qr1
-         VmSkzP3LXZWKAzmu0UvQdtkkMXJVBJgt6uDReQw9gHduE0ueXOeGXSbAMBWquhZY/Nwd
-         caRvUU4Q7uXLBzP/g3shhyZI4WSV+g8wT6UH9v1hdRZ0foNFKuCvTlm9iARltTVWm/9Y
-         zRnA==
-X-Gm-Message-State: AOAM531zFPwOKlHpuyid8hqd1cwpXNWgmiGIiWH5RZq0dQh82tlu+Kus
-        dFwzG0g4gpW4CSi7ZHE+y6UMrrTvhAk=
-X-Google-Smtp-Source: ABdhPJw1jUqsBpGXTU9ryoiUplt+3ZSvQ3a3cAGyymZhms5SudCuSclpvwYEZ/vAj/OC9j4KVeWwZN3Nr7M=
-Sender: "haoluo via sendgmr" <haoluo@haoluo.svl.corp.google.com>
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
- (user=haoluo job=sendgmr) by 2002:a62:1dd7:0:b029:154:dde2:ddcb with SMTP id
- d206-20020a621dd70000b0290154dde2ddcbmr749587pfd.30.1602033823275; Tue, 06
- Oct 2020 18:23:43 -0700 (PDT)
-Date:   Tue,  6 Oct 2020 18:23:13 -0700
-Message-Id: <20201007012313.2778426-1-haoluo@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-Subject: [PATCH v2] selftests/bpf: Fix test_verifier after introducing resolve_pseudo_ldimm64
-From:   Hao Luo <haoluo@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wXmU6E7pPkGTKuI6i2a6iOAeXxZcqsnNzDeA2uG/Lbk=;
+        b=VSZ57BZOpJyp+twQX4Cols3okZHrSXpcKTpKyOn/lY/AgMOeiBiLKH+1ySY2Dif4yP
+         UczajNGKQgljGiKtUWkDF4dM7ozPdNXwAhEbXrBSO/BoKAuqh3ZRY3xRsllO8lGTDLVn
+         HrVuGk0JuLPVxXvdmIrt2y9en/ws8tSlA6pbDO89yJhxskZjClMS8uexrZ9yNIwiSlgZ
+         0ORkG+xtsCrCiqcaNKqOfgxjk2LFI3HlD/6fUfGDBf5cxDFtWIloSP4khahmGk9Nhx0+
+         zocrr+q8+vKEgmC1BgXGCJ4/stD4MpNnW1/NWU/y0JuPh5SKb7SDz92x2XMX8+XLr2cv
+         7XEw==
+X-Gm-Message-State: AOAM533/m1A+6LbPWEpL7IC12tbN30vs3nVTD9rI14mGKb31qHqxzRvD
+        hoSrJSfTTQ1NnS7uHqttMAI=
+X-Google-Smtp-Source: ABdhPJwKS/LE5MMp07odF2ti3YPUH/10Min8uEKAnLwPb/26IQDKwczqqelpPx+xDdz+jx8Vbql21A==
+X-Received: by 2002:a17:90a:2ec8:: with SMTP id h8mr780424pjs.173.1602034537910;
+        Tue, 06 Oct 2020 18:35:37 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id fy24sm272835pjb.35.2020.10.06.18.35.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 18:35:37 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 18:35:34 -0700
+From:   dmitry.torokhov@gmail.com
+To:     kl@kl.wtf
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: evdev - per-client waitgroups
+Message-ID: <20201007013534.GT1009802@dtor-ws>
+References: <20201005233500.GM1009802@dtor-ws>
+ <20200429184126.2155-1-kl@kl.wtf>
+ <0ec848359962ebce267168618b816bb4@kl.wtf>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ec848359962ebce267168618b816bb4@kl.wtf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 4976b718c355 ("bpf: Introduce pseudo_btf_id") switched
-the order of check_subprogs() and resolve_pseudo_ldimm() in
-the verifier. Now an empty prog expects to see the error "last
-insn is not an the prog of a single invalid ldimm exit or jmp"
-instead, because the check for subprogs comes first. It's now
-pointless to validate that half of ldimm64 won't be the last
-instruction.
+On Tue, Oct 06, 2020 at 09:15:32AM +0000, kl@kl.wtf wrote:
+> October 6, 2020 1:35 AM, dmitry.torokhov@gmail.com wrote:
+> 
+> > On Wed, Apr 29, 2020 at 08:41:26PM +0200, Kenny Levinsen wrote:
+> > 
+> >> All evdev clients share a common waitgroup. On new input events, this
+> >> waitgroup is woken once for every client that did not filter the events,
+> > 
+> > I am having trouble parsing the changelog (I think I agree with the
+> > change itself). Did you mean to say "this waitqueue wakes up every
+> > client, even ones that requested to filter out events that are being
+> > delivered, leading to duplicated and unwanted wakeups"?
+> 
+> Ah, I suppose my original wording was a bit convoluted. Perhaps the following
+> is clearer:
+> 
+> 	All evdev clients share a common waitgroup. On new input events, all
+> 	clients waiting on this waitgroup are woken up, even those filtering
+> 	out the events, possibly more than once per event. This leads to
+> 	duplicated and unwanted wakeups.
+> 
+> What I tried to say is that not only do all clients polling the device/blocked
+> on read end up woken up, instead of being woken just once, they are woken once
+> for every client that was interested in the event.
+> 
+> So, if you have two clients interested and one uninterested, then the shared
+> waitgroup that all three clients are waiting on is woken up twice in a row.
+> 
+> Should I send an updated patch with the new wording? I'm also fine with your
+> suggested wording if you prefer that.
 
-Tested:
- # ./test_verifier
- Summary: 1129 PASSED, 537 SKIPPED, 0 FAILED
- and the full set of bpf selftests.
+I used the new description from above and applied, thank you.
 
-Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
-Signed-off-by: Hao Luo <haoluo@google.com>
----
-Changelog in v2:
- - Remove the original test_verifier ld_imm64 test4
- - Updated commit message.
-
- tools/testing/selftests/bpf/verifier/basic.c  |  2 +-
- .../testing/selftests/bpf/verifier/ld_imm64.c | 24 +++++++------------
- 2 files changed, 9 insertions(+), 17 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/verifier/basic.c b/tools/testing/selftests/bpf/verifier/basic.c
-index b8d18642653a..de84f0d57082 100644
---- a/tools/testing/selftests/bpf/verifier/basic.c
-+++ b/tools/testing/selftests/bpf/verifier/basic.c
-@@ -2,7 +2,7 @@
- 	"empty prog",
- 	.insns = {
- 	},
--	.errstr = "unknown opcode 00",
-+	.errstr = "last insn is not an exit or jmp",
- 	.result = REJECT,
- },
- {
-diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
-index 3856dba733e9..ed6a34991216 100644
---- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
-+++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
-@@ -54,21 +54,13 @@
- 	"test5 ld_imm64",
- 	.insns = {
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
--	},
--	.errstr = "invalid bpf_ld_imm64 insn",
--	.result = REJECT,
--},
--{
--	"test6 ld_imm64",
--	.insns = {
--	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
- 	BPF_RAW_INSN(0, 0, 0, 0, 0),
- 	BPF_EXIT_INSN(),
- 	},
- 	.result = ACCEPT,
- },
- {
--	"test7 ld_imm64",
-+	"test6 ld_imm64",
- 	.insns = {
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
- 	BPF_RAW_INSN(0, 0, 0, 0, 1),
-@@ -78,7 +70,7 @@
- 	.retval = 1,
- },
- {
--	"test8 ld_imm64",
-+	"test7 ld_imm64",
- 	.insns = {
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 1, 1),
- 	BPF_RAW_INSN(0, 0, 0, 0, 1),
-@@ -88,7 +80,7 @@
- 	.result = REJECT,
- },
- {
--	"test9 ld_imm64",
-+	"test8 ld_imm64",
- 	.insns = {
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
- 	BPF_RAW_INSN(0, 0, 0, 1, 1),
-@@ -98,7 +90,7 @@
- 	.result = REJECT,
- },
- {
--	"test10 ld_imm64",
-+	"test9 ld_imm64",
- 	.insns = {
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
- 	BPF_RAW_INSN(0, BPF_REG_1, 0, 0, 1),
-@@ -108,7 +100,7 @@
- 	.result = REJECT,
- },
- {
--	"test11 ld_imm64",
-+	"test10 ld_imm64",
- 	.insns = {
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
- 	BPF_RAW_INSN(0, 0, BPF_REG_1, 0, 1),
-@@ -118,7 +110,7 @@
- 	.result = REJECT,
- },
- {
--	"test12 ld_imm64",
-+	"test11 ld_imm64",
- 	.insns = {
- 	BPF_MOV64_IMM(BPF_REG_1, 0),
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, BPF_REG_1, 0, 1),
-@@ -129,7 +121,7 @@
- 	.result = REJECT,
- },
- {
--	"test13 ld_imm64",
-+	"test12 ld_imm64",
- 	.insns = {
- 	BPF_MOV64_IMM(BPF_REG_1, 0),
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, BPF_REG_1, 0, 1),
-@@ -140,7 +132,7 @@
- 	.result = REJECT,
- },
- {
--	"test14 ld_imm64: reject 2nd imm != 0",
-+	"test13 ld_imm64: reject 2nd imm != 0",
- 	.insns = {
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_1,
 -- 
-2.28.0.806.g8561365e88-goog
-
+Dmitry
