@@ -2,131 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84BA2865D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F50286538
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgJGRYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:24:00 -0400
-Received: from mga03.intel.com ([134.134.136.65]:1354 "EHLO mga03.intel.com"
+        id S1727876AbgJGQuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:50:07 -0400
+Received: from mga12.intel.com ([192.55.52.136]:1632 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727969AbgJGRX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:23:59 -0400
-IronPort-SDR: XejR/9Mbmw6bTXi00mTdvFcXXvW7H7Iu2Lb/jKLy7d/EEPiEaBUwyU5fT62lkUjjIarNomLzrB
- NetAGuBRXJEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="165087285"
+        id S1726948AbgJGQuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:50:04 -0400
+IronPort-SDR: JBibSw9JQUkvjf8svBRGePcjX13PgvkVGMyP1SkUQ+FeUb8tcsX/L0q4USOh3rJPhm+7KaKjWb
+ cgZqQQ4loD9g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="144400703"
 X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="165087285"
+   d="scan'208";a="144400703"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:48:57 -0700
-IronPort-SDR: JS5WF/ZWWJ6drdqE9KPrrDpGO1nBnyE4kYAX0TQWWs/O+DP5LvoNAnanbch5hAQcdmV4FDKhDy
- /8xYVEACsEgA==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:50:04 -0700
+IronPort-SDR: 0f+EG1A00l6z1hUghZw9f9jpHEWqPaisY8h+zEDQzhrqtzc50Y4k340UIVEDp5Vj9XVHr7y+Cd
+ Be2Be8cKTM0w==
 X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="311818207"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 07 Oct 2020 09:48:56 -0700
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id 01586580867;
-        Wed,  7 Oct 2020 09:48:56 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     bhelgaas@google.com, len.brown@intel.com, rafael@kernel.org
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: Disable PTM during suspend on Intel PCI bridges
-Date:   Wed,  7 Oct 2020 09:48:51 -0700
-Message-Id: <20201007164851.1218-1-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
+   d="scan'208";a="528047390"
+Received: from dumser-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.51.100])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:49:54 -0700
+Date:   Wed, 7 Oct 2020 19:49:50 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Roberto Sassu <roberto.sassu@polito.it>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ima: Fix sizeof mismatches
+Message-ID: <20201007164950.GA3885@linux.intel.com>
+References: <20201007110243.19033-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007110243.19033-1-colin.king@canonical.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
-Time Measurement (PTM) capability can prevent PCIe root ports from power
-gating during suspend-to-idle, causing increased power consumption on
-systems that suspend using Low Power S0 Idle [1]. The issue is yet to be
-root caused but believed to be coming from a race condition in the suspend
-flow as the incidence rate varies for different platforms on Linux but the
-issue does not occur at all in other operating systems. For now, disable
-the feature on suspend on all Intel root ports and enable again on resume.
+On Wed, Oct 07, 2020 at 12:02:43PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> An incorrect sizeof is being used, sizeof(*fields) is not correct,
+> it should be sizeof(**fields). This is not causing a problem since
+> the size of these is the same. Fix this in the kmalloc_array and
+> memcpy calls.
+> 
+> Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
+> Fixes: 1bd7face7439 ("ima: allocate field pointers array on demand in template_desc_init_fields()")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Link: https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=209361
-Tested-by: Len Brown <len.brown@intel.com>
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- drivers/pci/quirks.c | 57 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index bdf9b52567e0..e82b1f60c7a1 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5632,3 +5632,60 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
- }
- DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
- 			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-+
-+#ifdef CONFIG_PCIE_PTM
-+/*
-+ * On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
-+ * Time Measurement (PTM) capability can prevent the PCIe root port from
-+ * power gating during suspend-to-idle, causing increased power consumption.
-+ * So disable the feature on suspend on all Intel root ports and enable
-+ * again on resume.
-+ */
-+static void quirk_intel_ptm_disable_suspend(struct pci_dev *dev)
-+{
-+	int pos;
-+	u32 ctrl;
-+
-+	if (!(dev->ptm_enabled && dev->ptm_root))
-+		return;
-+
-+	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-+	if (!pos)
-+		return;
-+
-+	pci_dbg(dev, "quirk: disabling PTM\n");
-+
-+	dev->ptm_enabled = 0;
-+	dev->ptm_root = 0;
-+
-+	pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
-+	ctrl &= ~(PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT);
-+	pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
-+}
-+
-+static void quirk_intel_ptm_enable_resume(struct pci_dev *dev)
-+{
-+	int pos;
-+	u32 ctrl;
-+
-+	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-+	if (!pos)
-+		return;
-+
-+	pci_dbg(dev, "quirk: re-enabling PTM\n");
-+
-+	pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
-+	ctrl |= PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT;
-+	pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
-+
-+	dev->ptm_enabled = 1;
-+	dev->ptm_root = 1;
-+}
-+
-+DECLARE_PCI_FIXUP_CLASS_SUSPEND(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
-+				PCI_CLASS_BRIDGE_PCI, 8,
-+				quirk_intel_ptm_disable_suspend)
-+DECLARE_PCI_FIXUP_CLASS_RESUME(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
-+			       PCI_CLASS_BRIDGE_PCI, 8,
-+			       quirk_intel_ptm_enable_resume)
-+#endif
--- 
-2.20.1
-
+/Jarkko
