@@ -2,243 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FCA286023
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12AE28602D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgJGNaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        id S1728500AbgJGNam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728323AbgJGNaV (ORCPT
+        with ESMTP id S1728177AbgJGNak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:30:21 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75624C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:30:17 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id z8so2265862lfd.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:30:17 -0700 (PDT)
+        Wed, 7 Oct 2020 09:30:40 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343A8C061755;
+        Wed,  7 Oct 2020 06:30:40 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id 16so2376919oix.9;
+        Wed, 07 Oct 2020 06:30:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=k2l/9fzb03eCTZoGiByyf5gZsfF5uaw+eTCPdRAtu8g=;
-        b=rMRYSy7vcf6XtGqbukLSA52hgTFeiwzpZJ6SFJLCm6vFiw4eozjl6mZrCAWZDI8L8W
-         35O+K010AfwkUo7H6VIn18gON0I6c8XyE21fGlxOl+HuSs5bBoV76b7cW1ogvq989L4B
-         UsrOa9j9VHYWAeYzV6FLZYCj+nJnP+sKHagyhaJ89qb4d0U/DUPzCwLXNxGOme15HkZS
-         b/jYA7hvX0QGQixt6CY9j6DJABL3VqVhaoUPhz3SD0EPd8uhaoBHfmFBGaSyGZY6l1YQ
-         fK4RcLlj5bsNIt5QFWU/ZO2ACTS0zYKSOm/QJ8UjG2ym6zxZElq5P0qEih+9aIjG2vxF
-         Yamg==
+        bh=McUtuvNmevz+iZPEkj93ohl1FQAR4N/IBKgtlQ6BopY=;
+        b=dzD1Soqac7JVF1UwaDPRKuPlBtlof0VuzZDPjpnpw95DO8HZxT1yTDHVIvJcBPjun+
+         HNj4b3gng524257hABsHwoWvt8ARs5IrGpCRDBHjjG+//x73KtiJZoXhCsPTpJFOhZAJ
+         YlwlozQKdSp1nKuyJDdc2D8Uybg8wmzw3bz5sYzl5voxtXtYC4FBbddgJWDcQv+AfgZU
+         DgJjjzGUNyLjN6PDer7pIikR4j5sNVa5+64PAdaRRkkJm0tlRooUz3bBBKbdYqfBWvEp
+         pUOdag77j7jIYnuTqPyIV8J+2KLsXPpsdORYfXVuFlZP3WvZsGoPXoBPRzIOKgCi6ofN
+         MiZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=k2l/9fzb03eCTZoGiByyf5gZsfF5uaw+eTCPdRAtu8g=;
-        b=TDTsItdsp9J2nfTSpgIGJlNGHsPsXGjs1ePBMOOYMpU0fvoKwqjFGuMef5c1bwW/BG
-         f2D9f1ixUUY/hlOkd4CTbbxdIw/3QRqTl9fUF+P9sQx/UrieHZ26AupooPqUwCrN3XDa
-         GNDQD5lPGJXx/6rHqcDQdZCXVJMqopnl0bpgDf1CBWsEjPjpctuxm0zsEiE+DEQ644OC
-         3LnZGavbMBD+YlbxoobSQH5deljulpibmFDC12fI+J9PQwtd8KNz33yeJ9tlRFtTzmKA
-         wssneoXc7zmZaDnx4Yk4CerJzk7iknn3rVRarBDxHruY5C9PSugeA4QYczjR4XKnQIdZ
-         A7bA==
-X-Gm-Message-State: AOAM530PA7axgWdFT+rPCyQPbn2UgDAi2eSwEptqjspJdm8vFu4zQ8lM
-        yWUjZJF5AEnXKmXOs0hHKbcS1gFLv4B18ONC+t/vUw==
-X-Google-Smtp-Source: ABdhPJzM6EKSUbzWZ4QoyxcoR83GT/oWoNZ86uDYC1Qwc9NmgDn95/8Lwxq9JFC4JlMW2XebEtYnqy1OpjDtjraDimk=
-X-Received: by 2002:a19:e55:: with SMTP id 82mr893745lfo.571.1602077415649;
- Wed, 07 Oct 2020 06:30:15 -0700 (PDT)
+        bh=McUtuvNmevz+iZPEkj93ohl1FQAR4N/IBKgtlQ6BopY=;
+        b=CrMcBSwJjkPMOpPs1fPfWhk9GPQWJ2lcEQNyCzrxu+8cMD7iCjzQHFtwqoTWGjAX7d
+         Di2tEVMoqT6BXyNFSBL/8PTpOsXAH2rWjIAGU055Uld3MQXremlkIgT01vXNcVrZ+Cms
+         /MG/aWU6dhGYvI94SmItXw9esg+zzRfHguJlS33br2CaqdHdutgQS555a4nlf2uQ/QYR
+         86/occjg1zhyZtRXaQacuSGPOIp78vczzMW3jVycvjBe48eTQJBfFGifcy2/3z2aQ/i5
+         wGcPZrpH8RFrlD4UmizedEgXwoeO3vJlhDd1itYJRjE8GYy4G0VL1GWbEtPPhXNO6Uow
+         Lqyg==
+X-Gm-Message-State: AOAM530kD6djykHv+zLV3XfazKNU5g8p0qaNXaHfIA+t5kcOJhfgkDTz
+        IjdWiI8NOmy4Nyv1wti01mzyu2fxMA67PwUGhxRKcVGUZXw=
+X-Google-Smtp-Source: ABdhPJy+83PcC7wVSvBX1ScHbkDlmyI0zeP2uUIIRSmMfKZ7CooD6LvYSGpPflVaykpvLzI677haMfT1AH9FTsQh6Tc=
+X-Received: by 2002:aca:4c7:: with SMTP id 190mr2036744oie.58.1602077439329;
+ Wed, 07 Oct 2020 06:30:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201006142532.2247515-1-lars.povlsen@microchip.com> <20201006142532.2247515-3-lars.povlsen@microchip.com>
-In-Reply-To: <20201006142532.2247515-3-lars.povlsen@microchip.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 7 Oct 2020 15:30:03 +0200
-Message-ID: <CACRpkda+OSgma3E0XxXUk8a2yrn5Hpu3a47cBN50rOkoSMkiwQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3 2/3] pinctrl: pinctrl-mchp-sgpio: Add pinctrl
- driver for Microsemi Serial GPIO
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
+ <20201005134534.GT6642@arm.com> <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
+ <20201006092532.GU6642@arm.com> <CAMe9rOq_nKa6xjHju3kVZephTiO+jEW3PqxgAhU9+RdLTo-jgg@mail.gmail.com>
+ <20201006152553.GY6642@arm.com> <CAMe9rOpQiPUZMjysPqtyFfmGDtfRapUvzfMOk7X14xZFSQ66Aw@mail.gmail.com>
+ <20201006165520.GA6642@arm.com> <CAMe9rOoY5T61uYCXMcEaKxL7NURDpACJ+0rF47HFmosYOvA2aA@mail.gmail.com>
+ <20201007104720.GH6642@arm.com>
+In-Reply-To: <20201007104720.GH6642@arm.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Wed, 7 Oct 2020 06:30:03 -0700
+Message-ID: <CAMe9rOq7yoAwT=+JR4nk4yWMGeXza9490YgJYNp4FKfkJRJxtQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        GNU C Library <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars!
-
-Thanks for the update, this looks much improved!
-
-Some further hints at things I saw here:
-
-On Tue, Oct 6, 2020 at 4:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
-
-> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
-> (SGPIO) device used in various SoC's.
+On Wed, Oct 7, 2020 at 3:47 AM Dave Martin <Dave.Martin@arm.com> wrote:
 >
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> On Tue, Oct 06, 2020 at 10:44:14AM -0700, H.J. Lu wrote:
+> > On Tue, Oct 6, 2020 at 9:55 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> > >
+> > > On Tue, Oct 06, 2020 at 08:34:06AM -0700, H.J. Lu wrote:
+> > > > On Tue, Oct 6, 2020 at 8:25 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> > > > >
+> > > > > On Tue, Oct 06, 2020 at 05:12:29AM -0700, H.J. Lu wrote:
+> > > > > > On Tue, Oct 6, 2020 at 2:25 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, Oct 05, 2020 at 10:17:06PM +0100, H.J. Lu wrote:
+> > > > > > > > On Mon, Oct 5, 2020 at 6:45 AM Dave Martin <Dave.Martin@arm.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Tue, Sep 29, 2020 at 01:57:42PM -0700, Chang S. Bae wrote:
+> > > > > > > > > > During signal entry, the kernel pushes data onto the normal userspace
+> > > > > > > > > > stack. On x86, the data pushed onto the user stack includes XSAVE state,
+> > > > > > > > > > which has grown over time as new features and larger registers have been
+> > > > > > > > > > added to the architecture.
+> > > > > > > > > >
+> > > > > > > > > > MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+> > > > > > > > > > typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+> > > > > > > > > > compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+> > > > > > > > > > constant indicates to userspace how much data the kernel expects to push on
+> > > > > > > > > > the user stack, [2][3].
+> > > > > > > > > >
+> > > > > > > > > > However, this constant is much too small and does not reflect recent
+> > > > > > > > > > additions to the architecture. For instance, when AVX-512 states are in
+> > > > > > > > > > use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
+> > > > > > > > > >
+> > > > > > > > > > The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+> > > > > > > > > > cause user stack overflow when delivering a signal.
+> > > > > > > > > >
+> > > > > > > > > > In this series, we suggest a couple of things:
+> > > > > > > > > > 1. Provide a variable minimum stack size to userspace, as a similar
+> > > > > > > > > >    approach to [5]
+> > > > > > > > > > 2. Avoid using a too-small alternate stack
+> > > > > > > > >
+> > > > > > > > > I can't comment on the x86 specifics, but the approach followed in this
+> > > > > > > > > series does seem consistent with the way arm64 populates
+> > > > > > > > > AT_MINSIGSTKSZ.
+> > > > > > > > >
+> > > > > > > > > I need to dig up my glibc hacks for providing a sysconf interface to
+> > > > > > > > > this...
+> > > > > > > >
+> > > > > > > > Here is my proposal for glibc:
+> > > > > > > >
+> > > > > > > > https://sourceware.org/pipermail/libc-alpha/2020-September/118098.html
+> > > > > > >
+> > > > > > > Thanks for the link.
+> > > > > > >
+> > > > > > > Are there patches yet?  I already had some hacks in the works, but I can
+> > > > > > > drop them if there's something already out there.
+> > > > > >
+> > > > > > I am working on it.
+> > > > >
+> > > > > OK.  I may post something for discussion, but I'm happy for it to be
+> > > > > superseded by someone (i.e., other than me) who actually knows what
+> > > > > they're doing...
+> > > >
+> > > > Please see my previous email for my glibc patch:
+> > > >
+> > > > https://gitlab.com/x86-glibc/glibc/-/commits/users/hjl/AT_MINSIGSTKSZ
+> > > >
+> > > > > > >
+> > > > > > > > 1. Define SIGSTKSZ and MINSIGSTKSZ to 64KB.
+> > > > > > >
+> > > > > > > Can we do this?  IIUC, this is an ABI break and carries the risk of
+> > > > > > > buffer overruns.
+> > > > > > >
+> > > > > > > The reason for not simply increasing the kernel's MINSIGSTKSZ #define
+> > > > > > > (apart from the fact that it is rarely used, due to glibc's shadowing
+> > > > > > > definitions) was that userspace binaries will have baked in the old
+> > > > > > > value of the constant and may be making assumptions about it.
+> > > > > > >
+> > > > > > > For example, the type (char [MINSIGSTKSZ]) changes if this #define
+> > > > > > > changes.  This could be a problem if an newly built library tries to
+> > > > > > > memcpy() or dump such an object defined by and old binary.
+> > > > > > > Bounds-checking and the stack sizes passed to things like sigaltstack()
+> > > > > > > and makecontext() could similarly go wrong.
+> > > > > >
+> > > > > > With my original proposal:
+> > > > > >
+> > > > > > https://sourceware.org/pipermail/libc-alpha/2020-September/118028.html
+> > > > > >
+> > > > > > char [MINSIGSTKSZ] won't compile.  The feedback is to increase the
+> > > > > > constants:
+> > > > > >
+> > > > > > https://sourceware.org/pipermail/libc-alpha/2020-September/118092.html
+> > > > >
+> > > > > Ah, I see.  But both still API and ABI breaks; moreover, declaraing an
+> > > > > array with size based on (MIN)SIGSTKSZ is not just reasonable, but the
+> > > > > obvious thing to do with this constant in many simple cases.  Such usage
+> > > > > is widespread, see:
+> > > > >
+> > > > >  * https://codesearch.debian.net/search?q=%5BSIGSTKSZ%5D&literal=1
+> > > > >
+> > > > >
+> > > > > Your two approaches seem to trade off two different sources of buffer
+> > > > > overruns: undersized stacks versus ABI breaks across library boundaries.
+> > > >
+> > > > We can't get everything we want.
+> > > >
+> > > > > Since undersized stack is by far the more familiar problem and we at
+> > > > > least have guard regions to help detect overruns, I'd vote to keep
+> > > > > MINSIGSTKSZ and SIGSTKSZ as-is, at least for now.
+> > > >
+> > > > Agree.
+> > > >
+> > > > > Or are people reporting real stack overruns on x86 today?
+> > > >
+> > > > I hope so.
+> > > >
+> > > > >
+> > > > > For arm64, we made large vectors on SVE opt-in, so that oversized signal
+> > > > > frames are not seen by default.  Would somethine similar be feasible on
+> > > > > x86?
+> > > > >
+> > > > >
+> > > > > > > > 2. Add _SC_RSVD_SIG_STACK_SIZE for signal stack size reserved by the kernel.
+> > > > > > >
+> > > > > > > How about "_SC_MINSIGSTKSZ"?  This was my initial choice since only the
+> > > > > > > discovery method is changing.  The meaning of the value is exactly the
+> > > > > > > same as before.
+> > > > > > >
+> > > > > > > If we are going to rename it though, it could make sense to go for
+> > > > > > > something more directly descriptive, say, "_SC_SIGNAL_FRAME_SIZE".
+> > > > > > >
+> > > > > > > The trouble with including "STKSZ" is that is sounds like a
+> > > > > > > recommendation for your stack size.  While the signal frame size is
+> > > > > > > relevant to picking a stack size, it's not the only thing to
+> > > > > > > consider.
+> > > > > >
+> > > > > > The problem is that AT_MINSIGSTKSZ is the signal frame size used by
+> > > > > > kernel.   The minimum stack size for a signal handler is more likely
+> > > > > > AT_MINSIGSTKSZ + 1.5KB unless AT_MINSIGSTKSZ returns the signal
+> > > > > > frame size used by kernel + 6KB for user application.
+> > > > >
+> > > > > Ack; to be correct, you also need to take into account which signals may
+> > > > > be unmasked while running on this stack, and the stack requirements of
+> > > > > all their handlers.  Unfortunately, that's hard :(
+> > > > >
+> > > > > What's your view on my naming suggesions?
+> > > >
+> > > > I used _SC_MINSIGSTKSZ:
+> > > >
+> > > > https://gitlab.com/x86-glibc/glibc/-/commit/73ca53bfbc1c105bc579f55f15af011a07fcded9
+> > >
+> > > Apologies, I missed that.
+> > >
+> > > Otherwise, the changes look much as I would expect, except for the
+> > > "6K for user program" thing.  This is strictly not included in the
+> > > legacy MINSIGSTKSZ.
+> > >
+> > > >
+> > > > >
+> > > > > > > Also, do we need a _SC_SIGSTKSZ constant, or should the entire concept
+> > > > > > > of a "recommended stack size" be abandoned?  glibc can at least make a
+> > > > > > > slightly more informed guess about suitable stack sizes than the kernel
+> > > > > > > (and glibc already has to guess anyway, in order to determine the
+> > > > > > > default thread stack size).
+> > > > > >
+> > > > > > Glibc should try to deduct signal frame size if AT_MINSIGSTKSZ isn't
+> > > > > > available.
+> > > > >
+> > > > > In my code, I generate _SC_SIGSTKSZ as the equivalent of
+> > > > >
+> > > > >         max(sysconf(_SC_MINSIGSTKSZ) * 4, SIGSTKSZ)
+> > > > >
+> > > > > which is >= the legacy value, and broadly reperesentative of the
+> > > > > relationship between MINSIGSTKSZ and SIGSTKSZ on most arches.
+> > > > >
+> > > > >
+> > > > > What do you think?
+> > > >
+> > > > sysconf(_SC_MINSIGSTKSZ) should be usable ASIS for most cases.
+> > >
+> > > Why, though?
+> > >
+> > > MINSIGSTKSZ is not specified to be usable as-is for any case whatsoever.
+> > >
+> > >
+> > > Software that calculates its own needs to know the actual system values,
+> > > not estimates based on guesses about how much stack a typical program
+> > > might need if it were recompiled for x86.
+> > >
+> > > This doesn't mean we can't have a generic suggested value that's suitable
+> > > for common scenarios (like SIGSTKSZ), but if we do then I think it
+> > > should be a separate constant.
+> >
+> > I updated my glibc patch to add both _SC_MINSIGSTKSZ and _SC_SIGSTKSZ.
+> > _SC_MINSIGSTKSZ is  the minimum signal stack size from AT_MINSIGSTKSZ,
+> > which is the signal frame size used by kernel, and _SC_SIGSTKSZ is the value
+> > of sysconf (_SC_MINSIGSTKSZ) + 6KB for user application.
+>
+> Can I suggest sysconf (_SC_MINSIGSTKSZ) * 4 instead?
 
-> +       /* 2 banks: IN/OUT */
-> +       struct {
-> +               struct gpio_chip gpio;
-> +               struct pinctrl_desc pctl_desc;
-> +               struct pinctrl_dev *pctl_dev;
-> +       } bank[2];
+Done.
 
-Is it really good to use index [0,1] to refer to these?
-Isnt it easier to do something like:
+> If the arch has more or bigger registers to save in the signal frame,
+> the chances are that they're going to get saved in some userspace stack
+> frames too.  So I suspect that the user signal handler stack usage may
+> scale up to some extent rather than being a constant.
+>
+>
+> To help people migrate without unpleasant surprises, I also figured it
+> would be a good idea to make sure that sysconf (_SC_MINSIGSTKSZ) >=
+> legacy MINSIGSTKSZ, and sysconf (_SC_SIGSTKSZ) >= legacy SIGSTKSZ.
+> This should makes it safer to use sysconf (_SC_MINSIGSTKSZ) as a
+> drop-in replacement for MINSIGSTKSZ, etc.
+>
+> (To explain: AT_MINSIGSTKSZ may actually be < MINSIGSTKSZ on AArch64.
+> My idea was that sysconf () should hide this surprise, but people who
+> really want to know the kernel value would tolerate some
+> nonportability and read AT_MINSIGSTKSZ directly.)
+>
+>
+> So then:
+>
+>         kernel_minsigstksz = getauxval(AT_MINSIGSTKSZ);
+>         minsigstksz = LEGACY_MINSIGSTKSZ;
+>         if (kernel_minsigstksz > minsigstksz)
+>                 minsistksz = kernel_minsigstksz;
+>
+>         sigstksz = LEGACY_SIGSTKSZ;
+>         if (minsigstksz * 4 > sigstksz)
+>                 sigstksz = minsigstksz * 4;
 
-struct sgpio_bank {
-         struct gpio_chip gpio;
-         struct pinctrl_desc pctl_desc;
-         struct pinctrl_dev *pctl_dev;
-};
+I updated users/hjl/AT_MINSIGSTKSZ branch with
 
-struct sgpio_priv {
-        (...)
-        struct sgpio_bank in;
-        struct sgpio_bank out;
-        (...)
-};
++@item _SC_MINSIGSTKSZ
++@standards{GNU, unistd.h}
++Inquire about the signal stack size used by the kernel.
++
++@item _SC_SIGSTKSZ
++@standards{GNU, unistd.h}
++Inquire about the default signal stack size for a signal handler.
 
-This way you I think the code becomes clearer.
+    case _SC_MINSIGSTKSZ:
+      assert (GLRO(dl_minsigstacksize) != 0);
+      return GLRO(dl_minsigstacksize);
 
-> +static inline bool sgpio_pctl_is_input(struct sgpio_priv *priv,
-> +                                      struct pinctrl_dev *pctl)
-> +{
-> +       /* 1st index is input */
-> +       return pctl == priv->bank[0].pctl_dev;
-> +}
-> +
-> +static inline bool sgpio_gpio_is_input(struct sgpio_priv *priv,
-> +                                      struct gpio_chip *gc)
-> +{
-> +       /* 1st index is input */
-> +       return gc == &priv->bank[0].gpio;
-> +}
+    case _SC_SIGSTKSZ:
+      {
+        /* Return MAX (MINSIGSTKSZ, sysconf (_SC_MINSIGSTKSZ)) * 4.  */
+        long int minsigstacksize = GLRO(dl_minsigstacksize);
+        _Static_assert (__builtin_constant_p (MINSIGSTKSZ),
+                        "MINSIGSTKSZ is constant");
+        if (minsigstacksize < MINSIGSTKSZ)
+          minsigstacksize = MINSIGSTKSZ;
+        return minsigstacksize * 4;
+      }
 
-Isn't it easier to just add a
+>
+> (Or something like that, unless the architecture provides its own
+> definitions.  ia64's MINSIGSTKSZ is enormous, so it probably doesn't
+> want this.)
+>
+>
+> Also: should all these values be rounded up to a multiple of the
+> architecture's preferred stack alignment?
 
-bool is_input;
+Kernel should provide a properly aligned AT_MINSIGSTKSZ.
 
-to the struct gpio_bank?
+> Should the preferred stack alignment also be exposed through sysconf?
+> Portable code otherwise has no way to know this, though if the
+> preferred alignment is <= the minimum malloc()/alloca() alignment then
+> this is generally not an issue.)
 
-> +static inline u32 sgpio_readl(struct sgpio_priv *priv, u32 rno, u32 off)
-> +{
-> +       u32 __iomem *reg = &priv->regs[priv->properties->regoff[rno] + off];
-> +
-> +       return readl(reg);
-> +}
-> +
-> +static inline void sgpio_writel(struct sgpio_priv *priv,
-> +                               u32 val, u32 rno, u32 off)
-> +{
-> +       u32 __iomem *reg = &priv->regs[priv->properties->regoff[rno] + off];
-> +
-> +       writel(val, reg);
-> +}
-> +
-> +static inline void sgpio_clrsetbits(struct sgpio_priv *priv,
-> +                                   u32 rno, u32 off, u32 clear, u32 set)
-> +{
-> +       u32 __iomem *reg = &priv->regs[priv->properties->regoff[rno] + off];
-> +       u32 val = readl(reg);
-> +
-> +       val &= ~clear;
-> +       val |= set;
-> +
-> +       writel(val, reg);
-> +}
+Good question.  But it is orthogonal to the signal stack size issue.
 
-These accessors are somewhat re-implementing regmap-mmio, especially
-the clrsetbits. I would consider just creating a regmap for each
-struct sgpio_bank and manipulate the register through that.
-(Not any requirement just a suggestion.)
+>
+> > >
+> > > > > > > > 3. Deprecate SIGSTKSZ and MINSIGSTKSZ if _SC_RSVD_SIG_STACK_SIZE
+> > > > > > > > is in use.
+> > > > > > >
+> > > > > > > Great if we can do it.  I was concerned that this might be
+> > > > > > > controversial.
+> > > > > > >
+> > > > > > > Would this just be a recommendation, or can we enforce it somehow?
+> > > > > >
+> > > > > > It is just an idea.  We need to move away from constant SIGSTKSZ and
+> > > > > > MINSIGSTKSZ.
+> > > > >
+> > > > > Totally agree with that.
+> > > > >
+> > > >
+> > > > With my glibc patch, -D_SC_MINSIGSTKSZ_SOURCE will fail to compile
+> > > > if the source assumes constant SIGSTKSZ or MINSIGSTKSZ.
+> > >
+> > > Ah yes, I see.  That's a sensible precaution.
+> > >
+> > > Is it accepted in general that defining different feature test macros
+> > > can lead to ABI incompatibilities?
+> > >
+> > > I have thought that building a shared library with _GNU_SOURCE (say)
+> > > doesn't mean that a program that loads that library must also be built
+> > > with _GNU_SOURCE.  For one thing, that's hard to police.
+> > >
+> > >
+> > > However, there are already combinations that could break, e.g., mixing
+> > > -D_FILE_OFFSET_BITS=64 with -D_FILE_OFFSET_BITS=32 would be broken if
+> > > this define changes off_t.
+> > >
+> > >
+> > > So, maybe having _SC_MINSIGSTKSZ_SOURCE break things in this way is an
+> > > acceptable compromise.  Interfaces that depend on the value of
+> > > MINSIGSTKSZ or SIGSTKSZ are possible, but probably rare in practice --
+> > > I don't know of a specific example.
+> > >
+> >
+> > I changed it to _SC_SIGSTKSZ_SOURCE:
+> >
+> > https://gitlab.com/x86-glibc/glibc/-/commit/41d5e6b31025721590f12d5aa543eb0bc53ce263
+> >
+> > #ifdef __USE_SC_SIGSTKSZ
+> > # include <unistd.h>
+> > /* Minimum stack size for a signal handler: sysconf (SC_SIGSTKSZ).  */
+> > # undef MINSIGSTKSZ
+> > # define MINSIGSTKSZ sysconf (_SC_SIGSTKSZ)
+> > /* System default stack size for a signal handler: MINSIGSTKSZ.  */
+> > # undef SIGSTKSZ
+> > # define SIGSTKSZ MINSIGSTKSZ
+> > #endif
+> >
+> > Compilation will fail if the source assumes constant MINSIGSTKSZ or
+> > SIGSTKSZ.
+>
+> I don't understand all the glibc-fu, bit it looks reasonable overall
+> (notwithstanding my comments above).
+>
+> Cheers
+> ---Dave
 
-> +static void sgpio_output_set(struct sgpio_priv *priv,
-> +                            struct sgpio_port_addr *addr,
-> +                            int value)
-> +{
-> +       u32 mask = 3 << (3 * addr->bit);
-> +       value = (value & 3) << (3 * addr->bit);
 
-I would spell it out a bit so it becomes clear what is going in
-and use the bits helpers.
 
-value & 3 doesn't make much sense since value here is always
-0 or 1. Thus if value is 1 it in effect becomes value = 1 << (3 * addr->bit)
-so with the above helper bit:
-
-unsigned int bit = 3 * addr->bit;
-u32 mask = GENMASK(bit+1, bit);
-u32 val = BIT(bit);
-
-This way it becomes clear that you set the output usin the lower
-of the two bits.
-
-Also note that I use val rather than value to avoid overwriting
-the parameter: it is legal but confusing. Let the compiler optimize
-register use.
-
-> +static int sgpio_output_get(struct sgpio_priv *priv,
-> +                           struct sgpio_port_addr *addr)
-> +{
-> +       u32 portval = sgpio_readl(priv, REG_PORT_CONFIG, addr->port);
-> +       int ret;
-> +
-> +       ret = SGPIO_X_PORT_CFG_BIT_SOURCE(priv, portval);
-> +       ret = !!(ret & (3 << (3 * addr->bit)));
-
-Is the output direction really controlled by both bits?
-
-ret = !!(ret & (BIT(3 * addr->bit))); ?
-
-> +static int microchip_sgpio_get_direction(struct gpio_chip *gc, unsigned int gpio)
-> +{
-> +       struct sgpio_priv *priv = gpiochip_get_data(gc);
-> +
-> +       return sgpio_gpio_is_input(priv, gc); /* 0=out, 1=in */
-
-You can use the #defines from <linux/gpio/driver.h> if you want to be explicit:
-
-return sgpio_gpio_is_input(priv, gc) ? GPIO_LINE_DIRECTION_IN :
-GPIO_LINE_DIRECTION_OUT;
-
-> +static int microchip_sgpio_of_xlate(struct gpio_chip *gc,
-> +                              const struct of_phandle_args *gpiospec,
-> +                              u32 *flags)
-> +{
-> +       struct sgpio_priv *priv = gpiochip_get_data(gc);
-> +       int pin;
-> +
-> +       if (gpiospec->args[0] > SGPIO_BITS_PER_WORD ||
-> +           gpiospec->args[1] > priv->bitcount)
-> +               return -EINVAL;
-> +
-> +       pin = gpiospec->args[1] + (gpiospec->args[0] * priv->bitcount);
-> +
-> +       if (pin > gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       if (flags)
-> +               *flags = gpiospec->args[2];
-> +
-> +       return pin;
-> +}
-
-I'm still not convinced that you need the flags in args[2].
-
-Just using the default of_gpio_simple_xlate() with one flag
-should be fine. But I will go and review the bindings to figure
-this out.
-
-> +       gc->of_xlate            = microchip_sgpio_of_xlate;
-> +       gc->of_gpio_n_cells     = 3;
-
-So I'm sceptical to this.
-
-Why can't you just use the pin index in cell 0 directly
-and avoid cell 1?
-
-Yours,
-Linus Walleij
+-- 
+H.J.
