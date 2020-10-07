@@ -2,116 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF76286236
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8708A28623F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgJGPfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:35:39 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42216 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727414AbgJGPfj (ORCPT
+        id S1727967AbgJGPg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:36:59 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53772 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgJGPg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:35:39 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097FWDIn023606;
-        Wed, 7 Oct 2020 17:35:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=LPmTNBs4XJT9cCBJcxCmDFKkYPrNIrwRIBlSBsDz2R0=;
- b=lm1iWgIpw3IRxl+qksHroByVOItjRbOuuvxvijzveW7+Y9ICpeptdf6WIc5pIZiTqKAp
- jpWvLuQrdzZx4Fd7EJm3glQXfQnoBVYovukBy4jRmLDNCMyeOprguLv8mXyUM+vKE/+J
- mco1YAzJVY4FPvUGYMhspQW42Cua6au0cmdKHeciHHmcQOSulhJaC/uhZQCMf95m8RX2
- K6p6JN7wGf4Gx9lXCmjeK5FKt59HOP/M74padGli3II1RjJELU4s0f8837tiRtY4K32I
- hNyUq67nTSegexag0oatupc6Cjf0biUnc6b7DZiQPuwGOICW+6puyb5o4vieBaP4dXac xg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3402tjwfh2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 17:35:15 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7628D10002A;
-        Wed,  7 Oct 2020 17:35:15 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 690F82B8A27;
-        Wed,  7 Oct 2020 17:35:15 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct 2020 17:35:15
- +0200
-From:   Olivier Moysan <olivier.moysan@st.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <alexandre.torgue@st.com>,
-        <olivier.moysan@st.com>, <arnaud.pouliquen@st.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: stm32: dfsdm: add actual resolution trace
-Date:   Wed, 7 Oct 2020 17:34:59 +0200
-Message-ID: <20201007153459.22155-3-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201007153459.22155-1-olivier.moysan@st.com>
-References: <20201007153459.22155-1-olivier.moysan@st.com>
+        Wed, 7 Oct 2020 11:36:58 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097FXS7M021665;
+        Wed, 7 Oct 2020 15:36:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=5f69miCPt+NV0LANFf/qO1h0nLQY1MwO9sbrOzCAKXg=;
+ b=A3gBZ56H1novabUez4R1w5Sej3V87adyElfnlhPv4YAW+IMki1gknRxoArFhu/hvDAJ2
+ n1iqburVQ+/f8wX66ajrL4xQ+XBLT2th0ZLHzcMkyNkctAiQYjLhg6NR+JtetIa4wi8y
+ DG7mbgV27hqknqaHdLnJhXgbgHW2RFG7Rr+nNTHF+qyKSqrBifdQG93TtWcDWvmLwItt
+ ZbkcHPG/TSkVlxOLuSP6QiKqBXKJ7Up45WwlayF9lRAhMconbPSSumdcdHLcelw/HHLM
+ wMQIUfDyJRB0zB+In2+AQKQ0jx8FIwGI1oC9V8IFwuQV3M8t7EIYBExw42D2Ro6uECeP JQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33xhxn2f9h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 15:36:33 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097FZIEx008693;
+        Wed, 7 Oct 2020 15:36:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 33yyjhc1at-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 15:36:32 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 097FaKhX018653;
+        Wed, 7 Oct 2020 15:36:20 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 08:36:20 -0700
+Date:   Wed, 7 Oct 2020 08:36:19 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Theodore Ts'o" <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] ext4/xfs: add page refcount helper
+Message-ID: <20201007153619.GD49547@magnolia>
+References: <20201006230930.3908-1-rcampbell@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_09:2020-10-06,2020-10-07 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006230930.3908-1-rcampbell@nvidia.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070099
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a trace to report actual resolution of audio samples.
+On Tue, Oct 06, 2020 at 04:09:30PM -0700, Ralph Campbell wrote:
+> There are several places where ZONE_DEVICE struct pages assume a reference
+> count == 1 means the page is idle and free. Instead of open coding this,
+> add a helper function to hide this detail.
+> 
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+> 
+> I'm resending this as a separate patch since I think it is ready to
+> merge. Originally, this was part of an RFC and is unchanged from v3:
+> https://lore.kernel.org/linux-mm/20201001181715.17416-1-rcampbell@nvidia.com
+> 
+> It applies cleanly to linux-5.9.0-rc7-mm1 but doesn't really
+> depend on anything, just simple merge conflicts when applied to
+> other trees.
+> I'll let the various maintainers decide which tree and when to merge.
+> It isn't urgent since it is a clean up patch.
+> 
+>  fs/dax.c            |  4 ++--
+>  fs/ext4/inode.c     |  5 +----
+>  fs/xfs/xfs_file.c   |  4 +---
+>  include/linux/dax.h | 10 ++++++++++
+>  4 files changed, 14 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 5b47834f2e1b..85c63f735909 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct address_space *mapping,
+>  	for_each_mapped_pfn(entry, pfn) {
+>  		struct page *page = pfn_to_page(pfn);
+>  
+> -		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
+> +		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
+>  		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
+>  		page->mapping = NULL;
+>  		page->index = 0;
+> @@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
+>  	for_each_mapped_pfn(entry, pfn) {
+>  		struct page *page = pfn_to_page(pfn);
+>  
+> -		if (page_ref_count(page) > 1)
+> +		if (!dax_layout_is_idle_page(page))
+>  			return page;
+>  	}
+>  	return NULL;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 771ed8b1fadb..132620cbfa13 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3937,10 +3937,7 @@ int ext4_break_layouts(struct inode *inode)
+>  		if (!page)
+>  			return 0;
+>  
+> -		error = ___wait_var_event(&page->_refcount,
+> -				atomic_read(&page->_refcount) == 1,
+> -				TASK_INTERRUPTIBLE, 0, 0,
+> -				ext4_wait_dax_page(ei));
+> +		error = dax_wait_page(ei, page, ext4_wait_dax_page);
+>  	} while (error == 0);
+>  
+>  	return error;
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 3d1b95124744..a5304aaeaa3a 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -749,9 +749,7 @@ xfs_break_dax_layouts(
+>  		return 0;
+>  
+>  	*retry = true;
+> -	return ___wait_var_event(&page->_refcount,
+> -			atomic_read(&page->_refcount) == 1, TASK_INTERRUPTIBLE,
+> -			0, 0, xfs_wait_dax_page(inode));
+> +	return dax_wait_page(inode, page, xfs_wait_dax_page);
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- drivers/iio/adc/stm32-dfsdm-adc.c | 4 ++++
- drivers/iio/adc/stm32-dfsdm.h     | 2 ++
- 2 files changed, 6 insertions(+)
+I don't mind this open-coded soup getting cleaned up into a macro,
+though my general opinion is that if the mm/dax developers are ok with
+this then:
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-index 5e10fb4f3704..b7e9ef1a6eec 100644
---- a/drivers/iio/adc/stm32-dfsdm-adc.c
-+++ b/drivers/iio/adc/stm32-dfsdm-adc.c
-@@ -293,6 +293,7 @@ static int stm32_dfsdm_compute_osrs(struct stm32_dfsdm_filter *fl,
- 					max >>= flo->rshift;
- 				}
- 				flo->max = (s32)max;
-+				flo->bits = bits;
- 
- 				pr_debug("%s: fast %d, fosr %d, iosr %d, res 0x%llx/%d bits, rshift %d, lshift %d\n",
- 					 __func__, fast, flo->fosr, flo->iosr,
-@@ -476,6 +477,9 @@ static int stm32_dfsdm_channels_configure(struct iio_dev *indio_dev,
- 	if (!flo->res)
- 		return -EINVAL;
- 
-+	dev_dbg(&indio_dev->dev, "Samples actual resolution: %d bits",
-+		min(flo->bits, (u32)DFSDM_DATA_RES - 1));
-+
- 	for_each_set_bit(bit, &adc->smask,
- 			 sizeof(adc->smask) * BITS_PER_BYTE) {
- 		chan = indio_dev->channels + bit;
-diff --git a/drivers/iio/adc/stm32-dfsdm.h b/drivers/iio/adc/stm32-dfsdm.h
-index 5dbdae4ed881..4afc1f528b78 100644
---- a/drivers/iio/adc/stm32-dfsdm.h
-+++ b/drivers/iio/adc/stm32-dfsdm.h
-@@ -249,6 +249,7 @@ enum stm32_dfsdm_sinc_order {
-  * @rshift: output sample right shift (hardware shift)
-  * @lshift: output sample left shift (software shift)
-  * @res: output sample resolution
-+ * @bits: output sample resolution in bits
-  * @max: output sample maximum positive value
-  */
- struct stm32_dfsdm_filter_osr {
-@@ -257,6 +258,7 @@ struct stm32_dfsdm_filter_osr {
- 	unsigned int rshift;
- 	unsigned int lshift;
- 	u64 res;
-+	u32 bits;
- 	s32 max;
- };
- 
--- 
-2.17.1
+Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
 
+--D
+
+>  }
+>  
+>  int
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b52f084aa643..8909a91cd381 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -243,6 +243,16 @@ static inline bool dax_mapping(struct address_space *mapping)
+>  	return mapping->host && IS_DAX(mapping->host);
+>  }
+>  
+> +static inline bool dax_layout_is_idle_page(struct page *page)
+> +{
+> +	return page_ref_count(page) == 1;
+> +}
+> +
+> +#define dax_wait_page(_inode, _page, _wait_cb)				\
+> +	___wait_var_event(&(_page)->_refcount,				\
+> +		dax_layout_is_idle_page(_page),				\
+> +		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode))
+> +
+>  #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
+>  void hmem_register_device(int target_nid, struct resource *r);
+>  #else
+> -- 
+> 2.20.1
+> 
