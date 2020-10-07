@@ -2,135 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526F5286A7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B825E286A83
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgJGVvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728738AbgJGVvB (ORCPT
+        id S1728782AbgJGVwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:52:10 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:18796 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728575AbgJGVwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:51:01 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EF1C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 14:50:59 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id m128so4128216oig.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 14:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dWGCIOydys/PVXDkI8D7/WYJ3+tXIlDPLmJQQeojkP4=;
-        b=RYITGyTpDQrhaTy45WCQWB7S0cwfaHHh3OpiGBmEPf/5Sn9SZhBTUrfuBI5sApAVCz
-         T91G4l95cIiLFkCFoy02NhuBItioeoq67OA++h3qBN6BlQdZ2cpqUetUKAyKzW4kFQ0w
-         5Qtqca0SmLP0UhiDont79zDLISy/mkOvxYGHE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dWGCIOydys/PVXDkI8D7/WYJ3+tXIlDPLmJQQeojkP4=;
-        b=G2/UgK46rnj/gWmpK3FoDy94hkXbRGbuaD0Z1KoWw+0MwWxFnD7uJkO/HC2MVM3Hos
-         TgS+B+n8zn6Dn76iXrJSPwb7ug4APgoYIidWIufele8DTYuPfSxmVhf9LEWc6HEved+m
-         H4hRZyaSMcukyQQfTfONgFtzUl9Vc6o3dLgEVN/WfBA7Q5rI0oMdtSxPaa8RPVS630vC
-         0PvZnp1nh+qPGzluqCvzbjdp260FhE3daNXzLKrxz4E6vh6Ipizn8D+fRqLaQyuHtrQD
-         AT8ZSxAEt5x3CdzUM72T59vvmupuBeatCeZoM1bvHkXO19BRlyG9O5PElZyEe+fsEynR
-         NWlg==
-X-Gm-Message-State: AOAM533uf2ZJBypKZZHCP8hQKtCwctcrXWSMpgADNUUPsR4JZoTMIWfq
-        HyE0Wkm2Frh10nrkWw17b8FkzgsKjsOiB0lU6qP3kg==
-X-Google-Smtp-Source: ABdhPJywVeOO6ZiDQcLcwu4Td5CgpCTJ9U8XcX1hFxhlIWItjEaKhv17whEr41y9mEAabwbRCVa0NcIfbphA+xnz5sQ=
-X-Received: by 2002:aca:6083:: with SMTP id u125mr3249940oib.14.1602107459110;
- Wed, 07 Oct 2020 14:50:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
- <20201007164426.1812530-2-daniel.vetter@ffwll.ch> <80718789-b3de-c30a-03c5-7c8cbf41f7d9@nvidia.com>
- <CAKMK7uEuwmCkpSeKxjDgHXWrE9P-TbawLoQ4dpu0nc4MYykScA@mail.gmail.com> <895eb064-1c8f-ecfc-0a98-1fbe40cb3161@nvidia.com>
-In-Reply-To: <895eb064-1c8f-ecfc-0a98-1fbe40cb3161@nvidia.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 7 Oct 2020 23:50:47 +0200
-Message-ID: <CAKMK7uFgPfwxr7ePng-f=e__10+3bipmDhF4hFACcyao63m-nA@mail.gmail.com>
-Subject: Re: [PATCH 01/13] drm/exynos: Stop using frame_vector helpers
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
+        Wed, 7 Oct 2020 17:52:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1602107530; x=1633643530;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/oniEhso/26JSasHkIO1CiOAfMMzjz+yrKndXGJYt70=;
+  b=UEV3JjLg6Zj+rQrcQVji/WSPpCr9wvJ6YE4ahE4K9szdS5vakmS+nxfk
+   4+XwGtBhyI9Q0MYo8R6jA8lOGd3dTwvqeZti7u4glejZlrL7U3k45na5e
+   tMC8Mprnm3ak1qC60/sZ9H2aN2851r+o7aquOmg86d3GRpuja26EgvwdY
+   TPP9x9wGUdSmW61XPTfcU1pI/7Z5OoK6pJnR45t6hrBc6irDfVWc/57l9
+   t32pJr9Ql4LqjUel2V5W0N1n1UXhgaSMcilyYtHUH6Ylozp6MME0BA4Eq
+   A+DxfvyNE6E3CU7pmXF9ERuJg1KdSBUrvrUZj6ovlgdF6ELcXtOKZHcAt
+   Q==;
+IronPort-SDR: B1lRd0c2gCniF1MP3+KGyoSvDaW+yyeNKZAoTi8hppcxcVATGXl4MmxIUeQxhP7THgUYThvUdI
+ NDGG2pYzfoRuqf80HPgXwN+v6E7izI9eoNyHyNyCVFM+aUvky1DiIioj+r4WwUBYoTe4P4Q1h0
+ B2CGiJZKIThCzAaBia6l/2ja8A4Z8p7wosAveblAt6tH4wDWvU5/oKHnB8pRF54eCm1C08Jq/1
+ agknYtFwUF0kfs/K3WV/kNJrMLon+COPuhb4OwreAGbRYORHK+rU80hIF/rooMFCG5PcnSBzXj
+ 35w=
+X-IronPort-AV: E=Sophos;i="5.77,348,1596470400"; 
+   d="scan'208";a="150516942"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Oct 2020 05:52:10 +0800
+IronPort-SDR: ydK2G7FvMxT8CW3Nkw4Zr3VpYxxyaIv4Lp9T+rk6lWTQeEU6Bs/sSDrLXNRV/t33Uz/HRRpDXO
+ XOrygZbnNKXQ==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 14:38:53 -0700
+IronPort-SDR: RTUD36E2uQ6HTNvp95Nc4RYgHy3IZEnDnWXYqosV2EdlYL1oeBgiWSZWnD3sUoTup3xtIfelVs
+ rKc9ml7jxhVg==
+WDCIronportException: Internal
+Received: from b9f8262.ad.shared (HELO jedi-01.hgst.com) ([10.86.59.253])
+  by uls-op-cesaip02.wdc.com with ESMTP; 07 Oct 2020 14:52:09 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
         Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv@lists.infradead.org, Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: [PATCH v4] RISC-V: Remove any memblock representing unusable memory area
+Date:   Wed,  7 Oct 2020 14:51:59 -0700
+Message-Id: <20201007215159.1287602-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 11:37 PM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 10/7/20 2:32 PM, Daniel Vetter wrote:
-> > On Wed, Oct 7, 2020 at 10:33 PM John Hubbard <jhubbard@nvidia.com> wrote:
-> >>
-> >> On 10/7/20 9:44 AM, Daniel Vetter wrote:
-> ...
-> >>> @@ -398,15 +399,11 @@ static void g2d_userptr_put_dma_addr(struct g2d_data *g2d,
-> >>>        dma_unmap_sgtable(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt,
-> >>>                          DMA_BIDIRECTIONAL, 0);
-> >>>
-> >>> -     pages = frame_vector_pages(g2d_userptr->vec);
-> >>> -     if (!IS_ERR(pages)) {
-> >>> -             int i;
-> >>> +     for (i = 0; i < g2d_userptr->npages; i++)
-> >>> +             set_page_dirty_lock(g2d_userptr->pages[i]);
-> >>>
-> >>> -             for (i = 0; i < frame_vector_count(g2d_userptr->vec); i++)
-> >>> -                     set_page_dirty_lock(pages[i]);
-> >>> -     }
-> >>> -     put_vaddr_frames(g2d_userptr->vec);
-> >>> -     frame_vector_destroy(g2d_userptr->vec);
-> >>> +     unpin_user_pages(g2d_userptr->pages, g2d_userptr->npages);
-> >>> +     kvfree(g2d_userptr->pages);
-> >>
-> >> You can avoid writing your own loop, and just simplify the whole thing down to
-> >> two lines:
-> >>
-> >>          unpin_user_pages_dirty_lock(g2d_userptr->pages, g2d_userptr->npages,
-> >>                                      true);
-> >>          kvfree(g2d_userptr->pages);
-> >
-> > Oh nice, this is neat. I'll also roll it out in the habanalabs patch,
-> > that has the same thing. Well almost, it only uses set_page_dirty, not
-> > the _lock variant. But I have no idea whether that matters or not?
->
->
-> It matters. And invariably, call sites that use set_page_dirty() instead
-> of set_page_dirty_lock() were already wrong.  Which is why I never had to
-> provide anything like "unpin_user_pages_dirty (not locked)".
->
-> Although in habanalabs case, I just reviewed patch 3 and I think they *were*
-> correctly using set_page_dirty_lock()...
+RISC-V limits the physical memory size by -PAGE_OFFSET. Any memory beyond
+that size from DRAM start is unusable. Just remove any memblock pointing
+to those memory region without worrying about computing the maximum size.
 
-Yeah I mixed that up with some other code I read, habanalabs is using
-_lock. I have seen a pile of gup/pup code though that only uses
-set_page_dirty. And looking around I did not really parse the comment
-above set_page_dirty(). I guess just using the _lock variant shouldn't
-hurt too much. I've found a comment though from the infiniband umem
-notifier that it's sometimes called with the page locked, and
-sometimes not, so life is complicated there. But how it avoids races I
-didn't understand.
--Daniel
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+Changes from v3->v4:
+1. Rebased on top of for-next.
+---
+ arch/riscv/mm/init.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 4eda1a7e8521..da43c17544c5 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -156,9 +156,8 @@ static void __init setup_initrd(void)
+ 
+ void __init setup_bootmem(void)
+ {
+-	phys_addr_t mem_size = 0;
+-	phys_addr_t total_mem = 0;
+-	phys_addr_t mem_start, start, end = 0;
++	phys_addr_t mem_start = 0;
++	phys_addr_t start, end = 0;
+ 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+ 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
+ 	u64 i;
+@@ -166,21 +165,18 @@ void __init setup_bootmem(void)
+ 	/* Find the memory region containing the kernel */
+ 	for_each_mem_range(i, &start, &end) {
+ 		phys_addr_t size = end - start;
+-		if (!total_mem)
++		if (!mem_start)
+ 			mem_start = start;
+ 		if (start <= vmlinux_start && vmlinux_end <= end)
+ 			BUG_ON(size == 0);
+-		total_mem = total_mem + size;
+ 	}
+ 
+ 	/*
+-	 * Remove memblock from the end of usable area to the
+-	 * end of region
++	 * The maximal physical memory size is -PAGE_OFFSET.
++	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
++	 * as it is unusable by kernel.
+ 	 */
+-	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
+-	if (mem_start + mem_size < end)
+-		memblock_remove(mem_start + mem_size,
+-				end - mem_start - mem_size);
++	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
+ 
+ 	/* Reserve from the start of the kernel to the end of the kernel */
+ 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+-- 
+2.25.1
 
---
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
