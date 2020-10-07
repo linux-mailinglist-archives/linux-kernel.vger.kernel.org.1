@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F24285FA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4E8285FAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgJGNBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728371AbgJGNBU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:01:20 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A04C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:01:20 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id g3so1645227qtq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:01:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+X5C10wNiQ5h4TLjgr2La86JSVoLJfjveI9FFVrvlIs=;
-        b=XJ6YLwA8lgEAd5b26TU2Ap8GzNfR2IjEmS6+dUn75OhpB2OTVCV+dRMivCJ+wM77PN
-         HdRQCDOsO9KVh4YdPI6g4YDurW2+AZqLfgWKWhHRuyBAps4+v8gA9YExS4Vo7oRCg/vC
-         tW15snol03iauiEUq0Ds+tG/MCtIL66TRVjaF6P3w90yk81xPzTb+CDAL0dmF7xcTh7y
-         hOTaJZoNInjkKM0k4BY/MOyuMHvxyqtfI6q7xSg3u2JCSR3qRJigIZuMq0JTwUa9h/bv
-         JQLfkjz6owWPzEsPjt/cEOGYP0Dv3oGBal79OOaE/BZgjJ+JSIpzxxxa/R8+/qFNsdUn
-         gT3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+X5C10wNiQ5h4TLjgr2La86JSVoLJfjveI9FFVrvlIs=;
-        b=eiIsDgTw9iF3BqFHJizHF70SPPll9EUooHBFlUsHWj5l37Tvw5TUQipKTv/u4lrUn3
-         Dy/dO1eus21IEE8VHarc4M3R3Zkvt2Xprte+Ij2ArIoufnpUnjqRH4m4BtkEXsvwZLb6
-         o8D+YcUpPThrZLgbfs9ketjV6t3YYf6CbE7lXlKeSbdeRNWBAKCxkTMKsYirvQW2YRFJ
-         QUfxYYZV3Zx5QYM36J3erCv1Y+9MY5YntfFjl7Tlfm2dB3caL2hZmf0pxfq/GmGe+gbW
-         vgexFUBbcbo2H9OSMFwZUIWSXMO9MaWO1rA6JO/6dum0gQsoF+Le85LGy092XziQJmfz
-         Obnw==
-X-Gm-Message-State: AOAM5305wtV9/RXTKbM+9mRy9aD7VFN/V3SLnPY0tX8DzbRjMvaTGwwK
-        NSODWbFz9ObYaauRGylYUz4n4Qwak5MzJ/Uvt0g=
-X-Google-Smtp-Source: ABdhPJy3gXOopSXxi9iKT/4M8Z/ED7WQe1gnKU+SfPDIhsJS2ZC3sinADrqTsr4Nc6oSadPpaK0IySyOlfVg1gv6qoQ=
-X-Received: by 2002:ac8:5ac1:: with SMTP id d1mr1729397qtd.82.1602075677643;
- Wed, 07 Oct 2020 06:01:17 -0700 (PDT)
+        id S1728386AbgJGNB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:01:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56584 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728371AbgJGNB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:01:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C61D5AE9A;
+        Wed,  7 Oct 2020 13:01:27 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 14:01:25 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <fweisbecker@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
+ PREEMPT_VOLUNTARY on kernel command line
+Message-ID: <20201007130125.GI3165@suse.de>
+References: <20201007120401.11200-1-mhocko@kernel.org>
+ <20201007121939.GE2628@hirez.programming.kicks-ass.net>
+ <20201007122923.GJ29020@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20201005093024.16032-1-geert@linux-m68k.org> <CAMuHMdVqpgro9Qzn39fK9R2-2xDm6LDe6uOB5gSTrdRxbecNXQ@mail.gmail.com>
- <20201005125840.GP3956970@smile.fi.intel.com> <d1457a75d5f38002c063c3801af7819af43e0bfc.camel@tiscali.nl>
- <CAFLxGvyvgSvcizZFZxezFKhZCP79yyMuM7izFbcUtzRTpiOb6A@mail.gmail.com> <5f5c303d30eaa32c21131502cc6f28db9d655329.camel@tiscali.nl>
-In-Reply-To: <5f5c303d30eaa32c21131502cc6f28db9d655329.camel@tiscali.nl>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Wed, 7 Oct 2020 15:01:05 +0200
-Message-ID: <CAFLxGvxcz78aKRAHOz=oLCNFk-Xxm4sFMJk9DiR6aZOEbZ0Nog@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.9-rc8
-To:     Paul Bolle <pebolle@tiscali.nl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201007122923.GJ29020@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 2:47 PM Paul Bolle <pebolle@tiscali.nl> wrote:
->
-> Richard Weinberger schreef op wo 07-10-2020 om 14:08 [+0200]:
-> > UML has no ia32 emulation and therefore no in_ia32_syscall().
-> > Maybe you can check for CONFIG_IA32_EMULATION too?
->
-> The pending fix is:
->     #if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
->
-> Since this check guards in_ia32_syscall() just checking CONFIG_IA32_EMULATION
-> should do too.
->
-> (Way outside my limited expertise, but anyway: is does look odd to see a call
-> to in_ia32_syscall() in drivers/. All other calls are in arch/x86/. Isn't this
-> a bit too x86 specific for an arch independent driver?)
+On Wed, Oct 07, 2020 at 02:29:23PM +0200, Michal Hocko wrote:
+> On Wed 07-10-20 14:19:39, Peter Zijlstra wrote:
+> > On Wed, Oct 07, 2020 at 02:04:01PM +0200, Michal Hocko wrote:
+> > > From: Michal Hocko <mhocko@suse.com>
+> > > 
+> > > Many people are still relying on pre built distribution kernels and so
+> > > distributions have to provide mutliple kernel flavors to offer different
+> > > preemption models. Most of them are providing PREEMPT_NONE for typical
+> > > server deployments and PREEMPT_VOLUNTARY for desktop users.
+> > 
+> > Is there actually a benefit to NONE? We were recently talking about
+> > removing it.
+> 
+> I believe Mel can provide much better insight. We have been historically using
+> PREEMPT_NONE for our enterprise customers mostly for nice throughput
+> numbers. Many users are really targeting throughput much more than
+> latencies. My understanding is that even though VOLUNTARY preemption model
+> doesn't add too many preemption points on top of NONE it is still
+> something that is observable (IIRC 2-3% on hackbench).
+>  
 
-Indeed. in_compat_syscall() seems to be more suitable.
-
-But for UML this does not really help, I fear, it has also no CONFIG_COMPAT.
+It's marginal from the tests I ran but that was based on 5.3. At worst,
+it looked like roughly a hit but a lot of loads simply didn't notice.
+However, it might vary between architectures that I cannot cover or
+workloads that I didn't consider.  As the impact of PREEMPT_VOLUNTARY
+depends on where cond_resched and might_sleep is used, it's also something
+that can vary over time. The intent was that by having the command-line
+switch, a user could test the switch if there was a suspicion that a
+regression was related to PREEMPT_VOLUNTARY as opposed to telling them
+"tough, that's the reality now".
 
 -- 
-Thanks,
-//richard
+Mel Gorman
+SUSE Labs
