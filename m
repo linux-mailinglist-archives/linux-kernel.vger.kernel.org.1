@@ -2,120 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCA7286316
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE15B286320
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729017AbgJGQDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729008AbgJGQDk (ORCPT
+        id S1729038AbgJGQEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:04:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44494 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728428AbgJGQEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:03:40 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21295C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:03:40 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id u3so1266803pjr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 09:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/YizpSukiZJTtNoLgWG6EzWmeqvv1MxbPNrBeNGsNyg=;
-        b=SAJM/mHJTStiuwA/RXNIoEd/I1RF/1l9WpZ5YL41ULWYJBAAyRf4Hb3TS8iEwXAuP9
-         RQx2iC/ixOqG0x7N+rNlcXNzqyGtWEaifDz0VEJXVx6hFkBFzXxwLcoHfAwTSEhIPzAS
-         kkKb0hPUlzw22XBw3Fxw1empMhbvA/prllVk8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/YizpSukiZJTtNoLgWG6EzWmeqvv1MxbPNrBeNGsNyg=;
-        b=AiCG6LHRzkDPqgRg1GQmF1nl+ThYpz7c3qFI+e11Kx89rnIMsrZcrRVEl/k6cdvdDJ
-         JaGZirHXTD4O+cUyVLDeGyttr/jj9m7xuIUf7kR/Nd2DtakM4fk6qnW7omlNOJZ79bZc
-         v4RVg80wZxNh3VdhIo/fdoZbkL/bTqdvIArJV2BN9MWCUR3EeJ+FwJAU4TNRcALGh3lV
-         6iuomx5dvr0+Lz2q14UgTwwbpQWcU44Y2jysRuoq2LSUHVyp6+OrRUht5dWBEVWsBOab
-         mFP04ftXRzGiazq20LClkgRjHe4eCTLIQqt/j5rpoY9cuu/gV4f5RRbt5VsGcsob4wJS
-         FUJA==
-X-Gm-Message-State: AOAM531jp+aVg6Xmevc2GRdtkdJBt3UTBGli/eQYfvQN68vRMjtg47n2
-        0WtAAJZylwXfhu8CZR3OMWPUhw==
-X-Google-Smtp-Source: ABdhPJyLSpdm6PuJor4MO7EVpKE/G//lyvCubSlxpGwcoiZogSz0nxU/4ZrH3XYR4bO+fXpXRHdiog==
-X-Received: by 2002:a17:90a:94cc:: with SMTP id j12mr3408857pjw.106.1602086619344;
-        Wed, 07 Oct 2020 09:03:39 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id x10sm3659982pfc.88.2020.10.07.09.03.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 09:03:38 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 09:03:36 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201007160336.GA620323@google.com>
-References: <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
- <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
- <CAL_JsqLWmBCjrbs2D-d+9naJAKkNhDAbmRtqvCDY8jv=L_q-xA@mail.gmail.com>
- <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
- <20201006004510.GD4135817@google.com>
- <20201006141820.GA416765@rowland.harvard.edu>
- <20201006165957.GA191572@google.com>
- <20201006171524.GB423499@rowland.harvard.edu>
- <20201006192536.GB191572@google.com>
- <20201007010023.GA438733@rowland.harvard.edu>
+        Wed, 7 Oct 2020 12:04:13 -0400
+Date:   Wed, 07 Oct 2020 16:04:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602086651;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KlPKTaARyCDG9FYnBKL8idkZdK3fqAnv74Ua3tIWnJk=;
+        b=OMyBP3cStsDgj9+6rys+73k/U9vubot5qLUoOQcljBEyPUl9tOeqLghPsSs4Aq0BMCcHMJ
+        Read+vSh0ZoBuv8pGUi692mjd1Av1uyrhh0j4dsxrZwsWDl4Sc1ktykqbsVzgVeRMBgCWb
+        ilqjLTeyVzy/ka6mhXVsKoxlW2Dj8UGc4KWWY28bDCd07IXQ3VyUIWS/v12zOT/0DA07IE
+        OJqclNecxFObKze72Px5TlKMJkmVP+GI4vAIkFwqHwET4eX2g+J6e8VVsbrtk0wCZJjzGf
+        EcWmXsZDY3xRfANvy8UW5TbO9ZCZGEonbL2Z//CK8VK1WEvo5DCI2pZGl+jVJQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602086651;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KlPKTaARyCDG9FYnBKL8idkZdK3fqAnv74Ua3tIWnJk=;
+        b=9ZQDsbsOWDjTUv9i+0FeDQwDAbLYeQltbOIEE0vcHxDZo1tTVDTYnO/eG5P6gvZG/YC0QX
+        hc3K/LEIIIPtN2Bw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86: Fix n_metric for cancelled txn
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201005082611.GH2628@hirez.programming.kicks-ass.net>
+References: <20201005082611.GH2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201007010023.GA438733@rowland.harvard.edu>
+Message-ID: <160208664989.7002.3685591670886543436.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 09:00:23PM -0400, Alan Stern wrote:
-> On Tue, Oct 06, 2020 at 12:25:36PM -0700, Matthias Kaehlcke wrote:
-> > On Tue, Oct 06, 2020 at 01:15:24PM -0400, Alan Stern wrote:
-> > > You don't need a platform device or a new driver to do this.  The code 
-> > > can go in the existing hub driver.
-> > 
-> > Maybe. IIUC currently USB drivers don't support/use suspend_late. Could that
-> > be added? It would simplify matters, otherwise all hubs need to know their
-> > peers and check in suspend if they are the last hub standing, only then the
-> > power can be switched off. It would be simpler if a single instance (e.g. the
-> > hub with the DT entries) is in control.
-> 
-> Adding suspend_late would be a little painful.  But you don't really 
-> need it; you just need to make the "master" hub wait for its peer to 
-> suspend, which is easy to do.
+The following commit has been merged into the perf/core branch of tip:
 
-Ok, I wasn't sure if the hubs suspend asynchronously from each other. If they
-do it should indeed not be a problem to have the "master" wait for its peers.
+Commit-ID:     3dbde69575637658d2094ee4416c21bc22eb89fe
+Gitweb:        https://git.kernel.org/tip/3dbde69575637658d2094ee4416c21bc22eb89fe
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 05 Oct 2020 10:10:24 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 06 Oct 2020 15:18:17 +02:00
 
-> And hubs would need to know their peers in any case, because you have to
-> check if any devices attached to the peer have wakeup enabled.
+perf/x86: Fix n_metric for cancelled txn
 
-My concern was about all hubs (including 'secondaries') having to know their
-peers and check on each other, in the scenario we are now talking about only
-the "master" hub needs to know and check on its peers, which is fine.
+When a group that has TopDown members is failed to be scheduled, any
+later TopDown groups will not return valid values.
 
-> > > Incidentally, the peering information is already present in sysfs, 
-> > > although it is associated with a device's port on its upstream hub 
-> > > rather than with the device itself.
-> > 
-> > That might also help the hub driver to determine its peers without needing the
-> > 'companion-hubs' property.
-> 
-> It wouldn't hurt to have that property anyway.  The determination of 
-> peer ports doesn't always work right, because it depends on information 
-> provided by the firmware and that information isn't always correct.
+Here is an example.
 
-Good to know, then we should certainly have it.
+A background perf that occupies all the GP counters and the fixed
+counter 1.
+ $perf stat -e "{cycles,cycles,cycles,cycles,cycles,cycles,cycles,
+                 cycles,cycles}:D" -a
+
+A user monitors a TopDown group. It works well, because the fixed
+counter 3 and the PERF_METRICS are available.
+ $perf stat -x, --topdown -- ./workload
+   retiring,bad speculation,frontend bound,backend bound,
+   18.0,16.1,40.4,25.5,
+
+Then the user tries to monitor a group that has TopDown members.
+Because of the cycles event, the group is failed to be scheduled.
+ $perf stat -x, -e '{slots,topdown-retiring,topdown-be-bound,
+                     topdown-fe-bound,topdown-bad-spec,cycles}'
+                     -- ./workload
+    <not counted>,,slots,0,0.00,,
+    <not counted>,,topdown-retiring,0,0.00,,
+    <not counted>,,topdown-be-bound,0,0.00,,
+    <not counted>,,topdown-fe-bound,0,0.00,,
+    <not counted>,,topdown-bad-spec,0,0.00,,
+    <not counted>,,cycles,0,0.00,,
+
+The user tries to monitor a TopDown group again. It doesn't work anymore.
+ $perf stat -x, --topdown -- ./workload
+
+    ,,,,,
+
+In a txn, cancel_txn() is to truncate the event_list for a canceled
+group and update the number of events added in this transaction.
+However, the number of TopDown events added in this transaction is not
+updated. The kernel will probably fail to add new Topdown events.
+
+Fixes: 7b2c05a15d29 ("perf/x86/intel: Generic support for hardware TopDown metrics")
+Reported-by: Andi Kleen <ak@linux.intel.com>
+Reported-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lkml.kernel.org/r/20201005082611.GH2628@hirez.programming.kicks-ass.net
+---
+ arch/x86/events/core.c       | 3 +++
+ arch/x86/events/perf_event.h | 1 +
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index a7248a3..7b802a7 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1041,6 +1041,7 @@ static int add_nr_metric_event(struct cpu_hw_events *cpuc,
+ 		if (cpuc->n_metric == INTEL_TD_METRIC_NUM)
+ 			return -EINVAL;
+ 		cpuc->n_metric++;
++		cpuc->n_txn_metric++;
+ 	}
+ 
+ 	return 0;
+@@ -2009,6 +2010,7 @@ static void x86_pmu_start_txn(struct pmu *pmu, unsigned int txn_flags)
+ 	perf_pmu_disable(pmu);
+ 	__this_cpu_write(cpu_hw_events.n_txn, 0);
+ 	__this_cpu_write(cpu_hw_events.n_txn_pair, 0);
++	__this_cpu_write(cpu_hw_events.n_txn_metric, 0);
+ }
+ 
+ /*
+@@ -2035,6 +2037,7 @@ static void x86_pmu_cancel_txn(struct pmu *pmu)
+ 	__this_cpu_sub(cpu_hw_events.n_added, __this_cpu_read(cpu_hw_events.n_txn));
+ 	__this_cpu_sub(cpu_hw_events.n_events, __this_cpu_read(cpu_hw_events.n_txn));
+ 	__this_cpu_sub(cpu_hw_events.n_pair, __this_cpu_read(cpu_hw_events.n_txn_pair));
++	__this_cpu_sub(cpu_hw_events.n_metric, __this_cpu_read(cpu_hw_events.n_txn_metric));
+ 	perf_pmu_enable(pmu);
+ }
+ 
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 93e56d7..ee2b9b9 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -236,6 +236,7 @@ struct cpu_hw_events {
+ 	int			n_txn;    /* the # last events in the below arrays;
+ 					     added in the current transaction */
+ 	int			n_txn_pair;
++	int			n_txn_metric;
+ 	int			assign[X86_PMC_IDX_MAX]; /* event to counter assignment */
+ 	u64			tags[X86_PMC_IDX_MAX];
+ 
