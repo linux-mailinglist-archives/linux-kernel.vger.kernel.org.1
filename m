@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2ED286563
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DCF286567
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbgJGRDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:03:14 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48632 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGRDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:03:14 -0400
-Received: from zn.tnic (p200300ec2f09100045b18ec36a87abe5.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1000:45b1:8ec3:6a87:abe5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9263B1EC0494;
-        Wed,  7 Oct 2020 19:03:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602090192;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=R3Po/kkKVbylxU/+V5a34kAqvHVuTy9mr1Zd0GX+8yc=;
-        b=kyK/SZw9k7BaHn7A/zsZjWgY8RMedt8ddMKE0qyiXLTwhxRx/Eq8+QZpHQc25UEB+jz65U
-        AM/cY7enxcSCIG4ExzZAFfdQVWDXxIIMUmV3CvsfJMqVVhVrLZpPYpbC+EwJNi404sByWW
-        OCLsdzgGwEQYD0mPC6pSbTGFmn4UTwU=
-Date:   Wed, 7 Oct 2020 19:03:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-tip-commits@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>, stable@vger.kernel.org,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [tip: ras/core] x86, powerpc: Rename memcpy_mcsafe() to
- copy_mc_to_{user, kernel}()
-Message-ID: <20201007170305.GK5607@zn.tnic>
-References: <CAHk-=wjSqtXAqfUJxFtWNwmguFASTgB0dz1dT3V-78Quiezqbg@mail.gmail.com>
- <160197822988.7002.13716982099938468868.tip-bot2@tip-bot2>
- <20201007111447.GA23257@zn.tnic>
- <20201007164536.GJ5607@zn.tnic>
+        id S1727903AbgJGRFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:05:12 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:55700 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726041AbgJGRFL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:05:11 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097H07H6028709;
+        Wed, 7 Oct 2020 10:05:07 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
+ cc : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=pfpt0220; bh=rrKteRViA4vxSNBUsWnAhe7ROJCIJod5xGAgtVlXXL0=;
+ b=cqdVnGSG46S22OXunmVF839Tq+QCBTA4dyAkQT//o++COb2Ly6Tl1bBjlmSom1hnom0x
+ OThMdm1S+jfpBnGJIHqwMMh8jxyXIE3caQ4sUpzdF8YXIn3Hz5ImX0BcJJbr3VxB/qoO
+ RDVyhMo7mLePIMErsb4jet8u+sa7R7EfPc1tne5Y6d5Ol24vTmsvdZHKA7nWzmIjyBPi
+ GZOWoPfBSJpsM4+JiJdgf+jmQCwcRsu4l3cwEYGtaVqrbJiUiHGjbwdsQzVPgQ3uNZXB
+ DyCUPRWhmX3jwgICdTGYX9JNXnsbPEGiuOFGFbJhL6HjkFLUOTtavu6RoDp6bTlIUopL 5w== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 33xrtnmy0d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 10:05:07 -0700
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
+ 2020 10:05:05 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
+ 2020 10:05:05 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 7 Oct 2020 10:05:06 -0700
+Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
+        by maili.marvell.com (Postfix) with ESMTP id D7A303F703F;
+        Wed,  7 Oct 2020 10:05:05 -0700 (PDT)
+Received: from localhost (aeasi@localhost)
+        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 097H556M023986;
+        Wed, 7 Oct 2020 10:05:05 -0700
+X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
+Date:   Wed, 7 Oct 2020 10:05:05 -0700
+From:   Arun Easi <aeasi@marvell.com>
+X-X-Sender: aeasi@irv1user01.caveonetworks.com
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     Nilesh Javali <njavali@marvell.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] qla2xxx: Do not consume srb greedily
+In-Reply-To: <20200929073802.18770-1-dwagner@suse.de>
+Message-ID: <alpine.LRH.2.21.9999.2010071001520.28578@irv1user01.caveonetworks.com>
+References: <20200929073802.18770-1-dwagner@suse.de>
+User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201007164536.GJ5607@zn.tnic>
+Content-Type: text/plain; charset="US-ASCII"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 06:45:36PM +0200, Borislav Petkov wrote:
-> It doesn't look like it is toolchain-specific and in both cases,
-> copy_mc_fragile's checksum is 0.
+On Tue, 29 Sep 2020, 12:38am, Daniel Wagner wrote:
+
+> qla2xx_process_get_sp_from_handle() will clear the slot which the
+> current srb is stored. So this function has a side effect. Therefore,
+> we can't use it in qla24xx_process_mbx_iocb_response() to check
+> for consistency and later again in qla24xx_mbx_iocb_entry().
 > 
-> SUSE Leap 15.1:
+> Let's move the consistency check directly into
+> qla24xx_mbx_iocb_entry() and avoid the double call or any open coding
+> of the qla2xx_process_get_sp_from_handle() functionality.
 > 
-> Name           : binutils                                        
-> Version        : 2.32-lp151.3.6.1
-> 
-> $ grep -E "(copy_mc_fragile|copy_user_generic_unrolled)" Module.symvers
-> 0x00000000      copy_mc_fragile vmlinux EXPORT_SYMBOL_GPL
-> 0xecdcabd2      copy_user_generic_unrolled      vmlinux EXPORT_SYMBOL
-> 
-> debian testing:
-> 
-> Package: binutils
-> Version: 2.35-2
-> 
-> $ grep -E "(copy_mc_fragile|copy_user_generic_unrolled)" Module.symvers 
-> 0x00000000      copy_mc_fragile vmlinux EXPORT_SYMBOL_GPL
-> 0xecdcabd2      copy_user_generic_unrolled      vmlinux EXPORT_SYMBOL
+> Fixes: 31a3271ff11b ("scsi: qla2xxx: Handle incorrect entry_type entries")
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
 
-Ok, I think I have it:
+That was a nasty one, good that you caught it soon.
 
----
-From: Borislav Petkov <bp@suse.de>
-Date: Wed, 7 Oct 2020 18:55:35 +0200
-Subject: [PATCH] x86/mce: Allow for copy_mc_fragile symbol checksum to be generated
+Reviewed-by: Arun Easi <aeasi@marvell.com>
 
-Add asm/mce.h to asm/asm-prototypes.h so that that asm symbol's checksum
-can be generated in order to support CONFIG_MODVERSIONS with it and fix:
-
-  WARNING: modpost: EXPORT symbol "copy_mc_fragile" [vmlinux] version \
-	  generation failed, symbol will not be versioned.
-
-For reference see:
-
-  4efca4ed05cb ("kbuild: modversions for EXPORT_SYMBOL() for asm")
-  334bb7738764 ("x86/kbuild: enable modversions for symbols exported from asm")
-
-Fixes: ec6347bb4339 ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()")
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/include/asm/asm-prototypes.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/include/asm/asm-prototypes.h b/arch/x86/include/asm/asm-prototypes.h
-index 5a42f9206138..51e2bf27cc9b 100644
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -5,6 +5,7 @@
- #include <asm/string.h>
- #include <asm/page.h>
- #include <asm/checksum.h>
-+#include <asm/mce.h>
- 
- #include <asm-generic/asm-prototypes.h>
- 
--- 
-2.21.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+-Arun
