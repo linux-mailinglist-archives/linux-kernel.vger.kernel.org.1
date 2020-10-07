@@ -2,157 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84096286249
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7F528625B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbgJGPjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:39:33 -0400
-Received: from mail.efficios.com ([167.114.26.124]:41192 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgJGPjc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:39:32 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3B8D92B8486;
-        Wed,  7 Oct 2020 11:39:31 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id y8aq3lC37-5w; Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B5F322B8485;
-        Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B5F322B8485
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1602085170;
-        bh=oYcLhml/Vu2rcwrC6cdk1vAf2bRtvBVVdTcbv2NC41o=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=FrUcX1pyjwFje9H5PFWxcPg2MH02X2Ni8/NTW9EmPjHe20lkAfCoNMvmS8k5wq+KS
-         WsEjkhWB6ifyNp2x9/h/14pOtogbRR3jf7P+/wNa2400Ftmyw6NNqB2IOlTgHCjGKD
-         3sifN7K8SNOe/bECuqt0WQkZNXO8wkNqK2GIQhpu8JqHNGJYIQx4EPk8eMfjMqARau
-         dMsxQfw1PLNN/ELRATU9h9d+QZ/uCckRPFaHYRpswCLlOwq+9U5pS75gna1r7LbLJb
-         L/We+Tx9pJ+Hh/DPweN8oTtwE1H3nx0+pDb4yn9ZqwpZrdtUZjPnNZyq3B7bt3IeKH
-         RIadKsqTBhexw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 7ca02b-VvgA6; Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A7F702B8226;
-        Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
-Date:   Wed, 7 Oct 2020 11:39:30 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <1286784649.11153.1602085170586.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201007150704.GH2628@hirez.programming.kicks-ass.net>
-References: <20200924172508.8724-1-mathieu.desnoyers@efficios.com> <20200924172508.8724-3-mathieu.desnoyers@efficios.com> <20201007150704.GH2628@hirez.programming.kicks-ass.net>
-Subject: Re: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v3)
+        id S1728029AbgJGPkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:40:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44159 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726181AbgJGPkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:40:49 -0400
+IronPort-SDR: OGcxL5JG2WsT6BHEb0wfw7i85YfK58DJ173zdVOmmzv6OxYqlidj4bYOEM0HgqA5Rf3uqZGJHZ
+ PcmedOUf+O3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="152754785"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="152754785"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 08:40:48 -0700
+IronPort-SDR: FpXTz5k0XYL2/qm/0fjEbRN+GxW9oAIYEvj+G57/O2KjGPa96TWJTcAgW3kSJJB23P0EIR5FoS
+ gK/asx7FcL2g==
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="528012192"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.145.6]) ([10.249.145.6])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 08:40:46 -0700
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+References: <20201006083639.GJ3227@techsingularity.net>
+ <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+ <20201006190322.GL3227@techsingularity.net>
+ <20201006194745.GM3227@techsingularity.net>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <172043a7-d180-292e-249b-7aea16c2209a@intel.com>
+Date:   Wed, 7 Oct 2020 17:40:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201006194745.GM3227@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: sched: membarrier: cover kthread_use_mm (v3)
-Thread-Index: X4rtGzTiC/gdtRcWrfxY5lcPzEj2Wg==
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 7, 2020, at 11:07 AM, Peter Zijlstra peterz@infradead.org wrote:
+On 10/6/2020 9:47 PM, Mel Gorman wrote:
+> On Tue, Oct 06, 2020 at 08:03:22PM +0100, Mel Gorman wrote:
+>> On Tue, Oct 06, 2020 at 06:00:18PM +0200, Rafael J. Wysocki wrote:
+>>>> server systems") and enable-cst is the commit. It was not fixed by 5.6 or
+>>>> 5.9-rc8. A lot of bisections ended up here including kernel compilation,
+>>>> tbench, syscall entry/exit microbenchmark, hackbench, Java workloads etc.
+>>>>
+>>>> What I don't understand is why. The latencies for c-state exit states
+>>>> before and after the patch are both as follows
+>>>>
+>>>> /sys/devices/system/cpu/cpu0/cpuidle/state0/latency:0
+>>>> /sys/devices/system/cpu/cpu0/cpuidle/state1/latency:2
+>>>> /sys/devices/system/cpu/cpu0/cpuidle/state2/latency:10
+>>>> /sys/devices/system/cpu/cpu0/cpuidle/state3/latency:33
+>>>> /sys/devices/system/cpu/cpu0/cpuidle/state4/latency:133
+>>>>
+>>>> Perf profiles did not show up anything interesting. A diff of
+>>>> /sys/devices/system/cpu/cpu0/cpuidle/state0/ before and after the patch
+>>>> showed up nothing interesting. Any idea why exactly this patch shows up
+>>>> as being hazardous on Haswell in particular?
+>>>>
+>>> Presumably, some of the idle states are disabled by default on the affected
+>>> machines.
+>>>
+>>> Can you check the disable and default_status attributes of each state before
+>>> and after the commit in question?
+>>>
+>> # grep . pre-cst/cpuidle/state*/disable
+> Sorry, second attempt after thinking the results made no sense at all.
+> Turns out I fat fingered setting up the enable-cst kernel the second time
+> to collect what you asked for and the patch was not applied at all.
+>
+> # grep . pre-cst/cpuidle/state*/disable
+> pre-cst/cpuidle/state0/disable:0
+> pre-cst/cpuidle/state1/disable:0
+> pre-cst/cpuidle/state2/disable:0
+> pre-cst/cpuidle/state3/disable:0
+> pre-cst/cpuidle/state4/disable:0
+> # grep . pre-cst/cpuidle/state*/default_status
+> pre-cst/cpuidle/state0/default_status:enabled
+> pre-cst/cpuidle/state1/default_status:enabled
+> pre-cst/cpuidle/state2/default_status:enabled
+> pre-cst/cpuidle/state3/default_status:enabled
+> pre-cst/cpuidle/state4/default_status:enabled
+> # grep . enable-cst/cpuidle/state*/disable
+> enable-cst/cpuidle/state0/disable:0
+> enable-cst/cpuidle/state1/disable:0
+> enable-cst/cpuidle/state2/disable:0
+> enable-cst/cpuidle/state3/disable:1
+> enable-cst/cpuidle/state4/disable:1
+> # grep . enable-cst/cpuidle/state*/default_status
+> enable-cst/cpuidle/state0/default_status:enabled
+> enable-cst/cpuidle/state1/default_status:enabled
+> enable-cst/cpuidle/state2/default_status:enabled
+> enable-cst/cpuidle/state3/default_status:disabled
+> enable-cst/cpuidle/state4/default_status:disabled
+>
+> That looks like C3 and C6 are disabled after the patch.
+>
+> # grep . enable-cst/cpuidle/state*/name
+> enable-cst/cpuidle/state0/name:POLL
+> enable-cst/cpuidle/state1/name:C1
+> enable-cst/cpuidle/state2/name:C1E
+> enable-cst/cpuidle/state3/name:C3
+> enable-cst/cpuidle/state4/name:C6
+>
+That's kind of unexpected and there may be two reasons for that.
 
-> On Thu, Sep 24, 2020 at 01:25:07PM -0400, Mathieu Desnoyers wrote:
-> 
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 2d95dc3f4644..bab6f4f2809f 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -3736,6 +3736,8 @@ context_switch(struct rq *rq, struct task_struct *prev,
->>  	 */
->>  	arch_start_context_switch(prev);
->>  
->> +	membarrier_switch_mm(rq, prev->mm, next->mm);
->> +
->>  	/*
->>  	 * kernel -> kernel   lazy + transfer active
->>  	 *   user -> kernel   lazy + mmgrab() active
->> @@ -3752,7 +3754,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
->>  		else
->>  			prev->active_mm = NULL;
->>  	} else {                                        // to user
->> -		membarrier_switch_mm(rq, prev->active_mm, next->mm);
->>  		/*
->>  		 * sys_membarrier() requires an smp_mb() between setting
->>  		 * rq->curr / membarrier_switch_mm() and returning to userspace.
-> 
-> I was thinking... do we need the above, when:
-> 
->> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
->> index 8bc8b8a888b7..e5246580201b 100644
->> --- a/kernel/sched/membarrier.c
->> +++ b/kernel/sched/membarrier.c
->> @@ -112,13 +112,9 @@ static int membarrier_global_expedited(void)
->>  		    MEMBARRIER_STATE_GLOBAL_EXPEDITED))
->>  			continue;
->>  
->> -		/*
->> -		 * Skip the CPU if it runs a kernel thread. The scheduler
->> -		 * leaves the prior task mm in place as an optimization when
->> -		 * scheduling a kthread.
->> -		 */
->> +		/* Skip the CPU if it runs the idle thread. */
->>  		p = rcu_dereference(cpu_rq(cpu)->curr);
->> -		if (p->flags & PF_KTHREAD)
-> 
-> We retain this in the form:
-> 
->		if ((p->flags & PF_KTHREAD) && !p-mm)
->			continue;
-> 
->> +		if (is_idle_task(p))
->>  			continue;
->>  
->>  		__cpumask_set_cpu(cpu, tmpmask);
-> 
-> Specifically, we only care about kthreads when they're between
-> kthread_use_mm() / kthread_unuse_mm(), and in that case they will have
-> updated state already.
-> 
-> It's too late in the day to be sure about the memory ordering though;
-> but if we see !->mm, they'll do/have-done switch_mm() which implies
-> sufficient barriers().
-> 
-> Hmm?
+First off, the MWAIT hints in the ACPI tables for C3 and C6 may be 
+different from the ones in the intel_idle internal table.
 
-Interesting. There are two things we want to ensure here:
+Second, the ACPI tables may only be listing C1.
 
-1) That we issue an IPI or have the kthread issue the proper barriers when a kthread is
-   using/unusing a mm,
-2) That we don't issue an IPI to kthreads with NULL mm, so we don't disturb them.
-
-Moving the membarrier_switch_mm to cover kthread cases was to ensure (2), but if we
-add a p->mm NULL check in the global expedited iteration, I think we would be OK
-leaving the stale runqueue's membarrier state while in lazy tlb state.
-
-As far as (1) is concerned, I think your idea would work, because as you say we will
-have the proper barriers in kthread use/unuse mm.
-
-I just wonder whether having this stale membarrier state for lazy tlb is warranted
-performance-wise, as it adds complexity: the rq membarrier state will therefore not be
-relevant when we are in lazy tlb mode.
-
-Thoughts ?
-
-Thanks,
-
-Mathieu
+Can you send me the acpidump output from the affected machine, please?
 
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
