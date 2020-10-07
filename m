@@ -2,117 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069512869A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DEE2869A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728836AbgJGUzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:55:55 -0400
-Received: from mga17.intel.com ([192.55.52.151]:38777 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728022AbgJGUzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:55:54 -0400
-IronPort-SDR: EIviMndUDIHL3nApgZuAVeU49ySDtPKxKukCaxzAtgTXXXU5H5bo762dguG2kxhHioT3Gz4qVG
- YhfsM+FzOy0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="145028001"
-X-IronPort-AV: E=Sophos;i="5.77,348,1596524400"; 
-   d="scan'208";a="145028001"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 13:55:54 -0700
-IronPort-SDR: tKemYpyspvIDJstVnrosrbjs/GY71RYfm/aOB/qcgMVU8bVOKD7/gfGDPCVOOJjPtwr8AZLgZ9
- mHWILCKoR2Qg==
-X-IronPort-AV: E=Sophos;i="5.77,348,1596524400"; 
-   d="scan'208";a="528160278"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 13:55:53 -0700
-Date:   Wed, 7 Oct 2020 13:55:52 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 10/22] kvm: mmu: Add TDP MMU PF handler
-Message-ID: <20201007205552.GB2138@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-11-bgardon@google.com>
- <20200930163740.GD32672@linux.intel.com>
- <CANgfPd_A6Bbv+ehRvMVi_NK2C_Jb=bBmXJR89fj=JSFSga0avg@mail.gmail.com>
+        id S1728229AbgJGU5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgJGU5P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:57:15 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C422DC061755;
+        Wed,  7 Oct 2020 13:57:15 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id q21so3545872ota.8;
+        Wed, 07 Oct 2020 13:57:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+PgDkY01r+SPnq9V1UBxtImvIZ+pUBtI19wyV25iY7U=;
+        b=ThvuIbr0CMZR0dT8iUzKHjStgv9nz1WNJP5fSKGNEJY/201n+RdT9yrPcuzoZJPIsi
+         kS4PrL9gs8INyZACDFD9AEenxp93n7GO3vK7jruujXKhiIwq508kxuFJeIy2mB6yhTuW
+         6s1Yw/lZ1N2qcSvhuJ0Xn8tY+LxOg3Rt4EVJA4BbddD7CU2OuMJsLijYA8eVnlZ4+iyH
+         zp2OjjK/bGLdykxCCMqLJdcHpjgwrRsiqvFoMYADWd3E1WAl9fN2X+tR3zsEzkySmz0X
+         OnD9+yDxjT3RhT+hTJ20LlcWXVGQBNHyZQq/e8wniNDHt5Y+UZhPj9N5EkRDeQTw6o3z
+         pI0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+PgDkY01r+SPnq9V1UBxtImvIZ+pUBtI19wyV25iY7U=;
+        b=JMiLLPv+87dMZy3p+573rh9K4MDQuJIPHp4/dUeAAtpqqn9Zbv9oCVAQqW1CAE/QPp
+         G+QATvamdm4hv1kkvMza37p2yRxPYjZKNa9LSjll8jtJh4zaqRY1F9kjNyM8cmk1+t34
+         Z80z9ZpSkZAhc2O8pc177f59gzk7lDNhVdAechW2VIvYcEGdx9FHRNJM8DfyRY/NzGS7
+         7RI+FpVlfKX/fk/+oRYqsv0v2I5+vF3oqddt/5RjjLMj5k5b/yX1/dSPjIMfx6lzIdgO
+         Gh6K1GmxSa4JbnkNC3J+viYxGe2krOmIXPrhfm+IE+k6di8M3RKKvqgkUxumqGz0iTTz
+         Vwsg==
+X-Gm-Message-State: AOAM53360SvHh6mFcfoKC/uYDmzS6pVjnmTFne5GAJjAmxcq2iU/JxSb
+        XZFaR+P/9IswNyZInWbD6a4hYtUQaDCTWjrMKS8=
+X-Google-Smtp-Source: ABdhPJxgP4pU9mnZ9sU5+E8aH+0IQMPjuMDOxIs4XgZ/mYhmQeCtbrQMCUI8zn5ZAOPEnRHwPtiDhBHyFB0sMbUURYE=
+X-Received: by 2002:a05:6830:1f4d:: with SMTP id u13mr2870769oth.184.1602104235068;
+ Wed, 07 Oct 2020 13:57:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd_A6Bbv+ehRvMVi_NK2C_Jb=bBmXJR89fj=JSFSga0avg@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200921092951.945382-1-enric.balletbo@collabora.com> <20201007151159.GA221754@bogus>
+In-Reply-To: <20201007151159.GA221754@bogus>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Wed, 7 Oct 2020 22:57:02 +0200
+Message-ID: <CAFqH_531fkh_gZbOMuzhsRj-72NeWsPyxWoFQh9bAF3CZwTfNw@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: power: rockchip: Convert to json-schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Caesar Wang <wxt@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 03:33:21PM -0700, Ben Gardon wrote:
-> On Wed, Sep 30, 2020 at 9:37 AM Sean Christopherson
-> <sean.j.christopherson@intel.com> wrote:
+Hi Rob,
+
+Missatge de Rob Herring <robh@kernel.org> del dia dc., 7 d=E2=80=99oct. 202=
+0 a
+les 17:12:
+>
+> On Mon, Sep 21, 2020 at 11:29:51AM +0200, Enric Balletbo i Serra wrote:
+> > Convert the soc/rockchip/power_domain.txt binding document to json-sche=
+ma
+> > and move to the power bindings directory.
 > >
-> > On Fri, Sep 25, 2020 at 02:22:50PM -0700, Ben Gardon wrote:
-> > > @@ -4113,8 +4088,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> > >       if (page_fault_handle_page_track(vcpu, error_code, gfn))
-> > >               return RET_PF_EMULATE;
-> > >
-> > > -     if (fast_page_fault(vcpu, gpa, error_code))
-> > > -             return RET_PF_RETRY;
-> > > +     if (!is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
-> > > +             if (fast_page_fault(vcpu, gpa, error_code))
-> > > +                     return RET_PF_RETRY;
+> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > ---
 > >
-> > It'll probably be easier to handle is_tdp_mmu() in fast_page_fault().
-> 
-> I'd prefer to keep this check here because then in the fast page fault
-> path, we can just handle the case where we do have a tdp mmu root with
-> the tdp mmu fast pf handler and it'll mirror the split below with
-> __direct_map and the TDP MMU PF handler.
+> > Changes in v3:
+> > - Fixed tab errors found by bot
+> >
+> > Changes in v2:
+> > - Fixed a warning that says that 'syscon' should not be used alone.
+> > - Use patternProperties to define a new level for power-domains.
+> > - Add const values for power-domain-cells, address-cells, etc.
+> >
+> >  .../power/rockchip,power-controller.yaml      | 207 ++++++++++++++++++
+> >  .../bindings/soc/rockchip/power_domain.txt    | 136 ------------
+> >  2 files changed, 207 insertions(+), 136 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/power/rockchip,po=
+wer-controller.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/powe=
+r_domain.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/power/rockchip,power-con=
+troller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-contr=
+oller.yaml
+> > new file mode 100644
+> > index 000000000000..b23ea37e2a08
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller=
+.yaml
+> > @@ -0,0 +1,207 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yam=
+l#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Rockchip Power Domains
+> > +
+> > +maintainers:
+> > +  - Caesar Wang <wxt@rock-chips.com>
+> > +  - Heiko Stuebner <heiko@sntech.de>
+> > +
+> > +description: |
+> > +  Rockchip processors include support for multiple power domains which=
+ can be
+> > +  powered up/down by software based on different application scenes to=
+ save power.
+> > +
+> > +  Power domains contained within power-controller node are generic pow=
+er domain
+> > +  providers documented in Documentation/devicetree/bindings/power/powe=
+r-domain.yaml.
+> > +
+> > +  IP cores belonging to a power domain should contain a 'power-domains=
+'
+> > +  property that is a phandle for the power domain node representing th=
+e domain.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    const: power-controller
+> > +
+> > +  compatible:
+> > +    enum:
+> > +      - rockchip,px30-power-controller
+> > +      - rockchip,rk3036-power-controller
+> > +      - rockchip,rk3066-power-controller
+> > +      - rockchip,rk3128-power-controller
+> > +      - rockchip,rk3188-power-controller
+> > +      - rockchip,rk3228-power-controller
+> > +      - rockchip,rk3288-power-controller
+> > +      - rockchip,rk3328-power-controller
+> > +      - rockchip,rk3366-power-controller
+> > +      - rockchip,rk3368-power-controller
+> > +      - rockchip,rk3399-power-controller
+> > +
+> > +  '#power-domain-cells':
+> > +    const: 1
+> > +
+> > +  '#address-cells':
+> > +    const: 1
+> > +
+> > +  '#size-cells':
+> > +    const: 0
+> > +
+> > +patternProperties:
+> > +  "^power-domain@[0-9]+$":
+>
+> unit-addresses are hex.
+>
+> > +    type: object
+> > +    description: |
+> > +      Represents the power domains within the power controller node as=
+ documented
+> > +      in Documentation/devicetree/bindings/power/power-domain.yaml.
+> > +
+> > +    properties:
+> > +
+> > +      '#power-domain-cells':
+> > +        description:
+> > +            Must be 0 for nodes representing a single PM domain and 1 =
+for nodes
+> > +            providing multiple PM domains.
+> > +
+> > +      '#address-cells':
+> > +        const: 1
+> > +
+> > +      '#size-cells':
+> > +        const: 0
+> > +
+> > +      reg:
+> > +        description: |
+> > +          Power domain index. Valid values are defined in:
+> > +          "include/dt-bindings/power/px30-power.h" - for PX30 type pow=
+er domain.
+> > +          "include/dt-bindings/power/rk3036-power.h" - for RK3036 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3066-power.h" - for RK3066 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3128-power.h" - for RK3128 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3188-power.h" - for RK3188 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3228-power.h" - for RK3228 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3288-power.h" - for RK3288 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3328-power.h" - for RK3328 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3366-power.h" - for RK3366 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3368-power.h" - for RK3368 type=
+ power domain.
+> > +          "include/dt-bindings/power/rk3399-power.h" - for RK3399 type=
+ power domain.
+> > +        maxItems: 1
+>
+> Range of values?
+>
+> > +
+> > +      clocks:
+> > +        description: |
+> > +          A number of phandles to clocks that need to be enabled while=
+ power domain
+> > +          switches state.
+>
+> Can you at least put a range of how many clocks?
+>
+> > +
+> > +      pm_qos:
+> > +        description: |
+> > +          A number of phandles to qos blocks which need to be saved an=
+d restored
+> > +          while power domain switches state.
+>
+> And here.
+>
+> > +
+> > +    required:
+> > +      - reg
+>
+>        additionalProperties: false
+>
+> Which in turn means the nested power domains will throw an error, so you
+> can do:
+>
+>        patternProperties:
+>          "^power-domain@[0-9a-f]+$":
+>            $ref: '#/patternProperties/^power-domain@[0-9a-f]+$'
+>
 
-Hmm, what about adding wrappers for these few cases where TDP MMU splits
-cleanly from the existing paths?  The thought being that it would keep the
-control flow somewhat straightforward, and might also help us keep the two
-paths aligned (more below).
+When I tried this I got the following error:
 
-> > >
-> > >       r = mmu_topup_memory_caches(vcpu, false);
-> > >       if (r)
-> > > @@ -4139,8 +4115,14 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> > >       r = make_mmu_pages_available(vcpu);
-> > >       if (r)
-> > >               goto out_unlock;
-> > > -     r = __direct_map(vcpu, gpa, write, map_writable, max_level, pfn,
-> > > -                      prefault, is_tdp && lpage_disallowed);
-> > > +
-> > > +     if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
-> > > +             r = kvm_tdp_mmu_page_fault(vcpu, write, map_writable, max_level,
-> > > +                                        gpa, pfn, prefault,
-> > > +                                        is_tdp && lpage_disallowed);
-> > > +     else
-> > > +             r = __direct_map(vcpu, gpa, write, map_writable, max_level, pfn,
-> > > +                              prefault, is_tdp && lpage_disallowed);
+rockchip,power-controller.yaml:
+patternProperties:^power-domain@[0-9a-f]+$:patternProperties:^power-domain@=
+[0-9a-f]+$:$ref:
+'#/patternProperties/^power-domain@[0-9a-f]+$' is not a
+'uri-reference'
 
-Somewhat tangetially related to the above, it feels like the TDP MMU helper
-here would be better named tdp_mmu_map() or so.  KVM has already done the
-"fault" part, in that it has faulted in the page (if relevant) and obtained
-a pfn.  What's left is the actual insertion into the TDP page tables.
+Not sure if is my environment or I am still doing something silly, can
+you confirm that this works for you? It doesn't seem to be any binding
+doing this actually.
 
-And again related to the helper, ideally tdp_mmu_map() and __direct_map()
-would have identical prototypes.  Ditto for the fast page fault paths.  In
-theory, that would allow the compiler to generate identical preamble, with
-only the final check being different.  And if the compiler isn't smart enough
-to do that on its own, we might even make the wrapper non-inline, with an
-"unlikely" annotation to coerce the compiler to generate a tail call for the
-preferred path.
+Thanks,
+  Enric
 
-> > >
-> > >  out_unlock:
-> > >       spin_unlock(&vcpu->kvm->mmu_lock);
+> > +
+> > +required:
+> > +  - compatible
+> > +  - '#power-domain-cells'
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/rk3399-cru.h>
+> > +    #include <dt-bindings/power/rk3399-power.h>
+> > +
+> > +    soc {
+> > +        #address-cells =3D <2>;
+> > +        #size-cells =3D <2>;
+> > +
+> > +        qos_hdcp: qos@ffa90000 {
+> > +            compatible =3D "rockchip,rk3399-qos","syscon";
+>
+> space                                             ^
+>
+> > +            reg =3D <0x0 0xffa90000 0x0 0x20>;
+> > +        };
+> > +
+> > +        qos_iep: qos@ffa98000 {
+> > +            compatible =3D "rk3399-qos","syscon";
+> > +            reg =3D <0x0 0xffa98000 0x0 0x20>;
+> > +        };
+> > +
+> > +        qos_rga_r: qos@ffab0000 {
+> > +            compatible =3D "rk3399-qos","syscon";
+> > +            reg =3D <0x0 0xffab0000 0x0 0x20>;
+> > +        };
+> > +
+> > +        qos_rga_w: qos@ffab0080 {
+> > +            compatible =3D "rk3399-qos","syscon";
+> > +            reg =3D <0x0 0xffab0080 0x0 0x20>;
+> > +        };
+> > +
+> > +        qos_video_m0: qos@ffab8000 {
+> > +            compatible =3D "rk3399-qos","syscon";
+> > +            reg =3D <0x0 0xffab8000 0x0 0x20>;
+> > +        };
+> > +
+> > +        qos_video_m1_r: qos@ffac0000 {
+> > +            compatible =3D "rk3399-qos","syscon";
+> > +            reg =3D <0x0 0xffac0000 0x0 0x20>;
+> > +        };
+> > +
+> > +        qos_video_m1_w: qos@ffac0080 {
+> > +            compatible =3D "rk3399-qos","syscon";
+> > +            reg =3D <0x0 0xffac0080 0x0 0x20>;
+> > +        };
+> > +
+> > +        power-management@ff310000 {
+> > +            compatible =3D "rockchip,rk3399-pmu", "syscon", "simple-mf=
+d";
+> > +            reg =3D <0x0 0xff310000 0x0 0x1000>;
+> > +
+> > +            power-controller {
+> > +                compatible =3D "rockchip,rk3399-power-controller";
+> > +                #power-domain-cells =3D <1>;
+> > +                #address-cells =3D <1>;
+> > +                #size-cells =3D <0>;
+> > +
+> > +                /* These power domains are grouped by VD_CENTER */
+> > +                power-domain@RK3399_PD_IEP {
+> > +                    reg =3D <RK3399_PD_IEP>;
+> > +                    clocks =3D <&cru ACLK_IEP>,
+> > +                             <&cru HCLK_IEP>;
+> > +                    pm_qos =3D <&qos_iep>;
+> > +                    #power-domain-cells =3D <0>;
+> > +                };
+> > +                power-domain@RK3399_PD_RGA {
+> > +                    reg =3D <RK3399_PD_RGA>;
+> > +                    clocks =3D <&cru ACLK_RGA>,
+> > +                             <&cru HCLK_RGA>;
+> > +                    pm_qos =3D <&qos_rga_r>,
+> > +                             <&qos_rga_w>;
+> > +                    #power-domain-cells =3D <0>;
+> > +                };
+> > +                power-domain@RK3399_PD_VCODEC {
+> > +                    reg =3D <RK3399_PD_VCODEC>;
+> > +                    clocks =3D <&cru ACLK_VCODEC>,
+> > +                             <&cru HCLK_VCODEC>;
+> > +                    pm_qos =3D <&qos_video_m0>;
+> > +                    #power-domain-cells =3D <0>;
+> > +                };
+> > +                power-domain@RK3399_PD_VDU {
+> > +                    reg =3D <RK3399_PD_VDU>;
+> > +                    clocks =3D <&cru ACLK_VDU>,
+> > +                             <&cru HCLK_VDU>;
+> > +                    pm_qos =3D <&qos_video_m1_r>,
+> > +                             <&qos_video_m1_w>;
+> > +                    #power-domain-cells =3D <0>;
+> > +                };
+> > +                power-domain@RK3399_PD_VIO {
+> > +                    reg =3D <RK3399_PD_VIO>;
+> > +                    #power-domain-cells =3D <1>;
+> > +                    #address-cells =3D <1>;
+> > +                    #size-cells =3D <0>;
+> > +
+> > +                    power-domain@RK3399_PD_HDCP {
+> > +                        reg =3D <RK3399_PD_HDCP>;
+> > +                        clocks =3D <&cru ACLK_HDCP>,
+> > +                                 <&cru HCLK_HDCP>,
+> > +                                 <&cru PCLK_HDCP>;
+> > +                        pm_qos =3D <&qos_hdcp>;
+> > +                        #power-domain-cells =3D <0>;
+> > +                    };
+> > +                };
+> > +            };
+> > +        };
+> > +    };
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
