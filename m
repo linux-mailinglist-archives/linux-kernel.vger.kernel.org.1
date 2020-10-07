@@ -2,132 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19482285B97
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CAD285B9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgJGJJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:09:21 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:50395 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgJGJJS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:09:18 -0400
-Received: by mail-il1-f207.google.com with SMTP id u20so1030015ilk.17
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:09:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gjt5a7t5G0GfobNHig+44qsKG0BT7BoaxNCvBIm3TkU=;
-        b=VyxQpCbo1laqw2ihf8VS0hHMuds0FqeLy5k40cADjGv45g3uLvJDRWtov5osx/JrnZ
-         xQ/2zZyY2mlA5s/N+kDuy+TfamIEiD8tRnsloLjm7UhOSW9F+gLyt9+IL6Xa+ZthkMxL
-         wxTaKgMtlNLCdHzE+YE3kvq/MYVoG129gsY1aBNgivu3ZkebHzf4k8Tz5oLvpnLZrEti
-         Q/LaKpeg2s96eiB5rO0dN7Iol40lQOWa1BvcqabDB08P/Vbnu+6ikgkGNsyow2rPJGgs
-         OCELAgqCfKZSo8H801InOer87dmknROiUz24/UEfLpVqynNqPwoKp9qwPwjnEg6YysBx
-         AATg==
-X-Gm-Message-State: AOAM531J9rWfJrFZFojIm85G4QakF2DumRFLfRiR3v6fvkS7bhoqKKck
-        +7Aa0WaGI8LBuu9xSLl+cq6SHJBSpGKGmuE9uiZomdOna8vL
-X-Google-Smtp-Source: ABdhPJyE065X85vepOdRHdgasS67W6CExJ2Q77ctqNi5BraeqXZMsTCX8ZFps3jg8VFj8XwSpJ3bL5hFqQJcfaa1kAe7Im6rhpph
+        id S1726820AbgJGJKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:10:53 -0400
+Received: from mail-bn8nam11on2054.outbound.protection.outlook.com ([40.107.236.54]:33447
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726248AbgJGJKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 05:10:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G8zTLGTPwxcQzEAaOBR62gkFStsRp3h+CJ1i9CvPDA/gagOyWbtGRh7Cee+ylAESXmp/X89NTtzxrArXmHtt/c0F9EZ6tGvacbHMv1EYmSqt1zjm+0gHZdoA/VZ7QcC6IH0MpCeqEn4Fq4X+MF9aHMMmz8ZsXDbna6MXdjFqEM44kw86eNPuGhisLOTLYn5nsYNqBaPl29Ey+RM5ND9kGCsBY4Nh0Od65EQaUUL28De0uR9lgBMnUp97ofSSCReOR2k4LbFcWB/jRPgK0GE8P9UPWHYGF+ILuruCRwwQIy+GJ2wMvP4miu4A5wGuSOlfOSjBpzHKSES4grbLa6MAgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hYObESONmlfXZQ5An5ozdF8guh9kUyLXOW8bphf8GD4=;
+ b=eEkxQbzR0Jbyv5fEIUHyVxgV627vl2S4om6H8Zvb2hr7AM2BCEYSIZwnTLSKf8QH+GIha9drevp+ZfiTwA757wNC8V11MCjkiNQRNRQlyTcNQg8Eex3xU1CXpLHSQIJ0XuOLEj1kUJeWYMEIjWs6siVFZoyQuaubhtG07fUE7STktLdr5HTdrRaohhCyUY7P0oVLRG2mYeHhwsyUt/ixwM3OomKKcscRdQOhQdg3xpUdLpDW/XIYKFy/zkX/bZgv+/ccwJAIOs+HMq6NztFSCFqC1CTOtdTY7cDJ18buru5POX4cLxj/Am35ZWlnAYF0epbiNZLuyYm1rsQFvpfTBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=arndb.de smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hYObESONmlfXZQ5An5ozdF8guh9kUyLXOW8bphf8GD4=;
+ b=st45f2EvmXFgHYjJ5muavuG1HE9NPfNhoecTlcwUbyUP6BUizgUPrT4tulkcn6lsOSihVdEOCTNpmaSJeMHEkVsyL8PI8/FqPwmK7tAgjTymlmktuwr+bHNZ8QXb4l9XG5wZTHeT54+90hx9S+DNvMAWy89e6RtHybONZGl5mWk=
+Received: from SA9PR03CA0013.namprd03.prod.outlook.com (2603:10b6:806:20::18)
+ by BL0PR02MB4436.namprd02.prod.outlook.com (2603:10b6:208:4e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 7 Oct
+ 2020 09:10:49 +0000
+Received: from SN1NAM02FT027.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:20:cafe::49) by SA9PR03CA0013.outlook.office365.com
+ (2603:10b6:806:20::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.26 via Frontend
+ Transport; Wed, 7 Oct 2020 09:10:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; arndb.de; dkim=none (message not signed)
+ header.d=none;arndb.de; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT027.mail.protection.outlook.com (10.152.72.99) with Microsoft SMTP
+ Server id 15.20.3433.39 via Frontend Transport; Wed, 7 Oct 2020 09:10:49
+ +0000
+Received: from [149.199.38.66] (port=40964 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kQ5Sf-0001nF-1J; Wed, 07 Oct 2020 02:10:13 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kQ5TE-0007C5-Oy; Wed, 07 Oct 2020 02:10:48 -0700
+Received: from [172.30.17.110]
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <michals@xilinx.com>)
+        id 1kQ5TB-0007AV-Qh; Wed, 07 Oct 2020 02:10:46 -0700
+Subject: Re: [PATCH v3 1/2] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     muhammad.husaini.zulkifli@intel.com,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lakshmi.bai.raja.subramanian@intel.com,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+ <20201006155549.3595-2-muhammad.husaini.zulkifli@intel.com>
+ <49c9fe27-ee82-f490-482b-365101d3b6cf@xilinx.com>
+ <CAHp75VfXe=dwbNEdUfwmMnZCkSTRH_6HjGD0MUs=GY0en4f0sw@mail.gmail.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Autocrypt: addr=michals@xilinx.com; keydata=
+ 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
+ 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
+Message-ID: <f81384ff-1f7b-28ea-1ec1-2568e9f669ee@xilinx.com>
+Date:   Wed, 7 Oct 2020 11:10:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3f88:: with SMTP id m130mr1584454ioa.78.1602061757744;
- Wed, 07 Oct 2020 02:09:17 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 02:09:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fa89dc05b11111b7@google.com>
-Subject: general protection fault in ieee80211_key_free
-From:   syzbot <syzbot+847ae671fe8522d3491a@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75VfXe=dwbNEdUfwmMnZCkSTRH_6HjGD0MUs=GY0en4f0sw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: de3c5ecd-be54-45bb-1f34-08d86aa0e1f9
+X-MS-TrafficTypeDiagnostic: BL0PR02MB4436:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB4436D033B4AFFB5927B1F25FC60A0@BL0PR02MB4436.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mGgiinbZX29rAai8iERXIXRf1NRCM6HZCT0KVkmYj3Ol5YDnF/sh8UR1L1mvjY+DjkbqvR54lAsLiIn3lwCEEOuZBb9dvieKrCQGUPftVxT8rpP3uA0+Sc8wsWP05lJUgjOWlwZu3i3Q7NREIAETZwr6ecvj2LHzfTf9lRIUwotDKSG6OzUP36y3tYeiRFucXfptAi4k4BXHZ9GbU3hD+PUKm4NsVJ9kMIBMBdFWlqZSkiULyggwg+ji3+B1pPTAwWVdLjHlJPKk5SMxmFbhtR4EvLQk8ztlVd/Klvurs1nyLsLLARZNU7Tkn0c63AyBUNTtxug53l+OQv5cUjiOHC1L9pD90A4dqmh3HVUgz1pi7x+J1c2r/KJhPjMBKv2aYsr/Tdy5hLA6v6nNEYvUahUiKTRHbEfnyDoX8QnmAv43Zww+pamkWA5cGd1iDTrXUTH6lzChsh+MutULuQwcUQ==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(396003)(346002)(39850400004)(376002)(136003)(46966005)(2616005)(31696002)(8936002)(6666004)(31686004)(2906002)(82310400003)(7416002)(81166007)(82740400003)(47076004)(356005)(9786002)(5660300002)(316002)(336012)(70206006)(186003)(426003)(26005)(4326008)(53546011)(44832011)(8676002)(54906003)(478600001)(110136005)(36756003)(70586007)(43740500002)(266184004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 09:10:49.1296
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: de3c5ecd-be54-45bb-1f34-08d86aa0e1f9
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT027.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4436
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10e6e93f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=847ae671fe8522d3491a
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102e1cbf900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1671821b900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+847ae671fe8522d3491a@syzkaller.appspotmail.com
-
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-general protection fault, probably for non-canonical address 0xdffffe7100000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x0000138800000008-0x000013880000000f]
-CPU: 0 PID: 6852 Comm: syz-executor045 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ieee80211_key_free+0x34/0x320 net/mac80211/key.c:893
-Code: 50 89 f3 49 89 fc e8 9b 44 81 f9 4d 85 e4 0f 84 ae 00 00 00 48 bd 00 00 00 00 00 fc ff df 4d 8d 7c 24 08 4d 89 fe 49 c1 ee 03 <41> 80 3c 2e 00 74 08 4c 89 ff e8 1d 2b c1 f9 4d 8b 2f 4d 85 ed 0f
-RSP: 0018:ffffc90005377880 EFLAGS: 00010202
-RAX: ffffffff87f3b955 RBX: 0000000000000000 RCX: ffff88808f2fa000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000138800000000
-RBP: dffffc0000000000 R08: ffffffff87ece20b R09: fffffbfff135f936
-R10: fffffbfff135f936 R11: 0000000000000000 R12: 0000138800000000
-R13: dffffc0000000000 R14: 0000027100000001 R15: 0000138800000008
-FS:  000000000155f940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 000000009e0b0000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ieee80211_del_key+0x30c/0x360 net/mac80211/cfg.c:531
- rdev_del_key net/wireless/rdev-ops.h:107 [inline]
- nl80211_del_key+0x437/0x6f0 net/wireless/nl80211.c:4201
- genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
- genl_rcv_msg+0xaf5/0xd70 net/netlink/genetlink.c:731
- netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2470
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0x519/0x800 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44a339
-Code: e8 dc 18 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffeac18b158 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007ffeac18b1c0 RCX: 000000000044a339
-RDX: 0000000000000000 RSI: 0000000020000380 RDI: 0000000000000003
-RBP: 0000000000000032 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 0000000000000000 R14: 0000000000000048 R15: 0000000000000004
-Modules linked in:
----[ end trace 1b70266a49263a4c ]---
-RIP: 0010:ieee80211_key_free+0x34/0x320 net/mac80211/key.c:893
-Code: 50 89 f3 49 89 fc e8 9b 44 81 f9 4d 85 e4 0f 84 ae 00 00 00 48 bd 00 00 00 00 00 fc ff df 4d 8d 7c 24 08 4d 89 fe 49 c1 ee 03 <41> 80 3c 2e 00 74 08 4c 89 ff e8 1d 2b c1 f9 4d 8b 2f 4d 85 ed 0f
-RSP: 0018:ffffc90005377880 EFLAGS: 00010202
-RAX: ffffffff87f3b955 RBX: 0000000000000000 RCX: ffff88808f2fa000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000138800000000
-RBP: dffffc0000000000 R08: ffffffff87ece20b R09: fffffbfff135f936
-R10: fffffbfff135f936 R11: 0000000000000000 R12: 0000138800000000
-R13: dffffc0000000000 R14: 0000027100000001 R15: 0000138800000008
-FS:  000000000155f940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2b37de36c0 CR3: 000000009e0b0000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 07. 10. 20 10:55, Andy Shevchenko wrote:
+> On Wed, Oct 7, 2020 at 11:38 AM Michal Simek <michal.simek@xilinx.com> wrote:
+>> On 06. 10. 20 17:55, muhammad.husaini.zulkifli@intel.com wrote:
+> 
+> ...
+> 
+>>> +             /*
+>>> +              * This is like final gatekeeper. Need to ensure changed voltage
+> 
+> like a final
+> 
+>>> +              * is settled before and after turn on this bit.
+>>> +              */
+> 
+> ...
+> 
+>>> +             /*
+>>> +              * This is like final gatekeeper. Need to ensure changed voltage
+> 
+> Likewise.
+> 
+>>> +              * is settled before and after turn on this bit.
+>>> +              */
+> 
+> ...
+> 
+>>> +     struct device *dev = &pdev->dev;
+>>
+>> nit: I got this but as I see 3 lines below maybe would be better to use
+>> it everywhere but it can be done in separate patch.
+> 
+> In that case I think it would be better to have that patch first. It
+> make follow up code cleaner.
+> 
+> ...
+> 
+>>> +     if (of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sd")) {
+>>> +             struct gpio_desc *uhs;
+>>> +
+>>> +             uhs = devm_gpiod_get_optional(dev, "uhs", GPIOD_OUT_HIGH);
+>>
+>> I can't see change in dt binding to record uhs gpio.
+>>
+>>
+>> Better
+>> sdhci_arasan->uhs_gpio = devm_gpiod_get_optional(dev, "uhs",
+>> GPIOD_OUT_HIGH);
+>>
+>> then you can avoid uhs variable.
+> 
+> Actually it's readability vs. additional variable. It was my
+> suggestion to have a variable to make readability better.
+> Are you insisting on this change?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I understand that it is just about preference. I would use it directly
+not to deal with it. If your preference is via variable I am fine with
+it too.
+
+Thanks,
+Michal
