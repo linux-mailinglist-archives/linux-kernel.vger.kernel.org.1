@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FC52856FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B48285700
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgJGDUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 23:20:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726002AbgJGDUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 23:20:03 -0400
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602040803;
-        bh=TT5caF9gGI6wlMJur5sjzmW/xz0aSwdngqyuB+7s92A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DaBOOpu3HVKe4QF7mSoGAM820SRA5Pt6kbtAWO5nKbUISr1Zsiofb7gTsbsuWMuob
-         7hzEl0RHVu5YETXwhFjddyUgHpu/+Hsi4h6QHTycxqq/ZyyefNXsxVh2EN6ZgSnX2D
-         VZWrZB+FIcwGSsJq3ghSjwm3Pi0bblXOc0c2nUsg=
+        id S1727049AbgJGDUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 23:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgJGDUQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 23:20:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB576C061755;
+        Tue,  6 Oct 2020 20:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3lLD0zvE4MJ6obA1X6t1ltm+Ls0OGSfFYsuDvjn+1S8=; b=MFsCGRvpNGRCh6eLvXW6qRDO6U
+        G6brFP4dYd07RmCnkYA3fdM35fYCPeiKMMESZIx9O57f4aY5UNVSW6K24NAR2Xn/mj0zmCP+dI286
+        EpCC1FbhsCFYKQI0vz1pjzwR3gv/NZS8msguVo1g9yxnYqZy89Y5JNJRScdUyUiUk0+lnvcvifs7/
+        rb47ggI0zem2nvCvPMnSkCz2L19v0sKDFLUSM+bCUxO+rIcb275xOYiD3yFFcYy27sAzyffQlpRgN
+        U4dNouLq2u8MEXdEQlIbeAp+P3DeNM9KYlenMPc18NUgV6yr2EVy4NFF8GaTakhdK+mlDea/lqYPI
+        99wlsaqw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPzzx-0005dE-Db; Wed, 07 Oct 2020 03:20:13 +0000
+Date:   Wed, 7 Oct 2020 04:20:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     jglisse@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
+        Josef Bacik <jbacik@fb.com>
+Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
+Message-ID: <20201007032013.GS20115@casper.infradead.org>
+References: <20201007010603.3452458-1-jglisse@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] selftests/bpf: Fix test_verifier after introducing
- resolve_pseudo_ldimm64
-From:   patchwork-bot+bpf@kernel.org
-Message-Id: <160204080334.2587.12222243524671170166.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Oct 2020 03:20:03 +0000
-References: <20201007022857.2791884-1-haoluo@google.com>
-In-Reply-To: <20201007022857.2791884-1-haoluo@google.com>
-To:     Hao Luo <haoluo@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, andriin@fb.com,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007010603.3452458-1-jglisse@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Tue, Oct 06, 2020 at 09:05:49PM -0400, jglisse@redhat.com wrote:
+> The present patchset just add mapping argument to the various vfs call-
+> backs. It does not make use of that new parameter to avoid regression.
+> I am posting this whole things as small contain patchset as it is rather
+> big and i would like to make progress step by step.
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+Well, that's the problem.  This patch set is gigantic and unreviewable.
+And it has no benefits.  The idea you present here was discussed at
+LSFMM in Utah and I recall absolutely nobody being in favour of it.
+You claim many wonderful features will be unlocked by this, but I think
+they can all be achieved without doing any of this very disruptive work.
 
-On Tue,  6 Oct 2020 19:28:57 -0700 you wrote:
-> Commit 4976b718c355 ("bpf: Introduce pseudo_btf_id") switched
-> the order of check_subprogs() and resolve_pseudo_ldimm() in
-> the verifier. Now an empty prog expects to see the error "last
-> insn is not an the prog of a single invalid ldimm exit or jmp"
-> instead, because the check for subprogs comes first. It's now
-> pointless to validate that half of ldimm64 won't be the last
-> instruction.
-> 
-> [...]
+>  118 files changed, 722 insertions(+), 385 deletions(-)
 
-Here is the summary with links:
-  - [v3] selftests/bpf: Fix test_verifier after introducing resolve_pseudo_ldimm64
-    https://git.kernel.org/bpf/bpf-next/c/bf88a80a0407
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+mmm.
