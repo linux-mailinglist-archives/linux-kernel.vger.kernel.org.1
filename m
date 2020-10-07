@@ -2,87 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C368285C59
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654F2285C5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727993AbgJGKEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:04:06 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51836 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727257AbgJGKEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:04:04 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2F2FE1C0B7A; Wed,  7 Oct 2020 12:04:00 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 12:03:59 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Alexander Dahl <post@lespocky.de>
-Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Alexander Dahl <ada@thorsis.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Jeff LaBundy <jeff@labundy.com>
-Subject: Re: [PATCH v7 03/12] dt-bindings: mfd: Fix schema warnings for
- pwm-leds
-Message-ID: <20201007100359.GC12224@duo.ucw.cz>
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-4-post@lespocky.de>
+        id S1727832AbgJGKEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:04:37 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37832 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727257AbgJGKEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:04:36 -0400
+Received: from zn.tnic (p200300ec2f091000acdeda0e0c7556d4.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1000:acde:da0e:c75:56d4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9927F1EC0266;
+        Wed,  7 Oct 2020 12:04:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602065075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/hE/7UxzjG6+51BYRJlMG+kD5c521uFN7WfItXkkBhs=;
+        b=rpgL/fpc7TTly62n08xRcjjX1BRQOBViwB74t41qFbilaVR25FEubsTwpN2seurCtbGlev
+        3gTSqJtKDdudagSYYnHNhYxKwRpjdA1zfbYFndARKqHK/4vDp/6h9vs/Q7l0kGrFIARU+a
+        2+ETgnM/5QDYmUW4xEAQUBpDsm6eOBY=
+Date:   Wed, 7 Oct 2020 12:04:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Dave Jiang <dave.jiang@intel.com>, dan.j.williams@intel.com,
+        tony.luck@intel.com, ashok.raj@intel.com, kevin.tian@intel.com,
+        fenghua.yu@intel.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/5] Add shared workqueue support for idxd driver
+Message-ID: <20201007100426.GF5607@zn.tnic>
+References: <20201005151126.657029-1-dave.jiang@intel.com>
+ <20201007070132.GT2968@vkoul-mobl>
+ <20201007084856.GE5607@zn.tnic>
+ <20201007095313.GV2968@vkoul-mobl>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="/Uq4LBwYP4y1W6pO"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005203451.9985-4-post@lespocky.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201007095313.GV2968@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 07, 2020 at 03:23:13PM +0530, Vinod Koul wrote:
+> Right my build failed for x86 and I have dropped these now. I would have
+> expected the dependency to be a signed tag to be cross merged when I was
+> asked to merge this.
 
---/Uq4LBwYP4y1W6pO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I can give you a signed tag is you prefer but that's usually not
+necessary. You can simply merge tip's x86/pasid branch, then apply those
+ontop and test.
 
-Hi!
+HTH.
 
-> The node names for devices using the pwm-leds driver follow a certain
-> naming scheme (now).  Parent node name is not enforced, but recommended
-> by DT project.
->=20
->   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
->   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
-> /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.examp=
-le.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9=
-a-f]+)?$', 'pinctrl-[0-9]+'
->         From schema: /home/alex/src/linux/leds/Documentation/devicetree/b=
-indings/leds/leds-pwm.yaml
->=20
-> Signed-off-by: Alexander Dahl <post@lespocky.de>
+-- 
+Regards/Gruss,
+    Boris.
 
-Okay, so I need Rob's ack here, I guess... and rest of the series is
-not really for my tree.
-
-Best regards,
-								Pavel
-							=09
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---/Uq4LBwYP4y1W6pO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX32SjwAKCRAw5/Bqldv6
-8j2vAKCrp2lJsTwvDpUEUfMmPs/16q8FEwCeMqObBKksCi7uVCLOO12E0DIPrBo=
-=7lMU
------END PGP SIGNATURE-----
-
---/Uq4LBwYP4y1W6pO--
+https://people.kernel.org/tglx/notes-about-netiquette
