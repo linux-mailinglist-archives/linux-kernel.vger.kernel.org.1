@@ -2,109 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32160286347
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334DF286327
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729060AbgJGQKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:10:44 -0400
-Received: from mga14.intel.com ([192.55.52.115]:53238 "EHLO mga14.intel.com"
+        id S1729052AbgJGQEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728177AbgJGQKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:10:44 -0400
-IronPort-SDR: OVTLi5NkDmwBnU4+Nw/RXCt6NW2zm1qWLZyufihpN1nRF6rPNcSi2UqMnvfOvlYljEDXFX9yC6
- +cNVs55vLCVw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="164232811"
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="164232811"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:10:42 -0700
-IronPort-SDR: GinqcRlHCJ3bDcOfowgcd6oxwxJCVkK26VAmTdBZcwyPGr8L+Ghw7mGxUC5UN+R3lL0iepQI+w
- 2IbyxqZ3+Y5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="518897146"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Oct 2020 09:10:41 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
-        by linux.intel.com (Postfix) with ESMTP id 6A1ED580641;
-        Wed,  7 Oct 2020 09:10:41 -0700 (PDT)
-Message-ID: <09930d0783d6a5f17f9af872b4fc7a244c6dc5e1.camel@linux.intel.com>
-Subject: Re: [PATCH V8 2/5] mfd: Intel Platform Monitoring Technology support
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        hdegoede@redhat.com, alexey.budankov@linux.intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 07 Oct 2020 09:10:41 -0700
-In-Reply-To: <20201007065751.GA1763265@dell>
-References: <20201003013123.20269-1-david.e.box@linux.intel.com>
-         <20201003013123.20269-3-david.e.box@linux.intel.com>
-         <20201007065751.GA1763265@dell>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1728559AbgJGQEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:04:45 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94FC1216C4;
+        Wed,  7 Oct 2020 16:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602086683;
+        bh=Afpoi0axZ63mSzi9LUVJhYqlciQbhzVpxbkFCpclXHI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YbEwHOL6kLktQ/Z9t+jJPTlmu8CJwv+nelU6Z5CYjF82+UW5enSegQzU8yTye9H9h
+         0mJzWw0fPpELJrlwbVjBuqMfGZx7v2T6lewPGPzmoV4V2GdsCjoAeMHzgEPMZoUGJy
+         GF8Ay1rkhrwvdw0MvcRgPGhvWA5pXo+vQKMFlY1o=
+Date:   Wed, 7 Oct 2020 11:10:44 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-hardening@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 13/14] drm/amd/pm: Replace one-element array with
+ flexible-array in struct phm_ppt_v1_pcie_table
+Message-ID: <1f91ef3bc6aeb8adb7362166f09076ddbe13182f.1602020074.git.gustavoars@kernel.org>
+References: <cover.1602020074.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1602020074.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-07 at 07:57 +0100, Lee Jones wrote:
-> On Fri, 02 Oct 2020, David E. Box wrote:
-> 
-> > Intel Platform Monitoring Technology (PMT) is an architecture for
-> > enumerating and accessing hardware monitoring facilities. PMT
-> > supports
-> > multiple types of monitoring capabilities. This driver creates
-> > platform
-> > devices for each type so that they may be managed by capability
-> > specific
-> > drivers (to be introduced). Capabilities are discovered using PCIe
-> > DVSEC
-> > ids. Support is included for the 3 current capability types,
-> > Telemetry,
-> > Watcher, and Crashlog. The features are available on new Intel
-> > platforms
-> > starting from Tiger Lake for which support is added. This patch
-> > adds
-> > support for Tiger Lake (TGL), Alder Lake (ADL), and Out-of-Band
-> > Management
-> > Services Module (OOBMSM).
-> > 
-> > Also add a quirk mechanism for several early hardware differences
-> > and bugs.
-> > For Tiger Lake and Alder Lake, do not support Watcher and Crashlog
-> > capabilities since they will not be compatible with future product.
-> > Also,
-> > fix use a quirk to fix the discovery table offset.
-> > 
-> > Co-developed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com
-> > >
-> > Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > ---
-> >  MAINTAINERS             |   5 +
-> >  drivers/mfd/Kconfig     |  10 ++
-> >  drivers/mfd/Makefile    |   1 +
-> >  drivers/mfd/intel_pmt.c | 226
-> > ++++++++++++++++++++++++++++++++++++++++
-> >  4 files changed, 242 insertions(+)
-> >  create mode 100644 drivers/mfd/intel_pmt.c
-> 
-> I Acked this back in August.
-> 
-> Any reason why you didn't carry it forward?
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-So that you could review changes made after the Ack. You did and you
-requested fixups which were made. Please let me know if this is not
-preferred. Thanks.
+Refactor the code according to the use of a flexible-array member in
+struct phm_ppt_v1_pcie_table, instead of a one-element array, and use
+the struct_size() helper to calculate the size for the allocation.
 
-David
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+
+Build-tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/5f7db0bc.7Xivn4K83f7XW0ug%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ .../drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h    |  2 +-
+ .../powerplay/hwmgr/process_pptables_v1_0.c   | 22 ++++++++-----------
+ .../powerplay/hwmgr/vega10_processpptables.c  | 10 +++------
+ 3 files changed, 13 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h
+index e11298cdeb30..729615aff126 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h
+@@ -103,7 +103,7 @@ typedef struct phm_ppt_v1_pcie_record phm_ppt_v1_pcie_record;
+ 
+ struct phm_ppt_v1_pcie_table {
+ 	uint32_t count;                                            /* Number of entries. */
+-	phm_ppt_v1_pcie_record entries[1];                         /* Dynamically allocate count entries. */
++	phm_ppt_v1_pcie_record entries[];			   /* Dynamically allocate count entries. */
+ };
+ typedef struct phm_ppt_v1_pcie_table phm_ppt_v1_pcie_table;
+ 
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
+index 426655b9c678..4fa58614e26a 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
+@@ -478,7 +478,7 @@ static int get_pcie_table(
+ 		PPTable_Generic_SubTable_Header const *ptable
+ 		)
+ {
+-	uint32_t table_size, i, pcie_count;
++	uint32_t i, pcie_count;
+ 	phm_ppt_v1_pcie_table *pcie_table;
+ 	struct phm_ppt_v1_information *pp_table_information =
+ 		(struct phm_ppt_v1_information *)(hwmgr->pptable);
+@@ -491,12 +491,10 @@ static int get_pcie_table(
+ 		PP_ASSERT_WITH_CODE((atom_pcie_table->ucNumEntries != 0),
+ 			"Invalid PowerPlay Table!", return -1);
+ 
+-		table_size = sizeof(uint32_t) +
+-			sizeof(phm_ppt_v1_pcie_record) * atom_pcie_table->ucNumEntries;
+-
+-		pcie_table = kzalloc(table_size, GFP_KERNEL);
+-
+-		if (pcie_table == NULL)
++		pcie_table = kzalloc(struct_size(pcie_table, entries,
++						 atom_pcie_table->ucNumEntries),
++				     GFP_KERNEL);
++		if (!pcie_table)
+ 			return -ENOMEM;
+ 
+ 		/*
+@@ -530,12 +528,10 @@ static int get_pcie_table(
+ 		PP_ASSERT_WITH_CODE((atom_pcie_table->ucNumEntries != 0),
+ 			"Invalid PowerPlay Table!", return -1);
+ 
+-		table_size = sizeof(uint32_t) +
+-			sizeof(phm_ppt_v1_pcie_record) * atom_pcie_table->ucNumEntries;
+-
+-		pcie_table = kzalloc(table_size, GFP_KERNEL);
+-
+-		if (pcie_table == NULL)
++		pcie_table = kzalloc(struct_size(pcie_table, entries,
++						 atom_pcie_table->ucNumEntries),
++				     GFP_KERNEL);
++		if (!pcie_table)
+ 			return -ENOMEM;
+ 
+ 		/*
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
+index 3d7f915381c8..535404de78a2 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
+@@ -784,7 +784,7 @@ static int get_pcie_table(struct pp_hwmgr *hwmgr,
+ 		struct phm_ppt_v1_pcie_table **vega10_pcie_table,
+ 		const Vega10_PPTable_Generic_SubTable_Header *table)
+ {
+-	uint32_t table_size, i, pcie_count;
++	uint32_t i, pcie_count;
+ 	struct phm_ppt_v1_pcie_table *pcie_table;
+ 	struct phm_ppt_v2_information *table_info =
+ 			(struct phm_ppt_v2_information *)(hwmgr->pptable);
+@@ -795,12 +795,8 @@ static int get_pcie_table(struct pp_hwmgr *hwmgr,
+ 			"Invalid PowerPlay Table!",
+ 			return 0);
+ 
+-	table_size = sizeof(uint32_t) +
+-			sizeof(struct phm_ppt_v1_pcie_record) *
+-			atom_pcie_table->ucNumEntries;
+-
+-	pcie_table = kzalloc(table_size, GFP_KERNEL);
+-
++	pcie_table = kzalloc(struct_size(pcie_table, entries, atom_pcie_table->ucNumEntries),
++			     GFP_KERNEL);
+ 	if (!pcie_table)
+ 		return -ENOMEM;
+ 
+-- 
+2.27.0
 
