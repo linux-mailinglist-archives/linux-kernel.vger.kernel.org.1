@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A95285C30
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B38285C36
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgJGKAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgJGKAV (ORCPT
+        id S1727559AbgJGKCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:02:17 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51530 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbgJGKCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:00:21 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A9EC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 03:00:21 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a5so1329727ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 03:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WN6rPq3Jb2J9s19F4btsXYpY+lL25Qny3tbdIXW+Fas=;
-        b=Xf/ohE0wJ/Mz6aWYOKXAuP+EJO8mCAmm7j8DEnLoSRGWBvnOLA4vk3YceEz5Vi6X6k
-         CqnOFwimTOxcuGdy7tp0aMTABW9I5RCyx+pNH/XrKcud2SnKG6h0+ZMKht+C+lPdmF60
-         sl+j3WYLSp27WqL9pGrgAXC6SNccVFELBqAMTwK3VZYCJLNYqsXQHzg7l8V42NtfJrnJ
-         1dy+IAZcsriYaUXE4R9AKT+zknUk2lpARSY7aaZC/oax7zGT5tKgK4OlkeWz0Xv7WbeW
-         8eCXKmZHoGpNrhfSFDAvbQyVPV3Sv2ReEH1dJWtRP3AtuZ9Sd6QIbiwrcQSWomrqjCYw
-         N7LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WN6rPq3Jb2J9s19F4btsXYpY+lL25Qny3tbdIXW+Fas=;
-        b=gOqad17wIGwXrsu57uTSDPgifePqVWYKS7DmkTE8pxRXUr3QVquJOa/B8qdMZU9m0F
-         ySsDEiNZx5+pNW4ICQIu+tWhkGvyNzDGKZn5uBNye0IfxX6FtbpQp6Dq7Cq2wN44+3KU
-         jaf6YKU+KESi4WhudKYZPtiwj/vGG+Dot6uCspQllJLzTP1oKeetLw34+KjF4ecs2CyS
-         e4XWCGGH24UdhwFsTqssHaCwzORO8VWPdhf5/+h+aYl0nrSqsDqwwDk8PXhYRS3GQ+mm
-         tAWduQ/IPJ4BIBiBaROnf73KBxZAm+2qRsjH0SPgli2TLIh2YvKmmlF2ozbNCn3rEIyM
-         gttg==
-X-Gm-Message-State: AOAM531LVRBx72I2lexgXaHMzezTlbH+zh2qTcva6CRlCvNh6AHbfzQl
-        2El8HVYuBBQnwTdHKALI4JG5h1Vb8bzhcwKZQ3Tq9A==
-X-Google-Smtp-Source: ABdhPJykVCxs0SsnjDZ1ywvySwZi3o1buJA52HzDTcMWUwgQKxyxvgYNAvwkzcibJHOwEK9PKpmzsQ6GIxv2xTjik0I=
-X-Received: by 2002:a2e:810e:: with SMTP id d14mr1010594ljg.100.1602064819422;
- Wed, 07 Oct 2020 03:00:19 -0700 (PDT)
+        Wed, 7 Oct 2020 06:02:16 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A47C41C0B7A; Wed,  7 Oct 2020 12:02:13 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 12:02:13 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Alexander Dahl <ada@thorsis.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v7 02/12] dt-bindings: leds: Convert pwm to yaml
+Message-ID: <20201007100213.GA12224@duo.ucw.cz>
+References: <20201005203451.9985-1-post@lespocky.de>
+ <20201005203451.9985-3-post@lespocky.de>
 MIME-Version: 1.0
-References: <20201005190939.21016-1-peron.clem@gmail.com>
-In-Reply-To: <20201005190939.21016-1-peron.clem@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 7 Oct 2020 12:00:08 +0200
-Message-ID: <CACRpkdacfJ5G9Z=cSnQhCj8ccYs+QsbDRPZ3JSSdEMVusYKR0A@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: pinctrl: sunxi: Allow pinctrl with more
- interrupt banks
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
+Content-Disposition: inline
+In-Reply-To: <20201005203451.9985-3-post@lespocky.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 9:09 PM Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.co=
-m> wrote:
 
-> Recently introduced Allwinner A100 pinctrl block has 7 interrupts.
->
-> This trig a warning when running dtb_checks:
-> sun50i-a100-allwinner-perf1.dt.yaml: pinctrl@300b000: interrupts: [...] i=
-s too long
->         From schema: .../allwinner,sun4i-a10-pinctrl.yaml
->
-> Fix this by allowing up to 7 interrupts.
->
-> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+--y0ulUmNC+osPPQO6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Patch applied.
+On Mon 2020-10-05 22:34:41, Alexander Dahl wrote:
+> The example was adapted in the following ways:
+>=20
+> - make use of the now supported 'function' and 'color' properties
+> - remove pwm nodes, those are documented elsewhere
+> - align node names to new dt schema rules and dt recommendations
+>=20
+> License was not explicitly set before.  The license set now is
+> recommended by DT project.
+>=20
+> Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> ---
+>=20
+> Notes:
+>     NOTE: Due to license set/change this needs Acked-by or Signed-off-by =
+=66rom:
+>       * Peter Ujfalusi
+>       * Russell King
 
-Yours,
-Linus Walleij
+Russell King authored two lines of the documentation. He can state
+objections now, but I'll not wait for his Acked-by.
+
+>     That was discussed already with Peter (original author), still waiting
+>     for Acked-by though =E2=80=A6
+
+If Peter was okay with license change, I guess we can continue here.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--y0ulUmNC+osPPQO6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX32SJQAKCRAw5/Bqldv6
+8ih1AKC89CUSap/s2xV4Q89wc/i22r49KACcDa86v1lffE+ltjBCel8iiRX1DGs=
+=H5CR
+-----END PGP SIGNATURE-----
+
+--y0ulUmNC+osPPQO6--
