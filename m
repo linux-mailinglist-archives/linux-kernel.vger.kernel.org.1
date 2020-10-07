@@ -2,101 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0030285A40
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A053285A42
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgJGIPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:15:16 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:43356 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgJGIPO (ORCPT
+        id S1727858AbgJGIPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgJGIPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:15:14 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0978F7pD107578;
-        Wed, 7 Oct 2020 03:15:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602058507;
-        bh=wqXQa7yDqeTfTN4+dVx9Ap6+imKExZWyNom9gVP47/I=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=riBrpFE3gjypVvqiCcriCxFJndWJBkIcq0JtpIZ7tMTQXshIrRpPFZpCMF4DxYkRo
-         IWpuO8gKC9WTkKQYeylTJ+gs+Auqm/sf7nL6RI1Zefz3U1gxxhlcIVBhM6M1XMzjii
-         NKuqVoBNemdry7bhYM1anTTo7Nt+c9PT9KSzCMtQ=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0978F7VH001165
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Oct 2020 03:15:07 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
- 2020 03:15:04 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 7 Oct 2020 03:15:04 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0978F1Xq119443;
-        Wed, 7 Oct 2020 03:15:02 -0500
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCAyLzJdIHVzYjogY2RuczM6IFZhcmlhYmxlIOKAmGxl?=
- =?UTF-8?Q?ngth=e2=80=99_set_but_not_used?=
-To:     Pawel Laszczak <pawell@cadence.com>, <balbi@kernel.org>
-CC:     <peter.chen@nxp.com>, <nsekhar@ti.com>,
-        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>
-References: <20201007033932.23050-1-pawell@cadence.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <8994106d-2cc5-fa2c-bbcc-6526632ff80b@ti.com>
-Date:   Wed, 7 Oct 2020 11:15:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 7 Oct 2020 04:15:43 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB7BC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 01:15:43 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e20so976994otj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 01:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pzPWUp2kZLxPkBgPS5CFIuIDZhRYDXybDPGOe+gkyjk=;
+        b=Sk5u8ZJACW67ugyj/T0pqGfKZwFhZ6QzSMPb8GHncNSoFSXz5ceYEjUiMY2g1VWlur
+         akMu3IMZ04idCFQMJIH1qTYbGm9PtJrZDJY7cTSUMyHD2kqt0HmBgZwTu+2zWdQFbvWW
+         DnFXUIWNgYS5d6BaKP/BYCJ/koUmUcIdl08hI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pzPWUp2kZLxPkBgPS5CFIuIDZhRYDXybDPGOe+gkyjk=;
+        b=bDRvuIOMpWLz4XFFbbN4lPwCr9hexXNrCvb0O6wBt39mw+qAJq35oB1nZXGXg+OiP4
+         kSdX7P7bIJvFRzfbtgtArB9G93VWD6EqzmwtbljldIAR8BHTfPt46suTYh//4A5VWUTg
+         07lVDcg6jHPD4IOzBtuO8HJoDmL5apqZktYNjTAe1ylpumj0ku/s5Bu2/4StNRWpT2qd
+         cx2Pof05Mbcs62zywuNi3BoEQQFQI42knsK+FBYTGFQRYiNjDrXCOvw9wza7BBcDcf3x
+         +VgPSoIxDJGsWdkyaySkRwL221Qb2ZmkqpvMSZd9j5UrwSEWW8eFSMHCVfZ4wsQv+xnA
+         sQ6w==
+X-Gm-Message-State: AOAM533HXUHp2o9UUtNqDrERmfh9X7pLBzpEbDoWrvFxHmuiS7k8hZTG
+        oMl2c2rNCeId7OoRIi9fhYtVXy7HP9zpA+Rks1PtMg==
+X-Google-Smtp-Source: ABdhPJy+YbYFDPa0+x1zr9PWGe0p0SDWhe7AMwlm685FYFp9ntA32GbX8DL6dp85EDg+Q3d+DRjums1alXx8QoNeihU=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr1110002otj.303.1602058542439;
+ Wed, 07 Oct 2020 01:15:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201007033932.23050-1-pawell@cadence.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201004154340.1080481-1-leon@kernel.org> <20201005235650.GA89159@nvidia.com>
+ <20201006104122.GA438822@phenom.ffwll.local> <20201006114627.GE5177@ziepe.ca>
+In-Reply-To: <20201006114627.GE5177@ziepe.ca>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 7 Oct 2020 10:15:31 +0200
+Message-ID: <CAKMK7uG5UOS5360_HjJyroLE8b+6wrhT291PaqjFbii+BT7+Hg@mail.gmail.com>
+Subject: Re: [PATCH rdma-next v5 0/4] Dynamicaly allocate SG table from the pages
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 7, 2020 at 9:22 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Tue, Oct 06, 2020 at 12:41:22PM +0200, Daniel Vetter wrote:
+> > On Mon, Oct 05, 2020 at 08:56:50PM -0300, Jason Gunthorpe wrote:
+> > > On Sun, Oct 04, 2020 at 06:43:36PM +0300, Leon Romanovsky wrote:
+> > > > This series extends __sg_alloc_table_from_pages to allow chaining of
+> > > > new pages to already initialized SG table.
+> > > >
+> > > > This allows for the drivers to utilize the optimization of merging contiguous
+> > > > pages without a need to pre allocate all the pages and hold them in
+> > > > a very large temporary buffer prior to the call to SG table initialization.
+> > > >
+> > > > The second patch changes the Infiniband driver to use the new API. It
+> > > > removes duplicate functionality from the code and benefits the
+> > > > optimization of allocating dynamic SG table from pages.
+> > > >
+> > > > In huge pages system of 2MB page size, without this change, the SG table
+> > > > would contain x512 SG entries.
+> > > > E.g. for 100GB memory registration:
+> > > >
+> > > >              Number of entries      Size
+> > > >     Before        26214400          600.0MB
+> > > >     After            51200            1.2MB
+> > > >
+> > > > Thanks
+> > > >
+> > > > Maor Gottlieb (2):
+> > > >   lib/scatterlist: Add support in dynamic allocation of SG table from
+> > > >     pages
+> > > >   RDMA/umem: Move to allocate SG table from pages
+> > > >
+> > > > Tvrtko Ursulin (2):
+> > > >   tools/testing/scatterlist: Rejuvenate bit-rotten test
+> > > >   tools/testing/scatterlist: Show errors in human readable form
+> > >
+> > > This looks OK, I'm going to send it into linux-next on the hmm tree
+> > > for awhile to see if anything gets broken. If there is more
+> > > remarks/tags/etc please continue
+> >
+> > An idea that just crossed my mind: A pin_user_pages_sgt might be useful
+> > for both rdma and drm, since this would avoid the possible huge interim
+> > struct pages array for thp pages. Or anything else that could be coalesced
+> > down into a single sg entry.
+> >
+> > Not sure it's worth it, but would at least give a slightly neater
+> > interface I think.
+>
+> We've talked about it. Christoph wants to see this area move to a biovec
+> interface instead of sgl, but it might still be worthwhile to have an
+> interm step at least as an API consolidation.
 
+Hm but then we'd need a new struct for the mapped side of things
+(which would still be what you get from dma-buf). That would be quite
+a bit of work to roll out everywhere, and sgt isn't such a huge misfit
+for passing buffer object mappings and system memory backing storage
+around, and hence what we (very slowly) converging drivers/gpu towards
+over the past 10 years or so.
 
-On 07/10/2020 06:39, Pawel Laszczak wrote:
-> Patch removes not used variable 'length' from
-> cdns3_wa2_descmiss_copy_data function.
-> 
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+And moving the dma_map step out of dma-buf doesn't work, because some
+of the use-cases we have is for very special iommus which are managed
+by the gpu driver directly. Stuff that e.g. rotates/retiles/compresses
+on the fly, and is accessible by other (gfx related like video code,
+camera, ..) devices. Not something I expect to ever be relevant for
+rdma since this exist mostly on some small soc, but it's a thing.
+Without that dma-buf could hand out biovec for struct_page backed
+stuff, or some pfn_vec for the p2p stuff.
 
-Fixes: commit 141e70fef4ee ("usb: cdns3: gadget: need to handle sg case for workaround 2 case")
+Anyway was just an idea, I guess we'll have to live with some
+impedance mismatch since rolling out the one an only iovec structure
+which suits everyone is I think impossible :-)
 
-Acked-by: Roger Quadros <rogerq@ti.com>
+> Avoiding the page list would be complicated as we'd somehow have to
+> code share the page table iterator scheme.
 
-> ---
->   drivers/usb/cdns3/gadget.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
-> index 6e7b70a2e352..692acf7b9b14 100644
-> --- a/drivers/usb/cdns3/gadget.c
-> +++ b/drivers/usb/cdns3/gadget.c
-> @@ -506,7 +506,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
->   
->   	while (!list_empty(&priv_ep->wa2_descmiss_req_list)) {
->   		int chunk_end;
-> -		int length;
->   
->   		descmiss_priv_req =
->   			cdns3_next_priv_request(&priv_ep->wa2_descmiss_req_list);
-> @@ -517,7 +516,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
->   			break;
->   
->   		chunk_end = descmiss_priv_req->flags & REQUEST_INTERNAL_CH;
-> -		length = request->actual + descmiss_req->actual;
->   		request->status = descmiss_req->status;
->   		__cdns3_descmiss_copy_data(request, descmiss_req);
->   		list_del_init(&descmiss_priv_req->list);
-> 
-
+We're (slowly) getting towards thp for vram mappings and everything so
+I guess for drivers/gpu we might make that happen. But yeah it'd be
+not so pretty I think.
+-Daniel
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
