@@ -2,234 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F212428628E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25D6286297
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728780AbgJGPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgJGPsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:48:06 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B69C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 08:48:06 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id n6so2801323ioc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 08:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aWF1TF4KdnCr5qcDMXrCULVaedzfR/1QcSgId7V+J8g=;
-        b=coLv6p8tfIE3Ndebrf76d03R1yv6+Fwv7Rd1FtPnxp1JXDjpON6qZdEFE6AqAqlJkZ
-         xaUgkGmOtkiosAIDVmuLYfyfLSVOLJmNwMYCgxMp84EJdqWwKWl7BzXFXJJvTBFaOmrJ
-         ZdiGNFL/M/C2YQqAwWIsxKk8qBnYLUvg59CmU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aWF1TF4KdnCr5qcDMXrCULVaedzfR/1QcSgId7V+J8g=;
-        b=IgXr3W04/IaSHWk32eSVsz2X5OZvu31zxHfBi0kQBdfJwT15OHNWd2jCW5eHE0Z48I
-         YavQN2ah+KvgDE6jadx4v40jn8gccY4zDdTOF69VWXGLubzSrXedwatpnCQM7Xd04c7m
-         d7HvBSm5iYQ5NBk3Fisq0Vw7RAIacFTzWIflWCLJH7EtNLm3jiCVG3P54Tqa1TwIv4WW
-         WfA+Bmi1wUgbEMF3KGzedTAuWXCc+/BvtFTcr9J/BDHaB0W+tcfmqnernCvhfcD44WuP
-         5sClSJpoKe/DlrYrPp7U/GBR35lT5W+ejqKwsPxYPpT6rQIvR+HnG+PpnDwSe4THnEm3
-         Ravw==
-X-Gm-Message-State: AOAM532BdVOSpI9YsZZzL+DsEiNcZKNxo8RrDeqc9Nwn6h69o8onz9K0
-        csGNu6mwqGmvwGjr8yCEqXqDNA==
-X-Google-Smtp-Source: ABdhPJy05RgIbfJWaL3wudrFoFVSQ3A26qp8aJa2N34IBM2lNUShrWR7XXWSRigfcwNScDOndzon8Q==
-X-Received: by 2002:a05:6602:2dcf:: with SMTP id l15mr2827789iow.192.1602085686070;
-        Wed, 07 Oct 2020 08:48:06 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v17sm1215509ilm.48.2020.10.07.08.48.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 08:48:05 -0700 (PDT)
-Subject: Re: KASAN: null-ptr-deref Write in event_handler
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <000000000000810a4405b0ece316@google.com>
- <CAAeHK+xWQp87S=bF2RfUjcudGaLVjk3yKLL-bxRzVM=YNRtzRA@mail.gmail.com>
- <2947473d-76cd-a663-049a-4d51a97e2a3e@linuxfoundation.org>
- <4b6c9d53-a4de-8749-e0b1-055dbb42703b@linuxfoundation.org>
- <CAAeHK+wZGwovnT969F-aq+EzH8-K21GxJ7YJ0S0Ynd4GM_B4kA@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <5e0e21bd-5cc9-f1d8-d45e-ec7f10edbfba@linuxfoundation.org>
-Date:   Wed, 7 Oct 2020 09:48:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728803AbgJGPuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:50:50 -0400
+Received: from mail-eopbgr140070.outbound.protection.outlook.com ([40.107.14.70]:16673
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727005AbgJGPut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:50:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jCaqn7da06DasA0cyvi6e/D37BlEMwxeqITjVGC4o9ECam/B9KppB/tA1Coe8umyOXY/ekOqPFarxC/wUHv7cKeLZ1SBpAgfrTBYN71mrVsRO7VNH/MxN7OxB9+d8A5FzNotjLvw+zkI1GEMD2DWqsbnoKqfDZt4OlMrc7qpdlmYtigrT0lLtkHwV8QZoaFfbEm/0cd1BP5NiOr8uNPzXGZJigBaJ1MWsXXfOzFbcY6IxYlNkDusjYshtn1ZXAOLKHhAM8UARrrjQ1FBQW28nTBfdvT3yPilzF/uu5XSrj9AKRN+cpcqcHQvmZUGR0zdIopxEJOTCeXCxzMNrwdXNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jAWaZM2qvBc7l8N5xPr9kV8WvhQkT+CCR2Clg3EazBA=;
+ b=hhtWc6LlgzP/N+kY9JkaB7R6ytc8kPsXpDoSoEhG+R7nwNp7Uj44vRbt8E/r04NQ8AypamuzLbZQGkUCTu2q+z7n5o/2beLKH7K/xaDHfViKNi4rLHCb/74pB5kG2uLbmmTCuoUNcP+MIZlH7O/Rl1iiC4LI3Jvg6kc1ApTZ876M8+l6qLL2ttpqtEP1ZqEK6H+HmErMkLq3aOhXlE7WsgQNi07YzVBswFTJkh005xq2IN9mcjaPumhuFouboNdVPF/bgGE76jHMt1ptNKHHZISFotFqxKSNIU/kdbOaWf0+q+ZJFPkOjEQthomF47XpNrV049sU0F0UqHbgBESUNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jAWaZM2qvBc7l8N5xPr9kV8WvhQkT+CCR2Clg3EazBA=;
+ b=UeXFfN9eSNJNKqDfvuhMbghuDOUP7qsECP+/bEfBXhGXtJ/u23PMLZvnxfC/N4NZZFf/jNXkq2h7KEtI8OnEA9i6NZIvb9OPzSyR7ESsITZ1IYEeVIKoaSzlF0HmqfS6z960s/wGLYX5AOC/iw1nuzE0tXi6Z6lQdEOzAbTZhEk=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR04MB4929.eurprd04.prod.outlook.com (2603:10a6:208:c8::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Wed, 7 Oct
+ 2020 15:50:44 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a997:35ae:220c:14ef]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a997:35ae:220c:14ef%7]) with mapi id 15.20.3433.044; Wed, 7 Oct 2020
+ 15:50:44 +0000
+Date:   Wed, 7 Oct 2020 21:20:11 +0530
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Grant Likely <grant.likely@arm.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v1 6/7] net: dpaa2-mac: Add ACPI support for
+ DPAA2 MAC driver
+Message-ID: <20201007155011.GA27347@lsv03152.swis.in-blr01.nxp.com>
+References: <20200930160430.7908-1-calvin.johnson@oss.nxp.com>
+ <20200930160430.7908-7-calvin.johnson@oss.nxp.com>
+ <0e433de7-f569-0373-59a7-16f2999902d4@arm.com>
+ <20201003173949.GB28093@lsv03152.swis.in-blr01.nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201003173949.GB28093@lsv03152.swis.in-blr01.nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: SG2PR03CA0104.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::32) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+wZGwovnT969F-aq+EzH8-K21GxJ7YJ0S0Ynd4GM_B4kA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR03CA0104.apcprd03.prod.outlook.com (2603:1096:4:7c::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.15 via Frontend Transport; Wed, 7 Oct 2020 15:50:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 79800f69-7d2f-4617-fe62-08d86ad8ba9e
+X-MS-TrafficTypeDiagnostic: AM0PR04MB4929:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB4929EFD971805508030E08E3D20A0@AM0PR04MB4929.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JSD+Mc2dTK5eAUBmebs662meR8GFbMesF4gft57a/gJBKhDqjNKx0twNVVfuTMnd2tMVpJWpdRBUwmG0TwPY2++dNaJMW/9jSLvFRro44myXHzPV3nhk40Uq+ioCr5PH7NaoNaJENJpsuYYJTo1BBSL0JyCyT/mgXVuXHDfr2VRUciCLLj0Ob72DALbaF3BJ2n2BUX+uqst0gJGrC7B40eBuEQrlfX1xsKDYzRmtvosI+zyKGaU2cqcIGXJSFMH96AW6ApFRetxHNAWWqMTepmxKnpxFz2peONjki0KlzS1EZXvsrXIgiLpButdXQzbP2yOjpDI33ACZU4h/5k/vk1DYRxGU5NcqZS7xu1Th07Q7kG5fcUmaFAjncgg4sjdV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(396003)(39860400002)(346002)(1076003)(2906002)(8676002)(8936002)(7416002)(956004)(33656002)(55016002)(4326008)(66556008)(316002)(66946007)(66476007)(52116002)(7696005)(478600001)(186003)(9686003)(26005)(55236004)(5660300002)(6666004)(1006002)(44832011)(6506007)(54906003)(6916009)(86362001)(16526019)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: pkvKo5j/1zW9czBezLnsupE80dkMGafL0XqNQt0ImG03QIlEmN4xewLQifj22G0g+PwpLJM/7VdIvnc9cmQaa9N9tOq2BpyKtug23mddLUIhNRsYISdgFhEU297N8KPXzoyeHAMAyIAe4Jn0r4eONImacY8drmn00CCcoixAbXDEGFGxa92DbiNWwwbgvZVKJm794BrxskafhfPX+0HGGe/9YTOHnawwK9dYC66eCgykyOD3rMAko6Vtv3SZrdcqXFMlRfjAWRvbTVNOzwyciRS8Ji1/EhZTBm52qH9JMdKAab3kw7tGeyKrzjYZMLk8KMgeRO8SQZ55dJAmcWC6j6asmrMTlRRpC3kY8a7ygv50aYQhPFOJlB6sE4CvjopliCLajPgl+DwkFXVLLbIRes/S6EXMGNDYEXDIUTiRi/oAg39fNDnAnndRqrh2ejNd9GYOyommj6WAVibz03hiSNOgsqIvBXuMca2kYRps0ZqIuA2t20+qzFIsNiIve2a0OKacAlmGPg6Tz43faMoKrb62v8Oj1xFyE9UrvmXjjh+XxWQw5ayy3GT6ZyKkr5iTJi5JV0IwOG96RSV4nBqOU6xoi/LLeSPNt7LpeaWnfOzMsJgOWJbGAmFosWjooQz4B0057DblhV1ZVncIwJigwg==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79800f69-7d2f-4617-fe62-08d86ad8ba9e
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 15:50:44.5752
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nFq70i+iWYdvtHEuiAWpmQGyWdLL4TfWzND03RGF4Y7RFrUYHqtp6BUfLHITjqtU44FzPuZhUhEkuONxJe/j0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4929
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 8:28 AM, Andrey Konovalov wrote:
-> On Wed, Oct 7, 2020 at 3:56 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 10/5/20 2:44 PM, Shuah Khan wrote:
->>> On 10/5/20 8:04 AM, Andrey Konovalov wrote:
->>>> On Mon, Oct 5, 2020 at 3:59 PM syzbot
->>>> <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com> wrote:
->>>>>
->>>>> Hello,
->>>>>
->>>>> syzbot found the following issue on:
->>>>>
->>>>> HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of
->>>>> git://git.kernel.or..
->>>>> git tree:       upstream
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15781d8f900000
->>>>> kernel config:
->>>>> https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
->>>>> dashboard link:
->>>>> https://syzkaller.appspot.com/bug?extid=bf1a360e305ee719e364
->>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>>>> syz repro:
->>>>> https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
->>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1364f367900000
->>>>>
->>>>> IMPORTANT: if you fix the issue, please add the following tag to the
->>>>> commit:
->>>>> Reported-by: syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com
->>>>>
->>>>> vhci_hcd: stop threads
->>>>> vhci_hcd: release socket
->>>>> vhci_hcd: disconnect device
->>>>> ==================================================================
->>>>> BUG: KASAN: null-ptr-deref in instrument_atomic_write
->>>>> include/linux/instrumented.h:71 [inline]
->>>>> BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed
->>>>> include/asm-generic/atomic-instrumented.h:142 [inline]
->>>>> BUG: KASAN: null-ptr-deref in refcount_add
->>>>> include/linux/refcount.h:201 [inline]
->>>>> BUG: KASAN: null-ptr-deref in refcount_inc
->>>>> include/linux/refcount.h:241 [inline]
->>>>> BUG: KASAN: null-ptr-deref in get_task_struct
->>>>> include/linux/sched/task.h:104 [inline]
->>>>> BUG: KASAN: null-ptr-deref in kthread_stop+0x90/0x7e0
->>>>> kernel/kthread.c:591
->>>>> Write of size 4 at addr 000000000000001c by task kworker/u4:5/2519
->>>>>
->>>>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Not tainted 5.9.0-rc7-syzkaller #0
->>>>> Hardware name: Google Google Compute Engine/Google Compute Engine,
->>>>> BIOS Google 01/01/2011
->>>>> Workqueue: usbip_event event_handler
->>>>> Call Trace:
->>>>>    __dump_stack lib/dump_stack.c:77 [inline]
->>>>>    dump_stack+0x198/0x1fd lib/dump_stack.c:118
->>>>>    __kasan_report mm/kasan/report.c:517 [inline]
->>>>>    kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
->>>>>    check_memory_region_inline mm/kasan/generic.c:186 [inline]
->>>>>    check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
->>>>>    instrument_atomic_write include/linux/instrumented.h:71 [inline]
->>>>>    atomic_fetch_add_relaxed
->>>>> include/asm-generic/atomic-instrumented.h:142 [inline]
->>>>>    refcount_add include/linux/refcount.h:201 [inline]
->>>>>    refcount_inc include/linux/refcount.h:241 [inline]
->>>>>    get_task_struct include/linux/sched/task.h:104 [inline]
->>>>>    kthread_stop+0x90/0x7e0 kernel/kthread.c:591
->>>>>    vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
->>>>>    event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
->>>>>    process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
->>>>>    worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->>>>>    kthread+0x3b5/0x4a0 kernel/kthread.c:292
->>>>>    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->>>>> ==================================================================
->>>>> Kernel panic - not syncing: panic_on_warn set ...
->>>>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Tainted: G    B
->>>>> 5.9.0-rc7-syzkaller #0
->>>>> Hardware name: Google Google Compute Engine/Google Compute Engine,
->>>>> BIOS Google 01/01/2011
->>>>> Workqueue: usbip_event event_handler
->>>>> Call Trace:
->>>>>    __dump_stack lib/dump_stack.c:77 [inline]
->>>>>    dump_stack+0x198/0x1fd lib/dump_stack.c:118
->>>>>    panic+0x382/0x7fb kernel/panic.c:231
->>>>>    end_report+0x4d/0x53 mm/kasan/report.c:104
->>>>>    __kasan_report mm/kasan/report.c:520 [inline]
->>>>>    kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
->>>>>    check_memory_region_inline mm/kasan/generic.c:186 [inline]
->>>>>    check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
->>>>>    instrument_atomic_write include/linux/instrumented.h:71 [inline]
->>>>>    atomic_fetch_add_relaxed
->>>>> include/asm-generic/atomic-instrumented.h:142 [inline]
->>>>>    refcount_add include/linux/refcount.h:201 [inline]
->>>>>    refcount_inc include/linux/refcount.h:241 [inline]
->>>>>    get_task_struct include/linux/sched/task.h:104 [inline]
->>>>>    kthread_stop+0x90/0x7e0 kernel/kthread.c:591
->>>>>    vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
->>>>>    event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
->>>>>    process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
->>>>>    worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->>>>>    kthread+0x3b5/0x4a0 kernel/kthread.c:292
->>>>>    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->>>>> Kernel Offset: disabled
->>>>> Rebooting in 86400 seconds..
->>>>
->>>> Hi Valentina and Shuah,
->>>>
->>>> There appears to be a race condition in the USB/IP vhci_hcd shutdown
->>>> procedure. It happens quite often during fuzzing with syzkaller, and
->>>> prevents us from going deeper into the USB/IP code.
->>>>
->>>> Could you advise us what would be the best fix for this?
->>>>
->>>
->>> Hi Andrey,
->>>
->>> Reading the comments for this routine, looks like there is an assumption
->>> that context begins cleanup and race conditions aren't considered.
->>>
->>> The right fix is holding vhci->lock and vdev->priv_lock to protect
->>> critical sections in this routine. I will send a patch for this.
->>>
->>
->> Hi Andrey,
->>
->> I have been unable to reproduce the problem with the reproducer
->> so far. You mentioned it happens quite often.
->>
->> - matched config with yours
->> - load vhci_hcd module and run the reproducer
+On Sat, Oct 03, 2020 at 11:09:49PM +0530, Calvin Johnson wrote:
+> Hi Grant,
 > 
-> Hm, if you matched the config, then the module should be built-in?
-> 
+> On Fri, Oct 02, 2020 at 12:22:37PM +0100, Grant Likely wrote:
+> > 
+> > 
 
-Right. I did notice that your config has built-in. This shouldn't
-matter, I have a kernel built with it static. I will try it to
-see if it makes a difference.
+<snip>
 
->>
->> I do see the messages during shutdown - stop threads etc.
->>
->> What am I missing?
+> > > -static int dpaa2_mac_get_if_mode(struct device_node *node,
+> > > +static int dpaa2_mac_get_if_mode(struct fwnode_handle *dpmac_node,
+> > >   				 struct dpmac_attr attr)
+> > >   {
+> > >   	phy_interface_t if_mode;
+> > >   	int err;
+> > > -	err = of_get_phy_mode(node, &if_mode);
+> > > -	if (!err)
+> > > -		return if_mode;
+> > > +	err = fwnode_get_phy_mode(dpmac_node);
+> > > +	if (err > 0)
+> > > +		return err;
+> > 
+> > Is this correct? The function prototype from patch 2 is:
+> > 
+> > struct fwnode_handle *fwnode_get_phy_node(struct fwnode_handle *fwnode)
+> > 
+> > It returns struct fwnode_handle *. Does this compile?
 > 
-> This appears to be a race that requires precise timings. I failed to
-> reproduce it with the C reproducer, but I managed to reproduce it with
-> the syzkaller repro program:
-> 
-> https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
-> 
-> To do that you need to build syzkaller, and copy ./bin/syz-execprog
-> and ./bin/syz-executor into your testing environment, and then do:
-> 
-> ./syz-execprog -sandbox=none -repeat=0 -procs=6 ./repro.prog
-> 
+> Will correct this.
 
-Thanks for the tips on your environment.
+Sorry, this change looks correct to me. Actully, the function prototype is:
+int fwnode_get_phy_mode(struct fwnode_handle *fwnode);
+It is from drivers/base/property.c.
 
-thanks,
--- Shuah
+fwnode_get_phy_node() defined in patch-2 is used in phylink_fwnode_phy_connect()
+
+The confusion maybe due to one letter difference in the fn names.
+
+Thanks
+Calvin
