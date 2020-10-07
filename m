@@ -2,103 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434E3286A6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B28B286A70
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbgJGVqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgJGVqi (ORCPT
+        id S1728707AbgJGVth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:49:37 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10433 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJGVth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:46:38 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F05EC061755;
-        Wed,  7 Oct 2020 14:46:37 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id s17so2035045qvr.11;
-        Wed, 07 Oct 2020 14:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YqNUjigFoAXo2QafX/TTeVVXBpaXL3Be2L3u2zpujGM=;
-        b=nOiCFVqKn9qpKVGgPb0MgXhOqUoxudL61nKQkOjg6IWYyDk7Mo60sg2BiYT+qgKZvC
-         9VaQkgDLA3ZFv1YeeJC8BhF9M8X0SCrRrSiTt+2qetxnyXbH6atyoKgXDCG+UE40ZIzZ
-         86eXvROXYmV9sEIjqxwP/Q0MBgczL3xkhw3tZ7MCJgP+byDpqTsBY2BbJSpPN9Wz1b9k
-         cH5Ixg1DSgILYeRCDfE7unh/IUxVWkV3xpA7GsvrNGL/W/WZFUh6bZOOue7NP1YXbeOy
-         HjjcZn6gKV+UzkojRivqPU3griS6IdQl+o2V6nUDg6cBBz2ClbxBjZtP7r4dqtDaoib7
-         +OYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YqNUjigFoAXo2QafX/TTeVVXBpaXL3Be2L3u2zpujGM=;
-        b=FQ+JYpniK+pB4t68Oatylat+/PJqBkqpWPR8TjYXt8gDLVV3FwxQan4gGD08uA+dqb
-         uCLPvXaci4iO9stXWxCsvv23MJ9WG1CUfSWLy6wRL4ctZqnPXzCoVviUR2iaoRrhZNj+
-         ulYg7KTkgRbjpFXfAqkevfwHw9urHNK5/CQ2tGFxiUYhJE1kXKqeSP4JNp7E2vbZAago
-         /zMZNTEe1OTVPWihWXqfy3BOvlMK8PwfA5DJ4YVl32K8+jAxfYWSiG48XrIr01UnPFbQ
-         GnobJJtpi7jDEh6YuFJgHnmcRtseyxJ3f+n03zM299TdkJQb1lCyDq8hUjetaEgGPEDD
-         Kgww==
-X-Gm-Message-State: AOAM531vImpIsZzQP+A6N/wQz4a5/yWb4H7ohKJArlPnslJhq1lEz0/p
-        Awj32VnE3E61SctD11hdcINKQd5q2IB9XA==
-X-Google-Smtp-Source: ABdhPJzrDqRTfzp3kraZFbds/BuMxeQZZRTCB5lCKd7Q3veIzOCHzA9lsDBscGJUHmrCwPpXm8IlwQ==
-X-Received: by 2002:a0c:c492:: with SMTP id u18mr5342732qvi.18.1602107196335;
-        Wed, 07 Oct 2020 14:46:36 -0700 (PDT)
-Received: from ubuntu (ool-45785633.dyn.optonline.net. [69.120.86.51])
-        by smtp.gmail.com with ESMTPSA id 128sm2408554qkm.76.2020.10.07.14.46.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 14:46:35 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 17:46:33 -0400
-From:   Vivek Unune <npcomplete13@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/3] ARM: dts: BCM5301X: Linksys EA9500 make use of
- pinctrl
-Message-ID: <20201007214633.GA1972@ubuntu>
-References: <cover.1601655904.git.npcomplete13@gmail.com>
- <6687de05226dd055ee362933d4841a12b038792d.1601655904.git.npcomplete13@gmail.com>
- <20201007210134.GD112961@lunn.ch>
+        Wed, 7 Oct 2020 17:49:37 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7e37e40001>; Wed, 07 Oct 2020 14:49:24 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 21:49:36 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 7 Oct 2020 21:49:36 +0000
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-mm@kvack.org>, <linux-xfs@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Ralph Campbell" <rcampbell@nvidia.com>
+Subject: [PATCH v2] ext4/xfs: add page refcount helper
+Date:   Wed, 7 Oct 2020 14:49:25 -0700
+Message-ID: <20201007214925.11181-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007210134.GD112961@lunn.ch>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602107364; bh=REj8QP14NN2VWymC9pd1yxt9jHOscnBs9nwknQCUye0=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=qVPPzYo5AsUUHwus/S8Ekhyio/IAdtBrC6rBk43gpPR44t506lOgv7FACMlrPcebX
+         ZLxuBFBl+bbjpwzC5xKe3ZNDanoYq3hpP9YuWHoKAUFkpmQzwlZtKUjo5MMT4ltMyS
+         Wduyz1Xy7k+v+rJnc/V1Qw8MiHeuuhrppUxCc/wNr9+xtaawmxmlOPjQKfE8ulelhi
+         XdmOd/vMiAsj5HqRLP3zkooeipjGcmVtyFPw5s1SjWeUqiFWlZt3xkIK7oyDXa8xkr
+         QgaPDWkuP1DQJ2io/rptyAJIfDUGJDOKgktAodAK73J42JSasCWO5KuvnY52qevauN
+         hd7lr9rnqU5jg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:01:34PM +0200, Andrew Lunn wrote:
-> On Wed, Oct 07, 2020 at 03:01:50PM -0400, Vivek Unune wrote:
-> > Forgo the use of mmioreg mdio mux infavor of the pinctrl
-> 
-> Hi Vivek
-> 
-> Could you add some more details please. I don't know this
-> hardware. I'm assuming there are two MDIO busses, external as talked
-> about in the comments, and an internal one? And for this hardware you
-> only need one of them? But i don't see what pinmux has to do with
-> this?
-Hi Andrew,
+There are several places where ZONE_DEVICE struct pages assume a reference
+count =3D=3D 1 means the page is idle and free. Instead of open coding this=
+,
+add helper functions to hide this detail.
 
-There are indeed two mdio busses. To access the external bus, 9th bit
-of the mdio register has to be set. And to enable mii function,
-one has to set the registers 6 & 7 which is part of the pin controller.
-Earlier the pin controller was not defined and I resorted to use a
-combination of memory mapped io mux to change desired bits.
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
+Acked-by: Theodore Ts'o <tytso@mit.edu> # for fs/ext4/inode.c
+---
 
-Now that we have a pin controller - which is resposnsible for other 
-functionality such as pwm, i2c, uart2, it makes sense to have a consistent
-device tree
+Changes in v2:
+I strongly resisted the idea of extending this patch but after Jan
+Kara's comment about there being more places that could be cleaned
+up, I felt compelled to make this one tensy wensy change to add
+a dax_wakeup_page() to match the dax_wait_page().
+I kept the Reviewed/Acked-bys since I don't think this substantially
+changes the patch.
 
-Hope this helps,
+ fs/dax.c            |  4 ++--
+ fs/ext4/inode.c     |  5 +----
+ fs/xfs/xfs_file.c   |  4 +---
+ include/linux/dax.h | 15 +++++++++++++++
+ mm/memremap.c       |  3 ++-
+ 5 files changed, 21 insertions(+), 10 deletions(-)
 
-Vivek
+diff --git a/fs/dax.c b/fs/dax.c
+index 5b47834f2e1b..85c63f735909 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct =
+address_space *mapping,
+ 	for_each_mapped_pfn(entry, pfn) {
+ 		struct page *page =3D pfn_to_page(pfn);
+=20
+-		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
++		WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
+ 		WARN_ON_ONCE(page->mapping && page->mapping !=3D mapping);
+ 		page->mapping =3D NULL;
+ 		page->index =3D 0;
+@@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
+ 	for_each_mapped_pfn(entry, pfn) {
+ 		struct page *page =3D pfn_to_page(pfn);
+=20
+-		if (page_ref_count(page) > 1)
++		if (!dax_layout_is_idle_page(page))
+ 			return page;
+ 	}
+ 	return NULL;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 771ed8b1fadb..132620cbfa13 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3937,10 +3937,7 @@ int ext4_break_layouts(struct inode *inode)
+ 		if (!page)
+ 			return 0;
+=20
+-		error =3D ___wait_var_event(&page->_refcount,
+-				atomic_read(&page->_refcount) =3D=3D 1,
+-				TASK_INTERRUPTIBLE, 0, 0,
+-				ext4_wait_dax_page(ei));
++		error =3D dax_wait_page(ei, page, ext4_wait_dax_page);
+ 	} while (error =3D=3D 0);
+=20
+ 	return error;
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 3d1b95124744..a5304aaeaa3a 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -749,9 +749,7 @@ xfs_break_dax_layouts(
+ 		return 0;
+=20
+ 	*retry =3D true;
+-	return ___wait_var_event(&page->_refcount,
+-			atomic_read(&page->_refcount) =3D=3D 1, TASK_INTERRUPTIBLE,
+-			0, 0, xfs_wait_dax_page(inode));
++	return dax_wait_page(inode, page, xfs_wait_dax_page);
+ }
+=20
+ int
+diff --git a/include/linux/dax.h b/include/linux/dax.h
+index b52f084aa643..e2da78e87338 100644
+--- a/include/linux/dax.h
++++ b/include/linux/dax.h
+@@ -243,6 +243,21 @@ static inline bool dax_mapping(struct address_space *m=
+apping)
+ 	return mapping->host && IS_DAX(mapping->host);
+ }
+=20
++static inline bool dax_layout_is_idle_page(struct page *page)
++{
++	return page_ref_count(page) =3D=3D 1;
++}
++
++static inline void dax_wakeup_page(struct page *page)
++{
++	wake_up_var(&page->_refcount);
++}
++
++#define dax_wait_page(_inode, _page, _wait_cb)				\
++	___wait_var_event(&(_page)->_refcount,				\
++		dax_layout_is_idle_page(_page),				\
++		TASK_INTERRUPTIBLE, 0, 0, _wait_cb(_inode))
++
+ #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
+ void hmem_register_device(int target_nid, struct resource *r);
+ #else
+diff --git a/mm/memremap.c b/mm/memremap.c
+index 2bb276680837..504a10ff2edf 100644
+--- a/mm/memremap.c
++++ b/mm/memremap.c
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ #include <linux/wait_bit.h>
+ #include <linux/xarray.h>
++#include <linux/dax.h>
+=20
+ static DEFINE_XARRAY(pgmap_array);
+=20
+@@ -508,7 +509,7 @@ void free_devmap_managed_page(struct page *page)
+ {
+ 	/* notify page idle for dax */
+ 	if (!is_device_private_page(page)) {
+-		wake_up_var(&page->_refcount);
++		dax_wakeup_page(page);
+ 		return;
+ 	}
+=20
+--=20
+2.20.1
 
-
-> 
-> Thanks
-> 	Andrew
->  
