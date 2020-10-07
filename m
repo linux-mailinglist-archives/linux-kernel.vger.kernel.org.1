@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C82285BF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751C0285C02
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727460AbgJGJek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:34:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41776 "EHLO mx2.suse.de"
+        id S1727334AbgJGJqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:46:30 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:60252 "EHLO mail.z3ntu.xyz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgJGJek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:34:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD5A1B19C;
-        Wed,  7 Oct 2020 09:34:38 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 10:34:36 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Phil Auld <pauld@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 3/5] sched: Detect call to schedule from critical entry
- code
-Message-ID: <20201007093436.GG3165@suse.de>
-References: <20201005104919.5250-1-frederic@kernel.org>
- <20201005104919.5250-4-frederic@kernel.org>
- <20201005112353.GI2628@hirez.programming.kicks-ass.net>
- <20201005122648.GA1743@lothringen>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201005122648.GA1743@lothringen>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726411AbgJGJqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 05:46:30 -0400
+X-Greylist: delayed 314 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Oct 2020 05:46:28 EDT
+Received: by mail.z3ntu.xyz (Postfix, from userid 182)
+        id 8B5E3C7196; Wed,  7 Oct 2020 09:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1602063673; bh=G58nxDXR85aKAm9KZdsGVsJleTDCbz79NyrWb3uEyXY=;
+        h=Cc:Subject:From:To:Date:In-Reply-To;
+        b=nssfBIoByvP+3EH8HJuENhBQuGQTosfme+khCz5ttbYEyLd78Tns6n+r4cV4JfDxm
+         wy0lUjTBOkxGZizXrUTo/HZyCgQ6vgOmYd2Dl8Csxx1xkVPJIfCjkc6d4BIqDcVZ0I
+         2vy3Z8F7bZoZVY6eeB0nYQ9yX5E59hiF4rGCiHXc=
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on arch-vps
+X-Spam-Level: 
+X-Spam-Status: No, score=0.9 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        PDS_OTHER_BAD_TLD,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.4
+Received: from localhost (arch-vps [128.199.32.197])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 56ED9C4CF4;
+        Wed,  7 Oct 2020 09:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1602063670; bh=G58nxDXR85aKAm9KZdsGVsJleTDCbz79NyrWb3uEyXY=;
+        h=Cc:Subject:From:To:Date:In-Reply-To;
+        b=KKS8sIN1+vS6ETBIO+nKA9RcB493ngK2y7IMwGZaazCBBxwrViO4xq7AtWUo/aYjo
+         cXV6RfG7Ouk0NCyObeT5ynmMRocAhiuz4TEmukpj+X4BMAbFGCEy0Gmo9iIrzIYpRX
+         eOTbzPqkkEVD23ITtVw0Llo5t2J9nm+UyQez7qtQ=
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>
+Subject: Re: [PATCH v4 2/4] leds: Add driver for Qualcomm LPG
+From:   "Luca Weiss" <luca@z3ntu.xyz>
+To:     "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        "Pavel Machek" <pavel@ucw.cz>, "Dan Murphy" <dmurphy@ti.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Andy Gross" <agross@kernel.org>,
+        "Thierry Reding" <thierry.reding@gmail.com>,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Martin Botka" <martin.botka1@gmail.com>
+Date:   Wed, 07 Oct 2020 09:40:45 +0000
+Message-Id: <C66K5YFY5LGN.1S3H72H0QQQAI@arch-vps>
+In-Reply-To: <20200929031544.1000204-3-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 02:26:48PM +0200, Frederic Weisbecker wrote:
-> On Mon, Oct 05, 2020 at 01:23:53PM +0200, Peter Zijlstra wrote:
-> > On Mon, Oct 05, 2020 at 12:49:17PM +0200, Frederic Weisbecker wrote:
-> > > Detect calls to schedule() between user_enter() and user_exit(). Those
-> > > are symptoms of early entry code that either forgot to protect a call
-> > > to schedule() inside exception_enter()/exception_exit() or, in the case
-> > > of HAVE_CONTEXT_TRACKING_OFFSTACK, enabled interrupts or preemption in
-> > > a wrong spot.
-> > > 
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > Cc: Marcelo Tosatti <mtosatti@redhat.com>
-> > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Phil Auld <pauld@redhat.com>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > ---
-> > >  kernel/sched/core.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > index 2d95dc3f4644..d31a79e073e3 100644
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -4295,6 +4295,7 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
-> > >  		preempt_count_set(PREEMPT_DISABLED);
-> > >  	}
-> > >  	rcu_sleep_check();
-> > > +	WARN_ON_ONCE(ct_state() == CONTEXT_USER);
-> > 
-> > 	SCHED_WARN_ON() ?
-> 
-> Bah! That's exactly what I was looking for.
-> 
-> > No point in unconditionally polluting that path. Although, per MeL, we
-> > should probably invest in CONFIG_SCHED_DEBUG_I_MEANS_IT :/
-> 
-> Because CONFIG_SCHED_DEBUG is often used by default on distros?
-> 
+Hi Bjorn,
 
-SCHED_DEBUG is generally useful (e.g. figuring out weird topology problems
-on new hardware). The overhead isn't too bad when schedstats are
-disabled so it would be nice to avoid adding too much overhead via
-SCHED_DEBUG.
+On Mon Sep 28, 2020 at 8:15 PM, Bjorn Andersson wrote:
+> The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
+> PMICs from Qualcomm. It can operate on fixed parameters or based on a
+> lookup-table, altering the duty cycle over time - which provides the
+> means for e.g. hardware assisted transitions of LED brightness.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> Changes since v3:
+> - Adopt multicolor model
+> - Simplified hw_pattern implementation
+>
+> drivers/leds/Kconfig | 9 +
+> drivers/leds/Makefile | 1 +
+> drivers/leds/leds-qcom-lpg.c | 1213 ++++++++++++++++++++++++++++++++++
+> 3 files changed, 1223 insertions(+)
+> create mode 100644 drivers/leds/leds-qcom-lpg.c
 
-Other debugging options -- not so much. A lot of them are useful for
-development but there are people who request them be enabled anyway
-thinking that they improve security somehow when in reality they might,
-at best, detect a hardware issue that happens to hit a specific structure.
+<snip>
 
--- 
-Mel Gorman
-SUSE Labs
+> +static int lpg_pwm_request(struct pwm_chip *chip, struct pwm_device
+> *pwm)
+> +{
+> + struct lpg *lpg =3D container_of(chip, struct lpg, pwm);
+> + struct lpg_channel *chan =3D &lpg->channels[pwm->hwpwm];
+> +
+> + return chan->in_use ? -EBUSY : 0;
+> +}
+> +
+> +static int lpg_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> + const struct pwm_state *state)
+> +{
+> + struct lpg *lpg =3D container_of(chip, struct lpg, pwm);
+> + struct lpg_channel *chan =3D &lpg->channels[pwm->hwpwm];
+> +
+> + lpg_calc_freq(chan, state->period / NSEC_PER_USEC);
+> + lpg_calc_duty(chan, state->duty_cycle / NSEC_PER_USEC);
+
+As written on IRC this has to be wrapped div_u64() to compile on arm32;
+should also fix the buildbot failure.
+
+> + chan->enabled =3D state->enabled;
+> +
+> + lpg_apply(chan);
+> +
+> + triled_set(lpg, chan->triled_mask, chan->enabled);
+> +
+> + return 0;
+> +}
+
+Other than that, this works great on msm8974-fairphone-fp2 (pm8941)
+with reg 7 (red), 6 (green) & 5 (blue). Thanks for updating this
+patchset!
+
+Regards
+Luca
