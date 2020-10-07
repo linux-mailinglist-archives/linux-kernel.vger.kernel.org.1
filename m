@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CB12862B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662022862FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbgJGPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:55:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgJGPz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:55:29 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00F4320789;
-        Wed,  7 Oct 2020 15:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602086128;
-        bh=DnGfCBaWseLBM8TVFoELwrQRAC5MuHq6bqVMisC2Yvo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mDVqpVfuFWeeaFRs/tBZmwj1GKg0uFJM+VvcUSBodBR9xt4w6UTErIkNxSF73hD2L
-         jkR+jcqRKww35nmLeV8JBRPgoXP5GLKAYXEzm9XzC/CuQxGZN8pG0tqTw0srpYbIEl
-         6QVElnqaRXGMkNHQQyo6DmmbPXe6sqOPgRilXY60=
-Date:   Wed, 7 Oct 2020 11:01:28 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-hardening@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 00/14] drm/amd/pm: Replace one-element arrays with
- flexible-array members
-Message-ID: <cover.1602020074.git.gustavoars@kernel.org>
+        id S1728957AbgJGQCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728289AbgJGQCD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:02:03 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9992C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:02:02 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k18so2969078wmj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 09:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c+qu2p5G8BrkuES5RNsE8tqXhcZ9P1cBpxl6wwrb658=;
+        b=AN0kvfw6vjQ/xf8qVvgSneIvf64UvUcIPMnSoX/UZin+GOgkWJUZmM/J9cT7wqG48p
+         97+DkF+lsLzXY08L5pO6ukFQVxVgOxKrj3maEw2EE6uM8SRXyjY+rRZhJwj4qxBcuE2T
+         R+OrhBSuLSz3tx2KuTOoyTeDmcyEPv5+CAXefGDKYoBQbniQftqrENGWhBNXeivZtF2Y
+         nUCYieRv8axTO9IeC4A2eDckuHqLwVOs44E2vqm9LAamg/bJXPORnDHqXJcJDNuSPJte
+         wZ6G5TKdw8umeHlH9EfrY4pIqYAg6QQo9fEIsWSpaYhW9UuJHYsnQ+rIAGaAVekpZEg+
+         SBAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c+qu2p5G8BrkuES5RNsE8tqXhcZ9P1cBpxl6wwrb658=;
+        b=A0tNQq4d9pJ2Q7FzRPu19tYMNLzT4MmM1pbFMCre0BzTzAd0lN5gsjoMRuaa0UjPQW
+         YMdNi/mq0k40rMSsv5bCZaebFFxIy4pvI52hUJQ610cUa+BLBA8MyvgulXH6tQUxJ6R6
+         peioZ8OVvaqxvyj1NOGd+dxm5Cppq1Cew22ALSRtjRAbEo1xcJw0SoPU1uBf7O7giBKK
+         Q5ULkEg3jhxO1CYiFJVtmB9C9HC0RKnuuFSxJ+qZKpo5aByn/i5Ofzx7s1j8V+F2nyLi
+         Oyq6uQSOjz5PDYyzQvPrg76BdwP6NPKQw1xi/NN9rZBB+RcUYFMLAzcAeaolHz4AK1ZU
+         C9Rg==
+X-Gm-Message-State: AOAM533gQSW6O2YjCCAep5Q+bjlX3pQ+zTFlutKMrUxPlcgyScQ26RdZ
+        scmHJXCy50VTpdLu5rRnt16yCA==
+X-Google-Smtp-Source: ABdhPJwGNc59SEUCyrGDoHpukjGVfvlMb5fxa+XJbTVpk9Z5lA153Sx6JCKNYc67aq/6VMX73/OZKg==
+X-Received: by 2002:a1c:6488:: with SMTP id y130mr3978568wmb.94.1602086521044;
+        Wed, 07 Oct 2020 09:02:01 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id j13sm3520769wru.86.2020.10.07.09.02.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 09:02:00 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 18:01:59 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 05/16] devlink: Add remote reload stats
+Message-ID: <20201007160159.GD3064@nanopsycho>
+References: <1602050457-21700-1-git-send-email-moshe@mellanox.com>
+ <1602050457-21700-6-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1602050457-21700-6-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Wed, Oct 07, 2020 at 08:00:46AM CEST, moshe@mellanox.com wrote:
+>Add remote reload stats to hold the history of actions performed due
+>devlink reload commands initiated by remote host. For example, in case
+>firmware activation with reset finished successfully but was initiated
+>by remote host.
+>
+>The function devlink_remote_reload_actions_performed() is exported to
+>enable drivers update on remote reload actions performed as it was not
+>initiated by their own devlink instance.
+>
+>Expose devlink remote reload stats to the user through devlink dev get
+>command.
+>
+>Examples:
+>$ devlink dev show
+>pci/0000:82:00.0:
+>  stats:
+>      reload:
+>        driver_reinit 2 fw_activate 1 fw_activate_no_reset 0
+>      remote_reload:
+>        driver_reinit 0 fw_activate 0 fw_activate_no_reset 0
+>pci/0000:82:00.1:
+>  stats:
+>      reload:
+>        driver_reinit 1 fw_activate 0 fw_activate_no_reset 0
+>      remote_reload:
+>        driver_reinit 1 fw_activate 1 fw_activate_no_reset 0
+>
+>$ devlink dev show -jp
+>{
+>    "dev": {
+>        "pci/0000:82:00.0": {
+>            "stats": {
+>                "reload": {
+>                    "driver_reinit": 2,
+>                    "fw_activate": 1,
+>                    "fw_activate_no_reset": 0
+>                },
+>                "remote_reload": {
+>                    "driver_reinit": 0,
+>                    "fw_activate": 0,
+>                    "fw_activate_no_reset": 0
+>                }
+>            }
+>        },
+>        "pci/0000:82:00.1": {
+>            "stats": {
+>                "reload": {
+>                    "driver_reinit": 1,
+>                    "fw_activate": 0,
+>                    "fw_activate_no_reset": 0
+>                },
+>                "remote_reload": {
+>                    "driver_reinit": 1,
+>                    "fw_activate": 1,
+>                    "fw_activate_no_reset": 0
+>                }
+>            }
+>        }
+>    }
+>}
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>Reviewed-by: Jakub Kicinski <kuba@kernel.org>
 
-This series aims to replace one-element arrays with flexible-array
-members.
-
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
-
-Refactor the code according to the use of flexible-array members, instead
-of one-element arrays, and use the struct_size() helper to calculate the
-size for the dynamic memory allocation.
-
-Also, save some heap space in the process. More on this on each individual
-patch.
-
-This series also addresses multiple of the following sorts of warnings:
-
-drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu8_hwmgr.c:1515:37:
-warning: array subscript 1 is above array bounds of ‘const struct
-phm_clock_voltage_dependency_record[1]’ [-Warray-bounds]
-
-which, in this case, they are false positives, but nervertheless should be
-fixed in order to enable -Warray-bounds[3][4].
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
-[3] https://git.kernel.org/linus/44720996e2d79e47d508b0abe99b931a726a3197
-[4] https://github.com/KSPP/linux/issues/109
-
-Gustavo A. R. Silva (14):
-  drm/amd/pm: Replace one-element array with flexible-array member
-  drm/amd/pm: Replace one-element array with flexible-array member in
-    struct vi_dpm_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_clock_array
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_uvd_clock_voltage_dependency_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_acp_clock_voltage_dependency_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_phase_shedding_limits_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_vce_clock_voltage_dependency_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_cac_leakage_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_samu_clock_voltage_dependency_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_ppt_v1_clock_voltage_dependency_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_ppt_v1_mm_clock_voltage_dependency_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_ppt_v1_voltage_lookup_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    phm_ppt_v1_pcie_table
-  drm/amd/pm: Replace one-element array with flexible-array in struct
-    ATOM_Vega10_GFXCLK_Dependency_Table
-
- drivers/gpu/drm/amd/pm/inc/hwmgr.h            | 20 ++---
- .../drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h    |  8 +-
- .../powerplay/hwmgr/process_pptables_v1_0.c   | 85 +++++++-----------
- .../amd/pm/powerplay/hwmgr/processpptables.c  | 85 +++++++-----------
- .../drm/amd/pm/powerplay/hwmgr/smu8_hwmgr.c   |  2 +-
- .../drm/amd/pm/powerplay/hwmgr/smu_helper.c   |  5 +-
- .../amd/pm/powerplay/hwmgr/vega10_pptable.h   |  2 +-
- .../powerplay/hwmgr/vega10_processpptables.c  | 88 ++++++-------------
- 8 files changed, 107 insertions(+), 188 deletions(-)
-
--- 
-2.27.0
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
