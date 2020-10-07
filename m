@@ -2,119 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DBF2857D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707FE2857D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgJGEgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 00:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
+        id S1727049AbgJGEi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 00:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgJGEgw (ORCPT
+        with ESMTP id S1726388AbgJGEi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 00:36:52 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E25C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 21:36:51 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id x5so418000pjv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 21:36:51 -0700 (PDT)
+        Wed, 7 Oct 2020 00:38:26 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCADDC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 21:38:25 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id l8so957369ioh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 21:38:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:mime-version
-         :content-transfer-encoding;
-        bh=nozvEbVQdKm0fWbmXW8P7leHQ60pH5dp+Q3W9Dcy5V4=;
-        b=n1WW5YcrI53xIITQW3rS0ytcseBT+T/RQHMz3Zqp57IfDZrghK4GL5kgXuXXsYB0LA
-         zSdCBzRFTOQsz43WW+6+V7Hc1AJf0PN8PWnN43z8hyL0BmVX5BCY74vQiIzg2uhaHI+R
-         hQs92hJpSCDmeJ5brsdGX26zRB1Dfnwfq5bHgpWGJrnl4++alCtBe3C/JRIYjAIqVYtu
-         4JOF9bQMwP1px9XxHgG7U7GObWf6C02N9k+3uA5aEgBDuH0qiZbJLijGL6OIQj3sFSHi
-         BlS4UlCi0G6HMxvPI33SJnrxMjZfCBYVmTKRdyw+Q4/3PD+O/ez+KzFceGdqAyuDN0h8
-         1JXA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KoWN3z7qMFRYwlT/swD/uz2iy+XEdvNl4brWLiTEUGc=;
+        b=ZE848Q0dFaos8hqbNqRIhxn6jteIUdnTUdkXqQ7v/ZeXhPVF43NM/bL2unVN5j1ajY
+         0olql6hWV9AXKf64yomqZfL/ATxFW4zsu6fv8Y0FppXA7NCP9Q8LKDdCcoa5JNBoTxhi
+         zr01GpirXzSo7I1SwYDwVeqnmQT7GZGkrg9Pk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:mime-version
-         :content-transfer-encoding;
-        bh=nozvEbVQdKm0fWbmXW8P7leHQ60pH5dp+Q3W9Dcy5V4=;
-        b=eZ6maCNz+FYGaYZ8BAuEQYHeBk+r0dW/G0DhmEqE5tjHDvgkl/lNCw0SgeycZV10b3
-         4JrXHb4HTqhUrexSN/mX4tBc8aw94W0Ma8dELKOF3vyj5DWQGk0sMEAAMxg4bcX98f+l
-         4lyCJlTob2M7hYvk3m1fGjc/mQ2qgL9jQPb98sDCfmDXHuTASqTcwpUWHULgc8jNWjhu
-         Kw1INuHK8GsimMDmNCspkyTLho5o25proI1LsyMvmpkD9+I3ImSuIFsn2mNEHXMWGldi
-         mOku1cvdnpM8QZsFKbeHsBPGbyoIry4sRxCbwMWnEPCq2rT2lEkcpUQW0EjuzdAl17DV
-         mJLw==
-X-Gm-Message-State: AOAM532EeE4hOwB0gkrhRtk8GVa4h4RY26JWStHBNJmYgi6cEULttop+
-        fvEjZWfXB5Eu5aMZMtRBVU3fUA==
-X-Google-Smtp-Source: ABdhPJxD9yyAyA87nV4FleOY3/vQD8S5Z/YHoXq5MgZ1A7+P7KjsluKA5L+jUdSNE3BKauTwlUSlDw==
-X-Received: by 2002:a17:90b:1a89:: with SMTP id ng9mr825551pjb.24.1602045410632;
-        Tue, 06 Oct 2020 21:36:50 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id g9sm901513pgm.79.2020.10.06.21.36.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 21:36:50 -0700 (PDT)
-Message-ID: <df0a9995a15ff6ec03caf3329c81bf09792b892c.camel@areca.com.tw>
-Subject: [PATCH v2 1/2] scsi: arcmsr: fix warning: right shift count >=
- width of type
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     kbuild test robot <lkp@intel.com>
-Date:   Wed, 07 Oct 2020 12:36:49 +0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KoWN3z7qMFRYwlT/swD/uz2iy+XEdvNl4brWLiTEUGc=;
+        b=rfydg2vFxZzCQb579z/BaNXhkxAKe+G5vWSfEV/m/pVxkhJc5jKy5JHsbxiHdAg/tg
+         KB6/bnfqq23/ChHfvCilUkcJd3aGZmvdkqUJtRxkqiS4H+bSaHjFujKoR36hLYJl70Zo
+         t1VKNmty4VCvS6C99UVdSvYyrckJkKIjhW1u69hLL+eE8eovaJQuzrY8vFtTMZW6MIXg
+         Sk7GKiSVCqpy4w4gosQqkWc/ZY7TeQRYO8xUmmByv3t2lZmeSGciBeEZ1dk3ne9o7B/g
+         5UYGEI1LRIBqwGWaLEiJLnsFOjMm4Z92+v5gtyZfqnadr3Cyz7pLF3BXuLS0P2inkBMU
+         BE6Q==
+X-Gm-Message-State: AOAM530r3i1+Z1CTX0ZcaiO66USY8K0/cv3tIO7wPCLoWKtZrABbs6J3
+        ZKziQBiV4K9EZus0Xd2K18RYFeujjh9b1Q==
+X-Google-Smtp-Source: ABdhPJyA1FuTRU02g4GVfOQ6FZz0XrveNqYQhrR62ypDZ4dV6LfZ+2wwFzqRYyz1HtbHzWq8Bq9Urw==
+X-Received: by 2002:a05:6638:1389:: with SMTP id w9mr1357808jad.138.1602045504754;
+        Tue, 06 Oct 2020 21:38:24 -0700 (PDT)
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com. [209.85.166.51])
+        by smtp.gmail.com with ESMTPSA id r15sm482757ilj.43.2020.10.06.21.38.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Oct 2020 21:38:23 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id d197so1042131iof.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 21:38:23 -0700 (PDT)
+X-Received: by 2002:a5d:8752:: with SMTP id k18mr941313iol.27.1602045503184;
+ Tue, 06 Oct 2020 21:38:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200929080324.632523-1-tientzu@chromium.org>
+In-Reply-To: <20200929080324.632523-1-tientzu@chromium.org>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Wed, 7 Oct 2020 12:38:12 +0800
+X-Gmail-Original-Message-ID: <CALiNf28k5C48_ivAeRW7sSEEXp0gd-h_1n03YH6jQhYhaCXUDA@mail.gmail.com>
+Message-ID: <CALiNf28k5C48_ivAeRW7sSEEXp0gd-h_1n03YH6jQhYhaCXUDA@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: Move force_bredr_smp debugfs into hci_debugfs_create_bredr
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, BlueZ <linux-bluetooth@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+Hi,
 
-Fix warning: right shift count >= width of type.
+This patch is to fix the kernel error
+[   46.271811] debugfs: File 'force_bredr_smp' in directory 'hci0'
+already present!
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
+When powering off and on the bluetooth, the smp_register will try to create the
+force_bredr_smp entry again.
+Move the creation to hci_debugfs_create_bredr so the force_bredr_smp entry will
+only be created when HCI_SETUP and HCI_CONFIG are not set.
 
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index be6fb72..55d85c9 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -653,9 +653,9 @@ static void arcmsr_hbaF_assign_regAddr(struct AdapterControlBlock *acb)
- 		3) >> 2) << 2;
- 	pmuF = acb->pmuF;
- 	/* host buffer low address, bit0:1 all buffer active */
--	writel((uint32_t)(host_buffer_dma | 1), &pmuF->inbound_msgaddr0);
-+	writel(lower_32_bits(host_buffer_dma | 1), &pmuF->inbound_msgaddr0);
- 	/* host buffer high address */
--	writel((uint32_t)(host_buffer_dma >> 32), &pmuF->inbound_msgaddr1);
-+	writel(upper_32_bits(host_buffer_dma), &pmuF->inbound_msgaddr1);
- 	/* set host buffer physical address */
- 	writel(ARCMSR_HBFMU_DOORBELL_SYNC1, &pmuF->iobound_doorbell);
- }
-@@ -4057,11 +4057,8 @@ static int arcmsr_iop_confirm(struct AdapterControlBlock *acb)
- 		writel(cdb_phyaddr, &reg->msgcode_rwbuffer[2]);
- 		writel(cdb_phyaddr_hi32, &reg->msgcode_rwbuffer[3]);
- 		writel(acb->ccbsize, &reg->msgcode_rwbuffer[4]);
--		dma_coherent_handle = acb->dma_coherent_handle2;
--		cdb_phyaddr = (uint32_t)(dma_coherent_handle & 0xffffffff);
--		cdb_phyaddr_hi32 = (uint32_t)((dma_coherent_handle >> 16) >> 16);
--		writel(cdb_phyaddr, &reg->msgcode_rwbuffer[5]);
--		writel(cdb_phyaddr_hi32, &reg->msgcode_rwbuffer[6]);
-+		writel(lower_32_bits(acb->dma_coherent_handle2), &reg->msgcode_rwbuffer[5]);
-+		writel(upper_32_bits(acb->dma_coherent_handle2), &reg->msgcode_rwbuffer[6]);
- 		writel(acb->ioqueue_size, &reg->msgcode_rwbuffer[7]);
- 		writel(ARCMSR_INBOUND_MESG0_SET_CONFIG, &reg->inbound_msgaddr0);
- 		acb->out_doorbell ^= ARCMSR_HBEMU_DRV2IOP_MESSAGE_CMD_DONE;
-@@ -4081,11 +4078,8 @@ static int arcmsr_iop_confirm(struct AdapterControlBlock *acb)
- 		acb->msgcode_rwbuffer[2] = cdb_phyaddr;
- 		acb->msgcode_rwbuffer[3] = cdb_phyaddr_hi32;
- 		acb->msgcode_rwbuffer[4] = acb->ccbsize;
--		dma_coherent_handle = acb->dma_coherent_handle2;
--		cdb_phyaddr = (uint32_t)dma_coherent_handle;
--		cdb_phyaddr_hi32 = (uint32_t)(dma_coherent_handle >> 32);
--		acb->msgcode_rwbuffer[5] = cdb_phyaddr;
--		acb->msgcode_rwbuffer[6] = cdb_phyaddr_hi32;
-+		acb->msgcode_rwbuffer[5] = lower_32_bits(acb->dma_coherent_handle2);
-+		acb->msgcode_rwbuffer[6] = upper_32_bits(acb->dma_coherent_handle2);
- 		acb->msgcode_rwbuffer[7] = acb->completeQ_size;
- 		writel(ARCMSR_INBOUND_MESG0_SET_CONFIG, &reg->inbound_msgaddr0);
- 		acb->out_doorbell ^= ARCMSR_HBEMU_DRV2IOP_MESSAGE_CMD_DONE;
+Thanks,
+Claire
 
+On Tue, Sep 29, 2020 at 4:03 PM Claire Chang <tientzu@chromium.org> wrote:
+>
+> Avoid multiple attempts to create the debugfs entry, force_bredr_smp,
+> by moving it from the SMP registration to the BR/EDR controller init
+> section. hci_debugfs_create_bredr is only called when HCI_SETUP and
+> HCI_CONFIG is not set.
+>
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+> v2: correct a typo in commit message
+>
+>  net/bluetooth/hci_debugfs.c | 50 +++++++++++++++++++++++++++++++++++++
+>  net/bluetooth/smp.c         | 44 ++------------------------------
+>  net/bluetooth/smp.h         |  2 ++
+>  3 files changed, 54 insertions(+), 42 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
+> index 5e8af2658e44..4626e0289a97 100644
+> --- a/net/bluetooth/hci_debugfs.c
+> +++ b/net/bluetooth/hci_debugfs.c
+> @@ -494,6 +494,45 @@ static int auto_accept_delay_get(void *data, u64 *val)
+>  DEFINE_SIMPLE_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
+>                         auto_accept_delay_set, "%llu\n");
+>
+> +static ssize_t force_bredr_smp_read(struct file *file,
+> +                                   char __user *user_buf,
+> +                                   size_t count, loff_t *ppos)
+> +{
+> +       struct hci_dev *hdev = file->private_data;
+> +       char buf[3];
+> +
+> +       buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP) ? 'Y' : 'N';
+> +       buf[1] = '\n';
+> +       buf[2] = '\0';
+> +       return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+> +}
+> +
+> +static ssize_t force_bredr_smp_write(struct file *file,
+> +                                    const char __user *user_buf,
+> +                                    size_t count, loff_t *ppos)
+> +{
+> +       struct hci_dev *hdev = file->private_data;
+> +       bool enable;
+> +       int err;
+> +
+> +       err = kstrtobool_from_user(user_buf, count, &enable);
+> +       if (err)
+> +               return err;
+> +
+> +       err = smp_force_bredr(hdev, enable);
+> +       if (err)
+> +               return err;
+> +
+> +       return count;
+> +}
+> +
+> +static const struct file_operations force_bredr_smp_fops = {
+> +       .open           = simple_open,
+> +       .read           = force_bredr_smp_read,
+> +       .write          = force_bredr_smp_write,
+> +       .llseek         = default_llseek,
+> +};
+> +
+>  static int idle_timeout_set(void *data, u64 val)
+>  {
+>         struct hci_dev *hdev = data;
+> @@ -589,6 +628,17 @@ void hci_debugfs_create_bredr(struct hci_dev *hdev)
+>         debugfs_create_file("voice_setting", 0444, hdev->debugfs, hdev,
+>                             &voice_setting_fops);
+>
+> +       /* If the controller does not support BR/EDR Secure Connections
+> +        * feature, then the BR/EDR SMP channel shall not be present.
+> +        *
+> +        * To test this with Bluetooth 4.0 controllers, create a debugfs
+> +        * switch that allows forcing BR/EDR SMP support and accepting
+> +        * cross-transport pairing on non-AES encrypted connections.
+> +        */
+> +       if (!lmp_sc_capable(hdev))
+> +               debugfs_create_file("force_bredr_smp", 0644, hdev->debugfs,
+> +                                   hdev, &force_bredr_smp_fops);
+> +
+>         if (lmp_ssp_capable(hdev)) {
+>                 debugfs_create_file("ssp_debug_mode", 0444, hdev->debugfs,
+>                                     hdev, &ssp_debug_mode_fops);
+> diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
+> index 433227f96c73..8b817e4358fd 100644
+> --- a/net/bluetooth/smp.c
+> +++ b/net/bluetooth/smp.c
+> @@ -3353,31 +3353,8 @@ static void smp_del_chan(struct l2cap_chan *chan)
+>         l2cap_chan_put(chan);
+>  }
+>
+> -static ssize_t force_bredr_smp_read(struct file *file,
+> -                                   char __user *user_buf,
+> -                                   size_t count, loff_t *ppos)
+> +int smp_force_bredr(struct hci_dev *hdev, bool enable)
+>  {
+> -       struct hci_dev *hdev = file->private_data;
+> -       char buf[3];
+> -
+> -       buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP) ? 'Y': 'N';
+> -       buf[1] = '\n';
+> -       buf[2] = '\0';
+> -       return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+> -}
+> -
+> -static ssize_t force_bredr_smp_write(struct file *file,
+> -                                    const char __user *user_buf,
+> -                                    size_t count, loff_t *ppos)
+> -{
+> -       struct hci_dev *hdev = file->private_data;
+> -       bool enable;
+> -       int err;
+> -
+> -       err = kstrtobool_from_user(user_buf, count, &enable);
+> -       if (err)
+> -               return err;
+> -
+>         if (enable == hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP))
+>                 return -EALREADY;
+>
+> @@ -3399,16 +3376,9 @@ static ssize_t force_bredr_smp_write(struct file *file,
+>
+>         hci_dev_change_flag(hdev, HCI_FORCE_BREDR_SMP);
+>
+> -       return count;
+> +       return 0;
+>  }
+>
+> -static const struct file_operations force_bredr_smp_fops = {
+> -       .open           = simple_open,
+> -       .read           = force_bredr_smp_read,
+> -       .write          = force_bredr_smp_write,
+> -       .llseek         = default_llseek,
+> -};
+> -
+>  int smp_register(struct hci_dev *hdev)
+>  {
+>         struct l2cap_chan *chan;
+> @@ -3433,17 +3403,7 @@ int smp_register(struct hci_dev *hdev)
+>
+>         hdev->smp_data = chan;
+>
+> -       /* If the controller does not support BR/EDR Secure Connections
+> -        * feature, then the BR/EDR SMP channel shall not be present.
+> -        *
+> -        * To test this with Bluetooth 4.0 controllers, create a debugfs
+> -        * switch that allows forcing BR/EDR SMP support and accepting
+> -        * cross-transport pairing on non-AES encrypted connections.
+> -        */
+>         if (!lmp_sc_capable(hdev)) {
+> -               debugfs_create_file("force_bredr_smp", 0644, hdev->debugfs,
+> -                                   hdev, &force_bredr_smp_fops);
+> -
+>                 /* Flag can be already set here (due to power toggle) */
+>                 if (!hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP))
+>                         return 0;
+> diff --git a/net/bluetooth/smp.h b/net/bluetooth/smp.h
+> index 121edadd5f8d..fc35a8bf358e 100644
+> --- a/net/bluetooth/smp.h
+> +++ b/net/bluetooth/smp.h
+> @@ -193,6 +193,8 @@ bool smp_irk_matches(struct hci_dev *hdev, const u8 irk[16],
+>  int smp_generate_rpa(struct hci_dev *hdev, const u8 irk[16], bdaddr_t *rpa);
+>  int smp_generate_oob(struct hci_dev *hdev, u8 hash[16], u8 rand[16]);
+>
+> +int smp_force_bredr(struct hci_dev *hdev, bool enable);
+> +
+>  int smp_register(struct hci_dev *hdev);
+>  void smp_unregister(struct hci_dev *hdev);
+>
+> --
+> 2.28.0.618.gf4bc123cb7-goog
+>
