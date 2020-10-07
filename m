@@ -2,74 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3339E2859E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9E72859E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgJGHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:50:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGHui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:50:38 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E84CB2168B;
-        Wed,  7 Oct 2020 07:50:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602057037;
-        bh=wjdNt9fk4taQnomW0LVqef9xaaEAkbgb9aWhBDQXp98=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mATuEgSyP7rL8fztvdZ53xzVIQ0qiPBqDwDBwWpo7rGEWsoGSbmmjIVQ5/T1+oElx
-         LvpkoKvJ8f5ss619Sonne3lz61hYZpXyQxmYthySt9mfenl+HmSvgO6FwM2OsG4YKJ
-         kT3Htww3WM2HgrpoCHPm4ah8QAk7jTJJ0BtcldME=
-Received: by mail-ej1-f52.google.com with SMTP id e22so1605094ejr.4;
-        Wed, 07 Oct 2020 00:50:36 -0700 (PDT)
-X-Gm-Message-State: AOAM530rc7NFY9sIYC3ycga8oDTSn/LbnamHO4qCVw159nvj2qvEJ95X
-        BlXgludfSrtgpWIvbFSDw+lpLyJGeh48gKgmmNM=
-X-Google-Smtp-Source: ABdhPJyWOIbIcP4wtSvYOiWoDxRKahL3vDWWNT1vEumlBFNfZ5i4lu4dCOOmyGNrCQg5lbBkQnB6XJQZzof4vU1nLm8=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr1955039ejx.215.1602057035339;
- Wed, 07 Oct 2020 00:50:35 -0700 (PDT)
+        id S1727812AbgJGHu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGHu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 03:50:59 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26D6C061755;
+        Wed,  7 Oct 2020 00:50:58 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a3so1566029ejy.11;
+        Wed, 07 Oct 2020 00:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yK+TtzICLfp2nmfuxf7NcvdpIVXOd86cA4QsKvR9tAw=;
+        b=T5If2aVVQ1EmHDS4G7YpniQUAAHw3cazxRaBnXZngdOln2rLvZRaReHiJGMyyOUXCk
+         4wQlgf4ciKX+UGHX8PCzh360qR45avxLd82CKHobdiAze8lKiUMzGDOY9iWyecr4eMmm
+         A8W8ltDRG6Vj09RzaSNRkTgdnlGuVMFzy3Hs/47xYe9VADfF0bg6Y9iWpgX0DXRGUXf5
+         n5wdlWsAGoOgUMqdCsw8Juy6UQUgk//Q6Ff2NuoiulkiBLhSCID3EqCgyexIgFBZBWXP
+         OXahofka0k6YRnniQLe5mBxgFBCUlEXNE9gVdA0uefWJU+fGmE70LH9yL2xLePMIDnmi
+         1e2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yK+TtzICLfp2nmfuxf7NcvdpIVXOd86cA4QsKvR9tAw=;
+        b=P1aONDvkp8FQkwNjp3vvweluFUyNBs2ES4Z4ZYHNVjebKn1ev7FXzOhghCEwW9vGUg
+         dQvC1JqETB4hr/p5OltmfJk+b/Svx8nTYmVJDqVFmU85hmZmc3Dk8V0ghEx6zHwIqCqU
+         biFDkSlzS5M4LxEnfUZzO8WVIpkUgE3GiYa3x9/V7qQ/Cg7pQDUnNx4NHiNh2JF0C6T9
+         tz0M8p7Vmqwp9wQn5SL7jhFhlsExrkLYOBJzYPbDYHRz8/ksuqXqX6qQpfXs3qqnmpIl
+         vQ6RZXetHDnJmo2tFWal7HDxhOzR+GJW2ounfCsBudHWWRHv6GOx3FQaEqvX/6tM+7SC
+         jXxw==
+X-Gm-Message-State: AOAM5313qhgz/t2iijMJkhGUQu8FZodLTK5HAuardMChjOPXjhQoqr9I
+        JwsiEvTTLSArkyC/hjcSyDZXZc2pWXvGUAO3D2Y=
+X-Google-Smtp-Source: ABdhPJzmMxBLRZJzVbKi7vX/b/OeOCkQJSCC2GgVJ4WaH4XiYfF+kJx9bt6J5OE9zmgh1Fdl1FArhkkA9Fs1wLvljTk=
+X-Received: by 2002:a17:906:6409:: with SMTP id d9mr2040618ejm.344.1602057057351;
+ Wed, 07 Oct 2020 00:50:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201006160814.22047-1-ceggers@arri.de> <20201006160814.22047-2-ceggers@arri.de>
-In-Reply-To: <20201006160814.22047-2-ceggers@arri.de>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 7 Oct 2020 09:50:23 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPctS2DGkQW3EhP5Tg0y39oVF0xhEcmbs=T0vHmUsMgsQw@mail.gmail.com>
-Message-ID: <CAJKOXPctS2DGkQW3EhP5Tg0y39oVF0xhEcmbs=T0vHmUsMgsQw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] i2c: imx: Fix reset of I2SR_IAL flag
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20201003075514.32935-5-haifeng.zhao@intel.com> <20201003164421.GA2883839@bjorn-Precision-5520>
+In-Reply-To: <20201003164421.GA2883839@bjorn-Precision-5520>
+From:   Ethan Zhao <xerces.zhao@gmail.com>
+Date:   Wed, 7 Oct 2020 15:50:45 +0800
+Message-ID: <CAKF3qh0Dy6eUfpXqXkpd7Xbt8yLfxzrTKyqBNqXeUs95421vcg@mail.gmail.com>
+Subject: Re: [PATCH v7 4/5] PCI: only return true when dev io state is really changed
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raj, Ashok" <ashok.raj@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 18:10, Christian Eggers <ceggers@arri.de> wrote:
->
-> According to the "VFxxx Controller Reference Manual" (and the comment
-> block starting at line 97), Vybrid requires writing a one for clearing
-> an interrupt flag. Syncing the method for clearing I2SR_IIF in
-> i2c_imx_isr().
->
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Cc: stable@vger.kernel.org
-> ---
->  drivers/i2c/busses/i2c-imx.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
+Bjorn,
 
-I replied to your v2 with testing, so what happened with all my tested tags?
+On Sun, Oct 4, 2020 at 12:44 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Sat, Oct 03, 2020 at 03:55:13AM -0400, Ethan Zhao wrote:
+> > When uncorrectable error happens, AER driver and DPC driver interrupt
+> > handlers likely call
+> >
+> >    pcie_do_recovery()
+> >    ->pci_walk_bus()
+> >      ->report_frozen_detected()
+> >
+> > with pci_channel_io_frozen the same time.
+> >    If pci_dev_set_io_state() return true even if the original state is
+> > pci_channel_io_frozen, that will cause AER or DPC handler re-enter
+> > the error detecting and recovery procedure one after another.
+> >    The result is the recovery flow mixed between AER and DPC.
+> > So simplify the pci_dev_set_io_state() function to only return true
+> > when dev->error_state is really changed.
+> >
+> > Signed-off-by: Ethan Zhao <haifeng.zhao@intel.com>
+> > Tested-by: Wen Jin <wen.jin@intel.com>
+> > Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
+> > Reviewed-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > ---
+> > Changnes:
+> >  v2: revise description and code according to suggestion from Andy.
+> >  v3: change code to simpler.
+> >  v4: no change.
+> >  v5: no change.
+> >  v6: no change.
+> >  v7: changed based on Bjorn's code and truth table.
+> >
+> >  drivers/pci/pci.h | 53 ++++++++++++++++++-----------------------------
+> >  1 file changed, 20 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > index 455b32187abd..47af1ff2a286 100644
+> > --- a/drivers/pci/pci.h
+> > +++ b/drivers/pci/pci.h
+> > @@ -354,44 +354,31 @@ struct pci_sriov {
+> >   *
+> >   * Must be called with device_lock held.
+> >   *
+> > - * Returns true if state has been changed to the requested state.
+> > + * Returns true if state has been really changed to the requested state.
+> >   */
+> >  static inline bool pci_dev_set_io_state(struct pci_dev *dev,
+> >                                       pci_channel_state_t new)
+> >  {
+> > -     bool changed = false;
+> > -
+> >       device_lock_assert(&dev->dev);
+> > -     switch (new) {
+> > -     case pci_channel_io_perm_failure:
+> > -             switch (dev->error_state) {
+> > -             case pci_channel_io_frozen:
+> > -             case pci_channel_io_normal:
+> > -             case pci_channel_io_perm_failure:
+> > -                     changed = true;
+> > -                     break;
+> > -             }
+> > -             break;
+> > -     case pci_channel_io_frozen:
+> > -             switch (dev->error_state) {
+> > -             case pci_channel_io_frozen:
+> > -             case pci_channel_io_normal:
+> > -                     changed = true;
+> > -                     break;
+> > -             }
+> > -             break;
+> > -     case pci_channel_io_normal:
+> > -             switch (dev->error_state) {
+> > -             case pci_channel_io_frozen:
+> > -             case pci_channel_io_normal:
+> > -                     changed = true;
+> > -                     break;
+> > -             }
+> > -             break;
+> > -     }
+> > -     if (changed)
+> > -             dev->error_state = new;
+> > -     return changed;
+> > +
+> > +/*
+> > + *                   Truth table:
+> > + *                   requested new state
+> > + *     current          ------------------------------------------
+> > + *     state            normal         frozen         perm_failure
+> > + *     ------------  +  -------------  -------------  ------------
+> > + *     normal        |  normal         frozen         perm_failure
+> > + *     frozen        |  normal         frozen         perm_failure
+> > + *     perm_failure  |  perm_failure*  perm_failure*  perm_failure
+> > + */
+> > +
+> > +     if (dev->error_state == pci_channel_io_perm_failure)
+> > +             return false;
+> > +     else if (dev->error_state == new)
+> > +             return false;
+> > +
+> > +     dev->error_state = new;
+> > +     return true;
+>
+> No, you missed the point.  I want
+>
+>   1) One patch that converts the "switch" to the shorter "if"
+>      statements.  This one will be big and ugly, but should not change
+>      the functionality at all, and it should be pretty easy to verify
+>      that since there aren't very many states involved.
+>
+>      Since this one is pure code simplification, the commit log won't
+>      say anything at all about AER or DPC or their requirements
+>      because it's not changing any behavior.
+>
+>   2) A separate patch that's tiny and makes whatever functional change
+>      you need.
 
-Best regards,
-Krzysztof
+       Make sense, clear,  this time.
+
+     Thanks,
+     Ethan
+>
+> >  }
+> >
+> >  static inline int pci_dev_set_disconnected(struct pci_dev *dev, void *unused)
+> > --
+> > 2.18.4
+> >
