@@ -2,121 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572472868DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FBB2868E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgJGUOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:14:35 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:55565 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgJGUOf (ORCPT
+        id S1728287AbgJGUP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:15:59 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41394 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGUP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:14:35 -0400
-X-Originating-IP: 67.5.25.97
-Received: from localhost (unknown [67.5.25.97])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id A2D4060002;
-        Wed,  7 Oct 2020 20:14:27 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 13:14:24 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201007201424.GB15049@localhost>
-References: <CAHk-=wj-H5BYCU_kKiOK=B9sN3BtRzL4pnne2AJPyf54nQ+d=w@mail.gmail.com>
- <20201005081454.GA493107@localhost>
- <20201005173639.GA2311765@magnolia>
- <20201006003216.GB6553@localhost>
- <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
+        Wed, 7 Oct 2020 16:15:58 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097K9k4Z155286;
+        Wed, 7 Oct 2020 20:15:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=sEc3+JOY4GEUw7wZjFGU94rrw05aoMQl93fhhWlYcUM=;
+ b=gmE2LdZ8E+KF4wjs2C0rOpLG6fnheNQFNiI5jZsAgeMD20tsilNtf+YluYt5qq/uALMI
+ +hk9rjugah/1hM1Hjxlr/7pNRCkpKXS4EcgOw8ZH1ZeNcG3lPp8GXOqnwtGgGttnjdIk
+ 8tkD7VyFl2EqivTy3StxYDikwthvfNjAjGvMbVBEGFxv7E44K0SAiBVmin2r9y4lp+Fm
+ GEW/1V1JdfDAdmGxLr+o5Mb0BkbTbR9Cnaafsuf95itcPPqRm8WHm0Lbv2Y2aRcZwxc5
+ NQ0HZarITCobHJ6IkCkyVwQeAp5pTucJq9OEM7ujHIHO0D4wls+zDlJCeRif1yEg22L+ LQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33xhxn41kf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 20:15:31 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097KBCu4119070;
+        Wed, 7 Oct 2020 20:15:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 33yyjhnk1c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 20:15:31 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 097KFUlB031996;
+        Wed, 7 Oct 2020 20:15:30 GMT
+Received: from [10.65.129.34] (/10.65.129.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 13:15:29 -0700
+Subject: Re: [PATCH 2/2] sparc: Check VMA range in sparc_validate_prot()
+To:     Jann Horn <jannh@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20201007073932.865218-1-jannh@google.com>
+ <20201007073932.865218-2-jannh@google.com>
+From:   Khalid Aziz <khalid.aziz@oracle.com>
+X-Pep-Version: 2.0
+Organization: Oracle Corp
+Message-ID: <230d612d-75e8-34e0-00d6-b0f7274e692c@oracle.com>
+Date:   Wed, 7 Oct 2020 14:15:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007143211.GA235506@mit.edu>
+In-Reply-To: <20201007073932.865218-2-jannh@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:32:11AM -0400, Theodore Y. Ts'o wrote:
-> On Wed, Oct 07, 2020 at 01:03:04AM -0700, Josh Triplett wrote:
-> > > But can we *please* take your custom tool out back and shoot it in the
-> > > head?
-> > 
-> > Nope. As mentioned, this isn't about creating ext4 filesystem images,
-> > and it isn't even remotely similar to mke2fs.
-> 
-> Can you please tell us what your tool is for, then?  Why are you doing
-> this?  Why are you inflicting this on us?
+On 10/7/20 1:39 AM, Jann Horn wrote:
+> sparc_validate_prot() is called from do_mprotect_pkey() as
+> arch_validate_prot(); it tries to ensure that an mprotect() call can't
+> enable ADI on incompatible VMAs.
+> The current implementation only checks that the VMA at the start addres=
+s
+> matches the rules for ADI mappings; instead, check all VMAs that will b=
+e
+> affected by mprotect().
+>=20
+> (This hook is called before mprotect() makes sure that the specified ra=
+nge
+> is actually covered by VMAs, and mprotect() returns specific error code=
+s
+> when that's not the case. In order for mprotect() to still generate the=
 
-That sounds like a conversation that would have been a lot more
-interesting and enjoyable if it hadn't started with "can we shoot it in
-the head", and continued with the notion that anything other than
-e2fsprogs making something to be mounted by mount(2) and handled by
-fs/ext4 is being "inflicted", and if the goal didn't still seem to be
-"how do we make it go away so that only e2fsprogs and the kernel ever
-touch ext4". I started this thread because I'd written some userspace
-code, a new version of the kernel made that userspace code stop working,
-so I wanted to report that the moment I'd discovered that, along with a
-potential way to address it with as little disruption to ext4 as
-possible.
+> same error codes for mprotect(<unmapped_ptr>, <len>, ...|PROT_ADI), we =
+need
+> to *accept* cases where the range is not fully covered by VMAs.)
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: 74a04967482f ("sparc64: Add support for ADI (Application Data In=
+tegrity)")
+> Signed-off-by: Jann Horn <jannh@google.com>
+> ---
+> compile-tested only, I don't have a Sparc ADI setup - might be nice if =
+some
+> Sparc person could test this?
+>=20
+>  arch/sparc/include/asm/mman.h | 50 +++++++++++++++++++++--------------=
 
-I'm not looking to be an alternative userspace, or an alternative
-anything; that implies serving more-or-less the same function
-differently. I have no interest in supplanting mke2fs or any other part
-of e2fsprogs; I'm using those for many of the purposes they already
-serve.
+>  1 file changed, 30 insertions(+), 20 deletions(-)
 
-The short version is that I needed a library to rapidly turn
-dynamically-obtained data into a set of disk blocks to be served
-on-the-fly as a software-defined disk, and then mounted on the other
-side of that interface by the Linux kernel. Turns out that's *many
-orders of magnitude* faster than any kind of network filesystem like
-NFS. It's slightly similar to a vvfat for ext4. The less blocks it can
-generate and account for and cache, the faster it can run, and
-microseconds matter.
 
-ext4 has *incredible* compatibility guarantees. I'd already understood
-the whole compat/ro_compat mechanism when I read through the on-disk
-format documentation and the code. RO_COMPAT_SHARED_BLOCKS *seemed* like
-the right semantic description of "don't ever try to write to this
-filesystem because there are deduplicated blocks", and
-RO_COMPAT_READONLY seemed like the right semantic description for "don't
-ever try to write this, it's permanently read-only for unspecified
-reasons".
+Looks good to me.
 
-If those aren't the right way to express that, I could potentially
-adapt. I had a similar such conversation on linux-ext4 already (about
-inline data with 128-bit inodes), which led to me choosing to abandon
-128-byte inodes rather than try to get ext4 to support what I wanted
-with them, because I didn't want to be disruptive to ext4 for a niche
-use case. In the particular case that motivated this thread, what I was
-doing already worked in previous kernels, and it seemed reasonable to
-ask for it to continue to work in new kernels, while preserving the
-newly added checks in the new kernels.
+Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
 
-If the response here had been more along the lines of "could we create
-and use a *different* compat flag for shared metadata and have
-RO_COMPAT_SHARED_BLOCKS only mean shared data blocks", I'd be fine with
-that.
 
-If at some point I'm looking to make ext4 support more than it already
-does (e.g. a way to omit bitmaps entirely, or a way to express
-contiguous files with smaller extent maps, or other enhancements for
-read-only filesystems), I'd be coming with architectural discussions
-first, patches second, and at no point would I have the expectation that
-ext4 folks need to do extra work on my behalf. I'm happy to do the work.
-The *only* thing I'm asking, here, is "don't break things that worked".
-And after this particular item, I'd be happy to narrow that to "don't
-break things that e2fsck was previously happy with".
+>=20
+> diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mma=
+n.h
+> index e85222c76585..6dced75567c3 100644
+> --- a/arch/sparc/include/asm/mman.h
+> +++ b/arch/sparc/include/asm/mman.h
+> @@ -60,31 +60,41 @@ static inline int sparc_validate_prot(unsigned long=
+ prot, unsigned long addr,
+>  	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI=
+))
+>  		return 0;
+>  	if (prot & PROT_ADI) {
+> +		struct vm_area_struct *vma, *next;
+> +
+>  		if (!adi_capable())
+>  			return 0;
+> =20
+> -		if (addr) {
+> -			struct vm_area_struct *vma;
+> +		vma =3D find_vma(current->mm, addr);
+> +		/* if @addr is unmapped, let mprotect() deal with it */
+> +		if (!vma || vma->vm_start > addr)
+> +			return 1;
+> +		while (1) {
+> +			/* ADI can not be enabled on PFN
+> +			 * mapped pages
+> +			 */
+> +			if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
+> +				return 0;
+> =20
+> -			vma =3D find_vma(current->mm, addr);
+> -			if (vma) {
+> -				/* ADI can not be enabled on PFN
+> -				 * mapped pages
+> -				 */
+> -				if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
+> -					return 0;
+> +			/* Mergeable pages can become unmergeable
+> +			 * if ADI is enabled on them even if they
+> +			 * have identical data on them. This can be
+> +			 * because ADI enabled pages with identical
+> +			 * data may still not have identical ADI
+> +			 * tags on them. Disallow ADI on mergeable
+> +			 * pages.
+> +			 */
+> +			if (vma->vm_flags & VM_MERGEABLE)
+> +				return 0;
+> =20
+> -				/* Mergeable pages can become unmergeable
+> -				 * if ADI is enabled on them even if they
+> -				 * have identical data on them. This can be
+> -				 * because ADI enabled pages with identical
+> -				 * data may still not have identical ADI
+> -				 * tags on them. Disallow ADI on mergeable
+> -				 * pages.
+> -				 */
+> -				if (vma->vm_flags & VM_MERGEABLE)
+> -					return 0;
+> -			}
+> +			/* reached the end of the range without errors? */
+> +			if (addr+len <=3D vma->vm_end)
+> +				return 1;
+> +			next =3D vma->vm_next;
+> +			/* if a VMA hole follows, let mprotect() deal with it */
+> +			if (!next || next->vm_start !=3D vma->vm_end)
+> +				return 1;
+> +			vma =3D next;
+>  		}
+>  	}
+>  	return 1;
+>=20
 
-- Josh Triplett
+
