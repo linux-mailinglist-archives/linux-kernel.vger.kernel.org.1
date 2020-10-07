@@ -2,108 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCC8285E8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B024D285E84
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgJGL6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:58:25 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:35804 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgJGL6Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:58:25 -0400
-Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id BF1DF3B64F5;
-        Wed,  7 Oct 2020 11:52:15 +0000 (UTC)
-Received: from [192.168.0.28] (lns-bzn-39-82-255-60-242.adsl.proxad.net [82.255.60.242])
-        (Authenticated sender: hadess@hadess.net)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 3A8A3100012;
-        Wed,  7 Oct 2020 11:51:47 +0000 (UTC)
-Message-ID: <85a36eb58cb9774f1907582dfc75295ed847200c.camel@hadess.net>
-Subject: Re: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class
-From:   Bastien Nocera <hadess@hadess.net>
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     Mark Pearson <mpearson@lenovo.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Pearson <markpearson@lenovo.com>
-Date:   Wed, 07 Oct 2020 13:51:47 +0200
-In-Reply-To: <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
-References: <20201003131938.9426-1-hdegoede@redhat.com>
-         <20201003131938.9426-2-hdegoede@redhat.com>
-         <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.0 (3.38.0-1.fc33) 
+        id S1727927AbgJGL4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:56:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726219AbgJGL4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 07:56:33 -0400
+Received: from coco.lan (ip5f5ad5a2.dynamic.kabel-deutschland.de [95.90.213.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A42420782;
+        Wed,  7 Oct 2020 11:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602071792;
+        bh=80L2fgcL216D9D4sxx++q20VDrx0nqDDHD+L8nmS20g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hJ+tVMVYsM0GXEj7CR4meUbCqdbRRM1XBBR8WAFvVJe39HBLVzsBooByb7Lto98b0
+         VtM8LReC2tZ27K9r/y2oN5TWcnaOIK4vVgFqVsJoS4qaqcJC1Rne4YDmDbY5fA11DL
+         UQJwGxkFoXahP4NesrWBMNiupPZsFE9TZ+2vXYhw=
+Date:   Wed, 7 Oct 2020 13:56:27 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2] script: add a script for checking doc problems with
+ external functions
+Message-ID: <20201007135627.176d64e4@coco.lan>
+In-Reply-To: <aac55ad312d17bb12f905b544a4e485ad507735d.1602070137.git.mchehab+huawei@kernel.org>
+References: <aac55ad312d17bb12f905b544a4e485ad507735d.1602070137.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-05 at 12:58 +0000, Limonciello, Mario wrote:
-> > On modern systems CPU/GPU/... performance is often dynamically
-> > configurable
-> > in the form of e.g. variable clock-speeds and TPD. The performance
-> > is often
-> > automatically adjusted to the load by some automatic-mechanism
-> > (which may
-> > very well live outside the kernel).
-> > 
-> > These auto performance-adjustment mechanisms often can be
-> > configured with
-> > one of several performance-profiles, with either a bias towards
-> > low-power
-> > consumption (and cool and quiet) or towards performance (and higher
-> > power
-> > consumption and thermals).
-> > 
-> > Introduce a new performance_profile class/sysfs API which offers a
-> > generic
-> > API for selecting the performance-profile of these automatic-
-> > mechanisms.
-> > 
+Em Wed,  7 Oct 2020 13:29:04 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+
+> While not all EXPORT_SYMBOL*() symbols should be documented,
+> it seems useful to have a tool which would help to check what
+> symbols aren't documented.
 > 
-> If introducing an API for this - let me ask the question, why even let each
-> driver offer a class interface and userspace need to change "each" driver's
-> performance setting?
+> This is a first step on this direction. The tool has some
+> limitations. Yet, it could be useful for maintainers to check
+> about missing documents on their subsystems.
 > 
-> I would think that you could just offer something kernel-wide like
-> /sys/power/performance-profile
-> 
-> Userspace can read and write to a single file.  All drivers can get notified
-> on this sysfs file changing.
-> 
-> The systems that react in firmware (such as the two that prompted
-> this discussion) can change at that time.  It leaves the possibility for a
-> more open kernel implementation that can do the same thing though too by
-> directly modifying device registers instead of ACPI devices.
+> Suggested-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-The problem, as I've mentioned in previous discussions we had about
-this, is that, as you've seen in replies to this mail, this would
-suddenly be making the kernel apply policy.
+Please ignore this one. Just found some bugs. I'll send a v3
+after fixing them.
 
-There's going to be pushback as soon as policy is enacted in the
-kernel, and you take away the different knobs for individual components
-(or you can control them centrally as well as individually). As much as
-I hate the quantity of knobs[1], I don't think that trying to reduce
-the number of knobs in the kernel is a good use of our time, and easier
-to enact, coordinated with design targets, in user-space.
-
-Unless you can think of a way to implement this kernel wide setting
-without adding one more exponent on the number of possibilities for the
-testing matrix, I'll +1 Hans' original API.
-
-Cheers
-
-[1]: https://ometer.com/preferences.html
-
+Thanks,
+Mauro
