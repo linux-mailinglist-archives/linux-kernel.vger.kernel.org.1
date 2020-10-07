@@ -2,315 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57042861DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC042861E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgJGPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:12:03 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:41721 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgJGPMD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:12:03 -0400
-Received: by mail-oi1-f196.google.com with SMTP id q136so1608907oic.8;
-        Wed, 07 Oct 2020 08:12:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EWNhakFdr+Af9mXVcjVojegyJELDAdY6frBEcDPGyxU=;
-        b=rPgy62fssGRIBCp3fztdl7mi1crnUdoa1jIssThK0OxqTIktvZoD5FmFtxmEME5Dwz
-         FiTaq8LOqFQqQgb+gGdBsd5HrUe4wlb8sEawiIICQPgjrdHtReq3qMCZafavMHSJ29pl
-         E+UVXQ9iTrPwobGrIsDIdO/74+uV8TIdD3cLjFbemjB/3qGOztZgUzozWNvyztaQikDH
-         YnX9PXxBV/gAXmorHn09T+MWAwJQdRk5ClcJkE1YaZlrsPkTtYxgtuZsuyCvXESYqCXt
-         qm7DsSQt9Gt7HqIgpKrtoieQrnfYG3T9ufdEBhowaOqmHjt8K0FXdL1Ts6EJBSX6OYWs
-         010A==
-X-Gm-Message-State: AOAM530HBhH415Py0d/slonVuuV+KCvRi1XfQUuWQqzfq1JJ/h37p/wp
-        dupvY6CcRu5K/ypD5pUPqA==
-X-Google-Smtp-Source: ABdhPJy8zFQuU7BA4DG6IGmdYxtGW+BiMCGOjN+e2y4EDjuN4sX3E0CEhnbI1WsT2xPArBQABn1tHg==
-X-Received: by 2002:aca:b3c2:: with SMTP id c185mr2065065oif.118.1602083521386;
-        Wed, 07 Oct 2020 08:12:01 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o2sm2081304oia.42.2020.10.07.08.12.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 08:12:00 -0700 (PDT)
-Received: (nullmailer pid 234333 invoked by uid 1000);
-        Wed, 07 Oct 2020 15:11:59 -0000
-Date:   Wed, 7 Oct 2020 10:11:59 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
-        heiko@sntech.de, Collabora Kernel ML <kernel@collabora.com>,
-        Caesar Wang <wxt@rock-chips.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v3] dt-bindings: power: rockchip: Convert to json-schema
-Message-ID: <20201007151159.GA221754@bogus>
-References: <20200921092951.945382-1-enric.balletbo@collabora.com>
+        id S1728430AbgJGPM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:12:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:45312 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726152AbgJGPM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:12:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4919A106F;
+        Wed,  7 Oct 2020 08:12:27 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE4AD3F66B;
+        Wed,  7 Oct 2020 08:12:26 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 16:12:25 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
+        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
+        orjan.eide@arm.com
+Subject: Re: [PATCH 4/5] thermal: devfreq_cooling: remove old power model and
+ use EM
+Message-ID: <20201007151225.GB15063@arm.com>
+References: <20200921122007.29610-1-lukasz.luba@arm.com>
+ <20200921122007.29610-5-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921092951.945382-1-enric.balletbo@collabora.com>
+In-Reply-To: <20200921122007.29610-5-lukasz.luba@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:29:51AM +0200, Enric Balletbo i Serra wrote:
-> Convert the soc/rockchip/power_domain.txt binding document to json-schema
-> and move to the power bindings directory.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
-> 
-> Changes in v3:
-> - Fixed tab errors found by bot
-> 
-> Changes in v2:
-> - Fixed a warning that says that 'syscon' should not be used alone.
-> - Use patternProperties to define a new level for power-domains.
-> - Add const values for power-domain-cells, address-cells, etc.
-> 
->  .../power/rockchip,power-controller.yaml      | 207 ++++++++++++++++++
->  .../bindings/soc/rockchip/power_domain.txt    | 136 ------------
->  2 files changed, 207 insertions(+), 136 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> new file mode 100644
-> index 000000000000..b23ea37e2a08
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> @@ -0,0 +1,207 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip Power Domains
-> +
-> +maintainers:
-> +  - Caesar Wang <wxt@rock-chips.com>
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +
-> +description: |
-> +  Rockchip processors include support for multiple power domains which can be
-> +  powered up/down by software based on different application scenes to save power.
-> +
-> +  Power domains contained within power-controller node are generic power domain
-> +  providers documented in Documentation/devicetree/bindings/power/power-domain.yaml.
-> +
-> +  IP cores belonging to a power domain should contain a 'power-domains'
-> +  property that is a phandle for the power domain node representing the domain.
-> +
-> +properties:
-> +  $nodename:
-> +    const: power-controller
-> +
-> +  compatible:
-> +    enum:
-> +      - rockchip,px30-power-controller
-> +      - rockchip,rk3036-power-controller
-> +      - rockchip,rk3066-power-controller
-> +      - rockchip,rk3128-power-controller
-> +      - rockchip,rk3188-power-controller
-> +      - rockchip,rk3228-power-controller
-> +      - rockchip,rk3288-power-controller
-> +      - rockchip,rk3328-power-controller
-> +      - rockchip,rk3366-power-controller
-> +      - rockchip,rk3368-power-controller
-> +      - rockchip,rk3399-power-controller
-> +
-> +  '#power-domain-cells':
-> +    const: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +patternProperties:
-> +  "^power-domain@[0-9]+$":
+Hi Lukasz,
 
-unit-addresses are hex.
+On Monday 21 Sep 2020 at 13:20:06 (+0100), Lukasz Luba wrote:
+[..]
+>  /**
+> - * freq_get_state() - get the cooling state corresponding to a frequency
+> + * freq_get_state() - get the performance index corresponding to a frequency
 
-> +    type: object
-> +    description: |
-> +      Represents the power domains within the power controller node as documented
-> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
-> +
-> +    properties:
-> +
-> +      '#power-domain-cells':
-> +        description:
-> +            Must be 0 for nodes representing a single PM domain and 1 for nodes
-> +            providing multiple PM domains.
-> +
-> +      '#address-cells':
-> +        const: 1
-> +
-> +      '#size-cells':
-> +        const: 0
-> +
-> +      reg:
-> +        description: |
-> +          Power domain index. Valid values are defined in:
-> +          "include/dt-bindings/power/px30-power.h" - for PX30 type power domain.
-> +          "include/dt-bindings/power/rk3036-power.h" - for RK3036 type power domain.
-> +          "include/dt-bindings/power/rk3066-power.h" - for RK3066 type power domain.
-> +          "include/dt-bindings/power/rk3128-power.h" - for RK3128 type power domain.
-> +          "include/dt-bindings/power/rk3188-power.h" - for RK3188 type power domain.
-> +          "include/dt-bindings/power/rk3228-power.h" - for RK3228 type power domain.
-> +          "include/dt-bindings/power/rk3288-power.h" - for RK3288 type power domain.
-> +          "include/dt-bindings/power/rk3328-power.h" - for RK3328 type power domain.
-> +          "include/dt-bindings/power/rk3366-power.h" - for RK3366 type power domain.
-> +          "include/dt-bindings/power/rk3368-power.h" - for RK3368 type power domain.
-> +          "include/dt-bindings/power/rk3399-power.h" - for RK3399 type power domain.
-> +        maxItems: 1
+If we change the meaning of the return value, I think the function needs
+a name change as well.
 
-Range of values?
+Also, we do treat this as a cooling state when we do validation and
+compare it to THERMAL_CSTATE_INVALID,  but it's not actually a cooling
+state (it's max_state - state). It does create confusion if we name
+"state" both a performance index and a cooling state.
 
-> +
-> +      clocks:
-> +        description: |
-> +          A number of phandles to clocks that need to be enabled while power domain
-> +          switches state.
+Given that the only user is devfreq_cooling_get_requested_power(),
+might be good to collapse freq_get_state() in that function and rename
+the "state" variable in there to "em_perf_idx".
 
-Can you at least put a range of how many clocks?
+>   * @dfc:	Pointer to devfreq cooling device
+> - * @freq:	frequency in Hz
+> + * @freq:	frequency in kHz
+>   *
+> - * Return: the cooling state associated with the @freq, or
+> + * Return: the performance index associated with the @freq, or
+>   * THERMAL_CSTATE_INVALID if it wasn't found.
+>   */
+>  static unsigned long
+> @@ -128,8 +130,8 @@ freq_get_state(struct devfreq_cooling_device *dfc, unsigned long freq)
+>  {
+>  	int i;
+>  
+> -	for (i = 0; i < dfc->freq_table_size; i++) {
+> -		if (dfc->freq_table[i] == freq)
+> +	for (i = 0; i <= dfc->max_state; i++) {
+> +		if (dfc->em->table[i].frequency == freq)
+>  			return i;
+>  	}
+>  
+> @@ -164,71 +166,15 @@ static unsigned long get_voltage(struct devfreq *df, unsigned long freq)
+>  	return voltage;
+>  }
+>  
+> -/**
+> - * get_static_power() - calculate the static power
+> - * @dfc:	Pointer to devfreq cooling device
+> - * @freq:	Frequency in Hz
+> - *
+> - * Calculate the static power in milliwatts using the supplied
+> - * get_static_power().  The current voltage is calculated using the
+> - * OPP library.  If no get_static_power() was supplied, assume the
+> - * static power is negligible.
+> - */
+> -static unsigned long
+> -get_static_power(struct devfreq_cooling_device *dfc, unsigned long freq)
+> +static void dfc_em_get_requested_power(struct em_perf_domain *em,
+> +				       struct devfreq_dev_status *status,
+> +				       u32 *power, int em_perf_idx)
 
-> +
-> +      pm_qos:
-> +        description: |
-> +          A number of phandles to qos blocks which need to be saved and restored
-> +          while power domain switches state.
+Is there a reason for not directly returning the power value in this
+function? Also, this only does a few arithmetic operations and it's only
+called in one place. Is it worth to have this in a separate function?
 
-And here.
+[..]
+> @@ -345,11 +279,8 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
+>  	struct devfreq_cooling_device *dfc = cdev->devdata;
+>  	struct devfreq *df = dfc->devfreq;
+>  	struct devfreq_dev_status status;
+> -	unsigned long busy_time;
+> +	u32 est_power = power;
 
-> +
-> +    required:
-> +      - reg
+Nit: You could use power directly and remove est_power as well.
 
-       additionalProperties: false
+>  	unsigned long freq;
+> -	s32 dyn_power;
+> -	u32 static_power;
+> -	s32 est_power;
+>  	int i;
+>  
+>  	mutex_lock(&df->lock);
+> @@ -358,31 +289,26 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
+>  
+>  	freq = status.current_frequency;
+>  
+> -	if (dfc->power_ops->get_real_power) {
+> +	if (dfc->power_ops && dfc->power_ops->get_real_power) {
+>  		/* Scale for resource utilization */
+>  		est_power = power * dfc->res_util;
+>  		est_power /= SCALE_ERROR_MITIGATION;
+>  	} else {
+> -		static_power = get_static_power(dfc, freq);
+> -
+> -		dyn_power = power - static_power;
+> -		dyn_power = dyn_power > 0 ? dyn_power : 0;
+> -
+> -		/* Scale dynamic power for utilization */
+> -		busy_time = status.busy_time ?: 1;
+> -		est_power = (dyn_power * status.total_time) / busy_time;
+> +		_normalize_load(&status);
+> +		est_power *= status.total_time;
+> +		est_power /= status.busy_time;
+>  	}
+>  
+>  	/*
+>  	 * Find the first cooling state that is within the power
+> -	 * budget for dynamic power.
+> +	 * budget. The EM power table is sorted ascending.
+>  	 */
+> -	for (i = 0; i < dfc->freq_table_size - 1; i++)
+> -		if (est_power >= dfc->power_table[i])
+> +	for (i = dfc->max_state; i > 0; i--)
+> +		if (est_power >= dfc->em->table[i].power)
+>  			break;
+>  
+> -	*state = i;
+> -	dfc->capped_state = i;
+> +	*state = dfc->max_state - i;
+> +	dfc->capped_state = *state;
+>  	trace_thermal_power_devfreq_limit(cdev, freq, *state, power);
+>  	return 0;
+>  }
+[..]
+>  /**
+> @@ -503,7 +381,7 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+>  	struct thermal_cooling_device *cdev;
+>  	struct devfreq_cooling_device *dfc;
+>  	char dev_name[THERMAL_NAME_LENGTH];
+> -	int err;
+> +	int err, num_opps;
+>  
+>  	dfc = kzalloc(sizeof(*dfc), GFP_KERNEL);
+>  	if (!dfc)
+> @@ -511,28 +389,45 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+>  
+>  	dfc->devfreq = df;
+>  
+> -	if (dfc_power) {
+> -		dfc->power_ops = dfc_power;
+> -
+> +	dfc->em = em_pd_get(df->dev.parent);
+> +	if (dfc->em) {
+>  		devfreq_cooling_ops.get_requested_power =
+>  			devfreq_cooling_get_requested_power;
+>  		devfreq_cooling_ops.state2power = devfreq_cooling_state2power;
+>  		devfreq_cooling_ops.power2state = devfreq_cooling_power2state;
+> +
+> +		dfc->power_ops = dfc_power;
+> +
+> +		num_opps = em_pd_nr_perf_states(dfc->em);
+> +	} else {
+> +		/* Backward compatibility for drivers which do not use IPA */
+> +		dev_dbg(df->dev.parent, "missing EM for cooling device\n");
+> +
+> +		num_opps = dev_pm_opp_get_opp_count(df->dev.parent);
+> +
+> +		err = devfreq_cooling_gen_tables(dfc, num_opps);
+> +		if (err)
+> +			goto free_dfc;
+>  	}
+>  
+> -	err = devfreq_cooling_gen_tables(dfc);
+> -	if (err)
+> +	if (num_opps <= 0) {
+> +		err = -EINVAL;
+>  		goto free_dfc;
+> +	}
+> +
+> +	/* max_state is an index, not a counter */
 
-Which in turn means the nested power domains will throw an error, so you 
-can do:
+Nit: Might be more clear to replace "index" with cooling state. Then
+knowledge about cooling states would make this more clear.
 
-       patternProperties:
-	 "^power-domain@[0-9a-f]+$":
-           $ref: '#/patternProperties/^power-domain@[0-9a-f]+$'
-
-> +
-> +required:
-> +  - compatible
-> +  - '#power-domain-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3399-cru.h>
-> +    #include <dt-bindings/power/rk3399-power.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        qos_hdcp: qos@ffa90000 {
-> +            compatible = "rockchip,rk3399-qos","syscon";
-
-space                                             ^
-
-> +            reg = <0x0 0xffa90000 0x0 0x20>;
-> +        };
-> +
-> +        qos_iep: qos@ffa98000 {
-> +            compatible = "rk3399-qos","syscon";
-> +            reg = <0x0 0xffa98000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_r: qos@ffab0000 {
-> +            compatible = "rk3399-qos","syscon";
-> +            reg = <0x0 0xffab0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_w: qos@ffab0080 {
-> +            compatible = "rk3399-qos","syscon";
-> +            reg = <0x0 0xffab0080 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m0: qos@ffab8000 {
-> +            compatible = "rk3399-qos","syscon";
-> +            reg = <0x0 0xffab8000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_r: qos@ffac0000 {
-> +            compatible = "rk3399-qos","syscon";
-> +            reg = <0x0 0xffac0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_w: qos@ffac0080 {
-> +            compatible = "rk3399-qos","syscon";
-> +            reg = <0x0 0xffac0080 0x0 0x20>;
-> +        };
-> +
-> +        power-management@ff310000 {
-> +            compatible = "rockchip,rk3399-pmu", "syscon", "simple-mfd";
-> +            reg = <0x0 0xff310000 0x0 0x1000>;
-> +
-> +            power-controller {
-> +                compatible = "rockchip,rk3399-power-controller";
-> +                #power-domain-cells = <1>;
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                /* These power domains are grouped by VD_CENTER */
-> +                power-domain@RK3399_PD_IEP {
-> +                    reg = <RK3399_PD_IEP>;
-> +                    clocks = <&cru ACLK_IEP>,
-> +                             <&cru HCLK_IEP>;
-> +                    pm_qos = <&qos_iep>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_RGA {
-> +                    reg = <RK3399_PD_RGA>;
-> +                    clocks = <&cru ACLK_RGA>,
-> +                             <&cru HCLK_RGA>;
-> +                    pm_qos = <&qos_rga_r>,
-> +                             <&qos_rga_w>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_VCODEC {
-> +                    reg = <RK3399_PD_VCODEC>;
-> +                    clocks = <&cru ACLK_VCODEC>,
-> +                             <&cru HCLK_VCODEC>;
-> +                    pm_qos = <&qos_video_m0>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_VDU {
-> +                    reg = <RK3399_PD_VDU>;
-> +                    clocks = <&cru ACLK_VDU>,
-> +                             <&cru HCLK_VDU>;
-> +                    pm_qos = <&qos_video_m1_r>,
-> +                             <&qos_video_m1_w>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_VIO {
-> +                    reg = <RK3399_PD_VIO>;
-> +                    #power-domain-cells = <1>;
-> +                    #address-cells = <1>;
-> +                    #size-cells = <0>;
-> +
-> +                    power-domain@RK3399_PD_HDCP {
-> +                        reg = <RK3399_PD_HDCP>;
-> +                        clocks = <&cru ACLK_HDCP>,
-> +                                 <&cru HCLK_HDCP>,
-> +                                 <&cru PCLK_HDCP>;
-> +                        pm_qos = <&qos_hdcp>;
-> +                        #power-domain-cells = <0>;
-> +                    };
-> +                };
-> +            };
-> +        };
-> +    };
+Regards,
+Ionela.
