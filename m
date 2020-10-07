@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30C52859E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE05E2855E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgJGHvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:51:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGHvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:51:17 -0400
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 647702083B;
-        Wed,  7 Oct 2020 07:51:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602057076;
-        bh=pPe0QZH8ds38VJC2EDHDXgxsIIWzI5GyW5gBbQu8Wp4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ziIUUno7tUa/CJR94p7AGzuV5nmGieR4sEIkA4cnhFU41dlvgr0OedmZQcruKmHG8
-         rhnT782UwpMgyoAu9T7u6Ar0nXwm5TquAA1OI8PZDkH/7OMU6FAJFu1pEOiV9lT3oP
-         p36+qgA7lvbsfikp9L5+LAxpt81PocXuEZz6BCos=
-Received: by mail-ed1-f50.google.com with SMTP id v19so1135032edx.9;
-        Wed, 07 Oct 2020 00:51:16 -0700 (PDT)
-X-Gm-Message-State: AOAM532oHnRf3VWdbPNAYKiyoY7sYmhWp3a16+tpffoRICfhxeZBr7N+
-        L49uDfMaizipnIxiQZzvwTN1omew4L8rl8K2yEM=
-X-Google-Smtp-Source: ABdhPJzTD5nsOCxLuzUZRs3e0s1+5hkp77bWRxgXkCPy9k8HczaULR8h/+CBUEGxdc+jTPlN+fThYH5g8eZdl981y8o=
-X-Received: by 2002:aa7:d1d5:: with SMTP id g21mr2269960edp.348.1602057074792;
- Wed, 07 Oct 2020 00:51:14 -0700 (PDT)
+        id S1727217AbgJGBFe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Oct 2020 21:05:34 -0400
+Received: from smtp03.udep.edu.pe ([200.37.64.10]:49272 "EHLO
+        SRVEXCHANGE.udep.pe" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726904AbgJGBFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 21:05:33 -0400
+X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Oct 2020 21:05:33 EDT
+Received: from SRVEXCHANGE.udep.pe (172.30.20.36) by SRVEXCHANGE.udep.pe
+ (172.30.20.36) with Microsoft SMTP Server (TLS) id 15.0.847.32; Tue, 6 Oct
+ 2020 19:50:02 -0500
+Received: from User (10.112.41.90) by SRVEXCHANGE.udep.pe (172.30.20.36) with
+ Microsoft SMTP Server id 15.0.847.32 via Frontend Transport; Tue, 6 Oct 2020
+ 19:49:36 -0500
+Reply-To: <stevekon39@rediffmail.com>
+From:   "From: Steve Odonkon" <admin@gmail.com>
+Subject: RE: STRICTLY CONFIDENTIAL (Respond Immediately)  
+Date:   Wed, 7 Oct 2020 00:51:08 -0700
 MIME-Version: 1.0
-References: <20201006160814.22047-1-ceggers@arri.de> <20201006160814.22047-3-ceggers@arri.de>
-In-Reply-To: <20201006160814.22047-3-ceggers@arri.de>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 7 Oct 2020 09:51:03 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPc3ppDdcQCGCuLG2=QHRuXzMZV-Nodzc==LWjRMNxXpaA@mail.gmail.com>
-Message-ID: <CAJKOXPc3ppDdcQCGCuLG2=QHRuXzMZV-Nodzc==LWjRMNxXpaA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] i2c: imx: Check for I2SR_IAL after every byte
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-Antivirus: AVG (VPS 201006-2, 10/06/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <4fa255a4-fd7e-44e7-bb94-63c0f980f207@SRVEXCHANGE.udep.pe>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 18:11, Christian Eggers <ceggers@arri.de> wrote:
->
-> Arbitration Lost (IAL) can happen after every single byte transfer. If
-> arbitration is lost, the I2C hardware will autonomously switch from
-> master mode to slave. If a transfer is not aborted in this state,
-> consecutive transfers will not be executed by the hardware and will
-> timeout.
->
-> Signed-off-by: Christian Eggers <ceggers@arri.de>
-> Cc: stable@vger.kernel.org
+Esteem Complement,    Tuesday October 6th 2020
 
-Where is the tested-by tag from me?
+Hello, my name is Steve Odonkon, Audit Accounting Officer of Standard Chartered Bank, Basinghall Ave, London, United Kingdom. I got your information when I was searching for an oversea partner among other names, I ask for your pardon if my approach is offensive as I never meant to invade your privacy through this means, and also i believe this is the best and secured means I can pass my message across to you in clear terms. I have sent you this proposal before now; I do hope this will get to you in good health.
 
-Best regards,
-Krzysztof
+
+As the Audit Accounting Officer of the bank, I have access to lots of documents because I handle some of the bank's sensitive files. On the course of the last year 2019 business report, I discovered that my branch in which I am the Audit Accounting Officer made (£5,720,000.00). Million British pounds from some past government contractors in which my head office are not aware of and will never be aware of. I have placed this funds on what we call escrow call account with no beneficiary.
+
+
+As an officer of this bank I cannot be directly connected to this money, so my aim of contacting you is to assist me receive this money in your bank account and get 40% of the total funds as commission. There are practically no risks involved, it will be a bank-to-bank transfer, and all I need from you is to stand claim as the Original depositor of these funds who made the deposit with my branch so that my head office can order the transfer to your designated bank account.
+
+Send me your contact details below to enable me furnish you with more relevant details that will help you understand the transaction.
+
+Full Name...
+
+Telephone Number...
+
+
+Thank you in advance and May God bless you and your family.
+
+Yours truly,
+Steve Odonkon
+E-mail:  stevekon39@rediffmail.com
+Call: +44 7926062919
+
+-- 
+This email has been checked for viruses by AVG.
+https://www.avg.com
+
