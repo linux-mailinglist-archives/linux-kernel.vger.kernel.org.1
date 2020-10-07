@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE33285E6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286CC285E76
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbgJGLsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgJGLst (ORCPT
+        id S1728024AbgJGLtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:49:45 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:59728 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727140AbgJGLto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:48:49 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFBCC061755;
-        Wed,  7 Oct 2020 04:48:49 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kQ7w5-000t7x-Bn; Wed, 07 Oct 2020 13:48:45 +0200
-Message-ID: <bec6415925c213a2e3eb86e80d6982b82180f019.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/2] net, mac80211: enable KCOV remote coverage
- collection for 802.11 frame handling
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Aleksandr Nogikh <a.nogikh@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nogikh@google.com
-Date:   Wed, 07 Oct 2020 13:48:43 +0200
-In-Reply-To: <20201007101726.3149375-1-a.nogikh@gmail.com> (sfid-20201007_121750_390860_16179DAD)
-References: <20201007101726.3149375-1-a.nogikh@gmail.com>
-         (sfid-20201007_121750_390860_16179DAD)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Wed, 7 Oct 2020 07:49:44 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 097Bnfhu050847;
+        Wed, 7 Oct 2020 06:49:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602071381;
+        bh=W4xGhDWT1+ePzUUUuvec26NlPIyDjKM2QF/s3h1SvZw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=MKVT8Hiq1s9mtqtgyOKK3dXtvvCq1DMKYxqiJSeF4z6zxZHyP3+RoM1HJxl86Gk9w
+         cDGGmyhQ0u3Pu320zffqPALoN/ZBLcYS3Vj9cu3DVJ/VCvkPvku+s9WHQzu32mpw+y
+         MNFJw+HOxpHQKLhW//LOHbnByKQpdPFozCE8Uu/A=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 097BnfbN128101
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 06:49:41 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 06:49:41 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 06:49:41 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 097BnOgQ102958;
+        Wed, 7 Oct 2020 06:49:25 -0500
+Subject: Re: [PATCH v3 2/3] dmaengine: add peripheral configuration
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200923063410.3431917-1-vkoul@kernel.org>
+ <20200923063410.3431917-3-vkoul@kernel.org>
+ <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
+ <20201001112307.GX2968@vkoul-mobl>
+ <f063ae03-41da-480a-19ba-d061e140e4d2@ti.com>
+ <20201007112807.GW2968@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <5784e3cb-8d22-58f1-5211-a450b60949a9@ti.com>
+Date:   Wed, 7 Oct 2020 14:49:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201007112807.GW2968@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-07 at 10:17 +0000, Aleksandr Nogikh wrote:
-> From: Aleksandr Nogikh <nogikh@google.com>
+Hi Vinod,
+
+On 07/10/2020 14.28, Vinod Koul wrote:
+> Hi Peter,
 > 
-> This patch series enables remote KCOV coverage collection for the
-> mac80211 code that processes incoming 802.11 frames. These changes
-> make it possible to perform coverage-guided fuzzing in search of
-> remotely triggerable bugs.
+> On 02-10-20, 11:48, Peter Ujfalusi wrote:
 > 
+>> It depends which is best for the use case.
+>> I see the metadata useful when you need to send different
+>> metadata/configuration with each transfer.
+>> It can be also useful when you need it seldom, but for your use case and
+>> setup the dma_slave_config extended with
+>>
+>> enum dmaengine_peripheral peripheral_type;
+>> void *peripheral_config;
+>>
+>> would be a bit more explicit.
+>>
+>> I would then deal with the peripheral config in this way:
+>> when the DMA driver's device_config is called, I would take the
+>> parameters and set a flag that the config needs to be processed as it
+>> has changed.
+>> In the next prep_slave_sg() then I would prepare the TREs with the
+>> config and clear the flag that the next transfer does not need the
+>> configuration anymore.
+>>
+>> In this way each dmaengine_slave_config() will trigger at the next
+>> prep_slave_sg time configuration update for the peripheral to be
+>> included in the TREs.
+>> The set_config would be internal to the DMA driver, clients just need to
+>> update the configuration when they need to and everything is taken care of.
 > 
-> The series consists of two commits.
-> 1. Remember kcov_handle for each sk_buff. This can later be used to
-> enable remote coverage for other network subsystems.
-> 2. Annotate the code that processes incoming 802.11 frames.
+> Ok I am going to drop the dmaengine_peripheral and make
+> peripheral_config as as you proposed.
 > 
-> Aleksandr Nogikh (2):
->   net: store KCOV remote handle in sk_buff
+> So will add following to dma_slave_config:
+>         void *peripheral_config;
+> 
+> Driver can define the config they would like and use.
+> 
+> We can eventually look at common implementations and try to unify once
+> we have more users
 
-Can you explain that a bit better? What is a "remote handle"? What does
-it do in the SKB?
+Sound good to me!
 
-I guess I'd have to know more about "kcov_common_handle()" to understand
-this bit.
+- Péter
 
->   mac80211: add KCOV remote annotations to incoming frame processing
-
-This seems fine, but a bit too limited? You tagged
-only ieee80211_tasklet_handler() which calls ieee80211_rx()
-or ieee80211_tx_status(), but
-
-1) I'm not even sure ieee80211_tx_status() counts (it's processing
-locally generated frames after they round-tripped into the driver
-(although in mesh it could be remote originated but retransmitted
-frames, so I guess it makes some sense?); and
-
-2) there are many other ways that ieee80211_rx() could get called.
-
-It seems to me it'd make more sense to (also) annotate ieee80211_rx()
-itself?
-
-johannes
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
