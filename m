@@ -2,383 +2,1203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DEE2869A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3D62869BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgJGU5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgJGU5P (ORCPT
+        id S1728667AbgJGU6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:58:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728524AbgJGU6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:57:15 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C422DC061755;
-        Wed,  7 Oct 2020 13:57:15 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id q21so3545872ota.8;
-        Wed, 07 Oct 2020 13:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+PgDkY01r+SPnq9V1UBxtImvIZ+pUBtI19wyV25iY7U=;
-        b=ThvuIbr0CMZR0dT8iUzKHjStgv9nz1WNJP5fSKGNEJY/201n+RdT9yrPcuzoZJPIsi
-         kS4PrL9gs8INyZACDFD9AEenxp93n7GO3vK7jruujXKhiIwq508kxuFJeIy2mB6yhTuW
-         6s1Yw/lZ1N2qcSvhuJ0Xn8tY+LxOg3Rt4EVJA4BbddD7CU2OuMJsLijYA8eVnlZ4+iyH
-         zp2OjjK/bGLdykxCCMqLJdcHpjgwrRsiqvFoMYADWd3E1WAl9fN2X+tR3zsEzkySmz0X
-         OnD9+yDxjT3RhT+hTJ20LlcWXVGQBNHyZQq/e8wniNDHt5Y+UZhPj9N5EkRDeQTw6o3z
-         pI0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+PgDkY01r+SPnq9V1UBxtImvIZ+pUBtI19wyV25iY7U=;
-        b=JMiLLPv+87dMZy3p+573rh9K4MDQuJIPHp4/dUeAAtpqqn9Zbv9oCVAQqW1CAE/QPp
-         G+QATvamdm4hv1kkvMza37p2yRxPYjZKNa9LSjll8jtJh4zaqRY1F9kjNyM8cmk1+t34
-         Z80z9ZpSkZAhc2O8pc177f59gzk7lDNhVdAechW2VIvYcEGdx9FHRNJM8DfyRY/NzGS7
-         7RI+FpVlfKX/fk/+oRYqsv0v2I5+vF3oqddt/5RjjLMj5k5b/yX1/dSPjIMfx6lzIdgO
-         Gh6K1GmxSa4JbnkNC3J+viYxGe2krOmIXPrhfm+IE+k6di8M3RKKvqgkUxumqGz0iTTz
-         Vwsg==
-X-Gm-Message-State: AOAM53360SvHh6mFcfoKC/uYDmzS6pVjnmTFne5GAJjAmxcq2iU/JxSb
-        XZFaR+P/9IswNyZInWbD6a4hYtUQaDCTWjrMKS8=
-X-Google-Smtp-Source: ABdhPJxgP4pU9mnZ9sU5+E8aH+0IQMPjuMDOxIs4XgZ/mYhmQeCtbrQMCUI8zn5ZAOPEnRHwPtiDhBHyFB0sMbUURYE=
-X-Received: by 2002:a05:6830:1f4d:: with SMTP id u13mr2870769oth.184.1602104235068;
- Wed, 07 Oct 2020 13:57:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921092951.945382-1-enric.balletbo@collabora.com> <20201007151159.GA221754@bogus>
-In-Reply-To: <20201007151159.GA221754@bogus>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Wed, 7 Oct 2020 22:57:02 +0200
-Message-ID: <CAFqH_531fkh_gZbOMuzhsRj-72NeWsPyxWoFQh9bAF3CZwTfNw@mail.gmail.com>
-Subject: Re: [PATCH v3] dt-bindings: power: rockchip: Convert to json-schema
-To:     Rob Herring <robh@kernel.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Caesar Wang <wxt@rock-chips.com>
+        Wed, 7 Oct 2020 16:58:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602104291;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gx1oDuiZnhgLxpkMM6hHT+8e+2z4CZ373MWscvMW7RI=;
+        b=ArMY3+NPE6xztnfAEBlaBRLm/udr0fUNh7rEXVVwd1ynurhZwgTlsTa3Y11eLdkiV3TWam
+        UbLdXwNprRohZ5aojIV3oJ+jYUtieoybmZzsbukfWQ7uqPvvi83Gal3YBdLyHgCzYDMU2U
+        mZYOCg+y0vGOI0RjK6OWuBglxl1c5N0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-g3tDBAg7P1igeYq2nbb9Dg-1; Wed, 07 Oct 2020 16:58:07 -0400
+X-MC-Unique: g3tDBAg7P1igeYq2nbb9Dg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0F1C85B66C;
+        Wed,  7 Oct 2020 20:58:04 +0000 (UTC)
+Received: from ovpn-66-246.rdu2.redhat.com (ovpn-66-246.rdu2.redhat.com [10.10.66.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DFBB26EF40;
+        Wed,  7 Oct 2020 20:58:03 +0000 (UTC)
+Message-ID: <1f950d7fa9446fb55fe8d224bd419084922f867d.camel@redhat.com>
+Subject: Re: INFO: task can't die in request_wait_answer
+From:   Qian Cai <cai@redhat.com>
+To:     syzbot <syzbot+ea48ca29949b1820e745@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Date:   Wed, 07 Oct 2020 16:58:03 -0400
+In-Reply-To: <000000000000f84cce05b0e4a83e@google.com>
+References: <000000000000f84cce05b0e4a83e@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Sun, 2020-10-04 at 21:10 -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    2172e358 Add linux-next specific files for 20201002
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1596c7a3900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=70698f530a7e856f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ea48ca29949b1820e745
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e1c8e7900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a166af900000
 
-Missatge de Rob Herring <robh@kernel.org> del dia dc., 7 d=E2=80=99oct. 202=
-0 a
-les 17:12:
->
-> On Mon, Sep 21, 2020 at 11:29:51AM +0200, Enric Balletbo i Serra wrote:
-> > Convert the soc/rockchip/power_domain.txt binding document to json-sche=
-ma
-> > and move to the power bindings directory.
-> >
-> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> > ---
-> >
-> > Changes in v3:
-> > - Fixed tab errors found by bot
-> >
-> > Changes in v2:
-> > - Fixed a warning that says that 'syscon' should not be used alone.
-> > - Use patternProperties to define a new level for power-domains.
-> > - Add const values for power-domain-cells, address-cells, etc.
-> >
-> >  .../power/rockchip,power-controller.yaml      | 207 ++++++++++++++++++
-> >  .../bindings/soc/rockchip/power_domain.txt    | 136 ------------
-> >  2 files changed, 207 insertions(+), 136 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/power/rockchip,po=
-wer-controller.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/powe=
-r_domain.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/power/rockchip,power-con=
-troller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-contr=
-oller.yaml
-> > new file mode 100644
-> > index 000000000000..b23ea37e2a08
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller=
-.yaml
-> > @@ -0,0 +1,207 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yam=
-l#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Rockchip Power Domains
-> > +
-> > +maintainers:
-> > +  - Caesar Wang <wxt@rock-chips.com>
-> > +  - Heiko Stuebner <heiko@sntech.de>
-> > +
-> > +description: |
-> > +  Rockchip processors include support for multiple power domains which=
- can be
-> > +  powered up/down by software based on different application scenes to=
- save power.
-> > +
-> > +  Power domains contained within power-controller node are generic pow=
-er domain
-> > +  providers documented in Documentation/devicetree/bindings/power/powe=
-r-domain.yaml.
-> > +
-> > +  IP cores belonging to a power domain should contain a 'power-domains=
-'
-> > +  property that is a phandle for the power domain node representing th=
-e domain.
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    const: power-controller
-> > +
-> > +  compatible:
-> > +    enum:
-> > +      - rockchip,px30-power-controller
-> > +      - rockchip,rk3036-power-controller
-> > +      - rockchip,rk3066-power-controller
-> > +      - rockchip,rk3128-power-controller
-> > +      - rockchip,rk3188-power-controller
-> > +      - rockchip,rk3228-power-controller
-> > +      - rockchip,rk3288-power-controller
-> > +      - rockchip,rk3328-power-controller
-> > +      - rockchip,rk3366-power-controller
-> > +      - rockchip,rk3368-power-controller
-> > +      - rockchip,rk3399-power-controller
-> > +
-> > +  '#power-domain-cells':
-> > +    const: 1
-> > +
-> > +  '#address-cells':
-> > +    const: 1
-> > +
-> > +  '#size-cells':
-> > +    const: 0
-> > +
-> > +patternProperties:
-> > +  "^power-domain@[0-9]+$":
->
-> unit-addresses are hex.
->
-> > +    type: object
-> > +    description: |
-> > +      Represents the power domains within the power controller node as=
- documented
-> > +      in Documentation/devicetree/bindings/power/power-domain.yaml.
-> > +
-> > +    properties:
-> > +
-> > +      '#power-domain-cells':
-> > +        description:
-> > +            Must be 0 for nodes representing a single PM domain and 1 =
-for nodes
-> > +            providing multiple PM domains.
-> > +
-> > +      '#address-cells':
-> > +        const: 1
-> > +
-> > +      '#size-cells':
-> > +        const: 0
-> > +
-> > +      reg:
-> > +        description: |
-> > +          Power domain index. Valid values are defined in:
-> > +          "include/dt-bindings/power/px30-power.h" - for PX30 type pow=
-er domain.
-> > +          "include/dt-bindings/power/rk3036-power.h" - for RK3036 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3066-power.h" - for RK3066 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3128-power.h" - for RK3128 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3188-power.h" - for RK3188 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3228-power.h" - for RK3228 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3288-power.h" - for RK3288 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3328-power.h" - for RK3328 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3366-power.h" - for RK3366 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3368-power.h" - for RK3368 type=
- power domain.
-> > +          "include/dt-bindings/power/rk3399-power.h" - for RK3399 type=
- power domain.
-> > +        maxItems: 1
->
-> Range of values?
->
-> > +
-> > +      clocks:
-> > +        description: |
-> > +          A number of phandles to clocks that need to be enabled while=
- power domain
-> > +          switches state.
->
-> Can you at least put a range of how many clocks?
->
-> > +
-> > +      pm_qos:
-> > +        description: |
-> > +          A number of phandles to qos blocks which need to be saved an=
-d restored
-> > +          while power domain switches state.
->
-> And here.
->
-> > +
-> > +    required:
-> > +      - reg
->
->        additionalProperties: false
->
-> Which in turn means the nested power domains will throw an error, so you
-> can do:
->
->        patternProperties:
->          "^power-domain@[0-9a-f]+$":
->            $ref: '#/patternProperties/^power-domain@[0-9a-f]+$'
->
+Looking through the reproducer, it has all those privileged operations like
+mount etc which seems indicating that syzkaller tries to run as a root user
+which could easily screw up things like those soft-lockups.
 
-When I tried this I got the following error:
+So far, I can only reproduce this as a root user and then also need to Ctrl-C
+the reproducer in order for the kernel to stuck in request_wait_answer() forever
+probably because no response from the server (the server was already exited).
 
-rockchip,power-controller.yaml:
-patternProperties:^power-domain@[0-9a-f]+$:patternProperties:^power-domain@=
-[0-9a-f]+$:$ref:
-'#/patternProperties/^power-domain@[0-9a-f]+$' is not a
-'uri-reference'
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ea48ca29949b1820e745@syzkaller.appspotmail.com
+> 
+> INFO: task syz-executor220:7040 can't die for more than 143 seconds.
+> task:syz-executor220 state:D stack:28792 pid: 7040 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7040 blocked for more than 143 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:28792 pid: 7040 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7044 can't die for more than 143 seconds.
+> task:syz-executor220 state:D stack:28752 pid: 7044 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7044 blocked for more than 144 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:28752 pid: 7044 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7066 can't die for more than 144 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7066 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7066 blocked for more than 144 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:29048 pid: 7066 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7071 can't die for more than 144 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7071 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7071 blocked for more than 145 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:29048 pid: 7071 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7087 can't die for more than 145 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7087 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7087 blocked for more than 145 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:29048 pid: 7087 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7097 can't die for more than 145 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7097 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7097 blocked for more than 146 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:28912 pid: 7097 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7110 can't die for more than 146 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7110 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7110 blocked for more than 146 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:29048 pid: 7110 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7111 can't die for more than 147 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7111 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7111 blocked for more than 147 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:29048 pid: 7111 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7128 can't die for more than 147 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7128 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7128 blocked for more than 147 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:29048 pid: 7128 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7136 can't die for more than 148 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7136 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7136 blocked for more than 148 seconds.
+>       Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor220 state:D stack:29048 pid: 7136 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7149 can't die for more than 148 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7149 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7164 can't die for more than 148 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7164 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7165 can't die for more than 149 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7165 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7178 can't die for more than 149 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7178 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7192 can't die for more than 149 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7192 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7199 can't die for more than 149 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7199 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7215 can't die for more than 150 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7215 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7224 can't die for more than 150 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7224 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7237 can't die for more than 150 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7237 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7241 can't die for more than 150 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7241 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7253 can't die for more than 151 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7253 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7267 can't die for more than 151 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7267 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7270 can't die for more than 151 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7270 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7281 can't die for more than 152 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7281 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7293 can't die for more than 152 seconds.
+> task:syz-executor220 state:D stack:28912 pid: 7293 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7310 can't die for more than 152 seconds.
+> task:syz-executor220 state:D stack:28648 pid: 7310 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7314 can't die for more than 152 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7314 ppid:  6888
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7342 can't die for more than 153 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7342 ppid:  6887
+> flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:3772 [inline]
+>  __schedule+0xec5/0x2200 kernel/sched/core.c:4521
+>  schedule+0xcf/0x270 kernel/sched/core.c:4599
+>  request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
+>  __fuse_request_send fs/fuse/dev.c:421 [inline]
+>  fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
+>  fuse_do_getattr+0x226/0xc40 fs/fuse/dir.c:952
+>  fuse_update_get_attr fs/fuse/dir.c:988 [inline]
+>  fuse_getattr+0x37f/0x430 fs/fuse/dir.c:1723
+>  vfs_getattr_nosec+0x246/0x2e0 fs/stat.c:87
+>  vfs_getattr fs/stat.c:124 [inline]
+>  vfs_statx+0x18d/0x390 fs/stat.c:189
+>  vfs_fstatat fs/stat.c:207 [inline]
+>  vfs_stat include/linux/fs.h:3148 [inline]
+>  __do_sys_newstat+0x91/0x110 fs/stat.c:349
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446c99
+> Code: Bad RIP value.
+> RSP: 002b:00007fafe2cfedb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000004
+> RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446c99
+> RDX: 0000000000446c99 RSI: 0000000000000000 RDI: 00000000200004c0
+> RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+> R13: 00007fff48a82c7f R14: 00007fafe2cff9c0 R15: 0000000000000000
+> INFO: task syz-executor220:7349 can't die for more than 153 seconds.
+> task:syz-executor220 state:D stack:29048 pid: 7349 ppid:  6888
+> flags:0x00004004
+> 
 
-Not sure if is my environment or I am still doing something silly, can
-you confirm that this works for you? It doesn't seem to be any binding
-doing this actually.
-
-Thanks,
-  Enric
-
-> > +
-> > +required:
-> > +  - compatible
-> > +  - '#power-domain-cells'
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/rk3399-cru.h>
-> > +    #include <dt-bindings/power/rk3399-power.h>
-> > +
-> > +    soc {
-> > +        #address-cells =3D <2>;
-> > +        #size-cells =3D <2>;
-> > +
-> > +        qos_hdcp: qos@ffa90000 {
-> > +            compatible =3D "rockchip,rk3399-qos","syscon";
->
-> space                                             ^
->
-> > +            reg =3D <0x0 0xffa90000 0x0 0x20>;
-> > +        };
-> > +
-> > +        qos_iep: qos@ffa98000 {
-> > +            compatible =3D "rk3399-qos","syscon";
-> > +            reg =3D <0x0 0xffa98000 0x0 0x20>;
-> > +        };
-> > +
-> > +        qos_rga_r: qos@ffab0000 {
-> > +            compatible =3D "rk3399-qos","syscon";
-> > +            reg =3D <0x0 0xffab0000 0x0 0x20>;
-> > +        };
-> > +
-> > +        qos_rga_w: qos@ffab0080 {
-> > +            compatible =3D "rk3399-qos","syscon";
-> > +            reg =3D <0x0 0xffab0080 0x0 0x20>;
-> > +        };
-> > +
-> > +        qos_video_m0: qos@ffab8000 {
-> > +            compatible =3D "rk3399-qos","syscon";
-> > +            reg =3D <0x0 0xffab8000 0x0 0x20>;
-> > +        };
-> > +
-> > +        qos_video_m1_r: qos@ffac0000 {
-> > +            compatible =3D "rk3399-qos","syscon";
-> > +            reg =3D <0x0 0xffac0000 0x0 0x20>;
-> > +        };
-> > +
-> > +        qos_video_m1_w: qos@ffac0080 {
-> > +            compatible =3D "rk3399-qos","syscon";
-> > +            reg =3D <0x0 0xffac0080 0x0 0x20>;
-> > +        };
-> > +
-> > +        power-management@ff310000 {
-> > +            compatible =3D "rockchip,rk3399-pmu", "syscon", "simple-mf=
-d";
-> > +            reg =3D <0x0 0xff310000 0x0 0x1000>;
-> > +
-> > +            power-controller {
-> > +                compatible =3D "rockchip,rk3399-power-controller";
-> > +                #power-domain-cells =3D <1>;
-> > +                #address-cells =3D <1>;
-> > +                #size-cells =3D <0>;
-> > +
-> > +                /* These power domains are grouped by VD_CENTER */
-> > +                power-domain@RK3399_PD_IEP {
-> > +                    reg =3D <RK3399_PD_IEP>;
-> > +                    clocks =3D <&cru ACLK_IEP>,
-> > +                             <&cru HCLK_IEP>;
-> > +                    pm_qos =3D <&qos_iep>;
-> > +                    #power-domain-cells =3D <0>;
-> > +                };
-> > +                power-domain@RK3399_PD_RGA {
-> > +                    reg =3D <RK3399_PD_RGA>;
-> > +                    clocks =3D <&cru ACLK_RGA>,
-> > +                             <&cru HCLK_RGA>;
-> > +                    pm_qos =3D <&qos_rga_r>,
-> > +                             <&qos_rga_w>;
-> > +                    #power-domain-cells =3D <0>;
-> > +                };
-> > +                power-domain@RK3399_PD_VCODEC {
-> > +                    reg =3D <RK3399_PD_VCODEC>;
-> > +                    clocks =3D <&cru ACLK_VCODEC>,
-> > +                             <&cru HCLK_VCODEC>;
-> > +                    pm_qos =3D <&qos_video_m0>;
-> > +                    #power-domain-cells =3D <0>;
-> > +                };
-> > +                power-domain@RK3399_PD_VDU {
-> > +                    reg =3D <RK3399_PD_VDU>;
-> > +                    clocks =3D <&cru ACLK_VDU>,
-> > +                             <&cru HCLK_VDU>;
-> > +                    pm_qos =3D <&qos_video_m1_r>,
-> > +                             <&qos_video_m1_w>;
-> > +                    #power-domain-cells =3D <0>;
-> > +                };
-> > +                power-domain@RK3399_PD_VIO {
-> > +                    reg =3D <RK3399_PD_VIO>;
-> > +                    #power-domain-cells =3D <1>;
-> > +                    #address-cells =3D <1>;
-> > +                    #size-cells =3D <0>;
-> > +
-> > +                    power-domain@RK3399_PD_HDCP {
-> > +                        reg =3D <RK3399_PD_HDCP>;
-> > +                        clocks =3D <&cru ACLK_HDCP>,
-> > +                                 <&cru HCLK_HDCP>,
-> > +                                 <&cru PCLK_HDCP>;
-> > +                        pm_qos =3D <&qos_hdcp>;
-> > +                        #power-domain-cells =3D <0>;
-> > +                    };
-> > +                };
-> > +            };
-> > +        };
-> > +    };
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
