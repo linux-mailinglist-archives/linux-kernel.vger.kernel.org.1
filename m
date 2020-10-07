@@ -2,168 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06170285C3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03D1285C3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727668AbgJGKCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:02:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60598 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbgJGKCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:02:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602064955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1727906AbgJGKCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:02:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42456 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgJGKCv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:02:51 -0400
+Date:   Wed, 07 Oct 2020 10:02:47 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602064968;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UPWqCqBP0H3c92qI4BRuEyuQQ1xCSXfo5lceHHY4dKQ=;
-        b=QObC2YgWk4+bgZxmWEB/Ji5HZ03yKj8O4M2uoTVHuQ/gCJ8d9PsJA1l8vvvLN95PDhDLQC
-        cQdCerPmbh+6M+Mz/v8nLQFEkaoWGDoJU/vdr0CcPl/ClAY9lzNKKdNB6tH7xdT0i+dBac
-        o4REn0RJ7hTSnup/SMaUosJbEnY/KHY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2817FAD1B;
-        Wed,  7 Oct 2020 10:02:35 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 12:02:34 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201007100234.GI29020@dhcp22.suse.cz>
-References: <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
- <20201002090507.GB4555@dhcp22.suse.cz>
- <20201005150801.GC17959@pc636>
- <20201005154100.GF4555@dhcp22.suse.cz>
- <20201006222529.GA23612@pc636>
+        bh=CGlSxQ5HPpVMwPGSsFuoW8FqrIMnxWhiEtvYETyEjmI=;
+        b=LEr03ReiQo/SZUcPoft9ZMVzObfRS8Io+4nr0/aNX2XwI30DZnSdQ7laLj2xu8SUC+jjZE
+        ZCYZVIYQlvnVajIF3NmIY2gHihYXk0NJx5RzlD0moXs91MKE/CORrrBlWBdMOuLj2PheqU
+        7OXpK5S/EMb3lnFQaogFVZWe1G9pqmPM9X/4P3gUqC3nQdu0y/p5/V9bQj/jCnqCuoP1vq
+        AkIjne/BzItenZzKDsMmB+unzBq464FdCKh8n77UnO6B76yxqbeRmtA8qRFgcrEkW0ehbB
+        L0UKcFRuGmN2KK3htgb5poW6G5EfWs+fQfRRIzkJO/qrIXrU0Ef9BYgHjeJ4ng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602064968;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CGlSxQ5HPpVMwPGSsFuoW8FqrIMnxWhiEtvYETyEjmI=;
+        b=2tmsbkmee7kAsUFZcFPIfsfB29hNe6P63QFbZA88U1Zta4vIoK20oskUCkpuoNX3hTWJ7i
+        PgECJFAgHjxqt9AQ==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Decode a kernel instruction to determine if
+ it is copying from user
+Cc:     Youquan Song <youquan.song@intel.com>,
+        Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201006210910.21062-7-tony.luck@intel.com>
+References: <20201006210910.21062-7-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006222529.GA23612@pc636>
+Message-ID: <160206496755.7002.14650548591810890366.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 07-10-20 00:25:29, Uladzislau Rezki wrote:
-> On Mon, Oct 05, 2020 at 05:41:00PM +0200, Michal Hocko wrote:
-> > On Mon 05-10-20 17:08:01, Uladzislau Rezki wrote:
-> > > On Fri, Oct 02, 2020 at 11:05:07AM +0200, Michal Hocko wrote:
-> > > > On Fri 02-10-20 09:50:14, Mel Gorman wrote:
-> > > > > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
-> > > > > > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
-> > > > > > > > 
-> > > > > > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > > > > > > > the allocator (different from what you posted in previous version) so that it
-> > > > > > > > only looks at the flag after it tries to allocate from pcplist and finds out
-> > > > > > > > it's empty. So, no inventing of new page allocator entry points or checks such
-> > > > > > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > > > > > > > affect existing fast paths.
-> > > > > > > >
-> > > > > > > OK. Now i see. Please have a look below at the patch, so we fully understand
-> > > > > > > each other. If that is something that is close to your view or not:
-> > > > > > > 
-> > > > > > > <snip>
-> > > > > > > t a/include/linux/gfp.h b/include/linux/gfp.h
-> > > > > > > index c603237e006c..7e613560a502 100644
-> > > > > > > --- a/include/linux/gfp.h
-> > > > > > > +++ b/include/linux/gfp.h
-> > > > > > > @@ -39,8 +39,9 @@ struct vm_area_struct;
-> > > > > > >  #define ___GFP_HARDWALL                0x100000u
-> > > > > > >  #define ___GFP_THISNODE                0x200000u
-> > > > > > >  #define ___GFP_ACCOUNT         0x400000u
-> > > > > > > +#define ___GFP_NO_LOCKS                0x800000u
-> > > > > > 
-> > > > > > Even if a new gfp flag gains a sufficient traction and support I am
-> > > > > > _strongly_ opposed against consuming another flag for that. Bit space is
-> > > > > > limited. 
-> > > > > 
-> > > > > That is definitely true. I'm not happy with the GFP flag at all, the
-> > > > > comment is at best a damage limiting move. It still would be better for
-> > > > > a memory pool to be reserved and sized for critical allocations.
-> > > > 
-> > > > Completely agreed. The only existing usecase is so special cased that a
-> > > > dedicated pool is not only easier to maintain but it should be also much
-> > > > better tuned for the specific workload. Something not really feasible
-> > > > with the allocator.
-> > > > 
-> > > > > > Besides that we certainly do not want to allow craziness like
-> > > > > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
-> > > > > 
-> > > > > That would deserve to be taken to a dumpster and set on fire. The flag
-> > > > > combination could be checked in the allocator but the allocator path fast
-> > > > > paths are bad enough already.
-> > > > 
-> > > > If a new allocation/gfp mode is absolutely necessary then I believe that
-> > > > the most reasoanble way forward would be
-> > > > #define GFP_NO_LOCK	((__force gfp_t)0)
-> > > > 
-> > > Agree. Even though i see that some code should be adjusted for it. There are
-> > > a few users of the __get_free_page(0); So, need to double check it:
-> > 
-> > Yes, I believe I have pointed that out in the previous discussion.
-> > 
-> OK. I spent more time on it. A passed gfp_mask can be adjusted on the entry,
-> that adjustment depends on the gfp_allowed_mask. It can be changed in run-time.
-> 
-> For example during early boot it excludes: __GFP_RECLAIM|__GFP_IO|__GFP_FS flags,
-> what is GFP_KERNEL. So, GFP_KERNEL is adjusted on entry and becomes 0 during early
-> boot phase.
+The following commit has been merged into the ras/core branch of tip:
 
-Honestly I am not sure how much is GFP_BOOT_MASK still needed. The
-remaining user of gfp_allowed_mask mask should be only hibernation and I
-believe this should be removed in long term. Not as trivial because
-scope API cannot be used for that as it needs a global flag but this is
-a gross hack that should be implemented differently. It is waiting on my
-todo list but never got around to that.
+Commit-ID:     300638101329e8f1569115f3d7197ef5ef754a3a
+Gitweb:        https://git.kernel.org/tip/300638101329e8f1569115f3d7197ef5ef754a3a
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Tue, 06 Oct 2020 14:09:10 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 07 Oct 2020 11:32:40 +02:00
 
-> How to distinguish it:
-> 
-> <snip>
-> +       /*
-> +        * gfp_mask can become zero because gfp_allowed_mask changes in run-time.
-> +        */
-> +       if (!gfp_mask)
-> +               alloc_flags |= ALLOC_NO_LOCKS;
-> +
->         gfp_mask &= gfp_allowed_mask;
->         alloc_mask = gfp_mask;
->         if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
-> <snip>
-> 
-> > > 
-> > > Apart of that. There is a post_alloc_hook(), that gets called from the prep_new_page().
-> > > If "debug page alloc enabled", it maps a page for debug purposes invoking kernel_map_pages().
-> > > __kernel_map_pages() is ARCH specific. For example, powerpc variant uses sleep-able locks
-> > > what can be easily converted to raw variant. 
-> > 
-> > Yes, there are likely more surprises like that. I am not sure about
-> > kasan, page owner (which depens on the stack unwinder) and others which
-> > hook into this path.
-> >
-> I have checked kasan_alloc_pages(), kernel_poison_pages() both are OK,
-> at least i did not find any locking there. As for set_page_owner(), it
-> requires more attention, since it uses arch specific unwind logic. Though,
-> i spent some time on it and so far have not noticed anything.
+x86/mce: Decode a kernel instruction to determine if it is copying from user
 
-stack depod depends on a lock IIRC. Anyway, this is just showing how
-this is going to grow in complexity and make future additions harder.
-A niche usecase is inducing an additional complexity for future
-maintenance.
+All instructions copying data between kernel and user memory
+are tagged with either _ASM_EXTABLE_UA or _ASM_EXTABLE_CPY
+entries in the exception table. ex_fault_handler_type() returns
+EX_HANDLER_UACCESS for both of these.
 
--- 
-Michal Hocko
-SUSE Labs
+Recovery is only possible when the machine check was triggered
+on a read from user memory. In this case the same strategy for
+recovery applies as if the user had made the access in ring3. If
+the fault was in kernel memory while copying to user there is no
+current recovery plan.
+
+For MOV and MOVZ instructions a full decode of the instruction
+is done to find the source address. For MOVS instructions
+the source address is in the %rsi register. The function
+fault_in_kernel_space() determines whether the source address is
+kernel or user, upgrade it from "static" so it can be used here.
+
+Co-developed-by: Youquan Song <youquan.song@intel.com>
+Signed-off-by: Youquan Song <youquan.song@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201006210910.21062-7-tony.luck@intel.com
+---
+ arch/x86/include/asm/traps.h       |  2 +-
+ arch/x86/kernel/cpu/mce/core.c     | 11 ++++--
+ arch/x86/kernel/cpu/mce/severity.c | 53 ++++++++++++++++++++++++++++-
+ arch/x86/mm/fault.c                |  2 +-
+ 4 files changed, 63 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+index 714b1a3..df0b7bf 100644
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -35,6 +35,8 @@ extern int panic_on_unrecovered_nmi;
+ 
+ void math_emulate(struct math_emu_info *);
+ 
++bool fault_in_kernel_space(unsigned long address);
++
+ #ifdef CONFIG_VMAP_STACK
+ void __noreturn handle_stack_overflow(const char *message,
+ 				      struct pt_regs *regs,
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 5c423c4..3d6e1bf 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1250,14 +1250,19 @@ static void kill_me_maybe(struct callback_head *cb)
+ 	if (!p->mce_ripv)
+ 		flags |= MF_MUST_KILL;
+ 
+-	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags)) {
++	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
++	    !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
+ 		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
+ 		sync_core();
+ 		return;
+ 	}
+ 
+-	pr_err("Memory error not recovered");
+-	kill_me_now(cb);
++	if (p->mce_vaddr != (void __user *)-1l) {
++		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
++	} else {
++		pr_err("Memory error not recovered");
++		kill_me_now(cb);
++	}
+ }
+ 
+ static void queue_task_work(struct mce *m, int kill_it)
+diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+index c6494e6..83df991 100644
+--- a/arch/x86/kernel/cpu/mce/severity.c
++++ b/arch/x86/kernel/cpu/mce/severity.c
+@@ -13,6 +13,9 @@
+ 
+ #include <asm/mce.h>
+ #include <asm/intel-family.h>
++#include <asm/traps.h>
++#include <asm/insn.h>
++#include <asm/insn-eval.h>
+ 
+ #include "internal.h"
+ 
+@@ -212,6 +215,47 @@ static struct severity {
+ #define mc_recoverable(mcg) (((mcg) & (MCG_STATUS_RIPV|MCG_STATUS_EIPV)) == \
+ 				(MCG_STATUS_RIPV|MCG_STATUS_EIPV))
+ 
++static bool is_copy_from_user(struct pt_regs *regs)
++{
++	u8 insn_buf[MAX_INSN_SIZE];
++	struct insn insn;
++	unsigned long addr;
++
++	if (copy_from_kernel_nofault(insn_buf, (void *)regs->ip, MAX_INSN_SIZE))
++		return false;
++
++	kernel_insn_init(&insn, insn_buf, MAX_INSN_SIZE);
++	insn_get_opcode(&insn);
++	if (!insn.opcode.got)
++		return false;
++
++	switch (insn.opcode.value) {
++	/* MOV mem,reg */
++	case 0x8A: case 0x8B:
++	/* MOVZ mem,reg */
++	case 0xB60F: case 0xB70F:
++		insn_get_modrm(&insn);
++		insn_get_sib(&insn);
++		if (!insn.modrm.got || !insn.sib.got)
++			return false;
++		addr = (unsigned long)insn_get_addr_ref(&insn, regs);
++		break;
++	/* REP MOVS */
++	case 0xA4: case 0xA5:
++		addr = regs->si;
++		break;
++	default:
++		return false;
++	}
++
++	if (fault_in_kernel_space(addr))
++		return false;
++
++	current->mce_vaddr = (void __user *)addr;
++
++	return true;
++}
++
+ /*
+  * If mcgstatus indicated that ip/cs on the stack were
+  * no good, then "m->cs" will be zero and we will have
+@@ -229,10 +273,17 @@ static int error_context(struct mce *m, struct pt_regs *regs)
+ 
+ 	if ((m->cs & 3) == 3)
+ 		return IN_USER;
++	if (!mc_recoverable(m->mcgstatus))
++		return IN_KERNEL;
+ 
+ 	t = ex_get_fault_handler_type(m->ip);
+-	if (mc_recoverable(m->mcgstatus) && t == EX_HANDLER_FAULT) {
++	if (t == EX_HANDLER_FAULT) {
++		m->kflags |= MCE_IN_KERNEL_RECOV;
++		return IN_KERNEL_RECOV;
++	}
++	if (t == EX_HANDLER_UACCESS && regs && is_copy_from_user(regs)) {
+ 		m->kflags |= MCE_IN_KERNEL_RECOV;
++		m->kflags |= MCE_IN_KERNEL_COPYIN;
+ 		return IN_KERNEL_RECOV;
+ 	}
+ 
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 35f1498..88ae443 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1081,7 +1081,7 @@ access_error(unsigned long error_code, struct vm_area_struct *vma)
+ 	return 0;
+ }
+ 
+-static int fault_in_kernel_space(unsigned long address)
++bool fault_in_kernel_space(unsigned long address)
+ {
+ 	/*
+ 	 * On 64-bit systems, the vsyscall page is at an address above
