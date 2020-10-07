@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD26E2860E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0954D2860E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgJGOFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728469AbgJGOFL (ORCPT
+        id S1728590AbgJGOFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:05:20 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:48979 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728578AbgJGOFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:05:11 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42191C061755;
-        Wed,  7 Oct 2020 07:05:10 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y13so2473895iow.4;
-        Wed, 07 Oct 2020 07:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g+DCnJEicoCU1/vpp+wjrTHhiVCn5Rx4QLEMzph/RDQ=;
-        b=D0D5ZmKyabVh9PjCpDOiVuxtJkxfDygSUjVgpeanIdHgYCy/UQ5syh8N44cgLGqFpg
-         dCLP6y6jBmKu/fdtOwfmGRsvgYg2vSGupYGR+hE2h9fi7T0WkMiMSpPao3TK1WoJRGe9
-         SnJttD2iA/Qxtykw8Zt0QyIuGxk7iJ8SHUA2AnyluB/gesFGdJ13QK0jgRgK+bdx9//n
-         rvAsU4E4A0Mx0KcaufFZc59Egzr7YQbeDhTxBm4j8piNxeM/hP7VNHzN2r0rickh93S6
-         ao6ofp1LMrdqYyZ6XtyjdVk1EmlChzB/Yn2hyLnSDNU18YJVpG4Elvpcu0KHt6EYjksP
-         eJKQ==
+        Wed, 7 Oct 2020 10:05:20 -0400
+Received: by mail-il1-f197.google.com with SMTP id g1so1629838iln.15
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:05:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g+DCnJEicoCU1/vpp+wjrTHhiVCn5Rx4QLEMzph/RDQ=;
-        b=D/91Hg3Seh1DWq+InliO3irAXO7Aov/mNqsZoXYtwO649CTl3deTH8qhuyHoHnCQ1Q
-         UgwNDzsXH6W8eNv3mGGdu0GDwhSiVc8zar6GowUZxvs276dxnOBKFJdiSsInlSxxZUx2
-         1VGO+a5/LNkQQHbSRBP4eh/7y00wJDVXGsjMGtqrMtDhsjxl6vq1q7hYzCNSXsjCgdw9
-         seInARm9dPEhGpBJOLCO6uWmet5OiflqCZ7yB+dLSN0NQWvux2nxoIvt7maqFxecjmvR
-         krh3EUYd9U9G0waPm6g89KtGII/2KLNwEhFXLZM0lCPiST8D3g1WbGr1OzPkqtk9y6EA
-         MeLA==
-X-Gm-Message-State: AOAM532gamjr9K3l2yF2s0RLaxpZq902R1/p7bvKYc5zacbfGsIr5pnd
-        bxemvFhWwwrN9eLUpy6tolw=
-X-Google-Smtp-Source: ABdhPJyTCTKoBdK/Nk6z7TtrU/dPMcrzNyWpWAFTkcFBic0zmvYYyDYZ9MZo2a6F9VXv9PNZvXTQiQ==
-X-Received: by 2002:a02:ca48:: with SMTP id i8mr2992534jal.133.1602079509486;
-        Wed, 07 Oct 2020 07:05:09 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:7c62:dd9d:b755:cfbd])
-        by smtp.gmail.com with ESMTPSA id j11sm1106886ili.83.2020.10.07.07.05.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 07:05:08 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mm-beacon-som: Configure supplies on secondary cpus
-Date:   Wed,  7 Oct 2020 09:04:57 -0500
-Message-Id: <20201007140457.233697-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=9N4t1zZ/BgXswdt8rkaONIwjFjMlU8nOCAQhp6K8GdM=;
+        b=NkrGFA9OOenfXfiVSvG+MwWKFzgQ5OKfWTum4FTqJ6j/70pxZ/UEiu7VsOzqKwwgW6
+         Eu6Skm0pq2I42F8XmhYpHtXy/yw8WQOZi4WI1fF56RMdoqOEcltlbLuQboIqAavgTB+l
+         9fsJVHij5MkuKSWoAh7zM2zcHiqrB4Vny+BXr1J10U6/joJ8gFXvVnGz4qPqKSxWhV60
+         g3WnboKCM7jopOBqQ/ZBkhfQyg1Mdxvt0+qxWzOW32xeMUxXd21yrheJ3AYZPbeLdUG/
+         B8awktld5mTIC1GJ4ITzwQ0eGE2JRWbRLnaXzNI2s8yGjyPRlxix7By78/63ZPMkuQxc
+         jGhA==
+X-Gm-Message-State: AOAM5320RoKjZl7aJBfqL2mHxmDwe+fffj9JxAruUvxRGLWN3iRhHzYa
+        hKe4bATPuoOcMkKjCuaA4FS5XYEkRCPY8Ngvbx+Yo4TUhsh9
+X-Google-Smtp-Source: ABdhPJxyxhA2CKhBEp8yYRdtLB4N3yig4Q81IcjCGr6KySsABUKmscx8ep35DXpTIQfOxEWVwcAiuqe8qCjVPM98I2nuTkJjDh5d
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:da8e:: with SMTP id u14mr2835314iln.235.1602079518913;
+ Wed, 07 Oct 2020 07:05:18 -0700 (PDT)
+Date:   Wed, 07 Oct 2020 07:05:18 -0700
+In-Reply-To: <0000000000004a0d5e05b1110e86@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a07b5405b1153450@google.com>
+Subject: Re: WARNING in ieee80211_free_ack_frame
+From:   syzbot <syzbot+a063bbf0b15737362592@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each cpu core should have a corresponding supply, but only cpu0 does.
-This patch adds a supply for each of the secondary cpus.
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16933627900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+dashboard link: https://syzkaller.appspot.com/bug?extid=a063bbf0b15737362592
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157d194f900000
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-index b88c3c99b007..397cf8b2f29b 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-@@ -24,6 +24,18 @@ &A53_0 {
- 	cpu-supply = <&buck2_reg>;
- };
- 
-+&A53_1 {
-+	cpu-supply = <&buck2_reg>;
-+};
-+
-+&A53_2 {
-+	cpu-supply = <&buck2_reg>;
-+};
-+
-+&A53_3 {
-+	cpu-supply = <&buck2_reg>;
-+};
-+
- &ddrc {
- 	operating-points-v2 = <&ddrc_opp_table>;
- 
--- 
-2.25.1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a063bbf0b15737362592@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+Have pending ack frames!
+WARNING: CPU: 0 PID: 37 at net/mac80211/main.c:1396 ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1396
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 37 Comm: kworker/u4:2 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1396
+Code: e8 5d 43 b8 f9 48 89 ef e8 b5 dc a8 fe 31 c0 5b 5d c3 e8 4b 43 b8 f9 48 c7 c7 00 c0 5e 89 c6 05 66 b5 96 03 01 e8 3a 80 88 f9 <0f> 0b eb d2 0f 1f 40 00 41 57 41 56 41 55 49 89 d5 41 54 49 89 f4
+RSP: 0018:ffffc90000ea79c8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff8880a91b8380 RSI: ffffffff815f5a55 RDI: fffff520001d4f2b
+RBP: ffff888092f26540 R08: 0000000000000001 R09: ffff8880ae4318e7
+R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffffffff87bdfb90 R14: 0000000000000000 R15: 0000000000000000
+ idr_for_each+0x113/0x220 lib/idr.c:208
+ ieee80211_free_hw+0x9b/0x2a0 net/mac80211/main.c:1412
+ mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3285 [inline]
+ hwsim_exit_net+0x5bc/0xc90 drivers/net/wireless/mac80211_hwsim.c:4037
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:186
+ cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
