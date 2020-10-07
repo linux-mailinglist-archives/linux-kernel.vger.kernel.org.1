@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0912858E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBDD2858E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgJGG54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJGG54 (ORCPT
+        id S1727474AbgJGG7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 02:59:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39982 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJGG7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:57:56 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40365C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 23:57:56 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e2so1122635wme.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 23:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RvBs0NtTAlv1X8xK9DK+JUwuX3FHUjdEnezntOoMEhA=;
-        b=JwqsHdhVrikUVbP0FWDt07MtnZYB96hY71/Y68TVyo1SQGK/zTc/DNxqV/dMEa43sg
-         3QThoq2ZuHl6TB+oa06cxhQ8FmXnQ0PxtbavNFPBPR+z+0Po5Vx4wRUePTdSh8ZkJX9I
-         sTHowo/fiEPo359XnMKIJdw2Jvf1IugLpTZNwD2YakusslSi5YO+OCZBqFQR6kYq10Nr
-         cPOwDM20Mz+3agmGmuj7yTCin1kuiHws8iVF9SI+pKVltmPzGlTujXiDZFYH+XWXXKZo
-         VdbPN8FNCeDGBdqfoMki5kQ7VCNRck35KMyLY3fyU9QRKm+dzgT33EXKUogZDUn9bRyA
-         To+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=RvBs0NtTAlv1X8xK9DK+JUwuX3FHUjdEnezntOoMEhA=;
-        b=uMNehWuHfufUmpU1FpSMdoafpc5bLRGpCMrzvmPjyJTeCOAFd953BeK+Vl7voQ/vzM
-         F/lNiPZ+UZtAX6YLolfwHtRjmwwMIks1oUI0+ET0XZB7VMPXZ9PkrHW3XgEEZXOw8V7H
-         AUG49nsT+RzKsVN1Ku33w+XTptej5R+upEnDGrm1oUyyhSyisEYpKAy0dQVE0pnlIHUo
-         Bo2SGf5DPrTYh1NyEiWWAdFk+63sqzy60lnBK6KY01/rnNWAMw+ye9Cm8kpuaiofb5SN
-         DzpWDqogj5yf2Ve9v2zMGcIGTMLUPai9+YkXk27InHOUyAsFjRzdRlZdzG+zpQJ9HXSt
-         90iQ==
-X-Gm-Message-State: AOAM531qLfzjmqCfTm7YuZKXOEB/L7+KotJsQqdhywGySkUDpWHDIY3B
-        xJzltxMq8cgoAUh0qOnrdTxvAw==
-X-Google-Smtp-Source: ABdhPJyh6b3ua7kPCSvwZfZ/YfLpCWrAPpOCrD+jrkhwaT4WP7jgf0le8jwzj9Kr0Q6KhQTU/8JMzA==
-X-Received: by 2002:a1c:49c2:: with SMTP id w185mr1599561wma.70.1602053874162;
-        Tue, 06 Oct 2020 23:57:54 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id g4sm1505929wrm.18.2020.10.06.23.57.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 23:57:53 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 07:57:51 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        hdegoede@redhat.com, alexey.budankov@linux.intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH V8 2/5] mfd: Intel Platform Monitoring Technology support
-Message-ID: <20201007065751.GA1763265@dell>
-References: <20201003013123.20269-1-david.e.box@linux.intel.com>
- <20201003013123.20269-3-david.e.box@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201003013123.20269-3-david.e.box@linux.intel.com>
+        Wed, 7 Oct 2020 02:59:35 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kQ3Q5-00076b-Je; Wed, 07 Oct 2020 06:59:26 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm/i915/dpcd_bl: Skip testing control capability with force DPCD quirk
+Date:   Wed,  7 Oct 2020 14:58:20 +0800
+Message-Id: <20201007065915.13883-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Oct 2020, David E. Box wrote:
+HP DreamColor panel needs to be controlled via AUX interface. However,
+it has both DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP and
+DP_EDP_BACKLIGHT_BRIGHTNESS_PWM_PIN_CAP set, so it fails to pass
+intel_dp_aux_display_control_capable() test.
 
-> Intel Platform Monitoring Technology (PMT) is an architecture for
-> enumerating and accessing hardware monitoring facilities. PMT supports
-> multiple types of monitoring capabilities. This driver creates platform
-> devices for each type so that they may be managed by capability specific
-> drivers (to be introduced). Capabilities are discovered using PCIe DVSEC
-> ids. Support is included for the 3 current capability types, Telemetry,
-> Watcher, and Crashlog. The features are available on new Intel platforms
-> starting from Tiger Lake for which support is added. This patch adds
-> support for Tiger Lake (TGL), Alder Lake (ADL), and Out-of-Band Management
-> Services Module (OOBMSM).
-> 
-> Also add a quirk mechanism for several early hardware differences and bugs.
-> For Tiger Lake and Alder Lake, do not support Watcher and Crashlog
-> capabilities since they will not be compatible with future product. Also,
-> fix use a quirk to fix the discovery table offset.
-> 
-> Co-developed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
->  MAINTAINERS             |   5 +
->  drivers/mfd/Kconfig     |  10 ++
->  drivers/mfd/Makefile    |   1 +
->  drivers/mfd/intel_pmt.c | 226 ++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 242 insertions(+)
->  create mode 100644 drivers/mfd/intel_pmt.c
+Skip the test if the panel has force DPCD quirk.
 
-I Acked this back in August.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Any reason why you didn't carry it forward?
-
+diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+index acbd7eb66cbe..acf2e1c65290 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
++++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+@@ -347,9 +347,13 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
+ 	struct intel_panel *panel = &intel_connector->panel;
+ 	struct intel_dp *intel_dp = enc_to_intel_dp(intel_connector->encoder);
+ 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
++	bool force_dpcd;
++
++	force_dpcd = drm_dp_has_quirk(&intel_dp->desc, intel_dp->edid_quirks,
++				      DP_QUIRK_FORCE_DPCD_BACKLIGHT);
+ 
+ 	if (i915->params.enable_dpcd_backlight == 0 ||
+-	    !intel_dp_aux_display_control_capable(intel_connector))
++	    (!force_dpcd && !intel_dp_aux_display_control_capable(intel_connector)))
+ 		return -ENODEV;
+ 
+ 	/*
+@@ -358,9 +362,7 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
+ 	 */
+ 	if (i915->vbt.backlight.type !=
+ 	    INTEL_BACKLIGHT_VESA_EDP_AUX_INTERFACE &&
+-	    i915->params.enable_dpcd_backlight != 1 &&
+-	    !drm_dp_has_quirk(&intel_dp->desc, intel_dp->edid_quirks,
+-			      DP_QUIRK_FORCE_DPCD_BACKLIGHT)) {
++	    i915->params.enable_dpcd_backlight != 1 && !force_dpcd) {
+ 		drm_info(&i915->drm,
+ 			 "Panel advertises DPCD backlight support, but "
+ 			 "VBT disagrees. If your backlight controls "
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.17.1
+
