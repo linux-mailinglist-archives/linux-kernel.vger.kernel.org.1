@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859F2285F4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AD2285F50
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgJGMg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbgJGMg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:36:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF319C061755;
-        Wed,  7 Oct 2020 05:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7xZSyQPWnxLgrh1E9TtQ37I9TBQZo5pqOmu3lCWY/iI=; b=m/UGZtLZn/vN4y9M1nZ2Zjl0b5
-        r4S7hsMn5sTBt2bmtoc40cZm4Efl/3LvrLn+d4lq/R+BfXSr0QbkaUI09EE0yR0VInpGzv3o79/II
-        uBhFyWyfkV9sNAlEmUsk8FsNl4rxtjMGElFM3s8f4URICAxq43ok4C/T1+sb24V4vYRihpMzlOrKN
-        5r/6EMNqG84CGgm2bOjQyhA91w57Xu4lZsyPEq6pthgdsyKg+R04KH919HPs1obLNqsJGyQT13m3F
-        Eaadx2Mxm9FWD9V4lc8SBdo56njL3PvNoxXbRWKanjehqpl+NgfGpELV3eXDObpuR9Y2m+0twAcAu
-        Ri99tb6g==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQ8gg-0003hn-4Q; Wed, 07 Oct 2020 12:36:54 +0000
-Date:   Wed, 7 Oct 2020 13:36:54 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Khalid Aziz <khalid.aziz@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 2/2] sparc: Check VMA range in sparc_validate_prot()
-Message-ID: <20201007123654.GB11433@infradead.org>
-References: <20201007073932.865218-1-jannh@google.com>
- <20201007073932.865218-2-jannh@google.com>
+        id S1728315AbgJGMit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:38:49 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2964 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727927AbgJGMit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:38:49 -0400
+Received: from lhreml737-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 51B82FE16407BB6B87D2;
+        Wed,  7 Oct 2020 13:38:44 +0100 (IST)
+Received: from fraeml702-chm.china.huawei.com (10.206.15.51) by
+ lhreml737-chm.china.huawei.com (10.201.108.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Wed, 7 Oct 2020 13:38:44 +0100
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 7 Oct 2020 14:38:43 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Wed, 7 Oct 2020 14:38:43 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Colin King <colin.king@canonical.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Roberto Sassu <roberto.sassu@polito.it>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Silviu Vlasceanu" <Silviu.Vlasceanu@huawei.com>
+Subject: RE: [PATCH] ima: Fix sizeof mismatches
+Thread-Topic: [PATCH] ima: Fix sizeof mismatches
+Thread-Index: AQHWnJmhl+2ccdx8rkqE0F+MK/ZxlKmMEx7g
+Date:   Wed, 7 Oct 2020 12:38:43 +0000
+Message-ID: <cf66956ac2df49e6b51cacf94a8a31b9@huawei.com>
+References: <20201007110243.19033-1-colin.king@canonical.com>
+In-Reply-To: <20201007110243.19033-1-colin.king@canonical.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.220.96.108]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007073932.865218-2-jannh@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +++ b/arch/sparc/include/asm/mman.h
-> @@ -60,31 +60,41 @@ static inline int sparc_validate_prot(unsigned long prot, unsigned long addr,
->  	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI))
->  		return 0;
->  	if (prot & PROT_ADI) {
-> +		struct vm_area_struct *vma, *next;
-> +
-
-I'd split all the ADI logic into a separate, preferable out of line
-helper.
-
-> +			/* reached the end of the range without errors? */
-> +			if (addr+len <= vma->vm_end)
-
-missing whitespaces around the arithmetic operator.
+PiBGcm9tOiBDb2xpbiBLaW5nIFttYWlsdG86Y29saW4ua2luZ0BjYW5vbmljYWwuY29tXQ0KPiBT
+ZW50OiBXZWRuZXNkYXksIE9jdG9iZXIgNywgMjAyMCAxOjAzIFBNDQo+IEZyb206IENvbGluIElh
+biBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+DQo+IA0KPiBBbiBpbmNvcnJlY3Qgc2l6
+ZW9mIGlzIGJlaW5nIHVzZWQsIHNpemVvZigqZmllbGRzKSBpcyBub3QgY29ycmVjdCwNCj4gaXQg
+c2hvdWxkIGJlIHNpemVvZigqKmZpZWxkcykuIFRoaXMgaXMgbm90IGNhdXNpbmcgYSBwcm9ibGVt
+IHNpbmNlDQo+IHRoZSBzaXplIG9mIHRoZXNlIGlzIHRoZSBzYW1lLiBGaXggdGhpcyBpbiB0aGUg
+a21hbGxvY19hcnJheSBhbmQNCj4gbWVtY3B5IGNhbGxzLg0KPiANCj4gQWRkcmVzc2VzLUNvdmVy
+aXR5OiAoIlNpemVvZiBub3QgcG9ydGFibGUgKFNJWkVPRl9NSVNNQVRDSCkiKQ0KPiBGaXhlczog
+MWJkN2ZhY2U3NDM5ICgiaW1hOiBhbGxvY2F0ZSBmaWVsZCBwb2ludGVycyBhcnJheSBvbiBkZW1h
+bmQgaW4NCj4gdGVtcGxhdGVfZGVzY19pbml0X2ZpZWxkcygpIikNCj4gU2lnbmVkLW9mZi1ieTog
+Q29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCg0KVGhhbmtzIENvbGlu
+Lg0KDQpSZXZpZXdlZC1ieTogUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3ZWkuY29t
+Pg0KDQpSb2JlcnRvDQoNCkhVQVdFSSBURUNITk9MT0dJRVMgRHVlc3NlbGRvcmYgR21iSCwgSFJC
+IDU2MDYzDQpNYW5hZ2luZyBEaXJlY3RvcjogTGkgUGVuZywgTGkgSmlhbiwgU2hpIFlhbmxpDQoN
+Cj4gLS0tDQo+ICBzZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2ltYV90ZW1wbGF0ZS5jIHwgNCArKy0t
+DQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL3NlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3RlbXBsYXRlLmMNCj4g
+Yi9zZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2ltYV90ZW1wbGF0ZS5jDQo+IGluZGV4IDFlODllMmQz
+ODUxZi4uODg4NGJiZjAzYjQzIDEwMDY0NA0KPiAtLS0gYS9zZWN1cml0eS9pbnRlZ3JpdHkvaW1h
+L2ltYV90ZW1wbGF0ZS5jDQo+ICsrKyBiL3NlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3RlbXBs
+YXRlLmMNCj4gQEAgLTIxNiwxMSArMjE2LDExIEBAIGludCB0ZW1wbGF0ZV9kZXNjX2luaXRfZmll
+bGRzKGNvbnN0IGNoYXINCj4gKnRlbXBsYXRlX2ZtdCwNCj4gIAl9DQo+IA0KPiAgCWlmIChmaWVs
+ZHMgJiYgbnVtX2ZpZWxkcykgew0KPiAtCQkqZmllbGRzID0ga21hbGxvY19hcnJheShpLCBzaXpl
+b2YoKmZpZWxkcyksIEdGUF9LRVJORUwpOw0KPiArCQkqZmllbGRzID0ga21hbGxvY19hcnJheShp
+LCBzaXplb2YoKipmaWVsZHMpLCBHRlBfS0VSTkVMKTsNCj4gIAkJaWYgKCpmaWVsZHMgPT0gTlVM
+TCkNCj4gIAkJCXJldHVybiAtRU5PTUVNOw0KPiANCj4gLQkJbWVtY3B5KCpmaWVsZHMsIGZvdW5k
+X2ZpZWxkcywgaSAqIHNpemVvZigqZmllbGRzKSk7DQo+ICsJCW1lbWNweSgqZmllbGRzLCBmb3Vu
+ZF9maWVsZHMsIGkgKiBzaXplb2YoKipmaWVsZHMpKTsNCj4gIAkJKm51bV9maWVsZHMgPSBpOw0K
+PiAgCX0NCj4gDQo+IC0tDQo+IDIuMjcuMA0KDQo=
