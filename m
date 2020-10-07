@@ -2,113 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA577285F10
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46F7285F1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgJGMYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:24:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
+        id S1728341AbgJGMYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:24:24 -0400
+Received: from verein.lst.de ([213.95.11.211]:37192 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728207AbgJGMYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:24:01 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33B02206D9;
-        Wed,  7 Oct 2020 12:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602073440;
-        bh=Q3pIt73eh4sd4LL4/+WGztH/CUwDYXD/xhuKYEwDv40=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lSGykKvm91oG2fFwwcYo4YZiaUplkGPO8iH54eaHNS7INNj1YrW8z5cm2Ng/tWs6t
-         k6WhANcx1HAQvWXX6U55da5wT0ne3BwOjZci+RuKjFllktzo055y/vBvUabTIDCJgp
-         UQw2hSYBJrhJ1SJYycLwdkFfYpZJfgeE2Rkwvpac=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kQ8UA-000Ljy-7j; Wed, 07 Oct 2020 13:23:58 +0100
+        id S1728214AbgJGMYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:24:24 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 8D0B768B02; Wed,  7 Oct 2020 14:24:19 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 14:24:18 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 8/8] WIP: add a dma_alloc_contiguous API
+Message-ID: <20201007122418.GA31318@lst.de>
+References: <20200930160917.1234225-1-hch@lst.de> <20200930160917.1234225-9-hch@lst.de> <20201002175040.GA1131147@chromium.org> <20201005082629.GA13850@lst.de> <CAAFQd5DcFjTUpOYkaz4nGxozgOc9oGf9QngjbpXWdcwXTT=kmw@mail.gmail.com> <20201007062150.GA10601@lst.de> <CAAFQd5AtN-ykAF_2mAqGxVugeEegYxfYdS6gD4O3zCY1jznNYA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 07 Oct 2020 13:23:58 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 1/4] genirq/irqdomain: Allow partial trimming of
- irq_data hierarchy
-In-Reply-To: <738593a42b62ea7905e4a680775cb996@kernel.org>
-References: <20201006101137.1393797-1-maz@kernel.org>
- <20201006101137.1393797-2-maz@kernel.org>
- <87eemb6qdj.fsf@nanos.tec.linutronix.de>
- <10788c0d08fccbcbc1ac590a855e70d3@kernel.org>
- <738593a42b62ea7905e4a680775cb996@kernel.org>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <02226efd42fdb249b81c01eb702100e9@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAFQd5AtN-ykAF_2mAqGxVugeEegYxfYdS6gD4O3zCY1jznNYA@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-07 09:53, Marc Zyngier wrote:
-> On 2020-10-07 09:05, Marc Zyngier wrote:
->> On 2020-10-06 21:39, Thomas Gleixner wrote:
-
-[...]
-
->>> This is butt ugly, really. Especially the use case where the tegra 
->>> PMC
->>> domain removes itself from the hierarchy from .alloc()
->> 
->> I don't disagree at all. It is both horrible and dangerous.
->> 
->> My preference would have been to split the PMC domain into discrete
->> domains, each one having having its own depth. But that's incredibly
->> hard to express in DT, and would break the combination of old/new
->> DT and kernel.
->> 
->>> That said, I don't have a better idea either. Sigh...
->> 
->> A (very minor) improvement would be to turn the trim call in the PMC 
->> driver into
->> a flag set in the first invalid irq_data structure, and let
->> __irq_domain_alloc_irqs() do the dirty work.
->> 
->> Still crap, but at least would prevent some form of abuse. Thoughts?
+On Wed, Oct 07, 2020 at 02:21:43PM +0200, Tomasz Figa wrote:
+> My initial feeling is that it should work, but we'll give you a
+> definitive answer once we prototype it. :)
 > 
-> Actually, I wonder whether we can have a more general approach:
-> 
-> A partial hierarchy that doesn't have an irq_data->chip pointer 
-> populated
-> cannot be valid. So I wonder if the least ugly thing to do is to just 
-> drop
-> any messing about in the PMC driver, and instead to let
-> __irq_domain_alloc_irqs()
-> do the culling, always, by looking for a NULL pointer in 
-> irq_data->chip.
-> 
-> Not any less ugly, but at least doesn't need any driver intervention.
+> We might actually give it a try in the USB HCD subsystem as well, to
+> implement usb_alloc_noncoherent(), as an optimization for drivers
+> which have to perform multiple random accesses to the URB buffers. I
+> think you might recall discussing this by the way of the pwc and
+> uvcvideo camera drivers.
 
-[still talking to myself...]
-
-I implemented that, and it has the advantage of placing the hack in a
-single location. It even booted on a garden variety of systems.
-
-I'll post an updated series, and we can compare the various levels
-of ugliness.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Yes.  I guess for usb the dma_alloc_noncoherent as-is in linux-next
+might be better.   So if you have the cycles please prototype it
+either way, although for that we'd also need at least a
+mmap_noncoherent method, and probaby a get_sgtable_noncoherent one.
