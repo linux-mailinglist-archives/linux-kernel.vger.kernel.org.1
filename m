@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B120C2869E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352D52869E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgJGVLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:11:41 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:59516 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbgJGVLl (ORCPT
+        id S1728593AbgJGVMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:12:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49278 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728227AbgJGVMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:11:41 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-273-uIL7QyCPPFmHh7zg-MwAdA-1; Wed, 07 Oct 2020 22:11:36 +0100
-X-MC-Unique: uIL7QyCPPFmHh7zg-MwAdA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 7 Oct 2020 22:11:36 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 7 Oct 2020 22:11:36 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Luck, Tony'" <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>
-CC:     "Song, Youquan" <youquan.song@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 4/6] x86/mce: Avoid tail copy when machine check
- terminated a copy from user
-Thread-Topic: [PATCH v3 4/6] x86/mce: Avoid tail copy when machine check
- terminated a copy from user
-Thread-Index: AQHWnCT7Akl0tQfunEO6b5w/PLxMVqmLzKMAgACfloCAADZ6cA==
-Date:   Wed, 7 Oct 2020 21:11:35 +0000
-Message-ID: <65c0345e142c4c46a5cfd8f8b51489aa@AcuMS.aculab.com>
-References: <20201005163130.GD21151@zn.tnic>
- <20201006210910.21062-1-tony.luck@intel.com>
- <20201006210910.21062-5-tony.luck@intel.com>
- <c994091cdc9d42718769f584b7d4a134@AcuMS.aculab.com>
- <c0791688c58f434ca9e413630504d22d@intel.com>
-In-Reply-To: <c0791688c58f434ca9e413630504d22d@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 7 Oct 2020 17:12:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602105134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SDK3Gt9aT4einF5OjoqPRMgVOrOe8nFuHhFEtB2s2qQ=;
+        b=TUnMsCVfe4iM+eFMVc1WikcR5P0Gk69yhUJQkQlXcl3zXoLoPpbD5COpKxfesR+73QWjkI
+        DcNKtR0FvGhwJUIv/NbYTS8mAUvkehLzJ2HQpBFhNqU+vW3/PyIrC9vtlKLXKnVKY1UfVC
+        8CUhiTKddHaxn8wDFH97CYJfCKA8ieA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-lQvGFbo4PQmYVIJJIy3BzQ-1; Wed, 07 Oct 2020 17:12:13 -0400
+X-MC-Unique: lQvGFbo4PQmYVIJJIy3BzQ-1
+Received: by mail-ed1-f69.google.com with SMTP id y8so1440588edj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 14:12:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SDK3Gt9aT4einF5OjoqPRMgVOrOe8nFuHhFEtB2s2qQ=;
+        b=qS6QVbsmeEy1T3LfqmooyOTqXhEnXaQah6uPjGjUhNxvNl6ICilatW01ZN4v+o1XCp
+         Pqb+PjtKXp1IwC66bMpyVwLagJyRse4NTR+p44UTUc1KXLoFr0mTjhvmRckPgv+oWBf2
+         atYur2rHMbT87vxz4MaNgJLkTDaUijQMR4S+GBOh/DG7sDDP7m/6yHFAoaNzJ2Iwm7Ah
+         wYtvIkLffc1JioR+w4TG5rYr3Wdwx9xAStuDy32uzLlfeCWnfZnqlPjJVDdXDNMRD5Og
+         RLjTanjZdBQmxaGA4/mMnTFtdnsLqi2S+4lNctFHXqnt6sylFsyQ8PvpYRgLJalT8NmR
+         EXUw==
+X-Gm-Message-State: AOAM530w0PO0kBEJN4gwYhZkwnbCCs6HwXf6DLZCwi/fC3sZ5qE8zLTD
+        tdMkmdYL1slyVlPQPW+k1rP15IGzYKNxFOp1AwbiXhvb75zmy8YCfm8YnOYAOvl8J4jSc2a1zT/
+        zTresg6S6IROfP5QCBJHHhtih
+X-Received: by 2002:aa7:c90a:: with SMTP id b10mr5800430edt.163.1602105131359;
+        Wed, 07 Oct 2020 14:12:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjvdi7t9Ou7H9+JvHcCbilja8b5Sc3ql4mlKCyEKyXLa6QzXgT8fPdMx4sgqSar2mUADDCFg==
+X-Received: by 2002:aa7:c90a:: with SMTP id b10mr5800409edt.163.1602105131083;
+        Wed, 07 Oct 2020 14:12:11 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id f20sm2232254ejc.90.2020.10.07.14.12.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 14:12:09 -0700 (PDT)
+Subject: Re: [PATCH 0/3] Tiger Lake PMC core driver fixes
+To:     "David E. Box" <david.e.box@linux.intel.com>, dvhart@infradead.org,
+        andy@infradead.org, gayatri.kammela@intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201006224702.12697-1-david.e.box@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ad5c6d7c-351f-c1ee-7cab-6d3f083a10a1@redhat.com>
+Date:   Wed, 7 Oct 2020 23:12:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20201006224702.12697-1-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTHVjaywgVG9ueQ0KPiBTZW50OiAwNyBPY3RvYmVyIDIwMjAgMTk6NTANCj4gPj4gTWFj
-aGluZSBjaGVja3MgYXJlIG1vcmUgc2VyaW91cy4gSnVzdCBnaXZlIHVwIGF0IHRoZSBwb2ludCB3
-aGVyZSB0aGUNCj4gPj4gbWFpbiBjb3B5IGxvb3AgdHJpZ2dlcmVkIHRoZSAjTUMgYW5kIHJldHVy
-biBmcm9tIHRoZSBjb3B5IGNvZGUgYXMgaWYNCj4gPj4gdGhlIGNvcHkgc3VjY2VlZGVkLiBUaGUg
-bWFjaGluZSBjaGVjayBoYW5kbGVyIHdpbGwgdXNlIHRhc2tfd29ya19hZGQoKSB0bw0KPiA+PiBt
-YWtlIHN1cmUgdGhhdCB0aGUgdGFzayBpcyBzZW50IGEgU0lHQlVTLg0KPiA+DQo+ID4gSXNuJ3Qg
-dGhhdCBqdXN0IHBsYWluIHdyb25nPw0KPiANCj4gSXQgaXNuJ3QgcHJldHR5LiBJJ20gbm90IHN1
-cmUgaG93IHdyb25nIGl0IGlzLg0KPiANCj4gPiBJZiBjb3B5IGlzIHJlcG9ydGVkIGFzIHN1Y2Nl
-ZWRpbmcgdGhlIGtlcm5lbCBjb2RlIHdpbGwgdXNlIHRoZSAnb2xkJw0KPiA+IGRhdGEgdGhhdCBp
-cyBpbiB0aGUgYnVmZmVyIGFzIGlmIGl0IGhhZCBiZWVuIHJlYWQgZnJvbSB1c2Vyc3BhY2UuDQo+
-ID4gVGhpcyBjb3VsZCBlbmQgdXAgd2l0aCBrZXJuZWwgc3RhY2sgZGF0YSBiZWluZyB3cml0dGVu
-IHRvIGEgZmlsZS4NCj4gDQo+IEkgcmFuIGEgdGVzdCB3aXRoOg0KPiANCj4gCXdyaXRlKGZkLCBi
-dWYsIDUxMikNCj4gDQo+IFdpdGggcG9pc29uIGluamVjdGVkIGludG8gYnVmWzI1Nl0gdG8gZm9y
-Y2UgYSBtYWNoaW5lIGNoZWNrIG1pZC1jb3B5Lg0KPiANCj4gVGhlIHNpemUgb2YgdGhlIGZpbGUg
-ZGlkIGdldCBpbmNyZW1lbnRlZCBieSA1MTIgcmF0aGVyIHRoYW4gMjU2LiBXaGljaCBpc24ndCBn
-b29kLg0KPiANCj4gVGhlIGRhdGEgaW4gdGhlIGZpbGUgdXAgdG8gdGhlIDI1NiBieXRlIG1hcmsg
-d2FzIHRoZSB1c2VyIGRhdGEgZnJvbSBidWZbMCAuLi4gMjU1XS4NCj4gDQo+IFRoZSBkYXRhIGlu
-IHRoZSBmaWxlIHBhc3Qgb2Zmc2V0IDI1NiB3YXMgYWxsIHplcm9lcy4gSSBzdXNwZWN0IHRoYXQg
-aXNuJ3QgYnkgY2hhbmNlLg0KPiBUaGUga2VybmVsIGhhcyB0byBkZWZlbmQgYWdhaW5zdCBhIHVz
-ZXIgd3JpdGluZyBhIHBhcnRpYWwgcGFnZSBhbmQgdXNpbmcgbW1hcCgyKQ0KPiBvbiB0aGUgc2Ft
-ZSBmaWxlIHRvIHBlZWsgYXQgZGF0YSBwYXN0IEVPRiBhbmQgdXAgdG8gdGhlIG5leHQgUEFHRV9T
-SVpFIGJvdW5kYXJ5Lg0KPiBTbyBJIHRoaW5rIGl0IG11c3QgemVybyBuZXcgcGFnZXMgYWxsb2Nh
-dGVkIGluIHBhZ2UgY2FjaGUgYXMgdGhleSBhcmUgYWxsb2NhdGVkIHRvDQo+IGEgZmlsZS4NCg0K
-VGhpbmsgYWJvdXQgd2hhdCBoYXBwZW5zIHRvIGEgZGV2aWNlIHdyaXRlIG9yIGFuIGlvY3RsIHJl
-cXVlc3QuDQpUaGVzZSB0eXBpY2FsbHkgZ2V0IGNvcGllZCBpbnRvIG9uLXN0YWNrIGJ1ZmZlcnMu
-DQoNCj4gPiBJSVJDIHRoZSBjb2RlIHRvIHRyeSB0byBtYXhpbWlzZSB0aGUgY29weSBoYXMgYmVl
-biByZW1vdmVkLg0KPiA+IFNvIHRoZSAnc2xvdycgcmV0cnkgd29udCBoYXBwZW4gYW55IG1vcmUu
-DQo+IA0KPiBXaGljaCBjb2RlIGhhcyBiZWVuIHJlbW92ZWQgKGFuZCB3aGVuIC4uLiBUSVAsIGFu
-ZCBteSB0ZXN0aW5nLCBpcyBiYXNlZCBvbiA1LjktcmMxKQ0KDQpUaGUgY29kZSB0aGF0IHJldHJp
-ZXMgYnl0ZSBieSBieXRlIGFmdGVyIGFuIGluaXRpYWwgZmF1bHQuDQpNaWdodCBvbmx5IGJlIHJl
-bW92ZWQgZnJvbSAnbmV4dCcgYW5kIGZvciBzb21lIGFyY2hpdGVjdHVyZXMuDQpCYXNpY2FsbHkg
-YWxtb3N0IG5vdGhpbmcgZXZlciByZWxpZXMgb24gcGFydGlhbCBjb3BpZXMgKGV4Y2VwdCBtb3Vu
-dCkuDQoNCklJUkMgdGhlcmUgaXMgJ21hZ2ljJyBpbiB0aGUgc3lzY2FsbCBleGl0IHBhdGggdG8g
-Y29udmVydCBFRkFVTFQNCmludG8gU0lHU0VHVi4NCllvdSBwcm9iYWJseSB3YW50IHRvIGhpamFj
-ayBpdCB0byBnZW5lcmF0ZSBTSUdCVVM/DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
-c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
-IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+Hi,
+
+On 10/7/20 12:46 AM, David E. Box wrote:
+> This patch set adds several critical fixes for intel_pmc_core driver.
+> 
+> Patch 1: Uses descriptive register names for the TigerLake low power
+> 	 mode registers. Not critical, but was requested in review of
+> 	 Patch 2.
+> 
+> Patch 2: Fixes the register mapping to the correct IPs in the power
+> 	 gating status register for TigerLake.
+> 
+> Patch 3: Fixes the slps0 residency multiplier to use the correct, platform
+> 	 specific values.
+> 
+> David E. Box (1):
+>    platform/x86: pmc_core: Use descriptive names for LPM registers
+> 
+> Gayatri Kammela (2):
+>    platform/x86: intel_pmc_core: Fix TigerLake power gating status map
+>    platform/x86: intel_pmc_core: Fix the slp_s0 counter displayed value
+
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up there once I've pushed my local branch there,
+which might take a while.
+
+Once I've run some tests on this branch the patches there will be added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
 
