@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E54285E0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16492285E0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727558AbgJGLXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
+        id S1727685AbgJGLZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgJGLXH (ORCPT
+        with ESMTP id S1726219AbgJGLZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:23:07 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38E8C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 04:23:07 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id j13so1918752ilc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 04:23:07 -0700 (PDT)
+        Wed, 7 Oct 2020 07:25:19 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8948BC061755;
+        Wed,  7 Oct 2020 04:25:17 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id j22so1411999qtj.8;
+        Wed, 07 Oct 2020 04:25:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=VllmaAGqvMm4R67B7tk3ECGHjsNIHALPOCo1VH99jcU=;
-        b=gs4AqtOTc1Vv9Rx2kBybehXA1e9f1eDtZNjKLSEVekupCC8KQm++8Qe7dERkAAGg7e
-         YNnH2E/HIwueMwhm1bShuLcIy8KKvYvmGWENCetIvgggrxPx17zXew3paULWwGzcM+RT
-         zEuSZzUjfsrjl8JUo+S/7lr40kbJl0YrzLZc7F4jNLozglQQ/InGK7y6/2Qmbeo44O6T
-         dwBHgwlJTEsaUQs8LIDhxTXTH049W5Z4qLoJWumODF08PI3VCMIm4vrcC8qTRKNf2x1Y
-         RunRnJqNSDIbdWdTTJmhAo7wLMXOr1vIeF7op2cmg02AuopXkIZu1lyXmCTy26KRRTu4
-         lmgw==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yvxFh2lVt/f6BDA0Bx2JmAxB4jOtm8Py2fAMvv0foaM=;
+        b=BNoPeubeS3sXBJjI0gkWLOl9TtnB7QMuencLyKdA/jOtb/IGQdLGC84nEomR3w4lx7
+         9r0tdf5A85QFnljIjVksg0KJQXlffVvm4hvkE64oEtwYPmJVREvvbhBtreKXlRjgdMSj
+         I6sjoizv2hosGo4CNIasokE9hpsVi7mI5ExW4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=VllmaAGqvMm4R67B7tk3ECGHjsNIHALPOCo1VH99jcU=;
-        b=enON1XP3PYgIU5dn11hSFsx8eSnOtWzZwJbviYFIisduQ4pQ7PE2N9VLWwk8IiL++q
-         Au7q2LALGLMsVzfvCiKsgCZTuxXjC8omvjWBF8EoaTFNXYJVOsqlqZGANxRsbkYalS80
-         IO5XEHmWvD3jLZusyvBc10C7OIyhbx18nGvEjmLeDU/6P0CO4Ha1NVPvGaxMwAimAfCT
-         UxsRRhYRpWJmlOPKQ3jldhW44n/miinJoJDmj+qXrQBOZMaiacGEUmT3s4lYYlWRc2Jk
-         R+u7mPG7KQtoBObD/SfR8Td94jAPFFg9+GwNjV1RDX3GTb/RQmyCQPFofJrNQc1vyH2C
-         2Ylg==
-X-Gm-Message-State: AOAM532iFtZd8F8XwdYwsI2+ZsG3bSTWUmHPao+W/Q3FyZoGQpF5/Oxx
-        Id8usWNQgT6uxb7g08nGZqAMYon5zg2trhmbNQs=
-X-Google-Smtp-Source: ABdhPJwujEg3h/W4wwoD1oxgJdVP9YBrY373iMML2UDsmHmtbuxH3NtYY5bEs6hJPuoiprv+y0CNn833PZIg+z6GXrE=
-X-Received: by 2002:a05:6e02:10c7:: with SMTP id s7mr267465ilj.1.1602069786899;
- Wed, 07 Oct 2020 04:23:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yvxFh2lVt/f6BDA0Bx2JmAxB4jOtm8Py2fAMvv0foaM=;
+        b=W8KUN9wjhVOkHFfunfSBBfykmnIVmlB6wUeWp0TkfQNltaia9qNJBpAHY2BlKNxG5M
+         ODXf9N+MuDHfBWNV4yo4KjlkP7VQL/Oj5JBzH2SaMk/jt9LXpMbROt8VQUKHI+Lv8OV2
+         VbwHJim7FhmDAe+JCuSKhHvaTOMU9Jk+OyoC/TIkt4R/NfTxl5xodxXMuaROmYXMB0Qw
+         lDKv7DGmg4Ta4edknf9DIDIbRMPhy64qqFl/rmrh4+GbL0sbsCCUTZ3ta/YIgQntq+JN
+         Vwj/YtSKgDmPvk1LOHrTHNie8SQDLPEGyKnZT34esjjgmU/VgBjNKPGlrPAB9gKHkMC0
+         QuTw==
+X-Gm-Message-State: AOAM532YhPOcOERRgIa+I9zQdWdJalPi+82/nvD9/3O1grgV8g53KltA
+        hgEUPgJVdHSNzQwGmzQSeMeIDV6/v04KUtH3gZgpQ7ph3p8=
+X-Google-Smtp-Source: ABdhPJwRYZfAQA9D02ndfJ8Hwo5EMEXHSivMoq36Tr5vogI302Zi7/RH2rzq66EfzaFRDq87koLxojb4z3VA3ooIm/g=
+X-Received: by 2002:ac8:48ca:: with SMTP id l10mr2586401qtr.385.1602069916742;
+ Wed, 07 Oct 2020 04:25:16 -0700 (PDT)
 MIME-Version: 1.0
-Reply-To: habibahmohamed@protonmail.com
-Sender: hendrigrunge@gmail.com
-Received: by 2002:a92:d790:0:0:0:0:0 with HTTP; Wed, 7 Oct 2020 04:23:06 -0700 (PDT)
-From:   "Habibah Mohmad." <bibamohamed029@gmail.com>
-Date:   Wed, 7 Oct 2020 11:23:06 +0000
-X-Google-Sender-Auth: 1XuwThTMqAsGls-xDqAU45soTww
-Message-ID: <CAP_FgLaNECjMV+4Dvadh80WYDwfuSYT5pXeSnis9QHnk_4Ynzw@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IOWVhuS4muaKlei1hCAvIEJ1c2luZXNzIEludmVzdG1lbnRg?=
-To:     undisclosed-recipients:;
+References: <20200930040823.26065-1-ryan_chen@aspeedtech.com> <20200930040823.26065-3-ryan_chen@aspeedtech.com>
+In-Reply-To: <20200930040823.26065-3-ryan_chen@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 7 Oct 2020 11:25:04 +0000
+Message-ID: <CACPK8Xc2Y1njgtrtjO1bdmkcQR7jDu+oaOBc3R+CWtn+UrEOhQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] usb: host: add uhci compatible support for ast2600-uhci
+To:     Ryan Chen <ryan_chen@aspeedtech.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, bmc-sw@aspeedtech.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-                              BUSINESS INVESTMENT / PARTNERSHIP
+On Wed, 30 Sep 2020 at 04:08, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
+>
+> Add support for AST2600 SOC UHCI driver.
+>
+> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
 
-Asa-lam Alaikum.
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-I wish to seek for a good business partnership in your country which I
-want to invest and partner with you for a good profiting business in
-your country with my last resort deposited in a foreign bank.
+USB maintainers, can you please take this patch (2/3)? I will take the
+others in this series through the aspeed tree.
 
-Please, kindly advice me on good profiting business in your country
-in-which we can invest and partner under mutual understanding.
+Cheers,
 
-I am waiting to read from you  as soon as possible at your convenience
-time for us to start our good business relationship.
+Joel
 
-Allah Hafiz,
 
-Ma'am Habibah Mohammed.
+> ---
+>  drivers/usb/host/uhci-platform.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/host/uhci-platform.c b/drivers/usb/host/uhci-platform.c
+> index 70dbd95c3f06..fa40fe125c2a 100644
+> --- a/drivers/usb/host/uhci-platform.c
+> +++ b/drivers/usb/host/uhci-platform.c
+> @@ -113,7 +113,8 @@ static int uhci_hcd_platform_probe(struct platform_device *pdev)
+>                                 num_ports);
+>                 }
+>                 if (of_device_is_compatible(np, "aspeed,ast2400-uhci") ||
+> -                   of_device_is_compatible(np, "aspeed,ast2500-uhci")) {
+> +                       of_device_is_compatible(np, "aspeed,ast2500-uhci") ||
+> +                       of_device_is_compatible(np, "aspeed,ast2600-uhci")) {
+>                         uhci->is_aspeed = 1;
+>                         dev_info(&pdev->dev,
+>                                  "Enabled Aspeed implementation workarounds\n");
+> --
+> 2.17.1
+>
