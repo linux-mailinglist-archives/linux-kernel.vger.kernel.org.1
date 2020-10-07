@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA9C285CE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70008285CF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbgJGKbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:31:08 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42971 "EHLO 1wt.eu"
+        id S1727719AbgJGKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:35:45 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24828 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726219AbgJGKbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:31:07 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 097AUXEr006622;
-        Wed, 7 Oct 2020 12:30:33 +0200
-Date:   Wed, 7 Oct 2020 12:30:33 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        torvalds@linux-foundation.org
-Subject: Re: Control Dependencies vs C Compilers
-Message-ID: <20201007103033.GB6550@1wt.eu>
-References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
- <875z7nm4qm.fsf@oldenburg2.str.redhat.com>
- <20201007093243.GB2628@hirez.programming.kicks-ass.net>
+        id S1726219AbgJGKfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:35:44 -0400
+IronPort-SDR: Kq3QJuDVjpYxSHCstVdl08ZtuDOe2JqHTCyaQ6CJzAhWMS6W/g/n8Y0qJ83b21VftF3UbXeNC7
+ yll2ES2U45MQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="144808105"
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="144808105"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 03:35:43 -0700
+IronPort-SDR: 8rHst02E2sEkrzvZ+k78mTWrUl74uPckDgOmsw32oJQ9+9C1PFIQrwMh1Amz282g97aQXxjyRu
+ FKMfY+EyrKTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="354845530"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga007.jf.intel.com with SMTP; 07 Oct 2020 03:35:40 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Wed, 07 Oct 2020 13:35:39 +0300
+Date:   Wed, 7 Oct 2020 13:35:39 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Matteo Franchin <matteo.franchin@arm.com>
+Cc:     dri-devel@lists.freedesktop.org, tzimmermann@suse.de,
+        airlied@linux.ie, liviu.dudau@arm.com,
+        linux-kernel@vger.kernel.org, nd@arm.com
+Subject: Re: [PATCH] drm/fourcc: Add AXBXGXRX106106106106 format
+Message-ID: <20201007103539.GA6112@intel.com>
+References: <20201007092725.13300-1-matteo.franchin@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201007093243.GB2628@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201007092725.13300-1-matteo.franchin@arm.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:32:43AM +0200, Peter Zijlstra wrote:
-> A branch that cannot be optimized away and prohibits lifting stores
-> over. One possible suggestion would be allowing the volatile keyword as
-> a qualifier to if.
+On Wed, Oct 07, 2020 at 10:27:25AM +0100, Matteo Franchin wrote:
+> Add ABGR format with 10-bit components packed in 64-bit per pixel.
+> This format can be used to handle
+> VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16 on little-endian
+> architectures.
 > 
-> 	x = *foo;
-> 	volatile if (x > 42)
-> 		*bar = 1;
+> Signed-off-by: Matteo Franchin <matteo.franchin@arm.com>
+> ---
+>  drivers/gpu/drm/drm_fourcc.c  | 1 +
+>  include/uapi/drm/drm_fourcc.h | 7 +++++++
+>  2 files changed, 8 insertions(+)
 > 
-> This would tell the compiler that the condition is special in that it
-> must emit a conditional branch instruction and that it must not lift
-> stores (or sequence points) over it.
+> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+> index 722c7ebe4e88..bba03fcb016d 100644
+> --- a/drivers/gpu/drm/drm_fourcc.c
+> +++ b/drivers/gpu/drm/drm_fourcc.c
+> @@ -202,6 +202,7 @@ const struct drm_format_info *__drm_format_info(u32 format)
+>  		{ .format = DRM_FORMAT_XBGR16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1 },
+>  		{ .format = DRM_FORMAT_ARGB16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_ABGR16161616F,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> +		{ .format = DRM_FORMAT_AXBXGXRX106106106106,	.depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_RGB888_A8,	.depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_BGR888_A8,	.depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>  		{ .format = DRM_FORMAT_XRGB8888_A8,	.depth = 32, .num_planes = 2, .cpp = { 4, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+> index 82f327801267..76eedba52b77 100644
+> --- a/include/uapi/drm/drm_fourcc.h
+> +++ b/include/uapi/drm/drm_fourcc.h
+> @@ -155,6 +155,13 @@ extern "C" {
+>  #define DRM_FORMAT_ARGB16161616F fourcc_code('A', 'R', '4', 'H') /* [63:0] A:R:G:B 16:16:16:16 little endian */
+>  #define DRM_FORMAT_ABGR16161616F fourcc_code('A', 'B', '4', 'H') /* [63:0] A:B:G:R 16:16:16:16 little endian */
+>  
+> +/*
+> + * RGBA format with 10-bit components packed in 64-bit per pixel, with 6 bits
+> + * of unused padding per component:
+> + * [63:0] A:x:B:x:G:x:R:x 10:6:10:6:10:6:10:6 little endian
 
-This test is interesting, because if foo and bar are of the same type,
-nothing prevents them from aliasing and the compiler cannot make wild
-guesses on them (i.e. they may be plain memory as well as memory-mapped
-registers).
+I think we usually put that last bit at the end of the fourcc define.
+In theory it makes grepping a bit nicer. The exceptions are all planar
+formats where each plane can have different component packing.
 
-Extending it like this shows a difference between the use of volatile
-and __atomic_{load,store}_n. While both are correct in that each access
-is properly performed, for an unknown reason the compiler decided to
-implement two distinct branches in the atomic case and to inflate the
-code:
+> + */
+> +#define DRM_FORMAT_AXBXGXRX106106106106 fourcc_code('A', 'B', '1', '0')
+> +
+>  /* packed YCbCr */
+>  #define DRM_FORMAT_YUYV		fourcc_code('Y', 'U', 'Y', 'V') /* [31:0] Cr0:Y1:Cb0:Y0 8:8:8:8 little endian */
+>  #define DRM_FORMAT_YVYU		fourcc_code('Y', 'V', 'Y', 'U') /* [31:0] Cb0:Y1:Cr0:Y0 8:8:8:8 little endian */
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-$ gcc -v
-gcc version 9.3.0 (GCC)
-
-$ cat foo-volatile.c
-long foobar(long *foo, long *bar)
-{
-        *(volatile long *)bar = 10;
-        if (*(volatile long *)foo <= 42)
-                *(volatile long *)bar = 64;
-        if (*(volatile long *)foo > 42)
-                *(volatile long *)bar = 0;
-        return *(volatile long *)bar;
-}
-$ gcc -c -O2 foo-volatile.c
-$ objdump -dr foo-volatile.o 
-0000000000000000 <foobar>:
-   0:   48 c7 06 0a 00 00 00    movq   $0xa,(%rsi)
-   7:   48 8b 07                mov    (%rdi),%rax
-   a:   48 83 f8 2a             cmp    $0x2a,%rax
-   e:   7f 07                   jg     17 <foobar+0x17>
-  10:   48 c7 06 40 00 00 00    movq   $0x40,(%rsi)
-  17:   48 8b 07                mov    (%rdi),%rax
-  1a:   48 83 f8 2a             cmp    $0x2a,%rax
-  1e:   7e 07                   jle    27 <foobar+0x27>
-  20:   48 c7 06 00 00 00 00    movq   $0x0,(%rsi)
-  27:   48 8b 06                mov    (%rsi),%rax
-  2a:   c3                      retq   
-
-
-$ cat foo-atomic.c  
-long foobar(long *foo, long *bar)
-{
-        __atomic_store_n(bar, 10, __ATOMIC_RELAXED);
-        if (__atomic_load_n(foo, __ATOMIC_RELAXED) <= 42)
-                __atomic_store_n(bar, 64, __ATOMIC_RELAXED);
-        if (__atomic_load_n(foo, __ATOMIC_RELAXED) > 42)
-                __atomic_store_n(bar, 0, __ATOMIC_RELAXED);
-        return __atomic_load_n(bar, __ATOMIC_RELAXED);
-}
-$ objdump -dr foo-atomic.o 
-0000000000000000 <foobar>:
-   0:   48 c7 06 0a 00 00 00    movq   $0xa,(%rsi)
-   7:   48 8b 07                mov    (%rdi),%rax
-   a:   48 83 f8 2a             cmp    $0x2a,%rax
-   e:   7e 10                   jle    20 <foobar+0x20>
-  10:   48 8b 07                mov    (%rdi),%rax
-  13:   48 83 f8 2a             cmp    $0x2a,%rax
-  17:   7f 17                   jg     30 <foobar+0x30>
-  19:   48 8b 06                mov    (%rsi),%rax
-  1c:   c3                      retq   
-  1d:   0f 1f 00                nopl   (%rax)
-  20:   48 c7 06 40 00 00 00    movq   $0x40,(%rsi)
-  27:   48 8b 07                mov    (%rdi),%rax
-  2a:   48 83 f8 2a             cmp    $0x2a,%rax
-  2e:   7e e9                   jle    19 <foobar+0x19>
-  30:   48 c7 06 00 00 00 00    movq   $0x0,(%rsi)
-  37:   48 8b 06                mov    (%rsi),%rax
-  3a:   c3                      retq   
-
-When building at -Os both produce the same code as the volatile version
-above. It *seems* to me that the volatile version always produces more
-optimal code, but is it always correct ? This is just an illustration of
-how tricky this can currently be and how confusing it can sometimes be
-for the developer to make sure the desired code is emitted in a few
-special cases. And just for this, having the compiler support more easily
-predictable constructs would be a nice improvement.
-
-Willy
+-- 
+Ville Syrjälä
+Intel
