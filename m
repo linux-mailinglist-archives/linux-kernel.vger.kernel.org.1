@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A18286A6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434E3286A6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgJGVpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:45:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39286 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728628AbgJGVpn (ORCPT
+        id S1728727AbgJGVqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJGVqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:45:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602107141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HW8OEIB2v/3NbD2TNZtIeljE7aJBVgAky13HzY3nNm4=;
-        b=NdJ+zK5u3C4riPyi/7wEx6gbABaBI1vgMDCByAWBLKCvw2cZfvMiJEiCf5Tw8nx5EYlShs
-        CuZel9E3jCiIyV4H3keS/v52A+DMnnYjOs0creK8NX5cWfNs8N99hLyX56WJM8KryN1dRY
-        g3+KIEBKkcBY6U3Ed/GHK2zUQ429hyI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-PjEJ89a3MAm8sT_gIn3EDw-1; Wed, 07 Oct 2020 17:45:36 -0400
-X-MC-Unique: PjEJ89a3MAm8sT_gIn3EDw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA65387950B;
-        Wed,  7 Oct 2020 21:45:34 +0000 (UTC)
-Received: from redhat.com (ovpn-119-161.rdu2.redhat.com [10.10.119.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D0CB46EF5D;
-        Wed,  7 Oct 2020 21:45:33 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 17:45:32 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
-        Josef Bacik <jbacik@fb.com>
-Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
-Message-ID: <20201007214532.GA3484657@redhat.com>
-References: <20201007010603.3452458-1-jglisse@redhat.com>
- <20201007032013.GS20115@casper.infradead.org>
- <20201007144835.GA3471400@redhat.com>
- <20201007170558.GU20115@casper.infradead.org>
- <20201007175419.GA3478056@redhat.com>
- <20201007183316.GV20115@casper.infradead.org>
+        Wed, 7 Oct 2020 17:46:38 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F05EC061755;
+        Wed,  7 Oct 2020 14:46:37 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id s17so2035045qvr.11;
+        Wed, 07 Oct 2020 14:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YqNUjigFoAXo2QafX/TTeVVXBpaXL3Be2L3u2zpujGM=;
+        b=nOiCFVqKn9qpKVGgPb0MgXhOqUoxudL61nKQkOjg6IWYyDk7Mo60sg2BiYT+qgKZvC
+         9VaQkgDLA3ZFv1YeeJC8BhF9M8X0SCrRrSiTt+2qetxnyXbH6atyoKgXDCG+UE40ZIzZ
+         86eXvROXYmV9sEIjqxwP/Q0MBgczL3xkhw3tZ7MCJgP+byDpqTsBY2BbJSpPN9Wz1b9k
+         cH5Ixg1DSgILYeRCDfE7unh/IUxVWkV3xpA7GsvrNGL/W/WZFUh6bZOOue7NP1YXbeOy
+         HjjcZn6gKV+UzkojRivqPU3griS6IdQl+o2V6nUDg6cBBz2ClbxBjZtP7r4dqtDaoib7
+         +OYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YqNUjigFoAXo2QafX/TTeVVXBpaXL3Be2L3u2zpujGM=;
+        b=FQ+JYpniK+pB4t68Oatylat+/PJqBkqpWPR8TjYXt8gDLVV3FwxQan4gGD08uA+dqb
+         uCLPvXaci4iO9stXWxCsvv23MJ9WG1CUfSWLy6wRL4ctZqnPXzCoVviUR2iaoRrhZNj+
+         ulYg7KTkgRbjpFXfAqkevfwHw9urHNK5/CQ2tGFxiUYhJE1kXKqeSP4JNp7E2vbZAago
+         /zMZNTEe1OTVPWihWXqfy3BOvlMK8PwfA5DJ4YVl32K8+jAxfYWSiG48XrIr01UnPFbQ
+         GnobJJtpi7jDEh6YuFJgHnmcRtseyxJ3f+n03zM299TdkJQb1lCyDq8hUjetaEgGPEDD
+         Kgww==
+X-Gm-Message-State: AOAM531vImpIsZzQP+A6N/wQz4a5/yWb4H7ohKJArlPnslJhq1lEz0/p
+        Awj32VnE3E61SctD11hdcINKQd5q2IB9XA==
+X-Google-Smtp-Source: ABdhPJzrDqRTfzp3kraZFbds/BuMxeQZZRTCB5lCKd7Q3veIzOCHzA9lsDBscGJUHmrCwPpXm8IlwQ==
+X-Received: by 2002:a0c:c492:: with SMTP id u18mr5342732qvi.18.1602107196335;
+        Wed, 07 Oct 2020 14:46:36 -0700 (PDT)
+Received: from ubuntu (ool-45785633.dyn.optonline.net. [69.120.86.51])
+        by smtp.gmail.com with ESMTPSA id 128sm2408554qkm.76.2020.10.07.14.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 14:46:35 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 17:46:33 -0400
+From:   Vivek Unune <npcomplete13@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] ARM: dts: BCM5301X: Linksys EA9500 make use of
+ pinctrl
+Message-ID: <20201007214633.GA1972@ubuntu>
+References: <cover.1601655904.git.npcomplete13@gmail.com>
+ <6687de05226dd055ee362933d4841a12b038792d.1601655904.git.npcomplete13@gmail.com>
+ <20201007210134.GD112961@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201007183316.GV20115@casper.infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20201007210134.GD112961@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 07:33:16PM +0100, Matthew Wilcox wrote:
-> On Wed, Oct 07, 2020 at 01:54:19PM -0400, Jerome Glisse wrote:
-> > On Wed, Oct 07, 2020 at 06:05:58PM +0100, Matthew Wilcox wrote:
-> > > On Wed, Oct 07, 2020 at 10:48:35AM -0400, Jerome Glisse wrote:
-> > > > On Wed, Oct 07, 2020 at 04:20:13AM +0100, Matthew Wilcox wrote:
-> > > > > On Tue, Oct 06, 2020 at 09:05:49PM -0400, jglisse@redhat.com wrote:
-> > > For other things (NUMA distribution), we can point to something which
-
-[...]
-
-> > > isn't a struct page and can be distiguished from a real struct page by a
-> > > bit somewhere (I have ideas for at least three bits in struct page that
-> > > could be used for this).  Then use a pointer in that data structure to
-> > > point to the real page.  Or do NUMA distribution at the inode level.
-> > > Have a way to get from (inode, node) to an address_space which contains
-> > > just regular pages.
-> > 
-> > How do you find all the copies ? KSM maintains a list for a reasons.
-> > Same would be needed here because if you want to break the write prot
-> > you need to find all the copy first. If you intend to walk page table
-> > then how do you synchronize to avoid more copy to spawn while you
-> > walk reverse mapping, we could lock the struct page i guess. Also how
-> > do you walk device page table which are completely hidden from core mm.
+On Wed, Oct 07, 2020 at 11:01:34PM +0200, Andrew Lunn wrote:
+> On Wed, Oct 07, 2020 at 03:01:50PM -0400, Vivek Unune wrote:
+> > Forgo the use of mmioreg mdio mux infavor of the pinctrl
 > 
-> You have the inode and you iterate over each mapping, looking up the page
-> that's in each mapping.  Or you use the i_mmap tree to find the pages.
-
-This would slow down for everyone as we would have to walk all mapping
-each time we try to write to page. Also we a have mechanism for page
-write back to avoid race between thread trying to write and write back.
-We would also need something similar. Without mediating this through
-struct page i do not see how to keep this reasonable from performance
-point of view.
-
-
-> > > I don't have time to work on all of these.  If there's one that
-> > > particularly interests you, let's dive deep into it and figure out how
-> > 
-> > I care about KSM, duplicate NUMA copy (not only for CPU but also
-> > device) and write protection or exclusive write access. In each case
-> > you need a list of all the copy (for KSM of the deduplicated page)
-> > Having a special entry in the page cache does not sound like a good
-> > option in many code path you would need to re-look the page cache to
-> > find out if the page is in special state. If you use a bit flag in
-> > struct page how do you get to the callback or to the copy/alias,
-> > walk all the page tables ?
+> Hi Vivek
 > 
-> Like I said, something that _looks_ like a struct page.  At least looks
-> enough like a struct page that you can pull a pointer out of the page
-> cache and check the bit.  But since it's not actually a struct page,
-> you can use the rest of the data structure for pointers to things you
-> want to track.  Like the real struct page.
+> Could you add some more details please. I don't know this
+> hardware. I'm assuming there are two MDIO busses, external as talked
+> about in the comments, and an internal one? And for this hardware you
+> only need one of them? But i don't see what pinmux has to do with
+> this?
+Hi Andrew,
 
-What i fear is the added cost because it means we need to do this look-
-up everytime to check and we also need proper locking to avoid races.
-Adding an ancilliary struct and trying to keep everything synchronize
-seems harder to me.
+There are indeed two mdio busses. To access the external bus, 9th bit
+of the mdio register has to be set. And to enable mii function,
+one has to set the registers 6 & 7 which is part of the pin controller.
+Earlier the pin controller was not defined and I resorted to use a
+combination of memory mapped io mux to change desired bits.
+
+Now that we have a pin controller - which is resposnsible for other 
+functionality such as pwm, i2c, uart2, it makes sense to have a consistent
+device tree
+
+Hope this helps,
+
+Vivek
+
 
 > 
-> > I do not see how i am doing violence to struct page :) The basis of
-> > my approach is to pass down the mapping. We always have the mapping
-> > at the top of the stack (either syscall entry point on a file or
-> > through the vma when working on virtual address).
-> 
-> Yes, you explained all that in Utah.  I wasn't impressed than, and I'm
-> not impressed now.
-
-Is this more of a taste thing or is there something specific you do not
-like ?
-
-Cheers,
-Jérôme
-
+> Thanks
+> 	Andrew
+>  
