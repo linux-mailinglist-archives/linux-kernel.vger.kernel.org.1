@@ -2,115 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F86285BC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78490285BC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgJGJSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:18:23 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:50004 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726670AbgJGJSW (ORCPT
+        id S1727211AbgJGJTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726820AbgJGJTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:18:22 -0400
-Received: by mail-il1-f207.google.com with SMTP id t25so1042185ilk.16
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:18:19 -0700 (PDT)
+        Wed, 7 Oct 2020 05:19:43 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B0DC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 02:19:42 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id a9so1456021lfc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HearCtm5CzMBeIR1tHWuaWK0TC9md3N7NC53VUCWgV0=;
+        b=tvUxN56NHfUl5/2EqKur2+5/omgmNucchkaRxEodbK6bpaQJjNKooi1cKy6/DPqoti
+         xQS1dAoFvYB8aBcz/kzDREA4vnTD2B01zVEpGBDcgI7/SDexYB04zwEAE44CFU3WS/UZ
+         wsS7dGd3b1XMPekBf3XdUa5uLsR2Z/oUydBoVU7VC1rz4bSrNdJw7fIBAUC4lTEbJoGF
+         6hAXcK4Lexczm/fx6zvkHbZ3l8JNoh15PmmSDQ4PQ/PP+Xq47/BeSDLSDjGfSVnfr3SM
+         hoqML1sRnpG9hSYIGye/ASCyZzynNZZwxVq6swk549j+//v5kRBeuC1SPPNeVv0v7HyG
+         HstQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=siXcRoWiOT6IB9ZzaXzxLDjCcyJ5bZ2i3vOd6vwCjbw=;
-        b=B9jXRNaaDzJW7hQD3L7/8hnKu4nc763//8PrBUyW3PUivOHyeFvSCKydTAqqCxGdsi
-         0rRX1rX/gzQm3hNGk2z39x+A7vgjd6nJOupGdGaLFUqRo18XIYWr1oDo9KLxWZ4b8oGM
-         7LtSSbdpM6KO3X5BY+x/tHK4wHv/nDSwA2GL6cws/FtOLgQc2kxuj0N62tx5LEmwYvGu
-         XJl09vTjqeUsBob2pzaq0O28J6/0qI1q6lJM66TDxsnD2jQPRwkwY/SuRjNVs9darDoU
-         uOW3hMqx1Fv13AUg43PrDMs5PaLwFtANUO0odkfATdmjov0+IqU/kTHg2kPLZQyU1jjV
-         JC9A==
-X-Gm-Message-State: AOAM530eqSSuJBOelg4aoWYdeDLvUa2+hhALrXDWS7egeDnIs3VSAeGt
-        lNeD6tTET1k8fPoQ4aNGuCNZZAH3L/kvuV5Z1did07RKJsfP
-X-Google-Smtp-Source: ABdhPJwRwQWBq/XDdggILHJlcQJx0ogR/9jrp5LVj/8pJOUvdHwJXhwKqwA5ycytcwbJQgu8c4O6XYyQI5PNgqcyIvh+6jgeRGpJ
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HearCtm5CzMBeIR1tHWuaWK0TC9md3N7NC53VUCWgV0=;
+        b=fpPx4owMO5sxrCEI9Q7LbaNlHahtG74SHM7TNbcZjv94zyBemw31yeL7QRfyYhS07r
+         R2kUtznUeZNDJh9sJBrXn8buUvDp5Q8ak0JoAOIoqwSSV+Y7tEK9pv5GqZfFdFY8CHon
+         Mxcj77NzUKpP27P4Bjp62xxy/YNcXAPsNVw+yznbN3uFFnvB8Hsbpn1MPLezsh4VNa/s
+         Z/NlBu7EU7aqBVURmw8lAef5ZX8QwXC68zpdmOPMnuYdLcq6eSltVYuq43ML1oj9UT17
+         0W+Aswl7m98ZziTbWLS5rFxeaOVPk4WIqN84uIwdswc90CMg1JfiHzC/7SGFmV/xeLA2
+         kjmQ==
+X-Gm-Message-State: AOAM530z1VzyZlINIOOvlEdTcFaYuxhAYsWwjEfdJZbGruFjHzpi88Cw
+        UXlnG1AcMG8BrUm1n6D/Dgn3/oRbggnD2smHgaMavg==
+X-Google-Smtp-Source: ABdhPJzztxuaghX7mt6AZbNjuI6U2enA74cptLuZ2N1KOPduaNmzcuFfhw0yARzqithV/Y+z1T9IEU7p48uS5wXZCmM=
+X-Received: by 2002:ac2:42d8:: with SMTP id n24mr594980lfl.502.1602062380977;
+ Wed, 07 Oct 2020 02:19:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9e47:: with SMTP id i7mr1641257ioi.52.1602062299375;
- Wed, 07 Oct 2020 02:18:19 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 02:18:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000432c5405b1113296@google.com>
-Subject: INFO: task can't die in corrupted
-From:   syzbot <syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com>
-To:     chao@kernel.org, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com> <20201004162908.3216898-3-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20201004162908.3216898-3-martin.blumenstingl@googlemail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 7 Oct 2020 11:19:30 +0200
+Message-ID: <CACRpkdbTw4UBw02RXX2prju45AsDZqPchhz=gdzsuT-QjhYHVw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] dt-bindings: gpio: Add binding documentation for
+ Etron EJ168/EJ188/EJ198
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Oct 4, 2020 at 8:00 PM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
 
-syzbot found the following issue on:
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - pci1b6f,7023
+> +      - pci1b6f,7052
 
-HEAD commit:    a804ab08 Add linux-next specific files for 20201006
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17fe30bf900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
-dashboard link: https://syzkaller.appspot.com/bug?extid=ee250ac8137be41d7b13
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1336413b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f7392b900000
+I think it is better to let the PCI driver for the whole hardware in
+drivers/usb/host/xhci-pci.c probe from the PCI configuration space
+numbers, and then add a gpio_chip to xhci-pci.c.
 
-The issue was bisected to:
-
-commit eede846af512572b1f30b34f9889d7df64c017d4
-Author: Jaegeuk Kim <jaegeuk@kernel.org>
-Date:   Fri Oct 2 21:17:35 2020 +0000
-
-    f2fs: f2fs_get_meta_page_nofail should not be failed
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10a8aafb900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a8aafb900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com
-Fixes: eede846af512 ("f2fs: f2fs_get_meta_page_nofail should not be failed")
-
-INFO: task syz-executor178:6870 can't die for more than 143 seconds.
-task:syz-executor178 state:R
- stack:26960 pid: 6870 ppid:  6869 flags:0x00004006
-Call Trace:
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1179:
- #0: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6242
-1 lock held by systemd-journal/3920:
-1 lock held by in:imklog/6769:
- #0: ffff88809eebc130 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-1 lock held by syz-executor178/6870:
- #0: ffff8880925120e0 (&type->s_umount_key#47/1){+.+.}-{3:3}, at: alloc_super+0x201/0xaf0 fs/super.c:229
-
-=============================================
-
-Kernel panic - not syncing: hung_task: blocked tasks
-CPU: 0 PID: 1179 Comm: khungtaskd Not tainted 5.9.0-rc8-next-20201006-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- check_hung_uninterruptible_tasks kernel/hung_task.c:257 [inline]
- watchdog.cold+0x23e/0x248 kernel/hung_task.c:339
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks!
+Linus Walleij
