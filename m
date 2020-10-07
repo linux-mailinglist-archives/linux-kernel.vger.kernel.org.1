@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB517286198
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F171C286199
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728713AbgJGOyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728677AbgJGOx7 (ORCPT
+        id S1728716AbgJGOzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:55:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34972 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728677AbgJGOzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:53:59 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D48C061755;
-        Wed,  7 Oct 2020 07:53:59 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id bb1so1133014plb.2;
-        Wed, 07 Oct 2020 07:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OyV6KXUS1c7DltkhuFHvz8iH/qvXIDKFdF/6FuM3Dvg=;
-        b=OuOjVEZrMX7i4qZyPfaYfkDmwT4UCUjiWjpK5i0cEo0a2i3+Z9CLqRNjB0So9tDlI1
-         UPO1GLlswNEiEsawr+zNU8fOe1Mza/Xw/3wFb74ZWe1wJvLs84q3AMNdSPSbLzjrN1kd
-         N9423/l51m7+ASIR/M1B8R1j85SprUi0VLe6uHuSbbD6wVEMBVyno8mS5Al0yRrJT0kK
-         daDAWfB+ZWbUbjZSFR0BtVxwg6SQXQR/S5Li6ZqgfHF/0EMkMZ+Hg2tKAv+EvY/guGZv
-         GlYacxbTY0AWjijUbWDcIOSv2x3SlSOsu0huSSwD0f/2b8DW4mb8so9Qz+x5IjfJufkc
-         XLNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OyV6KXUS1c7DltkhuFHvz8iH/qvXIDKFdF/6FuM3Dvg=;
-        b=cv0g0PRYgKXmWBEMl9tbAJgRUlgUIAwFSalnB0HidOxNKJCGUm+uHdt6mV5tRVxq0Y
-         BDkJkcT8STPunqinR/fiw1TAH4g8ktsX1+mUJSpPyhkZm2mD+Kx4fYp7/d7vsvyBUWbe
-         EL1SQBXNmZOk6SgyeCWwsEkZJ8DvaNvwyi9OZO3vgL3NUxrMSqVS6e/KLHJQRENk8IFA
-         ytJ/t8UgqJlmOOqe4enRIpG75U33+M932l5L6NWesXoFDhHZxDx/TEKqvDwhS+k4Ezyj
-         pcx84EaNGoFrunFpVhcJ0YwdcBUcHcZGYFJfQYj57MXNUWj/PYiJwBrlBTB9qMQ2++mg
-         VQCw==
-X-Gm-Message-State: AOAM530/N9VHv16VqBzWYVvoxYwFE5WetILWVIJlSMlbSLI/RLF5hcgC
-        h6Q0VmwM7wy/SvpVUOun3sxsdLpcSD05LvV2Y9Q=
-X-Google-Smtp-Source: ABdhPJyYIQrR0698WQb7xr65UOrpJZ49f68fUhyAjCgrnYz/LAGp892x0F2TCpJq42TdjUcdJGj0D/XxeGRvKN+i5fc=
-X-Received: by 2002:a17:902:ea8c:b029:d2:8abd:c8de with SMTP id
- x12-20020a170902ea8cb02900d28abdc8demr3306474plb.21.1602082438746; Wed, 07
- Oct 2020 07:53:58 -0700 (PDT)
+        Wed, 7 Oct 2020 10:55:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602082499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YfwhkGiRrOH1PcwmIuFTvVZZYAlXa4jhrjm0JixaXmc=;
+        b=DkQgQbPw1YDjt242yuYHWzgy7sYUUf5ZJSmKRPwPhUBZk0yt0MHkZnJ4hInUIfqMcg/qil
+        RroW9N/fwuElMaQkycDL00+tN/GqgRtm6wwDQZI5nkv3CeyVFEMqmcjLqjWYoA17FXysNK
+        gtWELB+2Nb92cURCTLoQYnKPVpnl3jc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-QylDYpxLMG2OMX3mEuDZTg-1; Wed, 07 Oct 2020 10:54:55 -0400
+X-MC-Unique: QylDYpxLMG2OMX3mEuDZTg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92C0F108E1A1;
+        Wed,  7 Oct 2020 14:54:54 +0000 (UTC)
+Received: from treble (ovpn-113-148.rdu2.redhat.com [10.10.113.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D2DC5C1BD;
+        Wed,  7 Oct 2020 14:54:53 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 09:54:50 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH] x86/unwind/orc: fix inactive tasks with sp in sp
+Message-ID: <20201007145450.32yrrq75csmq7vgo@treble>
+References: <20201007081909.29226-1-jslaby@suse.cz>
 MIME-Version: 1.0
-References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
- <20201006155549.3595-2-muhammad.husaini.zulkifli@intel.com>
- <49c9fe27-ee82-f490-482b-365101d3b6cf@xilinx.com> <CAHp75VfXe=dwbNEdUfwmMnZCkSTRH_6HjGD0MUs=GY0en4f0sw@mail.gmail.com>
- <DM6PR11MB28768EDF354D2ED4A43B4AD2B80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB28768EDF354D2ED4A43B4AD2B80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 7 Oct 2020 17:54:48 +0300
-Message-ID: <CAHp75VeyO1XErkO=sGnY2VTyPQT9Gp-rkfPdmj0AMM95fA2J1g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201007081909.29226-1-jslaby@suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 4:28 PM Zulkifli, Muhammad Husaini
-<muhammad.husaini.zulkifli@intel.com> wrote:
-> >From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> >Sent: Wednesday, October 7, 2020 4:56 PM
-> >On Wed, Oct 7, 2020 at 11:38 AM Michal Simek <michal.simek@xilinx.com>
-> >wrote:
-> >> On 06. 10. 20 17:55, muhammad.husaini.zulkifli@intel.com wrote:
+-ENOPARSE on $SUBJECT.
 
-...
+Also please address it to x86@kernel.org, I think the tip maintainers
+can pick up the fix directly.
 
-> >> > +     struct device *dev = &pdev->dev;
-> >>
-> >> nit: I got this but as I see 3 lines below maybe would be better to
-> >> use it everywhere but it can be done in separate patch.
-> >
-> >In that case I think it would be better to have that patch first. It make follow up
-> >code cleaner.
-> I want to get some clarification here.
+Also it might be a good idea to Cc the live-patching mailing list, I
+presume this causes a livepatch stall?
 
-> Do I need a separate patch for this struct device *dev = &pdev->dev;?
+On Wed, Oct 07, 2020 at 10:19:09AM +0200, Jiri Slaby wrote:
+> gcc-10 optimizes the scheduler code differently than its predecessors,
+> depending on DEBUG_SECTION_MISMATCH=y config -- the config sets
+> -fno-inline-functions-called-once.
 
-It should be a separate patch and better your series starts with it,
-so it won't interfere with new code.
+Weird.  Was GCC ignoring this flag before?
 
-> Can I embedded together with UHS patch?
+> @@ -663,7 +656,13 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
+>  	} else {
+>  		struct inactive_task_frame *frame = (void *)task->thread.sp;
+>  
+> -		state->sp = task->thread.sp;
+> +		/*
+> +		 * @ret_addr is in __schedule _before_ the @frame is pushed to
+> +		 * the stack, but @thread.sp is saved in __switch_to_asm only
+> +		 * _after_ saving the @frame, so subtract the @frame size, i.e.
+> +		 * add it to @thread.sp.
+> +		 */
+> +		state->sp = task->thread.sp + sizeof(*frame);
 
-Better to avoid merging orthogonal things together in one change.
+IMO, the code speaks for itself and the comment may be superfluous.
+
+Otherwise it looks good to me.  Thanks for fixing it!
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Josh
+
