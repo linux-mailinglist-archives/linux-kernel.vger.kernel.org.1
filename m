@@ -2,156 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3AD285E24
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1BF285E34
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727278AbgJGLbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:31:18 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:39560 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgJGLbS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:31:18 -0400
-Received: by mail-io1-f80.google.com with SMTP id s135so1105099ios.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 04:31:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vjtRuHi2Hc6BiX+YCDt+i6nOG7vmNbQPu3H+COlDXvc=;
-        b=kBSUXAVm9avaFICLfs9cazeQtr6XjIUu7PfBguHHBIl//OP4hnNQp0vgDwZZbhq+28
-         +iFumTCflKcsIdwLprhhPmTJrgc86LAwT6jQIvwJNaByXVzMlHhmv4gaikydzv1oosIo
-         6gxF9o7HLkJzL3a4MnaRBj79GNjfco5Pm8bR1o+Ha4tzNSYrLR5xHzs66et36xD5Mcws
-         MCN/787PUaVbfnHBeSHJNheU7epniGGS93xcSgHD96Ao699qnTXuf387vR8qkx+ssSYb
-         t5eb+BqESilKKvG64SJYarGe7cYsV5GRGyJnvorc9d2OdcjKy16XwCVt8aOhBtaJajhy
-         fCOg==
-X-Gm-Message-State: AOAM531jio/ChZllvfW/xIFNCbA9YhLtjXvRRmTc16ad+PB5uBgbHWnc
-        4e/gtNGd/9CDXrmAVrIfEtcB1MYtI9hdqwlRS7LzAXn34NRj
-X-Google-Smtp-Source: ABdhPJyznvfWXXedrCqL5DcgMCDv/+9tBiX1/p6fdQaxxU7KE1KLFFgKG+Fg3Rm8tixZrRivTm+Z2vTGavwaOFvPa3XFON/nDHkb
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:54:: with SMTP id z20mr1906863ioz.85.1602070276914;
- Wed, 07 Oct 2020 04:31:16 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 04:31:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c2c2f005b1130def@google.com>
-Subject: KASAN: use-after-free Read in __d_alloc
-From:   syzbot <syzbot+0842a31cc990d5a8a60c@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+        id S1727801AbgJGLdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:33:49 -0400
+Received: from mga06.intel.com ([134.134.136.31]:24765 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgJGLdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 07:33:31 -0400
+IronPort-SDR: 2uGq1vyDYod8468Ir1BCGFPnOMs7AIbtlicnT8ofPFSnx5yFp6yDBxvgAoyLaXHYtrPBXcLczp
+ Pg2vA/ztmGjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="226492529"
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="226492529"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 04:33:29 -0700
+IronPort-SDR: lRnRKhudSEUyaGcD9Hhhrwe7ic1WEvkeZ/TS293akbgdAZYnzI1S6uc5G1dN9h2TBmjo2VS+DM
+ H/sEfhJuvN4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="354862114"
+Received: from shskylake.sh.intel.com ([10.239.48.137])
+  by orsmga007.jf.intel.com with ESMTP; 07 Oct 2020 04:33:25 -0700
+From:   Ethan Zhao <haifeng.zhao@intel.com>
+To:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
+        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
+        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
+        mika.westerberg@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@linux.intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        xerces.zhao@gmail.com, Ethan Zhao <haifeng.zhao@intel.com>
+Subject: [PATCH v8 0/6] Fix DPC hotplug race and enhance error handling
+Date:   Wed,  7 Oct 2020 07:31:52 -0400
+Message-Id: <20201007113158.48933-1-haifeng.zhao@intel.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,folks,
 
-syzbot found the following issue on:
+This simple patch set fixed some serious security issues found when DPC
+error injection and NVMe SSD hotplug brute force test were doing -- race
+condition between DPC handler and pciehp, AER interrupt handlers, caused
+system hang and system with DPC feature couldn't recover to normal
+working state as expected (NVMe instance lost, mount operation hang,
+race PCIe access caused uncorrectable errors reported alternatively etc).
 
-HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1615acaf900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=0842a31cc990d5a8a60c
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+The fundamental premise is that when due to error conditions (NON-FATAL/
+FATAL) when events are processed by both DPC handler and hotplug handling
+of DLLSC/PDC both operating on the same device object ends up with crashes 
+(from  Ashok).
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Debug shows when port DPC feature was enabled and triggered by errors,
+DLLSC/PDC/DPC interrupts will be sent to pciehp and DPC driver almost
+at the same time, and no delay between them is required by specification.
+so DPC driver and pciehp drivers may handle these interrupts cocurrently,
+thus introduces the possibility of race condition, other details see every
+commit description part.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0842a31cc990d5a8a60c@syzkaller.appspotmail.com
+With this patch set applied, stable 5.9-rc6 on ICS (Ice Lake SP platform,
+see
+https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server))
 
-==================================================================
-BUG: KASAN: use-after-free in memcpy include/linux/string.h:406 [inline]
-BUG: KASAN: use-after-free in __d_alloc+0x19a/0x950 fs/dcache.c:1740
-Read of size 1 at addr ffff8880928f30c0 by task kworker/0:3/7298
+could pass the PCIe Gen4 NVMe SSD brute force hotplug test with any time
+interval between hot-remove and plug-in operation tens of times without
+any errors occur and system works normal.
 
-CPU: 0 PID: 7298 Comm: kworker/0:3 Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: afs afs_manage_cell
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- memcpy+0x20/0x60 mm/kasan/common.c:105
- memcpy include/linux/string.h:406 [inline]
- __d_alloc+0x19a/0x950 fs/dcache.c:1740
- d_alloc+0x4a/0x230 fs/dcache.c:1788
- d_alloc_parallel+0xe9/0x18e0 fs/dcache.c:2540
- __lookup_slow+0x193/0x480 fs/namei.c:1529
- lookup_one_len+0x163/0x190 fs/namei.c:2562
- afs_dynroot_mkdir+0x167/0x250 fs/afs/dynroot.c:293
- afs_activate_cell fs/afs/cell.c:632 [inline]
- afs_manage_cell+0x6d2/0x11c0 fs/afs/cell.c:697
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- process_scheduled_works kernel/workqueue.c:2331 [inline]
- worker_thread+0x82b/0x1120 kernel/workqueue.c:2417
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+With this patch set applied, system with DPC feature could recover from
+NON-FATAL and FATAL errors injection test and works as expected.
 
-Allocated by task 13591:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- __do_kmalloc mm/slab.c:3659 [inline]
- __kmalloc+0x1b0/0x360 mm/slab.c:3668
- kmalloc include/linux/slab.h:559 [inline]
- afs_alloc_cell fs/afs/cell.c:157 [inline]
- afs_lookup_cell+0x5e9/0x1440 fs/afs/cell.c:262
- afs_parse_source fs/afs/super.c:290 [inline]
- afs_parse_param+0x404/0x8c0 fs/afs/super.c:326
- vfs_parse_fs_param fs/fs_context.c:117 [inline]
- vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
- vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
- generic_parse_monolithic+0x16f/0x1f0 fs/fs_context.c:201
- do_new_mount fs/namespace.c:2871 [inline]
- path_mount+0x133f/0x20a0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount fs/namespace.c:3390 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+System works smoothly when errors happen while hotplug is doing, no
+uncorrectable errors found.
 
-Freed by task 6891:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3422 [inline]
- kfree+0x10e/0x2b0 mm/slab.c:3760
- afs_cell_destroy+0x1b0/0x240 fs/afs/cell.c:500
- rcu_do_batch kernel/rcu/tree.c:2430 [inline]
- rcu_core+0x5ca/0x1130 kernel/rcu/tree.c:2658
- __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+Brute DPC error injection script:
 
-The buggy address belongs to the object at ffff8880928f30c0
- which belongs to the cache kmalloc-32 of size 32
-The buggy address is located 0 bytes inside of
- 32-byte region [ffff8880928f30c0, ffff8880928f30e0)
-The buggy address belongs to the page:
-page:00000000ff82e524 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880928f3fc1 pfn:0x928f3
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002881b08 ffffea000299dc88 ffff8880aa040100
-raw: ffff8880928f3fc1 ffff8880928f3000 0000000100000039 0000000000000000
-page dumped because: kasan: bad access detected
+for i in {0..100}
+do
+        setpci -s 64:02.0 0x196.w=000a
+        setpci -s 65:00.0 0x04.w=0544
+        mount /dev/nvme0n1p1 /root/nvme
+        sleep 1
+done
 
-Memory state around the buggy address:
- ffff8880928f2f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880928f3000: 00 00 01 fc fc fc fc fc fa fb fb fb fc fc fc fc
->ffff8880928f3080: 00 01 fc fc fc fc fc fc fa fb fb fb fc fc fc fc
-                                           ^
- ffff8880928f3100: 00 00 01 fc fc fc fc fc fb fb fb fb fc fc fc fc
- ffff8880928f3180: fb fb fb fb fc fc fc fc fb fb fb fb fc fc fc fc
-==================================================================
+This patch set could be applied to stable 5.9-rc6/rc7/rc8 directly.
+
+Help to review and test.
+
+v2: changed according to review by Andy Shevchenko.
+v3: changed patch 4/5 to simpler coding.
+v4: move function pci_wait_port_outdpc() to DPC driver and its
+   declaration to pci.h. (tip from Christoph Hellwig <hch@infradead.org>).
+v5: fix building issue reported by lkp@intel.com with some config.
+v6: move patch[3/5] as the first patch according to Lukas's suggestion.
+    and rewrite the comment part of patch[3/5].
+v7: change the patch[4/5], based on Bjorn's code and truth table.
+    change the patch[5/5] about the debug output information.
+v8: according Bjorn's suggestion, put the pci_dev_set_io_state()
+    simplification but no function code in one patch.(almost copy of
+    Bjorn's code and truth table, understood).
+    patch 5/6 re-based the function change code of pci_dev_set_io_state().
+    per Ashok's request, add more description to this cover-letter part.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks,
+Ethan
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+Ethan Zhao (6):
+  PCI/ERR: get device before call device driver to avoid NULL pointer
+    dereference
+  PCI/DPC: define a function to check and wait till port finish DPC
+    handling
+  PCI: pciehp: check and wait port status out of DPC before handling
+    DLLSC and PDC
+  PCI/ERR: simplify function pci_dev_set_io_state() with if
+  PCI/ERR: only return true when dev io state is really changed
+  PCI/ERR: don't mix io state not changed and no driver together
+
+ drivers/pci/hotplug/pciehp_hpc.c |  4 ++-
+ drivers/pci/pci.h                | 55 +++++++++++++-------------------
+ drivers/pci/pcie/dpc.c           | 27 ++++++++++++++++
+ drivers/pci/pcie/err.c           | 18 +++++++++--
+ 4 files changed, 69 insertions(+), 35 deletions(-)
+
+
+base-commit: 549738f15da0e5a00275977623be199fbbf7df50
+-- 
+2.18.4
+
