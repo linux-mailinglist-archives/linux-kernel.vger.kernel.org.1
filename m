@@ -2,288 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EEB2868D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396672868DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgJGUKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:10:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49359 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727657AbgJGUKb (ORCPT
+        id S1728237AbgJGUPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:15:21 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40898 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGUPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:10:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602101428;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BVhXhk+iF6o3RlOlKVnrK9GRKRrzsNTDLNFpzDWY1gw=;
-        b=QysUbag67WNfOVsexGWZg+8I920WyGJc0UyiZh4HcD+DFsqOVAyil4ZEPhbXMMCD7VDaVv
-        DOvheAHc8A7M340v3sF8QJXH3YvxQxzL6Jug/NzRyleh+5VkTAJeP43yS5XMpfrDx0qJo+
-        FghL8+8KZyC8iBwzgm+XPq+Ea9wxWVg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-FhXR8f0oOuC8yvhwtOO24Q-1; Wed, 07 Oct 2020 16:10:24 -0400
-X-MC-Unique: FhXR8f0oOuC8yvhwtOO24Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DD4957050;
-        Wed,  7 Oct 2020 20:10:21 +0000 (UTC)
-Received: from [10.10.110.48] (unknown [10.10.110.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 09D7F1002C01;
-        Wed,  7 Oct 2020 20:10:17 +0000 (UTC)
-Reply-To: tasleson@redhat.com
-Subject: Re: [v5 01/12] struct device: Add function callback durable_name
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-scsi@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>, pmladek@suse.com,
-        David Lehman <dlehman@redhat.com>,
-        sergey.senozhatsky@gmail.com, jbaron@akamai.com,
-        James.Bottomley@HansenPartnership.com,
-        linux-kernel@vger.kernel.org, rafael@kernel.org,
-        martin.petersen@oracle.com, kbusch@kernel.org, axboe@fb.com,
-        sagi@grimberg.me, akpm@linux-foundation.org, orson.zhai@unisoc.com,
-        viro@zeniv.linux.org.uk
-References: <20200925161929.1136806-1-tasleson@redhat.com>
- <20200925161929.1136806-2-tasleson@redhat.com>
- <20200929175102.GA1613@infradead.org> <20200929180415.GA1400445@kroah.com>
- <20e220a6-4bde-2331-6e5e-24de39f9aa3b@redhat.com>
- <20200930073859.GA1509708@kroah.com>
- <c6b031b8-f617-0580-52a5-26532da4ee03@redhat.com>
- <20201001114832.GC2368232@kroah.com>
-From:   Tony Asleson <tasleson@redhat.com>
-Organization: Red Hat
-Message-ID: <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
-Date:   Wed, 7 Oct 2020 15:10:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 7 Oct 2020 16:15:21 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097K9TXd155018;
+        Wed, 7 Oct 2020 20:14:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=0e/WSQywy08TzR1PbeoUl0NQLoa6r1TN03v8dKdC7U0=;
+ b=FjAO07Pb2c79haWCsZs0ux00POmzGfuH57r6caG0cGfcojOyTKVFFPuHVW+Yr2RzIT+3
+ TB4a36iJNtdmqutsHUDflCeeXakvsA/xWUAX9Fb2Tm2TrmarfvKjzvW25CjSB/BHbFK3
+ qpb7E0WXBbuf9SUhgR2ON+APMr7v9HeSPsuyJZyBlc049jKaC0zS5cy/QJgGEAFbrOSG
+ HpT74sNrtVAA1n+4SlUp50gV8BUootrJO3Fcxfh2iPuzGgmSbAR10V0h5oNy9jWxo0lR
+ W7Wz2ZRsGADnTPa3pQOtAlwgO0kMX8CsETwOwywHoiMIvZy5fxaCG9i42OerZiNoukJt lw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 33xhxn41dx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 20:14:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097KBKgS061221;
+        Wed, 7 Oct 2020 20:14:26 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33y2vpxjex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 20:14:26 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 097KEBt6031273;
+        Wed, 7 Oct 2020 20:14:13 GMT
+Received: from [10.65.129.34] (/10.65.129.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 13:14:11 -0700
+Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
+ and with length
+To:     Jann Horn <jannh@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20201007073932.865218-1-jannh@google.com>
+From:   Khalid Aziz <khalid.aziz@oracle.com>
+Organization: Oracle Corp
+X-Pep-Version: 2.0
+Message-ID: <d5332a7b-c300-6d28-18b9-4b7d4110ef86@oracle.com>
+Date:   Wed, 7 Oct 2020 14:14:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201001114832.GC2368232@kroah.com>
+In-Reply-To: <20201007073932.865218-1-jannh@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 6:48 AM, Greg Kroah-Hartman wrote:
-> On Wed, Sep 30, 2020 at 09:35:52AM -0500, Tony Asleson wrote:
->> On 9/30/20 2:38 AM, Greg Kroah-Hartman wrote:
->>> On Tue, Sep 29, 2020 at 05:04:32PM -0500, Tony Asleson wrote:
->>>> I'm trying to figure out a way to positively identify which storage
->>>> device an error belongs to over time.
->>>
->>> "over time" is not the kernel's responsibility.
->>>
->>> This comes up every 5 years or so. The kernel provides you, at runtime,
->>> a mapping between a hardware device and a "logical" device.  It can
->>> provide information to userspace about this mapping, but once that
->>> device goes away, the kernel is free to reuse that logical device again.
->>>
->>> If you want to track what logical devices match up to what physical
->>> device, then do it in userspace, by parsing the log files.
->>
->> I don't understand why people think it's acceptable to ask user space to
->> parse text that is subject to change.
-> 
-> What text is changing? The format of of the prefix of dev_*() is well
-> known and has been stable for 15+ years now, right?  What is difficult
-> in parsing it?
+On 10/7/20 1:39 AM, Jann Horn wrote:
+> arch_validate_prot() is a hook that can validate whether a given set of=
 
-Many of the storage layer messages are using printk, not dev_printk.
+> protection flags is valid in an mprotect() operation. It is given the s=
+et
+> of protection flags and the address being modified.
+>=20
+> However, the address being modified can currently not actually be used =
+in
+> a meaningful way because:
+>=20
+> 1. Only the address is given, but not the length, and the operation can=
 
->>>> Thank you for supplying some feedback and asking questions.  I've been
->>>> asking for suggestions and would very much like to have a discussion on
->>>> how this issue is best solved.  I'm not attached to what I've provided.
->>>> I'm just trying to get towards a solution.
->>>
->>> Again, solve this in userspace, you have the information there at
->>> runtime, why not use it?
->>
->> We usually don't have the needed information if you remove the
->> expectation that user space should parse the human readable portion of
->> the error message.
-> 
-> I don't expect that userspace should have to parse any human readable
-> portion, if they don't want to.  But if you do want it to, it is pretty
-> trivial to parse what you have today:
-> 
-> 	scsi 2:0:0:0: Direct-Access     Generic  STORAGE DEVICE   1531 PQ: 0 ANSI: 6
-> 
-> If you really have a unique identifier, then great, parse it today:
-> 
-> 	usb 4-1.3.1: Product: USB3.0 Card Reader
-> 	usb 4-1.3.1: Manufacturer: Generic
-> 	usb 4-1.3.1: SerialNumber: 000000001531
-> 
-> What's keeping that from working now?
+>    span multiple VMAs. Therefore, the callee can't actually tell which
+>    virtual address range, or which VMAs, are being targeted.
+> 2. The mmap_lock is not held, meaning that if the callee were to check
+>    the VMA at @addr, that VMA would be unrelated to the one the
+>    operation is performed on.
+>=20
+> Currently, custom arch_validate_prot() handlers are defined by
+> arm64, powerpc and sparc.
+> arm64 and powerpc don't care about the address range, they just check t=
+he
+> flags against CPU support masks.
+> sparc's arch_validate_prot() attempts to look at the VMA, but doesn't t=
+ake
+> the mmap_lock.
+>=20
+> Change the function signature to also take a length, and move the
+> arch_validate_prot() call in mm/mprotect.c down into the locked region.=
 
-I believe these examples are using dev_printk.  With dev_printk we don't
-need to parse the text, we can use the meta data.
-
-> In fact, I would argue that it does seem to work, as there are many
-> commercial tools out there that seem to handle it just fine...
-
-I'm trying to get something that's works for journalctl.
-
->>>> We've looked at user space quite a bit and there is an inherit race
->>>> condition with trying to fetch the unique hardware id for a message when
->>>> it gets emitted from the kernel as udev rules haven't even run (assuming
->>>> we even have the meta-data to make the association).
->>>
->>> But one moment later you do have the information, so you can properly
->>> correlate it, right?
->>
->> We could have the information if all the storage paths went through
->> dev_printk.  Here is what we get today when we encounter a read error
->> which uses printk in the block layer:
->>
->> {
->>         "_HOSTNAME" : "pn",
->>         "_TRANSPORT" : "kernel",
->>         "__MONOTONIC_TIMESTAMP" : "1806379233",
->>         "SYSLOG_IDENTIFIER" : "kernel",
->>         "_SOURCE_MONOTONIC_TIMESTAMP" : "1805611354",
->>         "SYSLOG_FACILITY" : "0",
->>         "MESSAGE" : "blk_update_request: critical medium error, dev
->> nvme0n1, sector 10000 op 0x0:(READ) flags 0x80700 phys_seg 3 prio class 0",
->>         "PRIORITY" : "3",
->>         "_MACHINE_ID" : "3f31a0847cea4c95b7a9cec13d07deeb",
->>         "__REALTIME_TIMESTAMP" : "1601471260802301",
->>         "_BOOT_ID" : "b03ed610f21d46ab8243a495ba5a0058",
->>         "__CURSOR" :
->> "s=a063a22bbb384da0b0412e8f652deabb;i=23c2;b=b03ed610f21d46ab8243a495ba5a0058;m=6bab28e1;t=5b087959e3cfd;x=20528862f8f765c9"
->> }
-> 
-> Ok, messy stuff, don't do that :)
-> 
->> Unless you parse the message text you cannot make the association.  If
->> the same message was changed to dev_printk we would get:
->>
->>
->> {
->>         "__REALTIME_TIMESTAMP" : "1589401901093443",
->>         "__CURSOR" :
->> "s=caac9703b34a48fd92f7875adae55a2f;i=1c713;b=e2ae14a9def345aa803a13648b95429c;m=7d25b4f;t=5a58d77b85243;x=b034c2d3fb853870",
->>         "SYSLOG_IDENTIFIER" : "kernel",
->>         "_KERNEL_DEVICE" : "b259:917504",
->>         "__MONOTONIC_TIMESTAMP" : "131226447",
->>         "_UDEV_SYSNAME" : "nvme0n1",
->>         "PRIORITY" : "3",
->>         "_KERNEL_SUBSYSTEM" : "block",
->>         "_SOURCE_MONOTONIC_TIMESTAMP" : "130941917",
->>         "_TRANSPORT" : "kernel",
->>         "_MACHINE_ID" : "3f31a0847cea4c95b7a9cec13d07deeb",
->>         "_HOSTNAME" : "pn",
->>         "SYSLOG_FACILITY" : "0",
->>         "_BOOT_ID" : "e2ae14a9def345aa803a13648b95429c",
->>         "_UDEV_DEVLINK" : [
->>                 "/dev/disk/by-uuid/22fc262a-d621-452a-a951-7761d9fcf0dc",
->>                 "/dev/disk/by-path/pci-0000:00:05.0-nvme-1",
->>
->> "/dev/disk/by-id/nvme-nvme.8086-4445414442454546-51454d55204e564d65204374726c-00000001",
->>                 "/dev/disk/by-id/nvme-QEMU_NVMe_Ctrl_DEADBEEF"
->>         ],
->>         "MESSAGE" : "block nvme0n1: blk_update_request: critical medium
->> error, dev nvme0n1, sector 10000 op 0x0:(READ) flags 0x0 phys_seg 1 prio
->> class 0",
->>         "_UDEV_DEVNODE" : "/dev/nvme0n1"
->> }
-> 
-> Great, you have a udev sysname, a kernel subsystem and a way to
-> associate that with a real device, what more are you wanting?
-
-Did you miss in my example where it's currently a printk?  I showed what
-it would look like if it was a dev_printk.
-
-Journald is using _KERNEL_DEVICE to add the _UDEV_DEVLINK information to
-the journal entry, it's not parsing the prefix of the message.
-
-The above json is outputted from journalctl when you specify "-o
-json-pretty".
-
->> Journald already knows how to utilize the dev_printk meta data.
-> 
-> And if you talk to the printk developers (which you seem to be keeping
-> out of the loop here), they are ripping out the meta data facility as
-> fast as possible.  So don't rely on extending that please.
-
-Again, I'm not trying to keep anyone out of the loop.  Last I knew the
-meta data capability wasn't being removed, maybe this has changed?
-
-Ref.
-
-https://lore.kernel.org/lkml/20191007120134.ciywr3wale4gxa6v@pathway.suse.cz/
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: 9035cf9a97e4 ("mm: Add address parameter to arch_validate_prot()=
+")
+> Suggested-by: Khalid Aziz <khalid.aziz@oracle.com>
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Signed-off-by: Jann Horn <jannh@google.com>
+> ---
+>  arch/arm64/include/asm/mman.h   | 4 ++--
+>  arch/powerpc/include/asm/mman.h | 3 ++-
+>  arch/powerpc/kernel/syscalls.c  | 2 +-
+>  arch/sparc/include/asm/mman.h   | 6 ++++--
+>  include/linux/mman.h            | 3 ++-
+>  mm/mprotect.c                   | 6 ++++--
+>  6 files changed, 15 insertions(+), 9 deletions(-)
 
 
->> One idea that I've suggested along the way is creating a dev_printk
->> function that doesn't change the message text.  We then avoid breaking
->> people that are parsing.  Is this something that would be acceptable to
->> folks?  It doesn't solve early boot where udev rules haven't even run,
->> but it's better.
-> 
-> I still fail to understand the root problem here.
+This looks good to me.
 
-IMHO one of the root problems is that many storage messages are still
-using printk.  Changing messages to dev_printk has been met with resistance.
+As Chris pointed out, the call to arch_validate_prot() from do_mmap2()
+is made without holding mmap_lock. Lock is not acquired until
+vm_mmap_pgoff(). This variance is uncomfortable but I am more
+uncomfortable forcing all implementations of validate_prot to require
+mmap_lock be held when non-sparc implementations do not have such need
+yet. Since do_mmap2() is in powerpc specific code, for now this patch
+solves a current problem. That leaves open the question of should
+generic mmap call arch_validate_prot and return EINVAL for invalid
+combination of protection bits, but that is better addressed in a
+separate patch.
 
+Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
 
-> Ok, no, I think I understand what you think the problem is, I just don't
-> see why it is up to the kernel to change what we have today when there
-> are lots of tools out there working just fine without any kernel changes
-> needed.
-> 
-> So try explaining the problem as you see it please, so we all know where
-> to work from.
+>=20
+> diff --git a/arch/arm64/include/asm/mman.h b/arch/arm64/include/asm/mma=
+n.h
+> index 081ec8de9ea6..0876a87986dc 100644
+> --- a/arch/arm64/include/asm/mman.h
+> +++ b/arch/arm64/include/asm/mman.h
+> @@ -23,7 +23,7 @@ static inline pgprot_t arch_vm_get_page_prot(unsigned=
+ long vm_flags)
+>  #define arch_vm_get_page_prot(vm_flags) arch_vm_get_page_prot(vm_flags=
+)
+> =20
+>  static inline bool arch_validate_prot(unsigned long prot,
+> -	unsigned long addr __always_unused)
+> +	unsigned long addr __always_unused, unsigned long len __always_unused=
+)
+>  {
+>  	unsigned long supported =3D PROT_READ | PROT_WRITE | PROT_EXEC | PROT=
+_SEM;
+> =20
+> @@ -32,6 +32,6 @@ static inline bool arch_validate_prot(unsigned long p=
+rot,
+> =20
+>  	return (prot & ~supported) =3D=3D 0;
+>  }
+> -#define arch_validate_prot(prot, addr) arch_validate_prot(prot, addr)
+> +#define arch_validate_prot(prot, addr, len) arch_validate_prot(prot, a=
+ddr, len)
+> =20
+>  #endif /* ! __ASM_MMAN_H__ */
+> diff --git a/arch/powerpc/include/asm/mman.h b/arch/powerpc/include/asm=
+/mman.h
+> index 7cb6d18f5cd6..65dd9b594985 100644
+> --- a/arch/powerpc/include/asm/mman.h
+> +++ b/arch/powerpc/include/asm/mman.h
+> @@ -36,7 +36,8 @@ static inline pgprot_t arch_vm_get_page_prot(unsigned=
+ long vm_flags)
+>  }
+>  #define arch_vm_get_page_prot(vm_flags) arch_vm_get_page_prot(vm_flags=
+)
+> =20
+> -static inline bool arch_validate_prot(unsigned long prot, unsigned lon=
+g addr)
+> +static inline bool arch_validate_prot(unsigned long prot, unsigned lon=
+g addr,
+> +				      unsigned long len)
+>  {
+>  	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_SAO=
+))
+>  		return false;
+> diff --git a/arch/powerpc/kernel/syscalls.c b/arch/powerpc/kernel/sysca=
+lls.c
+> index 078608ec2e92..b1fabb97d138 100644
+> --- a/arch/powerpc/kernel/syscalls.c
+> +++ b/arch/powerpc/kernel/syscalls.c
+> @@ -43,7 +43,7 @@ static inline long do_mmap2(unsigned long addr, size_=
+t len,
+>  {
+>  	long ret =3D -EINVAL;
+> =20
+> -	if (!arch_validate_prot(prot, addr))
+> +	if (!arch_validate_prot(prot, addr, len))
+>  		goto out;
+> =20
+>  	if (shift) {
+> diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mma=
+n.h
+> index f94532f25db1..e85222c76585 100644
+> --- a/arch/sparc/include/asm/mman.h
+> +++ b/arch/sparc/include/asm/mman.h
+> @@ -52,9 +52,11 @@ static inline pgprot_t sparc_vm_get_page_prot(unsign=
+ed long vm_flags)
+>  	return (vm_flags & VM_SPARC_ADI) ? __pgprot(_PAGE_MCD_4V) : __pgprot(=
+0);
+>  }
+> =20
+> -#define arch_validate_prot(prot, addr) sparc_validate_prot(prot, addr)=
 
-To me the problem today is the kernel logs information to identify how a
-storage device is attached, not what is attached.  I think you agree
-with this statement.  The log information is not helpful without the
-information to correlate to the actual device.  I think you also agree
-with this too as you have mentioned it's user space's responsibility to
-collect this so that the correlation can be done.
+> -static inline int sparc_validate_prot(unsigned long prot, unsigned lon=
+g addr)
+> +#define arch_validate_prot(prot, addr, len) sparc_validate_prot(prot, =
+addr, len)
+> +static inline int sparc_validate_prot(unsigned long prot, unsigned lon=
+g addr,
+> +				      unsigned long len)
+>  {
+> +	mmap_assert_write_locked(current->mm);
+>  	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI=
+))
+>  		return 0;
+>  	if (prot & PROT_ADI) {
+> diff --git a/include/linux/mman.h b/include/linux/mman.h
+> index 6f34c33075f9..5b4d554d3189 100644
+> --- a/include/linux/mman.h
+> +++ b/include/linux/mman.h
+> @@ -96,7 +96,8 @@ static inline void vm_unacct_memory(long pages)
+>   *
+>   * Returns true if the prot flags are valid
+>   */
+> -static inline bool arch_validate_prot(unsigned long prot, unsigned lon=
+g addr)
+> +static inline bool arch_validate_prot(unsigned long prot, unsigned lon=
+g addr,
+> +				      unsigned long len)
+>  {
+>  	return (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM)) =3D=3D=
+ 0;
+>  }
+> diff --git a/mm/mprotect.c b/mm/mprotect.c
+> index ce8b8a5eacbb..e2d6b51acbf8 100644
+> --- a/mm/mprotect.c
+> +++ b/mm/mprotect.c
+> @@ -533,14 +533,16 @@ static int do_mprotect_pkey(unsigned long start, =
+size_t len,
+>  	end =3D start + len;
+>  	if (end <=3D start)
+>  		return -ENOMEM;
+> -	if (!arch_validate_prot(prot, start))
+> -		return -EINVAL;
+> =20
+>  	reqprot =3D prot;
+> =20
+>  	if (mmap_write_lock_killable(current->mm))
+>  		return -EINTR;
+> =20
+> +	error =3D -EINVAL;
+> +	if (!arch_validate_prot(prot, start, len))
+> +		goto out;
+> +
+>  	/*
+>  	 * If userspace did not allocate the pkey, do not let
+>  	 * them use it here.
+>=20
+> base-commit: c85fb28b6f999db9928b841f63f1beeb3074eeca
+>=20
 
-If the following are *both* true, we have a usable message that has the
-correlated data with it in the journal.
-
-1. The storage related kernel message goes through dev_printk
-2. At the time of the message being emitted the device symlinks are present.
-
-When those two things are both true, journalctl can do the following
-(today):
-
-$ journalctl /dev/disk/by-id/wwn-0x5002538844584d30
-
-
-However, it usually can't because the above two things are rarely both
-true at the same time for a given message for journald when it logs to
-the journal.
-
-You keep saying this is a user space issue, but I believe we still need
-a bit of help from the kernel at the very least by migrating to
-dev_printk or something similar that adds the same meta data without
-changing the message text.
-
-Yes, my patch series went one step further and added the device ID as
-structured data to the log message, but I was also trying to minimize
-the race condition between the kernel emitting a message and journald
-not having the information to associate it to the hardware device.
-
-If people have other suggestions please let them be known.
-
-> But again, cutting out the developers of the subsystems you were wanting
-> to modify might just be making me really grumpy about this whole
-> thing...
-
-Again, I'm sorry I didn't reach out to the correct people.  Hopefully
-I've CC'd everyone that is appropriate for this discussion.
-
-
-Thanks,
-Tony
 
