@@ -2,117 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674C3286873
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0614C286875
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgJGTkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:40:51 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:60389 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728391AbgJGTkv (ORCPT
+        id S1728423AbgJGTlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728412AbgJGTlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:40:51 -0400
-Received: (qmail 470110 invoked by uid 1000); 7 Oct 2020 15:40:50 -0400
-Date:   Wed, 7 Oct 2020 15:40:50 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Bug in herd7 [Was: Re: Litmus test for question from Al Viro]
-Message-ID: <20201007194050.GC468921@rowland.harvard.edu>
-References: <20201003171338.GA323226@rowland.harvard.edu>
- <20201005151557.4bcxumreoekgwmsa@yquem.inria.fr>
- <20201005155310.GH376584@rowland.harvard.edu>
- <20201005165223.GB29330@paulmck-ThinkPad-P72>
- <20201005181949.GA387079@rowland.harvard.edu>
- <20201005191801.GF29330@paulmck-ThinkPad-P72>
- <20201005194834.GB389867@rowland.harvard.edu>
- <20201006163954.GM29330@paulmck-ThinkPad-P72>
- <20201006170525.GA423499@rowland.harvard.edu>
- <20201007175040.GQ29330@paulmck-ThinkPad-P72>
+        Wed, 7 Oct 2020 15:41:23 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF35C061755;
+        Wed,  7 Oct 2020 12:41:22 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id n6so3390721wrm.13;
+        Wed, 07 Oct 2020 12:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BlXTl6Hst6j2ZWlhRy8AiZeKdtWqE6ffJKL4bR3bTTQ=;
+        b=kcN3zsM/ZtIXY6Z3zNNaFiikNc/iRaBZnxWvNYxoXEUtzNiHbwXZE4CR024aHVJEt3
+         dXZoZeL6K3E3uWH8Xp9tFUjWpzrtRdRM9v1kwZdo7Ed4w0h6bFcL0v1ixtz9pjUhzzkE
+         TU/3b5FJtRRkNVZVxbNiInzha9rZEHRsxWTUTlUN2rhDPp6S+3m1pN6xficRXceeERJ7
+         QCkvpeB5aJ4MuBZnnXgrkAep6Rt5RGtqj1tYUiMsArrJSipocmOvPJ0Z6gelvX/+YHaq
+         bBPMlYl0XA9kURPuUbQuH42W/milxSPmX4C/iLklEzeXB9/C12CppD3jJbhAvWIhw09i
+         a+Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BlXTl6Hst6j2ZWlhRy8AiZeKdtWqE6ffJKL4bR3bTTQ=;
+        b=JmmGgUb5jJhH8KXazu1Z10EHToVqUIu7kLExO/L0e7PlepPq/kIhjqVeg/AFgiqyYO
+         heZzZqp78dB92yadWJ+pDGpUa/q7T4LVkNovO2j+y4LI05jMfRkf+gLU/tMs7gMy6V8U
+         /4dab/j99xxfYGBdX1H2Wgh0x97///Bw7F1NWHgs1PR2DmJFmryROstF/sRrErg5Pjpp
+         OODRGgUOuRco9LlMb9k2Y/+VZpqpCK/8nCkiidLoQMxmgacexYdbi2/v86NJQ/jc/Q/S
+         uI4qPcLKTsLWHJT9qQwTtaIKC55290co8rKTHD0R/tb7QtQ0Ktg8aNbp2Pq3t/JXhQUK
+         Y9ng==
+X-Gm-Message-State: AOAM530qtLiA+K/nQViK/wKe4z/M8GVfclsTSkT3eP8fIrJWY6WQxwlQ
+        wss44cqzmgPd7v91qdvyMkQ=
+X-Google-Smtp-Source: ABdhPJy/7viZdAja+X9JBIUZBanX5mxDMsnzvuFIPvUeDKF3xHLhGKTLJJ0EwcgvuZBD0cR6EcQ74A==
+X-Received: by 2002:adf:ce01:: with SMTP id p1mr4928562wrn.33.1602099680845;
+        Wed, 07 Oct 2020 12:41:20 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id c1sm4156555wru.49.2020.10.07.12.41.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 12:41:19 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 21:41:17 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, mark.rutland@arm.com,
+        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, tj@kernel.org,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: WARNING: at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+Message-ID: <20201007194117.GA4859@Red>
+References: <20200220090350.GA19858@Red>
+ <20200221174223.r3y6tugavp3k5jdl@ca-dmjordan1.us.oracle.com>
+ <20200228123311.GE3275@willie-the-truck>
+ <20200228153331.uimy62rat2tdxxod@ca-dmjordan1.us.oracle.com>
+ <20200301175351.GA11684@Red>
+ <20200302172510.fspofleipqjcdxak@ca-dmjordan1.us.oracle.com>
+ <e7c92da2-42c0-a97d-7427-6fdc769b41b9@arm.com>
+ <20200303213017.tanczhqd3nhpeeak@ca-dmjordan1.us.oracle.com>
+ <20201001175022.GA22444@Red>
+ <20201005170910.vxwrdwnzlw3ahkb4@ca-dmjordan1.us.oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007175040.GQ29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201005170910.vxwrdwnzlw3ahkb4@ca-dmjordan1.us.oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:50:40AM -0700, Paul E. McKenney wrote:
-> And here is the updated version.
+On Mon, Oct 05, 2020 at 01:09:10PM -0400, Daniel Jordan wrote:
+> On Thu, Oct 01, 2020 at 07:50:22PM +0200, Corentin Labbe wrote:
+> > On Tue, Mar 03, 2020 at 04:30:17PM -0500, Daniel Jordan wrote:
+> > > Barring other ideas, Corentin, would you be willing to boot with
+> > > 
+> > >     trace_event=initcall:*,module:* trace_options=stacktrace
+> > > 
+> > > and
+> > > 
+> > > diff --git a/kernel/module.c b/kernel/module.c
+> > > index 33569a01d6e1..393be6979a27 100644
+> > > --- a/kernel/module.c
+> > > +++ b/kernel/module.c
+> > > @@ -3604,8 +3604,11 @@ static noinline int do_init_module(struct module *mod)
+> > >  	 * be cleaned up needs to sync with the queued work - ie
+> > >  	 * rcu_barrier()
+> > >  	 */
+> > > -	if (llist_add(&freeinit->node, &init_free_list))
+> > > +	if (llist_add(&freeinit->node, &init_free_list)) {
+> > > +		pr_warn("%s: schedule_work for mod=%s\n", __func__, mod->name);
+> > > +		dump_stack();
+> > >  		schedule_work(&init_free_wq);
+> > > +	}
+> > >  
+> > >  	mutex_unlock(&module_mutex);
+> > >  	wake_up_all(&module_wq);
+> > > 
+> > > but not my earlier fix and share the dmesg and ftrace output to see if the
+> > > theory holds?
+> > > 
+> > > Also, could you attach your config?  Curious now what your crypto options look
+> > > like after fiddling with some of them today while trying and failing to see
+> > > this on x86.
+> > > 
+> > > thanks,
+> > > Daniel
+> > 
+> > Hello
+> > 
+> > Sorry for the very delayed answer.
+> > 
+> > I fail to reproduce it on x86 (qemu and  real hw) and arm.
+> > It seems to only happen on arm64.
 > 
-> 							Thanx, Paul
+> Thanks for the config and dmesg, but there's no ftrace.  I see it's not
+> configured in your kernel, so could you boot with my earlier debug patch plus
+> this one and the kernel argument initcall_debug instead?
 > 
-> ------------------------------------------------------------------------
+> I'm trying to see whether it really is a request module call from the crypto
+> tests that's triggering this warning.  Preeetty likely that's what's happening,
+> but want to be sure since I can't reproduce this.  Then I can post the fix.
 > 
-> commit b7cd60d4b41ad56b32b36b978488f509c4f7e228
-> Author: Alan Stern <stern@rowland.harvard.edu>
-> Date:   Tue Oct 6 09:38:37 2020 -0700
-> 
->     manual/kernel: Add LB+mb+data litmus test
 
-Let's change this to:
+I have added CONFIG_FTRACE=y and your second patch.
+The boot log can be seen at http://kernel.montjoie.ovh/108789.log
 
-      manual/kernel: Add LB data dependency test with no intermediate variable
+But it seems the latest dump_stack addition flood a bit.
+I have started to read ftrace documentation, but if you have a quick what to do in /sys/kernel/debug/tracing, it will be helpfull.
 
-Without that extra qualification, people reading just the title would
-wonder why we need a simple LB litmus test in the archive.
-
->     
->     Test whether herd7 can detect a data dependency when there is no
->     intermediate local variable, as in WRITE_ONCE(*x, READ_ONCE(*y)).
->     Commit 0f3f8188a326 in herdtools fixed an oversight which caused such
->     dependencies to be missed.
->     
->     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/manual/kernel/C-LB+mb+data.litmus b/manual/kernel/C-LB+mb+data.litmus
-> new file mode 100644
-> index 0000000..0cf9a7a
-> --- /dev/null
-> +++ b/manual/kernel/C-LB+mb+data.litmus
-> @@ -0,0 +1,27 @@
-> +C LB+mb+data
-> +(*
-> + * Result: Never
-> + *
-> + * Test whether herd7 can detect a data dependency when there is no
-> + * intermediate local variable, as in WRITE_ONCE(*x, READ_ONCE(*y)).
-> + * Commit 0f3f8188a326 in herdtools fixed an oversight which caused such
-> + * dependencies to be missed.
-
-You changed this comment!  It should have remained the way it was:
-
-+ * Versions of herd7 prior to commit 0f3f8188a326 ("[herd] Fix dependency
-+ * definition") recognize data dependencies only when they flow through
-+ * an intermediate local variable.  Since the dependency in P1 doesn't,
-+ * those versions get the wrong answer for this test.
-
-> + *)
-> +
-> +{}
-> +
-> +P0(int *x, int *y)
-> +{
-> +	int r1;
-> +
-> +	r1 = READ_ONCE(*x);
-> +	smp_mb();
-> +	WRITE_ONCE(*y, r1);
-> +}
-> +
-> +P1(int *x, int *y)
-> +{
-> +	WRITE_ONCE(*x, READ_ONCE(*y));
-> +}
-> +
-> +exists (0:r1=1)
-
-Alan
