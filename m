@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95411285E14
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D00285E1B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgJGL17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:27:59 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:59568 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgJGL16 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:27:58 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BB2F61C0BAE; Wed,  7 Oct 2020 13:27:56 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 13:27:56 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Luka Kovacic <luka.kovacic@sartura.hr>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-leds@vger.kernel.org, lee.jones@linaro.org, dmurphy@ti.com,
-        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        marek.behun@nic.cz, luka.perkov@sartura.hr, robert.marko@sartura.hr
-Subject: Re: [PATCH v4 4/6] drivers: leds: Add the iEi WT61P803 PUZZLE LED
- driver
-Message-ID: <20201007112756.GD12224@duo.ucw.cz>
-References: <20201007004901.39859-1-luka.kovacic@sartura.hr>
- <20201007004901.39859-5-luka.kovacic@sartura.hr>
+        id S1727811AbgJGL2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:28:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727741AbgJGL2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 07:28:12 -0400
+Received: from localhost (unknown [122.171.222.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBA29206F7;
+        Wed,  7 Oct 2020 11:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602070091;
+        bh=kY5VsQub9YBuVn954F0Hvvtht7ZySDXQRDsJceie9iM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dyt9iTFp03B8OwcY9z0GcHlfMNqCME8N04SBzD7esK8Pm2JFale4d/4z2ph/5yT9C
+         t80gyqdDHIz8cu62TOX2P5E5rRtJ6TKuBckoqsqUtPmRgOcnau30z5pFvCWTfnyj5V
+         jMaDPW9bG1EXTIGpYGxNRii5J8OlE3SOtaC6KdKU=
+Date:   Wed, 7 Oct 2020 16:58:07 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] dmaengine: add peripheral configuration
+Message-ID: <20201007112807.GW2968@vkoul-mobl>
+References: <20200923063410.3431917-1-vkoul@kernel.org>
+ <20200923063410.3431917-3-vkoul@kernel.org>
+ <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
+ <20201001112307.GX2968@vkoul-mobl>
+ <f063ae03-41da-480a-19ba-d061e140e4d2@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007004901.39859-5-luka.kovacic@sartura.hr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f063ae03-41da-480a-19ba-d061e140e4d2@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peter,
 
---fXStkuK2IQBfcDe+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 02-10-20, 11:48, Peter Ujfalusi wrote:
 
-Hi!
+> It depends which is best for the use case.
+> I see the metadata useful when you need to send different
+> metadata/configuration with each transfer.
+> It can be also useful when you need it seldom, but for your use case and
+> setup the dma_slave_config extended with
+> 
+> enum dmaengine_peripheral peripheral_type;
+> void *peripheral_config;
+> 
+> would be a bit more explicit.
+> 
+> I would then deal with the peripheral config in this way:
+> when the DMA driver's device_config is called, I would take the
+> parameters and set a flag that the config needs to be processed as it
+> has changed.
+> In the next prep_slave_sg() then I would prepare the TREs with the
+> config and clear the flag that the next transfer does not need the
+> configuration anymore.
+> 
+> In this way each dmaengine_slave_config() will trigger at the next
+> prep_slave_sg time configuration update for the peripheral to be
+> included in the TREs.
+> The set_config would be internal to the DMA driver, clients just need to
+> update the configuration when they need to and everything is taken care of.
 
-> Add support for the iEi WT61P803 PUZZLE LED driver.
-> Currently only the front panel power LED is supported.
->=20
-> This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+Ok I am going to drop the dmaengine_peripheral and make
+peripheral_config as as you proposed.
 
-> +static int iei_wt61p803_puzzle_led_brightness_set_blocking(struct led_cl=
-assdev *cdev,
-> +							   enum led_brightness brightness)
-> +{
-> +	struct iei_wt61p803_puzzle_led *priv =3D cdev_to_iei_wt61p803_puzzle_le=
-d(cdev);
-> +	unsigned char *resp_buf =3D priv->response_buffer;
-> +	unsigned char led_power_cmd[5] =3D {
-> +		IEI_WT61P803_PUZZLE_CMD_HEADER_START,
-> +		IEI_WT61P803_PUZZLE_CMD_LED,
-> +		IEI_WT61P803_PUZZLE_CMD_LED_POWER,
-> +		(char)IEI_LED_OFF
-> +	};
-> +	size_t reply_size;
-> +
-> +	mutex_lock(&priv->lock);
-> +	if (brightness =3D=3D LED_OFF) {
-> +		led_power_cmd[3] =3D (char)IEI_LED_OFF;
-> +		priv->led_power_state =3D LED_OFF;
-> +	} else {
-> +		led_power_cmd[3] =3D (char)IEI_LED_ON;
-> +		priv->led_power_state =3D LED_ON;
-> +	}
-> +	mutex_unlock(&priv->lock);
+So will add following to dma_slave_config:
+        void *peripheral_config;
 
-Are you sure you need the mutex?
+Driver can define the config they would like and use.
 
-> +	ret =3D devm_led_classdev_register_ext(dev, &priv->cdev, &init_data);
-> +	if (ret) {
-> +		dev_err(dev, "Could not register LED\n");
-> +		goto err_child_node;
-> +	}
-> +	return 0;
-> +err_child_node:
-> +	fwnode_handle_put(child);
-> +	return ret;
-> +}
+We can eventually look at common implementations and try to unify once
+we have more users
 
-Is the fwnode_handle_put(child); missing in non-error path somewhere?
-
-> +MODULE_LICENSE("GPL");
-
-Make sure this is consistent with file header. GPLv2+, if you can.
-
-Best regards,
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---fXStkuK2IQBfcDe+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX32mPAAKCRAw5/Bqldv6
-8qoDAJsGLSdnj7pS5+jNN106nqxPCn+sIwCgjgVV9LxT/eQ1kyFjPAxMgU23t+U=
-=NwvO
------END PGP SIGNATURE-----
-
---fXStkuK2IQBfcDe+--
+-- 
+~Vinod
