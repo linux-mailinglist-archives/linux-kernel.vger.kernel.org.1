@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F9D28663F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A400286645
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgJGRv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727293AbgJGRv5 (ORCPT
+        id S1727085AbgJGRx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:53:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37077 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727182AbgJGRx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:51:57 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06566C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:51:56 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id dt13so4203575ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:51:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FPzK5wBGWXJ9ijQIa+MDEBmpqmiIgIO3bGZX4u/BEvA=;
-        b=nJPlU34scXnjiguAFIm85t6n6hLkeHlGL7e06cFqc/xH6ug3oqr+c8thc4+lGHQ5fx
-         lKeD7w/D2ioAqMwoDiwBD6S4hyshsY7Twe954sIGgO+/iQ0Mi/yPzn2W4I5yqilFTvtK
-         v9c+EwouCRUoiD+AZDe+4a3vKd1upWDLYjNF/fAW6OpsCdzuxZHuiXYAcdXLN9wLKiGW
-         CtnwYPgmru3RPJjTBUtiUqhEAteIsddfm3Bo5/m/f3kTOoxnPIhg9+f655c+DlQJctrk
-         Te6UIWNqPBU/Lkg3oAYqY7CnP3BgTBbc1fXBLLvERFPXRemYRj95PRMVSvby7tJuuAzE
-         Jqqg==
+        Wed, 7 Oct 2020 13:53:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602093235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wkv1LonlQeT5UBNJLTQ7QmWoIbUunt1WKxKHWvxBZHU=;
+        b=Bdv0e3jhzUtMsHOVpDmbOu3XJfWG8rguRz23TgI0Xpxv3qeLF7l+gLojo+FvqXLqLOL2sV
+        9hEq5+GFWZAb+zfq9wcPEtMGtGuBS3nXn4ZsxDqXui+odsF+WV2Lrp9V3K0y/KJU5wgMc0
+        muAOfiK3u88VI2qpsju0TnWCnzxVass=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-ld5NXYNaOrKJTVrHjl44Jg-1; Wed, 07 Oct 2020 13:53:53 -0400
+X-MC-Unique: ld5NXYNaOrKJTVrHjl44Jg-1
+Received: by mail-wm1-f70.google.com with SMTP id u207so1154563wmu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:53:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FPzK5wBGWXJ9ijQIa+MDEBmpqmiIgIO3bGZX4u/BEvA=;
-        b=VNZ/9dcb8rjHYl+7DpEmFdcyFPMBUBSjU5S1wlgYNiYHrMRF4Glau14lPVqd96Ilr1
-         xqTJyQiadKAw3Tk4VszjjH3xdncpDah4v4SLRsaOdXB/X4dFaEUQ9zK46O+Q3VIUHaGm
-         kXtMi5dPfloUh5EDS9/SJey3rbMpF2y0gP61P+Ewl/CUZ1du1Nn06BgwNB03CGQdHx4I
-         SZG9sDlPsjqJSmBa7QZKKes33uy7A+LguxE2LVu2lCzpTbgdipeKKZmbYVH1UyKcKgzP
-         eoBu7+hlE4N17YsThTLxhBa1qfWZZBIPQvZ4vBGKRNOfsJdJhOmbBesXv8F75m3xsFFh
-         f/ZA==
-X-Gm-Message-State: AOAM530OPdEPevKP2NzJk1RvU59tv9bZoCuTXl7yK/NfibYaGyeUnSAQ
-        Rk4kq19T+0xcjU3/EWvHM/y/Mkv/JsMksrLITDwNlQ==
-X-Google-Smtp-Source: ABdhPJwXVJmp1Qp9M+2Fs5BW+I60lTtmt2Do0xLP53x9QM8x+a2tn+YyAAHGWKgvuYFp3ZpcVKtis4+aGvbyHP17gYk=
-X-Received: by 2002:a17:906:4306:: with SMTP id j6mr4716173ejm.523.1602093115565;
- Wed, 07 Oct 2020 10:51:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Wkv1LonlQeT5UBNJLTQ7QmWoIbUunt1WKxKHWvxBZHU=;
+        b=rFJ1JU2NvzqblpiaoMZT+hMU1xko3i6qbW9j7o/d+A+QwtPOgYrKFURwetRHHx86bl
+         kiHDn5NBF33ma7vxXXZPGzM/+D/zvuaTh1WUAnvznJDrVI4svaIGnYMhXT3sXoA3IX3q
+         tkNwz2Ndbn2fZs8NBqEUPDpeW2onqEbMrHIcdzSSNNJNTVyaYmfRf1prVtagCsuhzcW3
+         +mwf9QFEzwm6l8dUGoMw+3p4UNYI1M+O7RsSIY+AQXzNUhUpT1wtoJqRVureWj882FP+
+         vl+lwTWh5S+QZaGUp7OcJ7WLGB6x9p1oqX8WTSCnCbY+TjSfIl3WlwEJ76cFwWsGON/7
+         uI0w==
+X-Gm-Message-State: AOAM531uAmkRzzKRq4mGZUf+l70voPSAVeSZRJbDvB/ha1qBTFebZH4B
+        pXbSgjuFnzjEx8mwh5k4Z6MH1A1Y0NSOYZ4XfbaeCMXGv3kuR5n8KWtVv64cd+RiAFX+E+Xyh9J
+        0p/sGQdtjfBsFD8n9mO2xNFEm
+X-Received: by 2002:a1c:bb84:: with SMTP id l126mr4806486wmf.159.1602093231887;
+        Wed, 07 Oct 2020 10:53:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx66R/eljpuRHcwEkISzskFEnh6eFZvXspkuojvwqTEM48rNfW48Y3jx1D6geUNIh8ejoUSpQ==
+X-Received: by 2002:a1c:bb84:: with SMTP id l126mr4806458wmf.159.1602093231631;
+        Wed, 07 Oct 2020 10:53:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:d2f4:5943:190c:39ff? ([2001:b07:6468:f312:d2f4:5943:190c:39ff])
+        by smtp.gmail.com with ESMTPSA id u81sm3439550wmg.43.2020.10.07.10.53.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 10:53:50 -0700 (PDT)
+Subject: Re: [PATCH 18/22] kvm: mmu: Support disabling dirty logging for the
+ tdp MMU
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-19-bgardon@google.com>
+ <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com>
+ <CANgfPd_dQ19sZz2wzSfz7-RzdbQrfP6cYJLpSYbyNyQW6Uf09Q@mail.gmail.com>
+ <5dc72eec-a4bd-f31a-f439-cdf8c5b48c05@redhat.com>
+ <CANgfPd8Nzi2Cb3cvh5nFoaXTPbfm7Y77e4iM6-zOp5Qa3wNJBw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0dd49e95-181f-e6eb-5e3f-ed32d20c2196@redhat.com>
+Date:   Wed, 7 Oct 2020 19:53:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <CAHk-=wjSqtXAqfUJxFtWNwmguFASTgB0dz1dT3V-78Quiezqbg@mail.gmail.com>
- <160197822988.7002.13716982099938468868.tip-bot2@tip-bot2>
- <20201007111447.GA23257@zn.tnic> <20201007164536.GJ5607@zn.tnic>
-In-Reply-To: <20201007164536.GJ5607@zn.tnic>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 7 Oct 2020 10:51:42 -0700
-Message-ID: <CAPcyv4hYEbFxtRYD+nPOhbLEPTHs3JVDAtWr8Y+-hfdwPY1v1w@mail.gmail.com>
-Subject: Re: [tip: ras/core] x86, powerpc: Rename memcpy_mcsafe() to
- copy_mc_to_{user, kernel}()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-tip-commits@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        stable <stable@vger.kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANgfPd8Nzi2Cb3cvh5nFoaXTPbfm7Y77e4iM6-zOp5Qa3wNJBw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ add kbuild robot so they can add this check to their reports ]
+On 07/10/20 19:28, Ben Gardon wrote:
+>> No, that would be just another way to write the same thing.  That said,
+>> making the iteration API more complicated also has disadvantages because
+>> if get a Cartesian explosion of changes.
+> I wouldn't be too worried about that. The only things I ever found
+> worth making an iterator case for were:
+> Every SPTE
+> Every present SPTE
+> Every present leaf SPTE
 
-On Wed, Oct 7, 2020 at 9:47 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Oct 07, 2020 at 01:14:47PM +0200, Borislav Petkov wrote:
-> > On Tue, Oct 06, 2020 at 09:57:09AM -0000, tip-bot2 for Dan Williams wrote:
-> > > +   /* Copy successful. Return zero */
-> > > +.L_done_memcpy_trap:
-> > > +   xorl %eax, %eax
-> > > +.L_done:
-> > > +   ret
-> > > +SYM_FUNC_END(copy_mc_fragile)
-> > > +EXPORT_SYMBOL_GPL(copy_mc_fragile)
-> >
-> > That export together with CONFIG_MODVERSIONS causes
-> >
-> > WARNING: modpost: EXPORT symbol "copy_mc_fragile" [vmlinux] version generation failed, symbol will not be versioned.
-> >
-> > here.
-> >
-> > I don't see why tho...
->
-> It doesn't look like it is toolchain-specific and in both cases,
-> copy_mc_fragile's checksum is 0.
->
-> SUSE Leap 15.1:
->
-> Name           : binutils
-> Version        : 2.32-lp151.3.6.1
->
-> $ grep -E "(copy_mc_fragile|copy_user_generic_unrolled)" Module.symvers
-> 0x00000000      copy_mc_fragile vmlinux EXPORT_SYMBOL_GPL
-> 0xecdcabd2      copy_user_generic_unrolled      vmlinux EXPORT_SYMBOL
->
-> debian testing:
->
-> Package: binutils
-> Version: 2.35-2
->
-> $ grep -E "(copy_mc_fragile|copy_user_generic_unrolled)" Module.symvers
-> 0x00000000      copy_mc_fragile vmlinux EXPORT_SYMBOL_GPL
-> 0xecdcabd2      copy_user_generic_unrolled      vmlinux EXPORT_SYMBOL
+* (vcpu, root) * (all levels, large only)
 
-Yes, I'm seeing this too on Fedora, I'll take a look.
+We only need a small subset of these, but the naming would be more
+complex at least.
+
+Paolo
+
