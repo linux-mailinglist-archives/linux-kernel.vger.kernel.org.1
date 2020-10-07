@@ -2,167 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A562859AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6552859B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727778AbgJGHju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgJGHjr (ORCPT
+        id S1727765AbgJGHmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:42:18 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:48796 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGHmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:39:47 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AE3C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:39:45 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id n18so955123wrs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2AqrczMzdXJGGwH6lL0y5Ag3MFo0UoYjD20TIbYWHHA=;
-        b=Sws+UqMda3na0grxazZ1UlbLBQVvhhiu6dNhWZKXv3enMvB35YibvDyfhFUzaDt6fH
-         i0IcU3KgQ/+JRZNtYHZKQOFEEqRWkSitHK6s3Hn0uGwzhpBEdodMRJIy2nHrHWW/zhyo
-         TtI31JBWQoMHTf1+EtpmkH1F4qlUT+XnCn4RnGj8k05nmx8HPnOG25OqAoUq++rZ2kk8
-         cjhrH8dDIyWOsyUxSfbgXGEgCjFMsJFSfn35N3rrJuYoNMrniggQ7XfrXks1u3x/bXiP
-         0H47sRlDULqEKTr8ixihXxBTG4mEL9D2DnN9+xsFIxZnnwVrkiDVrorn1bOx/2yfJhkM
-         Dkew==
+        Wed, 7 Oct 2020 03:42:18 -0400
+Received: by mail-io1-f70.google.com with SMTP id u3so782237iow.15
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:42:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2AqrczMzdXJGGwH6lL0y5Ag3MFo0UoYjD20TIbYWHHA=;
-        b=exthe45rNDqZ2I+NNR3TxImpjiny9fiGgdKXFH6yMPlR/1vWfKgb+s2JgC05yQHxqN
-         5QdR9YHDrN/tD2IzhiGgaRa+tz8V+wbGr6txfH0vAPLQzkQUVKABdmI5HIaEXYoBTaKJ
-         zxGTnD2OuKS6WBrghp5EtwG5mOcJvGaOQCi48B5fPwHgNrJYAtkgDwwuyOYtXznu7l2p
-         YTlAGhc9p5v5SE66RydlPW4Kb2+dFccMxbIYBhcyyOxxVQvMKzo2S3fGcq+mWHZSpEK5
-         8UMKcQ5qr5n5eE4xax3tZ2SjEoxj9vYPQ2cIAd3HIGqIi/9YSl9x1P0t8RKmOXXo3PUh
-         6y6g==
-X-Gm-Message-State: AOAM533qpi2GLnanbjDA/4W6OikwMpEVAvYQeDGHg/6+M9aSEEdE1JTg
-        0zr/asKmp51eHGJtVNDXJO7G1qYI8D1RTw==
-X-Google-Smtp-Source: ABdhPJyjtCm/NSobuXsdsLBXoocPrZ/xctbDGs32ap8XM2d7TqDHBUehkZB/DCIUyDN0Vi/50goJzw==
-X-Received: by 2002:adf:fd8c:: with SMTP id d12mr1941981wrr.283.1602056383938;
-        Wed, 07 Oct 2020 00:39:43 -0700 (PDT)
-Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id p9sm1475809wmm.4.2020.10.07.00.39.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 00:39:43 -0700 (PDT)
-From:   Jann Horn <jannh@google.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Khalid Aziz <khalid.aziz@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 2/2] sparc: Check VMA range in sparc_validate_prot()
-Date:   Wed,  7 Oct 2020 09:39:32 +0200
-Message-Id: <20201007073932.865218-2-jannh@google.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-In-Reply-To: <20201007073932.865218-1-jannh@google.com>
-References: <20201007073932.865218-1-jannh@google.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=p1jF3bjaKGb+nCiTCUQ8vKDZ+1JpRqSGS18c2r055XA=;
+        b=QGYLJEwLng+V8s8AAPVsZBx2Pvuv0oyAGxbncW8eCz6NZA7CZRrTHlh7UbbVR5gXyH
+         Gk08teRVm61/CCP8JiQEifb8bcPjgvYlXpVY8D122b9ELumG+M9e7oHzTJps+IAEhdNx
+         LxgCa4dcsNh9rP6Y0M1Fbc9JNL/xFRsHGyq0Ck2m1G+1Gc9TS1l4xS5LqTCfwBm8q78k
+         7hLM8Ec4LdFRClZFpVwKJ1jkcsrPvAL0W3I0/IJMmXA7iPDh1E4klnASd2diZcESAWaO
+         luii6n4Bw1Pnr60jx05ovhCIBxcxDj33HHKhwcyjx3H7CV93/pZZp6GdAZPdEaCgNya8
+         EjDA==
+X-Gm-Message-State: AOAM531QhWoxwXmGbNpijuuNYwEpIJYq2AJ4L7O7B9wzrFPXMC2BviKq
+        TKrsP4s+nXEPgZ2gus8t5LXacN6IBR7a9FKx4Cb2gl4WCRD8
+X-Google-Smtp-Source: ABdhPJwXOtmVEWOcIEcBe/kpgu7JgPbMmLLFMbvc1tL2TVk6xAr/vicaB3JL2N7OisRGm680vCVzyYzE2nJYTJNWDCmCDddHG9Nm
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:858c:: with SMTP id f134mr1583646ilh.307.1602056535437;
+ Wed, 07 Oct 2020 00:42:15 -0700 (PDT)
+Date:   Wed, 07 Oct 2020 00:42:15 -0700
+In-Reply-To: <000000000000204d2105995c23eb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b4792b05b10fda4b@google.com>
+Subject: Re: KASAN: vmalloc-out-of-bounds Write in sys_imageblit
+From:   syzbot <syzbot+26dc38a00dc05118a4e6@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sparc_validate_prot() is called from do_mprotect_pkey() as
-arch_validate_prot(); it tries to ensure that an mprotect() call can't
-enable ADI on incompatible VMAs.
-The current implementation only checks that the VMA at the start address
-matches the rules for ADI mappings; instead, check all VMAs that will be
-affected by mprotect().
+syzbot has found a reproducer for the following issue on:
 
-(This hook is called before mprotect() makes sure that the specified range
-is actually covered by VMAs, and mprotect() returns specific error codes
-when that's not the case. In order for mprotect() to still generate the
-same error codes for mprotect(<unmapped_ptr>, <len>, ...|PROT_ADI), we need
-to *accept* cases where the range is not fully covered by VMAs.)
+HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17406d70500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=140446ac2aa637e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=26dc38a00dc05118a4e6
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14788d70500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15158ee0500000
 
-Cc: stable@vger.kernel.org
-Fixes: 74a04967482f ("sparc64: Add support for ADI (Application Data Integrity)")
-Signed-off-by: Jann Horn <jannh@google.com>
----
-compile-tested only, I don't have a Sparc ADI setup - might be nice if some
-Sparc person could test this?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+26dc38a00dc05118a4e6@syzkaller.appspotmail.com
 
- arch/sparc/include/asm/mman.h | 50 +++++++++++++++++++++--------------
- 1 file changed, 30 insertions(+), 20 deletions(-)
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in fast_imageblit drivers/video/fbdev/core/sysimgblt.c:229 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in sys_imageblit+0x117f/0x1290 drivers/video/fbdev/core/sysimgblt.c:275
+Write of size 4 at addr ffffc90009911000 by task syz-executor045/8761
 
-diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mman.h
-index e85222c76585..6dced75567c3 100644
---- a/arch/sparc/include/asm/mman.h
-+++ b/arch/sparc/include/asm/mman.h
-@@ -60,31 +60,41 @@ static inline int sparc_validate_prot(unsigned long prot, unsigned long addr,
- 	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI))
- 		return 0;
- 	if (prot & PROT_ADI) {
-+		struct vm_area_struct *vma, *next;
-+
- 		if (!adi_capable())
- 			return 0;
- 
--		if (addr) {
--			struct vm_area_struct *vma;
-+		vma = find_vma(current->mm, addr);
-+		/* if @addr is unmapped, let mprotect() deal with it */
-+		if (!vma || vma->vm_start > addr)
-+			return 1;
-+		while (1) {
-+			/* ADI can not be enabled on PFN
-+			 * mapped pages
-+			 */
-+			if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
-+				return 0;
- 
--			vma = find_vma(current->mm, addr);
--			if (vma) {
--				/* ADI can not be enabled on PFN
--				 * mapped pages
--				 */
--				if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
--					return 0;
-+			/* Mergeable pages can become unmergeable
-+			 * if ADI is enabled on them even if they
-+			 * have identical data on them. This can be
-+			 * because ADI enabled pages with identical
-+			 * data may still not have identical ADI
-+			 * tags on them. Disallow ADI on mergeable
-+			 * pages.
-+			 */
-+			if (vma->vm_flags & VM_MERGEABLE)
-+				return 0;
- 
--				/* Mergeable pages can become unmergeable
--				 * if ADI is enabled on them even if they
--				 * have identical data on them. This can be
--				 * because ADI enabled pages with identical
--				 * data may still not have identical ADI
--				 * tags on them. Disallow ADI on mergeable
--				 * pages.
--				 */
--				if (vma->vm_flags & VM_MERGEABLE)
--					return 0;
--			}
-+			/* reached the end of the range without errors? */
-+			if (addr+len <= vma->vm_end)
-+				return 1;
-+			next = vma->vm_next;
-+			/* if a VMA hole follows, let mprotect() deal with it */
-+			if (!next || next->vm_start != vma->vm_end)
-+				return 1;
-+			vma = next;
- 		}
- 	}
- 	return 1;
--- 
-2.28.0.806.g8561365e88-goog
+CPU: 0 PID: 8761 Comm: syz-executor045 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ fast_imageblit drivers/video/fbdev/core/sysimgblt.c:229 [inline]
+ sys_imageblit+0x117f/0x1290 drivers/video/fbdev/core/sysimgblt.c:275
+ drm_fb_helper_sys_imageblit+0x1c/0x180 drivers/gpu/drm/drm_fb_helper.c:767
+ bit_putcs_unaligned drivers/video/fbdev/core/bitblit.c:139 [inline]
+ bit_putcs+0x6e1/0xd20 drivers/video/fbdev/core/bitblit.c:188
+ fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1308
+ do_update_region+0x399/0x630 drivers/tty/vt/vt.c:675
+ redraw_screen+0x658/0x790 drivers/tty/vt/vt.c:1034
+ fbcon_modechanged+0x593/0x6d0 drivers/video/fbdev/core/fbcon.c:2714
+ fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:2759
+ do_fb_ioctl+0x62e/0x690 drivers/video/fbdev/core/fbmem.c:1106
+ fb_compat_ioctl+0x17c/0xc30 drivers/video/fbdev/core/fbmem.c:1311
+ __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f58549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f7f531dc EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
+RDX: 0000000020000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+
+Memory state around the buggy address:
+ ffffc90009910f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc90009910f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc90009911000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                   ^
+ ffffc90009911080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90009911100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
 
