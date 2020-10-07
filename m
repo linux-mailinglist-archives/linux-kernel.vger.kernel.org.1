@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4D2285A0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F80285A0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbgJGIFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:05:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59366 "EHLO mail.kernel.org"
+        id S1727818AbgJGIEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:04:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:39524 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGIFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:05:38 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 691F42076C;
-        Wed,  7 Oct 2020 08:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602057937;
-        bh=qSgDO/KF1PkgYuOLLQdWJ8Ae8ug3/f7wzPW5vva4H1E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yZsHLsXpN5Jwt3RVPi2o2roe4CmqWmEzWxtUjFpy6HhUqcC6FHSabw/mvacXdmP7M
-         ie6GlFzTrw/DAjNeJdQz30TZAW2X2ZmDwBKKtg4gpvaTVhlh4ee6qDPd5UzTwo/Rq5
-         nWNh4bnHthFMgoxuP02WPmnTY54gdbOjD9vKYXGk=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kQ4S7-000I86-BD; Wed, 07 Oct 2020 09:05:35 +0100
+        id S1727804AbgJGIEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:04:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97E28113E;
+        Wed,  7 Oct 2020 01:04:37 -0700 (PDT)
+Received: from e119603-lin.cambridge.arm.com (unknown [10.57.50.50])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 231963F66B;
+        Wed,  7 Oct 2020 01:04:36 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 09:06:01 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        robh@kernel.org, satyakim@qti.qualcomm.com,
+        etienne.carriere@linaro.org
+Subject: Re: [PATCH 4/4] dt-bindings: arm: add support for SCMI Regulators
+Message-ID: <20201007080601.GA21759@e119603-lin.cambridge.arm.com>
+References: <20201005222623.1123-1-cristian.marussi@arm.com>
+ <20201005222623.1123-5-cristian.marussi@arm.com>
+ <20201006105922.GC5259@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 07 Oct 2020 09:05:34 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 1/4] genirq/irqdomain: Allow partial trimming of
- irq_data hierarchy
-In-Reply-To: <87eemb6qdj.fsf@nanos.tec.linutronix.de>
-References: <20201006101137.1393797-1-maz@kernel.org>
- <20201006101137.1393797-2-maz@kernel.org>
- <87eemb6qdj.fsf@nanos.tec.linutronix.de>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <10788c0d08fccbcbc1ac590a855e70d3@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006105922.GC5259@sirena.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-06 21:39, Thomas Gleixner wrote:
-> On Tue, Oct 06 2020 at 11:11, Marc Zyngier wrote:
->> It appears that some HW is ugly enough that not all the interrupts
->> connected to a particular interrupt controller end up with the same
->> hierarchy repth (some of them are terminated early). This leaves
+Hi Mark
+
+thanks for reviewing this series.
+ 
+On Tue, Oct 06, 2020 at 11:59:22AM +0100, Mark Brown wrote:
+> On Mon, Oct 05, 2020 at 11:26:23PM +0100, Cristian Marussi wrote:
 > 
->   depth?
+> > +An SCMI Regulator is permanently bound to a well defined SCMI Voltage Domain,
+> > +and should be always positioned as a root regulator.
+> > +It does not support negative voltages nor any current operation.
 > 
->> the irqchip hacker with only two choices, both equally bad:
->> 
->> - create discrete domain chains, one for each "hierarchy depth",
->>   which is very hard to maintain
->> 
->> - create fake hierarchy levels for the shallow paths, leading
->>   to all kind of problems (what are the safe hwirq values for these
->>   fake levels?)
->> 
->> Instead, let's offer the possibility to cut short a single interrupt
+> Support for negative voltages is an implementation detail of Linux, IIRC
+> there's nothing in the generic regulator binding preventing it and even
+> if there were updates to the generic binding are what are relevant here
+> - they could start working with no updates to this binding.
 > 
-> s/let's offer/implement/
+> > +Optional properties:
+> > + - regulator-min-microvolt: when defined should be non-negative.
+> > + - regulator-max-microvolt: when defined should be non-negative.
+> 
+> These are covered by the generic regulator binding, no need to duplicate
+> the documentation here.
 
-Thanks for that, I'll fix it locally.
+Right I'll drop this references to negative voltages in the bindings.
 
-[...]
+Anyway, the underlying SCMI Voltage Domain protocol do support negatives
+and just expose a negative_volts_allowed flags in the Voltage descriptor
+if the domain is advertised by fw as supporting negatives.
 
-> This is butt ugly, really. Especially the use case where the tegra PMC
-> domain removes itself from the hierarchy from .alloc()
+Based on that, since the regulator framework as of now cannot report
+negative voltages (since the .get ops return an int which is used also
+for reporting negative error codes), the SCMI regulator driver in this
+series just checks for that flag on every found Voltage Domain and refuse
+to handle it like:
 
-I don't disagree at all. It is both horrible and dangerous.
+if (vinfo->negative_volts_allowed) {
++		dev_warn(dev, "Negative voltages NOT supported...skip %s\n",
++			 sreg->of_node->full_name);
++		return -EOPNOTSUPP;
++	}
 
-My preference would have been to split the PMC domain into discrete
-domains, each one having having its own depth. But that's incredibly
-hard to express in DT, and would break the combination of old/new
-DT and kernel.
+So the driver itself will need to be patched in this regards the day the
+regulator framework should support negatives, it won't just work.
+(but I suppose this is not a problem since it will need to be changed anyway
+to use properly this possible new API handling negatives.)
 
-> That said, I don't have a better idea either. Sigh...
+Thanks
 
-A (very minor) improvement would be to turn the trim call in the PMC 
-driver into
-a flag set in the first invalid irq_data structure, and let 
-__irq_domain_alloc_irqs()
-do the dirty work.
+Cristian
 
-Still crap, but at least would prevent some form of abuse. Thoughts?
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
