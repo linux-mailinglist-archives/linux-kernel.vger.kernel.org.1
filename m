@@ -2,182 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228C12860FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0310B2860FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgJGOMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
+        id S1728555AbgJGOPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728467AbgJGOMR (ORCPT
+        with ESMTP id S1728265AbgJGOPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:12:17 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3558BC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 07:12:17 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 33so2295324edq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:12:17 -0700 (PDT)
+        Wed, 7 Oct 2020 10:15:04 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE184C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 07:15:02 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id x1so2367714eds.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:15:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YFB+tdyXOtCPNmNlbyeGl25fBeChj1S+VT6tzzLEZ78=;
-        b=d8LN7dGO3Ag/inP5rvlWv5j43byrHe3f2u6a2r5SiIA/iuBN1VvbkR0plJSfSgqBlh
-         Xu6ol8DY8sIaLVYX8C/ptKWjmAW3b06V+W6maw4cEpyWOcxb/M9F7iw98CO5YNTALD0W
-         RHBCozGcvxlKPGX6uoYJpCQxNytt1WigBKfUE=
+        bh=MIy1jMlxCOJ0Y5mtMw96kWf8MP2ZqHwIF09OmCxHd/s=;
+        b=WCPWazuYKodAut6Dvw8x3qNRztwfkOsar0G2liazhPuQzvDvjg7Jukxi9uz54DhGNr
+         Sf7OZr+4DI1+Tkas8S2Bif5F8O4CRhY4MehqWbqnsq3bOrD4HTjd/kb1acw5Tqguoqtv
+         Rllh5USbqhULrd8U2UrO1YzU9hBKuL+LRjrkNln91SE0GleTS8gS/v2OlBk2x+kARzLU
+         wB8a+PXnZkS5+d9nkv6+TUW5EH+GjQb1mCBjM/+WA55NTw6KPCP5yQvlsnCQ5UlPIr30
+         jZl7ZGzHonK7hTlTbseBMPmmbTE23a89djvc1Z00KXGwgfUCf7c3uztATm1ENiA0CjV1
+         m8Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YFB+tdyXOtCPNmNlbyeGl25fBeChj1S+VT6tzzLEZ78=;
-        b=giR4YYf5Ifox8BNnBn4/ked50ZNk9aaJvqiSaMzSAOBHKAbEC5RJJPhDbb6eI5vikW
-         QOW6fllHDoeK9PD9lq87pFOBlS76uWJay/R7D57zhM0ywZ4pXcJybcMw7cl+y2ey33Ws
-         68Qz/Bm5nA/LIj9EtGghITWI0Gx/2twEHA8S49P8+eCO1yLt2CuQMWWrX1KJIhQiZ8oz
-         O7SKx7TqQuAf367lQvXpaYhw/sj2NZph31M1HjKUkwEk8D0bKm4enkuHc21Yvb2AE/R0
-         AcjfrSAcYomIhzsO1+MoKltKAgZKrEpDRMfAdbRDca5cJpQge4kjyvYxE0S2yGNWFI0l
-         SD1A==
-X-Gm-Message-State: AOAM533wLMBf4q0NbgHpGkvD3M7rTeusPz0+yv/ianzq1o1ga6bIH6PF
-        nWQ4ZQPf56Z+USdekhG71ox5oiNZ8xiB7w==
-X-Google-Smtp-Source: ABdhPJyySoCBiF9GnQSPM30BSpSehuI6nB7PEEAQlRcx5gX730g1jFusIOWoKruyIMiEZdF6WpBAcw==
-X-Received: by 2002:a05:6402:44c:: with SMTP id p12mr3664368edw.157.1602079934664;
-        Wed, 07 Oct 2020 07:12:14 -0700 (PDT)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id j22sm1408180edp.77.2020.10.07.07.12.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 07:12:13 -0700 (PDT)
-Received: by mail-wm1-f47.google.com with SMTP id d81so2491191wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 07:12:12 -0700 (PDT)
-X-Received: by 2002:a1c:8057:: with SMTP id b84mr3494264wmd.116.1602079932144;
- Wed, 07 Oct 2020 07:12:12 -0700 (PDT)
+        bh=MIy1jMlxCOJ0Y5mtMw96kWf8MP2ZqHwIF09OmCxHd/s=;
+        b=BAUEK8ODklESM3NOXcZTDidJwnO05mdsgOIpKuCyh9nvJAa4cDOlsFYx2u6nJKVuGP
+         moGxuwZipWCwWCCWiUp1ScMrTeLa45mfFqjbCNRkWjLGAtRCCU6bp0+6AJXtlCNu7mPD
+         rDT7LfH+1Mzgd1kDgeGxpB+CROH4XV5Moav8VsNjX0PSDQgQRA1zSpCr/D0j2BzIhx02
+         utYsnDxD86mHjtlMKI0JxEGnHYl/NsrJFX3QHBJc9MeQNnJAeKjy3wJv2FDFqN6eWrrm
+         kT5Lku2G9h2CZvrilZQZLaM3Xah+DMdAW9R1k0GA7OS8WU5JBa663yv7ahPfSYlaB00R
+         p8cw==
+X-Gm-Message-State: AOAM5333Ns9jtrvwnMGm+fIJOQLWyFz4g7r35+/MKPRa1qupdG9T4mJU
+        /g4NZJj57GXAP5yh0+VFPCtG/SzRgntl2tLz4xaTYQ==
+X-Google-Smtp-Source: ABdhPJwR/EYROZuqARz6G7n4XpMFS+ALLZjqv14b7utyykG9ti0A+TvzrhTUupRkmJLlxrAGOJoyhi7AI4L2KuqW7xA=
+X-Received: by 2002:a05:6402:b0e:: with SMTP id bm14mr3934250edb.259.1602080101068;
+ Wed, 07 Oct 2020 07:15:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
- <20201002233118.GM9916@ziepe.ca> <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
- <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
- <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com> <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
- <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com> <20201007124409.GN5177@ziepe.ca>
- <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
- <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com>
- <20201007130610.GP5177@ziepe.ca> <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
- <CAKMK7uFSTrULTE-o+vHU-81dJpKJ5cHAAb8qkpQtcz6KrhvPzg@mail.gmail.com>
-In-Reply-To: <CAKMK7uFSTrULTE-o+vHU-81dJpKJ5cHAAb8qkpQtcz6KrhvPzg@mail.gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 7 Oct 2020 16:11:59 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5ArKWR8f4XO73UB7tyeq3ZCYJb4OD_K=2hxOgputRY=Rw@mail.gmail.com>
-Message-ID: <CAAFQd5ArKWR8f4XO73UB7tyeq3ZCYJb4OD_K=2hxOgputRY=Rw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
+References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-3-elver@google.com>
+ <CAG48ez3OKj5Y8BURmqU9BAYWFJH8E8B5Dj9c0=UHutqf7r3hhg@mail.gmail.com> <CANpmjNP6mukCZ931_aW9dDqbkOyv=a2zbS7MuEMkE+unb7nYeg@mail.gmail.com>
+In-Reply-To: <CANpmjNP6mukCZ931_aW9dDqbkOyv=a2zbS7MuEMkE+unb7nYeg@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 7 Oct 2020 16:14:34 +0200
+Message-ID: <CAG48ez0sYZof_PDdNrqPUnNOCz1wcauma+zWJbF+VdUuO6x31w@mail.gmail.com>
+Subject: Re: [PATCH v4 02/11] x86, kfence: enable KFENCE for x86
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 4:09 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
->
-> On Wed, Oct 7, 2020 at 3:34 PM Tomasz Figa <tfiga@chromium.org> wrote:
-> >
-> > On Wed, Oct 7, 2020 at 3:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Wed, Oct 7, 2020 at 3:09 PM Marco Elver <elver@google.com> wrote:
+> On Fri, 2 Oct 2020 at 07:45, Jann Horn <jannh@google.com> wrote:
+> > On Tue, Sep 29, 2020 at 3:38 PM Marco Elver <elver@google.com> wrote:
+> > > Add architecture specific implementation details for KFENCE and enable
+> > > KFENCE for the x86 architecture. In particular, this implements the
+> > > required interface in <asm/kfence.h> for setting up the pool and
+> > > providing helper functions for protecting and unprotecting pages.
 > > >
-> > > On Wed, Oct 07, 2020 at 02:58:33PM +0200, Daniel Vetter wrote:
-> > > > On Wed, Oct 7, 2020 at 2:48 PM Tomasz Figa <tfiga@chromium.org> wrote:
-> > > > >
-> > > > > On Wed, Oct 7, 2020 at 2:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > > >
-> > > > > > On Wed, Oct 07, 2020 at 02:33:56PM +0200, Marek Szyprowski wrote:
-> > > > > > > Well, it was in vb2_get_vma() function, but now I see that it has been
-> > > > > > > lost in fb639eb39154 and 6690c8c78c74 some time ago...
-> > > > > >
-> > > > > > There is no guarentee that holding a get on the file says anthing
-> > > > > > about the VMA. This needed to check that the file was some special
-> > > > > > kind of file that promised the VMA layout and file lifetime are
-> > > > > > connected.
-> > > > > >
-> > > > > > Also, cloning a VMA outside the mm world is just really bad. That
-> > > > > > would screw up many assumptions the drivers make.
-> > > > > >
-> > > > > > If it is all obsolete I say we hide it behind a default n config
-> > > > > > symbol and taint the kernel if anything uses it.
-> > > > > >
-> > > > > > Add a big comment above the follow_pfn to warn others away from this
-> > > > > > code.
-> > > > >
-> > > > > Sadly it's just verbally declared as deprecated and not formally noted
-> > > > > anyway. There are a lot of userspace applications relying on user
-> > > > > pointer support.
-> > > >
-> > > > userptr can stay, it's the userptr abuse for zerocpy buffer sharing
-> > > > which doesn't work anymore. At least without major surgery (you'd need
-> > > > an mmu notifier to zap mappings and recreate them, and that pretty
-> > > > much breaks the v4l model of preallocating all buffers to make sure we
-> > > > never underflow the buffer queue). And static mappings are not coming
-> > > > back I think, we'll go ever more into the direction of dynamic
-> > > > mappings and moving stuff around as needed.
-> > >
-> > > Right, and to be clear, the last time I saw a security flaw of this
-> > > magnitude from a subsystem badly mis-designing itself, Linus's
-> > > knee-jerk reaction was to propose to remove the whole subsystem.
-> > >
-> > > Please don't take status-quo as acceptable, V4L community has to work
-> > > to resolve this, uABI breakage or not. The follow_pfn related code
-> > > must be compiled out of normal distro kernel builds.
+> > > For x86, we need to ensure that the pool uses 4K pages, which is done
+> > > using the set_memory_4k() helper function.
+> > [...]
+> > > diff --git a/arch/x86/include/asm/kfence.h b/arch/x86/include/asm/kfence.h
+> > [...]
+> > > +/* Protect the given page and flush TLBs. */
+> > > +static inline bool kfence_protect_page(unsigned long addr, bool protect)
+> > > +{
+> > > +       unsigned int level;
+> > > +       pte_t *pte = lookup_address(addr, &level);
+> > > +
+> > > +       if (!pte || level != PG_LEVEL_4K)
 > >
-> > I think the userptr zero-copy hack should be able to go away indeed,
-> > given that we now have CMA that allows having carveouts backed by
-> > struct pages and having the memory represented as DMA-buf normally.
+> > Do we actually expect this to happen, or is this just a "robustness"
+> > check? If we don't expect this to happen, there should be a WARN_ON()
+> > around the condition.
 >
-> Not sure whether there's a confusion here: dma-buf supports memory not
-> backed by struct page.
->
+> It's not obvious here, but we already have this covered with a WARN:
+> the core.c code has a KFENCE_WARN_ON, which disables KFENCE on a
+> warning.
 
-That's new to me. The whole API relies on sg_tables a lot, which in
-turn rely on struct page pointers to describe the physical memory.
+So for this specific branch: Can it ever happen? If not, please either
+remove it or add WARN_ON(). That serves two functions: It ensures that
+if something unexpected happens, we see a warning, and it hints to
+people reading the code "this isn't actually expected to happen, you
+don't have to wrack your brain trying to figure out for which scenario
+this branch is intended".
 
-> > How about the regular userptr use case, though?
+> > > +               return false;
+> > > +
+> > > +       if (protect)
+> > > +               set_pte(pte, __pte(pte_val(*pte) & ~_PAGE_PRESENT));
+> > > +       else
+> > > +               set_pte(pte, __pte(pte_val(*pte) | _PAGE_PRESENT));
 > >
-> > The existing code resolves the user pointer into pages by following
-> > the get_vaddr_frames() -> frame_vector_to_pages() ->
-> > sg_alloc_table_from_pages() / vm_map_ram() approach.
-> > get_vaddr_frames() seems to use pin_user_pages() behind the scenes if
-> > the vma is not an IO or a PFNMAP, falling back to follow_pfn()
-> > otherwise.
+> > Hmm... do we have this helper (instead of using the existing helpers
+> > for modifying memory permissions) to work around the allocation out of
+> > the data section?
 >
-> Yeah pin_user_pages is fine, it's just the VM_IO | VM_PFNMAP vma that
-> don't work.
-
-Ack.
-
-> >
-> > Is your intention to drop get_vaddr_frames() or we could still keep
-> > using it and if vec->is_pfns is true:
-> > a) if CONFIG_VIDEO_LEGACY_PFN_USERPTR is set, taint the kernel
-> > b) otherwise just undo and fail?
+> I just played around with using the set_memory.c functions, to remind
+> myself why this didn't work. I experimented with using
+> set_memory_{np,p}() functions; set_memory_p() isn't implemented, but
+> is easily added (which I did for below experiment). However, this
+> didn't quite work:
+[...]
+> For one, smp_call_function_many_cond() doesn't want to be called with
+> interrupts disabled, and we may very well get a KFENCE allocation or
+> page fault with interrupts disabled / within interrupts.
 >
-> I'm typing that patch series (plus a pile more) right now.
+> Therefore, to be safe, we should avoid IPIs.
 
-Cool, thanks!
+set_direct_map_invalid_noflush() does that, too, I think? And that's
+already implemented for both arm64 and x86.
 
-We also need to bring back the vma_open() that somehow disappeared
-around 4.2, as Marek found.
+> It follows that setting
+> the page attribute is best-effort, and we can tolerate some
+> inaccuracy. Lazy fault handling should take care of faults after we
+> set the page as PRESENT.
+[...]
+> > Shouldn't kfence_handle_page_fault() happen after prefetch handling,
+> > at least? Maybe directly above the "oops" label?
+>
+> Good question. AFAIK it doesn't matter, as is_kfence_address() should
+> never apply for any of those that follow, right? In any case, it
+> shouldn't hurt to move it down.
 
-Best regards,
-Tomasz
+is_prefetch() ignores any #PF not caused by instruction fetch if it
+comes from kernel mode and the faulting instruction is one of the
+PREFETCH* instructions. (Which is not supposed to happen - the
+processor should just be ignoring the fault for PREFETCH instead of
+generating an exception AFAIK. But the comments say that this is about
+CPU bugs and stuff.) While this is probably not a big deal anymore
+partly because the kernel doesn't use software prefetching in many
+places anymore, it seems to me like, in principle, this could also
+cause page faults that should be ignored in KFENCE regions if someone
+tries to do PREFETCH on an out-of-bounds array element or a dangling
+pointer or something.
