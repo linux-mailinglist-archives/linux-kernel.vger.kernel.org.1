@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966352865E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6033D2865E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728450AbgJGR2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        id S1728491AbgJGR2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbgJGR2l (ORCPT
+        with ESMTP id S1728460AbgJGR2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:28:41 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B61C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:28:41 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id u6so3191115iow.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:28:41 -0700 (PDT)
+        Wed, 7 Oct 2020 13:28:50 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC3BC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:28:50 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u24so1814307pgi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gzog+3s7evIu2Oc1rtwTUl+9x6mD7V8+jB/FerDJf6g=;
-        b=nX/4Q/YGjmebBLp4gLg8J2yprcJQilHAS6qA1FHs5eLbDhe6iwzEYvpmsJs/PP94Kp
-         GCzwHPrwqADg8+WqzbUbeFeB4eX4KHZvo0buxluUokPbtybLhx8dhFMWlcQAd4CKe10t
-         26nG5444aSaobp5nO22ausRmcHQy//aglJ0fRKo9ARJvEW1Yrw8Ky7WccdZpsJuYm3e/
-         xQS3dc0ny8dD/YDLaIBmKmsuC02TSE/s94jTazNbKJ4VAxjuvrFEJSzCQ/Eg9TGtG3ES
-         0m7EI+PaTupmbB5L+0UtEw9R9srPbyfyOmGMXNBfZhOTPadOU/ZYwAIGwrkLzEgvL1mu
-         hmWA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xZ+v2OuQAePhXqVi/kdiZzONG4PhtaojmuzF5SZ8xdQ=;
+        b=jjVdZZJO2VKrU5vGwGaKENvwebjy9U4YrvQZuQh867KzqulQ5YAGG2aGsnvOJ7SNwL
+         67LhMH6thzslOn+c6LItKcOFZ+dBQk9LTKjj+fPA5sW9cednh50SxaSbstDyu+8uyh/e
+         jXLbDrUk/RYwNjhbeYGqQt4xxOvM7AzzXokt8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gzog+3s7evIu2Oc1rtwTUl+9x6mD7V8+jB/FerDJf6g=;
-        b=t9jdUsffsm/5WO/sEk77k69KUNKe2K2iLminz84a2xb78t8HuRydICtrsO2Ok316QG
-         EyhWe1q6amK60nKM8LGVeoh4EnljN9CKk6Li43EGV3/esI27jteiwVYj/f1FNHE7i1W5
-         Bi+CxZYHe12xo0O8rN7vOr66zuA3CPHabzH+bTI5lT6k81OhB1isud2TUZQuolRHRobY
-         VwcioN9YxGlSi8ZYWxOclkH5g3iXtu8d1xWvucuBzOnLYcSjZtZvuHbl0kef/NPh7v2G
-         sLL1TRuv9iwZFZI8QAKPc4WQx2idhUcuXqjvLXgGINJEGT1Uh5kRlxe6jJrtBIQq1nju
-         /OAw==
-X-Gm-Message-State: AOAM533SMILGQ61mIZrD+H6BbPOThmXlOiUbZ7QnacWp7cm0ALSVLrKT
-        GvNwTNnd3cYLhfliJ16f/asmefXgZrOSKATxJZkPZQ==
-X-Google-Smtp-Source: ABdhPJx+5QZ/4AZZSBIqs4Xz/+pawpkCt8kkhCfoEeqQkigGdJRmMdYgOotYq/Tj/ADhEivC6xDJq+FADqbvmAySDHU=
-X-Received: by 2002:a02:2ac1:: with SMTP id w184mr3827019jaw.44.1602091720153;
- Wed, 07 Oct 2020 10:28:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xZ+v2OuQAePhXqVi/kdiZzONG4PhtaojmuzF5SZ8xdQ=;
+        b=Ijsi3I+whDQ4c0oF5cW4LfDWOUMcDZ+pkTmpGb2LPu0JzSHeiVdE8+bZDs1GujS9rx
+         kuC1kpRTz+EtvSU00hebRCYZMrLa5OCYDlnXpfExZSiRcagpAVuSPofmZy4w6RXbgjjG
+         m/E2EezVHxturt9RySZrl2QQS4Pu2xnoIYbH1Gwk1dkh5fOJ8S4GHl2TvYCoJzlIh1n9
+         R2fI+RD/b5OLE+TMVGaJ1F7+NbM4SJ6xbHBtmWND/lvAO/IsWNalq4NY1DYOXE1ApjFx
+         fvanukTj/nKJB0m9YuaIvBG9muFEexKTKBC2LH1aiTU39Wpobcyz0raN05Q5Jzvlhar+
+         iurg==
+X-Gm-Message-State: AOAM532dbIySWd7NAgPnQJpRF/OZmJqKfagmH836DcHgWkp+UL7U9noO
+        eymAwaymYVnc3L2Xp8RVUyW+vw==
+X-Google-Smtp-Source: ABdhPJw9NREkTfYOdNETDhW2xqODkOGKkUImfKXew2xQ2izoRdSgSn+1QXOSornth1rL61DMyAkEJQ==
+X-Received: by 2002:a63:551d:: with SMTP id j29mr3965988pgb.144.1602091729994;
+        Wed, 07 Oct 2020 10:28:49 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id o62sm3991891pfb.172.2020.10.07.10.28.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 10:28:49 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 10:28:47 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201007172847.GB620323@google.com>
+References: <CAL_JsqLWmBCjrbs2D-d+9naJAKkNhDAbmRtqvCDY8jv=L_q-xA@mail.gmail.com>
+ <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
+ <20201006004510.GD4135817@google.com>
+ <20201006141820.GA416765@rowland.harvard.edu>
+ <20201006165957.GA191572@google.com>
+ <20201006171524.GB423499@rowland.harvard.edu>
+ <20201006192536.GB191572@google.com>
+ <20201007010023.GA438733@rowland.harvard.edu>
+ <20201007160336.GA620323@google.com>
+ <20201007163838.GA457977@rowland.harvard.edu>
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-19-bgardon@google.com>
- <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com> <CANgfPd_dQ19sZz2wzSfz7-RzdbQrfP6cYJLpSYbyNyQW6Uf09Q@mail.gmail.com>
- <5dc72eec-a4bd-f31a-f439-cdf8c5b48c05@redhat.com>
-In-Reply-To: <5dc72eec-a4bd-f31a-f439-cdf8c5b48c05@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 7 Oct 2020 10:28:29 -0700
-Message-ID: <CANgfPd8Nzi2Cb3cvh5nFoaXTPbfm7Y77e4iM6-zOp5Qa3wNJBw@mail.gmail.com>
-Subject: Re: [PATCH 18/22] kvm: mmu: Support disabling dirty logging for the
- tdp MMU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201007163838.GA457977@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 10:21 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 07/10/20 18:30, Ben Gardon wrote:
-> >> I'm starting to wonder if another iterator like
-> >> for_each_tdp_leaf_pte_root would be clearer, since this idiom repeats
-> >> itself quite often.  The tdp_iter_next_leaf function would be easily
-> >> implemented as
-> >>
-> >>         while (likely(iter->valid) &&
-> >>                (!is_shadow_present_pte(iter.old_spte) ||
-> >>                 is_last_spte(iter.old_spte, iter.level))
-> >>                 tdp_iter_next(iter);
-> > Do you see a substantial efficiency difference between adding a
-> > tdp_iter_next_leaf and building on for_each_tdp_pte_using_root with
-> > something like:
-> >
-> > #define for_each_tdp_leaf_pte_using_root(_iter, _root, _start, _end)    \
-> >         for_each_tdp_pte_using_root(_iter, _root, _start, _end)         \
-> >                 if (!is_shadow_present_pte(_iter.old_spte) ||           \
-> >                     !is_last_spte(_iter.old_spte, _iter.level))         \
-> >                         continue;                                       \
-> >                 else
-> >
-> > I agree that putting those checks in a wrapper makes the code more concise.
-> >
->
-> No, that would be just another way to write the same thing.  That said,
-> making the iteration API more complicated also has disadvantages because
-> if get a Cartesian explosion of changes.
+On Wed, Oct 07, 2020 at 12:38:38PM -0400, Alan Stern wrote:
+> On Wed, Oct 07, 2020 at 09:03:36AM -0700, Matthias Kaehlcke wrote:
+> > On Tue, Oct 06, 2020 at 09:00:23PM -0400, Alan Stern wrote:
+> > > On Tue, Oct 06, 2020 at 12:25:36PM -0700, Matthias Kaehlcke wrote:
+> > > > On Tue, Oct 06, 2020 at 01:15:24PM -0400, Alan Stern wrote:
+> > > > > You don't need a platform device or a new driver to do this.  The code 
+> > > > > can go in the existing hub driver.
+> > > > 
+> > > > Maybe. IIUC currently USB drivers don't support/use suspend_late. Could that
+> > > > be added? It would simplify matters, otherwise all hubs need to know their
+> > > > peers and check in suspend if they are the last hub standing, only then the
+> > > > power can be switched off. It would be simpler if a single instance (e.g. the
+> > > > hub with the DT entries) is in control.
+> > > 
+> > > Adding suspend_late would be a little painful.  But you don't really 
+> > > need it; you just need to make the "master" hub wait for its peer to 
+> > > suspend, which is easy to do.
+> > 
+> > Ok, I wasn't sure if the hubs suspend asynchronously from each other. If they
+> > do it should indeed not be a problem to have the "master" wait for its peers.
+> 
+> Well, order of suspending is selectable by the user.  It can be either 
+> asynchronous or reverse order of device registration, which might pose a 
+> problem.  We don't know in advance which of two peer hubs will be 
+> registered first.  It might be necessary to introduce some additional 
+> explicit synchronization.
 
-I wouldn't be too worried about that. The only things I ever found
-worth making an iterator case for were:
-Every SPTE
-Every present SPTE
-Every present leaf SPTE
+I'm not sure we are understanding each other completely. I agree that
+synchronization is needed to have the primary hub wait for its peers, that
+was one of my initial concerns.
 
-And really there aren't many cases that use the middle one.
+Lets use an example to clarify my secondary concern: a hub chip provides a
+USB 3 and a USB 2 hub, lets say the USB 3 hub is the primary.
 
->
-> Regarding the naming, I'm leaning towards
->
->     tdp_root_for_each_pte
->     tdp_vcpu_for_each_pte
->
-> which is shorter than the version with "using" and still clarifies that
-> "root" and "vcpu" are the thing that the iteration works on.
+Here is some pseudo-code for the suspend function:
 
-That sounds good to me. I agree it's similarly clear.
+hub_suspend(hub)
+  ...
 
->
-> Paolo
->
+  if (hub->primary) {
+    device_pm_wait_for_dev(hub->peer)
+
+    // check for connected devices and turn regulator off
+  }
+
+  ...
+}
+
+What I meant with 'asynchronous suspend' in this context:
+
+Can hub_suspend() of the peer hub be executed (asynchronously) while the
+primary is blocked on device_pm_wait_for_dev(), or would the primary wait
+forever if the peer hub isn't suspended yet?
+
+> > > And hubs would need to know their peers in any case, because you have to
+> > > check if any devices attached to the peer have wakeup enabled.
+> > 
+> > My concern was about all hubs (including 'secondaries') having to know their
+> > peers and check on each other, in the scenario we are now talking about only
+> > the "master" hub needs to know and check on its peers, which is fine.
+> 
+> Not all hubs would need this.  Only ones marked in DT as having a power 
+> regulator.
+
+Sure, as long as the primary (with a power regulator) can wait for its peers
+to suspend without the risk of blocking forever (my doubt above).
