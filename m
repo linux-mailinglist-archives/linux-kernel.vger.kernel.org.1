@@ -2,148 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BBA285E58
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9600A285E5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgJGLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgJGLlc (ORCPT
+        id S1727946AbgJGLma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:42:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726096AbgJGLma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:41:32 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A72C061755;
-        Wed,  7 Oct 2020 04:41:31 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id t12so1975774ilh.3;
-        Wed, 07 Oct 2020 04:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N17VnEsIu34Gcj2d92AACCPEjaWw1N9Hkf92JAEgEGA=;
-        b=ibADa4c8zVbJ1vvahEOvd4VRx65VbYoBfkSfKuyVM/p90Nvkf4BstfrPncVCec4iSP
-         aLPjZYqG216hpe9L4hi07Q7o0F+X6Ay/6qFBNyQBG/TzpdJeIQPLMp195OVEN1y9PDM5
-         IAw+u+ZrPdUvCwZ2qZnyf6SnlbMU/A29lWG70=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N17VnEsIu34Gcj2d92AACCPEjaWw1N9Hkf92JAEgEGA=;
-        b=HMubA+jPadV0bPqmRbvbFfh0IRs7xE3CZ1dVqIFKZrxkfZhdbTY097+kiPHakCYqsT
-         o1QIex1PakqLHnIO9YmiAbWMPvEz8L8WbQiXGd2NrhQqqegi9Ihoc0ioX6vrRhVi434J
-         L31wivSAPtwLhpI6Jf8besPxrRLJDHfGuXvflTUMhgR1HdQQlIvUJjUoiTct6L4eDGcK
-         Gcp2krtOSZYS2eKnkm8xLzI0TeA436p5CrPhQhIrl7I5INExMCFzco6siV7VV5GfuGH3
-         1SejYg61NZ2WCHiHnw2Kqv9EJU4XjhqFJ/2HD7gUdIBGGECyOEMGK6d661qqxJoow3BB
-         0OTw==
-X-Gm-Message-State: AOAM531+CKzf/5+ruwl5CeP1ANEKPgN7xdqTd/HGIBaIv5ZtMw52vdI7
-        NPWCdbSIpTApgZ8f2ACGZOpbhnaDz+oPGcrqi/c=
-X-Google-Smtp-Source: ABdhPJz/r+ehlkOPdveObjrNrhT5nYGNLW4liBrZy4oEKvHxdCFDeWOtreukGOby4kV2yT+CQWXcCXIWhuxEs+X12ao=
-X-Received: by 2002:a05:6e02:66b:: with SMTP id l11mr2352022ilt.14.1602070891264;
- Wed, 07 Oct 2020 04:41:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200929131807.15378-1-tmaimon77@gmail.com>
-In-Reply-To: <20200929131807.15378-1-tmaimon77@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 7 Oct 2020 11:41:19 +0000
-Message-ID: <CACPK8Xch0KJW80-ehYxaY=p-OYtx2KWUkMAn8oE_FiqAA-y5yg@mail.gmail.com>
-Subject: Re: [PATCH v8 0/5] arm: dts: add and modify device node in NPCM7xx
- device tree
-To:     Tomer Maimon <tmaimon77@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>, arm <arm@kernel.org>,
-        SoC Team <soc@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        Wed, 7 Oct 2020 07:42:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602070949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q0aMpdtHmjtiVuvPnkusn1q5PI8l4NX+s9BFMDv7+0A=;
+        b=AiwgXf+BO+qK4m6GR0XwukGme9u+hOui4F23Z9ytXS/8yYQG02z/TbmaO4K5hqZMj631k+
+        9XLD8DeQkr9VkruGTcSKGyguzY35zcdkrD2b0QPcYpS0C8Ug/r2hQe6C1iccNKpebcxGJH
+        bIeglpPyjCwJ52YETrRkJZv1/jbVYl0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-0tlkMBAAO4eOAVGZCJbuJg-1; Wed, 07 Oct 2020 07:42:25 -0400
+X-MC-Unique: 0tlkMBAAO4eOAVGZCJbuJg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20527100746D;
+        Wed,  7 Oct 2020 11:42:23 +0000 (UTC)
+Received: from krava (unknown [10.40.195.148])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 570A25C1C4;
+        Wed,  7 Oct 2020 11:42:20 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 13:42:19 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Mark Rutland <mark.rutland@arm.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Wei Li <liwei391@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: Re: [PATCH] perf stat: Fix segfault on armv8_pmu events
+Message-ID: <20201007114219.GD249615@krava>
+References: <20201007081311.1831003-1-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007081311.1831003-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arm/SoC maintainers,
+On Wed, Oct 07, 2020 at 05:13:11PM +0900, Namhyung Kim wrote:
+> It was reported that perf stat crashed when using with armv8_pmu (cpu)
+> events with the task mode.  As perf stat uses an empty cpu map for
+> task mode but armv8_pmu has its own cpu mask, it confused which map
+> should use when accessing file descriptors and caused segfaults:
+> 
+>   (gdb) bt
+>   #0  0x0000000000603fc8 in perf_evsel__close_fd_cpu (evsel=<optimized out>,
+>       cpu=<optimized out>) at evsel.c:122
+>   #1  perf_evsel__close_cpu (evsel=evsel@entry=0x716e950, cpu=7) at evsel.c:156
+>   #2  0x00000000004d4718 in evlist__close (evlist=0x70a7cb0) at util/evlist.c:1242
+>   #3  0x0000000000453404 in __run_perf_stat (argc=3, argc@entry=1, argv=0x30,
+>       argv@entry=0xfffffaea2f90, run_idx=119, run_idx@entry=1701998435)
+>       at builtin-stat.c:929
+>   #4  0x0000000000455058 in run_perf_stat (run_idx=1701998435, argv=0xfffffaea2f90,
+>       argc=1) at builtin-stat.c:947
+>   #5  cmd_stat (argc=1, argv=0xfffffaea2f90) at builtin-stat.c:2357
+>   #6  0x00000000004bb888 in run_builtin (p=p@entry=0x9764b8 <commands+288>,
+>       argc=argc@entry=4, argv=argv@entry=0xfffffaea2f90) at perf.c:312
+>   #7  0x00000000004bbb54 in handle_internal_command (argc=argc@entry=4,
+>       argv=argv@entry=0xfffffaea2f90) at perf.c:364
+>   #8  0x0000000000435378 in run_argv (argcp=<synthetic pointer>,
+>       argv=<synthetic pointer>) at perf.c:408
+>   #9  main (argc=4, argv=0xfffffaea2f90) at perf.c:538
+> 
+> To fix this, I simply used the given cpu map unless the evsel actually
+> is not a system-wide event (like uncore events).
+> 
+> Reported-by: Wei Li <liwei391@huawei.com>
+> Tested-by: Barry Song <song.bao.hua@hisilicon.com>
+> Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-On Tue, 29 Sep 2020 at 13:18, Tomer Maimon <tmaimon77@gmail.com> wrote:
->
-> This patch set adds and modify device tree nodes in the NPCM7xx
-> Baseboard Management Controller (BMC) device tree.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-This series has been reviewed by myself and we would like to see it
-merged for 5.10.
+thanks,
+jirka
 
-Tomer isn't set up to send pull requests himself at this stage, so I
-can send you a pull request (and perhaps continue doing so in the
-future, as the "BMC maintainer"). Alternatively if you could merge
-this series directly that would be appreciated.
+> ---
+>  tools/lib/perf/evlist.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+> index 2208444ecb44..cfcdbd7be066 100644
+> --- a/tools/lib/perf/evlist.c
+> +++ b/tools/lib/perf/evlist.c
+> @@ -45,6 +45,9 @@ static void __perf_evlist__propagate_maps(struct perf_evlist *evlist,
+>  	if (!evsel->own_cpus || evlist->has_user_cpus) {
+>  		perf_cpu_map__put(evsel->cpus);
+>  		evsel->cpus = perf_cpu_map__get(evlist->cpus);
+> +	} else if (!evsel->system_wide && perf_cpu_map__empty(evlist->cpus)) {
+> +		perf_cpu_map__put(evsel->cpus);
+> +		evsel->cpus = perf_cpu_map__get(evlist->cpus);
+>  	} else if (evsel->cpus != evsel->own_cpus) {
+>  		perf_cpu_map__put(evsel->cpus);
+>  		evsel->cpus = perf_cpu_map__get(evsel->own_cpus);
+> -- 
+> 2.28.0.806.g8561365e88-goog
+> 
 
-Let me know what you would prefer.
-
-Cheers,
-
-Joel
-
->
-> The following device node add:
->         - NPCM7xx Pin controller and GPIO
->         - NPCM7xx PWM and FAN.
->         - NPCM7xx EHCI USB.
->         - NPCM7xx KCS.
->         - NPCM Reset.
->         - NPCM Peripheral SPI.
->         - NPCM FIU SPI.
->         - NPCM HWRNG.
->         - NPCM I2C.
->         - STMicro STMMAC.
->
-> The following device node modified:
->         - NPCM7xx timer.
->         - NPCM7xx clock constants parameters.
->
-> NPCM7xx device tree tested on NPCM750 evaluation board.
->
-> Changes since version 7:
-> Address comments from Joel Stanely: https://www.spinics.net/lists/devicetree/msg380191.html
->
-> Changes since version 6:
-> Split commits.
->
-> Changes since version 5:
-> Address comments from Joel Stanely: https://lkml.org/lkml/2020/9/16/994
->
-> Changes since version 4:
->  - Tested patches in Linux kernel 5.9.
->
-> Changes since version 3:
->  - Tested patches in Linux kernel 5.6.
->
-> Changes since version 2:
->  - Remove unnecessary output-enable flags.
->
-> Changes since version 1:
->  - Add NPCM reset device node.
->  - Add reset parameters to NPCM driver device nodes.
->
->
-> Tomer Maimon (5):
->   arm: dts: modify NPCM7xx device tree clock parameter
->   arm: dts: modify NPCM7xx device tree timer register size
->   arm: dts: add pinctrl and GPIO node to NPCM7XX device tree
->   arm: dts: add new device nodes to NPCM7XX device tree
->   arm: dts: add new device nodes to NPCM750 device tree EVB
->
->  arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi | 967 +++++++++++++++++-
->  arch/arm/boot/dts/nuvoton-npcm750-evb.dts     | 367 ++++++-
->  .../boot/dts/nuvoton-npcm750-pincfg-evb.dtsi  | 157 +++
->  arch/arm/boot/dts/nuvoton-npcm750.dtsi        |  24 +-
->  4 files changed, 1495 insertions(+), 20 deletions(-)
->  create mode 100644 arch/arm/boot/dts/nuvoton-npcm750-pincfg-evb.dtsi
->
-> --
-> 2.22.0
->
