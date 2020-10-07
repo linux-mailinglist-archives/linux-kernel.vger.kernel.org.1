@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F711286A9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 00:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4C1286AA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 00:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgJGWAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 18:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S1728775AbgJGWFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 18:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728768AbgJGWAM (ORCPT
+        with ESMTP id S1728575AbgJGWFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 18:00:12 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5D1C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 15:00:12 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id c22so5166064ejx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 15:00:12 -0700 (PDT)
+        Wed, 7 Oct 2020 18:05:07 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8E3C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 15:05:05 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id b193so1585589pga.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 15:05:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lT3B2ypuGco/P409+8M6gpuF12PaIQWc3S2n+DY8zro=;
-        b=Ncyj5HRyOHiv/PCCXeiIOREYqhKi9W7Kz+qYVEQlXmRkJQFhr4mPMx/M7DMnm6YtOW
-         DUL/0irEJWJ1u3Tn9PvlSn9dTNsY5IVKDzbC9mmRlGyJusWXyE84FSrRMHnC7+4R/s2K
-         JlmM8UKi1+egfyf0npBB325upNgCiCd5lLpYz+Qt+xyrV5CQrPP3johyniRb8z+kgaE1
-         GT+P5nqT7wPGuzMyK7J2sXKrVtMSHN7U9uJt8nssAD4vXadYIDhLD2lwmqXOOlH+//Pq
-         Hz5f0mZ598OqpvKpcokOiVFhrrXoK3FDSB6Diw9PKUvJFn/Wdx3dxk6fca3QGoU6OwHC
-         HCLw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+V7sZxEf6mQQioi6/3fm4YR6csX1PamPT+xsX7pNB4w=;
+        b=ep50T10dpOtQ6OLVV05z3OtJ/y5qq6xfZST1mEKfChwtiRhcO3i/N4I2jdp9MNovJk
+         pCKOd/eZwaZnV2KWv1TUqBmy/Gu3YCAdmn2W/P9tqvR4EIUmxSfRR6oCT2+UptOCoxYz
+         osAjjmkEmMm2ID+cJZ0TEfmtLYQNdpmmgQWnYXDtNwOxdB1HwOy81zc8y87p/ql4aEtl
+         rungVNTAaNvn1+j6w2VrV74FMWuiEcg/Ls9u87zllfaWoUrX3uD8c/ssBHk0n6iMSXZf
+         YFqgZdHZe4pPhylbuYcrd9eAzzNaQKbFJKRMvAJcT1fwFcThuz2o76vhh/JvTLhtvJ97
+         Bt9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lT3B2ypuGco/P409+8M6gpuF12PaIQWc3S2n+DY8zro=;
-        b=oi7srmR6pTgap1xBRIczQxukPntKMhQFNXB2D7PkMe3RZB/6Mp8z/Wqo6SBlmDqqcI
-         ozA5QPlTDpPRfQ+fwvSWt4HeJlS/lP1QncAOnQlCPsZOoSx62KH6KWcUYMgxw/x965uy
-         cZmgzNvC64idBvW2E07XocRWGVxFwCb6CFPSgPEUt0efLIHFLixMu4QZd/PBtPb8qxHH
-         /oJjFBWMAP1CslLW4pMQQ8Nenye9dRf/wmkNfQHTfHAbEjsjODTlybrywfK5/yf0S7VD
-         N+RJldHGRmJWB7143NdR9WLxLnx0BDAf6tpxsEt3PLLIXJsZyCrYthsGJ02lPFdJvI9f
-         Ehlg==
-X-Gm-Message-State: AOAM531NzcJbRLMpe3oqO4CNPe14I4kKvJJBfXG+vsyyK4g1YJ0eLrxY
-        A/LxQQOfK6XAw1AIzt4vBqsTazc57XQ5JF04LdOGjQ==
-X-Google-Smtp-Source: ABdhPJwku5mxYKwAyqqbDYZNawCeRw0Upn7X7sfFjzI/V4bf8n3ZT6QOAaXMTZWtxx4JzYTkY6EwLAJYedQOql+eTOc=
-X-Received: by 2002:a17:906:4701:: with SMTP id y1mr5413376ejq.341.1602108010723;
- Wed, 07 Oct 2020 15:00:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+V7sZxEf6mQQioi6/3fm4YR6csX1PamPT+xsX7pNB4w=;
+        b=aKMG2mPI1diYEQ3dCogP7BpLb6h+nXtDv+m/1xKM1RE9olEmXXRMJfqmx6qjilDYzw
+         uJB4CGv6NenJVyGkvXKWkAUmOUn7kCcJXqGPUDIgLG8Jprw/o/phTyPCLj7dJVg4E+FM
+         sXXlmjhvT5RauVxGRNOuLiLkthUiwqRUjiOIPKriBjQ2vuJuo5fSq5COIWesqBh7dTD9
+         FkBmIxS0lrQdIJXFGgmtFDbv3c96LXkrApsS3dsYy+daumG2oLARsTpOg/mB1RH8jfGD
+         oR75JEbDPcX8TckpElRVECy8ZI+LWBJQO+itcKxjOG95ZMXx0ctBrs9YFjBqYPILz5j3
+         T5eA==
+X-Gm-Message-State: AOAM5305xtAJIzhNWnCABSq6KezCCA1wmisQkUCzpwboLj9tcVKlSAv8
+        vKq6djmRxsO/1sQTJvkL66sihg==
+X-Google-Smtp-Source: ABdhPJys6F86XrljUH8qz8gcZargaIbvBEZ19MwlhxtUE/XlZ7tHjdwI5A2a2e1IHecb/WpyiWo9OQ==
+X-Received: by 2002:a63:4c4e:: with SMTP id m14mr4441454pgl.199.1602108304796;
+        Wed, 07 Oct 2020 15:05:04 -0700 (PDT)
+Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
+        by smtp.gmail.com with ESMTPSA id n67sm4425110pgn.14.2020.10.07.15.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 15:05:03 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 22:05:00 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
+Message-ID: <20201007220500.GA2544297@google.com>
+References: <20201005073606.1949772-1-satyat@google.com>
+ <20201007210040.GB1530638@gmail.com>
 MIME-Version: 1.0
-References: <20201006230930.3908-1-rcampbell@nvidia.com> <20201007082517.GC6984@quack2.suse.cz>
-In-Reply-To: <20201007082517.GC6984@quack2.suse.cz>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 7 Oct 2020 14:59:59 -0700
-Message-ID: <CAPcyv4j=q4n1PDW5vwOFpkeDEoDv2_xXBL+xoGsRwPn_ej=hnA@mail.gmail.com>
-Subject: Re: [PATCH] ext4/xfs: add page refcount helper
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ralph Campbell <rcampbell@nvidia.com>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Ts'o" <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007210040.GB1530638@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 1:25 AM Jan Kara <jack@suse.cz> wrote:
+On Wed, Oct 07, 2020 at 02:00:40PM -0700, Eric Biggers wrote:
+> On Mon, Oct 05, 2020 at 07:36:03AM +0000, Satya Tangirala wrote:
+> > This patch series adds support for metadata encryption to F2FS using
+> > blk-crypto.
+> 
+> This patch series needs more explanation about what "metadata encryption" is,
+> why people will want to use it (as opposed to either not using it, or using
+> fscrypt + dm-crypt instead), and why this is the best implementation of it.
+> 
+Sure, I'll add that in the next version
+> > Patch 2 introduces some functions to fscrypt that help filesystems perform
+> > metadata encryption. Any filesystem that wants to use metadata encryption
+> > can call fscrypt_setup_metadata_encryption() with the super_block of the
+> > filesystem, the encryption algorithm and the descriptor of the encryption
+> > key. The descriptor is looked up in the logon keyring of the current
+> > session with "fscrypt:" as the prefix of the descriptor.
+> 
+> I notice this is missing the step I suggested to include the metadata encryption
+> key in the HKDF application-specific info string when deriving subkeys from the
+> fscrypt master keys.
+> 
+> The same effect could also be achieved by adding an additional level to the key
+> hierarchy: each HKDF key would be derived from a fscrypt master key and the
+> metadata encryption key.
+> 
+> We need one of those, to guarantee that the file contents encryption is at least
+> as strong as the "metadata encryption".
 >
-> On Tue 06-10-20 16:09:30, Ralph Campbell wrote:
-> > There are several places where ZONE_DEVICE struct pages assume a reference
-> > count == 1 means the page is idle and free. Instead of open coding this,
-> > add a helper function to hide this detail.
-> >
-> > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
->
-> Looks as sane direction but if we are going to abstract checks when
-> ZONE_DEVICE page is idle, we should also update e.g.
-> mm/swap.c:put_devmap_managed_page() or
-> mm/gup.c:__unpin_devmap_managed_user_page() (there may be more places like
-> this but I found at least these two...). Maybe Dan has more thoughts about
-> this.
-
-Yes, but I think that cleanup comes once the idle page count is
-unified to be 0 across typical and ZONE_DEVICE pages. Then
-free_devmap_managed_page() can be moved internal to __put_page(). For
-this patch it's just hiding the "idle == 1" assumption from
-dax-filesystems.
+Yes - I didn't get around to that in the first version, but I'll add
+that too in the next version. I was going to go with the first approach
+before I saw your comment - is there one method you'd recommend going
+with over the other?
+> - Eric
