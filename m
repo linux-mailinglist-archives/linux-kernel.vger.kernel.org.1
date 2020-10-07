@@ -2,197 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AAA285DBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C43C285DD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgJGLCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgJGLCv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:02:51 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07288C061755;
-        Wed,  7 Oct 2020 04:02:50 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a23so737089ljp.5;
-        Wed, 07 Oct 2020 04:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CbjONhvllNSyW702K8bZjURMem2CyW8UYU/jLhqWZTM=;
-        b=L7Xj6RZJ7dh8W0ZgTwJU6Go5ids6sTbDmO5IN+gOOeP6Uo6dtXAFmpVFdEmHpOHy2x
-         +gsylc2e4ZjS0grEqCwE2GOkMKlXg8MWbUHrAwjm2/IwJmqQX5Gfy9Ib9GyIo9/VRBiG
-         P4eKkh4ELpYGD5B0Xuy3kgvIW2SdgCYIwHmHEb1ba2hVqy1aA2YHRBmDlOQybAQcL2qX
-         NClVuojhQ9jtB3da3+98+TsL+xgJmFMF/zQSIwgi2OPCLwHYrPLCwug7Du53qguNwlxR
-         PznpTCphf4twLxgDtmOeB51DmVLtlRHyHCAKjjfHxQd/HvSeKEdw1HNWF020nbOdw/Z3
-         Tv6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CbjONhvllNSyW702K8bZjURMem2CyW8UYU/jLhqWZTM=;
-        b=Jd6YXd81Rq+F1XAqxju5cdlr38w/aza2N9sSUefTN6GOW4+4koHQCctSjSJcwZkPNY
-         dQFzMFeqsuii/3u+g0rSFw1hzBEgkieb7I/BbUKsgPNm2veUEqccezw55HeWX5ltwxOB
-         /E0nSmbcXXkDmKMivx8WMz53PipyuF6t8w2GErkCq6fED6eAN7OnK/yBhW2XzvH1N3yo
-         KC9MUpTe+VZry6wZxjP729L/lWxvp9hHYxTq7rlyXdC2NTFEo1CjudnOeh2vK4T86YAS
-         m+eS1f/UwfQ6ynbiuY1wWHc9492Dfvna5DIfb2NsaniNxGpNe3M59xTJEuBuOdmz/hw0
-         FmpA==
-X-Gm-Message-State: AOAM533mnYlOagTQ2MlbjuO6HddvFeyexbqNVJS8SNWfjNDPL4pHZ117
-        pq6Fn7AgEdiTcPNT6Ifmex8=
-X-Google-Smtp-Source: ABdhPJw4UGU50WDP3vXA+Lj1oesoBXm6iHEH1ydOe3ByylMClE6FKl9qDPMlB81iUxeAmqpXWblhFQ==
-X-Received: by 2002:a2e:88cb:: with SMTP id a11mr1059943ljk.304.1602068569184;
-        Wed, 07 Oct 2020 04:02:49 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id s17sm282520lfp.292.2020.10.07.04.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 04:02:48 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 7 Oct 2020 13:02:46 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201007110246.GA25550@pc636>
-References: <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
- <20201002090507.GB4555@dhcp22.suse.cz>
- <20201005150801.GC17959@pc636>
- <20201005154100.GF4555@dhcp22.suse.cz>
- <20201006222529.GA23612@pc636>
- <20201007100234.GI29020@dhcp22.suse.cz>
-MIME-Version: 1.0
+        id S1728060AbgJGLG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:06:56 -0400
+Received: from mail-eopbgr00066.outbound.protection.outlook.com ([40.107.0.66]:40201
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726129AbgJGLGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 07:06:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MELNLZZJ8IXmGzHYbYFSUqW4qc5stMv+7KaaE0D0DDM=;
+ b=jQ1ZDMCS3VRXzhESQcMdEd38a5DjuByk2HFcvLSR0bFYJvaV8ZUM1WD2ACweZjb5yweycw29nSm9FLq9L96OyS4xJs6vlF1VLUG1rx36npsiZvNSuKZmBDXT3wJbZ2A7oaX25phMaVKEtgTmjCnAh2kFoC840qvO/mLhaObl+6k=
+Received: from AM6PR02CA0035.eurprd02.prod.outlook.com (2603:10a6:20b:6e::48)
+ by VE1PR08MB5757.eurprd08.prod.outlook.com (2603:10a6:800:1a4::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Wed, 7 Oct
+ 2020 11:04:16 +0000
+Received: from AM5EUR03FT015.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:20b:6e:cafe::f) by AM6PR02CA0035.outlook.office365.com
+ (2603:10a6:20b:6e::48) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend
+ Transport; Wed, 7 Oct 2020 11:04:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ AM5EUR03FT015.mail.protection.outlook.com (10.152.16.132) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.23 via Frontend Transport; Wed, 7 Oct 2020 11:04:15 +0000
+Received: ("Tessian outbound 7161e0c2a082:v64"); Wed, 07 Oct 2020 11:04:15 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: eeaa1abc63b199a8
+X-CR-MTA-TID: 64aa7808
+Received: from 41d17d6fd3f2.2
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 44DBCC0B-9590-4805-B137-D3A8DA400FBB.1;
+        Wed, 07 Oct 2020 11:03:52 +0000
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 41d17d6fd3f2.2
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Wed, 07 Oct 2020 11:03:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k38VuYxDQEbyBHbWjAJHUARPMoVaAMUsb4uyBFUJpeJqjrLRuAsPD1uyzzsfIhHDJlbwwB2z6sl/i+p5oi41MDCuyyblBXPdQ9ZA0G+71UOPgv/yg827Ce+6TzESCBn6lPxPGM07ZgV4iRZTW16Splw4tLD8lKQXMqy5ZuCl0cHFUxPy1gFa5ZYfNXMdHPrN+5T7sG68pM/M48Q5K4KdKX43sfxIhkukWHsXJHWL2VF87d7wVcKtSy8PYSpOU8L1l7xdEDtDzOHauoaOtN7HqyHx+v5bOAHFzZlo6dFYqljdP9ZTSu8LcENVCWIgjWddyBqHcx0n8KQ4zBJF4GEXLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MELNLZZJ8IXmGzHYbYFSUqW4qc5stMv+7KaaE0D0DDM=;
+ b=fOz49iOc8duIp/w9XOrHbSzOf6spTYOs5aOrGyHxFw/BdbyHhnGUW3RIaajTr+rcjpGrJ+YOPN76Q3Xr5asLFANzmNXFwWvL/HBiv2Z3cpQ4mHmsaSutBSdEvIgvob0t1qqvXXd0QrLbTq0DeO+cDltqzPU8j4rgvvTv50OjQahwDNNFhmeMBL8+CBtRuEzpW941/Yhn+h5KQjID4Xo2mDxcK0HRrLFdBuWtJbNtBs1WqeiwRiY9pTGGiIQTbFTrLQhDfCtDREg9N4hUBTKb0QFwg8tw/KkOg+NLv4qpZDlLmSk1pcv+Tv3ahNiIo873UJiEzz273hOvmoj/k6d+1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MELNLZZJ8IXmGzHYbYFSUqW4qc5stMv+7KaaE0D0DDM=;
+ b=jQ1ZDMCS3VRXzhESQcMdEd38a5DjuByk2HFcvLSR0bFYJvaV8ZUM1WD2ACweZjb5yweycw29nSm9FLq9L96OyS4xJs6vlF1VLUG1rx36npsiZvNSuKZmBDXT3wJbZ2A7oaX25phMaVKEtgTmjCnAh2kFoC840qvO/mLhaObl+6k=
+Authentication-Results-Original: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=arm.com;
+Received: from AM6PR08MB3653.eurprd08.prod.outlook.com (2603:10a6:20b:4c::22)
+ by AS8PR08MB6136.eurprd08.prod.outlook.com (2603:10a6:20b:292::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Wed, 7 Oct
+ 2020 11:03:50 +0000
+Received: from AM6PR08MB3653.eurprd08.prod.outlook.com
+ ([fe80::d0be:76bf:3d2f:8c56]) by AM6PR08MB3653.eurprd08.prod.outlook.com
+ ([fe80::d0be:76bf:3d2f:8c56%6]) with mapi id 15.20.3433.044; Wed, 7 Oct 2020
+ 11:03:50 +0000
+Date:   Wed, 7 Oct 2020 12:03:48 +0100
+From:   Matteo Franchin <matteo.franchin@arm.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Dave Airlie <airlied@linux.ie>, Liviu Dudau <liviu.dudau@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>, nd <nd@arm.com>
+Subject: Re: [PATCH] drm/fourcc: Add AXBXGXRX106106106106 format
+Message-ID: <20201007110348.GA13749@lagrange>
+References: <20201007092725.13300-1-matteo.franchin@arm.com>
+ <CAKMK7uHZs7uKMbbQhn43-u7Y3_KANA6tU25jnOZkzj3h_7dmgg@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007100234.GI29020@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAKMK7uHZs7uKMbbQhn43-u7Y3_KANA6tU25jnOZkzj3h_7dmgg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [217.140.106.50]
+X-ClientProxiedBy: LO2P123CA0074.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:138::7) To AM6PR08MB3653.eurprd08.prod.outlook.com
+ (2603:10a6:20b:4c::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (217.140.106.50) by LO2P123CA0074.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:138::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.44 via Frontend Transport; Wed, 7 Oct 2020 11:03:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a32462ed-1bb9-404a-70dc-08d86ab0bb2e
+X-MS-TrafficTypeDiagnostic: AS8PR08MB6136:|VE1PR08MB5757:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR08MB5757CF5E6125E0B240E889D5F40A0@VE1PR08MB5757.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: nd9b1VO7SKDPkiW1w1tpMWCS0WiKZZLjzzM1exUz1fq9vrcE64ci8eOuVBtXGhHUICv7bOk91fMRQKZuPATnSgAmnlVVC2ncbGlbIJmh7XqHft4BF2hwMJ96+RxXPreM4faSGtU2g2Nm2+CGKqTEJaZKhxf3gNbVGrrzl+ZHizr8srwsxUkaUPOWymEBlC/y5QWNlcQUMTZmsr1+Gp9hK+x+I/bBJMhzLJnYm++pQgMKlXOM40kjk6O8UHbbPf0gtcuiIvAF/f5siIeW0aw4ULNxZM98KoVwjwMDZxs1l8YCO4fMma1O4/+v8YYY7i/Q7/zaOvhCdbQe6sY6rT//daUh2dlOG6O4qf3XoV0oM+Vm6D8n/yaIx3wNUzR/KHkth+ywnCFLIfY9i9+/2Ysi9g==
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB3653.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(5660300002)(6486002)(478600001)(33656002)(66946007)(66556008)(4326008)(6916009)(83080400001)(66476007)(44832011)(2906002)(52116002)(16526019)(26005)(6496006)(186003)(53546011)(54906003)(316002)(956004)(86362001)(9686003)(8676002)(1076003)(8936002)(33716001)(966005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: QL1J1mng2vWh3wFAlzG5PaIa3pLF63sGIa5YuH+KIrevn97aNNswsRw0cbRBcSZAEAkF1Dxfsdsjq2IOOon2qaRwDJH5/TpV0f2GA9yXxogM3VpOfaf9zbAJKQ/yQ2Gs711xRTm2moR8YrYu3nrCdhx4RogO6UZRW4SkPLp3wPKnjkj4M7Tq3zAmxaG9PsXi600mJ4FoRMMOH1AwKCI9y8KUIXTjFGRKWMLcl6pgiGSk7/Xdo2bXkSHDgpwNpdNMjeR6xB73d550VVPdyrQKuuIweol7EzLna1LZ3Gmal8msJ5LVeacwXGk8xUMQrojshN2tHFTYhCo8hEmMHpvcbL/lxRbxc5BehHE3d6r1OfeDKU459mUVifdSGYGRz1U56ULObPhn6IHk4fgR6pbruypv1Vg5LwnwLWVVLIKXqDHmuKiBxGeUyp9D2bhpoeqPRj0Umzn2T1F3vzztqBfNKoupNYoO1kzr85rSJqPJxJoKZjfFQdOelGFsSVL2lCytqu81Mz/6yenujTtRKFl8w6fH5SCM9WzMOu8izKKOf196oQFifE/6C4yvJB7viW7KhfJr2rxpvMxLer15ij+Ol8LzUiCTnaw/eEjfUlHdZ0OCrmI4Sayalh+V1yX9XgpH9y5gQrVkMssrSezmRgQ7Yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB6136
+Original-Authentication-Results: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT015.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 8b07c61a-230f-4cf4-4797-08d86ab0abf4
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rvr9VXLVTldy247G672z1xvV4yYQVzoi9/RxgzTwkTM8HCbyP3W5fQ0mT9AcZanc0ybI4p7cO0UcucL+3KjldDMORSR4TzIFhw4saQLI9jpHh1M3rje5LnPIc1x8YyCLquvARv09Nh6YK2bMO9foNiYuAFNG7eHo9gEuU5bM/TpDwH5f+hnfC/Hs7Xm+VdfQ71MIQkEvjTgdv7WDZdwmO09YR11YEJxgMT77nHDoR0xrlp6eqwJdx0X05rp7/367q4Av0XJtd1OACREcn9zTTJy1me320S2WNWPW88Kv97NX3MaDnABklCMaMxSJQxWz20GMSKZGe040yIcO7QvPUigbQIPkZ4k0QT++Y/6ALwAbUJQrIT3yDyleSPWA/Jmeyxt/9+cm1S5ZGCuHwvQP0cBhzn/CqcOiGtAkvvHlmciTBTs5OqmupTc/QrUdGU/XIWIEaipvj74CoOJb07M6WpSHVyPbchP6/KCuEwpDRuU=
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(7916004)(4636009)(136003)(376002)(39860400002)(346002)(396003)(46966005)(6862004)(478600001)(956004)(966005)(5660300002)(70206006)(4326008)(316002)(6496006)(70586007)(54906003)(53546011)(36906005)(1076003)(82310400003)(6486002)(47076004)(356005)(16526019)(9686003)(86362001)(44832011)(186003)(83080400001)(81166007)(26005)(336012)(33716001)(82740400003)(33656002)(8936002)(8676002)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 11:04:15.9486
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a32462ed-1bb9-404a-70dc-08d86ab0bb2e
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT015.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR08MB5757
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 12:02:34PM +0200, Michal Hocko wrote:
-> On Wed 07-10-20 00:25:29, Uladzislau Rezki wrote:
-> > On Mon, Oct 05, 2020 at 05:41:00PM +0200, Michal Hocko wrote:
-> > > On Mon 05-10-20 17:08:01, Uladzislau Rezki wrote:
-> > > > On Fri, Oct 02, 2020 at 11:05:07AM +0200, Michal Hocko wrote:
-> > > > > On Fri 02-10-20 09:50:14, Mel Gorman wrote:
-> > > > > > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
-> > > > > > > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
-> > > > > > > > > 
-> > > > > > > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > > > > > > > > the allocator (different from what you posted in previous version) so that it
-> > > > > > > > > only looks at the flag after it tries to allocate from pcplist and finds out
-> > > > > > > > > it's empty. So, no inventing of new page allocator entry points or checks such
-> > > > > > > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > > > > > > > > affect existing fast paths.
-> > > > > > > > >
-> > > > > > > > OK. Now i see. Please have a look below at the patch, so we fully understand
-> > > > > > > > each other. If that is something that is close to your view or not:
-> > > > > > > > 
-> > > > > > > > <snip>
-> > > > > > > > t a/include/linux/gfp.h b/include/linux/gfp.h
-> > > > > > > > index c603237e006c..7e613560a502 100644
-> > > > > > > > --- a/include/linux/gfp.h
-> > > > > > > > +++ b/include/linux/gfp.h
-> > > > > > > > @@ -39,8 +39,9 @@ struct vm_area_struct;
-> > > > > > > >  #define ___GFP_HARDWALL                0x100000u
-> > > > > > > >  #define ___GFP_THISNODE                0x200000u
-> > > > > > > >  #define ___GFP_ACCOUNT         0x400000u
-> > > > > > > > +#define ___GFP_NO_LOCKS                0x800000u
-> > > > > > > 
-> > > > > > > Even if a new gfp flag gains a sufficient traction and support I am
-> > > > > > > _strongly_ opposed against consuming another flag for that. Bit space is
-> > > > > > > limited. 
-> > > > > > 
-> > > > > > That is definitely true. I'm not happy with the GFP flag at all, the
-> > > > > > comment is at best a damage limiting move. It still would be better for
-> > > > > > a memory pool to be reserved and sized for critical allocations.
-> > > > > 
-> > > > > Completely agreed. The only existing usecase is so special cased that a
-> > > > > dedicated pool is not only easier to maintain but it should be also much
-> > > > > better tuned for the specific workload. Something not really feasible
-> > > > > with the allocator.
-> > > > > 
-> > > > > > > Besides that we certainly do not want to allow craziness like
-> > > > > > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
-> > > > > > 
-> > > > > > That would deserve to be taken to a dumpster and set on fire. The flag
-> > > > > > combination could be checked in the allocator but the allocator path fast
-> > > > > > paths are bad enough already.
-> > > > > 
-> > > > > If a new allocation/gfp mode is absolutely necessary then I believe that
-> > > > > the most reasoanble way forward would be
-> > > > > #define GFP_NO_LOCK	((__force gfp_t)0)
-> > > > > 
-> > > > Agree. Even though i see that some code should be adjusted for it. There are
-> > > > a few users of the __get_free_page(0); So, need to double check it:
-> > > 
-> > > Yes, I believe I have pointed that out in the previous discussion.
-> > > 
-> > OK. I spent more time on it. A passed gfp_mask can be adjusted on the entry,
-> > that adjustment depends on the gfp_allowed_mask. It can be changed in run-time.
-> > 
-> > For example during early boot it excludes: __GFP_RECLAIM|__GFP_IO|__GFP_FS flags,
-> > what is GFP_KERNEL. So, GFP_KERNEL is adjusted on entry and becomes 0 during early
-> > boot phase.
-> 
-> Honestly I am not sure how much is GFP_BOOT_MASK still needed. The
-> remaining user of gfp_allowed_mask mask should be only hibernation and I
-> believe this should be removed in long term. Not as trivial because
-> scope API cannot be used for that as it needs a global flag but this is
-> a gross hack that should be implemented differently. It is waiting on my
-> todo list but never got around to that.
-> 
-> > How to distinguish it:
-> > 
-> > <snip>
-> > +       /*
-> > +        * gfp_mask can become zero because gfp_allowed_mask changes in run-time.
-> > +        */
-> > +       if (!gfp_mask)
-> > +               alloc_flags |= ALLOC_NO_LOCKS;
-> > +
-> >         gfp_mask &= gfp_allowed_mask;
-> >         alloc_mask = gfp_mask;
-> >         if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
-> > <snip>
-> > 
-> > > > 
-> > > > Apart of that. There is a post_alloc_hook(), that gets called from the prep_new_page().
-> > > > If "debug page alloc enabled", it maps a page for debug purposes invoking kernel_map_pages().
-> > > > __kernel_map_pages() is ARCH specific. For example, powerpc variant uses sleep-able locks
-> > > > what can be easily converted to raw variant. 
-> > > 
-> > > Yes, there are likely more surprises like that. I am not sure about
-> > > kasan, page owner (which depens on the stack unwinder) and others which
-> > > hook into this path.
-> > >
-> > I have checked kasan_alloc_pages(), kernel_poison_pages() both are OK,
-> > at least i did not find any locking there. As for set_page_owner(), it
-> > requires more attention, since it uses arch specific unwind logic. Though,
-> > i spent some time on it and so far have not noticed anything.
-> 
-> stack depod depends on a lock IIRC. Anyway, this is just showing how
-> this is going to grow in complexity and make future additions harder.
-> A niche usecase is inducing an additional complexity for future
-> maintenance.
-> 
-I agree regarding maintenance costs. That is what is hard to avoid.
+Hi Daniel,
 
---
-Vlad Rezki
+On Wed, Oct 07, 2020 at 12:06:34PM +0200, Daniel Vetter wrote:
+> On Wed, Oct 7, 2020 at 11:29 AM Matteo Franchin <matteo.franchin@arm.com> wrote:
+> >
+> > Add ABGR format with 10-bit components packed in 64-bit per pixel.
+> > This format can be used to handle
+> > VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16 on little-endian
+> > architectures.
+> >
+> > Signed-off-by: Matteo Franchin <matteo.franchin@arm.com>
+> 
+> So is this essentially 16 bit, with the lowest 6 bits in each channel
+> ignored? What exactly is this used for where the full 16bit format
+> doesn't work?
+
+If you are asking why we don't add a 16-bit format, instead (e.g.
+DRM_FORMAT_ABGR16161616) the answer is that this is really a 10-bit
+format: only the 10 MSBs are preserved. 
+
+We'd be uncomfortable to add support for a 16-bit format and just
+ignore the lowest 6 bits.
+
+Thanks,
+Matteo
+
+
+> -Daniel
+> 
+> > ---
+> >  drivers/gpu/drm/drm_fourcc.c  | 1 +
+> >  include/uapi/drm/drm_fourcc.h | 7 +++++++
+> >  2 files changed, 8 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+> > index 722c7ebe4e88..bba03fcb016d 100644
+> > --- a/drivers/gpu/drm/drm_fourcc.c
+> > +++ b/drivers/gpu/drm/drm_fourcc.c
+> > @@ -202,6 +202,7 @@ const struct drm_format_info *__drm_format_info(u32 format)
+> >                 { .format = DRM_FORMAT_XBGR16161616F,   .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1 },
+> >                 { .format = DRM_FORMAT_ARGB16161616F,   .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> >                 { .format = DRM_FORMAT_ABGR16161616F,   .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> > +               { .format = DRM_FORMAT_AXBXGXRX106106106106,    .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> >                 { .format = DRM_FORMAT_RGB888_A8,       .depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> >                 { .format = DRM_FORMAT_BGR888_A8,       .depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> >                 { .format = DRM_FORMAT_XRGB8888_A8,     .depth = 32, .num_planes = 2, .cpp = { 4, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> > diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+> > index 82f327801267..76eedba52b77 100644
+> > --- a/include/uapi/drm/drm_fourcc.h
+> > +++ b/include/uapi/drm/drm_fourcc.h
+> > @@ -155,6 +155,13 @@ extern "C" {
+> >  #define DRM_FORMAT_ARGB16161616F fourcc_code('A', 'R', '4', 'H') /* [63:0] A:R:G:B 16:16:16:16 little endian */
+> >  #define DRM_FORMAT_ABGR16161616F fourcc_code('A', 'B', '4', 'H') /* [63:0] A:B:G:R 16:16:16:16 little endian */
+> >
+> > +/*
+> > + * RGBA format with 10-bit components packed in 64-bit per pixel, with 6 bits
+> > + * of unused padding per component:
+> > + * [63:0] A:x:B:x:G:x:R:x 10:6:10:6:10:6:10:6 little endian
+> > + */
+> > +#define DRM_FORMAT_AXBXGXRX106106106106 fourcc_code('A', 'B', '1', '0')
+> > +
+> >  /* packed YCbCr */
+> >  #define DRM_FORMAT_YUYV                fourcc_code('Y', 'U', 'Y', 'V') /* [31:0] Cr0:Y1:Cb0:Y0 8:8:8:8 little endian */
+> >  #define DRM_FORMAT_YVYU                fourcc_code('Y', 'V', 'Y', 'U') /* [31:0] Cb0:Y1:Cr0:Y0 8:8:8:8 little endian */
+> > --
+> > 2.17.1
+> >
+> 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
