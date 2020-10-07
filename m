@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2213285580
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF98285583
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgJGAoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 20:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S1726871AbgJGAqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgJGAoA (ORCPT
+        with ESMTP id S1726697AbgJGAqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:44:00 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B984C061755;
-        Tue,  6 Oct 2020 17:43:58 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id b142so529826ybg.9;
-        Tue, 06 Oct 2020 17:43:58 -0700 (PDT)
+        Tue, 6 Oct 2020 20:46:08 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B25C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 17:46:07 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id x1so384774eds.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SyZblE9xC0nmAy+e+XaJzQ7/L8Iiy5qS/+bTpihGNwQ=;
-        b=DBXYBsdvnrW5yB3aSn0XQCNhysNNyPsbVxDZ43LGt5LPcW/Tw2hFOiW8Ztz1PcUGXP
-         MfaO6HHiPCVYJGw6kX+D1JEiFlo3/qOflosuXjCXPMNTb1IuRzUuhuGHwi0nAEp0gZz2
-         igdyNRkBy57Ly9PgdHgnukl2VaszP5Ic18Od1/VA78NBnQYE19g8poGE34kcFowHWaQz
-         cQ6r3gRMlc6D+zzHiLTDnfHd8Gp32bnLTRVAevDHn0X+GNy0sGl3rq7N/yJAodjRaqpC
-         J0q+Ng81LT9ZwaEzTVgVnsuCRJEEXnT9B3gzlDO1/EMrQuA8+zz3UBMPLFOISPAGdNPu
-         IE1A==
+        bh=GiHfqX5YBUl0yySo1pL2gGGbrA6tqlyBkCWwTPB5NN8=;
+        b=ofS3M+BgpBlCmdVu4ulyprSoSciUUGb1Uf38zSGa+0ILdvizmFWWzsTQAB9ztvK/7E
+         YVzD43CP0Fiq2tbj1+zAgUQozJZhOCmkUTYQlJObiymbX86JuMePRskDSHTnXPLOQ8F9
+         3SbYx306F2TUg/7fAXSL/ZgAfvnJdz+2hE0N95rM8OKtJ0HtrnDTZ6fnr7x5kUmHxQPd
+         T7KLcORg/n5aQK7+9/SvtoieJHtgKqjo29sgvBOwG+nzKCuA6PafVOJrP6VFRmYl5yx/
+         APyxPH9Pajz+uAJiUhACa5PojVG5H4tHHL3kOWQN7tniv1pNUBkuPK2G+405SozTbYTp
+         xIMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SyZblE9xC0nmAy+e+XaJzQ7/L8Iiy5qS/+bTpihGNwQ=;
-        b=oKK/plrlLY8GpuknsivF9i/ozGpCTtknraXaMJzJHgpKGBizwbZRuGy7WRjB6qLYHz
-         KYJzQ34MLylENcEnSmRRmaohKZXOQ95ML/UARv7FoLxN6MjKQ+B2yP97OwV3fmk8QEgh
-         RjZCBIgvbsV3tHjRSN+fExWUumqKOaSI5gZiBkeBeDLYlQ7zYBqJXtgSBTVuT39Gk/m5
-         saUIz21qgqyROjTd4+vGsELwzXUs8ocFIp0PAni/ptt5QnZK8FiJGyzURaBL23CrdFtn
-         tPv3nMwg6MuzwcfCn4FfKpxEP88K3IwPB4npWmIxkoRK+1DgffsHp3C9I3pS03I24SUc
-         LEYg==
-X-Gm-Message-State: AOAM5331bRJBzN1xDeJa1orxdCzKIubNhmdY7lr1ysdbzSkFsyQOdBrT
-        RJ4XfDzfZOzcI3EYcCmQBo/0nv0QVFfp0DveRSMTze6HPoQ=
-X-Google-Smtp-Source: ABdhPJzmZfbphdxld/IHexJY4Qcs8fvhckSYSM+00uJdHyDFMj27XtkHQrOFcnDVCV/InaANujPRdvaBBvmkc7C+Rk8=
-X-Received: by 2002:a25:8541:: with SMTP id f1mr1069611ybn.230.1602031437507;
- Tue, 06 Oct 2020 17:43:57 -0700 (PDT)
+        bh=GiHfqX5YBUl0yySo1pL2gGGbrA6tqlyBkCWwTPB5NN8=;
+        b=dNd2/RvD1wxIbaedJISgykDRTqG3LjNZk1JoyuGl+7bGmGF7IB0z3plCJCiQZJRWRJ
+         4pzHIEm6x64ksp40dEMcRK9EoJhXzYocjpkGRHfIfXPkNYUlYEmDVbPJestVD3cZbNfz
+         Rc/OzBsynwKVqLTtc9lrHNBj9gAlhMF8ZC443pRkf/wWt7iOHTA+mvKqa4XKVhiDgVUY
+         QaadprAoZquou6ujdaIk2tIVVWD7AQGpjjwi55og+x40t4CzbX+a1w401b5vhUtuX9A6
+         FdRKjPQG1n9gpHjWSQ1/CtZf8bGLGcYwg+NJsBbN3ZJhLzA8ejGXCc+NROK0PhUGAUiz
+         VXcQ==
+X-Gm-Message-State: AOAM530uRLCIIYD/5MMWwf+9hYDpJXHrrFePQq8Pclw102v7D/CMCl/Z
+        e5a7Fr0i5Lay+SABXPq2w1jfgLDxxggeFvw/wptNiw==
+X-Google-Smtp-Source: ABdhPJw3Ia9wju01JmgISNWBKagZYXjISvhNQOdV/iIymh+EUW2r++j7k5Cc0Cwtmcva+LirzNcPmHpvt/PM0Hj0Jnw=
+X-Received: by 2002:a05:6402:b0e:: with SMTP id bm14mr828322edb.259.1602031565578;
+ Tue, 06 Oct 2020 17:46:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201006231706.2744579-1-haoluo@google.com>
-In-Reply-To: <20201006231706.2744579-1-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 6 Oct 2020 17:43:46 -0700
-Message-ID: <CAEf4BzY1ggHq6UGkHQ_S=0_US=bLPc9u+9pyeUP2hWb_3kWN+w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix test_verifier after introducing resolve_pseudo_ldimm64
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+References: <CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com>
+ <0fb905cc-77a2-4beb-dc9c-0c2849a6f0ae@oracle.com>
+In-Reply-To: <0fb905cc-77a2-4beb-dc9c-0c2849a6f0ae@oracle.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 7 Oct 2020 02:45:39 +0200
+Message-ID: <CAG48ez3istGAOA=G8fvrQkbMs4MroT8bj=Z=Wmnj0k73K0AFRA@mail.gmail.com>
+Subject: Re: SPARC version of arch_validate_prot() looks broken (UAF read)
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 4:45 PM Hao Luo <haoluo@google.com> wrote:
+On Tue, Sep 29, 2020 at 7:30 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
+> On 9/28/20 6:14 AM, Jann Horn wrote:
+> > From what I can tell from looking at the code:
+> >
+> > SPARC's arch_validate_prot() looks up the VMA and peeks at it; that's
+> > not permitted though. do_mprotect_pkey() calls arch_validate_prot()
+> > before taking the mmap lock, so we can hit use-after-free reads if
+> > someone concurrently deletes a VMA we're looking at.
 >
-> Commit 4976b718c355 ("bpf: Introduce pseudo_btf_id") switched
-> the order of check_subprogs() and resolve_pseudo_ldimm() in
-> the verifier. Now an empty prog and the prog of a single
-> invalid ldimm expect to see the error "last insn is not an
-> exit or jmp" instead, because the check for subprogs comes
-> first. Fix the expection of the error message.
+> That makes sense. It will be a good idea to encapsulate vma access
+> inside sparc_validate_prot() between mmap_read_lock() and
+> mmap_read_unlock().
 >
-> Tested:
->  # ./test_verifier
->  Summary: 1130 PASSED, 538 SKIPPED, 0 FAILED
->  and the full set of bpf selftests.
+> >
+> > Additionally, arch_validate_prot() currently only accepts the start
+> > address as a parameter, but the SPARC code probably should be checking
+> > the entire given range, which might consist of multiple VMAs?
+> >
+> > I'm not sure what the best fix is here; it kinda seems like what SPARC
+> > really wants is a separate hook that is called from inside the loop in
+> > do_mprotect_pkey() that iterates over the VMAs? So maybe commit
+> > 9035cf9a97e4 ("mm: Add address parameter to arch_validate_prot()")
+> > should be reverted, and a separate hook should be created?
+> >
+> > (Luckily the ordering of the vmacache operations works out suIch that
+> > AFAICS, despite calling find_vma() without holding the mmap_sem, we
+> > can never end up establishing a vmacache entry with a dangling pointer
+> > that might be considered valid on a subsequent call. So this should be
+> > limited to a rather boring UAF data read, and not be exploitable for a
+> > UAF write or UAF function pointer read.)
+> >
 >
-> Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->  tools/testing/selftests/bpf/verifier/basic.c    | 2 +-
->  tools/testing/selftests/bpf/verifier/ld_imm64.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/verifier/basic.c b/tools/testing/selftests/bpf/verifier/basic.c
-> index b8d18642653a..de84f0d57082 100644
-> --- a/tools/testing/selftests/bpf/verifier/basic.c
-> +++ b/tools/testing/selftests/bpf/verifier/basic.c
-> @@ -2,7 +2,7 @@
->         "empty prog",
->         .insns = {
->         },
-> -       .errstr = "unknown opcode 00",
-> +       .errstr = "last insn is not an exit or jmp",
+> I think arch_validate_prot() is still the right hook to validate the
+> protection bits. sparc_validate_prot() can iterate over VMAs with read
+> lock. This will, of course, require range as well to be passed to
+> arch_validate_prot().
 
-in this case the new message makes more sense, so this is a good change
-
->         .result = REJECT,
->  },
->  {
-> diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
-> index 3856dba733e9..f300ba62edd0 100644
-> --- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
-> +++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
-> @@ -55,7 +55,7 @@
->         .insns = {
->         BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
->         },
-> -       .errstr = "invalid bpf_ld_imm64 insn",
-> +       .errstr = "last insn is not an exit or jmp",
-
-but this completely defeats the purpose of the test; better add
-BPF_EXIT_INSN() after ldimm64 instruction to actually get to
-validation of ldimm64
-
->         .result = REJECT,
->  },
->  {
-> --
-> 2.28.0.806.g8561365e88-goog
->
+In that case, do you want to implement this?
+When I try to figure out how to implement this based on your
+suggestion, it ends up a bit ugly because either mprotect has to do
+some extra checks before calling the hook or the hook has to deal with
+potentially (partly) unmapped userspace ranges in the supplied range
+and then figure out what to do about those. (And for extra fun, it
+also has to be safe against concurrent find_extend_vma() but should
+probably also not change what happens when the first half of the given
+address range is mapped and the second half is not mapped? Or does the
+latter not matter?)
+It'd also be annoying for me to test since I don't have any setup for
+testing SPARC stuff (let alone SPARC ADI).
