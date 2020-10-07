@@ -2,157 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6326F285F16
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F255285F12
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgJGMYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:24:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:42924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728214AbgJGMYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:24:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99EAE1042;
-        Wed,  7 Oct 2020 05:24:13 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.52.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3EF1D3F71F;
-        Wed,  7 Oct 2020 05:24:06 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     daniel.lezcano@linaro.org, amitk@kernel.org,
-        Dietmar.Eggemann@arm.com, lukasz.luba@arm.com,
-        michael.kao@mediatek.com, rui.zhang@intel.com
-Subject: [PATCH 3/3] thermal: move power_actor_set_power into IPA
-Date:   Wed,  7 Oct 2020 13:22:56 +0100
-Message-Id: <20201007122256.28080-4-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201007122256.28080-1-lukasz.luba@arm.com>
-References: <20201007122256.28080-1-lukasz.luba@arm.com>
+        id S1728300AbgJGMYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:24:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8012 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728260AbgJGMYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:24:02 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097C52aJ157821;
+        Wed, 7 Oct 2020 08:23:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=smKE/LD/md3a1U9WnEW1uafmq1nK9Vtq/doXRqV3bus=;
+ b=sxF+KMdW5h9KDu2kQCM1ewBYYAdtkJVUu0ZU1MJPYPzy9UDILT4vz21hkvb1Tu/J2CLV
+ h8gakhe93UQ7b7iB5Z/Khv4kJ4XMHYdWAm1kLpQFHI8+xFli0Dc+z3AmmVOXl6gbeM3c
+ qogh98RYWo+Q/OGSRF17NCUrqBWEUdlOf5VTYYA3Mb9aTcB2sgw2Q6jQ4+rRkBVQCD/S
+ A8I8Vvgjd1HOh9gzcwQaHmNQYwXIWK58P7mhnsKzhKuDmSP/It4G1PyS+X2N36XH2WjF
+ Ro0aQJr5XaNwwm7fVOrUN5fmXpI0+DQdqAh3oh6qx42M/SQ9Z7IS8mRwxHDV4b6lOzok wA== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 341cn7a4p2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 08:23:58 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 097CBoVv024236;
+        Wed, 7 Oct 2020 12:23:56 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 33xgx8c999-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 12:23:56 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 097CNrRg18284910
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Oct 2020 12:23:53 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 77F8A11C04C;
+        Wed,  7 Oct 2020 12:23:53 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F6DB11C04A;
+        Wed,  7 Oct 2020 12:23:53 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.175.219])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Oct 2020 12:23:52 +0000 (GMT)
+Subject: Re: [PATCH v4 2/2] s390/dasd: remove ioctl_by_bdev calls
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefan Haberland <sth@linux.ibm.com>, axboe@kernel.dk,
+        hoeppner@linux.ibm.com, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        linux-kernel@vger.kernel.org
+References: <20200519142259.102279-1-sth@linux.ibm.com>
+ <20200519142259.102279-3-sth@linux.ibm.com>
+ <5c815b8a-7d77-5c69-9191-d09cc433f5ff@de.ibm.com>
+ <20201007103936.GA24327@lst.de>
+ <ca1bad1e-6d4b-7e86-4a98-b9ba12e2bef2@de.ibm.com>
+ <20201007120005.GA29788@lst.de>
+ <e1e4afa1-faa2-aa19-a973-ee1286288802@de.ibm.com>
+ <20201007121403.GA30795@lst.de>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
+ 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
+ nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
+Message-ID: <57c35578-fb46-92f0-c1b8-9a3ee1a9e7ae@de.ibm.com>
+Date:   Wed, 7 Oct 2020 14:23:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201007121403.GA30795@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_08:2020-10-06,2020-10-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 suspectscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=608 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the power actor section has one function power_actor_set_power()
-move it into Intelligent Power Allocation (IPA). There is no other user
-of that helper function. It would also allow to remove the check of
-cdev_is_power_actor() because the code which calls it in IPA already does
-the needed check. Make the function static since only IPA use it.
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- drivers/thermal/gov_power_allocator.c | 32 +++++++++++++++++++++
- drivers/thermal/thermal_core.c        | 41 ---------------------------
- drivers/thermal/thermal_core.h        |  2 --
- 3 files changed, 32 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index f9ee7787b325..5009eb012dfe 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -258,6 +258,38 @@ static u32 pid_controller(struct thermal_zone_device *tz,
- 	return power_range;
- }
- 
-+/**
-+ * power_actor_set_power() - limit the maximum power a cooling device consumes
-+ * @cdev:	pointer to &thermal_cooling_device
-+ * @instance:	thermal instance to update
-+ * @power:	the power in milliwatts
-+ *
-+ * Set the cooling device to consume at most @power milliwatts. The limit is
-+ * expected to be a cap at the maximum power consumption.
-+ *
-+ * Return: 0 on success, -EINVAL if the cooling device does not
-+ * implement the power actor API or -E* for other failures.
-+ */
-+static int
-+power_actor_set_power(struct thermal_cooling_device *cdev,
-+		      struct thermal_instance *instance, u32 power)
-+{
-+	unsigned long state;
-+	int ret;
-+
-+	ret = cdev->ops->power2state(cdev, instance->tz, power, &state);
-+	if (ret)
-+		return ret;
-+
-+	instance->target = clamp_val(state, instance->lower, instance->upper);
-+	mutex_lock(&cdev->lock);
-+	cdev->updated = false;
-+	mutex_unlock(&cdev->lock);
-+	thermal_cdev_update(cdev);
-+
-+	return 0;
-+}
-+
- /**
-  * divvy_up_power() - divvy the allocated power between the actors
-  * @req_power:	each actor's requested power
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 6cba54929ef8..fd14e4b949f3 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -593,47 +593,6 @@ static void thermal_zone_device_check(struct work_struct *work)
- 	thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
- }
- 
--/*
-- * Power actor section: interface to power actors to estimate power
-- *
-- * Set of functions used to interact to cooling devices that know
-- * how to estimate their devices power consumption.
-- */
--
--/**
-- * power_actor_set_power() - limit the maximum power a cooling device consumes
-- * @cdev:	pointer to &thermal_cooling_device
-- * @instance:	thermal instance to update
-- * @power:	the power in milliwatts
-- *
-- * Set the cooling device to consume at most @power milliwatts. The limit is
-- * expected to be a cap at the maximum power consumption.
-- *
-- * Return: 0 on success, -EINVAL if the cooling device does not
-- * implement the power actor API or -E* for other failures.
-- */
--int power_actor_set_power(struct thermal_cooling_device *cdev,
--			  struct thermal_instance *instance, u32 power)
--{
--	unsigned long state;
--	int ret;
--
--	if (!cdev_is_power_actor(cdev))
--		return -EINVAL;
--
--	ret = cdev->ops->power2state(cdev, instance->tz, power, &state);
--	if (ret)
--		return ret;
--
--	instance->target = clamp_val(state, instance->lower, instance->upper);
--	mutex_lock(&cdev->lock);
--	cdev->updated = false;
--	mutex_unlock(&cdev->lock);
--	thermal_cdev_update(cdev);
--
--	return 0;
--}
--
- void thermal_zone_device_rebind_exception(struct thermal_zone_device *tz,
- 					  const char *cdev_type, size_t size)
- {
-diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-index 14f8a829a84a..fc887d6f23ff 100644
---- a/drivers/thermal/thermal_core.h
-+++ b/drivers/thermal/thermal_core.h
-@@ -65,8 +65,6 @@ static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
- 		cdev->ops->power2state;
- }
- 
--int power_actor_set_power(struct thermal_cooling_device *cdev,
--			  struct thermal_instance *ti, u32 power);
- /**
-  * struct thermal_trip - representation of a point in temperature domain
-  * @np: pointer to struct device_node that this trip point was created from
--- 
-2.17.1
+On 07.10.20 14:14, Christoph Hellwig wrote:
+> On Wed, Oct 07, 2020 at 02:09:18PM +0200, Christian Borntraeger wrote:
+>> Unfortunately not. On insmodding virtio_blk I do get:
+> 
+> Yeah, the symbol_put needs to be conditional as well.  New version below:
 
+Yes, this works.
+> 
+> diff --git a/block/partitions/ibm.c b/block/partitions/ibm.c
+> index d6e18df9c53c6d..4b044e620d3534 100644
+> --- a/block/partitions/ibm.c
+> +++ b/block/partitions/ibm.c
+> @@ -305,8 +305,6 @@ int ibm_partition(struct parsed_partitions *state)
+>  	if (!disk->fops->getgeo)
+>  		goto out_exit;
+>  	fn = symbol_get(dasd_biodasdinfo);
+> -	if (!fn)
+> -		goto out_exit;
+>  	blocksize = bdev_logical_block_size(bdev);
+>  	if (blocksize <= 0)
+>  		goto out_symbol;
+> @@ -326,7 +324,7 @@ int ibm_partition(struct parsed_partitions *state)
+>  	geo->start = get_start_sect(bdev);
+>  	if (disk->fops->getgeo(bdev, geo))
+>  		goto out_freeall;
+> -	if (fn(disk, info)) {
+> +	if (!fn || fn(disk, info)) {
+>  		kfree(info);
+>  		info = NULL;
+>  	}
+> @@ -370,7 +368,8 @@ int ibm_partition(struct parsed_partitions *state)
+>  out_nogeo:
+>  	kfree(info);
+>  out_symbol:
+> -	symbol_put(dasd_biodasdinfo);
+> +	if (fn)
+> +		symbol_put(dasd_biodasdinfo);
+>  out_exit:
+>  	return res;
+>  }
+> 
