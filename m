@@ -2,168 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0E8285F75
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5670C285F7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgJGMqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:46:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728328AbgJGMqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:46:00 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC6F4207EA;
-        Wed,  7 Oct 2020 12:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602074760;
-        bh=w/Fh1rsBc/qZz8z9gwOnv8+zC9kARhbA//ALVN8Zi6o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08BMunOamWWwu70r4+o6lAAqjBoADtvHh+fgKvH3sFdy4Od90EaTZnuUeJN3avC9B
-         B9Ryftu8qvQtfYo2buhZFaK1osqy33/oaGH/KzVEh/BVto7wriMbQp59PoMB6rSuhc
-         OE0oIQK/L46zG3aTteAdZ4/FScMuFuPKM8hWvRrY=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kQ8pR-000M8V-Ev; Wed, 07 Oct 2020 13:45:58 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
-Subject: [PATCH v3 4/4] soc/tegra: pmc: Don't create fake interrupt hierarchy levels
-Date:   Wed,  7 Oct 2020 13:45:44 +0100
-Message-Id: <20201007124544.1397322-5-maz@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201007124544.1397322-1-maz@kernel.org>
-References: <20201007124544.1397322-1-maz@kernel.org>
+        id S1728309AbgJGMsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgJGMsN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:48:13 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B3FC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 05:48:11 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id h24so2736160ejg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 05:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8DgUuIRfcHlPhdxgua6tbSE2mebG0xHkllja1Sz9A+A=;
+        b=OwAuf7F2NQb/bsfTM2qcO5DjrhllMR1QqFDtj/L3iekZAReq3qsqXSiEABTatoXxTB
+         rDETHWmgxlHX7z4dhuSD2d4gWdOO/SQlLd1ksmCUxOY435tx1KNZZq94LRBlSVJGBKWq
+         DO8qOQ4lkUnHLmdS85byS9GsBNdfVMiJquDxE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8DgUuIRfcHlPhdxgua6tbSE2mebG0xHkllja1Sz9A+A=;
+        b=dGWAs7Dxx9WgsUTalW7PxJh9cDJ54rnc7i0eNzVv7oq/J+mj/z7V7Au10vxJUMZ2Gx
+         JbB05CW2rWXYbVhKu6A+nbsKSmD/SyTxf3OViu72Ul5+o0R5EsI/x2Y9SwFLpjksktvc
+         rGSVuOtm5gCBAEZEvoZhPzPd0NPjGUX9IZf5JB/4Wet97lzWLVVEHQr8dOfadXU8ZMXw
+         zhTkZ8hYiDmx0vZWPYBN/oQJ3/Pi0+pWx2o9vcEKVbxt8bPlgH5CEPeyq88Mjam8UgZy
+         qN65ZsUaUgD8+FlXqilsaHi4pNzth/CNje5a0SJg6JFbVXCDpkvjtqqEvJeB6BhvSrzt
+         aTHA==
+X-Gm-Message-State: AOAM532wG2Lpv99oVMR9ae7j9RLyB4AiYRg3720UZ5VoJQq3bccFFsyb
+        keWBsZA5DqS4BDyQ670CQRplReLVIpux1Q==
+X-Google-Smtp-Source: ABdhPJwClKioatk3IhI9i1zrzQZZXckkDuMR3JG0A+AOFDAFqkqtWSj4/8Jsst3OCEKveU+YQT6vQw==
+X-Received: by 2002:a17:907:720f:: with SMTP id dr15mr3137068ejc.447.1602074889274;
+        Wed, 07 Oct 2020 05:48:09 -0700 (PDT)
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
+        by smtp.gmail.com with ESMTPSA id a10sm1461318ejs.11.2020.10.07.05.48.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 05:48:07 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id d4so2154823wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 05:48:07 -0700 (PDT)
+X-Received: by 2002:a1c:4904:: with SMTP id w4mr2925784wma.99.1602074886765;
+ Wed, 07 Oct 2020 05:48:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, tglx@linutronix.de, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+ <20201002175303.390363-2-daniel.vetter@ffwll.ch> <20201002180603.GL9916@ziepe.ca>
+ <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
+ <20201002233118.GM9916@ziepe.ca> <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
+ <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
+ <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com> <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
+ <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com> <20201007124409.GN5177@ziepe.ca>
+In-Reply-To: <20201007124409.GN5177@ziepe.ca>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 7 Oct 2020 14:47:55 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
+Message-ID: <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Tegra PMC driver does ungodly things with the interrupt hierarchy,
-repeatedly corrupting it by pulling hwirq numbers out of thin air,
-overriding existing IRQ mappings and changing the handling flow
-of unsuspecting users.
+On Wed, Oct 7, 2020 at 2:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Oct 07, 2020 at 02:33:56PM +0200, Marek Szyprowski wrote:
+> > Well, it was in vb2_get_vma() function, but now I see that it has been
+> > lost in fb639eb39154 and 6690c8c78c74 some time ago...
+>
+> There is no guarentee that holding a get on the file says anthing
+> about the VMA. This needed to check that the file was some special
+> kind of file that promised the VMA layout and file lifetime are
+> connected.
+>
+> Also, cloning a VMA outside the mm world is just really bad. That
+> would screw up many assumptions the drivers make.
+>
+> If it is all obsolete I say we hide it behind a default n config
+> symbol and taint the kernel if anything uses it.
+>
+> Add a big comment above the follow_pfn to warn others away from this
+> code.
 
-All of this is done in the name of preserving the interrupt hierarchy
-even when these levels do not exist in the HW. Together with the use
-of proper IRQs for IPIs, this leads to an unbootable system as the
-rescheduling IPI gets repeatedly repurposed for random drivers...
-
-Instead, let's simply not initialize the levels that do not make sense
-for the HW, and let the core code remove them from the hierarchy.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/soc/tegra/pmc.c | 50 -----------------------------------------
- 1 file changed, 50 deletions(-)
-
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index b39536c68f45..2395c84ef83a 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -1989,46 +1989,10 @@ static int tegra_pmc_irq_alloc(struct irq_domain *domain, unsigned int virq,
- 			err = irq_domain_set_hwirq_and_chip(domain, virq,
- 							    event->id,
- 							    &pmc->irq, pmc);
--
--			/*
--			 * GPIOs don't have an equivalent interrupt in the
--			 * parent controller (GIC). However some code, such
--			 * as the one in irq_get_irqchip_state(), require a
--			 * valid IRQ chip to be set. Make sure that's the
--			 * case by passing NULL here, which will install a
--			 * dummy IRQ chip for the interrupt in the parent
--			 * domain.
--			 */
--			if (domain->parent)
--				irq_domain_set_hwirq_and_chip(domain->parent,
--							      virq, 0, NULL,
--							      NULL);
--
- 			break;
- 		}
- 	}
- 
--	/*
--	 * For interrupts that don't have associated wake events, assign a
--	 * dummy hardware IRQ number. This is used in the ->irq_set_type()
--	 * and ->irq_set_wake() callbacks to return early for these IRQs.
--	 */
--	if (i == soc->num_wake_events) {
--		err = irq_domain_set_hwirq_and_chip(domain, virq, ULONG_MAX,
--						    &pmc->irq, pmc);
--
--		/*
--		 * Interrupts without a wake event don't have a corresponding
--		 * interrupt in the parent controller (GIC). Pass NULL for the
--		 * chip here, which causes a dummy IRQ chip to be installed
--		 * for the interrupt in the parent domain, to make this
--		 * explicit.
--		 */
--		if (domain->parent)
--			irq_domain_set_hwirq_and_chip(domain->parent, virq, 0,
--						      NULL, NULL);
--	}
--
- 	return err;
- }
- 
-@@ -2043,9 +2007,6 @@ static int tegra210_pmc_irq_set_wake(struct irq_data *data, unsigned int on)
- 	unsigned int offset, bit;
- 	u32 value;
- 
--	if (data->hwirq == ULONG_MAX)
--		return 0;
--
- 	offset = data->hwirq / 32;
- 	bit = data->hwirq % 32;
- 
-@@ -2080,9 +2041,6 @@ static int tegra210_pmc_irq_set_type(struct irq_data *data, unsigned int type)
- 	unsigned int offset, bit;
- 	u32 value;
- 
--	if (data->hwirq == ULONG_MAX)
--		return 0;
--
- 	offset = data->hwirq / 32;
- 	bit = data->hwirq % 32;
- 
-@@ -2123,10 +2081,6 @@ static int tegra186_pmc_irq_set_wake(struct irq_data *data, unsigned int on)
- 	unsigned int offset, bit;
- 	u32 value;
- 
--	/* nothing to do if there's no associated wake event */
--	if (WARN_ON(data->hwirq == ULONG_MAX))
--		return 0;
--
- 	offset = data->hwirq / 32;
- 	bit = data->hwirq % 32;
- 
-@@ -2154,10 +2108,6 @@ static int tegra186_pmc_irq_set_type(struct irq_data *data, unsigned int type)
- 	struct tegra_pmc *pmc = irq_data_get_irq_chip_data(data);
- 	u32 value;
- 
--	/* nothing to do if there's no associated wake event */
--	if (data->hwirq == ULONG_MAX)
--		return 0;
--
- 	value = readl(pmc->wake + WAKE_AOWAKE_CNTRL(data->hwirq));
- 
- 	switch (type) {
--- 
-2.28.0
-
+Sadly it's just verbally declared as deprecated and not formally noted
+anyway. There are a lot of userspace applications relying on user
+pointer support.
