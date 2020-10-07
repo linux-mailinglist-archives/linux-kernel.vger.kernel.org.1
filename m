@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5293B285C8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11A1285C92
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgJGKJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:09:02 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:35513 "EHLO mail.thorsis.com"
+        id S1727878AbgJGKKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:10:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:41250 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727996AbgJGKI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:08:58 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 0C54D3579;
-        Wed,  7 Oct 2020 12:08:55 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a5gx01CScUQn; Wed,  7 Oct 2020 12:08:54 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id D21B536BC; Wed,  7 Oct 2020 12:08:54 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Alexander Dahl <post@lespocky.de>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Jeff LaBundy <jeff@labundy.com>
-Subject: Re: [PATCH v7 03/12] dt-bindings: mfd: Fix schema warnings for pwm-leds
-Date:   Wed, 07 Oct 2020 12:08:46 +0200
-Message-ID: <2640582.VKub60Wb7X@ada>
-In-Reply-To: <20201007100359.GC12224@duo.ucw.cz>
-References: <20201005203451.9985-1-post@lespocky.de> <20201005203451.9985-4-post@lespocky.de> <20201007100359.GC12224@duo.ucw.cz>
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S1727014AbgJGKKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:10:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37806113E;
+        Wed,  7 Oct 2020 03:10:47 -0700 (PDT)
+Received: from bogus (unknown [10.57.54.133])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 938913F71F;
+        Wed,  7 Oct 2020 03:10:44 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 11:10:38 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     muhammad.husaini.zulkifli@intel.com, adrian.hunter@intel.com,
+        Sudeep Holla <sudeep.holla@arm.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        lakshmi.bai.raja.subramanian@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com, arnd@arndb.de
+Subject: Re: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+ Firmware Service call
+Message-ID: <20201007101038.ec7ymdhiaf7rhyrm@bogus>
+References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+ <20201006155549.3595-3-muhammad.husaini.zulkifli@intel.com>
+ <4677c614-ac00-fb69-d22c-54f9015249f4@xilinx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4677c614-ac00-fb69-d22c-54f9015249f4@xilinx.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hei Pavel,
-
-Am Mittwoch, 7. Oktober 2020, 12:03:59 CEST schrieb Pavel Machek:
-> > The node names for devices using the pwm-leds driver follow a certain
-> > naming scheme (now).  Parent node name is not enforced, but recommended
-> > by DT project.
-> > 
-> >   DTC     Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
-> >   CHECK   Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml
-> > 
-> > /home/alex/build/linux/Documentation/devicetree/bindings/mfd/iqs62x.exampl
-> > e.dt.yaml: pwmleds: 'panel' does not match any of the regexes:
-> > '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'> 
-> >         From schema:
-> >         /home/alex/src/linux/leds/Documentation/devicetree/bindings/leds/
-> >         leds-pwm.yaml> 
-> > Signed-off-by: Alexander Dahl <post@lespocky.de>
+On Wed, Oct 07, 2020 at 10:20:21AM +0200, Michal Simek wrote:
+> Hi,
 > 
-> Okay, so I need Rob's ack here, I guess... and rest of the series is
-> not really for my tree.
+> 1. Keem Bay: in subject is wrong. Tools are working with it and you
+> should just use keembay: instead.
+> 
+> 2. This should come first before actual change to keep the tree bisectable.
+> 
+> On 06. 10. 20 17:55, muhammad.husaini.zulkifli@intel.com wrote:
+> > From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> > 
+> > Add header file to handle API function for device driver to communicate
+> > with Arm Trusted Firmware.
+> > 
+> > Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> > ---
+> >  .../linux/firmware/intel/keembay_firmware.h   | 46 +++++++++++++++++++
+> >  1 file changed, 46 insertions(+)
+> >  create mode 100644 include/linux/firmware/intel/keembay_firmware.h
+> > 
+> > diff --git a/include/linux/firmware/intel/keembay_firmware.h b/include/linux/firmware/intel/keembay_firmware.h
+> > new file mode 100644
+> > index 000000000000..9adb8c87b788
+> > --- /dev/null
+> > +++ b/include/linux/firmware/intel/keembay_firmware.h
+> > @@ -0,0 +1,46 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + *  Intel Keembay SOC Firmware API Layer
+> > + *
+> > + *  Copyright (C) 2020-2021, Intel Corporation
+> > + *
+> > + *  Muhammad Husaini Zulkifli <Muhammad.Husaini.Zulkifli@intel.com>
+> > + */
+> > +
+> > +#ifndef __FIRMWARE_KEEMBAY_SMC_H__
+> > +#define __FIRMWARE_KEEMBAY_SMC_H__
+> > +
+> > +#include <linux/arm-smccc.h>
+> > +
+> > +/**
+> 
+> This is not a kernel doc comment. Just use /*
+> 
+> > + * This file defines API function that can be called by device driver in order to
+> > + * communicate with Arm Trusted Firmware.
+> > + */
+> > +
+> > +/* Setting for Keem Bay IO Pad Line Voltage Selection */
+> > +#define KEEMBAY_SET_SD_VOLTAGE_FUNC_ID	0x8200ff26
+> 
+> Sudeep: Don't we have any macros for composing these IDs?
+> nit: IMHO composing these IDs from macros would make more sense to me.
+> 
 
-I think so, too.
+Yes we do. Refer include/linux/arm-smccc.h
+I expect something like below, which also indicated you are using wrong
+OWNER space. You can't be 0 which is reserved for CPU ARCH. You need to
+be SIP(0x2)
 
-I saw you applied patch number 1, all the other patches are DT and from my 
-side those can wait for the Acks required and maybe I change the indexes again 
-and I'm fine resending all that after the 5.10 merge window.
-
-Thanks for applying the non-DT patches for leds subsystem, the rest will be 
-sorted out without hurry.
-
-Greets
-Alex
-
+#define ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTAGE          \
+        ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,       \
+                           ARM_SMCCC_SMC_32,          \
+                           ARM_SMCCC_OWNER_SIP,       \
+                           0xFF26)
 
 
+-- 
+Regards,
+Sudeep
