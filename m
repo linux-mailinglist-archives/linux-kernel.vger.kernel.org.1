@@ -2,97 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E36B286042
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E186F286046
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728484AbgJGNfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728450AbgJGNfl (ORCPT
+        id S1728499AbgJGNgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:36:02 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53034 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728450AbgJGNgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:35:41 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D70C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:35:40 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 184so2307755lfd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:35:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+w1W+CUXGGFXbZ34Qh5CjZMXrIFvrZ3lWXBN60hppFc=;
-        b=eH1+4bAxQ4Xw2n/zbFWwccR3SePzT0zlwNq4GU+LGKhCNA43MoCZwQdQMjjUAcMuGh
-         dsluM8ozYSNELiEQJFLaR3eiEn5++Dq8al3D8Khr1tTZPks7r68Wpt3sMEXduHALpgAH
-         cUuaTKI0v+ut5Jl+ezPoJNv9Az1p9q+Mqv5kV+gUHpQCMkPsrcmwYwyDD9bEp49cOiYr
-         u9O50ktsJyTOWWV11DouAXXAxK67iKi9Rk4kjR/SMSFQZnBr0YjP7aqLRc/FE+sVl1Ic
-         zIrd44diWdrcacEuYGR8KZyA8OSaK5fqklnFqa4WgbHRkmOYgq2U4pp3PbNa8Q/GyEAb
-         x6eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+w1W+CUXGGFXbZ34Qh5CjZMXrIFvrZ3lWXBN60hppFc=;
-        b=AgeexITDkAwv20Ov6R2kNJC2VZHuoWJ9/eNlKxKDlXrr4A8FmaKaAhO+knAKEo5LeY
-         Vkb7EFgbYHR+IdvpYZ2LfBb83K2L4phrwGHUVanS/H0HEOkc9ozQzGMTWDMyYOE3ItOF
-         8SxdC6G+6h1qq90XCRfQieMc5hF16NKjVMVzhZVMlr019Z8ewuC/BsHoMjDiO/XupngJ
-         OjSCXZ+1i21aZWbvsYI4Hy16NPDpH8O/Jp53+0hC+e3sSvoWvEWaM1AhIVjp4gVfLZn2
-         VTYOgcJmuIznnK1FC0H/FUIxgilGoRt+gKlaLUnYxuXUHVx5f/sy3c9nHPkcn+xcdr9r
-         jA/Q==
-X-Gm-Message-State: AOAM531d9946n3JbDjNUvQOucoZWvg/xA//5ptOZEwSY5nrZeCye8fxt
-        nyPvgcQTyUCsJMpR8BYmqhQ074Ekfh6xS8fRGLhXHg==
-X-Google-Smtp-Source: ABdhPJxFSWzDMt1RxkzVv4jvQRcoDe70+B0vvDwTNRVoglFOA+9S9Jcc6j31TSUtwhUg0sN0ZV0nqIu6f4fbXjVmpGE=
-X-Received: by 2002:ac2:4c11:: with SMTP id t17mr1043456lfq.260.1602077737755;
- Wed, 07 Oct 2020 06:35:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201007111145.2306213-1-lars.povlsen@microchip.com> <20201007111145.2306213-2-lars.povlsen@microchip.com>
-In-Reply-To: <20201007111145.2306213-2-lars.povlsen@microchip.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 7 Oct 2020 15:35:26 +0200
-Message-ID: <CACRpkda0RAK2gp-ZB6LDxAnQP3=VGrsfqkfV0=3FiSFfNhOmjA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: pinctrl: Add bindings for
- pinctrl-mchp-sgpio driver
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 7 Oct 2020 09:36:01 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097DZedN181990;
+        Wed, 7 Oct 2020 13:35:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=qzztbz137uTsx9vqSjB5304pXY2n0tbh024P77RqzFw=;
+ b=stKDT7x0W/SxhCNvCHdJSewezI7HAc6cHYGW9Rca/W84/4oSB2MLhbAuZt7VPu5dVb0y
+ 3sgkkN50Fd4hk3D88/Pt/3N3gPd2s/iNHF+pdN15guxNUUas9EGISMhoKkmJjOK7jQKV
+ +7s8iDhG16nQq4sHvowDGvnrBB6wiOdKWR6ZL3B+gEC9wWsWna6Pnum3eBXr17piZSUw
+ NkQ21D8KpoHH38+TbNk2J7ndd82sQ/rWn8ul7+6P/aI48UYS6NEPNF6lVDiv5bD8HbH5
+ VjyqIanw8aGallb7RUMUrKgnoQJRKqKoQZAHnLurj0DSeZ+MX0HOdms7txe2+SWIT65C Hg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 33xhxn1psv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 13:35:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097DZYaB180660;
+        Wed, 7 Oct 2020 13:35:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 33y2vph8xb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 13:35:44 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 097DZg34002242;
+        Wed, 7 Oct 2020 13:35:43 GMT
+Received: from [192.168.1.26] (/70.114.128.235)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 06:35:42 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH -next v2] scsi: qla2xxx: Convert to DEFINE_SHOW_ATTRIBUTE
+From:   Himanshu Madhani <himanshu.madhani@oracle.com>
+In-Reply-To: <20200919025202.17531-1-miaoqinglang@huawei.com>
+Date:   Wed, 7 Oct 2020 08:35:42 -0500
+Cc:     Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <68C6E741-9A58-4E4E-B746-4E810EA7D651@oracle.com>
+References: <20200919025202.17531-1-miaoqinglang@huawei.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070089
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars,
 
-a new version of the patch set arrives while I'm reviewing, haha :D
 
-On Wed, Oct 7, 2020 at 1:12 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+> On Sep 18, 2020, at 9:52 PM, Qinglang Miao <miaoqinglang@huawei.com> =
+wrote:
+>=20
+> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+>=20
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+> v2: based on linux-next(20200917), and can be applied to
+>    mainline cleanly now.
+>=20
+> drivers/scsi/qla2xxx/qla_dfs.c | 68 ++++------------------------------
+> 1 file changed, 8 insertions(+), 60 deletions(-)
+>=20
+> diff --git a/drivers/scsi/qla2xxx/qla_dfs.c =
+b/drivers/scsi/qla2xxx/qla_dfs.c
+> index e62b21152..9e49b47f6 100644
+> --- a/drivers/scsi/qla2xxx/qla_dfs.c
+> +++ b/drivers/scsi/qla2xxx/qla_dfs.c
+> @@ -37,20 +37,7 @@ qla2x00_dfs_tgt_sess_show(struct seq_file *s, void =
+*unused)
+> 	return 0;
+> }
+>=20
+> -static int
+> -qla2x00_dfs_tgt_sess_open(struct inode *inode, struct file *file)
+> -{
+> -	scsi_qla_host_t *vha =3D inode->i_private;
+> -
+> -	return single_open(file, qla2x00_dfs_tgt_sess_show, vha);
+> -}
+> -
+> -static const struct file_operations dfs_tgt_sess_ops =3D {
+> -	.open		=3D qla2x00_dfs_tgt_sess_open,
+> -	.read		=3D seq_read,
+> -	.llseek		=3D seq_lseek,
+> -	.release	=3D single_release,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(qla2x00_dfs_tgt_sess);
+>=20
+> static int
+> qla2x00_dfs_tgt_port_database_show(struct seq_file *s, void *unused)
+> @@ -106,20 +93,7 @@ qla2x00_dfs_tgt_port_database_show(struct seq_file =
+*s, void *unused)
+> 	return 0;
+> }
+>=20
+> -static int
+> -qla2x00_dfs_tgt_port_database_open(struct inode *inode, struct file =
+*file)
+> -{
+> -	scsi_qla_host_t *vha =3D inode->i_private;
+> -
+> -	return single_open(file, qla2x00_dfs_tgt_port_database_show, =
+vha);
+> -}
+> -
+> -static const struct file_operations dfs_tgt_port_database_ops =3D {
+> -	.open		=3D qla2x00_dfs_tgt_port_database_open,
+> -	.read		=3D seq_read,
+> -	.llseek		=3D seq_lseek,
+> -	.release	=3D single_release,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(qla2x00_dfs_tgt_port_database);
+>=20
+> static int
+> qla_dfs_fw_resource_cnt_show(struct seq_file *s, void *unused)
+> @@ -154,20 +128,7 @@ qla_dfs_fw_resource_cnt_show(struct seq_file *s, =
+void *unused)
+> 	return 0;
+> }
+>=20
+> -static int
+> -qla_dfs_fw_resource_cnt_open(struct inode *inode, struct file *file)
+> -{
+> -	struct scsi_qla_host *vha =3D inode->i_private;
+> -
+> -	return single_open(file, qla_dfs_fw_resource_cnt_show, vha);
+> -}
+> -
+> -static const struct file_operations dfs_fw_resource_cnt_ops =3D {
+> -	.open           =3D qla_dfs_fw_resource_cnt_open,
+> -	.read           =3D seq_read,
+> -	.llseek         =3D seq_lseek,
+> -	.release        =3D single_release,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(qla_dfs_fw_resource_cnt);
+>=20
+> static int
+> qla_dfs_tgt_counters_show(struct seq_file *s, void *unused)
+> @@ -244,20 +205,7 @@ qla_dfs_tgt_counters_show(struct seq_file *s, =
+void *unused)
+> 	return 0;
+> }
+>=20
+> -static int
+> -qla_dfs_tgt_counters_open(struct inode *inode, struct file *file)
+> -{
+> -	struct scsi_qla_host *vha =3D inode->i_private;
+> -
+> -	return single_open(file, qla_dfs_tgt_counters_show, vha);
+> -}
+> -
+> -static const struct file_operations dfs_tgt_counters_ops =3D {
+> -	.open           =3D qla_dfs_tgt_counters_open,
+> -	.read           =3D seq_read,
+> -	.llseek         =3D seq_lseek,
+> -	.release        =3D single_release,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(qla_dfs_tgt_counters);
+>=20
+> static int
+> qla2x00_dfs_fce_show(struct seq_file *s, void *unused)
+> @@ -459,19 +407,19 @@ qla2x00_dfs_setup(scsi_qla_host_t *vha)
+>=20
+> create_nodes:
+> 	ha->dfs_fw_resource_cnt =3D =
+debugfs_create_file("fw_resource_count",
+> -	    S_IRUSR, ha->dfs_dir, vha, &dfs_fw_resource_cnt_ops);
+> +	    S_IRUSR, ha->dfs_dir, vha, &qla_dfs_fw_resource_cnt_fops);
+>=20
+> 	ha->dfs_tgt_counters =3D debugfs_create_file("tgt_counters", =
+S_IRUSR,
+> -	    ha->dfs_dir, vha, &dfs_tgt_counters_ops);
+> +	    ha->dfs_dir, vha, &qla_dfs_tgt_counters_fops);
+>=20
+> 	ha->tgt.dfs_tgt_port_database =3D =
+debugfs_create_file("tgt_port_database",
+> -	    S_IRUSR,  ha->dfs_dir, vha, &dfs_tgt_port_database_ops);
+> +	    S_IRUSR,  ha->dfs_dir, vha, =
+&qla2x00_dfs_tgt_port_database_fops);
+>=20
+> 	ha->dfs_fce =3D debugfs_create_file("fce", S_IRUSR, ha->dfs_dir, =
+vha,
+> 	    &dfs_fce_ops);
+>=20
+> 	ha->tgt.dfs_tgt_sess =3D debugfs_create_file("tgt_sess",
+> -		S_IRUSR, ha->dfs_dir, vha, &dfs_tgt_sess_ops);
+> +		S_IRUSR, ha->dfs_dir, vha, &qla2x00_dfs_tgt_sess_fops);
+>=20
+> 	if (IS_QLA27XX(ha) || IS_QLA83XX(ha) || IS_QLA28XX(ha))
+> 		ha->tgt.dfs_naqp =3D debugfs_create_file("naqp",
+> --=20
+> 2.23.0
+>=20
 
-> This adds DT bindings for the Microsemi/Microchip SGPIO controller,
-> bindings microchip,sparx5-sgpio, mscc,ocelot-sgpio and
-> mscc,luton-sgpio.
->
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+Nice cleanup.=20
 
-(...)
-> +      reg:
-> +        description: |
-> +          The GPIO bank number. "0" is designates the input pin bank,
-> +          "1" the output bank.
-> +        maxItems: 1
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 
-Excellent.
+--
+Himanshu Madhani	 Oracle Linux Engineering
 
-> +      '#gpio-cells':
-> +        const: 3
-
-So I thought you needed three cells exactly because the
-middle cell would get you the bank. That you now have in
-reg. So what about using the standard twocell?
-
-Yours,
-Linus Walleij
