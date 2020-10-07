@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97C62861CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63752861D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgJGPHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgJGPHP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:07:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E98C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 08:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NbX1ykHFrbFRcpkWX+4eB6loFXRWmEWCwz+tjsJAz6U=; b=B+4rgxdgN0gp1L0HpHtoaUsZ64
-        OijsaAeHuqH7ss1toeabI1+RrXmbcVR98vhJ5lWP24NZ5CX9awhWowF9kupIFnomhGCArUXa2IjUX
-        XRHr/mHd4BvT8MstyNQIiD36iUaGmbOCl5i4sKpuUpYF51/VDvHisOmfZC1ppUE1ho9sYjhRVSUkw
-        8tIAqDEEz0Jfax+zHW1+7o1YrQseltCKtdbDaE5620RannmIkeSUVOg8OgU9ZyefomZxSnVxkLoRO
-        JYjC1XVidAPf9ZNBGvSXUfdn5RLN2JHDl6d/uA5HvknWDpxrvlNbsZuuRmp7XFwT9EQDfyeZ3BK/a
-        PAxCEQWg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQB21-0005fY-Gb; Wed, 07 Oct 2020 15:07:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9BCB53019CE;
-        Wed,  7 Oct 2020 17:07:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 877DE2BC1621E; Wed,  7 Oct 2020 17:07:04 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 17:07:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v3)
-Message-ID: <20201007150704.GH2628@hirez.programming.kicks-ass.net>
-References: <20200924172508.8724-1-mathieu.desnoyers@efficios.com>
- <20200924172508.8724-3-mathieu.desnoyers@efficios.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924172508.8724-3-mathieu.desnoyers@efficios.com>
+        id S1727765AbgJGPJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:09:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727608AbgJGPJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:09:27 -0400
+Received: from localhost.localdomain (89.208.247.74.16clouds.com [89.208.247.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12F0D20797;
+        Wed,  7 Oct 2020 15:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602083366;
+        bh=ue48qs9GmEev9xcyNZPMQmpU0ksnr3ttGA99FAlJ2uw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WSu15+dlN2JP7df3PziufzZRGpBKyUde1uJwJgq1GJJBU01R+cu7UGB7SH1+FzCOz
+         l+dP9iQudbkVbaW0eji2GP08amEFv5yjWzj4cESavSeE7xuzGqbLsw3tC9V+KNDtF2
+         qtXql4qvqqvER79nz12DWA7+UH62/8KAphJ0QS2g=
+From:   guoren@kernel.org
+To:     palmerdabbelt@google.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        atishp@atishpatra.org, schwab@linux-m68k.org, aurelien@aurel32.net,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH 1/2] Revert "riscv: Fixup static_obj() fail"
+Date:   Wed,  7 Oct 2020 15:08:32 +0000
+Message-Id: <1602083313-19239-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:25:07PM -0400, Mathieu Desnoyers wrote:
+From: Guo Ren <guoren@linux.alibaba.com>
 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2d95dc3f4644..bab6f4f2809f 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3736,6 +3736,8 @@ context_switch(struct rq *rq, struct task_struct *prev,
->  	 */
->  	arch_start_context_switch(prev);
->  
-> +	membarrier_switch_mm(rq, prev->mm, next->mm);
-> +
->  	/*
->  	 * kernel -> kernel   lazy + transfer active
->  	 *   user -> kernel   lazy + mmgrab() active
-> @@ -3752,7 +3754,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
->  		else
->  			prev->active_mm = NULL;
->  	} else {                                        // to user
-> -		membarrier_switch_mm(rq, prev->active_mm, next->mm);
->  		/*
->  		 * sys_membarrier() requires an smp_mb() between setting
->  		 * rq->curr / membarrier_switch_mm() and returning to userspace.
+This reverts commit 6184358da0004c8fd940afda6c0a0fa4027dc911.
 
-I was thinking... do we need the above, when:
+It will cause bootup failure with HARDENED_USERCOPY.
 
-> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-> index 8bc8b8a888b7..e5246580201b 100644
-> --- a/kernel/sched/membarrier.c
-> +++ b/kernel/sched/membarrier.c
-> @@ -112,13 +112,9 @@ static int membarrier_global_expedited(void)
->  		    MEMBARRIER_STATE_GLOBAL_EXPEDITED))
->  			continue;
->  
-> -		/*
-> -		 * Skip the CPU if it runs a kernel thread. The scheduler
-> -		 * leaves the prior task mm in place as an optimization when
-> -		 * scheduling a kthread.
-> -		 */
-> +		/* Skip the CPU if it runs the idle thread. */
->  		p = rcu_dereference(cpu_rq(cpu)->curr);
-> -		if (p->flags & PF_KTHREAD)
+As Aurelien has reported:
 
-We retain this in the form:
+[    3.484586] AppArmor: AppArmor sha1 policy hashing enabled
+[    4.749835] Freeing unused kernel memory: 492K
+[    4.752017] Run /init as init process
+[    4.753571] usercopy: Kernel memory overwrite attempt detected to kernel text (offset 507879, size 11)!
+[    4.754838] ------------[ cut here ]------------
+[    4.755651] kernel BUG at mm/usercopy.c:99!
+[    4.756445] Kernel BUG [#1]
+[    4.756815] Modules linked in:
+[    4.757542] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.8.0-1-riscv64 #1 Debian 5.8.7-1
+[    4.758372] epc: ffffffe0003b5120 ra : ffffffe0003b5120 sp : ffffffe07f783ca0
+[    4.758960]  gp : ffffffe000cc7230 tp : ffffffe07f77cec0 t0 : ffffffe000cdafc0
+[    4.759772]  t1 : 0000000000000064 t2 : 0000000000000000 s0 : ffffffe07f783cf0
+[    4.760534]  s1 : ffffffe00095d780 a0 : 000000000000005b a1 : 0000000000000020
+[    4.761309]  a2 : 0000000000000005 a3 : 0000000000000000 a4 : ffffffe000c1f340
+[    4.761848]  a5 : ffffffe000c1f340 a6 : 0000000000000000 a7 : 0000000000000087
+[    4.762684]  s2 : ffffffe000941848 s3 : 000000000007bfe7 s4 : 000000000000000b
+[    4.763500]  s5 : 0000000000000000 s6 : ffffffe00091cc00 s7 : fffffffffffff000
+[    4.764376]  s8 : 0000003ffffff000 s9 : ffffffe0769f3200 s10: 000000000000000b
+[    4.765208]  s11: ffffffe07d548c40 t3 : 0000000000000000 t4 : 000000000001dcd0
+[    4.766059]  t5 : ffffffe000cc8510 t6 : ffffffe000cd64aa
+[    4.766712] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
+[    4.768308] ---[ end trace 1f8e733e834d4c3e ]---
+[    4.769129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[    4.770070] SMP: stopping secondary CPUs
+[    4.771110] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
 
-		if ((p->flags & PF_KTHREAD) && !p-mm)
-			continue;
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Reported-by: Aurelien Jarno <aurelien@aurel32.net>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Atish Patra <atishp@atishpatra.org>
+Cc: Andreas Schwab <schwab@linux-m68k.org>
+---
+ arch/riscv/kernel/vmlinux.lds.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +		if (is_idle_task(p))
->  			continue;
->  
->  		__cpumask_set_cpu(cpu, tmpmask);
+diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+index f3586e3..e6f8016 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -22,7 +22,6 @@ SECTIONS
+ 	/* Beginning of code and text segment */
+ 	. = LOAD_OFFSET;
+ 	_start = .;
+-	_stext = .;
+ 	HEAD_TEXT_SECTION
+ 	. = ALIGN(PAGE_SIZE);
+ 
+@@ -55,6 +54,7 @@ SECTIONS
+ 	. = ALIGN(SECTION_ALIGN);
+ 	.text : {
+ 		_text = .;
++		_stext = .;
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+ 		CPUIDLE_TEXT
+-- 
+2.7.4
 
-Specifically, we only care about kthreads when they're between
-kthread_use_mm() / kthread_unuse_mm(), and in that case they will have
-updated state already.
-
-It's too late in the day to be sure about the memory ordering though;
-but if we see !->mm, they'll do/have-done switch_mm() which implies
-sufficient barriers().
-
-Hmm?
