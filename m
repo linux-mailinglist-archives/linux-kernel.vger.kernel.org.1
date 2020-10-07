@@ -2,148 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454EA28657B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAED28657F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgJGRK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:10:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
+        id S1728114AbgJGRLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:11:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726948AbgJGRK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:10:27 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        id S1726168AbgJGRLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:11:09 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CADE321707;
-        Wed,  7 Oct 2020 17:10:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EC5621775;
+        Wed,  7 Oct 2020 17:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602090626;
-        bh=dws2CpzEWU0JT8f0BWVwWDLwOmd1rKbKq0cKE+yRI+A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PxaVnUlf9ix7pnsdYskq35CddMgFV5OeK/e12Xlifv00IgAI81Hxzg65V/nJ7tLpa
-         k9Muw+CcNoe/uiGpRR99VVFpSpXpRNVYQBLNRQN4Cy8386l81mD7MAsKx2PrXRCYtd
-         n68DUWpTZ/fnEm5oHdgY12bgKFlapV047nnW892I=
-Date:   Wed, 7 Oct 2020 12:10:24 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Len Brown <len.brown@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PCI: Disable PTM during suspend on Intel PCI bridges
-Message-ID: <20201007171024.GA3252529@bjorn-Precision-5520>
+        s=default; t=1602090668;
+        bh=Q/SeNQlpma2QgtnPxD9Oeo195rXtJWRkFMLd4Ccsk7I=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VTi8JK423f8kusfHNAuAZiB9RWqC8f4FjfPzwDCcJHe41WddgDmti4dpdZgVWdV1d
+         FvyIi+Aq/l2drHrZHyzk2CVE377Wzi71lrbo5JYjL2+vOGf4wwxI67+TNtcCt9Wo+c
+         6COtjB1bJNl//Qx4MHfKN79CLs8/8tOMNvfFyrLU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 00AAD3522FA4; Wed,  7 Oct 2020 10:11:07 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 10:11:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
+        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        torvalds@linux-foundation.org
+Subject: Re: Control Dependencies vs C Compilers
+Message-ID: <20201007171107.GO29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
+ <875z7nm4qm.fsf@oldenburg2.str.redhat.com>
+ <20201007093243.GB2628@hirez.programming.kicks-ass.net>
+ <87k0w2gww6.fsf@oldenburg2.str.redhat.com>
+ <20201007115054.GD2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gRph3UMffWqUVqTnDE149Ai-SbzmhjzZU1x=QOzAZeZA@mail.gmail.com>
+In-Reply-To: <20201007115054.GD2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 06:53:16PM +0200, Rafael J. Wysocki wrote:
-> On Wed, Oct 7, 2020 at 6:49 PM David E. Box <david.e.box@linux.intel.com> wrote:
-> >
-> > On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
-> > Time Measurement (PTM) capability can prevent PCIe root ports from power
-> > gating during suspend-to-idle, causing increased power consumption on
-> > systems that suspend using Low Power S0 Idle [1]. The issue is yet to be
-> > root caused but believed to be coming from a race condition in the suspend
-> > flow as the incidence rate varies for different platforms on Linux but the
-> > issue does not occur at all in other operating systems. For now, disable
-> > the feature on suspend on all Intel root ports and enable again on resume.
+On Wed, Oct 07, 2020 at 01:50:54PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 07, 2020 at 12:20:41PM +0200, Florian Weimer wrote:
+> > * Peter Zijlstra:
+
+[ . . . ]
+
+> > >> I think in GCC, they are called __atomic_load_n(foo, __ATOMIC_RELAXED)
+> > >> and __atomic_store_n(foo, __ATOMIC_RELAXED).  GCC can't optimize relaxed
+> > >> MO loads and stores because the C memory model is defective and does not
+> > >> actually guarantee the absence of out-of-thin-air values (a property it
+> > >> was supposed to have).
+> > >
+> > > AFAIK people want to get that flaw in the C memory model fixed (which to
+> > > me seemd like a very good idea).
+> > 
+> > It's been a long time since people realized that this problem exists,
+> > with several standard releases since then.
 > 
-> IMV it should also be noted that there is no particular reason why PTM
-> would need to be enabled while the whole system is suspended.  At
-> least it doesn't seem to be particularly useful in that state.
+> I've been given to believe it is a hard problem. Personally I hold the
+> opinion that prohibiting store speculation (of all kinds) is both
+> necesary and sufficient to avoid OOTA. But I have 0 proof for that.
 
-Is this a hardware erratum?  If not, and this is working as designed,
-it sounds like we'd need to apply this quirk to every device that
-supports PTM.  That's not really practical.
+There are proofs for some definitions of store speculation, for example,
+as proposed by Demsky and Boehm [1] and as prototyped by Demsky's student,
+Peizhao Ou [2].  But these require marking all accesses and end up being
+optimized variants of acquire load and release store.  One optimization
+is that if you have a bunch of loads followed by a bunch of stores,
+the compiler can emit a single memory-barrier instruction between the
+last load and the first store.
 
-The bugzilla says "there is no erratum as this does not affect
-Windows," but that doesn't answer the question.  What I want to know
-is whether this is a *hardware* defect and whether it will be fixed in
-future hardware.
+I am not a fan of this approach.
 
-If it's a "wont-fix" hardware issue, we can just disable PTM
-completely on Intel hardware and we won't have to worry about it
-during suspend.
+Challenges include:
 
-> > Link: https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf
-> > Bug: https://bugzilla.kernel.org/show_bug.cgi?id=209361
-> > Tested-by: Len Brown <len.brown@intel.com>
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > ---
-> >  drivers/pci/quirks.c | 57 ++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 57 insertions(+)
-> >
-> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > index bdf9b52567e0..e82b1f60c7a1 100644
-> > --- a/drivers/pci/quirks.c
-> > +++ b/drivers/pci/quirks.c
-> > @@ -5632,3 +5632,60 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
-> >  }
-> >  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
-> >                                PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-> > +
-> > +#ifdef CONFIG_PCIE_PTM
-> > +/*
-> > + * On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
-> > + * Time Measurement (PTM) capability can prevent the PCIe root port from
-> > + * power gating during suspend-to-idle, causing increased power consumption.
-> > + * So disable the feature on suspend on all Intel root ports and enable
-> > + * again on resume.
-> > + */
-> > +static void quirk_intel_ptm_disable_suspend(struct pci_dev *dev)
-> > +{
-> > +       int pos;
-> > +       u32 ctrl;
-> > +
-> > +       if (!(dev->ptm_enabled && dev->ptm_root))
-> > +               return;
-> > +
-> > +       pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-> > +       if (!pos)
-> > +               return;
-> > +
-> > +       pci_dbg(dev, "quirk: disabling PTM\n");
-> > +
-> > +       dev->ptm_enabled = 0;
-> > +       dev->ptm_root = 0;
-> > +
-> > +       pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
-> > +       ctrl &= ~(PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT);
-> > +       pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
-> > +}
-> > +
-> > +static void quirk_intel_ptm_enable_resume(struct pci_dev *dev)
-> > +{
-> > +       int pos;
-> > +       u32 ctrl;
-> > +
-> > +       pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-> > +       if (!pos)
-> > +               return;
-> > +
-> > +       pci_dbg(dev, "quirk: re-enabling PTM\n");
-> > +
-> > +       pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
-> > +       ctrl |= PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT;
-> > +       pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
-> > +
-> > +       dev->ptm_enabled = 1;
-> > +       dev->ptm_root = 1;
-> > +}
-> > +
-> > +DECLARE_PCI_FIXUP_CLASS_SUSPEND(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
-> > +                               PCI_CLASS_BRIDGE_PCI, 8,
-> > +                               quirk_intel_ptm_disable_suspend)
-> > +DECLARE_PCI_FIXUP_CLASS_RESUME(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
-> > +                              PCI_CLASS_BRIDGE_PCI, 8,
-> > +                              quirk_intel_ptm_enable_resume)
-> > +#endif
-> > --
-> > 2.20.1
-> >
+o	Unmarked accesses.  Compilers are quite aggressive about
+	moving normal code.
+
+o	Separately compiled code.  For example, does the compiler have
+	unfortunatel optimization opportunities when "volatile if" 
+	appears in one translation unit and the dependent stores in
+	some other translation unit?
+
+o	LTO, as has already been mentioned in this thread.
+
+Probably other issues as well, but a starting point.
+
+							Thanx, Paul
+
+[1]	https://dl.acm.org/doi/10.1145/2618128.2618134
+	"Outlawing ghosts: avoiding out-of-thin-air results"
+	Hans-J. Boehm and Brian Demsky.
+
+[2]	https://escholarship.org/uc/item/2vm546k1
+	"An Initial Study of Two Approaches to Eliminating Out-of-Thin-Air
+	Results" Peizhao Ou.
