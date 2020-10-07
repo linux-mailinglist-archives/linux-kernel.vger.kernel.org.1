@@ -2,203 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DF028577B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0A6285781
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgJGEMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 00:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
+        id S1726388AbgJGEVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 00:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJGEMQ (ORCPT
+        with ESMTP id S1725970AbgJGEVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 00:12:16 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EDAC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 21:12:15 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id t23so2249385pji.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 21:12:15 -0700 (PDT)
+        Wed, 7 Oct 2020 00:21:08 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B0EC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 21:21:08 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id h24so961810ejg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 21:21:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y42f+xCeFC9aJfaprUfLKsV1W6cjiDKd4zVBYm3so2c=;
-        b=Am626B1mMSzKkJtKZO1KtVxoCrwhVXv6gfab3stoZ4ewy7b5+MYDP5R7eYl4JXL9kX
-         ngSMaYqPVKvRv6wfttCJyW7VySrZdpDbLVd7OXy+XZCkdwvcmrH1JLH8ZQ0zqNwHMdhZ
-         RZ3ankVeIu7omdFnqWFsJolMHytMcIUGg66DgJJxck6zBkvtdO8i2MrZAocOAIq3aHsp
-         5iLjQ/pLIF+y0LHaRinPO/bNl9vZoIsTNCOKSfB3ekqC+P+gxY4eSuLt5B6wI3DOSxb0
-         oXGMvUdklTynf3UE5QGClSGXUMnp/GW7uNrd+7RMirJIs1rUp948JKc47+jePxPQJnkc
-         1E9A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NBNZtVQQB2KTdNFAhcuch9XxJZhD9YHNjFHMfmNY94s=;
+        b=IAtzqnshZSKEtiIEx3/kBic2CZfhf5/w50Z/OJjVK0+RDEdhrzjVzNZZaqGoeOkTZg
+         c1K3VeB6RiR6uVngB7hth37dc2V/gtvVklcbHLmT0aGSMqs8zDvZAplv0Vfg/6FFNkts
+         qkyacXrYhC658NZhNQrgNwkwuGem15wyoWFv5bEILsdACBl90iga7QekKs8nZ21xx+jr
+         +miiB2scgvBloMfrUS1Pg/YQ/bZvlMDDSOCXneEfN/NeAIuYgzf5PAn+4n66WlRP3ReR
+         uOYpl/x8+bVMvHXhcYp/LAQWcGB4lHOfg3Be0qhjDsO4SmWE+tTAMt8GiO89iT93w5p2
+         gMKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Y42f+xCeFC9aJfaprUfLKsV1W6cjiDKd4zVBYm3so2c=;
-        b=oyUiG2U9oMPnMUlCxkSMeCX0SEVFIcGO7G87q/fCGltzq9r+W4bsUV/5KYdRchhAhQ
-         vZHOz1HXzZD/CxgNuuXz1pY45h0vOlYljZuy+VUGJL2vVk1g//NUc+mntBXWDBg4beyz
-         VuWWKyHdrdRtcjWk9r3cuhL9XWj1FO8xDU4MOjns69PAmlg4Tf7CIjQwTO/EGXhdy9Du
-         cDyjCCkhM1bb9j8ttDQdUuu2v+OLP3G2PuL888Z181c/8zxZjHx8BjdpmMSgFRUD65Mb
-         d/WSqp0c8Oy4cXEAdLSjKBk61VkQfpaQ6/8ekZD9/8p130N1C7rl2+2ytIa9iIhTL/VX
-         h+1g==
-X-Gm-Message-State: AOAM533PWMT2uGXCa89BD5AoysPftkSjrzahx07REgluMlHtWRIJbLbG
-        VF6mYN1l3NkD/G3Xe1UBHIjL3FNE0ht9Ng==
-X-Google-Smtp-Source: ABdhPJyYQFQrTMby8WlVHEvFCUzvT2Fa9HBpYH785CXECo64okrkWsmHHRBwGUcT1huT8BhMIW8nMA==
-X-Received: by 2002:a17:90b:698:: with SMTP id m24mr1227870pjz.154.1602043935036;
-        Tue, 06 Oct 2020 21:12:15 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id h9sm810241pgk.52.2020.10.06.21.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 21:12:14 -0700 (PDT)
-Date:   Tue, 06 Oct 2020 21:12:14 -0700 (PDT)
-X-Google-Original-Date: Tue, 06 Oct 2020 20:22:44 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Fixup bootup failure with HARDENED_USERCOPY
-In-Reply-To: <1602002973-92934-1-git-send-email-guoren@kernel.org>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        guoren@linux.alibaba.com, atishp@atishpatra.org,
-        schwab@linux-m68k.org
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     guoren@kernel.org
-Message-ID: <mhng-405fa3f3-74ce-4a03-958e-d0a6c42de3f6@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NBNZtVQQB2KTdNFAhcuch9XxJZhD9YHNjFHMfmNY94s=;
+        b=ktS2/1QoUTrRtHJkMMFP1VkVG4vZ//NEqLmBZ/2sY+5mXRdPpPn1eBelhz/whUTX8u
+         2qgnCbFErBPZ3hpUBj3flF1nBBfpEWD9MmbA+UDoUgpQom2q1XCUWWoX7veBjq3BVnkX
+         ElLEjpOV3TefX1OlPAGH/mjSuxEnw2qDL/+I+wioK2ylorI7KVGw1V1e9+SCiv+p6pO4
+         +FLFz1lPSZTKemJ431yWvXBt6JEATkPGPktngD+kbnpumEDpfEReyAtBjG+Q/dNtHtCg
+         2zqk4KT+SPtIfdIRH/aMHsfagY2S8qydvrPdCzDF3r7d0I1dRzOpwsnprNTA6/Z4/ewA
+         CO+g==
+X-Gm-Message-State: AOAM5307scLMLaxwPrthCx4GyoMzeZEWRFlgJX2nv75H7k8YOBrsZqYT
+        BlYnRPiH2Bn7sYpl10dmWI91ZNrPcm3xP2N0nC3ktg==
+X-Google-Smtp-Source: ABdhPJxdiczbtzfxGozT7L2wA9lT0y/4c98CZNLdrbdeb8WB+XggqqPmqtnlngt+l7qVyRbNLZSVAX1iCA9NPJp9B3c=
+X-Received: by 2002:a17:906:86c3:: with SMTP id j3mr1441155ejy.493.1602044466731;
+ Tue, 06 Oct 2020 21:21:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200916041908.66649-1-ebiggers@kernel.org>
+In-Reply-To: <20200916041908.66649-1-ebiggers@kernel.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 7 Oct 2020 06:20:40 +0200
+Message-ID: <CAG48ez3Jv6_SSgxMrzEmx1pY04TnsOXhGVvjt2-14-xe-BjTzA@mail.gmail.com>
+Subject: Re: [PATCH] random: fix the RNDRESEEDCRNG ioctl
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-crypto@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Oct 2020 09:49:33 PDT (-0700), guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> As Aurelien has reported:
->
-> [    3.484586] AppArmor: AppArmor sha1 policy hashing enabled
-> [    4.749835] Freeing unused kernel memory: 492K
-> [    4.752017] Run /init as init process
-> [    4.753571] usercopy: Kernel memory overwrite attempt detected to kernel text (offset 507879, size 11)!
-> [    4.754838] ------------[ cut here ]------------
-> [    4.755651] kernel BUG at mm/usercopy.c:99!
-> [    4.756445] Kernel BUG [#1]
-> [    4.756815] Modules linked in:
-> [    4.757542] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.8.0-1-riscv64 #1 Debian 5.8.7-1
-> [    4.758372] epc: ffffffe0003b5120 ra : ffffffe0003b5120 sp : ffffffe07f783ca0
-> [    4.758960]  gp : ffffffe000cc7230 tp : ffffffe07f77cec0 t0 : ffffffe000cdafc0
-> [    4.759772]  t1 : 0000000000000064 t2 : 0000000000000000 s0 : ffffffe07f783cf0
-> [    4.760534]  s1 : ffffffe00095d780 a0 : 000000000000005b a1 : 0000000000000020
-> [    4.761309]  a2 : 0000000000000005 a3 : 0000000000000000 a4 : ffffffe000c1f340
-> [    4.761848]  a5 : ffffffe000c1f340 a6 : 0000000000000000 a7 : 0000000000000087
-> [    4.762684]  s2 : ffffffe000941848 s3 : 000000000007bfe7 s4 : 000000000000000b
-> [    4.763500]  s5 : 0000000000000000 s6 : ffffffe00091cc00 s7 : fffffffffffff000
-> [    4.764376]  s8 : 0000003ffffff000 s9 : ffffffe0769f3200 s10: 000000000000000b
-> [    4.765208]  s11: ffffffe07d548c40 t3 : 0000000000000000 t4 : 000000000001dcd0
-> [    4.766059]  t5 : ffffffe000cc8510 t6 : ffffffe000cd64aa
-> [    4.766712] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
-> [    4.768308] ---[ end trace 1f8e733e834d4c3e ]---
-> [    4.769129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> [    4.770070] SMP: stopping secondary CPUs
-> [    4.771110] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
->
-> Above failure is relate to commit: a0fa4027dc911 (riscv: Fixup
+On Wed, Sep 16, 2020 at 6:19 AM Eric Biggers <ebiggers@kernel.org> wrote:
+> The RNDRESEEDCRNG ioctl reseeds the primary_crng from itself, which
+> doesn't make sense.  Reseed it from the input_pool instead.
 
-That commit isn't in Linus' tree (at least, as far as I see it).  I have
-6184358da000 ("riscv: Fixup static_obj() fail"), so I'm going to fix that -- in
-fact, I'm going to essentially just replace most of this rationale with what I
-wrote up in my revert as this is all a bit too long for a commit message.
+Good catch. (And its purpose is to ensure that entropy from
+random_write() is plumbed all the way through such that getrandom()
+and friends are guaranteed to actually use that entropy on the next
+invocation; and random_write() just puts data into the input pool.)
 
-I was kind of worried the initdata move was a bit too risky, but after reading
-the users of __init_{begin,end} I think it's safe.  Here's what I ended up with
-on fixes.
+But actually, looking at the surrounding code, I think there's another
+small problem?
 
-Thanks!
+> Fixes: d848e5f8e1eb ("random: add new ioctl RNDRESEEDCRNG")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-commit 84814460eef9af0fb56a4698341c9cb7996a6312 (HEAD -> fixes, riscv/fixes)
-gpg: Signature made Tue 06 Oct 2020 09:11:35 PM PDT
-gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
-gpg:                issuer "palmer@dabbelt.com"
-gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
-gpg:                 aka "Palmer Dabbelt <palmerdabbelt@google.com>" [ultimate]
-Author: Guo Ren <guoren@linux.alibaba.com>
-Date:   Tue Oct 6 16:49:33 2020 +0000
+Reviewed-by: Jann Horn <jannh@google.com>
 
-    riscv: Fixup bootup failure with HARDENED_USERCOPY
-    
-    6184358da000 ("riscv: Fixup static_obj() fail") attempted to elide a lockdep
-    failure by rearranging our kernel image to place all initdata within [_stext,
-    _end], thus triggering lockdep to treat these as static objects.  These objects
-    are released and eventually reallocated, causing check_kernel_text_object() to
-    trigger a BUG().
-    
-    This backs out the change to make [_stext, _end] all-encompassing, instead just
-    moving initdata.  This results in initdata being outside of [__init_begin,
-    __init_end], which means initdata can't be freed.
-    
-    Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
-    Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-    Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-    Tested-by: Aurelien Jarno <aurelien@aurel32.net>
-    [Palmer: Clean up commit text]
-    Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-
-> static_obj() fail). When we expand static_obj include INIT_DATA,
-> we also include INIT_TEXT into usercopy check kernel text:
->
-> /* Is this address range in the kernel text area? */
-> static inline void check_kernel_text_object(const unsigned long ptr,
->                                             unsigned long n, bool to_user)
-> {
->         unsigned long textlow = (unsigned long)_stext;
->         unsigned long texthigh = (unsigned long)_etext;
->         unsigned long textlow_linear, texthigh_linear;
->
->         if (overlaps(ptr, n, textlow, texthigh))
->                 usercopy_abort("kernel text", NULL, to_user, ptr - textlow, n);
->
-> When INIT_TEXT/DATA are freed, new allocation will reuse these
-> memory and overlaps check will be triggered.
->
-> The patch met static_obj and check_kernel_text_object requirements.
->
-> Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-> Tested-by: Aurelien Jarno <aurelien@aurel32.net>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Atish Patra <atishp@atishpatra.org>
-> Cc: Andreas Schwab <schwab@linux-m68k.org>
 > ---
->  arch/riscv/kernel/vmlinux.lds.S | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  drivers/char/random.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index f3586e3..34d00d9 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -22,13 +22,11 @@ SECTIONS
->  	/* Beginning of code and text segment */
->  	. = LOAD_OFFSET;
->  	_start = .;
-> -	_stext = .;
->  	HEAD_TEXT_SECTION
->  	. = ALIGN(PAGE_SIZE);
->
->  	__init_begin = .;
->  	INIT_TEXT_SECTION(PAGE_SIZE)
-> -	INIT_DATA_SECTION(16)
->  	. = ALIGN(8);
->  	__soc_early_init_table : {
->  		__soc_early_init_table_start = .;
-> @@ -55,6 +53,7 @@ SECTIONS
->  	. = ALIGN(SECTION_ALIGN);
->  	.text : {
->  		_text = .;
-> +		_stext = .;
->  		TEXT_TEXT
->  		SCHED_TEXT
->  		CPUIDLE_TEXT
-> @@ -67,6 +66,8 @@ SECTIONS
->  		_etext = .;
->  	}
->
-> +	INIT_DATA_SECTION(16)
-> +
->  	/* Start of data section */
->  	_sdata = .;
->  	RO_DATA(SECTION_ALIGN)
+> diff --git a/drivers/char/random.c b/drivers/char/random.c
+> index d20ba1b104ca3..a8b9e66f41435 100644
+> --- a/drivers/char/random.c
+> +++ b/drivers/char/random.c
+> @@ -1973,7 +1973,7 @@ static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+>                         return -EPERM;
+>                 if (crng_init < 2)
+>                         return -ENODATA;
+> -               crng_reseed(&primary_crng, NULL);
+> +               crng_reseed(&primary_crng, &input_pool);
+
+So now this will pull the data from the input_pool into the
+primary_crng, so far so good...
+
+>                 crng_global_init_time = jiffies - 1;
+
+... and this will hopefully cause _extract_crng() to pull from the
+primary_crng into crng_node_pool[numa_node_id()] afterwards. Unless
+things are going too fast and therefore the jiffies haven't changed
+since the last crng_reseed() on the crng_node_pool[numa_node_id()]...
+a sequence number would probably be more robust than a timestamp.
+
+And a plain write like this without holding any locks is also questionable.
+
+The easiest way would probably be to make it an atomic_long_t, do
+atomic_long_inc() instead of setting crng_global_init_time here, and
+check atomic_long_read(...) against a copy stored in the crng_state on
+_extract_crng()? And in crng_reseed(), grab the global sequence number
+at the start, then do smp_rmb(), and then under the lock do the actual
+reseeding and bump ->init_time? Or something like that?
+
+>                 return 0;
+>         default:
