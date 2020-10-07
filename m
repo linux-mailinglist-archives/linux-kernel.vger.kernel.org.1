@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B340285EDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E7E285EE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgJGMOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:14:07 -0400
-Received: from verein.lst.de ([213.95.11.211]:37161 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbgJGMOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:14:07 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id CBDE26736F; Wed,  7 Oct 2020 14:14:03 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 14:14:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Stefan Haberland <sth@linux.ibm.com>, axboe@kernel.dk,
-        hoeppner@linux.ibm.com, linux-s390@vger.kernel.org,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] s390/dasd: remove ioctl_by_bdev calls
-Message-ID: <20201007121403.GA30795@lst.de>
-References: <20200519142259.102279-1-sth@linux.ibm.com> <20200519142259.102279-3-sth@linux.ibm.com> <5c815b8a-7d77-5c69-9191-d09cc433f5ff@de.ibm.com> <20201007103936.GA24327@lst.de> <ca1bad1e-6d4b-7e86-4a98-b9ba12e2bef2@de.ibm.com> <20201007120005.GA29788@lst.de> <e1e4afa1-faa2-aa19-a973-ee1286288802@de.ibm.com>
+        id S1728129AbgJGMQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:16:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48128 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727253AbgJGMQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:16:31 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kQ8Mu-0004w5-Ev; Wed, 07 Oct 2020 12:16:28 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "nibble . max" <nibble.max@gmail.com>, linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: m88rs6000t: avoid potential out-of-bounds reads on arrays
+Date:   Wed,  7 Oct 2020 13:16:28 +0100
+Message-Id: <20201007121628.20676-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1e4afa1-faa2-aa19-a973-ee1286288802@de.ibm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 02:09:18PM +0200, Christian Borntraeger wrote:
-> Unfortunately not. On insmodding virtio_blk I do get:
+From: Colin Ian King <colin.king@canonical.com>
 
-Yeah, the symbol_put needs to be conditional as well.  New version below:
+There a 3 array for-loops that don't check the upper bounds of the
+index into arrays and this may lead to potential out-of-bounds
+reads.  Fix this by adding array size upper bounds checks to be
+full safe.
 
-diff --git a/block/partitions/ibm.c b/block/partitions/ibm.c
-index d6e18df9c53c6d..4b044e620d3534 100644
---- a/block/partitions/ibm.c
-+++ b/block/partitions/ibm.c
-@@ -305,8 +305,6 @@ int ibm_partition(struct parsed_partitions *state)
- 	if (!disk->fops->getgeo)
- 		goto out_exit;
- 	fn = symbol_get(dasd_biodasdinfo);
--	if (!fn)
--		goto out_exit;
- 	blocksize = bdev_logical_block_size(bdev);
- 	if (blocksize <= 0)
- 		goto out_symbol;
-@@ -326,7 +324,7 @@ int ibm_partition(struct parsed_partitions *state)
- 	geo->start = get_start_sect(bdev);
- 	if (disk->fops->getgeo(bdev, geo))
- 		goto out_freeall;
--	if (fn(disk, info)) {
-+	if (!fn || fn(disk, info)) {
- 		kfree(info);
- 		info = NULL;
- 	}
-@@ -370,7 +368,8 @@ int ibm_partition(struct parsed_partitions *state)
- out_nogeo:
- 	kfree(info);
- out_symbol:
--	symbol_put(dasd_biodasdinfo);
-+	if (fn)
-+		symbol_put(dasd_biodasdinfo);
- out_exit:
- 	return res;
- }
+Addresses-Coverity: ("Out-of-bounds read")
+Fixes: 333829110f1d ("[media] m88rs6000t: add new dvb-s/s2 tuner for integrated chip M88RS6000")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/media/tuners/m88rs6000t.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/tuners/m88rs6000t.c b/drivers/media/tuners/m88rs6000t.c
+index b3505f402476..8647c50b66e5 100644
+--- a/drivers/media/tuners/m88rs6000t.c
++++ b/drivers/media/tuners/m88rs6000t.c
+@@ -525,7 +525,7 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
+ 	PGA2_cri = PGA2_GC >> 2;
+ 	PGA2_crf = PGA2_GC & 0x03;
+ 
+-	for (i = 0; i <= RF_GC; i++)
++	for (i = 0; i <= RF_GC && i < ARRAY_SIZE(RFGS); i++)
+ 		RFG += RFGS[i];
+ 
+ 	if (RF_GC == 0)
+@@ -537,12 +537,12 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
+ 	if (RF_GC == 3)
+ 		RFG += 100;
+ 
+-	for (i = 0; i <= IF_GC; i++)
++	for (i = 0; i <= IF_GC && i < ARRAY_SIZE(IFGS); i++)
+ 		IFG += IFGS[i];
+ 
+ 	TIAG = TIA_GC * TIA_GS;
+ 
+-	for (i = 0; i <= BB_GC; i++)
++	for (i = 0; i <= BB_GC && i < ARRAY_SIZE(BBGS); i++)
+ 		BBG += BBGS[i];
+ 
+ 	PGA2G = PGA2_cri * PGA2_cri_GS + PGA2_crf * PGA2_crf_GS;
+-- 
+2.27.0
+
