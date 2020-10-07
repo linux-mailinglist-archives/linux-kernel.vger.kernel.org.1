@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2066286B66
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 01:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A3D286B64
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 01:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbgJGXNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 19:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727345AbgJGXNy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 19:13:54 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9498C061755;
-        Wed,  7 Oct 2020 16:13:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728600AbgJGXNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 19:13:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727345AbgJGXNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 19:13:50 -0400
+Received: from localhost (unknown [176.177.115.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C69BK1MKFz9sPB;
-        Thu,  8 Oct 2020 10:13:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602112430;
-        bh=0OI28V4KZp/CukgLxY2AM4+3y1zdBrEAWDeh7lQGtKY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HrjSN2r2BRCCajCfR1xFtwDpFTrDuafK4YXOBkMM3x1t4/jvNxvxjZvkhLKb7N934
-         fBksPpnjwI2UOhAt2894qsB6IPa1QmeQLuisQou0BIex/GQs6LLX3TqgQU5p8wxhQq
-         OIDb0M7Q/TV3rdo60p3aGC8/Mp0KVHSZ0OD/NkpN4Myh2/JmAxaoiQOBpr+eQMwSnn
-         N3yfSw365XBFVqOVa+t64ZhRYoR2uGWFZ/KgXbRbW4FlA4xbtfFH8FJEV8meeKRYFj
-         Ig5PwCk8D9dgGKRZQpjFuKU6SNURh3YUiba1F4l1CIKkJSZY58lWzLqx1iSNAiQFz7
-         ASNMKIcq6wo7g==
-Date:   Thu, 8 Oct 2020 10:13:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: linux-next: manual merge of the risc-v tree with the risc-v-fixes
- tree
-Message-ID: <20201008101341.12ce7ab7@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id BB5A12083B;
+        Wed,  7 Oct 2020 23:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602112429;
+        bh=/Le/feVywHw0Rh7iKUPEtO7jaKG1ZxqCavXeD9xdVAI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rMkC7GKd9lWjJMb10Amx3MeHOeJKsQPE8nL45Vbga+BQDWYGvpHizBEHj5fiDhHDV
+         BzR9Pjr9Xh6cPNg6Mz37TIGcUlZRagLcYIrHxQavkg8bLjfpeAbvfskLGghgvYdXWf
+         Owuimp5Wk7wA+ET77EHzm8C/MqN63dFosWv7zztc=
+Date:   Thu, 8 Oct 2020 01:13:46 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, neeraju@codeaurora.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2] rcu/tree: nocb: Avoid raising softirq when there are
+ ready to execute CBs
+Message-ID: <20201007231346.GA58749@lothringen>
+References: <20201005021132.146534-1-joel@joelfernandes.org>
+ <20201007223438.GU29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nBidG_b=.T0gle+JS2TAJDM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007223438.GU29330@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nBidG_b=.T0gle+JS2TAJDM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 07, 2020 at 03:34:38PM -0700, Paul E. McKenney wrote:
+> On Sun, Oct 04, 2020 at 10:11:32PM -0400, Joel Fernandes (Google) wrote:
+> > During testing, I see it is possible that rcu_pending() returns 1 when
+> > offloaded callbacks are ready to execute thus raising the RCU softirq.
+> > 
+> > However, softirq does not execute offloaded callbacks. They are executed in a
+> > kthread which is awakened independent of the softirq.
+> > 
+> > This commit therefore avoids raising the softirq in the first place. That's
+> > probably a good thing considering that the purpose of callback offloading is to
+> > reduce softirq activity.
+> > 
+> > Passed 30 minute tests of TREE01 through TREE09 each.
+> > 
+> > On TREE08, I notice that there is atmost 150us from when the softirq was
+> > NOT raised when ready cbs were present, to when the ready callbacks were
+> > invoked by the rcuop thread. This also further confirms that there is no
+> > need to raise the softirq for ready cbs in the first place.
+> > 
+> > Cc: neeraju@codeaurora.org
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Looks good, applied, thank you!  I reworked things a bit based on
+> previous patches and to more precisely capture why this patch does
+> not cause additional problems.  Please let me know if I messed
+> anything up.
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 33847a34a2d261354a79b4a24d9d37222e8ec888
+> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Date:   Wed Oct 7 13:50:36 2020 -0700
+> 
+>     rcu/tree: nocb: Avoid raising softirq for offloaded ready-to-execute CBs
+>     
+>     Testing showed that rcu_pending() can return 1 when offloaded callbacks
+>     are ready to execute.  This invokes RCU core processing, for example,
+>     by raising RCU_SOFTIRQ, eventually resulting in a call to rcu_core().
+>     However, rcu_core() explicitly avoids in any way manipulating offloaded
+>     callbacks, which are instead handled by the rcuog and rcuoc kthreads,
+>     which work independently of rcu_core().
+>     
+>     One exception to this independence is that rcu_core() invokes
+>     do_nocb_deferred_wakeup(), however, rcu_pending() also checks
+>     rcu_nocb_need_deferred_wakeup() in order to correctly handle this case,
+>     invoking rcu_core() when needed.
+>     
+>     This commit therefore avoids needlessly invoking RCU core processing
+>     by checking rcu_segcblist_ready_cbs() only on non-offloaded CPUs.
+>     This reduces overhead, for example, by reducing softirq activity.
+>     
+>     This change passed 30 minute tests of TREE01 through TREE09 each.
+>     
+>     On TREE08, there is at most 150us from the time that rcu_pending() chose
+>     not to invoke RCU core processing to the time when the ready callbacks
+>     were invoked by the rcuoc kthread.  This provides further evidence that
+>     there is no need to invoke rcu_core() for offloaded callbacks that are
+>     ready to invoke.
+>     
+>     Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+>     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-Hi all,
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Today's linux-next merge of the risc-v tree got a conflict in:
+Thanks!
 
-  arch/riscv/kernel/vmlinux.lds.S
-
-between commit:
-
-  84814460eef9 ("riscv: Fixup bootup failure with HARDENED_USERCOPY")
-
-from the risc-v-fixes tree and commit:
-
-  cb7d2dd5612a ("RISC-V: Add PE/COFF header for EFI stub")
-
-from the risc-v tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/riscv/kernel/vmlinux.lds.S
-index 34d00d9e6eac,9795359cb9da..000000000000
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@@ -66,8 -71,11 +70,13 @@@ SECTION
-  		_etext =3D .;
-  	}
- =20
-+ #ifdef CONFIG_EFI
-+ 	. =3D ALIGN(PECOFF_SECTION_ALIGNMENT);
-+ 	__pecoff_text_end =3D .;
-+ #endif
-+=20
- +	INIT_DATA_SECTION(16)
- +
-  	/* Start of data section */
-  	_sdata =3D .;
-  	RO_DATA(SECTION_ALIGN)
-
---Sig_/nBidG_b=.T0gle+JS2TAJDM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9+S6UACgkQAVBC80lX
-0GxMtgf/Uq1PGeDqzPSObxD/jeJw88vtjYFL+I/Rkvu/O3Ui5cPfKutgTzo4m+si
-+QTioSBmvrsCZC9LNS1ZSzqRME70zpEX1QI9mPNGSmOe3OXkK/wUbdME0VaFhVEX
-breuJivi9l6k7wvMBCOeILdXu5eyBuUrKrGNzfQvT2oYtHIzlylaVQgzyXO70CSf
-nUHwpow+GpDwi39xf9FNwsNpTVb2mQsqyu0M7MxHooAfkRoN2W+B7l/gcqzF9hYP
-yZuU/eLZNt66wy+hMjfX1Q7d1s1xBGk+tFEC6EGHKuYb3QhUN8+UseWuiiOMLNX7
-zebSatfOnvRDUvEu0mOGnTMC/gq62A==
-=oOMM
------END PGP SIGNATURE-----
-
---Sig_/nBidG_b=.T0gle+JS2TAJDM--
