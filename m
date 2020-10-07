@@ -2,128 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30060286950
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2101286953
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgJGUn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgJGUnZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:43:25 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A84C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 13:43:25 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id y20so1607238pll.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 13:43:25 -0700 (PDT)
+        id S1728285AbgJGUoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:44:32 -0400
+Received: from mail-dm6nam12on2071.outbound.protection.outlook.com ([40.107.243.71]:29856
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726152AbgJGUob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:44:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8djkwKsRo9jB1r85muZCKyv55RiWZRAAjLm3X5X4YSlZ2Gdvhlt8jBeFq3mXAGdb46tSXpYFtORkTQGoqKloUhWBscPhnkb255z7DSstCMt5VsyN0WlJ6vvdEOFjLw92OnN57TYKXB/mvQP141UzuwENn2wWp52abeKKKtL5Vo/f84Za25nBH7CxtxTnT/0YzjkDnMEmzeJFJJhZXMwlf58jwOAgO8SVyiAuy9rc0m3R7gn/oUoY980GioJHaUpyVn3qRG32a0311aw3E/rMxl4uKxiBoCtuukb5SDdSEupLlhh8v/qLDOi3bAAnD7bMBfWmcOpEi+ZufKLU46klQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QVq6dDkJSgOws3iXidiJkaNFQipv6Gu9G2wD4qkgC2s=;
+ b=O4QqCNNnFdtMP+qjST7O3IXMSb4leOyBnEEc37tRGYJX2kkf0KBrfEoauqYbd0fU9vjFAzZjrhoYWu20uQYYaaoMcbwTOJCP4apuFpBYNU45FBcfRPjddYrJ6kPquHtcVFOQHGorUgsvJTKA/nE0m6ir+og+ysOx2JZt9PH4bzQtB/v4VTU/eNXjK9ZGEqF33Y0cMmtDWAAiPgaRfrNg2JocMLlRdE7SPfIftZU1tbkeH3oPXYTnL4U/NY63qaif4k0M4dV/sju1UzkilI8+zAuGneN1zzy18wxtQEA4/C11nyBePDjxFLbPNwpaVILr2HpY9K4sDP2qUsOmNsJfkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VCinuZMYeBCtpffADMXEoQr/XmJXCICNr4Nv7UOf76M=;
-        b=VYg7BxkAOA7UOThtoUdxgn0/LwS8d5AjWTcJkLrfeU+oFQwYVrrX3CgwBb/6m2epZw
-         1aGGGTW4THwlIMybQqWiVj7FJPxFxozJrz5DEZLr3qUmAa5xTjdtDbhUvSlGykqS9e5W
-         UellVQHxyc4E2QUtV4Q5wVtMTlLBzOe8uwgCs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VCinuZMYeBCtpffADMXEoQr/XmJXCICNr4Nv7UOf76M=;
-        b=orZgC+NcYE4SAKTHEBSsd7RljaBR5Rpz2sFTeGfsxTQmTcjLpAcw5GvWNmq+1m3rdb
-         B6lcm6yE+yyrfU63aRg1/12MILHaOCvu3avWdMGDjI3Czi9L/78EbVeNIAelr+tc1rKi
-         3sMhNx1I44NITgSEaO6Qsx3xz7fKHHVBtFfyMcGhHATDm/lS05djIA14X+0sY/uodjMS
-         MLxA5jIoEhpqOrMisTRylH9IAwrBTYAwq/2JwTN/lbf7UrXUq1r9kD4IAlNc0ofqqfqu
-         9LCob7dnHFYiFg2Axvo0AHJQKWTSwYLym37PbvkfqMZWFt6zhhgAafgLS6vqFSqEYXr3
-         U+nQ==
-X-Gm-Message-State: AOAM5324dQedbqARoCx5SwScS/JGtKDUoKI31trSMq1p9FjXNEJtXGaM
-        cEFZU//KMbIQu+6K5DVIQc0g/g==
-X-Google-Smtp-Source: ABdhPJz77pgiC3u/NYMorDhqb5UkPb36DsIPJa1K611/tOcC3aDIYI78WvU55G4TM/Jw0nxG83b7Uw==
-X-Received: by 2002:a17:902:7c0d:b029:d3:de09:a3 with SMTP id x13-20020a1709027c0db02900d3de0900a3mr4365159pll.52.1602103404809;
-        Wed, 07 Oct 2020 13:43:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 16sm3497975pjl.27.2020.10.07.13.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 13:43:23 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 13:43:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/11] drivers/base/devcoredump: convert devcd_count
- to counter_atomic32
-Message-ID: <202010071334.8298F3FA7@keescook>
-References: <cover.1602011710.git.skhan@linuxfoundation.org>
- <462fd514dfe2afbb8faa1dea4cdb4b0e75d8e8da.1602011710.git.skhan@linuxfoundation.org>
- <202010071114.EE9A2A47C@keescook>
- <cb86761a-5531-cbb2-3987-0897771949b8@linuxfoundation.org>
- <f27149d6b9b781ccf9c2fa041082c134abccd925.camel@sipsolutions.net>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QVq6dDkJSgOws3iXidiJkaNFQipv6Gu9G2wD4qkgC2s=;
+ b=0j91gKfvmEJ/Yhpg+vPdxC8n6Ffbb4/t0rSj98LAWi87NKSXqn94oyqT2uvzm89GYK9rwPtd7lWsdtoW6ybu//YRwQ0Ntx7ycDGCLhimusdVDCzyFxoqUIqmrY80Cn3V4MttsVzYTFy87Oj8LgLhtUyVB2p4FRJilYvgZdNcubI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+ by CY4PR12MB1351.namprd12.prod.outlook.com (2603:10b6:903:36::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36; Wed, 7 Oct
+ 2020 20:44:21 +0000
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::11f9:59c8:16c0:7718]) by CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::11f9:59c8:16c0:7718%8]) with mapi id 15.20.3433.046; Wed, 7 Oct 2020
+ 20:44:20 +0000
+From:   Wei Huang <wei.huang2@amd.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, wei.huang2@amd.com
+Subject: [PATCH 1/1] acpi-cpufreq: Honor _PSD table setting in CPU frequency control
+Date:   Wed,  7 Oct 2020 15:44:12 -0500
+Message-Id: <20201007204412.565881-1-wei.huang2@amd.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [24.55.15.93]
+X-ClientProxiedBy: SN4PR0201CA0012.namprd02.prod.outlook.com
+ (2603:10b6:803:2b::22) To CY4PR12MB1494.namprd12.prod.outlook.com
+ (2603:10b6:910:f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f27149d6b9b781ccf9c2fa041082c134abccd925.camel@sipsolutions.net>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (24.55.15.93) by SN4PR0201CA0012.namprd02.prod.outlook.com (2603:10b6:803:2b::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Wed, 7 Oct 2020 20:44:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 05d21643-a154-4bb3-ecc7-08d86b01c453
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1351:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR12MB135153B6BABFD32340538510CF0A0@CY4PR12MB1351.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0TCJSlsmPPjIPganJwgAzzcNAY2ZNPC0TlVPlZa0BKpimlFLhfAJMeg3Gvkb2JkKhsh3KzVUhU7mjYgx/ad4/LCsf8zkJPQR90yhEdqiQnR17tXmgzUakNesFJ8mV+zSRtq/lJg1OEEv2KsK+oMp++hck4pOzgurKfN8GhpToVnsZ84qdxRMGbVqusxpGm4wzPwmHGrZoeHb1ia+n5GYM6XyCmBX3ITAPFypD9RXM2Y1Cu1aKSafOJ4tIrpZqTdyF5hdz5R7N+8/xlv+8g5DxzNILb6Cv+HbkTOXI3YN5kG1dMQiCtRfjrtTvRk8JlKluC0p1nw553fnJo6lwKO+aS7iPrud00wVSnB3xJVnYqDew0fRUIdNhywZO3kxIDOt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(16526019)(6512007)(956004)(478600001)(26005)(2616005)(186003)(8676002)(8936002)(69590400008)(36756003)(5660300002)(6506007)(52116002)(1076003)(66476007)(316002)(6916009)(66946007)(2906002)(6486002)(6666004)(4326008)(83380400001)(86362001)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: AoGP8l5OuLKpQeXIIzTMlK9X1jxWgT5r8RanroCTbzVXXIkMyQgEhA4ZPp7jixM0ltVKk8W9vBy5BilMM9lzJFe6Kub+lGGoL+8Yjo/PMVsu4SqBql1T96gg++ugRRMBIqn7i2lbYan87y9bmbO6ZHbx5fx//PyV4NsBL7JUD4uGR6bytymeWnEmrb2W22+YBqFPF2Fz6yG4DL6VXIIwZVLt6+3nK+h+3/gM3vV15IkwLtyV7GWyZT2o+FGB2S6Ua7hzLAlVUMf2eBbdUCXTMWWKzY+0VwtEoTmbTrLAbJe5GS5Bs2MF/hvANyGpiUR9OwqLLspC4HZ0nBG/jCQyWpbCG1XaA5OQf8py3zwYEjv2UGJrBmHuFXrOn5+Mh3ypEkLPhxQ569Ixuy0hfZK5fm/lLg7DvhsNdZQ/5qSCZxagoidvM6HRYmd3pdQCoX7s93ukQKDkTssJ3KKRhYaKveSW+02t9jyaA0TnY1JREwrf46rKLWTnbXjL20z40x32+WXJqod0nN5DPEzzUNVvKbJZNFOg3kPOqACDqTiDSh4IN371g87vLwD1G+nurVIWyLfJnMd2WUfd3eWXSv/07+32wthiVH2bMsVrT3Fgkrwesq+B8tstrH8JhBBEPFsahH11rkY/PBVhHEuXLEYlCQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 05d21643-a154-4bb3-ecc7-08d86b01c453
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 20:44:20.8907
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IfA1ZmJYWGQlbmt/jdxVe0mbXZymznlr/BzGUJvODWXfZpcNIgmCl8Y4DtTmwwHZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1351
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 09:38:47PM +0200, Johannes Berg wrote:
-> On Wed, 2020-10-07 at 13:33 -0600, Shuah Khan wrote:
-> > On 10/7/20 12:15 PM, Kees Cook wrote:
-> > > On Tue, Oct 06, 2020 at 02:44:35PM -0600, Shuah Khan wrote:
-> > > > counter_atomic* is introduced to be used when a variable is used as
-> > > > a simple counter and doesn't guard object lifetimes. This clearly
-> > > > differentiates atomic_t usages that guard object lifetimes.
-> > > > 
-> > > > counter_atomic* variables will wrap around to 0 when it overflows and
-> > > > should not be used to guard resource lifetimes, device usage and
-> > > > open counts that control state changes, and pm states.
-> > > > 
-> > > > devcd_count is used to track dev_coredumpm device count and used in
-> > > > device name string. It doesn't guard object lifetimes, device usage
-> > > > counts, device open counts, and pm states. There is very little chance
-> > > > of this counter overflowing. Convert it to use counter_atomic32.
-> > > > 
-> > > > This conversion doesn't change the overflow wrap around behavior.
-> > > > 
-> > > > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> > > 
-> > > I actually wonder if this should use refcount_t just because it is
-> > > designed to be an alway-unique value. It is hard to imagine ever causing
-> > > this to overflow, but why not let it be protected?
-> > > 
-> > 
-> > This is one of the cases where devcd_count doesn't guard lifetimes,
-> > however if it ever overflows, refcount_t is a better choice.
-> > 
-> > If we decide refcount_t is a better choice, I can drop this patch
-> > and send refcount_t conversion patch instead.
-> > 
-> > Greg! Any thoughts on refcount_t for this being a better choice?
-> 
-> I'm not Greg, but ... there's a 5 minute timeout. So in order to cause a
-> clash you'd have to manage to overflow the counter within a 5 minute
-> interval, otherwise you can actually reuse the numbers starting again
-> from 0 without any ill effect.
+acpi-cpufreq has a old quirk that overrides the _PSD table supplied by
+BIOS on AMD CPUs. However the _PSD table of new AMD CPUs (Family 19h+)
+now accurately reports the P-state dependency of CPU cores. Hence this
+quirk needs to be fixed in order to support new CPUs' frequency control.
 
-That's not true as far as I can see: there's no reset in here. It's a
-global heap variable with function-level visibility (note the "static"),
-so it is only ever initialized once:
+Fixes: acd316248205 ("acpi-cpufreq: Add quirk to disable _PSD usage on all AMD CPUs")
+Signed-off-by: Wei Huang <wei.huang2@amd.com>
+---
+ drivers/cpufreq/acpi-cpufreq.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-void dev_coredumpm(struct device *dev, struct module *owner,
-                   void *data, size_t datalen, gfp_t gfp,
-                   ssize_t (*read)(char *buffer, loff_t offset, size_t count,
-                                   void *data, size_t datalen),
-                   void (*free)(void *data))
-{
-        static atomic_t devcd_count = ATOMIC_INIT(0);
-	...
-        dev_set_name(&devcd->devcd_dev, "devcd%d",
-                     atomic_inc_return(&devcd_count));
-	...
-}
-
-https://godbolt.org/z/T6Wfcj
-
+diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+index e4ff681faaaa..1e6e2abde428 100644
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -691,7 +691,8 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 		cpumask_copy(policy->cpus, topology_core_cpumask(cpu));
+ 	}
+ 
+-	if (check_amd_hwpstate_cpu(cpu) && !acpi_pstate_strict) {
++	if (check_amd_hwpstate_cpu(cpu) && (c->x86 < 0x19) &&
++	    !acpi_pstate_strict) {
+ 		cpumask_clear(policy->cpus);
+ 		cpumask_set_cpu(cpu, policy->cpus);
+ 		cpumask_copy(data->freqdomain_cpus,
 -- 
-Kees Cook
+2.26.2
+
