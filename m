@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EB82859D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E984E2859DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgJGHsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgJGHsa (ORCPT
+        id S1727807AbgJGHtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:49:00 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32956 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727717AbgJGHs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:48:30 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1D4C061755;
-        Wed,  7 Oct 2020 00:48:30 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l17so1109349edq.12;
-        Wed, 07 Oct 2020 00:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aIxS3a1/Usr8Ax4oAxdfAOqWyGV3Kir87fjE4KL3SWA=;
-        b=Zkp2OT1dBxSRUm4UBunol1MkXZDcFD/RX1FhRudN2vPdQItuQfLLBD3IMuvchLOMGo
-         2l3/52w502E1A9Vumv8M3LN2i/KKNZKr9OFE/7GUmTIW3iU7/MCyGd2/1x9X/BhT4QqT
-         bhkaqv5wjJIYoxKxZt1b9KCCcbf+Q0s0hIlWSClE3lzP2+pDq15tkVXZv4agKtxnA2b+
-         F4q6R2X7yWm+3XPDnoKFp1lMjcoOwdYbLiFvkFzrga9MwWiOjjcRTCd8+nYbDLu1IGia
-         yIPZbwRBcdrcONxBt9ekMT0Q7X3NJnFTCo77i8W6IQ/Bg9l/85Di3yFpNJZbmrT8XGCn
-         sgZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aIxS3a1/Usr8Ax4oAxdfAOqWyGV3Kir87fjE4KL3SWA=;
-        b=Ljo3/a/+jyhGOok6Lj6PRkctxPCJUVR97Gl84H1SZDOywveAPFhAgRJtmF1ExX3MLR
-         AAPS4IqwfkcSyWqYkmJteNmZethl1VBI2T0CVx1XOIeOu6zHZSJCfAywIX3wP31XMQE7
-         9m+/y77QFp8lnAGOEKrv+9XAxO2XBkFzNfpkoYpr3U3x6Qni0Mvo3wwyO4D51YJxN3Pe
-         vYIgqBFg4YYRv22xsa6oRtDVWahmmGKuYh0sh58fZmods5WWsnzMo03j7/T/ILgx89sA
-         Axwr42mwXD9TBS5VVlc1WQ6KTrmQ/6Iop6cvZGuiaWw7KVok2ZUwmSNGH7a5kGxF4scz
-         91kg==
-X-Gm-Message-State: AOAM531YZ58Rws49P2aCNOtr78O/Fz7T5FBLMlBEtaehJxWLILgJj+D6
-        j9MeU/wSMv3DV7AaeK/iD3wOqEWBZxn6Iu7FQmA=
-X-Google-Smtp-Source: ABdhPJwsp4gWugt5zYoY/WqXwmjYqS76upRymp0LRLz2XkAXOwb1wEAWa9UTuA6na/2PbKPQ0dVTqSmOh4Y6FDI5ZkY=
-X-Received: by 2002:a50:b063:: with SMTP id i90mr2229989edd.187.1602056909027;
- Wed, 07 Oct 2020 00:48:29 -0700 (PDT)
+        Wed, 7 Oct 2020 03:48:59 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0977mdxS050552;
+        Wed, 7 Oct 2020 02:48:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602056920;
+        bh=GP3WVCcpQFbTTaD6QJrC4uojd9leE6jMcWf1qPGAsVI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=bx3/xdYQgH2j90nbcj+R2qf42jXYmX5ObfAIbTaw494zcJpkylMztMcRruHb2CRZF
+         WF1WLRY8ylk43BEy8LvRzqWf1Wa4HWQU992hh7vdXIbdmOtjx3qo4w6AIZYBq0k3+J
+         8pptdRjoC4VvCNQ2/MrJ4+YhpnyL5AX/7C8Y7Fug=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0977mdP2029170
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 02:48:39 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 02:48:39 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 02:48:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0977mcqQ070527;
+        Wed, 7 Oct 2020 02:48:39 -0500
+Date:   Wed, 7 Oct 2020 13:18:38 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Bert Vermeulen <bert@biot.com>, <tudor.ambarus@microchip.com>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH v2] mtd: spi-nor: Fix address width on flash chips
+ > 16MB
+Message-ID: <20201007074836.dyljsotpw3kkrtz3@ti.com>
+References: <20201006132346.12652-1-bert@biot.com>
+ <20201006151807.2pckm7ncply7uomc@ti.com>
+ <096b2b97-6b6b-a46e-1239-e5d257e80c0b@ti.com>
 MIME-Version: 1.0
-References: <20201003075514.32935-1-haifeng.zhao@intel.com>
- <20201003075514.32935-4-haifeng.zhao@intel.com> <20201004191329.GA27962@wunner.de>
-In-Reply-To: <20201004191329.GA27962@wunner.de>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Wed, 7 Oct 2020 15:48:17 +0800
-Message-ID: <CAKF3qh1coHqCHqpa_f8Mh4Ere+_xE2qACoNSyo2wYiOboYiNjQ@mail.gmail.com>
-Subject: Re: [PATCH v7 3/5] PCI: pciehp: check and wait port status out of DPC
- before handling DLLSC and PDC
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
-        ruscur@russell.cc,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stuart Hayes <stuart.w.hayes@gmail.com>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raj, Ashok" <ashok.raj@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <096b2b97-6b6b-a46e-1239-e5d257e80c0b@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lukas,
+On 07/10/20 12:59PM, Vignesh Raghavendra wrote:
+> 
+> 
+> On 10/6/20 8:48 PM, Pratyush Yadav wrote:
+> > On 06/10/20 03:23PM, Bert Vermeulen wrote:
+> >> If a flash chip has more than 16MB capacity but its BFPT reports
+> >> BFPT_DWORD1_ADDRESS_BYTES_3_OR_4, the spi-nor framework defaults to 3.
+> >>
+> >> The check in spi_nor_set_addr_width() doesn't catch it because addr_width
+> >> did get set. This fixes that check.
+> >>
+> >> Fixes: f9acd7fa80be ("mtd: spi-nor: sfdp: default to addr_width of 3 for configurable widths")
+> >> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> >> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >> ---
+> >>  drivers/mtd/spi-nor/core.c | 8 +++++---
+> >>  1 file changed, 5 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> index 0369d98b2d12..a2c35ad9645c 100644
+> >> --- a/drivers/mtd/spi-nor/core.c
+> >> +++ b/drivers/mtd/spi-nor/core.c
+> >> @@ -3009,13 +3009,15 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
+> >>  		/* already configured from SFDP */
+> >>  	} else if (nor->info->addr_width) {
+> >>  		nor->addr_width = nor->info->addr_width;
+> >> -	} else if (nor->mtd.size > 0x1000000) {
+> >> -		/* enable 4-byte addressing if the device exceeds 16MiB */
+> >> -		nor->addr_width = 4;
+> >>  	} else {
+> >>  		nor->addr_width = 3;
+> >>  	}
+> >>  
+> >> +	if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
+> > Nitpick:    ^^^^^^^^^^^^^^^^^^^^^^^^ you can drop this part. But its 
+> > fine either way.
+> > 
+> 
+> I don't think its a good idea to drop nor->addr_width == 3 check as
+> nor->info->addr_width is permitted to have a value > 4 (although there
+> is no such flash today)...
 
-On Mon, Oct 5, 2020 at 3:13 AM Lukas Wunner <lukas@wunner.de> wrote:
->
-> On Sat, Oct 03, 2020 at 03:55:12AM -0400, Ethan Zhao wrote:
-> > When root port has DPC capability and it is enabled, then triggered by
-> > errors, DPC DLLSC and PDC etc interrupts will be sent to DPC driver, pciehp
-> > drivers almost at the same time.
->
-> Do the DLLSC and PDC events occur as a result of handling the error
-> or do they occur independently?
-They could happen independently if links were recovered then the card
-was removed.
-They could happen as a result of handling the errors the same time.
+The check below for SPI_NOR_MAX_ADDR_WIDTH will return an error when 
+nor->addr_width > 4, but I see your point.
+ 
+> > Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+> > 
+> >> +		/* enable 4-byte addressing if the device exceeds 16MiB */
+> >> +		nor->addr_width = 4;
+> >> +	}
+> >> +
+> >>  	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+> >>  		dev_dbg(nor->dev, "address width is too large: %u\n",
+> >>  			nor->addr_width);
+> > 
+> 
+> Regards
+> Vignesh
 
-So don't assume DLLSC and PDC all occur at the same time.
-
->
-> If the latter, I don't see how we can tell whether the card in the
-> slot is still the same.
-If PDC happens, the card in the slot might not be the same.  so
-hot-removal /hot -plugin handling follows the PDC event.
->
-> If the former, holding the hotplug slot's reset_lock and doing something
-> along the lines of pciehp_reset_slot() (or calling it directly) might
-> solve the race.
-
-DPC reset is done by hardware, only AER calls pciehp_reset_slot() as recovery
-handling initiated by software.
-
-Thanks,
-Ethan
->
-> Thanks,
->
-> Lukas
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
