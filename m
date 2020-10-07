@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0A6285781
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C55285785
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgJGEVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 00:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJGEVI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 00:21:08 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B0EC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 21:21:08 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id h24so961810ejg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 21:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NBNZtVQQB2KTdNFAhcuch9XxJZhD9YHNjFHMfmNY94s=;
-        b=IAtzqnshZSKEtiIEx3/kBic2CZfhf5/w50Z/OJjVK0+RDEdhrzjVzNZZaqGoeOkTZg
-         c1K3VeB6RiR6uVngB7hth37dc2V/gtvVklcbHLmT0aGSMqs8zDvZAplv0Vfg/6FFNkts
-         qkyacXrYhC658NZhNQrgNwkwuGem15wyoWFv5bEILsdACBl90iga7QekKs8nZ21xx+jr
-         +miiB2scgvBloMfrUS1Pg/YQ/bZvlMDDSOCXneEfN/NeAIuYgzf5PAn+4n66WlRP3ReR
-         uOYpl/x8+bVMvHXhcYp/LAQWcGB4lHOfg3Be0qhjDsO4SmWE+tTAMt8GiO89iT93w5p2
-         gMKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NBNZtVQQB2KTdNFAhcuch9XxJZhD9YHNjFHMfmNY94s=;
-        b=ktS2/1QoUTrRtHJkMMFP1VkVG4vZ//NEqLmBZ/2sY+5mXRdPpPn1eBelhz/whUTX8u
-         2qgnCbFErBPZ3hpUBj3flF1nBBfpEWD9MmbA+UDoUgpQom2q1XCUWWoX7veBjq3BVnkX
-         ElLEjpOV3TefX1OlPAGH/mjSuxEnw2qDL/+I+wioK2ylorI7KVGw1V1e9+SCiv+p6pO4
-         +FLFz1lPSZTKemJ431yWvXBt6JEATkPGPktngD+kbnpumEDpfEReyAtBjG+Q/dNtHtCg
-         2zqk4KT+SPtIfdIRH/aMHsfagY2S8qydvrPdCzDF3r7d0I1dRzOpwsnprNTA6/Z4/ewA
-         CO+g==
-X-Gm-Message-State: AOAM5307scLMLaxwPrthCx4GyoMzeZEWRFlgJX2nv75H7k8YOBrsZqYT
-        BlYnRPiH2Bn7sYpl10dmWI91ZNrPcm3xP2N0nC3ktg==
-X-Google-Smtp-Source: ABdhPJxdiczbtzfxGozT7L2wA9lT0y/4c98CZNLdrbdeb8WB+XggqqPmqtnlngt+l7qVyRbNLZSVAX1iCA9NPJp9B3c=
-X-Received: by 2002:a17:906:86c3:: with SMTP id j3mr1441155ejy.493.1602044466731;
- Tue, 06 Oct 2020 21:21:06 -0700 (PDT)
+        id S1726490AbgJGEXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 00:23:12 -0400
+Received: from mx.socionext.com ([202.248.49.38]:21676 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725970AbgJGEXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 00:23:12 -0400
+Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 07 Oct 2020 13:23:10 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 370B260060;
+        Wed,  7 Oct 2020 13:23:10 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Wed, 7 Oct 2020 13:23:10 +0900
+Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
+        by iyokan.css.socionext.com (Postfix) with ESMTP id C81684031B;
+        Wed,  7 Oct 2020 13:23:09 +0900 (JST)
+Received: from [10.212.0.119] (unknown [10.212.0.119])
+        by yuzu.css.socionext.com (Postfix) with ESMTP id 2B04C120499;
+        Wed,  7 Oct 2020 13:23:09 +0900 (JST)
+Subject: Re: [PATCH v7 0/3] PCI: uniphier: Add PME/AER support for UniPhier
+ PCIe host controller
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+References: <1599816814-16515-1-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <aef99409-ae8e-3559-2b19-10a77d70749b@socionext.com>
+Date:   Wed, 7 Oct 2020 13:23:08 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200916041908.66649-1-ebiggers@kernel.org>
-In-Reply-To: <20200916041908.66649-1-ebiggers@kernel.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 7 Oct 2020 06:20:40 +0200
-Message-ID: <CAG48ez3Jv6_SSgxMrzEmx1pY04TnsOXhGVvjt2-14-xe-BjTzA@mail.gmail.com>
-Subject: Re: [PATCH] random: fix the RNDRESEEDCRNG ioctl
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-crypto@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1599816814-16515-1-git-send-email-hayashi.kunihiko@socionext.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 6:19 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> The RNDRESEEDCRNG ioctl reseeds the primary_crng from itself, which
-> doesn't make sense.  Reseed it from the input_pool instead.
+Hi,
 
-Good catch. (And its purpose is to ensure that entropy from
-random_write() is plumbed all the way through such that getrandom()
-and friends are guaranteed to actually use that entropy on the next
-invocation; and random_write() just puts data into the input pool.)
+Gentle ping.
+Are there any comments about this series?
 
-But actually, looking at the surrounding code, I think there's another
-small problem?
+Thank you,
 
-> Fixes: d848e5f8e1eb ("random: add new ioctl RNDRESEEDCRNG")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+On 2020/09/11 18:33, Kunihiko Hayashi wrote:
+> The original subject up to v6 is
+> "PCI: uniphier: Add features for UniPhier PCIe host controller".
+> 
+> This adds a new function called by MSI handler in DesignWare PCIe framework,
+> that invokes PME and AER funcions to detect the factor from SoC-dependent
+> registers.
+> 
+> The iATU patches is split from this series as
+> "PCI: dwc: Move iATU register mapping to common framework".
+> 
+> Changes since v6:
+> - Separate patches for iATU and phy error from this series
+> - Add Reviewed-by: line
+> 
+> Changes since v5:
+> - Add pcie_port_service_get_irq() function to pcie/portdrv
+> - Call pcie_port_service_get_irq() to get vIRQ interrupt number for PME/AER
+> - Rebase to the latest linux-next branch,
+>    and remove devm_platform_ioremap_resource_byname() replacement patch
+> 
+> Changes since v4:
+> - Add Acked-by: line to dwc patch
+> 
+> Changes since v3:
+> - Move msi_host_isr() call into dw_handle_msi_irq()
+> - Move uniphier_pcie_misc_isr() call into the guard of chained_irq
+> - Use a bool argument is_msi instead of pci_msi_enabled()
+> - Consolidate handler calls for the same interrupt
+> - Fix typos in commit messages
+> 
+> Changes since v2:
+> - Avoid printing phy error message in case of EPROBE_DEFER
+> - Fix iATU register mapping method
+> - dt-bindings: Add Acked-by: line
+> - Fix typos in commit messages
+> - Use devm_platform_ioremap_resource_byname()
+> 
+> Changes since v1:
+> - Add check if struct resource is NULL
+> - Fix warning in the type of dev_err() argument
+> 
+> Kunihiko Hayashi (3):
+>    PCI: portdrv: Add pcie_port_service_get_irq() function
+>    PCI: dwc: Add msi_host_isr() callback
+>    PCI: uniphier: Add misc interrupt handler to invoke PME and AER
+> 
+>   drivers/pci/controller/dwc/pcie-designware-host.c |  3 +
+>   drivers/pci/controller/dwc/pcie-designware.h      |  1 +
+>   drivers/pci/controller/dwc/pcie-uniphier.c        | 77 +++++++++++++++++++----
+>   drivers/pci/pcie/portdrv.h                        |  1 +
+>   drivers/pci/pcie/portdrv_core.c                   | 16 +++++
+>   5 files changed, 87 insertions(+), 11 deletions(-)
+> 
 
-Reviewed-by: Jann Horn <jannh@google.com>
-
-> ---
->  drivers/char/random.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/char/random.c b/drivers/char/random.c
-> index d20ba1b104ca3..a8b9e66f41435 100644
-> --- a/drivers/char/random.c
-> +++ b/drivers/char/random.c
-> @@ -1973,7 +1973,7 @@ static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
->                         return -EPERM;
->                 if (crng_init < 2)
->                         return -ENODATA;
-> -               crng_reseed(&primary_crng, NULL);
-> +               crng_reseed(&primary_crng, &input_pool);
-
-So now this will pull the data from the input_pool into the
-primary_crng, so far so good...
-
->                 crng_global_init_time = jiffies - 1;
-
-... and this will hopefully cause _extract_crng() to pull from the
-primary_crng into crng_node_pool[numa_node_id()] afterwards. Unless
-things are going too fast and therefore the jiffies haven't changed
-since the last crng_reseed() on the crng_node_pool[numa_node_id()]...
-a sequence number would probably be more robust than a timestamp.
-
-And a plain write like this without holding any locks is also questionable.
-
-The easiest way would probably be to make it an atomic_long_t, do
-atomic_long_inc() instead of setting crng_global_init_time here, and
-check atomic_long_read(...) against a copy stored in the crng_state on
-_extract_crng()? And in crng_reseed(), grab the global sequence number
-at the start, then do smp_rmb(), and then under the lock do the actual
-reseeding and bump ->init_time? Or something like that?
-
->                 return 0;
->         default:
+-- 
+---
+Best Regards
+Kunihiko Hayashi
