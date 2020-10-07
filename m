@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA132858AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF1B285871
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727383AbgJGGbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:31:09 -0400
-Received: from paleale.coelho.fi ([176.9.41.70]:54200 "EHLO
-        farmhouse.coelho.fi" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726564AbgJGGbJ (ORCPT
+        id S1727229AbgJGGF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 02:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgJGGF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:31:09 -0400
-X-Greylist: delayed 1786 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Oct 2020 02:31:07 EDT
-Received: from 91-156-6-193.elisa-laajakaista.fi ([91.156.6.193] helo=[192.168.100.69])
-        by farmhouse.coelho.fi with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <luca@coelho.fi>)
-        id 1kQ2Vk-002QAG-Oj; Wed, 07 Oct 2020 09:01:13 +0300
-Message-ID: <27f10117a4f26d6f1f528d8e03fe753614dbef1a.camel@coelho.fi>
-From:   Luca Coelho <luca@coelho.fi>
-To:     Kalle Valo <kvalo@codeaurora.org>, Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Date:   Wed, 07 Oct 2020 09:01:10 +0300
-In-Reply-To: <87lfgjbzin.fsf@codeaurora.org>
-References: <20200910065431.657636-1-lee.jones@linaro.org>
-         <20201002090353.GS6148@dell> <87362rdhv2.fsf@codeaurora.org>
-         <20201006065617.GX6148@dell> <87lfgjbzin.fsf@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Wed, 7 Oct 2020 02:05:29 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97D3C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 23:05:28 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id y14so685462pgf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 23:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+WZVwcVZq17DkZh6Ek8hgtQgHh8+kfcgUyh2yGXklz0=;
+        b=DDMZH9DrS5gsFGD94mHEOzp+CCLRwyQNYcYc57nxOJ5nvYUVhH/3HX8S+36V7pD23G
+         67Yr1XpXiqangp7o/tajpethsaqQEFLnl2ZXBcVVVEGoZcIXPxhjsVguqN4S4yYZ2muw
+         pwwesSCFH7kXDiBk1S6oowJU0gfy5ox74fFCfDcvgMCRpO9LD5HLi0kyCh5WCAqwTpNa
+         /z+OuPqciEGAs0ZkIIoQUutaz86zp3BsDrDcQiepVR66XOtT2n0HUFdBTbDNsWJb5YOD
+         D6z0ZqJ2LeGr7DNj/0NIAwzaOC5t0rzEhQ+rMdPwqv9dce1EhsQdg2/vUtHUXUGJbLkG
+         vshA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+WZVwcVZq17DkZh6Ek8hgtQgHh8+kfcgUyh2yGXklz0=;
+        b=M9uk5rnOAnGcWNuiqjMRZ7yZlGMWOlF4Z2QhohT7YmmXJxZ4NqexNe3BWlUJHxosBP
+         BZlPTacCQue3T63A/WAftmB3PsbSYKjODb/FOizq9e5nXAMfior+BKOSPq720Dq2NeyN
+         bosg7s0G5slGf0igMwSfsFMhw/Heeysl4v9fCTQIBxnATeM/L857D4qfV/S8UfXQvb7N
+         QhfZzvP/tT2nJMBZBp1TOvrVfXpcLfOWTB6U7DqvJRxWyK3PEsuKTNac8d2Wv/D7OS2O
+         45lrnKntw4a3vybV8eLUj5o/JQCTKTjoXFzWaeCC2NDuzD102pKWBQtsjoDjCmdrk+VM
+         Vb0A==
+X-Gm-Message-State: AOAM532hUa0odmyRpn+VuJbSMyEE63R7+hDbzkDSi0Itm2baYF3YzE7V
+        UcWPniyJ0OeSn9Sstq+79AgTxA==
+X-Google-Smtp-Source: ABdhPJzL6EN0aBk2qBvnw5Npidm2j1PjotUyNK/TEeojHbbecjp5Iy1TOibk43m25s2nmjkP5q0G3g==
+X-Received: by 2002:a63:3247:: with SMTP id y68mr1607315pgy.224.1602050728334;
+        Tue, 06 Oct 2020 23:05:28 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id 138sm1348410pfu.180.2020.10.06.23.05.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Oct 2020 23:05:27 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 11:35:25 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        ALKML <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 4/4] mailbox: arm_mhu: Add ARM MHU doorbell driver
+Message-ID: <20201007060525.ya6limypf6ggmtae@vireshk-i7>
+References: <20200928114445.19689-1-sudeep.holla@arm.com>
+ <20200928114445.19689-5-sudeep.holla@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on farmhouse.coelho.fi
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        TVD_RCVD_IP autolearn=ham autolearn_force=no version=3.4.4
-Subject: Re: [PATCH v2 00/29] [Set 1,2,3] Rid W=1 warnings in Wireless
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928114445.19689-5-sudeep.holla@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-06 at 10:10 +0300, Kalle Valo wrote:
-> Lee Jones <lee.jones@linaro.org> writes:
+On 28-09-20, 12:44, Sudeep Holla wrote:
+> The MHU drives the signal using a 32-bit register, with all 32 bits
+> logically ORed together. The MHU provides a set of registers to enable
+> software to set, clear, and check the status of each of the bits of this
+> register independently. The use of 32 bits for each interrupt line
+> enables software to provide more information about the source of the
+> interrupt. For example, each bit of the register can be associated with
+> a type of event that can contribute to raising the interrupt.
 > 
-> > On Tue, 06 Oct 2020, Kalle Valo wrote:
-> > 
-> > > Lee Jones <lee.jones@linaro.org> writes:
-> > > 
-> > > > On Thu, 10 Sep 2020, Lee Jones wrote:
-> > > > 
-> > > > > This is a rebased/re-worked set of patches which have been
-> > > > > previously posted to the mailing list(s).
-> > > > > 
-> > > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > > niggly little warnings.
-> > > > > 
-> > > > > There are quite a few W=1 warnings in the Wireless.  My plan
-> > > > > is to work through all of them over the next few weeks.
-> > > > > Hopefully it won't be too long before drivers/net/wireless
-> > > > > builds clean with W=1 enabled.
-> > > > > 
-> > > > > Lee Jones (29):
-> > > > >   iwlwifi: dvm: Demote non-compliant kernel-doc headers
-> > > > >   iwlwifi: rs: Demote non-compliant kernel-doc headers
-> > > > >   iwlwifi: dvm: tx: Demote non-compliant kernel-doc headers
-> > > > >   iwlwifi: dvm: lib: Demote non-compliant kernel-doc headers
-> > > > >   iwlwifi: calib: Demote seemingly unintentional kerneldoc header
-> > > > >   wil6210: Fix a couple of formatting issues in 'wil6210_debugfs_init'
-> > > > >   iwlwifi: dvm: sta: Demote a bunch of nonconformant kernel-doc headers
-> > > > >   iwlwifi: mvm: ops: Remove unused static struct 'iwl_mvm_debug_names'
-> > > > >   iwlwifi: dvm: Demote a couple of nonconformant kernel-doc headers
-> > > > >   iwlwifi: mvm: utils: Fix some doc-rot
-> > > > >   iwlwifi: dvm: scan: Demote a few nonconformant kernel-doc headers
-> > > > >   iwlwifi: dvm: rxon: Demote non-conformant kernel-doc headers
-> > > > >   iwlwifi: mvm: tx: Demote misuse of kernel-doc headers
-> > > > >   iwlwifi: dvm: devices: Fix function documentation formatting issues
-> > > > >   iwlwifi: iwl-drv: Provide descriptions debugfs dentries
-> > > > >   wil6210: wmi: Fix formatting and demote non-conforming function
-> > > > >     headers
-> > > > >   wil6210: interrupt: Demote comment header which is clearly not
-> > > > >     kernel-doc
-> > > > >   wil6210: txrx: Demote obvious abuse of kernel-doc
-> > > > >   wil6210: txrx_edma: Demote comments which are clearly not kernel-doc
-> > > > >   wil6210: pmc: Demote a few nonconformant kernel-doc function headers
-> > > > >   wil6210: wil_platform: Demote kernel-doc header to standard comment
-> > > > >     block
-> > > > >   wil6210: wmi: Correct misnamed function parameter 'ptr_'
-> > > > >   ath6kl: wmi: Remove unused variable 'rate'
-> > > > >   ath9k: ar9002_initvals: Remove unused array
-> > > > >     'ar9280PciePhy_clkreq_off_L1_9280'
-> > > > >   ath9k: ar9001_initvals: Remove unused array 'ar5416Bank6_9100'
-> > > > >   ath9k: ar5008_initvals: Remove unused table entirely
-> > > > >   ath9k: ar5008_initvals: Move ar5416Bank{0,1,2,3,7} to where they are
-> > > > >     used
-> > > > >   brcmsmac: phytbl_lcn: Remove unused array 'dot11lcn_gain_tbl_rev1'
-> > > > >   brcmsmac: phy_lcn: Remove unused variable
-> > > > >     'lcnphy_rx_iqcomp_table_rev0'
-> > > > 
-> > > > What's happening with all of these iwlwifi patches?
-> > > > 
-> > > > Looks like they are still not applied.
-> > > 
-> > > Luca (CCed) takes iwlwifi patches to his iwlwifi tree.
-> > 
-> > Thanks Kalle.
-> > 
-> > Luca,
-> > 
-> >   Do you know why these patches have not been applied yet?  Do you
-> > plan on applying them this week?  -rc1 is not due for release for
-> > nearly 3 weeks now that Linus tagged an -rc8.
+> This patch adds a separate the MHU controller driver for doorbel mode
+> of operation using the extended DT binding to add support the same.
 > 
-> I can also take Lee's patches directly to wireless-drivers-next, if
-> that's easier for Luca.
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/mailbox/Makefile     |   2 +-
+>  drivers/mailbox/arm_mhu_db.c | 359 +++++++++++++++++++++++++++++++++++
 
-Hi,
+Please put an entry in MAINTAINERS as well for this.
 
-Yes, please take these patches directly.  It simplifies things.
-
-Thanks!
-
---
-Cheers,
-Luca.
-
+-- 
+viresh
