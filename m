@@ -2,107 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E93428640E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16F5286477
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgJGQaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727978AbgJGQai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:30:38 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9D5C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:30:36 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id j13so2847362ilc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 09:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UYMk+BlOXeIbztTTmOGtrLRWb7ewhHw6QepmeLnJlMQ=;
-        b=Y4+NKXdlYiaTxkXT9l/2+Nk56HfwQ2izplaW+tMW3d0vI4hwfIC5V8T2ruDvM0wUNb
-         yAPjVLoCd3dSKe2CMd6GozDwwbjRFayGNqlAb00cDAldU9bBDMLQfDJNr1gfV5cHAAaf
-         /Z77J4+EhN66Oxu7/U6S2CevfxJwD8Y/meciKSGT0YiMbOeBYXIyiKiYjReB102VMaQ2
-         pk01mw9bZbvbUxpipQXJIWIZ8X+p311eE3aTLuxeb5hV41N5AtMTbTX46pfwersSs8SQ
-         IxEnrPM5BvSJ9lgamii7Kt//gXnrI3fPFKGpbt95RQHe2+2TJ2LX0CESU0s2JRmQ1an/
-         IxRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UYMk+BlOXeIbztTTmOGtrLRWb7ewhHw6QepmeLnJlMQ=;
-        b=mvsDoW1/Mgs4+h6VHjWYSOEon519v/qhOoALKVy772Wza/jqcD/cYE7gVyGjQbFlVE
-         d8rySAZ4X9q0lr4YLrbnwRTIW0ccTi0y6itR8m+yfoMxO3O5cpKtfqPZC2wiTXo9iAAB
-         zvBaWLt9KaujDY/YmvlbEkqOF+Rm+AK5Hj9As2jmPc0N7MDHj5QaFvlwgzUunnj771a/
-         PPtUSI2YONRsPDjju5nNirs5xrIkzlVsO9/2I8cqxmeNb16Tof15Xh36/HU3ZbiL8d6T
-         sziQiojdF6c10zmCL2X4/fc5h4K7eWSfoEPFq3ofGMjTbKKE9R60jO+Mxji3K4onYwSL
-         o2mg==
-X-Gm-Message-State: AOAM532TqwLEP/DlOgqoUEJOEdBVPDlp1u7dU11Gim5VdmW54E3PV93k
-        NzeE392SpeKXr86s616zPTxdehyaA4zc9ZG7AUn1cuRXFXeTPxF1olE=
-X-Google-Smtp-Source: ABdhPJz1pivHDuMpRIp1ymbBND8FIwBI+9YWjqbDyuFQsSBKh6gKtzo/VQ/hpFczpGrC3Z/Fe1wNF06wJy3f0eJ9Kos=
-X-Received: by 2002:a92:cbcd:: with SMTP id s13mr3157728ilq.306.1602088235893;
- Wed, 07 Oct 2020 09:30:35 -0700 (PDT)
+        id S1727665AbgJGQd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:33:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726138AbgJGQd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:33:27 -0400
+Received: from gaia (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 092952064E;
+        Wed,  7 Oct 2020 16:33:21 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 17:33:19 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Bhupesh Sharma <bhsharma@redhat.com>
+Cc:     John Donnelly <john.p.donnelly@oracle.com>,
+        Chen Zhou <chenzhou10@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        RuiRui Yang <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Prabhakar Kushwaha <prabhakar.pkin@gmail.com>,
+        Simon Horman <horms@verge.net.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, nsaenzjulienne@suse.de,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com
+Subject: Re: [PATCH v12 0/9] support reserving crashkernel above 4G on arm64
+ kdump
+Message-ID: <20201007163319.GS3462@gaia>
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
+ <e9b1b5db-a848-468e-6baf-2f7b4d658805@oracle.com>
+ <20201005170937.GA14576@gaia>
+ <CACi5LpMWUmP1df8fB8psJY_cNGHF9MNn+TNK4B4edaRHvOXxGQ@mail.gmail.com>
+ <20201006180012.GB31946@C02TF0J2HF1T.local>
+ <CACi5LpMmccLX9p0ZXnEbWHgn2LRrVSDQZF9zBGzfZySe3TvXEQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-19-bgardon@google.com>
- <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com>
-In-Reply-To: <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 7 Oct 2020 09:30:24 -0700
-Message-ID: <CANgfPd_dQ19sZz2wzSfz7-RzdbQrfP6cYJLpSYbyNyQW6Uf09Q@mail.gmail.com>
-Subject: Re: [PATCH 18/22] kvm: mmu: Support disabling dirty logging for the
- tdp MMU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACi5LpMmccLX9p0ZXnEbWHgn2LRrVSDQZF9zBGzfZySe3TvXEQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 6:09 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 25/09/20 23:22, Ben Gardon wrote:
-> > +     for_each_tdp_pte_root(iter, root, start, end) {
-> > +             if (!is_shadow_present_pte(iter.old_spte) ||
-> > +                 is_last_spte(iter.old_spte, iter.level))
-> > +                     continue;
-> > +
->
-> I'm starting to wonder if another iterator like
-> for_each_tdp_leaf_pte_root would be clearer, since this idiom repeats
-> itself quite often.  The tdp_iter_next_leaf function would be easily
-> implemented as
->
->         while (likely(iter->valid) &&
->                (!is_shadow_present_pte(iter.old_spte) ||
->                 is_last_spte(iter.old_spte, iter.level))
->                 tdp_iter_next(iter);
+On Wed, Oct 07, 2020 at 12:37:49PM +0530, Bhupesh Sharma wrote:
+> On Tue, Oct 6, 2020 at 11:30 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Mon, Oct 05, 2020 at 11:12:10PM +0530, Bhupesh Sharma wrote:
+> > > I think my earlier email with the test results on this series bounced
+> > > off the mailing list server (for some weird reason), but I still see
+> > > several issues with this patchset. I will add specific issues in the
+> > > review comments for each patch again, but overall, with a crashkernel
+> > > size of say 786M, I see the following issue:
+> > >
+> > > # cat /proc/cmdline
+> > > BOOT_IMAGE=(hd7,gpt2)/vmlinuz-5.9.0-rc7+ root=<..snip..> rd.lvm.lv=<..snip..> crashkernel=786M
+> > >
+> > > I see two regions of size 786M and 256M reserved in low and high
+> > > regions respectively, So we reserve a total of 1042M of memory, which
+> > > is an incorrect behaviour:
+> > >
+> > > # dmesg | grep -i crash
+> > > [    0.000000] Reserving 256MB of low memory at 2816MB for crashkernel (System low RAM: 768MB)
+> > > [    0.000000] Reserving 786MB of memory at 654158MB for crashkernel (System RAM: 130816MB)
+> > > [    0.000000] Kernel command line: BOOT_IMAGE=(hd2,gpt2)/vmlinuz-5.9.0-rc7+ root=/dev/mapper/rhel_ampere--hr330a--03-root ro rd.lvm.lv=rhel_ampere-hr330a-03/root rd.lvm.lv=rhel_ampere-hr330a-03/swap crashkernel=786M cma=1024M
+> > >
+> > > # cat /proc/iomem | grep -i crash
+> > >   b0000000-bfffffff : Crash kernel (low)
+> > >   bfcbe00000-bffcffffff : Crash kernel
+> >
+> > As Chen said, that's the intended behaviour and how x86 works. The
+> > requested 768M goes in the high range if there's not enough low memory
+> > and an additional buffer for swiotlb is allocated, hence the low 256M.
+> 
+> I understand, but why 256M (as low) for arm64? x86_64 setups usually
+> have more system memory available as compared to several commercially
+> available arm64 setups. So is the intent, just to keep the behavior
+> similar between arm64 and x86_64?
 
-Do you see a substantial efficiency difference between adding a
-tdp_iter_next_leaf and building on for_each_tdp_pte_using_root with
-something like:
+Similar in the sense of the fallback to high memory and some low memory
+allocation but the amounts can vary per architecture.
 
-#define for_each_tdp_leaf_pte_using_root(_iter, _root, _start, _end)    \
-        for_each_tdp_pte_using_root(_iter, _root, _start, _end)         \
-                if (!is_shadow_present_pte(_iter.old_spte) ||           \
-                    !is_last_spte(_iter.old_spte, _iter.level))         \
-                        continue;                                       \
-                else
+> Should we have a CONFIG option / bootarg to help one select the max
+> 'low_size'? Currently the ' low_size' value is calculated as:
+> 
+>     /*
+>          * two parts from kernel/dma/swiotlb.c:
+>          * -swiotlb size: user-specified with swiotlb= or default.
+>          *
+>          * -swiotlb overflow buffer: now hardcoded to 32k. We round it
+>          * to 8M for other buffers that may need to stay low too. Also
+>          * make sure we allocate enough extra low memory so that we
+>          * don't run out of DMA buffers for 32-bit devices.
+>          */
+>         low_size = max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
+> 
+> Since many arm64 boards ship with swiotlb=0 (turned off) via kernel
+> bootargs, the low_size, still ends up being 256M in such cases,
+> whereas this 256M can be used for some other purposes - so should we
+> be limiting this to 64M and failing the crash kernel allocation
+> request (gracefully) otherwise?
 
-I agree that putting those checks in a wrapper makes the code more concise.
+I think it makes sense to set a low_size = 0 if
+swiotlb_size_or_default() is 0. The assumption would be that if the main
+kernel doesn't need an swiotlb, the crashdump one wouldn't need it
+either. But this probably needs the ZONE_DMA for non-RPi4 platforms
+addressed as well (expanded to the whole ZONE_DMA32).
 
->
-> Paolo
->
+-- 
+Catalin
