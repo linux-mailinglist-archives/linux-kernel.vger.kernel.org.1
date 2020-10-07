@@ -2,210 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074B12860B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8492860C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbgJGN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728467AbgJGN45 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:56:57 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91988C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:56:57 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id u19so2451803ion.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:56:57 -0700 (PDT)
+        id S1728541AbgJGN65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:58:57 -0400
+Received: from mail-dm6nam10on2054.outbound.protection.outlook.com ([40.107.93.54]:19808
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728467AbgJGN65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:58:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dcc9TyfrmIOW/0D/yexqY1fWsno0syxz8ztiV0Pg2SLouEcIPNZUOJJhBHy6g2EJ+e6IbbsZVq4qK84Yi0PDf8tatwIhe+n7LSqAuBojgIrFurIlkMW3IWM4ACfeUKM4hwI0IF08ZUb9ApyNfpiFNHmiOGXka92McepSVgNLyxN6BzNm/r1yde4EBUNlkEpkTAk/nlXlhPnfElJNkKbAGYiGhcgIBFOrsTooo1YjkT/yYMpLa/q2v75850jJYxte6GCEBspvAifOwKCRnK72dBUgii/GhjZJ/SAc0zaxzvAS/nygHanxC0qcpVxa3KDB4/x6yNu9VJxQ1VcvmWjY2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fTEIP01uuSXtw07HFHYNcv12VnQVothc4aoAw97JCK8=;
+ b=eb/u8kSEveYvB6ZH/CC9st2ffYxYGjHF5n8mUfeKrzdg+FfduX1flHvM5Fe408gHdD6Xj1621QF4ElzjmAI/XdGoN6A/shOPndAfsLTLaOatq3uly0bR0EWJ+bHpPf7qS7+dsJwm9miH7O6NAZq8zibX5yo+OBJzMeehfnUahToN0oZLRwOy6kug25KkFpeuT2EES/Y9TMx6W4m6BHc1MMDkB4dtou6jUAzXqN6z1ZJyQRhY7MJDh1qtt5poLzkKKUF72pd/zdX6C9uwqS4TRa0HExoQGCJD2/uMMnbEVwhHIEiTe5wqlZY1lKwh8NB9mgWV1cILdiNm7Xl7vi2kXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8oRD8LT/3S5G8509ul/PnBl5dx6h253AKwvEmRsvyAc=;
-        b=QPkocxYM9HKwOzMQjAFecDlkLau2QjNN5OfM7Y/VT1h4Jz7MYWSHOY5dwlsNTi+/zZ
-         Ls2/32jguM+Awpix2QoNHROaqzKIZlZ16cBIBp2QA8arIzqaOtJlGN/ePOaORWVxzi53
-         CaMtnvw2UoxPG/jimGUPV8LtsHtSqsSjZzg4M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8oRD8LT/3S5G8509ul/PnBl5dx6h253AKwvEmRsvyAc=;
-        b=X1DGWe7OOvpuix51dWJlPhyo62IL/zwPPVWgdK6u4nK7HUhzE54cBzAZaeCo0DptOu
-         gJig2mFHpmqGapCpmtcAIaKAxMVg1KAhki/+VwvD3wogxjMcYV7PoOfPo7gtej/zL4fH
-         oDd0nDpfG93ekvygrde6nRuJ/O6Ijpkq2D33UorFGC9mursPDFa8fuT/pE+wx8wwNXaU
-         Gc7ozowf0zC2dTXJvPk5L4heOOurVTwjZHsV0+oQW2KDp4iSUkWHQX1B+9gDeA5o2rZR
-         4PYvMXxe0NJ+Pz/sxWASw94yx2stkK6sg8y0dDaZrHqh24I8zHf+fK2Z58z9dV3pH1ux
-         PbOA==
-X-Gm-Message-State: AOAM531dpI02raB1lD9vQ6esu8QifzkS+CxlDYcHNrTzG3FLyrDvlBCV
-        aay4jBbAMfKCxklE1Dmj//jSCA==
-X-Google-Smtp-Source: ABdhPJxtY+3tYBU2t4rrYYVoTab7aPCIfemauQQXHc8OJstFGnIcBLcl6zgbpJvelmLA082jkRfN3w==
-X-Received: by 2002:a05:6638:2512:: with SMTP id v18mr3087951jat.106.1602079016842;
-        Wed, 07 Oct 2020 06:56:56 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v9sm902611ioq.41.2020.10.07.06.56.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 06:56:55 -0700 (PDT)
-Subject: Re: KASAN: null-ptr-deref Write in event_handler
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <000000000000810a4405b0ece316@google.com>
- <CAAeHK+xWQp87S=bF2RfUjcudGaLVjk3yKLL-bxRzVM=YNRtzRA@mail.gmail.com>
- <2947473d-76cd-a663-049a-4d51a97e2a3e@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <4b6c9d53-a4de-8749-e0b1-055dbb42703b@linuxfoundation.org>
-Date:   Wed, 7 Oct 2020 07:56:54 -0600
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fTEIP01uuSXtw07HFHYNcv12VnQVothc4aoAw97JCK8=;
+ b=c43xvpu6oEAD/Oem51rvICEMchHX2zNilbLXBkD1NtBW/XSSZgM9f/Mq+V4VHl8cWFrZFtMWUzcLb/g+iZc8i9O8xeDIwMHF5IAQyB4fdTdXTXwD9NuslDisYscRYyswUkGYP5FR33ComAfktt60PdAKk/LHeIAuPrY5ohNN8n0=
+Received: from CY4PR19CA0038.namprd19.prod.outlook.com (2603:10b6:903:103::24)
+ by BY5PR02MB6675.namprd02.prod.outlook.com (2603:10b6:a03:203::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36; Wed, 7 Oct
+ 2020 13:58:53 +0000
+Received: from CY1NAM02FT008.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:103:cafe::94) by CY4PR19CA0038.outlook.office365.com
+ (2603:10b6:903:103::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22 via Frontend
+ Transport; Wed, 7 Oct 2020 13:58:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ CY1NAM02FT008.mail.protection.outlook.com (10.152.75.59) with Microsoft SMTP
+ Server id 15.20.3433.39 via Frontend Transport; Wed, 7 Oct 2020 13:58:52
+ +0000
+Received: from [149.199.38.66] (port=38439 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kQ9xQ-0007C4-Es; Wed, 07 Oct 2020 06:58:16 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kQ9y0-0003Tn-Ge; Wed, 07 Oct 2020 06:58:52 -0700
+Received: from xsj-pvapsmtp01 (mailman.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 097DwikD010920;
+        Wed, 7 Oct 2020 06:58:44 -0700
+Received: from [172.30.17.110]
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <michals@xilinx.com>)
+        id 1kQ9xr-0003SL-P5; Wed, 07 Oct 2020 06:58:44 -0700
+Subject: Re: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+ Firmware Service call
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>
+References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+ <20201006155549.3595-3-muhammad.husaini.zulkifli@intel.com>
+ <4677c614-ac00-fb69-d22c-54f9015249f4@xilinx.com>
+ <DM6PR11MB2876F93077CA6705EFAB2E4EB80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
+ <db60efac-c583-4b2a-3ad9-7bd93dfb5323@xilinx.com>
+ <DM6PR11MB2876A16148E84AB8FFC0B7FAB80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Autocrypt: addr=michals@xilinx.com; keydata=
+ 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
+ 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
+Message-ID: <b29226d8-08ad-f708-73d7-1c4bb66e5767@xilinx.com>
+Date:   Wed, 7 Oct 2020 15:58:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <2947473d-76cd-a663-049a-4d51a97e2a3e@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <DM6PR11MB2876A16148E84AB8FFC0B7FAB80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7f825064-c72b-49fb-2f75-08d86ac91fd7
+X-MS-TrafficTypeDiagnostic: BY5PR02MB6675:
+X-Microsoft-Antispam-PRVS: <BY5PR02MB667579D9BAC09F510CE97F4CC60A0@BY5PR02MB6675.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YzicsA7FiF770SiKPkhDKK+YdmLBgDEFRFcQeAfHcHIPSugUpwrv1SabHougxskFfvJUsBVYvA3CL2hybeK0IuePfTR4Ju9nCAmZxPfctYQR3WgHipx7vhlgUyW2HAgOsMYmZQMzmC/QoDmrC651FlJuYe4ja4D925zydj9znP/jV/aCuiytyIhVXFQo6+dOXSqBviZ06F0P4nJ/WYiUQwKy8pauhjKz6YE0Oy0cfe1FPs26F8Palle1PlKVwRbcsX+l4yVDXFJkRVir0BmgYaCLkYmPykhhhGyB2PWB3ulfvNfLss8ecH8ivibjYZN3KtzYUzhEjGqIokoo5dVhQMr6LI7sb06xK9pB1zumEwob36SDmf9M6ScIqSBm6se0E742BbuK23CZre3YZCtzMOidXMbWyG09Bq9CweQPVaeMCskJ/bD1oIR6gX41UnZn
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(396003)(39850400004)(346002)(136003)(376002)(46966005)(4326008)(7416002)(83380400001)(31686004)(316002)(54906003)(110136005)(478600001)(6666004)(81166007)(44832011)(53546011)(2906002)(8936002)(47076004)(82740400003)(36756003)(5660300002)(31696002)(9786002)(356005)(2616005)(26005)(426003)(336012)(8676002)(70586007)(186003)(82310400003)(70206006)(921003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 13:58:52.7972
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f825064-c72b-49fb-2f75-08d86ac91fd7
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT008.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6675
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/20 2:44 PM, Shuah Khan wrote:
-> On 10/5/20 8:04 AM, Andrey Konovalov wrote:
->> On Mon, Oct 5, 2020 at 3:59 PM syzbot
->> <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com> wrote:
->>>
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of 
->>> git://git.kernel.or..
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=15781d8f900000
->>> kernel config:  
->>> https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
->>> dashboard link: 
->>> https://syzkaller.appspot.com/bug?extid=bf1a360e305ee719e364
->>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>> syz repro:      
->>> https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1364f367900000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the 
->>> commit:
->>> Reported-by: syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com
->>>
->>> vhci_hcd: stop threads
->>> vhci_hcd: release socket
->>> vhci_hcd: disconnect device
->>> ==================================================================
->>> BUG: KASAN: null-ptr-deref in instrument_atomic_write 
->>> include/linux/instrumented.h:71 [inline]
->>> BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed 
->>> include/asm-generic/atomic-instrumented.h:142 [inline]
->>> BUG: KASAN: null-ptr-deref in refcount_add 
->>> include/linux/refcount.h:201 [inline]
->>> BUG: KASAN: null-ptr-deref in refcount_inc 
->>> include/linux/refcount.h:241 [inline]
->>> BUG: KASAN: null-ptr-deref in get_task_struct 
->>> include/linux/sched/task.h:104 [inline]
->>> BUG: KASAN: null-ptr-deref in kthread_stop+0x90/0x7e0 
->>> kernel/kthread.c:591
->>> Write of size 4 at addr 000000000000001c by task kworker/u4:5/2519
->>>
->>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Not tainted 5.9.0-rc7-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, 
->>> BIOS Google 01/01/2011
->>> Workqueue: usbip_event event_handler
->>> Call Trace:
->>>   __dump_stack lib/dump_stack.c:77 [inline]
->>>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
->>>   __kasan_report mm/kasan/report.c:517 [inline]
->>>   kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
->>>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
->>>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
->>>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
->>>   atomic_fetch_add_relaxed 
->>> include/asm-generic/atomic-instrumented.h:142 [inline]
->>>   refcount_add include/linux/refcount.h:201 [inline]
->>>   refcount_inc include/linux/refcount.h:241 [inline]
->>>   get_task_struct include/linux/sched/task.h:104 [inline]
->>>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
->>>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
->>>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
->>>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
->>>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->>>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
->>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->>> ==================================================================
->>> Kernel panic - not syncing: panic_on_warn set ...
->>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Tainted: G    B             
->>> 5.9.0-rc7-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, 
->>> BIOS Google 01/01/2011
->>> Workqueue: usbip_event event_handler
->>> Call Trace:
->>>   __dump_stack lib/dump_stack.c:77 [inline]
->>>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
->>>   panic+0x382/0x7fb kernel/panic.c:231
->>>   end_report+0x4d/0x53 mm/kasan/report.c:104
->>>   __kasan_report mm/kasan/report.c:520 [inline]
->>>   kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
->>>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
->>>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
->>>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
->>>   atomic_fetch_add_relaxed 
->>> include/asm-generic/atomic-instrumented.h:142 [inline]
->>>   refcount_add include/linux/refcount.h:201 [inline]
->>>   refcount_inc include/linux/refcount.h:241 [inline]
->>>   get_task_struct include/linux/sched/task.h:104 [inline]
->>>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
->>>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
->>>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
->>>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
->>>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
->>>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
->>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->>> Kernel Offset: disabled
->>> Rebooting in 86400 seconds..
->>
->> Hi Valentina and Shuah,
->>
->> There appears to be a race condition in the USB/IP vhci_hcd shutdown
->> procedure. It happens quite often during fuzzing with syzkaller, and
->> prevents us from going deeper into the USB/IP code.
->>
->> Could you advise us what would be the best fix for this?
->>
+Hi,
+
+On 07. 10. 20 15:52, Zulkifli, Muhammad Husaini wrote:
+> Hi,
 > 
-> Hi Andrey,
+>> -----Original Message-----
+>> From: Michal Simek <michal.simek@xilinx.com>
+>> Sent: Wednesday, October 7, 2020 9:37 PM
+>> To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>;
+>> Michal Simek <michal.simek@xilinx.com>; Hunter, Adrian
+>> <adrian.hunter@intel.com>; sudeep.holla@arm.com; ulf.hansson@linaro.org;
+>> linux-mmc@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+>> kernel@vger.kernel.org
+>> Cc: Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>;
+>> Wan Mohamad, Wan Ahmad Zainie
+>> <wan.ahmad.zainie.wan.mohamad@intel.com>; arnd@arndb.de
+>> Subject: Re: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+>> Firmware Service call
+>>
+>> Hi,
+>>
+>> On 07. 10. 20 15:21, Zulkifli, Muhammad Husaini wrote:
+>>> Hi Michal,
+>>>
+>>> Thanks for the feedback. I replied inline
+>>>
+>>>> -----Original Message-----
+>>>> From: Michal Simek <michal.simek@xilinx.com>
+>>>> Sent: Wednesday, October 7, 2020 4:20 PM
+>>>> To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>;
+>>>> Hunter, Adrian <adrian.hunter@intel.com>; michal.simek@xilinx.com;
+>>>> sudeep.holla@arm.com; ulf.hansson@linaro.org;
+>>>> linux-mmc@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+>>>> linux-kernel@vger.kernel.org
+>>>> Cc: Raja Subramanian, Lakshmi Bai
+>>>> <lakshmi.bai.raja.subramanian@intel.com>;
+>>>> Wan Mohamad, Wan Ahmad Zainie
+>>>> <wan.ahmad.zainie.wan.mohamad@intel.com>; arnd@arndb.de
+>>>> Subject: Re: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm
+>>>> Trusted Firmware Service call
+>>>>
+>>>> Hi,
+>>>>
+>>>> 1. Keem Bay: in subject is wrong. Tools are working with it and you
+>>>> should just use keembay: instead.
+>>> Are you saying like this ?
+>>> Keem Bay: Add support for Arm Trusted Firmware Service call
+>>
+>> like this:
+>> firmware: keembay: Add support for Arm Trusted Firmware Service call
+>>
+>>>
+>>>>
+>>>> 2. This should come first before actual change to keep the tree bisectable.
+>>> Noted. Done the changes
+>>>>
+>>>> On 06. 10. 20 17:55, muhammad.husaini.zulkifli@intel.com wrote:
+>>>>> From: Muhammad Husaini Zulkifli
+>>>>> <muhammad.husaini.zulkifli@intel.com>
+>>>>>
+>>>>> Add header file to handle API function for device driver to
+>>>>> communicate with Arm Trusted Firmware.
+>>>>>
+>>>>> Signed-off-by: Muhammad Husaini Zulkifli
+>>>>> <muhammad.husaini.zulkifli@intel.com>
+>>>>> ---
+>>>>>  .../linux/firmware/intel/keembay_firmware.h   | 46 +++++++++++++++++++
+>>>>>  1 file changed, 46 insertions(+)
+>>>>>  create mode 100644 include/linux/firmware/intel/keembay_firmware.h
+>>>>>
+>>>>> diff --git a/include/linux/firmware/intel/keembay_firmware.h
+>>>>> b/include/linux/firmware/intel/keembay_firmware.h
+>>>>> new file mode 100644
+>>>>> index 000000000000..9adb8c87b788
+>>>>> --- /dev/null
+>>>>> +++ b/include/linux/firmware/intel/keembay_firmware.h
+>>>>> @@ -0,0 +1,46 @@
+>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>>> +/*
+>>>>> + *  Intel Keembay SOC Firmware API Layer
+>>>>> + *
+>>>>> + *  Copyright (C) 2020-2021, Intel Corporation
+>>>>> + *
+>>>>> + *  Muhammad Husaini Zulkifli <Muhammad.Husaini.Zulkifli@intel.com>
+>>>>> + */
+>>>>> +
+>>>>> +#ifndef __FIRMWARE_KEEMBAY_SMC_H__
+>>>>> +#define __FIRMWARE_KEEMBAY_SMC_H__
+>>>>> +
+>>>>> +#include <linux/arm-smccc.h>
+>>>>> +
+>>>>> +/**
+>>>>
+>>>> This is not a kernel doc comment. Just use /*
+>>>>
+>>>>> + * This file defines API function that can be called by device
+>>>>> + driver in order to
+>>>>> + * communicate with Arm Trusted Firmware.
+>>>>> + */
+>>>>> +
+>>>>> +/* Setting for Keem Bay IO Pad Line Voltage Selection */
+>>>>> +#define KEEMBAY_SET_SD_VOLTAGE_FUNC_ID	0x8200ff26
+>>>>
+>>>> Sudeep: Don't we have any macros for composing these IDs?
+>>>> nit: IMHO composing these IDs from macros would make more sense to me.
+>>>>
+>>>>
+>>>>> +#define KEEMBAY_SET_1V8_VOLT		0x01
+>>>>
+>>>> 0x01 is just 1
+>>> Noted. Done the changes
+>>>>
+>>>>> +#define KEEMBAY_SET_3V3_VOLT		0x00
+>>>>
+>>>> 0x00 is just 0
+>>> Noted. Done the changes
+>>>>
+>>>>> +
+>>>>> +#if IS_ENABLED(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)
+>>>>> +static int do_fw_invoke(u64 func_id, u64 arg0, u64 arg1) {
+>>>>> +	struct arm_smccc_res res;
+>>>>> +
+>>>>> +	arm_smccc_1_1_invoke(func_id, arg0, arg1, &res);
+>>>>> +
+>>>>> +	return res.a0;
+>>>>
+>>>> I am not big fan of this error propagation in case of failure.
+>>>>
+>>>> If smc fails you get via res.a0 SMCCC_RET_NOT_SUPPORTED which is
+>>>> defined as
+>>>> -1 which is based on errno-base.h defined as EPERM.
+>>>>
+>>>> That driver which Sudeep pointed you to is using EINVAL instead.
+>>>>
+>>>> It means I would add a code to check it.
+>>>
+>>> Yeah I changed to below line of codes. Is this Ok? Tested working.
+>>> int keembay_sd_voltage_selection(int volt)
+>>
+>> static inline here shouldn't hurt.
+> due to func() prototype " int keembay_sd_voltage_selection(int volt);" to solve warning issues by robot , I cannot set static inline here. 
+> Will observed below error:
 > 
-> Reading the comments for this routine, looks like there is an assumption
-> that context begins cleanup and race conditions aren't considered.
-> 
-> The right fix is holding vhci->lock and vdev->priv_lock to protect
-> critical sections in this routine. I will send a patch for this.
-> 
+> error: static declaration of ‘keembay_sd_voltage_selection’ follows non-static declaration
+>  static inline int keembay_sd_voltage_selection(int volt).
 
-Hi Andrey,
+Will take a look at when you send new version.
 
-I have been unable to reproduce the problem with the reproducer
-so far. You mentioned it happens quite often.
-
-- matched config with yours
-- load vhci_hcd module and run the reproducer
-
-I do see the messages during shutdown - stop threads etc.
-
-What am I missing?
-
-thanks,
--- Shuah
-
+Thanks,
+Michal
 
 
