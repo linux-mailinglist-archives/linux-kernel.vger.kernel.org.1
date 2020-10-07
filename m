@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D498728631E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3108E2862D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgJGQEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728480AbgJGQEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:04:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC692C061755;
-        Wed,  7 Oct 2020 09:04:12 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 16:04:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602086651;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QqkP4ozmsjm1e34Fwhos2WpKUdEvFJaZzGM9Kb+4drA=;
-        b=pf1lGtPoFSANRIvq8hedfPiHzb9A9hX/AGpTBCadFsWt18r+UxXPnhLaVrrFI1td+OjGDB
-        j0iGoAvzJvy6qO4g/DIHvvydy8JMZ06lrt1xP9lqBu+bf6oti3iGQt2Zf3sMwT7XpG5ly7
-        SG9F9tC+n6Y7Hq5dCRAqt+eGUg/O4L7lqix7obHZ2+n+FY4O0HDFa56fmMvf2xiDf1Ip24
-        lsjKGsMbN4buNqW0AieJ9qu4MEsP++oAoQe2vqpd2j3s8o3pA6kkAxB1Db//HyqvXMScAN
-        f+TN/ShhZtNjc+zeYR9ktCuBQ3nZF+0dif06sHZ8Syblip9BzKphuHbf4vKQHA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602086651;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QqkP4ozmsjm1e34Fwhos2WpKUdEvFJaZzGM9Kb+4drA=;
-        b=+mHzWaYP4vJh+fK41IEFt9XF/Xr2uzBpaJ1xGTWzwXYAVmfiMNarP0AoeO5NPdXdFnm8ob
-        yxIutPiZlbbit8AA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86: Fix n_pair for cancelled txn
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kim Phillips <kim.phillips@amd.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201005082516.GG2628@hirez.programming.kicks-ass.net>
-References: <20201005082516.GG2628@hirez.programming.kicks-ass.net>
+        id S1728890AbgJGP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:58:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgJGP6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:58:13 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8373120789;
+        Wed,  7 Oct 2020 15:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602086292;
+        bh=HBwtJxagqbtQwZ67Dx8naXj+wlYZpPAKjHhzii40SSg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sBminQ92WVBJEwwafMT2XaIQUmSq/7wGDo+qB95LHJy0g79ZrIWTtmvjjuIlyhn4Z
+         9yEtPd43j5BDsGcUzvcwnhQ277O6G/ZPA6BpyL779Q0fsxFTeoCOh2tIXEM+KEnG2t
+         ZL8UqyTHDh3i/CmVF7LUqo+0XVsmt1okRgFdFtqA=
+Date:   Wed, 7 Oct 2020 11:04:12 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-hardening@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 03/14] drm/amd/pm: Replace one-element array with
+ flexible-array in struct phm_clock_array
+Message-ID: <661ad1c0e07f4eda264c08b219c8c702d67a9531.1602020074.git.gustavoars@kernel.org>
+References: <cover.1602020074.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Message-ID: <160208665048.7002.3857289526917288291.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1602020074.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Commit-ID:     871a93b0aad65a7f44ee25f2d17932ef6d559850
-Gitweb:        https://git.kernel.org/tip/871a93b0aad65a7f44ee25f2d17932ef6d559850
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 05 Oct 2020 10:09:06 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 06 Oct 2020 15:18:17 +02:00
+Refactor the code according to the use of a flexible-array member in
+struct phm_clock_array, instead of a one-element array, and use the
+struct_size() helper to calculate the size for the allocation.
 
-perf/x86: Fix n_pair for cancelled txn
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
 
-Kan reported that n_metric gets corrupted for cancelled transactions;
-a similar issue exists for n_pair for AMD's Large Increment thing.
-
-The problem was confirmed and confirmed fixed by Kim using:
-
-  sudo perf stat -e "{cycles,cycles,cycles,cycles}:D" -a sleep 10 &
-
-  # should succeed:
-  sudo perf stat -e "{fp_ret_sse_avx_ops.all}:D" -a workload
-
-  # should fail:
-  sudo perf stat -e "{fp_ret_sse_avx_ops.all,fp_ret_sse_avx_ops.all,cycles}:D" -a workload
-
-  # previously failed, now succeeds with this patch:
-  sudo perf stat -e "{fp_ret_sse_avx_ops.all}:D" -a workload
-
-Fixes: 5738891229a2 ("perf/x86/amd: Add support for Large Increment per Cycle Events")
-Reported-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Kim Phillips <kim.phillips@amd.com>
-Link: https://lkml.kernel.org/r/20201005082516.GG2628@hirez.programming.kicks-ass.net
+Build-tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/5f7c433f.ZyMD+YUIVAwiHGVe%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/x86/events/core.c       | 6 +++++-
- arch/x86/events/perf_event.h | 1 +
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/pm/inc/hwmgr.h                    |  2 +-
+ .../amd/pm/powerplay/hwmgr/process_pptables_v1_0.c    | 11 ++++-------
+ .../gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c  |  7 +++----
+ .../amd/pm/powerplay/hwmgr/vega10_processpptables.c   |  9 +++------
+ 4 files changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index cb5cfef..a7248a3 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1064,8 +1064,10 @@ static int collect_event(struct cpu_hw_events *cpuc, struct perf_event *event,
- 		return -EINVAL;
+diff --git a/drivers/gpu/drm/amd/pm/inc/hwmgr.h b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
+index d68b547743e6..e84cff09af2d 100644
+--- a/drivers/gpu/drm/amd/pm/inc/hwmgr.h
++++ b/drivers/gpu/drm/amd/pm/inc/hwmgr.h
+@@ -91,7 +91,7 @@ struct phm_set_power_state_input {
  
- 	cpuc->event_list[n] = event;
--	if (is_counter_pair(&event->hw))
-+	if (is_counter_pair(&event->hw)) {
- 		cpuc->n_pair++;
-+		cpuc->n_txn_pair++;
-+	}
+ struct phm_clock_array {
+ 	uint32_t count;
+-	uint32_t values[1];
++	uint32_t values[];
+ };
  
- 	return 0;
- }
-@@ -2006,6 +2008,7 @@ static void x86_pmu_start_txn(struct pmu *pmu, unsigned int txn_flags)
+ struct phm_clock_voltage_dependency_record {
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
+index b760f95e7fa7..52188f6cd150 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
+@@ -318,19 +318,16 @@ static int get_valid_clk(
+ 		phm_ppt_v1_clock_voltage_dependency_table const *clk_volt_pp_table
+ 		)
+ {
+-	uint32_t table_size, i;
++	uint32_t i;
+ 	struct phm_clock_array *table;
+ 	phm_ppt_v1_clock_voltage_dependency_record *dep_record;
  
- 	perf_pmu_disable(pmu);
- 	__this_cpu_write(cpu_hw_events.n_txn, 0);
-+	__this_cpu_write(cpu_hw_events.n_txn_pair, 0);
- }
+ 	PP_ASSERT_WITH_CODE((0 != clk_volt_pp_table->count),
+ 		"Invalid PowerPlay Table!", return -1);
  
- /*
-@@ -2031,6 +2034,7 @@ static void x86_pmu_cancel_txn(struct pmu *pmu)
- 	 */
- 	__this_cpu_sub(cpu_hw_events.n_added, __this_cpu_read(cpu_hw_events.n_txn));
- 	__this_cpu_sub(cpu_hw_events.n_events, __this_cpu_read(cpu_hw_events.n_txn));
-+	__this_cpu_sub(cpu_hw_events.n_pair, __this_cpu_read(cpu_hw_events.n_txn_pair));
- 	perf_pmu_enable(pmu);
- }
+-	table_size = sizeof(uint32_t) +
+-		sizeof(uint32_t) * clk_volt_pp_table->count;
+-
+-	table = kzalloc(table_size, GFP_KERNEL);
+-
+-	if (NULL == table)
++	table = kzalloc(struct_size(table, values, clk_volt_pp_table->count),
++			GFP_KERNEL);
++	if (!table)
+ 		return -ENOMEM;
  
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 3454424..93e56d7 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -235,6 +235,7 @@ struct cpu_hw_events {
- 					     they've never been enabled yet */
- 	int			n_txn;    /* the # last events in the below arrays;
- 					     added in the current transaction */
-+	int			n_txn_pair;
- 	int			assign[X86_PMC_IDX_MAX]; /* event to counter assignment */
- 	u64			tags[X86_PMC_IDX_MAX];
+ 	table->count = (uint32_t)clk_volt_pp_table->count;
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
+index d94a7d8e0587..d9bed4df6f65 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/processpptables.c
+@@ -404,12 +404,11 @@ static int get_valid_clk(struct pp_hwmgr *hwmgr,
+ 			struct phm_clock_array **ptable,
+ 			const struct phm_clock_voltage_dependency_table *table)
+ {
+-	unsigned long table_size, i;
++	unsigned long i;
+ 	struct phm_clock_array *clock_table;
  
+-	table_size = sizeof(unsigned long) + sizeof(unsigned long) * table->count;
+-	clock_table = kzalloc(table_size, GFP_KERNEL);
+-	if (NULL == clock_table)
++	clock_table = kzalloc(struct_size(clock_table, values, table->count), GFP_KERNEL);
++	if (!clock_table)
+ 		return -ENOMEM;
+ 
+ 	clock_table->count = (unsigned long)table->count;
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
+index f29af5ca0aa0..e655c04ccdfb 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
+@@ -875,17 +875,14 @@ static int get_valid_clk(
+ 		struct phm_clock_array **clk_table,
+ 		const phm_ppt_v1_clock_voltage_dependency_table *clk_volt_pp_table)
+ {
+-	uint32_t table_size, i;
++	uint32_t i;
+ 	struct phm_clock_array *table;
+ 
+ 	PP_ASSERT_WITH_CODE(clk_volt_pp_table->count,
+ 			"Invalid PowerPlay Table!", return -1);
+ 
+-	table_size = sizeof(uint32_t) +
+-			sizeof(uint32_t) * clk_volt_pp_table->count;
+-
+-	table = kzalloc(table_size, GFP_KERNEL);
+-
++	table = kzalloc(struct_size(table, values, clk_volt_pp_table->count),
++			GFP_KERNEL);
+ 	if (!table)
+ 		return -ENOMEM;
+ 
+-- 
+2.27.0
+
