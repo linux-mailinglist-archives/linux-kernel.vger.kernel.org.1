@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044AB286852
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E34286860
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbgJGTcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:32:53 -0400
-Received: from mx.aristanetworks.com ([162.210.129.12]:28723 "EHLO
-        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgJGTcx (ORCPT
+        id S1728364AbgJGTd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728336AbgJGTd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:32:53 -0400
-Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
-        by smtp.aristanetworks.com (Postfix) with ESMTP id 925304000A4;
-        Wed,  7 Oct 2020 12:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
-        s=Arista-A; t=1602099172;
-        bh=C0+5yjcysMk84GoYj0z05bOXjUBeWKhioIraoOaj5pU=;
-        h=Date:To:Subject:From:From;
-        b=mXoD2Q+nkriF0p709lff2+rKBzk1REnY4s8WWlfDsdp8XssJvXd27weNqnsFx5/U/
-         sRUi67pxVPh5Y1O4b2/L1D+zOL9gmM86BSOv1xl5badSNO8lnSusEz9+dTETDN/B2P
-         yDPwY0lve2/jTMyBTnHwZM2B3zQZ1yFqXPIE+Q458cvvJ+bWR0ZKcN8LvQTzqSDKl9
-         c8HjBTU+6M9Ifi9cVezxItw69tTl98ScyOuKIrXsD0rOAjhqdMPRjsWLzgrg449rob
-         BLG0t3+vLnLsM8/zxfEgRo1tDe4Sahgq6xzk7LYcqIq14UeYcigAnEkAUCMGKhDceW
-         7zhhKeaxmY6cQ==
-Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
-        id 7009D95C169C; Wed,  7 Oct 2020 12:32:52 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 12:32:52 -0700
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, fw@strlen.org,
-        kadlec@netfilter.org, pablo@netfilter.org, fruggeri@arista.com
-Subject: [PATCH nf v2] netfilter: conntrack: connection timeout after
- re-register
-User-Agent: Heirloom mailx 12.5 7/5/10
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-Id: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
-From:   fruggeri@arista.com (Francesco Ruggeri)
+        Wed, 7 Oct 2020 15:33:27 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F00FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 12:33:20 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id u21so4663108eja.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 12:33:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RmnEZ1FdPT1UPs7kQcpuXD7GC8rLG+yumUNPCpNpOGc=;
+        b=N8r/yrLDPKroMQCnakJtgQlEsxQFffAa7XjZXv3NwJKYhW6cGY3P32N/wys8kUmeLc
+         Z3cf4MV0FjcxNYHuUtP7Oj2/h/K2d2euOJU/PSS52ypyRDR0EBh1cJO1YDWaJVba6fQ/
+         H6alqkWn1zpA9cwsKPV0dohBNC66x1N6cRfq2ZiKrJCwD803V9/8UX+b9D3jMVPIj2FY
+         NiVc6lfVxwhoQC3sLujKgSkr8KPyal/ezBglcD4d9hDhYk/CQ3pPnvtXwA7Ku8FHDzUO
+         W0Kvwl/89Un3CcMfnS9Y//x9EccKgDRIV41sKknRM3LIym9lfBoDuNoTYkQr+aKovhyr
+         Mbmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RmnEZ1FdPT1UPs7kQcpuXD7GC8rLG+yumUNPCpNpOGc=;
+        b=HbKv/QzacsbnGuN236BxwRYsvtRPEMjqlLuYca8oy5slK06YRuWBtXTMUYS0kB6O8S
+         b3+M7zLo2FYw5GHmBZlxERJKmi6A2DXiVMEQrluPn7B8dwtNe1+zPvMl1Uf+syrfhZdR
+         jT6adLRL7c+UUiEhHmbqXQy6AZi6mqc1LhTdSZ2FENitwfGgUa9wSV709tDalRz3I0LR
+         yZ2PeGc6qLdhZyoamD/eT03L0QOeFkCVX4mj3RE7PmPbcCLRgRr9PXIBzb4Afut1OW77
+         PowHau1lDhks8ANyHFmAVWOrM+lZ1xYCBvfcylklcTrMn55vZxbStA/B8vmQzOs4I3f2
+         i5Cg==
+X-Gm-Message-State: AOAM532oTk6orNMzVpuXwiaAGM1x6P8cXRuPR4Sj/PsHIGyK8ZKXmKJP
+        FhTCsO22zQqT+5Q5CNBc+QMVtNmHzIbhCPTZaAgCmA==
+X-Google-Smtp-Source: ABdhPJwxGpDKjE8M6aFCtzChdIqpmhlJGveNVqW3bvq/Ql2n/UAIW/iMsi5CJ7xIyexOlAXnBF03c4LTBSDYYkOBolI=
+X-Received: by 2002:a17:906:1a0b:: with SMTP id i11mr4984968ejf.472.1602099198813;
+ Wed, 07 Oct 2020 12:33:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch> <20201007164426.1812530-11-daniel.vetter@ffwll.ch>
+In-Reply-To: <20201007164426.1812530-11-daniel.vetter@ffwll.ch>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 7 Oct 2020 12:33:06 -0700
+Message-ID: <CAPcyv4hBL68A7CZa+YnooufDH2tevoxrx32DTJMQ6OHRnec7QQ@mail.gmail.com>
+Subject: Re: [PATCH 10/13] PCI: revoke mappings like devmem
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the first packet conntrack sees after a re-register is an outgoing
-keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to
-SND.NXT-1.
-When the peer correctly acknowledges SND.NXT, tcp_in_window fails
-check III (Upper bound for valid (s)ack: sack <= receiver.td_end) and
-returns false, which cascades into nf_conntrack_in setting
-skb->_nfct = 0 and in later conntrack iptables rules not matching.
-In cases where iptables are dropping packets that do not match
-conntrack rules this can result in idle tcp connections to time out.
+On Wed, Oct 7, 2020 at 11:11 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
+> the region") /dev/kmem zaps ptes when the kernel requests exclusive
+> acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
+> the default for all driver uses.
+>
+> Except there's two more ways to access pci bars: sysfs and proc mmap
+> support. Let's plug that hole.
 
-v2: adjust td_end when getting the reply rather than when sending out
-    the keepalive packet.
+Ooh, yes, lets.
 
-Fixes: f94e63801ab2 ("netfilter: conntrack: reset tcp maxwin on re-register")
-Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
----
- net/netfilter/nf_conntrack_proto_tcp.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+>
+> For revoke_devmem() to work we need to link our vma into the same
+> address_space, with consistent vma->vm_pgoff. ->pgoff is already
+> adjusted, because that's how (io_)remap_pfn_range works, but for the
+> mapping we need to adjust vma->vm_file->f_mapping. Usually that's done
+> at ->open time, but that's a bit tricky here with all the entry points
+> and arch code. So instead create a fake file and adjust vma->vm_file.
 
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index e8c86ee4c1c4..c8fb2187ad4b 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -541,13 +541,20 @@ static bool tcp_in_window(const struct nf_conn *ct,
- 			swin = win << sender->td_scale;
- 			sender->td_maxwin = (swin == 0 ? 1 : swin);
- 			sender->td_maxend = end + sender->td_maxwin;
--			/*
--			 * We haven't seen traffic in the other direction yet
--			 * but we have to tweak window tracking to pass III
--			 * and IV until that happens.
--			 */
--			if (receiver->td_maxwin == 0)
-+			if (receiver->td_maxwin == 0) {
-+				/* We haven't seen traffic in the other
-+				 * direction yet but we have to tweak window
-+				 * tracking to pass III and IV until that
-+				 * happens.
-+				 */
- 				receiver->td_end = receiver->td_maxend = sack;
-+			} else if (sack == receiver->td_end + 1) {
-+				/* Likely a reply to a keepalive.
-+				 * Needed for III.
-+				 */
-+				receiver->td_end++;
-+			}
-+
- 		}
- 	} else if (((state->state == TCP_CONNTRACK_SYN_SENT
- 		     && dir == IP_CT_DIR_ORIGINAL)
--- 
-2.28.0
-
+I don't think you want to share the devmem inode for this, this should
+be based off the sysfs inode which I believe there is already only one
+instance per resource. In contrast /dev/mem can have multiple inodes
+because anyone can just mknod a new character device file, the same
+problem does not exist for sysfs.
