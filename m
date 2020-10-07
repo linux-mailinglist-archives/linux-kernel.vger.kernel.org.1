@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070882856B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 04:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDB32856B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 04:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgJGCkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 22:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgJGCkS (ORCPT
+        id S1726986AbgJGCnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 22:43:46 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42591 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726637AbgJGCnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 22:40:18 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03930C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 19:40:17 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id u8so783162ejg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 19:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=afZ2ku0615X/vbgIsq8uZABQa+HrZmef3/cMOPPeXPE=;
-        b=EPjdVqDeTinUn3xle7QkZRs1c1I777r6WwVNCzmQvuelLMEIhN7D3byY1DbMWiHRAd
-         QgHw7nunbi78JiFNVYPaj+vzDaQToh84mycymDqg79odab44O2bFpy0hTFRZMk6Gq88h
-         gdm22jg2FmT9PYcFKiksCpHH97YYjHNLfkRJqB+XyuOtAK7X6n9Ol7Qc3aWxyX/ubcf1
-         1Dj3nT3ueZ1gSrXVBd01SuIcMxMF+W8KjeuouHZbfkVWg3QUD53z+H8ypZQCYHGiMbYk
-         lCoLazlQUecuVDEtHUfRDwSsCvcaF59aNbsh9HWw6NNgsgGSQloXWj+DnfN5l7npN3En
-         PmkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=afZ2ku0615X/vbgIsq8uZABQa+HrZmef3/cMOPPeXPE=;
-        b=gMJz4H/puKKW/TgScdZ7IOOgMcdU4eRr7+aT9h+6WUGUa6sUhWUxae/CbtMkE0SHIs
-         v6tkCtx/Ewwp3QRdAsc4ElwVpWe5Xql2M1rfJ6QhEXsKb8e6rLsL3jlh7jxynPOWMz44
-         i2+iUTHLIT3235hNV7gx0Tz71jUurWKyS2P0/2qQJyF0urUbPjwKx58fwiO+QkPqYUPC
-         Yeo2NMd1BfWDE+nN8dZFnsBdEeS72piIf2nTRVaMEiQLBZvhTG8ZeO8ae2IUITxv5IDg
-         cKNtzPnEjjWTp8D90WojQKPG7L81I3MlifaUCFhxqj71JaCXqsB4JuqaUBsx0lXxFVcd
-         r9Lw==
-X-Gm-Message-State: AOAM532yAUtnAeotPjA+JoWLQcJ31im6I1VIoQv0s8dUcCHXpr0uv0KU
-        +oU6e7eeQNF2R6QnrYLcLozK+9m9TSSxPBRdGmpwEA==
-X-Google-Smtp-Source: ABdhPJyzhK0w2iAz2iCMzOOn/0AFV3bEvaxuBmF2mBxx+C4IpyFlFHdfkT/qw+BQgpUSKwf1wNdFiTZy1ImFQ33Wm94=
-X-Received: by 2002:a17:906:1a0b:: with SMTP id i11mr1116582ejf.472.1602038416463;
- Tue, 06 Oct 2020 19:40:16 -0700 (PDT)
+        Tue, 6 Oct 2020 22:43:46 -0400
+X-UUID: 20384dc07366430b91a2c9fb45b9941f-20201007
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=AFPXpclqC/BVWvt1LdPXCMRHLa9WQf2iX9kXqT1ZSNs=;
+        b=eBGwrty71ludhboOCgew7oyCJIcOzGTzYnUfNaGFRPQizsUc/ctOd/odc8h74bUnePBQ/p0Zp0eliuk8qjLRDYd1fPMyit7CW/xo2vXpvBATRj8jWnIpaPfQHN8qAjQey5e9DYJbYJ2/Fj/DUMQQi9Hm+SlyVJOsnBSgvazabnQ=;
+X-UUID: 20384dc07366430b91a2c9fb45b9941f-20201007
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <michael.kao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 841286483; Wed, 07 Oct 2020 10:43:38 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 7 Oct 2020 10:43:35 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 7 Oct 2020 10:43:32 +0800
+From:   Michael Kao <michael.kao@mediatek.com>
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
+CC:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Michael Kao <michael.kao@mediatek.com>
+Subject: [PATCH] [v2] thermal: core: add upper and lower limits to power_actor_set_power
+Date:   Wed, 7 Oct 2020 10:43:32 +0800
+Message-ID: <20201007024332.30322-1-michael.kao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20201006230930.3908-1-rcampbell@nvidia.com>
-In-Reply-To: <20201006230930.3908-1-rcampbell@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 6 Oct 2020 19:40:05 -0700
-Message-ID: <CAPcyv4gYtCmzPOWErYOkCCfD0ZvLcrgfR8n2kG3QPMww9B0gyg@mail.gmail.com>
-Subject: Re: [PATCH] ext4/xfs: add page refcount helper
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Ts'o" <tytso@mit.edu>, Christoph Hellwig <hch@lst.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 4:09 PM Ralph Campbell <rcampbell@nvidia.com> wrote:
->
-> There are several places where ZONE_DEVICE struct pages assume a reference
-> count == 1 means the page is idle and free. Instead of open coding this,
-> add a helper function to hide this detail.
->
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->
-> I'm resending this as a separate patch since I think it is ready to
-> merge. Originally, this was part of an RFC and is unchanged from v3:
-> https://lore.kernel.org/linux-mm/20201001181715.17416-1-rcampbell@nvidia.com
->
-> It applies cleanly to linux-5.9.0-rc7-mm1 but doesn't really
-> depend on anything, just simple merge conflicts when applied to
-> other trees.
-> I'll let the various maintainers decide which tree and when to merge.
-> It isn't urgent since it is a clean up patch.
+VGhlIHVwcGVyIGFuZCBsb3dlciBsaW1pdHMgb2YgdGhlcm1hbCB0aHJvdHRsZSBzdGF0ZSBpbiB0
+aGUNCkRUIGRvIG5vdCBhcHBseSB0byB0aGUgSW50ZWxsaWdlbnQgUG93ZXIgQWxsb2NhdGlvbiAo
+SVBBKSBnb3Zlcm5vci4NCkFkZCB0aGUgY2xhbXBpbmcgZm9yIGNvb2xpbmcgZGV2aWNlIHVwcGVy
+IGFuZCBsb3dlciBsaW1pdHMgaW4gdGhlDQpwb3dlcl9hY3Rvcl9zZXRfcG93ZXIoKSB1c2VkIGJ5
+IElQQS4NCg0KU2lnbmVkLW9mZi1ieTogTWljaGFlbCBLYW8gPG1pY2hhZWwua2FvQG1lZGlhdGVr
+LmNvbT4NCi0tLQ0KIGRyaXZlcnMvdGhlcm1hbC90aGVybWFsX2NvcmUuYyB8IDIgKy0NCiAxIGZp
+bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvdGhlcm1hbC90aGVybWFsX2NvcmUuYyBiL2RyaXZlcnMvdGhlcm1hbC90aGVybWFs
+X2NvcmUuYw0KaW5kZXggNzJiZjE1OWJjZWNjLi5hMjYwZTRhNTc1ZjMgMTAwNjQ0DQotLS0gYS9k
+cml2ZXJzL3RoZXJtYWwvdGhlcm1hbF9jb3JlLmMNCisrKyBiL2RyaXZlcnMvdGhlcm1hbC90aGVy
+bWFsX2NvcmUuYw0KQEAgLTY3NCw3ICs2NzQsNyBAQCBpbnQgcG93ZXJfYWN0b3Jfc2V0X3Bvd2Vy
+KHN0cnVjdCB0aGVybWFsX2Nvb2xpbmdfZGV2aWNlICpjZGV2LA0KIAlpZiAocmV0KQ0KIAkJcmV0
+dXJuIHJldDsNCiANCi0JaW5zdGFuY2UtPnRhcmdldCA9IHN0YXRlOw0KKwlpbnN0YW5jZS0+dGFy
+Z2V0ID0gY2xhbXBfdmFsKHN0YXRlLCBpbnN0YW5jZS0+bG93ZXIsIGluc3RhbmNlLT51cHBlcik7
+DQogCW11dGV4X2xvY2soJmNkZXYtPmxvY2spOw0KIAljZGV2LT51cGRhdGVkID0gZmFsc2U7DQog
+CW11dGV4X3VubG9jaygmY2Rldi0+bG9jayk7DQotLSANCjIuMTguMA0K
 
-Thanks Ralph, it looks good to me. Jan, or Ted care to ack? I don't
-have much else pending for dax at the moment as Andrew is carrying my
-dax updates for this cycle. Andrew please take this into -mm if you
-get a chance. Otherwise I'll cycle back to it when some other dax
-updates arrive in my queue.
