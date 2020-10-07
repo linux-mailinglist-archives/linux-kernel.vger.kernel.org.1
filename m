@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA809285FCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD97B285FDE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgJGNJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728283AbgJGNJX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:09:23 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF6BC061755;
-        Wed,  7 Oct 2020 06:09:22 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id o8so981295pll.4;
-        Wed, 07 Oct 2020 06:09:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KVqiXdKPy//yBLnrbUYNPIFbKzpfm4hlm2oJcG3MPKM=;
-        b=IcVmgf6DyKax8SL+CnODpfOy+HGD60ry2A6dznQV4HFKxlEZlWI7gHntlE7KHv8oLc
-         1+WemA7at7Q9Pq8ysSiPtfWdMU/6mKX2mM1L1FBedW+1dk+3Ivyma4ewpba1+e/BR037
-         u6zNRbytqB+YK6LWyAVmdbStn0o8adCPJ8/9HxHgRKsRrpz0HOGYniLFAODou/dwd5GK
-         szRyxVs5GKAuAR1j+Nu088VoyNZ+absaejCfre3l26i7d7kUB3BT8shJSRTS43Yp3IF0
-         7j7HwHAl1eeL2Ln27N3L315ZoxtQNuJmNYw3gOouy5iootYcF5owyUSa5wC3uGgPd8Kj
-         9UEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KVqiXdKPy//yBLnrbUYNPIFbKzpfm4hlm2oJcG3MPKM=;
-        b=REFE9xLC58yMzI4MrmYgyZG7kmxZByOSKZd7ga9h3WrXg7hVyxBxVYXSdPEekm/8wW
-         BiTI4E3uvHMz280jp7H5AIDG53gsdwd+80sQ67ncNyxDjAPFuEYc2xEXl/td9alnAO+t
-         wGYtTyNzWj4zVU/Vfd7OVzk+qW6nQtcH2dmWG0+rTTEVT/j1sIORqbBz3OtaKA7qfUPv
-         niOFlMGco5cyjNl66j3OdhyARicclCN8uwLStWlj7YgimzD8k4Ak/q/oOenmxOi9XWlA
-         Fb7BHqhZp7mmMiGh3fBNzOXJftFQcyy2k0FVR1nAjtR+u5+W7PaJgu2+htVVwwqqO4ym
-         79Rw==
-X-Gm-Message-State: AOAM532rbi336ynti+RFLMfMzG+k0XlzU+rs8BImD42/MMlRRbP9g30d
-        UQIxa5f5vk8eBzz+/w0SCieI7qV5yIxuahuksbqxA9ZO39N17Qwa
-X-Google-Smtp-Source: ABdhPJwqdhtZWdJhdm1csMPCmdSHYsP8gSl9tj/OFOQ/7yh5JkqqX3pFf60Mv+M5QC5MrJSkUbsoWRdq2i6Nsy4Mwfo=
-X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr2708722pjs.181.1602076161810;
- Wed, 07 Oct 2020 06:09:21 -0700 (PDT)
+        id S1728380AbgJGNOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:14:07 -0400
+Received: from mailout06.rmx.de ([94.199.90.92]:56677 "EHLO mailout06.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728177AbgJGNOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:14:06 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout06.rmx.de (Postfix) with ESMTPS id 4C5vtL3vpBz9wjx;
+        Wed,  7 Oct 2020 15:14:02 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4C5vsz63wHz2TTLX;
+        Wed,  7 Oct 2020 15:13:43 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.12) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 7 Oct
+ 2020 15:13:17 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: dsa: microchip: add ksz9563 to ksz9477 I2C driver
+Date:   Wed, 7 Oct 2020 15:13:15 +0200
+Message-ID: <5079657.ehXnlxHBby@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201007122107.GA112961@lunn.ch>
+References: <20201007093049.13078-1-ceggers@arri.de> <20201007122107.GA112961@lunn.ch>
 MIME-Version: 1.0
-References: <20201005140217.1390851-1-maz@kernel.org> <CACRpkdbctO9cWZZhVQHWkA1DN7YRTsLRo4Ub9g2x7q6BBSD=Ug@mail.gmail.com>
- <CAHp75Vdb3y_r_+Mq8K=Jog21wiFH54F18ED8eBwT4rM_zxcCUA@mail.gmail.com> <0175d3ce84ea0aa938a3ce9b3731762e@kernel.org>
-In-Reply-To: <0175d3ce84ea0aa938a3ce9b3731762e@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 7 Oct 2020 16:10:11 +0300
-Message-ID: <CAHp75VdQixJStuVj_aMZ9PhkWXk4RoUa13wAMDj4KGwm2t9nFQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: pca953x: Survive spurious interrupts
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.12]
+X-RMX-ID: 20201007-151347-4C5vsz63wHz2TTLX-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 3:09 PM Marc Zyngier <maz@kernel.org> wrote:
-> On 2020-10-07 13:02, Andy Shevchenko wrote:
-> > On Wed, Oct 7, 2020 at 12:49 PM Linus Walleij
-> > <linus.walleij@linaro.org> wrote:
-> >> On Mon, Oct 5, 2020 at 4:02 PM Marc Zyngier <maz@kernel.org> wrote:
-> >>
-> >> > The pca953x driver never checks the result of irq_find_mapping(),
-> >> > which returns 0 when no mapping is found. When a spurious interrupt
-> >> > is delivered (which can happen under obscure circumstances), the
-> >> > kernel explodes as it still tries to handle the error code as
-> >> > a real interrupt.
-> >> >
-> >> > Handle this particular case and warn on spurious interrupts.
-> >> >
-> >> > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> >
-> > Wait, doesn't actually [1]  fix the reported issue?
->
-> Not at all.
->
-> > Marc, can you confirm this?
-> >
-> > [1]: e43c26e12dd4 ("gpio: pca953x: Fix uninitialized pending variable")
->
-> Different bug, really. If an interrupt is *really* pending, and no
-> mapping established yet, feeding the result of irq_find_mapping() to
-> handle_nested_irq() will lead to a panic.
+Hi Andrew,
 
-I don't understand. We have plenty of drivers doing exactly the way
-without checking this returned code. What circumstances makes the
-mapping be absent?
+> What chip_id values does it use? I don't see it listed in
+> ksz9477_switch_chips.
 
-Shouldn't we rather change this:
+here a short dump of the first chip registers:
 
-        girq->handler = handle_simple_irq;
-to this:
-        girq->handler = handle_bad_irq;
-?
+>         Chip ID0     00
+>         Chip ID1_2   9893      Chip ID      9893
+>         Chip ID3     60        Revision ID  6              Reset         normal
+>         Chip ID4     1C        SKU ID       1C
 
-> Recently seen on a Tegra system suffering from even more pathological
-> bugs.
+In ksz9477_switch_detect(), the 32 bit value is built from only
+the 2 middle bytes: 0x00989300. The number of port (3) is also
+assigned within this function:
+
+> 	if ((id_lo & 0xf) == 3) {
+> 		/* Chip is from KSZ9893 design. */
+> 		dev->features |= IS_9893;
+> 		/* Chip does not support gigabit. */
+> 		if (data8 & SW_QW_ABLE)
+> 			dev->features &= ~GBIT_SUPPORT;
+> 		dev->mib_port_cnt = 3;
+> 		dev->phy_port_cnt = 2;
+> 	} ...
+
+The chip id 0x00989300 does already exist in ksz9477_switch_chips:
+
+> 	{
+> 		.chip_id = 0x00989300,
+> 		.dev_name = "KSZ9893",
+> 		.num_vlans = 4096,
+> 		.num_alus = 4096,
+> 		.num_statics = 16,
+> 		.cpu_ports = 0x07,	/* can be configured as cpu port */
+> 		.port_cnt = 3,		/* total port count */
+> 	},
+
+But my chip is really a KSZ9563.
+
+Best regards
+Christian
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+
