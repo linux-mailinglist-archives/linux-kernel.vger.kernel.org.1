@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969A1285BAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5D5285BAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbgJGJMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:12:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726218AbgJGJMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:12:40 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0FFF204EC;
-        Wed,  7 Oct 2020 09:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602061960;
-        bh=GGf3v+keEJl27fl/reXppAsR7VWyzAcjRjLjHR8aKhk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EyrmmIMEHS8nKj4+hHnrFi7/ht0wmdlNWzy2ijninxCkJewmjZ/iULg60WcIW5ah5
-         yrGJ8/3H2nJ2EdPA3BKyHAJqFg3+6lN2L7X0pgNX4Wskvemqsu8pWq4f8pCj7Zd2Jr
-         S8vfkVlb86Aj/Pg9iZ2YW+YXCyATor6AVJN49pHQ=
-Date:   Wed, 7 Oct 2020 11:13:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "M. Vefa Bicakci" <m.v.b@runbox.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bastien Nocera <hadess@hadess.net>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        syzkaller@googlegroups.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH 5.8 05/85] Revert "usbip: Implement a match function to
- fix usbip"
-Message-ID: <20201007091324.GF614379@kroah.com>
-References: <20201005142114.732094228@linuxfoundation.org>
- <20201005142115.000911358@linuxfoundation.org>
- <ad55b590-da4a-4aa8-7a04-302a8d55d723@runbox.com>
+        id S1727140AbgJGJOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbgJGJOL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 05:14:11 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A42EC061755;
+        Wed,  7 Oct 2020 02:14:11 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id n15so1284990wrq.2;
+        Wed, 07 Oct 2020 02:14:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uP41AxAirI5kgSSLv8bjqRlk/ljwQNpF8oZxpTbY8l0=;
+        b=GaFP92hQcXPefevT1rafT9Y2lzLCa0PU/iJdCs68CaNIMPfE8N/yUkE+HJeo83vI7b
+         3a8zEF1p3W83wYJcK6loECboG6Ctmy3z4MB1t44aMba4ApV1ZR+dFY/0qhidQRAjsR8n
+         4d76L4LqdSgk11UKPYJKUaC0UtWnuixf4EJgFF3VKT2JmbyC+2N+QiTuQODR4iphOs1H
+         w2U6W2f7/9NG+EPMlvctKkxJVHKMzTi3I1ai67XW+oLiGtdi4JlNw7Di5gJG1iXOJRoU
+         RueimpsH3igbboaavIuH8o/deFxWBNjRrwUSP4ZVMgnJWLIC080rwCHvxYeTM+7RiHiX
+         GmtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uP41AxAirI5kgSSLv8bjqRlk/ljwQNpF8oZxpTbY8l0=;
+        b=GpF3iZfSJGJK3Jaog3WxV/OQzg+IoZ16g1m3xkbIKgXtZIVZwVlefXmwHkrdr5Kq6L
+         8SGsEMojpguAXQROW5EU343UUJgv45Jo/PJip3okm4rIwlmBGU9zkrHlAOHXY+vm8Bs8
+         4f5nFJ1cqDTXCcuaoQTfRFwPy1/FZ7UBlNj5njzW4U+aVHNbwmQwhUd1cNUgDWoIZQf3
+         GcCQw1JClH4RwGs+Io5uUcj83YJAiFeDI1xKyw6A1D3mtcYJWLeEkQhOJGUq7tJcCpWg
+         rf3f/Iqhjwbmill5RA1MBIk0U+nUvPUkt4omapOT6mgJIvkqUX27BFJCPJzqPyDjHr/+
+         Ms5g==
+X-Gm-Message-State: AOAM533JGUoQIGHtYb177HYtMHOcgWIVFnjxC+DGdq3UVciu2m05aRUW
+        42BQL3hSjy2JWhi+3s9qprG/wxvwRAXFyg==
+X-Google-Smtp-Source: ABdhPJyjLZyu5A8Xu/6Ic0iV8U8JZb8lba1JYrHJt2Gh/tJ4di648lnr+MDKWlEgxAFO0pNk0DN3sg==
+X-Received: by 2002:adf:dccd:: with SMTP id x13mr2531381wrm.403.1602062049745;
+        Wed, 07 Oct 2020 02:14:09 -0700 (PDT)
+Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id i126sm672754wmi.0.2020.10.07.02.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 02:14:09 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Wed, 7 Oct 2020 10:13:49 +0100
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5e: Fix freeing of unassigned pointer
+Message-ID: <20201007091349.cceyuje3ktilygzv@medion>
+References: <20201003111050.25130-1-alex.dewar90@gmail.com>
+ <80cb7391f0feb838cc61a608efe0c24dcef41115.camel@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ad55b590-da4a-4aa8-7a04-302a8d55d723@runbox.com>
+In-Reply-To: <80cb7391f0feb838cc61a608efe0c24dcef41115.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:26:27PM +0300, M. Vefa Bicakci wrote:
-> On 05/10/2020 18.26, Greg Kroah-Hartman wrote:
-> > From: M. Vefa Bicakci <m.v.b@runbox.com>
+On Tue, Oct 06, 2020 at 04:22:12PM -0700, Saeed Mahameed wrote:
+> On Sat, 2020-10-03 at 12:10 +0100, Alex Dewar wrote:
+> > Commit ff7ea04ad579 ("net/mlx5e: Fix potential null pointer
+> > dereference")
+> > added some missing null checks but the error handling in
+> > mlx5e_alloc_flow() was left broken: the variable attr is passed to
+> > kfree
+> > although it is never assigned to and never needs to be freed in this
+> > function. Fix this.
 > > 
-> > commit d6407613c1e2ef90213dee388aa16b6e1bd08cbc upstream.
+> > Addresses-Coverity-ID: 1497536 ("Memory - illegal accesses")
+> > Fixes: ff7ea04ad579 ("net/mlx5e: Fix potential null pointer
+> > dereference")
+> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 17 +++++++++----
+> > ----
+> >  1 file changed, 9 insertions(+), 8 deletions(-)
 > > 
-> > This commit reverts commit 7a2f2974f265 ("usbip: Implement a match
-> > function to fix usbip").
-> > 
-> > In summary, commit d5643d2249b2 ("USB: Fix device driver race")
-> > inadvertently broke usbip functionality, which I resolved in an incorrect
-> > manner by introducing a match function to usbip, usbip_match(), that
-> > unconditionally returns true.
-> > 
-> > However, the usbip_match function, as is, causes usbip to take over
-> > virtual devices used by syzkaller for USB fuzzing, which is a regression
-> > reported by Andrey Konovalov.
-> > 
-> > Furthermore, in conjunction with the fix of another bug, handled by another
-> > patch titled "usbcore/driver: Fix specific driver selection" in this patch
-> > set, the usbip_match function causes unexpected USB subsystem behaviour
-> > when the usbip_host driver is loaded. The unexpected behaviour can be
-> > qualified as follows:
-> > - If commit 41160802ab8e ("USB: Simplify USB ID table match") is included
-> >    in the kernel, then all USB devices are bound to the usbip_host
-> >    driver, which appears to the user as if all USB devices were
-> >    disconnected.
-> > - If the same commit (41160802ab8e) is not in the kernel (as is the case
-> >    with v5.8.10) then all USB devices are re-probed and re-bound to their
-> >    original device drivers, which appears to the user as a disconnection
-> >    and re-connection of USB devices.
-> > 
-> > Please note that this commit will make usbip non-operational again,
-> > until yet another patch in this patch set is merged, titled
-> > "usbcore/driver: Accommodate usbip".
-> > 
-> > Cc: <stable@vger.kernel.org> # 5.8: 41160802ab8e: USB: Simplify USB ID table match
-> > Cc: <stable@vger.kernel.org> # 5.8
 > 
-> Hello Greg,
+> Hi Alex, thanks for the patch, 
+> Colin submitted a one liner patch that I already picked up.
 > 
-> Sorry for the lateness of this e-mail.
-> 
-> I had noted commit 41160802ab8e ("USB: Simplify USB ID table match") as a
-> prerequisite in the commit message, but I just realized that the commit
-> identifier refers to a commit in my local git tree, and not to the actual
-> commit in Linus Torvalds' git tree! I apologize for this mistake.
-> 
-> Here is the correct commit identifier:
->   0ed9498f9ecfde50c93f3f3dd64b4cd5414d9944 ("USB: Simplify USB ID table match")
-> 
-> Perhaps this is why the prerequisite commit was not cherry-picked to the 5.8.y
-> branch.
-> 
-> As a justification for the cherry-pick, commit 0ed9498f9ecf actually resolves
-> a bug. In summary, this commit works together with commit adb6e6ac20ee ("USB:
-> Also match device drivers using the ->match vfunc", which has been cherry-picked
-> as part of v5.8.6) and ensures that a USB driver's ->match function is also
-> called during the search for a more specialized/appropriate USB driver, in case
-> the driver in question does not have an id_table.
-> 
-> If I am to be the devil's advocate, however, then given that there is only one
-> specialized USB device driver ("apple-mfi-fastcharge"), which conveniently has
-> an id_table, and also given that usbip no longer has a match function, I also
-> realize that it may not be crucial to cherry-pick 0ed9498f9ecf as a prerequisite
-> commit.
+> I hope you are ok with this.
 
-I'm sorry, but I don't really understand.  Does 5.8.y need an additional
-patch here, or is all ok because I missed the above patch?
+Hi Saeed,
 
-thanks,
+Sure. As long as attr is no longer being freed then that should fix the
+problem.
 
-greg k-h
+Best,
+Alex
+
+> 
+> Thanks,
+> Saeed.
+> 
