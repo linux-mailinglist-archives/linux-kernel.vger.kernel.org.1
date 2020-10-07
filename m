@@ -2,51 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA5F285D0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A492F285D13
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgJGKjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:39:40 -0400
-Received: from verein.lst.de ([213.95.11.211]:36915 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727767AbgJGKjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:39:39 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id F1B656736F; Wed,  7 Oct 2020 12:39:36 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 12:39:36 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Stefan Haberland <sth@linux.ibm.com>, hch@lst.de, axboe@kernel.dk,
-        hoeppner@linux.ibm.com, linux-s390@vger.kernel.org,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] s390/dasd: remove ioctl_by_bdev calls
-Message-ID: <20201007103936.GA24327@lst.de>
-References: <20200519142259.102279-1-sth@linux.ibm.com> <20200519142259.102279-3-sth@linux.ibm.com> <5c815b8a-7d77-5c69-9191-d09cc433f5ff@de.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c815b8a-7d77-5c69-9191-d09cc433f5ff@de.ibm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1728115AbgJGKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726096AbgJGKmk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:42:40 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0666C061755;
+        Wed,  7 Oct 2020 03:42:39 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l17so1613106edq.12;
+        Wed, 07 Oct 2020 03:42:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=6KY06uHjT4FGbr1jf7LkxmngoS8t8NSmf8ERDU+3OjU=;
+        b=gGAfa3mkIonhmBL6mXR/klqY56zNyofwXg+JPtC6R6ez3a3Nu2HSqq3FUSTMHAE+Rh
+         /TpJo4uZuk/pZo62SVAw0hs5jWL2OAV69uugtNb9w7D11hXN19zPBhuge8IgL5RJu3Kv
+         KXbnJvg9THd9CYkx074JsNmXC1chsn/4zGhZZfjHmV83E9VrDXDxrZdhx9XccEW87vZh
+         Hya2Rc3jxmkY3UMFCV+U5OdAEMdCkXbFC1zQ/2MqkRfFoF996WvujkI3+GantGXCb6F8
+         WskAE3xAtGonvtG27k25IDbzyfuq6ebeLmSWuqewjBrKedtj4GYDbq5FdVTBe/OdhVFa
+         mj9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6KY06uHjT4FGbr1jf7LkxmngoS8t8NSmf8ERDU+3OjU=;
+        b=Pk8lMAyuusvvPezLePLNZGsGjncCb+kogEUubcot1X/kobwYUZ61F2UF3m7NYHvhY7
+         01CZ15y+UgGveQAEglbGTa+yLFOUJ0wxTDMBCg+x1qjf2+Pu6UBEORjr2pBt/ea24OUa
+         AQZdPtFz5r9OsmRaUSyBNzi3JZinJevOZLIpv/lo6segtbZImKTTpZ9B+g3weMxnfTyl
+         oMgpRE59n+cfRL89GU4Jp6U/S52gJAhW0WrFaPPkSf2Q6A1pXg/sQyfMlkf0Law3x4Gf
+         DiqoHjrJ1YnWeAxtFjlSYVK6k53kYAG2DVUxHiOeRpUpWdomh/EqQzFcgpLqHtBy9QEv
+         hHHQ==
+X-Gm-Message-State: AOAM532W2pFsckJaW7NILQJGPbbeu6DugAzBrzaTlcEmLY8/rRcSpWCs
+        hkHuEbodNLJyLKoMbuFFJgo=
+X-Google-Smtp-Source: ABdhPJyqraldx1BIB6BRIuIJPwg9j4l6EUxFmwO3fNVtOe98PCix4WME4TrObcyaxcQQ8ZICb4EanQ==
+X-Received: by 2002:a50:cfc5:: with SMTP id i5mr2800301edk.151.1602067358476;
+        Wed, 07 Oct 2020 03:42:38 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:598:b907:5772:ec4c:df78:2ef4:dfa8])
+        by smtp.gmail.com with ESMTPSA id s25sm1231482ejc.29.2020.10.07.03.42.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 03:42:37 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com, bvanassche@acm.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bean Huo <beanhuo@micron.com>
+Subject: [PATCH] scsi: sd: Use UNMAP in case the device doesn't support WRITE_SAME
+Date:   Wed,  7 Oct 2020 12:42:20 +0200
+Message-Id: <20201007104220.8772-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:34:17AM +0200, Christian Borntraeger wrote:
-> 
-> On 19.05.20 16:22, Stefan Haberland wrote:
-> > The IBM partition parser requires device type specific information only
-> > available to the DASD driver to correctly register partitions. The
-> > current approach of using ioctl_by_bdev with a fake user space pointer
-> > is discouraged.
-> > 
-> > Fix this by replacing IOCTL calls with direct in-kernel function calls.
-> > 
-> > Suggested-by: Christoph Hellwig <hch@lst.de>
-> > Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-> > Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-> > Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-> 
-> FWIW, this broken the ibm-partition code for virtio-blk, when CONFIG_DASD=m.
+From: Bean Huo <beanhuo@micron.com>
 
-What are the symptoms?
+There exists a storage device that supports READ_CAPACITY, but doesn't
+support WRITE_SAME. The problem is that WRITE SAME heuristics doesn't work
+for this kind of storage device since its block limits VPD page doesn't
+contain the LBP information. Currently we set its provisioning_mode
+"writesame_16" and didn't check "no_write_same". If we didn't manually change
+this default provisioning_mode to "unmap" through sysfs, provisioning_mode
+will be set to "disabled" after the first WRITE_SAME command with the following
+error occurs:
+
+sd 0:0:0:3: [sdd] tag#4 UNKNOWN(0x2003) Result: hostbyte=0x00 driverbyte=0x08 cmd_age=0s
+sd 0:0:0:3: [sdd] tag#4 Sense Key : 0x5 [current]
+sd 0:0:0:3: [sdd] tag#4 ASC=0x20 ASCQ=0x0
+sd 0:0:0:3: [sdd] tag#4 CDB: opcode=0x93 93 08 00 00 00 00 00 00 05 4b 00 00 00 1f 00 00
+blk_update_request: critical target error, dev sdd, sector 10840 op 0x3:(DISCARD) flags 0x800 phys_seg 1 prio class 0
+
+Comparing to manually change provisioning_mode in sysfs, it is better to set
+provisioning_mode to "unmap" in case WRITE_SAME is not supported.
+
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+---
+ drivers/scsi/sd.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 95018e650f2d..93fb41741b21 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -2372,7 +2372,10 @@ static int read_capacity_16(struct scsi_disk *sdkp, struct scsi_device *sdp,
+ 		if (buffer[14] & 0x40) /* LBPRZ */
+ 			sdkp->lbprz = 1;
+ 
+-		sd_config_discard(sdkp, SD_LBP_WS16);
++		if (sdp->no_write_same)
++			sd_config_discard(sdkp, SD_LBP_UNMAP);
++		else
++			sd_config_discard(sdkp, SD_LBP_WS16);
+ 	}
+ 
+ 	sdkp->capacity = lba + 1;
+-- 
+2.17.1
+
