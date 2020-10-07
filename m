@@ -2,230 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB0B2860B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074B12860B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgJGNz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        id S1728532AbgJGN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728555AbgJGNzZ (ORCPT
+        with ESMTP id S1728467AbgJGN45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:55:25 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE4AC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:55:23 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id de3so1160997qvb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:55:23 -0700 (PDT)
+        Wed, 7 Oct 2020 09:56:57 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91988C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:56:57 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id u19so2451803ion.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:56:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QMj5Xs3AcMn+SJugShn3OP+lZCLx/hn0Ukl9O139KTw=;
-        b=KC9P+EoCruIpIV+v+DapsON180SQ0hCh7OOQWdNFjQgTxktrrdab9O3vEMRarPeCuR
-         9REwfePl5Kw2uui2sqj1PTkcOkyvnFIxagS0BblOk0lztEWCcDK0AlBRzyKDUBN/tJMG
-         c41MbV6qqhMumg5cmt9bEMnbAevoypNzMADAhIoC9RB4fMOWIovHpsQ7Vin3irb2+ZEu
-         mwKD/pSpQULyd12F/VSxg4pKqjs1ENux+uEbXrT+iOzXMQZaXJwsBXCMpzxZX7GGl4dH
-         tp3T/sjlAoQ4k9ch6g2tcmLWRNDk90NKAD+id+xfjWT71Nd+kxRa6iKA8+6TDr8IXCLo
-         YOjQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8oRD8LT/3S5G8509ul/PnBl5dx6h253AKwvEmRsvyAc=;
+        b=QPkocxYM9HKwOzMQjAFecDlkLau2QjNN5OfM7Y/VT1h4Jz7MYWSHOY5dwlsNTi+/zZ
+         Ls2/32jguM+Awpix2QoNHROaqzKIZlZ16cBIBp2QA8arIzqaOtJlGN/ePOaORWVxzi53
+         CaMtnvw2UoxPG/jimGUPV8LtsHtSqsSjZzg4M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QMj5Xs3AcMn+SJugShn3OP+lZCLx/hn0Ukl9O139KTw=;
-        b=WVU7vY/uARJ68LsMKkjHoPR/ysdOMm61k6Nu432NnF7eO2EVZYJrxxMxAN7DRVW/vk
-         Yu7Xcne+7UqstGr0ebTi3HX8l4sCHWL8VmCf2ccdagljB8adfTtl+nKRcUshrj5HDbrA
-         JFJtiCHdiKLDTmXr1yoxkcGij/uBDLjsVcSzBRyYzkLHRYTTKiyre/vKgMAfQhFiW4nl
-         ICHqGncIN3RS4SaJB00gWYooA4Wm/gEBQFc0ScBKt+DKw3wjC89fPD+afzlTxv2k30ZW
-         mymi+QfPjpfRYUlNGg+IST8JXr0akVbkxtvyzhPstHtPnxoQ1vG1FkXt4Kv4jMC1de8x
-         dLZQ==
-X-Gm-Message-State: AOAM5337cojTeMZ58FCbokWul2MIWwKhsP2wgy39GfZO63Xp1xyPVlL3
-        jN05ORfrQu9V+KjER+Qk71ZXH3GwV5V4X4gmhVQ6Bw==
-X-Google-Smtp-Source: ABdhPJwtaBnDn2/UIyN0jX+YcCE6dHNeZF5GxiQryPV1x0fJ0ruNxMHBEckT2fSaLd2hkvPPh1yJ59JurPTTHJ2kZ7A=
-X-Received: by 2002:a0c:e054:: with SMTP id y20mr3439251qvk.30.1602078922225;
- Wed, 07 Oct 2020 06:55:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8oRD8LT/3S5G8509ul/PnBl5dx6h253AKwvEmRsvyAc=;
+        b=X1DGWe7OOvpuix51dWJlPhyo62IL/zwPPVWgdK6u4nK7HUhzE54cBzAZaeCo0DptOu
+         gJig2mFHpmqGapCpmtcAIaKAxMVg1KAhki/+VwvD3wogxjMcYV7PoOfPo7gtej/zL4fH
+         oDd0nDpfG93ekvygrde6nRuJ/O6Ijpkq2D33UorFGC9mursPDFa8fuT/pE+wx8wwNXaU
+         Gc7ozowf0zC2dTXJvPk5L4heOOurVTwjZHsV0+oQW2KDp4iSUkWHQX1B+9gDeA5o2rZR
+         4PYvMXxe0NJ+Pz/sxWASw94yx2stkK6sg8y0dDaZrHqh24I8zHf+fK2Z58z9dV3pH1ux
+         PbOA==
+X-Gm-Message-State: AOAM531dpI02raB1lD9vQ6esu8QifzkS+CxlDYcHNrTzG3FLyrDvlBCV
+        aay4jBbAMfKCxklE1Dmj//jSCA==
+X-Google-Smtp-Source: ABdhPJxtY+3tYBU2t4rrYYVoTab7aPCIfemauQQXHc8OJstFGnIcBLcl6zgbpJvelmLA082jkRfN3w==
+X-Received: by 2002:a05:6638:2512:: with SMTP id v18mr3087951jat.106.1602079016842;
+        Wed, 07 Oct 2020 06:56:56 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v9sm902611ioq.41.2020.10.07.06.56.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 06:56:55 -0700 (PDT)
+Subject: Re: KASAN: null-ptr-deref Write in event_handler
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <000000000000810a4405b0ece316@google.com>
+ <CAAeHK+xWQp87S=bF2RfUjcudGaLVjk3yKLL-bxRzVM=YNRtzRA@mail.gmail.com>
+ <2947473d-76cd-a663-049a-4d51a97e2a3e@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4b6c9d53-a4de-8749-e0b1-055dbb42703b@linuxfoundation.org>
+Date:   Wed, 7 Oct 2020 07:56:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200715070649.18733-1-tn@semihalf.com> <517BB937-1F18-4CCF-81BF-11777BB99779@traviangames.com>
-In-Reply-To: <517BB937-1F18-4CCF-81BF-11777BB99779@traviangames.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 7 Oct 2020 15:55:09 +0200
-Message-ID: <CAPv3WKe6jF5bMX-f3MacaOaOTVd_1ypZopm3uOynt4KL-VNQDw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Add system mmu support for Armada-806
-To:     Denis Odintsov <d.odintsov@traviangames.com>
-Cc:     Tomasz Nowicki <tn@semihalf.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "hannah@marvell.com" <hannah@marvell.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nadavh@marvell.com" <nadavh@marvell.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2947473d-76cd-a663-049a-4d51a97e2a3e@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Denis,
+On 10/5/20 2:44 PM, Shuah Khan wrote:
+> On 10/5/20 8:04 AM, Andrey Konovalov wrote:
+>> On Mon, Oct 5, 2020 at 3:59 PM syzbot
+>> <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com> wrote:
+>>>
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of 
+>>> git://git.kernel.or..
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15781d8f900000
+>>> kernel config:  
+>>> https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+>>> dashboard link: 
+>>> https://syzkaller.appspot.com/bug?extid=bf1a360e305ee719e364
+>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>>> syz repro:      
+>>> https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
+>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1364f367900000
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the 
+>>> commit:
+>>> Reported-by: syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com
+>>>
+>>> vhci_hcd: stop threads
+>>> vhci_hcd: release socket
+>>> vhci_hcd: disconnect device
+>>> ==================================================================
+>>> BUG: KASAN: null-ptr-deref in instrument_atomic_write 
+>>> include/linux/instrumented.h:71 [inline]
+>>> BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed 
+>>> include/asm-generic/atomic-instrumented.h:142 [inline]
+>>> BUG: KASAN: null-ptr-deref in refcount_add 
+>>> include/linux/refcount.h:201 [inline]
+>>> BUG: KASAN: null-ptr-deref in refcount_inc 
+>>> include/linux/refcount.h:241 [inline]
+>>> BUG: KASAN: null-ptr-deref in get_task_struct 
+>>> include/linux/sched/task.h:104 [inline]
+>>> BUG: KASAN: null-ptr-deref in kthread_stop+0x90/0x7e0 
+>>> kernel/kthread.c:591
+>>> Write of size 4 at addr 000000000000001c by task kworker/u4:5/2519
+>>>
+>>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Not tainted 5.9.0-rc7-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, 
+>>> BIOS Google 01/01/2011
+>>> Workqueue: usbip_event event_handler
+>>> Call Trace:
+>>>   __dump_stack lib/dump_stack.c:77 [inline]
+>>>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>>>   __kasan_report mm/kasan/report.c:517 [inline]
+>>>   kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
+>>>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
+>>>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+>>>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
+>>>   atomic_fetch_add_relaxed 
+>>> include/asm-generic/atomic-instrumented.h:142 [inline]
+>>>   refcount_add include/linux/refcount.h:201 [inline]
+>>>   refcount_inc include/linux/refcount.h:241 [inline]
+>>>   get_task_struct include/linux/sched/task.h:104 [inline]
+>>>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+>>>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
+>>>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
+>>>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>>>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>>>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>>> ==================================================================
+>>> Kernel panic - not syncing: panic_on_warn set ...
+>>> CPU: 1 PID: 2519 Comm: kworker/u4:5 Tainted: G    B             
+>>> 5.9.0-rc7-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, 
+>>> BIOS Google 01/01/2011
+>>> Workqueue: usbip_event event_handler
+>>> Call Trace:
+>>>   __dump_stack lib/dump_stack.c:77 [inline]
+>>>   dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>>>   panic+0x382/0x7fb kernel/panic.c:231
+>>>   end_report+0x4d/0x53 mm/kasan/report.c:104
+>>>   __kasan_report mm/kasan/report.c:520 [inline]
+>>>   kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
+>>>   check_memory_region_inline mm/kasan/generic.c:186 [inline]
+>>>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+>>>   instrument_atomic_write include/linux/instrumented.h:71 [inline]
+>>>   atomic_fetch_add_relaxed 
+>>> include/asm-generic/atomic-instrumented.h:142 [inline]
+>>>   refcount_add include/linux/refcount.h:201 [inline]
+>>>   refcount_inc include/linux/refcount.h:241 [inline]
+>>>   get_task_struct include/linux/sched/task.h:104 [inline]
+>>>   kthread_stop+0x90/0x7e0 kernel/kthread.c:591
+>>>   vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
+>>>   event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
+>>>   process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>>>   worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>>>   kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>>> Kernel Offset: disabled
+>>> Rebooting in 86400 seconds..
+>>
+>> Hi Valentina and Shuah,
+>>
+>> There appears to be a race condition in the USB/IP vhci_hcd shutdown
+>> procedure. It happens quite often during fuzzing with syzkaller, and
+>> prevents us from going deeper into the USB/IP code.
+>>
+>> Could you advise us what would be the best fix for this?
+>>
+> 
+> Hi Andrey,
+> 
+> Reading the comments for this routine, looks like there is an assumption
+> that context begins cleanup and race conditions aren't considered.
+> 
+> The right fix is holding vhci->lock and vdev->priv_lock to protect
+> critical sections in this routine. I will send a patch for this.
+> 
 
-Thank you for your report.
+Hi Andrey,
 
-wt., 6 pa=C5=BA 2020 o 17:17 Denis Odintsov <d.odintsov@traviangames.com> n=
-apisa=C5=82(a):
->
-> Hi,
->
-> > Am 15.07.2020 um 09:06 schrieb Tomasz Nowicki <tn@semihalf.com>:
-> >
-> > The series is meant to support SMMU for AP806 and a workaround
-> > for accessing ARM SMMU 64bit registers is the gist of it.
-> >
-> > For the record, AP-806 can't access SMMU registers with 64bit width.
-> > This patches split the readq/writeq into two 32bit accesses instead
-> > and update DT bindings.
-> >
-> > The series was successfully tested on a vanilla v5.8-rc3 kernel and
-> > Intel e1000e PCIe NIC. The same for platform devices like SATA and USB.
-> >
-> > For reference, previous versions are listed below:
-> > V1: https://lkml.org/lkml/2018/10/15/373
-> > V2: https://lkml.org/lkml/2019/7/11/426
-> > V3: https://lkml.org/lkml/2020/7/2/1114
-> >
->
-> 1) After enabling SMMU on Armada 8040, and ARM_SMMU_DISABLE_BYPASS_BY_DEF=
-AUL=3Dy by default in kernel since 954a03be033c7cef80ddc232e7cbdb17df735663=
-,
-> internal eMMC is prevented from being initialised (as there is no iommus =
-property for ap_sdhci0)
-> Disabling "Disable bypass by default" make it work, but the patch highly =
-suggest doing it properly.
-> I wasn't able to find correct path for ap_sdhci for iommus in any publicl=
-y available documentation,
-> would be highly appreciated addressed properly, thank you!
+I have been unable to reproduce the problem with the reproducer
+so far. You mentioned it happens quite often.
 
-According to my knowledge and the docs AP IO devices cannot be
-virtualized, only ones connected via CP110/CP115. We'd need to check
-what should be done in such configuration and get back to you.
+- matched config with yours
+- load vhci_hcd module and run the reproducer
+
+I do see the messages during shutdown - stop threads etc.
+
+What am I missing?
+
+thanks,
+-- Shuah
 
 
->
-> 2) Second issue I got (btw I have ClearFog GT 8k armada-8040 based board)=
- is mpci ath10k card.
-> It is found, it is enumerated, it is visible in lspci, but it fails to be=
- initialised. Here is the log:
->
-> [    1.743754] armada8k-pcie f2600000.pcie: host bridge /cp0/pcie@f260000=
-0 ranges:
-> [    1.751116] armada8k-pcie f2600000.pcie:      MEM 0x00f6000000..0x00f6=
-efffff -> 0x00f6000000
-> [    1.964690] armada8k-pcie f2600000.pcie: Link up
-> [    1.969379] armada8k-pcie f2600000.pcie: PCI host bridge to bus 0000:0=
-0
-> [    1.976026] pci_bus 0000:00: root bus resource [bus 00-ff]
-> [    1.981537] pci_bus 0000:00: root bus resource [mem 0xf6000000-0xf6eff=
-fff]
-> [    1.988462] pci 0000:00:00.0: [11ab:0110] type 01 class 0x060400
-> [    1.994504] pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x000fffff]
-> [    2.000843] pci 0000:00:00.0: supports D1 D2
-> [    2.005132] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-> [    2.011853] pci 0000:01:00.0: [168c:003c] type 00 class 0x028000
-> [    2.018001] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x001fffff 64b=
-it]
-> [    2.025002] pci 0000:01:00.0: reg 0x30: [mem 0x00000000-0x0000ffff pre=
-f]
-> [    2.032111] pci 0000:01:00.0: supports D1 D2
-> [    2.049409] pci 0000:00:00.0: BAR 14: assigned [mem 0xf6000000-0xf61ff=
-fff]
-> [    2.056322] pci 0000:00:00.0: BAR 0: assigned [mem 0xf6200000-0xf62fff=
-ff]
-> [    2.063142] pci 0000:00:00.0: BAR 15: assigned [mem 0xf6300000-0xf63ff=
-fff pref]
-> [    2.070484] pci 0000:01:00.0: BAR 0: assigned [mem 0xf6000000-0xf61fff=
-ff 64bit]
-> [    2.077880] pci 0000:01:00.0: BAR 6: assigned [mem 0xf6300000-0xf630ff=
-ff pref]
-> [    2.085135] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-> [    2.090384] pci 0000:00:00.0:   bridge window [mem 0xf6000000-0xf61fff=
-ff]
-> [    2.097202] pci 0000:00:00.0:   bridge window [mem 0xf6300000-0xf63fff=
-ff pref]
-> [    2.104539] pcieport 0000:00:00.0: Adding to iommu group 4
-> [    2.110232] pcieport 0000:00:00.0: PME: Signaling with IRQ 38
-> [    2.116141] pcieport 0000:00:00.0: AER: enabled with IRQ 38
-> [    8.131135] ath10k_pci 0000:01:00.0: Adding to iommu group 4
-> [    8.131874] ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)
-> [    8.132203] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_m=
-ode 0 reset_mode 0
->
-> up to that point the log is the same as without SMMU enabled, except "Add=
-ing to iommu group N" lines, and IRQ being 37
->
-> [    8.221328] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.313362] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.409373] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.553433] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.641370] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.737979] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.807356] ath10k_pci 0000:01:00.0: Failed to get pcie state addr: -1=
-6
-> [    8.814032] ath10k_pci 0000:01:00.0: failed to setup init config: -16
-> [    8.820605] ath10k_pci 0000:01:00.0: could not power on hif bus (-16)
-> [    8.827111] ath10k_pci 0000:01:00.0: could not probe fw (-16)
->
-> Thank you!
 
-The PCIE was validated when booting from edk2 + using pci-host-generic
-driver and standard intel NIC. Not sure if it makes any difference vs
-the Designware driver ("marvell,armada8k-pcie"), but we need to
-double-check that.
-
-Best regards,
-Marcin
-
->
-> > v3 -> v4
-> > - call cfg_probe() impl hook a bit earlier which simplifies errata hand=
-ling
-> > - use hi_lo_readq_relaxed() and hi_lo_writeq_relaxed() for register acc=
-essors
-> > - keep SMMU status disabled by default and enable where possible (DTS c=
-hanges)
-> > - commit logs improvements and other minor fixes
-> >
-> > Hanna Hawa (1):
-> >  iommu/arm-smmu: Workaround for Marvell Armada-AP806 SoC erratum
-> >    #582743
-> >
-> > Marcin Wojtas (1):
-> >  arm64: dts: marvell: add SMMU support
-> >
-> > Tomasz Nowicki (2):
-> >  iommu/arm-smmu: Call configuration impl hook before consuming features
-> >  dt-bindings: arm-smmu: add compatible string for Marvell Armada-AP806
-> >    SMMU-500
-> >
-> > Documentation/arm64/silicon-errata.rst        |  3 ++
-> > .../devicetree/bindings/iommu/arm,smmu.yaml   |  4 ++
-> > arch/arm64/boot/dts/marvell/armada-7040.dtsi  | 28 ++++++++++++
-> > arch/arm64/boot/dts/marvell/armada-8040.dtsi  | 40 +++++++++++++++++
-> > arch/arm64/boot/dts/marvell/armada-ap80x.dtsi | 18 ++++++++
-> > drivers/iommu/arm-smmu-impl.c                 | 45 +++++++++++++++++++
-> > drivers/iommu/arm-smmu.c                      | 11 +++--
-> > 7 files changed, 145 insertions(+), 4 deletions(-)
-> >
-> > --
-> > 2.17.1
-> >
-> > _______________________________________________
-> > iommu mailing list
-> > iommu@lists.linux-foundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> >
->
