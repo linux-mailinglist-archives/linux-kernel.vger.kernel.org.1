@@ -2,111 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2101286953
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73E0286954
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgJGUoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:44:32 -0400
-Received: from mail-dm6nam12on2071.outbound.protection.outlook.com ([40.107.243.71]:29856
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726152AbgJGUob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:44:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B8djkwKsRo9jB1r85muZCKyv55RiWZRAAjLm3X5X4YSlZ2Gdvhlt8jBeFq3mXAGdb46tSXpYFtORkTQGoqKloUhWBscPhnkb255z7DSstCMt5VsyN0WlJ6vvdEOFjLw92OnN57TYKXB/mvQP141UzuwENn2wWp52abeKKKtL5Vo/f84Za25nBH7CxtxTnT/0YzjkDnMEmzeJFJJhZXMwlf58jwOAgO8SVyiAuy9rc0m3R7gn/oUoY980GioJHaUpyVn3qRG32a0311aw3E/rMxl4uKxiBoCtuukb5SDdSEupLlhh8v/qLDOi3bAAnD7bMBfWmcOpEi+ZufKLU46klQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QVq6dDkJSgOws3iXidiJkaNFQipv6Gu9G2wD4qkgC2s=;
- b=O4QqCNNnFdtMP+qjST7O3IXMSb4leOyBnEEc37tRGYJX2kkf0KBrfEoauqYbd0fU9vjFAzZjrhoYWu20uQYYaaoMcbwTOJCP4apuFpBYNU45FBcfRPjddYrJ6kPquHtcVFOQHGorUgsvJTKA/nE0m6ir+og+ysOx2JZt9PH4bzQtB/v4VTU/eNXjK9ZGEqF33Y0cMmtDWAAiPgaRfrNg2JocMLlRdE7SPfIftZU1tbkeH3oPXYTnL4U/NY63qaif4k0M4dV/sju1UzkilI8+zAuGneN1zzy18wxtQEA4/C11nyBePDjxFLbPNwpaVILr2HpY9K4sDP2qUsOmNsJfkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QVq6dDkJSgOws3iXidiJkaNFQipv6Gu9G2wD4qkgC2s=;
- b=0j91gKfvmEJ/Yhpg+vPdxC8n6Ffbb4/t0rSj98LAWi87NKSXqn94oyqT2uvzm89GYK9rwPtd7lWsdtoW6ybu//YRwQ0Ntx7ycDGCLhimusdVDCzyFxoqUIqmrY80Cn3V4MttsVzYTFy87Oj8LgLhtUyVB2p4FRJilYvgZdNcubI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
- by CY4PR12MB1351.namprd12.prod.outlook.com (2603:10b6:903:36::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36; Wed, 7 Oct
- 2020 20:44:21 +0000
-Received: from CY4PR12MB1494.namprd12.prod.outlook.com
- ([fe80::11f9:59c8:16c0:7718]) by CY4PR12MB1494.namprd12.prod.outlook.com
- ([fe80::11f9:59c8:16c0:7718%8]) with mapi id 15.20.3433.046; Wed, 7 Oct 2020
- 20:44:20 +0000
-From:   Wei Huang <wei.huang2@amd.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, wei.huang2@amd.com
-Subject: [PATCH 1/1] acpi-cpufreq: Honor _PSD table setting in CPU frequency control
-Date:   Wed,  7 Oct 2020 15:44:12 -0500
-Message-Id: <20201007204412.565881-1-wei.huang2@amd.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [24.55.15.93]
-X-ClientProxiedBy: SN4PR0201CA0012.namprd02.prod.outlook.com
- (2603:10b6:803:2b::22) To CY4PR12MB1494.namprd12.prod.outlook.com
- (2603:10b6:910:f::22)
+        id S1728300AbgJGUpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:45:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34580 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726152AbgJGUpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602103531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7J6dPwfXmeW22JZUNek6c2wKDKEBTY6RdTNBS6bcQ0=;
+        b=Csxa8qDRJc7mZCQ+DceXFvzjT5or29gF4p9jzVOqldf+ZwiwiVVs5x/hSMkR5VXo6E1d+6
+        MN5Kb/eG5TU85yEF0nPU+j15kM9s4lcOhE9YaPe1Xe6gdVifUOnQhigbEKG3sKZdFl1QGx
+        RGgiRX2EVPbnNID9vftBEyOkzy89Vf4=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-Ej9ge3l8OO-7sa8JQwEBtg-1; Wed, 07 Oct 2020 16:45:29 -0400
+X-MC-Unique: Ej9ge3l8OO-7sa8JQwEBtg-1
+Received: by mail-qk1-f197.google.com with SMTP id 125so2232118qkh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 13:45:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E7J6dPwfXmeW22JZUNek6c2wKDKEBTY6RdTNBS6bcQ0=;
+        b=OsoMQ8gRkl9cLChRTcBm5K11h35RM+L0H3rbO6xHfNAl6lnNWIPKQN++bJqde6WFQX
+         gg0zRQUTzPDQLeGSM60vfF7V812Yv9zINKMHKrfqQ2+Bg0Nhk+6EFIH3d1hOKDNDTO0X
+         s0Vhll+/xKw19M8N8/6m8SeUmrrDoBSgTR27kdERKDRomdnVvutuYk9EqUsSHDXcPzqH
+         q+7Nzn37vLBv1sl4gp7i9XW/6jRe9Vy5qkDUx9Wr/u1UmdNcjADn4CH7SAELgZ8UFs8c
+         nEWmbYJUkWCL7W2JK2StsGnGA/jQ3Md57vNueSNmlWyr91xWRsqPfY4rW6eqnXdLftcy
+         BcXg==
+X-Gm-Message-State: AOAM533x2+2+4ZPhFf+bDg06fsEkntMvVBlNLCejOW3dDj6AhFxRgisT
+        Q7GXKUzyqV/a2HwUTR4RHb4jpqqbc9u92PWdTwfFMRNsen5I42jXWvx3L3A+H2VdUthJVkRfXJz
+        fbfAT6QHbCPSIT+duBytdFqXj
+X-Received: by 2002:a0c:b31c:: with SMTP id s28mr4943496qve.17.1602103528104;
+        Wed, 07 Oct 2020 13:45:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnuEgrf9hFpVwG8HHk/TKC3qHYKhW63uYqNQX2cToA3cJ6Oxzipj8pV6tt+t/PfdunpV9t4Q==
+X-Received: by 2002:a0c:b31c:: with SMTP id s28mr4943463qve.17.1602103527770;
+        Wed, 07 Oct 2020 13:45:27 -0700 (PDT)
+Received: from xz-x1 (toroon474qw-lp140-04-174-95-215-133.dsl.bell.ca. [174.95.215.133])
+        by smtp.gmail.com with ESMTPSA id h4sm2376104qtq.41.2020.10.07.13.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 13:45:27 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 16:45:25 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Jones <drjones@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        0day robot <lkp@intel.com>, lkp@lists.01.org
+Subject: Re: [KVM] 11e2633982: kernel-selftests.kvm.dirty_log_test.fail
+Message-ID: <20201007204525.GF6026@xz-x1>
+References: <20200930215449.48343-1-peterx@redhat.com>
+ <20201004132631.GR393@shao2-debian>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (24.55.15.93) by SN4PR0201CA0012.namprd02.prod.outlook.com (2603:10b6:803:2b::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Wed, 7 Oct 2020 20:44:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 05d21643-a154-4bb3-ecc7-08d86b01c453
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1351:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR12MB135153B6BABFD32340538510CF0A0@CY4PR12MB1351.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0TCJSlsmPPjIPganJwgAzzcNAY2ZNPC0TlVPlZa0BKpimlFLhfAJMeg3Gvkb2JkKhsh3KzVUhU7mjYgx/ad4/LCsf8zkJPQR90yhEdqiQnR17tXmgzUakNesFJ8mV+zSRtq/lJg1OEEv2KsK+oMp++hck4pOzgurKfN8GhpToVnsZ84qdxRMGbVqusxpGm4wzPwmHGrZoeHb1ia+n5GYM6XyCmBX3ITAPFypD9RXM2Y1Cu1aKSafOJ4tIrpZqTdyF5hdz5R7N+8/xlv+8g5DxzNILb6Cv+HbkTOXI3YN5kG1dMQiCtRfjrtTvRk8JlKluC0p1nw553fnJo6lwKO+aS7iPrud00wVSnB3xJVnYqDew0fRUIdNhywZO3kxIDOt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(16526019)(6512007)(956004)(478600001)(26005)(2616005)(186003)(8676002)(8936002)(69590400008)(36756003)(5660300002)(6506007)(52116002)(1076003)(66476007)(316002)(6916009)(66946007)(2906002)(6486002)(6666004)(4326008)(83380400001)(86362001)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: AoGP8l5OuLKpQeXIIzTMlK9X1jxWgT5r8RanroCTbzVXXIkMyQgEhA4ZPp7jixM0ltVKk8W9vBy5BilMM9lzJFe6Kub+lGGoL+8Yjo/PMVsu4SqBql1T96gg++ugRRMBIqn7i2lbYan87y9bmbO6ZHbx5fx//PyV4NsBL7JUD4uGR6bytymeWnEmrb2W22+YBqFPF2Fz6yG4DL6VXIIwZVLt6+3nK+h+3/gM3vV15IkwLtyV7GWyZT2o+FGB2S6Ua7hzLAlVUMf2eBbdUCXTMWWKzY+0VwtEoTmbTrLAbJe5GS5Bs2MF/hvANyGpiUR9OwqLLspC4HZ0nBG/jCQyWpbCG1XaA5OQf8py3zwYEjv2UGJrBmHuFXrOn5+Mh3ypEkLPhxQ569Ixuy0hfZK5fm/lLg7DvhsNdZQ/5qSCZxagoidvM6HRYmd3pdQCoX7s93ukQKDkTssJ3KKRhYaKveSW+02t9jyaA0TnY1JREwrf46rKLWTnbXjL20z40x32+WXJqod0nN5DPEzzUNVvKbJZNFOg3kPOqACDqTiDSh4IN371g87vLwD1G+nurVIWyLfJnMd2WUfd3eWXSv/07+32wthiVH2bMsVrT3Fgkrwesq+B8tstrH8JhBBEPFsahH11rkY/PBVhHEuXLEYlCQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05d21643-a154-4bb3-ecc7-08d86b01c453
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 20:44:20.8907
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IfA1ZmJYWGQlbmt/jdxVe0mbXZymznlr/BzGUJvODWXfZpcNIgmCl8Y4DtTmwwHZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1351
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201004132631.GR393@shao2-debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-acpi-cpufreq has a old quirk that overrides the _PSD table supplied by
-BIOS on AMD CPUs. However the _PSD table of new AMD CPUs (Family 19h+)
-now accurately reports the P-state dependency of CPU cores. Hence this
-quirk needs to be fixed in order to support new CPUs' frequency control.
+On Sun, Oct 04, 2020 at 09:26:31PM +0800, kernel test robot wrote:
+> # fetch 0x1fff3 page 13105==== Test Assertion Failure ====
+> #   dirty_log_test.c:526: test_bit_le(page, bmap)
+> #   pid=10583 tid=10583 - Invalid argument
+> #      1	0x0000000000403294: vm_dirty_log_verify at dirty_log_test.c:523
+> #      2	 (inlined by) run_test at dirty_log_test.c:743
+> #      3	0x00000000004026f4: main at dirty_log_test.c:905 (discriminator 3)
+> #      4	0x00007f2d11a2809a: ?? ??:0
+> #      5	0x0000000000402809: _start at ??:?
+> #   Page 131151 should have its dirty bit set in this iteration but it is missing
 
-Fixes: acd316248205 ("acpi-cpufreq: Add quirk to disable _PSD usage on all AMD CPUs")
-Signed-off-by: Wei Huang <wei.huang2@amd.com>
----
- drivers/cpufreq/acpi-cpufreq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I think I reproduced this error even on my latest tree.  I don't think it's a
+kvm bug, instead it's a bug in the test case.  Not too surprising considering
+that I spent probably more time on the test case than the kernel changes.
 
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index e4ff681faaaa..1e6e2abde428 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -691,7 +691,8 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 		cpumask_copy(policy->cpus, topology_core_cpumask(cpu));
- 	}
- 
--	if (check_amd_hwpstate_cpu(cpu) && !acpi_pstate_strict) {
-+	if (check_amd_hwpstate_cpu(cpu) && (c->x86 < 0x19) &&
-+	    !acpi_pstate_strict) {
- 		cpumask_clear(policy->cpus);
- 		cpumask_set_cpu(cpu, policy->cpus);
- 		cpumask_copy(data->freqdomain_cpus,
+KVM dirty ring introduced a chance for spurious dirty bit (safe, but it just
+made the test even more tricky) which does not exist for dirty logging.  It
+happens when the ring gets full and the last PFN written could be spurious,
+simply because when kvm noticed that the ring is full, it won't continue the
+guest (whose next instruction is to do the real RAM update) but instead it'll
+quit to userspace with that page PFN actually set but with old data.
+
+The current test case is very strict on checking stuff. It tries to skip this
+magic bit so far by recording it into host_bmap_track so we don't check the
+data in this round, but we expect this bit to be set in the next run (because
+it's the next guest instruction that gonna happen soon).  However I just
+noticed that when accidentally the vcpu thread didn't really continue (e.g.,
+when the collection thread is too slow, due to when we enabled all debug
+prints) then we won't find that special bit in the next iteration of dirty
+bitmap simply because the vcpu has already stopped and never go into the next
+round.
+
+Anyway, I'm posting the fix here for reference which have worked for me.  Below
+is the thing I plan to squash into the test patch (probably not the current
+one, but previous one):
+
+-------------8<--------------------
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index 80c42c87265e..aecd0f99f13c 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -146,6 +146,20 @@ static sem_t dirty_ring_vcpu_cont;
+  * dirty_ring_vcpu_stop and before vcpu continues to run.
+  */
+ static bool dirty_ring_vcpu_ring_full;
++/*
++ * This is only used for verifying the dirty pages.  Dirty ring has a very
++ * tricky case when the ring just got full, kvm will do userspace exit due to
++ * ring full.  When that happens, the very last PFN is very tricky in that it's
++ * set but actually the data is not changed (the guest WRITE is not really
++ * applied yet), because when we find that the dirty ring is full, we refused
++ * to continue the vcpu, hence we got the dirty gfn recorded without the new
++ * data.  For this specific case, it's safe to skip checking this pfn for this
++ * bit, because it's a redundant bit, and when the write happens later the bit
++ * will be set again.  We use this variable to always keep track of the latest
++ * dirty gfn we've collected, so that if a mismatch of data found later in the
++ * verifying process, we let it pass.
++ */
++static uint64_t dirty_ring_last_page;
+
+ enum log_mode_t {
+        /* Only use KVM_GET_DIRTY_LOG for logging */
+@@ -281,7 +295,8 @@ static uint32_t dirty_ring_collect_one(struct kvm_dirty_gfn *dirty_gfns,
+                TEST_ASSERT(cur->offset < num_pages, "Offset overflow: "
+                            "0x%llx >= 0x%x", cur->offset, num_pages);
+                pr_info("fetch 0x%x page %llu\n", *fetch_index, cur->offset);
+-               set_bit(cur->offset, bitmap);
++               set_bit_le(cur->offset, bitmap);
++               dirty_ring_last_page = cur->offset;
+                dirty_gfn_set_collected(cur);
+                (*fetch_index)++;
+                count++;
+@@ -572,16 +587,12 @@ static void vm_dirty_log_verify(enum vm_guest_mode mode, unsigned long *bmap)
+                                         *    (here if we read value on page
+                                         *     "2R-2" is 1, while iter=3!!!)
+                                         */
+-                                       matched = true;
+-                               } else {
++                                       continue;
++                               } else if (page == dirty_ring_last_page) {
+                                        /*
+-                                        * This is also special for dirty ring
+-                                        * when this page is exactly the last
+-                                        * page touched before vcpu ring full.
+-                                        * If it happens, we should expect the
+-                                        * value to change in the next round.
++                                        * Please refer to comments in
++                                        * dirty_ring_last_page.
+                                         */
+-                                       set_bit_le(page, host_bmap_track);
+                                        continue;
+                                }
+                        }
+-------------8<--------------------
+
+Majorly what I did is:
+
+  - A new variable 'dirty_ring_last_page' is introduced to the test to record
+    the last dirtied GFN.  When verifying the dirty bits, if we found a
+    spurious dirty bit on this specific GFN, we skip.  This should be more
+    solid than the previous trick to pass it onto host_bmap_track.
+
+  - Since at it, I touched up two other places:
+
+    - Replaced another set_bit() that I just found, which would otherwise break
+      ppc I believe (but I must also confess I don't know when ppc will support
+      dirty ring)
+
+    - Change one "matched = true;" into a "continue;".  It should do the same
+      thing, but "continue" is more obvious.
+
+I'll resend the series.  I won't touch anything else, but just to (hopefully)
+trigger the testbot again on the whole series.
+
 -- 
-2.26.2
+Peter Xu
 
