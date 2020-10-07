@@ -2,150 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCB1285CD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F88285CE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgJGKVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:21:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728045AbgJGKUy (ORCPT
+        id S1727932AbgJGK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727460AbgJGK2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:20:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602066053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5L7RqrTGay7HbZcNQSWbJzLb7RkfE/YXz+TNWyeK64k=;
-        b=F0YMkeoNvLE4CN0EBEJAEwFEVkPUHeG/Hme/8OVU1YcVOvcjIOrFK9rjZ+LmHnh1WH1z9b
-        YeMgiZPXOW1OBQctfGXOGXdXT1oy/Iv+nu049AoUcquZF54UPoCCp/J2MTbtelqdvSKzXV
-        s1HRJNGL/AY4anBZ5KvpyK1mkzAKiBQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-CPKgesjlOUG72MwykUnfGg-1; Wed, 07 Oct 2020 06:20:49 -0400
-X-MC-Unique: CPKgesjlOUG72MwykUnfGg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C587357051;
-        Wed,  7 Oct 2020 10:20:46 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-154.ams2.redhat.com [10.36.113.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8E4B88CD22;
-        Wed,  7 Oct 2020 10:20:43 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        torvalds@linux-foundation.org
-Subject: Re: Control Dependencies vs C Compilers
-References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
-        <875z7nm4qm.fsf@oldenburg2.str.redhat.com>
-        <20201007093243.GB2628@hirez.programming.kicks-ass.net>
-Date:   Wed, 07 Oct 2020 12:20:41 +0200
-In-Reply-To: <20201007093243.GB2628@hirez.programming.kicks-ass.net> (Peter
-        Zijlstra's message of "Wed, 7 Oct 2020 11:32:43 +0200")
-Message-ID: <87k0w2gww6.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Wed, 7 Oct 2020 06:28:45 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B97C061755;
+        Wed,  7 Oct 2020 03:28:44 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id a7so601064lfk.9;
+        Wed, 07 Oct 2020 03:28:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=H2N8UG6dic65TiBzlWgQu1CisgZIiaE0Rlzl4pcozag=;
+        b=dQZAzOpLSe+lUXEaHN6i1aw7a5TaOeFrdXOH2fNI2pe6gMyFxHCoX25QpUjcmwtSff
+         SqhLOXoXM5nmrEmv/gkd8R79Oe2MU4SnwRyzKBg9QN0pvUTMjMRFOzQda266SPjRJuCD
+         rOku4rtjcbgptU43sta5UXoalx33PAsqNisO/dA2x05z3Rgfvpy3fUZrdqcMJy3zn3pP
+         lvTbI5fSElsHhLyjBtR8uTLE1TNZmD2Fk5bC2EltQ7fSJDh6EP6mTqXtrvriABmsawGz
+         EKCt+0sig1cn70EJ8vKfsAMK5Ic92jUFl8J1qJVqE6b0bMRlhKljp2aZ5zJ6cV4lEqAg
+         IhIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H2N8UG6dic65TiBzlWgQu1CisgZIiaE0Rlzl4pcozag=;
+        b=SPV3QDtSo30h4KEiR7qkLQv3v04swWw4FToP/RwZ/mhnqbhHlzx5hMKWlZi8RJyklC
+         Pd2cI87yEKq6DVT/MDpEg+nfTlLARzJS4CxETLOjUVgjylM2fEyf6ab/NOuNkK4tEyo5
+         +DJ+SSIha/EJqsH8wWyC/cjEQTU6MUnIentrku5VRq79kNcqPpJNC/sRyJmAwnpXM6+O
+         BNE5fYNzDIyoAmLQUrW489Bo480ZCaJEy4pz3qKTq3cQFbeVVFKUuYCZWwERY9/8XULl
+         AeB/L+6tQsk89bXkOQUDeYeMibcWlOSTdONdLNyM9+Agmm1KiJaUH/c3itUyPwnF93Jj
+         yd/Q==
+X-Gm-Message-State: AOAM533HWSvuhbQoq5n5NciVXT9r/ROUeNS7p30GkHkNrB6ZF4AdxBP9
+        N2YHjZpOquQem0HfYHOYsp4=
+X-Google-Smtp-Source: ABdhPJzuS/fxGr0bBPYvubbiVZY9aJgTugLhxEnxd2+B2P4zw8n4WX1edPzG52Mqq3TE4dwGb5/H4A==
+X-Received: by 2002:a19:4151:: with SMTP id o78mr694102lfa.408.1602066523199;
+        Wed, 07 Oct 2020 03:28:43 -0700 (PDT)
+Received: from wasted.omprussia.ru ([2a00:1fa0:826:1518:6ea7:4f6b:1e21:3742])
+        by smtp.gmail.com with ESMTPSA id c20sm271406lfg.15.2020.10.07.03.28.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 03:28:42 -0700 (PDT)
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCAyLzJdIHVzYjogY2RuczM6IFZhcmlhYmxlIOKAmGxl?=
+ =?UTF-8?Q?ngth=e2=80=99_set_but_not_used?=
+To:     Roger Quadros <rogerq@ti.com>, Pawel Laszczak <pawell@cadence.com>,
+        balbi@kernel.org
+Cc:     peter.chen@nxp.com, nsekhar@ti.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kurahul@cadence.com
+References: <20201007033932.23050-1-pawell@cadence.com>
+ <8994106d-2cc5-fa2c-bbcc-6526632ff80b@ti.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <18bf46b7-d86a-fbf0-9ce7-c2d0765758f1@gmail.com>
+Date:   Wed, 7 Oct 2020 13:28:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <8994106d-2cc5-fa2c-bbcc-6526632ff80b@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra:
+Hello!
 
-> On Tue, Oct 06, 2020 at 11:20:01PM +0200, Florian Weimer wrote:
->> * Peter Zijlstra:
->> 
->> > Our Documentation/memory-barriers.txt has a Control Dependencies section
->> > (which I shall not replicate here for brevity) which lists a number of
->> > caveats. But in general the work-around we use is:
->> >
->> > 	x = READ_ONCE(*foo);
->> > 	if (x > 42)
->> > 		WRITE_ONCE(*bar, 1);
->> >
->> > Where READ/WRITE_ONCE() cast the variable volatile. The volatile
->> > qualifier dissuades the compiler from assuming it knows things and we
->> > then hope it will indeed emit the branch like we'd expect.
->> >
->> >
->> > Now, hoping the compiler generates correct code is clearly not ideal and
->> > very dangerous indeed. Which is why my question to the compiler folks
->> > assembled here is:
->> >
->> >   Can we get a C language extention for this?
->> 
->> For what exactly?
->
-> A branch that cannot be optimized away and prohibits lifting stores
-> over. One possible suggestion would be allowing the volatile keyword as
-> a qualifier to if.
->
-> 	x = *foo;
-> 	volatile if (x > 42)
-> 		*bar = 1;
->
-> This would tell the compiler that the condition is special in that it
-> must emit a conditional branch instruction and that it must not lift
-> stores (or sequence points) over it.
+On 10/7/20 11:15 AM, Roger Quadros wrote:
 
-But it's not the if statement, but the expression in it, right?  So this
-would not be a valid transformation:
+[...]
+>> Patch removes not used variable 'length' from
+>> cdns3_wa2_descmiss_copy_data function.
+>>
+>> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> 
+> Fixes: commit 141e70fef4ee ("usb: cdns3: gadget: need to handle sg case for workaround 2 case")
 
- 	x = *foo;
-        bool flag = x > 42;
- 	volatile if (flag)
- 		*bar = 1;
+   No "commit" is needed here.
 
-And if we had this:
+> Acked-by: Roger Quadros <rogerq@ti.com>
+[...]
 
- 	unsigned x = *foo;
- 	volatile if (x >= 17 && x < 42)
- 		*bar = 1;
-
-Would it be valid to transform this into (assuming that I got the
-arithmetic correct):
-
- 	unsigned x = *foo;
- 	volatile if ((x - 17) < 25)
- 		*bar = 1;
-
-Or would this destroy the magic because arithmetic happens on the value
-before the comparison?
-
->> But not using READ_ONCE and WRITE_ONCE?
->
-> I'm OK with READ_ONCE(), but the WRITE_ONCE() doesn't help much, if
-> anything. The compiler is always allowed to lift stores, regardless of
-> the qualifiers used.
-
-I would hope that with some level of formalization, it can be shown that
-no additional synchronization is necessary beyond the load/conditional
-sequence.
-
->> I think in GCC, they are called __atomic_load_n(foo, __ATOMIC_RELAXED)
->> and __atomic_store_n(foo, __ATOMIC_RELAXED).  GCC can't optimize relaxed
->> MO loads and stores because the C memory model is defective and does not
->> actually guarantee the absence of out-of-thin-air values (a property it
->> was supposed to have).
->
-> AFAIK people want to get that flaw in the C memory model fixed (which to
-> me seemd like a very good idea).
-
-It's been a long time since people realized that this problem exists,
-with several standard releases since then.
-
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
-
+MBR, Sergei
