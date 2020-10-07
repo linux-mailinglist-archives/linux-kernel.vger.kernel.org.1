@@ -2,127 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F666285A5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C185285A5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgJGIWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:22:46 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45210 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725976AbgJGIWq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:22:46 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0978McFf110394;
-        Wed, 7 Oct 2020 03:22:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602058958;
-        bh=fQFE7sGDqZdok5OvK6iGtl1lyFb8J/X+nm8IT+21uSg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fMGtC0/S0jbk1EMLXNwUvXRaszFWa2NOfPXH4bHHiO7YvmLkBmgAMfMS5ukD5eb83
-         OI1eJNr+PWItT+zp6hF3TMekb07vTOXSwh2qE7IVcEHQQ1M92E+1pslWFrLLrw6bLS
-         N7BJ9dIDQxyStn2qOkKUKPozD6hCYaVv9AQxFv34=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0978MbSr082643
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Oct 2020 03:22:37 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
- 2020 03:22:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 7 Oct 2020 03:22:37 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0978MYqc012043;
-        Wed, 7 Oct 2020 03:22:35 -0500
-Subject: Re: [PATCH 07/18] dmaengine: ti: k3-udma-glue: Add function to get
- device pointer for DMA API
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>,
-        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
-        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>
-References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
- <20200930091412.8020-8-peter.ujfalusi@ti.com>
- <20201007065305.GS2968@vkoul-mobl>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <71d190e7-5654-e873-16b0-3b9bd6e8bf7a@ti.com>
-Date:   Wed, 7 Oct 2020 11:22:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1727904AbgJGIWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:22:54 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44318 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727896AbgJGIWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:22:54 -0400
+IronPort-SDR: xt5cVcWXarbAl1TtCBB2MF9xg3AmOtAaZe2PW8a/zeIiJlxRtDOep3YERJlA5xs64bI86h+fKl
+ c+SUn8v+LiyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="152628612"
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="152628612"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 01:22:51 -0700
+IronPort-SDR: 05ugYUlxo5ouPOyYQiwLdofSkck3UW7zEhZ3ydBjg8wP7VzFIzkUTg/+XfztGUA24kn5Maa6WQ
+ HKmficnhWrfA==
+X-IronPort-AV: E=Sophos;i="5.77,346,1596524400"; 
+   d="scan'208";a="461229991"
+Received: from kneumaye-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.34.113])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 01:22:49 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH RFC] script: add a script for checking doc problems with external functions
+In-Reply-To: <e40a32900dba6b8e7a1f41838ee8caeb1ef1c1b3.1601985151.git.mchehab+huawei@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201005125920.27a7768d@coco.lan> <e40a32900dba6b8e7a1f41838ee8caeb1ef1c1b3.1601985151.git.mchehab+huawei@kernel.org>
+Date:   Wed, 07 Oct 2020 11:23:11 +0300
+Message-ID: <87tuv6igwg.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201007065305.GS2968@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 06 Oct 2020, Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> While not all EXPORT_SYMBOL*() symbols should be documented,
+> it seems useful to have a tool which would help to check what
+> symbols aren't documented.
+>
+> This is a first step on this direction. The tool has some
+> limitations. Yet, it could be useful for maintainers to check
+> about missing documents on their subsystems.
+
+Seems like this should be part of checkpatch.pl somehow.
 
 
-On 07/10/2020 9.53, Vinod Koul wrote:
-> On 30-09-20, 12:14, Peter Ujfalusi wrote:
->> Glue layer users should use the device of the DMA for DMA mapping and
->> allocations as it is the DMA which accesses to descriptors and buffers,
->> not the clients
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->>  drivers/dma/ti/k3-udma-glue.c    | 14 ++++++++++++++
->>  drivers/dma/ti/k3-udma-private.c |  6 ++++++
->>  drivers/dma/ti/k3-udma.h         |  1 +
->>  include/linux/dma/k3-udma-glue.h |  4 ++++
->>  4 files changed, 25 insertions(+)
->>
->> diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glue.c
->> index a367584f0d7b..a53bc4707ae8 100644
->> --- a/drivers/dma/ti/k3-udma-glue.c
->> +++ b/drivers/dma/ti/k3-udma-glue.c
->> @@ -487,6 +487,13 @@ int k3_udma_glue_tx_get_irq(struct k3_udma_glue_tx_channel *tx_chn)
->>  }
->>  EXPORT_SYMBOL_GPL(k3_udma_glue_tx_get_irq);
->>  
->> +struct device *
->> +	k3_udma_glue_tx_get_dma_device(struct k3_udma_glue_tx_channel *tx_chn)
-> 
-> How about..
-> 
-> struct device *
-> k3_udma_glue_tx_get_dma_device(struct k3_udma_glue_tx_channel *tx_chn)
+BR,
+Jani.
 
-OK.
 
-> 
->> +{
->> +	return xudma_get_device(tx_chn->common.udmax);
->> +}
->> +EXPORT_SYMBOL_GPL(k3_udma_glue_tx_get_dma_device);
-> 
-> Hmm why would you need to export this device.. Can you please outline
-> all the devices involved here...
-
-In upstream we have one user of the udma-glue layer:
-drivers/net/ethernet/ti/am65-cpsw-nuss.c
-
-It is allocating memory to be used with DMA (descriptor pool), it needs
-to use correct device for DMA API.
-The cpsw atm using it's own dev for allocation, which is wrong, but it
-worked fine as am654/j721e/j7200 is all coherent.
-
-> why not use dmaI_dev->dev or chan->dev?
-
-The glue layer does not use DMAengine API to request a channel as it
-require special resource setup compared to what is possible via generic
-API. We have kept the DMAengine and Glue layer as separate until I have
-time to extend the core to support the features we would need to remove
-the Glue layer.
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+-- 
+Jani Nikula, Intel Open Source Graphics Center
