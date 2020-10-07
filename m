@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC8B2856CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 04:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3732856D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgJGCyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 22:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgJGCyt (ORCPT
+        id S1727141AbgJGDFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 23:05:04 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:51516 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgJGDFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 22:54:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AF2C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 19:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Kfn1EjIw61OOA6atfqtDsUyZD8OZlfnAF20PJC2dm14=; b=qehWR4LYimU3auLImYdY7dy5xT
-        qJQ7N/N3RyKgXPBBGJYKenvFHzkRm0aP5DoMQ6DGuzp7kbj88LGDpZobZVYOq+KTpLb3Ws0H0gEJJ
-        IrwCgHI6Lz1Iu127MZ7tZ9ovdDvIP4MEjIO206vqEC4Aa1haNrPBcr40VsRTJDbSdg0zvbQbXYIUk
-        N9qUoTB3J73qcHt8uu/vJKNlQl8dXXsI5VB7doSJ8ZxVzCjsip4lJe9+mlP7fROSXTEZomxi5C4Ux
-        SeYr8zbaP9gWNhZyg8dwsv7anSol1N7Ff9jeXVxsSjv5Bwex6spTxEHGQ2Am/A9i/FvSHfHCmpa1a
-        WgQks5Rw==;
-Received: from [2601:1c0:6280:3f0::2c9a]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPzbI-0004UB-3H; Wed, 07 Oct 2020 02:54:44 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     kernel test robot <lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] fs: dax: fix build error on ARC
-Message-ID: <6b5c6090-331d-7485-da4a-45e9c7f13be1@infradead.org>
-Date:   Tue, 6 Oct 2020 19:54:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 6 Oct 2020 23:05:03 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09734mEK110546;
+        Wed, 7 Oct 2020 03:04:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=jqRdFRaTCRX50YLpfWUfCvgJZ+DcIQ09ZvdMuiM6BMo=;
+ b=Sn+UK/KJujisWzLS1r7hxDORKd2qqAiBtWVZGBdnJ3iUcadX35BNNZDVB5oDpqLy75xt
+ iTKgCBHCh3J0dnHOwJnYxTjIYWNhSiOrWjPVvnDDdLNsE7cgpoXgP69lLqEKWJzf1xZZ
+ 3vvpNkfLbbRbgtl1QIn6ddAU4bMUL92xp0M4441bmpszUHUCeyyW8oHzm2I3cZls0w9C
+ bYJ79I9FbcjR70H8UtuCFeD5oHJlU6Ka4qvHZzbzO21GD+o6PCAR0AR6eL+LiG3ZvTRc
+ E6cIJ0rwtuOscyfvnLBiJIVckqSt6EUaByBiWa5DhuJg7vLqK20ufDz1+D+QfviWaPPH AA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33xetayjg7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 03:04:48 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09731HEQ166779;
+        Wed, 7 Oct 2020 03:04:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 33y2vnwv8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 03:04:48 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09734iw9006781;
+        Wed, 7 Oct 2020 03:04:44 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 06 Oct 2020 20:04:44 -0700
+To:     bvanassche@acm.org
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, jthumshirn@suse.de,
+        hare@suse.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: pmcraid: Fix memory allocation in
+ 'pmcraid_alloc_sglist()'
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1r1qa68lk.fsf@ca-mkp.ca.oracle.com>
+References: <20200920075722.376644-1-christophe.jaillet@wanadoo.fr>
+Date:   Tue, 06 Oct 2020 23:04:41 -0400
+In-Reply-To: <20200920075722.376644-1-christophe.jaillet@wanadoo.fr>
+        (Christophe JAILLET's message of "Sun, 20 Sep 2020 09:57:22 +0200")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=641
+ malwarescore=0 suspectscore=10 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070019
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=657 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=10 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-fs/dax.c uses copy_user_page() but ARC does not provide that interface,
-resulting in a build error.
+> When the scatter list is allocated in 'pmcraid_alloc_sglist()', the
+> corresponding pointer should be stored in 'scatterlist' within the
+> 'pmcraid_sglist' structure. Otherwise, 'scatterlist' is NULL.
+>
+> This leads to a potential memory leak and NULL pointer dereference.
 
-Provide copy_user_page() in <asm/page.h> (beside copy_page()) and
-add <asm/page.h> to fs/dax.c to fix the build error.
+> Fixes: ed4414cef2ad ("scsi: pmcraid: Use sgl_alloc_order() and sgl_free_order()")
 
-../fs/dax.c: In function 'copy_cow_page_dax':
-../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+This does indeed look odd. Bart?
 
-Fixes: cccbce671582 ("filesystem-dax: convert to dax_direct_access()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: linux-snps-arc@lists.infradead.org
-Cc: Dan Williams <dan.j.williams@intel.com>
----
-Vineet, This patch fixes the build error but is it correct for ARC?
-
- arch/arc/include/asm/page.h |    1 +
- fs/dax.c                    |    1 +
- 2 files changed, 2 insertions(+)
-
---- lnx-59-rc7.orig/fs/dax.c
-+++ lnx-59-rc7/fs/dax.c
-@@ -25,6 +25,7 @@
- #include <linux/sizes.h>
- #include <linux/mmu_notifier.h>
- #include <linux/iomap.h>
-+#include <asm/page.h>
- #include <asm/pgalloc.h>
- 
- #define CREATE_TRACE_POINTS
---- lnx-59-rc7.orig/arch/arc/include/asm/page.h
-+++ lnx-59-rc7/arch/arc/include/asm/page.h
-@@ -10,6 +10,7 @@
- #ifndef __ASSEMBLY__
- 
- #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
-+#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
- 
- struct vm_area_struct;
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
