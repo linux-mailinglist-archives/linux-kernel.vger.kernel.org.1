@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DFC285A0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4D2285A0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgJGIE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:04:57 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37132 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgJGIE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:04:56 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09784mu1057707;
-        Wed, 7 Oct 2020 03:04:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602057888;
-        bh=z4VpTvoOOZp6qQHLtmXVaZGYtqgiD52MMsRvSIv4cjk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=nzD+cJGiqOp91ekDNpfsxNGIs/X2hqgR1/2TScI6DWvMMAgMaouLaYfh54tgc78Xr
-         xAbrdEc8GjzTncRCdVAnFpG6M5Jm7a4MsvIYZtOAcOIv0lKLkKhKRNbWcPcHoDP8VS
-         rrijELMbgAPscIh5ozllkgblYPh6Hfc/1hEgPPwQ=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09784mQ8112342
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Oct 2020 03:04:48 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
- 2020 03:04:48 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 7 Oct 2020 03:04:48 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09784j5R103861;
-        Wed, 7 Oct 2020 03:04:46 -0500
-Subject: Re: [PATCH] usb: cdns3: Add static to cdns3_gadget_exit function
-To:     Pawel Laszczak <pawell@cadence.com>, <balbi@kernel.org>
-CC:     <peter.chen@nxp.com>, <nsekhar@ti.com>,
-        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>
-References: <20201007040230.25741-1-pawell@cadence.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <34195846-65f5-c3b3-b883-bed27a401814@ti.com>
-Date:   Wed, 7 Oct 2020 11:04:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727663AbgJGIFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:05:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726041AbgJGIFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:05:38 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 691F42076C;
+        Wed,  7 Oct 2020 08:05:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602057937;
+        bh=qSgDO/KF1PkgYuOLLQdWJ8Ae8ug3/f7wzPW5vva4H1E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yZsHLsXpN5Jwt3RVPi2o2roe4CmqWmEzWxtUjFpy6HhUqcC6FHSabw/mvacXdmP7M
+         ie6GlFzTrw/DAjNeJdQz30TZAW2X2ZmDwBKKtg4gpvaTVhlh4ee6qDPd5UzTwo/Rq5
+         nWNh4bnHthFMgoxuP02WPmnTY54gdbOjD9vKYXGk=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kQ4S7-000I86-BD; Wed, 07 Oct 2020 09:05:35 +0100
 MIME-Version: 1.0
-In-Reply-To: <20201007040230.25741-1-pawell@cadence.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Date:   Wed, 07 Oct 2020 09:05:34 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Venkat Reddy Talla <vreddytalla@nvidia.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 1/4] genirq/irqdomain: Allow partial trimming of
+ irq_data hierarchy
+In-Reply-To: <87eemb6qdj.fsf@nanos.tec.linutronix.de>
+References: <20201006101137.1393797-1-maz@kernel.org>
+ <20201006101137.1393797-2-maz@kernel.org>
+ <87eemb6qdj.fsf@nanos.tec.linutronix.de>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <10788c0d08fccbcbc1ac590a855e70d3@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 07/10/2020 07:02, Pawel Laszczak wrote:
-> Function cdns3_gadget_exit is used only in gadget.c file.
-> This patch removes declaration and definition of this
-> function from gadget-export.h file and makes it static.
+On 2020-10-06 21:39, Thomas Gleixner wrote:
+> On Tue, Oct 06 2020 at 11:11, Marc Zyngier wrote:
+>> It appears that some HW is ugly enough that not all the interrupts
+>> connected to a particular interrupt controller end up with the same
+>> hierarchy repth (some of them are terminated early). This leaves
 > 
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-
-Acked-by: Roger Quadros <rogerq@ti.com>
-
-
-> ---
->   drivers/usb/cdns3/gadget-export.h | 3 ---
->   drivers/usb/cdns3/gadget.c        | 2 +-
->   2 files changed, 1 insertion(+), 4 deletions(-)
+>   depth?
 > 
-> diff --git a/drivers/usb/cdns3/gadget-export.h b/drivers/usb/cdns3/gadget-export.h
-> index 577469eee961..702c5a267a92 100644
-> --- a/drivers/usb/cdns3/gadget-export.h
-> +++ b/drivers/usb/cdns3/gadget-export.h
-> @@ -13,7 +13,6 @@
->   #ifdef CONFIG_USB_CDNS3_GADGET
->   
->   int cdns3_gadget_init(struct cdns3 *cdns);
-> -void cdns3_gadget_exit(struct cdns3 *cdns);
->   #else
->   
->   static inline int cdns3_gadget_init(struct cdns3 *cdns)
-> @@ -21,8 +20,6 @@ static inline int cdns3_gadget_init(struct cdns3 *cdns)
->   	return -ENXIO;
->   }
->   
-> -static inline void cdns3_gadget_exit(struct cdns3 *cdns) { }
-> -
->   #endif
->   
->   #endif /* __LINUX_CDNS3_GADGET_EXPORT */
-> diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
-> index 692acf7b9b14..6ff3aa3db497 100644
-> --- a/drivers/usb/cdns3/gadget.c
-> +++ b/drivers/usb/cdns3/gadget.c
-> @@ -3069,7 +3069,7 @@ static void cdns3_gadget_release(struct device *dev)
->   	kfree(priv_dev);
->   }
->   
-> -void cdns3_gadget_exit(struct cdns3 *cdns)
-> +static void cdns3_gadget_exit(struct cdns3 *cdns)
->   {
->   	struct cdns3_device *priv_dev;
->   
+>> the irqchip hacker with only two choices, both equally bad:
+>> 
+>> - create discrete domain chains, one for each "hierarchy depth",
+>>   which is very hard to maintain
+>> 
+>> - create fake hierarchy levels for the shallow paths, leading
+>>   to all kind of problems (what are the safe hwirq values for these
+>>   fake levels?)
+>> 
+>> Instead, let's offer the possibility to cut short a single interrupt
 > 
+> s/let's offer/implement/
 
+Thanks for that, I'll fix it locally.
+
+[...]
+
+> This is butt ugly, really. Especially the use case where the tegra PMC
+> domain removes itself from the hierarchy from .alloc()
+
+I don't disagree at all. It is both horrible and dangerous.
+
+My preference would have been to split the PMC domain into discrete
+domains, each one having having its own depth. But that's incredibly
+hard to express in DT, and would break the combination of old/new
+DT and kernel.
+
+> That said, I don't have a better idea either. Sigh...
+
+A (very minor) improvement would be to turn the trim call in the PMC 
+driver into
+a flag set in the first invalid irq_data structure, and let 
+__irq_domain_alloc_irqs()
+do the dirty work.
+
+Still crap, but at least would prevent some form of abuse. Thoughts?
+
+         M.
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Jazz is not dead. It just smells funny...
