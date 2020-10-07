@@ -2,258 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D1F285627
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E98D285628
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgJGBRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 21:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727217AbgJGBRp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 21:17:45 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CFAC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 18:17:45 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id n9so330287pgf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 18:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H0grO1/LPC39zD9/uMmlQwrmk7dyJY/6UPRijWFp5DU=;
-        b=DwAXRI8VrMz5z37j30Xsto7xic7Bh+bbl0UOI//b5d+NFKMXiVyQGZlAZ4yL5WS/1s
-         13AVVhf6vI0jtlrrvP/HS16s3vKmauOfL366oReuvTdguygMM2duFUiwPX7dcGNTCsCb
-         2ksJfXtVV9+0cCEFcitGsp9nWna9a2VyySn9M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H0grO1/LPC39zD9/uMmlQwrmk7dyJY/6UPRijWFp5DU=;
-        b=MpS1Hfh9qacmza4mFPKKT7V1pfe8k23QYPk0qxqayn4Mxxutlm5KR5kZw4P4HXaRnw
-         dGxkzCoXD+5ng+CQ2l+gKWO9FvDBb+c8lSaAbSUCY7L0iuqwGnLt4mxyZ+YfBnlnc07/
-         BBwPnmeJqdaWcSY9F8zAaWZmDs5+z+KF0vsHyTebsfNOx4vKY++6rJerACIRpwuk+ohf
-         wUtsSm6kG81rF1VTC0AJnliBwvqFjZNGcNFI8aWQGTh4UqvCoiREMHCcYbD1usGBzFXa
-         fYSUH2uSBPwgG/DDJkvMk01lTYoUIIWBLIthfJTFwH9p7Blx2aTxjVPCiL2uFDyQaD7w
-         Mwlw==
-X-Gm-Message-State: AOAM531G6liGFM4gJjr7oYdH339e66EU4hsM9YexjL3KhrQ9nsWXZ8hN
-        SRPpOVi80Flp0xHj+veQzoLIHw==
-X-Google-Smtp-Source: ABdhPJzvP6pmCV0CHzjkMIN3vZmFolozsxfx8647zKjG5uTT3wwlPNTf9ElCwr8w8UDAR+GXZDJMBw==
-X-Received: by 2002:a63:4a43:: with SMTP id j3mr867356pgl.42.1602033465479;
-        Tue, 06 Oct 2020 18:17:45 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id z190sm482654pfc.89.2020.10.06.18.17.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 18:17:44 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Daniel Campello <campello@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-Subject: [PATCH v3 6/6] iio: sx9310: Set various settings from DT
-Date:   Tue,  6 Oct 2020 18:17:35 -0700
-Message-Id: <20201007011735.1346994-7-swboyd@chromium.org>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-In-Reply-To: <20201007011735.1346994-1-swboyd@chromium.org>
-References: <20201007011735.1346994-1-swboyd@chromium.org>
+        id S1727253AbgJGBRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 21:17:46 -0400
+Received: from mga05.intel.com ([192.55.52.43]:64023 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727071AbgJGBRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 21:17:40 -0400
+IronPort-SDR: FGlFUB6cYExiQqUHpz2sg0hDAWHEfqVuJRUMa5teOExRL2hRhjjQkhlSgAo8PuuA4QQpbcLrn2
+ 29S7GGImtaaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="249484990"
+X-IronPort-AV: E=Sophos;i="5.77,344,1596524400"; 
+   d="scan'208";a="249484990"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 18:17:40 -0700
+IronPort-SDR: z4GdBqZyOMbCI7Pm9uc6aG8jGviXAZzx5h4TfpxYHByZbgbVjGUnjHJLCPamuh6k7bPj+9z2ca
+ YmPDJQ61PO0g==
+X-IronPort-AV: E=Sophos;i="5.77,344,1596524400"; 
+   d="scan'208";a="518582544"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 18:17:39 -0700
+Date:   Tue, 6 Oct 2020 18:17:38 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20201007011738.GE28981@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
+ <20201006025703.GG15803@linux.intel.com>
+ <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
+ <20201006151532.GA17610@linux.intel.com>
+ <20201006172819.GA114208@linux.intel.com>
+ <20201006232129.GB28981@linux.intel.com>
+ <20201007002236.GA139112@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007002236.GA139112@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These properties need to be set during driver probe. Parse any DT
-properties and replace the default register settings with the ones
-parsed from DT.
+On Wed, Oct 07, 2020 at 03:22:36AM +0300, Jarkko Sakkinen wrote:
+> On Tue, Oct 06, 2020 at 04:21:29PM -0700, Sean Christopherson wrote:
+> > On Tue, Oct 06, 2020 at 08:28:19PM +0300, Jarkko Sakkinen wrote:
+> > > On Tue, Oct 06, 2020 at 08:15:32AM -0700, Sean Christopherson wrote:
+> > > > On Tue, Oct 06, 2020 at 10:30:16AM +0200, Jethro Beekman wrote:
+> > > > > On 2020-10-06 04:57, Sean Christopherson wrote:
+> > > > > > On Sat, Oct 03, 2020 at 07:50:56AM +0300, Jarkko Sakkinen wrote:
+> > > > > >> +struct sgx_enclave_run {
+> > > > > >> +  __u64 tcs;
+> > > > > >> +  __u64 user_handler;
+> > > > > >> +  __u64 user_data;
+> > > > > >> +  __u32 leaf;
+> > > > > >
+> > > > > > I am still very strongly opposed to omitting exit_reason.  It is not at all
+> > > > > > difficult to imagine scenarios where 'leaf' alone is insufficient for the
+> > > > > > caller or its handler to deduce why the CPU exited the enclave.  E.g. see
+> > > > > > Jethro's request for intercepting interrupts.
+> > > > >
+> > > > > Not entirely sure what this has to do with my request, I just expect to see
+> > > > > leaf=ERESUME in this case, I think? E.g. as you would see in EAX when calling
+> > > > > ENCLU.
+> > > > 
+> > > > But how would you differentiate from the case that an exception occured in
+> > > > the enclave?  That will also transfer control with leaf=ERESUME.  If there
+> > > > was a prior exception and userspace didn't zero out the struct, there would
+> > > > be "valid" data in the exception fields.
+> > > > 
+> > > > An exit_reason also would allow retrofitting the exception fields into a
+> > > > union, i.e. the fields are valid if and only if exit_reason is exception.
+> > > 
+> > > Let's purge this a bit. Please remark where my logic goes wrong. I'm
+> > > just explaining how I've deduced the whole thing.
+> > > 
+> > > The information was encoded in v38 version of the vDSO was exactly this:
+> > > 
+> > > - On normal EEXIT, it got the value 0.
+> > > - Otherwise, it got the value 1.
+> > > 
+> > > The leaf, then embdded to struct sgx_exception but essentially the same
+> > > field got the value from EAX, and the value that EAX had was only
+> > > written on exception path.
+> > > 
+> > > Thus, I deduced that if you write $EEXIT to leaf on synchrous exit you
+> > > get the same information content, nothing gets overwritten. I.e. you
+> > > can make same conclusions as you would with those two struct fields.
+> > 
+> > And then a third flavor comes along, e.g. Jethro's request interrupt case,
+> > and exit_reason can also return '2'.  How do you handle that with only the
+> > leaf?
+> 
+> I'm listening. How was that handled before? I saw only '0' and '1'.  Can
+> you bring some context on that? I did read the emails that were swapped
+> when the run structure was added but I'm not sure what is the exact
+> differentiator. Maybe I'm missing something.
 
-Cc: Daniel Campello <campello@chromium.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: <devicetree@vger.kernel.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Gwendal Grignou <gwendal@chromium.org>
-Cc: Evan Green <evgreen@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/iio/proximity/sx9310.c | 125 ++++++++++++++++++++++++++++++++-
- 1 file changed, 124 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-index 3f909177eca9..23aa235ac2b6 100644
---- a/drivers/iio/proximity/sx9310.c
-+++ b/drivers/iio/proximity/sx9310.c
-@@ -49,23 +49,42 @@
- #define   SX9310_REG_PROX_CTRL0_SCANPERIOD_15MS		0x01
- #define SX9310_REG_PROX_CTRL1				0x11
- #define SX9310_REG_PROX_CTRL2				0x12
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_MASK		GENMASK(7, 6)
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1_CS2_CS3 (0x03 << 6)
- #define   SX9310_REG_PROX_CTRL2_COMBMODE_CS1_CS2	(0x02 << 6)
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1	(0x01 << 6)
-+#define   SX9310_REG_PROX_CTRL2_COMBMODE_CS3		(0x00 << 6)
-+#define   SX9310_REG_PROX_CTRL2_SHIELDEN_MASK		GENMASK(3, 2)
- #define   SX9310_REG_PROX_CTRL2_SHIELDEN_DYNAMIC	(0x01 << 2)
-+#define   SX9310_REG_PROX_CTRL2_SHIELDEN_GROUND		(0x02 << 2)
- #define SX9310_REG_PROX_CTRL3				0x13
- #define   SX9310_REG_PROX_CTRL3_GAIN0_MASK		GENMASK(3, 2)
- #define   SX9310_REG_PROX_CTRL3_GAIN0_X8		(0x03 << 2)
- #define   SX9310_REG_PROX_CTRL3_GAIN12_MASK		GENMASK(1, 0)
- #define   SX9310_REG_PROX_CTRL3_GAIN12_X4		0x02
- #define SX9310_REG_PROX_CTRL4				0x14
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_MASK		GENMASK(2, 0)
- #define   SX9310_REG_PROX_CTRL4_RESOLUTION_FINEST	0x07
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_FINE	0x06
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_FINE		0x05
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM	0x04
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM_COARSE 0x03
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_COARSE	0x02
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_COARSE	0x01
-+#define   SX9310_REG_PROX_CTRL4_RESOLUTION_COARSEST	0x00
- #define SX9310_REG_PROX_CTRL5				0x15
- #define   SX9310_REG_PROX_CTRL5_RANGE_SMALL		(0x03 << 6)
-+#define   SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK	GENMASK(3, 2)
- #define   SX9310_REG_PROX_CTRL5_STARTUPSENS_CS1		(0x01 << 2)
-+#define   SX9310_REG_PROX_CTRL5_RAWFILT_MASK		GENMASK(1, 0)
-+#define   SX9310_REG_PROX_CTRL5_RAWFILT_SHIFT		0
- #define   SX9310_REG_PROX_CTRL5_RAWFILT_1P25		0x02
- #define SX9310_REG_PROX_CTRL6				0x16
- #define   SX9310_REG_PROX_CTRL6_AVGTHRESH_DEFAULT	0x20
- #define SX9310_REG_PROX_CTRL7				0x17
- #define   SX9310_REG_PROX_CTRL7_AVGNEGFILT_2		(0x01 << 3)
-+#define   SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK		GENMASK(2, 0)
-+#define   SX9310_REG_PROX_CTRL7_AVGPOSFILT_SHIFT	0
- #define   SX9310_REG_PROX_CTRL7_AVGPOSFILT_512		0x05
- #define SX9310_REG_PROX_CTRL8				0x18
- #define   SX9310_REG_PROX_CTRL8_9_PTHRESH_MASK		GENMASK(7, 3)
-@@ -1193,9 +1212,113 @@ static int sx9310_init_compensation(struct iio_dev *indio_dev)
- 	return ret;
- }
- 
-+static const struct sx9310_reg_default *
-+sx9310_get_default_reg(struct sx9310_data *data, int i,
-+		       struct sx9310_reg_default *reg_def)
-+{
-+	int ret;
-+	const struct device_node *np = data->client->dev.of_node;
-+	u32 combined[SX9310_NUM_CHANNELS] = { 4, 4, 4, 4 };
-+	unsigned long comb_mask = 0;
-+	const char *res;
-+	u32 start = 0, raw = 0, pos = 0;
-+
-+	memcpy(reg_def, &sx9310_default_regs[i], sizeof(*reg_def));
-+	if (!np)
-+		return reg_def;
-+
-+	switch (reg_def->reg) {
-+	case SX9310_REG_PROX_CTRL2:
-+		if (of_property_read_bool(np, "semtech,cs0-ground")) {
-+			reg_def->def &= ~SX9310_REG_PROX_CTRL2_SHIELDEN_MASK;
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_SHIELDEN_GROUND;
-+		}
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL2_COMBMODE_MASK;
-+		of_property_read_u32_array(np, "semtech,combined-sensors",
-+					   combined, ARRAY_SIZE(combined));
-+		for (i = 0; i < ARRAY_SIZE(combined); i++) {
-+			if (combined[i] <= SX9310_NUM_CHANNELS)
-+				comb_mask |= BIT(combined[i]);
-+		}
-+
-+		comb_mask &= 0xf;
-+		if (comb_mask == (BIT(3) | BIT(2) | BIT(1) | BIT(0)))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1_CS2_CS3;
-+		else if (comb_mask == (BIT(1) | BIT(2)))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS1_CS2;
-+		else if (comb_mask == (BIT(0) | BIT(1)))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS0_CS1;
-+		else if (comb_mask == BIT(3))
-+			reg_def->def |= SX9310_REG_PROX_CTRL2_COMBMODE_CS3;
-+
-+		break;
-+	case SX9310_REG_PROX_CTRL4:
-+		ret = of_property_read_string(np, "semtech,resolution", &res);
-+		if (ret)
-+			break;
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL4_RESOLUTION_MASK;
-+		if (!strcmp(res, "coarsest"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_COARSEST;
-+		else if (!strcmp(res, "very-coarse"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_COARSE;
-+		else if (!strcmp(res, "coarse"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_COARSE;
-+		else if (!strcmp(res, "medium-coarse"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM_COARSE;
-+		else if (!strcmp(res, "medium"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_MEDIUM;
-+		else if (!strcmp(res, "fine"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_FINE;
-+		else if (!strcmp(res, "very-fine"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_VERY_FINE;
-+		else if (!strcmp(res, "finest"))
-+			reg_def->def |= SX9310_REG_PROX_CTRL4_RESOLUTION_FINEST;
-+
-+		break;
-+	case SX9310_REG_PROX_CTRL5:
-+		ret = of_property_read_u32(np, "semtech,startup-sensor", &start);
-+		if (ret) {
-+			start = FIELD_GET(SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK,
-+					  reg_def->def);
-+		}
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK;
-+		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL5_STARTUPSENS_MASK,
-+					   start);
-+
-+		ret = of_property_read_u32(np, "semtech,proxraw-strength", &raw);
-+		if (ret) {
-+			raw = FIELD_GET(SX9310_REG_PROX_CTRL5_RAWFILT_MASK,
-+					reg_def->def);
-+		} else {
-+			raw = ilog2(raw);
-+		}
-+
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL5_RAWFILT_MASK;
-+		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL5_RAWFILT_MASK,
-+					   raw);
-+		break;
-+	case SX9310_REG_PROX_CTRL7:
-+		ret = of_property_read_u32(np, "semtech,avg-pos-strength", &pos);
-+		if (ret)
-+			break;
-+
-+		pos = min(max(ilog2(pos), 3), 10) - 3;
-+		reg_def->def &= ~SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK;
-+		reg_def->def |= FIELD_PREP(SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK,
-+					   pos);
-+		break;
-+	}
-+
-+	return reg_def;
-+}
-+
- static int sx9310_init_device(struct iio_dev *indio_dev)
- {
- 	struct sx9310_data *data = iio_priv(indio_dev);
-+	struct sx9310_reg_default tmp;
- 	const struct sx9310_reg_default *initval;
- 	int ret;
- 	unsigned int i, val;
-@@ -1213,7 +1336,7 @@ static int sx9310_init_device(struct iio_dev *indio_dev)
- 
- 	/* Program some sane defaults. */
- 	for (i = 0; i < ARRAY_SIZE(sx9310_default_regs); i++) {
--		initval = &sx9310_default_regs[i];
-+		initval = sx9310_get_default_reg(data, i, &tmp);
- 		ret = regmap_write(data->regmap, initval->reg, initval->def);
- 		if (ret)
- 			return ret;
--- 
-Sent by a computer, using git, on the internet
-
+https://patchwork.kernel.org/patch/11719889/
