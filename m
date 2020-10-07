@@ -2,108 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD66286265
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702D3286260
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgJGPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
+        id S1728038AbgJGPmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgJGPnb (ORCPT
+        with ESMTP id S1727005AbgJGPmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:43:31 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0743EC0613D2;
-        Wed,  7 Oct 2020 08:43:31 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id o18so2716408ill.2;
-        Wed, 07 Oct 2020 08:43:30 -0700 (PDT)
+        Wed, 7 Oct 2020 11:42:43 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CA7C061755;
+        Wed,  7 Oct 2020 08:42:43 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x22so1519086pfo.12;
+        Wed, 07 Oct 2020 08:42:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XLErf/pxRiqNYirhZZuvmNaePRdLyo9kzRk5xrxoNiI=;
-        b=F/1PO7iFtNNGiOo3iYB+K5B7xcDy2INnmOBSZYzckiMBh17YWO0eKjV4ZbAmaF+PJG
-         lmIDh+tYXMQBO7uIbPfhsLtN4dKK73NvU+BBV2UmF4/MLzSM7WtBqxZlaFDCR3tT9wij
-         QGiE5hcGAzgoPc2nlqOBlIWw2kNy0dOHOetnz1ElQL0C1ePUHMvK/+BTae7SA6VkZLh3
-         ztKtPEH6QmFohzNxF8DCntb4fq6YjmzO37mXUVxjiDC8vKH0pkzn9rwqm2S+C0X3MKUR
-         nrCR9lKmPNRIKUTeZslyyuAH2deKfGRDPfJudrF+RFjHaoSxMME2+rYXXQs63clGchXl
-         1PnQ==
+        bh=sGFQepT5dAielyQOcZZKF78Vk6XPpWVnwJvjhh+Nths=;
+        b=EZ1RN/YiciSHmmi6KmaZ4yd1HwEjk6cFBdDoxz0e/cBJLO/gMoW3UBhjRRKtjlOvWH
+         LN/3RTHIZ/SLy1+igAdhORfr/+RJrMZzny+csOHfFB3yU89BuTZYhjiJjQ5OcfpladKU
+         CBiyDDBrUxpLvPzv8uKuI90P2GNM/LnxBFlTU0AxKIgjNPmzljIcQwT98pw6ScHswsxJ
+         RZ9qOgSRgBHv0Ty7rIjlepNHT//TNKlDu+WFe9xWqi46oHACRG01o9SkbsiWEpAK0qzv
+         nAa/48uCBxj0K1XsVuQhhs7p1BLya074XMB2ZAkcFL2kCpOk4oNJlQQC4r3PCB51g5CP
+         qlcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XLErf/pxRiqNYirhZZuvmNaePRdLyo9kzRk5xrxoNiI=;
-        b=WUqBItBCgVuU0qpVM/FdfpBRQH0tAIpYgEtHvc1c1/47Oozg5M2yZImPuAKGx39Nhc
-         DholGHfKH9zJpNsHssV9id5nPXxnEZ2VE0Z6aYQ/ttSi2AgMkarH+2yDtY27Iv1LMDaW
-         tKaBg9B7sMexDIXvyP4Lxp5TCt2Df4wPE6b5+LdM332uwZStgTt3dkjXGeFD2ksq5b+k
-         lATZtSJDUB2h7ES23S9HxRyZ1s8oXtP/CWrWCkePmh71ayD3Xk9+xg8ZZGmz3kgh+j52
-         rSiUlviYN9qbZ3URDElKWjaaSYf5mUEg94bsjTd7YyDD9T7zHqTJ6lRagSKXb1pNg0NS
-         0pAw==
-X-Gm-Message-State: AOAM5319gmHiKuZHpqZDfZtkp41A/Kpq2utCKNQi1VwmvcgN07CwzToK
-        1KSUdh7fmagKjJjPPwoZ33zI1k9tj0X1AVGg6gg=
-X-Google-Smtp-Source: ABdhPJzYG90VRk4VCTsbGZMwSv6suXz1iFPnQuwpl76x3sjHbZu6JHgGEJ9Uxe3HE95st0zaTrE2TVDgocp+nbNvCUc=
-X-Received: by 2002:a92:8910:: with SMTP id n16mr3335377ild.239.1602085410239;
- Wed, 07 Oct 2020 08:43:30 -0700 (PDT)
+        bh=sGFQepT5dAielyQOcZZKF78Vk6XPpWVnwJvjhh+Nths=;
+        b=aWfTgXiu96pY9HyuYfBd3UJBioI1JcANjqZHn2jcvblN4vjDEBoy489UPJ6q3a0E0s
+         we/HiikNYmIeLVFXQt4Wd3Rbr2+2GY/piZ5hnqWm0Wf+jt5TeXzcQmPrCkgGWyafqlwR
+         AtisYFqfPVzQPwtPhsfkUcUhXHYjnt77id/M3mQWrsAqvVdkk7SIYFnx/N8QP635FZgZ
+         ZaFNBXMvzKsupk6BfVHpX0QGBUwenc79TJ+SU+x15IAZ33j92nIDx56EMmPvGMco2Wwy
+         MD989+7uqACXmN97+Xm/e/dBmIyLizRPjyzko6HoxCEXlBUJTd4u+jaN4yTFtaqSHEqS
+         4DEA==
+X-Gm-Message-State: AOAM530wX7c3lkYiRnsyRRKdbvDMs8TZ0tM6gtOEMmke284avshoEZAG
+        thMZ1uozwROABraovjQv/ACtdvJTLSc3fYqQBOQ=
+X-Google-Smtp-Source: ABdhPJzz1+XMwvpBzj19pLceQVBur+ueQvp6VyjuWDJnETHhvRf5xN483kY8Z+8/5Xt+06Bo2B2EMJPDb7eeL8wDjeg=
+X-Received: by 2002:aa7:81d5:0:b029:142:2501:39fa with SMTP id
+ c21-20020aa781d50000b0290142250139famr3518995pfn.73.1602085362812; Wed, 07
+ Oct 2020 08:42:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200928114445.19689-1-sudeep.holla@arm.com> <20200928114445.19689-5-sudeep.holla@arm.com>
- <CABb+yY11d8uS34yfE6-c_NP6n5pmxvmjs67aOKEAduhUpnU3Uw@mail.gmail.com> <20201007114034.rkiujybiknaedy7m@bogus>
-In-Reply-To: <20201007114034.rkiujybiknaedy7m@bogus>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Wed, 7 Oct 2020 10:43:19 -0500
-Message-ID: <CABb+yY12hntCgydcTza4qBggi0aqCrt7=aZ+sJoiqEFkm11xtQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mailbox: arm_mhu: Add ARM MHU doorbell driver
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        ALKML <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>
+References: <20201005140217.1390851-1-maz@kernel.org> <CACRpkdbctO9cWZZhVQHWkA1DN7YRTsLRo4Ub9g2x7q6BBSD=Ug@mail.gmail.com>
+ <CAHp75Vdb3y_r_+Mq8K=Jog21wiFH54F18ED8eBwT4rM_zxcCUA@mail.gmail.com>
+ <0175d3ce84ea0aa938a3ce9b3731762e@kernel.org> <CAHp75VdQixJStuVj_aMZ9PhkWXk4RoUa13wAMDj4KGwm2t9nFQ@mail.gmail.com>
+ <bab5b8d99b57710030955c3924c9fca5@kernel.org> <CAHp75VdZxU67P9RPAmw=hnToR2H-8bfHvzeU4UCwKCpV5xEKNg@mail.gmail.com>
+ <15ef48ca189e6535ea1549f7329bc20e@kernel.org>
+In-Reply-To: <15ef48ca189e6535ea1549f7329bc20e@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 7 Oct 2020 18:43:32 +0300
+Message-ID: <CAHp75VevBH6MBHy9MTW-qFDHPeaXzPu3=EyW19JoAsFU-sBViw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: pca953x: Survive spurious interrupts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 6:40 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Fri, Oct 02, 2020 at 02:42:37PM -0500, Jassi Brar wrote:
-> > On Mon, Sep 28, 2020 at 6:45 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+On Wed, Oct 7, 2020 at 6:00 PM Marc Zyngier <maz@kernel.org> wrote:
+> On 2020-10-07 15:03, Andy Shevchenko wrote:
+> > On Wed, Oct 7, 2020 at 4:20 PM Marc Zyngier <maz@kernel.org> wrote:
+> >> On 2020-10-07 14:10, Andy Shevchenko wrote:
+> >> > On Wed, Oct 7, 2020 at 3:09 PM Marc Zyngier <maz@kernel.org> wrote:
+> >> >> On 2020-10-07 13:02, Andy Shevchenko wrote:
+> >> >> > On Wed, Oct 7, 2020 at 12:49 PM Linus Walleij
+> >> >> > <linus.walleij@linaro.org> wrote:
+> >> >> >> On Mon, Oct 5, 2020 at 4:02 PM Marc Zyngier <maz@kernel.org> wrote:
+> >> >> >>
+> >> >> >> > The pca953x driver never checks the result of irq_find_mapping(),
+> >> >> >> > which returns 0 when no mapping is found. When a spurious interrupt
+> >> >> >> > is delivered (which can happen under obscure circumstances), the
+> >> >> >> > kernel explodes as it still tries to handle the error code as
+> >> >> >> > a real interrupt.
+> >> >> >> >
+> >> >> >> > Handle this particular case and warn on spurious interrupts.
+> >> >> >> >
+> >> >> >> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> >> >> >
+> >> >> > Wait, doesn't actually [1]  fix the reported issue?
+> >> >>
+> >> >> Not at all.
+> >> >>
+> >> >> > Marc, can you confirm this?
+> >> >> >
+> >> >> > [1]: e43c26e12dd4 ("gpio: pca953x: Fix uninitialized pending variable")
+> >> >>
+> >> >> Different bug, really. If an interrupt is *really* pending, and no
+> >> >> mapping established yet, feeding the result of irq_find_mapping() to
+> >> >> handle_nested_irq() will lead to a panic.
+> >> >
+> >> > I don't understand. We have plenty of drivers doing exactly the way
+> >> > without checking this returned code.
+> >>
+> >> I'm sure we do. Most driver code is buggy as hell, but I don't see
+> >> that
+> >> as a reason to cargo-cult the crap. The API is crystal clear that it
+> >> can
+> >> return 0 for no mapping, and 0 isn't a valid interrupt.
 > >
-> > > +
-> > > +static void mhu_db_shutdown(struct mbox_chan *chan)
-> > > +{
-> > > +       struct mhu_db_channel *chan_info = chan->con_priv;
-> > > +       struct mbox_controller *mbox = &chan_info->mhu->mbox;
-> > > +       int i;
-> > > +
-> > > +       for (i = 0; i < mbox->num_chans; i++)
-> > > +               if (chan == &mbox->chans[i])
-> > > +                       break;
-> > > +
-> > > +       if (mbox->num_chans == i) {
-> > > +               dev_warn(mbox->dev, "Request to free non-existent channel\n");
-> > > +               return;
-> > > +       }
-> > > +
-> > > +       /* Reset channel */
-> > > +       mhu_db_mbox_clear_irq(chan);
-> > > +       chan->con_priv = NULL;
-> > >
-> > request->free->request will fail because of this NULL assignment.
-> > Maybe add a 'taken' flag in mhu_db_channel, which should also be
-> > checked before calling mbox_chan_received_data because the data may
-> > arrive for a now relinquished channel.
-> >
+> > Yes, and the problem here is that we got this response from IRQ core,
+> > which we shouldn't.
 >
-> Good point, but the new 'taken' flag will have the same race as con_priv.
-> We need a lock here and can we use chan->lock or do you prefer this
-> driver maintains it own for this purpose.
->
-I meant the con_priv is allocated in mhu_db_mbox_xlate and simply
-assigning it NULL leaks memory, if not a crash by some other path. At
-least free it before.
+> What do you mean? There is no mapping at all. and all the core code
+> can tell you is exactly that. If you think that using an error code
+> as a valid input to another function is OK, we have a much bigger
+> problem.
 
--j
+Of course it's not okay. And that's what puzzles me. We shouldn't get
+bit set in pending if there is no requested IRQ (handler assigned).
+I think there is a bug indeed, but I'm not sure it is in the code you
+are patching. Rather in the code when we are preparing a pending
+bitmap.
+Shouldn't we have unused (unassigned interrupts) being masked in the
+first place?
+
+I can imagine that we have the chip preconfigured by firmware and when
+->probe() happens the enabled IRQs should be left untouched, but is it
+the case?
+I guess you are using a non-latched version of the GPIO expander (I
+don't have such for a test).
+
+I need to look at this closer...
+Since Linus already applied this we will live with it now, but it
+would be really helpful if you may dump the traces of non-working case
+before this patch to analyze (I would like to see all regmap IO for
+this chip).
+
+> >> > What circumstances makes the mapping be absent?
+> >>
+> >> Other bugs in the system ([1]), spurious interrupts (which can
+> >> *always*
+> >> happen).
+> >>
+> >> > Shouldn't we rather change this:
+> >> >
+> >> >         girq->handler = handle_simple_irq;
+> >> > to this:
+> >> >         girq->handler = handle_bad_irq;
+> >> > ?
+> >>
+> >> I don't understand what you are trying to achieve with that, apart
+> >> from
+> >> maybe breaking the driver. The right way to handle spurious interrupts
+> >> is by telling the core code that the interrupt wasn't handled, and to
+> >> let
+> >> the spurious interrupt code do its magic.
+> >
+> > handle_bad_irq() is exactly for handling spurious IRQs as far as we
+> > believe documentation. So, by default the driver assigns (should
+> > assign) handle_bad_irq() to all IRQs as a default handler. If, by any
+> > chance, we got it, we already have a proper handler in place. The read
+> > handler is assigned whenever the IRQ core is called to register it (by
+> > means of ->irq_set_type() callback). My understanding that GPIO IRQ
+> > drivers are designed (should be designed) in this way.  The approach
+> > will make us sure that we don't have spurious interrupts with assigned
+> > handlers.
+>
+> I can't see how setting this to anything else can work, given that
+> handle_nested_irq() knows nothing about this flow (it doesn't use
+> any).
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
