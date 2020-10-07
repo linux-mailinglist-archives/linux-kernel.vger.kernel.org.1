@@ -2,121 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010EC286036
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC681286038
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgJGNc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:32:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50402 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgJGNc4 (ORCPT
+        id S1728463AbgJGNeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728177AbgJGNeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:32:56 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097DDUE2134529;
-        Wed, 7 Oct 2020 13:32:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=qs97gC59p8+vTB3DTCcQDnWHINcXtYOlPp2Ryb61e/E=;
- b=vaudEtAgfkE8qX7dNHZCb4OHFeFJL2wmZ3drtxnHFNZYxqyl7Qtte2P4q5guCX0NrZ50
- 7+uKEk718QMSqJNLR1iHjuQr3BazSbQ4HpiGzGUC14CniIhLi8aQmGW5stDJThEFK8bh
- m588/2/Cu9Tagy7cMNZEhAF7X8JLV1SJNNrFDT+1x+9zfI8/v3bTPyTcjMDWBQszBZw4
- j+ZT/chq5Rr2yH80DsIQr3rO9xx+hQzWfrPVTFXUZ/0YAAHvdQlZ5vtxpQIzrKraHOaa
- I51i2K9OPTWHb1kx9EsgZfp3jqcYwClwxVfXAwX7XAFqznzMgW9yEqjFoOrdcywOuSxl UQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33xhxn1pbd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 13:32:45 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097DFKWL120949;
-        Wed, 7 Oct 2020 13:32:44 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33y2vph5s5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Oct 2020 13:32:44 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 097DWhN2019396;
-        Wed, 7 Oct 2020 13:32:43 GMT
-Received: from [192.168.1.26] (/70.114.128.235)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 06:32:43 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] scsi: qla2xxx: initialize value
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-In-Reply-To: <20201005144544.25335-1-trix@redhat.com>
-Date:   Wed, 7 Oct 2020 08:32:42 -0500
-Cc:     Nilesh Javali <njavali@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2E536F63-9F97-4B80-8538-D3176650CC70@oracle.com>
-References: <20201005144544.25335-1-trix@redhat.com>
-To:     trix@redhat.com
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=1 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070088
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=1 phishscore=0
- mlxlogscore=999 adultscore=0 clxscore=1011 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070088
+        Wed, 7 Oct 2020 09:34:19 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDD4C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:34:17 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id g4so2222741edk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ey5jQVqWMq7tqWUNxbxQD0XiFyWsfkNlQHb48MNv2aU=;
+        b=nAjkJUUBJHWrdRcj/JQF4tgMcf+DJFpLnYSCmmlIuprUdgoLEBWSV6qYfpXkufV58D
+         1ygy8Ye8eM0wJiy3NaQOx+HxxjLP1n4qD/B0tg3UGVaIeTzAyknxIF1gbeXP60pMqvpc
+         Vp+0RCZyupp2cXXYh4nhaFWBwRptD1ctUWClM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ey5jQVqWMq7tqWUNxbxQD0XiFyWsfkNlQHb48MNv2aU=;
+        b=EtcYCrgjQ+PhCYCzIkP1F1eD7NdR7jMX5NNSjh7iZ8EsP4x6VH5VJ9qKfHTq7V4095
+         tdkajpmFxwzqqZ8LpVYIYWVq7w0JGvZRdocghaxPJsYa9CV5nMGE5eYUlzr4ZwPHwZru
+         fQQ86xTatM6B/Vvw2kAzVruJ2g54Dm/8PXt8CWduXljX49HMb34EQfnooeANqZlA9+gH
+         aW4cb5jTLTOqT2cvyHSG6SRem5aS086zI4i5nxORoBkqJu/+sKfrBb5Jtt3qI5GvQGPF
+         BunRcT8oM09fSfS/Rew5XgsqpbfBkudVSG7LQeQkrAi4Gk7ZSituEo7Tbzymjn8APhZd
+         e8dA==
+X-Gm-Message-State: AOAM532wOZkKArbctYvc+hLYqkSSL1C7Sxo2lve+QANNSeEZt3YVgtcx
+        bqE2OaepsIaKdm7Ut270NMlggK0pfKoScg==
+X-Google-Smtp-Source: ABdhPJxiri1ibp87BLIzTYzOgLZJc/wFjh9Hbo2avNH7gI0yFa6s7Yd8hxZSqz3R1p75jfN+wWTnZQ==
+X-Received: by 2002:a50:9e49:: with SMTP id z67mr3492051ede.183.1602077655911;
+        Wed, 07 Oct 2020 06:34:15 -0700 (PDT)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
+        by smtp.gmail.com with ESMTPSA id n25sm1523378ejd.114.2020.10.07.06.34.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 06:34:14 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id d81so2339020wmc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:34:14 -0700 (PDT)
+X-Received: by 2002:a1c:3bd4:: with SMTP id i203mr2678118wma.28.1602077653530;
+ Wed, 07 Oct 2020 06:34:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
+ <20201002233118.GM9916@ziepe.ca> <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
+ <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
+ <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com> <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
+ <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com> <20201007124409.GN5177@ziepe.ca>
+ <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
+ <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com> <20201007130610.GP5177@ziepe.ca>
+In-Reply-To: <20201007130610.GP5177@ziepe.ca>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 7 Oct 2020 15:34:01 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
+Message-ID: <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 7, 2020 at 3:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Oct 07, 2020 at 02:58:33PM +0200, Daniel Vetter wrote:
+> > On Wed, Oct 7, 2020 at 2:48 PM Tomasz Figa <tfiga@chromium.org> wrote:
+> > >
+> > > On Wed, Oct 7, 2020 at 2:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Wed, Oct 07, 2020 at 02:33:56PM +0200, Marek Szyprowski wrote:
+> > > > > Well, it was in vb2_get_vma() function, but now I see that it has been
+> > > > > lost in fb639eb39154 and 6690c8c78c74 some time ago...
+> > > >
+> > > > There is no guarentee that holding a get on the file says anthing
+> > > > about the VMA. This needed to check that the file was some special
+> > > > kind of file that promised the VMA layout and file lifetime are
+> > > > connected.
+> > > >
+> > > > Also, cloning a VMA outside the mm world is just really bad. That
+> > > > would screw up many assumptions the drivers make.
+> > > >
+> > > > If it is all obsolete I say we hide it behind a default n config
+> > > > symbol and taint the kernel if anything uses it.
+> > > >
+> > > > Add a big comment above the follow_pfn to warn others away from this
+> > > > code.
+> > >
+> > > Sadly it's just verbally declared as deprecated and not formally noted
+> > > anyway. There are a lot of userspace applications relying on user
+> > > pointer support.
+> >
+> > userptr can stay, it's the userptr abuse for zerocpy buffer sharing
+> > which doesn't work anymore. At least without major surgery (you'd need
+> > an mmu notifier to zap mappings and recreate them, and that pretty
+> > much breaks the v4l model of preallocating all buffers to make sure we
+> > never underflow the buffer queue). And static mappings are not coming
+> > back I think, we'll go ever more into the direction of dynamic
+> > mappings and moving stuff around as needed.
+>
+> Right, and to be clear, the last time I saw a security flaw of this
+> magnitude from a subsystem badly mis-designing itself, Linus's
+> knee-jerk reaction was to propose to remove the whole subsystem.
+>
+> Please don't take status-quo as acceptable, V4L community has to work
+> to resolve this, uABI breakage or not. The follow_pfn related code
+> must be compiled out of normal distro kernel builds.
 
+I think the userptr zero-copy hack should be able to go away indeed,
+given that we now have CMA that allows having carveouts backed by
+struct pages and having the memory represented as DMA-buf normally.
 
-> On Oct 5, 2020, at 9:45 AM, trix@redhat.com wrote:
->=20
-> From: Tom Rix <trix@redhat.com>
->=20
-> clang static analysis reports this problem:
->=20
-> qla_nx2.c:694:3: warning: 6th function call argument is
->  an uninitialized value
->        ql_log(ql_log_fatal, vha, 0xb090,
->        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->=20
-> In qla8044_poll_reg(), when reading the reg fails, the
-> error is reported by reusing the timeout error reporter.
-> Because the value is unset, a garbage value will be
-> reported.  So initialize the value.
->=20
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
-> drivers/scsi/qla2xxx/qla_nx2.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/scsi/qla2xxx/qla_nx2.c =
-b/drivers/scsi/qla2xxx/qla_nx2.c
-> index 3a415b12dcec..01ccd4526707 100644
-> --- a/drivers/scsi/qla2xxx/qla_nx2.c
-> +++ b/drivers/scsi/qla2xxx/qla_nx2.c
-> @@ -659,7 +659,7 @@ static int
-> qla8044_poll_reg(struct scsi_qla_host *vha, uint32_t addr,
-> 	int duration, uint32_t test_mask, uint32_t test_result)
-> {
-> -	uint32_t value;
-> +	uint32_t value =3D 0;
-> 	int timeout_error;
-> 	uint8_t retries;
-> 	int ret_val =3D QLA_SUCCESS;
-> --=20
-> 2.18.1
->=20
+How about the regular userptr use case, though?
 
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+The existing code resolves the user pointer into pages by following
+the get_vaddr_frames() -> frame_vector_to_pages() ->
+sg_alloc_table_from_pages() / vm_map_ram() approach.
+get_vaddr_frames() seems to use pin_user_pages() behind the scenes if
+the vma is not an IO or a PFNMAP, falling back to follow_pfn()
+otherwise.
 
---
-Himanshu Madhani	 Oracle Linux Engineering
+Is your intention to drop get_vaddr_frames() or we could still keep
+using it and if vec->is_pfns is true:
+a) if CONFIG_VIDEO_LEGACY_PFN_USERPTR is set, taint the kernel
+b) otherwise just undo and fail?
 
+Best regards,
+Tomasz
