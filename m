@@ -2,339 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2340D286B7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 01:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06935286B88
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 01:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgJGX2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 19:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727261AbgJGX2M (ORCPT
+        id S1728218AbgJGXby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 19:31:54 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15464 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgJGXbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 19:28:12 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3357DC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 16:28:12 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 34so2611482pgo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 16:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rSUbD1+U2Lq2EenlGAYm1ufk2wcygYgfqrlESf3aYUk=;
-        b=jBIqTXn877ZibdJc8AnFwWz2do9qfKkFOp0AzVz5oGDOCK5rBJAfc65Jhpihkf4sny
-         02fP3PEzAo6BqHaMr3y52wQL/PVwa7XQ+xpdcTcsKX2pSamRGyefEVVCjlzBGN+XMkjq
-         eO61mY1QEM5sOmJwFt9z+O3IHoCGSfry7zyRbPw5sSYkWwhY7NhLCyQWets08bF/OeV1
-         BbIGLMgLxLewbsW243Uy1Gd80kgGGULgoSX2hnyH7t1d4cPZQrZrlLKuCyS+MIpyqiph
-         QNv+11XaMfZQDx47TCCjkKiGek0io31iY/gqOgu3MOwI7Y2cp7TvmX66e5ovqo/as91f
-         YOIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rSUbD1+U2Lq2EenlGAYm1ufk2wcygYgfqrlESf3aYUk=;
-        b=kOFdh0JGUaXwCyJrQinfCQ52ToMyeHVIbEwCGDD48hBU9E2vXvY9nQEHC92oG7oNsA
-         HSp/QnukAPfxZcFkwEe1QoyPHpDSeio0WJT5XrJkU6H1YDr1xssD7y1LvOQfCXRyArn3
-         HLHGHIbLFBCoAD2tkGUQUeLX4DOOLVtfB3Zp5ILK9p0qy9XK1NANr9BnT6nx7jRYbKWJ
-         UknAM/Hyx52UVfoIOYd8ikqqQsQ61mjHfUsmfDiNdVBtNSVO07QO1Rod+aUGRFf8IN39
-         +KwsRK2mV3AiID9/26Q5TH08opzsfmHFv9NNLtIF9jUSMv2Z2V7BXPjoZXV9sSRiEllN
-         YCoA==
-X-Gm-Message-State: AOAM530isXrKj9sZ49XvT6LEonAaXdPNBM01sYTeBZwU+N5/kovdWkbe
-        ba5K67UM/Hs9pD+gOXvALgwWa0SsX6TRjA==
-X-Google-Smtp-Source: ABdhPJwbAgvlw1gILyFrg3tooZ4NMYx00/ak320lMtII/4wQ89yVoKfddV4PME+12xcrv8ZaFlRbOg==
-X-Received: by 2002:a17:90a:804a:: with SMTP id e10mr4843620pjw.218.1602113291209;
-        Wed, 07 Oct 2020 16:28:11 -0700 (PDT)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id 206sm4596006pgh.26.2020.10.07.16.28.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 16:28:10 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 23:28:06 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 2/3] fscrypt: Add metadata encryption support
-Message-ID: <20201007232806.GB2544297@google.com>
-References: <20201005073606.1949772-1-satyat@google.com>
- <20201005073606.1949772-3-satyat@google.com>
- <20201007205221.GA1530638@gmail.com>
+        Wed, 7 Oct 2020 19:31:53 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7e4f7c0000>; Wed, 07 Oct 2020 16:30:04 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 23:31:53 +0000
+Received: from sandstorm.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 7 Oct 2020 23:31:53 +0000
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+CC:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH] Documentation: filesystems: better locations for sysfs-pci, sysfs-tagging
+Date:   Wed, 7 Oct 2020 16:31:51 -0700
+Message-ID: <20201007233151.490953-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007205221.GA1530638@gmail.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602113404; bh=E7vpDOD4gxqXLsuZsi7hTD94dOIXP2RUKkySHzQpRT8=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=bB7+fcU3Jtj5cwQqrmHTz9zotIY3TwJMuEMq5n6trsRShAKCX2QlL/x0mw8RGe/9C
+         QmYkDu9iLWJDYsanChxjkYnCTKy9aDuRKniRX5RNxiXXahMm334qDeDaCJM61BaK8Q
+         7uOHJUtyaqp6AwaDUC8uRIuAaGrKZtufpItk0gHHPOI2fMbDC79QIsNr+IAvCoSMwG
+         /EZv2FhCTw8wEazFQkArh9OrxqYrbcVDNL+5Lix906F17uzA1JXGpECrNHC1Ut1nfG
+         7TOzcPhF6YOTSAc3ippwjqQn45XaM0VnkbMmyTe0vWK03yZKMJLCq/sGnK7+Xl3Af5
+         krIMxddp/YZHQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 01:52:21PM -0700, Eric Biggers wrote:
-> On Mon, Oct 05, 2020 at 07:36:05AM +0000, Satya Tangirala wrote:
-> > Introduces functions that help with metadata encryption.
-> > 
-> > In particular, we introduce:
-> > 
-> > fscrypt_setup_metadata_encryption() - filesystems should call this function
-> > to set up metadata encryption on a super block with the encryption
-> > algorithm (the desired FSCRYPT_MODE_*) and the key descriptor of the
-> > encryption key. The key descriptor is looked up in the logon keyring of the
-> > current session using "fscrypt:" as the descriptor prefix.
-> > 
-> > fscrypt_metadata_crypt_bio() - filesystems should call this function on a
-> > bio that it wants metadata crypted. This function will set a bio-crypt-ctx
-> > on the bio if the metadata key was set up with
-> > fscrypt_setup_metadata_encryption(). The DUN for the first block in the bio
-> > is the offset of that block from the start of the filesystem.
-> > 
-> > fscrypt_free_metadata_encryption() - this function should be called when
-> > the super block is being freed. It ensures that the metadata encryption key
-> > is evicted, if necessary, from devices.
-> > 
-> > Note that the filesystem (rather than fscrypt) controls precisely which
-> > blocks are encrypted with the metadata encryption key and which blocks are
-> > encrypted with other keys/not encrypted at all. Fscrypt only provides some
-> > convenience functions that ultimately help encrypt a bio with the metadata
-> > encryption key when desired.
-> > 
-> > Signed-off-by: Satya Tangirala <satyat@google.com>
-> > ---
-> >  fs/crypto/Kconfig           |   6 +
-> >  fs/crypto/Makefile          |   1 +
-> >  fs/crypto/fscrypt_private.h |  19 ++++
-> >  fs/crypto/inline_crypt.c    |  18 ---
-> >  fs/crypto/metadata_crypt.c  | 220 ++++++++++++++++++++++++++++++++++++
-> >  include/linux/fs.h          |   3 +
-> >  include/linux/fscrypt.h     |  47 ++++++++
-> >  7 files changed, 296 insertions(+), 18 deletions(-)
-> >  create mode 100644 fs/crypto/metadata_crypt.c
-> > 
-> > diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-> > index a5f5c30368a2..3010e91f6659 100644
-> > --- a/fs/crypto/Kconfig
-> > +++ b/fs/crypto/Kconfig
-> > @@ -30,3 +30,9 @@ config FS_ENCRYPTION_INLINE_CRYPT
-> >  	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
-> >  	help
-> >  	  Enable fscrypt to use inline encryption hardware if available.
-> > +
-> > +config FS_ENCRYPTION_METADATA
-> > +	bool "Enable metadata encryption with fscrypt"
-> > +	depends on FS_ENCRYPTION && BLK_INLINE_ENCRYPTION
-> > +	help
-> > +	  Enable fscrypt to encrypt metadata.
-> 
-> This needs Kconfig help text to describe what this feature is and why anyone
-> would want to enable it.  It also needs an update to
-> Documentation/filesystems/fscrypt.rst, and a test in xfstests that tests that
-> the encryption is being done correctly.
-> 
-Sure. I forgot to mention, fwiw I did hack xfstests to enable metadata
-encryption on each device to try to test the code, and also some other
-informal tests, but as you point out, I should send out actual xfstests
-to test this.
-> > diff --git a/fs/crypto/metadata_crypt.c b/fs/crypto/metadata_crypt.c
-> > new file mode 100644
-> > index 000000000000..5e16df130509
-> > --- /dev/null
-> > +++ b/fs/crypto/metadata_crypt.c
-> > @@ -0,0 +1,220 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Metadata encryption support for fscrypt
-> > + *
-> > + * Copyright 2020 Google LLC
-> > + */
-> > +
-> > +#include <keys/user-type.h>
-> > +#include <linux/blk-crypto.h>
-> > +#include <linux/blkdev.h>
-> > +#include <linux/buffer_head.h>
-> > +#include <linux/sched/mm.h>
-> > +
-> > +#include "fscrypt_private.h"
-> > +
-> > +/* TODO: mostly copied from keysetup_v1.c - maybe refactor this function */
-> > +static int fscrypt_metadata_get_key_from_id(const char *prefix,
-> > +					    char *descriptor_hex,
-> > +					    unsigned int min_keysize,
-> > +					    char *raw_key)
-> > +{
-> > +	char *description;
-> > +	struct key *key;
-> > +	const struct user_key_payload *ukp;
-> > +	const struct fscrypt_key *payload;
-> > +	int err = -ENOKEY;
-> > +
-> > +	if (strlen(descriptor_hex) != FSCRYPT_KEY_DESCRIPTOR_SIZE * 2)
-> > +		return -EINVAL;
-> > +
-> > +	description = kasprintf(GFP_NOFS, "%s%s", prefix, descriptor_hex);
-> > +	if (!description)
-> > +		return -ENOMEM;
-> > +
-> > +	key = request_key(&key_type_logon, description, NULL);
-> > +	kfree(description);
-> > +	if (IS_ERR(key))
-> > +		return PTR_ERR(key);
-> > +
-> > +	down_read(&key->sem);
-> > +	ukp = user_key_payload_locked(key);
-> > +
-> > +	if (!ukp) /* was the key revoked before we acquired its semaphore? */
-> > +		goto out;
-> > +
-> > +	payload = (const struct fscrypt_key *)ukp->data;
-> 
-> 'struct fscrypt_key' was a mistake.  How about having the key payload just be
-> the raw key?
-> 
-> Or are you thinking that reserved fields will be needed?
-> 
-Ah, I should've just made it the raw key to start with - I can't think
-of any reserved fields we might need when specifying the key (I thought
-we might need something like that when we try to support hardware
-wrapped keys with metadata encryption, but we could use extra fields in
-the superblock for that).
+sysfs-pci and sysfs-tagging were mis-filed: their locations with
+Documentation/ implied that they were related to file systems. Actually,
+each topic is about a very specific *use* of sysfs, and sysfs *happens*
+to be a (virtual) filesystem, so this is not really the right place.
 
-> > +/**
-> > + * fscrypt_setup_metadata_encryption() - prepare a super_block for metadata
-> > + *					 encryption
-> > + * @sb: The super_block to set up metadata encryption for
-> > + * @key_desc_hex: The key descriptor (in hex) to look for in the logon keyring.
-> 
-> There's no such thing as a "logon keyring".  I think you mean "look for a logon
-> key in the process-subscribed keyrings".
-> 
-Ah, I see - thanks!
-> > + * @fscrypt_mode_num: The FSCRYPT_MODE_* to use as the encryption algorithm.
-> > + *
-> > + * Return: 0 on success, negative number on error.
-> > + */
-> > +int fscrypt_setup_metadata_encryption(struct super_block *sb,
-> > +				      char *key_desc_hex,
-> > +				      int fscrypt_mode_num)
-> > +{
-> > +	int err = 0;
-> > +	enum blk_crypto_mode_num crypto_mode;
-> > +	unsigned int lblk_bits = 64;
-> > +	unsigned int dun_bytes;
-> > +	unsigned int dummy;
-> > +	char raw_key[FSCRYPT_MAX_KEY_SIZE];
-> 
-> For binary data, prefer 'u8' to 'char'.
-> 
-> > +
-> > +	if (fscrypt_mode_num > __FSCRYPT_MODE_MAX || fscrypt_mode_num < 0 ||
-> > +	    !fscrypt_modes[fscrypt_mode_num].cipher_str) {
-> > +		fscrypt_warn(NULL, "Invalid fscrypt mode %d specified for metadata encryption.",
-> > +			     fscrypt_mode_num);
-> > +		return -EOPNOTSUPP;
-> > +	}
-> 
-> The filenames-only encryption modes (FSCRYPT_MODE_AES_256_CTS and
-> FSCRYPT_MODE_AES_128_CTS) will pass this check, which seems undesired.
-> 
-> > +
-> > +	if (sb->s_cop->get_ino_and_lblk_bits)
-> > +		sb->s_cop->get_ino_and_lblk_bits(sb, &dummy, &lblk_bits);
-> > +	dun_bytes = DIV_ROUND_UP(lblk_bits, 8);
-> > +
-> > +	if (fscrypt_modes[fscrypt_mode_num].ivsize < dun_bytes) {
-> > +		fscrypt_warn(NULL, "The fscrypt mode only supports %d DUN bytes, but FS requires support for %d DUN bytes.",
-> > +			     fscrypt_modes[fscrypt_mode_num].ivsize, dun_bytes);
-> > +		return -EOPNOTSUPP;
-> > +	}
-> 
-> lblk_bits is the number of bits used to represent file logical block numbers
-> (e.g. ext4_lblk_t).  That's different from the filesystem-wide block number
-> (e.g. ext4_fsblk_t), which is what metadata encryption will use.
-> 
-> > +	crypto_mode = fscrypt_modes[fscrypt_mode_num].blk_crypto_mode;
-> > +
-> > +	err = fscrypt_metadata_get_key_from_id(
-> > +					FSCRYPT_KEY_DESC_PREFIX,
-> > +					key_desc_hex,
-> > +					fscrypt_modes[fscrypt_mode_num].keysize,
-> > +					raw_key);
-> > +	if (err)
-> > +		goto out;
-> 
-> This is allowing for the key to be longer than the provided keysize, in which
-> case only a prefix of the key is used.
-> 
-> It should require the exact keysize instead.
-> 
-> > +
-> > +	sb->s_metadata_key = kzalloc(sizeof(*sb->s_metadata_key), GFP_NOFS);
-> 
-> No need for GFP_NOFS here.
-> 
-> > +/**
-> > + * fscrypt_free_metadata_encryption() - free metadata encryption fields in
-> > + *					super_block.
-> > + * @sb: The super_block to free metatdata encryption fields from
-> > + */
-> > +void fscrypt_free_metadata_encryption(struct super_block *sb)
-> > +{
-> > +	int num_devices;
-> > +	int i;
-> > +	struct request_queue *q;
-> > +
-> > +	if (!sb->s_metadata_key)
-> > +		return;
-> > +
-> > +	num_devices = fscrypt_get_num_devices(sb);
-> > +
-> > +	for (i = 0; i < num_devices; i++) {
-> > +		q = fscrypt_get_device(sb, i);
-> > +		if (WARN_ON(!q))
-> > +			continue;
-> > +		blk_crypto_evict_key(q, sb->s_metadata_key);
-> > +	}
-> > +
-> > +	memzero_explicit(sb->s_metadata_key, sizeof(*sb->s_metadata_key));
-> > +	kzfree(sb->s_metadata_key);
-> > +	sb->s_metadata_key = NULL;
-> > +}
-> 
-> kfree_sensitive(), not kzfree().
-> 
-> Also, memzero_explicit() is redundant.
-> 
-> > +/**
-> > + * fscrypt_metadata_crypt_bio() - Add metadata encryption context to bio.
-> > + *
-> > + * @bio: The bio to add the encryption context to
-> > + * @lblk: The logical block number within the filesystem at which this bio
-> > + *	  starts reading/writing data.
-> 
-> Should be:
-> 
->    @fsblk: The block number within the filesystem ...
-> 
-> > + * @sb: The superblock of the filesystem
-> > + * @gfp_mask: gfp_mask for bio_crypt_context allocation
-> > + */
-> > +void fscrypt_metadata_crypt_bio(struct bio *bio, u64 lblk,
-> > +				struct super_block *sb, gfp_t gfp_mask)
-> > +{
-> > +	u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE] = { 0 };
-> > +
-> > +	if (!sb->s_metadata_key)
-> > +		return;
-> > +
-> > +	dun[0] = lblk;
-> > +	bio_crypt_set_ctx(bio, sb->s_metadata_key, dun, gfp_mask);
-> > +}
-> 
-> Perhaps fscrypt_set_bio_crypt_ctx() should call this?  It seems there should be
-> a single function that filesystems can call that handles setting the
-> bio_crypt_ctx for both file contents and metadata encryption.
-> 
-I mistakenly dismissed this idea when I was coding this up :( - I'll do
-this for the next version... I think it'll also make supporting direct I/O
-easier in future :) . Also, I might require FS_ENCRYPTION_INLINE_CRYPT
-when enabling FS_ENCRYPTION_METADATA to maybe make the code slightly
-cleaner (unless there's a reason we want to support metadata encryption
-without FS inline encryption being enabled?).
-> - Eric
+It's jarring to be reading about filesystems in general and then come
+across these specific details about PCI, and tagging...and then back to
+general filesystems again.
+
+Move sysfs-pci and sysfs-tagging to a location under the sysfs topic.
+
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
+
+Hi,
+
+I'm not sure if the "toctree, maxdepth: 1" is the ideal way to do this,=20
+but the output in the browser looks about right to me, anyway.
+
+thanks,
+John Hubbard
+NVIDIA
+
+ Documentation/filesystems/index.rst |  2 --
+ Documentation/filesystems/sysfs.rst | 14 ++++++++++++++
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystem=
+s/index.rst
+index 4c536e66dc4c..98f59a864242 100644
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -34,8 +34,6 @@ algorithms work.
+    quota
+    seq_file
+    sharedsubtree
+-   sysfs-pci
+-   sysfs-tagging
+=20
+    automount-support
+=20
+diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystem=
+s/sysfs.rst
+index ab0f7795792b..39da2f5c235f 100644
+--- a/Documentation/filesystems/sysfs.rst
++++ b/Documentation/filesystems/sysfs.rst
+@@ -416,3 +416,17 @@ ABI between the kernel and user space. As for any ABI,=
+ it is important that
+ this ABI is stable and properly documented. All new sysfs attributes must =
+be
+ documented in Documentation/ABI. See also Documentation/ABI/README for mor=
+e
+ information.
++
++sysfs and PCI
++~~~~~~~~~~~~~
++.. toctree::
++   :maxdepth: 1
++
++   sysfs-pci
++
++sysfs and tagging
++~~~~~~~~~~~~~~~~~
++.. toctree::
++   :maxdepth: 1
++
++   sysfs-tagging
+--=20
+2.28.0
+
