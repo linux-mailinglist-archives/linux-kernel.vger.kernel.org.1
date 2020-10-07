@@ -2,92 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5406286289
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D852286286
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728794AbgJGPrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:47:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29740 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726129AbgJGPrI (ORCPT
+        id S1728791AbgJGPqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:46:38 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:46136 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728019AbgJGPqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:47:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602085627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Aa1KCvlfUQGWUsGkUKS4sAmJdaBzy1cWEwvYw2yGIs=;
-        b=S8V0GfKVkYwsvdCk5POTcy2vTcI9fJKAnKQxennR02PijWTLg/kr7GBS7hBxyWgZd4RkId
-        OHWOakzYqUANPm35T9yhBIqvBZ8kyNwSJzZfFFomSYGCf2FsgKvHE1zPr0WYG2LVSyTF1d
-        82/6W3NpP2tMm2NXInmzm1EF/jiIySw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-6YZw2zieNkWq5WRL6DuGcw-1; Wed, 07 Oct 2020 11:47:03 -0400
-X-MC-Unique: 6YZw2zieNkWq5WRL6DuGcw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCE02104D3E5;
-        Wed,  7 Oct 2020 15:46:40 +0000 (UTC)
-Received: from treble (ovpn-113-148.rdu2.redhat.com [10.10.113.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DB6CD7A41F;
-        Wed,  7 Oct 2020 15:46:38 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 10:46:33 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: linux-next: build failure after merge of the vfs tree
-Message-ID: <20201007154633.akspeclzc3z7urd6@treble>
-References: <20200924183038.3c6da86e@canb.auug.org.au>
- <20200924200807.GU3421308@ZenIV.linux.org.uk>
- <20200925220128.1604f09b@canb.auug.org.au>
- <20200925133820.GW3421308@ZenIV.linux.org.uk>
- <20200929041056.uj6gedgm6hfjaxrx@treble>
- <20201006143012.fgpyujguzvcwszp4@treble>
- <20201007080405.5e90a579@canb.auug.org.au>
+        Wed, 7 Oct 2020 11:46:38 -0400
+Received: by mail-oi1-f193.google.com with SMTP id u126so2853351oif.13;
+        Wed, 07 Oct 2020 08:46:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rQHCXCV/i+kaGlmPVLS4FFOvSgdOWuMGT9TwEXcskOQ=;
+        b=Hz2Ok0HWgjcwr+A0z3oh4o8Kk3xAFFUiDs9FngHt6CgjJ5uCrGbzUBCJ1VoNpFgiJ7
+         cQRnBxtK5xZfErIqmswT6b0wy4H0npMcWgVBQidegV/axs7O1PC/PTye8wuIFqviDl/L
+         tOWzgimciWNBW8S77IPYIARwgHcCkmQeHtbu32DtLw5coIGk72HoDiHmam3w1TLkQUXg
+         vgd8GQdx/7EBDIrj7wPzadl/aZQVInxUh0JEJ/yE6TA8NsgU1ZOhDRmDJQQth77kxx6u
+         Tna/LgytbApc32uNM+Y/BdlIj0Cv5ziW/HB4MTN1P9BgZOrtA0r3EIHWZVJj3Uv0JQML
+         +llA==
+X-Gm-Message-State: AOAM5323B9sNKrINnaVKEmyM3xrEFgYBiQSBwSjTL/UTd+oDa5AXjerb
+        TDmAp3qdDuOQpV1unGcJUw==
+X-Google-Smtp-Source: ABdhPJzDk8KVgVgZu26G0OLEbj+MCjqT8zp2WyE6DHWNle1MsgOmCTzlodkyKJvl4XZQhj7iUJBhxw==
+X-Received: by 2002:aca:bc8b:: with SMTP id m133mr2436812oif.10.1602085597093;
+        Wed, 07 Oct 2020 08:46:37 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o9sm2452289oop.1.2020.10.07.08.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 08:46:36 -0700 (PDT)
+Received: (nullmailer pid 278714 invoked by uid 1000);
+        Wed, 07 Oct 2020 15:46:35 -0000
+Date:   Wed, 7 Oct 2020 10:46:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     vkoul@kernel.org, nm@ti.com, ssantosh@kernel.org, vigneshr@ti.com,
+        dan.j.williams@intel.com, t-kristo@ti.com, lokeshvutla@ti.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH 09/18] dt-bindings: dma: ti: Add document for K3 BCDMA
+Message-ID: <20201007154635.GA273523@bogus>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-10-peter.ujfalusi@ti.com>
+ <20201006192909.GA2679155@bogus>
+ <bc054ef7-dcd7-dde2-13f8-4900a33b1377@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007080405.5e90a579@canb.auug.org.au>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <bc054ef7-dcd7-dde2-13f8-4900a33b1377@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 08:04:05AM +1100, Stephen Rothwell wrote:
-> Hi Josh,
+On Wed, Oct 07, 2020 at 12:09:06PM +0300, Peter Ujfalusi wrote:
 > 
-> On Tue, 6 Oct 2020 09:30:12 -0500 Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Mon, Sep 28, 2020 at 11:10:56PM -0500, Josh Poimboeuf wrote:
-> > > > Josh, any ideas?  We could, of course, make it "r"(size), but that would
-> > > > be unpleasant in all existing callers...  
-> > > 
-> > > Sorry, I've been traveling.  I'd just vote for making it "r".
-> > > 
-> > > array_index_nospec() is always called after a usercopy.  I don't think
-> > > anyone will notice the extra mov, for the cases where it would be
-> > > propagated as an immediate.  And the argument *is* an unsigned long
-> > > after all.
-> > > 
-> > > Stephen, can you confirm this fixes it?  
+> 
+> On 06/10/2020 22.29, Rob Herring wrote:
+> > On Wed, Sep 30, 2020 at 12:14:03PM +0300, Peter Ujfalusi wrote:
+> >> New binding document for
+> >> Texas Instruments K3 Block Copy DMA (BCDMA).
+> >>
+> >> BCDMA is introduced as part of AM64.
+> >>
+> 
+> ...
+> 
 > > 
-> > Still traveling, I didn't see an update on this.  Any objections to the
-> > below?  I assume it fixes Stephen's build issue.
+> >> +  ti,sci:
+> >> +    description: phandle to TI-SCI compatible System controller node
+> >> +    allOf:
+> >> +      - $ref: /schemas/types.yaml#/definitions/phandle
+> >> +
+> >> +  ti,sci-dev-id:
+> >> +    description: TI-SCI device id of BCDMA
+> >> +    allOf:
+> >> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> > 
+> > We have a common definition for these.
 > 
-> Yes, it does fix my x86_64 allnoconfig build.
+> Yes, in arm/keystone/ti,k3-sci-common.yaml, but I could not get to use
+> that as reference.
+> 
+> I can not list it under the topmost allOf and drop the ti,sci and
+> ti,sci-dev-id like this:
+> 
+> allOf:
+>   - $ref: /schemas/dma/dma-controller.yaml#
+>   - $ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
+> 
+> It results:
+>   CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+>   DTEX    Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dts
+>   SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+>   DTC     Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml
+>   CHECK   Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml
+> Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml:
+> dma-controller@485c0100: 'ti,sci', 'ti,sci-dev-id' do not match any of
+> the regexes: 'pinctrl-[0-9]+'
+>         From schema: Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+> 
+> If I remove the "additionalProperties: false" from the schema file, then
+> it compiles fine.
 
-Stephen, thanks!
+Yeah, you have to do 'unevaluatedProperties: false' which doesn't 
+actually do anything yet, but can 'see' into $ref's.
 
-Al, do you want to fold that change in?  Or shall I post another
-version?
 
--- 
-Josh
+> >> +  ti,asel:
+> >> +    description: ASEL value for non slave channels
+> >> +    allOf:
+> > 
+> > You no longer need 'allOf' here.
+> 
+> OK, I changed it in all instances.
+> 
+> > 
+> >> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> >> +
+> >> +  ti,sci-rm-range-bchan:
+> >> +    description: |
+> >> +      Array of BCDMA block-copy channel resource subtypes for resource
+> >> +      allocation for this host
+> >> +    allOf:
+> >> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+> >> +    minItems: 1
+> >> +    # Should be enough
+> >> +    maxItems: 255
+> > 
+> > Are there constraints for the individual elements?
+> 
+> In practice the subtype ID is 6bits number.
+> Should I add limits to individual elements?
 
+Yes:
+
+items:
+  maximum: 0x3f
+
+> 
+> >> +
+> >> +  ti,sci-rm-range-tchan:
+> >> +    description: |
+> >> +      Array of BCDMA split tx channel resource subtypes for resource allocation
+> >> +      for this host
+> >> +    allOf:
+> >> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+> >> +    minItems: 1
+> >> +    # Should be enough
+> >> +    maxItems: 255
+> >> +
+> >> +  ti,sci-rm-range-rchan:
+> >> +    description: |
+> >> +      Array of BCDMA split rx channel resource subtypes for resource allocation
+> >> +      for this host
+> >> +    allOf:
+> >> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+> >> +    minItems: 1
+> >> +    # Should be enough
+> >> +    maxItems: 255
+> >> +
+> >> +required:
+> >> +  - compatible
+> >> +  - "#address-cells"
+> >> +  - "#size-cells"
+> >> +  - "#dma-cells"
+> >> +  - reg
+> >> +  - reg-names
+> >> +  - msi-parent
+> >> +  - ti,sci
+> >> +  - ti,sci-dev-id
+> >> +  - ti,sci-rm-range-bchan
+> >> +  - ti,sci-rm-range-tchan
+> >> +  - ti,sci-rm-range-rchan
+> >> +
+> >> +additionalProperties: false
+> >> +
+> >> +examples:
+> >> +  - |+
+> >> +    cbass_main {
+> >> +        #address-cells = <2>;
+> >> +        #size-cells = <2>;
+> >> +
+> >> +        main_dmss {
+> >> +            compatible = "simple-mfd";
+> > 
+> > IMO, if it is memory-mapped, then you should be using 'simple-bus'.
+> 
+> We had the same discussion when I introduced the k3-udma binding and we
+> have concluded on the simple-mfd as DMSS is not a bus, but contains
+> different peripherals.
+
+Ok.
+
+Rob
