@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C55285785
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F0D285791
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 06:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgJGEXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 00:23:12 -0400
-Received: from mx.socionext.com ([202.248.49.38]:21676 "EHLO mx.socionext.com"
+        id S1726511AbgJGEYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 00:24:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgJGEXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 00:23:12 -0400
-Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 07 Oct 2020 13:23:10 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 370B260060;
-        Wed,  7 Oct 2020 13:23:10 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Wed, 7 Oct 2020 13:23:10 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by iyokan.css.socionext.com (Postfix) with ESMTP id C81684031B;
-        Wed,  7 Oct 2020 13:23:09 +0900 (JST)
-Received: from [10.212.0.119] (unknown [10.212.0.119])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 2B04C120499;
-        Wed,  7 Oct 2020 13:23:09 +0900 (JST)
-Subject: Re: [PATCH v7 0/3] PCI: uniphier: Add PME/AER support for UniPhier
- PCIe host controller
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-References: <1599816814-16515-1-git-send-email-hayashi.kunihiko@socionext.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <aef99409-ae8e-3559-2b19-10a77d70749b@socionext.com>
-Date:   Wed, 7 Oct 2020 13:23:08 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725970AbgJGEYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 00:24:12 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FAA1208C7;
+        Wed,  7 Oct 2020 04:24:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602044652;
+        bh=HNZgGw5t+zku3ew40cODLileKIhXkp3jSljN6AT8TLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=errdOSLLvUuLmIJhiUvORHXPdy4e8M12nUcZNwbqksJZ3hgZcLzDnSs0aVX+gGbxw
+         +Oo9U1uMWXrUFFXkGuerRU9SciMb7timjw/YOzmep2l/jRWADGaQJG8q0kko6KBVc3
+         OCklyThqJpOyLH+hiRL7yjaC19diNIqmaeAL0xa8=
+Date:   Tue, 6 Oct 2020 21:24:09 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Torsten Duwe <duwe@lst.de>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-crypto@vger.kernel.org,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
+ SP800-90B compliance
+Message-ID: <20201007042409.GE912@sol.localdomain>
+References: <20200921075857.4424-1-nstange@suse.de>
+ <20201002123836.GA14807@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <1599816814-16515-1-git-send-email-hayashi.kunihiko@socionext.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002123836.GA14807@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Gentle ping.
-Are there any comments about this series?
-
-Thank you,
-
-On 2020/09/11 18:33, Kunihiko Hayashi wrote:
-> The original subject up to v6 is
-> "PCI: uniphier: Add features for UniPhier PCIe host controller".
+On Fri, Oct 02, 2020 at 02:38:36PM +0200, Torsten Duwe wrote:
+> Almost two weeks passed and these are the "relevant" replies:
 > 
-> This adds a new function called by MSI handler in DesignWare PCIe framework,
-> that invokes PME and AER funcions to detect the factor from SoC-dependent
-> registers.
+> Jason personally does not like FIPS, and is afraid of
+> "subpar crypto". Albeit this patch set strictly isn't about
+> crypto at all; the crypto subsystem is in the unlucky position
+> to just depend on a good entropy source.
 > 
-> The iATU patches is split from this series as
-> "PCI: dwc: Move iATU register mapping to common framework".
+> Greg claims that Linux (kernel) isn't about choice, which is clearly
+> wrong.
 > 
-> Changes since v6:
-> - Separate patches for iATU and phy error from this series
-> - Add Reviewed-by: line
+> And this is all ???
 > 
-> Changes since v5:
-> - Add pcie_port_service_get_irq() function to pcie/portdrv
-> - Call pcie_port_service_get_irq() to get vIRQ interrupt number for PME/AER
-> - Rebase to the latest linux-next branch,
->    and remove devm_platform_ioremap_resource_byname() replacement patch
+> There are options for stack protection. I can see bounds checking
+> and other sanity checks all over the place. And doing a similar thing
+> on entropy sources is a problem?
 > 
-> Changes since v4:
-> - Add Acked-by: line to dwc patch
+> Admittedly, if entropy sources fail, the kernel will happily remain
+> running. No bad immediate effects in userland will arise. Only some
+> cryptographic algorithms, otherwise very decent, will run on
+> unneccessarily weak keys, probably causing some real-world problems.
+> Does anybody care?
+> The NIST and the BSI do, but that does not mean their solutions are
+> automatically wrong or backdoored.
 > 
-> Changes since v3:
-> - Move msi_host_isr() call into dw_handle_msi_irq()
-> - Move uniphier_pcie_misc_isr() call into the guard of chained_irq
-> - Use a bool argument is_msi instead of pci_msi_enabled()
-> - Consolidate handler calls for the same interrupt
-> - Fix typos in commit messages
+> There is now a well layed-out scheme to ensure quality randomness,
+> and a lot of work here has been put into its implementation.
 > 
-> Changes since v2:
-> - Avoid printing phy error message in case of EPROBE_DEFER
-> - Fix iATU register mapping method
-> - dt-bindings: Add Acked-by: line
-> - Fix typos in commit messages
-> - Use devm_platform_ioremap_resource_byname()
-> 
-> Changes since v1:
-> - Add check if struct resource is NULL
-> - Fix warning in the type of dev_err() argument
-> 
-> Kunihiko Hayashi (3):
->    PCI: portdrv: Add pcie_port_service_get_irq() function
->    PCI: dwc: Add msi_host_isr() callback
->    PCI: uniphier: Add misc interrupt handler to invoke PME and AER
-> 
->   drivers/pci/controller/dwc/pcie-designware-host.c |  3 +
->   drivers/pci/controller/dwc/pcie-designware.h      |  1 +
->   drivers/pci/controller/dwc/pcie-uniphier.c        | 77 +++++++++++++++++++----
->   drivers/pci/pcie/portdrv.h                        |  1 +
->   drivers/pci/pcie/portdrv_core.c                   | 16 +++++
->   5 files changed, 87 insertions(+), 11 deletions(-)
+> Would some maintainer please comment on potential problems or
+> shortcomings? Otherwise a "Thanks, applied" would be appropriate, IMO.
 > 
 
--- 
----
-Best Regards
-Kunihiko Hayashi
+Well, very people are experts in the Linux RNG *and* have time to review large
+patchsets, especially when three people are all proposing conflicting changes.
+And those that might be able to review these patches aren't necessarily
+interested in compliance with particular government standards.
+
+Note that having multiple RNG implementations would cause fragmentation, more
+maintenance burden, etc.  So IMO, that should be a last resort.  Instead we
+should try to find an implementation that works for everyone.  I.e., at least to
+me, Nicolai's patchset seems more on the right track than Stephan's patchset...
+
+However, not everyone cares about "compliance".  So any changes for "compliance"
+either need to have a real technical argument for making the change, *or* need
+to be optional (e.g. controlled by fips_enabled).
+
+AFAICS, this patchset mostly just talks about NIST SP800-90B compliance, and
+doesn't make clear whether the changes make the RNG better, worse, or the same
+from an actual technical perspective.
+
+If that was properly explained, and if the answer was "better" or at least
+"not worse", I expect that people would be more interested.
+
+- Eric
