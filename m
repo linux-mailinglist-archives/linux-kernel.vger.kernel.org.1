@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBECF285598
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C72F28559A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgJGAuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 20:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        id S1727097AbgJGAvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726860AbgJGAuP (ORCPT
+        with ESMTP id S1726779AbgJGAvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:50:15 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CD5C0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 17:50:07 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l24so357305edj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:50:07 -0700 (PDT)
+        Tue, 6 Oct 2020 20:51:05 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639C5C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 17:51:05 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id md26so474874ejb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:51:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iRUXIUPW9gOf8Xu9KYj+IxZzLpARb4saek0+Bb/SUfA=;
-        b=q/V3uGIo5weyK1Q3xEWwp7EZAle9uGvntQtycbOdoiMoX1VvH5qO60svdD2V/lI8zG
-         GQPMIYJAu7KE7swFZgzQlZNudYXjJa/mar+wp53qD/WqRv1Jr7BqxY3/uC+S/QZO9206
-         WxKSiiU14ZRA5T7Wwe/scXWBVbYJxzU2L/oW0zSjVjxbup7aF5YePNRm2SuWw/DTAELt
-         68yPMIBczs54KF7yIsNiEoNdHU7tbs+p4BSRUVZj0LQ7VfKMTqE4wQzI2me0jq+7bUnm
-         a03RKWRwutqqsSOCrxSOCJk0L/kIh1oNaqXIkfS9g2ZvFWPrjhVuCgrAvvhRILgqXAYZ
-         NrtQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eRgpBFDQ71r3jZmAEWAU5ispHXswfcNPKvXGtL8hegk=;
+        b=MrdR1Mx+X+SeJ23S2PnH5HipsAt0mLLjg8Qsk3HtHtaMT6qKs80nxn/ZtQD1O4E4k9
+         yzMsQ1eaaxP+we98Wk+3I6R7MK5Iwgd/AiZ/8Y22njGHOlNX6NnC0rRBTTGQsoKLykX1
+         rL81TNWoUTP2mYuNE7Z7vLtG8YEDodvSY1heIAHezmt8ug6ELrA9l9JGlPWrbQiKD/w1
+         Ot3G7Z6uVl2UFVh5isZSYS78Wx/Rx0MnNZeIcnJZW6HFni9vDb2lh/UPm5I2N1gZSpQH
+         hnU6+jis26zSubOANjvPkfAWHDskkMjbaX4wyWQb6JfwTolFKMuI/h9yWP2dkim5B/3N
+         +Qbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iRUXIUPW9gOf8Xu9KYj+IxZzLpARb4saek0+Bb/SUfA=;
-        b=Q2st/bxpPt9OJtQYESr5GpwBbKJv/7IQP0cEdgDfRK6xYO0d2dCFssNUUba3IRxyfD
-         1VTRXyLQuLBOMwgl3xsOp+kdDzKp5XoM0jSKLB5wyq/pJF9hY2Uu73gQSjydbDyvGTdX
-         AsbGtCiVLulT1B9qdL+2PRR131zR8/9nxUTbhDrCtZXfGjTsBXaeWkWF6We9GZSMASRi
-         DYtH95ViTf+FKXeHntXPBEFGXatbIpZ1StwuQGUt22ncI2/x5QzHs9YomS70YU2gfXMa
-         7tmfsHbGmoL/1oG36OrQijjqf6eZhoiwwPUk+bnDn2NRUj68EFhaOIfKgAiTE75vvd8I
-         uh0A==
-X-Gm-Message-State: AOAM532HxxY7tyFvRpdCkzJPyVaTQIuLVwAA0cX8KFcdKpTeq4zGIRMz
-        8hpb3Nf73mdiYxP/FKzoCKCvp3BiS8t9WEGhBVVe7SboasN+vscDqA0isiAsWIxPlG58zF89as6
-        6+exFe9VajQ3VWMMc+TTUi38ga/XzVNTW0X/ywNVdnBbrIW99bTVPDwzopLbsiYcDMYVexFrvia
-        OlmEavqIm1Gg==
-X-Google-Smtp-Source: ABdhPJy/KIFNtYEAMF5iDj0TRNRLBv5tDl8vpCTs6g16124IMX8nRVGsecZDCgSa0MIx/trUCyHskA==
-X-Received: by 2002:aa7:d7ca:: with SMTP id e10mr807758eds.269.1602031805865;
-        Tue, 06 Oct 2020 17:50:05 -0700 (PDT)
-Received: from localhost.localdomain ([2a00:ee2:4b0d:3002:290:faff:fe54:449c])
-        by smtp.gmail.com with ESMTPSA id bw25sm261090ejb.119.2020.10.06.17.50.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Oct 2020 17:50:05 -0700 (PDT)
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-To:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Cc:     lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
-        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        marek.behun@nic.cz, luka.perkov@sartura.hr,
-        robert.marko@sartura.hr, Luka Kovacic <luka.kovacic@sartura.hr>
-Subject: [PATCH v4 6/6] MAINTAINERS: Add an entry for the iEi WT61P803 PUZZLE driver
-Date:   Wed,  7 Oct 2020 02:49:01 +0200
-Message-Id: <20201007004901.39859-7-luka.kovacic@sartura.hr>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201007004901.39859-1-luka.kovacic@sartura.hr>
-References: <20201007004901.39859-1-luka.kovacic@sartura.hr>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eRgpBFDQ71r3jZmAEWAU5ispHXswfcNPKvXGtL8hegk=;
+        b=KdZ+Chph62VTNcrrfoid3NKdiR/nD8rHdonvURWGyH3DWY61bQORsWastA9kChFvZj
+         LAhTTtLGhY8/yIU3kWeFSctvFsZLnchAYj4JK+fkU9RrxJZXzz2xWNgXnnRyJkip13Iq
+         5Vwn7nARWmRWfbtsLMBmNrMKvrA0mRXNG/vA857+I8IKZ3UB6Wcc0UvHBKG2Zt44r5/7
+         ftNsI3SABdemk36o4imh9MzVNG8csYYUzaS4Ca8HrDuUaF/FhaEVNQjukElXofkZlwPr
+         A0523n6Rjn6Udf/4dyUNDn+NCJ6LQBHOtS2rPOScZECCdJq5l/e5Y3SzfnlpfgZcQ4o9
+         Kmuw==
+X-Gm-Message-State: AOAM531YYVQhYaJ6fXIIMQ0B3+2O4szqOIW+1DWJ2Po7fxVMUXidlz16
+        U+XhKQWWYDHehkL0h+2U6O+b6rtoGnzqlqaCj61xpA==
+X-Google-Smtp-Source: ABdhPJxJJ1TsiRyKiZr0F9iwPg0xQoz9g238e5l71p9cVxLuHyITngG+hiywuYgs4FdTP0coxxVgOm8lYRFVkX1sSM8=
+X-Received: by 2002:a17:906:7d52:: with SMTP id l18mr735056ejp.220.1602031863860;
+ Tue, 06 Oct 2020 17:51:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201006231706.2744579-1-haoluo@google.com> <CAEf4BzY1ggHq6UGkHQ_S=0_US=bLPc9u+9pyeUP2hWb_3kWN+w@mail.gmail.com>
+In-Reply-To: <CAEf4BzY1ggHq6UGkHQ_S=0_US=bLPc9u+9pyeUP2hWb_3kWN+w@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 6 Oct 2020 17:50:52 -0700
+Message-ID: <CA+khW7hVh4PJHtZSNG-_ZPxthQdvKSxoL4P17GZn5NdQxjnHxA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix test_verifier after introducing resolve_pseudo_ldimm64
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an entry for the iEi WT61P803 PUZZLE driver (MFD, HWMON, LED drivers).
+On Tue, Oct 6, 2020 at 5:43 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Oct 6, 2020 at 4:45 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > Commit 4976b718c355 ("bpf: Introduce pseudo_btf_id") switched
+> > the order of check_subprogs() and resolve_pseudo_ldimm() in
+> > the verifier. Now an empty prog and the prog of a single
+> > invalid ldimm expect to see the error "last insn is not an
+> > exit or jmp" instead, because the check for subprogs comes
+> > first. Fix the expection of the error message.
+> >
+> > Tested:
+> >  # ./test_verifier
+> >  Summary: 1130 PASSED, 538 SKIPPED, 0 FAILED
+> >  and the full set of bpf selftests.
+> >
+> > Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > ---
+[...]
+> > diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> > index 3856dba733e9..f300ba62edd0 100644
+> > --- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> > +++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> > @@ -55,7 +55,7 @@
+> >         .insns = {
+> >         BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
+> >         },
+> > -       .errstr = "invalid bpf_ld_imm64 insn",
+> > +       .errstr = "last insn is not an exit or jmp",
+>
+> but this completely defeats the purpose of the test; better add
+> BPF_EXIT_INSN() after ldimm64 instruction to actually get to
+> validation of ldimm64
+>
 
-Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
-Cc: Robert Marko <robert.marko@sartura.hr>
----
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Actually there is already a test (test4) that covers this case. So it
+makes sense to remove it, I think. I will resend with this change.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 33b27e62ce19..7b17195511ae 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8455,6 +8455,19 @@ F:	include/net/nl802154.h
- F:	net/ieee802154/
- F:	net/mac802154/
- 
-+IEI WT61P803 M801 MFD DRIVER
-+M:	Luka Kovacic <luka.kovacic@sartura.hr>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
-+F:	Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
-+F:	Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
-+F:	Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
-+F:	drivers/hwmon/iei-wt61p803-puzzle-hwmon.c
-+F:	drivers/leds/leds-iei-wt61p803-puzzle.c
-+F:	drivers/mfd/iei-wt61p803-puzzle.c
-+F:	include/linux/mfd/iei-wt61p803-puzzle.h
-+
- IFE PROTOCOL
- M:	Yotam Gigi <yotam.gi@gmail.com>
- M:	Jamal Hadi Salim <jhs@mojatatu.com>
--- 
-2.26.2
-
+> >         .result = REJECT,
+> >  },
+> >  {
+> > --
+> > 2.28.0.806.g8561365e88-goog
+> >
