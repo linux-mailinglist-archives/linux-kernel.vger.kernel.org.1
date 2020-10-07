@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F277A285833
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A26285836
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgJGFoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 01:44:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgJGFoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 01:44:10 -0400
-Received: from localhost (unknown [122.171.222.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 533C1208C7;
-        Wed,  7 Oct 2020 05:44:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602049449;
-        bh=szK29eB1aaDwRPv2AAeq7Q2s91RHTL+W1LUcPPKFjlI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FGgaMjpcC8fbyiin8nYnw/U/7+ET6l+beTO3vqzZNA2Bdfz2Uvh+pSNsXRUfM6+1r
-         YdTagc9UNzaXvyTNxTVgl3Y+cvMcXoWB7YyvBp6ZLreZjrkVnK3BpnbHjYWwCjveGD
-         nn50PNOd5b3ebFvLXrhhwQ704jY/nOdoCMhVmDEg=
-Date:   Wed, 7 Oct 2020 11:14:04 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     nm@ti.com, ssantosh@kernel.org, robh+dt@kernel.org,
-        vigneshr@ti.com, dan.j.williams@intel.com, t-kristo@ti.com,
-        lokeshvutla@ti.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
- configuration callback
-Message-ID: <20201007054404.GR2968@vkoul-mobl>
-References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
- <20200930091412.8020-2-peter.ujfalusi@ti.com>
+        id S1727072AbgJGFpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 01:45:00 -0400
+Received: from smtpout1.mo804.mail-out.ovh.net ([79.137.123.220]:33147 "EHLO
+        smtpout1.mo804.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726009AbgJGFo7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 01:44:59 -0400
+Received: from mxplan5.mail.ovh.net (unknown [10.108.16.114])
+        by mo804.mail-out.ovh.net (Postfix) with ESMTPS id 17B006974A95;
+        Wed,  7 Oct 2020 07:44:56 +0200 (CEST)
+Received: from kaod.org (37.59.142.105) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Wed, 7 Oct 2020
+ 07:44:55 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-105G0064af6da83-515b-414c-86c4-642b6e60958a,
+                    A1FB6DEFD4FFF4B2E39ADAD8D1A9CF0B60FA0B96) smtp.auth=clg@kaod.org
+Subject: Re: [PATCH v2] mtd: spi-nor: Fix address width on flash chips > 16MB
+To:     Joel Stanley <joel@jms.id.au>, Bert Vermeulen <bert@biot.com>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201004213204.11584-1-bert@biot.com>
+ <CACPK8XceL_QHCQOhfus27rei0vwfRJAFjfL6JkVw9pwxJj2d6Q@mail.gmail.com>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <df901923-ede9-baf0-b82d-517839305d12@kaod.org>
+Date:   Wed, 7 Oct 2020 07:44:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930091412.8020-2-peter.ujfalusi@ti.com>
+In-Reply-To: <CACPK8XceL_QHCQOhfus27rei0vwfRJAFjfL6JkVw9pwxJj2d6Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [37.59.142.105]
+X-ClientProxiedBy: DAG9EX1.mxp5.local (172.16.2.81) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: 7bbe3df6-b180-4240-b832-b998933fa573
+X-Ovh-Tracer-Id: 6185412613786995564
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrgeehgddutddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeekudeuudevleegudeugeekleffveeludejteffiedvledvgfekueefudehheefnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehjohgvlhesjhhmshdrihgurdgruh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On 30-09-20, 12:13, Peter Ujfalusi wrote:
-> Additional configuration for the DMA event router might be needed for a
-> channel which can not be done during device_alloc_chan_resources callback
-> since the router information is not yet present for the drivers.
+On 10/7/20 3:51 AM, Joel Stanley wrote:
+> On Sun, 4 Oct 2020 at 21:33, Bert Vermeulen <bert@biot.com> wrote:
+>>
+>> If a flash chip has more than 16MB capacity but its BFPT reports
+>> BFPT_DWORD1_ADDRESS_BYTES_3_OR_4, the spi-nor framework defaults to 3.
+>>
+>> The check in spi_nor_set_addr_width() doesn't catch it because addr_width
+>> did get set. This fixes that check.
+>>
+>> Signed-off-by: Bert Vermeulen <bert@biot.com>
 > 
-> If there is a need for additional configuration for the channel if DMA
-> router is in use, then the driver can implement the device_router_config
-> callback.
-
-So what is the additional information you need, I am looking at the code
-below and xlate invokes device_router_config() which driver will
-implement..
-
-Are you using this to configure channels based on info from DT?
-
+> After replying to the other thread, I just saw this one.
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  drivers/dma/of-dma.c      | 10 ++++++++++
->  include/linux/dmaengine.h |  2 ++
->  2 files changed, 12 insertions(+)
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+> Tested-by: Joel Stanley <joel@jms.id.au>
 > 
-> diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
-> index 8a4f608904b9..ec00b20ae8e4 100644
-> --- a/drivers/dma/of-dma.c
-> +++ b/drivers/dma/of-dma.c
-> @@ -75,8 +75,18 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
->  		ofdma->dma_router->route_free(ofdma->dma_router->dev,
->  					      route_data);
->  	} else {
-> +		int ret = 0;
-> +
->  		chan->router = ofdma->dma_router;
->  		chan->route_data = route_data;
-> +
-> +		if (chan->device->device_router_config)
-> +			ret = chan->device->device_router_config(chan);
-> +
-> +		if (ret) {
-> +			dma_release_channel(chan);
-> +			chan = ERR_PTR(ret);
-> +		}
->  	}
->  
->  	/*
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index dd357a747780..d6197fe875af 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -800,6 +800,7 @@ struct dma_filter {
->   *	by tx_status
->   * @device_alloc_chan_resources: allocate resources and return the
->   *	number of allocated descriptors
-> + * @device_router_config: optional callback for DMA router configuration
->   * @device_free_chan_resources: release DMA channel's resources
->   * @device_prep_dma_memcpy: prepares a memcpy operation
->   * @device_prep_dma_xor: prepares a xor operation
-> @@ -874,6 +875,7 @@ struct dma_device {
->  	enum dma_residue_granularity residue_granularity;
->  
->  	int (*device_alloc_chan_resources)(struct dma_chan *chan);
-> +	int (*device_router_config)(struct dma_chan *chan);
->  	void (*device_free_chan_resources)(struct dma_chan *chan);
->  
->  	struct dma_async_tx_descriptor *(*device_prep_dma_memcpy)(
-> -- 
-> Peter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> Thanks Bert!
 
--- 
-~Vinod
+
+Yes. I was starting to add bfpt-fixups for all chips we use on Aspeed 
+based system.
+
+Reviewed-by: Cédric Le Goater <clg@kaod.org>
+Tested-by: Cédric Le Goater <clg@kaod.org>
+
+Thanks,
+
+C. 
+
+
+
+> Cheers,
+> 
+> Joel
+> 
+>> ---
+>>  drivers/mtd/spi-nor/core.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 0369d98b2d12..a2c35ad9645c 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -3009,13 +3009,15 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
+>>                 /* already configured from SFDP */
+>>         } else if (nor->info->addr_width) {
+>>                 nor->addr_width = nor->info->addr_width;
+>> -       } else if (nor->mtd.size > 0x1000000) {
+>> -               /* enable 4-byte addressing if the device exceeds 16MiB */
+>> -               nor->addr_width = 4;
+>>         } else {
+>>                 nor->addr_width = 3;
+>>         }
+>>
+>> +       if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
+>> +               /* enable 4-byte addressing if the device exceeds 16MiB */
+>> +               nor->addr_width = 4;
+>> +       }
+>> +
+>>         if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+>>                 dev_dbg(nor->dev, "address width is too large: %u\n",
+>>                         nor->addr_width);
+>> --
+>> 2.17.1
+>>
+
