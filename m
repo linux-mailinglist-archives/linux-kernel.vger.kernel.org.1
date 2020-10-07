@@ -2,118 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CC2285637
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1077928563C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgJGBVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 21:21:32 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:29018 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725996AbgJGBVb (ORCPT
+        id S1726973AbgJGBXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 21:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726337AbgJGBXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 21:21:31 -0400
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0971FYMx002841;
-        Wed, 7 Oct 2020 01:21:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pps0720;
- bh=/zpvpQBMo/f3GdTerzEYdyceizkLUV976JwIcMUSvAE=;
- b=IS7kIkt6HsPjb3f8023w68tbjpEyzwdY4cugKXrJXB0Rq9tpYI9V7eTKDAwXRfLPXRyL
- sf9jOR8yvXqLvy3Hcnv2nZ1DzFUv3PA0Uw2fl7Gcc16BqZICwm47T35Xo6zrdTKOz4+/
- mblNwKhpZT3pVdu+ZqiLocIiziwiVLHHQW3T54FJyHjjYWF0+RUL1TtK6BmHxtrAMqgJ
- 9ilFIwW31ED/r6/NOaMoWXZFnA1lOjJSBrNtlTmV8STBUkaH2rIMcwWF+v3g8lDz1spt
- V050Z1lLptW9KBScGBOQCZu56sxeaOfq7PwgrqB0yKhC6PYajdxHSd7wO2nNvbd08eNd 9g== 
-Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33xjkpeb07-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 01:21:18 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3425.houston.hpe.com (Postfix) with ESMTP id D9B4892;
-        Wed,  7 Oct 2020 01:21:16 +0000 (UTC)
-Received: from [16.99.129.196] (unknown [16.99.129.196])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id E1EE54B;
-        Wed,  7 Oct 2020 01:21:14 +0000 (UTC)
-Subject: Re: [PATCH v4 06/13] x86/platform/uv: Add and Decode Arch Type in
- UVsystab
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel test robot <lkp@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20201005203929.148656-1-mike.travis@hpe.com>
- <20201005203929.148656-7-mike.travis@hpe.com>
- <20201005212135.GL21151@zn.tnic>
- <d2c7d3d8-3863-f15f-7ec6-ae41cf8b2657@hpe.com>
- <20201006151959.GF27700@zn.tnic>
-From:   Mike Travis <mike.travis@hpe.com>
-Message-ID: <ee51449f-22b1-1074-19c1-b1b5a51fed64@hpe.com>
-Date:   Tue, 6 Oct 2020 18:21:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
-MIME-Version: 1.0
-In-Reply-To: <20201006151959.GF27700@zn.tnic>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-06_15:2020-10-06,2020-10-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 mlxscore=0 malwarescore=0
- suspectscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2010070005
+        Tue, 6 Oct 2020 21:23:43 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3008C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 18:23:43 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id p15so296757plr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 18:23:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=wF2FFu1dgNpdE0yU/Yio/eWj3yPuYo+n3vLnxYeYPa8=;
+        b=C9nxvY17K2bLBW5hmhU3GQR3F27rRncCxl3H5TP9uKYbdY8lcvtNGVDBf5KHk/3iOa
+         ZJOlLe3WypysziulYiz8BMD3X/IBYbCwe5Ov6J+n6GnPLts5eR0Rda6SfvBG5ThhPtcH
+         htqvFkO5+gHYp8ClJT9GXGT1FNpeX0lp5YgRLYY//aweL+HMR5qibKkQPgM/RjLJfNFU
+         y+TgQWYTUiNH/Fq7AqVUlqRaXD/6mlLrD0WT7drS89rTCVeQANJ6gjePD2AdF983fGga
+         RUETbNEt8FgfFRq0Rg+EDle8XmymyAxAyDoj2TCCcwaaQ1rSzpdyyDFURZ9HV2lzi7CI
+         6/pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=wF2FFu1dgNpdE0yU/Yio/eWj3yPuYo+n3vLnxYeYPa8=;
+        b=YuT95/SzZD8hqJic5EttRKpofU5CaptXm1uI/JSZblYdLVnTSWcGb+R4xZtzFUtDSz
+         T4ZXhOxMmkL/tYT8SA7gOgJ2nS9EL+mtIT8k+91vn2OvkiIAM0G3ufxF1llDu1CtFYdh
+         zTT+fzufGXfxG95snUWAHLvIQQPadD1EG5PAworkO2vHfGhAVxbXl/TxbWwAlLNm/Qr1
+         VmSkzP3LXZWKAzmu0UvQdtkkMXJVBJgt6uDReQw9gHduE0ueXOeGXSbAMBWquhZY/Nwd
+         caRvUU4Q7uXLBzP/g3shhyZI4WSV+g8wT6UH9v1hdRZ0foNFKuCvTlm9iARltTVWm/9Y
+         zRnA==
+X-Gm-Message-State: AOAM531zFPwOKlHpuyid8hqd1cwpXNWgmiGIiWH5RZq0dQh82tlu+Kus
+        dFwzG0g4gpW4CSi7ZHE+y6UMrrTvhAk=
+X-Google-Smtp-Source: ABdhPJw1jUqsBpGXTU9ryoiUplt+3ZSvQ3a3cAGyymZhms5SudCuSclpvwYEZ/vAj/OC9j4KVeWwZN3Nr7M=
+Sender: "haoluo via sendgmr" <haoluo@haoluo.svl.corp.google.com>
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
+ (user=haoluo job=sendgmr) by 2002:a62:1dd7:0:b029:154:dde2:ddcb with SMTP id
+ d206-20020a621dd70000b0290154dde2ddcbmr749587pfd.30.1602033823275; Tue, 06
+ Oct 2020 18:23:43 -0700 (PDT)
+Date:   Tue,  6 Oct 2020 18:23:13 -0700
+Message-Id: <20201007012313.2778426-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
+Subject: [PATCH v2] selftests/bpf: Fix test_verifier after introducing resolve_pseudo_ldimm64
+From:   Hao Luo <haoluo@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 4976b718c355 ("bpf: Introduce pseudo_btf_id") switched
+the order of check_subprogs() and resolve_pseudo_ldimm() in
+the verifier. Now an empty prog expects to see the error "last
+insn is not an the prog of a single invalid ldimm exit or jmp"
+instead, because the check for subprogs comes first. It's now
+pointless to validate that half of ldimm64 won't be the last
+instruction.
 
+Tested:
+ # ./test_verifier
+ Summary: 1129 PASSED, 537 SKIPPED, 0 FAILED
+ and the full set of bpf selftests.
 
-On 10/6/2020 8:19 AM, Borislav Petkov wrote:
-> On Mon, Oct 05, 2020 at 02:35:58PM -0700, Mike Travis wrote:
->>
->>
->> On 10/5/2020 2:21 PM, Borislav Petkov wrote:
->>> On Mon, Oct 05, 2020 at 03:39:22PM -0500, Mike Travis wrote:
->>>> A patch to add and process the UV Arch Type field in the UVsystab passed
->>>> from UV BIOS to the kernel.
->>>
->>> What does that mean?
->>>
->>
->> There have been recent cases where OEM's want to use the OEM_ID in the ACPI
->> tables to brand their own product.  The UV BIOS used that field to tell the
->> Linux kernel which UV arch the running system is.  The Arch Type in the
->> UVsystab (also created by UV BIOS) now carries that field in systems that
->> support it.
-> 
-> I am unclear on the whole patch passing from UV BIOS to the kernel. Are
-> you talking about a kernel patch here? If so, commit ID is? Or what kind
-> of patch are you talking about?
-> 
+Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
+Signed-off-by: Hao Luo <haoluo@google.com>
+---
+Changelog in v2:
+ - Remove the original test_verifier ld_imm64 test4
+ - Updated commit message.
 
-When the UV BIOS starts the kernel it passes the UVsystab info struct to 
-the kernel which contains information elements more specific than ACPI, 
-and generally pertinent only to the MMR's.  These are read only fields 
-so information is passed one way only.  A new field starting with UV5 is 
-the UV architecture type so the ACPI OEM_ID field can be used for other 
-purposes going forward.  The UV Arch Type selects the entirety of the 
-MMRs available, with their addresses and fields defined in uv_mmrs.h.
+ tools/testing/selftests/bpf/verifier/basic.c  |  2 +-
+ .../testing/selftests/bpf/verifier/ld_imm64.c | 24 +++++++------------
+ 2 files changed, 9 insertions(+), 17 deletions(-)
 
-Thanks,
-Mike
+diff --git a/tools/testing/selftests/bpf/verifier/basic.c b/tools/testing/selftests/bpf/verifier/basic.c
+index b8d18642653a..de84f0d57082 100644
+--- a/tools/testing/selftests/bpf/verifier/basic.c
++++ b/tools/testing/selftests/bpf/verifier/basic.c
+@@ -2,7 +2,7 @@
+ 	"empty prog",
+ 	.insns = {
+ 	},
+-	.errstr = "unknown opcode 00",
++	.errstr = "last insn is not an exit or jmp",
+ 	.result = REJECT,
+ },
+ {
+diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+index 3856dba733e9..ed6a34991216 100644
+--- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
++++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+@@ -54,21 +54,13 @@
+ 	"test5 ld_imm64",
+ 	.insns = {
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
+-	},
+-	.errstr = "invalid bpf_ld_imm64 insn",
+-	.result = REJECT,
+-},
+-{
+-	"test6 ld_imm64",
+-	.insns = {
+-	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
+ 	BPF_RAW_INSN(0, 0, 0, 0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.result = ACCEPT,
+ },
+ {
+-	"test7 ld_imm64",
++	"test6 ld_imm64",
+ 	.insns = {
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
+ 	BPF_RAW_INSN(0, 0, 0, 0, 1),
+@@ -78,7 +70,7 @@
+ 	.retval = 1,
+ },
+ {
+-	"test8 ld_imm64",
++	"test7 ld_imm64",
+ 	.insns = {
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 1, 1),
+ 	BPF_RAW_INSN(0, 0, 0, 0, 1),
+@@ -88,7 +80,7 @@
+ 	.result = REJECT,
+ },
+ {
+-	"test9 ld_imm64",
++	"test8 ld_imm64",
+ 	.insns = {
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
+ 	BPF_RAW_INSN(0, 0, 0, 1, 1),
+@@ -98,7 +90,7 @@
+ 	.result = REJECT,
+ },
+ {
+-	"test10 ld_imm64",
++	"test9 ld_imm64",
+ 	.insns = {
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
+ 	BPF_RAW_INSN(0, BPF_REG_1, 0, 0, 1),
+@@ -108,7 +100,7 @@
+ 	.result = REJECT,
+ },
+ {
+-	"test11 ld_imm64",
++	"test10 ld_imm64",
+ 	.insns = {
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 1),
+ 	BPF_RAW_INSN(0, 0, BPF_REG_1, 0, 1),
+@@ -118,7 +110,7 @@
+ 	.result = REJECT,
+ },
+ {
+-	"test12 ld_imm64",
++	"test11 ld_imm64",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_1, 0),
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, BPF_REG_1, 0, 1),
+@@ -129,7 +121,7 @@
+ 	.result = REJECT,
+ },
+ {
+-	"test13 ld_imm64",
++	"test12 ld_imm64",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_1, 0),
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, BPF_REG_1, 0, 1),
+@@ -140,7 +132,7 @@
+ 	.result = REJECT,
+ },
+ {
+-	"test14 ld_imm64: reject 2nd imm != 0",
++	"test13 ld_imm64: reject 2nd imm != 0",
+ 	.insns = {
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_1,
+-- 
+2.28.0.806.g8561365e88-goog
+
