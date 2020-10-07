@@ -2,134 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9F22867C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5E82867C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727810AbgJGSxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44618 "EHLO
+        id S1728021AbgJGSx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJGSxK (ORCPT
+        with ESMTP id S1726111AbgJGSx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:53:10 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63585C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:53:10 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id 67so3514075iob.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:53:10 -0700 (PDT)
+        Wed, 7 Oct 2020 14:53:28 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7DFC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:53:28 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id ce10so4484241ejc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KO+y56HHfRTV4+PXqtIIHy8g7bN2Nwji1Pf2rJWSLag=;
-        b=TFWyYwTG2ftpwcDpT3thFrPNd4YAfiL7KKwnFvVpUScgwpFr0U4+pgptwNqGLNqeb2
-         qhD+yHUpmO++xypu2uNSTIkizdBRwOu/53UqrajQXqlx2GMOjaWzFrEmCDK1dkmJbKnD
-         M5wT3UVCZan8ECu9cMsA7ZwVbrGsFaQTczyhc=
+        bh=Rdre9jrmRp+/9/Y6RnzGhKU8N5YkFWVxUCgScft3zmU=;
+        b=OFMCe2fA7ENUSEpSD1GFyoJSxPtUoTVyvWQ0nTA6wRiRt3SeCvMFuQ4bQDkdqLvM/7
+         /4/nQ7dvOnsthrJcz2BG09maCJRRIa5jdEe9z525GK+fBvhK5hoj+nY4WiqXn/+83XDh
+         S1DVmBDjd9f3ZJU+WCAmMSwUQKH5R7gZLwd0KA+PNuih6PquuL2Ls5p5Cm2oRCwrTKVb
+         gE//eAYWWZWyOQ2AUskNBJ2OZS/7EWasnYJSqWZCGBpRxgRegLepOnSxQGG0NnrrjdRF
+         A9Ig8OW1Jz0RU6RtM10weytdPGoUgw+vqeM8WxFQLNtnef/z4F/K2lWeKD/tuNez14nM
+         kYhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KO+y56HHfRTV4+PXqtIIHy8g7bN2Nwji1Pf2rJWSLag=;
-        b=BugIRZ6euGqPA0a2L9wBA8FIwXbwsE5AM9SqFhNpKOHimsandiTeWo0Rq+k4Wr5SFN
-         Pe9cDFhCS8xFc9zHn0vlZ8NOsiVBXmvpcL3dU9SpoXrDujj9cBG00N83Av/OIDlL8qrD
-         r/zz0WwAOuKbjqhQ8C+j8Wysx6B+MvVvpek1t/liU61Do1bz5lDFafX3atiDniaS2ZSk
-         NtdyqKcGWi7sRCSQCTa9H9cL6iPiSMJ4ce9FhY6sRElto8yg2jbXjQUAdcROEbsMvnY6
-         ARa5XS+STqEFtdxhuCvxrYol6VJQyTQtxPWbivLHmLeRImWpuNaQ7ONmeft1UhCtghq/
-         v4EQ==
-X-Gm-Message-State: AOAM5302VrVHOXkL90WwmE6+18k0VD+okssJnMXGUIWEjU4inZ9XAlCj
-        zz95PoQcpVZPnxWcN26J+GvysolLn95vP+GvNKkG
-X-Google-Smtp-Source: ABdhPJy3N9QPqRCm7vLTFezp9RQysmNIo7Crh7+Nm/22ezXbo2bA99nLfCG8eETLCtYOvNYzMeS4MwgaKVOOJ9Nf+DE=
-X-Received: by 2002:a05:6602:18a:: with SMTP id m10mr3309246ioo.174.1602096789625;
- Wed, 07 Oct 2020 11:53:09 -0700 (PDT)
+        bh=Rdre9jrmRp+/9/Y6RnzGhKU8N5YkFWVxUCgScft3zmU=;
+        b=pRGRbbhBa2zXUtMros8Jmr95CUJdyl6J/B5bi6y3oqGSETBEdSMaJNswarA6dfa0lt
+         6psTGaePkpt4ggz1deqCNiU9G1UJpwTyZHPuATCpxMM/jjbS4jwsqIR2j4TGjbsACpyW
+         s/tnA2hXZpVX6FwY67xIw3kWGYgAKekbm70bX2aXerI7GgAyrN7aE/0UO5IJUq20FI/t
+         ddgV3zSxUa01m7YrOJ0e4WU5rWOKrHMKnXqf7/Kp0N/1R14noDdYQ1Q9cGIXtWNQeGDL
+         LTB+e0e9+Q34uSQNvM6Gh9Ym0tYl8IzL+t5DAuxSg/GrqrE1HxscbxqMVCBP29Mld4JZ
+         B8+w==
+X-Gm-Message-State: AOAM532wyW1pDIZMn6aSeI0L3kLqc3GRrABEpfXidlHavV/wZ0olT1hC
+        RGSIRGJw1S9Rgqzn8Mg30UGePPyAzp1LpP/SyyhBbA==
+X-Google-Smtp-Source: ABdhPJwTY40tXBoCGJvpR0HSEuM3/x/Oubwtv2I1I6/MuM6iQLQYOQ6MDqfOLpfRHPqQEuX+JWoAr7Ap/AtWi0NxOJA=
+X-Received: by 2002:a17:906:7e47:: with SMTP id z7mr4723987ejr.418.1602096807136;
+ Wed, 07 Oct 2020 11:53:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <1602083313-19239-1-git-send-email-guoren@kernel.org>
-In-Reply-To: <1602083313-19239-1-git-send-email-guoren@kernel.org>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 7 Oct 2020 11:52:58 -0700
-Message-ID: <CAOnJCUK03L_n51N8CwekAa4QuVtUr75Cv6zfLabZCCgr0Jdgyg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Revert "riscv: Fixup static_obj() fail"
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>, aurelien@aurel32.net,
-        Guo Ren <guoren@linux.alibaba.com>
+References: <CAHk-=wjSqtXAqfUJxFtWNwmguFASTgB0dz1dT3V-78Quiezqbg@mail.gmail.com>
+ <160197822988.7002.13716982099938468868.tip-bot2@tip-bot2>
+ <20201007111447.GA23257@zn.tnic> <20201007164536.GJ5607@zn.tnic> <20201007170305.GK5607@zn.tnic>
+In-Reply-To: <20201007170305.GK5607@zn.tnic>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 7 Oct 2020 11:53:15 -0700
+Message-ID: <CAPcyv4jgLRzDzXkbdHwA-XUwWuSoA1tZfVqgvFQ5jxq=m2P_Bg@mail.gmail.com>
+Subject: Re: [tip: ras/core] x86, powerpc: Rename memcpy_mcsafe() to
+ copy_mc_to_{user, kernel}()
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-tip-commits@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        stable <stable@vger.kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 8:09 AM <guoren@kernel.org> wrote:
+On Wed, Oct 7, 2020 at 11:47 AM Borislav Petkov <bp@alien8.de> wrote:
 >
-> From: Guo Ren <guoren@linux.alibaba.com>
+> On Wed, Oct 07, 2020 at 06:45:36PM +0200, Borislav Petkov wrote:
+> > It doesn't look like it is toolchain-specific and in both cases,
+> > copy_mc_fragile's checksum is 0.
+> >
+> > SUSE Leap 15.1:
+> >
+> > Name           : binutils
+> > Version        : 2.32-lp151.3.6.1
+> >
+> > $ grep -E "(copy_mc_fragile|copy_user_generic_unrolled)" Module.symvers
+> > 0x00000000      copy_mc_fragile vmlinux EXPORT_SYMBOL_GPL
+> > 0xecdcabd2      copy_user_generic_unrolled      vmlinux EXPORT_SYMBOL
+> >
+> > debian testing:
+> >
+> > Package: binutils
+> > Version: 2.35-2
+> >
+> > $ grep -E "(copy_mc_fragile|copy_user_generic_unrolled)" Module.symvers
+> > 0x00000000      copy_mc_fragile vmlinux EXPORT_SYMBOL_GPL
+> > 0xecdcabd2      copy_user_generic_unrolled      vmlinux EXPORT_SYMBOL
 >
-> This reverts commit 6184358da0004c8fd940afda6c0a0fa4027dc911.
+> Ok, I think I have it:
 >
-> It will cause bootup failure with HARDENED_USERCOPY.
->
-> As Aurelien has reported:
->
-> [    3.484586] AppArmor: AppArmor sha1 policy hashing enabled
-> [    4.749835] Freeing unused kernel memory: 492K
-> [    4.752017] Run /init as init process
-> [    4.753571] usercopy: Kernel memory overwrite attempt detected to kernel text (offset 507879, size 11)!
-> [    4.754838] ------------[ cut here ]------------
-> [    4.755651] kernel BUG at mm/usercopy.c:99!
-> [    4.756445] Kernel BUG [#1]
-> [    4.756815] Modules linked in:
-> [    4.757542] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.8.0-1-riscv64 #1 Debian 5.8.7-1
-> [    4.758372] epc: ffffffe0003b5120 ra : ffffffe0003b5120 sp : ffffffe07f783ca0
-> [    4.758960]  gp : ffffffe000cc7230 tp : ffffffe07f77cec0 t0 : ffffffe000cdafc0
-> [    4.759772]  t1 : 0000000000000064 t2 : 0000000000000000 s0 : ffffffe07f783cf0
-> [    4.760534]  s1 : ffffffe00095d780 a0 : 000000000000005b a1 : 0000000000000020
-> [    4.761309]  a2 : 0000000000000005 a3 : 0000000000000000 a4 : ffffffe000c1f340
-> [    4.761848]  a5 : ffffffe000c1f340 a6 : 0000000000000000 a7 : 0000000000000087
-> [    4.762684]  s2 : ffffffe000941848 s3 : 000000000007bfe7 s4 : 000000000000000b
-> [    4.763500]  s5 : 0000000000000000 s6 : ffffffe00091cc00 s7 : fffffffffffff000
-> [    4.764376]  s8 : 0000003ffffff000 s9 : ffffffe0769f3200 s10: 000000000000000b
-> [    4.765208]  s11: ffffffe07d548c40 t3 : 0000000000000000 t4 : 000000000001dcd0
-> [    4.766059]  t5 : ffffffe000cc8510 t6 : ffffffe000cd64aa
-> [    4.766712] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
-> [    4.768308] ---[ end trace 1f8e733e834d4c3e ]---
-> [    4.769129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> [    4.770070] SMP: stopping secondary CPUs
-> [    4.771110] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Atish Patra <atishp@atishpatra.org>
-> Cc: Andreas Schwab <schwab@linux-m68k.org>
 > ---
->  arch/riscv/kernel/vmlinux.lds.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> From: Borislav Petkov <bp@suse.de>
+> Date: Wed, 7 Oct 2020 18:55:35 +0200
+> Subject: [PATCH] x86/mce: Allow for copy_mc_fragile symbol checksum to be generated
 >
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index f3586e3..e6f8016 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -22,7 +22,6 @@ SECTIONS
->         /* Beginning of code and text segment */
->         . = LOAD_OFFSET;
->         _start = .;
-> -       _stext = .;
->         HEAD_TEXT_SECTION
->         . = ALIGN(PAGE_SIZE);
+> Add asm/mce.h to asm/asm-prototypes.h so that that asm symbol's checksum
+> can be generated in order to support CONFIG_MODVERSIONS with it and fix:
 >
-> @@ -55,6 +54,7 @@ SECTIONS
->         . = ALIGN(SECTION_ALIGN);
->         .text : {
->                 _text = .;
-> +               _stext = .;
->                 TEXT_TEXT
->                 SCHED_TEXT
->                 CPUIDLE_TEXT
-> --
-> 2.7.4
+>   WARNING: modpost: EXPORT symbol "copy_mc_fragile" [vmlinux] version \
+>           generation failed, symbol will not be versioned.
 >
+> For reference see:
+>
+>   4efca4ed05cb ("kbuild: modversions for EXPORT_SYMBOL() for asm")
+>   334bb7738764 ("x86/kbuild: enable modversions for symbols exported from asm")
 
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
+Oh nice! I just sent a patch [1] to fix this up as well, but mine goes
+after minimizing when it is exported, I think perhaps both are needed.
 
--- 
-Regards,
-Atish
+http://lore.kernel.org/r/160209507277.2768223.9933672492157583642.stgit@dwillia2-desk3.amr.corp.intel.com
