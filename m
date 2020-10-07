@@ -2,81 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241F8286245
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84096286249
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgJGPhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:37:55 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:55951 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgJGPhy (ORCPT
+        id S1727746AbgJGPjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:39:33 -0400
+Received: from mail.efficios.com ([167.114.26.124]:41192 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgJGPjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:37:54 -0400
-Received: from mail-qt1-f182.google.com ([209.85.160.182]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Md66H-1kzWSo1MsV-00aDYM; Wed, 07 Oct 2020 17:37:53 +0200
-Received: by mail-qt1-f182.google.com with SMTP id 10so2208624qtx.12;
-        Wed, 07 Oct 2020 08:37:52 -0700 (PDT)
-X-Gm-Message-State: AOAM5329ei+keLtl2h4V4yEhmN32GdqjZ0Y3eBiFKWrv98HnNIIZoX1O
-        5jFLb7d81+t464sRK3euOsQujMRUZF/v3Ugn6EE=
-X-Google-Smtp-Source: ABdhPJz1UVvdnvYbeBpkWMxqxLtjj8co5Lbs7eY9E/m3oUp5zJUn8Q+Zu+P5QH4HKcr9UjsA/z0soG9AFQZi8lXMrJ8=
-X-Received: by 2002:ac8:7cba:: with SMTP id z26mr2055142qtv.7.1602085072021;
- Wed, 07 Oct 2020 08:37:52 -0700 (PDT)
+        Wed, 7 Oct 2020 11:39:32 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3B8D92B8486;
+        Wed,  7 Oct 2020 11:39:31 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id y8aq3lC37-5w; Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id B5F322B8485;
+        Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B5F322B8485
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1602085170;
+        bh=oYcLhml/Vu2rcwrC6cdk1vAf2bRtvBVVdTcbv2NC41o=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=FrUcX1pyjwFje9H5PFWxcPg2MH02X2Ni8/NTW9EmPjHe20lkAfCoNMvmS8k5wq+KS
+         WsEjkhWB6ifyNp2x9/h/14pOtogbRR3jf7P+/wNa2400Ftmyw6NNqB2IOlTgHCjGKD
+         3sifN7K8SNOe/bECuqt0WQkZNXO8wkNqK2GIQhpu8JqHNGJYIQx4EPk8eMfjMqARau
+         dMsxQfw1PLNN/ELRATU9h9d+QZ/uCckRPFaHYRpswCLlOwq+9U5pS75gna1r7LbLJb
+         L/We+Tx9pJ+Hh/DPweN8oTtwE1H3nx0+pDb4yn9ZqwpZrdtUZjPnNZyq3B7bt3IeKH
+         RIadKsqTBhexw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 7ca02b-VvgA6; Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id A7F702B8226;
+        Wed,  7 Oct 2020 11:39:30 -0400 (EDT)
+Date:   Wed, 7 Oct 2020 11:39:30 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <1286784649.11153.1602085170586.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201007150704.GH2628@hirez.programming.kicks-ass.net>
+References: <20200924172508.8724-1-mathieu.desnoyers@efficios.com> <20200924172508.8724-3-mathieu.desnoyers@efficios.com> <20201007150704.GH2628@hirez.programming.kicks-ass.net>
+Subject: Re: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v3)
 MIME-Version: 1.0
-References: <20201007141702.655724-1-arnd@arndb.de> <20201007141812.GA1578@lst.de>
-In-Reply-To: <20201007141812.GA1578@lst.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 7 Oct 2020 17:37:35 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a38xRc602Sm2mRQQ2h5qp2r8znXBjzdfV2MWK33T21fSA@mail.gmail.com>
-Message-ID: <CAK8P3a38xRc602Sm2mRQQ2h5qp2r8znXBjzdfV2MWK33T21fSA@mail.gmail.com>
-Subject: Re: [PATCH] media: atomisp: stop compiling compat_ioctl32 code
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Rgqw1hrHw3LKh2n/Z45AFazItlGr31bW2b1C6rbEu7Ia6XO3Vmj
- JGTn5JUiV5qwVT+8Zf4PLbWzfiQmDMVbrawS8uqb3Yptu/pQs08HxRFVp6b6dqqHWqrlhL6
- e56Ka44Fr7CUcaCNG5IbE0006QYoDYQwEfCt2wx0+NAVef9I4kSjO23B7JEzL3qBu1RcAfG
- bAr3iX9wNvpGSu5jfiUXw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ajare0/6oxw=:4Szm3wqIQuNyiYzFPtSlaW
- nuj+z3nYwUTGJvxLI4WyDlJSrpvLTxKwbnPbCFSxbopIphsL03GztzU3/RllLtnzIEuHfXUJU
- TMFoUtUCI23y72FMI3HgE6v+nnMNurY4Gu2jPsKb9ZaK3eQtAhPIHmmTzv5Wn6ZxobCyWW67X
- JqPiIsDKXBQsV3zO+oGlECYrQPQhUBbWBmyT7SoH3ZRVcEV13QY48/TYyt/b1ULivinj5USRv
- RBImUUS3MSRJkHhaPpQ8QlD4NJpdSSCvjEh4jWv0EMLrg0VSjWI5i316Vw6CQQI/Kqmqrduzs
- +euKK8pcCbMZbqjBnDDGfJ5m5DGhENO25qpqrO1T+shre68DxHbH2i/3YNIukVF11+o/rk7z4
- Qe1p7kPLMbBk3p7ACNmwMkRhlTpefJ5CBfkxh//JWDsfEswiDTSGdnB5ontbMCJ0HIKIyBBpF
- KweTR8gz/n04GJP1Iao+VWLO2Ch4TlJ/qrfi95Ge3Nb9V5q7lZ10RgOXC8kyMShY6/gUcPIur
- 3RAgPrbELxcC/8rFJydbEGtr5ntnvOb3VtMO5AfTTsM8LD4FCaFYebfYLI901qU3J2bv35lFm
- 6J1meYrTCrzZTN0L7Z/u/tfgpz9G199LYsusNuFA3iXPUsgz4UP5VbYJSz1ZgJG2z+uVb/T5R
- Rl/2urQ1fGYAsSHWbx9zOKOKdRXNOurqCMroyYY6Qveq/uQVQipFGEd+48bTaGd5r6V52a4IA
- ZrGaCFiOI5/mO8M6UKytk54ZWdA5AZC47rpygyPFj/6vAA5fzASoyyzjqG3aqQfhJW2D+Ui0V
- 29ypfX0xRr3dKV9Uq5MdNWsiYZDfNboE3SRPFLyNouSgWNdPB0Fn84gf77AhoI/vNNWBnK5
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
+Thread-Topic: sched: membarrier: cover kthread_use_mm (v3)
+Thread-Index: X4rtGzTiC/gdtRcWrfxY5lcPzEj2Wg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 4:18 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Oct 07, 2020 at 04:16:39PM +0200, Arnd Bergmann wrote:
-> > Alternatively, the entire file could just be removed, since anyone
-> > willing to restore the functionality can equally well just look up
-> > the contents in the git history if needed.
->
-> I suspect that is the right thing.  Note that given that the driver
-> is only in staging anyway, the right thing to do would be to change
-> the ioctl ABI to be more compat friendly to start with.
+----- On Oct 7, 2020, at 11:07 AM, Peter Zijlstra peterz@infradead.org wrote:
 
-Ok, I sent that as v2 now.
+> On Thu, Sep 24, 2020 at 01:25:07PM -0400, Mathieu Desnoyers wrote:
+> 
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 2d95dc3f4644..bab6f4f2809f 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -3736,6 +3736,8 @@ context_switch(struct rq *rq, struct task_struct *prev,
+>>  	 */
+>>  	arch_start_context_switch(prev);
+>>  
+>> +	membarrier_switch_mm(rq, prev->mm, next->mm);
+>> +
+>>  	/*
+>>  	 * kernel -> kernel   lazy + transfer active
+>>  	 *   user -> kernel   lazy + mmgrab() active
+>> @@ -3752,7 +3754,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
+>>  		else
+>>  			prev->active_mm = NULL;
+>>  	} else {                                        // to user
+>> -		membarrier_switch_mm(rq, prev->active_mm, next->mm);
+>>  		/*
+>>  		 * sys_membarrier() requires an smp_mb() between setting
+>>  		 * rq->curr / membarrier_switch_mm() and returning to userspace.
+> 
+> I was thinking... do we need the above, when:
+> 
+>> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+>> index 8bc8b8a888b7..e5246580201b 100644
+>> --- a/kernel/sched/membarrier.c
+>> +++ b/kernel/sched/membarrier.c
+>> @@ -112,13 +112,9 @@ static int membarrier_global_expedited(void)
+>>  		    MEMBARRIER_STATE_GLOBAL_EXPEDITED))
+>>  			continue;
+>>  
+>> -		/*
+>> -		 * Skip the CPU if it runs a kernel thread. The scheduler
+>> -		 * leaves the prior task mm in place as an optimization when
+>> -		 * scheduling a kthread.
+>> -		 */
+>> +		/* Skip the CPU if it runs the idle thread. */
+>>  		p = rcu_dereference(cpu_rq(cpu)->curr);
+>> -		if (p->flags & PF_KTHREAD)
+> 
+> We retain this in the form:
+> 
+>		if ((p->flags & PF_KTHREAD) && !p-mm)
+>			continue;
+> 
+>> +		if (is_idle_task(p))
+>>  			continue;
+>>  
+>>  		__cpumask_set_cpu(cpu, tmpmask);
+> 
+> Specifically, we only care about kthreads when they're between
+> kthread_use_mm() / kthread_unuse_mm(), and in that case they will have
+> updated state already.
+> 
+> It's too late in the day to be sure about the memory ordering though;
+> but if we see !->mm, they'll do/have-done switch_mm() which implies
+> sufficient barriers().
+> 
+> Hmm?
 
-I wonder how many of those 56 ioctl commands in the driver are
-actually used in practice. Is there a public repository for the
-matching user space? Is it required to even use the driver
-or is it otherwise compatible with normal v4l2 applications?
+Interesting. There are two things we want to ensure here:
 
-     Arnd
+1) That we issue an IPI or have the kthread issue the proper barriers when a kthread is
+   using/unusing a mm,
+2) That we don't issue an IPI to kthreads with NULL mm, so we don't disturb them.
+
+Moving the membarrier_switch_mm to cover kthread cases was to ensure (2), but if we
+add a p->mm NULL check in the global expedited iteration, I think we would be OK
+leaving the stale runqueue's membarrier state while in lazy tlb state.
+
+As far as (1) is concerned, I think your idea would work, because as you say we will
+have the proper barriers in kthread use/unuse mm.
+
+I just wonder whether having this stale membarrier state for lazy tlb is warranted
+performance-wise, as it adds complexity: the rq membarrier state will therefore not be
+relevant when we are in lazy tlb mode.
+
+Thoughts ?
+
+Thanks,
+
+Mathieu
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
