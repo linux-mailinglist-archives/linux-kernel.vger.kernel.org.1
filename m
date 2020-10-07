@@ -2,123 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC2D285B47
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5087E285ACC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgJGIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:50:08 -0400
-Received: from mailout04.rmx.de ([94.199.90.94]:45029 "EHLO mailout04.rmx.de"
+        id S1727923AbgJGIpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:45:53 -0400
+Received: from gentwo.org ([3.19.106.255]:50524 "EHLO gentwo.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727369AbgJGIuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:50:08 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout04.rmx.de (Postfix) with ESMTPS id 4C5p1l2LB5z3qxQ3;
-        Wed,  7 Oct 2020 10:50:03 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4C5p0k3gQCz2TTL4;
-        Wed,  7 Oct 2020 10:49:10 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.119) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 7 Oct
- 2020 10:47:26 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "David Laight" <David.Laight@ACULAB.COM>
-CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>, <stable@vger.kernel.org>
-Subject: [PATCH v5 3/3] i2c: imx: Don't generate STOP condition if arbitration has been lost
-Date:   Wed, 7 Oct 2020 10:45:24 +0200
-Message-ID: <20201007084524.10835-4-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201007084524.10835-1-ceggers@arri.de>
-References: <20201007084524.10835-1-ceggers@arri.de>
+        id S1726218AbgJGIpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:45:52 -0400
+Received: by gentwo.org (Postfix, from userid 1002)
+        id 74BE93F0F8; Wed,  7 Oct 2020 08:45:52 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id 73CA33EC1B;
+        Wed,  7 Oct 2020 08:45:52 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 08:45:52 +0000 (UTC)
+From:   Christopher Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+cc:     linux-kernel@vger.kernel.org, ben.widawsky@intel.com,
+        rientjes@google.com, alex.shi@linux.alibaba.com, dwagner@suse.de,
+        tobin@kernel.org, akpm@linux-foundation.org, ying.huang@intel.com,
+        dan.j.williams@intel.com, cai@lca.pw
+Subject: Re: [RFC][PATCH 02/12] mm/vmscan: move RECLAIM* bits to uapi
+ header
+In-Reply-To: <20201006205108.ADF7B6F2@viggo.jf.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2010070845140.113351@www.lameter.com>
+References: <20201006205103.268F74A9@viggo.jf.intel.com> <20201006205108.ADF7B6F2@viggo.jf.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.119]
-X-RMX-ID: 20201007-104916-4C5p0k3gQCz2TTL4-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If arbitration is lost, the master automatically changes to slave mode.
-I2SR_IBB may or may not be reset by hardware. Raising a STOP condition
-by resetting I2CR_MSTA has no effect and will not clear I2SR_IBB.
+On Tue, 6 Oct 2020, Dave Hansen wrote:
 
-So calling i2c_imx_bus_busy() is not required and would busy-wait until
-timeout.
+> It is currently not obvious that the RECLAIM_* bits are part of the
+> uapi since they are defined in vmscan.c.  Move them to a uapi header
+> to make it obvious.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Tested (not extensively) on Vybrid VF500 (Toradex VF50):
-Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: stable@vger.kernel.org # Requires trivial backporting, simple remove
-                           # the 3rd argument from the calls to
-                           # i2c_imx_bus_busy().
----
- drivers/i2c/busses/i2c-imx.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index 63575af41c09..5d8a79319b2b 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -615,6 +615,8 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
- 		/* Stop I2C transaction */
- 		dev_dbg(&i2c_imx->adapter.dev, "<%s>\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		if (i2c_imx->dma)
- 			temp &= ~I2CR_DMAEN;
-@@ -778,9 +780,12 @@ static int i2c_imx_dma_read(struct imx_i2c_struct *i2c_imx,
- 		 */
- 		dev_dbg(dev, "<%s> clear MSTA\n", __func__);
- 		temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+		if (!(temp & I2CR_MSTA))
-+			i2c_imx->stopped = 1;
- 		temp &= ~(I2CR_MSTA | I2CR_MTX);
- 		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--		i2c_imx_bus_busy(i2c_imx, 0, false);
-+		if (!i2c_imx->stopped)
-+			i2c_imx_bus_busy(i2c_imx, 0, false);
- 	} else {
- 		/*
- 		 * For i2c master receiver repeat restart operation like:
-@@ -905,9 +910,12 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
- 				dev_dbg(&i2c_imx->adapter.dev,
- 					"<%s> clear MSTA\n", __func__);
- 				temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+				if (!(temp & I2CR_MSTA))
-+					i2c_imx->stopped =  1;
- 				temp &= ~(I2CR_MSTA | I2CR_MTX);
- 				imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
--				i2c_imx_bus_busy(i2c_imx, 0, atomic);
-+				if (!i2c_imx->stopped)
-+					i2c_imx_bus_busy(i2c_imx, 0, atomic);
- 			} else {
- 				/*
- 				 * For i2c master receiver repeat restart operation like:
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+Acked-by: Christoph Lameter <cl@linux.com>
 
