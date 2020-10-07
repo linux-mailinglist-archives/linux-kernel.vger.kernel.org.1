@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09E9285D9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918C4285DA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgJGKyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
+        id S1728300AbgJGKza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:55:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:41842 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726637AbgJGKyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:54:31 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DAC4212CC;
-        Wed,  7 Oct 2020 10:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602068069;
-        bh=wOytTXNCU8gtZ+ntCxQtyM7YOuGQFzHEkacmPvyiVVk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hBQtrv+04atIlx+6BcY4bd16tOCql3kl/BA+KjY/+fm2rBldCMlR7fAGLcRD4W6vN
-         qhLpvXe5uMerVjjfMWrzrXuwYZzSunvxF+41BlVFnBozqFjp1oIkSx6dfxyqwYPnJP
-         reqxG4DrtcZeO8eYZSwdOq0zCw7YZ6LpwouKpBZ0=
-Date:   Wed, 7 Oct 2020 12:55:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 0/7] wfx: move out from the staging area
-Message-ID: <20201007105513.GA1078344@kroah.com>
-References: <20201007101943.749898-1-Jerome.Pouiller@silabs.com>
+        id S1726637AbgJGKza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:55:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B9A411B3;
+        Wed,  7 Oct 2020 03:55:29 -0700 (PDT)
+Received: from [10.57.52.96] (unknown [10.57.52.96])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0795F3F71F;
+        Wed,  7 Oct 2020 03:55:19 -0700 (PDT)
+Subject: Re: [PATCH] [v2] thermal: core: add upper and lower limits to
+ power_actor_set_power
+To:     Michael Kao <michael.kao@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com
+Cc:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20201007024332.30322-1-michael.kao@mediatek.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <9ecedd8a-fbc3-895c-d79c-f05af5c90ae5@arm.com>
+Date:   Wed, 7 Oct 2020 11:55:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201007101943.749898-1-Jerome.Pouiller@silabs.com>
+In-Reply-To: <20201007024332.30322-1-michael.kao@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 12:19:36PM +0200, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> 
-> I think the wfx driver is now mature enough to be accepted in the
-> drivers/net/wireless directory.
-> 
-> There is still one item on the TODO list. It is an idea to improve the rate
-> control in some particular cases[1]. However, the current performances of the
-> driver seem to satisfy everyone. In add, the suggested change is large enough.
-> So, I would prefer to implement it only if it really solves an issue. I think it
-> is not an obstacle to move the driver out of the staging area.
-> 
-> In order to comply with the last rules for the DT bindings, I have converted the
-> documentation to yaml. I am moderately happy with the result. Especially, for
-> the description of the binding. Any comments are welcome.
-> 
-> The series also update the copyrights dates of the files. I don't know exactly
-> how this kind of changes should be sent. It's a bit weird to change all the
-> copyrights in one commit, but I do not see any better way.
-> 
-> I also include a few fixes I have found these last weeks.
-> 
-> [1] https://lore.kernel.org/lkml/3099559.gv3Q75KnN1@pc-42
 
-I'll take the first 6 patches here, the last one you should work with
-the wireless maintainers to get reviewed.
+On 10/7/20 3:43 AM, Michael Kao wrote:
+> The upper and lower limits of thermal throttle state in the
+> DT do not apply to the Intelligent Power Allocation (IPA) governor.
+> Add the clamping for cooling device upper and lower limits in the
+> power_actor_set_power() used by IPA.
+> 
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> ---
+>   drivers/thermal/thermal_core.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 72bf159bcecc..a260e4a575f3 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -674,7 +674,7 @@ int power_actor_set_power(struct thermal_cooling_device *cdev,
+>   	if (ret)
+>   		return ret;
+>   
+> -	instance->target = state;
+> +	instance->target = clamp_val(state, instance->lower, instance->upper);
+>   	mutex_lock(&cdev->lock);
+>   	cdev->updated = false;
+>   	mutex_unlock(&cdev->lock);
+> 
 
-Maybe that might want to wait until after 5.10-rc1 is out, with all of
-these changes in it, making it an easier move.
+Please check the patch with scripts/checkpatch.pl before sending.
+It's again base64 encoded, I was able to apply it on my end with
+--ignore-whitespace, but still some odd char is there.
 
-thanks,
+If Daniel is OK to fix it when applying to the thermal branch, then:
 
-greg k-h
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+
+I would send a few patches on top of this one, to fully support the
+upper and lower limits in IPA.
+
+Regards,
+Lukasz
