@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1FF285C69
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D79285C6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgJGKGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
+        id S1727962AbgJGKGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727908AbgJGKGi (ORCPT
+        with ESMTP id S1727908AbgJGKGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:06:38 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201E2C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 03:06:38 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k10so1456982wru.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 03:06:38 -0700 (PDT)
+        Wed, 7 Oct 2020 06:06:45 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BB5C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 03:06:45 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id f10so1663559otb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 03:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OKGC4aJ7pVGKjgcA5u7g3Rhoe0Civ0MEouVUNdh999U=;
-        b=XpHsc9NMXnH0fXij5AfiKNqZa46H+xqUjDFSWAiOz/Yc2UBExH+OlCULSsM9CQyaRW
-         fGa1BlUQo9Mp2hJd8VB8/jb7sTy0AbnLzgKT+T4TlzwvMpNoXf3EUcctvebFCIavwQpl
-         VcLfEwiCKH5YzKiN/rHeoaznRqT7FiV13K8IBGYuVPBCK4UecSRkmzgaulepDw/4OdTH
-         9zNd5qGCsZF5qxcxD3y6E1+seSqIYHQT16OtlP//xZ/zCLS2JXWrRyjkqngqnx9i4FXo
-         zSHBvi0JZ4xm0Uu8m5Y/HoUKAiMxf4BHt6ps33CH3+TBkU42iE3ExQdzuwPEQKoFPgBR
-         CkDw==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FXyl0UgurwxyLuUIkQMCFeSWyFvGgXaLaSwzkPaBkpk=;
+        b=R9tD3DdCMSZDZ5WwC/5gIKKZndNXWY6OZjNWoxwCaCIa3UbGwGd4/OR5cFtRIV+Hf4
+         G47QhxXTI/FiaUusw2qLpB5eQAKol2Yo2E/Xn9o9NDt+7+zpeB1c9SrSq8Ad4I0G3wDg
+         8Lekzp2kNtZlRHFaqOYDIsP385qmpf6cMsfqE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OKGC4aJ7pVGKjgcA5u7g3Rhoe0Civ0MEouVUNdh999U=;
-        b=ePe0SYam17f7RUUI+RXmhdj704XqhZbz4NQYFRNS028tWoxpyrDoGUpsNUgPUM4Qi0
-         GPt/DqjdE8YGnhb2Lx7yn5ON3Pu9Mfew+BdmEGm5qXIeckITmgDe8+hrIE1WD4hrMV28
-         /9jEa0lLsvln8PHTsslh6YJenebDMgEgjr3MZ/kXK5xgJKRM1JD7FApLP0uJOjv92JJM
-         q2DA95JhCh3W3T3QnlDQWmVFwTE/nsIP3eDvMtW+oDXsJmd6hfmLC7U8K4rA1/liEJrR
-         XcM12I7IJ3zEuFJu/LXsXl7b9qqv41BDAPYVc+VHKflNnE1rhE6i8DRdq9fYXlwKTVVY
-         5yxA==
-X-Gm-Message-State: AOAM532i8kEgotFa6UxsPsCdMPdiN/GuaeUFni1Bs0dq7QCUr5ViDgZL
-        6CHBcJoThI73+WsqfzFQecgMmg==
-X-Google-Smtp-Source: ABdhPJy9x6oJ00YrXuOsPfoIio+5ofoiMcKffI+3mUrb4UJzBgSZWFtDkkkNLpiwpP4elSP0PSXASg==
-X-Received: by 2002:adf:fd07:: with SMTP id e7mr2503089wrr.377.1602065196705;
-        Wed, 07 Oct 2020 03:06:36 -0700 (PDT)
-Received: from bojack.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id h16sm2214981wre.87.2020.10.07.03.06.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 03:06:35 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 2/2] arm64: dts: meson-axg-s400: enable PCIe M.2 Key E slots
-Date:   Wed,  7 Oct 2020 12:06:31 +0200
-Message-Id: <20201007100631.192348-3-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201007100631.192348-1-narmstrong@baylibre.com>
-References: <20201007100631.192348-1-narmstrong@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FXyl0UgurwxyLuUIkQMCFeSWyFvGgXaLaSwzkPaBkpk=;
+        b=Fri4DB2vWAhcdr1Z1goPGKtGrN0UuDbdCZwHWPFjMUnQXF2PWvXtFWaZlhLdgQkKAU
+         1tIthC1TjpfstiiKzGo3bw1zfnj4biG0PtZnPSTixtNYrMbQ2mQ2xpfvCMP/SXfpSMBb
+         v0LLeTEwm/678vYuu1WvX2GmgSUNvzzhnWD3Ta9oJmqMtc/tRQCXGLg5v1R89dTtsXM2
+         rVAubcGQrFd/d4wueAYc4HtUb6dveocYRiL71GLteiha01uJZwBZvfj+a7JeXwRYmZig
+         4D+hbiTEvCmwc5rO5pRRvSVwpSzlQnwaaN1S46js/oK5d6LC12pUcB/Ead95djeuwiZY
+         8YgA==
+X-Gm-Message-State: AOAM533UmjBPhhxN3ZQSa+QB8cEUc2qWX0gplbKxY8mb6SGGku7Lp0Eg
+        /EgnoMcuzpArCfA+9oE0QLotNR//zHPHbyy3qXqHVg==
+X-Google-Smtp-Source: ABdhPJyTcsoFNvuCh/cejrXxOixaiBBuesPOk0gqUkmdbG5dVwok3f70fWkkCBRI3SLyoPEuoAzRGQ9NuOx+3m2aKn8=
+X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr1314124otj.303.1602065205130;
+ Wed, 07 Oct 2020 03:06:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201007092725.13300-1-matteo.franchin@arm.com>
+In-Reply-To: <20201007092725.13300-1-matteo.franchin@arm.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 7 Oct 2020 12:06:34 +0200
+Message-ID: <CAKMK7uHZs7uKMbbQhn43-u7Y3_KANA6tU25jnOZkzj3h_7dmgg@mail.gmail.com>
+Subject: Re: [PATCH] drm/fourcc: Add AXBXGXRX106106106106 format
+To:     Matteo Franchin <matteo.franchin@arm.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/meson-axg-s400.dts | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+On Wed, Oct 7, 2020 at 11:29 AM Matteo Franchin <matteo.franchin@arm.com> wrote:
+>
+> Add ABGR format with 10-bit components packed in 64-bit per pixel.
+> This format can be used to handle
+> VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16 on little-endian
+> architectures.
+>
+> Signed-off-by: Matteo Franchin <matteo.franchin@arm.com>
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
-index 84129abb2399..96c384a7f49f 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
-@@ -395,6 +395,16 @@
- 	};
- };
- 
-+&pcieA {
-+	reset-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+};
-+
-+&pcieB {
-+	reset-gpios = <&gpio GPIOZ_10 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
-+	status = "okay";
-+};
-+
- &pwm_ab {
- 	status = "okay";
- 	pinctrl-0 = <&pwm_a_x20_pins>, <&pwm_b_z_pins>;
+So is this essentially 16 bit, with the lowest 6 bits in each channel
+ignored? What exactly is this used for where the full 16bit format
+doesn't work?
+-Daniel
+
+> ---
+>  drivers/gpu/drm/drm_fourcc.c  | 1 +
+>  include/uapi/drm/drm_fourcc.h | 7 +++++++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+> index 722c7ebe4e88..bba03fcb016d 100644
+> --- a/drivers/gpu/drm/drm_fourcc.c
+> +++ b/drivers/gpu/drm/drm_fourcc.c
+> @@ -202,6 +202,7 @@ const struct drm_format_info *__drm_format_info(u32 format)
+>                 { .format = DRM_FORMAT_XBGR16161616F,   .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1 },
+>                 { .format = DRM_FORMAT_ARGB16161616F,   .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>                 { .format = DRM_FORMAT_ABGR16161616F,   .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> +               { .format = DRM_FORMAT_AXBXGXRX106106106106,    .depth = 0,  .num_planes = 1, .cpp = { 8, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>                 { .format = DRM_FORMAT_RGB888_A8,       .depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>                 { .format = DRM_FORMAT_BGR888_A8,       .depth = 32, .num_planes = 2, .cpp = { 3, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+>                 { .format = DRM_FORMAT_XRGB8888_A8,     .depth = 32, .num_planes = 2, .cpp = { 4, 1, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+> index 82f327801267..76eedba52b77 100644
+> --- a/include/uapi/drm/drm_fourcc.h
+> +++ b/include/uapi/drm/drm_fourcc.h
+> @@ -155,6 +155,13 @@ extern "C" {
+>  #define DRM_FORMAT_ARGB16161616F fourcc_code('A', 'R', '4', 'H') /* [63:0] A:R:G:B 16:16:16:16 little endian */
+>  #define DRM_FORMAT_ABGR16161616F fourcc_code('A', 'B', '4', 'H') /* [63:0] A:B:G:R 16:16:16:16 little endian */
+>
+> +/*
+> + * RGBA format with 10-bit components packed in 64-bit per pixel, with 6 bits
+> + * of unused padding per component:
+> + * [63:0] A:x:B:x:G:x:R:x 10:6:10:6:10:6:10:6 little endian
+> + */
+> +#define DRM_FORMAT_AXBXGXRX106106106106 fourcc_code('A', 'B', '1', '0')
+> +
+>  /* packed YCbCr */
+>  #define DRM_FORMAT_YUYV                fourcc_code('Y', 'U', 'Y', 'V') /* [31:0] Cr0:Y1:Cb0:Y0 8:8:8:8 little endian */
+>  #define DRM_FORMAT_YVYU                fourcc_code('Y', 'V', 'Y', 'U') /* [31:0] Cb0:Y1:Cr0:Y0 8:8:8:8 little endian */
+> --
+> 2.17.1
+>
+
+
 -- 
-2.25.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
