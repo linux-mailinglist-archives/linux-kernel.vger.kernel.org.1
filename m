@@ -2,65 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F50286538
+	by mail.lfdr.de (Postfix) with ESMTP id 9806128653A
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgJGQuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:50:07 -0400
-Received: from mga12.intel.com ([192.55.52.136]:1632 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726948AbgJGQuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:50:04 -0400
-IronPort-SDR: JBibSw9JQUkvjf8svBRGePcjX13PgvkVGMyP1SkUQ+FeUb8tcsX/L0q4USOh3rJPhm+7KaKjWb
- cgZqQQ4loD9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="144400703"
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="144400703"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:50:04 -0700
-IronPort-SDR: 0f+EG1A00l6z1hUghZw9f9jpHEWqPaisY8h+zEDQzhrqtzc50Y4k340UIVEDp5Vj9XVHr7y+Cd
- Be2Be8cKTM0w==
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="528047390"
-Received: from dumser-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.51.100])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:49:54 -0700
-Date:   Wed, 7 Oct 2020 19:49:50 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Roberto Sassu <roberto.sassu@polito.it>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ima: Fix sizeof mismatches
-Message-ID: <20201007164950.GA3885@linux.intel.com>
-References: <20201007110243.19033-1-colin.king@canonical.com>
+        id S1727937AbgJGQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727608AbgJGQuG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:50:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748B5C061755;
+        Wed,  7 Oct 2020 09:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Nav6Oy18S0mncB3AAW0uN+jV/XzmjmJbW8GBwpVEUfw=; b=Frs5Gubuq3ricUN+drCNVuXFCQ
+        mjI7QUo+b9QJ0YTE5NrJrGyyJTC4C7Xnqrmod9ynuk2Y4oiEYd+aqpRGhhGIukQecVxABVPSNgViH
+        jXvjPC1UixiXhwHJ04SFdFoxR8VLpIunkTZG6/3+V/LmPruKj0WukyumMT+flkN7/b9TYSWUGvcd9
+        EZ4oPxIyDyE1OJcZ/xUA2i8t/gu5hDGhZdmPy3Nk2nrEgX6vLDagbZaWR9br0Pnz4xXebGH+/oo50
+        5hFO3Svf9XCI1rvN/DfQQ+Vat5rRqfQNhNOJGo/fHDm/oFL+uiPJmQZwQuGy0T2XOUVCxAWxyy/Ow
+        zGOlf7dw==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQCdf-0004Uj-U1; Wed, 07 Oct 2020 16:50:04 +0000
+Subject: Re: [PATCH] fs: use correct parameter in notes of
+ generic_file_llseek_size()
+To:     Tianxianting <tian.xianting@h3c.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200905071525.12259-1-tian.xianting@h3c.com>
+ <3808373d663146c882c22397a1d6587f@h3c.com>
+ <07de1867-e61c-07fb-8809-91d5e573329b@infradead.org>
+ <e028ff27412d4a80aa273320482a801d@h3c.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b2bd4f65-3054-3c08-807f-f1e800c122ed@infradead.org>
+Date:   Wed, 7 Oct 2020 09:50:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007110243.19033-1-colin.king@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <e028ff27412d4a80aa273320482a801d@h3c.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 12:02:43PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 10/7/20 8:20 AM, Tianxianting wrote:
+> hi,
 > 
-> An incorrect sizeof is being used, sizeof(*fields) is not correct,
-> it should be sizeof(**fields). This is not causing a problem since
-> the size of these is the same. Fix this in the kmalloc_array and
-> memcpy calls.
+> thanks Randy
 > 
-> Addresses-Coverity: ("Sizeof not portable (SIZEOF_MISMATCH)")
-> Fixes: 1bd7face7439 ("ima: allocate field pointers array on demand in template_desc_init_fields()")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> I checked the latest code, seems this patch not applied currently.
 
-Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Hi--
 
-/Jarkko
+Please don't send html email.
+I'm pretty sure that the mailing list has dropped (discarded) your email
+because it was html.
+
+Probably only Al and I received your email.
+
+Al- Would you prefer that fs/ documentation patches go to someone else
+for merging?  maybe Andrew?
+
+Thanks.
+
+PS: I can't tell if I am writing an html email or not... :(
+
+
+> ________________________________
+> 发件人: Randy Dunlap <rdunlap@infradead.org>
+> 发送时间: Friday, September 11, 2020 10:57:24 AM
+> 收件人: tianxianting (RD); viro@zeniv.linux.org.uk
+> 抄送: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: [PATCH] fs: use correct parameter in notes of generic_file_llseek_size()
+> 
+> On 9/10/20 7:06 PM, Tianxianting wrote:
+>> Hi viro,
+>> Could I get your feedback?
+>> This patch fixed the build warning, I think it can be applied, thanks :)
+>>
+>> -----Original Message-----
+>> From: tianxianting (RD)
+>> Sent: Saturday, September 05, 2020 3:15 PM
+>> To: viro@zeniv.linux.org.uk
+>> Cc: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org; tianxianting (RD) <tian.xianting@h3c.com>
+>> Subject: [PATCH] fs: use correct parameter in notes of generic_file_llseek_size()
+>>
+>> Fix warning when compiling with W=1:
+>> fs/read_write.c:88: warning: Function parameter or member 'maxsize' not described in 'generic_file_llseek_size'
+>> fs/read_write.c:88: warning: Excess function parameter 'size' description in 'generic_file_llseek_size'
+>>
+>> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> 
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Thanks.
+> 
+>> ---
+>>  fs/read_write.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/read_write.c b/fs/read_write.c
+>> index 5db58b8c7..058563ee2 100644
+>> --- a/fs/read_write.c
+>> +++ b/fs/read_write.c
+>> @@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
+>>   * @file:    file structure to seek on
+>>   * @offset:  file offset to seek to
+>>   * @whence:  type of seek
+>> - * @size:    max size of this file in file system
+>> + * @maxsize: max size of this file in file system
+>>   * @eof:     offset used for SEEK_END position
+>>   *
+>>   * This is a variant of generic_file_llseek that allows passing in a custom
+>>
+> 
+> 
+> --
+> ~Randy
+> 
+
+-- 
+~Randy
+
