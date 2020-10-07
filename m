@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5D5285BAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C68285BB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727140AbgJGJOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        id S1727306AbgJGJOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgJGJOL (ORCPT
+        with ESMTP id S1727181AbgJGJOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:14:11 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A42EC061755;
-        Wed,  7 Oct 2020 02:14:11 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n15so1284990wrq.2;
-        Wed, 07 Oct 2020 02:14:11 -0700 (PDT)
+        Wed, 7 Oct 2020 05:14:21 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62235C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 02:14:19 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a23so438475ljp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:14:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uP41AxAirI5kgSSLv8bjqRlk/ljwQNpF8oZxpTbY8l0=;
-        b=GaFP92hQcXPefevT1rafT9Y2lzLCa0PU/iJdCs68CaNIMPfE8N/yUkE+HJeo83vI7b
-         3a8zEF1p3W83wYJcK6loECboG6Ctmy3z4MB1t44aMba4ApV1ZR+dFY/0qhidQRAjsR8n
-         4d76L4LqdSgk11UKPYJKUaC0UtWnuixf4EJgFF3VKT2JmbyC+2N+QiTuQODR4iphOs1H
-         w2U6W2f7/9NG+EPMlvctKkxJVHKMzTi3I1ai67XW+oLiGtdi4JlNw7Di5gJG1iXOJRoU
-         RueimpsH3igbboaavIuH8o/deFxWBNjRrwUSP4ZVMgnJWLIC080rwCHvxYeTM+7RiHiX
-         GmtQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R38D306cOdCH6gNOKn2dfXzMIdx9cVWTJ2EnhMSHPgI=;
+        b=K8VM3Lt7he4DbXomcBl3P1LJNqMltD6OgLwpi66vIZr+U4091oDg8WzFZwthUfNZxM
+         7C3DSeIGUrUU442GfpAuHECgrAXYpLu2i7jiJ+tc6NndlzfBRXWLyNPCYaNORPl5LkFO
+         j3yVM1TBGLTi9OzIO8xmg8KIb9XE9xmNm50yhZZUafUFC94LNH6xELqQcJEXdcb/FW4z
+         44xqj1ig+cU6YFysClUu3zjTOkqGuvBvWXZiSdDxbhsSmOFnipKSHBKJ+wUCBXNHBrs5
+         uGh4kXbK7c8M4OfTPTFIVLc9+ICXIqD7n5c2eMHJ2raESyevz/KFuf+fgzJR7Sc1K+iE
+         CkyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uP41AxAirI5kgSSLv8bjqRlk/ljwQNpF8oZxpTbY8l0=;
-        b=GpF3iZfSJGJK3Jaog3WxV/OQzg+IoZ16g1m3xkbIKgXtZIVZwVlefXmwHkrdr5Kq6L
-         8SGsEMojpguAXQROW5EU343UUJgv45Jo/PJip3okm4rIwlmBGU9zkrHlAOHXY+vm8Bs8
-         4f5nFJ1cqDTXCcuaoQTfRFwPy1/FZ7UBlNj5njzW4U+aVHNbwmQwhUd1cNUgDWoIZQf3
-         GcCQw1JClH4RwGs+Io5uUcj83YJAiFeDI1xKyw6A1D3mtcYJWLeEkQhOJGUq7tJcCpWg
-         rf3f/Iqhjwbmill5RA1MBIk0U+nUvPUkt4omapOT6mgJIvkqUX27BFJCPJzqPyDjHr/+
-         Ms5g==
-X-Gm-Message-State: AOAM533JGUoQIGHtYb177HYtMHOcgWIVFnjxC+DGdq3UVciu2m05aRUW
-        42BQL3hSjy2JWhi+3s9qprG/wxvwRAXFyg==
-X-Google-Smtp-Source: ABdhPJyjLZyu5A8Xu/6Ic0iV8U8JZb8lba1JYrHJt2Gh/tJ4di648lnr+MDKWlEgxAFO0pNk0DN3sg==
-X-Received: by 2002:adf:dccd:: with SMTP id x13mr2531381wrm.403.1602062049745;
-        Wed, 07 Oct 2020 02:14:09 -0700 (PDT)
-Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id i126sm672754wmi.0.2020.10.07.02.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 02:14:09 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Wed, 7 Oct 2020 10:13:49 +0100
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5e: Fix freeing of unassigned pointer
-Message-ID: <20201007091349.cceyuje3ktilygzv@medion>
-References: <20201003111050.25130-1-alex.dewar90@gmail.com>
- <80cb7391f0feb838cc61a608efe0c24dcef41115.camel@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R38D306cOdCH6gNOKn2dfXzMIdx9cVWTJ2EnhMSHPgI=;
+        b=lGI79nvo70wHwyknOr+RJpgv541d0rqHr255A+OvW28Xl9AhCkUGF9mU2512f5+DcM
+         vH4gFCq+wKIfl700KGVio5Hkmsgo59S/YQoI+1COaqYKJyE5p9/zso/Wek9wpd/VXOGK
+         fPn3rbEwzY5j5zhpliUq3u3UsZcxbckSMBfZHGTB5xFIWlqRQhqy8C+jMi8YjTxi8tiI
+         b/2g4lLu3Jzp9x6zk21fx9f2eXj5GgdoT/UWKoyFPTvp0Rkxc6DOmbitmyhdahwRfE2p
+         ampeOb6fv8FNM46mY/Vz68ucpf6z4sfibjUhdEKXUvLwBqRgiqU6pwDJr6FrpOHgeLw4
+         JfrA==
+X-Gm-Message-State: AOAM532hTHswnHcTHWz8K2JWoy8iRBk1ryoZKT5PyS1A2sUtsQgbWurJ
+        j+9QqxpncbjiCUdTV4h5KqNonPNU898ji8w5KUGL4w==
+X-Google-Smtp-Source: ABdhPJxbc/bmd6ODDC9I5vRdhThK0GMJxuWPkDmiYh8tJC4/GZdchNUlcn3p1SbgotwVnTnpAIL7su86RHImnlHNlZE=
+X-Received: by 2002:a2e:810e:: with SMTP id d14mr941823ljg.100.1602062057729;
+ Wed, 07 Oct 2020 02:14:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80cb7391f0feb838cc61a608efe0c24dcef41115.camel@kernel.org>
+References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com> <20201004162908.3216898-2-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20201004162908.3216898-2-martin.blumenstingl@googlemail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 7 Oct 2020 11:14:06 +0200
+Message-ID: <CACRpkdbscEpV6oP7q1AcbCcR-XUBG2PnnapQ695xug63VQ830w@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] PCI: Add the IDs for Etron EJ168 and EJ188
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-usb <linux-usb@vger.kernel.org>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 04:22:12PM -0700, Saeed Mahameed wrote:
-> On Sat, 2020-10-03 at 12:10 +0100, Alex Dewar wrote:
-> > Commit ff7ea04ad579 ("net/mlx5e: Fix potential null pointer
-> > dereference")
-> > added some missing null checks but the error handling in
-> > mlx5e_alloc_flow() was left broken: the variable attr is passed to
-> > kfree
-> > although it is never assigned to and never needs to be freed in this
-> > function. Fix this.
-> > 
-> > Addresses-Coverity-ID: 1497536 ("Memory - illegal accesses")
-> > Fixes: ff7ea04ad579 ("net/mlx5e: Fix potential null pointer
-> > dereference")
-> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 17 +++++++++----
-> > ----
-> >  1 file changed, 9 insertions(+), 8 deletions(-)
-> > 
-> 
-> Hi Alex, thanks for the patch, 
-> Colin submitted a one liner patch that I already picked up.
-> 
-> I hope you are ok with this.
+On Sun, Oct 4, 2020 at 8:00 PM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
 
-Hi Saeed,
+> Add the vendor ID for Etron Technology, Inc. as well as the device IDs
+> for the two USB xHCI controllers EJ168 and EJ188.
+>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Sure. As long as attr is no longer being freed then that should fix the
-problem.
+(...)
 
-Best,
-Alex
+>  #define PCI_VENDOR_ID_REDHAT           0x1b36
+>
+> +#define PCI_VENDOR_ID_ETRON            0x1b6f
+> +#define PCI_DEVICE_ID_ETRON_EJ168      0x7023
+> +#define PCI_DEVICE_ID_ETRON_EJ188      0x7052
 
-> 
-> Thanks,
-> Saeed.
-> 
+If you're defining that here, I think it should also be
+removed in
+drivers/usb/host/xhci-pci.c
+by including this file instead?
+
+Yours,
+Linus Walleij
