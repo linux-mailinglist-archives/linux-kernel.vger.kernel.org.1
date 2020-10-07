@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB4C285A09
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DFC285A0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgJGIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:04:28 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62660 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGIE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:04:27 -0400
-IronPort-SDR: rRiuTHbTn7yIrLk46eSktQGNLzd2xX9beTdGQNda6DND3f4RnmsaeaxDre5fDbLBijqh6GWtkF
- 3F5ewrPA8adg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="226446204"
-X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="226446204"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 01:04:26 -0700
-IronPort-SDR: qAZrGJWZW5CwC7nZO1xy6Lb7ans0/3wAfGuHuHMDS/PXpHbM55bjBoIK+xkQi2E/UgFwJWMOMS
- 7fDO2489KDmQ==
-X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="527837821"
-Received: from juliahar-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.223])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 01:04:13 -0700
-Date:   Wed, 7 Oct 2020 11:04:08 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20201007080408.GA4610@linux.intel.com>
-References: <20201006025703.GG15803@linux.intel.com>
- <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
- <20201006151532.GA17610@linux.intel.com>
- <20201006172819.GA114208@linux.intel.com>
- <20201006232129.GB28981@linux.intel.com>
- <20201007002236.GA139112@linux.intel.com>
- <20201007011738.GE28981@linux.intel.com>
- <20201007031402.GA143690@linux.intel.com>
- <20201007043418.GG28981@linux.intel.com>
- <20201007073923.GA3632@linux.intel.com>
+        id S1727829AbgJGIE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:04:57 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37132 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJGIE4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:04:56 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09784mu1057707;
+        Wed, 7 Oct 2020 03:04:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602057888;
+        bh=z4VpTvoOOZp6qQHLtmXVaZGYtqgiD52MMsRvSIv4cjk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=nzD+cJGiqOp91ekDNpfsxNGIs/X2hqgR1/2TScI6DWvMMAgMaouLaYfh54tgc78Xr
+         xAbrdEc8GjzTncRCdVAnFpG6M5Jm7a4MsvIYZtOAcOIv0lKLkKhKRNbWcPcHoDP8VS
+         rrijELMbgAPscIh5ozllkgblYPh6Hfc/1hEgPPwQ=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09784mQ8112342
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 03:04:48 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 03:04:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 03:04:48 -0500
+Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09784j5R103861;
+        Wed, 7 Oct 2020 03:04:46 -0500
+Subject: Re: [PATCH] usb: cdns3: Add static to cdns3_gadget_exit function
+To:     Pawel Laszczak <pawell@cadence.com>, <balbi@kernel.org>
+CC:     <peter.chen@nxp.com>, <nsekhar@ti.com>,
+        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>
+References: <20201007040230.25741-1-pawell@cadence.com>
+From:   Roger Quadros <rogerq@ti.com>
+Message-ID: <34195846-65f5-c3b3-b883-bed27a401814@ti.com>
+Date:   Wed, 7 Oct 2020 11:04:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007073923.GA3632@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201007040230.25741-1-pawell@cadence.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:39:23AM +0300, Jarkko Sakkinen wrote:
-> On Tue, Oct 06, 2020 at 09:34:19PM -0700, Sean Christopherson wrote:
-> > Even more hypothetical would be if Andy gets one of his wishes, and EENTER2
-> > comes along that doesn't allow the enclave to dictate the exit point,
-> > "returns" an error code on enclave failure, and allows the kernel to
-> > auto-restart the enclave on IRQs/NMIs.  That (very hypothetical) scenario
-> > fits nicely into the exit_reason handling.
-> > 
-> > I'm not arguing that any of the above is even remotely likely.  I just don't
-> > understand why we'd want an API that at best requires heuristics in userspace
-> > to determine why the enclave stopped running, and at worst will saddle us with
-> > an ugly mess in the future.  All to save 4 bytes that no one cares about (they
-> > literally cost nothing), and a single MOV in a flow that is hundreds, if not
-> > thousands, of cycles.
+
+
+On 07/10/2020 07:02, Pawel Laszczak wrote:
+> Function cdns3_gadget_exit is used only in gadget.c file.
+> This patch removes declaration and definition of this
+> function from gadget-export.h file and makes it static.
 > 
-> I don't care as much as saving bytes as defining API, which has zero
-> ambiguous state variables.
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+
+Acked-by: Roger Quadros <rogerq@ti.com>
+
+
+> ---
+>   drivers/usb/cdns3/gadget-export.h | 3 ---
+>   drivers/usb/cdns3/gadget.c        | 2 +-
+>   2 files changed, 1 insertion(+), 4 deletions(-)
 > 
-> And since the field 'leaf' is there, and was before too, no degrees of
-> freedom are lost. Removing one variable does not make more of a mess.
+> diff --git a/drivers/usb/cdns3/gadget-export.h b/drivers/usb/cdns3/gadget-export.h
+> index 577469eee961..702c5a267a92 100644
+> --- a/drivers/usb/cdns3/gadget-export.h
+> +++ b/drivers/usb/cdns3/gadget-export.h
+> @@ -13,7 +13,6 @@
+>   #ifdef CONFIG_USB_CDNS3_GADGET
+>   
+>   int cdns3_gadget_init(struct cdns3 *cdns);
+> -void cdns3_gadget_exit(struct cdns3 *cdns);
+>   #else
+>   
+>   static inline int cdns3_gadget_init(struct cdns3 *cdns)
+> @@ -21,8 +20,6 @@ static inline int cdns3_gadget_init(struct cdns3 *cdns)
+>   	return -ENXIO;
+>   }
+>   
+> -static inline void cdns3_gadget_exit(struct cdns3 *cdns) { }
+> -
+>   #endif
+>   
+>   #endif /* __LINUX_CDNS3_GADGET_EXPORT */
+> diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
+> index 692acf7b9b14..6ff3aa3db497 100644
+> --- a/drivers/usb/cdns3/gadget.c
+> +++ b/drivers/usb/cdns3/gadget.c
+> @@ -3069,7 +3069,7 @@ static void cdns3_gadget_release(struct device *dev)
+>   	kfree(priv_dev);
+>   }
+>   
+> -void cdns3_gadget_exit(struct cdns3 *cdns)
+> +static void cdns3_gadget_exit(struct cdns3 *cdns)
+>   {
+>   	struct cdns3_device *priv_dev;
+>   
+> 
 
-I think the reserved space should be expanded though.
-
-I'd go with that 256 bytes as it was before. It's still fast to validate
-and the loop construct for that is already in place. I complement that
-with addition to the changelog with the reasoning that I gave earlier.
-That was lacking for that detail in earlier patch set versions.
-
-/Jarkko
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
