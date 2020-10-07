@@ -2,183 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E082869ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F07E2869F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728659AbgJGVNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:13:52 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16238 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727948AbgJGVNw (ORCPT
+        id S1728282AbgJGVOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:14:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37867 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727821AbgJGVOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:13:52 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7e2f220008>; Wed, 07 Oct 2020 14:12:02 -0700
-Received: from [10.2.85.86] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
- 2020 21:13:42 +0000
-Subject: Re: [PATCH 05/13] mm/frame-vector: Use FOLL_LONGTERM
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Kyungmin Park" <kyungmin.park@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
- <20201007164426.1812530-6-daniel.vetter@ffwll.ch>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <fc0ac3fb-2758-bef1-76b4-8ac2449f5743@nvidia.com>
-Date:   Wed, 7 Oct 2020 14:13:42 -0700
+        Wed, 7 Oct 2020 17:14:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602105280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UsS4juZFqfcdzrHO2PVDQfEmKbf/j75qDjzNdWA/dp4=;
+        b=eHYuQz9yiSb+JthQq3Emx9QWifQtjXehOT/nJXh4ka3i1gIKOUBMAzG5qOTrzwQebGnKBw
+        u9kCGxiyTRL+rSUA3NEBiLLyncfpYWDvFWm63vLThqYQ5OkbFuPnVC1s2mkTjMeT5JABY7
+        ztrTu4vFxBk1fLjLHrSl1ryGxFenYWc=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-fwXe9clPMcuKnZKjwbStAw-1; Wed, 07 Oct 2020 17:14:39 -0400
+X-MC-Unique: fwXe9clPMcuKnZKjwbStAw-1
+Received: by mail-ed1-f70.google.com with SMTP id i22so1447970edu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 14:14:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UsS4juZFqfcdzrHO2PVDQfEmKbf/j75qDjzNdWA/dp4=;
+        b=SMRkLDYi1xUSuLjKO3FhoBlWOAQjdEFQKHzZXFKVIMsKzL9r9+SOLWAXNLOwHi9WQV
+         Yc3ArhUpnvvsnZiOzeR8/L3kysviU3+Ac4Ji2vom0lBu/hGpZ85JhML3NNUfWPRLcvcJ
+         hoL3GNu53k4LKt7ZTVL9UYFdgZk9ehsD2jmFexqrCKZDdai/kZwz9a9sZnL+IRKETdfz
+         yoe046qGSLby0MDuC+pgsT60mvvS012rtyqniLR7FP0r6Z+mPUHSDHZadFMVhPP7wIQg
+         olcNmH6E1x83lVfpkls8p2W38PQwQBqYIa6wZeiG95SRw3hd3vgNmKTKqJsX8/B/mJrB
+         06cQ==
+X-Gm-Message-State: AOAM530sCFTrSdfp/Pg/M0xifcudd5Ch0W3S2fSy2++2wBMsr1SI2CVg
+        4kqorPjinIhWXT+zp/dlNIbcX4O+w7JV66GeyCzx3w6xrSbpMT0iuw/aI3OCSig4SJqfTjIH/eO
+        ZbowFNCciNYJjwj7Tmoy/aS6J
+X-Received: by 2002:a17:907:4365:: with SMTP id nd5mr5461678ejb.56.1602105277814;
+        Wed, 07 Oct 2020 14:14:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxO3AZ/uQr60oWbsGvXQf5H0kkUbwZNu5WCxlnZdO17Gf+feZ0U52eqMaLw6eAyuOOFTA+hQA==
+X-Received: by 2002:a17:907:4365:: with SMTP id nd5mr5461667ejb.56.1602105277642;
+        Wed, 07 Oct 2020 14:14:37 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id bt16sm2309673ejb.89.2020.10.07.14.14.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 14:14:37 -0700 (PDT)
+Subject: Re: [PATCH 0/4] pmc_core: Add RocketLake and other changes
+To:     "David E. Box" <david.e.box@linux.intel.com>,
+        irenic.rajneesh@gmail.com, david.e.box@intel.com,
+        dvhart@infradead.org, andy@infradead.org, gayatri.kammela@intel.com
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20201007035108.31078-1-david.e.box@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <74b92bc3-2126-a11a-5de3-3f594c6af82c@redhat.com>
+Date:   Wed, 7 Oct 2020 23:14:36 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201007164426.1812530-6-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201007035108.31078-1-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602105122; bh=sdL9dWr71OcitQ1QN+LtvleGwHLKlRCYjfX+GmsKdT8=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=UczOXY9to1LCj5AA/vWDFIZSxYcptbOuWof8ytMtikifjWBiV7WFE1SZd1H0LH0fv
-         kOKJobR115WCn/yjDIJFRQ+hkcq+2dAKR1e6FJj4MkEmdDzg6N2N4gslr80UJRaZgX
-         Lkk41XeM43UGThQQOFlbMX+h/b39dMZd63P9UIGH6zBsVqei7Fx18bJACRBf9osCOy
-         57RN8QfMM60XFWH7HJJ2PGtXfTOLsVy5u8w4Kq70u1hUdIgK44rQsExvKhmLL+DdpK
-         oxBJseYzqWkzebOA0vrS2YNSZyf8rdAgfIOjGviz66fazstOfGqMqtR5VpaT1zywo3
-         jmYuc2NJXDq1A==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 9:44 AM, Daniel Vetter wrote:
-> This is used by media/videbuf2 for persistent dma mappings, not just
-> for a single dma operation and then freed again, so needs
-> FOLL_LONGTERM.
->=20
-> Unfortunately current pup_locked doesn't support FOLL_LONGTERM due to
-> locking issues. Rework the code to pull the pup path out from the
-> mmap_sem critical section as suggested by Jason.
->=20
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Pawel Osciak <pawel@osciak.com>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> Cc: Tomasz Figa <tfiga@chromium.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> ---
->   mm/frame_vector.c | 36 +++++++++++-------------------------
->   1 file changed, 11 insertions(+), 25 deletions(-)
->=20
-> diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-> index 10f82d5643b6..39db520a51dc 100644
-> --- a/mm/frame_vector.c
-> +++ b/mm/frame_vector.c
-> @@ -38,7 +38,6 @@ int get_vaddr_frames(unsigned long start, unsigned int =
-nr_frames,
->   	struct vm_area_struct *vma;
->   	int ret =3D 0;
->   	int err;
-> -	int locked;
->  =20
->   	if (nr_frames =3D=3D 0)
->   		return 0;
-> @@ -48,35 +47,22 @@ int get_vaddr_frames(unsigned long start, unsigned in=
-t nr_frames,
->  =20
->   	start =3D untagged_addr(start);
->  =20
-> +	ret =3D pin_user_pages_fast(start, nr_frames,
-> +				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
-> +				  (struct page **)(vec->ptrs));
-> +	if (ret > 0) {
-> +		vec->got_ref =3D true;
-> +		vec->is_pfns =3D false;
-> +		goto out_unlocked;
-> +	}
+Hi,
 
-This part looks good, and changing to _fast is a potential performance impr=
-ovement,
-too.
+On 10/7/20 5:51 AM, David E. Box wrote:
+> Add RocketLake platform support and other driver maintainance.
+> 
+> Gayatri Kammela (4):
+>    platform/x86: intel_pmc_core: Clean up: Remove the duplicate comments
+>      and reorganize
+>    platform/x86: intel_pmc_core: Add Intel RocketLake (RKL) support
+>    platform/x86: intel_pmc_core: fix: Replace dev_dbg macro with
+>      dev_info()
+>    MAINTAINERS: Update maintainers for pmc_core driver
 
-> +
->   	mmap_read_lock(mm);
-> -	locked =3D 1;
->   	vma =3D find_vma_intersection(mm, start, start + 1);
->   	if (!vma) {
->   		ret =3D -EFAULT;
->   		goto out;
->   	}
->  =20
-> -	/*
-> -	 * While get_vaddr_frames() could be used for transient (kernel
-> -	 * controlled lifetime) pinning of memory pages all current
-> -	 * users establish long term (userspace controlled lifetime)
-> -	 * page pinning. Treat get_vaddr_frames() like
-> -	 * get_user_pages_longterm() and disallow it for filesystem-dax
-> -	 * mappings.
-> -	 */
-> -	if (vma_is_fsdax(vma)) {
-> -		ret =3D -EOPNOTSUPP;
-> -		goto out;
-> -	}
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Are you sure we don't need to check vma_is_fsdax() anymore?
+Note it will show up there once I've pushed my local branch there,
+which might take a while.
 
-> -
-> -	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
-> -		vec->got_ref =3D true;
-> -		vec->is_pfns =3D false;
-> -		ret =3D pin_user_pages_locked(start, nr_frames,
-> -			gup_flags, (struct page **)(vec->ptrs), &locked);
-> -		goto out;
-> -	}
-> -
->   	vec->got_ref =3D false;
->   	vec->is_pfns =3D true;
->   	do {
-> @@ -101,8 +87,8 @@ int get_vaddr_frames(unsigned long start, unsigned int=
- nr_frames,
->   		vma =3D find_vma_intersection(mm, start, start + 1);
->   	} while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
->   out:
-> -	if (locked)
-> -		mmap_read_unlock(mm);
-> +	mmap_read_unlock(mm);
-> +out_unlocked:
->   	if (!ret)
->   		ret =3D -EFAULT;
->   	if (ret > 0)
->=20
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-All of the error handling still looks accurate there.
+Regards,
 
-thanks,
---=20
-John Hubbard
-NVIDIA
+Hans
+
