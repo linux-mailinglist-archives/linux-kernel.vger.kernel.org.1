@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B49286269
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7462228626B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgJGPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgJGPo4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:44:56 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE40CC061755;
-        Wed,  7 Oct 2020 08:44:56 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id ds1so1229160pjb.5;
-        Wed, 07 Oct 2020 08:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OopvoL5bmYi+0qGhF3VP83b68UDgKQrkU07BBY2nqsU=;
-        b=Ig/V6oAtwr/rda438Rz4wdMGeHF553yyGeIjxYz9QCthXwy0yvoevXQ6NpwmseSPuV
-         CNlUq05As99tyk81B67xqF9YFCHxzedVnIssvfxH44QkoFOvs4xv/ykeQrf9AkZd7798
-         JXXL6M8aO47whWXB2WV/GIPXPXMANYDolePAAFhSw9zQL8nvFG4AU8RcJVfiV9VLY2wK
-         s8pmXOv2E0zj37KmflRfe8LhAxjJGc4iNlXAhlqa22NBs/kcwtkTbTEnuuFBiY+W06tv
-         kv8Sd1jYdH/kWrRf+8R0MbJz+dRQB7z7NxXKTmHfKo0XdSQAPlmQvdNB2+p2coe+Z3M9
-         T1kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OopvoL5bmYi+0qGhF3VP83b68UDgKQrkU07BBY2nqsU=;
-        b=PDFae633qPyRC9VKlWUTkYGzVu/E7uL6Ub6qrJqKDp++n0GlYYeem7i2qkKynIPJ6h
-         VXheR+Dec4AVxVZSVnbQvC1U2RaEqk02MUGqzxGtERHkgCsjWLLO3R0hXclnHk6qCpKB
-         3RHh9H22+nFWylTch7RYp7YRyWo25udhEk44Le6f85ZJvwcF6xflFAEmcENQ/V61kPTR
-         pqM2hEm8An0TlYpmo1iJ+1j5hLVeT8Sm4rdTNl65POhVp9GvmN9ANXbzofk62/Yy5ivZ
-         I30zQkQNVzeLlwlucikr1cLiCRqnIzwF/hlvNXMgOQefI9tbpRs9XYmuh/+w/RgoKi0d
-         icww==
-X-Gm-Message-State: AOAM5301A/MhgOPPioknRmx246a5V+hwKtepd8E/IkpD6fulA5g+Z/MN
-        OjQytV98jjubgODJmpxB3TR4rra4rG2qPQ==
-X-Google-Smtp-Source: ABdhPJyi7dDLCLtbgKVzaWHV9rqYxTGP9mA6JVYSD9c0RBIUN12Z2wPgdGtKHPZfocfmjrL5dEwhmQ==
-X-Received: by 2002:a17:90b:4b05:: with SMTP id lx5mr3263313pjb.42.1602085496169;
-        Wed, 07 Oct 2020 08:44:56 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id e8sm3745514pgj.8.2020.10.07.08.44.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 08:44:55 -0700 (PDT)
-To:     Marco Felsch <m.felsch@pengutronix.de>,
-        Marek Vasut <marex@denx.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>
-References: <20201006080424.GA6988@pengutronix.de>
- <2cc5ea02-707e-dbb5-c081-4c5202bd5815@gmail.com>
- <42d4c4b2-d3ea-9130-ef7f-3d1955116fdc@denx.de>
- <0687984c-5768-7c71-5796-8e16169f5192@gmail.com>
- <20201007081410.jk5fi6x5w3ab3726@pengutronix.de>
- <7edb2e01-bec5-05b0-aa47-caf6e214e5a0@denx.de>
- <20201007090636.t5rsus3tnkwuekjj@pengutronix.de>
- <2b6a1616-beb8-fd12-9932-1e7d1ef04769@denx.de>
- <20201007104757.fntgjiwt4tst3w3f@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: PHY reset question
-Message-ID: <c6bce70b-c97a-1696-2113-61bd3ba6ae99@gmail.com>
-Date:   Wed, 7 Oct 2020 08:44:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        id S1728699AbgJGPpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:45:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21310 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727005AbgJGPpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:45:34 -0400
+IronPort-SDR: 5JoB1Amrhf6l+4MSPP2MV1SBFOAgvEQfVPBjZGSRkNkPOst7CjhuDPSKShqgViYgFao6n8wSt0
+ l3pDhgQLGoQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="151925280"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="151925280"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 08:45:33 -0700
+IronPort-SDR: dSzd2fqw2gQ5jdGVKSZWflL8Vl34KK9OtKbcpqH7DBqlCDWtQvQw88yvE9H04nY/6r1FUMgWY8
+ GYn/U2+rSKjA==
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="528014627"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.145.6]) ([10.249.145.6])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 08:45:32 -0700
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+References: <20201006083639.GJ3227@techsingularity.net>
+ <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+ <20201006190322.GL3227@techsingularity.net>
+ <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
+ <20201006211820.GN3227@techsingularity.net>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
+Date:   Wed, 7 Oct 2020 17:45:30 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201007104757.fntgjiwt4tst3w3f@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201006211820.GN3227@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/6/2020 11:18 PM, Mel Gorman wrote:
+> On Tue, Oct 06, 2020 at 09:29:24PM +0200, Rafael J. Wysocki wrote:
+>>> After the commit, the default_status file does not appear in /sys
+>>>
+>> Something is amiss, then, because the commit doesn't affect the presence of
+>> this file.
+>>
+> This was cleared up in another mail.
+>
+>> The only thing it does is to set the use_acpi flag for several processor
+>> models in intel_idle.c.
+>>
+>> It can be effectively reversed by removing all of the ".use_acpi = true,"
+>> lines from intel_idle.c.
+>>
+>> In particular, please check if changing the value of use_acpi in struct
+>> idle_cpu_hsx from 'true' to 'false' alone (without reverting the commit)
+>> makes the issue go away in 5.9-rc8 (the default_status file should be
+>> present regardless).
+>>
+> Thanks.  I applied the following
+>
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index 9a810e4a7946..6478347669a9 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -1044,7 +1044,7 @@ static const struct idle_cpu idle_cpu_hsw __initconst = {
+>   static const struct idle_cpu idle_cpu_hsx __initconst = {
+>   	.state_table = hsw_cstates,
+>   	.disable_promotion_to_c1e = true,
+> -	.use_acpi = true,
+> +	.use_acpi = false,
+>   };
+>
+> netperf UDP_STREAM
+>                                        pre                 enable                 enable                5.9-rc8                5.9-rc8
+>                                        cst                    cst        cst-no-hsx-acpi                vanilla            no-hsx-acpi
+> Hmean     send-64       203.96 (   0.00%)      179.23 * -12.13%*      201.04 (  -1.44%)      203.24 (  -0.36%)      233.43 *  14.45%*
+> Hmean     send-128      403.66 (   0.00%)      355.99 * -11.81%*      402.28 (  -0.34%)      387.65 *  -3.97%*      461.47 *  14.32%*
+> Hmean     send-256      784.39 (   0.00%)      697.78 * -11.04%*      782.15 (  -0.29%)      758.49 *  -3.30%*      895.31 *  14.14%*
+> Hmean     recv-64       203.96 (   0.00%)      179.23 * -12.13%*      201.04 (  -1.44%)      203.24 (  -0.36%)      233.43 *  14.45%*
+> Hmean     recv-128      403.66 (   0.00%)      355.99 * -11.81%*      402.28 (  -0.34%)      387.65 *  -3.97%*      461.47 *  14.32%*
+> Hmean     recv-256      784.39 (   0.00%)      697.78 * -11.04%*      782.15 (  -0.29%)      758.49 *  -3.30%*      895.28 *  14.14%*
+>
+> This is a more limited run to save time but is enough to illustrate
+> the point.
+>
+> pre-cst is just before your patch
+> enable-cst is your patch that was bisected
+> enable-cst-no-hsx-acpi is your patch with use_acpi disabled
+> 5.9-rc8-vanilla is what it sounds like
+> 5.9-rc8-no-hsx-acpi disables use_acpi
+>
+> The enable-cst-no-hsx-acpi result indicates that use_acpi was the issue for
+> Haswell (at least these machines). Looking just at 5.9-rc8-vanillaa might
+> have been misleading because its performance is not far off the baseline
+> due to unrelated changes that mostly offset the performance penalty.
+>
+> The key question is -- how appropriate would it be to disable acpi for
+> Haswell? Would that be generally safe or could it hide other surprises?
+>
+It should be safe, but let's try to do something more fine-grained.
+
+There is the CPUIDLE_FLAG_ALWAYS_ENABLE flag that is set for C1E.  Can 
+you please try to set it for C6 in hsw_cstates instead of clearing 
+use_acpi in idle_cpu_hsx and retest?
 
 
-On 10/7/2020 3:47 AM, Marco Felsch wrote:
-> Florian did you send a new version of those patches?
-
-I did not because we had a good conversation with Rob over IRC and the 
-conclusion was that the only solution that scaled across drivers, 
-subsystems and type of resources (regulators, clocks, resets, etc.) was 
-to have a compatible string for the given device that contains the ID. 
-For Ethernet PHY or MDIO device nodes that is "ethernet-phyAAAA.BBBB".
-
-When the bus determines the presence of such a compatible string it 
-needs to bypass the dynamic identification of the device and needs to 
-bind the PHY driver and the device instance directly. MDIO does that, 
-and so does I2C and SPI AFAICT with the modalias/compatible (there is 
-not a standardized way to runtime detect an I2C or SPI client anyway), 
-while PCI and USB do not, but arguably could in the future.
-
-For the specific use case that I had which required turning on a clock 
-to the Ethernet PHY, I ended up modifying the firmware to provide that 
-compatible string "ethernetAAAA.BBBB" and have the driver request the 
-clock from its probe function:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/drivers/net/phy/bcm7xxx.c?id=ba4ee3c053659119472135231dbef8f6880ce1fb
--- 
-Florian
