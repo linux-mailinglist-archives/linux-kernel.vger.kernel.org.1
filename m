@@ -2,157 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897C1285E4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A221285E51
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgJGLkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:40:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726096AbgJGLkO (ORCPT
+        id S1727811AbgJGLkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726096AbgJGLkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:40:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602070812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VnpOHvJy8LvAhL+Lm2aOHdven8UGI5jNfFG54RH0lno=;
-        b=W1BtREJ8Jg1163D/XYRpfx/pbMYvR3unRAUryVJGUASPLx3G3KpL6KZnKR5SgJ5L4qYH/z
-        FdCp4FQK7OrulXkTCtXigUGQ6AgjktETFmbn5llkC+s7gySKP50vnEcur4QewCMTlQukEV
-        cdo23pxcyzxl6JKr8xtqiDnhnBqd0KE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-CVwuDJ3ZOieVRIiIXspLDw-1; Wed, 07 Oct 2020 07:40:09 -0400
-X-MC-Unique: CVwuDJ3ZOieVRIiIXspLDw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 69762425D1;
-        Wed,  7 Oct 2020 11:40:08 +0000 (UTC)
-Received: from [10.33.36.138] (unknown [10.33.36.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C4E675D9E2;
-        Wed,  7 Oct 2020 11:40:02 +0000 (UTC)
-Subject: Re: [Cluster-devel] general protection fault in gfs2_rgrp_dump
-To:     syzbot <syzbot+43fa87986bdd31df9de6@syzkaller.appspotmail.com>,
-        agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-References: <00000000000035788305b1000361@google.com>
-From:   Andrew Price <anprice@redhat.com>
-Message-ID: <48e63ee5-7d68-6502-33e0-9ab5489290ce@redhat.com>
-Date:   Wed, 7 Oct 2020 12:40:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 7 Oct 2020 07:40:31 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B9FC061755;
+        Wed,  7 Oct 2020 04:40:29 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id t21so1799365eds.6;
+        Wed, 07 Oct 2020 04:40:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=k0aeJ1aYDeTbfQgHa1bFP6cUwbAIO3u/WkE2x9DvX8Y=;
+        b=lL6tR969hOKqmM8s5zNN//ayAtdv7Ochna4uq6PZS54QF5l4MU+t4smAXv2EhtFOqi
+         0nBsyOoRstNSS4yzZ0OpGMCmjhoDIJprstf5+YlImipSM6XjE3oqFGtuX/iLdMrQ/heO
+         zAm7Vec+A9T6Dl9ep+/AgFwyns8sTn5gRSSp62jRC/It1TbFyx+Mm+gkpEK0kMY3k1hX
+         acrMmRVLwp7XiIzJ8ADtFKlnpsGI1Lkqv8/5bm5xPO6d5h7uosjpQcP/5RLaC7pMcQMC
+         uzBZofb6QC1JUw3n/1DJJ90EGnn2ZXzGMfR6Yxzk9H9S0EPphVCovR8pf9hEisWrqtIV
+         PxbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:references:date
+         :in-reply-to:message-id:user-agent:mime-version;
+        bh=k0aeJ1aYDeTbfQgHa1bFP6cUwbAIO3u/WkE2x9DvX8Y=;
+        b=fjB8B/clBY5Qt7Fw6Rd9AGKdSP/tpIgDMX6HUYD6ClIEifjeiuqwhDL8ybgiGBVQgO
+         PspXnkjVaxUXJZScNfRd6O2eVBEEonPrWKj/TXQ8GSjqnr780ILpcTm4u695z3ZElO8I
+         dQDX8cO9jya/GMxLLc0VY4khyUCd76ivBSJDjP5OTVhEvCK/EHd+d/61yS4csbZ0WKXf
+         TDMCo3i4JL5US+WBI98EnIY1dLzGI7PTeuKu46fni+u6V4BPYMganje8Bt6YZw5NHl+s
+         ZwFuMA70VXCLomFSgcv+xy7TtgeqSKM9cdjcgKkN+2c93fHuLi7Cw39ZV/BDQP54vzhw
+         Cigg==
+X-Gm-Message-State: AOAM530vV8jOvREi+vo9nXLvg9/DMH767RnOlXRGnyhYDTjf6v3P9wLZ
+        4KATQVsDO/EM172BcqBvzzA=
+X-Google-Smtp-Source: ABdhPJwJ9X8Pq8LdGx1IPQXF6Ck6Bt3s9OPFOqe1bc1uSKlyPS0JUsrgQKWA19ob02V6jsPNKYXNvg==
+X-Received: by 2002:aa7:dbc5:: with SMTP id v5mr3195373edt.54.1602070828096;
+        Wed, 07 Oct 2020 04:40:28 -0700 (PDT)
+Received: from dell.be.48ers.dk (d51A5BC31.access.telenet.be. [81.165.188.49])
+        by smtp.gmail.com with ESMTPSA id r21sm1319295eda.3.2020.10.07.04.40.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 04:40:26 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
+        (envelope-from <peter@korsgaard.com>)
+        id 1kQ7o2-0002tm-0t; Wed, 07 Oct 2020 13:40:26 +0200
+From:   Peter Korsgaard <peter@korsgaard.com>
+To:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-i2c@vger.kernel.org, andrew@lunn.ch,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Subject: Re: [PATCH 1/1] i2c: ocores: fix polling mode workaround on FU540-C000 SoC
+References: <1602006796-273724-1-git-send-email-sagar.kadam@sifive.com>
+        <1602006796-273724-2-git-send-email-sagar.kadam@sifive.com>
+Date:   Wed, 07 Oct 2020 13:40:26 +0200
+In-Reply-To: <1602006796-273724-2-git-send-email-sagar.kadam@sifive.com>
+        (Sagar Shrikant Kadam's message of "Tue, 6 Oct 2020 10:53:16 -0700")
+Message-ID: <87imbm4639.fsf@dell.be.48ers.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <00000000000035788305b1000361@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2020 13:48, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    7575fdda Merge tag 'platform-drivers-x86-v5.9-2' of git://..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14abb7c7900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=43fa87986bdd31df9de6
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+43fa87986bdd31df9de6@syzkaller.appspotmail.com
-> 
-> gfs2: fsid=syz:syz.0: ri_addr = 20
-> ri_length = 1
-> ri_data0 = 21
-> ri_data = 2060
-> ri_bitbytes = 0
+>>>>> "Sagar" == Sagar Shrikant Kadam <sagar.kadam@sifive.com> writes:
 
-I could reproduce this by setting ri_bitbytes in the first rindex entry 
-to 0. The bug is in the error path.
+ > The FU540-C000 has a broken IRQ and support was added earlier
+ > so that it will operate in polling mode, but seems to work only
+ > in case interrupts property is missing from the i2c0 dt-node.
+ > This should not be the case and the driver should handle polling
+ > mode with the interrupt property present in i2c0 node of the
+ > device tree.
+ > So check if it's the FU540-C000 soc and enable polling mode master
+ > xfers, as the IRQ for this chip is broken.
 
-Patch submitted: 
-https://www.redhat.com/archives/cluster-devel/2020-October/msg00008.html
+ > Fixes commit c45d4ba86731 ("i2c: ocores: add polling mode workaround
+ > for Sifive FU540-C000 SoC")
 
-Andy
+ > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+ > ---
+ >  drivers/i2c/busses/i2c-ocores.c | 22 +++++++++++++---------
+ >  1 file changed, 13 insertions(+), 9 deletions(-)
 
-> start=0 len=0 offset=128
-> general protection fault, probably for non-canonical address 0xdffffc0000000020: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000100-0x0000000000000107]
-> CPU: 1 PID: 19688 Comm: syz-executor.3 Not tainted 5.9.0-rc8-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:gfs2_rgrp_dump+0x3b/0x6c0 fs/gfs2/rgrp.c:2220
-> Code: 24 10 48 89 f3 48 89 7c 24 08 48 bd 00 00 00 00 00 fc ff df e8 06 7a 2b fe 48 89 ea 48 81 c3 00 01 00 00 48 89 d8 48 c1 e8 03 <80> 3c 28 00 74 12 48 89 df e8 97 60 6b fe 48 ba 00 00 00 00 00 fc
-> RSP: 0018:ffffc90009037758 EFLAGS: 00010202
-> RAX: 0000000000000020 RBX: 0000000000000100 RCX: 0000000000040000
-> RDX: dffffc0000000000 RSI: 0000000000016753 RDI: 0000000000016754
-> RBP: dffffc0000000000 R08: ffffffff83ddd758 R09: fffff52001206efa
-> R10: fffff52001206efa R11: 0000000000000000 R12: ffffffff89364b22
-> R13: ffff888042e74000 R14: dffffc0000000000 R15: ffffffff89364943
-> FS:  00007fb8f261d700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000016a9e60 CR3: 00000000959d9000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   gfs2_consist_rgrpd_i+0xa1/0x110 fs/gfs2/util.c:422
->   compute_bitstructs fs/gfs2/rgrp.c:812 [inline]
->   read_rindex_entry fs/gfs2/rgrp.c:909 [inline]
->   gfs2_ri_update+0xb60/0x1860 fs/gfs2/rgrp.c:986
->   gfs2_rindex_update+0x283/0x320 fs/gfs2/rgrp.c:1032
->   init_inodes fs/gfs2/ops_fstype.c:792 [inline]
->   gfs2_fill_super+0x28e7/0x3fe0 fs/gfs2/ops_fstype.c:1125
->   get_tree_bdev+0x3e9/0x5f0 fs/super.c:1342
->   gfs2_get_tree+0x4c/0x1f0 fs/gfs2/ops_fstype.c:1201
->   vfs_get_tree+0x88/0x270 fs/super.c:1547
->   do_new_mount fs/namespace.c:2875 [inline]
->   path_mount+0x179d/0x29e0 fs/namespace.c:3192
->   do_mount fs/namespace.c:3205 [inline]
->   __do_sys_mount fs/namespace.c:3413 [inline]
->   __se_sys_mount+0x126/0x180 fs/namespace.c:3390
->   do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x46087a
-> Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8a 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
-> RSP: 002b:00007fb8f261ca88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 00007fb8f261cb20 RCX: 000000000046087a
-> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fb8f261cae0
-> RBP: 00007fb8f261cae0 R08: 00007fb8f261cb20 R09: 0000000020000000
-> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
-> R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020047a20
-> Modules linked in:
-> ---[ end trace 8711b33583174bc7 ]---
-> RIP: 0010:gfs2_rgrp_dump+0x3b/0x6c0 fs/gfs2/rgrp.c:2220
-> Code: 24 10 48 89 f3 48 89 7c 24 08 48 bd 00 00 00 00 00 fc ff df e8 06 7a 2b fe 48 89 ea 48 81 c3 00 01 00 00 48 89 d8 48 c1 e8 03 <80> 3c 28 00 74 12 48 89 df e8 97 60 6b fe 48 ba 00 00 00 00 00 fc
-> RSP: 0018:ffffc90009037758 EFLAGS: 00010202
-> RAX: 0000000000000020 RBX: 0000000000000100 RCX: 0000000000040000
-> RDX: dffffc0000000000 RSI: 0000000000016753 RDI: 0000000000016754
-> RBP: dffffc0000000000 R08: ffffffff83ddd758 R09: fffff52001206efa
-> R10: fffff52001206efa R11: 0000000000000000 R12: ffffffff89364b22
-> R13: ffff888042e74000 R14: dffffc0000000000 R15: ffffffff89364943
-> FS:  00007fb8f261d700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000016a9e60 CR3: 00000000959d9000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+ > diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-ocores.c
+ > index f5fc75b..4405244 100644
+ > --- a/drivers/i2c/busses/i2c-ocores.c
+ > +++ b/drivers/i2c/busses/i2c-ocores.c
+ > @@ -686,17 +686,21 @@ static int ocores_i2c_probe(struct platform_device *pdev)
+ 
+ >  	init_waitqueue_head(&i2c->wait);
+ 
+ > +	/*
+ > +	 * Set OCORES_FLAG_BROKEN_IRQ to enable workaround for
+ > +	 * FU540-C000 SoC in polling mode.
+ > +	 * Since the SoC does have interrupt it's dt has the interrupt
+ > +	 * defined but it should be bypassed in driver as this SoC has
+ > +	 * a broken IRQ, hence update the master_xfer to use polling
+ > +	 * transfers.
+ > +	 */
+ > +	match = of_match_node(ocores_i2c_match, pdev->dev.of_node);
+ > +	if (match && (long)match->data == TYPE_SIFIVE_REV0)
+ > +		i2c->flags |= OCORES_FLAG_BROKEN_IRQ;
+ > +
+ >  	irq = platform_get_irq(pdev, 0);
+ > -	if (irq == -ENXIO) {
+ > +	if (i2c->flags == OCORES_FLAG_BROKEN_IRQ || irq == -ENXIO) {
 
+NIT: flags is a bitmask, so i2c->flags & OCORES_FLAG_BROKEN_IRQ would be
+better, even if there currently doesn't exist any other flags.
+
+TYPE_SIFIVE_REV0 is also set for two compatibles:
+
+        {
+                .compatible = "sifive,fu540-c000-i2c",
+                .data = (void *)TYPE_SIFIVE_REV0,
+        },
+        {
+                .compatible = "sifive,i2c0",
+                .data = (void *)TYPE_SIFIVE_REV0,
+        },
+
+Are both affected by this issue? if not, we will need to extend the code
+to handle them differently.
+
+Other than that, it looks OK to me.
+
+-- 
+Bye, Peter Korsgaard
