@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAED28657F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20371286583
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgJGRLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:11:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbgJGRLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:11:09 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EC5621775;
-        Wed,  7 Oct 2020 17:11:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602090668;
-        bh=Q/SeNQlpma2QgtnPxD9Oeo195rXtJWRkFMLd4Ccsk7I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VTi8JK423f8kusfHNAuAZiB9RWqC8f4FjfPzwDCcJHe41WddgDmti4dpdZgVWdV1d
-         FvyIi+Aq/l2drHrZHyzk2CVE377Wzi71lrbo5JYjL2+vOGf4wwxI67+TNtcCt9Wo+c
-         6COtjB1bJNl//Qx4MHfKN79CLs8/8tOMNvfFyrLU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 00AAD3522FA4; Wed,  7 Oct 2020 10:11:07 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 10:11:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        linux-toolchains@vger.kernel.org, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        torvalds@linux-foundation.org
-Subject: Re: Control Dependencies vs C Compilers
-Message-ID: <20201007171107.GO29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201006114710.GQ2628@hirez.programming.kicks-ass.net>
- <875z7nm4qm.fsf@oldenburg2.str.redhat.com>
- <20201007093243.GB2628@hirez.programming.kicks-ass.net>
- <87k0w2gww6.fsf@oldenburg2.str.redhat.com>
- <20201007115054.GD2628@hirez.programming.kicks-ass.net>
+        id S1727906AbgJGRMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgJGRMg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:12:36 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4168C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:12:36 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id s66so2955590otb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ds2b6pt8mpuSnK1WqusZcK5IPcMpzyRXiJsNhW5qyYM=;
+        b=XywxnLHwupjUJptE/EVD6sBBvmwp1LZdLWVQN7sGbbfMYl92hBOlZr7ZFS4X+E/amg
+         opzvB15wo+wkKlQcyzXYRqNCcc6ZTwDvf0ncSkJzjaY9dJ7cef2oaD3bBKharNZqlUDk
+         SK2SYwy12YuTYhWzjRrLHd7+bMmqCT/EcoV/4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ds2b6pt8mpuSnK1WqusZcK5IPcMpzyRXiJsNhW5qyYM=;
+        b=p+PtgMYuYFmgdHfZzD8LShY0k5E2SJb1PENURy78H/81nm3l95m5wBH6aQYgD/N9hj
+         gJf5DPUppOd5CXFGnUqUShclCNcimkMLNz4QWbyOZ3YiIfIWgeMD5uPFDf4NhSPPa/UU
+         8rUwiT2V0wERlKJInoiWx3s1ek9h8uswJIRodnGKt77KeU2gKyZLWpam9orITOQsVlGV
+         QGMMzPLUJAk9OvwsE+2zHNayZ+KRBb7LWaTBPjN267lLXsNuPXcT0titUrH7tqEN+O0q
+         gMGLt7qLm1W7S0LeGeevHXVyJFDRnSGXfPi5eSA9XcDnnqlpGHOiAJclW+OWX/m/KOvX
+         zeBg==
+X-Gm-Message-State: AOAM531XyAvEkRGHa+Iy6hN2EW0QDVtYcGEe5Ug2+t0Zaw7bzSNG4Dls
+        5lqo9aeW3NFWdxl3HUvRyViGGnSEQAPW0fbADsNLnQ==
+X-Google-Smtp-Source: ABdhPJzTO+z2ObbheXgto8t7rJhDCsKMuOtKVLpylgXo93WqdqDznkfE8ic3+XhZYxCrctCNbkyO32BPlJ+tqH+Wfoo=
+X-Received: by 2002:a05:6830:1c3c:: with SMTP id f28mr2639345ote.188.1602090755973;
+ Wed, 07 Oct 2020 10:12:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007115054.GD2628@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-6-daniel.vetter@ffwll.ch> <20201007165316.GT5177@ziepe.ca>
+In-Reply-To: <20201007165316.GT5177@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 7 Oct 2020 19:12:24 +0200
+Message-ID: <CAKMK7uGTpZcHwrBNQOXwzDAzyfSgoLSt_Dae_3hMRE2xwGx+GA@mail.gmail.com>
+Subject: Re: [PATCH 05/13] mm/frame-vector: Use FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 01:50:54PM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 07, 2020 at 12:20:41PM +0200, Florian Weimer wrote:
-> > * Peter Zijlstra:
+On Wed, Oct 7, 2020 at 6:53 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Oct 07, 2020 at 06:44:18PM +0200, Daniel Vetter wrote:
+> >
+> > -     /*
+> > -      * While get_vaddr_frames() could be used for transient (kernel
+> > -      * controlled lifetime) pinning of memory pages all current
+> > -      * users establish long term (userspace controlled lifetime)
+> > -      * page pinning. Treat get_vaddr_frames() like
+> > -      * get_user_pages_longterm() and disallow it for filesystem-dax
+> > -      * mappings.
+> > -      */
+> > -     if (vma_is_fsdax(vma)) {
+> > -             ret = -EOPNOTSUPP;
+> > -             goto out;
+> > -     }
+> > -
+> > -     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> > -             vec->got_ref = true;
+> > -             vec->is_pfns = false;
+> > -             ret = pin_user_pages_locked(start, nr_frames,
+> > -                     gup_flags, (struct page **)(vec->ptrs), &locked);
+> > -             goto out;
+> > -     }
+>
+> The vm_flags still need to be checked before going into the while
+> loop. If the break is taken then nothing would check vm_flags
 
-[ . . . ]
+Hm right that's a bin inconsistent. follow_pfn also checks for this,
+so I think we can just ditch this entirely both here and in the do {}
+while () check, simplifying the latter to just while (vma). Well, just
+make it a real loop with less confusing control flow probably.
 
-> > >> I think in GCC, they are called __atomic_load_n(foo, __ATOMIC_RELAXED)
-> > >> and __atomic_store_n(foo, __ATOMIC_RELAXED).  GCC can't optimize relaxed
-> > >> MO loads and stores because the C memory model is defective and does not
-> > >> actually guarantee the absence of out-of-thin-air values (a property it
-> > >> was supposed to have).
-> > >
-> > > AFAIK people want to get that flaw in the C memory model fixed (which to
-> > > me seemd like a very good idea).
-> > 
-> > It's been a long time since people realized that this problem exists,
-> > with several standard releases since then.
-> 
-> I've been given to believe it is a hard problem. Personally I hold the
-> opinion that prohibiting store speculation (of all kinds) is both
-> necesary and sufficient to avoid OOTA. But I have 0 proof for that.
-
-There are proofs for some definitions of store speculation, for example,
-as proposed by Demsky and Boehm [1] and as prototyped by Demsky's student,
-Peizhao Ou [2].  But these require marking all accesses and end up being
-optimized variants of acquire load and release store.  One optimization
-is that if you have a bunch of loads followed by a bunch of stores,
-the compiler can emit a single memory-barrier instruction between the
-last load and the first store.
-
-I am not a fan of this approach.
-
-Challenges include:
-
-o	Unmarked accesses.  Compilers are quite aggressive about
-	moving normal code.
-
-o	Separately compiled code.  For example, does the compiler have
-	unfortunatel optimization opportunities when "volatile if" 
-	appears in one translation unit and the dependent stores in
-	some other translation unit?
-
-o	LTO, as has already been mentioned in this thread.
-
-Probably other issues as well, but a starting point.
-
-							Thanx, Paul
-
-[1]	https://dl.acm.org/doi/10.1145/2618128.2618134
-	"Outlawing ghosts: avoiding out-of-thin-air results"
-	Hans-J. Boehm and Brian Demsky.
-
-[2]	https://escholarship.org/uc/item/2vm546k1
-	"An Initial Study of Two Approaches to Eliminating Out-of-Thin-Air
-	Results" Peizhao Ou.
+Or prefer I keep this and touch the code less?
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
