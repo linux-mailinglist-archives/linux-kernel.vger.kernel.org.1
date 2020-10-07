@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04A82868C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D157D2868C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgJGUBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:01:17 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:52893 "EHLO
+        id S1728227AbgJGUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:01:15 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:53173 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728092AbgJGUBO (ORCPT
+        with ESMTP id S1728060AbgJGUBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:01:14 -0400
+        Wed, 7 Oct 2020 16:01:13 -0400
 Received: from weisslap.m4st3rnet.de ([178.27.102.19]) by
  mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1Mm9NA-1kqozl46Vc-00iCmY; Wed, 07 Oct 2020 22:01:02 +0200
+ id 1MGxYh-1kCnD23hRL-00E6t7; Wed, 07 Oct 2020 22:01:03 +0200
 From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Andrei Vagin <avagin@gmail.com>,
@@ -22,75 +22,133 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Christian Brauner <christian.brauner@ubuntu.com>
 Cc:     linux-kernel@vger.kernel.org,
         =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Subject: [PATCH 3/4] fs/proc: apply timens offset for start_boottime of processes
-Date:   Wed,  7 Oct 2020 22:00:14 +0200
-Message-Id: <20201007200015.30868-4-michael.weiss@aisec.fraunhofer.de>
+Subject: [PATCH 4/4] selftests/timens: added selftest for /proc/stat btime
+Date:   Wed,  7 Oct 2020 22:00:15 +0200
+Message-Id: <20201007200015.30868-5-michael.weiss@aisec.fraunhofer.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201007200015.30868-1-michael.weiss@aisec.fraunhofer.de>
 References: <20201007200015.30868-1-michael.weiss@aisec.fraunhofer.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:TU8MOXyzC5ITS5h5SQXAVQJaNCSW+GUs23n815igV1Fg49UWUj4
- vv9WA9hwCnHlpdZde/5zpC5h2VrG+ZZVhjBFZjVpHjUQ4O3MO4dHY3P4aIyErLzAJV1Zk4S
- Y1wIfg1031V0Zsx6bdhujKitgTQQZKMhZWI06hmyvBNA+UPr1hFae+Ghu/wDKyVuVk7pghU
- Qqgwz6JKlThGSPlqWlIQQ==
+X-Provags-ID: V03:K1:FgTrGpeHQrRfG65lLTx+YffpR+XLlCqQ4sYTOqKpip06j+yKXBy
+ CDRt0dMtSPpPb8JN55tROQaQ7nEjgVBqASUn3yX30zuQXDMEhJuwk3Bhn1bsUlqXqY2QSZM
+ U5AEg04h3kHKOeNmSiXMTp4CJBz0oY0hg2xjrtbCcLpzidZYVQzq0A6SkSLtWhhqa5jg/ia
+ C3d07uVtl7NXJ2Nc6V5Ww==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wpTpl0KUL1U=:uAF7UMz4lQ3Ab5LfT7FPyw
- DaaoYJHtPd9W7/avjTV3CPYqmMRjYT/s/rIsA22iSkxdgFSIdbdXG7Is2okLzbRN4zRtMLZK7
- +j7V1upsfQ+oDXHCnn2g9rJnSzz6A0r1+YCjjRsm3oCZe2aPxvz+T9iBIoZk31aWAqSkpf1o3
- F7gSyWSXTWspMO5TIwwmdHk5AEzXbbwB9RW0fOR/bVDJMFp5EZsho/MfKu/xyREx2UyNRn1nH
- Nqumzy92Tros53IPkIYmnVwI728vUXXZ4kwVoEYu/B0zaaQqM7Txb4kwhh0gajWs9WWqwGm/+
- EASk3c+EJGscvtQs+u4UMq2KUFJb7FMyE0OWnq2RzsVq1E4rrT7LIJNyvnrs5YuD0vM9R+vEk
- NdPJhUcXlgMfkP6CK1YmD5i8xR2cpopECbHYUYJbE7rA1wOoE6woBHrD+SU/gNPh5ygItEZBh
- mjUS3X+ElcVYrszRScniX9UExKuyja3ycZJuEJkXT4VkI5fA/94WB55p6vDi3ZYhvtnQTN5DY
- fEje6aqpRHyczYap4SW2/4fs+N2DCZmomnAnIrzIysc/PhBD84MGLqjwCM2eA1pBPq/qvgh68
- Bz4Wb4AtOFpefIyGi9pdSSWAOHP4URfKps3rnuxxS0iWw7j8SVorIyE2P48YE2hjaNdjaks1W
- 4I6SQVBs1IQE1pDGGjucwO1KsY+vIulkF1epY+7IcoMKstgA8/YTlgXaru+RexkTPT5z9jvcp
- 41rTeo5iuyZi1vUZhlDXQGoNbgiaMhknsQ+a71rdGGLRjAEZw8fl7vASPv8DLbnJTC9S+L34R
- 5MVXf4yn0F/quQD+XPyleYKKWFyedhbuevdsgwS56eC1R6wsYO9Wl2z60tQLrjVeNwhxbVvKx
- AJmxk0OukfLvM9yvJk4Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dVkN4KU9ANI=:8GoHeJ5nbLUOx6LIlWQXpZ
+ Gd1f+yBtYv45dPRH31Idv+W193bzuK4q0MTFROwDPCdJuXVXwDQCLyXeFBQOx2sRqz5WFTlKZ
+ AxGE7uyLtu/QCHczDvmnHf+eWu2pIONGKgRy1nNU1WIBIqZoG6K5GPieUNat6dGmBENNf0/Sj
+ 9fvbyIvfA8nroAu5tAq/MfxLLuJ81/CUr68LfZxa0DAJ8P5jbkXrlnP0TETqp9XekOEFLhIW7
+ Ln3ooAr0SC7cL7ghJ39LNle0uSYAQAVSbspzTGheFffU3vLtuVU190vv3KB3pxqtd5omw7hwZ
+ 5VIztQZrljpsF5oEfRNV5iDEDfvdCXlxI/staTQXrOAa8Jp/SzVcPZt9oms+/fbc65o/4PcGl
+ JQchuVfJVBUm3rfQsSZqSyioSAxRUBk/TBvDnRZpLKZu2YuYKoTe9F+6E40xSijYnFIV3uUyZ
+ ptDhEvfqqgDfmb4MlgiRy3t/7j9MIuq4+TcVhYAojH2ZFY1FZMKMuM9KGIvSt0MpdjgFuppjA
+ W4DDM2sAx64SiciMBEH+00AgxyPx2d5rOk5bkzbPkAIUrPn6fAETU7cTl/G+maqNMjQyywzSQ
+ /Ia0B4mVsLwShFP76gv9G6kVbPxCk6m8/Zd5CMUYcuKk62FW9wtH8nHoZCUPX2JkxdZw2xFpP
+ VLNPRdE0yK6T/QC3VkUZKo36rUiW9MZOyt7D0lTGdAxNbH+SkOB4/gMHuU8ZLvPRBt5NG33Hy
+ TpJ9Wcs4gxP2HFIlqXU+DKES1Wb3GSC0n0bHOLDhNpFdkWukeFksWanYetuAH/DOWouEqIoPe
+ 8U2wsJ6Ju06/cFZXNbMWt990vkkJQOh+dc+83cvDHJgJW9zFI8k0Ezr6Y39h/lynohO2SmiDY
+ xI97DTYAPB0/t+VgnsBA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since start_boottime of processes are seconds since boottime and the
-boottime stamp is now shifted according to the timens offset, the
-offset of the time namespace also needs to be applied before the
-process stats are given to userspace.
-
-This avoids that processes shown, e.g., by 'ps' appear as time
-travelers in the corresponding time namespace.
+Test that btime value of /proc/stat is as expected in the time namespace
+using a simple parser to get btime from /proc/stat.
 
 Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
 ---
- fs/proc/array.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/testing/selftests/timens/procfs.c | 58 ++++++++++++++++++++++++-
+ 1 file changed, 57 insertions(+), 1 deletion(-)
 
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index 65ec2029fa80..277f654f289e 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -56,6 +56,7 @@
- #include <linux/types.h>
- #include <linux/errno.h>
- #include <linux/time.h>
-+#include <linux/time_namespace.h>
- #include <linux/kernel.h>
- #include <linux/kernel_stat.h>
- #include <linux/tty.h>
-@@ -533,8 +534,9 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 	priority = task_prio(task);
- 	nice = task_nice(task);
+diff --git a/tools/testing/selftests/timens/procfs.c b/tools/testing/selftests/timens/procfs.c
+index 7f14f0fdac84..f2519154208a 100644
+--- a/tools/testing/selftests/timens/procfs.c
++++ b/tools/testing/selftests/timens/procfs.c
+@@ -93,6 +93,33 @@ static int read_proc_uptime(struct timespec *uptime)
+ 	return 0;
+ }
  
--	/* convert nsec -> ticks */
--	start_time = nsec_to_clock_t(task->start_boottime);
-+	/* apply timens offset for boottime and convert nsec -> ticks */
-+	start_time =
-+		nsec_to_clock_t(timens_add_boottime_ns(task->start_boottime));
++static int read_proc_stat_btime(unsigned long long *boottime_sec)
++{
++	FILE *proc;
++	char line_buf[2048];
++
++	proc = fopen("/proc/stat", "r");
++	if (proc == NULL) {
++		pr_perror("Unable to open /proc/stat");
++		return -1;
++	}
++
++	while (fgets(line_buf, 2048, proc)) {
++		if (sscanf(line_buf, "btime %llu", boottime_sec) != 1)
++			continue;
++		fclose(proc);
++		return 0;
++	}
++	if (errno) {
++		pr_perror("fscanf");
++		fclose(proc);
++		return -errno;
++	}
++	pr_err("failed to parse /proc/stat");
++	fclose(proc);
++	return -1;
++}
++
+ static int check_uptime(void)
+ {
+ 	struct timespec uptime_new, uptime_old;
+@@ -123,18 +150,47 @@ static int check_uptime(void)
+ 	return 0;
+ }
  
- 	seq_put_decimal_ull(m, "", pid_nr_ns(pid, ns));
- 	seq_puts(m, " (");
++static int check_stat_btime(void)
++{
++	unsigned long long btime_new, btime_old;
++	unsigned long long btime_expected;
++
++	if (switch_ns(parent_ns))
++		return pr_err("switch_ns(%d)", parent_ns);
++
++	if (read_proc_stat_btime(&btime_old))
++		return 1;
++
++	if (switch_ns(child_ns))
++		return pr_err("switch_ns(%d)", child_ns);
++
++	if (read_proc_stat_btime(&btime_new))
++		return 1;
++
++	btime_expected = btime_old - TEN_DAYS_IN_SEC;
++	if (btime_new != btime_expected) {
++		pr_fail("btime in /proc/stat: old %llu, new %llu [%llu]",
++			btime_old, btime_new, btime_expected);
++		return 1;
++	}
++
++	ksft_test_result_pass("Passed for /proc/stat btime\n");
++	return 0;
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	int ret = 0;
+ 
+ 	nscheck();
+ 
+-	ksft_set_plan(1);
++	ksft_set_plan(2);
+ 
+ 	if (init_namespaces())
+ 		return 1;
+ 
+ 	ret |= check_uptime();
++	ret |= check_stat_btime();
+ 
+ 	if (ret)
+ 		ksft_exit_fail();
 -- 
 2.20.1
 
