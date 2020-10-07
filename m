@@ -2,205 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41009285811
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19363285814
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgJGFMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 01:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgJGFMk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 01:12:40 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108D4C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 22:12:40 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id kk9so457077pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 22:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MqTaxytWvoQI4ISZ9BZG2giK3+8JEgCqbQGbQ3XkJqk=;
-        b=LGoPU1XO1ohz1/7KKRrz8tPn+DnsThHNrteOQsE3QbHsBUw3YADJGr8EvvRcMqQgmo
-         DNC2+EPoJhQ1Yj7kNjHG3aeDND1FDRI6d95oHKGoBCfCnpcMMNAQ9QtgPs6QYtHoPa3P
-         RdILhLbu7q1FIRXcqT2f5u/S7xJkBu6na1OBHwZ9f3rinykP2rNiAEGv0Z/ligd4haab
-         A7dohGfhUjxOwrKZz7S8YjwUl1uwQIqEKI5eZ8h5evcz7miTXX9cbDdPa1s2atGA41W0
-         cmkmY17f+i+JzRtZVBQW8yHeWEfGmCPv/zxxuzjl6o5DEPaU39cteup81PkE/TLyVVyu
-         aT+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MqTaxytWvoQI4ISZ9BZG2giK3+8JEgCqbQGbQ3XkJqk=;
-        b=VjYejz4vIHcBaUdIOXApD/nTsevXS3wLkNOMymWCDjzt1gHXyuh+wXTEBKkJnZwdd4
-         5eMpls68mVrM6Qc3cBBZLWsdfnI6z6ljSC6U0wnpWEkdOzFjAFAKx3T9KOkPKFMSCcnH
-         DHnXzrVcyxSIOKG4OW6Ssqrc/Pd7VuxCYRL5+scthtV8BgGBFoPsyy5ZR2C5qO3QsXmG
-         YhbQVQdw4qNNNnkv6RIGOl0Y/khiOopv8rUKp97Y+CNl9DuUARB3lx8lv4QIQn+yh2W/
-         lcFHR0wRH3sD3iPY6HPdzegkL+ub1aQx+Kyc2wdIVbCdh+Q2LWfT5ll7d/RAhe79skXa
-         Z/OQ==
-X-Gm-Message-State: AOAM530EZptWKoKwBsL/BsY6lBb9en+F/EX6zE8qq+RjetOEtSlytQ1G
-        NZQo7Vp1nLNyrRAowoqdtV1b0w==
-X-Google-Smtp-Source: ABdhPJyuzER3yXOIM1ovZ2IILulDTv2B2tmy94ezorWOc4BP5IEFS/rdo7QZ9htpC8TeUs0pYb5nJQ==
-X-Received: by 2002:a17:90a:fa97:: with SMTP id cu23mr1382812pjb.149.1602047559573;
-        Tue, 06 Oct 2020 22:12:39 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id y13sm1032771pfl.166.2020.10.06.22.12.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 06 Oct 2020 22:12:38 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 10:42:36 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
-        linux@armlinux.org.uk, rjw@rjwysocki.net, dietmar.eggemann@arm.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] cpufreq,arm,arm64: restructure definitions of
- arch_set_freq_scale()
-Message-ID: <20201007051236.yszspqcx4preezs4@vireshk-i7>
-References: <20200924123016.13427-1-ionela.voinescu@arm.com>
- <20200924123016.13427-2-ionela.voinescu@arm.com>
+        id S1726408AbgJGFPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 01:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726041AbgJGFPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 01:15:51 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67CA7208C7;
+        Wed,  7 Oct 2020 05:15:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602047749;
+        bh=ANfQhwGzorCY3vkKqVqlFWIvj91DN6/XmR+ZZcnxwk8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1qpIDSwyz6Byq1l6YiRmkSwSfodaPH0tuefE5CjJZ6NQRypdptyq2UgLkSNjuT2U0
+         /AMiRKv1VzqZ900W80iWTv5Oc9Ta2HzFqVoyfgCpgYFiaTztmXaOcHDZ8J2WbS1VXX
+         3SABi8Isr4ueVZy0NME1WLfxRFdZ7t1kQEwxZSF8=
+Date:   Wed, 7 Oct 2020 07:15:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+Message-ID: <20201007051546.GA47583@kroah.com>
+References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+ <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
+ <20201003085345.GA114893@kroah.com>
+ <20201006005736.GD6041@ranerica-svr.sc.intel.com>
+ <20201006073744.GA6753@kroah.com>
+ <20201007031447.GB27938@ranerica-svr.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924123016.13427-2-ionela.voinescu@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201007031447.GB27938@ranerica-svr.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-09-20, 13:30, Ionela Voinescu wrote:
-> Compared to other arch_* functions, arch_set_freq_scale() has an atypical
-> weak definition that can be replaced by a strong architecture specific
-> implementation.
+On Tue, Oct 06, 2020 at 08:14:47PM -0700, Ricardo Neri wrote:
+> On Tue, Oct 06, 2020 at 09:37:44AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 05, 2020 at 05:57:36PM -0700, Ricardo Neri wrote:
+> > > On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
+> > > > > Hybrid CPU topologies combine CPUs of different microarchitectures in the
+> > > > > same die. Thus, even though the instruction set is compatible among all
+> > > > > CPUs, there may still be differences in features (e.g., some CPUs may
+> > > > > have counters that others CPU do not). There may be applications
+> > > > > interested in knowing the type of micro-architecture topology of the
+> > > > > system to make decisions about process affinity.
+> > > > > 
+> > > > > While the existing sysfs for capacity (/sys/devices/system/cpu/cpuX/
+> > > > > cpu_capacity) may be used to infer the types of micro-architecture of the
+> > > > > CPUs in the platform, it may not be entirely accurate. For instance, two
+> > > > > subsets of CPUs with different types of micro-architecture may have the
+> > > > > same capacity due to power or thermal constraints.
+> > > > > 
+> > > > > Create the new directory /sys/devices/system/cpu/types. Under such
+> > > > > directory, create individual subdirectories for each type of CPU micro-
+> > > > > architecture. Each subdirectory will have cpulist and cpumap files. This
+> > > > > makes it convenient for user space to read all the CPUs of the same type
+> > > > > at once without having to inspect each CPU individually.
+> > > > > 
+> > > > > Implement a generic interface using weak functions that architectures can
+> > > > > override to indicate a) support for CPU types, b) the CPU type number, and
+> > > > > c) a string to identify the CPU vendor and type.
+> > > > > 
+> > > > > For example, an x86 system with one Intel Core and four Intel Atom CPUs
+> > > > > would look like this (other architectures have the hooks to use whatever
+> > > > > directory naming convention below "types" that meets their needs):
+> > > > > 
+> > > > > user@host:~$: ls /sys/devices/system/cpu/types
+> > > > > intel_atom_0  intel_core_0
+> > > > > 
+> > > > > user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
+> > > > > cpulist cpumap
+> > > > > 
+> > > > > user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
+> > > > > cpulist cpumap
+> > > > > 
+> > > > > user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpumap
+> > > > > 0f
+> > > > > 
+> > > > > user@host:~$ cat /sys/devices/system/cpu/types/intel_atom_0/cpulist
+> > > > > 0-3
+> > > > > 
+> > > > > user@ihost:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpumap
+> > > > > 10
+> > > > > 
+> > > > > user@host:~$ cat /sys/devices/system/cpu/types/intel_core_0/cpulist
+> > > > > 4
+> > > 
+> > > Thank you for the quick and detailed Greg!
+> > > 
+> > > > 
+> > > > The output of 'tree' sometimes makes it easier to see here, or:
+> > > > 	grep -R . *
+> > > > also works well.
+> > > 
+> > > Indeed, this would definitely make it more readable.
+> > > 
+> > > > 
+> > > > > On non-hybrid systems, the /sys/devices/system/cpu/types directory is not
+> > > > > created. Add a hook for this purpose.
+> > > > 
+> > > > Why should these not show up if the system is not "hybrid"?
+> > > 
+> > > My thinking was that on a non-hybrid system, it does not make sense to
+> > > create this interface, as all the CPUs will be of the same type.
+> > 
+> > Why not just have this an attribute type in the existing cpuX directory?
+> > Why do this have to be a totally separate directory and userspace has to
+> > figure out to look in two different spots for the same cpu to determine
+> > what it is?
 > 
-> The more typical support for architectural functions involves defining
-> an empty stub in a header file if the symbol is not already defined in
-> architecture code. Some examples involve:
->  - #define arch_scale_freq_capacity	topology_get_freq_scale
->  - #define arch_scale_freq_invariant	topology_scale_freq_invariant
->  - #define arch_scale_cpu_capacity	topology_get_cpu_scale
->  - #define arch_update_cpu_topology	topology_update_cpu_topology
->  - #define arch_scale_thermal_pressure	topology_get_thermal_pressure
->  - #define arch_set_thermal_pressure	topology_set_thermal_pressure
-> 
-> Bring arch_set_freq_scale() in line with these functions by renaming it to
-> topology_set_freq_scale() in the arch topology driver, and by defining the
-> arch_set_freq_scale symbol to point to the new function for arm and arm64.
-> 
-> While there are other users of the arch_topology driver, this patch defines
-> arch_set_freq_scale for arm and arm64 only, due to their existing
-> definitions of arch_scale_freq_capacity. This is the getter function of the
-> frequency invariance scale factor and without a getter function, the
-> setter function - arch_set_freq_scale() has not purpose.
-> 
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->  arch/arm/include/asm/topology.h   |  1 +
->  arch/arm64/include/asm/topology.h |  1 +
->  drivers/base/arch_topology.c      |  4 ++--
->  drivers/cpufreq/cpufreq.c         |  7 -------
->  include/linux/arch_topology.h     |  2 ++
->  include/linux/cpufreq.h           | 11 ++++++++---
->  6 files changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
-> index 9219e67befbe..e5e3d5ce4d55 100644
-> --- a/arch/arm/include/asm/topology.h
-> +++ b/arch/arm/include/asm/topology.h
-> @@ -8,6 +8,7 @@
->  #include <linux/arch_topology.h>
->  
->  /* Replace task scheduler's default frequency-invariant accounting */
-> +#define arch_set_freq_scale topology_set_freq_scale
->  #define arch_scale_freq_capacity topology_get_freq_scale
->  #define arch_scale_freq_invariant topology_scale_freq_invariant
->  
-> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
-> index 7cb519473fbd..11a465243f66 100644
-> --- a/arch/arm64/include/asm/topology.h
-> +++ b/arch/arm64/include/asm/topology.h
-> @@ -26,6 +26,7 @@ void topology_scale_freq_tick(void);
->  #endif /* CONFIG_ARM64_AMU_EXTN */
->  
->  /* Replace task scheduler's default frequency-invariant accounting */
-> +#define arch_set_freq_scale topology_set_freq_scale
->  #define arch_scale_freq_capacity topology_get_freq_scale
->  #define arch_scale_freq_invariant topology_scale_freq_invariant
->  
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 1705c772c273..ae5a596bcf86 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -33,8 +33,8 @@ __weak bool arch_freq_counters_available(const struct cpumask *cpus)
->  }
->  DEFINE_PER_CPU(unsigned long, freq_scale) = SCHED_CAPACITY_SCALE;
->  
-> -void arch_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
-> -			 unsigned long max_freq)
-> +void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
-> +			     unsigned long max_freq)
->  {
->  	unsigned long scale;
->  	int i;
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 2ea245a6c0c0..f34d3a3d5ba6 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -160,13 +160,6 @@ u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy)
->  }
->  EXPORT_SYMBOL_GPL(get_cpu_idle_time);
->  
-> -__weak void arch_set_freq_scale(const struct cpumask *cpus,
-> -				unsigned long cur_freq,
-> -				unsigned long max_freq)
-> -{
-> -}
-> -EXPORT_SYMBOL_GPL(arch_set_freq_scale);
-> -
->  /*
->   * This is a generic cpufreq init() routine which can be used by cpufreq
->   * drivers of SMP systems. It will do following:
-> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-> index 083df331a3c9..0f6cd6b73a61 100644
-> --- a/include/linux/arch_topology.h
-> +++ b/include/linux/arch_topology.h
-> @@ -30,6 +30,8 @@ static inline unsigned long topology_get_freq_scale(int cpu)
->  	return per_cpu(freq_scale, cpu);
->  }
->  
-> +void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
-> +			     unsigned long max_freq);
->  bool topology_scale_freq_invariant(void);
->  
->  bool arch_freq_counters_available(const struct cpumask *cpus);
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index 9f779fbdbe7b..fa37b1c66443 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -1011,9 +1011,14 @@ static inline void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
->  extern void arch_freq_prepare_all(void);
->  extern unsigned int arch_freq_get_on_cpu(int cpu);
->  
-> -extern void arch_set_freq_scale(const struct cpumask *cpus,
-> -				unsigned long cur_freq,
-> -				unsigned long max_freq);
-> +#ifndef arch_set_freq_scale
-> +static __always_inline
-> +void arch_set_freq_scale(const struct cpumask *cpus,
-> +			 unsigned long cur_freq,
-> +			 unsigned long max_freq)
-> +{
-> +}
-> +#endif
->  
->  /* the following are really really optional */
->  extern struct freq_attr cpufreq_freq_attr_scaling_available_freqs;
+> But if the type is located under cpuX, usespace would need to traverse
+> all the CPUs and create its own cpu masks. Under the types directory it
+> would only need to look once for each type of CPU, IMHO.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+What does a "mask" do?  What does userspace care about this?  You would
+have to create it by traversing the directories you are creating anyway,
+so it's not much different, right?
 
--- 
-viresh
+> > That feels wasteful, it should be much simpler to use the existing
+> > object, right?
+> > 
+> > That way, you also show the "type" of all cpus, no matter if they are
+> > "hybrid" or not, again, making userspace deal with things in a much
+> > simpler manner.
+> 
+> Indeed, that would be simpler to implement, and perhaps a natural extension
+> of the existing interface. 
+> 
+> Lastly, legacy and non-hybrid parts will not have a type defined. Thus,
+> it may not make sense for them to expose a type in sysfs.
+
+That's fine, not having a sysfs file if you don't know the type is fine.
+Or you can fix that up and show the type of those as well, why wouldn't
+you want to?
+
+> > > I thought of this as maybe intel_atcm vs a potential amd_minizen. I
+> > > guess arch is sufficient, as there will never be an amd_atom.
+> > 
+> > Even if there is, that can be part of the cpu "type" that you have for
+> > your enumerated type, right?
+> 
+> Indeed. The interface I propose lets archs define their own string
+> names.
+
+Arches _should_ define their own names, otherwise who would?
+
+thanks,
+
+greg k-h
