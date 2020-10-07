@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1664D2858D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BD22858DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgJGGyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
+        id S1727474AbgJGGyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 02:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJGGyB (ORCPT
+        with ESMTP id S1726009AbgJGGyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:54:01 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226B8C061755;
-        Tue,  6 Oct 2020 23:54:01 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id e2so1112895wme.1;
-        Tue, 06 Oct 2020 23:54:01 -0700 (PDT)
+        Wed, 7 Oct 2020 02:54:55 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0107AC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 23:54:54 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so845526wrn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 23:54:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ob9nq6VFc7bTI/f8dcEEVfJzzE6WUMnV/UoxYuqk+3Y=;
-        b=gTD9DgIVPlTlS0aa0gpHruQSu5j25fGFhsGbiaDzxgtSvMtbqBFi3FjBUOK6mfL2q3
-         pLKGNWjxBk0hzLAYX17VdKqQohknze8riqlSG4CaNZrCPXZPhon+JqgBOmz/aLiECCnA
-         4IHHbPAwl/jHM4TOAGVsxchFTIQo00uXrqAttZzWMvgGyuW8pUY8sJkp6RyDprbwdRAJ
-         HXF0CL+ao7ytblXdGs83c2T6zExkQ/gfWzDYmvVXRFgttql/SEqUe7hLDJHqnJMrbCHX
-         sw/jRbEdzCbbh7Vpo0tQkHPB7SkmSBOzC10/GKcSAwykK7ipvWWxtGv4NckXA1x4Gf9I
-         aJKQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yV5AkaFIVg+Yi3ixHGvhAiRB15tgFTDYhQclUATgZhM=;
+        b=DaUOvxS2baB+WsthNTl4GhU1HgjUAnfHCdOiQSRHle8Jib0em9a5gVlZWhkljZMldX
+         /ZYpWBdSIdWcdQBl+usF0/I6UnapkS0OL/0SI/wnlCJ4LKd5tJAtd4iOyStsVgsCtaW1
+         ufEyHznBicgVue0wYNbAVIuztugJla2pUN7UUKzn6FYWIrLwbbaUmWk9xfC+hL+eYSwA
+         GeKZJX536oj0Yj+DocHZ1zjzg2zU4zw8uwKTDOSOi8N4EtblMq2kF1EuKqEPQ0tBNXBg
+         HDNwVizZ2xr5+wkGdlgT3l8uA22ByJXw/JdEQNhqZvh5rf65F1Z8AS3bMA4vKaUqVEJv
+         Npqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ob9nq6VFc7bTI/f8dcEEVfJzzE6WUMnV/UoxYuqk+3Y=;
-        b=jsAkSPg6QhgDmmwFf76pRc1qo87qfoe4A+Xfl+igxY2rgpEaksgI0IfXP0ADxUQeFr
-         JLIqUKS1IIZ8YFPHsBR/a1JpUmPjRwE1LAYs8/a9+XMNJ6Y+z8Fwk0cPIc/kkr2xiARo
-         +PC1+dUXGmhcKH+tHvFT/eoiFmhPuw0wJgFd1A38kEjBBh7k8dzt0fHXkWpQ4HEmwddW
-         vhrij1g5d2R7LzAdBhZ7PW+tyAxUAfLK6TpW6CroWo7DxKqzpL8K/BvTtnc3qQU290ai
-         nMHawVKi4/DJ+czjge7kBeT1SA+O2E1L1hxKDlA52h10XzM47+fbfXomoUkcyalEywQF
-         4+Xw==
-X-Gm-Message-State: AOAM530k6YYN3Bc3YlsM0zM7qlOm9Otbl4Tcpo2xU4J+JFNa5HBV3Am9
-        oZFhkxWxVN+SanQ0X4ibkWoJN8qoPC+19w==
-X-Google-Smtp-Source: ABdhPJwO7nhIpGzcPTaVFQoDII/x0Jo+vZPkKQLN0ImXae/nrD0j307rhQTRpbshSEVWrVYW/kjGfg==
-X-Received: by 2002:a1c:7c12:: with SMTP id x18mr1625391wmc.107.1602053639652;
-        Tue, 06 Oct 2020 23:53:59 -0700 (PDT)
-Received: from [192.168.43.156] (dynamic-046-114-000-081.46.114.pool.telefonica.de. [46.114.0.81])
-        by smtp.gmail.com with ESMTPSA id f14sm1381078wme.22.2020.10.06.23.53.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Oct 2020 23:53:59 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        libc-alpha@sourceware.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] off_t.3: New link to system_data_types(7)
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <20201005221247.13065-1-colomar.6.4.3@gmail.com>
- <20201005221247.13065-2-colomar.6.4.3@gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <720f2ffe-b553-13cb-3eb8-b9a093c4777b@gmail.com>
-Date:   Wed, 7 Oct 2020 08:53:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yV5AkaFIVg+Yi3ixHGvhAiRB15tgFTDYhQclUATgZhM=;
+        b=a9aAUJuqtAW5xiE6HV4dm/8K5GKO2mkUUfJHJGDxM4UYE3wt2QrNPnEU18677+rdNL
+         VGYhfsqS5D/7V4y9squ9Esu4uhV/kU4PYbEcTratUFWGmh0zYg6KywWmi7gzeQx3iiDH
+         sYz4kvg8zv3AbV7oenEgz8t3Gyz/1W1+NtnmP9v5O01S0MObfA4ij+/SS9SjV02tCIsj
+         QajF5J4P+U7hSAhAA5cL9nLp4/DpD4ssT23T+nQWicmTW84ZivANeio9NDx0cIJ1ZYNn
+         O4hFXy+Hqoo+64Zxy8vebzv54P2AEped0Tl20PMS+7OcsB+nZBQRXZD7GQUxl+eOJxTa
+         P7wA==
+X-Gm-Message-State: AOAM531UKz8UVsQoG2eKDDF3sgAZsT5/NEFzL/ma/rNt1fVGqKfwpjY8
+        sJMSj5AKeIbtzf7hBg7XC5cb/Q==
+X-Google-Smtp-Source: ABdhPJwLqYg8vIlX/I+U3N0KaVXMtiFm1z+Pi+eWTyNxdyBLnzqtb//QVQxvRxj2/tHkP31vn/ozcQ==
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr1744527wrb.70.1602053693510;
+        Tue, 06 Oct 2020 23:54:53 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id g83sm1346727wmf.15.2020.10.06.23.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 23:54:52 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 07:54:51 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, dvhart@infradead.org,
+        andy@infradead.org, bhelgaas@google.com, hdegoede@redhat.com,
+        alexey.budankov@linux.intel.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH V8 1/5] PCI: Add defines for Designated Vendor-Specific
+ Extended Capability
+Message-ID: <20201007065451.GB6148@dell>
+References: <20201007005118.GA3230211@bjorn-Precision-5520>
+ <dcaea6b4e1d5b4a452c304fadb034b7b1e1c40af.camel@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201005221247.13065-2-colomar.6.4.3@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dcaea6b4e1d5b4a452c304fadb034b7b1e1c40af.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/20 12:12 AM, Alejandro Colomar wrote:
-> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+On Tue, 06 Oct 2020, David E. Box wrote:
 
-Thanks, Alex. Patch applied.
-
-Cheers,
-
-Michael
-
-> ---
->  man3/off_t.3 | 1 +
->  1 file changed, 1 insertion(+)
->  create mode 100644 man3/off_t.3
+> On Tue, 2020-10-06 at 19:51 -0500, Bjorn Helgaas wrote:
+> > On Tue, Oct 06, 2020 at 03:45:54PM -0700, David E. Box wrote:
+> > > Hi Bjorn,
+> > > 
+> > > This patch has been acked and unchanged for weeks. Is it possible
+> > > to
+> > > get this pulled into next? We have SIOV and CXL related work that
+> > > is
+> > > using these definitions. Thanks.
+> > 
+> > I acked it because I expected you to merge it along with the rest of
+> > the series.
+> > 
+> > I guess I could merge this patch via the PCI tree if you really want,
+> > but that ends up being a hassle because we have to worry about which
+> > order things get merged to Linus' tree.  Better if the whole series
+> > is
+> > merged via the same tree.
 > 
-> diff --git a/man3/off_t.3 b/man3/off_t.3
-> new file mode 100644
-> index 000000000..db50c0f09
-> --- /dev/null
-> +++ b/man3/off_t.3
-> @@ -0,0 +1 @@
-> +.so man7/system_data_types.7
-> 
+> Agreed. The hope is that this series is ready for the next merge window
+> but no ack yet on V8. And if the series does not make it I'd like this
+> patch to at least get in.
 
+If Bjorn is happy to take this patch so late in the release cycle then
+please go ahead.  The other patches are due for v5.11.
 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
