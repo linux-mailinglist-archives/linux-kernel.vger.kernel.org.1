@@ -2,76 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AB0286936
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF89E28694A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgJGUiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:38:17 -0400
-Received: from sonic302-3.consmr.mail.bf2.yahoo.com ([74.6.135.42]:46309 "EHLO
-        sonic302-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726041AbgJGUiQ (ORCPT
+        id S1728022AbgJGUnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:43:23 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3476 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJGUnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:38:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602103093; bh=lZt6zGgItlgNlCAD+ZRtvUsnME7lCnJlzSFez5pfVOQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=sq9S2fuoeI0O9aVy1MsPZuIUoOCin+z6UpUjry5fhb7zsK5fW1PSWdrIFV8zdauKVeJqIhmA8E+k9XNP45g+EfSmH5VIA5ZdpvJSK1FuWYlU1cS66h61pk8mDa39MSGOt5egROn6kBEe2LqcH5qGgix4ShjaKt9+09HretkOro3p0ijHRmUtkki21ZdO7xM4r0nNJSQEBVL3evLBzcSqa9kHVB2bob0PnqJqpRl0itbs2+j0FfQ9ckyBBXcIFS3qgQBvInKcSTNluNcAolhM0GdvXZS0zAWR8sF1DKWSA+x7smp/wtYWdnCFhD+ao+xo1aJwN1K2IKVBGUlSnyknOA==
-X-YMail-OSG: GSNkcTAVM1nFteOlpXsfDjOzUDoCQCqiSJDhw2fsZUH4x27Ret_kSxSFIeqJlu1
- 8P7HduJQDGd0WUedOYRtDv6rtul2vPeB6xP0uqxocEakwx0hn6emw01l3YR6fKtTDqsTuCCEpEle
- 16UI_WF7aAhyOtqRtn14Hg8LDHZPGXpsN6B7R..IFaX9vWNCG.8xwfozT0XX5ll3O9r82TBofbJV
- 4MgZVUORp.5.5urQnsXHTuNwSLM1cswkkL70T2VMutw9gvdmI9tkNbD2YN0ijZWmiX8ivZS9dxk5
- khGcPp84KTLISv_7JvxqFJuTqEys_8nPpbpBSctiZJBosLdYGAFKROa_DQkUQNsNJMqcEPdoajso
- Z8MsR6RYREonoRS0qA1rBAYgyzcooxqzb6il78oUHlN8TVloSN_W0kDAMG5PxAjWXgUH0VdnOLXZ
- 4d7O6bu_uJhundWCs4Ax3lNaJJUMdSEppAocQBI24fZhKKXZsHvJexUvhF1QE6xuYYmnqf67lEQ2
- 4y5l8lehe.9.iLICU5oj8iZiHOgDOdnWvgm9hl4eCuPAfnac5AQfubVzyOiI2zbvB4Dr1TQGUZbd
- IpFVmtJ2yUC5dYyngvCYBaNHObHRcIl23MnijYnjzuJg6k6uizZoaCee_80kUA4jgEtKAUuZnqI0
- TAo8oSgaFqK_sppQqQ25JnTJ2IrZXAIk_1THAUJhGrv1ipZyYJFXWYbboz47LRuNhrkR4KtK0oNN
- Cy85BqVldCqkI2BQbL.E4m56wHPRqm1r1OUEsUnLnyyd4e_SXeSjvk8ubGG1zYgBwEXszurTdVq3
- W.2wrGS8G.qXZL2TlbKvD6BZ6rh3gLzAvDDlcHuxzzmSh5mFi6xzbWljoYWrHMtLpKxFq93604Ni
- kP43AB0VLFaTjMiv9szeSZD_Rh4kIwchzChOhfuHFrpzlNIBx3aTZu3BGo6tb1asL19saMTnKETY
- HsfDbkJK4JNVB62GOpeQZ8a4FaEQYwd8kb0quStmI_23CCe.mtJlEud.NvtME3jRsy5kvg9K2VEF
- Gmn.w1ZE96pRRpXO.M9wUiZXnPdVT7AQFhjwuWsZUsizhebS9AlhMu2aReTXXCft1Hj3kjtYKMgW
- Dn3SoVJpDzZbxZ45se_HcUf.fmvAGK0RSpYj4ACmACaB.f8pTxzpXUuw_L_qtueIYlJHoM.a55B0
- QlncSQCCbKfzrQkqVlwoOlJQUm9rpN4pWGoOgSyJ1sp34luv2ikP5FBhTIUFKgz6Uqq06lF_IKXe
- JUAl1RzgE3PFRGshAmCDKqVcUNZHqOGNsx2T8W26ob0DAQNLqnQumALMu1phX.PPjwKgE7Vi3m6f
- AVgxNgcpjS6SlmWIDOevvoTz3ak4ywqsaqNtBrTw5qOvqEnbjeRXfMJeBP5RoMjbsoSG.kzyJXL1
- xMhYl0yJQ39KZrwFWZx2FS7xKWdSMO3V5oYVDlC5XDtE-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.bf2.yahoo.com with HTTP; Wed, 7 Oct 2020 20:38:13 +0000
-Date:   Wed, 7 Oct 2020 20:38:12 +0000 (UTC)
-From:   "Mr. Nor Hizam Hashim." <mr.norhizamhashim01@gmail.com>
-Reply-To: mr.norhizamhashim@gmail.com
-Message-ID: <356927829.238709.1602103092652@mail.yahoo.com>
-Subject: Waiting for your urgent response.
+        Wed, 7 Oct 2020 16:43:22 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7e285c0000>; Wed, 07 Oct 2020 13:43:08 -0700
+Received: from [10.2.85.86] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 20:43:12 +0000
+Subject: Re: [PATCH 02/13] drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        "Seung-Woo Kim" <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-3-daniel.vetter@ffwll.ch>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <399490f0-7738-db0b-9ed4-2510d4ea8379@nvidia.com>
+Date:   Wed, 7 Oct 2020 13:43:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <356927829.238709.1602103092652.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16795 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20201007164426.1812530-3-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602103388; bh=ZH2IidqacoMSnuzYghwbg6WDl/o5t7oHmVOXu9c1F+k=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=jXusZWpBkQ1E6jLC+qdDyvRga2/qZ6wGf4TnjYxb2V9EXcRc1zvX7XvzMN/x2XmRV
+         amUuUeUpijEytDz23vQicMFFvEDWq9xPU19Z/hHbG+VwmOaASLw1wXJUhec1jkmflu
+         JvxzAxQeYwLjgNiZTXC2Edy+0UqxsOxdmjaWFkJug7jWAt82v682QL7yxYxxxTiqYh
+         BN2Ra7ou6K3nD/FomQD0uDqVCLol8vmay1Bzkqs35TZglYx3LGw/EP4RnDtgkk8ato
+         6xAqVBz0QhxejE3t4KSvuT1TRFuosStCVtPLNr9nfU343+HPTrXAP2pZOBPMrqIVbo
+         ASkFmOgWvs3mw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/7/20 9:44 AM, Daniel Vetter wrote:
+> The exynos g2d interface is very unusual, but it looks like the
+> userptr objects are persistent. Hence they need FOLL_LONGTERM.
+>=20
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Inki Dae <inki.dae@samsung.com>
+> Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+> Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Kukjin Kim <kgene@kernel.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> ---
+>   drivers/gpu/drm/exynos/exynos_drm_g2d.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/ex=
+ynos/exynos_drm_g2d.c
+> index c83f6faac9de..514fd000feb1 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> @@ -478,7 +478,8 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2=
+d_data *g2d,
+>   		goto err_free;
+>   	}
+>  =20
+> -	ret =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE,
+> +	ret =3D pin_user_pages_fast(start, npages,
+> +				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+>   				  g2d_userptr->pages);
+>   	if (ret !=3D npages) {
+>   		DRM_DEV_ERROR(g2d->dev,
+>=20
 
+Looks good from a pin_user_pages_fast() point of view. I'm of course not a =
+exynos
+developer, so we still need a look from one of those, ideally, but:
 
-Dear Sir or Madam
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-Please forgive me if my request is not acceptable by your kind person.
-
-I am Mr. Nor Hizam Hashim, who works in ADB (BURKINA FASO) as a non-independent non-executive Director and President of AFRICAN DEVELOPMENT BANK. During our last banking audits, we discovered that an account abandoned belongs to one of our deceased foreign clients, the Mr. Wang Jian, co-founder and co-chair of the HNA Group, a conglomerate Chinese with important real estate properties throughout the US. in a accident during a business trip in France on Tuesday.
-
-Go to this link:
-https://observer.com/2018/07/wang-jian-hna-founder-dies-tragic-fall/
-
-I got your contact from yahoo tourist search while I was searching for a foreign partner. I am assured of your capability and reliability to champion this business opportunity when I prayed about you.
-
-I am writing to request your assistance to transfer the sum of $15,000,000.00 (fifteen million United States dollars) at its counts as Wang Jian's last foreign business partner, which I plan use the fund to invest in public benefit as follows
-
-1. Establish an orphanage home to help orphaned children.
-2. Build a hospital to help the poor.
-3. Build an asylum for the elderly and homeless.
-
-Meanwhile, before contacting you, I did an investigation staff to locate one of the relatives of the late Mr. Wang Jian who knows the account, but I didn't succeed. However, I took this decision to support orphans and less privileged children with this fund, because I don't want this fund transferred to our Account of Government treasury as unclaimed fund. I am willing to offer you the 50% of the fund for your support and assistant to transfer the fund to your account.
-
-More detailed information will be sent to the desegregation explaining how the fund will be transferred to you Please continue to achieve the purpose.
-
-Waiting for your urgent response.
-Attentively
-Mr. Nor Hizam Hashim.
+thanks,
+--=20
+John Hubbard
+NVIDIA
