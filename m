@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83BD286576
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924EC28657E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgJGRKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgJGRKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:10:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DCBC061755;
-        Wed,  7 Oct 2020 10:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EVTgrX30Sf2N0MDTPXtgxP49nGA0fxDU2gu5Ho0vIkY=; b=B1g4qsOSOqDYaNjtTtjKq622e+
-        advRWgITx6SgThtKn4TcLOYMxPj2OBViZWilqAuuvPtqGUPJWH9pG9Y+R6a5BnpkQ8O9KhtMWL+Lt
-        IncrdsPONYRCsjDRZCReDy6rX3ByiGQ4FA00Q6ZvL4E9QFRwT3oF9+nw84oKzny8MzoK3tdF7CK8a
-        r/Pi85ilx2hRMPfEotzhkTmkyho/ZCJgrkyvpn6B0/KSBB28HxA3h51/VHS4bShr9UyKzggRSxb9N
-        7+OjH94VKVz1YwXtsH6GPpAM/SGsJk0+wKSz9hLj4W7VgmVGs4OkarctBzxhk6ysaAwzDEPmGMK9n
-        1py74zBA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQCvc-0005r8-M3; Wed, 07 Oct 2020 17:08:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24572300B22;
-        Wed,  7 Oct 2020 19:08:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E1F4A2B067BCF; Wed,  7 Oct 2020 19:08:35 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 19:08:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Michael Matz <matz@suse.de>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        x86 <x86@kernel.org>
-Subject: Re: [tip: x86/pasid] x86/asm: Carve out a generic movdir64b() helper
- for general usage
-Message-ID: <20201007170835.GM2628@hirez.programming.kicks-ass.net>
-References: <20201005151126.657029-2-dave.jiang@intel.com>
- <160208728972.7002.18130814269550766361.tip-bot2@tip-bot2>
+        id S1727677AbgJGRLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:11:05 -0400
+Received: from m12-11.163.com ([220.181.12.11]:37401 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726168AbgJGRLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:11:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=j4REq
+        kCE4oCWuH/+jqK40t4uMno65/8VwgwA63qY9qQ=; b=WeXddWzYE/Cd/LaNFkJY1
+        FMUjHLGNePnhDOBwjLY5rjDFdRe0GP3iQ+MdyI+1iuK+a1AJHlQgYt6h1eg8Mj40
+        Y2rIkIQUF1+0N4nZlfLayAsFWdDeXuDG75tzhBZT4qp9g83B/n3gpKoV+s/dD2pf
+        zaUPo9yt2RsopNNg1k+Xhw=
+Received: from localhost (unknown [101.228.30.83])
+        by smtp7 (Coremail) with SMTP id C8CowAAX1tJe9n1fZAygBg--.18295S2;
+        Thu, 08 Oct 2020 01:09:50 +0800 (CST)
+Date:   Thu, 8 Oct 2020 01:09:49 +0800
+From:   Hui Su <sh_def@163.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/hugetlb.c: just use put_page_testzero() instead of
+ page_count()
+Message-ID: <20201007170949.GA6416@rlk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160208728972.7002.18130814269550766361.tip-bot2@tip-bot2>
+X-CM-TRANSID: C8CowAAX1tJe9n1fZAygBg--.18295S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrur4kJr15Jr17tr4xZw4fKrg_yoW3ZrX_W3
+        WvyF10yw4UX3srZa1akw43JryfGasxurZ3Wr47Kry3tFy5KF4DX3WDGw1FyrZxW3y7WrW3
+        Krn5C3W7Cry3KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU04q2JUUUUU==
+X-Originating-IP: [101.228.30.83]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiLgG2X1SIqUP2NwABsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 04:14:49PM -0000, tip-bot2 for Dave Jiang wrote:
-> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-> index 59a3e13..d4baa0e 100644
-> --- a/arch/x86/include/asm/special_insns.h
-> +++ b/arch/x86/include/asm/special_insns.h
-> @@ -234,6 +234,28 @@ static inline void clwb(volatile void *__p)
->  
->  #define nop() asm volatile ("nop")
->  
-> +/* The dst parameter must be 64-bytes aligned */
-> +static inline void movdir64b(void *dst, const void *src)
-> +{
-> +	const struct { char _[64]; } *__src = src;
-> +	struct { char _[64]; } *__dst = dst;
-> +
-> +	/*
-> +	 * MOVDIR64B %(rdx), rax.
+we test the page reference count is zero or not here,
+it can be a bug here if page refercence count is not zero.
+So we can just use put_page_testzero() instead of
+page_count().
 
-(%rdx), %rax, surely? Also, that's a horrible convention, but I suppose
-(%rdx), (%rax) was out?
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ mm/hugetlb.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> +	 *
-> +	 * Both __src and __dst must be memory constraints in order to tell the
-> +	 * compiler that no other memory accesses should be reordered around
-> +	 * this one.
-> +	 *
-> +	 * Also, both must be supplied as lvalues because this tells
-> +	 * the compiler what the object is (its size) the instruction accesses.
-> +	 * I.e., not the pointers but what they point to, thus the deref'ing '*'.
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 67fc6383995b..a274b9ac466f 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2105,8 +2105,7 @@ static int gather_surplus_pages(struct hstate *h, int delta)
+ 		 * This page is now managed by the hugetlb allocator and has
+ 		 * no users -- drop the buddy allocator's reference.
+ 		 */
+-		put_page_testzero(page);
+-		VM_BUG_ON_PAGE(page_count(page), page);
++		VM_BUG_ON_PAGE(!put_page_testzero(page), page);
+ 		enqueue_huge_page(h, page);
+ 	}
+ free:
+-- 
+2.25.1
 
-Can we pretty please get a binutils version that knows about this
-instruction, such that we know when we can get rid of the silly .byte
-encoded mess?
 
-> +	 */
-> +	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
-> +		     : "+m" (*__dst)
-> +		     :  "m" (*__src), "a" (__dst), "d" (__src));
-> +}
-> +
->  #endif /* __KERNEL__ */
->  
->  #endif /* _ASM_X86_SPECIAL_INSNS_H */
