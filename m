@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E938286A4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CB0286A52
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbgJGVgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:36:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55231 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbgJGVgc (ORCPT
+        id S1728674AbgJGVhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:37:04 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9398 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728292AbgJGVhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:36:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602106590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VaWBCvnLnMCu9K8Y6rGNvR+4FR1+Z+PYqu4cnE5JVz0=;
-        b=irVVgDojjtgZqZPoM2cGZNipGXpOfSaSvA+F/18FtmRdKBossyTWv2uEV4RrJbyqjrsLCx
-        od6DDKN5SlKuq4P+Fmn41Px7QMtN6e4F3gT0IaSRnu6+yYt4Qnjm29rfPqrNKJnRYbfT9N
-        nfIwgxyVm/RFYcqDuWlCmdBV5v1njU4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-y3zs6Uu6ObyMOOM6HQEkDg-1; Wed, 07 Oct 2020 17:36:29 -0400
-X-MC-Unique: y3zs6Uu6ObyMOOM6HQEkDg-1
-Received: by mail-ed1-f72.google.com with SMTP id a15so993421eda.15
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 14:36:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VaWBCvnLnMCu9K8Y6rGNvR+4FR1+Z+PYqu4cnE5JVz0=;
-        b=SVaJb6UkxBJ/+L1qN/H0JGMUe97scnCcaVoTfZ1vFN958cjEDgpLQjNaQM1HagNY0A
-         9691SYQUR/9iHwR+tR0zGtu/9qxt2Z2M0tevkcDwvNtnJcn1ykgTe4zcaWdmSZwJ75pG
-         /fvfE0vggxQuK4qUwuZSKDKL7KUT80Au/em37th0jAZPSNL5s6Xo5aDqtyHfLI7qeVZU
-         0AxnQNUQuO2aeV8npCTU8WPAoYKGi2tI+c9eIiG3I4Rc9cmqn+kMuYAAXQFkQvOAyeAC
-         BxfgMjv+sIh/XRNWwRM7G7kqf8EkYwwWQP2++6KoMv7w/nIidrSZNtZo14xer4NXQhPK
-         2gAQ==
-X-Gm-Message-State: AOAM532Aom6yf0KlZzb6M19tK6Z6x9aJ9aBHE043AbeC81jOYUB8eKzz
-        Ww+phRmZva1ZA+ykZrXmoL7K+zobEyffOg5auIb7IM/gKzcx/eGMu4yOx9fd2n0j2YT7HnEJw55
-        tRJH+xljKp12whGB+rLdZFiFf
-X-Received: by 2002:a17:906:d186:: with SMTP id c6mr5193521ejz.298.1602106587848;
-        Wed, 07 Oct 2020 14:36:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxkfKaJEhZrG5NDUqhcd7QFr5sWP0E6bwLI9Qqlgn3cv72BQQ3Te9xwgxqq9162bqA11Qp/2g==
-X-Received: by 2002:a17:906:d186:: with SMTP id c6mr5193505ejz.298.1602106587608;
-        Wed, 07 Oct 2020 14:36:27 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id c5sm2453276edx.58.2020.10.07.14.36.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 14:36:26 -0700 (PDT)
-Subject: Re: [PATCH V8 1/5] PCI: Add defines for Designated Vendor-Specific
- Extended Capability
-To:     Lee Jones <lee.jones@linaro.org>,
-        "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, dvhart@infradead.org,
-        andy@infradead.org, bhelgaas@google.com,
-        alexey.budankov@linux.intel.com,
-        Andy Shevchenko <andy.shevchenko@gmail.com>, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-References: <20201007005118.GA3230211@bjorn-Precision-5520>
- <dcaea6b4e1d5b4a452c304fadb034b7b1e1c40af.camel@linux.intel.com>
- <20201007065451.GB6148@dell>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e09f4c44-e3d0-e14b-297f-6981516ea3bf@redhat.com>
-Date:   Wed, 7 Oct 2020 23:36:26 +0200
+        Wed, 7 Oct 2020 17:37:03 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7e34f10003>; Wed, 07 Oct 2020 14:36:49 -0700
+Received: from [10.2.85.86] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 21:36:52 +0000
+Subject: Re: [PATCH 01/13] drm/exynos: Stop using frame_vector helpers
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+CC:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>, Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        "Kyungmin Park" <kyungmin.park@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        "Krzysztof Kozlowski" <krzk@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-2-daniel.vetter@ffwll.ch>
+ <80718789-b3de-c30a-03c5-7c8cbf41f7d9@nvidia.com>
+ <CAKMK7uEuwmCkpSeKxjDgHXWrE9P-TbawLoQ4dpu0nc4MYykScA@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <895eb064-1c8f-ecfc-0a98-1fbe40cb3161@nvidia.com>
+Date:   Wed, 7 Oct 2020 14:36:52 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201007065451.GB6148@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAKMK7uEuwmCkpSeKxjDgHXWrE9P-TbawLoQ4dpu0nc4MYykScA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602106609; bh=OI3+pLVYL5cWSE4B2a2jiHWrJeRBVcUjCT4H6VDdVUk=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=A3zmsxRkTiEuP5NMToHsIjBexJZ1BRIWpMrbXsaDVyF7pGmKjuyPBJQTjoYnCT+Id
+         Rh7uCABfImT6HrUYHb0dneU7xMwQcxjKSVOEB6uLjaVXfpYC3GRycDey9vhNW5mmoL
+         jEbZuoQHH31CQTquNUREPNteX38ixLxxzHu2SsT2FwNmpb8XAJQj2e6AubzOwwCf8P
+         V6JNWODSmsgKGWHO++1cASV1aBplJBXlrENJ9aSSd2jA/V2blcSUK8OOBGXEaMYN/S
+         S6PO0PnBjGCbslJ42wDbWrRxEjHDBuLX0dG111P3JgKEC7Adhql3cu0O80p7PRSGSg
+         0YNay76WexGkg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/7/20 8:54 AM, Lee Jones wrote:
-> On Tue, 06 Oct 2020, David E. Box wrote:
-> 
->> On Tue, 2020-10-06 at 19:51 -0500, Bjorn Helgaas wrote:
->>> On Tue, Oct 06, 2020 at 03:45:54PM -0700, David E. Box wrote:
->>>> Hi Bjorn,
->>>>
->>>> This patch has been acked and unchanged for weeks. Is it possible
->>>> to
->>>> get this pulled into next? We have SIOV and CXL related work that
->>>> is
->>>> using these definitions. Thanks.
->>>
->>> I acked it because I expected you to merge it along with the rest of
->>> the series.
->>>
->>> I guess I could merge this patch via the PCI tree if you really want,
->>> but that ends up being a hassle because we have to worry about which
->>> order things get merged to Linus' tree.  Better if the whole series
->>> is
->>> merged via the same tree.
+On 10/7/20 2:32 PM, Daniel Vetter wrote:
+> On Wed, Oct 7, 2020 at 10:33 PM John Hubbard <jhubbard@nvidia.com> wrote:
 >>
->> Agreed. The hope is that this series is ready for the next merge window
->> but no ack yet on V8. And if the series does not make it I'd like this
->> patch to at least get in.
+>> On 10/7/20 9:44 AM, Daniel Vetter wrote:
+...
+>>> @@ -398,15 +399,11 @@ static void g2d_userptr_put_dma_addr(struct g2d_data *g2d,
+>>>        dma_unmap_sgtable(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt,
+>>>                          DMA_BIDIRECTIONAL, 0);
+>>>
+>>> -     pages = frame_vector_pages(g2d_userptr->vec);
+>>> -     if (!IS_ERR(pages)) {
+>>> -             int i;
+>>> +     for (i = 0; i < g2d_userptr->npages; i++)
+>>> +             set_page_dirty_lock(g2d_userptr->pages[i]);
+>>>
+>>> -             for (i = 0; i < frame_vector_count(g2d_userptr->vec); i++)
+>>> -                     set_page_dirty_lock(pages[i]);
+>>> -     }
+>>> -     put_vaddr_frames(g2d_userptr->vec);
+>>> -     frame_vector_destroy(g2d_userptr->vec);
+>>> +     unpin_user_pages(g2d_userptr->pages, g2d_userptr->npages);
+>>> +     kvfree(g2d_userptr->pages);
+>>
+>> You can avoid writing your own loop, and just simplify the whole thing down to
+>> two lines:
+>>
+>>          unpin_user_pages_dirty_lock(g2d_userptr->pages, g2d_userptr->npages,
+>>                                      true);
+>>          kvfree(g2d_userptr->pages);
 > 
-> If Bjorn is happy to take this patch so late in the release cycle then
-> please go ahead.  The other patches are due for v5.11.
+> Oh nice, this is neat. I'll also roll it out in the habanalabs patch,
+> that has the same thing. Well almost, it only uses set_page_dirty, not
+> the _lock variant. But I have no idea whether that matters or not?
 
-I agree (that the other patches are for 5.11) talking about merging
-this series patch 2 is a mfd patch and patches 3-5 are drivers/platform/x86
-patches.
 
-Lee, FYI I'm taking over drivers/platform/x86 maintainership from Andy.
+It matters. And invariably, call sites that use set_page_dirty() instead
+of set_page_dirty_lock() were already wrong.  Which is why I never had to
+provide anything like "unpin_user_pages_dirty (not locked)".
 
-I suggest that we merge the entire series through a single tree
-(with acks or reviewed-by-s from the other maintainer)
-either through the mfd tree or through the drivers/platform/x86
-tree. Since most changes are in drivers/platform/x86 the latter
-probably makes more sense, but either way works for me.
-So how would you like to proceed with this series ?
+Although in habanalabs case, I just reviewed patch 3 and I think they *were*
+correctly using set_page_dirty_lock()...
 
-Regards,
-
-Hans
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
