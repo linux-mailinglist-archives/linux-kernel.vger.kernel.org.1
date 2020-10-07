@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166D52867F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB702867F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgJGTCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
+        id S1728241AbgJGTCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbgJGTCH (ORCPT
+        with ESMTP id S1728054AbgJGTCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:02:07 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED414C0613D2;
-        Wed,  7 Oct 2020 12:02:06 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d1so2912928qtr.6;
-        Wed, 07 Oct 2020 12:02:06 -0700 (PDT)
+        Wed, 7 Oct 2020 15:02:08 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F65C061755;
+        Wed,  7 Oct 2020 12:02:07 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c2so4133165qkf.10;
+        Wed, 07 Oct 2020 12:02:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FEl01U0O4q1Wh5acZAMNLtX3OV2kFE+fvUvj0p58OWc=;
-        b=ZOIJ8j4wn7/ZIbygqbn+zPxpWp96Dd/JFoJSsXP+0Jc+OVM2nt1NzPMxGMD6Srqo5e
-         IK2Op88lBz8ucs9cmugYfAK2ldHi9qWlPQ9yigtHwSS5SKAW8HzQB+zL3lB37+e2e9OH
-         F5CadzRUkD4OH/AhX/QGorxuNCTSj7SiTexiFlYz6fFctrc7Ka9wEyM5N2eJ3pcsiE3c
-         8ERdSgFHXYj2MQkzz7n0rhrhjS/NT/lZNsol15cQZhfOmk1yYMnBhZ/EEMTEvbK2iqI6
-         tZvdJEReO8m6jTalTHRsOkfw1vKp89Ra/OfPR/8PyaU94p6zv3ZSUuntXYBlTycbNxzy
-         fN2g==
+        bh=cn3dG5n0vqcoPNTEYGHnnPIs7oCE0YkkaB1qoJ0Mljo=;
+        b=tqIldT8RHozyj/3vaZGZ8+d1+EMoZ5vLRTCAxszk5TvN4UqGTdv/vTPAAsvkVluGur
+         EG6FGuv5KKLjH3T3BtL5rMQJtynEXGd8MEopTzzz2UHZSLOME45Gjh3pp26KVRityd7s
+         siRT70pMrCTq7ArIiBnHccZIbDIYoLth8ADsN0Kn1nwxW+ptAZQl/efK1kJbGdXsxt5P
+         Hfs+MgzXHWmAbPMKTCGm13i6HCAoA9+EmFyGqH3ZQZTeqMlMfM6pb4eE0mcgpCf8hES3
+         77iNxhTi4RZJJq/2dzNqmX6fMcnE1by6Chs0ZxHCOkKYThQJCjcqLyjUlbZVp12SFlhH
+         SGAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FEl01U0O4q1Wh5acZAMNLtX3OV2kFE+fvUvj0p58OWc=;
-        b=nnWGV4ww+xaLATeAT/UyejcT7NtsyrImA/qvnKd7T1cscWzwR50wFmMFlHSJ4PF66v
-         ajcXIvcLBwf9ekkRvN13kQTq3EJrU8yorR1Vk1h97wDOVPlkdhXmoARlaqF8rHAcnB+w
-         4kVShWYG4mzViQq/Qcph52ixQmSX95C5Ph1w27kPK2Aj06cq6ck+Fzanx7lWBBk/SyVU
-         BilVoOQMtF5Jt1OKikEhPehlphgB/UlWLI9zohNbyyqmu5SqW/k9KSMvWAdC9jNEh3Kz
-         lPnUIGQVQPLCesyH074wh7hEJ80DKoCLdO9IXoiW2zQ3arKjgiDD+ZVCs7+Zzzw81KDv
-         XDSA==
-X-Gm-Message-State: AOAM531rUtxotSkZ8QZaIAubnmrcJryhbLdtrRhGFgyCKT+5YKbv+bBL
-        MhtQe7jIx9Vn0YanvbYzzoA=
-X-Google-Smtp-Source: ABdhPJw43qZa0AFvk3gQx2GGHVG0qqHBOJmpcOK+e0O9FK8qvssu7uMLossAnkrEWn2VWiaE1T9Z7w==
-X-Received: by 2002:ac8:760f:: with SMTP id t15mr4917593qtq.35.1602097326163;
-        Wed, 07 Oct 2020 12:02:06 -0700 (PDT)
+        bh=cn3dG5n0vqcoPNTEYGHnnPIs7oCE0YkkaB1qoJ0Mljo=;
+        b=M/BXIdO2et1A7fz5OtUH/oQsrUi+j+PSfd3c99V4ekfacX0T2hOhGoLZE+voNEvYsO
+         PJLNI4xFjqe1/4iSh2tG0lRA+3cW7nt5vEz6Smg2OXh0sK96tkVbVgQDbAgB+B6/384o
+         6sGuDbXxh6s0jwKEePrQHkzhUBAbJwidA2T0JtvEGuQEJc/bVc/MIwegvpY99g6Kphe6
+         T9k6Y9g/A11cX16qKI4GjHQX3oK0LM46rIvlvBBnUSwxiYSUvIO1YoXtM2UO8YflNFf0
+         GctfRunbQpF3cfUCzntQuX7DgGd0CtqtLAXqSIIWIjSIV1t+tOIYVUuzY/PvQVfeN9Wp
+         f1Mw==
+X-Gm-Message-State: AOAM531MSHh4ayknOiwYxWLZWTrKLJLrJfNKtGfOR4iQzHnr07v9/Vvc
+        toDWiRXQeK22KCkHsJwMYCTkC66YXqAW9Q==
+X-Google-Smtp-Source: ABdhPJwM3NpsNzFNkkIjvGBnVgmByNkpsiEMEm7SUKpoQCCciFzerxExh0Z7HH6draGub+YZ/FDBHw==
+X-Received: by 2002:a37:a46:: with SMTP id 67mr4435265qkk.477.1602097327111;
+        Wed, 07 Oct 2020 12:02:07 -0700 (PDT)
 Received: from ubuntu.localdomain (ool-45785633.dyn.optonline.net. [69.120.86.51])
-        by smtp.googlemail.com with ESMTPSA id j16sm2087078qkg.26.2020.10.07.12.02.05
+        by smtp.googlemail.com with ESMTPSA id j16sm2087078qkg.26.2020.10.07.12.02.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 12:02:05 -0700 (PDT)
+        Wed, 07 Oct 2020 12:02:06 -0700 (PDT)
 From:   Vivek Unune <npcomplete13@gmail.com>
 Cc:     Vivek Unune <npcomplete13@gmail.com>,
         Hauke Mehrtens <hauke@hauke-m.de>,
@@ -56,9 +56,9 @@ Cc:     Vivek Unune <npcomplete13@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] ARM: dts: BCM5301X: Linksys EA9500 add port 5 and port 7
-Date:   Wed,  7 Oct 2020 15:01:51 -0400
-Message-Id: <cd64e0ccae3e5785c80ad4d73af533a40fc15876.1601655904.git.npcomplete13@gmail.com>
+Subject: [PATCH 3/3] ARM: dts: BCM5301X: Linksys EA9500 add fixed partitions
+Date:   Wed,  7 Oct 2020 15:01:52 -0400
+Message-Id: <25a5a438aef1d158a57872de963ac870ab13507c.1601655904.git.npcomplete13@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1601655904.git.npcomplete13@gmail.com>
 References: <cover.1601655904.git.npcomplete13@gmail.com>
@@ -69,47 +69,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add port 5 and port 7 which are connected to gmac0 & 1 respectively
-DSA driver will use port 5 as cpu port and this works as well.
+This router has dual paritions to store trx firmware image and
+dual partitions for nvram. The second one for acts as a backup store.
+
+When tested with OpenWrt, the default partition parser causes two issues:
+
+1. It labels both nvram partitions as nvram. In factory, second one is
+labeled devinfo.
+2. It parses second trx image and tries to create second 'linux' partition
+and fails with - cannot create another 'linux' partition
+
+The following patch works around both of these issues.
 
 Signed-off-by: Vivek Unune <npcomplete13@gmail.com>
 ---
- .../boot/dts/bcm47094-linksys-panamera.dts    | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ .../boot/dts/bcm47094-linksys-panamera.dts    | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
 diff --git a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-index f8443d9f86b7..b36ed0ead733 100644
+index b36ed0ead733..488e83c1780d 100644
 --- a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
 +++ b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-@@ -161,6 +161,28 @@ port@4 {
- 			label = "wan";
- 		};
- 
-+		port@5 {
-+			reg = <5>;
-+			ethernet = <&gmac0>;
-+			label = "cpu";
+@@ -281,3 +281,44 @@ fixed-link {
+ &usb3_phy {
+ 	status = "okay";
+ };
 +
-+			fixed-link {
-+				speed = <1000>;
-+				full-duplex;
-+			};
++&nandcs {
++	partitions {
++		compatible = "fixed-partitions";
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		partition@0 {
++			label = "boot";
++			reg = <0x0000000 0x0080000>;
++			read-only;
 +		};
 +
-+		port@7 {
-+			reg = <7>;
-+			ethernet = <&gmac1>;
-+			label = "cpu";
-+
-+			fixed-link {
-+				speed = <1000>;
-+				full-duplex;
-+			};
++		partition@80000 {
++			label = "nvram";
++			reg = <0x080000 0x0100000>;
 +		};
 +
- 		port@8 {
- 			reg = <8>;
- 			ethernet = <&gmac2>;
++		partition@180000{
++			label = "devinfo";
++			reg = <0x0180000 0x080000>;
++		};
++
++		partition@200000 {
++			label = "firmware";
++			reg = <0x0200000 0x01D00000>;
++			compatible = "brcm,trx";
++		};
++
++		partition@1F00000 {
++			label = "failsafe";
++			reg = <0x01F00000 0x01D00000>;
++			read-only;
++		};
++
++		partition@0x5200000 {
++			label = "brcmnand";
++			reg = <0x05200000 0x02E00000>;
++		};
++	};
++};
 -- 
 2.25.1
 
