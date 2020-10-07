@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E07E285546
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EDE285558
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgJGANh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 20:13:37 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:32966 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgJGANh (ORCPT
+        id S1726697AbgJGAUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgJGAUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:13:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=eYFnsTNV0pXGQumm+nqU2TNbmz7lOpEXm7qb8I/w0lQ=; b=c/GXW+u8o1AM2KEKc7MYJzCiPw
-        eJ7MUQ4HAgarJHK+8kQ+sUs9iA6/8QNLZsq6zEF/gkhvIhD0MJ2wULJkvDl29UC589Njlg7qaYAok
-        nB5K9nCja1NwF+12oHFqo80dGSQbvbsETf5CoMpHtChLSapQS8Tew70if3fCCZnc3efxLvPWnnWoV
-        uuRNoHiw9xRVxbUbny0W/Gt77sCcQfAaW2hhuFGkfIYwhMXz9M1AFxdsPI2Ka20YX/5SXcfkQm33F
-        fUol7kCrTM06e536K47DKAIWiLYz+PvLKIIkZKK0re0/K8iTd4pvr0Bi2Ztw8K7na+L50AH6MLr77
-        ofW8Smsg==;
-Received: from [172.16.1.162]
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kPx5J-0007C8-Ug; Tue, 06 Oct 2020 18:13:34 -0600
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20200930185422.11494-1-logang@deltatee.com>
- <20200930185422.11494-6-logang@deltatee.com>
- <BYAPR04MB49654DCBAD729B05759EB6FF860A0@BYAPR04MB4965.namprd04.prod.outlook.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <e7bdf462-c86d-f248-58f4-d9d41b2bd343@deltatee.com>
-Date:   Tue, 6 Oct 2020 18:13:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <BYAPR04MB49654DCBAD729B05759EB6FF860A0@BYAPR04MB4965.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, sagi@grimberg.me, osandov@osandov.com, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, Chaitanya.Kulkarni@wdc.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH blktests v2 05/11] nvme: Add common helpers for passthru
- tests
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+        Tue, 6 Oct 2020 20:20:08 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F71AC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 17:20:08 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id m6so180328wrn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:20:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=CjEUI/O5nyKq05nG1WVXTi7g9bQBDlF9MtDWFFyQoGY=;
+        b=szmKAa4h1nHPyu9kcgwhbnZwdWEom7YpolFcRBsSoQqYFmkDojdFrkPBDrQ6P1b1OE
+         SDL4RKZBrZwXqPHgUvMGkC1lAl2laNSh3a+GQ9VABKqDmqmF/uCP7XgqLFoN3xuptB64
+         0xb/cb3LTEyj24Lsv9JQqC9fac7s5gq/WWSJVWrWFsTgwMxzXEQNPY+FEQJ9GsXNmhL7
+         Tez0OXL6tqaAQFOTNU60zjq9hfbFnHrNgCLoYtFggR0g4U+AX+JvNGhX3oNh/qE1Dw8g
+         CrNjetASxcd+r8aXNDuXkHLvjaQZQPNOK7cdWpSczqXMBga/9flrOAJKfw7vayD0r54i
+         J7xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CjEUI/O5nyKq05nG1WVXTi7g9bQBDlF9MtDWFFyQoGY=;
+        b=rzI6FW+wcS5Dh4TFVb0mqTVVCh2xI2RHBPu7Q+aoBwrE58wTCk2IY6m+ziOHO8m36I
+         dOQf27mtEWY6WfbfMl+5mMbxX7d2XSLBahiV+PdTi3o7z0VTERkoUMeoqSGD13EgyJPR
+         5TFpsSu6YiDM55Z+v9NP4q4z3+Aa5diN6WcciPoKkFdF99avGGsvygMyc1UloKr95eDd
+         vJDzj6fyngbF3MCoBeM6j/p0ISb0yBFpVsvMCssIY8W/Wu1WciXf4AqHjqPd2i4b8vK5
+         UsKakj1Gmli5/ggDAeghgU6m+iIN9+pHwnTYNM9ysm7hZTeqJTVcoL33eMKoDQvgUoX5
+         g15g==
+X-Gm-Message-State: AOAM533VMmbNQpuOILdQ6BEEQRmOHm2R/dYis1FlogryKokcARc+q23f
+        mrQ6+Q5qsotYzpFhsZLdM/BNTaflVhufzl4U
+X-Google-Smtp-Source: ABdhPJwMVpbb8Q5c6eSA81jvzdixcDlAOogWa73AyGdsDDaLtZXN+sI+E2/WSNCMdFp/phA9SXN6eg==
+X-Received: by 2002:adf:a418:: with SMTP id d24mr470329wra.80.1602030007166;
+        Tue, 06 Oct 2020 17:20:07 -0700 (PDT)
+Received: from localhost.localdomain ([195.24.90.54])
+        by smtp.gmail.com with ESMTPSA id 142sm402650wma.14.2020.10.06.17.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 17:20:06 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH] PM: runtime: Use pmruntime sync variant to put suppliers
+Date:   Wed,  7 Oct 2020 03:19:34 +0300
+Message-Id: <20201007001934.18606-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Calling pm_runtime_put_sync over a device with suppliers with device
+link flags PM_RUNTIME | RPM_ACTIVE it is observed that the supplier
+is not put (turned off) at the end, but instead put asynchronously.
+In some case This could lead to issues for the callers which expects
+that the pmruntime sync variants should also put the suppliers
+synchronously.
 
+Also the opposite rpm_get_suppliers is already using pmruntime _sync
+variant of the API.
 
-On 2020-10-06 6:02 p.m., Chaitanya Kulkarni wrote:
-> On 9/30/20 12:01, Logan Gunthorpe wrote:
->> Add some simple helpers to setup a passthru target that passes through
->> to a nvme test device.
->>
->> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->> ---
->>  tests/nvme/rc | 76 +++++++++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 76 insertions(+)
->>
->> diff --git a/tests/nvme/rc b/tests/nvme/rc
->> index dfa57a299625..1ea23308a3f7 100644
->> --- a/tests/nvme/rc
->> +++ b/tests/nvme/rc
->> @@ -73,6 +73,17 @@ _require_nvme_trtype_is_fabrics() {
->>  	return 0
->>  }
->>  
->> +_test_dev_nvme_ctrl() {
->> +	local dev
->> +
->> +	dev=$(cat "${TEST_DEV_SYSFS}/device/dev")
->  can you initialize dev this at the time of declaration ?
+Correct this by changing pmruntime_put to pmruntime_put_sync in
+rpm_put_suppliers.
 
-Yup, will fix.
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ drivers/base/power/runtime.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> +	echo "/dev/char/${dev}"
->> +}
->> +
->> +_test_dev_nvme_nsid() {
->> +	cat "${TEST_DEV_SYSFS}/nsid"
->> +}
->> +
->>  _cleanup_nvmet() {
->>  	local dev
->>  	local port
->> @@ -257,6 +268,27 @@ _remove_nvmet_subsystem() {
->>  	rmdir "${subsys_path}"
->>  }
->>  
->> +_create_nvmet_passthru() {
->> +	local nvmet_subsystem="$1"
->> +	local subsys_path="${NVMET_CFS}/subsystems/${nvmet_subsystem}"
->> +	local passthru_path="${subsys_path}/passthru"
->> +
->> +	mkdir -p "${subsys_path}"
->> +	printf 1 > "${subsys_path}/attr_allow_any_host"
->> +
->> +	printf "%s" "$(_test_dev_nvme_ctrl)" > "${passthru_path}/device_path"
->> +	printf 1 > "${passthru_path}/enable"
-> 
-> can you please echo in general and printf only when it is needed ?>
-> I know existing code is a bit inconsistent I'll send a clenup to make it
-> uniform.
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+index 6f605f7820bb..8dab4fcab4e8 100644
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -313,7 +313,7 @@ static void rpm_put_suppliers(struct device *dev)
+ 				device_links_read_lock_held()) {
+ 
+ 		while (refcount_dec_not_one(&link->rpm_active))
+-			pm_runtime_put(link->supplier);
++			pm_runtime_put_sync(link->supplier);
+ 	}
+ }
+ 
+-- 
+2.17.1
 
-Yes, I agree. I will it fix in v3.
-Thanks,
-
-Logan
