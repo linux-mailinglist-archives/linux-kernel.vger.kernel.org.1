@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF98285583
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF07285586
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgJGAqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 20:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
+        id S1726832AbgJGAt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgJGAqI (ORCPT
+        with ESMTP id S1726672AbgJGAt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:46:08 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B25C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 17:46:07 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id x1so384774eds.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:46:07 -0700 (PDT)
+        Tue, 6 Oct 2020 20:49:59 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA00EC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 17:49:58 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id g4so395318edk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 17:49:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GiHfqX5YBUl0yySo1pL2gGGbrA6tqlyBkCWwTPB5NN8=;
-        b=ofS3M+BgpBlCmdVu4ulyprSoSciUUGb1Uf38zSGa+0ILdvizmFWWzsTQAB9ztvK/7E
-         YVzD43CP0Fiq2tbj1+zAgUQozJZhOCmkUTYQlJObiymbX86JuMePRskDSHTnXPLOQ8F9
-         3SbYx306F2TUg/7fAXSL/ZgAfvnJdz+2hE0N95rM8OKtJ0HtrnDTZ6fnr7x5kUmHxQPd
-         T7KLcORg/n5aQK7+9/SvtoieJHtgKqjo29sgvBOwG+nzKCuA6PafVOJrP6VFRmYl5yx/
-         APyxPH9Pajz+uAJiUhACa5PojVG5H4tHHL3kOWQN7tniv1pNUBkuPK2G+405SozTbYTp
-         xIMQ==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n01MKJ7pcB5R49YVHzoVbmQ3+llauqhHFsVp4UeOt6M=;
+        b=Me9YDOViqBP/zNPc1EZsVidJxhjEs7D+f1pBs/hni9ivlrdcLYrgH9KII5c2ld/LaS
+         m+qbWu70BXBOBDbTVfqCdQQOC3pHOre2UAmid9rMW2HFiCyOUADmC8Zpm4iDe8zKDIVr
+         zH2MOOm8/t5R8Yp7IDbt0n6nc3GERe2VB6aUUsxKw3xGoEPlFQEBWjN+P64cxgrHjuLR
+         y7oFepIhX60QJnU929nU5XmNVqqusPhRHlebW2kLiVTMPmIep1cJwnU4FdqqEKidfGQT
+         jA5ANWOWv49G7FNy+6MWVciVgTJ7RT0dI/d8qFdn0yfun5mLKaO0QpPH1gtNchJTUf76
+         fLWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GiHfqX5YBUl0yySo1pL2gGGbrA6tqlyBkCWwTPB5NN8=;
-        b=dNd2/RvD1wxIbaedJISgykDRTqG3LjNZk1JoyuGl+7bGmGF7IB0z3plCJCiQZJRWRJ
-         4pzHIEm6x64ksp40dEMcRK9EoJhXzYocjpkGRHfIfXPkNYUlYEmDVbPJestVD3cZbNfz
-         Rc/OzBsynwKVqLTtc9lrHNBj9gAlhMF8ZC443pRkf/wWt7iOHTA+mvKqa4XKVhiDgVUY
-         QaadprAoZquou6ujdaIk2tIVVWD7AQGpjjwi55og+x40t4CzbX+a1w401b5vhUtuX9A6
-         FdRKjPQG1n9gpHjWSQ1/CtZf8bGLGcYwg+NJsBbN3ZJhLzA8ejGXCc+NROK0PhUGAUiz
-         VXcQ==
-X-Gm-Message-State: AOAM530uRLCIIYD/5MMWwf+9hYDpJXHrrFePQq8Pclw102v7D/CMCl/Z
-        e5a7Fr0i5Lay+SABXPq2w1jfgLDxxggeFvw/wptNiw==
-X-Google-Smtp-Source: ABdhPJw3Ia9wju01JmgISNWBKagZYXjISvhNQOdV/iIymh+EUW2r++j7k5Cc0Cwtmcva+LirzNcPmHpvt/PM0Hj0Jnw=
-X-Received: by 2002:a05:6402:b0e:: with SMTP id bm14mr828322edb.259.1602031565578;
- Tue, 06 Oct 2020 17:46:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n01MKJ7pcB5R49YVHzoVbmQ3+llauqhHFsVp4UeOt6M=;
+        b=l6uhdAz8EpHvQxZyxGeT7a8sDTaejsYZx4P+vnSHY1PPb+1yTSbco585Nk+vmsdfgc
+         4AKr2HZSYqzy00IggU8eHFWXD8BnALcI4v34EGIjZNfLKv0ZPHGS4Nw4CGF9z02LhuZf
+         s3V0xNVzqowu33RyQhE5zZx3b8kjEy0oFII3HoqbOG9NeJ4RGYj7Yt0pfqdWLLFeHYJU
+         0gh7wGPhx1+mPvC3p3IayVckInX7c3YpTGUBO+M6rAti/5p3FZlAW2VmOpGByDlwDHM2
+         vMI/Bvq46zFekR47UA9yIpQutR6D+ctYhq2+iC/A1MkQp8FZGWfqY3yq5fuhyvHpQZW8
+         9P6A==
+X-Gm-Message-State: AOAM533hgxh8wN79x8Ux4iZhp999/8AMB2eIf1tnfvtQNT+ef+ZQmLWg
+        z+U47RpqUgcQ/9jmP/14TYnv41OcjTVVQJAvz/KfLJApg0dknKLhlv+BR6PjYdiIptJEtPlenzZ
+        ovf3oVeVBHCNROOCTaPlNc5h7JZ9cwoQSg8wcWbFPbYMB9HLsQQDgztbQ6m2DiAEMG5vfnLO41+
+        NIHd4G5HisHQ==
+X-Google-Smtp-Source: ABdhPJzLWY4gphtkLM2bVQCWr4fLMSIJUsfhCgkAp68W0xr87A3Jk8KiZDzteYP15NLJidEFmj/eZg==
+X-Received: by 2002:a05:6402:396:: with SMTP id o22mr781601edv.361.1602031796961;
+        Tue, 06 Oct 2020 17:49:56 -0700 (PDT)
+Received: from localhost.localdomain ([2a00:ee2:4b0d:3002:290:faff:fe54:449c])
+        by smtp.gmail.com with ESMTPSA id bw25sm261090ejb.119.2020.10.06.17.49.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 17:49:56 -0700 (PDT)
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+To:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Cc:     lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        marek.behun@nic.cz, luka.perkov@sartura.hr,
+        robert.marko@sartura.hr, Luka Kovacic <luka.kovacic@sartura.hr>
+Subject: [PATCH v4 0/6] Add support for the iEi WT61P803 PUZZLE MCU
+Date:   Wed,  7 Oct 2020 02:48:55 +0200
+Message-Id: <20201007004901.39859-1-luka.kovacic@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com>
- <0fb905cc-77a2-4beb-dc9c-0c2849a6f0ae@oracle.com>
-In-Reply-To: <0fb905cc-77a2-4beb-dc9c-0c2849a6f0ae@oracle.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 7 Oct 2020 02:45:39 +0200
-Message-ID: <CAG48ez3istGAOA=G8fvrQkbMs4MroT8bj=Z=Wmnj0k73K0AFRA@mail.gmail.com>
-Subject: Re: SPARC version of arch_validate_prot() looks broken (UAF read)
-To:     Khalid Aziz <khalid.aziz@oracle.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 7:30 PM Khalid Aziz <khalid.aziz@oracle.com> wrote:
-> On 9/28/20 6:14 AM, Jann Horn wrote:
-> > From what I can tell from looking at the code:
-> >
-> > SPARC's arch_validate_prot() looks up the VMA and peeks at it; that's
-> > not permitted though. do_mprotect_pkey() calls arch_validate_prot()
-> > before taking the mmap lock, so we can hit use-after-free reads if
-> > someone concurrently deletes a VMA we're looking at.
->
-> That makes sense. It will be a good idea to encapsulate vma access
-> inside sparc_validate_prot() between mmap_read_lock() and
-> mmap_read_unlock().
->
-> >
-> > Additionally, arch_validate_prot() currently only accepts the start
-> > address as a parameter, but the SPARC code probably should be checking
-> > the entire given range, which might consist of multiple VMAs?
-> >
-> > I'm not sure what the best fix is here; it kinda seems like what SPARC
-> > really wants is a separate hook that is called from inside the loop in
-> > do_mprotect_pkey() that iterates over the VMAs? So maybe commit
-> > 9035cf9a97e4 ("mm: Add address parameter to arch_validate_prot()")
-> > should be reverted, and a separate hook should be created?
-> >
-> > (Luckily the ordering of the vmacache operations works out suIch that
-> > AFAICS, despite calling find_vma() without holding the mmap_sem, we
-> > can never end up establishing a vmacache entry with a dangling pointer
-> > that might be considered valid on a subsequent call. So this should be
-> > limited to a rather boring UAF data read, and not be exploitable for a
-> > UAF write or UAF function pointer read.)
-> >
->
-> I think arch_validate_prot() is still the right hook to validate the
-> protection bits. sparc_validate_prot() can iterate over VMAs with read
-> lock. This will, of course, require range as well to be passed to
-> arch_validate_prot().
+This patchset adds support for the iEi WT61P803 PUZZLE microcontroller,
+which enables some board specific features like fan and LED control,
+system power management and temperature sensor reading on some iEi
+Puzzle series boards.
 
-In that case, do you want to implement this?
-When I try to figure out how to implement this based on your
-suggestion, it ends up a bit ugly because either mprotect has to do
-some extra checks before calling the hook or the hook has to deal with
-potentially (partly) unmapped userspace ranges in the supplied range
-and then figure out what to do about those. (And for extra fun, it
-also has to be safe against concurrent find_extend_vma() but should
-probably also not change what happens when the first half of the given
-address range is mapped and the second half is not mapped? Or does the
-latter not matter?)
-It'd also be annoying for me to test since I don't have any setup for
-testing SPARC stuff (let alone SPARC ADI).
+The first board to use this functionality is iEi Puzzle-M801 1U
+Rackmount Network Appliance and is since v4 sent separately, as a
+standalone patch.
+
+Changes for v2:
+   - Use LAAs for local-mac-address and match reg values
+   - Code styling changes
+   - Error handling moved to the end of the function
+   - Define all magic numbers in the main header file
+   - Convert the driver to make it OF independent
+   - Refactor hwmon to use devm_hwmon_device_register_with_info()
+   - Reduce the number of mutex locks
+   - Allocate memory once for the response buffer
+   - Reduce managed memory allocations
+Changes for v3:
+   - Move iei-wt61p803-puzzle driver sysfs interface documentation to testing
+   - Change some internal functions to static
+   - Sync dt-bindings examples with the iEi Puzzle-M801 board dts
+   - Remove obsolete device tree properties and correct LED functions
+   - Reverse christmas tree variable declaration order, where possible
+   - MAC address sysfs function rewrite
+   - Fixed struct members size, where reasonable (MFD driver)
+   - Add an error check for hwmon_dev
+   - Use devm_led_classdev_register_ext() in the LED driver
+Changes for v4:
+   - Clean up sensible checks reported by checkpatch --strict
+   - Document the mutex lock usage in the LED driver
+   - Fix error handling and code styling issues in the HWMON driver
+   - Break up the patchset and send the iEi Puzzle-M801 board support
+patch separately
+
+Luka Kovacic (6):
+  dt-bindings: Add iEi vendor prefix and iEi WT61P803 PUZZLE driver
+    bindings
+  drivers: mfd: Add a driver for iEi WT61P803 PUZZLE MCU
+  drivers: hwmon: Add the iEi WT61P803 PUZZLE HWMON driver
+  drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
+  Documentation/ABI: Add iei-wt61p803-puzzle driver sysfs interface
+    documentation
+  MAINTAINERS: Add an entry for the iEi WT61P803 PUZZLE driver
+
+ .../testing/sysfs-driver-iei-wt61p803-puzzle  |   55 +
+ .../hwmon/iei,wt61p803-puzzle-hwmon.yaml      |   41 +
+ .../leds/iei,wt61p803-puzzle-leds.yaml        |   45 +
+ .../bindings/mfd/iei,wt61p803-puzzle.yaml     |   82 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |   13 +
+ drivers/hwmon/Kconfig                         |    8 +
+ drivers/hwmon/Makefile                        |    1 +
+ drivers/hwmon/iei-wt61p803-puzzle-hwmon.c     |  457 +++++++
+ drivers/leds/Kconfig                          |    8 +
+ drivers/leds/Makefile                         |    1 +
+ drivers/leds/leds-iei-wt61p803-puzzle.c       |  156 +++
+ drivers/mfd/Kconfig                           |    8 +
+ drivers/mfd/Makefile                          |    1 +
+ drivers/mfd/iei-wt61p803-puzzle.c             | 1053 +++++++++++++++++
+ include/linux/mfd/iei-wt61p803-puzzle.h       |   69 ++
+ 16 files changed, 2000 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-iei-wt61p803-puzzle
+ create mode 100644 Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+ create mode 100644 Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+ create mode 100644 drivers/hwmon/iei-wt61p803-puzzle-hwmon.c
+ create mode 100644 drivers/leds/leds-iei-wt61p803-puzzle.c
+ create mode 100644 drivers/mfd/iei-wt61p803-puzzle.c
+ create mode 100644 include/linux/mfd/iei-wt61p803-puzzle.h
+
+-- 
+2.26.2
+
