@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4112F2862B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F022862B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728857AbgJGPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:55:20 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:38954 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgJGPzU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:55:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=z5udLltffkLJI9drucFdIqOZx1b8+mVHzFbzJoFwRjY=; b=WXydZ7GBEWK47T6TzK1Ygl7ZLD
-        XJpRfRj7nQ8y95YWRPJ8rSMDbithPdnei+IbZAZV88PQg+pdC9eLUqC2Ilk74agTD9c8y6teLM0rS
-        H70jpSMtJmcnvH27CgZAvJyMAi3jUYgu+nRyTaHcRYa9/LcvGViT2F20MWlmihXjvYD77Eo5v/+qb
-        qwxfw9DUtFgICIZn+38Vh64w4roruEtmkkCDbc6Z7rFFX2rL2hN3Mb6KVWdgZMwhK+aTyIX21hy85
-        GsnczW5aVnTHnEKtExl6qpkzYgOsDF3vpfA+TXsn7n4Kynjgpva4uuxaLdfDnQ5IRytwtKpYA8Ezk
-        36jhqs2g==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kQBmf-0000Ah-KX; Wed, 07 Oct 2020 09:55:18 -0600
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20200930185422.11494-1-logang@deltatee.com>
- <20200930185422.11494-5-logang@deltatee.com>
- <BYAPR04MB49657A481271ADC1F576377B860D0@BYAPR04MB4965.namprd04.prod.outlook.com>
- <517a5fd9-50eb-eb5e-5911-093dc5d1a759@deltatee.com>
- <BYAPR04MB49650C6419A84705D04FFE63860A0@BYAPR04MB4965.namprd04.prod.outlook.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <39ab50dd-b117-2e53-a7ca-b390ade7dd1e@deltatee.com>
-Date:   Wed, 7 Oct 2020 09:55:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728870AbgJGPzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728039AbgJGPzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 11:55:38 -0400
+Received: from localhost (unknown [122.171.222.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28A1A20789;
+        Wed,  7 Oct 2020 15:55:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602086138;
+        bh=BwlW5lM9IzbCgjSoHneqUDGEskMzMU8oFit0dRom6qQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mn22y7qe1QHoIEmqTpxMYG9HpGyBe8aHPMOUHwXhWa4NPtifJ64ZVnq4fOsrMMqr9
+         7qarzrTuzl4U9wJ+hHvxIu+OrHmrSRrvaS/Cs/yehGegZAPojCHLw8ixU567cU8QDQ
+         7Rk39hq40P2dq69R8WE+Lq01fdYQAYYlQrdWUyYM=
+Date:   Wed, 7 Oct 2020 21:25:33 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     nm@ti.com, ssantosh@kernel.org, robh+dt@kernel.org,
+        vigneshr@ti.com, dan.j.williams@intel.com, t-kristo@ti.com,
+        lokeshvutla@ti.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
+ configuration callback
+Message-ID: <20201007155533.GZ2968@vkoul-mobl>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-2-peter.ujfalusi@ti.com>
+ <20201007054404.GR2968@vkoul-mobl>
+ <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <BYAPR04MB49650C6419A84705D04FFE63860A0@BYAPR04MB4965.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, sagi@grimberg.me, osandov@osandov.com, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, Chaitanya.Kulkarni@wdc.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,NICE_REPLY_A autolearn=no autolearn_force=no version=3.4.2
-Subject: Re: [PATCH blktests v2 04/11] nvme: Search for specific subsysnqn in
- _find_nvme_loop_dev
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07-10-20, 11:08, Peter Ujfalusi wrote:
 
-
-On 2020-10-06 6:24 p.m., Chaitanya Kulkarni wrote:
-> On 10/6/20 17:10, Logan Gunthorpe wrote:
->>> With this patch or this series will I be able to write the testcase ?
->> This patch helps with that but other helpers introduced in this series
->> would require minor changes.
->>
->> As far as I can see, you'd only have to adjust _create_nvmet_passthru()
->> to take an optional argument because, presently, it always uses
->> $_test_dev_nvme_ctrl for the backing device.
->>
->> This can easily be done if and when someone writes such a test.
->>
->> However, I'm not even sure right now if that test would pass in the
->> kernel as is -- it seems like an odd thing to do.
->>
->> Logan
->>
-> This test should pass if I remember the code correctly where we don't
+> Not really. In DT an event triggered channel can be requested via router
+> (when this is used) for example:
 > 
-> have any PCIe specific checks for the passthru controller and it is an
-
-Yes, there's no explicit restrictions, but that doesn't mean there are no bugs
-with that particular stack.
-
-> important to support this scenario in order to write device independent
+> dmas = <&inta_l2g a b c>;
+> a - the input number of the DMA request in l2g
+> b - edge or level trigger to be selected
+> c - ASEL number for the channel for coherency
 > 
-> testcases as rest of the testcases are.
+> The l2g router driver then translate this to:
+> <&main_bcdma 1 0 c>
+> 1 - Global trigger 0 is used by the DMA
+> 0 - ignored
+> c - ASEL number.
+> 
+> The router needs to send an event which is going to be received by the
+> channel we have picked up, this event number can only be known when we
+> do have the channel.
+> 
+> So the flow in this case:
+> router converts the dma_spec for the DMA, but it does not yet know what
+> is the event number it has to use.
+> The BCDMA driver will pick an available bchan and notes that the
+> transfers will be triggered by global event 0.
+> When we have the channel, the core saves the router information and
+> calls the device_router_config of BCDMA.
+> In there we call back to the router and give the event number it has to
+> use to send the trigger for the channel.
 
-Ok, feel free to write a test for this. It's not important to me.
+Ah that is intresting, so you would call router driver foo_set_event()
+and would send the event number, why not call that API from alloc
+channel or even xlate? Why do you need new callback?
+Or did i miss something..
 
-Logan
-
+-- 
+~Vinod
