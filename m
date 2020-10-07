@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29015285F97
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0E2285FA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgJGM6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgJGM6p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:58:45 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C537C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 05:58:45 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id f37so2026992otf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 05:58:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RqJhQ9wl4HnfFJba5qafgVA83HvKuODOv14/VuzQKBc=;
-        b=HLP5cVy/+ivPAr8S6VW2DODWQvroNZFg7BttjeOcbezz6CNNniUIHSIARYKF8Ijk1T
-         rmy9z7yE9flAapP4YSBu9HIymzY2iBki4HzaALq9rM2UBFkXQlEaW3TvVZzqH2LSayDe
-         1rPcp7GgFX99YVk0vI8HYbxifKX0pBDMeSfv0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RqJhQ9wl4HnfFJba5qafgVA83HvKuODOv14/VuzQKBc=;
-        b=emuGd80gKgVwTUv6kxN+iq1XWj4rb8Q5jt3EtuZtFWgMvW8Yy+08Gyvki7m+W1i+/1
-         S9U6qtUlglzgEJXQfts0Xhu505lB75pm9ToPdaavWYdnzZrLtj6/ISyl+UvCk385qC1l
-         4UyH58YbzLSwoSnBOeE/QCoNd1Fe+nJ51mun+X2sIDimgMOUQyv1nli1Rg9tFZSG2t+h
-         +m3ND/aSRAPsfHfRtNjRV63IEYkwQ/MpZlVJxAOeJ20hk3l+zqjsgocvvXRYi2e7f4ak
-         tGMN6RDU3s8bpimFFgfWShpx6GzeMZbzt1UY87xEinxS+KAs6CBgrdP2yZ/HN9DlQ6Al
-         BBXA==
-X-Gm-Message-State: AOAM530qQLnzUwQPlXpCU04aIJ33OKPuQa6ALgkDrbadRpEg/D8+b4sO
-        XZAPGaTKalRPbrDfoCDdcpHwkfPbvBvA3IpHuCDv1A==
-X-Google-Smtp-Source: ABdhPJwvOqDF0PtNvyjRy9NUPdpqckHeo5Pb4aBKzEFyLCyusu6A+MJ6CRQQIQu70npKdaR3NW8xVD0BDZv4+5HBzkA=
-X-Received: by 2002:a05:6830:1e56:: with SMTP id e22mr1696603otj.303.1602075524433;
- Wed, 07 Oct 2020 05:58:44 -0700 (PDT)
+        id S1728370AbgJGNBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:01:02 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:51379 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728325AbgJGNBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:01:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602075660; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Ampq9i94Z2y+v4ESFzjpNequ3NQaL38eIA6M3XkpyyU=; b=wvAtM+WefQ0Eq8mOYt0qGDtB6QU6hQddFuZgSlK3y9juKpmXaPq25kbYkBSaPTtf5vh19GbJ
+ KdagbninAe0Wsty6Is+FcFa+8gjPQQg0H/Mb5xBBkBq53hAi2owHk5Rt8a4V3BcAcf1iK+Vv
+ 2O46bd+XtLTtjTpdVl7lqbx9sxc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f7dbbf9d6d00c7a9e29a099 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Oct 2020 13:00:41
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A5801C433FF; Wed,  7 Oct 2020 13:00:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 105FAC433CB;
+        Wed,  7 Oct 2020 13:00:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 105FAC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>
+Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, denik@google.com,
+        leo.yan@linaro.org, peterz@infradead.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 0/2] coresight: etf/etb: NULL Pointer dereference crash fixes 
+Date:   Wed,  7 Oct 2020 18:30:23 +0530
+Message-Id: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
- <20201002175303.390363-2-daniel.vetter@ffwll.ch> <20201002180603.GL9916@ziepe.ca>
- <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
- <20201002233118.GM9916@ziepe.ca> <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
- <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
- <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com> <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
- <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com> <20201007124409.GN5177@ziepe.ca>
- <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
-In-Reply-To: <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 7 Oct 2020 14:58:33 +0200
-Message-ID: <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 2:48 PM Tomasz Figa <tfiga@chromium.org> wrote:
->
-> On Wed, Oct 7, 2020 at 2:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Wed, Oct 07, 2020 at 02:33:56PM +0200, Marek Szyprowski wrote:
-> > > Well, it was in vb2_get_vma() function, but now I see that it has been
-> > > lost in fb639eb39154 and 6690c8c78c74 some time ago...
-> >
-> > There is no guarentee that holding a get on the file says anthing
-> > about the VMA. This needed to check that the file was some special
-> > kind of file that promised the VMA layout and file lifetime are
-> > connected.
-> >
-> > Also, cloning a VMA outside the mm world is just really bad. That
-> > would screw up many assumptions the drivers make.
-> >
-> > If it is all obsolete I say we hide it behind a default n config
-> > symbol and taint the kernel if anything uses it.
-> >
-> > Add a big comment above the follow_pfn to warn others away from this
-> > code.
->
-> Sadly it's just verbally declared as deprecated and not formally noted
-> anyway. There are a lot of userspace applications relying on user
-> pointer support.
+There was a report of NULL pointer dereference in ETF enable
+path for perf CS mode with PID monitoring. It is almost 100%
+reproducible when the process to monitor is something very
+active such as chrome and with ETF as the sink and not ETR.
+Currently in a bid to find the pid, the owner is dereferenced
+via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
+owner being NULL, we get a NULL pointer dereference.
 
-userptr can stay, it's the userptr abuse for zerocpy buffer sharing
-which doesn't work anymore. At least without major surgery (you'd need
-an mmu notifier to zap mappings and recreate them, and that pretty
-much breaks the v4l model of preallocating all buffers to make sure we
-never underflow the buffer queue). And static mappings are not coming
-back I think, we'll go ever more into the direction of dynamic
-mappings and moving stuff around as needed.
--Daniel
+Looking at the ETR and other places in the kernel, ETF and the
+ETB are the only places trying to dereference the task(owner)
+in tmc_enable_etf_sink_perf() which is also called from the
+sched_in path as in the call trace. Owner(task) is NULL even
+in the case of ETR in tmc_enable_etr_sink_perf(), but since we
+cache the PID in alloc_buffer() callback and it is done as part
+of etm_setup_aux() when allocating buffer for ETR sink, we never
+dereference this NULL pointer and we are safe. So lets do the
+same thing with ETF and ETB and cache the PID to which the
+cs_buffer belongs in alloc_buffer() callback for ETF and ETB as
+done for ETR. This will also remove the unnecessary function calls
+(task_pid_nr()) in tmc_enable_etr_sink_perf() and etb_enable_perf().
+
+Easily reproducible running below:
+
+ perf record -e cs_etm/@tmc_etf0/ -N -p <pid>
+
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000548
+Mem abort info:
+  ESR = 0x96000006
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+Data abort info:
+  ISV = 0, ISS = 0x00000006
+  CM = 0, WnR = 0
+<snip>...
+Call trace:
+ tmc_enable_etf_sink+0xe4/0x280
+ coresight_enable_path+0x168/0x1fc
+ etm_event_start+0x8c/0xf8
+ etm_event_add+0x38/0x54
+ event_sched_in+0x194/0x2ac
+ group_sched_in+0x54/0x12c
+ flexible_sched_in+0xd8/0x120
+ visit_groups_merge+0x100/0x16c
+ ctx_flexible_sched_in+0x50/0x74
+ ctx_sched_in+0xa4/0xa8
+ perf_event_sched_in+0x60/0x6c
+ perf_event_context_sched_in+0x98/0xe0
+ __perf_event_task_sched_in+0x5c/0xd8
+ finish_task_switch+0x184/0x1cc
+ schedule_tail+0x20/0xec
+ ret_from_fork+0x4/0x18
+
+Sai Prakash Ranjan (2):
+  coresight: tmc-etf: Fix NULL ptr dereference in
+    tmc_enable_etf_sink_perf()
+  coresight: etb10: Fix possible NULL ptr dereference in
+    etb_enable_perf()
+
+ drivers/hwtracing/coresight/coresight-etb10.c   | 4 +++-
+ drivers/hwtracing/coresight/coresight-priv.h    | 2 ++
+ drivers/hwtracing/coresight/coresight-tmc-etf.c | 4 +++-
+ 3 files changed, 8 insertions(+), 2 deletions(-)
+
+
+base-commit: 3477326277451000bc667dfcc4fd0774c039184c
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
