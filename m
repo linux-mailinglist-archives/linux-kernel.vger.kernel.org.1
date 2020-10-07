@@ -2,68 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D428A285AB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0267285AC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgJGInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:43:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36912 "EHLO mail.kernel.org"
+        id S1727911AbgJGIpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:45:14 -0400
+Received: from gentwo.org ([3.19.106.255]:50500 "EHLO gentwo.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgJGInN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:43:13 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7CEF20797;
-        Wed,  7 Oct 2020 08:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602060193;
-        bh=/sFCkq5oJImYNwq6dQNMQFugo7oIPmUBVxj2a8fU55M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=W28yM5bIifjQ3xzPcY8ovt+B0pmQlytcYdWLJjSyfoYhoS45AcvBuRbWIo3zbnM+f
-         grDw+zV1kPnoeCrtf1oPg9BgantQrZunfrywCiud/ow65oyme/iRX8iR69DvLW/9Nq
-         Wv9rQVxK+7jy45Hqi03UtXhi25ijpqKIJvhjLUGE=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] docs: submitting-patches: describe preserving review/test tags
-Date:   Wed,  7 Oct 2020 10:43:06 +0200
-Message-Id: <20201007084306.12591-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1727863AbgJGIpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:45:12 -0400
+Received: by gentwo.org (Postfix, from userid 1002)
+        id 36BF23F0D9; Wed,  7 Oct 2020 08:45:10 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id 34D473EC1B;
+        Wed,  7 Oct 2020 08:45:10 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 08:45:10 +0000 (UTC)
+From:   Christopher Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+cc:     linux-kernel@vger.kernel.org, ben.widawsky@intel.com,
+        rientjes@google.com, alex.shi@linux.alibaba.com, dwagner@suse.de,
+        tobin@kernel.org, akpm@linux-foundation.org, ying.huang@intel.com,
+        dan.j.williams@intel.com, cai@lca.pw, stable@vger.kernel.org
+Subject: Re: [RFC][PATCH 01/12] mm/vmscan: restore zone_reclaim_mode ABI
+In-Reply-To: <20201006205106.52F4D02E@viggo.jf.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2010070843540.113351@www.lameter.com>
+References: <20201006205103.268F74A9@viggo.jf.intel.com> <20201006205106.52F4D02E@viggo.jf.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From time to time, the novice kernel contributors do not add Reviewed-by
-or Tested-by tags to the next versions of the patches.  Mostly because
-they are unaware that responsibility of adding these tags in next
-version is on submitter, not maintainer.
+On Tue, 6 Oct 2020, Dave Hansen wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- Documentation/process/submitting-patches.rst | 7 +++++++
- 1 file changed, 7 insertions(+)
+> But, when the bit was removed (bit 0) the _other_ bit locations also
+> got changed.  That's not OK because the bit values are documented to
+> mean one specific thing and users surely rely on them meaning that one
+> thing and not changing from kernel to kernel.  The end result is that
+> if someone had a script that did:
 
-diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-index 58586ffe2808..9752b6311674 100644
---- a/Documentation/process/submitting-patches.rst
-+++ b/Documentation/process/submitting-patches.rst
-@@ -527,6 +527,13 @@ done on the patch.  Reviewed-by: tags, when supplied by reviewers known to
- understand the subject area and to perform thorough reviews, will normally
- increase the likelihood of your patch getting into the kernel.
- 
-+Both Tested-by and Reviewed-by tags, once received on mailing list from tester
-+or reviewer, should be added by author to the applicable patches when sending
-+next versions.  However if the patch is changed in following version, these
-+tags might not be applicable anymore and thus should be removed.  Usually
-+removal of someone's Tested-by or Reviewed-by tags should be mentioned
-+in the patch changelog (after '---' separator).
-+
- A Suggested-by: tag indicates that the patch idea is suggested by the person
- named and ensures credit to the person for the idea. Please note that this
- tag should not be added without the reporter's permission, especially if the
--- 
-2.17.1
+Exactly right. Sorry must have missed to review that patch.
+
+Acked-by: Christoph Lameter <cl@linux.com>
 
