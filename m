@@ -2,103 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272A0286647
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B22828664A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbgJGRyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:54:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54258 "EHLO
+        id S1728745AbgJGRyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:54:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35325 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728298AbgJGRyP (ORCPT
+        by vger.kernel.org with ESMTP id S1728710AbgJGRyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:54:15 -0400
+        Wed, 7 Oct 2020 13:54:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602093253;
+        s=mimecast20190719; t=1602093269;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vH9Kiij2/aTW7bWMoqRFax1aZ04huQLmyjYHxGrPQdc=;
-        b=gwcSMHn/mz5vSFmSFe7vF2VMI4cHqidCfotrtNmbSA9NulzboVkajfawf0tDcI9HlSRA+b
-        JxLWnqTchoSK/bcC2KN758G+7OtMTdeMafjskYXXMKQ64nnjbhyHlTrPPxSj3LvXSf7uth
-        8BmrKO3Yay5f8T16O2cDIvnYp5a9FCw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-LUgFd02kOkKXt201YjT0yA-1; Wed, 07 Oct 2020 13:54:11 -0400
-X-MC-Unique: LUgFd02kOkKXt201YjT0yA-1
-Received: by mail-wr1-f72.google.com with SMTP id l15so1702018wro.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:54:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vH9Kiij2/aTW7bWMoqRFax1aZ04huQLmyjYHxGrPQdc=;
-        b=rqZ3Q7sKbWCooyQPoNFvqK6en1N5qSpykRxmC9paIwnnLZM/kdiAqzGxUH3xgxBVJs
-         wptCbZr4g45fRtRjswNjKugAroLMxbGZ68KHIVt+CHwhwgo68iQsbws4guHUHWd77AIk
-         TGkTyva1PAigYyUMwxIttx1uRNSC8dYd6acPzOUXNMlA4f+80UbURs5+vjUs1SQvbFnW
-         IbqoksvItTm8ufYs/UdAKZUOzaN+/rcsA/qzSnjl2/9apqfaz2xKg3sag8PgrY6Sa/jC
-         2+vMSkkgpTzWKpwpDVHUG4sGLGlGYBc0cxTc7RecZF3apcy7DdbT+6YzlfRZAxTt3yM0
-         HiLQ==
-X-Gm-Message-State: AOAM533Z/wuvw654XHQokHdFCoQa7QlZDk92CWi/vMeGWveUsDVTIybd
-        pyP6SiRcUS2iQwxIiLf9nMo7jdug237CpvSEHjcug8wyBL9y+9G7zq4itgJdfOIRU2goXYcVnyH
-        hMYvFR6PN8lsCZGOuJqr/tMfU
-X-Received: by 2002:a1c:3105:: with SMTP id x5mr4237279wmx.143.1602093250497;
-        Wed, 07 Oct 2020 10:54:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4+uUHG31siOZb1tYt9cPAYxZ5B/XQn33ayWCITZONCDeGW1eaR6Zh3CPhBOOARnjaPLcSNQ==
-X-Received: by 2002:a1c:3105:: with SMTP id x5mr4237182wmx.143.1602093249068;
-        Wed, 07 Oct 2020 10:54:09 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:d2f4:5943:190c:39ff? ([2001:b07:6468:f312:d2f4:5943:190c:39ff])
-        by smtp.gmail.com with ESMTPSA id 67sm3587452wmb.31.2020.10.07.10.54.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 10:54:08 -0700 (PDT)
-Subject: Re: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-16-bgardon@google.com>
- <622ffc59-d914-c718-3f2f-952f714ac63c@redhat.com>
- <CANgfPd_8SpHkCd=NyBKtRFWKkczx4SMxPLRon-kx9Oc6P7b=Ew@mail.gmail.com>
- <7636707a-b622-90a3-e641-18662938f6dd@redhat.com>
- <CANgfPd_F_EurkfGquC79cEHa=4A2AMfnCAfMHPpAXa-6w4+bsg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5bb8168c-e4a2-6365-f220-13b67c9c375d@redhat.com>
-Date:   Wed, 7 Oct 2020 19:54:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        bh=NP2NwvRNkpskpbqtazC17Q7q1+ouDsoPdcjnY53Rhgc=;
+        b=acFyu1cKQUNr52NMUadpwS3fYPKVSmpS7OZZOmZDh0xc1HoF0T9br2fEgJNHz2mF7PSn7L
+        xOGxk0kdDm2WPIECifxyhC3p4gKA6S3IR4X7c8nXSU+zHV22o3PYaXk3qRlAanGdi0/9hr
+        JSoRTNoi1Gpa5cPOlGwSqTYT0GVpMjc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-YdsGazGJMfuY6Pu2pCBvfQ-1; Wed, 07 Oct 2020 13:54:27 -0400
+X-MC-Unique: YdsGazGJMfuY6Pu2pCBvfQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BF4119080B1;
+        Wed,  7 Oct 2020 17:54:26 +0000 (UTC)
+Received: from redhat.com (ovpn-119-161.rdu2.redhat.com [10.10.119.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 96D1F6EF5B;
+        Wed,  7 Oct 2020 17:54:24 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 13:54:19 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
+        Josef Bacik <jbacik@fb.com>
+Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
+Message-ID: <20201007175419.GA3478056@redhat.com>
+References: <20201007010603.3452458-1-jglisse@redhat.com>
+ <20201007032013.GS20115@casper.infradead.org>
+ <20201007144835.GA3471400@redhat.com>
+ <20201007170558.GU20115@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd_F_EurkfGquC79cEHa=4A2AMfnCAfMHPpAXa-6w4+bsg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201007170558.GU20115@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/20 19:30, Ben Gardon wrote:
->> Well that's not easy if you have to think of which functions have to be
->> called.
->>
->> I'll take a closer look at the access tracking and dirty logging cases
->> to try and understand what those bugs can be.  Apart from that I have my
->> suggested changes and I can probably finish testing them and send them
->> out tomorrow.
-> Awesome, thank you. I'll look forward to seeing them. Will you be
-> applying those changes to the tdp_mmu branch you created as well?
+On Wed, Oct 07, 2020 at 06:05:58PM +0100, Matthew Wilcox wrote:
+> On Wed, Oct 07, 2020 at 10:48:35AM -0400, Jerome Glisse wrote:
+> > On Wed, Oct 07, 2020 at 04:20:13AM +0100, Matthew Wilcox wrote:
+> > > On Tue, Oct 06, 2020 at 09:05:49PM -0400, jglisse@redhat.com wrote:
+> > > > The present patchset just add mapping argument to the various vfs call-
+> > > > backs. It does not make use of that new parameter to avoid regression.
+> > > > I am posting this whole things as small contain patchset as it is rather
+> > > > big and i would like to make progress step by step.
+> > > 
+> > > Well, that's the problem.  This patch set is gigantic and unreviewable.
+> > > And it has no benefits.  The idea you present here was discussed at
+> > > LSFMM in Utah and I recall absolutely nobody being in favour of it.
+> > > You claim many wonderful features will be unlocked by this, but I think
+> > > they can all be achieved without doing any of this very disruptive work.
+> > 
+> > You have any ideas on how to achieve them without such change ? I will
+> > be more than happy for a simpler solution but i fail to see how you can
+> > work around the need for a pointer inside struct page. Given struct
+> > page can not grow it means you need to be able to overload one of the
+> > existing field, at least i do not see any otherway.
 > 
+> The one I've spent the most time thinking about is sharing pages between
+> reflinked files.  My approach is to pull DAX entries into the main page
+> cache and have them reference the PFN directly.  It's not a struct page,
+> but we can find a struct page from it if we need it.  The struct page
+> would belong to a mapping that isn't part of the file.
 
-No, only to the rebased version.
+You would need to do a lot of filesystem specific change to make sure
+the fs understand the special mapping. It is doable but i feel it would
+have a lot of fs specific part.
 
-Paolo
+
+> For other things (NUMA distribution), we can point to something which
+> isn't a struct page and can be distiguished from a real struct page by a
+> bit somewhere (I have ideas for at least three bits in struct page that
+> could be used for this).  Then use a pointer in that data structure to
+> point to the real page.  Or do NUMA distribution at the inode level.
+> Have a way to get from (inode, node) to an address_space which contains
+> just regular pages.
+
+How do you find all the copies ? KSM maintains a list for a reasons.
+Same would be needed here because if you want to break the write prot
+you need to find all the copy first. If you intend to walk page table
+then how do you synchronize to avoid more copy to spawn while you
+walk reverse mapping, we could lock the struct page i guess. Also how
+do you walk device page table which are completely hidden from core mm.
+
+
+> Using main memory to cache DAX could be done today without any data
+> structure changes.  It just needs the DAX entries pulled up into the
+> main pagecache.  See earlier item.
+> 
+> Exclusive write access ... you could put a magic value in the pagecache
+> for pages which are exclusively for someone else's use and handle those
+> specially.  I don't entirely understand this use case.
+
+For this use case you need a callback to break the protection and it
+needs to handle all cases ie not only write by CPU through file mapping
+but also file write syscall and other syscall that can write to page
+(pipe, ...).
+
+
+> I don't have time to work on all of these.  If there's one that
+> particularly interests you, let's dive deep into it and figure out how
+
+I care about KSM, duplicate NUMA copy (not only for CPU but also
+device) and write protection or exclusive write access. In each case
+you need a list of all the copy (for KSM of the deduplicated page)
+Having a special entry in the page cache does not sound like a good
+option in many code path you would need to re-look the page cache to
+find out if the page is in special state. If you use a bit flag in
+struct page how do you get to the callback or to the copy/alias,
+walk all the page tables ?
+
+> you can do it without committing this kind of violence to struct page.
+
+I do not see how i am doing violence to struct page :) The basis of
+my approach is to pass down the mapping. We always have the mapping
+at the top of the stack (either syscall entry point on a file or
+through the vma when working on virtual address).
+
+But we rarely pass down this mapping down the stack into the fs code.
+I am only passing down the mapping through the bottom of the stack so
+we do not need to rely of page->mapping all the time. I am not trying
+to remove the page->mapping field, it is still usefull, i just want
+to be able to overload it so that we can make KSM code generic and
+allow to reuse that generic part for other usecase.
+
+Cheers,
+Jérôme
 
