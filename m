@@ -2,91 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220ED2869E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E082869ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 23:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbgJGVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 17:13:38 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54434 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727948AbgJGVNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 17:13:38 -0400
-Received: from zn.tnic (p200300ec2f091000329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:1000:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B85551EC047E;
-        Wed,  7 Oct 2020 23:13:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602105216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/Yh+wbC0gePra/fHYoDJBYHzwvAnC3odlqyeb1eRkS0=;
-        b=Ahf9g86lq4umgnClS2SgAlXjH3q8p/EGeW3E/h1y+n2Z2C36gTb4SS2luUWONCEkQxF1y3
-        uY/Ic3KwuleaXauo/4WodNuPropBofqVWw8PcZNDIeoE0hbOqLegth9TMiKN1QIjmZdCgJ
-        TY2FWjueaW0HRiDyieoy+76tHexnF28=
-Date:   Wed, 7 Oct 2020 23:13:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Michael Matz <matz@suse.de>, Dave Jiang <dave.jiang@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        x86 <x86@kernel.org>
-Subject: Re: [tip: x86/pasid] x86/asm: Carve out a generic movdir64b() helper
- for general usage
-Message-ID: <20201007211327.GN5607@zn.tnic>
-References: <20201005151126.657029-2-dave.jiang@intel.com>
- <160208728972.7002.18130814269550766361.tip-bot2@tip-bot2>
- <20201007170835.GM2628@hirez.programming.kicks-ass.net>
+        id S1728659AbgJGVNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 17:13:52 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16238 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727948AbgJGVNw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 17:13:52 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7e2f220008>; Wed, 07 Oct 2020 14:12:02 -0700
+Received: from [10.2.85.86] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct
+ 2020 21:13:42 +0000
+Subject: Re: [PATCH 05/13] mm/frame-vector: Use FOLL_LONGTERM
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Kyungmin Park" <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-6-daniel.vetter@ffwll.ch>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <fc0ac3fb-2758-bef1-76b4-8ac2449f5743@nvidia.com>
+Date:   Wed, 7 Oct 2020 14:13:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201007170835.GM2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201007164426.1812530-6-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602105122; bh=sdL9dWr71OcitQ1QN+LtvleGwHLKlRCYjfX+GmsKdT8=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=UczOXY9to1LCj5AA/vWDFIZSxYcptbOuWof8ytMtikifjWBiV7WFE1SZd1H0LH0fv
+         kOKJobR115WCn/yjDIJFRQ+hkcq+2dAKR1e6FJj4MkEmdDzg6N2N4gslr80UJRaZgX
+         Lkk41XeM43UGThQQOFlbMX+h/b39dMZd63P9UIGH6zBsVqei7Fx18bJACRBf9osCOy
+         57RN8QfMM60XFWH7HJJ2PGtXfTOLsVy5u8w4Kq70u1hUdIgK44rQsExvKhmLL+DdpK
+         oxBJseYzqWkzebOA0vrS2YNSZyf8rdAgfIOjGviz66fazstOfGqMqtR5VpaT1zywo3
+         jmYuc2NJXDq1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 07:08:35PM +0200, Peter Zijlstra wrote:
-> (%rdx), %rax, surely?
+On 10/7/20 9:44 AM, Daniel Vetter wrote:
+> This is used by media/videbuf2 for persistent dma mappings, not just
+> for a single dma operation and then freed again, so needs
+> FOLL_LONGTERM.
+>=20
+> Unfortunately current pup_locked doesn't support FOLL_LONGTERM due to
+> locking issues. Rework the code to pull the pup path out from the
+> mmap_sem critical section as suggested by Jason.
+>=20
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Pawel Osciak <pawel@osciak.com>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> ---
+>   mm/frame_vector.c | 36 +++++++++++-------------------------
+>   1 file changed, 11 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+> index 10f82d5643b6..39db520a51dc 100644
+> --- a/mm/frame_vector.c
+> +++ b/mm/frame_vector.c
+> @@ -38,7 +38,6 @@ int get_vaddr_frames(unsigned long start, unsigned int =
+nr_frames,
+>   	struct vm_area_struct *vma;
+>   	int ret =3D 0;
+>   	int err;
+> -	int locked;
+>  =20
+>   	if (nr_frames =3D=3D 0)
+>   		return 0;
+> @@ -48,35 +47,22 @@ int get_vaddr_frames(unsigned long start, unsigned in=
+t nr_frames,
+>  =20
+>   	start =3D untagged_addr(start);
+>  =20
+> +	ret =3D pin_user_pages_fast(start, nr_frames,
+> +				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+> +				  (struct page **)(vec->ptrs));
+> +	if (ret > 0) {
+> +		vec->got_ref =3D true;
+> +		vec->is_pfns =3D false;
+> +		goto out_unlocked;
+> +	}
 
-Right, later. Already tagged the branch so that Vinod can base stuff ontop.
+This part looks good, and changing to _fast is a potential performance impr=
+ovement,
+too.
 
-> Also, that's a horrible convention, but I suppose (%rdx), (%rax) was
-> out?
+> +
+>   	mmap_read_lock(mm);
+> -	locked =3D 1;
+>   	vma =3D find_vma_intersection(mm, start, start + 1);
+>   	if (!vma) {
+>   		ret =3D -EFAULT;
+>   		goto out;
+>   	}
+>  =20
+> -	/*
+> -	 * While get_vaddr_frames() could be used for transient (kernel
+> -	 * controlled lifetime) pinning of memory pages all current
+> -	 * users establish long term (userspace controlled lifetime)
+> -	 * page pinning. Treat get_vaddr_frames() like
+> -	 * get_user_pages_longterm() and disallow it for filesystem-dax
+> -	 * mappings.
+> -	 */
+> -	if (vma_is_fsdax(vma)) {
+> -		ret =3D -EOPNOTSUPP;
+> -		goto out;
+> -	}
 
-See the end of this mail:
+Are you sure we don't need to check vma_is_fsdax() anymore?
 
-https://lkml.kernel.org/r/alpine.LSU.2.20.2009241356020.20802@wotan.suse.de
+> -
+> -	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> -		vec->got_ref =3D true;
+> -		vec->is_pfns =3D false;
+> -		ret =3D pin_user_pages_locked(start, nr_frames,
+> -			gup_flags, (struct page **)(vec->ptrs), &locked);
+> -		goto out;
+> -	}
+> -
+>   	vec->got_ref =3D false;
+>   	vec->is_pfns =3D true;
+>   	do {
+> @@ -101,8 +87,8 @@ int get_vaddr_frames(unsigned long start, unsigned int=
+ nr_frames,
+>   		vma =3D find_vma_intersection(mm, start, start + 1);
+>   	} while (vma && vma->vm_flags & (VM_IO | VM_PFNMAP));
+>   out:
+> -	if (locked)
+> -		mmap_read_unlock(mm);
+> +	mmap_read_unlock(mm);
+> +out_unlocked:
+>   	if (!ret)
+>   		ret =3D -EFAULT;
+>   	if (ret > 0)
+>=20
 
-> Can we pretty please get a binutils version that knows about this
-> instruction, such that we know when we can get rid of the silly .byte
-> encoded mess?
+All of the error handling still looks accurate there.
 
-It looks like support for this insn got introduced in this binutils commit:
-
-c0a30a9f0ab4 ("Enable Intel MOVDIRI, MOVDIR64B instructions")
-
-So I guess from 2.31 onwards:
-
-$ git tag --contains c0a30a9f0ab48
-binutils-2_31
-binutils-2_31_1
-binutils-2_32
-binutils-2_33
-binutils-2_33_1
-binutils-2_34
-binutils-2_35
-binutils-2_35_1
-gdb-8.2-release
-gdb-8.2.1-release
-gdb-8.3-release
-gdb-8.3.1-release
-gdb-9.1-release
-gdb-9.2-release
-...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+thanks,
+--=20
+John Hubbard
+NVIDIA
