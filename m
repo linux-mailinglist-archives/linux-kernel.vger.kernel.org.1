@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751C0285C02
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9E3285BFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgJGJqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:46:30 -0400
-Received: from mail.z3ntu.xyz ([128.199.32.197]:60252 "EHLO mail.z3ntu.xyz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbgJGJqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:46:30 -0400
-X-Greylist: delayed 314 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Oct 2020 05:46:28 EDT
-Received: by mail.z3ntu.xyz (Postfix, from userid 182)
-        id 8B5E3C7196; Wed,  7 Oct 2020 09:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1602063673; bh=G58nxDXR85aKAm9KZdsGVsJleTDCbz79NyrWb3uEyXY=;
-        h=Cc:Subject:From:To:Date:In-Reply-To;
-        b=nssfBIoByvP+3EH8HJuENhBQuGQTosfme+khCz5ttbYEyLd78Tns6n+r4cV4JfDxm
-         wy0lUjTBOkxGZizXrUTo/HZyCgQ6vgOmYd2Dl8Csxx1xkVPJIfCjkc6d4BIqDcVZ0I
-         2vy3Z8F7bZoZVY6eeB0nYQ9yX5E59hiF4rGCiHXc=
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on arch-vps
-X-Spam-Level: 
-X-Spam-Status: No, score=0.9 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.4
-Received: from localhost (arch-vps [128.199.32.197])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 56ED9C4CF4;
-        Wed,  7 Oct 2020 09:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1602063670; bh=G58nxDXR85aKAm9KZdsGVsJleTDCbz79NyrWb3uEyXY=;
-        h=Cc:Subject:From:To:Date:In-Reply-To;
-        b=KKS8sIN1+vS6ETBIO+nKA9RcB493ngK2y7IMwGZaazCBBxwrViO4xq7AtWUo/aYjo
-         cXV6RfG7Ouk0NCyObeT5ynmMRocAhiuz4TEmukpj+X4BMAbFGCEy0Gmo9iIrzIYpRX
-         eOTbzPqkkEVD23ITtVw0Llo5t2J9nm+UyQez7qtQ=
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>
-Subject: Re: [PATCH v4 2/4] leds: Add driver for Qualcomm LPG
-From:   "Luca Weiss" <luca@z3ntu.xyz>
-To:     "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        "Pavel Machek" <pavel@ucw.cz>, "Dan Murphy" <dmurphy@ti.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Andy Gross" <agross@kernel.org>,
-        "Thierry Reding" <thierry.reding@gmail.com>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Martin Botka" <martin.botka1@gmail.com>
-Date:   Wed, 07 Oct 2020 09:40:45 +0000
-Message-Id: <C66K5YFY5LGN.1S3H72H0QQQAI@arch-vps>
-In-Reply-To: <20200929031544.1000204-3-bjorn.andersson@linaro.org>
+        id S1727296AbgJGJn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726218AbgJGJn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 05:43:56 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEDDC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 02:43:54 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id r127so1507423lff.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4hFktsPwEbTgb6XtsDRKma4HYkbhuyQkfc2EV/sEEq4=;
+        b=PeJPY3t2subOODdcZjbaiew8E9wJphH5QHFWTqfxC6QtU6CxaljZFwUYEx4QPPjJ3e
+         7JhFK63xaJLx+sEKCfV6i3e63IZyOW90iiF+5UcV8BPXaJOLL0LwzPMBamP9E94yuq2m
+         BtZrSMd/o4q3S80lDZt49lc64W0pCWaNMAhopT3Fw6uLxBDxYZba3BOVUaE7/igggED9
+         xWWs0dc6C3MgD+0SuWdGA43Lb2jumM0JN253IkT62eD65hwbgH5AdlFYHLdMzbQXG3jF
+         HgIxt5c2FXyENDQGf5ieYWurEMIVIeynCnhR1U0x5o4KnctHUYQmBDZQb3aqEEK/kVSl
+         XN0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4hFktsPwEbTgb6XtsDRKma4HYkbhuyQkfc2EV/sEEq4=;
+        b=onO2mO8r/Jm9oJRcHGgr/BfAKHwWW7UVQFsoP9Iy+LMda855vtNrWrPICwi9yIqrKy
+         5Ler944/sR7DzoBtkzdCZOT82iZyKmgQscJOAFlrAB3TNe/fdnPMZSZnEhUX5BJrI3tz
+         8/ze9x5EYJnYLdTCfWsvfwGpOtYDsak3oVkVNNJzUuRJuMJBmTdd97+00EepXxpJVoel
+         CJuJcn277XhoHvyVXchnk5G3Np0PSmwsTFxuqDBiOtnW4eJIKk0kAHqF6naxYe6UcLwg
+         nYf0VohSR7aHXBXelZqqWFV9IxSqY+u1vadauz1jxfIf0WVJW42Ung8+f3LjRI5NelDX
+         87gg==
+X-Gm-Message-State: AOAM5322G2eqVCpEPOEuDeZTbieVLU8ubrQiF7V+kz0ZiZ4CYTEdZVWQ
+        A2URe8QP93cT5nciI1B6uwcXeJls0d4=
+X-Google-Smtp-Source: ABdhPJwOsA6j+H5y6KLQz2Es7KBdsCm+M0aNhzRhTbleVU3ReVOQo2YeHiWCEYk6AMu6Y5aAFjL6Jg==
+X-Received: by 2002:a05:6512:3692:: with SMTP id d18mr644960lfs.62.1602063832636;
+        Wed, 07 Oct 2020 02:43:52 -0700 (PDT)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id o23sm95757lji.68.2020.10.07.02.43.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 02:43:52 -0700 (PDT)
+Subject: Re: [PATCH] mm: optionally disable brk()
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'David Hildenbrand' <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201002171921.3053-1-toiwoton@gmail.com>
+ <653873ef-2a57-37e0-1ac3-fba763652b35@redhat.com>
+ <2a0f5ade-d770-c36e-50bc-ff0c8e9dacbf@gmail.com>
+ <20201005061248.GN4555@dhcp22.suse.cz>
+ <888e62e0-3979-207b-c516-ddfc6b9f3345@redhat.com>
+ <4d325e3e-3139-eded-6781-435fb04fb915@gmail.com>
+ <9dc586f4-38f0-7956-0ab6-bd7921491606@redhat.com>
+ <5fb32353b1964299809fce0c7579a092@AcuMS.aculab.com>
+ <b6baf73e-35fd-fe12-bb5f-b9b4e334ae83@redhat.com>
+ <23ca06acdfb44b76892857f9e9871241@AcuMS.aculab.com>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <b5c9bf5d-5857-8131-82af-6611d2b7d592@gmail.com>
+Date:   Wed, 7 Oct 2020 12:43:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <23ca06acdfb44b76892857f9e9871241@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On 5.10.2020 15.25, David Laight wrote:
+> From: David Hildenbrand
+>> Sent: 05 October 2020 13:19
+>>
+>> On 05.10.20 13:21, David Laight wrote:
+>>> From: David Hildenbrand
+>>>> Sent: 05 October 2020 10:55
+>>> ...
+>>>>> If hardening and compatibility are seen as tradeoffs, perhaps there
+>>>>> could be a top level config choice (CONFIG_HARDENING_TRADEOFF) for this.
+>>>>> It would have options
+>>>>> - "compatibility" (default) to gear questions for maximum compatibility,
+>>>>> deselecting any hardening options which reduce compatibility
+>>>>> - "hardening" to gear questions for maximum hardening, deselecting any
+>>>>> compatibility options which reduce hardening
+>>>>> - "none/manual": ask all questions like before
+>>>>
+>>>> I think the general direction is to avoid an exploding set of config
+>>>> options. So if there isn't a *real* demand, I guess gluing this to a
+>>>> single option ("CONFIG_SECURITY_HARDENING") might be good enough.
+>>>
+>>> Wouldn't that be better achieved by run-time clobbering
+>>> of the syscall vectors?
+>>
+>> You mean via something like a boot parameter? Possibly yes.
+> 
+> I was thinking of later.
+> Some kind of restricted system might want the 'clobber'
+> mount() after everything is running.
 
-On Mon Sep 28, 2020 at 8:15 PM, Bjorn Andersson wrote:
-> The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
-> PMICs from Qualcomm. It can operate on fixed parameters or based on a
-> lookup-table, altering the duty cycle over time - which provides the
-> means for e.g. hardware assisted transitions of LED brightness.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->
-> Changes since v3:
-> - Adopt multicolor model
-> - Simplified hw_pattern implementation
->
-> drivers/leds/Kconfig | 9 +
-> drivers/leds/Makefile | 1 +
-> drivers/leds/leds-qcom-lpg.c | 1213 ++++++++++++++++++++++++++++++++++
-> 3 files changed, 1223 insertions(+)
-> create mode 100644 drivers/leds/leds-qcom-lpg.c
+Perhaps suitably privileged tasks should be able to install global 
+seccomp filters which would disregard any NoNewPrivileges requirements 
+and would apply immediately to all tasks. The boot parameter would be 
+also nice so that initrd and PID1 would be also restricted. Seccomp 
+would also allow more specific filtering than messing with the syscall 
+tables.
 
-<snip>
-
-> +static int lpg_pwm_request(struct pwm_chip *chip, struct pwm_device
-> *pwm)
-> +{
-> + struct lpg *lpg =3D container_of(chip, struct lpg, pwm);
-> + struct lpg_channel *chan =3D &lpg->channels[pwm->hwpwm];
-> +
-> + return chan->in_use ? -EBUSY : 0;
-> +}
-> +
-> +static int lpg_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> + const struct pwm_state *state)
-> +{
-> + struct lpg *lpg =3D container_of(chip, struct lpg, pwm);
-> + struct lpg_channel *chan =3D &lpg->channels[pwm->hwpwm];
-> +
-> + lpg_calc_freq(chan, state->period / NSEC_PER_USEC);
-> + lpg_calc_duty(chan, state->duty_cycle / NSEC_PER_USEC);
-
-As written on IRC this has to be wrapped div_u64() to compile on arm32;
-should also fix the buildbot failure.
-
-> + chan->enabled =3D state->enabled;
-> +
-> + lpg_apply(chan);
-> +
-> + triled_set(lpg, chan->triled_mask, chan->enabled);
-> +
-> + return 0;
-> +}
-
-Other than that, this works great on msm8974-fairphone-fp2 (pm8941)
-with reg 7 (red), 6 (green) & 5 (blue). Thanks for updating this
-patchset!
-
-Regards
-Luca
+-Topi
