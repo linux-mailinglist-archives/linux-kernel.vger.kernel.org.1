@@ -2,162 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602A82868E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD412868F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728332AbgJGURe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:17:34 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:33639 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728307AbgJGURd (ORCPT
+        id S1728303AbgJGUWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:22:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53022 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726463AbgJGUWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:17:33 -0400
-Received: (qmail 471404 invoked by uid 1000); 7 Oct 2020 16:17:32 -0400
-Date:   Wed, 7 Oct 2020 16:17:32 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201007201732.GE468921@rowland.harvard.edu>
-References: <20201006141820.GA416765@rowland.harvard.edu>
- <20201006165957.GA191572@google.com>
- <20201006171524.GB423499@rowland.harvard.edu>
- <20201006192536.GB191572@google.com>
- <20201007010023.GA438733@rowland.harvard.edu>
- <20201007160336.GA620323@google.com>
- <20201007163838.GA457977@rowland.harvard.edu>
- <20201007172847.GB620323@google.com>
- <20201007192542.GA468921@rowland.harvard.edu>
- <20201007194229.GC620323@google.com>
+        Wed, 7 Oct 2020 16:22:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602102119;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZDrXh4cE65yGFS+V0oC4Ce+GkKCDRoNl54roC654jNU=;
+        b=AH7hhy1firtKrBSSe+Y8XmqdmOff7htEcBcDRr6te4pDgSTlw5A1KaEE9X5uWH14Fm/HBq
+        iE/vPo6C4+QnZAUpUQaMoysdyQL/HzwebDgrDi/iQn6t7H1OyCtJpvpceIgRIFLGFPM5m9
+        DS+DcCyhdML9SjYcdf+3anm+wZ5dezY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-FOuCiWzlNRyN4XHwLZNBSA-1; Wed, 07 Oct 2020 16:21:54 -0400
+X-MC-Unique: FOuCiWzlNRyN4XHwLZNBSA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 193678070FD;
+        Wed,  7 Oct 2020 20:21:52 +0000 (UTC)
+Received: from w520.home (ovpn-113-244.phx2.redhat.com [10.3.113.244])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 60D245D9DD;
+        Wed,  7 Oct 2020 20:21:51 +0000 (UTC)
+Date:   Wed, 7 Oct 2020 14:21:50 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     cohuck@redhat.com, schnelle@linux.ibm.com, pmorel@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] vfio: Introduce capability definitions for
+ VFIO_DEVICE_GET_INFO
+Message-ID: <20201007142150.44773a1f@w520.home>
+In-Reply-To: <1602096984-13703-4-git-send-email-mjrosato@linux.ibm.com>
+References: <1602096984-13703-1-git-send-email-mjrosato@linux.ibm.com>
+        <1602096984-13703-4-git-send-email-mjrosato@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201007194229.GC620323@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 12:42:29PM -0700, Matthias Kaehlcke wrote:
-> On Wed, Oct 07, 2020 at 03:25:42PM -0400, Alan Stern wrote:
-> > On Wed, Oct 07, 2020 at 10:28:47AM -0700, Matthias Kaehlcke wrote:
-> > > On Wed, Oct 07, 2020 at 12:38:38PM -0400, Alan Stern wrote:
-> > > > On Wed, Oct 07, 2020 at 09:03:36AM -0700, Matthias Kaehlcke wrote:
-> > > > > Ok, I wasn't sure if the hubs suspend asynchronously from each other. If they
-> > > > > do it should indeed not be a problem to have the "master" wait for its peers.
-> > > > 
-> > > > Well, order of suspending is selectable by the user.  It can be either 
-> > > > asynchronous or reverse order of device registration, which might pose a 
-> > > > problem.  We don't know in advance which of two peer hubs will be 
-> > > > registered first.  It might be necessary to introduce some additional 
-> > > > explicit synchronization.
-> > > 
-> > > I'm not sure we are understanding each other completely. I agree that
-> > > synchronization is needed to have the primary hub wait for its peers, that
-> > > was one of my initial concerns.
-> > > 
-> > > Lets use an example to clarify my secondary concern: a hub chip provides a
-> > > USB 3 and a USB 2 hub, lets say the USB 3 hub is the primary.
-> > > 
-> > > Here is some pseudo-code for the suspend function:
-> > > 
-> > > hub_suspend(hub)
-> > >   ...
-> > > 
-> > >   if (hub->primary) {
-> > >     device_pm_wait_for_dev(hub->peer)
-> > > 
-> > >     // check for connected devices and turn regulator off
-> > >   }
-> > > 
-> > >   ...
-> > > }
-> > > 
-> > > What I meant with 'asynchronous suspend' in this context:
-> > > 
-> > > Can hub_suspend() of the peer hub be executed (asynchronously) while the
-> > > primary is blocked on device_pm_wait_for_dev(),
-> > 
-> > Yes, that's exactly what would happen with async suspend.
-> > 
-> > >  or would the primary wait
-> > > forever if the peer hub isn't suspended yet?
-> > 
-> > That wouldn't happen.  device_pm_wait_for_dev is smart; it will return 
-> > immediately if neither device uses async suspend.  But in that case you 
-> > could end up removing power from the peer hub before it had suspended.
-> > 
-> > That's why I said you might need to add additional synchronization.  The 
-> > suspend routines for the two hubs could each check to see whether the 
-> > other device had suspended yet, and the last one would handle the power 
-> > regulator.  The additional synchronization is for the case where the two 
-> > checks end up being concurrent.
+On Wed,  7 Oct 2020 14:56:22 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+
+> Allow the VFIO_DEVICE_GET_INFO ioctl to include a capability chain.
+> Add a flag indicating capability chain support, and introduce the
+> definitions for the first set of capabilities which are specified to
+> s390 zPCI devices.
 > 
-> That was exactly my initial concern and one of the reasons I favor(ed) a
-> platform instead of a USB driver:
-
-Clearly there's a tradeoff.
-
-> > otherwise all hubs need to know their peers and check in suspend if they
-> > are the last hub standing, only then the power can be switched off.
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> ---
+>  include/uapi/linux/vfio.h      | 11 ++++++
+>  include/uapi/linux/vfio_zdev.h | 78 ++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 89 insertions(+)
+>  create mode 100644 include/uapi/linux/vfio_zdev.h
 > 
-> To which you replied:
-> 
-> > you just need to make the "master" hub wait for its peer to suspend, which
-> > is easy to do.
-> 
-> However that apparently only works if async suspend is enabled, and we
-> can't rely on that.
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 9204705..836a25b 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -201,8 +201,10 @@ struct vfio_device_info {
+>  #define VFIO_DEVICE_FLAGS_AMBA  (1 << 3)	/* vfio-amba device */
+>  #define VFIO_DEVICE_FLAGS_CCW	(1 << 4)	/* vfio-ccw device */
+>  #define VFIO_DEVICE_FLAGS_AP	(1 << 5)	/* vfio-ap device */
+> +#define VFIO_DEVICE_FLAGS_CAPS	(1 << 6)	/* Info supports caps */
 
-Yes, I had forgotten about the possibility of synchronous suspend.  My 
-mistake.
 
-> With the peers checking on each other you lose effectively the notion
-> of a primary.
+FYI, I'm going to change this to (1 << 7) because the new fsl-mc bus
+driver patches are claiming a new device type with (1 << 6) and I don't
+want the conflict to be magically resolved on merge.  Thanks,
 
-Well, you can still want to put the sysfs power-control attribute file 
-into just one of the hubs' directories, and that one would be considered 
-the primary.  But I agree, it's a weak notion.
+Alex
 
-> Going back to the binding:
-> 
->   &usb_1_dwc3 {
->     hub_2_0: hub@1 {
->       compatible = "usbbda,5411";
->       reg = <1>;
->     };
-> 
->     hub_3_0: hub@2 {
->       compatible = "usbbda,411";
->       reg = <2>;
->       vdd-supply = <&pp3300_hub>;
->       companion-hubs = <&hub_2_0>;
->     };
->   };
-> 
-> How does 'hub_2_0' know that its peer is hub_3_0 and that it has a regulator
-> (and potentially other resources)?
+>  	__u32	num_regions;	/* Max region index + 1 */
+>  	__u32	num_irqs;	/* Max IRQ index + 1 */
+> +	__u32   cap_offset;	/* Offset within info struct of first cap */
+>  };
+>  #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
+>  
+> @@ -218,6 +220,15 @@ struct vfio_device_info {
+>  #define VFIO_DEVICE_API_CCW_STRING		"vfio-ccw"
+>  #define VFIO_DEVICE_API_AP_STRING		"vfio-ap"
+>  
+> +/*
+> + * The following capabilities are unique to s390 zPCI devices.  Their contents
+> + * are further-defined in vfio_zdev.h
+> + */
+> +#define VFIO_DEVICE_INFO_CAP_ZPCI_BASE		1
+> +#define VFIO_DEVICE_INFO_CAP_ZPCI_GROUP		2
+> +#define VFIO_DEVICE_INFO_CAP_ZPCI_UTIL		3
+> +#define VFIO_DEVICE_INFO_CAP_ZPCI_PFIP		4
+> +
+>  /**
+>   * VFIO_DEVICE_GET_REGION_INFO - _IOWR(VFIO_TYPE, VFIO_BASE + 8,
+>   *				       struct vfio_region_info)
+> diff --git a/include/uapi/linux/vfio_zdev.h b/include/uapi/linux/vfio_zdev.h
+> new file mode 100644
+> index 0000000..b430939
+> --- /dev/null
+> +++ b/include/uapi/linux/vfio_zdev.h
+> @@ -0,0 +1,78 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * VFIO Region definitions for ZPCI devices
+> + *
+> + * Copyright IBM Corp. 2020
+> + *
+> + * Author(s): Pierre Morel <pmorel@linux.ibm.com>
+> + *            Matthew Rosato <mjrosato@linux.ibm.com>
+> + */
+> +
+> +#ifndef _VFIO_ZDEV_H_
+> +#define _VFIO_ZDEV_H_
+> +
+> +#include <linux/types.h>
+> +#include <linux/vfio.h>
+> +
+> +/**
+> + * VFIO_DEVICE_INFO_CAP_ZPCI_BASE - Base PCI Function information
+> + *
+> + * This capability provides a set of descriptive information about the
+> + * associated PCI function.
+> + */
+> +struct vfio_device_info_cap_zpci_base {
+> +	struct vfio_info_cap_header header;
+> +	__u64 start_dma;	/* Start of available DMA addresses */
+> +	__u64 end_dma;		/* End of available DMA addresses */
+> +	__u16 pchid;		/* Physical Channel ID */
+> +	__u16 vfn;		/* Virtual function number */
+> +	__u16 fmb_length;	/* Measurement Block Length (in bytes) */
+> +	__u8 pft;		/* PCI Function Type */
+> +	__u8 gid;		/* PCI function group ID */
+> +};
+> +
+> +/**
+> + * VFIO_DEVICE_INFO_CAP_ZPCI_GROUP - Base PCI Function Group information
+> + *
+> + * This capability provides a set of descriptive information about the group of
+> + * PCI functions that the associated device belongs to.
+> + */
+> +struct vfio_device_info_cap_zpci_group {
+> +	struct vfio_info_cap_header header;
+> +	__u64 dasm;		/* DMA Address space mask */
+> +	__u64 msi_addr;		/* MSI address */
+> +	__u64 flags;
+> +#define VFIO_DEVICE_INFO_ZPCI_FLAG_REFRESH 1 /* Program-specified TLB refresh */
+> +	__u16 mui;		/* Measurement Block Update Interval */
+> +	__u16 noi;		/* Maximum number of MSIs */
+> +	__u16 maxstbl;		/* Maximum Store Block Length */
+> +	__u8 version;		/* Supported PCI Version */
+> +};
+> +
+> +/**
+> + * VFIO_DEVICE_INFO_CAP_ZPCI_UTIL - Utility String
+> + *
+> + * This capability provides the utility string for the associated device, which
+> + * is a device identifier string made up of EBCDID characters.  'size' specifies
+> + * the length of 'util_str'.
+> + */
+> +struct vfio_device_info_cap_zpci_util {
+> +	struct vfio_info_cap_header header;
+> +	__u32 size;
+> +	__u8 util_str[];
+> +};
+> +
+> +/**
+> + * VFIO_DEVICE_INFO_CAP_ZPCI_PFIP - PCI Function Path
+> + *
+> + * This capability provides the PCI function path string, which is an identifier
+> + * that describes the internal hardware path of the device. 'size' specifies
+> + * the length of 'pfip'.
+> + */
+> +struct vfio_device_info_cap_zpci_pfip {
+> +	struct vfio_info_cap_header header;
+> +	__u32 size;
+> +	__u8 pfip[];
+> +};
+> +
+> +#endif
 
-The peering relation goes both ways, so it should be included in the 
-hub_2_0 description too.  Given that, the driver could check hub_2_0's 
-peer's DT description for the appropriate resources.
-
-> All this mess can be avoided by having a single instance in control of the
-> resources which is guaranteed to suspend after the USB devices.
-
-Yes.  At the cost of registering, adding a driver for, and making users 
-aware of a fictitious platform device.
-
-Alan Stern
