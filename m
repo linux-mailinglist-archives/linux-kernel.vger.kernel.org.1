@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB90285947
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15395285950
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgJGHUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
+        id S1727724AbgJGHW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727624AbgJGHUQ (ORCPT
+        with ESMTP id S1727692AbgJGHW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:20:16 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BFAC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:20:16 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gm14so606850pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=AKIEEcKeE8/9i9HUsSzlMQgzbQ/bmUdgtBYl5wmpO0Q=;
-        b=tLsGziNKPTqjyqaZhoPQxWKDGkRg42i7n+a7StQGVjqHPk/18+jFYQcN+JtvcUdbjg
-         FdhRn0cyZrF0iXzbvUZmtSxc0o6QPL0BiUpt1/Frl3880Qs3MEtWXXFqGZKtQnwqFqdA
-         U4hLtU5vhQupIsWWl6bh3i3VUMDzvs5Na9UmCREAXxAI4gH157cnhFtJDhJDDyoKh46n
-         WJfICHSuMPvP+4HDvUIQEbot1X0Pw+XR6atyNBnCiJYuuNilrzk02NXt22ojv/9KllSq
-         XjMfeq36Myv4E6og/vUgow2v2D53qDyu3Ue9QLYx6DHmACoisCj50x9RhFZMfXMiAoGJ
-         vltA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=AKIEEcKeE8/9i9HUsSzlMQgzbQ/bmUdgtBYl5wmpO0Q=;
-        b=rxvpZvZSeCWO7KrxW+IS2xTh24u2vFdMAp5ybBaXKZP7aWyIicAU4SA3RCasQIhtHl
-         jQDejYXh/m2d+DaN+od8qfVHrM2k7wm0DkdafGmFN8WzDH36tgoFfUmZ3yVLLkD9WRY0
-         h7+xr4HbaqOpZqLlttSDbjlOtBrbvLYujMVwwtPooEkGpmzTgZ5uSt6zCthmBc3nW625
-         U6lNOAD/AU7Mayn6Z5Lm5TlWbIDJsERsMjRlr1TPZgtGBq0skCP0tNp4roYVVDT4DJJK
-         wyxsxsD0xpDUHUREbB5W1jjoA+nsHcdlXL3ckRhImMeF+Zeg+wh9BsI7zRDcmkwLR+P/
-         3IRg==
-X-Gm-Message-State: AOAM533S4V3MXYlHa3Wdqa7c67u2HMmb3MBkDvghut85t66gJuXb73/H
-        CBvc/+3Ammicoh+t27gj/bNHSM62wUYHWQ==
-X-Google-Smtp-Source: ABdhPJxRe1m0UNaavWieph1r3PU8iks0BQhqTlr68cM2slQKW2iaOusuqgrYJDTQeR1a+o7C+fGl1g==
-X-Received: by 2002:a17:90a:e697:: with SMTP id s23mr1683200pjy.16.1602055216182;
-        Wed, 07 Oct 2020 00:20:16 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id o1sm1662676pgi.41.2020.10.07.00.20.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Oct 2020 00:20:15 -0700 (PDT)
-Message-ID: <9846b9ef4f8dcdac543270c3268d1ebb31aad6a7.camel@areca.com.tw>
-Subject: [PATCH v3 0/2] scsi: arcmsr: use upper_32_bits() instead of
- dma_addr_hi32()
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 07 Oct 2020 15:20:14 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
+        Wed, 7 Oct 2020 03:22:29 -0400
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CDCC061755;
+        Wed,  7 Oct 2020 00:22:29 -0700 (PDT)
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id 7E91B5C9251;
+        Wed,  7 Oct 2020 09:22:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1602055345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/dAIqjiicGptdfRu3qYqqJJN23634h4i58r4TShcvuQ=;
+        b=lncQ3h3FO0m7JOx+cvkZtWmAtdtQYPCKzVYKHskh6TiyZtL5ZB/ANfyxe3MlhrgeBVKWE1
+        BJhpaMoqQAzmaIVCpZQvmLeDok4Y1Cm5BEW1eSeqqpHN1W8ozn+gFYPfkRxtJYuNahQCmV
+        r6yQ0iCUiXbEjWMU2GuNAHpi306triE=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 07 Oct 2020 09:22:25 +0200
+From:   Stefan Agner <stefan@agner.ch>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
+In-Reply-To: <20201004133114.845230-1-pgwipeout@gmail.com>
+References: <20201004133114.845230-1-pgwipeout@gmail.com>
+User-Agent: Roundcube Webmail/1.4.1
+Message-ID: <cdd0f520ae4990de90f461e21cb4f298@agner.ch>
+X-Sender: stefan@agner.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is against to mkp's 5.10/scsi-staging.
+Hi Peter,
 
-1. Use upper_32_bits() instead of dma_addr_hi32().
-2. Use round_up() instead of logical operation.
----
+On 2020-10-04 15:31, Peter Geis wrote:
+> Good Day,
+> 
+> This series introduces upstream kernel support for the Ouya game
+> console device. Please review and apply. Thank you in advance.
 
+Interesting patchset, maybe I can give my Ouya a second live now :-) Do
+you happen to have (a link) to instructions how to flash the device?
 
+Btw, there was also a driver for the Bluetooth controller on the ML
+once, maybe a good time to revive that:
+https://spinics.net/lists/linux-input/msg56288.html
+
+--
+Stefan
+
+> 
+> Changelog:
+> v3: - Reorder aliases per Dmitry Osipenko's review.
+>     - Add sdio clocks per Dmitry Osipenko's review.
+>     - Add missing ti sleep bits per Dmitry Osipenko's review.
+>     - Enable lp1 sleep mode.
+>     - Fix bluetooth comment and add missing power supplies.
+> 
+> v2: - Update pmic and clock handles per Rob Herring's review.
+>     - Add acks from Rob Herring to patch 2 and 3.
+> 
+> Peter Geis (3):
+>   ARM: tegra: Add device-tree for Ouya
+>   dt-bindings: Add vendor prefix for Ouya Inc.
+>   dt-bindings: ARM: tegra: Add Ouya game console
+> 
+>  .../devicetree/bindings/arm/tegra.yaml        |    3 +
+>  .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+>  arch/arm/boot/dts/Makefile                    |    3 +-
+>  arch/arm/boot/dts/tegra30-ouya.dts            | 4511 +++++++++++++++++
+>  4 files changed, 4518 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
