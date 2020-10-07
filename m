@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B22286339
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFC428633B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbgJGQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgJGQI2 (ORCPT
+        id S1729070AbgJGQIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:08:42 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:11194 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728177AbgJGQIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:08:28 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F8AC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:08:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NBDR8z9Krw/0Dr4RVbqC3cKm4wMq2dtVQF736GkrtRE=; b=G2QqLtu3hLukWPl/dLwS8JP3n3
-        4/diavCcKbTcqEj3KbLkZXI34jL6fBzer3mb5UcZbPmQPCx1lhgzsLOO5F9MdopKywaO5JDZ8KUh7
-        EyVlr28FFBBs0ZNuSQhZLsxczLq4AFuYeejKMwtRRXSYYpRZ6RxYL8y5P0+hX4DtgGZdrmMw1OEA7
-        W+q1G/MirlbgOz21ldnuR5a6YWKy/3qukT23h9e9SlB6s3toSABq+soeEL8d3pdFIfo+NnZ+8XhTo
-        0WCV/EwfzU5WrPCrJ4QgDBklkb+RKkHm8aK191zPxx1iduAX+g26YcnnwvzA2+e/S5TXXJfgfhBjW
-        nf09mOGw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQBzK-0004bF-J9; Wed, 07 Oct 2020 16:08:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 25B99300B22;
-        Wed,  7 Oct 2020 18:08:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 09A8224C0D72F; Wed,  7 Oct 2020 18:08:20 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 18:08:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v3)
-Message-ID: <20201007160820.GK2628@hirez.programming.kicks-ass.net>
-References: <20200924172508.8724-1-mathieu.desnoyers@efficios.com>
- <20200924172508.8724-3-mathieu.desnoyers@efficios.com>
- <20201007150704.GH2628@hirez.programming.kicks-ass.net>
- <1286784649.11153.1602085170586.JavaMail.zimbra@efficios.com>
+        Wed, 7 Oct 2020 12:08:41 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097FrQ8G004988;
+        Wed, 7 Oct 2020 18:08:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=aZtohltui9FGlH6aAfSKwpgjGCik6ypAi07JSbtsLUs=;
+ b=aDP3MLJJowXp1h5Fhd/NOnY6Oty/kl+iPJShXC2bjojTUOt6yBBWM1TnQWLj3PAoBhW0
+ tAW29yxXk0cwB5N9UY993oq6N8o1tJgcw1AiYvjNSwttRa8bGNC9RzGhCO/Q075IwS12
+ X1Igsedc/FcrNhl4Z4vvs6cL1//VYhqUQSnZaKF5TcPiAQiYO/a5We0CvKIR2l9vFtnW
+ 3ti/JYgrKM+EG10ud67kkTE/wuSAVUlrzumbz8sQaFRe52A6ZjKVnVSlOvU4gWW2Zozt
+ 5YKu0e3AEzVED0yymK133fRVMnAzKM2+dnxpBdhgrHUyuQmcx8J651qjPEK8d0BFo8H1 Wg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3402tjdubk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 18:08:32 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6AA2810002A;
+        Wed,  7 Oct 2020 18:08:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5F29F2BA2C7;
+        Wed,  7 Oct 2020 18:08:32 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG1NODE1.st.com (10.75.127.1)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 7 Oct 2020 18:08:32
+ +0200
+From:   Hugues Fruchet <hugues.fruchet@st.com>
+To:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+CC:     <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>
+Subject: [PATCH] media: stm32-dcmi: add 8-bit Bayer formats support
+Date:   Wed, 7 Oct 2020 18:08:25 +0200
+Message-ID: <1602086905-9219-1-git-send-email-hugues.fruchet@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1286784649.11153.1602085170586.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG1NODE1.st.com
+ (10.75.127.1)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_10:2020-10-06,2020-10-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:39:30AM -0400, Mathieu Desnoyers wrote:
-> Moving the membarrier_switch_mm to cover kthread cases was to ensure (2), but if we
-> add a p->mm NULL check in the global expedited iteration, I think we would be OK
-> leaving the stale runqueue's membarrier state while in lazy tlb state.
-> 
-> As far as (1) is concerned, I think your idea would work, because as you say we will
-> have the proper barriers in kthread use/unuse mm.
-> 
-> I just wonder whether having this stale membarrier state for lazy tlb is warranted
-> performance-wise, as it adds complexity: the rq membarrier state will therefore not be
-> relevant when we are in lazy tlb mode.
-> 
-> Thoughts ?
+From: Alain Volmat <alain.volmat@st.com>
 
-Well, the way I got here was that I considered the membarrier state
-update tied to switch_mm(), and in that regard my proposal is a
-simplification.
+Add BA81, GBRG, GRBG, RGGB formats in the list of
+supported capture formats.
 
+Signed-off-by: Alain Volmat <alain.volmat@st.com>
+Acked-by: Hugues FRUCHET <hugues.fruchet@st.com>
+Reviewed-by: Philippe CORNU <philippe.cornu@st.com>
+---
+ drivers/media/platform/stm32/stm32-dcmi.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/media/platform/stm32/stm32-dcmi.c b/drivers/media/platform/stm32/stm32-dcmi.c
+index fd1c41c..918b41d 100644
+--- a/drivers/media/platform/stm32/stm32-dcmi.c
++++ b/drivers/media/platform/stm32/stm32-dcmi.c
+@@ -1574,6 +1574,22 @@ static const struct dcmi_format dcmi_formats[] = {
+ 		.fourcc = V4L2_PIX_FMT_JPEG,
+ 		.mbus_code = MEDIA_BUS_FMT_JPEG_1X8,
+ 		.bpp = 1,
++	}, {
++		.fourcc = V4L2_PIX_FMT_SBGGR8,
++		.mbus_code = MEDIA_BUS_FMT_SBGGR8_1X8,
++		.bpp = 1,
++	}, {
++		.fourcc = V4L2_PIX_FMT_SGBRG8,
++		.mbus_code = MEDIA_BUS_FMT_SGBRG8_1X8,
++		.bpp = 1,
++	}, {
++		.fourcc = V4L2_PIX_FMT_SGRBG8,
++		.mbus_code = MEDIA_BUS_FMT_SGRBG8_1X8,
++		.bpp = 1,
++	}, {
++		.fourcc = V4L2_PIX_FMT_SRGGB8,
++		.mbus_code = MEDIA_BUS_FMT_SRGGB8_1X8,
++		.bpp = 1,
+ 	},
+ };
+ 
+-- 
+2.7.4
 
