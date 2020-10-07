@@ -2,118 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E79F2867FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B06286823
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgJGTES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgJGTES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:04:18 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CCE12168B;
-        Wed,  7 Oct 2020 19:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602097457;
-        bh=llfxpknjIWXGV1PRIAQcxo2wu7p/kw/F31cAdH+5TX0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ldJJe2wFmBaoUuddH8wZ6oJe8RqDmpVZiKmohkPIlhwNvLm9ES6k+23YepXYyBN7q
-         Fw83LTzq9fnC391wl9zmtQaY85gHpYkTQPYwUYBCWeonnWwRAIBcLlSyXAG3m7t3CI
-         7/ciqTmm3JQf8YwSaOg3J9geHKO4nIPGZ0LLTuU8=
-Date:   Wed, 7 Oct 2020 12:04:16 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: mmap: Fix general protection fault in
- unlink_file_vma()
-Message-Id: <20201007120416.0e826cbb79da76ac9673b9d8@linux-foundation.org>
-In-Reply-To: <20200916090733.31427-1-linmiaohe@huawei.com>
-References: <20200916090733.31427-1-linmiaohe@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727718AbgJGTRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgJGTRa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 15:17:30 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C14C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 12:17:28 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id b193so1179653pga.6
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 12:17:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EZMSE/xQ7AzIngGK3w5Ap7k+DggxMKKSrbX6SyQ019g=;
+        b=SZhSXd1ccYKVdiga/5hBcXZZesYb5d1PFbu+8OjMa7Mlg62ELjJTkWVlu8RJqyaUJm
+         J1+UqS1KPJp4raeG40fQt2RPcpJLxhr9wg0GV/IACJMhk76suxw/EvWPFEmgxUJGaoDU
+         nMm7F6eeMgAWfcYXP0d9yLsUAaSkJWomMGHs4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EZMSE/xQ7AzIngGK3w5Ap7k+DggxMKKSrbX6SyQ019g=;
+        b=FDanGRzAQy5sdYWUzrf3KDfS1jyLEor7OiCOEs1scyJVau1aix7NnqEbdq1DPOZx38
+         LpN33vFgXaYISx4T2t3xKPK+AZ0ewTHxvZ15X224QT7v+v6zB6kB/oRpxIjq+MJsUxpH
+         dQOgjlH17fc6an6b1d2jIvrg8UjGTF8E0prSa7cxxyEVf49+QEyJ3E7tz5XwH/1BgC62
+         vYgQ6Pxq7imJdHhiUZU6Hv20nhJHn7D4gGLPW7l4IYVEzb8dZg1sIUcRZMXRZFHIt0Ql
+         OmcUawORUB4lzAkbPAQyxYogKgins1NXS4WSDyN1EtSkOLQ3yinpT+gyMh307jc2w6v6
+         wnxQ==
+X-Gm-Message-State: AOAM532ayIFt/2IwAqD9kr9Z8STk6f0yK/logMEmNElFWK7baszdf3o4
+        zPVhxd5aYFZf+H4b7WwpgLBELQ==
+X-Google-Smtp-Source: ABdhPJxSZ58HQ14M6xAuImI7StMZrCjyYHvJE0/IhXi3VSO+yGRJkNFLSJFofW7GUBPqBFMkujTJog==
+X-Received: by 2002:a05:6a00:1585:b029:142:2501:35ed with SMTP id u5-20020a056a001585b0290142250135edmr4439365pfk.77.1602098247651;
+        Wed, 07 Oct 2020 12:17:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e19sm4428262pfl.135.2020.10.07.12.17.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 12:17:26 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 12:17:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     WeiXiong Liao <gmpy.liaowx@gmail.com>,
+        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org
+Subject: Re: use case for register_pstore_blk?
+Message-ID: <202010071147.F6E57A32@keescook>
+References: <20201006155220.GA11668@lst.de>
+ <202010070007.8FF59EC42@keescook>
+ <20201007075537.GA12531@lst.de>
+ <20201007083715.GA15695@lst.de>
+ <202010071130.7EA00291@keescook>
+ <20201007184258.GA6157@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007184258.GA6157@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 05:07:33 -0400 Miaohe Lin <linmiaohe@huawei.com> wrote:
+On Wed, Oct 07, 2020 at 08:42:58PM +0200, Christoph Hellwig wrote:
+> The problem with the block code is that it is completely broken.
 
-> The syzbot reported the below general protection fault:
-> 
-> general protection fault, probably for non-canonical address
-> 0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: maybe wild-memory-access in range
-> [0x00777770000001d8-0x00777770000001df]
-> CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 5.9.0-rc3-syzkaller #0
-> RIP: 0010:unlink_file_vma+0x57/0xb0 mm/mmap.c:164
-> Code: 4c 8b a5 a0 00 00 00 4d 85 e4 74 4e e8 92 d7 cd ff 49 8d bc 24
-> d8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c
-> 02 00 75 3d 4d 8b b4 24 d8 01 00 00 4d 8d 6e 78 4c 89 ef e8
-> RSP: 0018:ffffc9000ac0f9b0 EFLAGS: 00010202
-> RAX: dffffc0000000000 RBX: ffff88800010ceb0 RCX: ffffffff81592421
-> RDX: 000eeeee0000003b RSI: ffffffff81a6736e RDI: 00777770000001d8
-> RBP: ffff88800010ceb0 R08: 0000000000000001 R09: ffff88801291a50f
-> R10: ffffed10025234a1 R11: 0000000000000001 R12: 0077777000000000
-> R13: 00007f1eea0da000 R14: 00007f1eea0d9000 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880ae700000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f1eea11a9d0 CR3: 000000000007e000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  free_pgtables+0x1b3/0x2f0 mm/memory.c:415
->  exit_mmap+0x2c0/0x530 mm/mmap.c:3184
->  __mmput+0x122/0x470 kernel/fork.c:1076
->  mmput+0x53/0x60 kernel/fork.c:1097
->  exit_mm kernel/exit.c:483 [inline]
->  do_exit+0xa8b/0x29f0 kernel/exit.c:793
->  do_group_exit+0x125/0x310 kernel/exit.c:903
->  get_signal+0x428/0x1f00 kernel/signal.c:2757
->  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
->  exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
->  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
->  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> It's because the ->mmap() callback can change vma->vm_file and fput the
-> original file. But the commit d70cec898324 ("mm: mmap: merge vma after
-> call_mmap() if possible") failed to catch this case and always fput() the
-> original file, hence add an extra fput().
-> 
-> ...
->
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1815,7 +1815,11 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  			merge = vma_merge(mm, prev, vma->vm_start, vma->vm_end, vma->vm_flags,
->  				NULL, vma->vm_file, vma->vm_pgoff, NULL, NULL_VM_UFFD_CTX);
->  			if (merge) {
-> -				fput(file);
-> +				/* ->mmap() can change vma->vm_file and fput the original file. So
-> +				 * fput the vma->vm_file here or we would add an extra fput for file
-> +				 * and cause general protection fault ultimately.
-> +				 */
-> +				fput(vma->vm_file);
->  				vm_area_free(vma);
->  				vma = merge;
->  				/* Update vm_flags and possible addr to pick up the change. We don't
+This seems like hyperbole.
 
-What about the case where this code block does its `goto unmap_writable'?
+> It uses on-stack structures where it can't,
 
-	/* Once vma denies write, undo our temporary denial count */
-	if (file) {
-unmap_writable:
-		if (vm_flags & VM_SHARED)
-			mapping_unmap_writable(file->f_mapping);
-		if (vm_flags & VM_DENYWRITE)
-			allow_write_access(file);
-	}
-	file = vma->vm_file;
+Do you mean the ones in pstore_blk_init() and pstore_blk_exit()? Those
+are fine -- they're what provide the "driverless" module-param loaded
+"best_effort" target. Do you seem something unsafe about it?
 
-is this using the correct file?  I think it is, but please do check.
+> it pokes into internals of the block device read/write path for
+> absolutely no reason,
 
+Do you mean psblk_generic_blk_read() and psblk_generic_blk_write()?
+These are for writing to the block device... I'm happy to adjust this
+if you can show me the better API. (This was being developed in the
+middle of the iov_iter changes, so perhaps I missed a more appropriate
+way to do things.)
+
+> and it uses name_to_dev_t which must not be used in new code.
+
+What?
+
+include/linux/mount.h:
+extern dev_t name_to_dev_t(const char *name);
+
+init/do_mounts.c:
+/*
+ *      Convert a name into device number.  We accept the following
+ *      variants:
+ ...
+ *      If name doesn't have fall into the categories above, we return
+ *      (0,0).
+ *      block_class is used to check if something is a disk name. If the
+ *      disk
+ *      name contains slashes, the device name has them replaced with
+ *      bangs.
+ */
+dev_t name_to_dev_t(const char *name)
+
+There are no comments about it being deprecated.
+
+And even I had guessed to double-check, there isn't even a hit
+on lkml about it that I can easily find:
+https://lore.kernel.org/lkml/?q=name_to_dev_t+%22new+code%22
+https://lore.kernel.org/lkml/?q=name_to_dev_t+deprecated
+
+Where did this happen, where was it documented, and what should be used
+instead?
+
+> Or in other words: it is a complete piece of crap full of layering
+> violations that should never have been merged in that form.
+
+Gee thanks. I obviously don't agree with you.
+
+> It also does not happen to share code with the mtd case.
+
+What? Yes it does: it explicitly uses the pstore/blk configuration
+callback to get the details configured at boot to identify and configure
+the backing device. This is specifically designed this way to avoid
+repeating the mistake of having per-backing-device configuration that is
+essentially only actually used by the pstore storage layer. i.e. the very
+thing I'm trying to get away from in ramoops, efi-pstore, etc: storage
+configuration is tied to the pstore storage layer (i.e. pstore/blk and
+pstore/zone), not the specific backing device (i.e. MTD, blk, RAM, NVRAM,
+EFI variables, etc).
+
+So, yes, I think it'd be fine to drop the unused EXPORTs, and I welcome
+corrections to the generic read/write routines, I very specifically do
+not want to rip out having a block device as a backing device, nor do I
+want to revert the configuration management to being backing device
+specific.
+
+-- 
+Kees Cook
