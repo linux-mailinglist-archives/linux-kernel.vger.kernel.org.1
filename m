@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C58E285AAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D428A285AB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgJGIl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgJGIlZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:41:25 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98931C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 01:41:24 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h20so1123641lji.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 01:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sHa2vFP6Z8cci/P7jIrJ+MfHpuwcBKpgKXxskm6Q6fw=;
-        b=YJ0BrXrTdWa9WcTPIrxIhis2lFVE8NJZ7eX1eFAsS12yIwIRFHaWaDTdRTuEw7YouW
-         x+Adgai/YMC612Um+spQ3qH++PGFChPoVsfEJp0lWu/e1Oav5QmjrtWkyQuVJkNNtcfK
-         bPwfch50Boi29xjUj+u53MugBX+0p1RpEY58R8h0UkHHqwFqEXD8noT5siTVjYkqly1O
-         e5D3Z4A/9SM3icFV3mbAIn5Bt6Z1wxMmstL9LMwYoTXAGB/VnSoCLbeoEbHw9tD3wUQf
-         8FaIgT+zxzwljpQIJB7DGAgtyJUI1Ln/IMLsPJtGEt+MMrpvEtMrQXqxGhsHNP21paMY
-         HNtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sHa2vFP6Z8cci/P7jIrJ+MfHpuwcBKpgKXxskm6Q6fw=;
-        b=FYr7xPKvpQsoCWwyGl25AlHC8bXZti/n23/1VoY8JRHP4M1UTXIbP8W0Mw3/oxrGv5
-         eaQ1Lq5uYWYL8efvlZ3Hfc+pdlUQ+JRyyNTdYsxm0V8jnYAkvJc4/TUcJa9T3/8EVxtR
-         EAbJEt+ZmUtPA00pntvpuEiV3NBKZFDvtzVIieUi39Nlc8zoDWstomFo+JDkQ383A2nx
-         hFb7ItevqxQJMTNe+meLiA9Xcqfi7i8v0pTZ+SVSfJgOltdLVAHJ87vm7LlG9RlizDLg
-         RWMDNYxXNVcUbssLKLolXbaiRpLXDw6qzpRnrqNOvGDeQ0LffZBovGM1d6Mawb1y+7bp
-         uosg==
-X-Gm-Message-State: AOAM532H0amRmk7lhbMcKTUmdL/jvDWH4De2FWxaLg/PlUHshmHg1N2j
-        xKZpOoAgx1YbhC5YlThNee+6+0Mnw66aKPGQ+n0zjA==
-X-Google-Smtp-Source: ABdhPJxmxSmndRJcdm9n8iZOBVRj/ahjFLB1cwPQRfxLM+g9mWOMwZ8+xk5a9BryxnbSPEpeI/xy+t1OFxdEDOmQmec=
-X-Received: by 2002:a2e:810e:: with SMTP id d14mr890047ljg.100.1602060083038;
- Wed, 07 Oct 2020 01:41:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1601616399.git.mchehab+huawei@kernel.org> <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
-In-Reply-To: <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 7 Oct 2020 10:41:12 +0200
-Message-ID: <CACRpkdacQ=rtbeyGd-s7j303Ne=Z1gFFSer4i-6cqQ-uYCPJ7A@mail.gmail.com>
-Subject: Re: [PATCH 6/6] docs: gpio: add a new document to its index.rst
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727861AbgJGInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726181AbgJGInN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:43:13 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.194])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7CEF20797;
+        Wed,  7 Oct 2020 08:43:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602060193;
+        bh=/sFCkq5oJImYNwq6dQNMQFugo7oIPmUBVxj2a8fU55M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=W28yM5bIifjQ3xzPcY8ovt+B0pmQlytcYdWLJjSyfoYhoS45AcvBuRbWIo3zbnM+f
+         grDw+zV1kPnoeCrtf1oPg9BgantQrZunfrywCiud/ow65oyme/iRX8iR69DvLW/9Nq
+         Wv9rQVxK+7jy45Hqi03UtXhi25ijpqKIJvhjLUGE=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] docs: submitting-patches: describe preserving review/test tags
+Date:   Wed,  7 Oct 2020 10:43:06 +0200
+Message-Id: <20201007084306.12591-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 7:49 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+From time to time, the novice kernel contributors do not add Reviewed-by
+or Tested-by tags to the next versions of the patches.  Mostly because
+they are unaware that responsibility of adding these tags in next
+version is on submitter, not maintainer.
 
-> There's now a new ReST file. Add it to the index.rst file.
->
-> Fixes: ce7a2f77f976 ("docs: gpio: Add GPIO Aggregator documentation")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ Documentation/process/submitting-patches.rst | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-This patch (6/6) applied to the GPIO tree.
-Fixed the Fixes: as indicated by Kent.
+diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+index 58586ffe2808..9752b6311674 100644
+--- a/Documentation/process/submitting-patches.rst
++++ b/Documentation/process/submitting-patches.rst
+@@ -527,6 +527,13 @@ done on the patch.  Reviewed-by: tags, when supplied by reviewers known to
+ understand the subject area and to perform thorough reviews, will normally
+ increase the likelihood of your patch getting into the kernel.
+ 
++Both Tested-by and Reviewed-by tags, once received on mailing list from tester
++or reviewer, should be added by author to the applicable patches when sending
++next versions.  However if the patch is changed in following version, these
++tags might not be applicable anymore and thus should be removed.  Usually
++removal of someone's Tested-by or Reviewed-by tags should be mentioned
++in the patch changelog (after '---' separator).
++
+ A Suggested-by: tag indicates that the patch idea is suggested by the person
+ named and ensures credit to the person for the idea. Please note that this
+ tag should not be added without the reporter's permission, especially if the
+-- 
+2.17.1
 
-Yours,
-Linus Walleij
