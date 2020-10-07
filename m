@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4698D285AA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C58E285AAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgJGIjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:39:22 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:50192 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGIjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:39:22 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kQ4ye-0004RV-Bl; Wed, 07 Oct 2020 10:39:12 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Nishanth Menon <nm@ti.com>, linux-pm@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 2/4] power: avs: rockchip-io: Move the driver to the rockchip specific drivers
-Date:   Wed, 07 Oct 2020 10:39:11 +0200
-Message-ID: <1739403.NJMpfr3yiC@diego>
-In-Reply-To: <20201006160516.319830-3-ulf.hansson@linaro.org>
-References: <20201006160516.319830-1-ulf.hansson@linaro.org> <20201006160516.319830-3-ulf.hansson@linaro.org>
+        id S1727620AbgJGIl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGIlZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 04:41:25 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98931C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 01:41:24 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h20so1123641lji.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 01:41:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sHa2vFP6Z8cci/P7jIrJ+MfHpuwcBKpgKXxskm6Q6fw=;
+        b=YJ0BrXrTdWa9WcTPIrxIhis2lFVE8NJZ7eX1eFAsS12yIwIRFHaWaDTdRTuEw7YouW
+         x+Adgai/YMC612Um+spQ3qH++PGFChPoVsfEJp0lWu/e1Oav5QmjrtWkyQuVJkNNtcfK
+         bPwfch50Boi29xjUj+u53MugBX+0p1RpEY58R8h0UkHHqwFqEXD8noT5siTVjYkqly1O
+         e5D3Z4A/9SM3icFV3mbAIn5Bt6Z1wxMmstL9LMwYoTXAGB/VnSoCLbeoEbHw9tD3wUQf
+         8FaIgT+zxzwljpQIJB7DGAgtyJUI1Ln/IMLsPJtGEt+MMrpvEtMrQXqxGhsHNP21paMY
+         HNtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sHa2vFP6Z8cci/P7jIrJ+MfHpuwcBKpgKXxskm6Q6fw=;
+        b=FYr7xPKvpQsoCWwyGl25AlHC8bXZti/n23/1VoY8JRHP4M1UTXIbP8W0Mw3/oxrGv5
+         eaQ1Lq5uYWYL8efvlZ3Hfc+pdlUQ+JRyyNTdYsxm0V8jnYAkvJc4/TUcJa9T3/8EVxtR
+         EAbJEt+ZmUtPA00pntvpuEiV3NBKZFDvtzVIieUi39Nlc8zoDWstomFo+JDkQ383A2nx
+         hFb7ItevqxQJMTNe+meLiA9Xcqfi7i8v0pTZ+SVSfJgOltdLVAHJ87vm7LlG9RlizDLg
+         RWMDNYxXNVcUbssLKLolXbaiRpLXDw6qzpRnrqNOvGDeQ0LffZBovGM1d6Mawb1y+7bp
+         uosg==
+X-Gm-Message-State: AOAM532H0amRmk7lhbMcKTUmdL/jvDWH4De2FWxaLg/PlUHshmHg1N2j
+        xKZpOoAgx1YbhC5YlThNee+6+0Mnw66aKPGQ+n0zjA==
+X-Google-Smtp-Source: ABdhPJxmxSmndRJcdm9n8iZOBVRj/ahjFLB1cwPQRfxLM+g9mWOMwZ8+xk5a9BryxnbSPEpeI/xy+t1OFxdEDOmQmec=
+X-Received: by 2002:a2e:810e:: with SMTP id d14mr890047ljg.100.1602060083038;
+ Wed, 07 Oct 2020 01:41:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <cover.1601616399.git.mchehab+huawei@kernel.org> <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
+In-Reply-To: <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 7 Oct 2020 10:41:12 +0200
+Message-ID: <CACRpkdacQ=rtbeyGd-s7j303Ne=Z1gFFSer4i-6cqQ-uYCPJ7A@mail.gmail.com>
+Subject: Re: [PATCH 6/6] docs: gpio: add a new document to its index.rst
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 6. Oktober 2020, 18:05:14 CEST schrieb Ulf Hansson:
-> The avs drivers are all SoC specific drivers that doesn't share any code.
-> Instead they are located in a directory, mostly to keep similar
-> functionality together. From a maintenance point of view, it makes better
-> sense to collect SoC specific drivers like these, into the SoC specific
-> directories.
-> 
-> Therefore, let's move the rockchip-io driver to the rockchip directory.
-> 
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Cc: linux-rockchip@lists.infradead.org
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+On Fri, Oct 2, 2020 at 7:49 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 
-Acked-by: Heiko Stuebner <heiko@sntech.de>
+> There's now a new ReST file. Add it to the index.rst file.
+>
+> Fixes: ce7a2f77f976 ("docs: gpio: Add GPIO Aggregator documentation")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
+This patch (6/6) applied to the GPIO tree.
+Fixed the Fixes: as indicated by Kent.
 
-
+Yours,
+Linus Walleij
