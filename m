@@ -2,107 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8ADD28635A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D1728636B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbgJGQOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:14:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726388AbgJGQOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:14:37 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA7DD20789;
-        Wed,  7 Oct 2020 16:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602087276;
-        bh=W+PsYeZ1rL2UkEz2izQCDDL4aqter95eSf8vS/CL9hA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=crBXhtTMwMrn1fnSCY/i0BkiOZID/MnQTF2G9kdgMljIa7fnZ0zuT38LoG9mVs/4j
-         4AGrCY7nEqpSHivw6SlnEVoHJS8otrFVXwKb/4YSRALfKuUxMbdpn7rYFUDz0mnIhN
-         IaOfVg4GruzdOJCXVcV20nVjmDD8VPpyBjLTfyDE=
-Date:   Wed, 7 Oct 2020 11:14:34 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Oliver O'Halloran <oohall@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Yinghai Lu <yinghai@kernel.org>
-Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
-Message-ID: <20201007161434.GA3247067@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        id S1729151AbgJGQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:16:29 -0400
+Received: from mail-mw2nam10on2054.outbound.protection.outlook.com ([40.107.94.54]:31169
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729141AbgJGQQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:16:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eApryz9y+Tmis29kKV2bRkVAa78YXikJVASBFWN2iVQbAXuWYeamT+PvbNTIJYklJoGTdZleqGfUf9dFzejOUCevT4nvr+94E6y+raa5Dj4WX2iVahfKdSoAqIplEpvt+XYxh9RAE1tICqX/Zvl2IHqdK98pWzGMx3RVw//nroFCWVluzntc1zGgbMwKbzbtERpz+H6sFRaMO22JMhiZ3x+95DING6ReNWd84Nk8SaGdnyQftfeAeUQLZYpa1kIBaNZIwkpInx1ODVbtA9N7qFYg+inG3G+sfzfmlxl+xm3mYgVUrncZ79KqdM3+tXZlK2C1MPY9Yhz+H1h5Ap45iA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB8GFOBx6rTSSLJ7f3iySoWHmU/ilgynIcbv8Y5v0rU=;
+ b=UxPJsj3O5KPtKaj+bApf3lViR0uM2YlQouh+JmlL0oxn4HCqeNeHlehDkNXDsBV0y6eJAnEtEjcyJUSPCrg9+LFe/hwxAhtDVKt4uZkfc1qsrL3IQ/4K98poXOc/FjrjcSo/IG/nB+QLemy43lgIP8OTeYlYtCDDmaeKEQWzlXNf5Uatz68gzZJ502vbv06HZdY993fmvNWZ9OkP+nAbz7bUdxQojqj/OH0WmWT5tPirsYDb4PbXt+Ls5TYy4QulV8K3fG4C7yULYarRVFklsYITMbW82A7qow7SQit/d+LkKcyDp+G3vAhcAt7XPs0dTQWzkvMgu+XTRCZ0vjMVTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB8GFOBx6rTSSLJ7f3iySoWHmU/ilgynIcbv8Y5v0rU=;
+ b=ILEg1Qrwqf7EnxprzVpeg1MsXkDkG6yIER2Pg3GtPNo4wKF4SI9ygTHgX6KJRG9SBLqXbLR9K+9jjuEXmxdhNBbj9a8ZN33o/sSAWsvzgciT+NOZsrjq4lgWoWjToh+/nyg72mEWjdna6U1TbSoln/ThSDe3g7r7UFLFe32gzJQ=
+Authentication-Results: rjwysocki.net; dkim=none (message not signed)
+ header.d=none;rjwysocki.net; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB2946.namprd12.prod.outlook.com (2603:10b6:408:9d::13)
+ by BN8PR12MB3444.namprd12.prod.outlook.com (2603:10b6:408:47::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.37; Wed, 7 Oct
+ 2020 16:16:19 +0000
+Received: from BN8PR12MB2946.namprd12.prod.outlook.com
+ ([fe80::3054:612a:b2d7:f46d]) by BN8PR12MB2946.namprd12.prod.outlook.com
+ ([fe80::3054:612a:b2d7:f46d%6]) with mapi id 15.20.3433.046; Wed, 7 Oct 2020
+ 16:16:19 +0000
+From:   Kim Phillips <kim.phillips@amd.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Victor Ding <victording@google.com>, linux-pm@vger.kernel.org
+Cc:     Kim Phillips <kim.phillips@amd.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
+Subject: [PATCH v2 0/4] powercap: Enable RAPL for AMD Fam17h and Fam19h 
+Date:   Wed,  7 Oct 2020 11:14:35 -0500
+Message-Id: <20201007161439.312534-1-kim.phillips@amd.com>
+X-Mailer: git-send-email 2.27.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201007081400.tmoisrk2be5gkkhh@pali>
+Content-Type: text/plain
+X-Originating-IP: [70.114.200.6]
+X-ClientProxiedBy: DM6PR02CA0137.namprd02.prod.outlook.com
+ (2603:10b6:5:1b4::39) To BN8PR12MB2946.namprd12.prod.outlook.com
+ (2603:10b6:408:9d::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (70.114.200.6) by DM6PR02CA0137.namprd02.prod.outlook.com (2603:10b6:5:1b4::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22 via Frontend Transport; Wed, 7 Oct 2020 16:16:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 6eba61e9-5a06-484a-8386-08d86adc5334
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3444:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3444108E7EE302D5097E8107870A0@BN8PR12MB3444.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sV0G1z0sV5HwmVfdTT9pRjuryZ5PLdoLgzXBbWgKo6Pkv4pbQZwf71NzCr60Xg12+jr4ZeZnBybzjbE84f0ivmY3Rfwj4328a/CsfNDzLsRAgmTsLQ9236A52PiWBgsKICD79MkeFAXQtXj3/sGfW33iuRRJqZsxZbvtuAvBIXSUWnIL4TZGWBkhITbcl0Tn07DGPWFDyUFjgtiLl/Aw0YLKgiAlWDupcI0QChfo/DtRda2WpTS8oMofq/qn4Vqm7hm6G8Z1Qx4YPYzMrnT1QMcBq5B29fmLGcN+Fn7RLGIU/juV7k84uihhstIkfThuIXrVg7kctB1mUOP1r2ZUNYA5+Mya1xQrjjQbBMLxAuPobVqHeTn/a/e4Xj0DeYOp9rkKJo1rIC7RLfMWrhQG7S5I2nEa/l15NtGCYMuIB9IYLVUrLjlpT7HA3HLG2CDcgxNnFX4GcBcW/YXvQO/dQw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB2946.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(366004)(346002)(39860400002)(6486002)(110136005)(478600001)(36756003)(316002)(44832011)(6506007)(4743002)(966005)(5660300002)(7416002)(86362001)(2906002)(66556008)(66476007)(66946007)(956004)(26005)(2616005)(6666004)(83380400001)(69590400008)(54906003)(4326008)(52116002)(6512007)(16526019)(186003)(1076003)(8676002)(83080400001)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 17E4GLc1pZ0fr6ibTLCOxwa3mvgUa44j8sJg3e6S+ZdMjyIi1bTkNNCUif+re/Eq2ZBLLkblxJRbvd5yGw7A36ft9nu3zVxgdY/AV8vgv5ZociLeU0v6b0Yr2BQW8DZ+hG6f9XzjRjUVIYabkz1XIEEoLOEVLtBWRs4Zuw2Imdrbgkq2pIBTvRYa5iLqw+MaofNxSy8gUJuazjS0tJzr1IVcLTt1Yw+e/YGHK8LZGphgB35k1swAUJTZyfILridQ6GgB0U5d2jCCK9e8/HRhjhBi/JgFb7mxvNdOoSkwcZkxfXnDSFVkpP/IWLQIIldozKfI4g6z/VL/0r9EEerxuUZy9frrDEzHsCE5zV3LeNtYFaxDXnWSZsP7a9wXF3XelP2JpftqOfROJTkyuIZChW5PYq+n8mbX0HWvX5XkLm8fgKBT4zq8+tEHXoYEdoBMnwqi+Knj5UKTHb4WkXcIcOO5T/sU0HuzBuN0cnDHDHV0IRrj9kLedjDw/EAUrjgOiPzk0z7h8/EmV4mNAuyc1wx1B0i5BqXGwGlN6RnyZ+SQaZw3AM5OnFUy0Voi7G/5YAbE7WCTg+1whrTsG88MG09qsDWoqBDrEukQcFnouSBvzR44ZhvYDvZbzfsjrerBk0rYQ8wPfP4mWbTsN906Hw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6eba61e9-5a06-484a-8386-08d86adc5334
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB2946.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 16:16:19.5334
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0rpGfbiUViNIzccWjr8aZOtZjRLutdfYgv8Etg/dTcGw0D0btxoK1TkFd/bpgxB0eQcClN9pcEsE2i9zAAqlbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3444
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 10:14:00AM +0200, Pali Rohár wrote:
-> On Wednesday 07 October 2020 12:47:40 Oliver O'Halloran wrote:
-> > On Wed, Oct 7, 2020 at 10:26 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >
-> > > I'm not really a fan of this because pci_sysfs_init() is a bit of a
-> > > hack to begin with, and this makes it even more complicated.
-> > >
-> > > It's not obvious from the code why we need pci_sysfs_init(), but
-> > > Yinghai hinted [1] that we need to create sysfs after assigning
-> > > resources.  I experimented by removing pci_sysfs_init() and skipping
-> > > the ROM BAR sizing.  In that case, we create sysfs files in
-> > > pci_bus_add_device() and later assign space for the ROM BAR, so we
-> > > fail to create the "rom" sysfs file.
-> > >
-> > > The current solution to that is to delay the sysfs files until
-> > > pci_sysfs_init(), a late_initcall(), which runs after resource
-> > > assignments.  But I think it would be better if we could create the
-> > > sysfs file when we assign the BAR.  Then we could get rid of the
-> > > late_initcall() and that implicit ordering requirement.
-> > 
-> > You could probably fix that by using an attribute_group to control
-> > whether the attribute shows up in sysfs or not. The .is_visible() for
-> > the group can look at the current state of the device and hide the rom
-> > attribute if the BAR isn't assigned or doesn't exist. That way we
-> > don't need to care when the actual assignment occurs.
-> 
-> And cannot we just return e.g. -ENODATA (or other error code) for those
-> problematic sysfs nodes until late_initcall() is called?
+From: Victor Ding <victording@google.com>
 
-I really like Oliver's idea and I think we should push on that to see
-if it can be made to work.  If so, we can remove the late_initcall()
-completely.
+This patch series adds support for AMD Fam17h RAPL counters. As per
+AMD PPR, Fam17h support RAPL counters to monitor power usage. The RAPL
+counter operates as with Intel RAPL. Therefore, it is beneficial to
+re-use existing framework for Intel, especially to allow existing tools
+to seamlessly run on AMD.
 
-> > > But I haven't tried to code it up, so it's probably more complicated
-> > > than this.  I guess ideally we would assign all the resources before
-> > > pci_bus_add_device().  If we could do that, we could just remove
-> > > pci_sysfs_init() and everything would just work, but I think that's a
-> > > HUGE can of worms.
-> > 
-> > I was under the impression the whole point of pci_bus_add_device() was
-> > to handle any initialisation that needed to be done after resources
-> > were assigned. Is the ROM BAR being potentially unassigned an x86ism
-> > or is there some bigger point I'm missing?
+From the user's point view, this series enables the following two sysfs
+entry on AMD Fam17h:
+  /sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj
+  /sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj
 
-We can't assign resources for each device as we enumerate it because
-we don't know what's in use by other devices yet to be enumerated.
-That part is generic, not x86-specific.
+Cc: Victor Ding <victording@google.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Vineela Tummalapalli <vineela.tummalapalli@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: linux-pm@vger.kernel.org
+Cc: x86@kernel.org
 
-The part that is x86-specific (or at least specific to systems using
-ACPI) is that the ACPI core doesn't reserve resources used by ACPI
-devices.  Sometimes those resources are included in the PCI host
-bridge windows, and we don't want to assign them to PCI devices.
+Kim Phillips (1):
+  powercap: Add AMD Fam19h RAPL support
 
-I didn't trace this all the way, but the pcibios_assign_resources()
-and pnp_system_init() comments look relevant.  It's a little concerning
-that they're both fs_initcalls() and the ordering looks important, but
-it would only be by accident of link ordering that pnp_system_init()
-happens first.
+Victor Ding (3):
+  x86/msr-index: sort AMD RAPL MSRs by address
+  powercap/intel_rapl_msr: Convert rapl_msr_priv into pointer
+  powercap: Add AMD Fam17h RAPL support
 
-Bjorn
+ arch/x86/include/asm/msr-index.h     |  3 +-
+ drivers/powercap/intel_rapl_common.c |  3 ++
+ drivers/powercap/intel_rapl_msr.c    | 62 ++++++++++++++++++++--------
+ 3 files changed, 50 insertions(+), 18 deletions(-)
+
+v2: Kim's changes from Victor's original submission:
+
+https://lore.kernel.org/lkml/20200729105206.2991064-1-victording@google.com/
+
+- Added the Fam19h patch to the end of the series
+- Added my Acked-by
+- Added Daniel Lezcano to Cc 
+- (linux-pm was already on Cc)
+- (No code changes)
+-- 
+2.27.0
+
