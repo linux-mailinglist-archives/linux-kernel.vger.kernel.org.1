@@ -2,157 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC697285729
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917D228572B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 05:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgJGDlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 23:41:13 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:8134 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725970AbgJGDlN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 23:41:13 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0973RGgR024752;
-        Tue, 6 Oct 2020 20:41:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=proofpoint;
- bh=TwXR40QDTd2h7f/veXUUEZREyv4ylgqGQOqD3DmmmUo=;
- b=q+mE9KN55nvJE2Di4OIvbK+kYNiXaRvp5Vi5axYlNsMepab7msIzphMps2glKIEc7usj
- 8OrubmiFVKEzAzlr06btg5P4I78LYN8j8xp+9cjY1jXlI1tOcQfmowDbXZSlo+jusg+4
- saTkx7YFkM1iGvYgZygx4CFgOXXL9lA+KaxD+uitYeUoBWMO0ePAE0BUYhNxsTWCamKe
- DbWlc1vLk3X2u0QUl6/WLIAE6NuHYc5RDEwgOGGJdyw/6B5RuwdXkW5EU3p6H1tPEeCn
- 2jKqwmzDVyN519+D4pU1o+UcGqD9meliQ15gOdkLzXLAeL4Wzcsy9yGhdrkXMWWr8zC1 1w== 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 33xnuxkt53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Oct 2020 20:41:05 -0700
+        id S1726949AbgJGDmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 23:42:02 -0400
+Received: from mga01.intel.com ([192.55.52.88]:55509 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725970AbgJGDmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 23:42:01 -0400
+IronPort-SDR: aGMiU5KjFLHqJqFMTns9lrsQbLSA0OKSw3IVkxmO9Yw+/tV2Sbu/2PmO0TvQXObswyXnVUcSKG
+ 45ZaFKaF2K+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="182274765"
+X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
+   d="scan'208";a="182274765"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 20:42:00 -0700
+IronPort-SDR: JCLrwwVCKi2thxa9WGdC6XnLK6Bw3lDtJPdn7JimKm6G0OuJV3nEW07WzoyfrpFumuXYldEDp/
+ meuHyU2Ps82g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
+   d="scan'208";a="342662593"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga004.fm.intel.com with ESMTP; 06 Oct 2020 20:42:00 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 6 Oct 2020 20:42:00 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 6 Oct 2020 20:42:00 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 6 Oct 2020 20:41:59 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZSbXgPe0HrWX/keQTpAROFYU7C/MugRNHmfU9VMLKCvXJ817FKWk/aIJ8wRzUDfu1qtp5wbqLJZR9BKQMtkYC3id429lghp9IpAvikptzaHKTAnnBMHdzmkX3nj2i58plF25txg8bjexI8Sj4cRqAVolMd9EAKXaPHwSd2k3pAvGgF2Jdu3aSb1lZiEPRYLb4I7U6muKN0r+ij56gBdwCNS1yAAoleMPSBrHOk+iNIxtOuPvclgcZBxSXnMATM3wG5J9SfXO4s5FIZ6hzvPWhcsBgEnA3xsQ5J+oKMrIIsEIEjCB0MNjGrzzORzrUSBX5fZUISm8NYIqKFKRM7Uqgw==
+ b=Wm1SLsphU8k1YT5NXGJesjMkpaCnnOo6v7M7zSJLreCi7g64vFMXPjSRfuqeLNsOwIMuRjatT5qePESoS6aeootB3fSqUYjAgtTnphURMz5sDGE1HacMcEPifMPevBCQPz8DVY/8unsw77VIzxVZdyB9dA7oz8MJ8QVKyTfJIfXwIcRm/YeWNuNp9Jw471qiBlMm3u79p9DgUSRmbuGNW0eOraCIbLrO+bZ0rdhENBWHJAjvwDktg1DkSe7BgxTwHxnh6OiSvEw/tAy2hR520s9QJwSrNZrRaxd5DvtQlvlflR2+b92D0YscbfgIFxujcY5ScnipjjHyibqBwvDWzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TwXR40QDTd2h7f/veXUUEZREyv4ylgqGQOqD3DmmmUo=;
- b=RoN/hLmzp0V3iH7nXQuN5ps8nXLK32kBO9MnkGoI1sFcr8nQrdve20KPB3tfV86kfwmum9vBKa/1sIGVWYvO1495Ka39InZ6cQc1pD58dJlpA2hKN62MEyog0XwqxbIZFpnAkEzXwgCaR4j2a+ZH15PJxHHFHHYG4dQ1qYOnv+tid8U05qjCknLMPlBk8d7jr/IbnD+z2vA4TAknVwBtpJSZSn2VYlnp/SwqeneWbiBau4XPBiQJ6DPLG6Nw0dEAVqyoQMqIwu3vDe5/xRG2jWPQ3Ro57+Q0rqvP4catsLf/XN4oxoDeNue4uX+0EWiQsjeLeN/kIuB9RHZvMw9VPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.148) smtp.rcpttodomain=ti.com smtp.mailfrom=cadence.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=cadence.com; dkim=none
- (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
+ bh=nfLSSnELY0lhNtS9knkI5qHDSEPjPG/vVcDHdAfHtvg=;
+ b=fMLPi5SOqpwxgCUvQZ3IQBLjfzTUnoOYLdXKpaJPYEHLr2NFKGDMEncE4mDm5aaMsSzEMB3xoFHxkAW1CG6ApHXR3tHLMvgHbSTr4ZvPQs2VhkjJ2kdm8a6XnTb+oZXnk0hrvZDLCooJJHQE6gKzue8Z2HkaU+61zXfKkuCDSNy7/Wd/R0Gshl0UL0knQKXjLftDLEUgOvxJrgqspzRxnSoYCxVCcgqGoOGoNnlHuYs3fUE7SX5YIWv7/Vh7IaCsvcICmIiw+AqAWIA40nfnw22c7iAzjtJ6aa6yPK83cm5La+7sApnQcv+1QTj/Ki/YoZVPp/blnGnSvTG5dVHFTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TwXR40QDTd2h7f/veXUUEZREyv4ylgqGQOqD3DmmmUo=;
- b=63oaIoENRFX5v00A3ly3f5dARZALkrgG13u+0zkILXiBQyWPX7sBYSx8CuK6lS+B6w+jBZJ/aARF5uWhLWje+l+7Ymynl35EkTgWRF1PKIyVigxW1ViI8/EpIrYZM+81dPOHe3aoCF2RbgxjfWk8j1rl12dqVrsL9yIDB+KYvCU=
-Received: from BN3PR05CA0003.namprd05.prod.outlook.com (2603:10b6:400::13) by
- MW2PR07MB7897.namprd07.prod.outlook.com (2603:10b6:302:6::23) with Microsoft
+ bh=nfLSSnELY0lhNtS9knkI5qHDSEPjPG/vVcDHdAfHtvg=;
+ b=nK3hOGaAbiTbSTmkQeFgDBFUa0fFm6l/ew2fypR4dN0OlkmtVEPlCIAVSW79XwxVbAeANfLcfCH9FbPKVErWN6XCzg7MQ5U1zQavQViPF5BlluLFnZ0P8+S25Yhp+bTp6pOPauiRWazGUlEVPMCdiVURAzRviFZYoZ2hzH+QWtA=
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com (2603:10b6:5:c1::16) by
+ DM6PR11MB2939.namprd11.prod.outlook.com (2603:10b6:5:70::10) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3433.35; Wed, 7 Oct 2020 03:41:00 +0000
-Received: from BN8NAM12FT054.eop-nam12.prod.protection.outlook.com
- (2603:10b6:400:0:cafe::c4) by BN3PR05CA0003.outlook.office365.com
- (2603:10b6:400::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.15 via Frontend
- Transport; Wed, 7 Oct 2020 03:40:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.148)
- smtp.mailfrom=cadence.com; ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.148 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.148; helo=sjmaillnx2.cadence.com;
-Received: from sjmaillnx2.cadence.com (158.140.1.148) by
- BN8NAM12FT054.mail.protection.outlook.com (10.13.183.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3455.13 via Frontend Transport; Wed, 7 Oct 2020 03:40:59 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 0973ewvF002155
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Tue, 6 Oct 2020 20:40:59 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Wed, 7 Oct 2020 05:40:56 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Wed, 7 Oct 2020 05:40:56 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0973euSD023135;
-        Wed, 7 Oct 2020 05:40:56 +0200
-Received: (from pawell@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0973euAP023134;
-        Wed, 7 Oct 2020 05:40:56 +0200
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     <balbi@kernel.org>
-CC:     <peter.chen@nxp.com>, <rogerq@ti.com>, <nsekhar@ti.com>,
-        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>,
-        Pawel Laszczak <pawell@cadence.com>
-Subject: [PATCH 2/2] =?UTF-8?q?usb:=20cdns3:=20Variable=20=E2=80=98length?= =?UTF-8?q?=E2=80=99=20set=20but=20not=20used?=
-Date:   Wed, 7 Oct 2020 05:39:32 +0200
-Message-ID: <20201007033932.23050-1-pawell@cadence.com>
-X-Mailer: git-send-email 2.18.0
+ 15.20.3433.36; Wed, 7 Oct 2020 03:41:57 +0000
+Received: from DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c]) by DM6PR11MB2876.namprd11.prod.outlook.com
+ ([fe80::c85a:d98e:fbf3:9f8c%5]) with mapi id 15.20.3433.045; Wed, 7 Oct 2020
+ 03:41:57 +0000
+From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+To:     "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>
+Subject: RE: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+ Firmware Service call
+Thread-Topic: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+ Firmware Service call
+Thread-Index: AQHWm/mmQ68E6v02PEeQu9XSxqgGOqmLfq5Q
+Date:   Wed, 7 Oct 2020 03:41:57 +0000
+Message-ID: <DM6PR11MB28767574129C0FA35B5BAA2BB80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
+References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+ <20201006155549.3595-3-muhammad.husaini.zulkifli@intel.com>
+In-Reply-To: <20201006155549.3595-3-muhammad.husaini.zulkifli@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.203]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b64983c5-91b0-4531-5f69-08d86a72f141
+x-ms-traffictypediagnostic: DM6PR11MB2939:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB2939DB85D94D89C7A8BA32A3B80A0@DM6PR11MB2939.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dEvYvc5SytXJP3qeijDatx69GGUhbFEmriBiUKn8p1HJQjMSVaUdmUaLgGG718JVDpPa/s2zk2GrAZutHbvYBhHS6DmPOGrkqnD81TnMqDPNLelpMfqytGN93JfXU5kS1ttkviTqHlBozVc2tJOC9CtJK8n/DMaHvKafTduju+30TPaM9XAymp+vtVvpAsI0jT50iHrJoA1v2F7+F+5vomQaslji7o/kg0B5IMfGqmo/ZB40rKf3GvoSBTdVrZM0I9jcdJTFFqr2MHEKG4ECDCvZG2IhiAz/o5asyOYsRBHLQ4kUbJe4HDl7zinmus1TikIDXnOIt+okERIpY7LJEA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2876.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(26005)(86362001)(8676002)(55016002)(9686003)(64756008)(66446008)(5660300002)(66476007)(66556008)(186003)(76116006)(66946007)(52536014)(2906002)(316002)(54906003)(110136005)(83380400001)(4326008)(71200400001)(7696005)(6506007)(8936002)(33656002)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: PzF0aoo0k51brOnAuTAPgOt5FlabC+NEXFeCP1R/FP8OTL3X7Co8HMzb8e20htUsZWBeinFUxeuOHUsZ8XyEIZbakSYBRe0c25/RZSCs0vIrR3Ca731R3Ycb8uQ+dAkfOqDz4NQ7UVQC7IYXFnQsOCPUK6oRaqlOKrykKxgqNM4EDqSUPuO9Rep74CbQ6xKy2tvVU5V27iaE4G1XQtbCHNx9a18WEZH6vNJeZ8Kd3Kjfoxm0SiiR/yvTDXnT+AF6c4Ff6aKUBdaG50u37goquqia/Wu39SQIKEj0bXs07qcT8FtCe24GfIQkhudJHblq0SWQXwjzPVqidTTrqKKb1Z2SA7XjfFqJTFXyCwEsWjj1nvNckUN79n9oQTquln5SWmJ4vmEFcQ+PuuzZfCttMpegajXSKP4lvIP3547uJqxrt6N1s2kjRatsllxhr1G19WEvEVemDJi1WEjWm8azwqPFUzTqYlqK14GTj84rA2auHJSQ+krPy0n6i4wtAHZwzbifFDplJsSef9hjfHWY4A8m22F9pnVhLS33/+5uW2xX6tcE+AfOjNqs5TF41BY7RKt064FXilObU28zaU9FAM0wPdLuuDWvPH1W1gRMteDskngFHKDJnfMI2N7prSEprCQueRFGs+VFnF6vSkPnbg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 378b6b33-88f4-49ae-0aa5-08d86a72ce97
-X-MS-TrafficTypeDiagnostic: MW2PR07MB7897:
-X-Microsoft-Antispam-PRVS: <MW2PR07MB7897BFB65299C5CB4BAC40EDDD0A0@MW2PR07MB7897.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:632;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m7CVikTv2MbVf4XcKz4QCXDkjKLiS1SR5R9bDe74K67dWNFgGhd0xKWqypRfT/TnO/uIjWTx9epyNU8HrGVxqQq2gibQ4bLJof6R0uscNtirSdxpju6UH0WAOUbvFDb0/rUhdepJEXK/mlYXxvPv1iKcsjQk3cFD1VHXgTAXvLvP0lAp54gONfsx8KxmE6xkeqA6F49Hc4uCD8xYYDCCSwv5ELPoLXR0VJhdKS5ZKKeYqZDxdqSgCiieW6wL3Fn61/7KkIFmmiLlRZLtPSyIRwGB+J1HwcDF5WW8cJvCimKJBvMjehxvLIiqEA9l/WUNJDmqSvGZcy6sxcm4jrWXUP+xkIJsAv+MyGPMBvhJSL5d1pn7YFQiVFlFhByoP0UApA1D6cnMh0DMQ6j2wcei01p4Hff2M9FueZdRZB2myAU=
-X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(346002)(36092001)(46966005)(4744005)(2616005)(356005)(4326008)(186003)(336012)(6666004)(70206006)(36906005)(54906003)(70586007)(6916009)(1076003)(42186006)(7636003)(478600001)(316002)(5660300002)(83380400001)(426003)(82740400003)(8936002)(26005)(47076004)(82310400003)(2906002)(36756003)(86362001)(107886003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 03:40:59.6387
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2876.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b64983c5-91b0-4531-5f69-08d86a72f141
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2020 03:41:57.8325
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 378b6b33-88f4-49ae-0aa5-08d86a72ce97
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT054.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR07MB7897
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_03:2020-10-06,2020-10-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
- mlxscore=0 mlxlogscore=685 priorityscore=1501 phishscore=0 spamscore=0
- clxscore=1015 adultscore=0 suspectscore=1 impostorscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070022
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bVoikYOAo17LNY+bl1KBWCoz2Y5+zIY2INcZzRr+MgE2aocHs5kMGT+PUvsKJSjU52xctIf8lYNwPUUW/TkeAD9J1hAmsC3M3bptOYS5qDr1lQYm4oX2UiSi8ywxq6Vu
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2939
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch removes not used variable 'length' from
-cdns3_wa2_descmiss_copy_data function.
+Hi Sudeep and Michal,
 
-Signed-off-by: Pawel Laszczak <pawell@cadence.com>
----
- drivers/usb/cdns3/gadget.c | 2 --
- 1 file changed, 2 deletions(-)
+I would like to receive some feedback on this patch before send out another=
+ version to fix the autobot compiler warning.
 
-diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
-index 6e7b70a2e352..692acf7b9b14 100644
---- a/drivers/usb/cdns3/gadget.c
-+++ b/drivers/usb/cdns3/gadget.c
-@@ -506,7 +506,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
- 
- 	while (!list_empty(&priv_ep->wa2_descmiss_req_list)) {
- 		int chunk_end;
--		int length;
- 
- 		descmiss_priv_req =
- 			cdns3_next_priv_request(&priv_ep->wa2_descmiss_req_list);
-@@ -517,7 +516,6 @@ static void cdns3_wa2_descmiss_copy_data(struct cdns3_endpoint *priv_ep,
- 			break;
- 
- 		chunk_end = descmiss_priv_req->flags & REQUEST_INTERNAL_CH;
--		length = request->actual + descmiss_req->actual;
- 		request->status = descmiss_req->status;
- 		__cdns3_descmiss_copy_data(request, descmiss_req);
- 		list_del_init(&descmiss_priv_req->list);
--- 
-2.17.1
+Really appreciated it.
+Thanks
+
+>-----Original Message-----
+>From: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+>Sent: Tuesday, October 6, 2020 11:56 PM
+>To: Hunter, Adrian <adrian.hunter@intel.com>; michal.simek@xilinx.com;
+>sudeep.holla@arm.com; ulf.hansson@linaro.org; linux-mmc@vger.kernel.org;
+>linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+>Cc: Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>=
+;
+>Wan Mohamad, Wan Ahmad Zainie
+><wan.ahmad.zainie.wan.mohamad@intel.com>; Zulkifli, Muhammad Husaini
+><muhammad.husaini.zulkifli@intel.com>; arnd@arndb.de
+>Subject: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+>Firmware Service call
+>
+>From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+>
+>Add header file to handle API function for device driver to communicate wi=
+th
+>Arm Trusted Firmware.
+>
+>Signed-off-by: Muhammad Husaini Zulkifli
+><muhammad.husaini.zulkifli@intel.com>
+>---
+> .../linux/firmware/intel/keembay_firmware.h   | 46 +++++++++++++++++++
+> 1 file changed, 46 insertions(+)
+> create mode 100644 include/linux/firmware/intel/keembay_firmware.h
+>
+>diff --git a/include/linux/firmware/intel/keembay_firmware.h
+>b/include/linux/firmware/intel/keembay_firmware.h
+>new file mode 100644
+>index 000000000000..9adb8c87b788
+>--- /dev/null
+>+++ b/include/linux/firmware/intel/keembay_firmware.h
+>@@ -0,0 +1,46 @@
+>+/* SPDX-License-Identifier: GPL-2.0 */
+>+/*
+>+ *  Intel Keembay SOC Firmware API Layer
+>+ *
+>+ *  Copyright (C) 2020-2021, Intel Corporation
+>+ *
+>+ *  Muhammad Husaini Zulkifli <Muhammad.Husaini.Zulkifli@intel.com>
+>+ */
+>+
+>+#ifndef __FIRMWARE_KEEMBAY_SMC_H__
+>+#define __FIRMWARE_KEEMBAY_SMC_H__
+>+
+>+#include <linux/arm-smccc.h>
+>+
+>+/**
+>+ * This file defines API function that can be called by device driver
+>+in order to
+>+ * communicate with Arm Trusted Firmware.
+>+ */
+>+
+>+/* Setting for Keem Bay IO Pad Line Voltage Selection */
+>+#define KEEMBAY_SET_SD_VOLTAGE_FUNC_ID	0x8200ff26
+>+#define KEEMBAY_SET_1V8_VOLT		0x01
+>+#define KEEMBAY_SET_3V3_VOLT		0x00
+>+
+>+#if IS_ENABLED(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)
+>+static int do_fw_invoke(u64 func_id, u64 arg0, u64 arg1) {
+>+	struct arm_smccc_res res;
+>+
+>+	arm_smccc_1_1_invoke(func_id, arg0, arg1, &res);
+>+
+>+	return res.a0;
+>+}
+>+
+>+int keembay_sd_voltage_selection(int volt) {
+>+	return do_fw_invoke(KEEMBAY_SET_SD_VOLTAGE_FUNC_ID, volt, 0); }
+>#else
+>+static inline int keembay_sd_voltage_selection(int volt) {
+>+	return -ENODEV;
+>+}
+>+#endif
+>+
+>+#endif /* __FIRMWARE_KEEMBAY_SMC_H__ */
+>--
+>2.17.1
 
