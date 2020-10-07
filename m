@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E16285843
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA35285847
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 07:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgJGFvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 01:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgJGFvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 01:51:02 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF07A208C7;
-        Wed,  7 Oct 2020 05:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602049861;
-        bh=0Pn6APRQsa4HpVjf3rGUOYdtE8clqW/GJUxe6iTqV3I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fmR5aCHNJXJvqiU8VG6MlZZTo7JvqEdQuWGy4VItalPDsBNjtgW2h9lnhbDk6tP+B
-         SIQu5gBARtSIY/GJ40obH23kY1FsWAalHTEORlXimqAySlcvBZLXxNO637CNRT1Ndk
-         VT5Fi/JkY+D3xYD6w/TB8ImTGaRVnfHqaGZRWwU8=
-Date:   Wed, 7 Oct 2020 14:50:57 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Alex =?UTF-8?B?QmVubsOpZQ==?= <alex.bennee@linaro.org>,
-        takahiro.akashi@linaro.org, jgross@suse.com,
-        boris.ostrovsky@oracle.com
-Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
- correctly
-Message-Id: <20201007145057.81024d41dfd239628296d090@kernel.org>
-In-Reply-To: <alpine.DEB.2.21.2010061040350.10908@sstabellini-ThinkPad-T480s>
-References: <160190516028.40160.9733543991325671759.stgit@devnote2>
-        <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
-        <alpine.DEB.2.21.2010051526550.10908@sstabellini-ThinkPad-T480s>
-        <20201006114058.b93839b1b8f35a470874572b@kernel.org>
-        <alpine.DEB.2.21.2010061040350.10908@sstabellini-ThinkPad-T480s>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727211AbgJGFyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 01:54:54 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:16549 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJGFyy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 01:54:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1602050090;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=C8o//TEedE15rHNz3cZ8YSVaRQEVoqX8N3cKiUWpx3A=;
+        b=Cahzp4hql1BlWFD8i7MdGROyeIHe7HYTSIcVV/gTE0bv2cpj2rrFlzxj3vYZGt/+ka
+        XKS3c6c6glT64dABcdQIfJRJLTsjsk6Bnn99gLifMyrwQH7TLslcE3ntYdpgL2jYa71r
+        UA+yIqVLjVzZJGxTk+UPa8a4Xn7zItml92n+OSdclICKjshV4axuVcS8P+s3Enh4Mk1l
+        cq03Pgy+Smp/A1RJw2KOzv1WOm0i89KRAmh4lWrAh1Gpclyp5c8qNZyguMSNgYFbOW+c
+        PnNR9NXPMU2Vljz9WRm0Wq2MT4e7fYNDC/nwOdG2FryCRWcifvgrdtZSMbSDhAL3JGP2
+        tmlw==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZIvSfY6w+"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
+        with ESMTPSA id C0b627w975qwOcC
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 7 Oct 2020 07:52:58 +0200 (CEST)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Torsten Duwe <duwe@lst.de>, Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-crypto@vger.kernel.org,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST SP800-90B compliance
+Date:   Wed, 07 Oct 2020 07:52:58 +0200
+Message-ID: <5285278.e8GPZlJvtg@tauon.chronox.de>
+In-Reply-To: <20201007042409.GE912@sol.localdomain>
+References: <20200921075857.4424-1-nstange@suse.de> <20201002123836.GA14807@lst.de> <20201007042409.GE912@sol.localdomain>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 10:56:52 -0700 (PDT)
-Stefano Stabellini <sstabellini@kernel.org> wrote:
+Am Mittwoch, 7. Oktober 2020, 06:24:09 CEST schrieb Eric Biggers:
 
-> On Tue, 6 Oct 2020, Masami Hiramatsu wrote:
-> > On Mon, 5 Oct 2020 18:13:22 -0700 (PDT)
-> > Stefano Stabellini <sstabellini@kernel.org> wrote:
-> > 
-> > > On Mon, 5 Oct 2020, Julien Grall wrote:
-> > > > Hi Masami,
-> > > > 
-> > > > On 05/10/2020 14:39, Masami Hiramatsu wrote:
-> > > > > Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
-> > > > > address conversion.
-> > > > > 
-> > > > > In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
-> > > > > to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
-> > > > > assumes the given virtual address is in contiguous kernel memory
-> > > > > area, it can not convert the per-cpu memory if it is allocated on
-> > > > > vmalloc area (depends on CONFIG_SMP).
-> > > > 
-> > > > Are you sure about this? I have a .config with CONFIG_SMP=y where the per-cpu
-> > > > region for CPU0 is allocated outside of vmalloc area.
-> > > > 
-> > > > However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING was
-> > > > enabled.
-> > > 
-> > > I cannot reproduce the issue with defconfig, but I can with Masami's
-> > > kconfig.
-> > > 
-> > > If I disable just CONFIG_NUMA_BALANCING from Masami's kconfig, the
-> > > problem still appears.
-> > > 
-> > > If I disable CONFIG_NUMA from Masami's kconfig, it works, which is
-> > > strange because CONFIG_NUMA is enabled in defconfig, and defconfig
-> > > works.
-> > 
-> > Hmm, strange, because when I disabled CONFIG_NUMA_BALANCING, the issue
-> > disappeared.
-> > 
-> > --- config-5.9.0-rc4+   2020-10-06 11:36:20.620107129 +0900
-> > +++ config-5.9.0-rc4+.buggy     2020-10-05 21:04:40.369936461 +0900
-> > @@ -131,7 +131,8 @@
-> >  CONFIG_ARCH_SUPPORTS_NUMA_BALANCING=y
-> >  CONFIG_CC_HAS_INT128=y
-> >  CONFIG_ARCH_SUPPORTS_INT128=y
-> > -# CONFIG_NUMA_BALANCING is not set
-> > +CONFIG_NUMA_BALANCING=y
-> > +CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
-> >  CONFIG_CGROUPS=y
-> >  CONFIG_PAGE_COUNTER=y
-> >  CONFIG_MEMCG=y
-> > 
-> > So buggy config just enabled NUMA_BALANCING (and default enabled)
+Hi Eric,
 > 
-> Yeah but both NUMA and NUMA_BALANCING are enabled in defconfig which
-> works fine...
-> 
-> [...]
-> 
-> > > The fix is fine for me. I tested it and it works. We need to remove the
-> > > "Fixes:" line from the commit message. Ideally, replacing it with a
-> > > reference to what is the source of the problem.
-> > 
-> > OK, as I said, it seems commit 9a9ab3cc00dc ("xen/arm: SMP support") has
-> > introduced the per-cpu code. So note it instead of Fixes tag.
-> 
-> ...and commit 9a9ab3cc00dc was already present in 5.8 which also works
-> fine with your kconfig. Something else changed in 5.9 causing this
-> breakage as a side effect. Commit 9a9ab3cc00dc is there since 2013, I
-> think it is OK -- this patch is fixing something else.
+> Note that having multiple RNG implementations would cause fragmentation,
+> more maintenance burden, etc.  So IMO, that should be a last resort. 
+> Instead we should try to find an implementation that works for everyone. 
+> I.e., at least to me, Nicolai's patchset seems more on the right track than
+> Stephan's patchset...
 
-Hmm, then it might be someone runs out the first chunk of percpu and
-xen uses the 2nd chunk which is in vmalloc area. It is possible if the
-other initcall functions uses alloc_percpu().
+Thank you for sharing your considerations.
 
-Maybe we can trace percpu chunk allocation function for both case.
+If you say that only one implementation should be there, I am wondering why 
+not considering an implementation that as significant advantages over the 
+existing implementation as outlined in my cover letter to patch v35. In the 
+default configuration, it compiles no code at all that has any bearing on 
+government standards. Yet it has a more cryptographic sound approach to handle 
+entropy. In addition is meant to be extensible allowing each user to pick and 
+chose what he wants. Yet, users who do not want these extensions should not 
+suffer from it (neither performance-wise, nor should they suffer from an 
+unnecessary complex code that builds all options into one C file).
 
-Thank you,
+And speaking of fragmentation, if it is not *possible* to allow users to pick 
+what they want and need (and yes, in some parts of the world or for some users 
+these government standards are simply a necessity), we surely invite 
+fragmentation. In the LRNG, I tried to have all operations critical to entropy 
+compression and random number generation modularized so that the a can be 
+replaced or extended if needed without fragmentation.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+PS: The reason why I started the LRNG was not government standards, but the 
+result of performing two studies. The one study was about entropy in 
+virtualized environment which showed that we have significant entropy in 
+virtual environments and yet the existing /dev/random implementation thinks 
+there is much less available. Another study I maintain for years also shows 
+that the entire entropy collection and heuristic on bare metal systems is also 
+in need of advancements. Initially I provided patches to the existing /dev/
+random implementation, but basically all were silently ignored.
+
+Ciao
+Stephan
+
+
