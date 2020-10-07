@@ -2,170 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45C72865E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966352865E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgJGR1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
+        id S1728450AbgJGR2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgJGR1t (ORCPT
+        with ESMTP id S1726762AbgJGR2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:27:49 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F990C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:27:49 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id d1so2604017qtr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:27:49 -0700 (PDT)
+        Wed, 7 Oct 2020 13:28:41 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B61C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:28:41 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id u6so3191115iow.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:28:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XbSoU+/at8nS4vwGrWdy12hS6b+RYvRwUOTYRSNB06Q=;
-        b=mSF3jlLKHl2GcWOtjisnFuOxmsafdLuRV7HNQszKRHTbX7yrWh+1uuimlnTVBDf88S
-         7CDIDMQGVG9iRv64l0dGVTOGsF3HhoVCmCeCFmDoV09KS3pUl6DC8vC3fTvvt2cweotS
-         YfhKySivQyKZUy5Qq80V3s1ZqG50WhxQuoVnwHYZe7OK1Xk2CZbcO9rDgpzCxYLE695p
-         iM3zaabJqTXzIZDyKFOBFSJJu8gE182ca6m7suRvcG0u6/EkdQ4bhJV4U+DEo5V7zW7u
-         S96CIynxOtOJjWv1pdwcNaqEUxAlUPVqbissjAJxdOugEaGgQF1dKaRPG7Vtfa/bgluo
-         JjMA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gzog+3s7evIu2Oc1rtwTUl+9x6mD7V8+jB/FerDJf6g=;
+        b=nX/4Q/YGjmebBLp4gLg8J2yprcJQilHAS6qA1FHs5eLbDhe6iwzEYvpmsJs/PP94Kp
+         GCzwHPrwqADg8+WqzbUbeFeB4eX4KHZvo0buxluUokPbtybLhx8dhFMWlcQAd4CKe10t
+         26nG5444aSaobp5nO22ausRmcHQy//aglJ0fRKo9ARJvEW1Yrw8Ky7WccdZpsJuYm3e/
+         xQS3dc0ny8dD/YDLaIBmKmsuC02TSE/s94jTazNbKJ4VAxjuvrFEJSzCQ/Eg9TGtG3ES
+         0m7EI+PaTupmbB5L+0UtEw9R9srPbyfyOmGMXNBfZhOTPadOU/ZYwAIGwrkLzEgvL1mu
+         hmWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XbSoU+/at8nS4vwGrWdy12hS6b+RYvRwUOTYRSNB06Q=;
-        b=R5DOtzKTJLFzmilFO2keRwLCS6AdYH0Cto7Hnl5D8gg8mHHPBkmjr2oza+mDL2nsCt
-         gdi3BN28AykwBJt5OlhFcVxCdxDCGq8+FPuBTG7j5Cd1Q+qDwBH3N4j/KMqC2+8jGM+6
-         Ho6DuLny4aSKKubPBkDgd2bdm4P1M2da4mlT0HTiOv+LQZl0ScEYc6zK6YtbCcVTuxMV
-         i/wB1yOW2KKh0PTp9wuwFCl7IGpAJWwJrG8bltzeDk52tTRZiKfjOqZGOJ7XeG6jYHIK
-         Vlcb+A4iHB/9tkIdQ3/Ll94UgbC7tBygEUB/zQbAAc7Cf7q//KTtsusbhfyIfrxct+I2
-         3m1w==
-X-Gm-Message-State: AOAM532xA9ONQmFc6P4YGBb+B+62SEITp77Vb/wlu46NUfnfm9p4agKh
-        /UBRWrjmBdDp13l5n/LlScZOYQ==
-X-Google-Smtp-Source: ABdhPJzBzIEuFCTfuv3ULvENiYmE1q5S6ZKvaoPSvLERT9h4HN4R+RXmtJoeCi0hQLY2ayjG0AcA6w==
-X-Received: by 2002:ac8:37ef:: with SMTP id e44mr4247866qtc.342.1602091668463;
-        Wed, 07 Oct 2020 10:27:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id t10sm1904322qkt.55.2020.10.07.10.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 10:27:47 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQDEA-0010sP-Uz; Wed, 07 Oct 2020 14:27:46 -0300
-Date:   Wed, 7 Oct 2020 14:27:46 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Rik van Riel <riel@redhat.com>,
-        Benjamin Herrensmidt <benh@kernel.crashing.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Hugh Dickins <hugh@veritas.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 07/13] mm: close race in generic_access_phys
-Message-ID: <20201007172746.GU5177@ziepe.ca>
-References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
- <20201007164426.1812530-8-daniel.vetter@ffwll.ch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gzog+3s7evIu2Oc1rtwTUl+9x6mD7V8+jB/FerDJf6g=;
+        b=t9jdUsffsm/5WO/sEk77k69KUNKe2K2iLminz84a2xb78t8HuRydICtrsO2Ok316QG
+         EyhWe1q6amK60nKM8LGVeoh4EnljN9CKk6Li43EGV3/esI27jteiwVYj/f1FNHE7i1W5
+         Bi+CxZYHe12xo0O8rN7vOr66zuA3CPHabzH+bTI5lT6k81OhB1isud2TUZQuolRHRobY
+         VwcioN9YxGlSi8ZYWxOclkH5g3iXtu8d1xWvucuBzOnLYcSjZtZvuHbl0kef/NPh7v2G
+         sLL1TRuv9iwZFZI8QAKPc4WQx2idhUcuXqjvLXgGINJEGT1Uh5kRlxe6jJrtBIQq1nju
+         /OAw==
+X-Gm-Message-State: AOAM533SMILGQ61mIZrD+H6BbPOThmXlOiUbZ7QnacWp7cm0ALSVLrKT
+        GvNwTNnd3cYLhfliJ16f/asmefXgZrOSKATxJZkPZQ==
+X-Google-Smtp-Source: ABdhPJx+5QZ/4AZZSBIqs4Xz/+pawpkCt8kkhCfoEeqQkigGdJRmMdYgOotYq/Tj/ADhEivC6xDJq+FADqbvmAySDHU=
+X-Received: by 2002:a02:2ac1:: with SMTP id w184mr3827019jaw.44.1602091720153;
+ Wed, 07 Oct 2020 10:28:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201007164426.1812530-8-daniel.vetter@ffwll.ch>
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-19-bgardon@google.com>
+ <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com> <CANgfPd_dQ19sZz2wzSfz7-RzdbQrfP6cYJLpSYbyNyQW6Uf09Q@mail.gmail.com>
+ <5dc72eec-a4bd-f31a-f439-cdf8c5b48c05@redhat.com>
+In-Reply-To: <5dc72eec-a4bd-f31a-f439-cdf8c5b48c05@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 7 Oct 2020 10:28:29 -0700
+Message-ID: <CANgfPd8Nzi2Cb3cvh5nFoaXTPbfm7Y77e4iM6-zOp5Qa3wNJBw@mail.gmail.com>
+Subject: Re: [PATCH 18/22] kvm: mmu: Support disabling dirty logging for the
+ tdp MMU
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 06:44:20PM +0200, Daniel Vetter wrote:
-> Way back it was a reasonable assumptions that iomem mappings never
-> change the pfn range they point at. But this has changed:
-> 
-> - gpu drivers dynamically manage their memory nowadays, invalidating
->   ptes with unmap_mapping_range when buffers get moved
-> 
-> - contiguous dma allocations have moved from dedicated carvetouts to
->   cma regions. This means if we miss the unmap the pfn might contain
->   pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
-> 
-> - even /dev/mem now invalidates mappings when the kernel requests that
->   iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
->   ("/dev/mem: Revoke mappings when a driver claims the region")
-> 
-> Accessing pfns obtained from ptes without holding all the locks is
-> therefore no longer a good idea. Fix this.
-> 
-> Since ioremap might need to manipulate pagetables too we need to drop
-> the pt lock and have a retry loop if we raced.
-> 
-> While at it, also add kerneldoc and improve the comment for the
-> vma_ops->access function. It's for accessing, not for moving the
-> memory from iomem to system memory, as the old comment seemed to
-> suggest.
-> 
-> References: 28b2ee20c7cb ("access_process_vm device memory infrastructure")
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Rik van Riel <riel@redhat.com>
-> Cc: Benjamin Herrensmidt <benh@kernel.crashing.org>
-> Cc: Dave Airlie <airlied@linux.ie>
-> Cc: Hugh Dickins <hugh@veritas.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: Jérôme Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> ---
->  include/linux/mm.h |  3 ++-
->  mm/memory.c        | 44 ++++++++++++++++++++++++++++++++++++++++++--
->  2 files changed, 44 insertions(+), 3 deletions(-)
+On Wed, Oct 7, 2020 at 10:21 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 07/10/20 18:30, Ben Gardon wrote:
+> >> I'm starting to wonder if another iterator like
+> >> for_each_tdp_leaf_pte_root would be clearer, since this idiom repeats
+> >> itself quite often.  The tdp_iter_next_leaf function would be easily
+> >> implemented as
+> >>
+> >>         while (likely(iter->valid) &&
+> >>                (!is_shadow_present_pte(iter.old_spte) ||
+> >>                 is_last_spte(iter.old_spte, iter.level))
+> >>                 tdp_iter_next(iter);
+> > Do you see a substantial efficiency difference between adding a
+> > tdp_iter_next_leaf and building on for_each_tdp_pte_using_root with
+> > something like:
+> >
+> > #define for_each_tdp_leaf_pte_using_root(_iter, _root, _start, _end)    \
+> >         for_each_tdp_pte_using_root(_iter, _root, _start, _end)         \
+> >                 if (!is_shadow_present_pte(_iter.old_spte) ||           \
+> >                     !is_last_spte(_iter.old_spte, _iter.level))         \
+> >                         continue;                                       \
+> >                 else
+> >
+> > I agree that putting those checks in a wrapper makes the code more concise.
+> >
+>
+> No, that would be just another way to write the same thing.  That said,
+> making the iteration API more complicated also has disadvantages because
+> if get a Cartesian explosion of changes.
 
-This does seem to solve the race with revoke_devmem(), but it is really ugly.
+I wouldn't be too worried about that. The only things I ever found
+worth making an iterator case for were:
+Every SPTE
+Every present SPTE
+Every present leaf SPTE
 
-It would be much nicer to wrap a rwsem around this access and the unmap.
+And really there aren't many cases that use the middle one.
 
-Any place using it has a nice linear translation from vm_off to pfn,
-so I don't think there is a such a good reason to use follow_pte in
-the first place.
+>
+> Regarding the naming, I'm leaning towards
+>
+>     tdp_root_for_each_pte
+>     tdp_vcpu_for_each_pte
+>
+> which is shorter than the version with "using" and still clarifies that
+> "root" and "vcpu" are the thing that the iteration works on.
 
-ie why not the helper be this:
+That sounds good to me. I agree it's similarly clear.
 
- int generic_access_phys(unsigned long pfn, unsigned long pgprot,
-      void *buf, size_t len, bool write)
-
-Then something like dev/mem would compute pfn and obtain the lock:
-
-dev_access(struct vm_area_struct *vma, unsigned long addr, void *buf, int len, int write)
-{
-     cpu_addr = vma->vm_pgoff*PAGE_SIZE + (addr - vma->vm_start));
-
-     /* FIXME: Has to be over each page of len */
-     if (!devmem_is_allowed_access(PHYS_PFN(cpu_addr/4096)))
-           return -EPERM;
-
-     down_read(&mem_sem);
-     generic_access_phys(cpu_addr/4096, pgprot_val(vma->vm_page_prot),
-                         buf, len, write);
-     up_read(&mem_sem);
-}
-
-The other cases looked simpler because they don't revoke, here the
-mmap_sem alone should be enough protection, they would just need to
-provide the linear translation to pfn.
-
-What do you think?
-
-Jason
+>
+> Paolo
+>
