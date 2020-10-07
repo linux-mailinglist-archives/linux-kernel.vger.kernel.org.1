@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28F52865FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE64286603
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728450AbgJGRcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:32:43 -0400
-Received: from mail-41103.protonmail.ch ([185.70.41.103]:52462 "EHLO
-        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgJGRcn (ORCPT
+        id S1728624AbgJGRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728594AbgJGRd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:32:43 -0400
-Received: from mail-03.mail-europe.com (mail-03.mail-europe.com [91.134.188.129])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 45799200042A
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 17:32:41 +0000 (UTC)
-Authentication-Results: mail-41103.protonmail.ch;
-        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="jrhtjpse"
-Date:   Wed, 07 Oct 2020 17:32:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1602091958;
-        bh=BYNQ4Z6yjIk9IsDDEPdgqxZjFtVaEs6dDvEa2sPxVHU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=jrhtjpseKScEpsPLIawRw8MFlSoZ15XPouDy0s+f5ZIwiIm779cBL/V1PU3UOuWeL
-         8MRqR9h4NgJltJUK5iVk6K/kOmwxwGbODuD39Obj28d2hdkjnldnPGkeYW5hQfk2/F
-         0hmWC377xsa0HeNF18spfhqHwEFpaw4qZUjwKxjo=
-To:     Hans de Goede <hdegoede@redhat.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v2] platform/x86: hp-wmi: add support for thermal policy
-Message-ID: <k8GF7y7_mFT5nk-CGsZKHT32w0-qC_nlvitYD6jfCHWTb38gJZh83XcuyNX4vuySFFwF9o-_hFvgVL68Gr_L0bLPAjo3AT5bt-NREiSpMFw=@protonmail.com>
-In-Reply-To: <37a0a8b8-6792-8ed7-2e66-da0fa1d6302a@redhat.com>
-References: <20200917214957.GD29136@mtg-dev.jf.intel.com> <20201004211305.11628-1-eliadevito@gmail.com> <CAHp75VfbK226a-SsNj=Bnpfc3wWyT9K_D4XzAMOu9of1_g+8-A@mail.gmail.com> <5d60709b-e3cb-685f-2b3e-07381b9855e5@redhat.com> <zm1oBveg0S9L-MagzWnleGj5ZfQg8cV95Ugbzz6WZbnv-nzpF8_9Fghwj8P8V-ZAmVF6kRBWF-blVcOFirhSN3xxmE_8cOUycONWZMJP5xE=@protonmail.com> <37a0a8b8-6792-8ed7-2e66-da0fa1d6302a@redhat.com>
+        Wed, 7 Oct 2020 13:33:26 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C789C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:33:26 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id ev17so1625952qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:33:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TdSre1+FiF17b2WS+AUXMuyymNAaLTf4uLT17E+pnFU=;
+        b=I7/owwaByfC+T615S4yoAl1o98d1ue1FvXLjxM8yebhh+9JecaDPgFNy3dbnkmB8TN
+         Vzx15ySYhGig+ha8DgJwv0JB9nc9mTmHX7s01XzVMtrzGqF7F5ysx9nVT6a95aQv8luf
+         ubR2OEMsVZaWQ7RmDyyDSLyoP0q7IOFEADlrOkM8v9xk0+G5fAvCgdRAbNUwL2HYX/wg
+         NdxL0Agtty3FgSPu+bQMrdJNei+OMp8ipKgGOhWKyjOjRZlk7D/1NKUJUn0ab2X75jIZ
+         GLdNE/c4Zf4maicgzgeRTMpXMrGmFUZrqUFukx9r5Pv+87LO5DNFvo/M0m7x2mbqppxs
+         Yd4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TdSre1+FiF17b2WS+AUXMuyymNAaLTf4uLT17E+pnFU=;
+        b=fnyoGlEj6Hgcnju9JnUiADnSUVV5bsLE+QD0KXTkHptZQwBhOtBk8hUZKze+T1nI7z
+         OOp/h6UEyhPToXNa1Dlgcs1XI32pNzl1U5zFp1gj0foMzQnYd7jCd9k3GaIjaIy81FZF
+         +huRxy/7Jkwea3NuuW+3GuDMbVfgROrtywDjJg1tSzannyiMu90HDiLbwO4CtPT3edZB
+         PLBcC/z/KtIhzx0RH8TOo01O973fH4/TIBpPEjmnPbrne+Yiic6zQxKKJHV0wVzmI7NU
+         v1sqtQJwcVtz+PHjjlX3VCqZVpkmbfnvgx9GNCSmfIBshhWPwS+Rp4PnTRnhKZ8xAkHf
+         olkA==
+X-Gm-Message-State: AOAM530iwygN6s/FY0t/FkccDchl1XMhdagQcYgs2wtBoEiOqCUW9Lt/
+        ZXgaKH4lUF1x/77CifbZghDubgXL48FEpt5Q
+X-Google-Smtp-Source: ABdhPJw0qC4HxiG6+lNGoLhXdKRQ6phNXWeAziKb0zM4HKIClbwU3fAgBb5ZP6iA8tkK3T/vsUzqKA==
+X-Received: by 2002:ad4:456c:: with SMTP id o12mr4490006qvu.48.1602092005183;
+        Wed, 07 Oct 2020 10:33:25 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 184sm1954180qkl.104.2020.10.07.10.33.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 10:33:24 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQDJb-0010xU-S5; Wed, 07 Oct 2020 14:33:23 -0300
+Date:   Wed, 7 Oct 2020 14:33:23 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH 05/13] mm/frame-vector: Use FOLL_LONGTERM
+Message-ID: <20201007173323.GV5177@ziepe.ca>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-6-daniel.vetter@ffwll.ch>
+ <20201007165316.GT5177@ziepe.ca>
+ <CAKMK7uGTpZcHwrBNQOXwzDAzyfSgoLSt_Dae_3hMRE2xwGx+GA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uGTpZcHwrBNQOXwzDAzyfSgoLSt_Dae_3hMRE2xwGx+GA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, Oct 07, 2020 at 07:12:24PM +0200, Daniel Vetter wrote:
+> On Wed, Oct 7, 2020 at 6:53 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 06:44:18PM +0200, Daniel Vetter wrote:
+> > >
+> > > -     /*
+> > > -      * While get_vaddr_frames() could be used for transient (kernel
+> > > -      * controlled lifetime) pinning of memory pages all current
+> > > -      * users establish long term (userspace controlled lifetime)
+> > > -      * page pinning. Treat get_vaddr_frames() like
+> > > -      * get_user_pages_longterm() and disallow it for filesystem-dax
+> > > -      * mappings.
+> > > -      */
+> > > -     if (vma_is_fsdax(vma)) {
+> > > -             ret = -EOPNOTSUPP;
+> > > -             goto out;
+> > > -     }
+> > > -
+> > > -     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> > > -             vec->got_ref = true;
+> > > -             vec->is_pfns = false;
+> > > -             ret = pin_user_pages_locked(start, nr_frames,
+> > > -                     gup_flags, (struct page **)(vec->ptrs), &locked);
+> > > -             goto out;
+> > > -     }
+> >
+> > The vm_flags still need to be checked before going into the while
+> > loop. If the break is taken then nothing would check vm_flags
+> 
+> Hm right that's a bin inconsistent. follow_pfn also checks for this,
+> so I think we can just ditch this entirely both here and in the do {}
+> while () check, simplifying the latter to just while (vma). Well, just
+> make it a real loop with less confusing control flow probably.
 
-2020. okt=C3=B3ber 7., szerda 19:30 keltez=C3=A9ssel, Hans de Goede =C3=
-=ADrta:
-> [...]
-> Since I'm just getting up2speed in my new role today, I have never pushed
-> that branch out yet, hence the error.
->
-> I've pushed it out now, the mirrors which actually serve
-> the http interface can lag a bit, so give it 10 minutes and
-> then it should be there.
-> [...]
+It does read very poorly with the redundant check, espeically since I
+keep forgetting follow_pfn does it too :\
 
-
-I see, thanks!
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
+Jason
