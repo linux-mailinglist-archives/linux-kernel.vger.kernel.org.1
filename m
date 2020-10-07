@@ -2,149 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFF82865EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A739F2865F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgJGR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:28:55 -0400
-Received: from mga12.intel.com ([192.55.52.136]:7786 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728456AbgJGR2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:28:53 -0400
-IronPort-SDR: K0HIRN/KUmkODLSWpTxVne3OH/b885xBH1cORRpNKIkshKiihbSY9Phg4KQ5dCIh9fItQH9g2K
- TSZXShCO5ETg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="144411819"
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="144411819"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:28:51 -0700
-IronPort-SDR: 0e/WL67OF1SS3EUzmvW2mir+firZR9ovDYD8JbaZS63+sZHvwi1Am/7iTu3v5+y1B01G4PiStF
- BEp+pd2EnllQ==
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="311835366"
-Received: from jdelcan-mobl.amr.corp.intel.com (HELO [10.254.64.135]) ([10.254.64.135])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:28:51 -0700
-Subject: Re: [PATCH v8 2/6] PCI/DPC: define a function to check and wait till
- port finish DPC handling
-To:     Ethan Zhao <haifeng.zhao@intel.com>, bhelgaas@google.com,
-        oohall@gmail.com, ruscur@russell.cc, lukas@wunner.de,
-        andriy.shevchenko@linux.intel.com, stuart.w.hayes@gmail.com,
-        mr.nuke.me@gmail.com, mika.westerberg@linux.intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ashok.raj@linux.intel.com, xerces.zhao@gmail.com
-References: <20201007113158.48933-1-haifeng.zhao@intel.com>
- <20201007113158.48933-3-haifeng.zhao@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
-Message-ID: <4bedeb35-942e-5ad3-9721-62495af1f09a@intel.com>
-Date:   Wed, 7 Oct 2020 10:28:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728551AbgJGRaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726511AbgJGRaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:30:23 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC093C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:30:22 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so3262238ioo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pQ3RmkMpjXxSLR81pkKdGt+TZH44v4hpamp0wM2Tbvs=;
+        b=Se9nw5FgHFtKsm8GMYSImWv2wXIqCCOCv6pqlrWzBIvY0KyFKYLSgBJbdclE74rN0V
+         L0OzzCyXjwmzqY5CvOwmW1s23GoVCPICapYUZFiSyQ3VzyBQJpfZ+6B7eKkncs8IsvXR
+         slEUoHEbK3sqOXSRrw0ZRR2s39x9H1sNI4Ysl2tET0kOXOHkex1NPPywMNawv3w1f+sB
+         c6lulPb33S1fRXiAC5OZMKjd4VOO5Q3jJ7RhTgSz7ELXfAEp8rJq7zc0JWvoRTDpcC0Q
+         cTGuo3+wxAiYN9Cg6g/Jn6XY557RX4qkZ2GxwutbY+LCvSQ633tA4zpsHUJpBQTsLVbR
+         lMZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pQ3RmkMpjXxSLR81pkKdGt+TZH44v4hpamp0wM2Tbvs=;
+        b=gMFikUQnXQrdyR9do6Z0L0sifGCpUTK9ihRIdp5IiP2MfqRuDtPBzc6kgo5YxGfpHD
+         nCmdSzcxD4Nwj9Z1zr0sOZ9ZDp6lOPt8G6pGcLMDWdqDX6HnAWUFhrA+/WiYr03t4zK7
+         MiCtbUu/NkKo0YwOAf9IGZMO+fou7JMgMkmXqTKNdPq1QcI+5S1FTsNxSvUMEx9jn8do
+         x0c4SGx2666x3voYQfN6yDPm8uzJS/6wYyIFCe9ZyVoyiXSv1jc1WVB0E0a0HeCNEhcB
+         8eBMfyhlswT+i1aTbCd5vPajQpkpiTUzprZKKRqDZStP+mqRQ5rKM7aMTOBZT6/avZUR
+         Iahw==
+X-Gm-Message-State: AOAM530fJdmNgu3dqIEynJQiqd8g2mO2P6g148vCI3B/veKcpOgYdhZo
+        3Lg6VnY6s97AJDOvZvh4HkebFnNVDXukDGadoTb6Tw==
+X-Google-Smtp-Source: ABdhPJytlhBgnWm3jW2tGSy64WkRj5mYfdnZRMLgkPXFNiRl5vrEqOTNvUu8Lz/HHEZVJWadIix3VN17uQKF1IQZXao=
+X-Received: by 2002:a6b:1646:: with SMTP id 67mr3090555iow.189.1602091821740;
+ Wed, 07 Oct 2020 10:30:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201007113158.48933-3-haifeng.zhao@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-16-bgardon@google.com>
+ <622ffc59-d914-c718-3f2f-952f714ac63c@redhat.com> <CANgfPd_8SpHkCd=NyBKtRFWKkczx4SMxPLRon-kx9Oc6P7b=Ew@mail.gmail.com>
+ <7636707a-b622-90a3-e641-18662938f6dd@redhat.com>
+In-Reply-To: <7636707a-b622-90a3-e641-18662938f6dd@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 7 Oct 2020 10:30:10 -0700
+Message-ID: <CANgfPd_F_EurkfGquC79cEHa=4A2AMfnCAfMHPpAXa-6w4+bsg@mail.gmail.com>
+Subject: Re: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/7/20 4:31 AM, Ethan Zhao wrote:
-> Once root port DPC capability is enabled and triggered, at the beginning
-> of DPC is triggered, the DPC status bits are set by hardware and then
-> sends DPC/DLLSC/PDC interrupts to OS DPC and pciehp drivers, it will
-> take the port and software DPC interrupt handler 10ms to 50ms (test data
-> on ICS(Ice Lake SP platform, see
-> https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server)
-> & stable 5.9-rc6) to complete the DPC containment procedure
-This data is based on one particular architecture. So using this
-to create a timed loop in pci_wait_port_outdpc() looks incorrect.
-
-I still recommend looking for some locking model to fix this
-issue (may be atomic state flag or lock).
-> till the DPC status is cleared at the end of the DPC interrupt handler.
+On Wed, Oct 7, 2020 at 10:18 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> We use this function to check if the root port is in DPC handling status
-> and wait till the hardware and software completed the procedure.
+> On 07/10/20 18:53, Ben Gardon wrote:
+> >> in addition to the previously-mentioned cleanup of always calling
+> >> handle_changed_spte instead of special-casing calls to two of the
+> >> three functions.  It would be a nice place to add the
+> >> trace_kvm_mmu_set_spte tracepoint, too.
+> > I'm not sure we can avoid special casing calls to the access tracking
+> > and dirty logging handler functions. At least in the past that's
+> > created bugs with things being marked dirty or accessed when they
+> > shouldn't be. I'll revisit those assumptions. It would certainly be
+> > nice to get rid of that complexity.
+> >
+> > I agree that putting the SPTE assignment and handler functions in a
+> > helper function would clean up the code. I'll do that.
 >
-> Signed-off-by: Ethan Zhao <haifeng.zhao@intel.com>
-> Tested-by: Wen Jin <wen.jin@intel.com>
-> Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
-> ---
-> changes:
->   v2：align ICS code name to public doc.
->   v3: no change.
->   v4: response to Christoph's (Christoph Hellwig <hch@infradead.org>)
->       tip, move pci_wait_port_outdpc() to DPC driver and its declaration
->       to pci.h.
->   v5: fix building issue reported by lkp@intel.com with some config.
->   v6: move from [1/5] to [2/5].
->   v7: no change.
->   v8: no change.
+> Well that's not easy if you have to think of which functions have to be
+> called.
 >
->   drivers/pci/pci.h      |  2 ++
->   drivers/pci/pcie/dpc.c | 27 +++++++++++++++++++++++++++
->   2 files changed, 29 insertions(+)
->
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index fa12f7cbc1a0..455b32187abd 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -455,10 +455,12 @@ void pci_restore_dpc_state(struct pci_dev *dev);
->   void pci_dpc_init(struct pci_dev *pdev);
->   void dpc_process_error(struct pci_dev *pdev);
->   pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
-> +bool pci_wait_port_outdpc(struct pci_dev *pdev);
->   #else
->   static inline void pci_save_dpc_state(struct pci_dev *dev) {}
->   static inline void pci_restore_dpc_state(struct pci_dev *dev) {}
->   static inline void pci_dpc_init(struct pci_dev *pdev) {}
-> +static inline bool pci_wait_port_outdpc(struct pci_dev *pdev) { return false; }
->   #endif
->   
->   #ifdef CONFIG_PCI_ATS
-> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-> index daa9a4153776..2e0e091ce923 100644
-> --- a/drivers/pci/pcie/dpc.c
-> +++ b/drivers/pci/pcie/dpc.c
-> @@ -71,6 +71,33 @@ void pci_restore_dpc_state(struct pci_dev *dev)
->   	pci_write_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_CTL, *cap);
->   }
->   
-> +bool pci_wait_port_outdpc(struct pci_dev *pdev)
-> +{
-> +	u16 cap = pdev->dpc_cap, status;
-> +	u16 loop = 0;
-> +
-> +	if (!cap) {
-> +		pci_WARN_ONCE(pdev, !cap, "No DPC capability initiated\n");
-> +		return false;
-> +	}
-> +	pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
-> +	pci_dbg(pdev, "DPC status %x, cap %x\n", status, cap);
-> +
-> +	while (status & PCI_EXP_DPC_STATUS_TRIGGER && loop < 100) {
-> +		msleep(10);
-> +		loop++;
-> +		pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
-> +	}
-> +
-> +	if (!(status & PCI_EXP_DPC_STATUS_TRIGGER)) {
-> +		pci_dbg(pdev, "Out of DPC %x, cost %d ms\n", status, loop*10);
-> +		return true;
-> +	}
-> +
-> +	pci_dbg(pdev, "Timeout to wait port out of DPC status\n");
-> +	return false;
-> +}
-> +
->   static int dpc_wait_rp_inactive(struct pci_dev *pdev)
->   {
->   	unsigned long timeout = jiffies + HZ;
+> I'll take a closer look at the access tracking and dirty logging cases
+> to try and understand what those bugs can be.  Apart from that I have my
+> suggested changes and I can probably finish testing them and send them
+> out tomorrow.
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Awesome, thank you. I'll look forward to seeing them. Will you be
+applying those changes to the tdp_mmu branch you created as well?
 
+>
+> Paolo
+>
+> > I got some
+> > feedback on the RFC I sent last year which led me to open-code a lot
+> > more, but I think this is still a good cleanup.
+>
