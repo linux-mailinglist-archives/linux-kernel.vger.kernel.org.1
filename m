@@ -2,141 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE99128654B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B61286547
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728151AbgJGQx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:53:29 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:41754 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728046AbgJGQx3 (ORCPT
+        id S1728039AbgJGQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgJGQxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:53:29 -0400
-Received: by mail-ot1-f66.google.com with SMTP id q21so2852483ota.8;
-        Wed, 07 Oct 2020 09:53:28 -0700 (PDT)
+        Wed, 7 Oct 2020 12:53:20 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EDFC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 09:53:19 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 140so1839736qko.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 09:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aA5/IKqeJTcjHMODAliv+D9oxsXiJBjU0Q/RoQOchc4=;
+        b=ThVHp0Bf6+g4+R33mQIvIX8CheiSQQTMUuTCia9X1IqJrBuFaGelh/l39LBTeYKkvK
+         NaMOGfKlUrf0z4iE8OxQVYLuzZ/JlM7sUpAQwKcFn4cRIEuVLL6aIerNL35v1pmwUkj+
+         wDrYDlD+5FNGiiz175SjQIUqXASz3MvdF3eYJh+ukkwcF83qjZnM9uioklIntUHKaRya
+         Zg9rg6+eKKInIDWli/ZJm1h6yck77cdzU9Fs3bEWsRArMtEGioYwK8tfNazOHk/B4xtt
+         Mf7AVxNkG0ee/JcnZSnMywZa9C4+2enXUIhuG1wGpzdJZvOcjJkPsfCeezTM2uT5xq7S
+         MUrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0A+i/MnG7ofk1/uow7Ro700CbvukkHEpDKrbjreJTRc=;
-        b=QHWWg0b8jTnc9x1ukbEWEcd0ak2+6OsQiKET89hEQni5yX3hKHdkuCd1H1+3ioUcN0
-         Gz9l9V20p+SUR5wmncysfoYoQf+hk97iyCkrIWNKF5AAROVfnfONOetp2fOXi7wk9/79
-         4hdHY44nh1zMyYjRxmAML99por+CTqQBmrEXoxVC5Nic1rrDoHwTqgQ3iuEjQ8FqPAl7
-         Y2oheFDKDkxso5hHHIAl1mgpbwl9kolslEF+hOEe8VZv0RjS9Kfp8SShALFMsCdvuqEO
-         eaeOywcnKwNJxzSabcISDKifqQUImggOYDQZCaTEwa8UcsiIjPhHA8UkNfVQ8A7fDuof
-         4uxQ==
-X-Gm-Message-State: AOAM530ppGilp+870PRVH/jZOrNkl6g1zQXnxhJPldqgAB3Nevdm2hYn
-        A+B4XTGbdbS0t92MU2JWFLEOXeT2GZXupXKcTKKxuLW/
-X-Google-Smtp-Source: ABdhPJw4S694LNMITp3AqYQCdCiM9gQ1FgdvqLSxqsYd0Y4fue2dbiG3/bedis6HuatQ8Q8D2nJgp+iE5QSoLHuT9C8=
-X-Received: by 2002:a9d:3626:: with SMTP id w35mr2533946otb.206.1602089607809;
- Wed, 07 Oct 2020 09:53:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aA5/IKqeJTcjHMODAliv+D9oxsXiJBjU0Q/RoQOchc4=;
+        b=sE2ufgHjhAGvNdxZkiiRDRCraUb8xM68aPKqsOzccsGI2Qz/rjgm0fleJyhKsBEodx
+         l+NW6pvFQSRGJPwfRLVkrwWAWvWF/zeVrvKhccpS4ccZrfKuSvCUfryvKsKKHtLEegnq
+         8pP67t8SbEgGp3B4O0cqrllVWSI66mmewfI3hzjFHwYdhbWW2BzY4ftlCd1sJFuezCb4
+         IGZlHNKW+qYwOdEsrUpzcSXcEP5rb4jVxXcmWjnwGxEcAM4epiqcwyH0TxVagNr5L3wS
+         keTT3pH+iObp4U5uqP/BM5j4q3rMN6X94ZuEuPHkdtahC5F5LT0oL9MjbIgY2y6vruwT
+         4UzQ==
+X-Gm-Message-State: AOAM531n7OcW+rz9XMzv5fHlO3gMFkwVT8D+gSuSjzR4lpf4fepricpU
+        zfFUQiAvi7RfXZ5zMEHTqFEwGg==
+X-Google-Smtp-Source: ABdhPJxixhkZJXYtJ75yqJVriDbZSDlnfap0MWWWiSIn4wzaboeX7oTS66SiExjVo2w4rTtFpjs6Eg==
+X-Received: by 2002:a37:aec2:: with SMTP id x185mr3746059qke.73.1602089598574;
+        Wed, 07 Oct 2020 09:53:18 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id x75sm232893qka.59.2020.10.07.09.53.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 09:53:17 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kQCgm-0010EB-Tr; Wed, 07 Oct 2020 13:53:16 -0300
+Date:   Wed, 7 Oct 2020 13:53:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH 05/13] mm/frame-vector: Use FOLL_LONGTERM
+Message-ID: <20201007165316.GT5177@ziepe.ca>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-6-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
-References: <20201007164851.1218-1-david.e.box@linux.intel.com>
-In-Reply-To: <20201007164851.1218-1-david.e.box@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 7 Oct 2020 18:53:16 +0200
-Message-ID: <CAJZ5v0gRph3UMffWqUVqTnDE149Ai-SbzmhjzZU1x=QOzAZeZA@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Disable PTM during suspend on Intel PCI bridges
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007164426.1812530-6-daniel.vetter@ffwll.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 6:49 PM David E. Box <david.e.box@linux.intel.com> wrote:
->
-> On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
-> Time Measurement (PTM) capability can prevent PCIe root ports from power
-> gating during suspend-to-idle, causing increased power consumption on
-> systems that suspend using Low Power S0 Idle [1]. The issue is yet to be
-> root caused but believed to be coming from a race condition in the suspend
-> flow as the incidence rate varies for different platforms on Linux but the
-> issue does not occur at all in other operating systems. For now, disable
-> the feature on suspend on all Intel root ports and enable again on resume.
+On Wed, Oct 07, 2020 at 06:44:18PM +0200, Daniel Vetter wrote:
+>  
+> -	/*
+> -	 * While get_vaddr_frames() could be used for transient (kernel
+> -	 * controlled lifetime) pinning of memory pages all current
+> -	 * users establish long term (userspace controlled lifetime)
+> -	 * page pinning. Treat get_vaddr_frames() like
+> -	 * get_user_pages_longterm() and disallow it for filesystem-dax
+> -	 * mappings.
+> -	 */
+> -	if (vma_is_fsdax(vma)) {
+> -		ret = -EOPNOTSUPP;
+> -		goto out;
+> -	}
+> -
+> -	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> -		vec->got_ref = true;
+> -		vec->is_pfns = false;
+> -		ret = pin_user_pages_locked(start, nr_frames,
+> -			gup_flags, (struct page **)(vec->ptrs), &locked);
+> -		goto out;
+> -	}
 
-IMV it should also be noted that there is no particular reason why PTM
-would need to be enabled while the whole system is suspended.  At
-least it doesn't seem to be particularly useful in that state.
+The vm_flags still need to be checked before going into the while
+loop. If the break is taken then nothing would check vm_flags
 
-> Link: https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf
-> Bug: https://bugzilla.kernel.org/show_bug.cgi?id=209361
-> Tested-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  drivers/pci/quirks.c | 57 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
->
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index bdf9b52567e0..e82b1f60c7a1 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -5632,3 +5632,60 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
->  }
->  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
->                                PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-> +
-> +#ifdef CONFIG_PCIE_PTM
-> +/*
-> + * On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
-> + * Time Measurement (PTM) capability can prevent the PCIe root port from
-> + * power gating during suspend-to-idle, causing increased power consumption.
-> + * So disable the feature on suspend on all Intel root ports and enable
-> + * again on resume.
-> + */
-> +static void quirk_intel_ptm_disable_suspend(struct pci_dev *dev)
-> +{
-> +       int pos;
-> +       u32 ctrl;
-> +
-> +       if (!(dev->ptm_enabled && dev->ptm_root))
-> +               return;
-> +
-> +       pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-> +       if (!pos)
-> +               return;
-> +
-> +       pci_dbg(dev, "quirk: disabling PTM\n");
-> +
-> +       dev->ptm_enabled = 0;
-> +       dev->ptm_root = 0;
-> +
-> +       pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
-> +       ctrl &= ~(PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT);
-> +       pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
-> +}
-> +
-> +static void quirk_intel_ptm_enable_resume(struct pci_dev *dev)
-> +{
-> +       int pos;
-> +       u32 ctrl;
-> +
-> +       pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-> +       if (!pos)
-> +               return;
-> +
-> +       pci_dbg(dev, "quirk: re-enabling PTM\n");
-> +
-> +       pci_read_config_dword(dev, pos + PCI_PTM_CTRL, &ctrl);
-> +       ctrl |= PCI_PTM_CTRL_ENABLE | PCI_PTM_CTRL_ROOT;
-> +       pci_write_config_dword(dev, pos + PCI_PTM_CTRL, ctrl);
-> +
-> +       dev->ptm_enabled = 1;
-> +       dev->ptm_root = 1;
-> +}
-> +
-> +DECLARE_PCI_FIXUP_CLASS_SUSPEND(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
-> +                               PCI_CLASS_BRIDGE_PCI, 8,
-> +                               quirk_intel_ptm_disable_suspend)
-> +DECLARE_PCI_FIXUP_CLASS_RESUME(PCI_VENDOR_ID_INTEL, PCI_ANY_ID,
-> +                              PCI_CLASS_BRIDGE_PCI, 8,
-> +                              quirk_intel_ptm_enable_resume)
-> +#endif
-> --
-> 2.20.1
->
+Jason
