@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9806128653A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A28F28653D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgJGQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727608AbgJGQuG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:50:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748B5C061755;
-        Wed,  7 Oct 2020 09:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Nav6Oy18S0mncB3AAW0uN+jV/XzmjmJbW8GBwpVEUfw=; b=Frs5Gubuq3ricUN+drCNVuXFCQ
-        mjI7QUo+b9QJ0YTE5NrJrGyyJTC4C7Xnqrmod9ynuk2Y4oiEYd+aqpRGhhGIukQecVxABVPSNgViH
-        jXvjPC1UixiXhwHJ04SFdFoxR8VLpIunkTZG6/3+V/LmPruKj0WukyumMT+flkN7/b9TYSWUGvcd9
-        EZ4oPxIyDyE1OJcZ/xUA2i8t/gu5hDGhZdmPy3Nk2nrEgX6vLDagbZaWR9br0Pnz4xXebGH+/oo50
-        5hFO3Svf9XCI1rvN/DfQQ+Vat5rRqfQNhNOJGo/fHDm/oFL+uiPJmQZwQuGy0T2XOUVCxAWxyy/Ow
-        zGOlf7dw==;
-Received: from [2601:1c0:6280:3f0::2c9a]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQCdf-0004Uj-U1; Wed, 07 Oct 2020 16:50:04 +0000
-Subject: Re: [PATCH] fs: use correct parameter in notes of
- generic_file_llseek_size()
-To:     Tianxianting <tian.xianting@h3c.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200905071525.12259-1-tian.xianting@h3c.com>
- <3808373d663146c882c22397a1d6587f@h3c.com>
- <07de1867-e61c-07fb-8809-91d5e573329b@infradead.org>
- <e028ff27412d4a80aa273320482a801d@h3c.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b2bd4f65-3054-3c08-807f-f1e800c122ed@infradead.org>
-Date:   Wed, 7 Oct 2020 09:50:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728043AbgJGQuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:50:21 -0400
+Received: from mga04.intel.com ([192.55.52.120]:9895 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727958AbgJGQuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:50:20 -0400
+IronPort-SDR: 7SKj03YEsZi8siPJ2A1AVVwwOLGlDr3+9+Du9rjDk13OLA2WrbiqCW1gaijhiCcAJoLyy+OhwI
+ ZNw4srPX4WQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="162398123"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="162398123"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:50:19 -0700
+IronPort-SDR: JrC6QF5/odrbn7CHDLJIcwmsP3AqDxNK02WJ+trXcOUzbJi0697Tne5mMaR9MpX4PfTWVixQ51
+ Qwd/An4C/C6A==
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="311818876"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.241.84]) ([10.212.241.84])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 09:50:18 -0700
+Subject: Re: [PATCH v7 0/5] Add shared workqueue support for idxd driver
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     bp@alien8.de, dan.j.williams@intel.com, tony.luck@intel.com,
+        ashok.raj@intel.com, kevin.tian@intel.com, fenghua.yu@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201005151126.657029-1-dave.jiang@intel.com>
+ <20201007070132.GT2968@vkoul-mobl>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <c25b11ce-4588-6663-c9d6-b1177c627c98@intel.com>
+Date:   Wed, 7 Oct 2020 09:50:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <e028ff27412d4a80aa273320482a801d@h3c.com>
-Content-Type: text/plain; charset=gbk
+In-Reply-To: <20201007070132.GT2968@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 8:20 AM, Tianxianting wrote:
-> hi,
+
+
+On 10/7/2020 12:01 AM, Vinod Koul wrote:
+> On 05-10-20, 08:11, Dave Jiang wrote:
 > 
-> thanks Randy
-> 
-> I checked the latest code, seems this patch not applied currently.
-
-Hi--
-
-Please don't send html email.
-I'm pretty sure that the mailing list has dropped (discarded) your email
-because it was html.
-
-Probably only Al and I received your email.
-
-Al- Would you prefer that fs/ documentation patches go to someone else
-for merging?  maybe Andrew?
-
-Thanks.
-
-PS: I can't tell if I am writing an html email or not... :(
-
-
-> ________________________________
-> 发件人: Randy Dunlap <rdunlap@infradead.org>
-> 发送时间: Friday, September 11, 2020 10:57:24 AM
-> 收件人: tianxianting (RD); viro@zeniv.linux.org.uk
-> 抄送: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org
-> 主题: Re: [PATCH] fs: use correct parameter in notes of generic_file_llseek_size()
-> 
-> On 9/10/20 7:06 PM, Tianxianting wrote:
->> Hi viro,
->> Could I get your feedback?
->> This patch fixed the build warning, I think it can be applied, thanks :)
+>> == Background ==
+>> A typical DMA device requires the driver to translate application buffers to hardware addresses,
+>> and a kernel-user transition to notify the hardware of new work. Shared Virtual Addressing (SVA)
+>> allows the processor and device to use the same virtual addresses without requiring software to
+>> translate between the address spaces. ENQCMD is a new instruction on Intel Platforms that allows
+>> user applications to directly notify hardware of new work, much like how doorbells are used in
+>> some hardware, but it carries a payload along with it. ENQCMDS is the supervisor version (ring0)
+>> of ENQCMD.
 >>
->> -----Original Message-----
->> From: tianxianting (RD)
->> Sent: Saturday, September 05, 2020 3:15 PM
->> To: viro@zeniv.linux.org.uk
->> Cc: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org; tianxianting (RD) <tian.xianting@h3c.com>
->> Subject: [PATCH] fs: use correct parameter in notes of generic_file_llseek_size()
+>> == ENQCMDS ==
+>> Introduce enqcmds(), a helper funciton that copies an input payload to a 64B aligned
+>> destination and confirms whether the payload was accepted by the device or not.
+>> enqcmds() wraps the new ENQCMDS CPU instruction. The ENQCMDS is a ring 0 CPU instruction that
+>> performs similar to the ENQCMD instruction. Descriptor submission must use ENQCMD(S) for shared
+>> workqueues (swq) on an Intel DSA device.
 >>
->> Fix warning when compiling with W=1:
->> fs/read_write.c:88: warning: Function parameter or member 'maxsize' not described in 'generic_file_llseek_size'
->> fs/read_write.c:88: warning: Excess function parameter 'size' description in 'generic_file_llseek_size'
+>> == Shared WQ support ==
+>> Introduce shared workqueue (swq) support for the idxd driver. The current idxd driver contains
+>> dedicated workqueue (dwq) support only. A dwq accepts descriptors from a MOVDIR64B instruction.
+>> MOVDIR64B is a posted instruction on the PCIe bus, it does not wait for any response from the
+>> device. If the wq is full, submitted descriptors are dropped. A swq utilizes the ENQCMDS in
+>> ring 0, which is a non-posted instruction. The zero flag would be set to 1 if the device rejects
+>> the descriptor or if the wq is full. A swq can be shared between multiple users
+>> (kernel or userspace) due to not having to keep track of the wq full condition for submission.
+>> A swq requires PASID and can only run with SVA support.
 >>
->> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Thanks.
-> 
->> ---
->>  fs/read_write.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> == IDXD SVA support ==
+>> Add utilization of PASID to support Shared Virtual Addressing (SVA). With PASID support,
+>> the descriptors can be programmed with host virtual address (HVA) rather than IOVA.
+>> The hardware will work with the IOMMU in fulfilling page requests. With SVA support,
+>> a user app using the char device interface can now submit descriptors without having to pin the
+>> virtual memory range it wants to DMA in its own address space.
 >>
->> diff --git a/fs/read_write.c b/fs/read_write.c
->> index 5db58b8c7..058563ee2 100644
->> --- a/fs/read_write.c
->> +++ b/fs/read_write.c
->> @@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
->>   * @file:    file structure to seek on
->>   * @offset:  file offset to seek to
->>   * @whence:  type of seek
->> - * @size:    max size of this file in file system
->> + * @maxsize: max size of this file in file system
->>   * @eof:     offset used for SEEK_END position
->>   *
->>   * This is a variant of generic_file_llseek that allows passing in a custom
->>
+>> The series does not add SVA support for the dmaengine subsystem. That support is coming at a
+>> later time.
 > 
-> 
-> --
-> ~Randy
+> Applied, thanks
 > 
 
--- 
-~Randy
-
+Thanks Vinod!
