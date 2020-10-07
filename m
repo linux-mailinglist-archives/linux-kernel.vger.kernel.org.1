@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D8B285E86
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01F5285E92
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgJGL5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgJGL5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:57:18 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04ACC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 04:57:16 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b26so1213776pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 04:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cwm4zDn9ljbFZPKUydUSNtDryo6m1+1+OZ3G4Zk6/bU=;
-        b=gH6ss9U/zr9dB9r913dqtqA0EMf7LkDf5A6QBpcrwwQmBcUCdva9leLV/3h8J64sBe
-         hgaox9x0fbrPuQcfbiKwmdCsQcesl1aZ/pH+KJMmJzPYJL0amLw7tKIWNPwVEe7F1jiH
-         PaIvkNDrMY8i4s/SpUqkrRjq+Xr+ZBw0UEkwhZKXQWPEVKbq9qHRxWYZR3njitztbgD1
-         EmR66r2Dkoej0dXtj8Kqak6imMqAUZaUiZZFh9TqKyHuFtii9oYXbF4fX9x16Nxni+za
-         dNIcpCqkDbhCrli67OvdkH4cnvu6FYDSPX7xHcQnOttUyFoTyIY8oWKrjoBrqYR9mvdD
-         pHcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cwm4zDn9ljbFZPKUydUSNtDryo6m1+1+OZ3G4Zk6/bU=;
-        b=e+mnrIoO54SBCyM/Zsfs2sYhjjqF+uylIbbAK/VnNDFp7def3Zi2ZMKzCD4hz/j0/i
-         Hgf79INncHB8W0JwjjxXA6VYAoFcve1iwV5bF0kJW8O1W9nFklb5E0LmpV1J7OC97AEX
-         8PVQKzUQyOkQAJ6SUKYxiETYbLqBZQrgvquvt+cCSeVZbIx8+kNdWjP2o4JhIXrcS6Rc
-         ToCvCv+tLnX0KZa1DYZJTIUYalqv+pcaP6vTBUnK4EbA1IJrkZmkXwgZb0w5vquiurNf
-         IUgjq1drgLJA7bBdCZKsD3XC9UO1Aiyi9lGyFtzDE6oIwD37mfhk3ct51Ndf7UnrLu1w
-         J6Sg==
-X-Gm-Message-State: AOAM532cCOjcgBSa8/Cu2vzmv0Z1TRcx2S221feutsKu3QY0jKqcl1/L
-        RsROYnbXz7rwJQRCyQT/MOmbVA94+h/AKoZ9sdg=
-X-Google-Smtp-Source: ABdhPJw4ppH2wCGaZIAtqHTcKgPefWwCVrQkk6D7WXTaslXFFkUJbnDpwzC2lhK6SqhvFLsecq58UhGgGOcgFVwb/fQ=
-X-Received: by 2002:a65:47c2:: with SMTP id f2mr2720554pgs.4.1602071836324;
- Wed, 07 Oct 2020 04:57:16 -0700 (PDT)
+        id S1728053AbgJGL7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 07:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727884AbgJGL7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 07:59:40 -0400
+Received: from coco.lan (ip5f5ad5a2.dynamic.kabel-deutschland.de [95.90.213.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F7C620782;
+        Wed,  7 Oct 2020 11:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602071979;
+        bh=9bf1lUl/RI13I65CyzWhTm9xfS0ZoW88igz6z6D5x0U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FnP0wIRDk7WazriyIFsmbdt1u76A71ElD7jAxneZPFj1kE6QYh4GHsLdnpAAi4sPB
+         EizBUdqRMnldOxRd4Lrd12ZMD6OccHWbh6I0cPkT9obKMFDAbjCPLEooWQvY2LEsO8
+         rIFzmJJfuDmbKQ2ZbugZOjD2RQwQIKmI42+ITmao=
+Date:   Wed, 7 Oct 2020 13:59:34 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Akira Shimahara <akira215corp@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Evgeny Boger <boger@wirenboard.com>
+Subject: Re: [PATCH 2/2] w1: w1_therm: Add support for GXCAS GX20MH01
+ device.
+Message-ID: <20201007135934.4b6e598e@coco.lan>
+In-Reply-To: <20201007114359.GA2167293@kroah.com>
+References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru>
+        <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru>
+        <20201006151915.77d044a4@coco.lan>
+        <1561045277.20201007103227@wirenboard.ru>
+        <20201007105702.67988846@coco.lan>
+        <20201007090619.GA613204@kroah.com>
+        <20201007130549.6ca57af0@coco.lan>
+        <20201007114359.GA2167293@kroah.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20201005093024.16032-1-geert@linux-m68k.org> <CAMuHMdVqpgro9Qzn39fK9R2-2xDm6LDe6uOB5gSTrdRxbecNXQ@mail.gmail.com>
- <20201005125840.GP3956970@smile.fi.intel.com> <d1457a75d5f38002c063c3801af7819af43e0bfc.camel@tiscali.nl>
-In-Reply-To: <d1457a75d5f38002c063c3801af7819af43e0bfc.camel@tiscali.nl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 7 Oct 2020 14:58:06 +0300
-Message-ID: <CAHp75VcCkpLUAQU4YHvfeZ7gcUhYQSBp9Q1MZeN4xhYSjRTR1g@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.9-rc8
-To:     Paul Bolle <pebolle@tiscali.nl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 2:50 PM Paul Bolle <pebolle@tiscali.nl> wrote:
-> Andy Shevchenko schreef op ma 05-10-2020 om 15:58 [+0300]:
-> > On Mon, Oct 05, 2020 at 11:35:33AM +0200, Geert Uytterhoeven wrote:
-> > > On Mon, Oct 5, 2020 at 11:33 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > JFYI, when comparing v5.9-rc8[1] to v5.9-rc7[3], the summaries are:
-> > > >   - build errors: +3/-6
-> >
-> > Thanks for the report!
-> >
-> > >   + /kisskb/src/drivers/gpio/gpiolib-cdev.c: error: implicit
-> > > declaration of function 'in_ia32_syscall'
-> > > [-Werror=implicit-function-declaration]:  => 430:6
-> > >   + /kisskb/src/drivers/gpio/gpiolib-cdev.c: error: unknown type name
-> > > 'compat_u64':  => 432:4
-> > >
-> > > x86_64/um-all{mod,yes}config
-> >
-> > I guess the quick fix is to disable that code for UML, I don't know how IOCTLs
-> > are working in UML in cases when host - guest - guest app either from:
-> >       1. x86_64 - x86_64 - i386;
-> >       2. x86_64 - i386 - i386.
->
-> I ran into this build error too.
->
-> Perhaps the UML maintainers have an idea what to do here. The commit that
-> triggers this error is 5ad284ab3a01 ("gpiolib: Fix line event handling in
-> syscall compatible mode").
+Em Wed, 7 Oct 2020 13:43:59 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
 
-Does [1] fix the issue?
+> On Wed, Oct 07, 2020 at 01:05:49PM +0200, Mauro Carvalho Chehab wrote:
+> > Em Wed, 7 Oct 2020 11:06:19 +0200
+> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> >   
+> > > On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:  
+> > > > Em Wed, 7 Oct 2020 10:32:27 +0300
+> > > > Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
+> > > >     
+> > > > > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
+> > > > >     
+> > > > > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
+> > > > > >> index f1148181f53e..00376501a5ef 100644
+> > > > > >> --- a/Documentation/w1/slaves/w1_therm.rst
+> > > > > >> +++ b/Documentation/w1/slaves/w1_therm.rst      
+> > > > >     
+> > > > > >>  
+> > > > > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
+> > > > > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
+> > > > > >>  conversion completion (normal power only) by generating read cycles on the bus
+> > > > > >>  after conversion starts. In parasite power mode this feature is not available.
+> > > > > >> -Feature bit masks may be combined (OR).
+> > > > > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
+> > > > > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
+> > > > > >> +      
+> > > > >     
+> > > > > > As warned by Sphinx, this cross-reference is broken:      
+> > > > >     
+> > > > > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
+> > > > > > undefined label: w1_therm (if the link has no caption the label must precede a section header)      
+> > > > > 
+> > > > > Would this be ok?    
+> > > > 
+> > > > Yeah, sure!
+> > > >     
+> > > > > 
+> > > > > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
+> > > > >     
+> > > > > > Not sure what you wanted to point here.      
+> > > > > 
+> > > > > A link to a driver's sysfs interface, but sysfs docs are text
+> > > > > files and seem to not be included in Sphynx Docs.    
+> > > > 
+> > > > I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
+> > > > was not merged, not sure why:
+> > > > 
+> > > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6    
+> > > 
+> > > I think the raft of different patches floating around at the time made
+> > > me totally confused as to what was, and was not, the latest versions.  
+> > 
+> > Yeah, there were lots of patches floating around that time.
+> > 
+> > I also recall that someone (Jeni?) asked if the best wouldn't be to
+> > just convert the ABI files to ReST directly.
+> >   
+> > > I'll be glad to look at them again, if you want to rebase after 5.10-rc1
+> > > is out and resend them, as I think this should be showing up in the
+> > > documentation.  
+> > 
+> > Surely. I'll rebase them after 5.10-rc1 and re-submit. 
+> > 
+> > What strategy do you prefer? Keep the files with the same format as
+> > today (allowing them to optionally have ReST markups) or to convert
+> > them to .rst directly?
+> > 
+> > In the latter case, the best would be to apply it as early as possible
+> > after 5.10-rc1, as it may cause conflicts with other patches being
+> > submitted for 5.11.  
+> 
+> The existing format if at all possible, doing wholesale changes is a
+> mess and wouldn't be recommended.
 
-[1]: https://lore.kernel.org/linux-gpio/20201005131044.87276-1-andriy.shevchenko@linux.intel.com/
+Yeah, merging it would indeed be a mess. At long term, though, it could 
+be easier to maintain.
 
+> I think you already fixed up the entries that had problems being parsed
+> in the past, if not, we can resolve those as well.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Yes. The series start with fixes. I suspect several of them
+(if not all) were already merged, but if anything is missing, I can fix 
+at the upcoming rebased series.
+
+Thanks,
+Mauro
