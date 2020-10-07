@@ -2,87 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5494728629A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34142862A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 17:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728797AbgJGPwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 11:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgJGPwm (ORCPT
+        id S1728836AbgJGPyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 11:54:03 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60752 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgJGPyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 11:52:42 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1CFC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 08:52:42 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id b12so2675781edz.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 08:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+kRXBiTTqLjoGuZADUPKhdAQg4SP22QhzxvR6S3848o=;
-        b=nqUDHkZUkA+6evfFg+zzhGq85zxiHhImQ0yisbZigWKi3GOaE0AZ+9ws+VhE7Xhy/R
-         uw6Bhxdl/QvOlaZa+zfugJ4TYgesSTDiSrMKHbrrBDRMAdISHaEBvnCGrS7vkaPTwUbX
-         pWA9btmQc+4tJe7MqWz6nj/w3UHHpz8glHtbdC+dSP7D4QghKBlDFZumDCijaJXZ0u8f
-         YL5cxFmbwMdjY1xS0NAXsbL/w2G18k+nCxIh70sE5P3sWwnR1MGAKfzg6L8WPAp8e0V7
-         89t0DINkUocnpm8qezUl72nwIm1AlLu6cebjwyIrqQQB+oaz5ZQWinOI+313V19cBEGo
-         S4Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+kRXBiTTqLjoGuZADUPKhdAQg4SP22QhzxvR6S3848o=;
-        b=XSwV1vDI5Q5FZD17LyxG51kityj9qgJ+V0sAGGjF09VS52Ze3QGjQUNio0QI+Mz3U8
-         eIizj1sbZSYmlvaDnLQzIXtulj+rurhKYI54FP7t8xaY4SjrCw0QAkG56lOw9XWFRm8P
-         RSpYtJAz1XwzjYLJl5wP7nh7X1eCvLYr9h4mxuGIlXNbr0mapskqVFr2MISNJkI4geBr
-         jiITcBjoPixZ08n+YILf8Kq0oWLDfiPH6Z8l6v4wRl1PQF/wehVitIWxVMmjAgeJ6DhS
-         1rB10RQC3m9tyl2bGdgwWDitrjC8E40ottulEFyM6CI+MTPOhLo00Wuf+YLUJ8txEwCG
-         147w==
-X-Gm-Message-State: AOAM531ge6dy4KdsSRV6z+NzuXcxH6XazdSO7j2hDi2h9JzF/TWM2u/V
-        8150937Nbz7zUMouTVgAwjcS1rB46AwrbH3CJV0=
-X-Google-Smtp-Source: ABdhPJxfazbFsQCQXjT26uU6DP50kS4jYKa7wASwPIdnkg+0Seru1E0+NnAhK1qFBoBa/p3RvaOEv5Q8IBMVZDNV1FA=
-X-Received: by 2002:a50:c05b:: with SMTP id u27mr4176668edd.290.1602085961143;
- Wed, 07 Oct 2020 08:52:41 -0700 (PDT)
+        Wed, 7 Oct 2020 11:54:00 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 097Frlc2017186;
+        Wed, 7 Oct 2020 10:53:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602086027;
+        bh=6lMy6LquFt39HPrr11PBpdD/OnxnmKuCJoz1qOgHoEk=;
+        h=From:To:CC:Subject:Date;
+        b=yiu3/Yc2doYc0nv+1kKaLTv/J5mExnUX93P8jT2We8mIEh6fh65kfnCJ9QG+YtzDV
+         UGEGA423dB7cusbMa/+aKKd6vmy++Y/AGSeCx9sWZkIpyqN9kqvb6BRWk9iS8OiUgp
+         gNi7w0Cqr/qgCatCuq5djtYsnSFJhlqwIeEfbMwg=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 097FrlxG120261
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 10:53:47 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 10:53:47 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 10:53:47 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 097FrlX2129960;
+        Wed, 7 Oct 2020 10:53:47 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
+        <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v3 1/2] dt-bindings: tas2764: Add the TAS2764 binding doc
+Date:   Wed, 7 Oct 2020 10:53:40 -0500
+Message-ID: <20201007155341.10139-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201006205103.268F74A9@viggo.jf.intel.com> <20201007095225.GH29020@dhcp22.suse.cz>
- <89df7a1e-747c-4059-0b4d-6e2ffe129579@redhat.com>
-In-Reply-To: <89df7a1e-747c-4059-0b4d-6e2ffe129579@redhat.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 7 Oct 2020 08:52:28 -0700
-Message-ID: <CAHbLzkq0EZDwN28Bhfhv1pPqv0he2QA5by9etXriasnq0h9-7g@mail.gmail.com>
-Subject: Re: [RFC][PATCH 00/12] mm: tweak page cache migration
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 2:55 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 07.10.20 11:52, Michal Hocko wrote:
-> > Am I the only one missing patch 1-5? lore.k.o doesn't seem to link them
-> > under this message id either.
->
-> I received no patches via linux-mm, only the cover letter and Dave's
-> reply. (maybe some are still in flight ...)
+Add the binding for the TAS2764 Smart Amplifier.
 
-Yes, exactly the same to me, but anyway I saw the patches via linux-kernel.
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/sound/tas2764.yaml    | 76 +++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2764.yaml
 
-And, it seems the github series doesn't reflect the changes made by this series.
+diff --git a/Documentation/devicetree/bindings/sound/tas2764.yaml b/Documentation/devicetree/bindings/sound/tas2764.yaml
+new file mode 100644
+index 000000000000..5bf8c76ecda1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2764.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2020 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/tas2764.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Texas Instruments TAS2764 Smart PA
++
++maintainers:
++  - Dan Murphy <dmurphy@ti.com>
++
++description: |
++  The TAS2764 is a mono, digital input Class-D audio amplifier optimized for
++  efficiently driving high peak power into small loudspeakers.
++  Integrated speaker voltage and current sense provides for
++  real time monitoring of loudspeaker behavior.
++
++properties:
++  compatible:
++    enum:
++      - ti,tas2764
++
++  reg:
++    maxItems: 1
++    description: |
++       I2C address of the device can be between 0x38 to 0x45.
++
++  reset-gpios:
++    maxItems: 1
++    description: GPIO used to reset the device.
++
++  shutdown-gpios:
++    maxItems: 1
++    description: GPIO used to control the state of the device.
++
++  interrupts:
++    maxItems: 1
++
++  ti,imon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX current sense time slot.
++
++  ti,vmon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX voltage sense time slot.
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c0 {
++     #address-cells = <1>;
++     #size-cells = <0>;
++     codec: codec@38 {
++       compatible = "ti,tas2764";
++       reg = <0x38>;
++       #sound-dai-cells = <1>;
++       interrupt-parent = <&gpio1>;
++       interrupts = <14>;
++       reset-gpios = <&gpio1 15 0>;
++       shutdown-gpios = <&gpio1 15 0>;
++       ti,imon-slot-no = <0>;
++       ti,vmon-slot-no = <2>;
++     };
++   };
++
++...
+-- 
+2.28.0.585.ge1cfff676549
 
->
-> --
-> Thanks,
->
-> David / dhildenb
->
->
