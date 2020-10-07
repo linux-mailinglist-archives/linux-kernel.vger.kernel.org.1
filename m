@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4E8285FAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7D7285FB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgJGNB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:01:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56584 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728371AbgJGNB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:01:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C61D5AE9A;
-        Wed,  7 Oct 2020 13:01:27 +0000 (UTC)
-Date:   Wed, 7 Oct 2020 14:01:25 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <fweisbecker@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [RFC PATCH] kernel: allow to configure PREEMPT_NONE,
- PREEMPT_VOLUNTARY on kernel command line
-Message-ID: <20201007130125.GI3165@suse.de>
-References: <20201007120401.11200-1-mhocko@kernel.org>
- <20201007121939.GE2628@hirez.programming.kicks-ass.net>
- <20201007122923.GJ29020@dhcp22.suse.cz>
+        id S1728418AbgJGNCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728325AbgJGNCv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:02:51 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F5CC061755;
+        Wed,  7 Oct 2020 06:02:51 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id c5so2155774ilr.9;
+        Wed, 07 Oct 2020 06:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xgra9s8aJ1g9hZznlmShgFGid1qDvqpduTjQ63z9Ai4=;
+        b=txDSCDnGVOvBmCLpVuBmy9IwJHZMw5/f4HStsCW+a8uQ7KWFidpfrCed0boKAYPdf0
+         m9m57hMEGQJvsAFppDA44N//SLhO8o8hmLybVJEVm08MQ8NDl0bAy6hLRPDejWPB91RX
+         ytVP/dxuCa7IhDhfJbL6TLJsjPlIdWiiiWoIez1gZF7MJno9VmRVAPE9yuluvWPiS3r/
+         C76xBU9YpL+XL3SoGiw1TApJcJYf/vUoh/jYNwViuQ14P6TgiTxQoyE07SDDzJbINIGk
+         EfYyobyL8GDPNsmhyjk/PhF9PVucyaEQEkR7MeJTcGjJvyTS1MCz4bW6BPfokTHg0NOz
+         dHxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xgra9s8aJ1g9hZznlmShgFGid1qDvqpduTjQ63z9Ai4=;
+        b=YiTs+3yR7rCYVW7k4IRajdyZGlTPiouQM/hTc+IhFdPQAkN02OolFGB0zES1+Di7Sq
+         2qijQc9cmHmqsaiSS6LNfWlcdMd7C9LWpRJDW+kGIacJnytSTQnD81YIkh36ED9X9wfG
+         tIFrLWnzZxxa3mIQJg7qVORNHXat/2tBn5uJ/Dt1ofL3KKC4Ad5eGjn6VJ6SvY/ba+5L
+         bsU2IZFH7Vmu2nmRrmWREMRmIbQwqyWfdpWr3+5HhIS6e54VFk3PQqadq3eWxXMGYKnh
+         B+knY34EhrhjQXOzffQXNpMmVjy020QsX0PaoQs2fym6slZ7NJfNHPWnCdDRRIPycRGO
+         wprA==
+X-Gm-Message-State: AOAM531iW+imi3Bm904gMDEotdarGdno5TqhwKZTb4UyDucKd1MqH9U0
+        BLNAevzxj1AdLYVN0NCeAqU=
+X-Google-Smtp-Source: ABdhPJyCcgAY00Z2svC4bvm0PN2VeHh0tvFzCAmFibdex1iaqZRd6Iwj3EXya/oA9U7bGCAolg8SRA==
+X-Received: by 2002:a92:dc03:: with SMTP id t3mr2541087iln.245.1602075770162;
+        Wed, 07 Oct 2020 06:02:50 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:7c62:dd9d:b755:cfbd])
+        by smtp.gmail.com with ESMTPSA id w14sm1000038ilm.88.2020.10.07.06.02.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 06:02:49 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mm-beacon-som: Fix Choppy BT audio
+Date:   Wed,  7 Oct 2020 08:02:37 -0500
+Message-Id: <20201007130237.230613-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201007122923.GJ29020@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 02:29:23PM +0200, Michal Hocko wrote:
-> On Wed 07-10-20 14:19:39, Peter Zijlstra wrote:
-> > On Wed, Oct 07, 2020 at 02:04:01PM +0200, Michal Hocko wrote:
-> > > From: Michal Hocko <mhocko@suse.com>
-> > > 
-> > > Many people are still relying on pre built distribution kernels and so
-> > > distributions have to provide mutliple kernel flavors to offer different
-> > > preemption models. Most of them are providing PREEMPT_NONE for typical
-> > > server deployments and PREEMPT_VOLUNTARY for desktop users.
-> > 
-> > Is there actually a benefit to NONE? We were recently talking about
-> > removing it.
-> 
-> I believe Mel can provide much better insight. We have been historically using
-> PREEMPT_NONE for our enterprise customers mostly for nice throughput
-> numbers. Many users are really targeting throughput much more than
-> latencies. My understanding is that even though VOLUNTARY preemption model
-> doesn't add too many preemption points on top of NONE it is still
-> something that is observable (IIRC 2-3% on hackbench).
->  
+When streaming bluetooth audio, the sound is choppy due to the
+fact that the default baud rate of the HCI interface is too slow
+to handle 16-bit stereo at 48KHz.
 
-It's marginal from the tests I ran but that was based on 5.3. At worst,
-it looked like roughly a hit but a lot of loads simply didn't notice.
-However, it might vary between architectures that I cannot cover or
-workloads that I didn't consider.  As the impact of PREEMPT_VOLUNTARY
-depends on where cond_resched and might_sleep is used, it's also something
-that can vary over time. The intent was that by having the command-line
-switch, a user could test the switch if there was a suspicion that a
-regression was related to PREEMPT_VOLUNTARY as opposed to telling them
-"tough, that's the reality now".
+The Bluetooth chip is capable of up to 4M baud on the serial port,
+so this patch sets the max-speed to 4000000 in order to properly
+stream audio over the Bluetooth.
 
+Fixes: 593816fa2f35 ("arm64: dts: imx: Add Beacon i.MX8m-Mini development kit")
+
+Signed-off-by: Adam Ford <aford173@gmail.com>
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+index 55b36bddd513..b88c3c99b007 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+@@ -211,6 +211,7 @@ bluetooth {
+ 		host-wakeup-gpios = <&gpio2 8 GPIO_ACTIVE_HIGH>;
+ 		device-wakeup-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+ 		clocks = <&osc_32k>;
++		max-speed = <4000000>;
+ 		clock-names = "extclk";
+ 	};
+ };
 -- 
-Mel Gorman
-SUSE Labs
+2.25.1
+
