@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08318286659
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83BD286576
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbgJGR7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:59:00 -0400
-Received: from mga03.intel.com ([134.134.136.65]:4340 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727866AbgJGR7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:59:00 -0400
-IronPort-SDR: ww5ONvF/i5D6CAGo9YBkElL3nqd3ia9p+nbMaykCJOpoaJcxBcFaTIImyC7ZFsYTMmbJ0fOb38
- qpv9q6kkw7Zw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="165094130"
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="165094130"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:08:32 -0700
-IronPort-SDR: 6FXyyR/Wk63C0KbfRxNAF5R0RrYYODaflapC63QWpPoNxys6lDJ/Ze48nS8s5h2xAha7I5Kdaq
- UGC97vzYwGBg==
-X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
-   d="scan'208";a="528056352"
-Received: from dumser-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.51.100])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:08:21 -0700
-Date:   Wed, 7 Oct 2020 20:08:18 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jethro Beekman <jethro@fortanix.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20201007170818.GB3885@linux.intel.com>
-References: <453c2d9b-0fd0-0d63-2bb9-096f255a6ff4@fortanix.com>
- <20201006151532.GA17610@linux.intel.com>
- <20201006172819.GA114208@linux.intel.com>
- <20201006232129.GB28981@linux.intel.com>
- <20201007002236.GA139112@linux.intel.com>
- <20201007011738.GE28981@linux.intel.com>
- <20201007031402.GA143690@linux.intel.com>
- <20201007043418.GG28981@linux.intel.com>
- <20201007073923.GA3632@linux.intel.com>
- <20201007152545.GB758@linux.intel.com>
+        id S1727978AbgJGRKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726948AbgJGRKE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:10:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DCBC061755;
+        Wed,  7 Oct 2020 10:10:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EVTgrX30Sf2N0MDTPXtgxP49nGA0fxDU2gu5Ho0vIkY=; b=B1g4qsOSOqDYaNjtTtjKq622e+
+        advRWgITx6SgThtKn4TcLOYMxPj2OBViZWilqAuuvPtqGUPJWH9pG9Y+R6a5BnpkQ8O9KhtMWL+Lt
+        IncrdsPONYRCsjDRZCReDy6rX3ByiGQ4FA00Q6ZvL4E9QFRwT3oF9+nw84oKzny8MzoK3tdF7CK8a
+        r/Pi85ilx2hRMPfEotzhkTmkyho/ZCJgrkyvpn6B0/KSBB28HxA3h51/VHS4bShr9UyKzggRSxb9N
+        7+OjH94VKVz1YwXtsH6GPpAM/SGsJk0+wKSz9hLj4W7VgmVGs4OkarctBzxhk6ysaAwzDEPmGMK9n
+        1py74zBA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQCvc-0005r8-M3; Wed, 07 Oct 2020 17:08:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24572300B22;
+        Wed,  7 Oct 2020 19:08:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E1F4A2B067BCF; Wed,  7 Oct 2020 19:08:35 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 19:08:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org, Michael Matz <matz@suse.de>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
+        x86 <x86@kernel.org>
+Subject: Re: [tip: x86/pasid] x86/asm: Carve out a generic movdir64b() helper
+ for general usage
+Message-ID: <20201007170835.GM2628@hirez.programming.kicks-ass.net>
+References: <20201005151126.657029-2-dave.jiang@intel.com>
+ <160208728972.7002.18130814269550766361.tip-bot2@tip-bot2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007152545.GB758@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <160208728972.7002.18130814269550766361.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 08:25:45AM -0700, Sean Christopherson wrote:
-> On Wed, Oct 07, 2020 at 10:39:23AM +0300, Jarkko Sakkinen wrote:
-> > On Tue, Oct 06, 2020 at 09:34:19PM -0700, Sean Christopherson wrote:
-> > > > Even if that was in place, you'd need to separate normal and interrupt.
-> > > > Tristate is useless here. 
-> > > 
-> > > Huh?  You mean like adding SGX_INTERRUPT_EXIT and SGX_EXCEPTION_EXIT?
-> > 
-> > OK, so I'll throw something.
-> > 
-> > 1. "normal" is either exception from either EENTER or ERESUME,
-> >    or just EEXIT.
-> > 2. "interrupt" is something where you want to tailor AEP path.
-> 
-> Manipulating the behavior of the vDSO, as in #2, would be done via an input
-> flag.  It may be related to the exit reason, e.g. the flag may also opt-in to
-> a new exit reason, but that has no bearing on whether or not a dedicated exit
-> reason is valuable.
+On Wed, Oct 07, 2020 at 04:14:49PM -0000, tip-bot2 for Dave Jiang wrote:
+> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+> index 59a3e13..d4baa0e 100644
+> --- a/arch/x86/include/asm/special_insns.h
+> +++ b/arch/x86/include/asm/special_insns.h
+> @@ -234,6 +234,28 @@ static inline void clwb(volatile void *__p)
+>  
+>  #define nop() asm volatile ("nop")
+>  
+> +/* The dst parameter must be 64-bytes aligned */
+> +static inline void movdir64b(void *dst, const void *src)
+> +{
+> +	const struct { char _[64]; } *__src = src;
+> +	struct { char _[64]; } *__dst = dst;
+> +
+> +	/*
+> +	 * MOVDIR64B %(rdx), rax.
 
-The fact is that AEP path is not actual right now.
+(%rdx), %rax, surely? Also, that's a horrible convention, but I suppose
+(%rdx), (%rax) was out?
 
-I'm not even interested to go further on discussing about feature that
-does not exist. Perhaps if/when it exist it turns out that we want a
-variable lets say 'exit_reason' to present something in that context.
+> +	 *
+> +	 * Both __src and __dst must be memory constraints in order to tell the
+> +	 * compiler that no other memory accesses should be reordered around
+> +	 * this one.
+> +	 *
+> +	 * Also, both must be supplied as lvalues because this tells
+> +	 * the compiler what the object is (its size) the instruction accesses.
+> +	 * I.e., not the pointers but what they point to, thus the deref'ing '*'.
 
-I'm neither against that or for it because it is all speculative.
+Can we pretty please get a binutils version that knows about this
+instruction, such that we know when we can get rid of the silly .byte
+encoded mess?
 
-> > > I'm not arguing that any of the above is even remotely likely.  I just don't
-> > > understand why we'd want an API that at best requires heuristics in userspace
-> > > to determine why the enclave stopped running, and at worst will saddle us with
-> > > an ugly mess in the future.  All to save 4 bytes that no one cares about (they
-> > > literally cost nothing), and a single MOV in a flow that is hundreds, if not
-> > > thousands, of cycles.
-> > 
-> > I don't care as much as saving bytes as defining API, which has zero
-> > ambiguous state variables.
-> 
-> How is exit_reason ambiguous?
-
-I rather pick the word redundant:
-
-1. 'leaf' exist anyway.
-2. It can represent all the state we need right now.
-3. It does not block anything.,
-
-I care deeply about wasting 4 bytes in a fixed size struct for
-absolutely nothing.
-
-/Jarkko
+> +	 */
+> +	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
+> +		     : "+m" (*__dst)
+> +		     :  "m" (*__src), "a" (__dst), "d" (__src));
+> +}
+> +
+>  #endif /* __KERNEL__ */
+>  
+>  #endif /* _ASM_X86_SPECIAL_INSNS_H */
