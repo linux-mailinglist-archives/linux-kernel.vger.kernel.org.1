@@ -2,142 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01F5285E92
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 13:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB2B285E97
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgJGL7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 07:59:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
+        id S1728062AbgJGMAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:00:11 -0400
+Received: from verein.lst.de ([213.95.11.211]:37104 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727884AbgJGL7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 07:59:40 -0400
-Received: from coco.lan (ip5f5ad5a2.dynamic.kabel-deutschland.de [95.90.213.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F7C620782;
-        Wed,  7 Oct 2020 11:59:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602071979;
-        bh=9bf1lUl/RI13I65CyzWhTm9xfS0ZoW88igz6z6D5x0U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FnP0wIRDk7WazriyIFsmbdt1u76A71ElD7jAxneZPFj1kE6QYh4GHsLdnpAAi4sPB
-         EizBUdqRMnldOxRd4Lrd12ZMD6OccHWbh6I0cPkT9obKMFDAbjCPLEooWQvY2LEsO8
-         rIFzmJJfuDmbKQ2ZbugZOjD2RQwQIKmI42+ITmao=
-Date:   Wed, 7 Oct 2020 13:59:34 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Evgeny Boger <boger@wirenboard.com>
-Subject: Re: [PATCH 2/2] w1: w1_therm: Add support for GXCAS GX20MH01
- device.
-Message-ID: <20201007135934.4b6e598e@coco.lan>
-In-Reply-To: <20201007114359.GA2167293@kroah.com>
-References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru>
-        <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru>
-        <20201006151915.77d044a4@coco.lan>
-        <1561045277.20201007103227@wirenboard.ru>
-        <20201007105702.67988846@coco.lan>
-        <20201007090619.GA613204@kroah.com>
-        <20201007130549.6ca57af0@coco.lan>
-        <20201007114359.GA2167293@kroah.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726219AbgJGMAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:00:10 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0F2CB6736F; Wed,  7 Oct 2020 14:00:06 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 14:00:05 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stefan Haberland <sth@linux.ibm.com>, axboe@kernel.dk,
+        hoeppner@linux.ibm.com, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] s390/dasd: remove ioctl_by_bdev calls
+Message-ID: <20201007120005.GA29788@lst.de>
+References: <20200519142259.102279-1-sth@linux.ibm.com> <20200519142259.102279-3-sth@linux.ibm.com> <5c815b8a-7d77-5c69-9191-d09cc433f5ff@de.ibm.com> <20201007103936.GA24327@lst.de> <ca1bad1e-6d4b-7e86-4a98-b9ba12e2bef2@de.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca1bad1e-6d4b-7e86-4a98-b9ba12e2bef2@de.ibm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 7 Oct 2020 13:43:59 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-
-> On Wed, Oct 07, 2020 at 01:05:49PM +0200, Mauro Carvalho Chehab wrote:
-> > Em Wed, 7 Oct 2020 11:06:19 +0200
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> >   
-> > > On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:  
-> > > > Em Wed, 7 Oct 2020 10:32:27 +0300
-> > > > Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
-> > > >     
-> > > > > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
-> > > > >     
-> > > > > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
-> > > > > >> index f1148181f53e..00376501a5ef 100644
-> > > > > >> --- a/Documentation/w1/slaves/w1_therm.rst
-> > > > > >> +++ b/Documentation/w1/slaves/w1_therm.rst      
-> > > > >     
-> > > > > >>  
-> > > > > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
-> > > > > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
-> > > > > >>  conversion completion (normal power only) by generating read cycles on the bus
-> > > > > >>  after conversion starts. In parasite power mode this feature is not available.
-> > > > > >> -Feature bit masks may be combined (OR).
-> > > > > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
-> > > > > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
-> > > > > >> +      
-> > > > >     
-> > > > > > As warned by Sphinx, this cross-reference is broken:      
-> > > > >     
-> > > > > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
-> > > > > > undefined label: w1_therm (if the link has no caption the label must precede a section header)      
-> > > > > 
-> > > > > Would this be ok?    
-> > > > 
-> > > > Yeah, sure!
-> > > >     
-> > > > > 
-> > > > > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
-> > > > >     
-> > > > > > Not sure what you wanted to point here.      
-> > > > > 
-> > > > > A link to a driver's sysfs interface, but sysfs docs are text
-> > > > > files and seem to not be included in Sphynx Docs.    
-> > > > 
-> > > > I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
-> > > > was not merged, not sure why:
-> > > > 
-> > > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6    
-> > > 
-> > > I think the raft of different patches floating around at the time made
-> > > me totally confused as to what was, and was not, the latest versions.  
-> > 
-> > Yeah, there were lots of patches floating around that time.
-> > 
-> > I also recall that someone (Jeni?) asked if the best wouldn't be to
-> > just convert the ABI files to ReST directly.
-> >   
-> > > I'll be glad to look at them again, if you want to rebase after 5.10-rc1
-> > > is out and resend them, as I think this should be showing up in the
-> > > documentation.  
-> > 
-> > Surely. I'll rebase them after 5.10-rc1 and re-submit. 
-> > 
-> > What strategy do you prefer? Keep the files with the same format as
-> > today (allowing them to optionally have ReST markups) or to convert
-> > them to .rst directly?
-> > 
-> > In the latter case, the best would be to apply it as early as possible
-> > after 5.10-rc1, as it may cause conflicts with other patches being
-> > submitted for 5.11.  
+On Wed, Oct 07, 2020 at 12:44:55PM +0200, Christian Borntraeger wrote:
 > 
-> The existing format if at all possible, doing wholesale changes is a
-> mess and wouldn't be recommended.
+> 
+> On 07.10.20 12:39, Christoph Hellwig wrote:
+> > On Wed, Oct 07, 2020 at 11:34:17AM +0200, Christian Borntraeger wrote:
+> >>
+> >> On 19.05.20 16:22, Stefan Haberland wrote:
+> >>> The IBM partition parser requires device type specific information only
+> >>> available to the DASD driver to correctly register partitions. The
+> >>> current approach of using ioctl_by_bdev with a fake user space pointer
+> >>> is discouraged.
+> >>>
+> >>> Fix this by replacing IOCTL calls with direct in-kernel function calls.
+> >>>
+> >>> Suggested-by: Christoph Hellwig <hch@lst.de>
+> >>> Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+> >>> Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+> >>> Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+> >>
+> >> FWIW, this broken the ibm-partition code for virtio-blk, when CONFIG_DASD=m.
+> > 
+> > What are the symptoms?
+> 
+> During boot I normally have
 
-Yeah, merging it would indeed be a mess. At long term, though, it could 
-be easier to maintain.
+> [    0.930231] virtio_blk virtio1: [vda] 5409180 4096-byte logical blocks (22.2 GB/20.6 GiB)
+> [    0.930233] vda: detected capacity change from 0 to 22156001280
+> [    0.932806]  vda:VOL1/  0X3333: vda1 vda2 vda3
+> 
+> With this change, the last line is no longer there (if CONFIG_DASD=m) and this also 
+> reflects itself in /proc/partitions. The partitions are no longer detected.
 
-> I think you already fixed up the entries that had problems being parsed
-> in the past, if not, we can resolve those as well.
+Can you try this patch?
 
-Yes. The series start with fixes. I suspect several of them
-(if not all) were already merged, but if anything is missing, I can fix 
-at the upcoming rebased series.
-
-Thanks,
-Mauro
+diff --git a/block/partitions/ibm.c b/block/partitions/ibm.c
+index d6e18df9c53c6d..d91cee558ce67a 100644
+--- a/block/partitions/ibm.c
++++ b/block/partitions/ibm.c
+@@ -305,8 +305,6 @@ int ibm_partition(struct parsed_partitions *state)
+ 	if (!disk->fops->getgeo)
+ 		goto out_exit;
+ 	fn = symbol_get(dasd_biodasdinfo);
+-	if (!fn)
+-		goto out_exit;
+ 	blocksize = bdev_logical_block_size(bdev);
+ 	if (blocksize <= 0)
+ 		goto out_symbol;
+@@ -326,7 +324,7 @@ int ibm_partition(struct parsed_partitions *state)
+ 	geo->start = get_start_sect(bdev);
+ 	if (disk->fops->getgeo(bdev, geo))
+ 		goto out_freeall;
+-	if (fn(disk, info)) {
++	if (!fn || fn(disk, info)) {
+ 		kfree(info);
+ 		info = NULL;
+ 	}
