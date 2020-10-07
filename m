@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B4F285CAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A513E285CB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgJGKSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728013AbgJGKSA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:18:00 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F194FC0613D2;
-        Wed,  7 Oct 2020 03:17:59 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k10so1494313wru.6;
-        Wed, 07 Oct 2020 03:17:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PrZHgoHwx+8u1/cy9dkjn6c9rWW6kI8dskt+mlUcuL4=;
-        b=YAyNSKmrlZECEsQsYfztmczdbHiXVB5bsPiFmxOFIAET6TjdLpos+HyIAD4Kv2cRe8
-         IWVu0sRjgw1Js4O0XN/Vq0FUIEkmWomBagBwjpNtm2UU/sCNyGdsQfVv4H5+Gq+/ZnsL
-         oyS6P20zqcuK8B0XUgB4rv9/1BLgV18WC8KbzUSd4gdomsM4SGJ2JyC31B9N8Ye4Gbvd
-         0tqf5FwqTYqVeGQchpY/FdITDu4FZxEeIgxGRqLc/9qPMpIUi4Yng7mv4Zjb73cQrFGD
-         3b0Bcd/SGDCuDII31KeENjDHLHwxHp1rlULWnhzJvbVRJfifaX0iv0By9uTg+aNF1jMo
-         YNyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PrZHgoHwx+8u1/cy9dkjn6c9rWW6kI8dskt+mlUcuL4=;
-        b=QwmOuf9GdD3g5aHKalneWnAvmH8xEylGJldrwNaD9vCWpyrqSQD59HmRUZjKfPAigq
-         1UNXxAVKZdHUFINNBoEUFEgYjMNnVHSZAFGY7DiN4+ZDzgDCAMCVC0wStyZ5Rep5UD+P
-         v1074mhpryK95uVOeHYivjYhk5iLRxQYeh8J1IG1scYmZwVsRtFawybVBbYFakGFBtbr
-         OTEaAgp6CLRC+CQsO+8oe7UjJWb7t0njPLIxzgaseT2QabBkcXZg9kuI3QhFxWg/WRAT
-         0+YWz2rbx58fpU3trF9uXBCQVdJmWlUkCnNZHnSUeZEcHzL6xmomdKrcWMPnj60c5Uy4
-         eokA==
-X-Gm-Message-State: AOAM532O1ugc06wKUMHpMt2cmPEQ5D48VcMD5DiR+l5J0EAVjC4lJgxR
-        0CdeVSGlOF+1loW1YDVFDaPFTTByrcU4Rdpj
-X-Google-Smtp-Source: ABdhPJxQJLHjvhwq4UaVCUsIgyqBcpYW8JqyymbOZ+t6Ge87O3Ej71NY2tzRxuf6sYSJePvKpM4cjg==
-X-Received: by 2002:adf:f508:: with SMTP id q8mr2546894wro.233.1602065878650;
-        Wed, 07 Oct 2020 03:17:58 -0700 (PDT)
-Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id u12sm2249168wrt.81.2020.10.07.03.17.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 03:17:58 -0700 (PDT)
-From:   Aleksandr Nogikh <a.nogikh@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, johannes@sipsolutions.net
-Cc:     edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nogikh@google.com
-Subject: [PATCH 2/2] mac80211: add KCOV remote annotations to incoming frame processing
-Date:   Wed,  7 Oct 2020 10:17:26 +0000
-Message-Id: <20201007101726.3149375-3-a.nogikh@gmail.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-In-Reply-To: <20201007101726.3149375-1-a.nogikh@gmail.com>
-References: <20201007101726.3149375-1-a.nogikh@gmail.com>
+        id S1727945AbgJGKTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:19:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:41398 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727297AbgJGKTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:19:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4407D11B3;
+        Wed,  7 Oct 2020 03:19:39 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 61C433F71F;
+        Wed,  7 Oct 2020 03:19:37 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 11:19:34 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Dave Martin via Libc-alpha <libc-alpha@sourceware.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC PATCH 0/4] x86: Improve Minimum Alternate Stack Size
+Message-ID: <20201007101933.GF6642@arm.com>
+References: <20200929205746.6763-1-chang.seok.bae@intel.com>
+ <20201005134534.GT6642@arm.com>
+ <CAMe9rOpZm43aDG3UJeaioU32zSYdTxQ=ZyZuSS4u0zjbs9RoKw@mail.gmail.com>
+ <20201006092532.GU6642@arm.com>
+ <CAMe9rOq_nKa6xjHju3kVZephTiO+jEW3PqxgAhU9+RdLTo-jgg@mail.gmail.com>
+ <20201006152553.GY6642@arm.com>
+ <7663eff0-6c94-f6bf-f3e2-93ede50e75ed@intel.com>
+ <20201006170020.GB6642@arm.com>
+ <87362rp65v.fsf@oldenburg2.str.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87362rp65v.fsf@oldenburg2.str.redhat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Nogikh <nogikh@google.com>
+On Tue, Oct 06, 2020 at 08:21:00PM +0200, Florian Weimer wrote:
+> * Dave Martin via Libc-alpha:
+> 
+> > On Tue, Oct 06, 2020 at 08:33:47AM -0700, Dave Hansen wrote:
+> >> On 10/6/20 8:25 AM, Dave Martin wrote:
+> >> > Or are people reporting real stack overruns on x86 today?
+> >> 
+> >> We have real overruns.  We have ~2800 bytes of XSAVE (regisiter) state
+> >> mostly from AVX-512, and a 2048 byte MINSIGSTKSZ.
+> >
+> > Right.  Out of interest, do you believe that's a direct consequence of
+> > the larger kernel-generated signal frame, or does the expansion of
+> > userspace stack frames play a role too?
+> 
+> I must say that I do not quite understand this question.
+> 
+> 32 64-*byte* registers simply need 2048 bytes of storage space worst
+> case, there is really no way around that.
 
-Add KCOV remote annotations to ieee80211_iface_work and
-ieee80211_tasklet_handler. This will enable coverage-guided fuzzing of
-mac80211 code that processes incoming 802.11 frames.
+If the architecture grows more or bigger registers, and if those
+registers are used in general-purpose code, then all stack frames will
+tend to grow, not just the signal frame.
 
-Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
----
- net/mac80211/iface.c | 2 ++
- net/mac80211/main.c  | 2 ++
- 2 files changed, 4 insertions(+)
+So a stack overflow might be caused by the larger signal frame by
+itself; or it might be caused by the growth of the stack of 20 function
+frames created by someone's signal handler.
 
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 240862a74a0f..482d2ae46e71 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1377,6 +1377,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 	while ((skb = skb_dequeue(&sdata->skb_queue))) {
- 		struct ieee80211_mgmt *mgmt = (void *)skb->data;
- 
-+		kcov_remote_start_common(skb_get_kcov_handle(skb));
- 		if (ieee80211_is_action(mgmt->frame_control) &&
- 		    mgmt->u.action.category == WLAN_CATEGORY_BACK) {
- 			int len = skb->len;
-@@ -1486,6 +1487,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 		}
- 
- 		kfree_skb(skb);
-+		kcov_remote_stop();
- 	}
- 
- 	/* then other type-dependent work */
-diff --git a/net/mac80211/main.c b/net/mac80211/main.c
-index 523380aed92e..d7eebafc14e0 100644
---- a/net/mac80211/main.c
-+++ b/net/mac80211/main.c
-@@ -227,6 +227,7 @@ static void ieee80211_tasklet_handler(unsigned long data)
- 
- 	while ((skb = skb_dequeue(&local->skb_queue)) ||
- 	       (skb = skb_dequeue(&local->skb_queue_unreliable))) {
-+		kcov_remote_start_common(skb_get_kcov_handle(skb));
- 		switch (skb->pkt_type) {
- 		case IEEE80211_RX_MSG:
- 			/* Clear skb->pkt_type in order to not confuse kernel
-@@ -244,6 +245,7 @@ static void ieee80211_tasklet_handler(unsigned long data)
- 			dev_kfree_skb(skb);
- 			break;
- 		}
-+		kcov_remote_stop();
- 	}
- }
- 
--- 
-2.28.0.806.g8561365e88-goog
+In the latter case, this is just a "normal" stack overflow, and nothing
+really to do with signals or SIGSTKSZ.  Rebuilding with different
+compiler flags could also grow the stack usage and cause just the same
+problem.
 
+I also strongly suspect that people often don't think about signal
+nesting when allocating signal stacks.  So, there might be a pre-
+existing potential overflow that just becomes more likely when the
+signal frame grows.  That's not really SIGSTKSZ's fault.
+
+
+Of course, AVX-512 might never be used in general-purpose code.  On
+AArch64, SVE can be used in general-purpose code, but it's too early to
+say what its prevalence will be in signal handlers.  Probably low.
+
+
+> > In practice software just assumes SIGSTKSZ and then ignores the problem
+> > until / unless an actual stack overflow is seen.
+> >
+> > There's probably a lot of software out there whose stack is
+> > theoretically too small even without AVX-512 etc. in the mix, especially
+> > when considering the possibility of nested signals...
+> 
+> That is certainly true.  We have seen problems with ntpd, which
+> requested a 16 KiB stack, at a time when there were various deductions
+> from the stack size, and since the glibc dynamic loader also uses XSAVE,
+> ntpd exceeded the remaining stack space.  But in this case, we just
+> fudged the stack size computation in pthread_create and made it less
+> likely that the dynamic loader was activated, which largely worked
+> around this particular problem.  For MINSIGSTKSZ, we just don't have
+> this option because it's simply too small in the first place.
+> 
+> I don't immediately recall a bug due to SIGSTKSZ being too small.  The
+> test cases I wrote for this were all artificial, to raise awareness of
+> this issue (applications treating these as recommended values, rather
+> than minimum value to avoid immediately sigaltstack/phtread_create
+> failures, same issue with PTHREAD_STACK_MIN).
+
+Ack, I think if SIGSTKSZ was too small significantly often, there would
+be more awareness of the issue.
+
+Cheers
+---Dave
