@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997FE28612D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423F128612E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgJGOYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728614AbgJGOYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:24:23 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD98C061755;
-        Wed,  7 Oct 2020 07:24:21 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id c5so2417897ilr.9;
-        Wed, 07 Oct 2020 07:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JSj/UM2360e5ZtD9XOs4mgGC/BNRZvHQoqg5vEMD19s=;
-        b=QFpH12dD6BSc3LZwsboImJ1dX8xS7doPSg0RBtp6MYfyDWfgW/KMT3E3FztgFw0XgZ
-         siMEl32tRufar+fqwJ6+imEMUQx2VGvYc+JYVMMV+6A9vXi3U96k/5JB1on1K4BG2ZGj
-         8h+RJp8X9WFCcNgHG0PwxUAP+LiEg4OgVNGdHQKuvr4n7kk9wrkGaBsrGtaaTcIWDlx6
-         F/uLpK95nN9uZl6a1/LItkvvd+QwkQ6fznzAhwuDMv2wpdcwxCnkGjrl53a+AKL2MurV
-         NCFLtSVvMedcbmJZRpuIsnpcCOnmSqjQeNiNBM/G116DcEvCkuCwTawby7EH6br+S51J
-         wCOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JSj/UM2360e5ZtD9XOs4mgGC/BNRZvHQoqg5vEMD19s=;
-        b=IWOII1dYj6P77epzXdic6GUUzjl4p1PRMCWEFfp6iQfBrWxqkKhUfMN41MqQMyX5U4
-         iTincZF9E1Gyi60QJnRhaPcESh9IQEehY+V6iaIZJiwFxPN6BplSQMD94hd79JEuQrf3
-         GMH/5lxky1niMAYTMVgp3+97/k0yxtw+4jwD21Lgri3Jeeb6Y7+Vn/RhCNgKqo3tboIM
-         dOpG4h7eQGUVqJ5yqaFuahdKvh4EAEy81FPwZSd1SqieZIiNjeaLAmZqsvfMf++RvaQG
-         Zcp6CM4qZLF+8JwamSNa7pDR8pxHO1rOyf+1FcvL2XcUTxR32tOLqVz9fyGN/GgFIXZk
-         wpMw==
-X-Gm-Message-State: AOAM531ewHWtmhmUuW3qrwCdsbv9IRtH/XiVZ9Jm4ALZezYq72rpF/UC
-        y11hOMLFQQmw4pLiDT3/BQM=
-X-Google-Smtp-Source: ABdhPJwWPdjgMKy0kWogBxnpVfTyUH5LCeUBSX3inRJC3MQQaMDTvOUQ405GSvknXrB2oV07DelT1w==
-X-Received: by 2002:a92:4891:: with SMTP id j17mr2733860ilg.65.1602080661196;
-        Wed, 07 Oct 2020 07:24:21 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:7c62:dd9d:b755:cfbd])
-        by smtp.gmail.com with ESMTPSA id f11sm950788ioj.27.2020.10.07.07.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 07:24:20 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mm-beacon-som: Add QSPI NOR flash support
-Date:   Wed,  7 Oct 2020 09:24:08 -0500
-Message-Id: <20201007142409.235234-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728628AbgJGOYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:24:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728053AbgJGOYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 10:24:45 -0400
+Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCA452076C;
+        Wed,  7 Oct 2020 14:24:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602080685;
+        bh=BzMiLG3o9KTsXHIs8zkROqkug2J5mhgSNQCw3AUVpTw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=uPlCvJQm/kBON6qQQV0enCmY3ZMzNjmt9tdsbGbjV+lF8qIPH+nc/1cvy3cRqsCH3
+         bjwpZHYn9+ZwuQL9FSEGUMN4KEuuhigAGI4JsYkOgpXz3wAp23n7ry9Hh3xY9Cazpt
+         jW74W47Yp9TTfCvYKipfEVCr/fOCreBbtEn+iA2M=
+Message-ID: <7de01ef110454f0fdcfc8422260c9e61424a255e.camel@kernel.org>
+Subject: Re: [PATCH v4 7/7] tracing: Change synthetic event string format to
+ limit printed length
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 07 Oct 2020 09:24:43 -0500
+In-Reply-To: <20201005181751.1338afbc@gandalf.local.home>
+References: <cover.1601848695.git.zanussi@kernel.org>
+         <b6bdb34e70d970e8026daa3503db6b8e5cdad524.1601848695.git.zanussi@kernel.org>
+         <20201005181751.1338afbc@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-imx8mm-beacon-som has a Quad-SPI NOR flash connected to the FlexSPI bus.
+Hi Steve,
 
-This patch enables the FlexSPI bus and configures it to work with the
-flash part.
+On Mon, 2020-10-05 at 18:17 -0400, Steven Rostedt wrote:
+> On Sun,  4 Oct 2020 17:14:09 -0500
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > From: Steven Rostedt <rostedt@goodmis.org>
+> > 
+> > Change the format for printing synthetic field strings to limit the
+> > length of the string printed even if it's not correctly terminated.
+> > 
+> > Description from Steve:
+> > 
+> > I also added this for a bit of paranoid, and probably should be a
+> > separate patch, just to make sure if the string isn't nul
+> > terminated,
+> > this will keep it from bleeding pass the end of the string.
+> 
+> Just FYI. In the future, for something like this, you should still
+> have
+> your own Signed-off-by, as you are sending it (and part of the commit
+> path). You could also add:
+> 
+> [ Need signed-off-by from Steven ]
+> 
+> Which I would have also added as well.
+> 
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+Yeah, will do that next time.  Thanks for the tip.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-index 397cf8b2f29b..b65059f715cd 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-@@ -75,6 +75,22 @@ ethphy0: ethernet-phy@0 {
- 	};
- };
- 
-+&flexspi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexspi>;
-+	status = "okay";
-+
-+	flash@0 {
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <80000000>;
-+		spi-tx-bus-width = <4>;
-+		spi-rx-bus-width = <4>;
-+	};
-+};
-+
- &i2c1 {
- 	clock-frequency = <400000>;
- 	pinctrl-names = "default";
-@@ -304,6 +320,17 @@ MX8MM_IOMUXC_I2C3_SDA_I2C3_SDA		0x400001c3
- 			>;
- 		};
- 
-+		pinctrl_flexspi: flexspigrp {
-+			fsl,pins = <
-+				MX8MM_IOMUXC_NAND_ALE_QSPI_A_SCLK               0x1c2
-+				MX8MM_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B            0x82
-+				MX8MM_IOMUXC_NAND_DATA00_QSPI_A_DATA0           0x82
-+				MX8MM_IOMUXC_NAND_DATA01_QSPI_A_DATA1           0x82
-+				MX8MM_IOMUXC_NAND_DATA02_QSPI_A_DATA2           0x82
-+				MX8MM_IOMUXC_NAND_DATA03_QSPI_A_DATA3           0x82
-+			>;
-+		};
-+
- 		pinctrl_pmic: pmicirqgrp {
- 			fsl,pins = <
- 				MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x141
--- 
-2.25.1
+Tom
+
+> Thanks!
+> 
+> -- Steve
+> 
+> 
+> > ---
+> >  kernel/trace/trace_events_synth.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/trace/trace_events_synth.c
+> > b/kernel/trace/trace_events_synth.c
+> > index 24bc6d61aa40..742ce5f62d6d 100644
+> > --- a/kernel/trace/trace_events_synth.c
+> > +++ b/kernel/trace/trace_events_synth.c
+> > @@ -234,7 +234,7 @@ static const char *synth_field_fmt(char *type)
+> >  	else if (strcmp(type, "gfp_t") == 0)
+> >  		fmt = "%x";
+> >  	else if (synth_field_is_string(type))
+> > -		fmt = "%s";
+> > +		fmt = "%.*s";
+> >  
+> >  	return fmt;
+> >  }
+> > @@ -303,11 +303,13 @@ static enum print_line_t
+> > print_synth_event(struct trace_iterator *iter,
+> >  				str_field = (char *)entry +
+> > data_offset;
+> >  
+> >  				trace_seq_printf(s, print_fmt, se-
+> > >fields[i]->name,
+> > +						 STR_VAR_LEN_MAX,
+> >  						 str_field,
+> >  						 i == se->n_fields - 1
+> > ? "" : " ");
+> >  				n_u64++;
+> >  			} else {
+> >  				trace_seq_printf(s, print_fmt, se-
+> > >fields[i]->name,
+> > +						 STR_VAR_LEN_MAX,
+> >  						 (char *)&entry-
+> > >fields[n_u64],
+> >  						 i == se->n_fields - 1
+> > ? "" : " ");
+> >  				n_u64 += STR_VAR_LEN_MAX / sizeof(u64);
+> 
+> 
 
