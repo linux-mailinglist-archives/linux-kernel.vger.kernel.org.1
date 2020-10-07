@@ -2,138 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09302859CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EB82859D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgJGHqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJGHqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:46:45 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2932720870;
-        Wed,  7 Oct 2020 07:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602056804;
-        bh=R4+hRjeXx44BI8Hcdv5NdWTepbPaIEsQ9jUrvEd5YUk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=x3m4w3PfO9rY8rRGo1rQ1CjNzTrKpKQ2aeHGJ12WZoiDbP4hB6FBpIqezhvDckLa8
-         xmevP6p3xYTJjV16vCqm/G0s4vpHrdN3ZNNck4WfOqL2u5cY5Dx3YehHss9WItbnI3
-         ffUes45WIg6s14zBmdKxvmCiQ4DSzR/ESnm0GgRg=
-Received: by mail-ed1-f54.google.com with SMTP id b12so1110929edz.11;
-        Wed, 07 Oct 2020 00:46:44 -0700 (PDT)
-X-Gm-Message-State: AOAM531s7OBuSS+VDNBAfpccWPr+kSLaFuQQHNZv3daIPO7gOEw3Srb2
-        sj87vQhcgJPT/6NL2Rshb40n6/sY8i3Y4Cn7PAc=
-X-Google-Smtp-Source: ABdhPJwNzl1urhb9nVWyMFf0v62ujPzA20R0+9EZ7zY78dXLqzBp3vrmcCnYB4Kd9+I9bzs0Q6IFpFOhmgYHVbhC46o=
-X-Received: by 2002:a50:e78f:: with SMTP id b15mr2224622edn.104.1602056802570;
- Wed, 07 Oct 2020 00:46:42 -0700 (PDT)
+        id S1727784AbgJGHsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGHsa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 03:48:30 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1D4C061755;
+        Wed,  7 Oct 2020 00:48:30 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l17so1109349edq.12;
+        Wed, 07 Oct 2020 00:48:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aIxS3a1/Usr8Ax4oAxdfAOqWyGV3Kir87fjE4KL3SWA=;
+        b=Zkp2OT1dBxSRUm4UBunol1MkXZDcFD/RX1FhRudN2vPdQItuQfLLBD3IMuvchLOMGo
+         2l3/52w502E1A9Vumv8M3LN2i/KKNZKr9OFE/7GUmTIW3iU7/MCyGd2/1x9X/BhT4QqT
+         bhkaqv5wjJIYoxKxZt1b9KCCcbf+Q0s0hIlWSClE3lzP2+pDq15tkVXZv4agKtxnA2b+
+         F4q6R2X7yWm+3XPDnoKFp1lMjcoOwdYbLiFvkFzrga9MwWiOjjcRTCd8+nYbDLu1IGia
+         yIPZbwRBcdrcONxBt9ekMT0Q7X3NJnFTCo77i8W6IQ/Bg9l/85Di3yFpNJZbmrT8XGCn
+         sgZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aIxS3a1/Usr8Ax4oAxdfAOqWyGV3Kir87fjE4KL3SWA=;
+        b=Ljo3/a/+jyhGOok6Lj6PRkctxPCJUVR97Gl84H1SZDOywveAPFhAgRJtmF1ExX3MLR
+         AAPS4IqwfkcSyWqYkmJteNmZethl1VBI2T0CVx1XOIeOu6zHZSJCfAywIX3wP31XMQE7
+         9m+/y77QFp8lnAGOEKrv+9XAxO2XBkFzNfpkoYpr3U3x6Qni0Mvo3wwyO4D51YJxN3Pe
+         vYIgqBFg4YYRv22xsa6oRtDVWahmmGKuYh0sh58fZmods5WWsnzMo03j7/T/ILgx89sA
+         Axwr42mwXD9TBS5VVlc1WQ6KTrmQ/6Iop6cvZGuiaWw7KVok2ZUwmSNGH7a5kGxF4scz
+         91kg==
+X-Gm-Message-State: AOAM531YZ58Rws49P2aCNOtr78O/Fz7T5FBLMlBEtaehJxWLILgJj+D6
+        j9MeU/wSMv3DV7AaeK/iD3wOqEWBZxn6Iu7FQmA=
+X-Google-Smtp-Source: ABdhPJwsp4gWugt5zYoY/WqXwmjYqS76upRymp0LRLz2XkAXOwb1wEAWa9UTuA6na/2PbKPQ0dVTqSmOh4Y6FDI5ZkY=
+X-Received: by 2002:a50:b063:: with SMTP id i90mr2229989edd.187.1602056909027;
+ Wed, 07 Oct 2020 00:48:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200924192455.2484005-1-j.neuschaefer@gmx.net> <20200925050818.2512375-1-j.neuschaefer@gmx.net>
-In-Reply-To: <20200925050818.2512375-1-j.neuschaefer@gmx.net>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 7 Oct 2020 09:46:30 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfRh4vyJ21ACM3Bf5+HtWZUy+anV47VBAmtitfLuAeUjw@mail.gmail.com>
-Message-ID: <CAJKOXPfRh4vyJ21ACM3Bf5+HtWZUy+anV47VBAmtitfLuAeUjw@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] ARM: dts: imx50-kobo-aura: Add Netronix embedded controller
-To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20201003075514.32935-1-haifeng.zhao@intel.com>
+ <20201003075514.32935-4-haifeng.zhao@intel.com> <20201004191329.GA27962@wunner.de>
+In-Reply-To: <20201004191329.GA27962@wunner.de>
+From:   Ethan Zhao <xerces.zhao@gmail.com>
+Date:   Wed, 7 Oct 2020 15:48:17 +0800
+Message-ID: <CAKF3qh1coHqCHqpa_f8Mh4Ere+_xE2qACoNSyo2wYiOboYiNjQ@mail.gmail.com>
+Subject: Re: [PATCH v7 3/5] PCI: pciehp: check and wait port status out of DPC
+ before handling DLLSC and PDC
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raj, Ashok" <ashok.raj@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 07:10, Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.n=
-et> wrote:
->
-> Enable the Netronix EC on the Kobo Aura ebook reader.
->
-> Several features are still missing:
->  - Frontlight/backlight. The vendor kernel drives the frontlight LED
->    using the PWM output of the EC and an additional boost pin that
->    increases the brightness.
->  - Battery monitoring
->  - Interrupts for RTC alarm and low-battery events
->
-> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> ---
->
-> v3:
-> - Remove interrupt-controller property from embedded-controller node
-> - subnodes of embedded-controller node in to the main node
->
-> v2:
-> - https://lore.kernel.org/lkml/20200905144503.1067124-3-j.neuschaefer@gmx=
-.net/
-> - Fix pwm-cells property (should be 2, not 1)
-> ---
->  arch/arm/boot/dts/imx50-kobo-aura.dts | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/imx50-kobo-aura.dts b/arch/arm/boot/dts/im=
-x50-kobo-aura.dts
-> index a0eaf869b9135..2d1a59091a37c 100644
-> --- a/arch/arm/boot/dts/imx50-kobo-aura.dts
-> +++ b/arch/arm/boot/dts/imx50-kobo-aura.dts
-> @@ -6,6 +6,7 @@
->  /dts-v1/;
->  #include "imx50.dtsi"
->  #include <dt-bindings/input/input.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
->
->  / {
->         model =3D "Kobo Aura (N514)";
-> @@ -135,10 +136,24 @@ &i2c3 {
->         pinctrl-0 =3D <&pinctrl_i2c3>;
->         status =3D "okay";
->
-> -       /* TODO: embedded controller at 0x43 */
-> +       embedded-controller@43 {
-> +               pinctrl-names =3D "default";
-> +               pinctrl-0 =3D <&pinctrl_ec>;
-> +               compatible =3D "netronix,ntxec";
-> +               reg =3D <0x43>;
-> +               system-power-controller;
-> +               interrupts-extended =3D <&gpio4 11 IRQ_TYPE_EDGE_FALLING>=
-;
-> +               #pwm-cells =3D <2>;
-> +       };
->  };
->
->  &iomuxc {
-> +       pinctrl_ec: ec {
+Lukas,
 
-This should fail on dtschema check - pinctrl groups should end with "grp".
+On Mon, Oct 5, 2020 at 3:13 AM Lukas Wunner <lukas@wunner.de> wrote:
+>
+> On Sat, Oct 03, 2020 at 03:55:12AM -0400, Ethan Zhao wrote:
+> > When root port has DPC capability and it is enabled, then triggered by
+> > errors, DPC DLLSC and PDC etc interrupts will be sent to DPC driver, pciehp
+> > drivers almost at the same time.
+>
+> Do the DLLSC and PDC events occur as a result of handling the error
+> or do they occur independently?
+They could happen independently if links were recovered then the card
+was removed.
+They could happen as a result of handling the errors the same time.
 
-Best regards,
-Krzysztof
+So don't assume DLLSC and PDC all occur at the same time.
+
+>
+> If the latter, I don't see how we can tell whether the card in the
+> slot is still the same.
+If PDC happens, the card in the slot might not be the same.  so
+hot-removal /hot -plugin handling follows the PDC event.
+>
+> If the former, holding the hotplug slot's reset_lock and doing something
+> along the lines of pciehp_reset_slot() (or calling it directly) might
+> solve the race.
+
+DPC reset is done by hardware, only AER calls pciehp_reset_slot() as recovery
+handling initiated by software.
+
+Thanks,
+Ethan
+>
+> Thanks,
+>
+> Lukas
