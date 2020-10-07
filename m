@@ -2,106 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E0E285B90
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0271285B95
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgJGJIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:08:17 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:34408 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgJGJIR (ORCPT
+        id S1726899AbgJGJI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:08:56 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56168 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgJGJI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:08:17 -0400
-Received: by mail-il1-f205.google.com with SMTP id f89so1062116ill.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 02:08:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=f5og6DbWxpYcd90/DEz6IZXDliRgWnLuDlkXoFdfP2M=;
-        b=Y7WikopV3dHEpFfKtNiis6aauNkgocLrYarvtq6gZ6JHiZK6xZEneE5Dh8xifFpqr7
-         7ZU6yRqnmidvDK5XFclZbJVsMXcKxJrihj6HLb4+wBHxR14JIadHiSXb/Hg3agytMrAE
-         Dp5HE2uaDNyP13SQ/4Q9MQfJZ4H+iEKGd6XY1cP0DxtXeleRcUJqL22PQFLXDK9KEd8Q
-         hQujZGCLrfsUPLULkY60yCznfk31Y82AUM+x6pn2OGxkdU/rEdLqDpVvRQyOpJBc2VZJ
-         OJAayUXcOt4fS1VNKldEcwd1JHY2BKups8UxrPORLtpZUuPYi/gzT9Rnk0lehF6Lo3KD
-         8L4Q==
-X-Gm-Message-State: AOAM5335tccPZK2Kp3rCbGWvWBw5AkO5GGkhKlfYEyDeX/wZ5OaSNUC6
-        gOUvkgti91suex8d3XPTrduKIU4ggPsjlF8becLcZR1ExEUL
-X-Google-Smtp-Source: ABdhPJxVWDIGP/C0Y4y7Biv0A0CkHohIyEyidw8GxXqMDYEs2AG3BkRhVdRE75tgAKjvclnxgB3wCFfIeZlMRsMrsbq2Haq2Nokm
+        Wed, 7 Oct 2020 05:08:56 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09798meo128250;
+        Wed, 7 Oct 2020 04:08:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602061728;
+        bh=Yq8eK6r2Xypqm1GMf8LGZkAc+AgJ4YBZZ9RXWFTos5c=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=w3Af0OQx/1B34zi13Ytd+YW+fZ4X0hPvQIrfeRRHt+tT5Ia6eCgYzalIh+wXXHmLs
+         dzhaq8edZAJXREPITlSHmEEqTyxaHZGW0KyMt7zxdlIvcbmvgfhVhp8Ns5qbnDfCJi
+         U3FV5Ud5eqdile2h33VRsJfd24c25Ubo6VDJGfEE=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09798mlj087707
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 04:08:48 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 04:08:48 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 04:08:48 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09798jMh049524;
+        Wed, 7 Oct 2020 04:08:45 -0500
+Subject: Re: [PATCH 09/18] dt-bindings: dma: ti: Add document for K3 BCDMA
+To:     Rob Herring <robh@kernel.org>
+CC:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
+        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-10-peter.ujfalusi@ti.com>
+ <20201006192909.GA2679155@bogus>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <bc054ef7-dcd7-dde2-13f8-4900a33b1377@ti.com>
+Date:   Wed, 7 Oct 2020 12:09:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:6b06:: with SMTP id g6mr1958787ilc.194.1602061695845;
- Wed, 07 Oct 2020 02:08:15 -0700 (PDT)
-Date:   Wed, 07 Oct 2020 02:08:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004a0d5e05b1110e86@google.com>
-Subject: WARNING in ieee80211_free_ack_frame
-From:   syzbot <syzbot+a063bbf0b15737362592@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201006192909.GA2679155@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=121fa53f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
-dashboard link: https://syzkaller.appspot.com/bug?extid=a063bbf0b15737362592
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a063bbf0b15737362592@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-Have pending ack frames!
-WARNING: CPU: 0 PID: 8957 at net/mac80211/main.c:1396 ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1396
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8957 Comm: kworker/u4:8 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:ieee80211_free_ack_frame+0x48/0x50 net/mac80211/main.c:1396
-Code: e8 5d 43 b8 f9 48 89 ef e8 b5 dc a8 fe 31 c0 5b 5d c3 e8 4b 43 b8 f9 48 c7 c7 00 c0 5e 89 c6 05 66 b5 96 03 01 e8 3a 80 88 f9 <0f> 0b eb d2 0f 1f 40 00 41 57 41 56 41 55 49 89 d5 41 54 49 89 f4
-RSP: 0018:ffffc900075d79c8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8880527e0480 RSI: ffffffff815f5a55 RDI: fffff52000ebaf2b
-RBP: ffff8880a1746c00 R08: 0000000000000001 R09: ffff8880ae420f8b
-R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffffffff87bdfb90 R14: 0000000000000000 R15: 0000000000000000
- idr_for_each+0x113/0x220 lib/idr.c:208
- ieee80211_free_hw+0x9b/0x2a0 net/mac80211/main.c:1412
- mac80211_hwsim_del_radio drivers/net/wireless/mac80211_hwsim.c:3285 [inline]
- hwsim_exit_net+0x5bc/0xc90 drivers/net/wireless/mac80211_hwsim.c:4037
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:186
- cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 06/10/2020 22.29, Rob Herring wrote:
+> On Wed, Sep 30, 2020 at 12:14:03PM +0300, Peter Ujfalusi wrote:
+>> New binding document for
+>> Texas Instruments K3 Block Copy DMA (BCDMA).
+>>
+>> BCDMA is introduced as part of AM64.
+>>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+...
+
+> 
+>> +  ti,sci:
+>> +    description: phandle to TI-SCI compatible System controller node
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  ti,sci-dev-id:
+>> +    description: TI-SCI device id of BCDMA
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> 
+> We have a common definition for these.
+
+Yes, in arm/keystone/ti,k3-sci-common.yaml, but I could not get to use
+that as reference.
+
+I can not list it under the topmost allOf and drop the ti,sci and
+ti,sci-dev-id like this:
+
+allOf:
+  - $ref: /schemas/dma/dma-controller.yaml#
+  - $ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
+
+It results:
+  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+  DTEX    Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dts
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+  DTC     Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml
+Documentation/devicetree/bindings/dma/ti/k3-bcdma.example.dt.yaml:
+dma-controller@485c0100: 'ti,sci', 'ti,sci-dev-id' do not match any of
+the regexes: 'pinctrl-[0-9]+'
+        From schema: Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+
+If I remove the "additionalProperties: false" from the schema file, then
+it compiles fine.
+
+> 
+>> +
+>> +  ti,asel:
+>> +    description: ASEL value for non slave channels
+>> +    allOf:
+> 
+> You no longer need 'allOf' here.
+
+OK, I changed it in all instances.
+
+> 
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+>> +  ti,sci-rm-range-bchan:
+>> +    description: |
+>> +      Array of BCDMA block-copy channel resource subtypes for resource
+>> +      allocation for this host
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    minItems: 1
+>> +    # Should be enough
+>> +    maxItems: 255
+> 
+> Are there constraints for the individual elements?
+
+In practice the subtype ID is 6bits number.
+Should I add limits to individual elements?
+
+>> +
+>> +  ti,sci-rm-range-tchan:
+>> +    description: |
+>> +      Array of BCDMA split tx channel resource subtypes for resource allocation
+>> +      for this host
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    minItems: 1
+>> +    # Should be enough
+>> +    maxItems: 255
+>> +
+>> +  ti,sci-rm-range-rchan:
+>> +    description: |
+>> +      Array of BCDMA split rx channel resource subtypes for resource allocation
+>> +      for this host
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    minItems: 1
+>> +    # Should be enough
+>> +    maxItems: 255
+>> +
+>> +required:
+>> +  - compatible
+>> +  - "#address-cells"
+>> +  - "#size-cells"
+>> +  - "#dma-cells"
+>> +  - reg
+>> +  - reg-names
+>> +  - msi-parent
+>> +  - ti,sci
+>> +  - ti,sci-dev-id
+>> +  - ti,sci-rm-range-bchan
+>> +  - ti,sci-rm-range-tchan
+>> +  - ti,sci-rm-range-rchan
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |+
+>> +    cbass_main {
+>> +        #address-cells = <2>;
+>> +        #size-cells = <2>;
+>> +
+>> +        main_dmss {
+>> +            compatible = "simple-mfd";
+> 
+> IMO, if it is memory-mapped, then you should be using 'simple-bus'.
+
+We had the same discussion when I introduced the k3-udma binding and we
+have concluded on the simple-mfd as DMSS is not a bus, but contains
+different peripherals.
+
+> 
+>> +            #address-cells = <2>;
+>> +            #size-cells = <2>;
+>> +            dma-ranges;
+>> +            ranges;
+>> +
+>> +            ti,sci-dev-id = <25>;
+>> +
+>> +            main_bcdma: dma-controller@485c0100 {
+>> +                compatible = "ti,am64-dmss-bcdma";
+>> +                #address-cells = <2>;
+>> +                #size-cells = <2>;
+>> +
+>> +                reg = <0x0 0x485c0100 0x0 0x100>,
+>> +                      <0x0 0x4c000000 0x0 0x20000>,
+>> +                      <0x0 0x4a820000 0x0 0x20000>,
+>> +                      <0x0 0x4aa40000 0x0 0x20000>,
+>> +                      <0x0 0x4bc00000 0x0 0x100000>;
+>> +                reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
+>> +                msi-parent = <&inta_main_dmss>;
+>> +                #dma-cells = <3>;
+>> +
+>> +                ti,sci = <&dmsc>;
+>> +                ti,sci-dev-id = <26>;
+>> +
+>> +                ti,sci-rm-range-bchan = <0x20>; /* BLOCK_COPY_CHAN */
+>> +                ti,sci-rm-range-rchan = <0x21>; /* SPLIT_TR_RX_CHAN */
+>> +                ti,sci-rm-range-tchan = <0x22>; /* SPLIT_TR_TX_CHAN */
+>> +            };
+>> +        };
+>> +    };
+>> -- 
+>> Peter
+>>
+>> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+>> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>>
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
