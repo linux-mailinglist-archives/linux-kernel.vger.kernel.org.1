@@ -2,97 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ACF285568
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B818E285571
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 02:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgJGAYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 20:24:12 -0400
-Received: from mga12.intel.com ([192.55.52.136]:55216 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgJGAYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:24:12 -0400
-IronPort-SDR: CHD6U3cPDX8wG8uYttm4VanHDDB8phXR/ijV9867je9IctJWYxmfXHFMuc4LNywoQWPp6LZZ4C
- cAYyPVKp7+TA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="144151835"
-X-IronPort-AV: E=Sophos;i="5.77,344,1596524400"; 
-   d="scan'208";a="144151835"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 17:24:11 -0700
-IronPort-SDR: bOAvkYbslB+MgYLitLBi35IwGiJ1F8dCfaMJWlBxeya4sAlaRL1IPSPxpAZE8m3BibUWzh7XvM
- Dxb8wSzdSYEQ==
-X-IronPort-AV: E=Sophos;i="5.77,344,1596524400"; 
-   d="scan'208";a="342595610"
-Received: from thijsmet-mobl.ger.corp.intel.com (HELO localhost) ([10.249.34.36])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 17:24:05 -0700
-Date:   Wed, 7 Oct 2020 03:23:57 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20201007002357.GB139112@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
- <20201006025703.GG15803@linux.intel.com>
- <20201006213927.GA117517@linux.intel.com>
+        id S1726785AbgJGA3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 20:29:52 -0400
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:57882 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725972AbgJGA3w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 20:29:52 -0400
+Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0970RgfQ022078;
+        Tue, 6 Oct 2020 20:29:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=Zpz3yPUOdecC5MUWU7DGhhm96ACcS70HWBMQd2DtWNg=;
+ b=P/r13U8o9qfjlHGg1uYNyQ+u/IiDptSAfJXMN6IYcL4oAMMvu8Cj0/P0MQhJO/SZOu5c
+ zklEZnhrk9HEJzwrfn64Fnqypzr4PEOFB8TAO7sNSAT7YaVMz335dDyjW9kAt99+Vi7D
+ 4xziIHGs6KDBQyhUaVubdND9ND5yd32unMha9wTC9dsNqFouDNaoWmDow32WQtyk28/0
+ zcuBIdrjR5DISuJi6cnynNHFYyR/stUK9YQwqPKes111UbZtwv9dKgXKG8LKkLwzSDrh
+ UjS5vx7iJH0TT1V2lTC6eJE0zdnmqdHSsHcxgx3E9tv7pK3PeCNm9GgRSu9Q2tAcdHXH Ww== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 33xmmjb5bw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 06 Oct 2020 20:29:50 -0400
+Received: from pps.filterd (m0133268.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0970RUpx148532;
+        Tue, 6 Oct 2020 20:29:49 -0400
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+        by mx0a-00154901.pphosted.com with ESMTP id 340uuknt1a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Oct 2020 20:29:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SDFjOfGdoBe7kqwb8borVYWHmkaA8tZyjacO3vSRvg5NLOqBUonCB6O4WextWzVlGgiRca9oLzD7TlBi1Q6vjzSdVq2Q0PknG1/asgWDG2vYCsGdJ7Ka8iVwBSGa1JseLQkp65O2+n4ka1ritpXZxTtHAazpww5iVX5GPknZmCeM6FsD7jSORqhw1wStZvN05iQkhFFkRZREwoq750Qn+wAWlroGZwAUk2y1NSLZPMLApHcC9SyQB8pboSHSZzPI0AfpdoH7Z2Mgml3KeYFvPTOjCKGQGaLgw+xEvb7X1B+37jcUcHoU2d6yO5asaB7EoI1Msq1GbuAIVj7yiPFlvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zpz3yPUOdecC5MUWU7DGhhm96ACcS70HWBMQd2DtWNg=;
+ b=Za0YScjtyxF/eHZstEeITwhc/j9fqmXSkxJZMTAMAUNi4KK7RefTn5JDsKDTjcWAzDaXadgItjQnNcqwQAZkEVIgbTzs4hvRkpvRse0TMrLTEwsX4tQZ8NYhm7wWmU4v2uCeY7fDOIGG/jF3wpcwxCT9IuOiXhmT8dtN6BlVOe1Zj5aJSCCR7vxggyYD5C28j6jwmhyZxtUYQvo0kTzRLwuwqE3YLZSlTDLfCfhyYxfZPPjegFoq4C1z48Urar7AKis/q2XG/W3+3HY5fY1uaEQ3x05mWyQIQKifI/Uaunkgre3DVAZ0XVfBiz3uethgd/mB6vO+fsCVbzET/B7o0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
+ s=selector1-Dell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zpz3yPUOdecC5MUWU7DGhhm96ACcS70HWBMQd2DtWNg=;
+ b=nzLMDpJIZdcmmnyfvm4G6JO2njz/mNWxLMxoFiUazIgpUNO2AJ16wSK9jXJ9YyQtVds8EKtsGVoZFiRMURRHetPXGvdqCschF87vNSvMhTRRLUlSdAp8ZCivfgV3jlYAC8Cqx1FVEcm9Qk1FsDVVLImEypZPsiqmYK6KWuLEKts=
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
+ by DM6PR19MB2779.namprd19.prod.outlook.com (2603:10b6:5:144::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Wed, 7 Oct
+ 2020 00:29:48 +0000
+Received: from DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a4b8:d5c9:29da:39b2]) by DM6PR19MB2636.namprd19.prod.outlook.com
+ ([fe80::a4b8:d5c9:29da:39b2%4]) with mapi id 15.20.3455.021; Wed, 7 Oct 2020
+ 00:29:48 +0000
+From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
+To:     "Brown, Aaron F" <aaron.f.brown@intel.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     "Yuan, Perry" <Perry.Yuan@dell.com>,
+        "Shen, Yijun" <Yijun.Shen@dell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH 2/3] e1000e: Add Dell's Comet Lake
+ systems into s0ix heuristics
+Thread-Topic: [Intel-wired-lan] [PATCH 2/3] e1000e: Add Dell's Comet Lake
+ systems into s0ix heuristics
+Thread-Index: AQHWlVGDdCzkdRP8E0eWGGD4/IQBRamLVPMAgAACDcA=
+Date:   Wed, 7 Oct 2020 00:29:47 +0000
+Message-ID: <DM6PR19MB263685129F30B4D7213398A9FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+References: <20200928044024.7595-1-mario.limonciello@dell.com>
+ <20200928044024.7595-3-mario.limonciello@dell.com>
+ <DM6PR11MB2890F9ACE2ACF01E52A1ADBDBC0A0@DM6PR11MB2890.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB2890F9ACE2ACF01E52A1ADBDBC0A0@DM6PR11MB2890.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-10-07T00:29:41.3594513Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=f6f3ed80-bfc9-4ff5-bce1-108640737d02;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [76.251.167.31]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3dda3fd5-3903-4a74-e2b0-08d86a5818e6
+x-ms-traffictypediagnostic: DM6PR19MB2779:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR19MB2779198D3AFAF715B823B4E6FA0A0@DM6PR19MB2779.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:3276;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: F+s65LBSnQKwhh6xsDQo/vyAruSFV3iTqePugAOFxRbWJ+Tjd2e7MzNCe52ulHY7tzv9AkGtEfdtKj9yUeYFxxhFD0qi0TqIbk15knPb6+OgLtSFV1MkwldWH1KH4LX3ENawEMlP6FyI/0g4gshmjv+/WT8QOkcCdnFJSjc8VCF5invd1KMNVkENEF9QPQdzXHeXApzEn1E58ogMYfhe8I/vRy6ojBUN+00HSLH1o+RrDOK+0Pthg0K35AZJnku3pUYFbcuHjJsJxIXukRKCKoQOdeLVfBwSpYTzqGHnTFNEMKlFBlYg5dDYAyXKd9juuncNw8zVU2a/hLDFpg4CY4p5tBxstOQKcy4+6gWpLax6sYT6gJeoLImzQAjVMFjM54hr2/P8+oEdg9cEIciAx/ibltq37ypiFKBgH+2OYlp+6glqARPnJwPSM5ME/iCt2p2f2Knx5GzKoij5imV2Yw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(366004)(346002)(136003)(376002)(64756008)(66556008)(66476007)(76116006)(66446008)(66946007)(33656002)(71200400001)(110136005)(6506007)(26005)(7696005)(54906003)(52536014)(53546011)(55016002)(186003)(5660300002)(8676002)(9686003)(86362001)(316002)(83380400001)(786003)(8936002)(966005)(83080400001)(4326008)(478600001)(2906002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 1UE+uQABI7stHHW4IY4ohq63zeKSzDZLz1Lo1JKTTbBc2lkmTqmy2bOaZC+Io2uvqnXOuoQnKgrEX5cSj/RfD8ljV5h0ywT70PAKtiR5x2Bl7tbTIq7flqnTzCCPXcDJZ5oRmwizjfZee+CG/pCOq54/HIadmiwgUXGdrVVcqDhA8na/t5U193P3yaloNxbyyQGr0CNeFF2SjXjj8d00fkpD2XIyNZ0uenPDS6EjUPK07fswATM/EFl0P3ACRoGybAvZyx1n2Mg01r2m51bUZ4wZUeEbyik57aoK5vD0hRATLDeGuLx2e31sC6moSsQEcLiw1wDkESHeTAIfiBhQdQv7/kyRqEjBIXaI7R5ZSlX0K1zl1S/rjhG9IRaa86k+VuutuW18ZfXJObhAstlAtQ75eKP2trucch29owUBkx4MWza4tBgRWMfian3PIAnjz9eGJTmto9UNQQeuCjCv6k0zxSZLaalDZXnF0H7oSYxqMX17UboGXLKqZHIeyBJPAYPcF/yKcFi5Oms4IFH7QGZvHxnRqT36FJp4uceIcGnsNodivjG0E0f+Ac0SfMfzfD6v6JaSIPb75UkAw/6ydEWNf7vhIlZCD4+s6LoiFeVD2CMNQVg775QDyMFdvWiryeVBLqa9OZNmh0PtFOLkJw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006213927.GA117517@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3dda3fd5-3903-4a74-e2b0-08d86a5818e6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2020 00:29:47.9496
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Bbz4YTgwI/YlSQDayDl8EJ8cH2o4u36biVJaoH4OGA9VSgIayG2YfZkNlxUaFRiEj5A5aXWZF8SpxA7I8lMvu0bUsFq+jSJPjPyxRf+62/c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB2779
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-06_15:2020-10-06,2020-10-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 clxscore=1011 spamscore=0 lowpriorityscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2010070000
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 12:39:27AM +0300, Jarkko Sakkinen wrote:
-> On Mon, Oct 05, 2020 at 07:57:05PM -0700, Sean Christopherson wrote:
-> > On Sat, Oct 03, 2020 at 07:50:56AM +0300, Jarkko Sakkinen wrote:
-> > > +	__u16 exception_vector;
-> > > +	__u16 exception_error_code;
-> > > +	__u64 exception_addr;
-> > > +	__u8  reserved[24];
-> > 
-> > I also think it's a waste of space to bother with multiple reserved fields.
-> > 24 bytes isn't so much that it guarantees we'll never run into problems in
-> > the future.  But I care far less about this than I do about exit_reason.
-> 
-> For me the real problem is that there has not been "no brainer" basis
-> for any size, so a one cache line worth of data is just something that
-> makes sense, because would neither make much sense to have less.
-> 
-> I'll throw an argument to have it a bit bigger amount of reserved space
-> for future use.
-> 
-> First, there is always some amount of unknown unknowns when it comes to
-> run-time structures, given the evolution of microarchitectures. So yes,
-> some more "state" might be needed in the future.
-> 
-> Secondly, this is a bigger problem for the vDSO than it is for ioctl's
-> because we can have only one. With ioctl's, in the absolute worst case,
-> we can have a second version of the same ioctl.
-> 
-> At least 256 bytes would be probably a good number, if we want to
-> increase it. The reserved space zero validation that I implemented to
-> this version probably does not add much to the overhead anyway.
-> 
-> I'm not sure why care about one struct field more than making sure that
-> the run-time structure can stand time.
 
-So what I could do is to grow the reserved area and based on my response
-explain this in the changelog message but I need to make sure that I got
-the reasoning right behind the size.
+> > From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> > Mario Limonciello
+> > Sent: Sunday, September 27, 2020 9:40 PM
+> > To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; intel-wired-
+> > lan@lists.osuosl.org
+> > Cc: Perry.Yuan@dell.com; Yijun.Shen@dell.com; linux-kernel@vger.kernel.=
+org;
+> > Mario Limonciello <mario.limonciello@dell.com>
+> > Subject: [Intel-wired-lan] [PATCH 2/3] e1000e: Add Dell's Comet Lake sy=
+stems
+> > into s0ix heuristics
+> >
+> > Dell's Comet Lake Latitude and Precision systems containing i219LM are
+> > properly configured and should use the s0ix flows.
+> >
+> > Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
+> > ---
+> >  drivers/net/ethernet/intel/Kconfig        |  1 +
+> >  drivers/net/ethernet/intel/e1000e/param.c | 80 ++++++++++++++++++++++-
+> >  2 files changed, 80 insertions(+), 1 deletion(-)
+>=20
+> Is there anyone who touched this hardware with this patch willing to prov=
+ide a
+> Tested-by:?
+> I am happy to do regression / sanity checks against other e1000e based
+> systems, but do not have access to these devices.
 
-/Jarkko
+Alex (Yijun) who is CC'ed did test them and I expect can add a Tested-By af=
+ter the
+China holidays are over.
+
+>=20
+> >
+> > diff --git a/drivers/net/ethernet/intel/Kconfig
+> > b/drivers/net/ethernet/intel/Kconfig
+> > index 5aa86318ed3e..280af47d74d2 100644
+> > --- a/drivers/net/ethernet/intel/Kconfig
+> > +++ b/drivers/net/ethernet/intel/Kconfig
+> > @@ -58,6 +58,7 @@ config E1000
+> >  config E1000E
+> >  	tristate "Intel(R) PRO/1000 PCI-Express Gigabit Ethernet support"
+> >  	depends on PCI && (!SPARC32 || BROKEN)
+> > +	depends on DMI
+> >  	select CRC32
+> >  	imply PTP_1588_CLOCK
+> >  	help
+> > diff --git a/drivers/net/ethernet/intel/e1000e/param.c
+> > b/drivers/net/ethernet/intel/e1000e/param.c
+> > index e66b222c824b..58e6718c4f75 100644
+> > --- a/drivers/net/ethernet/intel/e1000e/param.c
+> > +++ b/drivers/net/ethernet/intel/e1000e/param.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  /* Copyright(c) 1999 - 2018 Intel Corporation. */
+> >
+> > +#include <linux/dmi.h>
+> >  #include <linux/netdevice.h>
+> >  #include <linux/module.h>
+> >  #include <linux/pci.h>
+> > @@ -201,6 +202,80 @@ static const struct e1000e_me_supported
+> > me_supported[] =3D {
+> >  	{0}
+> >  };
+> >
+> > +static const struct dmi_system_id s0ix_supported_systems[] =3D {
+> > +	{
+> > +		/* Dell Latitude 5310 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "099F"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Latitude 5410 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09A0"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Latitude 5410 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C9"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Latitude 5510 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09A1"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Precision 3550 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09A2"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Latitude 5411 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C0"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Latitude 5511 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C1"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Precision 3551 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C2"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Precision 7550 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C3"),
+> > +		},
+> > +	},
+> > +	{
+> > +		/* Dell Precision 7750 */
+> > +		.matches =3D {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C4"),
+> > +		},
+> > +	},
+> > +	{ }
+> > +};
+> > +
+> >  static bool e1000e_check_me(u16 device_id)
+> >  {
+> >  	struct e1000e_me_supported *id;
+> > @@ -599,8 +674,11 @@ void e1000e_check_options(struct e1000_adapter
+> > *adapter)
+> >  		}
+> >
+> >  		if (enabled =3D=3D S0IX_HEURISTICS) {
+> > +			/* check for allowlist of systems */
+> > +			if (dmi_check_system(s0ix_supported_systems))
+> > +				enabled =3D S0IX_FORCE_ON;
+> >  			/* default to off for ME configurations */
+> > -			if (e1000e_check_me(hw->adapter->pdev->device))
+> > +			else if (e1000e_check_me(hw->adapter->pdev-
+> > >device))
+> >  				enabled =3D S0IX_FORCE_OFF;
+> >  		}
+> >
+> > --
+> > 2.25.1
+> >
+> > _______________________________________________
+> > Intel-wired-lan mailing list
+> > Intel-wired-lan@osuosl.org
+> > https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
