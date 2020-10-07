@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D4B2856C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 04:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC8B2856CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 04:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgJGCvR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 6 Oct 2020 22:51:17 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3973 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727071AbgJGCvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 22:51:16 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id AC98011ED6A3023FB1B1;
-        Wed,  7 Oct 2020 10:51:15 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 7 Oct 2020 10:51:15 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Wed, 7 Oct 2020 10:51:15 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: mmap: Fix general protection fault in
- unlink_file_vma()
-Thread-Topic: [PATCH] mm: mmap: Fix general protection fault in
- unlink_file_vma()
-Thread-Index: AdacVJ5fEj92vdCBS6uaM8UKNp7qsg==
-Date:   Wed, 7 Oct 2020 02:51:15 +0000
-Message-ID: <d06c6c0652e64ae79a55951e94df3610@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.177.16]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727087AbgJGCyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 22:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgJGCyt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 6 Oct 2020 22:54:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AF2C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 19:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Kfn1EjIw61OOA6atfqtDsUyZD8OZlfnAF20PJC2dm14=; b=qehWR4LYimU3auLImYdY7dy5xT
+        qJQ7N/N3RyKgXPBBGJYKenvFHzkRm0aP5DoMQ6DGuzp7kbj88LGDpZobZVYOq+KTpLb3Ws0H0gEJJ
+        IrwCgHI6Lz1Iu127MZ7tZ9ovdDvIP4MEjIO206vqEC4Aa1haNrPBcr40VsRTJDbSdg0zvbQbXYIUk
+        N9qUoTB3J73qcHt8uu/vJKNlQl8dXXsI5VB7doSJ8ZxVzCjsip4lJe9+mlP7fROSXTEZomxi5C4Ux
+        SeYr8zbaP9gWNhZyg8dwsv7anSol1N7Ff9jeXVxsSjv5Bwex6spTxEHGQ2Am/A9i/FvSHfHCmpa1a
+        WgQks5Rw==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPzbI-0004UB-3H; Wed, 07 Oct 2020 02:54:44 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     kernel test robot <lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] fs: dax: fix build error on ARC
+Message-ID: <6b5c6090-331d-7485-da4a-45e9c7f13be1@infradead.org>
+Date:   Tue, 6 Oct 2020 19:54:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Friendly ping.
-> The syzbot reported the below general protection fault:
->
-> general protection fault, probably for non-canonical address
-> 0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: maybe wild-memory-access in range [0x00777770000001d8-0x00777770000001df]
-> CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 5.9.0-rc3-syzkaller #0
->
-> It's because the ->mmap() callback can change vma->vm_file and fput the original file. But the commit d70cec898324 ("mm: mmap: merge vma after
-> call_mmap() if possible") failed to catch this case and always fput() the original file, hence add an extra fput().
->
-> [ Thanks Hillf for pointing this extra fput() out. ]
->
-> @@ -1815,7 +1815,11 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  			merge = vma_merge(mm, prev, vma->vm_start, vma->vm_end, vma->vm_flags,
->  				NULL, vma->vm_file, vma->vm_pgoff, NULL, NULL_VM_UFFD_CTX);
->  			if (merge) {
-> -				fput(file);
-> +				/* ->mmap() can change vma->vm_file and fput the original file. So
-> +				 * fput the vma->vm_file here or we would add an extra fput for file
-> +				 * and cause general protection fault ultimately.
-> +				 */
-> +				fput(vma->vm_file);
->  				vm_area_free(vma);
->  				vma = merge;
->  				/* Update vm_flags and possible addr to pick up the change. We don't
-> --
-> 2.19.1
->
+From: Randy Dunlap <rdunlap@infradead.org>
+
+fs/dax.c uses copy_user_page() but ARC does not provide that interface,
+resulting in a build error.
+
+Provide copy_user_page() in <asm/page.h> (beside copy_page()) and
+add <asm/page.h> to fs/dax.c to fix the build error.
+
+../fs/dax.c: In function 'copy_cow_page_dax':
+../fs/dax.c:702:2: error: implicit declaration of function 'copy_user_page'; did you mean 'copy_to_user_page'? [-Werror=implicit-function-declaration]
+
+Fixes: cccbce671582 ("filesystem-dax: convert to dax_direct_access()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+---
+Vineet, This patch fixes the build error but is it correct for ARC?
+
+ arch/arc/include/asm/page.h |    1 +
+ fs/dax.c                    |    1 +
+ 2 files changed, 2 insertions(+)
+
+--- lnx-59-rc7.orig/fs/dax.c
++++ lnx-59-rc7/fs/dax.c
+@@ -25,6 +25,7 @@
+ #include <linux/sizes.h>
+ #include <linux/mmu_notifier.h>
+ #include <linux/iomap.h>
++#include <asm/page.h>
+ #include <asm/pgalloc.h>
+ 
+ #define CREATE_TRACE_POINTS
+--- lnx-59-rc7.orig/arch/arc/include/asm/page.h
++++ lnx-59-rc7/arch/arc/include/asm/page.h
+@@ -10,6 +10,7 @@
+ #ifndef __ASSEMBLY__
+ 
+ #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
++#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+ #define copy_page(to, from)		memcpy((to), (from), PAGE_SIZE)
+ 
+ struct vm_area_struct;
+
