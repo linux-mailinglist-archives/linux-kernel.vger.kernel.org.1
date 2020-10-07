@@ -2,198 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FBB2868E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602A82868E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 22:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgJGUP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 16:15:59 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:41394 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgJGUP6 (ORCPT
+        id S1728332AbgJGURe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 16:17:34 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:33639 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728307AbgJGURd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 16:15:58 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097K9k4Z155286;
-        Wed, 7 Oct 2020 20:15:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=sEc3+JOY4GEUw7wZjFGU94rrw05aoMQl93fhhWlYcUM=;
- b=gmE2LdZ8E+KF4wjs2C0rOpLG6fnheNQFNiI5jZsAgeMD20tsilNtf+YluYt5qq/uALMI
- +hk9rjugah/1hM1Hjxlr/7pNRCkpKXS4EcgOw8ZH1ZeNcG3lPp8GXOqnwtGgGttnjdIk
- 8tkD7VyFl2EqivTy3StxYDikwthvfNjAjGvMbVBEGFxv7E44K0SAiBVmin2r9y4lp+Fm
- GEW/1V1JdfDAdmGxLr+o5Mb0BkbTbR9Cnaafsuf95itcPPqRm8WHm0Lbv2Y2aRcZwxc5
- NQ0HZarITCobHJ6IkCkyVwQeAp5pTucJq9OEM7ujHIHO0D4wls+zDlJCeRif1yEg22L+ LQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33xhxn41kf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 07 Oct 2020 20:15:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097KBCu4119070;
-        Wed, 7 Oct 2020 20:15:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33yyjhnk1c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Oct 2020 20:15:31 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 097KFUlB031996;
-        Wed, 7 Oct 2020 20:15:30 GMT
-Received: from [10.65.129.34] (/10.65.129.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 13:15:29 -0700
-Subject: Re: [PATCH 2/2] sparc: Check VMA range in sparc_validate_prot()
-To:     Jann Horn <jannh@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20201007073932.865218-1-jannh@google.com>
- <20201007073932.865218-2-jannh@google.com>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-X-Pep-Version: 2.0
-Organization: Oracle Corp
-Message-ID: <230d612d-75e8-34e0-00d6-b0f7274e692c@oracle.com>
-Date:   Wed, 7 Oct 2020 14:15:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 7 Oct 2020 16:17:33 -0400
+Received: (qmail 471404 invoked by uid 1000); 7 Oct 2020 16:17:32 -0400
+Date:   Wed, 7 Oct 2020 16:17:32 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201007201732.GE468921@rowland.harvard.edu>
+References: <20201006141820.GA416765@rowland.harvard.edu>
+ <20201006165957.GA191572@google.com>
+ <20201006171524.GB423499@rowland.harvard.edu>
+ <20201006192536.GB191572@google.com>
+ <20201007010023.GA438733@rowland.harvard.edu>
+ <20201007160336.GA620323@google.com>
+ <20201007163838.GA457977@rowland.harvard.edu>
+ <20201007172847.GB620323@google.com>
+ <20201007192542.GA468921@rowland.harvard.edu>
+ <20201007194229.GC620323@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201007073932.865218-2-jannh@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070128
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010070128
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007194229.GC620323@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 1:39 AM, Jann Horn wrote:
-> sparc_validate_prot() is called from do_mprotect_pkey() as
-> arch_validate_prot(); it tries to ensure that an mprotect() call can't
-> enable ADI on incompatible VMAs.
-> The current implementation only checks that the VMA at the start addres=
-s
-> matches the rules for ADI mappings; instead, check all VMAs that will b=
-e
-> affected by mprotect().
->=20
-> (This hook is called before mprotect() makes sure that the specified ra=
-nge
-> is actually covered by VMAs, and mprotect() returns specific error code=
-s
-> when that's not the case. In order for mprotect() to still generate the=
+On Wed, Oct 07, 2020 at 12:42:29PM -0700, Matthias Kaehlcke wrote:
+> On Wed, Oct 07, 2020 at 03:25:42PM -0400, Alan Stern wrote:
+> > On Wed, Oct 07, 2020 at 10:28:47AM -0700, Matthias Kaehlcke wrote:
+> > > On Wed, Oct 07, 2020 at 12:38:38PM -0400, Alan Stern wrote:
+> > > > On Wed, Oct 07, 2020 at 09:03:36AM -0700, Matthias Kaehlcke wrote:
+> > > > > Ok, I wasn't sure if the hubs suspend asynchronously from each other. If they
+> > > > > do it should indeed not be a problem to have the "master" wait for its peers.
+> > > > 
+> > > > Well, order of suspending is selectable by the user.  It can be either 
+> > > > asynchronous or reverse order of device registration, which might pose a 
+> > > > problem.  We don't know in advance which of two peer hubs will be 
+> > > > registered first.  It might be necessary to introduce some additional 
+> > > > explicit synchronization.
+> > > 
+> > > I'm not sure we are understanding each other completely. I agree that
+> > > synchronization is needed to have the primary hub wait for its peers, that
+> > > was one of my initial concerns.
+> > > 
+> > > Lets use an example to clarify my secondary concern: a hub chip provides a
+> > > USB 3 and a USB 2 hub, lets say the USB 3 hub is the primary.
+> > > 
+> > > Here is some pseudo-code for the suspend function:
+> > > 
+> > > hub_suspend(hub)
+> > >   ...
+> > > 
+> > >   if (hub->primary) {
+> > >     device_pm_wait_for_dev(hub->peer)
+> > > 
+> > >     // check for connected devices and turn regulator off
+> > >   }
+> > > 
+> > >   ...
+> > > }
+> > > 
+> > > What I meant with 'asynchronous suspend' in this context:
+> > > 
+> > > Can hub_suspend() of the peer hub be executed (asynchronously) while the
+> > > primary is blocked on device_pm_wait_for_dev(),
+> > 
+> > Yes, that's exactly what would happen with async suspend.
+> > 
+> > >  or would the primary wait
+> > > forever if the peer hub isn't suspended yet?
+> > 
+> > That wouldn't happen.  device_pm_wait_for_dev is smart; it will return 
+> > immediately if neither device uses async suspend.  But in that case you 
+> > could end up removing power from the peer hub before it had suspended.
+> > 
+> > That's why I said you might need to add additional synchronization.  The 
+> > suspend routines for the two hubs could each check to see whether the 
+> > other device had suspended yet, and the last one would handle the power 
+> > regulator.  The additional synchronization is for the case where the two 
+> > checks end up being concurrent.
+> 
+> That was exactly my initial concern and one of the reasons I favor(ed) a
+> platform instead of a USB driver:
 
-> same error codes for mprotect(<unmapped_ptr>, <len>, ...|PROT_ADI), we =
-need
-> to *accept* cases where the range is not fully covered by VMAs.)
->=20
-> Cc: stable@vger.kernel.org
-> Fixes: 74a04967482f ("sparc64: Add support for ADI (Application Data In=
-tegrity)")
-> Signed-off-by: Jann Horn <jannh@google.com>
-> ---
-> compile-tested only, I don't have a Sparc ADI setup - might be nice if =
-some
-> Sparc person could test this?
->=20
->  arch/sparc/include/asm/mman.h | 50 +++++++++++++++++++++--------------=
+Clearly there's a tradeoff.
 
->  1 file changed, 30 insertions(+), 20 deletions(-)
+> > otherwise all hubs need to know their peers and check in suspend if they
+> > are the last hub standing, only then the power can be switched off.
+> 
+> To which you replied:
+> 
+> > you just need to make the "master" hub wait for its peer to suspend, which
+> > is easy to do.
+> 
+> However that apparently only works if async suspend is enabled, and we
+> can't rely on that.
 
+Yes, I had forgotten about the possibility of synchronous suspend.  My 
+mistake.
 
-Looks good to me.
+> With the peers checking on each other you lose effectively the notion
+> of a primary.
 
-Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+Well, you can still want to put the sysfs power-control attribute file 
+into just one of the hubs' directories, and that one would be considered 
+the primary.  But I agree, it's a weak notion.
 
+> Going back to the binding:
+> 
+>   &usb_1_dwc3 {
+>     hub_2_0: hub@1 {
+>       compatible = "usbbda,5411";
+>       reg = <1>;
+>     };
+> 
+>     hub_3_0: hub@2 {
+>       compatible = "usbbda,411";
+>       reg = <2>;
+>       vdd-supply = <&pp3300_hub>;
+>       companion-hubs = <&hub_2_0>;
+>     };
+>   };
+> 
+> How does 'hub_2_0' know that its peer is hub_3_0 and that it has a regulator
+> (and potentially other resources)?
 
->=20
-> diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mma=
-n.h
-> index e85222c76585..6dced75567c3 100644
-> --- a/arch/sparc/include/asm/mman.h
-> +++ b/arch/sparc/include/asm/mman.h
-> @@ -60,31 +60,41 @@ static inline int sparc_validate_prot(unsigned long=
- prot, unsigned long addr,
->  	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI=
-))
->  		return 0;
->  	if (prot & PROT_ADI) {
-> +		struct vm_area_struct *vma, *next;
-> +
->  		if (!adi_capable())
->  			return 0;
-> =20
-> -		if (addr) {
-> -			struct vm_area_struct *vma;
-> +		vma =3D find_vma(current->mm, addr);
-> +		/* if @addr is unmapped, let mprotect() deal with it */
-> +		if (!vma || vma->vm_start > addr)
-> +			return 1;
-> +		while (1) {
-> +			/* ADI can not be enabled on PFN
-> +			 * mapped pages
-> +			 */
-> +			if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
-> +				return 0;
-> =20
-> -			vma =3D find_vma(current->mm, addr);
-> -			if (vma) {
-> -				/* ADI can not be enabled on PFN
-> -				 * mapped pages
-> -				 */
-> -				if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
-> -					return 0;
-> +			/* Mergeable pages can become unmergeable
-> +			 * if ADI is enabled on them even if they
-> +			 * have identical data on them. This can be
-> +			 * because ADI enabled pages with identical
-> +			 * data may still not have identical ADI
-> +			 * tags on them. Disallow ADI on mergeable
-> +			 * pages.
-> +			 */
-> +			if (vma->vm_flags & VM_MERGEABLE)
-> +				return 0;
-> =20
-> -				/* Mergeable pages can become unmergeable
-> -				 * if ADI is enabled on them even if they
-> -				 * have identical data on them. This can be
-> -				 * because ADI enabled pages with identical
-> -				 * data may still not have identical ADI
-> -				 * tags on them. Disallow ADI on mergeable
-> -				 * pages.
-> -				 */
-> -				if (vma->vm_flags & VM_MERGEABLE)
-> -					return 0;
-> -			}
-> +			/* reached the end of the range without errors? */
-> +			if (addr+len <=3D vma->vm_end)
-> +				return 1;
-> +			next =3D vma->vm_next;
-> +			/* if a VMA hole follows, let mprotect() deal with it */
-> +			if (!next || next->vm_start !=3D vma->vm_end)
-> +				return 1;
-> +			vma =3D next;
->  		}
->  	}
->  	return 1;
->=20
+The peering relation goes both ways, so it should be included in the 
+hub_2_0 description too.  Given that, the driver could check hub_2_0's 
+peer's DT description for the appropriate resources.
 
+> All this mess can be avoided by having a single instance in control of the
+> resources which is guaranteed to suspend after the USB devices.
 
+Yes.  At the cost of registering, adding a driver for, and making users 
+aware of a fictitious platform device.
+
+Alan Stern
