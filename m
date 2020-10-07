@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCC2286842
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37DD28684B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 21:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgJGT0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 15:26:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726671AbgJGT0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 15:26:11 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FA492076C;
-        Wed,  7 Oct 2020 19:26:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602098770;
-        bh=ARBy9A0ue5dqKp5InVcHb1ElW6qKfvo+jYevu8+wq/U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hhvb+RWQ6CdkbJ5w0RajeI+9jps9z2eLNp+IAp5cf1HZtUwQU3SltMtME1qVb3cls
-         2mTPXr1+dGxa3833DrxJmXcqY6UtvMTxRygGp1olweQPVQBiMfN26qaJpn96SFe78k
-         sWPAONQenDab5v9q+zGC5kVoxOA5GPnXxwkoIYQ8=
-Date:   Wed, 7 Oct 2020 21:26:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        id S1727776AbgJGT3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 15:29:46 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:46931 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726129AbgJGT3q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 15:29:46 -0400
+Received: (qmail 469787 invoked by uid 1000); 7 Oct 2020 15:29:45 -0400
+Date:   Wed, 7 Oct 2020 15:29:45 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
-Message-ID: <20201007192655.GA104072@kroah.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
- <20201003143925.GB800720@kroah.com>
- <20201004143246.GA3561@linux.intel.com>
- <20201005094246.GB151835@kroah.com>
- <20201005124221.GA191854@linux.intel.com>
- <op.0r4p1bn7wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>
+Subject: Re: [PATCH] kcov, usb, vhost: specify contexts for remote coverage
+ sections
+Message-ID: <20201007192945.GB468921@rowland.harvard.edu>
+References: <8c71349c3cd9698b8edcfbfc9631c5dcc3b29a37.1602091732.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <op.0r4p1bn7wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+In-Reply-To: <8c71349c3cd9698b8edcfbfc9631c5dcc3b29a37.1602091732.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 01:09:01PM -0500, Haitao Huang wrote:
-> > > > There is a patch that adds "sgx/provision".
-> > > 
-> > > What number in this series?
-> > 
-> > It's 15/24.
-> > 
+On Wed, Oct 07, 2020 at 07:30:51PM +0200, Andrey Konovalov wrote:
+> Currently there's a KCOV remote coverage collection section in
+> __usb_hcd_giveback_urb(). Initially that section was added based on the
+> assumption that usb_hcd_giveback_urb() can only be called in interrupt
+> context as indicated by a comment before it.
 > 
-> Don't know if this is critical. I'd prefer to keep them as is. Directory
-> seems natural to me and makes sense to add more under the same dir in case
-> there are more to come.
+> As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
+> context, provided that the caller turned off the interrupts; USB/IP actually
+> does that. This can lead to a nested KCOV remote coverage collection
+> sections both trying to collect coverage in task context. This isn't
+> supported by KCOV, and leads to a WARNING.
+> 
+> The approach this patch takes is to annotate every call of kcov_remote_*()
+> callbacks with the context those callbacks are supposed to be executed in.
+> If the current context doesn't match the mask provided to a callback,
+> that callback is ignored. KCOV currently only supports collecting remote
+> coverage in two contexts: task and softirq.
+> 
+> As the result, the coverage from USB/IP related usb_hcd_giveback_urb() calls
+> won't be collected, but the WARNING is fixed.
+> 
+> A potential future improvement would be to support nested remote coverage
+> collection sections, but this patch doesn't address that.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
 
-Why is this so special that you need a subdirectory for a single driver
-with a mere 2 device nodes?  Do any other misc drivers have a new
-subdirectory in /dev/ for them?
+> --- a/drivers/usb/core/hcd.c
+> +++ b/drivers/usb/core/hcd.c
+> @@ -1646,9 +1646,9 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
+>  
+>  	/* pass ownership to the completion handler */
+>  	urb->status = status;
+> -	kcov_remote_start_usb((u64)urb->dev->bus->busnum);
+> +	kcov_remote_start_usb((u64)urb->dev->bus->busnum, KCOV_CONTEXT_SOFTIRQ);
+>  	urb->complete(urb);
+> -	kcov_remote_stop();
+> +	kcov_remote_stop(KCOV_CONTEXT_SOFTIRQ);
 
-thanks,
+This isn't right.  __usb_hcd_giveback_urb() can execute in pretty much
+any context; its constraint is that interrupts must be disabled.
 
-greg k-h
+Alan Stern
