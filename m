@@ -2,130 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469D52861A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AAA2861A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgJGO5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:57:54 -0400
-Received: from mail.efficios.com ([167.114.26.124]:57484 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728727AbgJGO5x (ORCPT
+        id S1728744AbgJGO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 10:58:12 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:59523 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728737AbgJGO6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:57:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id CF1C62A7D26;
-        Wed,  7 Oct 2020 10:57:52 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id O9AZFKOHq3-g; Wed,  7 Oct 2020 10:57:52 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 907BF2A7FA5;
-        Wed,  7 Oct 2020 10:57:52 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 907BF2A7FA5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1602082672;
-        bh=1Ktb8dVEjdCHzeKbUWH2JD+Y0IDfX3A/rL26vV5/0Ag=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=I27kyyO/RGK8dE2er29khZX9ggVc0M5cGtxto1/6T8w8xqkJp4WiuNE5z1LngdeG0
-         dnKLtQOUrty5B2yDgs8EIEylzl0lw2qLD7Ojjid6aSpDO1OdjREa+UcE1y9iJNhwpt
-         Tc18pbFJRG92Je2tSi7HD20qAf0PZuzF6XQu1vaCZ6VoqDpb92BTlSAsr+MIeWou3l
-         +P3VWWpz3kFWTlqt+ZTmxqxKJLbD2YRqRkDfX6C4OXuvG4M6z/l8xrnk+z83bFWZWw
-         AuxoqYl6O41rc2vCj2ArEpBxUYRTg/3+5JvZhjSLDxQX+Osvfee0h4/rWUrQIBBZRr
-         zsdp9StiUixPA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id N_SunlkMaROq; Wed,  7 Oct 2020 10:57:52 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 82DA82A7C1D;
-        Wed,  7 Oct 2020 10:57:52 -0400 (EDT)
-Date:   Wed, 7 Oct 2020 10:57:52 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-mm <linux-mm@kvack.org>
-Message-ID: <1929468067.11124.1602082672412.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201007142947.GG2628@hirez.programming.kicks-ass.net>
-References: <20200924172508.8724-1-mathieu.desnoyers@efficios.com> <20200924172508.8724-2-mathieu.desnoyers@efficios.com> <20201007142947.GG2628@hirez.programming.kicks-ass.net>
-Subject: Re: [RFC PATCH 1/3] sched: fix exit_mm vs membarrier (v3)
+        Wed, 7 Oct 2020 10:58:11 -0400
+Received: (qmail 456826 invoked by uid 1000); 7 Oct 2020 10:58:09 -0400
+Date:   Wed, 7 Oct 2020 10:58:09 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Ryan Chen <ryan_chen@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, bmc-sw@aspeedtech.com
+Subject: Re: [PATCH 2/3] usb: host: add uhci compatible support for
+ ast2600-uhci
+Message-ID: <20201007145809.GA456169@rowland.harvard.edu>
+References: <20200930040823.26065-1-ryan_chen@aspeedtech.com>
+ <20200930040823.26065-3-ryan_chen@aspeedtech.com>
+ <CACPK8Xc2Y1njgtrtjO1bdmkcQR7jDu+oaOBc3R+CWtn+UrEOhQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: sched: fix exit_mm vs membarrier (v3)
-Thread-Index: H5oSZrcmgKMm8xI6y1tQ8Xx6TofG7A==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACPK8Xc2Y1njgtrtjO1bdmkcQR7jDu+oaOBc3R+CWtn+UrEOhQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 7, 2020, at 10:29 AM, Peter Zijlstra peterz@infradead.org wrote:
-
-> On Thu, Sep 24, 2020 at 01:25:06PM -0400, Mathieu Desnoyers wrote:
->> diff --git a/kernel/exit.c b/kernel/exit.c
->> index 733e80f334e7..0767a2dbf245 100644
->> --- a/kernel/exit.c
->> +++ b/kernel/exit.c
->> @@ -475,7 +475,19 @@ static void exit_mm(void)
->>  	BUG_ON(mm != current->active_mm);
->>  	/* more a memory barrier than a real lock */
->>  	task_lock(current);
->> +	/*
->> +	 * When a thread stops operating on an address space, the loop
->> +	 * in membarrier_private_expedited() may not observe that
->> +	 * tsk->mm, and the loop in membarrier_global_expedited() may
->> +	 * not observe a MEMBARRIER_STATE_GLOBAL_EXPEDITED
->> +	 * rq->membarrier_state, so those would not issue an IPI.
->> +	 * Membarrier requires a memory barrier after accessing
->> +	 * user-space memory, before clearing tsk->mm or the
->> +	 * rq->membarrier_state.
->> +	 */
->> +	smp_mb__after_spinlock();
->>  	current->mm = NULL;
->> +	membarrier_update_current_mm(NULL);
->>  	mmap_read_unlock(mm);
->>  	enter_lazy_tlb(mm, current);
->>  	task_unlock(current);
+On Wed, Oct 07, 2020 at 11:25:04AM +0000, Joel Stanley wrote:
+> On Wed, 30 Sep 2020 at 04:08, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
+> >
+> > Add support for AST2600 SOC UHCI driver.
+> >
+> > Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
 > 
-> This site seems to be lacking in IRQ disabling. As proposed it will
-> explode on RT.
-
-Right, so irq off is needed for accessing this_rq()'s fields safely,
-correct ?
-
-I'll fold that fix in my patch for the next round, thanks!
-
-Mathieu
-
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
 > 
-> Something like so to match kthread_unuse_mm().
+> USB maintainers, can you please take this patch (2/3)? I will take the
+> others in this series through the aspeed tree.
 > 
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -486,11 +486,13 @@ static void exit_mm(void)
-> 	 * rq->membarrier_state.
-> 	 */
-> 	smp_mb__after_spinlock();
-> +	local_irq_disable()
-> 	current->mm = NULL;
-> 	membarrier_update_current_mm(NULL);
-> -	mmap_read_unlock(mm);
-> 	enter_lazy_tlb(mm, current);
-> +	local_irq_enable();
-> 	task_unlock(current);
-> +	mmap_read_unlock(mm);
-> 	mm_update_next_owner(mm);
-> 	mmput(mm);
->  	if (test_thread_flag(TIF_MEMDIE))
+> Cheers,
+> 
+> Joel
+> 
+> 
+> > ---
+> >  drivers/usb/host/uhci-platform.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/usb/host/uhci-platform.c b/drivers/usb/host/uhci-platform.c
+> > index 70dbd95c3f06..fa40fe125c2a 100644
+> > --- a/drivers/usb/host/uhci-platform.c
+> > +++ b/drivers/usb/host/uhci-platform.c
+> > @@ -113,7 +113,8 @@ static int uhci_hcd_platform_probe(struct platform_device *pdev)
+> >                                 num_ports);
+> >                 }
+> >                 if (of_device_is_compatible(np, "aspeed,ast2400-uhci") ||
+> > -                   of_device_is_compatible(np, "aspeed,ast2500-uhci")) {
+> > +                       of_device_is_compatible(np, "aspeed,ast2500-uhci") ||
+> > +                       of_device_is_compatible(np, "aspeed,ast2600-uhci")) {
+> >                         uhci->is_aspeed = 1;
+> >                         dev_info(&pdev->dev,
+> >                                  "Enabled Aspeed implementation workarounds\n");
+> > --
+> > 2.17.1
+> >
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+The indentation of the continuation lines isn't good, because the 
+continued parts are aligned with the lines in the conditional block.  
+They should be visually distinct.  Either align with the "of_device..." 
+at the start or indent by two extra tab stops.
+
+Once this is fixed, you can add:
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+
+Alan Stern
