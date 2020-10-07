@@ -2,148 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6033D2865E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFF82865EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgJGR2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728460AbgJGR2u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:28:50 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC3BC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 10:28:50 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u24so1814307pgi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 10:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xZ+v2OuQAePhXqVi/kdiZzONG4PhtaojmuzF5SZ8xdQ=;
-        b=jjVdZZJO2VKrU5vGwGaKENvwebjy9U4YrvQZuQh867KzqulQ5YAGG2aGsnvOJ7SNwL
-         67LhMH6thzslOn+c6LItKcOFZ+dBQk9LTKjj+fPA5sW9cednh50SxaSbstDyu+8uyh/e
-         jXLbDrUk/RYwNjhbeYGqQt4xxOvM7AzzXokt8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xZ+v2OuQAePhXqVi/kdiZzONG4PhtaojmuzF5SZ8xdQ=;
-        b=Ijsi3I+whDQ4c0oF5cW4LfDWOUMcDZ+pkTmpGb2LPu0JzSHeiVdE8+bZDs1GujS9rx
-         kuC1kpRTz+EtvSU00hebRCYZMrLa5OCYDlnXpfExZSiRcagpAVuSPofmZy4w6RXbgjjG
-         m/E2EezVHxturt9RySZrl2QQS4Pu2xnoIYbH1Gwk1dkh5fOJ8S4GHl2TvYCoJzlIh1n9
-         R2fI+RD/b5OLE+TMVGaJ1F7+NbM4SJ6xbHBtmWND/lvAO/IsWNalq4NY1DYOXE1ApjFx
-         fvanukTj/nKJB0m9YuaIvBG9muFEexKTKBC2LH1aiTU39Wpobcyz0raN05Q5Jzvlhar+
-         iurg==
-X-Gm-Message-State: AOAM532dbIySWd7NAgPnQJpRF/OZmJqKfagmH836DcHgWkp+UL7U9noO
-        eymAwaymYVnc3L2Xp8RVUyW+vw==
-X-Google-Smtp-Source: ABdhPJw9NREkTfYOdNETDhW2xqODkOGKkUImfKXew2xQ2izoRdSgSn+1QXOSornth1rL61DMyAkEJQ==
-X-Received: by 2002:a63:551d:: with SMTP id j29mr3965988pgb.144.1602091729994;
-        Wed, 07 Oct 2020 10:28:49 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id o62sm3991891pfb.172.2020.10.07.10.28.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 10:28:49 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 10:28:47 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201007172847.GB620323@google.com>
-References: <CAL_JsqLWmBCjrbs2D-d+9naJAKkNhDAbmRtqvCDY8jv=L_q-xA@mail.gmail.com>
- <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
- <20201006004510.GD4135817@google.com>
- <20201006141820.GA416765@rowland.harvard.edu>
- <20201006165957.GA191572@google.com>
- <20201006171524.GB423499@rowland.harvard.edu>
- <20201006192536.GB191572@google.com>
- <20201007010023.GA438733@rowland.harvard.edu>
- <20201007160336.GA620323@google.com>
- <20201007163838.GA457977@rowland.harvard.edu>
+        id S1728517AbgJGR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:28:55 -0400
+Received: from mga12.intel.com ([192.55.52.136]:7786 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728456AbgJGR2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:28:53 -0400
+IronPort-SDR: K0HIRN/KUmkODLSWpTxVne3OH/b885xBH1cORRpNKIkshKiihbSY9Phg4KQ5dCIh9fItQH9g2K
+ TSZXShCO5ETg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="144411819"
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="144411819"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:28:51 -0700
+IronPort-SDR: 0e/WL67OF1SS3EUzmvW2mir+firZR9ovDYD8JbaZS63+sZHvwi1Am/7iTu3v5+y1B01G4PiStF
+ BEp+pd2EnllQ==
+X-IronPort-AV: E=Sophos;i="5.77,347,1596524400"; 
+   d="scan'208";a="311835366"
+Received: from jdelcan-mobl.amr.corp.intel.com (HELO [10.254.64.135]) ([10.254.64.135])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 10:28:51 -0700
+Subject: Re: [PATCH v8 2/6] PCI/DPC: define a function to check and wait till
+ port finish DPC handling
+To:     Ethan Zhao <haifeng.zhao@intel.com>, bhelgaas@google.com,
+        oohall@gmail.com, ruscur@russell.cc, lukas@wunner.de,
+        andriy.shevchenko@linux.intel.com, stuart.w.hayes@gmail.com,
+        mr.nuke.me@gmail.com, mika.westerberg@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@linux.intel.com, xerces.zhao@gmail.com
+References: <20201007113158.48933-1-haifeng.zhao@intel.com>
+ <20201007113158.48933-3-haifeng.zhao@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
+Message-ID: <4bedeb35-942e-5ad3-9721-62495af1f09a@intel.com>
+Date:   Wed, 7 Oct 2020 10:28:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201007163838.GA457977@rowland.harvard.edu>
+In-Reply-To: <20201007113158.48933-3-haifeng.zhao@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 12:38:38PM -0400, Alan Stern wrote:
-> On Wed, Oct 07, 2020 at 09:03:36AM -0700, Matthias Kaehlcke wrote:
-> > On Tue, Oct 06, 2020 at 09:00:23PM -0400, Alan Stern wrote:
-> > > On Tue, Oct 06, 2020 at 12:25:36PM -0700, Matthias Kaehlcke wrote:
-> > > > On Tue, Oct 06, 2020 at 01:15:24PM -0400, Alan Stern wrote:
-> > > > > You don't need a platform device or a new driver to do this.  The code 
-> > > > > can go in the existing hub driver.
-> > > > 
-> > > > Maybe. IIUC currently USB drivers don't support/use suspend_late. Could that
-> > > > be added? It would simplify matters, otherwise all hubs need to know their
-> > > > peers and check in suspend if they are the last hub standing, only then the
-> > > > power can be switched off. It would be simpler if a single instance (e.g. the
-> > > > hub with the DT entries) is in control.
-> > > 
-> > > Adding suspend_late would be a little painful.  But you don't really 
-> > > need it; you just need to make the "master" hub wait for its peer to 
-> > > suspend, which is easy to do.
-> > 
-> > Ok, I wasn't sure if the hubs suspend asynchronously from each other. If they
-> > do it should indeed not be a problem to have the "master" wait for its peers.
-> 
-> Well, order of suspending is selectable by the user.  It can be either 
-> asynchronous or reverse order of device registration, which might pose a 
-> problem.  We don't know in advance which of two peer hubs will be 
-> registered first.  It might be necessary to introduce some additional 
-> explicit synchronization.
 
-I'm not sure we are understanding each other completely. I agree that
-synchronization is needed to have the primary hub wait for its peers, that
-was one of my initial concerns.
+On 10/7/20 4:31 AM, Ethan Zhao wrote:
+> Once root port DPC capability is enabled and triggered, at the beginning
+> of DPC is triggered, the DPC status bits are set by hardware and then
+> sends DPC/DLLSC/PDC interrupts to OS DPC and pciehp drivers, it will
+> take the port and software DPC interrupt handler 10ms to 50ms (test data
+> on ICS(Ice Lake SP platform, see
+> https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server)
+> & stable 5.9-rc6) to complete the DPC containment procedure
+This data is based on one particular architecture. So using this
+to create a timed loop in pci_wait_port_outdpc() looks incorrect.
 
-Lets use an example to clarify my secondary concern: a hub chip provides a
-USB 3 and a USB 2 hub, lets say the USB 3 hub is the primary.
+I still recommend looking for some locking model to fix this
+issue (may be atomic state flag or lock).
+> till the DPC status is cleared at the end of the DPC interrupt handler.
+>
+> We use this function to check if the root port is in DPC handling status
+> and wait till the hardware and software completed the procedure.
+>
+> Signed-off-by: Ethan Zhao <haifeng.zhao@intel.com>
+> Tested-by: Wen Jin <wen.jin@intel.com>
+> Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
+> ---
+> changes:
+>   v2：align ICS code name to public doc.
+>   v3: no change.
+>   v4: response to Christoph's (Christoph Hellwig <hch@infradead.org>)
+>       tip, move pci_wait_port_outdpc() to DPC driver and its declaration
+>       to pci.h.
+>   v5: fix building issue reported by lkp@intel.com with some config.
+>   v6: move from [1/5] to [2/5].
+>   v7: no change.
+>   v8: no change.
+>
+>   drivers/pci/pci.h      |  2 ++
+>   drivers/pci/pcie/dpc.c | 27 +++++++++++++++++++++++++++
+>   2 files changed, 29 insertions(+)
+>
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index fa12f7cbc1a0..455b32187abd 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -455,10 +455,12 @@ void pci_restore_dpc_state(struct pci_dev *dev);
+>   void pci_dpc_init(struct pci_dev *pdev);
+>   void dpc_process_error(struct pci_dev *pdev);
+>   pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
+> +bool pci_wait_port_outdpc(struct pci_dev *pdev);
+>   #else
+>   static inline void pci_save_dpc_state(struct pci_dev *dev) {}
+>   static inline void pci_restore_dpc_state(struct pci_dev *dev) {}
+>   static inline void pci_dpc_init(struct pci_dev *pdev) {}
+> +static inline bool pci_wait_port_outdpc(struct pci_dev *pdev) { return false; }
+>   #endif
+>   
+>   #ifdef CONFIG_PCI_ATS
+> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> index daa9a4153776..2e0e091ce923 100644
+> --- a/drivers/pci/pcie/dpc.c
+> +++ b/drivers/pci/pcie/dpc.c
+> @@ -71,6 +71,33 @@ void pci_restore_dpc_state(struct pci_dev *dev)
+>   	pci_write_config_word(dev, dev->dpc_cap + PCI_EXP_DPC_CTL, *cap);
+>   }
+>   
+> +bool pci_wait_port_outdpc(struct pci_dev *pdev)
+> +{
+> +	u16 cap = pdev->dpc_cap, status;
+> +	u16 loop = 0;
+> +
+> +	if (!cap) {
+> +		pci_WARN_ONCE(pdev, !cap, "No DPC capability initiated\n");
+> +		return false;
+> +	}
+> +	pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
+> +	pci_dbg(pdev, "DPC status %x, cap %x\n", status, cap);
+> +
+> +	while (status & PCI_EXP_DPC_STATUS_TRIGGER && loop < 100) {
+> +		msleep(10);
+> +		loop++;
+> +		pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
+> +	}
+> +
+> +	if (!(status & PCI_EXP_DPC_STATUS_TRIGGER)) {
+> +		pci_dbg(pdev, "Out of DPC %x, cost %d ms\n", status, loop*10);
+> +		return true;
+> +	}
+> +
+> +	pci_dbg(pdev, "Timeout to wait port out of DPC status\n");
+> +	return false;
+> +}
+> +
+>   static int dpc_wait_rp_inactive(struct pci_dev *pdev)
+>   {
+>   	unsigned long timeout = jiffies + HZ;
 
-Here is some pseudo-code for the suspend function:
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-hub_suspend(hub)
-  ...
-
-  if (hub->primary) {
-    device_pm_wait_for_dev(hub->peer)
-
-    // check for connected devices and turn regulator off
-  }
-
-  ...
-}
-
-What I meant with 'asynchronous suspend' in this context:
-
-Can hub_suspend() of the peer hub be executed (asynchronously) while the
-primary is blocked on device_pm_wait_for_dev(), or would the primary wait
-forever if the peer hub isn't suspended yet?
-
-> > > And hubs would need to know their peers in any case, because you have to
-> > > check if any devices attached to the peer have wakeup enabled.
-> > 
-> > My concern was about all hubs (including 'secondaries') having to know their
-> > peers and check on each other, in the scenario we are now talking about only
-> > the "master" hub needs to know and check on its peers, which is fine.
-> 
-> Not all hubs would need this.  Only ones marked in DT as having a power 
-> regulator.
-
-Sure, as long as the primary (with a power regulator) can wait for its peers
-to suspend without the risk of blocking forever (my doubt above).
