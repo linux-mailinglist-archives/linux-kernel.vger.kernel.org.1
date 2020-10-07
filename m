@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2F3285994
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B897285999
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 09:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbgJGHbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 03:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        id S1727739AbgJGHdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 03:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727629AbgJGHbr (ORCPT
+        with ESMTP id S1727647AbgJGHdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 03:31:47 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DFDC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:31:46 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a200so829742pfa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:31:46 -0700 (PDT)
+        Wed, 7 Oct 2020 03:33:20 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B79C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 00:33:19 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id h6so1159093lfj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 00:33:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=6hV7PJClGfgaN5TCcjKdtC8dZqi0TjTnFZSL7SHtRuk=;
-        b=xys4W4ypmtRSJhPuvzq7s7axuVnaIiwpBUAUfnpo3KP7OiUS7EPpweAu0+QNIy7gz/
-         m92F1Mns/2D+LivzbQ2pD7lHWvB/JlX+EF0I2p45tDKi+friRCqi0MIjWrVC+808yT3t
-         kHPVF5iCy9mdBMqHcbawN7bJVWaE7KaMxDxEiVMUXRxh1UVwYS+jInOLOPm5bOt19K02
-         nY5JJxDFJGHStYdVzRLX9mlwU/NY+QwLjVMxzdObGqnz2RgKHtBlffpiTHquToIFrAov
-         dedhuUoSNf6n6/Bip5VawgAr8tjh9ORsGVM3Ka3ZPHXZlYcnDOHcfI7ejuh9IaAq+3tA
-         pvqg==
+        d=wirenboard-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:message-id:to:cc:subject:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=H+yhAtKBkJAhd84Dg7hmzBchD0bnksTdEsvNNdIrfzU=;
+        b=r86zR5CSiSdiaQOjoa/A8EDooKjhNyFIVPPxIsH0NcfFkcCH2wGYXZvgMw4WNpUfjN
+         wp+WYl6jQ5qPOHnH+HO7tgxbr0PfbKGYJcBmUn4m4sDf3JU5OuSdypBT3U2P3uhj43nD
+         Wjv2GArTiOxtr0UjpGuyWCkDdsn+VHfaIUulqXlbXYooq29TR5Y7SHk5O2aX3GWKaPDO
+         fHDn8Kv0Ec2RFIdZ6T0qwpH/JzAD9qkzj5fjD2S6y++H9i9DRd5cPAGyv3aH4HPI2QT/
+         XOizhVEn8nlG4WF6EZ92FXpBOWnfncOXnUUMDYmQcs+U2tt9Z6r4bkP6ipbbFAU5gEjt
+         gw8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=6hV7PJClGfgaN5TCcjKdtC8dZqi0TjTnFZSL7SHtRuk=;
-        b=JVVPw6uJmp3tWHA8xIfAX2wzNNFCG+36f9ARpL/il/oPsKdJIFexlvGy/rVxmmfFge
-         YxTH4zD3m0zmBTZx8zvxERwvXvVHIHgMkAPbYAdPU95+1u2pU4a7kddDYtoWX6ntV6BO
-         alndc0fPqwsb1PVEp16S1BXq2/qJ2f1zSclg14MfTF42kRditjM+afmjE+VB5wIuaUwj
-         y9UGKw2ijEAm1LWdWPjek3tQGFvccymP1OH3ntZt8Zyxyh5En9mo8ikEuNoIvG+yxRpS
-         ZH99L7Dbv9f/GYY8ch+R171ax1YdhtUIixQCGdK7IBBKmYD718cWMYLeTT3M643K+ClM
-         gXPQ==
-X-Gm-Message-State: AOAM532xZGCeyurPjQ4dO5/0JPomSuNzS/rUq0uf+bZdS5l+Qgvq1LrA
-        f7KCwziAAAOwRrAzezDOwnzCqg==
-X-Google-Smtp-Source: ABdhPJzkvpBvMcshEG/PBntDPZnKQ0S/7L3SIzNxi8KvQ81B4ZFVi+qGVidyehgCG3ndaMOz6HyKpQ==
-X-Received: by 2002:a63:5663:: with SMTP id g35mr1917905pgm.163.1602055905370;
-        Wed, 07 Oct 2020 00:31:45 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id o17sm1224263pji.30.2020.10.07.00.31.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Oct 2020 00:31:44 -0700 (PDT)
-Message-ID: <fd826c8ec91cfc49a17eb107a2e81087dfcde3cb.camel@areca.com.tw>
-Subject: [PATCH v3 2/2] scsi: arcmsr: use round_up() instead of logical
- operation
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 07 Oct 2020 15:31:44 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
+        h=x-gm-message-state:date:from:message-id:to:cc:subject:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=H+yhAtKBkJAhd84Dg7hmzBchD0bnksTdEsvNNdIrfzU=;
+        b=KicJ9JYxfPkiOUdck7dOomvfk9fYw00/JXJDxEL1mwo3GWUK0tMODVg5+QLzMgFn+8
+         huobsIrOfwCc52leMdq/bKdu6XDGZpXbPpf99v96aZNtj+aAoHDh1kvv1jSL2/2sGrfx
+         ElQ3SFLx+m0Yjk2/cRcRy9IwnXAXVbM+4HZO/yj1juQTW6L5JkGHq1l0CNiQzJ4JB2UP
+         CiL1i2tyV8t6bMYWMMHcqP5gdIeG4Ayd1hZXB3mSfh682WJ6/95hL3ZBjS9/Ly1Umvx/
+         CKWqqipvy1Au0rmcBIq1GI308yy/YBwMSMW49dw8n8tPaOOwsLPfbJ2eh8r7QmQChE5x
+         W9Jg==
+X-Gm-Message-State: AOAM533+G8c6fx9diZMcIhVoR2mLC/IfO9iNJ5k8TYJGaYQdrck7oXmX
+        3sjKOz45hW6p8ZwfWfMeyiepSg==
+X-Google-Smtp-Source: ABdhPJyO4JVtlsxVmVera4axbDrjS/Qfw7ukoANOngtFtqjd/hzKbeyjxyppntyjZG4oAWKR1LpSqA==
+X-Received: by 2002:a19:68a:: with SMTP id 132mr494362lfg.429.1602055998298;
+        Wed, 07 Oct 2020 00:33:18 -0700 (PDT)
+Received: from [192.168.1.25] (128-70-41-239.broadband.corbina.ru. [128.70.41.239])
+        by smtp.gmail.com with ESMTPSA id o18sm200728lfl.282.2020.10.07.00.33.17
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Wed, 07 Oct 2020 00:33:17 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 10:32:27 +0300
+From:   Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
+X-Priority: 3 (Normal)
+Message-ID: <1561045277.20201007103227@wirenboard.ru>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     Evgeniy Polyakov <zbr@ioremap.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Akira Shimahara <akira215corp@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        Evgeny Boger <boger@wirenboard.com>
+Subject: Re: [PATCH 2/2] w1: w1_therm: Add support for GXCAS GX20MH01 device.
+In-Reply-To: <20201006151915.77d044a4@coco.lan>
+References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru> <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru> <20201006151915.77d044a4@coco.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
 
-Use round_up() instead of logical operation.
+>> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
+>> index f1148181f53e..00376501a5ef 100644
+>> --- a/Documentation/w1/slaves/w1_therm.rst
+>> +++ b/Documentation/w1/slaves/w1_therm.rst
 
-Reported-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
+>>  
+>> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
+>>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
+>>  conversion completion (normal power only) by generating read cycles on the bus
+>>  after conversion starts. In parasite power mode this feature is not available.
+>> -Feature bit masks may be combined (OR).
+>> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
+>> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
+>> +
 
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index 55d85c9..1e358d9 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -644,13 +644,12 @@ static void arcmsr_hbaF_assign_regAddr(struct AdapterControlBlock *acb)
- 	struct MessageUnit_F __iomem *pmuF;
- 
- 	memset(acb->dma_coherent2, 0xff, acb->completeQ_size);
--	acb->message_wbuffer = (uint32_t *)((((unsigned long)acb->dma_coherent2 +
--		acb->completeQ_size + 3) >> 2) << 2);
-+	acb->message_wbuffer = (uint32_t *)round_up((unsigned long)acb->dma_coherent2 +
-+		acb->completeQ_size, 4);
- 	acb->message_rbuffer = ((void *)acb->message_wbuffer) + 0x100;
- 	acb->msgcode_rwbuffer = ((void *)acb->message_wbuffer) + 0x200;
- 	memset((void *)acb->message_wbuffer, 0, MESG_RW_BUFFER_SIZE);
--	host_buffer_dma = ((acb->dma_coherent_handle2 + acb->completeQ_size +
--		3) >> 2) << 2;
-+	host_buffer_dma = round_up(acb->dma_coherent_handle2 + acb->completeQ_size, 4);
- 	pmuF = acb->pmuF;
- 	/* host buffer low address, bit0:1 all buffer active */
- 	writel(lower_32_bits(host_buffer_dma | 1), &pmuF->inbound_msgaddr0);
+> As warned by Sphinx, this cross-reference is broken:
+
+>         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
+> undefined label: w1_therm (if the link has no caption the label must precede a section header)
+
+Would this be ok?
+
+"More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
+
+> Not sure what you wanted to point here.
+
+A link to a driver's sysfs interface, but sysfs docs are text
+files and seem to not be included in Sphynx Docs.
+
+-- 
+Best regards,
+ Ivan                            mailto:ivan.zaentsev@wirenboard.ru
 
