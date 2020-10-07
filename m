@@ -2,160 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334DF286327
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C837828634A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 18:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgJGQEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 12:04:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48172 "EHLO mail.kernel.org"
+        id S1729080AbgJGQLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 12:11:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:46362 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728559AbgJGQEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:04:45 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94FC1216C4;
-        Wed,  7 Oct 2020 16:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602086683;
-        bh=Afpoi0axZ63mSzi9LUVJhYqlciQbhzVpxbkFCpclXHI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YbEwHOL6kLktQ/Z9t+jJPTlmu8CJwv+nelU6Z5CYjF82+UW5enSegQzU8yTye9H9h
-         0mJzWw0fPpELJrlwbVjBuqMfGZx7v2T6lewPGPzmoV4V2GdsCjoAeMHzgEPMZoUGJy
-         GF8Ay1rkhrwvdw0MvcRgPGhvWA5pXo+vQKMFlY1o=
-Date:   Wed, 7 Oct 2020 11:10:44 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-hardening@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 13/14] drm/amd/pm: Replace one-element array with
- flexible-array in struct phm_ppt_v1_pcie_table
-Message-ID: <1f91ef3bc6aeb8adb7362166f09076ddbe13182f.1602020074.git.gustavoars@kernel.org>
-References: <cover.1602020074.git.gustavoars@kernel.org>
+        id S1726702AbgJGQLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:11:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FED31FB;
+        Wed,  7 Oct 2020 09:11:22 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E52073F66B;
+        Wed,  7 Oct 2020 09:11:21 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 17:11:20 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
+        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
+        orjan.eide@arm.com
+Subject: Re: [PATCH 2/5] thermal: devfreq_cooling: get a copy of device status
+Message-ID: <20201007161120.GC15063@arm.com>
+References: <20200921122007.29610-1-lukasz.luba@arm.com>
+ <20200921122007.29610-3-lukasz.luba@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1602020074.git.gustavoars@kernel.org>
+In-Reply-To: <20200921122007.29610-3-lukasz.luba@arm.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Monday 21 Sep 2020 at 13:20:04 (+0100), Lukasz Luba wrote:
+> Devfreq cooling needs to now the correct status of the device in order
+> to operate. Do not rely on Devfreq last_status which might be a stale data
+> and get more up-to-date values of the load.
+> 
+> Devfreq framework can change the device status in the background. To
+> mitigate this situation make a copy of the status structure and use it
+> for internal calculations.
+> 
+> In addition this patch adds normalization function, which also makes sure
+> that whatever data comes from the device, it is in a sane range.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/thermal/devfreq_cooling.c | 52 +++++++++++++++++++++++++------
+>  1 file changed, 43 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> index 7063ccb7b86d..cf045bd4d16b 100644
+> --- a/drivers/thermal/devfreq_cooling.c
+> +++ b/drivers/thermal/devfreq_cooling.c
+> @@ -227,6 +227,24 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
+>  							       voltage);
+>  }
+>  
+> +static void _normalize_load(struct devfreq_dev_status *status)
 
-Refactor the code according to the use of a flexible-array member in
-struct phm_ppt_v1_pcie_table, instead of a one-element array, and use
-the struct_size() helper to calculate the size for the allocation.
+Is there a reason for the leading "_" ?
+AFAIK, "__name()" is meant to suggest a "worker" function for another
+"name()" function, but that would not apply here.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+> +{
+> +	/* Make some space if needed */
+> +	if (status->busy_time > 0xffff) {
+> +		status->busy_time >>= 10;
+> +		status->total_time >>= 10;
+> +	}
 
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/5f7db0bc.7Xivn4K83f7XW0ug%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- .../drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h    |  2 +-
- .../powerplay/hwmgr/process_pptables_v1_0.c   | 22 ++++++++-----------
- .../powerplay/hwmgr/vega10_processpptables.c  | 10 +++------
- 3 files changed, 13 insertions(+), 21 deletions(-)
+How about removing the above code and adding here:
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h
-index e11298cdeb30..729615aff126 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr_ppt.h
-@@ -103,7 +103,7 @@ typedef struct phm_ppt_v1_pcie_record phm_ppt_v1_pcie_record;
- 
- struct phm_ppt_v1_pcie_table {
- 	uint32_t count;                                            /* Number of entries. */
--	phm_ppt_v1_pcie_record entries[1];                         /* Dynamically allocate count entries. */
-+	phm_ppt_v1_pcie_record entries[];			   /* Dynamically allocate count entries. */
- };
- typedef struct phm_ppt_v1_pcie_table phm_ppt_v1_pcie_table;
- 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-index 426655b9c678..4fa58614e26a 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0.c
-@@ -478,7 +478,7 @@ static int get_pcie_table(
- 		PPTable_Generic_SubTable_Header const *ptable
- 		)
- {
--	uint32_t table_size, i, pcie_count;
-+	uint32_t i, pcie_count;
- 	phm_ppt_v1_pcie_table *pcie_table;
- 	struct phm_ppt_v1_information *pp_table_information =
- 		(struct phm_ppt_v1_information *)(hwmgr->pptable);
-@@ -491,12 +491,10 @@ static int get_pcie_table(
- 		PP_ASSERT_WITH_CODE((atom_pcie_table->ucNumEntries != 0),
- 			"Invalid PowerPlay Table!", return -1);
- 
--		table_size = sizeof(uint32_t) +
--			sizeof(phm_ppt_v1_pcie_record) * atom_pcie_table->ucNumEntries;
--
--		pcie_table = kzalloc(table_size, GFP_KERNEL);
--
--		if (pcie_table == NULL)
-+		pcie_table = kzalloc(struct_size(pcie_table, entries,
-+						 atom_pcie_table->ucNumEntries),
-+				     GFP_KERNEL);
-+		if (!pcie_table)
- 			return -ENOMEM;
- 
- 		/*
-@@ -530,12 +528,10 @@ static int get_pcie_table(
- 		PP_ASSERT_WITH_CODE((atom_pcie_table->ucNumEntries != 0),
- 			"Invalid PowerPlay Table!", return -1);
- 
--		table_size = sizeof(uint32_t) +
--			sizeof(phm_ppt_v1_pcie_record) * atom_pcie_table->ucNumEntries;
--
--		pcie_table = kzalloc(table_size, GFP_KERNEL);
--
--		if (pcie_table == NULL)
-+		pcie_table = kzalloc(struct_size(pcie_table, entries,
-+						 atom_pcie_table->ucNumEntries),
-+				     GFP_KERNEL);
-+		if (!pcie_table)
- 			return -ENOMEM;
- 
- 		/*
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-index 3d7f915381c8..535404de78a2 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-@@ -784,7 +784,7 @@ static int get_pcie_table(struct pp_hwmgr *hwmgr,
- 		struct phm_ppt_v1_pcie_table **vega10_pcie_table,
- 		const Vega10_PPTable_Generic_SubTable_Header *table)
- {
--	uint32_t table_size, i, pcie_count;
-+	uint32_t i, pcie_count;
- 	struct phm_ppt_v1_pcie_table *pcie_table;
- 	struct phm_ppt_v2_information *table_info =
- 			(struct phm_ppt_v2_information *)(hwmgr->pptable);
-@@ -795,12 +795,8 @@ static int get_pcie_table(struct pp_hwmgr *hwmgr,
- 			"Invalid PowerPlay Table!",
- 			return 0);
- 
--	table_size = sizeof(uint32_t) +
--			sizeof(struct phm_ppt_v1_pcie_record) *
--			atom_pcie_table->ucNumEntries;
--
--	pcie_table = kzalloc(table_size, GFP_KERNEL);
--
-+	pcie_table = kzalloc(struct_size(pcie_table, entries, atom_pcie_table->ucNumEntries),
-+			     GFP_KERNEL);
- 	if (!pcie_table)
- 		return -ENOMEM;
- 
--- 
-2.27.0
+status->busy_time = status->busy_time ? : 1;
 
+> +
+> +	if (status->busy_time > status->total_time)
+
+This check would then cover the possibility that total_time is 0.
+
+> +		status->busy_time = status->total_time;
+
+But a reversal is needed here:
+		status->total_time = status->busy_time;
+
+> +
+> +	status->busy_time *= 100;
+> +	status->busy_time /= status->total_time ? : 1;
+> +
+> +	/* Avoid division by 0 */
+> +	status->busy_time = status->busy_time ? : 1;
+> +	status->total_time = 100;
+
+Then all of this code can be replaced by:
+
+status->busy_time = (unsigned long)div64_u64((u64)status->busy_time << 10,
+					     status->total_time);
+status->total_time = 1 << 10;
+
+This way you gain some resolution to busy_time and the divisions in the
+callers would just become shifts by 10.
+
+Hope it helps,
+Ionela.
