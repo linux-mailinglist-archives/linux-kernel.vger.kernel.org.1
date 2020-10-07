@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6189C28567E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EE4285681
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgJGBu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 21:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S1726770AbgJGBv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 21:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgJGBu7 (ORCPT
+        with ESMTP id S1726634AbgJGBv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 21:50:59 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27101C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 18:50:59 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id x5so254708pjv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 18:50:59 -0700 (PDT)
+        Tue, 6 Oct 2020 21:51:28 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A2BC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 18:51:28 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id b69so869305qkg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 18:51:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TqHElblEUNOu/az3HKD2MtYdO4N9TYFu9tSH2Q29boU=;
-        b=ESkySwR9q21mUhedBgLuoRUrv5HR5+B4XWDZcTRzoXEV090MPytPwDCZ66oDQXqPYa
-         B3reVmXsY8vcvyYVtaTiG+kmWU1vevpS9yDxmtsiq2bJgXkSH37eEq7ShAK0bnHwo/dF
-         BAIPkQOYOI0jODjoqawZSVczJF9nOcgsn/F1nLAJ0QGezawlNhvX4Byh4IRZzRcTL8oS
-         JyfvK3s2N8KFYxVQqAhfQDDV3cK0vtSU8x1mIqBx5s+yad/IcIY/Xy+LWboJZ2xC+7Of
-         2DqOWBCjR34qqC79EjMctEQyKWWjKGpE5N4tdiri5Om4SQG+8aP4Mv+j+xioS53tNaze
-         e3eQ==
+        bh=DhT5192mGIN04lhJQKpHcHO54yzKIALf8GZavNFgKps=;
+        b=Hffk7LYCHuRT4fwBiH02KWrywWC4XMNDBL0iY0bvlLeZtyPRI1ZFYMDIOJrZNUdQCa
+         3v5C+9WWM9EP9YH42m6jfBxJ0U5H8lyPvCzVKOV+kzDfyseytSN05hvW3KA4kJJrZzqX
+         wXUpBNC2WB6tA37LTs6mw+MWawOqDklG+sSSs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TqHElblEUNOu/az3HKD2MtYdO4N9TYFu9tSH2Q29boU=;
-        b=HFhokFtnvu9CLrV4whwbyqa7XT9Htu8u6G5iwN/FxD9K1Rv91IhwU3/wRDkh/6RC5P
-         aaccDQKS1LIpA8WUWJhFyLXCRd1YK8/MOnBACTprg0rm6/injuUEdzTbS8xxuiRyklkR
-         XdQDqKMQsAjw2wpDhjVRetcC1Aj+rnYMD0lrXQl2Hhi2QuJ2NVBOfdxwuVlXJfvbwEgm
-         OM/fUvkLmIRAncQyVTVV3WCrEFLgsQpfl4AhnPlVEYH/j3yvaG0Sq7EiV1hGuQ7e/l3I
-         4zZ68LRkJFc3helubuxBNVkuqBJuV/1S0ljBGKZCNu+71o+MrPO6jDDCoAuruPPK58JL
-         cQnA==
-X-Gm-Message-State: AOAM532LV+Aqns3ShDdVEDhVuX1EaH5qc7DYLL5r2rnaQrnor9Dj0TJU
-        Qi8PNcTHOUvIf02J3uTnss0+cuFZ059qrVqbhEL0Sg==
-X-Google-Smtp-Source: ABdhPJz5tAXgKQtqclifCbHVpDFk9k1IMHruU85dPLUeZi5fxZNaR5jIeWu7k9I7s+v+puPMHINznVZUf/EJB7hMQ7k=
-X-Received: by 2002:a17:90a:b78b:: with SMTP id m11mr833325pjr.13.1602035458679;
- Tue, 06 Oct 2020 18:50:58 -0700 (PDT)
+        bh=DhT5192mGIN04lhJQKpHcHO54yzKIALf8GZavNFgKps=;
+        b=goJCrRLlSg0OYbf6WDUIh1jllsTzUxcruzS1PfUFU3o4E+brHiCzoa4I6fqAYm3He4
+         4DJ9YpjQIjzpY4FaI1mrXCHJYbNMmYyEnr25s+Ez5jKgviXRE+qjYqJsdQMQnXuqvAI8
+         Md7ZLzdy149czgD6qdP4S/Vp9OmDR5+puqCAjdI1kUCyG74djV24VGkkbWq4FT8rGhbB
+         Tz8cimQd2f9Rl3tfl3upMO+0XuKWJ9S3Oqu1xcmHJUwyVpWDeZbB82Gny3KvlXZqcGKA
+         XUbaYtQVdJBqsH5yiA6bvkvzc5YlivQvZp5X+FLkcznai81JhF+VEmOFMc9ZWMhCUG9y
+         ZoGA==
+X-Gm-Message-State: AOAM5313Xf2e3CziXx162MfJQ1274LULh9EZRMXJ+v3RoU1wQESwy9YD
+        ql6yzx8q5T0LOYhS6H6ZJjpYvwCubn/AJ3IUKLU=
+X-Google-Smtp-Source: ABdhPJxFMdJlBX+/LRa3e7NAJmDb4iEWSAKzYbDMp6aTkrAOrOw6u96cKjLozMg5OBgEU09Hsuq6vZ2a/PlAdj8aNqk=
+X-Received: by 2002:a37:c404:: with SMTP id d4mr630341qki.273.1602035487238;
+ Tue, 06 Oct 2020 18:51:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200923114419.71218-1-songmuchun@bytedance.com>
- <CAMZfGtUFacR9GFfmySEN6EfdxVi7ZKdwTs17HrJmOL9A38J8sg@mail.gmail.com> <a1488045-afd0-39c5-0b56-079fc51723d4@kernel.dk>
-In-Reply-To: <a1488045-afd0-39c5-0b56-079fc51723d4@kernel.dk>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 7 Oct 2020 09:50:22 +0800
-Message-ID: <CAMZfGtV_L9fDqbF2+cKE3fEjis+bCMhhGQMD0vtyyDb=VcUZEg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 0/5] io_uring: Fix async workqueue is
- not canceled on some corner case
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Yinyin Zhu <zhuyinyin@bytedance.com>
+References: <20201004213204.11584-1-bert@biot.com>
+In-Reply-To: <20201004213204.11584-1-bert@biot.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 7 Oct 2020 01:51:15 +0000
+Message-ID: <CACPK8XceL_QHCQOhfus27rei0vwfRJAFjfL6JkVw9pwxJj2d6Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: Fix address width on flash chips > 16MB
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 4:26 AM Jens Axboe <axboe@kernel.dk> wrote:
+On Sun, 4 Oct 2020 at 21:33, Bert Vermeulen <bert@biot.com> wrote:
 >
-> On 9/28/20 6:50 AM, Muchun Song wrote:
-> > Ping guys. This is worth fixing.
+> If a flash chip has more than 16MB capacity but its BFPT reports
+> BFPT_DWORD1_ADDRESS_BYTES_3_OR_4, the spi-nor framework defaults to 3.
 >
-> Agree - can you respin with the suggested change?
+> The check in spi_nor_set_addr_width() doesn't catch it because addr_width
+> did get set. This fixes that check.
+>
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
 
-OK, will do.
+After replying to the other thread, I just saw this one.
 
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Tested-by: Joel Stanley <joel@jms.id.au>
+
+Thanks Bert!
+
+Cheers,
+
+Joel
+
+> ---
+>  drivers/mtd/spi-nor/core.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 >
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 0369d98b2d12..a2c35ad9645c 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3009,13 +3009,15 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
+>                 /* already configured from SFDP */
+>         } else if (nor->info->addr_width) {
+>                 nor->addr_width = nor->info->addr_width;
+> -       } else if (nor->mtd.size > 0x1000000) {
+> -               /* enable 4-byte addressing if the device exceeds 16MiB */
+> -               nor->addr_width = 4;
+>         } else {
+>                 nor->addr_width = 3;
+>         }
+>
+> +       if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
+> +               /* enable 4-byte addressing if the device exceeds 16MiB */
+> +               nor->addr_width = 4;
+> +       }
+> +
+>         if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+>                 dev_dbg(nor->dev, "address width is too large: %u\n",
+>                         nor->addr_width);
 > --
-> Jens Axboe
+> 2.17.1
 >
-
-
--- 
-Yours,
-Muchun
