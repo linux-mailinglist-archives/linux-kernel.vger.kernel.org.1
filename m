@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DCF286567
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E59286569
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgJGRFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:05:12 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:55700 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726041AbgJGRFL (ORCPT
+        id S1727950AbgJGRGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgJGRGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:05:11 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097H07H6028709;
-        Wed, 7 Oct 2020 10:05:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=rrKteRViA4vxSNBUsWnAhe7ROJCIJod5xGAgtVlXXL0=;
- b=cqdVnGSG46S22OXunmVF839Tq+QCBTA4dyAkQT//o++COb2Ly6Tl1bBjlmSom1hnom0x
- OThMdm1S+jfpBnGJIHqwMMh8jxyXIE3caQ4sUpzdF8YXIn3Hz5ImX0BcJJbr3VxB/qoO
- RDVyhMo7mLePIMErsb4jet8u+sa7R7EfPc1tne5Y6d5Ol24vTmsvdZHKA7nWzmIjyBPi
- GZOWoPfBSJpsM4+JiJdgf+jmQCwcRsu4l3cwEYGtaVqrbJiUiHGjbwdsQzVPgQ3uNZXB
- DyCUPRWhmX3jwgICdTGYX9JNXnsbPEGiuOFGFbJhL6HjkFLUOTtavu6RoDp6bTlIUopL 5w== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 33xrtnmy0d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 07 Oct 2020 10:05:07 -0700
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
- 2020 10:05:05 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Oct
- 2020 10:05:05 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 7 Oct 2020 10:05:06 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id D7A303F703F;
-        Wed,  7 Oct 2020 10:05:05 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 097H556M023986;
-        Wed, 7 Oct 2020 10:05:05 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Wed, 7 Oct 2020 10:05:05 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     Nilesh Javali <njavali@marvell.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] qla2xxx: Do not consume srb greedily
-In-Reply-To: <20200929073802.18770-1-dwagner@suse.de>
-Message-ID: <alpine.LRH.2.21.9999.2010071001520.28578@irv1user01.caveonetworks.com>
-References: <20200929073802.18770-1-dwagner@suse.de>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        Wed, 7 Oct 2020 13:06:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C01C061755;
+        Wed,  7 Oct 2020 10:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yKmG7sDo2Hnmphbd29uuI2McQMWDJPEwalTXCxvAe3w=; b=U9HXBDNu+js8W+6zeTrV/jtVbE
+        oMZoX096Vc8qatSsLrVFG7bwYEYUWHjBzexbJg2O0Rge2BHdOTAHGkuoHcMBNJvkVFvlkbgWYoMaV
+        D5g7T1A2br7NSa3/EP3hesxNxR+rP8hlaRJt5b8WIwE0EtyOGEkMU2TXl0eyIYF+eXRA2lw+dCJI2
+        93JiKTXr0l/z2ovvqGoOYkSP0yzM6zD4PhTQuxnCTqBSDpaPXy7f6m3VTRMCxN36K0Y16lMFkMlnD
+        0fM0rhB+yHBfryWGrgBHb9TgsEUqjETEcVHsfU7VjgXMA6KM7Db1Vd5Wde79UK81MdFSp+IvZwPRW
+        sTkTHBKA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kQCt4-0005jh-S1; Wed, 07 Oct 2020 17:05:58 +0000
+Date:   Wed, 7 Oct 2020 18:05:58 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
+        Josef Bacik <jbacik@fb.com>
+Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
+Message-ID: <20201007170558.GU20115@casper.infradead.org>
+References: <20201007010603.3452458-1-jglisse@redhat.com>
+ <20201007032013.GS20115@casper.infradead.org>
+ <20201007144835.GA3471400@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007144835.GA3471400@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020, 12:38am, Daniel Wagner wrote:
-
-> qla2xx_process_get_sp_from_handle() will clear the slot which the
-> current srb is stored. So this function has a side effect. Therefore,
-> we can't use it in qla24xx_process_mbx_iocb_response() to check
-> for consistency and later again in qla24xx_mbx_iocb_entry().
+On Wed, Oct 07, 2020 at 10:48:35AM -0400, Jerome Glisse wrote:
+> On Wed, Oct 07, 2020 at 04:20:13AM +0100, Matthew Wilcox wrote:
+> > On Tue, Oct 06, 2020 at 09:05:49PM -0400, jglisse@redhat.com wrote:
+> > > The present patchset just add mapping argument to the various vfs call-
+> > > backs. It does not make use of that new parameter to avoid regression.
+> > > I am posting this whole things as small contain patchset as it is rather
+> > > big and i would like to make progress step by step.
+> > 
+> > Well, that's the problem.  This patch set is gigantic and unreviewable.
+> > And it has no benefits.  The idea you present here was discussed at
+> > LSFMM in Utah and I recall absolutely nobody being in favour of it.
+> > You claim many wonderful features will be unlocked by this, but I think
+> > they can all be achieved without doing any of this very disruptive work.
 > 
-> Let's move the consistency check directly into
-> qla24xx_mbx_iocb_entry() and avoid the double call or any open coding
-> of the qla2xx_process_get_sp_from_handle() functionality.
-> 
-> Fixes: 31a3271ff11b ("scsi: qla2xxx: Handle incorrect entry_type entries")
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> You have any ideas on how to achieve them without such change ? I will
+> be more than happy for a simpler solution but i fail to see how you can
+> work around the need for a pointer inside struct page. Given struct
+> page can not grow it means you need to be able to overload one of the
+> existing field, at least i do not see any otherway.
 
-That was a nasty one, good that you caught it soon.
+The one I've spent the most time thinking about is sharing pages between
+reflinked files.  My approach is to pull DAX entries into the main page
+cache and have them reference the PFN directly.  It's not a struct page,
+but we can find a struct page from it if we need it.  The struct page
+would belong to a mapping that isn't part of the file.
 
-Reviewed-by: Arun Easi <aeasi@marvell.com>
+For other things (NUMA distribution), we can point to something which
+isn't a struct page and can be distiguished from a real struct page by a
+bit somewhere (I have ideas for at least three bits in struct page that
+could be used for this).  Then use a pointer in that data structure to
+point to the real page.  Or do NUMA distribution at the inode level.
+Have a way to get from (inode, node) to an address_space which contains
+just regular pages.
 
-Regards,
--Arun
+Using main memory to cache DAX could be done today without any data
+structure changes.  It just needs the DAX entries pulled up into the
+main pagecache.  See earlier item.
+
+Exclusive write access ... you could put a magic value in the pagecache
+for pages which are exclusively for someone else's use and handle those
+specially.  I don't entirely understand this use case.
+
+I don't have time to work on all of these.  If there's one that
+particularly interests you, let's dive deep into it and figure out how
+you can do it without committing this kind of violence to struct page.
