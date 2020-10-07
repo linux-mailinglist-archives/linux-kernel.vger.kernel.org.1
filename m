@@ -2,71 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38133285BA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969A1285BAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 11:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgJGJLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 05:11:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50080 "EHLO mail.kernel.org"
+        id S1726987AbgJGJMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 05:12:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgJGJLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 05:11:46 -0400
+        id S1726218AbgJGJMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 05:12:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB4C32083B;
-        Wed,  7 Oct 2020 09:11:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0FFF204EC;
+        Wed,  7 Oct 2020 09:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602061906;
-        bh=52rWsOExDDPmAHNn6Ft0He+B0sqyHGMSlFLkhKStQds=;
+        s=default; t=1602061960;
+        bh=GGf3v+keEJl27fl/reXppAsR7VWyzAcjRjLjHR8aKhk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qIpbHkMUywQOZIDxXw5vZWDxYzIFWjaohmR3Jz6SjoDnXdYNAkyXT4Q3q1cKSc0r3
-         zoe16IdbkWbOvJ0oVyvnwdpyj5vK0FJwQvZretItWv/eh6hNd7eQumHaNLgCsldRb+
-         56M6Tu9FXfwrh+LLmkyusx8pawjTzqg6cEAyc6IY=
-Date:   Wed, 7 Oct 2020 11:12:30 +0200
+        b=EyrmmIMEHS8nKj4+hHnrFi7/ht0wmdlNWzy2ijninxCkJewmjZ/iULg60WcIW5ah5
+         yrGJ8/3H2nJ2EdPA3BKyHAJqFg3+6lN2L7X0pgNX4Wskvemqsu8pWq4f8pCj7Zd2Jr
+         S8vfkVlb86Aj/Pg9iZ2YW+YXCyATor6AVJN49pHQ=
+Date:   Wed, 7 Oct 2020 11:13:24 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 00/85] 5.8.14-rc1 review
-Message-ID: <20201007091230.GD614379@kroah.com>
+To:     "M. Vefa Bicakci" <m.v.b@runbox.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Bastien Nocera <hadess@hadess.net>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        syzkaller@googlegroups.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH 5.8 05/85] Revert "usbip: Implement a match function to
+ fix usbip"
+Message-ID: <20201007091324.GF614379@kroah.com>
 References: <20201005142114.732094228@linuxfoundation.org>
- <796191d0-b72a-296d-1fa9-ea9384597024@linuxfoundation.org>
+ <20201005142115.000911358@linuxfoundation.org>
+ <ad55b590-da4a-4aa8-7a04-302a8d55d723@runbox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <796191d0-b72a-296d-1fa9-ea9384597024@linuxfoundation.org>
+In-Reply-To: <ad55b590-da4a-4aa8-7a04-302a8d55d723@runbox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 06:18:56PM -0600, Shuah Khan wrote:
-> On 10/5/20 9:25 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.8.14 release.
-> > There are 85 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+On Tue, Oct 06, 2020 at 04:26:27PM +0300, M. Vefa Bicakci wrote:
+> On 05/10/2020 18.26, Greg Kroah-Hartman wrote:
+> > From: M. Vefa Bicakci <m.v.b@runbox.com>
 > > 
-> > Responses should be made by Wed, 07 Oct 2020 14:20:55 +0000.
-> > Anything received after that time might be too late.
+> > commit d6407613c1e2ef90213dee388aa16b6e1bd08cbc upstream.
 > > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.14-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> > and the diffstat can be found below.
+> > This commit reverts commit 7a2f2974f265 ("usbip: Implement a match
+> > function to fix usbip").
 > > 
-> > thanks,
+> > In summary, commit d5643d2249b2 ("USB: Fix device driver race")
+> > inadvertently broke usbip functionality, which I resolved in an incorrect
+> > manner by introducing a match function to usbip, usbip_match(), that
+> > unconditionally returns true.
 > > 
-> > greg k-h
+> > However, the usbip_match function, as is, causes usbip to take over
+> > virtual devices used by syzkaller for USB fuzzing, which is a regression
+> > reported by Andrey Konovalov.
 > > 
+> > Furthermore, in conjunction with the fix of another bug, handled by another
+> > patch titled "usbcore/driver: Fix specific driver selection" in this patch
+> > set, the usbip_match function causes unexpected USB subsystem behaviour
+> > when the usbip_host driver is loaded. The unexpected behaviour can be
+> > qualified as follows:
+> > - If commit 41160802ab8e ("USB: Simplify USB ID table match") is included
+> >    in the kernel, then all USB devices are bound to the usbip_host
+> >    driver, which appears to the user as if all USB devices were
+> >    disconnected.
+> > - If the same commit (41160802ab8e) is not in the kernel (as is the case
+> >    with v5.8.10) then all USB devices are re-probed and re-bound to their
+> >    original device drivers, which appears to the user as a disconnection
+> >    and re-connection of USB devices.
+> > 
+> > Please note that this commit will make usbip non-operational again,
+> > until yet another patch in this patch set is merged, titled
+> > "usbcore/driver: Accommodate usbip".
+> > 
+> > Cc: <stable@vger.kernel.org> # 5.8: 41160802ab8e: USB: Simplify USB ID table match
+> > Cc: <stable@vger.kernel.org> # 5.8
 > 
-> Compiled and booted on my test system. No dmesg regressions.
+> Hello Greg,
 > 
-> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> Sorry for the lateness of this e-mail.
+> 
+> I had noted commit 41160802ab8e ("USB: Simplify USB ID table match") as a
+> prerequisite in the commit message, but I just realized that the commit
+> identifier refers to a commit in my local git tree, and not to the actual
+> commit in Linus Torvalds' git tree! I apologize for this mistake.
+> 
+> Here is the correct commit identifier:
+>   0ed9498f9ecfde50c93f3f3dd64b4cd5414d9944 ("USB: Simplify USB ID table match")
+> 
+> Perhaps this is why the prerequisite commit was not cherry-picked to the 5.8.y
+> branch.
+> 
+> As a justification for the cherry-pick, commit 0ed9498f9ecf actually resolves
+> a bug. In summary, this commit works together with commit adb6e6ac20ee ("USB:
+> Also match device drivers using the ->match vfunc", which has been cherry-picked
+> as part of v5.8.6) and ensures that a USB driver's ->match function is also
+> called during the search for a more specialized/appropriate USB driver, in case
+> the driver in question does not have an id_table.
+> 
+> If I am to be the devil's advocate, however, then given that there is only one
+> specialized USB device driver ("apple-mfi-fastcharge"), which conveniently has
+> an id_table, and also given that usbip no longer has a match function, I also
+> realize that it may not be crucial to cherry-pick 0ed9498f9ecf as a prerequisite
+> commit.
 
-Thanks for testing them all and letting me know.
+I'm sorry, but I don't really understand.  Does 5.8.y need an additional
+patch here, or is all ok because I missed the above patch?
+
+thanks,
 
 greg k-h
