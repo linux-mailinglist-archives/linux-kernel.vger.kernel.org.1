@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5777285D45
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8466285D4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgJGKtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:49:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60612 "EHLO mail.kernel.org"
+        id S1728227AbgJGKty convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Oct 2020 06:49:54 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:56708 "EHLO mx.metalurgs.lv"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728204AbgJGKtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:49:42 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C902C20870;
-        Wed,  7 Oct 2020 10:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602067782;
-        bh=1wuWrBxTStM0az/awlDUjLP9jEWZ5Wpim0mWksWSOUA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cPmVZRUwByaoivWI1uqYU7zS5g9j5p/qV2QRVTG29W6uwF5tMLyYP3nNpY1J4NUTX
-         7JMG/znA/bnbXIHJWikzQM73gt6MQd5pa/TdAklZizIUrmK5f7cYYxo0S/43gypMtr
-         +jKrye872fH2qRyuYsmcN8LAF434DjiLsK9L6arg=
-Date:   Wed, 7 Oct 2020 11:48:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64: Add support for SMCCC TRNG firmware interface
-Message-ID: <20201007104838.GA5030@sirena.org.uk>
-References: <20201006201808.37665-1-andre.przywara@arm.com>
- <20201006201808.37665-3-andre.przywara@arm.com>
+        id S1728219AbgJGKtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 06:49:53 -0400
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id D7E44651E8
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 13:49:49 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 88C0F650C9
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 13:49:49 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id 8A14F63A56; Wed,  7 Oct 2020 13:49:48 +0300 (EEST)
+Received: from [100.64.1.74] (unknown [190.15.125.55])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id B05D5627CC;
+        Wed,  7 Oct 2020 13:49:41 +0300 (EEST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
-Content-Disposition: inline
-In-Reply-To: <20201006201808.37665-3-andre.przywara@arm.com>
-X-Cookie: Two heads are more numerous than one.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Description: Mail message body
+To:     Recipients <financialcapability6@gmail.com>
+From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
+Date:   Wed, 07 Oct 2020 07:49:33 -0300
+Reply-To: hmurrah39@gmail.com
+X-SpamTest-Envelope-From: financialcapability6@gmail.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 55
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20201007104948.8A14F63A56@mx.metalurgs.lv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Low Rate Loan./mmm,
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20201007 notchecked
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Dear,
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Oct 06, 2020 at 09:18:08PM +0100, Andre Przywara wrote:
-> The ARM architected TRNG firmware interface, described in ARM spec
-> DEN0098[1], defines an ARM SMCCC based interface to a true random number
-> generator, provided by firmware.
-> This can be discovered via the SMCCC >=v1.1 interface, and provides
-> up to 192 bits of entropy per call.
+We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
 
---wRRV7LY7NUeQGEoC
-Content-Type: application/pgp-signature; name="signature.asc"
+We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl99nQUACgkQJNaLcl1U
-h9ALVAf/RE8cMKM1nbggP3489Btap0JuTt7uhwVRspEJ7WG/WHEeSWvW6tTQZhCf
-A+HVamghoOcekfVOT9QFFiN1Z8WdMsXcFOkmdAb6IonVGL7qz+d3f47wbjk2LnE6
-Fucf5tZ3VKJ0FePTC3CkFu3zPnJYqGtEi5DX0krnTWy3hXDcVk+KeJsaK4g9VUak
-Jh6YZvzVbZPgtvN06klk30W40cN1mFTpuiF+vx/tjh24cAkOZ0hSwNAzsd0ZxyMO
-DYA5stPpUTa9WDqPTura3byuDUvhwWy7Xktb//zC6aJcg1bCoblr8x/SNbXNgeHu
-3X8l7zZx0VwsECUOUe9jqc5bh2Lh2Q==
-=QBrs
------END PGP SIGNATURE-----
+Please get back to me if you are interested for more
 
---wRRV7LY7NUeQGEoC--
+details.
+
+
+Yours faithfully,
+
+Hashim Murrah
