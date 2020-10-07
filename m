@@ -2,156 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB202858B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F652858BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 08:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgJGGgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 02:36:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:34836 "EHLO mga14.intel.com"
+        id S1727237AbgJGGiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 02:38:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44830 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgJGGgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 02:36:45 -0400
-IronPort-SDR: Wj8ThXsUEAbPS6vkIk4UiX3aQKL/ZTgWjzIrZ14uVZXFFMJHfUyAaveIK3dkjCYUJJ7Tl15Ovb
- uw2BDL3BMg5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9766"; a="164067896"
-X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="164067896"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2020 23:36:45 -0700
-IronPort-SDR: MYCrtKX06DVxqFqZZXwT7mN+birpAjaXeXSAcbDcaLBgIsU81KoqEVO1r3EYn1mz7AwMqaLC8r
- kKOs87d5qHwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,345,1596524400"; 
-   d="scan'208";a="342715797"
-Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Oct 2020 23:36:44 -0700
-Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kQ347-0001VR-Df; Wed, 07 Oct 2020 06:36:43 +0000
-Date:   Wed, 07 Oct 2020 14:36:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/drm/amd/pm/phm_ppt_v1_mm] BUILD SUCCESS b83c3eff4d97ce6ceaa11209ad8af4831f93a4be
-Message-ID: <5f7d61e2.qiTVTyG2pVoG8bb0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726096AbgJGGiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 02:38:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602052685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3kOyoKtsiwS+tjIZ6dzqH1KCmgJdwgCsiyneWCC8R6M=;
+        b=avIV58ZPj1GRAdoykPhUo3Pb+VuebfM0SYxiddm2n+p0Cvd77cb6VdKI7RCVOsx232QccN
+        jcxMzjWOhbuYQMQdUmP6lUEzjthAElIa36MGYYx42V3FgYU67XNi6sminKmixQ4fV01Wwu
+        SbYRFgneC0vPBvNzoU/ByaqpJ96KozU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 16D46AC0C;
+        Wed,  7 Oct 2020 06:38:05 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        boris.ostrovsky@oracle.com
+Subject: [GIT PULL] xen: branch for v5.9-rc9
+Date:   Wed,  7 Oct 2020 08:38:04 +0200
+Message-Id: <20201007063804.21597-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/drm/amd/pm/phm_ppt_v1_mm
-branch HEAD: b83c3eff4d97ce6ceaa11209ad8af4831f93a4be  drm/amd/pm: Replace one-element array with flexible-array in struct phm_ppt_v1_mm_clock_voltage_dependency_table
+Linus,
 
-elapsed time: 722m
+Please git pull the following tag:
 
-configs tested: 93
-configs skipped: 2
+ git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.9b-rc9-tag
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+xen: branch for v5.9-rc9
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                  cavium_octeon_defconfig
-arm                         hackkit_defconfig
-arm                         socfpga_defconfig
-sh                          r7780mp_defconfig
-sh                            migor_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                      ep88xc_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                      arches_defconfig
-arm                         palmz72_defconfig
-arc                          axs101_defconfig
-arm                         lpc18xx_defconfig
-alpha                            allyesconfig
-arm                          exynos_defconfig
-powerpc                     ppa8548_defconfig
-nios2                            alldefconfig
-m68k                       m5208evb_defconfig
-powerpc                       eiger_defconfig
-mips                         tb0226_defconfig
-mips                        nlm_xlr_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20201005
-i386                 randconfig-a005-20201005
-i386                 randconfig-a001-20201005
-i386                 randconfig-a004-20201005
-i386                 randconfig-a003-20201005
-i386                 randconfig-a002-20201005
-x86_64               randconfig-a012-20201005
-x86_64               randconfig-a015-20201005
-x86_64               randconfig-a014-20201005
-x86_64               randconfig-a013-20201005
-x86_64               randconfig-a011-20201005
-x86_64               randconfig-a016-20201005
-i386                 randconfig-a014-20201005
-i386                 randconfig-a015-20201005
-i386                 randconfig-a013-20201005
-i386                 randconfig-a016-20201005
-i386                 randconfig-a011-20201005
-i386                 randconfig-a012-20201005
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+It contains one fix for a regression when booting as a Xen guest on
+ARM64 introduced probably during the 5.9 cycle. It is very low risk as
+it is modifying Xen specific code only. The exact commit introducing
+the bug hasn't been identified yet, but everything was fine in 5.8 and
+only in 5.9 some configurations started to fail.
 
-clang tested configs:
-x86_64               randconfig-a004-20201005
-x86_64               randconfig-a002-20201005
-x86_64               randconfig-a001-20201005
-x86_64               randconfig-a003-20201005
-x86_64               randconfig-a005-20201005
-x86_64               randconfig-a006-20201005
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks.
+
+Juergen
+
+ arch/arm/xen/enlighten.c | 2 +-
+ include/xen/arm/page.h   | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+Masami Hiramatsu (1):
+      arm/arm64: xen: Fix to convert percpu address to gfn correctly
