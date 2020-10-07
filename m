@@ -2,81 +2,648 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29CE2855A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B992855AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 03:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgJGBAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Oct 2020 21:00:25 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:55839 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726860AbgJGBAY (ORCPT
+        id S1727018AbgJGBBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Oct 2020 21:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbgJGBBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Oct 2020 21:00:24 -0400
-Received: (qmail 438874 invoked by uid 1000); 6 Oct 2020 21:00:23 -0400
-Date:   Tue, 6 Oct 2020 21:00:23 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201007010023.GA438733@rowland.harvard.edu>
-References: <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
- <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
- <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
- <CAL_JsqLWmBCjrbs2D-d+9naJAKkNhDAbmRtqvCDY8jv=L_q-xA@mail.gmail.com>
- <CAD=FV=XkV2eGuPhpo-v4bYy12DVNtDAtjyzpKs7r6SOUZf6-sg@mail.gmail.com>
- <20201006004510.GD4135817@google.com>
- <20201006141820.GA416765@rowland.harvard.edu>
- <20201006165957.GA191572@google.com>
- <20201006171524.GB423499@rowland.harvard.edu>
- <20201006192536.GB191572@google.com>
+        Tue, 6 Oct 2020 21:01:04 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BEAC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Oct 2020 18:01:02 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id e22so531179ejr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Oct 2020 18:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xrf/gyUp4YjkEUyXaydwfhyzRMTOcnc20idUKYnAU+s=;
+        b=w6+VFANviZTuHfTitAA7ZsM5cgdBLpQKP+Sh2fYgQcvZxNXj1KNiiOHtTDiCnhvWxx
+         8XaAWbgQ1UdcMVSmSpy609l8SHkM3ioLh04vFcXrTvaj0KQySLEYM8y4sEK4OQuyXHOK
+         N2RKXNbtUab9CHwAriVVewxZbSJz7HC7gXyXfUnUdh0iXD4hckC9tt7CF0jbcLxg532/
+         8fcFuViWF+68JRo7VnwJZwiacYxDULngjkhL99ZFmjt5HaGB5EmgKDmf5t5x0sKu4eUW
+         XZWJw3Sg2mxUkslYrz2J8fJtyO3wxTeEuJ6IvBFjz7lfWNVZ8GL4E+mitZURBrZHEj9t
+         QWKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xrf/gyUp4YjkEUyXaydwfhyzRMTOcnc20idUKYnAU+s=;
+        b=AuZcUiK9LdfZi9/5SCiwDAa4Mf5pgw0ifyL3FHeWAZDz0PTq4qysoS2AXNy7qZTsl6
+         ZIXFx3DWKNPKFZRJGM/VrOOkuEDFjSbBUIrkU5cytQFhede1zYrOzki4VFKiNa7oukBn
+         kkmPEr1Eidl7BlFdKowoXdpLu/sRjS2XSSVQHszrOxfJCOBtFe+UPkaTwSCGl1VZdGWI
+         gtUevSH3JlbCuD8kmuKktABdw8O1pRuCK7P3kqmSGZgodKpBrxmKk3K1VXej8CywdsBB
+         /tNREJHhO53QWDcLZ7WSv0RsjIyypfXEiJjh84Uk5odn6sB4q9+SnhpaHxK+uI85JVdN
+         DOFA==
+X-Gm-Message-State: AOAM532ICrM9ubwAFSA+UGGpakMxcGFCphrWq12ZC940N67DAhXFcsYj
+        0wEVeT2n8P25wMDs68mE6BuNFjO69pObn/zJKkujr3zq7T5f3yYmp6glbGwj5P0Um0bTCQi/gQu
+        jktkizysvJ5Tw+eGKnCGfF1C/+nKg2mnRUt7vLuBY2ECR+d2izzm7dJ9Q41WIYK8QAM5biE/Xsd
+        9EbYFkdaUvQw==
+X-Google-Smtp-Source: ABdhPJzF+A1VKngw7FuyAwNdRembInJsLeKoknLnjNHuJfU9qRIE6Ct/cBIiuAwOblPSU/NB9Rf3HQ==
+X-Received: by 2002:a17:906:4048:: with SMTP id y8mr763076ejj.466.1602032460992;
+        Tue, 06 Oct 2020 18:01:00 -0700 (PDT)
+Received: from localhost.localdomain ([2a00:ee2:4b0d:3002:290:faff:fe54:449c])
+        by smtp.gmail.com with ESMTPSA id v25sm254388edr.29.2020.10.06.18.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 18:01:00 -0700 (PDT)
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     robh+dt@kernel.org, andrew@lunn.ch, jason@lakedaemon.net,
+        gregory.clement@bootlin.com, marek.behun@nic.cz,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr,
+        Luka Kovacic <luka.kovacic@sartura.hr>
+Subject: [PATCH 1/1] arm64: dts: marvell: Add a device tree for the iEi Puzzle-M801 board
+Date:   Wed,  7 Oct 2020 03:00:34 +0200
+Message-Id: <20201007010034.41166-1-luka.kovacic@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006192536.GB191572@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 12:25:36PM -0700, Matthias Kaehlcke wrote:
-> On Tue, Oct 06, 2020 at 01:15:24PM -0400, Alan Stern wrote:
-> > You don't need a platform device or a new driver to do this.  The code 
-> > can go in the existing hub driver.
-> 
-> Maybe. IIUC currently USB drivers don't support/use suspend_late. Could that
-> be added? It would simplify matters, otherwise all hubs need to know their
-> peers and check in suspend if they are the last hub standing, only then the
-> power can be switched off. It would be simpler if a single instance (e.g. the
-> hub with the DT entries) is in control.
+Add initial support for the iEi Puzzle-M801 1U Rackmount Network
+Appliance board.
 
-Adding suspend_late would be a little painful.  But you don't really 
-need it; you just need to make the "master" hub wait for its peer to 
-suspend, which is easy to do.
+The board is based on the quad-core Marvell Armada 8040 SoC and supports
+up to 16 GB of DDR4 2400 MHz ECC RAM. It has a PCIe x16 slot (x2 lanes
+only) and an M.2 type B slot.
 
-And hubs would need to know their peers in any case, because you have to 
-check if any devices attached to the peer have wakeup enabled.
+Main system hardware:
+2x USB 3.0
+4x Gigabit Ethernet
+2x SFP+
+1x SATA 3.0
+1x M.2 type B
+1x RJ45 UART
+1x SPI flash
+1x iEi WT61P803 PUZZLE Microcontroller
+1x EPSON RX8010 RTC (used instead of the integrated Marvell RTC controller)
+6x SFP+ LED
+1x HDD LED
 
-> > Incidentally, the peering information is already present in sysfs, 
-> > although it is associated with a device's port on its upstream hub 
-> > rather than with the device itself.
-> 
-> That might also help the hub driver to determine its peers without needing the
-> 'companion-hubs' property.
+All of the hardware listed above is supported and tested in this port.
 
-It wouldn't hurt to have that property anyway.  The determination of 
-peer ports doesn't always work right, because it depends on information 
-provided by the firmware and that information isn't always correct.
+Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+Acked-by: Andrew Lunn <andrew@lunn.ch>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+Cc: Robert Marko <robert.marko@sartura.hr>
+---
+This patch is now sent separately from the iEi WT61P803 PUZZLE MCU
+patchset. Go to the following link for reference:
+https://lore.kernel.org/linux-hwmon/20201007004901.39859-1-luka.kovacic@sartura.hr/
 
-Alan Stern
+ arch/arm64/boot/dts/marvell/Makefile          |   1 +
+ .../dts/marvell/armada-8040-puzzle-m801.dts   | 524 ++++++++++++++++++
+ 2 files changed, 525 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
+
+diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+index 3e5f2e7a040c..e413c3261792 100644
+--- a/arch/arm64/boot/dts/marvell/Makefile
++++ b/arch/arm64/boot/dts/marvell/Makefile
+@@ -12,6 +12,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-clearfog-gt-8k.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin-singleshot.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-puzzle-m801.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += armada-8080-db.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += cn9130-db.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += cn9131-db.dtb
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
+new file mode 100644
+index 000000000000..f1dd09ed22e9
+--- /dev/null
++++ b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
+@@ -0,0 +1,524 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (C) 2016 Marvell Technology Group Ltd.
++ * Copyright (C) 2020 Sartura Ltd.
++ *
++ * Device Tree file for iEi Puzzle-M801
++ */
++
++#include "armada-8040.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/leds/common.h>
++
++/ {
++	model = "iEi-Puzzle-M801";
++	compatible = "marvell,armada8040", "marvell,armada-ap806-quad", "marvell,armada-ap806";
++
++	aliases {
++		ethernet0 = &cp0_eth0;
++		ethernet1 = &cp1_eth0;
++		ethernet2 = &cp0_eth1;
++		ethernet3 = &cp0_eth2;
++		ethernet4 = &cp1_eth1;
++		ethernet5 = &cp1_eth2;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x0 0x0 0x80000000>;
++	};
++
++	/* Regulator labels correspond with schematics */
++	v_3_3: regulator-3-3v {
++		compatible = "regulator-fixed";
++		regulator-name = "v_3_3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++		status = "okay";
++	};
++
++	v_5v0_usb3_hst_vbus: regulator-usb3-vbus0 {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&cp0_gpio2 15 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&cp0_xhci_vbus_pins>;
++		regulator-name = "v_5v0_usb3_hst_vbus";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		status = "okay";
++	};
++
++	v_vddo_h: regulator-1-8v {
++		compatible = "regulator-fixed";
++		regulator-name = "v_vddo_h";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++		status = "okay";
++	};
++
++	sfp_cp0_eth0: sfp-cp0-eth0 {
++		compatible = "sff,sfp";
++		i2c-bus = <&sfpplus0_i2c>;
++		los-gpio = <&sfpplus_gpio 11 GPIO_ACTIVE_HIGH>;
++		mod-def0-gpio = <&sfpplus_gpio 10 GPIO_ACTIVE_LOW>;
++		tx-disable-gpio = <&sfpplus_gpio 9 GPIO_ACTIVE_HIGH>;
++		tx-fault-gpio  = <&sfpplus_gpio 8 GPIO_ACTIVE_HIGH>;
++		maximum-power-milliwatt = <3000>;
++	};
++
++	sfp_cp1_eth0: sfp-cp1-eth0 {
++		compatible = "sff,sfp";
++		i2c-bus = <&sfpplus1_i2c>;
++		los-gpio = <&sfpplus_gpio 3 GPIO_ACTIVE_HIGH>;
++		mod-def0-gpio = <&sfpplus_gpio 2 GPIO_ACTIVE_LOW>;
++		tx-disable-gpio = <&sfpplus_gpio 1 GPIO_ACTIVE_HIGH>;
++		tx-fault-gpio  = <&sfpplus_gpio 0 GPIO_ACTIVE_HIGH>;
++		maximum-power-milliwatt = <3000>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		status = "okay";
++		pinctrl-0 = <&cp0_sfpplus_led_pins &cp1_sfpplus_led_pins>;
++		pinctrl-names = "default";
++
++		led-0 {
++			/* SFP+ port 2: Activity */
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <0>;
++			gpios = <&cp1_gpio1 6 GPIO_ACTIVE_LOW>;
++		};
++
++		led-1 {
++			/* SFP+ port 1: Activity */
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <1>;
++			gpios = <&cp1_gpio1 14 GPIO_ACTIVE_LOW>;
++		};
++
++		led-2 {
++			/* SFP+ port 2: 10 Gbps indicator */
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <2>;
++			gpios = <&cp1_gpio1 7 GPIO_ACTIVE_LOW>;
++		};
++
++		led-3 {
++			/* SFP+ port 2: 1 Gbps indicator */
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <3>;
++			gpios = <&cp1_gpio1 8 GPIO_ACTIVE_LOW>;
++		};
++
++		led-4 {
++			/* SFP+ port 1: 10 Gbps indicator */
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <4>;
++			gpios = <&cp1_gpio1 10 GPIO_ACTIVE_LOW>;
++		};
++
++		led-5 {
++			/* SFP+ port 1: 1 Gbps indicator */
++			function = LED_FUNCTION_LAN;
++			function-enumerator = <5>;
++			gpios = <&cp1_gpio1 31 GPIO_ACTIVE_LOW>;
++		};
++
++		led-6 {
++			function = LED_FUNCTION_DISK;
++			linux,default-trigger = "disk-activity";
++			gpios = <&cp0_gpio2 22 GPIO_ACTIVE_HIGH>;
++		};
++
++	};
++};
++
++&ap_sdhci0 {
++	bus-width = <8>;
++	/*
++	 * Not stable in HS modes - phy needs "more calibration", so add
++	 * the "slow-mode" and disable SDR104, SDR50 and DDR50 modes.
++	 */
++	marvell,xenon-phy-slow-mode;
++	no-1-8-v;
++	no-sd;
++	no-sdio;
++	non-removable;
++	status = "okay";
++	vqmmc-supply = <&v_vddo_h>;
++};
++
++&ap_thermal_cpu1 {
++	trips {
++		cpu_active: cpu-active {
++			temperature = <44000>;
++			hysteresis = <2000>;
++			type = "active";
++		};
++	};
++	cooling-maps {
++		fan-map {
++			trip = <&cpu_active>;
++			cooling-device = <&chassis_fan_group0 64 THERMAL_NO_LIMIT>,
++					<&chassis_fan_group1 64 THERMAL_NO_LIMIT>;
++		};
++	};
++};
++
++&i2c0 {
++	clock-frequency = <100000>;
++	status = "okay";
++
++	rtc@32 {
++		compatible = "epson,rx8010";
++		reg = <0x32>;
++	};
++};
++
++&spi0 {
++	status = "okay";
++	spi-flash@0 {
++		#address-cells = <0x1>;
++		#size-cells = <0x1>;
++		compatible = "jedec,spi-nor";
++		reg = <0x0>;
++		spi-max-frequency = <20000000>;
++		partition@u-boot {
++			label = "u-boot";
++			reg = <0x00000000 0x001f0000>;
++		};
++		partition@u-boot-env {
++			label = "u-boot-env";
++			reg = <0x001f0000 0x00010000>;
++		};
++		partition@ubi1 {
++			label = "ubi1";
++			reg = <0x00200000 0x03f00000>;
++		};
++		partition@ubi2 {
++			label = "ubi2";
++			reg = <0x04100000 0x03f00000>;
++		};
++	};
++};
++
++&uart0 {
++	status = "okay";
++	pinctrl-0 = <&uart0_pins>;
++	pinctrl-names = "default";
++};
++
++&uart1 {
++	status = "okay";
++	/* iEi WT61P803 PUZZLE MCU Controller */
++	mcu {
++		compatible = "iei,wt61p803-puzzle";
++		current-speed = <115200>;
++		enable-beep;
++
++		leds {
++			compatible = "iei,wt61p803-puzzle-leds";
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			led@0 {
++				reg = <0>;
++				function = LED_FUNCTION_POWER;
++				color = <LED_COLOR_ID_BLUE>;
++			};
++		};
++
++		iei-wt61p803-puzzle-hwmon {
++			compatible = "iei,wt61p803-puzzle-hwmon";
++
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			chassis_fan_group0:fan-group@0 {
++				#cooling-cells = <2>;
++				reg = <0x00>;
++				cooling-levels = <64 102 170 230 250>;
++			};
++
++			chassis_fan_group1:fan-group@1 {
++				#cooling-cells = <2>;
++				reg = <0x01>;
++				cooling-levels = <64 102 170 230 250>;
++			};
++		};
++	};
++};
++
++&cp0_rtc {
++	status = "disabled";
++};
++
++&cp0_i2c0 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&cp0_i2c0_pins>;
++	status = "okay";
++
++	sfpplus_gpio: gpio@21 {
++		compatible = "nxp,pca9555";
++		reg = <0x21>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	eeprom@54 {
++		compatible = "atmel,24c04";
++		reg = <0x54>;
++	};
++};
++
++&cp0_i2c1 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&cp0_i2c1_pins>;
++	status = "okay";
++
++	i2c-switch@70 {
++		compatible = "nxp,pca9544";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x70>;
++
++		sfpplus0_i2c: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++		};
++
++		sfpplus1_i2c: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++	};
++};
++
++&cp0_uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&cp0_uart1_pins>;
++	status = "okay";
++};
++
++&cp0_mdio {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	status = "okay";
++
++	ge_phy2: ethernet-phy@0 {
++		reg = <0>;
++	};
++
++	ge_phy3: ethernet-phy@1 {
++		reg = <1>;
++	};
++};
++
++&cp0_pcie0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&cp0_pcie_pins>;
++	num-lanes = <1>;
++	num-viewport = <8>;
++	reset-gpios = <&cp0_gpio2 20 GPIO_ACTIVE_LOW>;
++	ranges = <0x82000000 0x0 0xc0000000 0x0 0xc0000000 0x0 0x20000000>;
++	phys = <&cp0_comphy0 0>;
++	phy-names = "cp0-pcie0-x1-phy";
++	status = "okay";
++};
++
++&cp0_pinctrl {
++	cp0_ge_mdio_pins: ge-mdio-pins {
++		marvell,pins = "mpp32", "mpp34";
++		marvell,function = "ge";
++	};
++	cp0_i2c1_pins: i2c1-pins {
++		marvell,pins = "mpp35", "mpp36";
++		marvell,function = "i2c1";
++	};
++	cp0_i2c0_pins: i2c0-pins {
++		marvell,pins = "mpp37", "mpp38";
++		marvell,function = "i2c0";
++	};
++	cp0_uart1_pins: uart1-pins {
++		marvell,pins = "mpp40", "mpp41";
++		marvell,function = "uart1";
++	};
++	cp0_xhci_vbus_pins: xhci0-vbus-pins {
++		marvell,pins = "mpp47";
++		marvell,function = "gpio";
++	};
++	cp0_pcie_pins: pcie-pins {
++		marvell,pins = "mpp52";
++		marvell,function = "gpio";
++	};
++	cp0_sdhci_pins: sdhci-pins {
++		marvell,pins = "mpp55", "mpp56", "mpp57", "mpp58", "mpp59",
++			       "mpp60", "mpp61";
++		marvell,function = "sdio";
++	};
++	cp0_sfpplus_led_pins: sfpplus-led-pins {
++		marvell,pins = "mpp54";
++		marvell,function = "gpio";
++	};
++};
++
++&cp0_ethernet {
++	status = "okay";
++};
++
++&cp0_eth0 {
++	status = "okay";
++	phy-mode = "10gbase-r";
++	phys = <&cp0_comphy4 0>;
++	local-mac-address = [ae 00 00 00 ff 00];
++	sfp = <&sfp_cp0_eth0>;
++	managed = "in-band-status";
++};
++
++&cp0_eth1 {
++	status = "okay";
++	phy = <&ge_phy2>;
++	phy-mode = "sgmii";
++	local-mac-address = [ae 00 00 00 ff 01];
++	phys = <&cp0_comphy3 1>;
++};
++
++&cp0_eth2 {
++	status = "okay";
++	phy-mode = "sgmii";
++	phys = <&cp0_comphy1 2>;
++	local-mac-address = [ae 00 00 00 ff 02];
++	phy = <&ge_phy3>;
++};
++
++&cp0_sata0 {
++	status = "okay";
++
++	sata-port@0 {
++		phys = <&cp0_comphy2 0>;
++		phy-names = "cp0-sata0-0-phy";
++	};
++
++	sata-port@1 {
++		phys = <&cp0_comphy5 1>;
++		phy-names = "cp0-sata0-1-phy";
++	};
++};
++
++&cp0_sdhci0 {
++	broken-cd;
++	bus-width = <4>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&cp0_sdhci_pins>;
++	status = "okay";
++	vqmmc-supply = <&v_3_3>;
++};
++
++&cp0_usb3_0 {
++	status = "okay";
++};
++
++&cp0_usb3_1 {
++	status = "okay";
++};
++
++&cp1_i2c0 {
++	clock-frequency = <100000>;
++	status = "disabled";
++};
++
++&cp1_i2c1 {
++	clock-frequency = <100000>;
++	status = "disabled";
++};
++
++&cp1_rtc {
++	status = "disabled";
++};
++
++&cp1_ethernet {
++	status = "okay";
++};
++
++&cp1_eth0 {
++	status = "okay";
++	phy-mode = "10gbase-r";
++	phys = <&cp1_comphy4 0>;
++	local-mac-address = [ae 00 00 00 ff 03];
++	sfp = <&sfp_cp1_eth0>;
++	managed = "in-band-status";
++};
++
++&cp1_eth1 {
++	status = "okay";
++	phy = <&ge_phy4>;
++	phy-mode = "sgmii";
++	local-mac-address = [ae 00 00 00 ff 04];
++	phys = <&cp1_comphy3 1>;
++};
++
++&cp1_eth2 {
++	status = "okay";
++	phy-mode = "sgmii";
++	local-mac-address = [ae 00 00 00 ff 05];
++	phys = <&cp1_comphy5 2>;
++	phy = <&ge_phy5>;
++};
++
++&cp1_pinctrl {
++	cp1_sfpplus_led_pins: sfpplus-led-pins {
++		marvell,pins = "mpp6", "mpp7", "mpp8", "mpp10", "mpp14", "mpp31";
++		marvell,function = "gpio";
++	};
++};
++
++&cp1_uart0 {
++	status = "disabled";
++};
++
++&cp1_comphy2 {
++	cp1_usbh0_con: connector {
++		compatible = "usb-a-connector";
++		phy-supply = <&v_5v0_usb3_hst_vbus>;
++	};
++};
++
++&cp1_usb3_0 {
++	phys = <&cp1_comphy2 0>;
++	phy-names = "cp1-usb3h0-comphy";
++	status = "okay";
++};
++
++&cp1_mdio {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	status = "okay";
++
++	ge_phy4: ethernet-phy@1 {
++		reg = <1>;
++	};
++	ge_phy5: ethernet-phy@0 {
++		reg = <0>;
++	};
++};
++
++&cp1_pcie0 {
++	num-lanes = <2>;
++	phys = <&cp1_comphy0 0>, <&cp1_comphy1 0>;
++	phy-names = "cp1-pcie0-x2-lane0-phy", "cp1-pcie0-x2-lane1-phy";
++	status = "okay";
++};
+-- 
+2.26.2
+
