@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6E4285F6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FA4285F70
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 14:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgJGMpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 08:45:35 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:60951 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727253AbgJGMpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:45:35 -0400
-Received: from cust-43cce789 ([IPv6:fc0c:c1a4:736c:9c1a:15d2:fd0f:664c:4844])
-        by smtp-cloud8.xs4all.net with ESMTPSA
-        id Q8p0k5ytWTHgxQ8p3kFRHm; Wed, 07 Oct 2020 14:45:33 +0200
-Message-ID: <5f5c303d30eaa32c21131502cc6f28db9d655329.camel@tiscali.nl>
-Subject: Re: Build regressions/improvements in v5.9-rc8
-From:   Paul Bolle <pebolle@tiscali.nl>
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Date:   Wed, 07 Oct 2020 14:45:30 +0200
-In-Reply-To: <CAFLxGvyvgSvcizZFZxezFKhZCP79yyMuM7izFbcUtzRTpiOb6A@mail.gmail.com>
-References: <20201005093024.16032-1-geert@linux-m68k.org>
-         <CAMuHMdVqpgro9Qzn39fK9R2-2xDm6LDe6uOB5gSTrdRxbecNXQ@mail.gmail.com>
-         <20201005125840.GP3956970@smile.fi.intel.com>
-         <d1457a75d5f38002c063c3801af7819af43e0bfc.camel@tiscali.nl>
-         <CAFLxGvyvgSvcizZFZxezFKhZCP79yyMuM7izFbcUtzRTpiOb6A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1728316AbgJGMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 08:45:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727253AbgJGMp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 08:45:58 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 181D120789;
+        Wed,  7 Oct 2020 12:45:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602074757;
+        bh=SQtVP+8f1KfVqOEVuHUJHQBMLIpKu5oYibHyjTN7fBg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GAI2Lniq7V7EDRJTGTBlD6b6oBzqr8DHnPpPcVZ8TUBCyWU4hNsNHjv33gWUr1TtE
+         7Y1oL8E4RRr5wmIkkFWcaWkuBAx+rl48gP5kfTp+GLcJNXFedzD0y3Hxqy+740H9Sw
+         wQqQGZf705dB8POglB2NvaztT1a5EZNxfxsinj7c=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kQ8pP-000M8V-1P; Wed, 07 Oct 2020 13:45:55 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Venkat Reddy Talla <vreddytalla@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Subject: [PATCH v3 0/4] soc/tegra: Prevent the PMC driver from corrupting interrupt routing
+Date:   Wed,  7 Oct 2020 13:45:40 +0100
+Message-Id: <20201007124544.1397322-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfLmECytRh1QUsTdE8IrpXEKLtVO35SBA9ERidZmlQS5ltBJyPZG8+6+gVf1IKAYJO2ui0/nJD8V5RAHdw09IHCeLzUGV0IU2XQpuHtb24KGtvEDU1R6i
- YHLacu0Xlp1uozYD9aZ9oWEcOg7OHfRGudC6VuGe4I7D3BooWlz9aClFmk++1gdI3b+XGmkurrssYE1l2cM5YV/fZ9udsMEA+LqR2lnaqmFgYeXvOwU1VpVe
- GuSegzWYt5i7Xd60W87QipjckDxamUtK4nMO6/fPoe/6XPpRFAxp6RTt15LDlxUK41XmUcwEKHyHe3J9DxEenRXZLFEp0JLo7+nJcIW8z6tzo0D58PKQy00R
- 1+fNfRuWpzSlODU+4buLW9uebXymIPShdboCQkKlm9SDIZMf3P3A/N+MHSAMXx3ifQ94DFMyZs1yvteoJbPyLv8CLCgUrQFhEEMBiDuTOzKlflBFnNh0PQe7
- NEBOuViOL0LCBKxgf2ospXs8/w+AzFLvCRQlwyHWmz/UIr6XTOvAw0LexU5Wkh5R97DJRZFihZzkpLfKiQkZf+1vlblKs2mQcV6V07g3ssGqkh2ZURkrSdnj
- CeJJCaCr2fMkazZ9cNJQfudQ
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com, skomatineni@nvidia.com, vreddytalla@nvidia.com, tglx@linutronix.de, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Richard Weinberger schreef op wo 07-10-2020 om 14:08 [+0200]:
-> UML has no ia32 emulation and therefore no in_ia32_syscall().
-> Maybe you can check for CONFIG_IA32_EMULATION too?
+This is another respin of the initial version posted at [1] (the cover
+letter describes the rational for doing this).
 
-The pending fix is:
-    #if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+Jon, Thierry: I still haven't applied your TB tags as the series has
+changed significantly again. Please let me know if they are still
+valid.
 
-Since this check guards in_ia32_syscall() just checking CONFIG_IA32_EMULATION
-should do too.
+If everybody is OK with this, I'll stick it in irq/irqchip-next.
 
-(Way outside my limited expertise, but anyway: is does look odd to see a call
-to in_ia32_syscall() in drivers/. All other calls are in arch/x86/. Isn't this
-a bit too x86 specific for an arch independent driver?)
+* From v2 [2]:
+  - Made the hierarchy trimming an internal functionnality, not
+    requiring any intervention from driver code
+  - Spelling fixes
 
-Thanks,
+* From v1 [1]:
+  - Moved the hierarchy trimming part to its own patch, living in
+    irqdomain.c
+  - Reduced the PMC irqchip patch to the bare minimal in order to
+    reduce the risk of merge conflicts
 
+[1] https://lore.kernel.org/r/20201005111443.1390096-1-maz@kernel.org
+[2] https://lore.kernel.org/r/20201006101137.1393797-1-maz@kernel.org
 
-Paul Bolle
+Marc Zyngier (4):
+  genirq/irqdomain: Allow partial trimming of irq_data hierarchy
+  gpio: tegra186: Allow optional irq parent callbacks
+  soc/tegra: pmc: Allow optional irq parent callbacks
+  soc/tegra: pmc: Don't create fake interrupt hierarchy levels
+
+ drivers/gpio/gpio-tegra186.c | 15 ++++++-
+ drivers/soc/tegra/pmc.c      | 86 ++++++++++++++----------------------
+ kernel/irq/irqdomain.c       | 58 +++++++++++++++++++++---
+ 3 files changed, 97 insertions(+), 62 deletions(-)
+
+-- 
+2.28.0
 
