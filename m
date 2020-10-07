@@ -2,277 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7210C286113
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 16:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62D7286049
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728616AbgJGOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 10:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgJGOTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 10:19:04 -0400
-X-Greylist: delayed 2553 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 07 Oct 2020 07:19:03 PDT
-Received: from verain.settrans.net (verain.settrans.net [IPv6:2a00:1098:0:86:1000:11:ea:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F0CC061755;
-        Wed,  7 Oct 2020 07:19:03 -0700 (PDT)
-Received: from [185.132.133.26] (helo=lotus.a.rb)
-        by verain.settrans.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <rah@settrans.net>)
-        id 1kQ9cJ-0002Ny-EW; Wed, 07 Oct 2020 14:36:27 +0100
-Received: from localhost ([127.0.0.1])
-        by lotus.a.rb with esmtp (Exim 4.92)
-        (envelope-from <rah@settrans.net>)
-        id 1kQ9cI-0000DG-OJ; Wed, 07 Oct 2020 14:36:26 +0100
-To:     Stefan Agner <stefan@agner.ch>, Peter Geis <pgwipeout@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lukas Rusak <lorusak@gmail.com>
-References: <20201004133114.845230-1-pgwipeout@gmail.com>
- <cdd0f520ae4990de90f461e21cb4f298@agner.ch>
-From:   Bob Ham <rah@settrans.net>
-Autocrypt: addr=rah@settrans.net; prefer-encrypt=mutual; keydata=
- mQgNBFN/YUMBQADKw+GhI8HKoUDMFFWh8P+FlUE8QVeOe8krz9Q4+aa+8U1GgTI1E4q3WeZT
- 1Q+SfyN1lyGAKw9nGlhjgUus5Iv1bCxCSuIEtAZ9mdkhSzMz2JaY20GxeweTX7bQzuSNlg+/
- fARZGpW1UDAcm043RjadJU8A6xn1eE2se4Vg/WVT3EPfQzdjWJoLu6TR6gHmOJJAFubs0P6j
- 2Vn4oYm/m1jTGAB2c6aSbHnerpnwT+Hy4Po4W1qfrKXOZtuVp/kJ9KXdhuUIDAGmeciguT/n
- BwTA7agUkTbxKAnv08sLyZj2EYabgmpH8rh1RMYUyVO9kgrDyLjjuoNl0+ZVjIOvkNHkAhJA
- 3bJSONOxWg1jXFn//pzAjlQfmjrG/H1+SgZCYaLNGq+wdGDq9Dd1xuJE2pF7VtZ2Zrnrd/Bh
- IZ22M7c2vYW51R+vGm+FBKdMHwVM6o5XzQPAZlmXuuJ3apMuoLj/wgFvr8QFMqQ9GP95EOL9
- uj12YV1dHvCQCX+6Gy/TdvG8cpyS5VX0+RdnJ5SLmCbKflBcM4wIxz+PV+qK/OZXvUqGY6xi
- pRYZms30vkL6LaSrU7IghLcsWe5CWfwEZQ6OFbMWRbmTo09bYppJBF2hlQIyH9xZ1dnZAp24
- xUTH8CbLbIquK/nsaJ5r6kHClNsPMvWiGe11R7W2VvxgNQImPjTNDbdA64XFpHIj/tBvkTuJ
- RdGihmbKFZXQtBna8BgMEJCyGtmeP7LBm0+kye/tGS5ozUEfRNozyMlI8/E8YRV/cIrrciA6
- 8d+URBkgcZwkNi1UXEUi7ApMULWjLGJnAuKwng1Ib8Hmu3SrIffnpNDwlaP263EPrgamUmkL
- 9ZOONPFyxNFFI0sTLT3VOQXLDOWo4cLOlPSUeUjm8vi0Dw5i9gPzF/noDYHS9U5Z9QNosPzD
- +q7MHXYpU6oP7tUpmCdPOSfyNf0E+dib6S/ULVpKD0fthBY9c2/s4wCsqdnXyNCKvaDP9zst
- UhldlHIUGFZFhntN3RaXRfmuD8UcmtjkoSI9ofDkeC+lu9siJXL5oLQfIhucpx5vS8n5PCZP
- edBK3whkAjRzGJsduIOCttmjQ1SbxIbKC0cK2GHJiY5+1DxU8hnuq7ohzET8g5PTS6nPodg1
- afoCB6HPC/SPqUw+jhLkuZ1e1TC5uVhLJ6TdOgEnOCqDDAehbp5jMyxao+3StDzC6T+Z1Vhy
- WU1OjlldckCH6ZuT4joQF5eE5EEXTXw1E8lATPMEmlWe0jEnQdlSz6UUu2Yn+Wj0GKLTszys
- c/6jej/QolQohXi7KdpvPaEGa/1tHVOdS5fGXLzXMNDqqlemAn7j/pkJKY1WUPpQvDjuQYge
- peXeVO+zgbJSM+fAlFr9Q7WWjj5WuzYucZ1DADvk6RCjxLSH3cf6cig2iIdbY+v+ojMd3aE4
- WRLwfNOe3n8Djle63632BGUMEClz/ipt5MHBgQtDHYrkzxV2O3OaTdaz9o60QRJl7MYyYBSl
- OP7m5168TrwVH7OWgpl7GdiXMOEqT3It+vDM5DcflStQyoZYo5TmZLUTKeJ0hCdWmCk++qdq
- +9ktLNfwSK2n//SZKu5OMIBhWFNWQZeCHX7FotdNZNzFJz3ZPYUKzZtESSLV9ds7rCPEKsjo
- yhteDI2iKu25T+3Tm+P5UF2zPz4Teg0RMHXx1dYlHbN1gmVO/36JbNgb0C4Lq98lVJEaiX+4
- 23ymU0nc560vfh0jb9ZabCgnpf2WbMH+Kt/Sv7YcKdsRD5Tc/Uuacq6c2EPKIZO7LF/TZLxq
- BWup3xFfuekF5iH89wDHhoAl8q5gZoVy0GzCVuuPQdq9PNNaFo3+aYkzGqcjZTzmXySLMU/j
- WDvE9pF5YvUiCAFGbKR0pRMYdUWfmxlbeUQt71jaNb5C+N1xmI7FaQsmAo17jubpL8V/xpk4
- vbNXDEedhsBv51LxbD3EKeTqKqIitgt3WUllH+Imm3BtG6Z8twsvQkGU6nLQ4YEteDsTcLhX
- cX3eo7AH3iA7YR389ynIvgh2/xxGgPzRuTcP7z+bP4SrfDR3sxG2qMEevNoerel27dyNHLx0
- b1WkjzWnz3Oxu9+jql3e+fYEtxVEfRrNVsawViAQhv4JTu6xLy/GYsEd54sYao6S/8PiD63o
- 1Z/Y1rJU2xkI/+e3EIW1F06pIFq17YQraWR7R4Jv7OmvWO4e17QYSyjyHFA1n3mdmTSjaMXA
- 3Z7oh2Vg4pxqchlvQwQULpN5ktIl9rkB9x1lS+5/Q/gGCZD1hDVRHt00mTvxN1QoQKlXKWwQ
- pOMEgywJnQqovN2g80noXmmoZE6RLe/mLnEC0MYUqolEkV1W20/UFQveMC9nz8xm2vpyKIKP
- khrpj6HT8AI2xpkif3rXCARv1Er0qIKAP/eIQRycZhTrj1qtS/fyB93S8TVfKmN1F9YXZYnX
- HPlzNrSHZSRe0Hj9gcO4TlaSKd19sACm4/c/7Xb9uaOrR71W1jF9yGZCYUA3l2gUTK+3nMId
- LWbo8jqZWoipxElZaOwZeR/kZvPlIEDbQjIcJyYbY/9mYTs1h5ocwPDhM14+bEkZgc/3dCZ5
- mCtTua+SqYzaC/9Pa0qQ91E8H28Q+7ENlICnULcyQw7rpxSl6N5CkOCRg+9Z7TZupRkLEw5Y
- RsBsd2LBWh+fxP4Ws/Y/SSvKLpXwdRwx9YUvutgdWuw6XTyU2yg1CdBMk8QXK1cQRfvZx4Jg
- 16oewDl0SQARAQABtBpCb2IgSGFtIDxyYWhAc2V0dHJhbnMubmV0PokIOgQTAQgAJAIbAwUL
- CQgHAwUVCgkICwUWAgMBAAIeAQIXgAUCU3+eQAIZAQAKCRDgd8HtIOPjrvJYP/9gl09IC4ir
- QVdi0g763w/sGF5e5KE1Sq4ciP/Ki/BpaTdPj73GrjsT7Sv94xyr6NS/OF1bIJb6D2QrKabK
- 6FthKPNg6Ib7YBvL7Fk5BEtg/Q5/D+IK49XgyQGkmLt5WS5wk/b6YEgJ9S4pwgjgwII9KkdF
- 6z3RJ8Ki5cJ5d8kHI/S4ciMqPu15Limu7XQbOplkeMO6a7KwIDystyNdcD4mftg9CN57XLGf
- 0y6THC8MesmgW7jEFicG6I60uUhmvRmnPZRQ44Z5pCYysJvi1jn5cJYglK/AG4doKfMQ93Qv
- gkVZ+vTSHw6F7ubGGVOu4bakppF3E9/xZs4DXhVOooFwqNvRXqrLgV54H2C3x6t1atVev/ud
- BALhxSfHxxU7qD79lt8l0euUnhaHwEJsyH2VuAK0Lcr8K8mosXeOc8tp9UMZGjDtLjWjJDlO
- ZvRb5AXMq9OcG7IQ/59JGrMQRdvLCwaTh9TjYcEZNzFlIxLWwqoKwWuuBci/CyDo0J/tp4dn
- ElxNroNGtlt1GdNqcQWqDDQecbo5jtOjku73niyBewLppPXMcc2vWyXScCxaEPby0IbKTL6o
- zD4DXcDnNXveENHcWactI+jdksNpdgbuws1+jIVt81x6sX5hq9B8zTEWRXXCP/+jmPwlI02F
- 7Zt6QfDqILj6QUmnq8RN2PFpvA+3Fh6CwfYYaqG7i/Nywy8QRX2ejvIQKTFtXpAuK2IR6/JS
- sd8oNANmFehoXMvBIB7pnFkagirZCWcOIcdA14ZY+9gMVs80GgMPaVOOPJjtFD1EjjzS9cfI
- +D/Azh+6OUbpScbf0idAKGVurvRlE7GrXKxa6Kc1qM+gPDeYN4Yw7ApPHdVCYTxOwTY3z+RF
- CFGIY7xvwGAsQSd1LimzIMZtGr4pLMyKRYQj/rYQdFtL/bzVWpAcAvD0vD97BNMscqn1ybC/
- fNZGA6dITPvg77m49MwNeQe+/DMO7wToveCJ8SLAqAic00c1acuQJfVDLC6SOrVqJHzu3V6u
- 1Gug1MsfzCqnniH7AzWxfZlE27OxB9dIa9wJSjUKz8ZrrdeUyeci8GGFaouKZprN2uDp5jrT
- kwqwDVIxPUBABeQrHhRbfSF8HsLBkEBsXwouQTIr2LURc9GaZ5w9RDL5E2EQjVL/CFmFMOvS
- D6m/81edeX7Zmolb4Ff0mAPA6/m3skEoStYfcuQlJVYZK2tlxC2o2nvv37kbN2AyiwFuzNyd
- G80E0Hy7NXL4dV4n7XthO+I1owKRRsL7fEJ5bUpvCR28cj1vE16PZN7p5jMLRKruHMwrNvoJ
- H9nNI65ywJc5eIJTNtRcb+CIyjayze9e9QceHv9xTan1gsi7ssXRkSjjI7fU3mF6wz+iwDiU
- PhIVUGlZc31rcker8itCprJ8wskRU3+/BUAsfHXnU5WqlVAqRUZdWLSTAEMpWTo5OHOTN6CF
- r/3II8XDfHy8Ney4335HO2XssyZzBTA1OIwjXe8LYqMBO1v/rFf0x3TAWU7pu5EXDPHHAiK6
- mVK9a7G09j9EHHyMavpxSmMaYt2yLfjF/it/WrYNToO4tGb4dX0NcV6QDrbcny+hYERg/K/c
- Aa4oeCTkq7QQTW16uBAf5pt9cSd8HeBqgGXL4+NVp/3MOlaqCpcsv4ttFK5T6DsGtwIrF0sz
- bfMh0JPOZFGPHkJjyW+8ufPY+DtOz7SY7x0HmLy44F0ZH0GVBbVcAB92Z4be/lW+ydLeo/2P
- M1gpTOaFkNRpg1ngtMOGYUaMLVIUg009MAbJMuCSDP2XJfjUFLHYHjiSYtugnb7+G7I3Wz5r
- Jqvo/XMmzVbUKwsck/CG3WoZNaCZa07sAt5Qd6KE71MONLHyeHgc/zXw8vW60Pa9yaLlq8ua
- roIE8TQeLa0MOGFKxHbZAShV1qucTMElJ1mp6UYt1XcJm8FLrE7GhKRQEULx6fA/XfpCqT0j
- 4dQV8HF93nGdDSG8V1GOw3+lTvM/hAJnY9uhEu3fA21ot7mfq/lD1bjRd5SQsxb3CLTwx95B
- is+JKsit7NjMlIN/9h2COac++VADcPwspX+i2E3jFPQaqK7TUyis7wJ71UfGBwtPHZf8T2p1
- D0QneT9fY7ofPuJ4ZquRlPptVzmoOldUBBKMphSstiPGKDHZiWMDmS9zu7qqkSBmDDApyGPZ
- XXsP2ZUAsT4GXeFp1O9Tfa176/W8Reu6ZZPjyA900UAwQA3IU0SvQllBeVTPHgqgce7ldZcb
- 5LJnafkuidfnoOtEYEFYoJ03GZK1ncDhRTqrRTxttnx8Pq7XlcyP9kdImtd+lXOy1+307xLK
- 3zMdPavLGipNpCYzrtN6s6vXsUy32rUx5QcnhEXujJR5zcBdXaF+xEmx1ZSbE2t+NuKGx6nQ
- WiXCIqJl7A1tCc4aVPWWaPzsSht5WFFlXjMGmfg4byNZYkgXMndtFFS0NSq6e18TqqdetZfV
- pX1LrQyjgPaLOwLtsRuqziUYpZtFNi6TltN5OmF6BnC4C3dlrXUfDs5j8wXLJUFM9lcJjUWJ
- EoWR4twrXsLQilge+c3XvCYQUX3Fhsg4KDAinYxzDMyAsDsaApncghkBGVYdvTJIn1Hs5izm
- 3b0+Yl97IBtJ7afDM1fDXvY1DoHrObacPHqg1HCwvEI248KxzT+xpUq/XfawjrYOuw8bYMjW
- PYdr7KWfmXvA+HH5HvO+9WAzdoN7eRDc8ioPT4tphi1rpr0Sk4p0oUebQrkIDQRTf2FDAUAA
- vitDH2V9eAtpQnaeAPQFDpQp9en13gd1r6tB2xc07kioqQG6lVASGjScBf5F/W6M8KbMDsEL
- SX8eBrQd972UV7wyBb7PJW1KjXLJUUOnZmsb7E28zNRtwZA2vHyubOTcotzc8SoWDMFzE1A+
- 2yFmGL0yRavTrFKjJugPvKTZUOpRiW419zOCjSI2M6HbVHCuBFMXfG9/jFLHo+tEZ7LRJ2Gq
- sZvt2kUyLRMMdIMGb+Umxh7g6HgCxr+wdXvfjFVzbxFdPnlPGxiBpJS0A4uR+n6kSDOa1pcM
- Nw9yCRVlD8QCj7HxC5fbjuCCcbX71Xi7fnY5mm5LjLgc3KNP3h7HVFwdYa/kvBtBMaOBj+ID
- D8mWpE7Hgp7ZkNHkojlsuIHAx2ohDWCfazwEoBSf3H0C0HGDc16UiUosRYvywC2AXki42QVM
- 5TiCzVFeugqDBmhPO75QNweLSwC2X8KCINtMhcr0QMAO9ceygVlLyF0X30wn62Zgj0Ajc7kz
- AT8STQD+LVc9m/u8RIdbegNRFMB7AlyGdRWjezvnGI4WXotJuSqvQ5ZYOqfnsgGFGg6Kx0Iv
- 6o7r1d7Ke+mWmNZktxWJ5s9ex1mjCvHoOpzYN0xj2dC1gF8onGmaSwNT3pa/fkljSzwbGHvm
- xGSPtV6GdsUTcDJULeiFT8TM2/v2Z1P5Lava6QSDCJ36KAuCf793b8yCTIfhDyECQhXL2XRP
- 42jys7JrhWYwa4RTohnSh8taX4WV1yufk02Lca8HUe2h4dCD1E11mmphmrkGN7Q1ACjC+LAc
- O1RjaBSgGrKQ6vP8RUhRaN7hRlybsIzAmb8tA4lgUGWJ8jFANiz3Ulhi79WRilWCdYhAwFwX
- N633+h6rAaplhFHOvdoEkycKWuyOKTm3h5TgJ+ndNGN5++KjNKGUapl0LrAy1qAjW2NP8p5K
- +7rjLSIujJD0eBSacmFRZlegffvc7lfS7lYAUgAwnzyYcxYtuozp1qqasVXN1dKEpIelZt5g
- qoFyHwQdmE2FHAmcst4mOw7teuDt/K+59PWha2fsP/9IXEglKg+ojgJ5ae+WaQVRUgTwnEqr
- Qf4Qg5vNMBJmGJGXy8JzB7XloBvFURH8seD/VxxzU+WbQdcH+WCNNvmb0Q6PT7FeI75MYL0g
- h5ISNEyYxnoUTQeiFz1WVF8DxfAf8r/RT2PJPtkVHjQeX4m7H+Mi3dKjszkEcD4Wd06KHkG/
- iCrPl2e8bPWQ5RKx4r9Ka5ZJbv+kAcTuKlGRieIKzJU1EzcuBefIccSiDqaL901oTi274zJY
- wihAqqR4DZavYOwim1hMqoeVil0mH66vHnvT2PF2/DvSNQG9hv5/1uaPwqpBpkfI6LhSpoSe
- Pu0IzteDiZYp298pidBHO/zdPvgmv3ecFbImeYcxDRCavQpkUZpWkm/BQZXiJbc7Z2Qzy3D1
- 8/w82T4ba7u7V9P4zEKW2rpmzCV3wdYglk1QJvuTfzU3ZVDHSpbe6y7d7IvOQElGLh6otBXG
- 5WeTqhPwYgUBjXQEDCm2z2ZE6IHEQj0M1Tfa52jZJpEJWrowFJIhMRdyE1106jpQeuCF1hK5
- YTS3Sz7Xk8p69ff8HQd3wmGCZMsGAcl0M35ZmTC0xMXWQYw9572fqx+UD5k57TddVVaIUOzG
- 2mOp4njpTQE41bd5OjeEO9GC5EmyBTFhid3zegPxJbFSXoA3eUTyQeFXNkduAaWE3sAjctBa
- s8OFGM+uHQIh6lMonBRlSULWifOtnQ9dReHV3KjzIzpCGKqW+krgoZmysywPDRm3IPITxk6h
- j/UBVPw+VJhbTwMNqdhhaU3SDqQOmMsOFhvWVETqI89GArrOF4k60DC/XFAgox6uLawteUnn
- q5hXoHN4GOaaI8T83UXclb9+2LOHR6gpWjlGEPT9GrQJKto0c8wVKREWt61ArKhyByIA6Itt
- BL32AMwxlLS8r6UCKHTLeQ6S7EMffU249o2GbakKjWmpcsUkVOuHx4U7WbGuRt0TrMS4FinI
- 2dl5SZ0EGCqoqXfCyzGqfMmCf6q2a9rADGxUyqSiR0wEVFX6wdsEiyBfhscxKiUQ8vlDQ7Ay
- 0yk9M6++G7c047tUYk99pEDNy6PDfvsk41Va3zCnffVyYHMvtJUaq3oEdpCTdbcqH/zZeQ30
- uJpV6NVOiOj/UcQiWZdqtkWKIPN0rQGOwAM9gdIiXbBSsziFI+lDadM/UNcna6OJ0OqtOlIw
- KCC72SBKrgVp1P6UfAQWgv9U7/7StWgcl+Yu9N+p2bCb4LY7wFrrUh+yiLah5P22m5DO5VBt
- PDTZvlHmSiXSCNBx7wJmoGgRd2RBESAToNgO1Dtppc/ltlZkSTIZ+1AC0Ijwrq7UlUUviy96
- 1srXt1VIdoSS/oZIyeZg7b/FUg0+Pm6RshphfKoXN/v07jGDuRDp5AlX91QqNs1MWffSAddC
- 90l1AVuBRNGIcBJMbE3nHlJDVryT0yz5g8f4I799zewPbMcLPGrjoiHwYW4sHxOAAAkWi9c/
- U/OpkAJymsaaQckx7GW/IXFGsO7eh9mHdhfSXn15wmtD1JV94ZWKTXniB2+uCBcTIVB7M/We
- XyvARLdKDehbJMxtEA0hTAhRTe7IDsTaNU3OfPGUkxuDDOsYfZzwPQ6c7+me7UivUjKZGPAm
- 9Yug66EaB/3OBRwHaLLRyEmjn9y+ZKZVVyAnmdEHIiE3h17i2JQJg6cHIvHmI/aGn9EAEQEA
- AYkIHwQYAQgACQUCU39hQwIbDAAKCRDgd8HtIOPjrpEPP/452po252lsZpeDmvWD7UK1J2Yk
- NSdnYxB3sdqLqkMFvkqrgoHlUu0SXrYXNMDTVS4FpjtPWCKl7M80I0ZHlHp18RbIUwp5xAXU
- O+HtVRNIfqmp96XRTbwvsKOOuo9hsJvxh0R20u1MalmYh8XXR0Pehfn5NXm7GFMT2I4fNFBi
- Ii3qLhR4pAOGfBwxXG90B+DcxBFolWLtrGU6zg35n7Mec+qb0uTqWsMyw4g67DMTB73Q+uP8
- Ag0cqbFgiERkQmzOtiyOYcF3ejuvm/OzVrc2u6bHKkMtzavjK25o/UOBWhX4JR/I41BmOpk1
- d+L3+TgKCRSw720KqvpNTgsGwXu5QHaIlNN9bf1GDDavpnZh8HIZV/yr2UhCVnXexGdQdXK5
- llNEN23Ez098KWXxh5Phr3lHbiifFKDbUd4bzks7aKP/6UTxeN0G/ImHKbzlzzEC6NMox5bz
- 4gIw/d/Fkd1FhQuMyhBKf2i9slA74JSBxIeG57m3RfsP8Obxny3kewc6X6UprHP9YKK5jLNa
- INkgaMrFYIecMQDBktDYVdqyJYEyc7O8NiWzQj3KEXyrojFhGIa4wBo9p+MkAS4EAUpDl6SN
- 0/IohKAKibH2300SR3DmXX1SiLxCqvL+XnAW4VwftqTK0SYZkZjAgimaudwahZgq788JWfqG
- h5WJnBqzT4kAcLcNfb1XfEdmX+vcuKqvFBMa0j5kf50hqql/siXHTDfhMR2Ho1A2CZZSywbt
- ohuBv/6/xRXCnnlTWhEdoTDbTBr61x4f1BQxB0OerXsyk3ZRDWY6oO6zSawCZQavPAzu9VNk
- 1iM4X5BXGl+6HFXdaVBqs0LDJ7Rg9rg2DfYPbE92zdU4gytnkgvcM5KObzKdY4slYtBmSdQK
- dSXmg2owYDUjFUaazWJ9tHkxlf7OivA7m5uk6vRfqsEbpKLrbfQtkvEBwdeAtYQr63GTTjwq
- 6mJUewU0tT5eJpDxKzISIJkjYj2y8mdjGvZ3kButM3uwVHDAtK6heFJcbVY0FBHTChgbjC1W
- 4RsadUre7pLMoii5yydnDIdTDj6LgY8HxGmn7wSOz5vz3leyzxzrXBhwRWZgKSZJTftf429P
- ZYLyLU4dyzB9mGg+IcNfMyC2X/z0gquy+0bjWNBGRL6ZKICfiiaD/pmVIrf8g4ea0+o7UveR
- 0+yp8T+lJA6zBrrK60l7HQxEMrMeeOhsMrwqDbhj1wXYjLVWbax/4ap0b47XCUtaKV4Yzphd
- 8Y/ikBqI+9b4gkaMOIUO5OvmUAJNWFXZQYNa97Q8jPdXo86gOPMCD7s65yNs5pjgHgSwXQa9
- d2yWb1PrHNrJorOUWGoZetqJCyE3fN23I0MqlCir2SGk0gii/5OqsZ3+5dyZsppvtp2GWGZk
- JfIG6tW6cyIHjk83cM/AoeXacArpnSG2Qh1cvkpX+iyZMBKz5crM2yjgwDRKfBl9pedEzO5a
- HWJqP67tfI7+/fVkwh+9f7LU7iPYwfuzjUsSg3if4tnI2ED0KUBbA/OYc6GSRv+sFV9FFJKY
- tfhUND5ORlz6amNJewRJucDQIHy6cBrcmwurQDVZItcaBIzMs1p5MOO7py1wGMEd0vO0stJL
- rzxsYX+jbhw6+BaY/FZtyqLSDL8l0mztLclkpY7J3eRKlmjADXW2zDA+oV9YzMAkkfT2Y+h0
- VOyBybIBwAP5/UQKpToFIamXjCG2fkmsyWs9GM3D+0w6Htfg07qSywt4UKUS3vB6/xQyeGzt
- wuI1LGY9dUbuq281fNU1hO5d19qIieHguAiHtMolcRcyUkPTYYKz+nbObJTOFbBAIBDa6KR1
- uC5mxyOHyFP3js/J3LVCYDQ8V+Jpen/wE43sD3XayNb+6j+T2J6Ll4XkBzNVzvxuNCCRniqD
- RCcIx9o4HQvvdLiTz9EpDRtv38y7VBLXUilzJZ0b46w3Rix+rP8DIhw1ajay9GP4OaSOFIWQ
- UMtVtX6TNZkuKGerR8W9Dj1dPKhoNQmUUjceQr6FY+PuIXW6J0CbGf2kz2298ST4xllLR0en
- JwCkJCcT1owyOhGADeBM07lWONNrU+f1V0dAzIPiYdc2JbZFyFZWhZJt35pHJIHCF/pAjXaS
- pLxsAO1QMGmzMr5DYtYFd33C8IHmCrTe533KpMavi/RbJj/1pjSxANoC/dxTwjwnFhtRybVK
- MSdjtBGQubUI3OjIXA+AdqYZOeCCqeN2kfD/h6/oTiuXhHEFqmmTrLuzBoaedDDoHTrNMcgx
- tuZHjy+WdrIB9uK5kOvSH8AaP4EXXaoFZkoQPeBFrwmuRTy0UDP8dXiwSlTOXaGoycP93zRT
- 5psDskBQrY/SLBlS5cqivB86bMA4m9IRbfoGz8rIS4WTJPJ6R54zEWWkrlf6V5OnA9bTzXRG
- eeSwUfc9yqxqdWFCyUDlC47YPOOTC/Br2vQYRK/m29Gb8MtKg00WzNyKwvGsX+b9QDu0BEnT
- f+t4hlAAwBS2b/VnhJeXuso1vcV+TrIRReUfoDly4BjJrCfAAK6Ne5KuVVC/vXr0fAQdRPjR
- rggA7TV2Qrapz9yKaN+Ipp/oZ5HLw7vY8Tka+4t8icjsicaubQYXQJu8nrapBHYwa554Poy9
- FklFrQ9167uf1yY5s6dibmNkLhDLyo923/DID8aG+eSDcr3bvWukSwjpNLmtLU6p5nr7UBQf
- szcVqpo61jDbacuIWK5lw897gD2UHfxVGLnD5qJxUw==
-Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
-Message-ID: <4d3eb998-045b-f288-7a9c-aaa620c38bff@settrans.net>
-Date:   Wed, 7 Oct 2020 14:36:26 +0100
+        id S1728477AbgJGNhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:37:23 -0400
+Received: from mail-bn7nam10on2046.outbound.protection.outlook.com ([40.107.92.46]:45280
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728271AbgJGNhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:37:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e9Yp5aPcB/IpoK96pztg0QIEJqALvL8sttfGIvsQtGdOPi44aNcRyRCPL+eBlJnaCherCatmTqDhLKG/qxwWFfehPzu3t/53R+eN6XQW11cdrjH6FEnugVeh3d8XBfeULLztPrcuWlUBS3I8Z8I4MuAKzTAquAVK5nqxMC4NvzqNeSHpDtiKDzN+D9wq0XIyX6rKzLIrlbD4evJUe38BCYm7xxjVRIPunptZQ5AG6qeR6/p44vzFL1IKbOrnZwzWOYtH7K5gwJmxPlCqyDb/c0Zpa9ZTj5HwvyeB+p739CBSjlSQd52ExSFp1ZTM2w0WQ+VDsZrmhCYRG8ka6ehV/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hfD2r6NJLTjQrebZf1puBD3OPBtUHAhs8W/QPOjmzTc=;
+ b=GU2s/dxPz7N0u+CcPrMQAfwYWAe1HJUZagBEW52oiThGaPxk/KXrTG3WMQcbdB1iFU331Lb3Ey4iKYQvKVQEr9QUk96rBaS+Ec3yBZIgnCwAJtdVmZjj+4vYbB2T3xb+CV1+p0DtjrRS1rQe6sEJvYJ74t5QkfDNzePTMPgMi+rs2jPHzgoezSaW+vVu89ndpC+ltwzyVFB+yM4JbLruWTKOL1l9zO7BcP7ZZwkQXuxOvo6mOyH4e+sxXwsPWZ2Lm8F4suY02S/naRRpGb17WGxXd1xD+WStPu8fsHwqiH9TIuwx7fdS+juDODBaTwiku6EuOM1HW+rI9Ad+9NWTdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hfD2r6NJLTjQrebZf1puBD3OPBtUHAhs8W/QPOjmzTc=;
+ b=PKhfkDU7LiNMMxwEXzbBBm7MOXC6isbPHjz8+pcf0iRW/SEtycW2+vqrTRAT0OPx6TR5rcIsfbZcX0UxDaLj7u62az+uSOZAhtJ0nr/Ch6yoJ7J3eTiWNGzEtKLGZ6HyjUetXkg72VBfCiyvtR+p6PqppqBitfZjpWebUjhMj/8=
+Received: from CY4PR02CA0023.namprd02.prod.outlook.com (2603:10b6:903:18::33)
+ by DM6PR02MB4906.namprd02.prod.outlook.com (2603:10b6:5:11::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Wed, 7 Oct
+ 2020 13:37:19 +0000
+Received: from CY1NAM02FT032.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:18:cafe::70) by CY4PR02CA0023.outlook.office365.com
+ (2603:10b6:903:18::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22 via Frontend
+ Transport; Wed, 7 Oct 2020 13:37:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ CY1NAM02FT032.mail.protection.outlook.com (10.152.75.184) with Microsoft SMTP
+ Server id 15.20.3433.39 via Frontend Transport; Wed, 7 Oct 2020 13:37:19
+ +0000
+Received: from [149.199.38.66] (port=35332 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kQ9cY-0006s6-Tb; Wed, 07 Oct 2020 06:36:42 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kQ9d8-0004j6-Uu; Wed, 07 Oct 2020 06:37:19 -0700
+Received: from xsj-pvapsmtp01 (xsj-smtp.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 097Db8hx003549;
+        Wed, 7 Oct 2020 06:37:08 -0700
+Received: from [172.30.17.110]
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <michals@xilinx.com>)
+        id 1kQ9cy-0004hh-72; Wed, 07 Oct 2020 06:37:08 -0700
+Subject: Re: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+ Firmware Service call
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>
+References: <20201006155549.3595-1-muhammad.husaini.zulkifli@intel.com>
+ <20201006155549.3595-3-muhammad.husaini.zulkifli@intel.com>
+ <4677c614-ac00-fb69-d22c-54f9015249f4@xilinx.com>
+ <DM6PR11MB2876F93077CA6705EFAB2E4EB80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Autocrypt: addr=michals@xilinx.com; keydata=
+ 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
+ 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
+Message-ID: <db60efac-c583-4b2a-3ad9-7bd93dfb5323@xilinx.com>
+Date:   Wed, 7 Oct 2020 15:37:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <cdd0f520ae4990de90f461e21cb4f298@agner.ch>
+In-Reply-To: <DM6PR11MB2876F93077CA6705EFAB2E4EB80A0@DM6PR11MB2876.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 54124c35-2c09-4033-085b-08d86ac61cd7
+X-MS-TrafficTypeDiagnostic: DM6PR02MB4906:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB490677696EBD4E9B80952DDDC60A0@DM6PR02MB4906.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 32cXAP+NCBxHcvAjAcc+PcLZGC0mn0pJqxFDpWcx5aOws4z9VGOGvsqBGhNCL48S7CcOSIejybpolOjbroQNOIvuxmvQnP2NESnC8nIdJ2olMOiGrlsQXtewL8hQh6GbKGt5Fit/1PDes44aWT9HFfbeQ5F4qIAP3+fooxOiF5eK9dXDsBtgrrUJCkTG4aw8dHi8mCnTH/AZnnyfZWhlZoG9TGA40U+i8ab+KmOh527TB4+AVEShJdQuLvHCP7lKIk2ypcgOMxV5UfDBeihCIEnPGViRFq2hhligHi+g00hFZZsGdjh/DXzwXKxnPiotA3qWj9x1T6mA1DEa9pilmCWKclVvV8CcwPqa/iDVKqyM1qo/kpo6rdHPwKHAgAj6AbO/zjU7qSsh483Ytotrg9Gff0h2SlYCwXbdgU79oH5WPN4uNDdioS3JKlXQ8w92
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(376002)(136003)(346002)(39850400004)(396003)(46966005)(82740400003)(83380400001)(47076004)(110136005)(8676002)(4326008)(316002)(31696002)(36756003)(31686004)(54906003)(2906002)(8936002)(5660300002)(9786002)(2616005)(70586007)(70206006)(44832011)(6666004)(82310400003)(53546011)(186003)(81166007)(356005)(336012)(478600001)(426003)(7416002)(26005)(921003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2020 13:37:19.2278
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54124c35-2c09-4033-085b-08d86ac61cd7
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT032.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4906
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi,
 
-The Bluetooth controller driver sent to linux-input by Lukas Rusak
-(CC'd) is a bit of a concern.  Here is the original driver:
-
-https://github.com/ouya/ouya_1_1-kernel/blob/master/drivers/hid/hid-ouya.c
-
-and you can see that there is no SPDX header, no license information and
-no MODULE_LICENSE declaration.  I'd previously noticed this as a
-possible cause for concern in upstreaming the driver.
-
-Meanwhile, Lukas's driver is clearly derived from the Ouya Inc. driver
-and even retains the Ouya Inc. copyright notice line.  However, Lukas's
-driver now has a MODULE_LICENSE("GPL") declaration added.
-
-Lukas, did you get clear permission to license the driver as GPL?
-
-Alternatively, kernel developers with greater legal or Ouya knowledge,
-is this actually a concern or is it nothing to worry about?
-
-Thanks,
-
-Bob
-
-
-On 07/10/2020 08:22, Stefan Agner wrote:
-> Hi Peter,
+On 07. 10. 20 15:21, Zulkifli, Muhammad Husaini wrote:
+> Hi Michal,
 > 
-> On 2020-10-04 15:31, Peter Geis wrote:
->> Good Day,
+> Thanks for the feedback. I replied inline
+> 
+>> -----Original Message-----
+>> From: Michal Simek <michal.simek@xilinx.com>
+>> Sent: Wednesday, October 7, 2020 4:20 PM
+>> To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>;
+>> Hunter, Adrian <adrian.hunter@intel.com>; michal.simek@xilinx.com;
+>> sudeep.holla@arm.com; ulf.hansson@linaro.org; linux-mmc@vger.kernel.org;
+>> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+>> Cc: Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>;
+>> Wan Mohamad, Wan Ahmad Zainie
+>> <wan.ahmad.zainie.wan.mohamad@intel.com>; arnd@arndb.de
+>> Subject: Re: [PATCH v3 2/2] firmware: Keem Bay: Add support for Arm Trusted
+>> Firmware Service call
 >>
->> This series introduces upstream kernel support for the Ouya game
->> console device. Please review and apply. Thank you in advance.
-> 
-> Interesting patchset, maybe I can give my Ouya a second live now :-) Do
-> you happen to have (a link) to instructions how to flash the device?
-> 
-> Btw, there was also a driver for the Bluetooth controller on the ML
-> once, maybe a good time to revive that:
-> https://spinics.net/lists/linux-input/msg56288.html
-> 
-> --
-> Stefan
+>> Hi,
+>>
+>> 1. Keem Bay: in subject is wrong. Tools are working with it and you should just
+>> use keembay: instead.
+> Are you saying like this ? 
+> Keem Bay: Add support for Arm Trusted Firmware Service call
+
+like this:
+firmware: keembay: Add support for Arm Trusted Firmware Service call
+
 > 
 >>
->> Changelog:
->> v3: - Reorder aliases per Dmitry Osipenko's review.
->>     - Add sdio clocks per Dmitry Osipenko's review.
->>     - Add missing ti sleep bits per Dmitry Osipenko's review.
->>     - Enable lp1 sleep mode.
->>     - Fix bluetooth comment and add missing power supplies.
+>> 2. This should come first before actual change to keep the tree bisectable.
+> Noted. Done the changes
 >>
->> v2: - Update pmic and clock handles per Rob Herring's review.
->>     - Add acks from Rob Herring to patch 2 and 3.
+>> On 06. 10. 20 17:55, muhammad.husaini.zulkifli@intel.com wrote:
+>>> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+>>>
+>>> Add header file to handle API function for device driver to
+>>> communicate with Arm Trusted Firmware.
+>>>
+>>> Signed-off-by: Muhammad Husaini Zulkifli
+>>> <muhammad.husaini.zulkifli@intel.com>
+>>> ---
+>>>  .../linux/firmware/intel/keembay_firmware.h   | 46 +++++++++++++++++++
+>>>  1 file changed, 46 insertions(+)
+>>>  create mode 100644 include/linux/firmware/intel/keembay_firmware.h
+>>>
+>>> diff --git a/include/linux/firmware/intel/keembay_firmware.h
+>>> b/include/linux/firmware/intel/keembay_firmware.h
+>>> new file mode 100644
+>>> index 000000000000..9adb8c87b788
+>>> --- /dev/null
+>>> +++ b/include/linux/firmware/intel/keembay_firmware.h
+>>> @@ -0,0 +1,46 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +/*
+>>> + *  Intel Keembay SOC Firmware API Layer
+>>> + *
+>>> + *  Copyright (C) 2020-2021, Intel Corporation
+>>> + *
+>>> + *  Muhammad Husaini Zulkifli <Muhammad.Husaini.Zulkifli@intel.com>
+>>> + */
+>>> +
+>>> +#ifndef __FIRMWARE_KEEMBAY_SMC_H__
+>>> +#define __FIRMWARE_KEEMBAY_SMC_H__
+>>> +
+>>> +#include <linux/arm-smccc.h>
+>>> +
+>>> +/**
 >>
->> Peter Geis (3):
->>   ARM: tegra: Add device-tree for Ouya
->>   dt-bindings: Add vendor prefix for Ouya Inc.
->>   dt-bindings: ARM: tegra: Add Ouya game console
+>> This is not a kernel doc comment. Just use /*
 >>
->>  .../devicetree/bindings/arm/tegra.yaml        |    3 +
->>  .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
->>  arch/arm/boot/dts/Makefile                    |    3 +-
->>  arch/arm/boot/dts/tegra30-ouya.dts            | 4511 +++++++++++++++++
->>  4 files changed, 4518 insertions(+), 1 deletion(-)
->>  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
+>>> + * This file defines API function that can be called by device driver
+>>> + in order to
+>>> + * communicate with Arm Trusted Firmware.
+>>> + */
+>>> +
+>>> +/* Setting for Keem Bay IO Pad Line Voltage Selection */
+>>> +#define KEEMBAY_SET_SD_VOLTAGE_FUNC_ID	0x8200ff26
+>>
+>> Sudeep: Don't we have any macros for composing these IDs?
+>> nit: IMHO composing these IDs from macros would make more sense to me.
+>>
+>>
+>>> +#define KEEMBAY_SET_1V8_VOLT		0x01
+>>
+>> 0x01 is just 1
+> Noted. Done the changes
+>>
+>>> +#define KEEMBAY_SET_3V3_VOLT		0x00
+>>
+>> 0x00 is just 0
+> Noted. Done the changes
+>>
+>>> +
+>>> +#if IS_ENABLED(CONFIG_HAVE_ARM_SMCCC_DISCOVERY)
+>>> +static int do_fw_invoke(u64 func_id, u64 arg0, u64 arg1) {
+>>> +	struct arm_smccc_res res;
+>>> +
+>>> +	arm_smccc_1_1_invoke(func_id, arg0, arg1, &res);
+>>> +
+>>> +	return res.a0;
+>>
+>> I am not big fan of this error propagation in case of failure.
+>>
+>> If smc fails you get via res.a0 SMCCC_RET_NOT_SUPPORTED which is defined as
+>> -1 which is based on errno-base.h defined as EPERM.
+>>
+>> That driver which Sudeep pointed you to is using EINVAL instead.
+>>
+>> It means I would add a code to check it.
 > 
+> Yeah I changed to below line of codes. Is this Ok? Tested working.
+> int keembay_sd_voltage_selection(int volt)
+
+static inline here shouldn't hurt.
+
+> {
+> 	struct arm_smccc_res res;
+> 
+> 	arm_smccc_1_1_invoke(ARM_SMCCC_SIP_KEEMBAY_SET_SD_VOLTAGE, volt, &res);
+> 	if ((int)res.a0 < 0)
+> 		return -EINVAL;
+> 
+> 	return 0;
+> }
+
+This is fine.
+
+M
