@@ -2,104 +2,546 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEFC2865BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290F42865C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 19:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgJGRSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 13:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728171AbgJGRSu (ORCPT
+        id S1728207AbgJGRUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 13:20:13 -0400
+Received: from mail-41103.protonmail.ch ([185.70.41.103]:41790 "EHLO
+        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbgJGRUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:18:50 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3D5C061755;
-        Wed,  7 Oct 2020 10:18:49 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id v19so2983237edx.9;
-        Wed, 07 Oct 2020 10:18:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FbvgWYf8WmFqAJOEe1UYaKohDkiYp3VreWyGDtXaqz8=;
-        b=dVrg5yXsPbI5qvL4/8aGH30/TpyXARXamdOnbGSmS4gTpTQp9eH1GXn8IgbLEolJ8G
-         hiPkIqvvDj/4CTAnjCcHO2SIozfvoIWT1av/ixwfQcBvgX+hxUquKwrnasaWknawYceu
-         nRIcU7O+fGSVRQp3Ocs0MYUJAlgOx7xC/dVH9Z7YZoVhwlPI8cyjSq/9GCYkR0LKEydy
-         v4YidfNyN/xlHadchDVutaYDFw1zaym5gVxxcVOfiyXZMZy7zYVmsNK2SuDroi+h0Jao
-         7rVmi77ctUuEP8FctJq/GPBn0lpXoFscuQHs9OMgtEFVH8SG6K3B5GPkFCG8Jauoq2Jk
-         iCEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FbvgWYf8WmFqAJOEe1UYaKohDkiYp3VreWyGDtXaqz8=;
-        b=cT0sKvUscAnwo2W/XSSgS8eOIZ7qbE6z6dl64gk2Fl+QbXBmsSgfLw7DOwlyLG7o4y
-         e9tLqb9fCgkYH3dNOjdrDw41uOMDmnC9JJXQWyuyhv2pllU0Bh7T/sm1nIp7QjJkRZtA
-         e4+O8PxvEFWrpOda8deSTtbLeba8LLpshIrxqjNw5uPJ+LpSuhdlv5CeXh+JewPTmIRR
-         X1TD8ocDHzEkcK7omth/Xl/M2AHxHYcd2yskZB4wWHlESn6Hxgul5afDt3blUMsYXAfo
-         URfvnizFrWrknASI7ISTHHPfX5O8uUpdbJi2qDzSY2MftLpfbidhz+ZwjWVFoiGn3S4O
-         rCgA==
-X-Gm-Message-State: AOAM533ie5vNREXlQbmqaAhbujJTYvSG2d9m3hR7CfdIPf6wkCAL5cZl
-        Lv4+oRxhl5GIJ9cb0NxACDhcQV7Yg+yvz30v8MA=
-X-Google-Smtp-Source: ABdhPJxR2PNvYgiGBJpfUyMO8e+O6T4BT5QzDizpTZdiP0rpHdLPJLC65LYH5YSEruuW6EvK5oJ7yyPXu2SGR31hvQ0=
-X-Received: by 2002:a50:c199:: with SMTP id m25mr4495447edf.207.1602091128283;
- Wed, 07 Oct 2020 10:18:48 -0700 (PDT)
+        Wed, 7 Oct 2020 13:20:13 -0400
+Received: from mail-03.mail-europe.com (mail-03.mail-europe.com [91.134.188.129])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41103.protonmail.ch (Postfix) with ESMTPS id BBB9B20000A4
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 17:19:50 +0000 (UTC)
+Authentication-Results: mail-41103.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=connolly.tech header.i=@connolly.tech header.b="P77AwqaH"
+Date:   Wed, 07 Oct 2020 17:19:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1602091187;
+        bh=lr01I54W83dQfyPAXxNgr/K8XWBKrwkLjst7BnhvlRw=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=P77AwqaHfzSUfSdSPycIEWqs+dG/IhTlMsCjJTQMpsFg8wJP9H2wIQjxPG4ySI3te
+         ctoDDJKzco1Sju7n++a1l6YeVilr4yXq2S/hGNa3IAHQxO/67K/VlxnGBTL1t7WeQF
+         Wg84/nTVppFrWeP+V/OOADXwYJ744lRreG4OLfUw=
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Caleb Connolly <caleb@connolly.tech>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: [PATCH 1/5] drm/panel/oneplus6: Add panel-oneplus6
+Message-ID: <20201007171807.285298-2-caleb@connolly.tech>
+In-Reply-To: <20201007171807.285298-1-caleb@connolly.tech>
+References: <20201007171807.285298-1-caleb@connolly.tech>
 MIME-Version: 1.0
-References: <20201004133114.845230-1-pgwipeout@gmail.com> <cdd0f520ae4990de90f461e21cb4f298@agner.ch>
- <4d3eb998-045b-f288-7a9c-aaa620c38bff@settrans.net> <c8140ea3-8731-8084-47dd-8819b4b4df6a@gmail.com>
- <f12c1ad2-d180-8981-c3bf-db8ab6afbbaa@wwwdotorg.org>
-In-Reply-To: <f12c1ad2-d180-8981-c3bf-db8ab6afbbaa@wwwdotorg.org>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 7 Oct 2020 13:18:36 -0400
-Message-ID: <CAMdYzYrNg39QmR3QDG4T5DTOht=8p4LvFon14M1J7HkEZo4KRQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
-To:     Stephen Warren <swarren@wwwdotorg.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, Bob Ham <rah@settrans.net>,
-        Stefan Agner <stefan@agner.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lukas Rusak <lorusak@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 12:08 PM Stephen Warren <swarren@wwwdotorg.org> wrote:
->
->
-> This definitely isn't the correct attitude to copyright.
->
-> The facts[1] that Ouya published the code and that it used GPL-only
-> symbols certainly does imply that they *should* have published under GPL
-> or a compatible license, but doesn't mean that they definitely did. The
-> only way to know that for sure is for there to be evidence in the file
-> content or git history, such as license headers or Signed-off-by lines.
->
-> When someone writes Signed-off-by in their code submission, which is
-> required to contribute to upstream Linux, they are stating/warranting
-> certain things about the code they're submitting. One aspect is that
-> they definitely have the rights to submit the code under the given
-> license. Without evidence to this effect, or having written the code
-> themselves, nobody can state/warrant this. Take a look at the following
-> link to see what you're stating/warranting when writing Signed-off-by in
-> a code submission:
->
-> https://developercertificate.org/
->
-> [1] I haven't checked the facts.
+This commit adds support for the display panels used in the OnePlus 6 /
+T devices.
 
-Unfortunately the only source release I've been able to find is the
-last release.
-Ouya purposely purged the git history for the current source release,
-it's also completely lacking in signoffs and commit history.
-[1] is the commit that added this driver to their source.
+The OnePlus 6/T devices use different panels however they are
+functionally identical with much of the commands being shared. The
+panels don't appear to be used by any other devices some combine them as
+one driver that is specific to the devices.
 
-Their original source release had the git history intact, but I never
-got a copy of it before Ouya purged it from their repos.
+The panels are: samsung,sofef00
+and             samsung,s6e3fc2x01
 
-[1] https://github.com/ouya/ouya_1_1-kernel/commit/407e72990e39d5c29d015e21110b9497aea2dfe3
+Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+---
+ drivers/gpu/drm/panel/Kconfig          |  12 +
+ drivers/gpu/drm/panel/Makefile         |   1 +
+ drivers/gpu/drm/panel/panel-oneplus6.c | 418 +++++++++++++++++++++++++
+ 3 files changed, 431 insertions(+)
+ create mode 100644 drivers/gpu/drm/panel/panel-oneplus6.c
+
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index de2f2a452be5..d72862265400 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -229,6 +229,18 @@ config DRM_PANEL_OLIMEX_LCD_OLINUXINO
+ =09  Say Y here if you want to enable support for Olimex Ltd.
+ =09  LCD-OLinuXino panel.
+=20
++config DRM_PANEL_ONEPLUS6
++=09tristate "OnePlus 6/6T Samsung AMOLED DSI command mode panels"
++=09depends on OF
++=09depends on DRM_MIPI_DSI
++=09depends on BACKLIGHT_CLASS_DEVICE
++=09select VIDEOMODE_HELPERS
++=09help
++=09  Say Y or M here if you want to enable support for the Samsung AMOLED
++=09  command mode panels found in the OnePlus 6/6T smartphones.
++
++=09  The panels are 2280x1080@60Hz and 2340x1080@60Hz respectively
++
+ config DRM_PANEL_ORISETECH_OTM8009A
+ =09tristate "Orise Technology otm8009a 480x800 dsi 2dl panel"
+ =09depends on OF
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefil=
+e
+index e45ceac6286f..017539056f53 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -21,6 +21,7 @@ obj-$(CONFIG_DRM_PANEL_NEC_NL8048HL11) +=3D panel-nec-nl8=
+048hl11.o
+ obj-$(CONFIG_DRM_PANEL_NOVATEK_NT35510) +=3D panel-novatek-nt35510.o
+ obj-$(CONFIG_DRM_PANEL_NOVATEK_NT39016) +=3D panel-novatek-nt39016.o
+ obj-$(CONFIG_DRM_PANEL_OLIMEX_LCD_OLINUXINO) +=3D panel-olimex-lcd-olinuxi=
+no.o
++obj-$(CONFIG_DRM_PANEL_ONEPLUS6) +=3D panel-oneplus6.o
+ obj-$(CONFIG_DRM_PANEL_ORISETECH_OTM8009A) +=3D panel-orisetech-otm8009a.o
+ obj-$(CONFIG_DRM_PANEL_OSD_OSD101T2587_53TS) +=3D panel-osd-osd101t2587-53=
+ts.o
+ obj-$(CONFIG_DRM_PANEL_PANASONIC_VVX10F034N00) +=3D panel-panasonic-vvx10f=
+034n00.o
+diff --git a/drivers/gpu/drm/panel/panel-oneplus6.c b/drivers/gpu/drm/panel=
+/panel-oneplus6.c
+new file mode 100644
+index 000000000000..5e212774b1e0
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-oneplus6.c
+@@ -0,0 +1,418 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2020 Caleb Connolly <caleb@connolly.tech>
++ * Generated with linux-mdss-dsi-panel-driver-generator from vendor device=
+ tree:
++ *   Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ *
++ * Caleb Connolly <caleb@connolly.tech>
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/regulator/consumer.h>
++
++#include <video/mipi_display.h>
++
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_modes.h>
++#include <drm/drm_panel.h>
++#include <linux/backlight.h>
++
++struct oneplus6_panel {
++=09struct drm_panel panel;
++=09struct mipi_dsi_device *dsi;
++=09struct backlight_device *backlight;
++=09struct regulator *supply;
++=09struct gpio_desc *reset_gpio;
++=09struct gpio_desc *enable_gpio;
++=09const struct drm_display_mode *mode;
++=09bool prepared;
++=09bool enabled;
++};
++
++static inline
++struct oneplus6_panel *to_oneplus6_panel(struct drm_panel *panel)
++{
++=09return container_of(panel, struct oneplus6_panel, panel);
++}
++
++#define dsi_dcs_write_seq(dsi, seq...) do {=09=09=09=09\
++=09=09static const u8 d[] =3D { seq };=09=09=09=09\
++=09=09int ret;=09=09=09=09=09=09\
++=09=09ret =3D mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));=09\
++=09=09if (ret < 0)=09=09=09=09=09=09\
++=09=09=09return ret;=09=09=09=09=09\
++=09} while (0)
++
++static void oneplus6_panel_reset(struct oneplus6_panel *ctx)
++{
++=09gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++=09usleep_range(5000, 6000);
++}
++
++static int oneplus6_panel_on(struct oneplus6_panel *ctx)
++{
++=09struct mipi_dsi_device *dsi =3D ctx->dsi;
++=09struct device *dev =3D &dsi->dev;
++=09int ret;
++
++=09dsi->mode_flags |=3D MIPI_DSI_MODE_LPM;
++
++=09ret =3D mipi_dsi_dcs_exit_sleep_mode(dsi);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
++=09=09return ret;
++=09}
++=09usleep_range(10000, 11000);
++
++=09dsi_dcs_write_seq(dsi, 0xf0, 0x5a, 0x5a);
++
++=09ret =3D mipi_dsi_dcs_set_tear_on(dsi, MIPI_DSI_DCS_TEAR_MODE_VBLANK);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to set tear on: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09dsi_dcs_write_seq(dsi, 0xf0, 0xa5, 0xa5);
++=09dsi_dcs_write_seq(dsi, 0xf0, 0x5a, 0x5a);
++=09dsi_dcs_write_seq(dsi, 0xb0, 0x07);
++=09dsi_dcs_write_seq(dsi, 0xb6, 0x12);
++=09dsi_dcs_write_seq(dsi, 0xf0, 0xa5, 0xa5);
++=09dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY, 0x20);
++=09dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_POWER_SAVE, 0x00);
++
++=09ret =3D mipi_dsi_dcs_set_display_on(dsi);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to set display on: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09return 0;
++}
++
++static int oneplus6_panel_off(struct oneplus6_panel *ctx)
++{
++=09struct mipi_dsi_device *dsi =3D ctx->dsi;
++=09struct device *dev =3D &dsi->dev;
++=09int ret;
++
++=09dsi->mode_flags &=3D ~MIPI_DSI_MODE_LPM;
++
++=09ret =3D mipi_dsi_dcs_set_display_off(dsi);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to set display off: %d\n", ret);
++=09=09return ret;
++=09}
++=09msleep(40);
++
++=09ret =3D mipi_dsi_dcs_enter_sleep_mode(dsi);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
++=09=09return ret;
++=09}
++=09msleep(160);
++
++=09return 0;
++}
++
++static int oneplus6_panel_prepare(struct drm_panel *panel)
++{
++=09struct oneplus6_panel *ctx =3D to_oneplus6_panel(panel);
++=09struct device *dev =3D &ctx->dsi->dev;
++=09int ret;
++
++=09if (ctx->prepared)
++=09=09return 0;
++
++=09oneplus6_panel_reset(ctx);
++
++=09ret =3D oneplus6_panel_on(ctx);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to initialize panel: %d\n", ret);
++=09=09gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++=09=09return ret;
++=09}
++
++=09ctx->prepared =3D true;
++=09return 0;
++}
++
++static int oneplus6_panel_unprepare(struct drm_panel *panel)
++{
++=09struct oneplus6_panel *ctx =3D to_oneplus6_panel(panel);
++=09struct device *dev =3D &ctx->dsi->dev;
++=09int ret;
++
++=09if (!ctx->prepared)
++=09=09return 0;
++
++=09ret =3D regulator_enable(ctx->supply);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to enable regulator: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ret =3D oneplus6_panel_off(ctx);
++=09if (ret < 0)
++=09=09dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
++
++=09gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++=09regulator_disable(ctx->supply);
++
++=09ctx->prepared =3D false;
++=09return 0;
++}
++
++
++static int oneplus6_panel_enable(struct drm_panel *panel)
++{
++=09struct oneplus6_panel *ctx =3D to_oneplus6_panel(panel);
++=09int ret;
++
++=09if (ctx->enabled)
++=09=09return 0;
++
++=09ret =3D backlight_enable(ctx->backlight);
++=09if (ret < 0) {
++=09=09dev_err(&ctx->dsi->dev, "Failed to enable backlight: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ctx->enabled =3D true;
++=09return 0;
++}
++
++static int oneplus6_panel_disable(struct drm_panel *panel)
++{
++=09struct oneplus6_panel *ctx =3D to_oneplus6_panel(panel);
++=09int ret;
++
++=09if (!ctx->enabled)
++=09=09return 0;
++
++=09ret =3D backlight_disable(ctx->backlight);
++=09if (ret < 0) {
++=09=09dev_err(&ctx->dsi->dev, "Failed to disable backlight: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ctx->enabled =3D false;
++=09return 0;
++}
++
++
++static const struct drm_display_mode enchilada_panel_mode =3D {
++=09.clock =3D (1080 + 112 + 16 + 36) * (2280 + 36 + 8 + 12) * 60 / 1000,
++=09.hdisplay =3D 1080,
++=09.hsync_start =3D 1080 + 112,
++=09.hsync_end =3D 1080 + 112 + 16,
++=09.htotal =3D 1080 + 112 + 16 + 36,
++=09.vdisplay =3D 2280,
++=09.vsync_start =3D 2280 + 36,
++=09.vsync_end =3D 2280 + 36 + 8,
++=09.vtotal =3D 2280 + 36 + 8 + 12,
++=09.width_mm =3D 68,
++=09.height_mm =3D 145,
++};
++
++static const struct drm_display_mode fajita_panel_mode =3D {
++=09.clock =3D (1080 + 72 + 16 + 36) * (2340 + 32 + 4 + 18) * 60 / 1000,
++=09.hdisplay =3D 1080,
++=09.hsync_start =3D 1080 + 72,
++=09.hsync_end =3D 1080 + 72 + 16,
++=09.htotal =3D 1080 + 72 + 16 + 36,
++=09.vdisplay =3D 2340,
++=09.vsync_start =3D 2340 + 32,
++=09.vsync_end =3D 2340 + 32 + 4,
++=09.vtotal =3D 2340 + 32 + 4 + 18,
++=09.width_mm =3D 68,
++=09.height_mm =3D 145,
++};
++
++static int oneplus6_panel_get_modes(struct drm_panel *panel,
++=09=09=09=09=09=09struct drm_connector *connector)
++{
++=09struct drm_display_mode *mode;
++=09struct oneplus6_panel *ctx =3D to_oneplus6_panel(panel);
++
++=09mode =3D drm_mode_duplicate(connector->dev, ctx->mode);
++=09if (!mode)
++=09=09return -ENOMEM;
++
++=09drm_mode_set_name(mode);
++
++=09mode->type =3D DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
++=09connector->display_info.width_mm =3D mode->width_mm;
++=09connector->display_info.height_mm =3D mode->height_mm;
++=09drm_mode_probed_add(connector, mode);
++
++=09return 1;
++}
++
++static const struct drm_panel_funcs oneplus6_panel_panel_funcs =3D {
++=09.disable =3D oneplus6_panel_disable,
++=09.enable =3D oneplus6_panel_enable,
++=09.prepare =3D oneplus6_panel_prepare,
++=09.unprepare =3D oneplus6_panel_unprepare,
++=09.get_modes =3D oneplus6_panel_get_modes,
++};
++
++static int oneplus6_panel_bl_get_brightness(struct backlight_device *bl)
++{
++=09struct mipi_dsi_device *dsi =3D bl_get_data(bl);
++=09int err;
++=09u16 brightness =3D bl->props.brightness;
++
++=09err =3D mipi_dsi_dcs_get_display_brightness(dsi, &brightness);
++=09if (err < 0) {
++=09=09return err;
++=09}
++
++=09return brightness & 0xff;
++}
++
++static int oneplus6_panel_bl_update_status(struct backlight_device *bl)
++{
++=09struct mipi_dsi_device *dsi =3D bl_get_data(bl);
++=09int err;
++=09unsigned short brightness;
++
++=09// This panel needs the high and low bytes swapped for the brightness v=
+alue
++=09brightness =3D ((bl->props.brightness<<8)&0xff00)|((bl->props.brightnes=
+s>>8)&0x00ff);
++
++=09err =3D mipi_dsi_dcs_set_display_brightness(dsi, brightness);
++=09if (err < 0) {
++=09=09return err;
++=09}
++
++=09return 0;
++}
++
++static const struct backlight_ops oneplus6_panel_bl_ops =3D {
++=09.update_status =3D oneplus6_panel_bl_update_status,
++=09.get_brightness =3D oneplus6_panel_bl_get_brightness,
++};
++
++static struct backlight_device *
++oneplus6_panel_create_backlight(struct mipi_dsi_device *dsi)
++{
++=09struct device *dev =3D &dsi->dev;
++=09struct backlight_properties props =3D {
++=09=09.type =3D BACKLIGHT_PLATFORM,
++=09=09.scale =3D BACKLIGHT_SCALE_LINEAR,
++=09=09.brightness =3D 255,
++=09=09.max_brightness =3D 512,
++=09};
++
++=09return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
++=09=09=09=09=09=09  &oneplus6_panel_bl_ops, &props);
++}
++
++
++static int oneplus6_panel_probe(struct mipi_dsi_device *dsi)
++{
++=09struct device *dev =3D &dsi->dev;
++=09struct oneplus6_panel *ctx;
++=09int ret;
++
++=09ctx =3D devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
++=09if (!ctx)
++=09=09return -ENOMEM;
++
++=09ctx->mode =3D of_device_get_match_data(dev);
++
++=09if (!ctx->mode) {
++=09=09dev_err(dev, "Missing device mode\n");
++=09=09return -ENODEV;
++=09}
++
++=09ctx->supply =3D devm_regulator_get(dev, "vddio");
++=09if (IS_ERR(ctx->supply)) {
++=09=09ret =3D PTR_ERR(ctx->supply);
++=09=09dev_err(dev, "Failed to get vddio regulator: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ctx->reset_gpio =3D devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++=09if (IS_ERR(ctx->reset_gpio)) {
++=09=09ret =3D PTR_ERR(ctx->reset_gpio);
++=09=09dev_warn(dev, "Failed to get reset-gpios: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ctx->backlight =3D oneplus6_panel_create_backlight(dsi);
++=09if (IS_ERR(ctx->backlight)) {
++=09=09ret =3D PTR_ERR(ctx->backlight);
++=09=09dev_err(dev, "Failed to create backlight: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ctx->dsi =3D dsi;
++=09mipi_dsi_set_drvdata(dsi, ctx);
++
++=09dsi->lanes =3D 4;
++=09dsi->format =3D MIPI_DSI_FMT_RGB888;
++
++=09drm_panel_init(&ctx->panel, dev, &oneplus6_panel_panel_funcs,
++=09=09=09   DRM_MODE_CONNECTOR_DSI);
++
++=09ret =3D drm_panel_add(&ctx->panel);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to add panel: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ret =3D mipi_dsi_attach(dsi);
++=09if (ret < 0) {
++=09=09dev_err(dev, "Failed to attach to DSI host: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09dev_info(dev, "Successfully added oneplus6 panel");
++
++=09return 0;
++}
++
++static int oneplus6_panel_remove(struct mipi_dsi_device *dsi)
++{
++=09struct oneplus6_panel *ctx =3D mipi_dsi_get_drvdata(dsi);
++=09int ret;
++
++=09ret =3D mipi_dsi_detach(dsi);
++=09if (ret < 0)
++=09=09dev_err(&dsi->dev, "Failed to detach from DSI host: %d\n", ret);
++
++=09drm_panel_remove(&ctx->panel);
++
++=09return 0;
++}
++
++static const struct of_device_id oneplus6_panel_of_match[] =3D {
++=09{
++=09=09.compatible =3D "samsung,sofef00",
++=09=09.data =3D &enchilada_panel_mode,
++=09},
++=09{
++=09=09.compatible =3D "samsung,s6e3fc2x01",
++=09=09.data =3D &fajita_panel_mode,
++=09},
++=09{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, oneplus6_panel_of_match);
++
++static struct mipi_dsi_driver oneplus6_panel_driver =3D {
++=09.probe =3D oneplus6_panel_probe,
++=09.remove =3D oneplus6_panel_remove,
++=09.driver =3D {
++=09=09.name =3D "panel-oneplus6",
++=09=09.of_match_table =3D oneplus6_panel_of_match,
++=09},
++};
++
++module_mipi_dsi_driver(oneplus6_panel_driver);
++
++MODULE_AUTHOR("Caleb Connolly <caleb@connolly.tech>");
++MODULE_DESCRIPTION("DRM driver for Samsung AMOLED DSI panels found in OneP=
+lus 6/6T phones");
++MODULE_LICENSE("GPL v2");
+--=20
+2.28.0
+
+
