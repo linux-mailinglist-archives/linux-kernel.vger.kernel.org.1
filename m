@@ -2,488 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEE2285D18
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3041F285D1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 12:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgJGKoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 06:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgJGKog (ORCPT
+        id S1728129AbgJGKpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 06:45:06 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44564 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726096AbgJGKpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 06:44:36 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BDCC061755;
-        Wed,  7 Oct 2020 03:44:36 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k18so1790273wmj.5;
-        Wed, 07 Oct 2020 03:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cK/7KKg3LMRLJqngGOT4//Qph/7CsuKSEUe0I2xQ0J0=;
-        b=XvyNypdAGm/e/or1Zzz6Q0oTSrZtOgYRxIkbW+kGQZx1+/faQQCqN8wZI9T5k/rMdL
-         AdiCf7ktooeT0UvfnZOe8OZhWdd3qaSWNS2hs09uDU9KjJpybl+HjpSoyWGe0rbYPbnu
-         KZb12QbjLQuIKN145yxp4fNpZpoXNor3NWQ4qUuv+3adSgoYpPhd0knpzc5MqxMitiou
-         GcLdTHSrExPGf6vLo6saedkrGX+ZiMf4gQlmx4etrzt2Z3DnJhE4A86OEI7kjifV8iZJ
-         nltGoCNJxBOMeSoJ0uqGZbbTtYcZxPzVedQrdFW/TI2AMHi4kNJV2JAAnPEvVTeV04G3
-         kAow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cK/7KKg3LMRLJqngGOT4//Qph/7CsuKSEUe0I2xQ0J0=;
-        b=oUFqxfzh28fh2aJ9STQGzmKfwiIFjPDgOIRSDpyl6LPWwtlKB0P15o30zZS2uScP1s
-         dUXxzqcSCoaYuYM7h5gZj6zttFNLjxCrXE5QdHdeaSuDlRe+pBgU/WongDSWK6Nfhmk6
-         GgpbwRQ8S3ELgLLfVuuDH57jlXYWfWK85PcMAQq3Cr+ip2IA2yy1kJDLRj5WWotDHq4e
-         CIhpNb8DIosKEml9TIQh6EdolDMdHhcGyqVVEwHw+DX9zbP9rZH5sJP1Trag5GBWU6xF
-         HSLjjFEvALXJ7J8ygnAnz88muQgQnbu8+Ii8cgGvqIyUkQDSu3BuA3awvBrymVss0dSx
-         EzOw==
-X-Gm-Message-State: AOAM532/PRTFp5yDdh5cQV7ptnwaAiV6oXl2T73UmLYoJbpMXLNAOBTs
-        D1XtD4extyR+1U0sQ3wIA+4=
-X-Google-Smtp-Source: ABdhPJzkwikVrg3KNBchgYEO0PjzOoiSixKtQCEZcj3e4/u8fKunkxK7W6bDddpEl4BVFK39fdd2ZQ==
-X-Received: by 2002:a1c:4943:: with SMTP id w64mr2683472wma.165.1602067474706;
-        Wed, 07 Oct 2020 03:44:34 -0700 (PDT)
-Received: from ziggy.stardust ([37.223.143.170])
-        by smtp.gmail.com with ESMTPSA id z13sm2243306wro.97.2020.10.07.03.44.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 03:44:33 -0700 (PDT)
-Subject: Re: [PATCH v7 2/2] soc: mediatek: add mt6779 devapc driver
-To:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>, wsd_upstream@mediatek.com
-References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
- <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <c41ec664-73a0-3c63-a31c-48c89028dfac@gmail.com>
-Date:   Wed, 7 Oct 2020 12:44:32 +0200
+        Wed, 7 Oct 2020 06:45:05 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097AP6ng163964;
+        Wed, 7 Oct 2020 06:45:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uGLqe4D4Pdgjs0FfCRH8TIwDpofHT3tZXnON5CQi8fk=;
+ b=bHoWK5AL8LoORqDMNDXnRDcIthU3aL4z/MHFUpqaErqK5HanCDRdhCGhjckdIcb68KUg
+ N/dFYY32i9nMxiUcOcbSGjMphGz6w32BzTtJOFiatCTcN7z4guyfkrWJ3ctLqDfjKTcj
+ i6HbUZbdIc0OcYdTQnvdtK4wIMj/E6PafcmZ6PHi7EtWWpk9Hbfr+hohEa3aQi/g3rNm
+ AEmRoaXuCPOMUllj1XPA5GIc5utxjiaN/ep2JqoJdURwn9vGS5d5OtmhEtkt4oLyBowU
+ Y1rRs2xeR/y7tMzkK7/kpdyooRtEdq26ehbaReoulT62Ox0tNKQ4QMnewWh/YTVZ5efe Rw== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 341bwdgjub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 06:45:01 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 097AgZ9w021674;
+        Wed, 7 Oct 2020 10:44:59 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 33xgx826af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Oct 2020 10:44:58 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 097AiuJI32112962
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Oct 2020 10:44:56 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 273C0A404D;
+        Wed,  7 Oct 2020 10:44:56 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC30FA4053;
+        Wed,  7 Oct 2020 10:44:55 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.175.219])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Oct 2020 10:44:55 +0000 (GMT)
+Subject: Re: [PATCH v4 2/2] s390/dasd: remove ioctl_by_bdev calls
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefan Haberland <sth@linux.ibm.com>, axboe@kernel.dk,
+        hoeppner@linux.ibm.com, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        linux-kernel@vger.kernel.org
+References: <20200519142259.102279-1-sth@linux.ibm.com>
+ <20200519142259.102279-3-sth@linux.ibm.com>
+ <5c815b8a-7d77-5c69-9191-d09cc433f5ff@de.ibm.com>
+ <20201007103936.GA24327@lst.de>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
+ 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
+ nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
+Message-ID: <ca1bad1e-6d4b-7e86-4a98-b9ba12e2bef2@de.ibm.com>
+Date:   Wed, 7 Oct 2020 12:44:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201007103936.GA24327@lst.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_05:2020-10-06,2020-10-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 mlxscore=0 impostorscore=0 phishscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=953 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 27/08/2020 05:06, Neal Liu wrote:
-> MediaTek bus fabric provides TrustZone security support and data
-> protection to prevent slaves from being accessed by unexpected
-> masters.
-> The security violation is logged and sent to the processor for
-> further analysis or countermeasures.
+On 07.10.20 12:39, Christoph Hellwig wrote:
+> On Wed, Oct 07, 2020 at 11:34:17AM +0200, Christian Borntraeger wrote:
+>>
+>> On 19.05.20 16:22, Stefan Haberland wrote:
+>>> The IBM partition parser requires device type specific information only
+>>> available to the DASD driver to correctly register partitions. The
+>>> current approach of using ioctl_by_bdev with a fake user space pointer
+>>> is discouraged.
+>>>
+>>> Fix this by replacing IOCTL calls with direct in-kernel function calls.
+>>>
+>>> Suggested-by: Christoph Hellwig <hch@lst.de>
+>>> Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+>>> Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+>>> Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+>>
+>> FWIW, this broken the ibm-partition code for virtio-blk, when CONFIG_DASD=m.
 > 
-> Any occurrence of security violation would raise an interrupt, and
-> it will be handled by mtk-devapc driver. The violation
-> information is printed in order to find the murderer.
+> What are the symptoms?
 
-"The violation information is printed in order to find the responsible component."
+During boot I normally have
+ 
+[    0.930231] virtio_blk virtio1: [vda] 5409180 4096-byte logical blocks (22.2 GB/20.6 GiB)
+[    0.930233] vda: detected capacity change from 0 to 22156001280
+[    0.932806]  vda:VOL1/  0X3333: vda1 vda2 vda3
 
-Nobody got actually killed, right :)
-
-> 
-> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
-> ---
->   drivers/soc/mediatek/Kconfig      |    9 ++
->   drivers/soc/mediatek/Makefile     |    1 +
->   drivers/soc/mediatek/mtk-devapc.c |  305 +++++++++++++++++++++++++++++++++++++
->   3 files changed, 315 insertions(+)
->   create mode 100644 drivers/soc/mediatek/mtk-devapc.c
-> 
-> diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
-> index 59a56cd..1177c98 100644
-> --- a/drivers/soc/mediatek/Kconfig
-> +++ b/drivers/soc/mediatek/Kconfig
-> @@ -17,6 +17,15 @@ config MTK_CMDQ
->   	  time limitation, such as updating display configuration during the
->   	  vblank.
->   
-> +config MTK_DEVAPC
-> +	tristate "Mediatek Device APC Support"
-> +	help
-> +	  Say yes here to enable support for Mediatek Device APC driver.
-> +	  This driver is mainly used to handle the violation which catches
-> +	  unexpected transaction.
-> +	  The violation information is logged for further analysis or
-> +	  countermeasures.
-> +
->   config MTK_INFRACFG
->   	bool "MediaTek INFRACFG Support"
->   	select REGMAP
-> diff --git a/drivers/soc/mediatek/Makefile b/drivers/soc/mediatek/Makefile
-> index 01f9f87..abfd4ba 100644
-> --- a/drivers/soc/mediatek/Makefile
-> +++ b/drivers/soc/mediatek/Makefile
-> @@ -1,5 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0-only
->   obj-$(CONFIG_MTK_CMDQ) += mtk-cmdq-helper.o
-> +obj-$(CONFIG_MTK_DEVAPC) += mtk-devapc.o
->   obj-$(CONFIG_MTK_INFRACFG) += mtk-infracfg.o
->   obj-$(CONFIG_MTK_PMIC_WRAP) += mtk-pmic-wrap.o
->   obj-$(CONFIG_MTK_SCPSYS) += mtk-scpsys.o
-> diff --git a/drivers/soc/mediatek/mtk-devapc.c b/drivers/soc/mediatek/mtk-devapc.c
-> new file mode 100644
-> index 0000000..0ba61d7
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/mtk-devapc.c
-> @@ -0,0 +1,305 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020 MediaTek Inc.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/of_address.h>
-> +
-> +#define VIO_MOD_TO_REG_IND(m)	((m) / 32)
-> +#define VIO_MOD_TO_REG_OFF(m)	((m) % 32)
-> +
-> +struct mtk_devapc_vio_dbgs {
-> +	union {
-> +		u32 vio_dbg0;
-> +		struct {
-> +			u32 mstid:16;
-> +			u32 dmnid:6;
-> +			u32 vio_w:1;
-> +			u32 vio_r:1;
-> +			u32 addr_h:4;
-> +			u32 resv:4;
-> +		} dbg0_bits;
-> +	};
-> +
-> +	u32 vio_dbg1;
-> +};
-> +
-> +struct mtk_devapc_data {
-> +	u32 vio_idx_num;
-> +	u32 vio_mask_offset;
-> +	u32 vio_sta_offset;
-> +	u32 vio_dbg0_offset;
-> +	u32 vio_dbg1_offset;
-> +	u32 apc_con_offset;
-> +	u32 vio_shift_sta_offset;
-> +	u32 vio_shift_sel_offset;
-> +	u32 vio_shift_con_offset;
-> +};
-
-Please describe the fields of the struct, that will make it easier to understand 
-the driver.
-
-> +
-> +struct mtk_devapc_context {
-> +	struct device *dev;
-> +	void __iomem *infra_base;
-> +	struct clk *infra_clk;
-> +	const struct mtk_devapc_data *data;
-> +};
-> +
-> +static void clear_vio_status(struct mtk_devapc_context *ctx)
-> +{
-> +	void __iomem *reg;
-> +	int i;
-> +
-> +	reg = ctx->infra_base + ctx->data->vio_sta_offset;
-> +
-> +	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num - 1); i++)
-> +		writel(GENMASK(31, 0), reg + 4 * i);
-> +
-> +	writel(GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num - 1), 0),
-> +	       reg + 4 * i);
-> +}
-> +
-> +static void mask_module_irq(struct mtk_devapc_context *ctx, bool mask)
-> +{
-> +	void __iomem *reg;
-> +	u32 val;
-> +	int i;
-> +
-> +	reg = ctx->infra_base + ctx->data->vio_mask_offset;
-> +
-> +	if (mask)
-> +		val = GENMASK(31, 0);
-> +	else
-> +		val = 0;
-> +
-> +	for (i = 0; i < VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num - 1); i++)
-
-Do I get that right? We have a number of virtual IO identifier. Their 
-correspondending interrupt are grouped in 32 bit registers. And we want to 
-enable/disable them by writing 0 or 1. We have to take care of the last 
-registers as it could be the case that vio_idx_num is not a multiple of 32, correct?
-
-In this case we should traverse VIO_MOD_TO_REG_IND(ctx->data->vio_idx_num) - 1 
-registers, which is (vio_idx_num / 32) - 1 and not (vio_idx_num - 1) / 32.
-
-> +		writel(val, reg + 4 * i);
-> +
-> +	val = readl(reg + 4 * i);
-> +	if (mask)
-> +		val |= GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num - 1),
-> +			       0);
-
-We have 511 IRQs, which gives us 31 bits in the last register to set/unset. 
-Thats 510..0 bits, so from what I understand, once again we want
-GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num) - 1, 0)
-which is (vio_idx_num % 32) - 1
-
-Correct or do I understand something wrong?
-If so, same applies to clear_vio_status().
-
-
-> +	else
-> +		val &= ~GENMASK(VIO_MOD_TO_REG_OFF(ctx->data->vio_idx_num - 1),
-> +				0);
-> +
-> +	writel(val, reg + 4 * i);
-> +}
-> +
-> +#define PHY_DEVAPC_TIMEOUT	0x10000
-> +
-> +/*
-> + * devapc_sync_vio_dbg - do "shift" mechansim" to get full violation information.
-> + *                       shift mechanism is depends on devapc hardware design.
-> + *                       Mediatek devapc set multiple slaves as a group.
-> + *                       When violation is triggered, violation info is kept
-> + *                       inside devapc hardware.
-> + *                       Driver should do shift mechansim to sync full violation
-> + *                       info to VIO_DBGs registers.
-> + *
-> + */
-> +static int devapc_sync_vio_dbg(struct mtk_devapc_context *ctx)
-> +{
-> +	void __iomem *pd_vio_shift_sta_reg;
-> +	void __iomem *pd_vio_shift_sel_reg;
-> +	void __iomem *pd_vio_shift_con_reg;
-> +	int min_shift_group;
-> +	int ret;
-> +	u32 val;
-> +
-> +	pd_vio_shift_sta_reg = ctx->infra_base +
-> +			       ctx->data->vio_shift_sta_offset;
-> +	pd_vio_shift_sel_reg = ctx->infra_base +
-> +			       ctx->data->vio_shift_sel_offset;
-> +	pd_vio_shift_con_reg = ctx->infra_base +
-> +			       ctx->data->vio_shift_con_offset;
-> +
-> +	/* Find the minimum shift group which has violation */
-> +	val = readl(pd_vio_shift_sta_reg);
-> +	if (!val)
-> +		return false;
-
-So bit 0 of selection register (pd_vio_shift_sel_reg) does not represent a 
-violation group?
-I don't know how the HW works, but is seems odd to me. In case that's bit 0 
-actually doesn't represent anything: how can an interrupt be triggered without 
-any debug information present (means val == 0)?
-
-> +
-> +	min_shift_group = __ffs(val);
-> +
-> +	/* Assign the group to sync */
-> +	writel(0x1 << min_shift_group, pd_vio_shift_sel_reg);
-> +
-> +	/* Start syncing */
-> +	writel(0x1, pd_vio_shift_con_reg);
-> +
-> +	ret = readl_poll_timeout(pd_vio_shift_con_reg, val, val == 0x3, 0,
-> +				 PHY_DEVAPC_TIMEOUT);
-> +	if (ret) {
-> +		dev_err(ctx->dev, "%s: Shift violation info failed\n", __func__);
-
-In which case this can happen? I'm asking, because we are calling 
-devapc_sync_vio_dbg() in a while loop that could make the kernel hang here.
-
-Do I understand correctly, that we are using the while loop, because there can 
-be more then one violation group which got triggered (read, more then one bit is 
-set in pd_vio_shift_sta_reg)? Would it make more sense then to read the register 
-once and do all the shift operation for all groups which bit set to 1 in the 
-shift status register?
-
-> +		return false;
-> +	}
-> +
-> +	/* Stop syncing */
-> +	writel(0x0, pd_vio_shift_con_reg);
-> +
-> +	/* Write clear */
-> +	writel(0x1 << min_shift_group, pd_vio_shift_sta_reg);
-> +
-> +	return true;
-> +}
-> +
-> +/*
-> + * devapc_extract_vio_dbg - extract full violation information after doing
-> + *                          shift mechanism.
-> + */
-> +static void devapc_extract_vio_dbg(struct mtk_devapc_context *ctx)
-> +{
-> +	struct mtk_devapc_vio_dbgs vio_dbgs;
-> +	void __iomem *vio_dbg0_reg;
-> +	void __iomem *vio_dbg1_reg;
-> +
-> +	vio_dbg0_reg = ctx->infra_base + ctx->data->vio_dbg0_offset;
-> +	vio_dbg1_reg = ctx->infra_base + ctx->data->vio_dbg1_offset;
-> +
-> +	vio_dbgs.vio_dbg0 = readl(vio_dbg0_reg);
-> +	vio_dbgs.vio_dbg1 = readl(vio_dbg1_reg);
-> +
-> +	/* Print violation information */
-> +	if (vio_dbgs.dbg0_bits.vio_w)
-> +		dev_info(ctx->dev, "Write Violation\n");
-> +	else if (vio_dbgs.dbg0_bits.vio_r)
-> +		dev_info(ctx->dev, "Read Violation\n");
-> +
-> +	dev_info(ctx->dev, "Bus ID:0x%x, Dom ID:0x%x, Vio Addr:0x%x\n",
-> +		 vio_dbgs.dbg0_bits.mstid, vio_dbgs.dbg0_bits.dmnid,
-> +		 vio_dbgs.vio_dbg1);
-> +}
-> +
-> +/*
-> + * devapc_violation_irq - the devapc Interrupt Service Routine (ISR) will dump
-> + *                        violation information including which master violates
-> + *                        access slave.
-> + */
-> +static irqreturn_t devapc_violation_irq(int irq_number,
-> +					struct mtk_devapc_context *ctx)
-
-static irqreturn_t devapc_violation_irq(int irq_number, void *data)
-{
-	struct mtk_devapc_context *ctx = data;
-
-> +{
-> +	while (devapc_sync_vio_dbg(ctx))
-> +		devapc_extract_vio_dbg(ctx);
-> +
-> +	clear_vio_status(ctx);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +/*
-> + * start_devapc - unmask slave's irq to start receiving devapc violation.
-> + */
-> +static void start_devapc(struct mtk_devapc_context *ctx)
-> +{
-> +	writel(BIT(31), ctx->infra_base + ctx->data->apc_con_offset);
-> +
-> +	mask_module_irq(ctx, false);
-> +}
-> +
-> +/*
-> + * stop_devapc - mask slave's irq to stop service.
-> + */
-> +static void stop_devapc(struct mtk_devapc_context *ctx)
-> +{
-> +	mask_module_irq(ctx, true);
-> +
-> +	writel(BIT(2), ctx->infra_base + ctx->data->apc_con_offset);
-> +}
-> +
-> +static const struct mtk_devapc_data devapc_mt6779 = {
-> +	.vio_idx_num = 511,
-> +	.vio_mask_offset = 0x0,
-> +	.vio_sta_offset = 0x400,
-> +	.vio_dbg0_offset = 0x900,
-> +	.vio_dbg1_offset = 0x904,
-> +	.apc_con_offset = 0xF00,
-> +	.vio_shift_sta_offset = 0xF10,
-> +	.vio_shift_sel_offset = 0xF14,
-> +	.vio_shift_con_offset = 0xF20,
-> +};
-> +
-> +static const struct of_device_id mtk_devapc_dt_match[] = {
-> +	{
-> +		.compatible = "mediatek,mt6779-devapc",
-> +		.data = &devapc_mt6779,
-> +	}, {
-> +	},
-> +};
-> +
-> +static int mtk_devapc_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *node = pdev->dev.of_node;
-> +	struct mtk_devapc_context *ctx;
-> +	u32 devapc_irq;
-> +	int ret;
-> +
-> +	if (IS_ERR(node))
-> +		return -ENODEV;
-> +
-> +	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx)
-> +		return -ENOMEM;
-> +
-> +	ctx->data = of_device_get_match_data(&pdev->dev);
-> +	ctx->dev = &pdev->dev;
-> +
-> +	ctx->infra_base = of_iomap(node, 0);
-
-Does this mean the device is part of the infracfg block?
-I wasn't able to find any information about it.
-
-> +	if (!ctx->infra_base)
-> +		return -EINVAL;
-> +
-> +	devapc_irq = irq_of_parse_and_map(node, 0);
-> +	if (!devapc_irq)
-> +		return -EINVAL;
-> +
-> +	ctx->infra_clk = devm_clk_get(&pdev->dev, "devapc-infra-clock");
-> +	if (IS_ERR(ctx->infra_clk))
-> +		return -EINVAL;
-> +
-> +	if (clk_prepare_enable(ctx->infra_clk))
-> +		return -EINVAL;
-> +
-> +	ret = devm_request_irq(&pdev->dev, devapc_irq,
-> +			       (irq_handler_t)devapc_violation_irq,
-
-No cast should be needed.
-
-> +			       IRQF_TRIGGER_NONE, "devapc", ctx);
-> +	if (ret) {
-> +		clk_disable_unprepare(ctx->infra_clk);
-> +		return ret;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, ctx);
-> +
-> +	start_devapc(ctx);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mtk_devapc_remove(struct platform_device *pdev)
-> +{
-> +	struct mtk_devapc_context *ctx = platform_get_drvdata(pdev);
-> +
-> +	stop_devapc(ctx);
-> +
-> +	clk_disable_unprepare(ctx->infra_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver mtk_devapc_driver = {
-> +	.probe = mtk_devapc_probe,
-> +	.remove = mtk_devapc_remove,
-> +	.driver = {
-> +		.name = KBUILD_MODNAME,
-
-.name = "mtk-devapc",
-
-Regards,
-Matthias
+With this change, the last line is no longer there (if CONFIG_DASD=m) and this also 
+reflects itself in /proc/partitions. The partitions are no longer detected.
