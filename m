@@ -2,74 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67502866EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F182866FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 20:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbgJGS1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 14:27:09 -0400
-Received: from smtprelay0145.hostedemail.com ([216.40.44.145]:36068 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726152AbgJGS1J (ORCPT
+        id S1727379AbgJGS1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 14:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgJGS1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:27:09 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id D3A08100E7B49;
-        Wed,  7 Oct 2020 18:27:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2894:3138:3139:3140:3141:3142:3352:3622:3865:3866:3868:3870:3871:3872:4321:5007:8603:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21212:21611:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: point10_6007cd0271d1
-X-Filterd-Recvd-Size: 1995
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  7 Oct 2020 18:27:06 +0000 (UTC)
-Message-ID: <55ae0b6152c84013d483b1bbecb28a425801c408.camel@perches.com>
-Subject: Re: [PATCH] ima: Fix sizeof mismatches
-From:   Joe Perches <joe@perches.com>
-To:     Colin King <colin.king@canonical.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Roberto Sassu <roberto.sassu@polito.it>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 07 Oct 2020 11:27:04 -0700
-In-Reply-To: <20201007110243.19033-1-colin.king@canonical.com>
-References: <20201007110243.19033-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 7 Oct 2020 14:27:34 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D7DC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 11:27:33 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id g29so1942045pgl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 11:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ymVtv9z8we+uemQdgcTTCFtg9jdtL6i9lziRYSGdqLY=;
+        b=NAitLy3ro1EoqxL1Os7+jL9Cl7w2BNMBSHwH/yDLcoXfRoeeEp86f/3jFb39IdMiBm
+         RU+HfWbykKLEEl4lE5juuPVoKTvNwSqCbX73CVMmo5ydjEyeueoivIk7AEQMHB9xI1Qt
+         mpMQ+dOrMKV492119aCy+Cf6WRUb8O8BdowSc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ymVtv9z8we+uemQdgcTTCFtg9jdtL6i9lziRYSGdqLY=;
+        b=gO4WSQ+/OSnzf87Z7Fcr0ihrugYFyOW9rdPpt2EMD7hMFD2po9HNlJZNrJa3InbRRL
+         VuftYKzXzA3Obu6QLX6p9xdUhEbGEWkiGPHVi48vmyP2oKogywodEmFVI7d/q40+Mqyh
+         S+VOilrHrjjfSi9JvX5EORa7XFhsgAYtO+F/HfvB5aWmon54uN1j9rn9Qw/CsxykKTju
+         t4ezqPvtOs8DdJRYhXxNssSP/0NNNX2ZSKmbel+NcwVpHfOO/NLi8GkwobWsk+Fu5Gi6
+         C7W3iO0aE/72Y6s7OyKt5Y3s5QdLtvJQRQZsUZFfPD84uL4RZBXrroon/whiwJMC3b8T
+         3iUg==
+X-Gm-Message-State: AOAM533O+hJCkq8LWppnNbFliPpwvsNSmIUgkoRACkOaRhwy/fxrTSD4
+        YRlLMG42AvEBHTX/TOm+S+64YC5x47Fayniy
+X-Google-Smtp-Source: ABdhPJw+XHu1u6BdJzcQDAhCppN2N7kssWLj0NxjtLiUczd7SM6AB9x3LGvwuolAAvfYPbWSl3xADA==
+X-Received: by 2002:a62:1d52:0:b029:152:3cf6:e2a8 with SMTP id d79-20020a621d520000b02901523cf6e2a8mr4083585pfd.46.1602095251776;
+        Wed, 07 Oct 2020 11:27:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id in6sm2520124pjb.42.2020.10.07.11.27.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Oct 2020 11:27:30 -0700 (PDT)
+Date:   Wed, 7 Oct 2020 11:27:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/11] drivers/misc/vmw_vmci: convert num guest
+ devices counter to counter_atomic32
+Message-ID: <202010071123.B54E1EA20B@keescook>
+References: <cover.1602011710.git.skhan@linuxfoundation.org>
+ <81f5ca6f9b0a032840d6ec0fb403d4908b9ddec9.1602011710.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81f5ca6f9b0a032840d6ec0fb403d4908b9ddec9.1602011710.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-07 at 12:02 +0100, Colin King wrote:
-> An incorrect sizeof is being used, sizeof(*fields) is not correct,
-> it should be sizeof(**fields). This is not causing a problem since
-> the size of these is the same. Fix this in the kmalloc_array and
-> memcpy calls.
-[]
-> diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
-[]
-> @@ -216,11 +216,11 @@ int template_desc_init_fields(const char *template_fmt,
->  	}
+On Tue, Oct 06, 2020 at 02:44:41PM -0600, Shuah Khan wrote:
+> counter_atomic* is introduced to be used when a variable is used as
+> a simple counter and doesn't guard object lifetimes. This clearly
+> differentiates atomic_t usages that guard object lifetimes.
+> 
+> counter_atomic* variables will wrap around to 0 when it overflows and
+> should not be used to guard resource lifetimes, device usage and
+> open counts that control state changes, and pm states.
+> 
+> atomic_t variable used to count number of vmci guest devices is used
+> as just as counter and it doesn't control object lifetimes or state
+> management. Overflow doesn't appear to be problem for this use.
+> 
+> Convert it to use counter_atomic32.
+> 
+> This conversion doesn't change the overflow wrap around behavior.
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+
+I'm not convinced this isn't both managing lifetime and already buggy.
+Specifically, I'm looking at how vmci_guest_code_active() is used --
+it's being tested before making calls? Is this safe?
+
+> ---
+>  drivers/misc/vmw_vmci/vmci_guest.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/misc/vmw_vmci/vmci_guest.c b/drivers/misc/vmw_vmci/vmci_guest.c
+> index cc8eeb361fcd..86ae27b05fc2 100644
+> --- a/drivers/misc/vmw_vmci/vmci_guest.c
+> +++ b/drivers/misc/vmw_vmci/vmci_guest.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/smp.h>
+>  #include <linux/io.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/counters.h>
 >  
->  	if (fields && num_fields) {
-> -		*fields = kmalloc_array(i, sizeof(*fields), GFP_KERNEL);
-> +		*fields = kmalloc_array(i, sizeof(**fields), GFP_KERNEL);
->  		if (*fields == NULL)
->  			return -ENOMEM;
+>  #include "vmci_datagram.h"
+>  #include "vmci_doorbell.h"
+> @@ -68,11 +69,11 @@ struct pci_dev *vmci_pdev;
+>  static struct vmci_guest_device *vmci_dev_g;
+>  static DEFINE_SPINLOCK(vmci_dev_spinlock);
 >  
-> -		memcpy(*fields, found_fields, i * sizeof(*fields));
-> +		memcpy(*fields, found_fields, i * sizeof(**fields));
+> -static atomic_t vmci_num_guest_devices = ATOMIC_INIT(0);
+> +static struct counter_atomic32 vmci_num_guest_devices = COUNTER_ATOMIC_INIT(0);
+>  
+>  bool vmci_guest_code_active(void)
+>  {
+> -	return atomic_read(&vmci_num_guest_devices) != 0;
+> +	return counter_atomic32_read(&vmci_num_guest_devices) != 0;
 
-Maybe use kmemdup instead.
+Shouldn't this be "> 0" ?
 
-	if (fields && num_fields) {
-		*fields = kmemdup(found_fields, i * sizeof(**fields), GFP_KERNEL);
-		etc...
+>  }
+>  
+>  u32 vmci_get_vm_context_id(void)
+> @@ -624,7 +625,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
+>  
+>  	dev_dbg(&pdev->dev, "Registered device\n");
+>  
+> -	atomic_inc(&vmci_num_guest_devices);
+> +	counter_atomic32_inc(&vmci_num_guest_devices);
+>  
+>  	/* Enable specific interrupt bits. */
+>  	cmd = VMCI_IMR_DATAGRAM;
+> @@ -684,7 +685,7 @@ static void vmci_guest_remove_device(struct pci_dev *pdev)
+>  
+>  	dev_dbg(&pdev->dev, "Removing device\n");
+>  
+> -	atomic_dec(&vmci_num_guest_devices);
+> +	counter_atomic32_dec(&vmci_num_guest_devices);
 
+If there is a bug elsewhere and vmci_guest_remove_device() (or probe)
+gets called too many times, shouldn't we protect the rest of this stack
+from having vmci_num_guest_devices go negative (and therefore non-zero)?
 
+This really seems like it should be refcount_t to me, though I have no
+idea what the races between the dec() and the read() might mean in this
+code generally.
+
+-- 
+Kees Cook
