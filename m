@@ -2,121 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6391228605D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565E9286062
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 15:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgJGNmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 09:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728441AbgJGNmg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 09:42:36 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AACC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 06:42:36 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id w5so1117877qvn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 06:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bm7Nux/xb6SXj9ZR29eQsCeZolUUGIlGA/3pCXOWnqY=;
-        b=oRN0ouP+3GVYiwbPUcOxPk+cVTMSfi6e6xB/kp+ZpPLA+3QEn3FltuYnLYp3IbMyT4
-         XLTyLwYzH3ifqaZnXaU/ZWFyM48epTsFUjsHkhU0idcCtjI43xlPcUDIQI5i97qJQ1Z/
-         hmWU0XhKPvhi2J7X6OI+NOkn5m1fjar7B+5a/IGgH6kfN1aHK788jThYwphFUhnE71h5
-         QymuBRmevVtIbPPsb8/x5Mk95uTwIXwCIbZATz13huzt0//nPIRFE0pqbC5dvTfYdelP
-         5WCCE51W2P5JcKqcJp27ijUk9DzYAmgp+0NhYYdt4Crdv5HPqfR+eWr9bpKdWw5SdwKY
-         eKWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bm7Nux/xb6SXj9ZR29eQsCeZolUUGIlGA/3pCXOWnqY=;
-        b=IYGvudGKt/CpnMDBe8kvjyRdD0S1aJ44FLmg1ZHToSkldlupkH6kSqObtRPjAJUlgJ
-         UEXaMgQgvZ6b+DkW1Q5SUuUOmZ9gYrJ7rPY8YqohT0fQUv2qdlbJjOuf+rdjxAoV4TBb
-         Qhe5eaLGEdIRaYJgR4hGxw51QmfJuVfnhGS1mZJsY9/oq/ylEDpfEyYjQdQ0Uhj2HYy8
-         PgoTrDbv7g9IZarflhKEDKKReYsybgDOINPJoKBy9uz6trOzf1EVfWqWs0T9PZAilMx3
-         rrca0sYIYaVrBzOiwNmNxAtbowksI97XwQACkNwOECXhWDsKOzkcJYMty5YTUioCWnr3
-         s5Pg==
-X-Gm-Message-State: AOAM530Ji92A1QxuFLiEJfJK5M4wVDRpYOv2iF7bXMS9WSKnqxrTwBFy
-        vLGtjgttP/YyA0xeACzUa/CQWg==
-X-Google-Smtp-Source: ABdhPJwsa8h0AE9bNg84UqMhO3s2DHUlgwedfs5Hzzp4d+UxHAd3U8iQNwNgaZByIN+Ca7e6aXxfNA==
-X-Received: by 2002:a0c:e2c1:: with SMTP id t1mr3148068qvl.35.1602078155592;
-        Wed, 07 Oct 2020 06:42:35 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b9sm1325969qka.86.2020.10.07.06.42.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 06:42:34 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kQ9iE-000uYh-A3; Wed, 07 Oct 2020 10:42:34 -0300
-Date:   Wed, 7 Oct 2020 10:42:34 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Pawel Osciak <pawel@osciak.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Oded Gabbay <oded.gabbay@gmail.com>
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Message-ID: <20201007134234.GR5177@ziepe.ca>
-References: <CGME20201003094038eucas1p12aaafe0f52a7747bc2ba95ccb91d1651@eucas1p1.samsung.com>
- <CAKMK7uFP-XQHUPYeRhPx7tjvjARQiF-os9z9jx6WANV6sgSf6g@mail.gmail.com>
- <d2f8e8a7-614d-18c8-9e2a-c604e5e54ce6@samsung.com>
- <CAKMK7uF+a1PSn+e-6F+YhkSXn9vC7etS-z0AFBMCU+Vzb2PwqA@mail.gmail.com>
- <725819e9-4f07-3f04-08f8-b6180406b339@samsung.com>
- <20201007124409.GN5177@ziepe.ca>
- <CAAFQd5D0ahP-3hp_vGEmJ2cyBOMXeW9HX5yKaVPcQTsFwwOE8Q@mail.gmail.com>
- <CAKMK7uG3fds79Yf9VhMstnJ2+UHYUEVdODkoOvtwFC28_+T6RA@mail.gmail.com>
- <20201007130610.GP5177@ziepe.ca>
- <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
+        id S1728511AbgJGNn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 09:43:27 -0400
+Received: from verein.lst.de ([213.95.11.211]:37400 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728441AbgJGNn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 09:43:27 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 363E76736F; Wed,  7 Oct 2020 15:43:24 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 15:43:23 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 02/12] samples: configfs: order includes alphabetically
+Message-ID: <20201007134323.GA764@lst.de>
+References: <20200924124526.17365-1-brgl@bgdev.pl> <20200924124526.17365-3-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAFQd5CH8ytmwfd_AD0e9C92xkW3fRPmqvi9_4UN6pw-y3f-sg@mail.gmail.com>
+In-Reply-To: <20200924124526.17365-3-brgl@bgdev.pl>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 03:34:01PM +0200, Tomasz Figa wrote:
+On Thu, Sep 24, 2020 at 02:45:16PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> The preferred coding style is to order all includes alphabetically for
+> improved readability. There's no need for the configfs header to come
+> last.
 
-> I think the userptr zero-copy hack should be able to go away indeed,
-> given that we now have CMA that allows having carveouts backed by
-> struct pages and having the memory represented as DMA-buf normally.
-
-This also needs to figure out how to get references to CMA pages out
-of a VMA. IIRC Daniel said these are not pinnable?
-
-> How about the regular userptr use case, though?
-
-Just call pin_user_pages(), that is the easy case.
-
-> Is your intention to drop get_vaddr_frames() or we could still keep
-> using it and if vec->is_pfns is true:
-
-get_vaddr_frames() is dangerous, I would like it to go away.
-
-> a) if CONFIG_VIDEO_LEGACY_PFN_USERPTR is set, taint the kernel
-> b) otherwise just undo and fail?
-
-For the CONFIG_VIDEO_LEGACY_PFN_USERPTR case all the follow_pfn
-related code in get_vaddr_frames() shold move back into media and be
-hidden under this config.
-
-Jason
+Is it?  People seem to have all kinds of weird opinions, but I don't
+think any ordering really makes sense.  What does make sense it dropping
+the pointless empty line, so I've folded that into the next patch.
