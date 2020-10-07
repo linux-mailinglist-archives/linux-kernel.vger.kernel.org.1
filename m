@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D605285A5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F666285A5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Oct 2020 10:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgJGIXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 04:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727885AbgJGIW7 (ORCPT
+        id S1727893AbgJGIWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 04:22:46 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45210 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgJGIWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 04:22:59 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0CEC061755;
-        Wed,  7 Oct 2020 01:22:59 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id j33so917113pgj.5;
-        Wed, 07 Oct 2020 01:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DTMIeAb4199BQec+LNtvo77g56g0FGiP7OwneWm/qvY=;
-        b=r5BnuTJLumHmMsoWOjoCTn0gMd3jUUw8iI1MJypztqgE5nG9CU48UfVtN/rMXQM1VV
-         9T9wzdYfyxDvwqIKaC0Uogef32LbP8aY80dXceZCT9SmtMe947Ezwe8v/TGV3kT5cBG8
-         AvzvzQRrY5FfVf9RXlA/0HWbScgyo+BejsLtuefOVV0oD9IgY9DZWmZlM8jBHwXq8Rcq
-         z2awCSt0XRi26cQC4dhwsEtoJLVapdo2WzkklbaRzMiosk9p6zCRYbWZJ9DzXdUafiyr
-         4IjmhXbwG1+APq65/HQKdO33dC8UgGaA52aZV89jTuvhqCVNzSoWFyRAjEl832NMqUnv
-         sZPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DTMIeAb4199BQec+LNtvo77g56g0FGiP7OwneWm/qvY=;
-        b=ALJbApXnff3Fugx0QPQVZWQQAWESsVdP4PEFNdKIVjcPvkXFjaSs4bojo+4LeCiwuF
-         hxlApqvP0A4GoyzqwlosKTOhx7TBoL+gtcuv9NTlCDYWTSUVlHDatPpqcjEY6fVQTZnZ
-         yTpZ4p0HCqkathhsuQcckUlEtUgReYgq8++qb1s6p54ZYrGonQFz070YuSBIUDT5Htfk
-         u5YFOQQlFCP/P9mRGLo1y8UkT4c1qsH0TbLfO9XvPgJjicz77/E2RhJLd46gMSsp38dH
-         l05VZKIWbua4giam4HVn6CcgQH02mJpaiQ06/IX8lp/PZVfWgdAdg7geP7lu2SNDwUc0
-         CQbQ==
-X-Gm-Message-State: AOAM530MD56Gp4OSC4PXksquAdHTCEWxrxUmQf9bPMi8y5ookbUh/tRl
-        ou4VjLTCiSAE2syO7q6T8/Q=
-X-Google-Smtp-Source: ABdhPJw7aCjvWh+9f5ZHF7Si16K7xRCRQhAenNZXmtVZEZmwMh2/En9ERkjHqxmnFwxsTNeJFHnCUQ==
-X-Received: by 2002:a63:4e4a:: with SMTP id o10mr391023pgl.384.1602058979301;
-        Wed, 07 Oct 2020 01:22:59 -0700 (PDT)
-Received: from adolin ([49.207.194.78])
-        by smtp.gmail.com with ESMTPSA id g4sm2042335pgh.65.2020.10.07.01.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 01:22:58 -0700 (PDT)
-Date:   Wed, 7 Oct 2020 13:52:53 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     corbet@lwn.net, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
-        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH 2/2 V3] Documentation: Coccinelle: Modify parallelisation
- information in docs
-Message-ID: <25adae324909605cdbe5ae88a9d60c34aeb515d7.1602054065.git.sylphrenadin@gmail.com>
-References: <cover.1602054065.git.sylphrenadin@gmail.com>
+        Wed, 7 Oct 2020 04:22:46 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0978McFf110394;
+        Wed, 7 Oct 2020 03:22:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602058958;
+        bh=fQFE7sGDqZdok5OvK6iGtl1lyFb8J/X+nm8IT+21uSg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=fMGtC0/S0jbk1EMLXNwUvXRaszFWa2NOfPXH4bHHiO7YvmLkBmgAMfMS5ukD5eb83
+         OI1eJNr+PWItT+zp6hF3TMekb07vTOXSwh2qE7IVcEHQQ1M92E+1pslWFrLLrw6bLS
+         N7BJ9dIDQxyStn2qOkKUKPozD6hCYaVv9AQxFv34=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0978MbSr082643
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Oct 2020 03:22:37 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 7 Oct
+ 2020 03:22:37 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 7 Oct 2020 03:22:37 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0978MYqc012043;
+        Wed, 7 Oct 2020 03:22:35 -0500
+Subject: Re: [PATCH 07/18] dmaengine: ti: k3-udma-glue: Add function to get
+ device pointer for DMA API
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>,
+        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-8-peter.ujfalusi@ti.com>
+ <20201007065305.GS2968@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <71d190e7-5654-e873-16b0-3b9bd6e8bf7a@ti.com>
+Date:   Wed, 7 Oct 2020 11:22:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1602054065.git.sylphrenadin@gmail.com>
+In-Reply-To: <20201007065305.GS2968@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset modifies coccicheck to use at most one thread per core by
-default in machines with more than 4 hyperthreads for optimal performance.
-Modify documentation in coccinelle.rst to reflect the same.
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
-Changes in V2:
-	Update scripts/coccicheck to use all available threads
-	in machines with upto 4 hyperthreads.
----
- Documentation/dev-tools/coccinelle.rst | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/dev-tools/coccinelle.rst b/Documentation/dev-tools/coccinelle.rst
-index 74c5e6aeeff5..6fdc462689d5 100644
---- a/Documentation/dev-tools/coccinelle.rst
-+++ b/Documentation/dev-tools/coccinelle.rst
-@@ -130,8 +130,9 @@ To enable verbose messages set the V= variable, for example::
- Coccinelle parallelization
- --------------------------
- 
--By default, coccicheck tries to run as parallel as possible. To change
--the parallelism, set the J= variable. For example, to run across 4 CPUs::
-+By default, coccicheck uses at most 1 thread per core in a machine with more
-+than 4 hyperthreads. In a machine with upto 4 threads, all threads are used.
-+To change the parallelism, set the J= variable. For example, to run across 4 CPUs::
- 
-    make coccicheck MODE=report J=4
- 
--- 
-2.25.1
+On 07/10/2020 9.53, Vinod Koul wrote:
+> On 30-09-20, 12:14, Peter Ujfalusi wrote:
+>> Glue layer users should use the device of the DMA for DMA mapping and
+>> allocations as it is the DMA which accesses to descriptors and buffers,
+>> not the clients
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>>  drivers/dma/ti/k3-udma-glue.c    | 14 ++++++++++++++
+>>  drivers/dma/ti/k3-udma-private.c |  6 ++++++
+>>  drivers/dma/ti/k3-udma.h         |  1 +
+>>  include/linux/dma/k3-udma-glue.h |  4 ++++
+>>  4 files changed, 25 insertions(+)
+>>
+>> diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glue.c
+>> index a367584f0d7b..a53bc4707ae8 100644
+>> --- a/drivers/dma/ti/k3-udma-glue.c
+>> +++ b/drivers/dma/ti/k3-udma-glue.c
+>> @@ -487,6 +487,13 @@ int k3_udma_glue_tx_get_irq(struct k3_udma_glue_tx_channel *tx_chn)
+>>  }
+>>  EXPORT_SYMBOL_GPL(k3_udma_glue_tx_get_irq);
+>>  
+>> +struct device *
+>> +	k3_udma_glue_tx_get_dma_device(struct k3_udma_glue_tx_channel *tx_chn)
+> 
+> How about..
+> 
+> struct device *
+> k3_udma_glue_tx_get_dma_device(struct k3_udma_glue_tx_channel *tx_chn)
 
+OK.
+
+> 
+>> +{
+>> +	return xudma_get_device(tx_chn->common.udmax);
+>> +}
+>> +EXPORT_SYMBOL_GPL(k3_udma_glue_tx_get_dma_device);
+> 
+> Hmm why would you need to export this device.. Can you please outline
+> all the devices involved here...
+
+In upstream we have one user of the udma-glue layer:
+drivers/net/ethernet/ti/am65-cpsw-nuss.c
+
+It is allocating memory to be used with DMA (descriptor pool), it needs
+to use correct device for DMA API.
+The cpsw atm using it's own dev for allocation, which is wrong, but it
+worked fine as am654/j721e/j7200 is all coherent.
+
+> why not use dmaI_dev->dev or chan->dev?
+
+The glue layer does not use DMAengine API to request a channel as it
+require special resource setup compared to what is possible via generic
+API. We have kept the DMAengine and Glue layer as separate until I have
+time to extend the core to support the features we would need to remove
+the Glue layer.
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
