@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B2B286EB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E729286EB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727652AbgJHG20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 02:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgJHG2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 02:28:25 -0400
-Received: from coco.lan (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1740A20782;
-        Thu,  8 Oct 2020 06:28:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602138505;
-        bh=rGx/tHK9sk8GEZ+IdsjK+5u1fpzknodOEQmNbsMkT/I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Isqt2nMZQ/msZy3rrJO1dkoKGf3EOi1uZBykw+xIFT9/xiWZGo4Uv1jzwO3DeEqdd
-         W+rSahuNBkctSu3w5/PWyplJSBQ5lQ54Twilc7ihWypc4jvVb7aDH+7ga184dF0rjG
-         WVN6PjMNAd27Ju+76hxVCJ4vCXuNC1J8m7N64x8s=
-Date:   Thu, 8 Oct 2020 08:28:18 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v2] misc: Kconfig: add a new dependency for
- HISI_HIKEY_USB
-Message-ID: <20201008082818.6342737a@coco.lan>
-In-Reply-To: <20201008061443.GB172088@kroah.com>
-References: <fed9c0d3538eae7adf9e876fd4c93c2afb3ac31b.1602135021.git.mchehab+huawei@kernel.org>
-        <20201008061443.GB172088@kroah.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727752AbgJHGdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 02:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727437AbgJHGdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 02:33:17 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0BDC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 23:33:17 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id y1so17244uac.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 23:33:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lluFhrYB3PEvXC7CXE2TI2ye7nUNlCyHKSdtn268RHs=;
+        b=Uap0QwGe0bVpSyDIMIQCU35AKa7J9SWbQxq4Chum27zoWrYm0yc+uCdxq3Os950AOP
+         x8NW+2M/bu9wAG5+y29o7oqGlRwUQFTjW+YXpMMCZbZN6475NOGMu3dGaQJ6rgQXkLnl
+         UfemFBwE3dwvFmsX8J68Y7M1D4Ltf0Aw/uovjKO5q6u+P6YeqD1TeJFPR3MCW7vQqZ5e
+         7EnDOFQXrzf2NKBFkTcva8BC7cMT+Fy+xtWvX/6mggAlZJY+8K/TlWUrnFhKpEKQtYPs
+         c6uzitFCHLPSXdoln1wx0HdD+WWfco61zakkolLzk7N217qF7k9/ZPPmO4GVfTGfx7Zs
+         vR5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lluFhrYB3PEvXC7CXE2TI2ye7nUNlCyHKSdtn268RHs=;
+        b=L1vcNTWk18PQioymsKg7d7d2kJQmjJFzl7exSsswJJwTQ51eQX9c7CfQIXI7oS7eKH
+         KC/0M4FIuXaXBhe3TjdmdiGc9mocvgEH+uBFH4TMmBYKwNmEIBDcTK6y5Xr/k1vZNDLG
+         OccqHEJ33bQp2poJMhsRjRgGZluIv2wW//Yw0u22WIDXbVRWOQ6rZuTA8Hc7f25Lzvsa
+         +3y1IjrDlpx4ECiYKNVKL4X8nc+vD6A97C1oJUixOQAHKZXh12IHZvoTITz3TiagT6fC
+         mqiwLTM+SxyMsV3vDXeggVcISYfS8jB1kyoFnIQm/TSyodl17rNwHpkX23o3wpLIbjwL
+         yqOA==
+X-Gm-Message-State: AOAM530h6ChAngghFeWU8z3hT2fxRc8UVMFrxkgzfZC4uolG2Wq2YxfC
+        Cs2pNXN8F2iKH8jXTrGGI8OhvxvxuDc1WRy3nN6X4Q==
+X-Google-Smtp-Source: ABdhPJx+JgKbahMVZ03FJfQUtlBPU0ys6TF84oj1TdEQhmAc5Ww45cf+EbI2/l+liFuUa4xS5QxDNygwT10mFfdKtB4=
+X-Received: by 2002:a9f:366e:: with SMTP id s43mr3791903uad.69.1602138796259;
+ Wed, 07 Oct 2020 23:33:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-3-badhri@google.com>
+ <20201002133952.GA3411859@kroah.com> <20201002134041.GA3412330@kroah.com>
+ <CAPTae5LBeY1qifPmGce+6Cu2hjVx=QZazk53Y=n6RPPRAuozLA@mail.gmail.com> <20201003155726.GC1509449@kroah.com>
+In-Reply-To: <20201003155726.GC1509449@kroah.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 7 Oct 2020 23:32:39 -0700
+Message-ID: <CAPTae5LiLKosJyLndf-T7wCuXKs6tL=vGpqtdqxfgyPMOFZ4wg@mail.gmail.com>
+Subject: Re: [PATCH v9 02/15] usb: typec: tcpci: Add set_vbus tcpci callback
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 8 Oct 2020 08:14:43 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+On Sat, Oct 3, 2020 at 8:56 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Oct 02, 2020 at 09:08:00AM -0700, Badhri Jagan Sridharan wrote:
+> > Hi Greg,
+> >
+> > Yes I tested it on usb-next before sending it out.
+> >
+> >   630 |  tcpci->tcpc.enable_frs = tcpci_enable_frs;
+> >
+> > In https://patchwork.kernel.org/project/linux-usb/list/?series=356837
+> > i.e v9 version of this series,
+> > Patch 7 i.e. https://patchwork.kernel.org/patch/11804847/ is where the
+> > above line is added.
+> >
+> > I restested in combinations [1]  [2] [3] [4]. All of them were clear
+> > cherry-picks. I didnt any merge conflicts.
+> >
+> > Maybe you are applying patches in a different order ?
+>
+> I didn't think so.  Can you try applying the patches, in order, and
+> building after each one to see if you get the same error or not?
 
-> On Thu, Oct 08, 2020 at 07:30:27AM +0200, Mauro Carvalho Chehab wrote:
-> > As warned by Randy:
-> > 
-> > 	on x86_64:
-> > 	CONFIG_USB_ROLE_SWITCH=m
-> > 	and HISI_HIKEY_USB=y.
-> > 
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_remove':
-> > 	hisi_hikey_usb.c:(.text+0x61): undefined reference to `usb_role_switch_unregister'
-> > 	ld: hisi_hikey_usb.c:(.text+0xa4): undefined reference to `usb_role_switch_put'
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `hub_usb_role_switch_set':
-> > 	hisi_hikey_usb.c:(.text+0xd3): undefined reference to `usb_role_switch_get_drvdata'
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `relay_set_role_switch':
-> > 	hisi_hikey_usb.c:(.text+0x54d): undefined reference to `usb_role_switch_set_role'
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_probe':
-> > 	hisi_hikey_usb.c:(.text+0x8a5): undefined reference to `usb_role_switch_get'
-> > 	ld: hisi_hikey_usb.c:(.text+0xa08): undefined reference to `usb_role_switch_register'
-> > 	ld: hisi_hikey_usb.c:(.text+0xa6e): undefined reference to `usb_role_switch_put'
-> > 
-> > Make it dependent on CONFIG_USB_ROLE_SWITCH.
-> > 
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/misc/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> > index e19e1dcceb41..d5ce8082b0a0 100644
-> > --- a/drivers/misc/Kconfig
-> > +++ b/drivers/misc/Kconfig
-> > @@ -459,6 +459,7 @@ config PVPANIC
-> >  config HISI_HIKEY_USB
-> >  	tristate "USB GPIO Hub on HiSilicon Hikey 960/970 Platform"
-> >  	depends on (OF && GPIOLIB) || COMPILE_TEST
-> > +	depends on USB_ROLE_SWITCH
-> >  	help
-> >  	  If you say yes here this adds support for the on-board USB GPIO hub
-> >  	  found on HiKey 960/970 boards, which is necessary to support  
-> 
-> I can't rebase my tree, so can you send the fix-up patch instead, with
-> the proper "reported-by:"?
+Tried this as well. Not sure what I am doing differently.
+Also was manually looking for "tcpci_enable_frs" in the series
+and it's first occurrence is in:
+"[PATCH v9 07/15] usb: typec: tcpci: Implement callbacks for FRS".
 
-Sent. You may need to adjust the Fixes: line there, in order to
-point to the right changeset on your tree.
+Just sent out the v10 after addressing a couple of comments from
+Rob Herring.
 
 Thanks,
-Mauro
+Badhri
+
+
+>
+> My usb-next branch is up to date with all of the recent patches.
+>
+> thanks,
+>
+> greg k-h
