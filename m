@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C839C287D42
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56BC287D15
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730570AbgJHUeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730449AbgJHUe2 (ORCPT
+        id S1730364AbgJHU2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:28:12 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:39005 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730312AbgJHU2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:34:28 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1C9C0613D2;
-        Thu,  8 Oct 2020 13:34:28 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y14so4923065pfp.13;
-        Thu, 08 Oct 2020 13:34:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VtGhw982GZn5/2jIJzO1yFQfzPXCKOgYHg55HZsneqM=;
-        b=gl6kSWRTalU0gQse2emeofjVMefKvJ+7B6qUmbgJbgBMlni6PL6sCsac18RkEem87Y
-         aSx1jif8DDWl0CrNyexpGkI0mEm+QGmMOzRwm6/wI+TEG1wCCUWmm9/HL9v1rxQ7jpdW
-         Os1PHnky6IiXhI0MMpJAqeX1M0WGyGBPHSGRnj8UED/kfzsdx/SRMXbUaSNzN8UGq1/j
-         QD8wOXO6ejL5bpR8jUvdwHhuU8mESKA5Poc2OGYXoX7HOdvqQAV+HUsd1+vt+Q2YcE4L
-         i1Gg9iuE+bZqPY3YMb5SLbsbBHSdaVXcXxDKKbDUR6m9aAFozyVNgRyOAbMdrErmYFMf
-         FI1A==
+        Thu, 8 Oct 2020 16:28:11 -0400
+Received: by mail-io1-f78.google.com with SMTP id s135so4632098ios.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 13:28:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VtGhw982GZn5/2jIJzO1yFQfzPXCKOgYHg55HZsneqM=;
-        b=WCo5xyixWcbkeXEtj8do8nIpR72Bf78S1pHYLKK61fwWwAoInkfg3SvznC32djwcQc
-         jcMT41yEUReKtnAIs2/YvatALXzc8+T+qakuabQ4Gnd6XoNrjmceQSMPioOr4+E+6nAU
-         uRcH+4xRmi4B33N59QR70UgdIpRTecQbw5n53C5dLBrn5iqF+8eVt4rKZmoV1e3cwYyW
-         FJErqwI1MIkNOpnzP6zwHHG9d5KaoegKvQ1PzYaRAQesH95sk29cSBZfrGGFKPQj7wgY
-         qmBlndZfuAqwertjaWVxBwy6/BzU68lCJF7l+ckWodhTbT+i/VtXstqz8L5Kws0k9PEx
-         ygQA==
-X-Gm-Message-State: AOAM533q7ymyKfBnYCrNLXgGXuHP2Ya4Ka0JjnzIT+/Wh6ENemY3mWOg
-        FR/o6Me2bpMG4wVap5HSeug=
-X-Google-Smtp-Source: ABdhPJz0BwAzCB5xfM16GJ/Hxrzy13WG9fwAkAYfv8cn7dmNgkv17FanejEaeAu2ttkkxYPbHDFN3g==
-X-Received: by 2002:a62:60c3:0:b029:152:151e:9dd6 with SMTP id u186-20020a6260c30000b0290152151e9dd6mr8585870pfb.72.1602189267559;
-        Thu, 08 Oct 2020 13:34:27 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id n203sm661528pfd.81.2020.10.08.13.34.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 08 Oct 2020 13:34:27 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 13:27:25 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/5] memory: tegra: Fix client list and add swgroups
-Message-ID: <20201008202725.GB32140@Asurada-Nvidia>
-References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
- <CAJKOXPdf8YMFkoTzLhM7d51dwtH1ckGis86dHiSYpFBV0oscfA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7y3B3XsOiPTLYLIDns6NguVsL9ucnpw4TXcZn72tI0c=;
+        b=UygwF6DWIk2VhJRxUu6cJwV/zXPTJLav7yLMs9vuCTlniBMHVbK40VDZ34ITa9cGmz
+         oNrTSLHxvoNLtZGsokAm6PrzxiGGqnbF6RnI/HLQRhkit1OHRsdtnntKI7wRgdAKDQHS
+         GdSTkGZGKmQUODkkZSdXlwyNU9A4BIndMT20J4csFFy+hUUtkS3tB9Yl2Ibuyn4m8WXC
+         H3UPucyhGPYRD6o8cSCZsPu+mhFjukSbuxmHUVQNzhilQoELycUJw9tXrOcwQV0f693G
+         pOw0Cp48N4xDja4FwQY2jrqKxl/Zy1hnbw9DXZTnoLXbuQDLbGPiIImmD4mQSeHsrrd+
+         khCg==
+X-Gm-Message-State: AOAM533egAGwMKazIZUA/sQMymESh/q1Y4q5/VxsnStTQ6b2CRowCtM0
+        2rLtfDkhHClS3cWWi8urIH/LQ2J2BDyMyxgHrPCDFv5TmMSX
+X-Google-Smtp-Source: ABdhPJxQG7zkhxy1g7ndmakw3pFTvWpidkFGm3ConSOutpg5F4NLy+BDbf/l7aHvxuH3DwXEGuIgtAHY6s+z1objQuaP9/PVvEnF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPdf8YMFkoTzLhM7d51dwtH1ckGis86dHiSYpFBV0oscfA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a92:1f44:: with SMTP id i65mr7622723ile.280.1602188890683;
+ Thu, 08 Oct 2020 13:28:10 -0700 (PDT)
+Date:   Thu, 08 Oct 2020 13:28:10 -0700
+In-Reply-To: <00000000000084dcbd05b12a3736@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1412b05b12eab0a@google.com>
+Subject: Re: general protection fault in percpu_ref_exit
+From:   syzbot <syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, bcrl@kvack.org, hch@lst.de, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, viro@zeniv.linux.org.uk, vkabatov@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+syzbot has bisected this issue to:
 
-On Thu, Oct 08, 2020 at 12:29:06PM +0200, Krzysztof Kozlowski wrote:
-> On Thu, 8 Oct 2020 at 02:44, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> >
-> > This series has two fixes of tegra210_mc_clients, and three
-> > changes to add missing swgroups, according to Tegra X1 TRM.
-> >
-> > Nicolin Chen (5):
-> >   memory: tegra: Correct la.reg address of seswr
-> >   memory: tegra: Correct tegra210_mc_clients def values
-> >   memory: tegra: Sort tegra210_swgroups by reg address
-> >   dt-bindings: memory: tegra: Add missing swgroups
-> >   memory: tegra: Complete tegra210_swgroups
-> 
-> Hi,
-> 
-> It's too late in the cycle for another pull request so this will wait
-> for merge window to finish.
+commit 2b0d3d3e4fcfb19d10f9a82910b8f0f05c56ee3e
+Author: Ming Lei <ming.lei@redhat.com>
+Date:   Thu Oct 1 15:48:41 2020 +0000
 
-I see. Thanks for telling me this!
+    percpu_ref: reduce memory footprint of percpu_ref in fast path
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126930d0500000
+start commit:   8b787da7 Add linux-next specific files for 20201007
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=116930d0500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=166930d0500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aac055e9c8fbd2b8
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd15ff734dace9e16437
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119a0568500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106c0a8b900000
+
+Reported-by: syzbot+fd15ff734dace9e16437@syzkaller.appspotmail.com
+Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
