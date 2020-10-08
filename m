@@ -2,90 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D801E2871A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1802871A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729177AbgJHJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:34:59 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:58808 "EHLO pegase1.c-s.fr"
+        id S1729186AbgJHJf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:35:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60136 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729132AbgJHJe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:34:58 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C6Qz34GzYz9v0Jf;
-        Thu,  8 Oct 2020 11:34:55 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Dxf-B-Usr2rW; Thu,  8 Oct 2020 11:34:55 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C6Qz33DdTz9v0Jb;
-        Thu,  8 Oct 2020 11:34:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A4C818B830;
-        Thu,  8 Oct 2020 11:34:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id PPROgbo_lq6s; Thu,  8 Oct 2020 11:34:56 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 63F018B82F;
-        Thu,  8 Oct 2020 11:34:56 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 3C9D065DCA; Thu,  8 Oct 2020 09:34:56 +0000 (UTC)
-Message-Id: <002585b74fd8d24b051b6445a7de1058c14afde6.1602149655.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] crypto: talitos - Fix return type of current_desc_hdr()
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  8 Oct 2020 09:34:56 +0000 (UTC)
+        id S1725852AbgJHJf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:35:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 79F17ACAC;
+        Thu,  8 Oct 2020 09:35:24 +0000 (UTC)
+Message-ID: <4fcb8adf6241e601109cfae5945f38be0e67e0f6.camel@suse.de>
+Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Tim Gover <tim.gover@raspberrypi.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Eric Anholt <eric@anholt.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Date:   Thu, 08 Oct 2020 11:35:21 +0200
+In-Reply-To: <CAPY8ntAr+wV0F-GCxHLg+30tuu8van51BFQ9Nh_C1LD+CPRcLA@mail.gmail.com>
+References: <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
+         <20200929221526.GA1370981@ubuntu-m3-large-x86>
+         <20200930140758.gummt3umouva3wyu@gilmour.lan>
+         <20200930163823.GA237050@ubuntu-m3-large-x86>
+         <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
+         <20201001064843.dlewcu3b7dvqanyy@gilmour.lan>
+         <20201001085402.t6mzzwzplviunhoc@gilmour.lan>
+         <CAAvKZ65WqQqH-9JVdb5M6HcKbR3yQdvZha8n9UXXCfciYRq4aA@mail.gmail.com>
+         <20201002151954.wazqc5riesdomlpx@gilmour.lan>
+         <CAPY8ntCkY9F0e=hOyg=rs5G2a=iEbukWgmr0adXrwJQPm=uY6A@mail.gmail.com>
+         <20201006152623.sjc3jxagj4wh7g5f@gilmour.lan>
+         <CAPY8ntAr+wV0F-GCxHLg+30tuu8van51BFQ9Nh_C1LD+CPRcLA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-GGTW+6nQFXkETNpj3DA5"
+User-Agent: Evolution 3.36.5 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-current_desc_hdr() returns a u32 but in fact this is a __be32,
-leading to a lot of sparse warnings.
 
-Change the return type to __be32 and ensure it is handled as
-sure by the caller.
+--=-GGTW+6nQFXkETNpj3DA5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 3e721aeb3df3 ("crypto: talitos - handle descriptor not found in error path")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- drivers/crypto/talitos.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hi Dave, sorry for the late reply.
 
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index 7c547352a862..f9f0d34d49f3 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -460,7 +460,7 @@ DEF_TALITOS2_DONE(ch1_3, TALITOS2_ISR_CH_1_3_DONE)
- /*
-  * locate current (offending) descriptor
-  */
--static u32 current_desc_hdr(struct device *dev, int ch)
-+static __be32 current_desc_hdr(struct device *dev, int ch)
- {
- 	struct talitos_private *priv = dev_get_drvdata(dev);
- 	int tail, iter;
-@@ -501,13 +501,13 @@ static u32 current_desc_hdr(struct device *dev, int ch)
- /*
-  * user diagnostics; report root cause of error based on execution unit status
-  */
--static void report_eu_error(struct device *dev, int ch, u32 desc_hdr)
-+static void report_eu_error(struct device *dev, int ch, __be32 desc_hdr)
- {
- 	struct talitos_private *priv = dev_get_drvdata(dev);
- 	int i;
- 
- 	if (!desc_hdr)
--		desc_hdr = in_be32(priv->chan[ch].reg + TALITOS_DESCBUF);
-+		desc_hdr = cpu_to_be32(in_be32(priv->chan[ch].reg + TALITOS_DESCBUF));
- 
- 	switch (desc_hdr & DESC_HDR_SEL0_MASK) {
- 	case DESC_HDR_SEL0_AFEU:
--- 
-2.25.0
+On Tue, 2020-10-06 at 18:14 +0100, Dave Stevenson wrote:
+> Hi Maxime
+>=20
+> On Tue, 6 Oct 2020 at 16:26, Maxime Ripard <maxime@cerno.tech> wrote:
+> > Hi Dave,
+> >=20
+> > On Fri, Oct 02, 2020 at 04:57:05PM +0100, Dave Stevenson wrote:
+> > > Hi Maxime
+> > >=20
+> > > On Fri, 2 Oct 2020 at 16:19, Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > Hi Tim,
+> > > >=20
+> > > > On Thu, Oct 01, 2020 at 11:15:46AM +0100, Tim Gover wrote:
+> > > > > hdmi_enable_4k60=3D1 causes the firmware to select 3.3 GHz for th=
+e PLLC
+> > > > > VCO to support a core-frequency of 550 MHz which is the minimum
+> > > > > frequency required by the HVS at 4Kp60. The side effect is that i=
+f the
+> > > > > display clock requirements are lower than 4Kp60 then you will see
+> > > > > different core frequencies selected by DVFS.
+> > > > >=20
+> > > > > If enable_uart=3D1 and the mini-uart is selected (default unless
+> > > > > bluetooth is disabled) then the firmware will pin the core-freque=
+ncy
+> > > > > to either core_freq max (500 or 550). Although, I think there is =
+a way
+> > > > > of pinning it to a lower fixed frequency.
+> > > > >=20
+> > > > > The table in overclocking.md defines options for setting the maxi=
+mum
+> > > > > core frequency but unless core_freq_min is specified DVFS will
+> > > > > automatically pick the lowest idle frequency required by the disp=
+lay
+> > > > > resolution.
+> > > >=20
+> > > > I'm wondering if there's some way to detect this from Linux? I gues=
+s it
+> > > > would be nice to be able to at least detect a broken config to warn=
+ /
+> > > > prevent an user that their situation is not going to be reliable / =
+work
+> > > > really well (like if they have a 4k display without hdmi_enable_4kp=
+60
+> > > > set, or the issue we're discussing here)
+> > >=20
+> > > The main filter in the firmware is the parameter
+> > > hdmi_pixel_freq_limit. That can either be set manually from
+> > > config.txt, or defaults appropriately based on hdmi_enable_4kp60.
+> > > Under firmware_kms [1] I read back those values to use as a filter
+> > > within crtc_mode_valid[2].
+> > > I can't think of a nice way of exposing that without the vc4 driver
+> > > gaining a DT link to the firmware, and that starts to get ugly.
+> >=20
+> > I had in mind something like if the clock driver can infer that somehow
+> > through some the boundaries reported by the firmware maybe? IIRC,
+> > hdmi_enable_4kp60 will already change the max frequency reported to
+> > 550MHz instead of 500MHz
+>=20
+> Yes, that's plausible, but I don't know enough about the clock
+> infrastructure for advertising limits to know what works there.
+> Tell me what you need from the mailbox service and I'll see what I can do=
+.
+>=20
+> We do already have RPI_FIRMWARE_GET_MAX_CLOCK_RATE and
+> RPI_FIRMWARE_GET_MIN_CLOCK_RATE. It'd take a few minutes of staring at
+> the code (or a quick test) to confirm if they definitely are changed
+> for CORE clock by hdmi_enable_4kp60 - I think it does.
+
+Tim commented earlier that you meant to pin CORE frequency when enable_uart=
+=3D1.
+In practice it doesn't seem to be the case, but it would solve the UART
+problem for most use cases. Would that be feasible?
+
+If we have to change the CORE frequency during runtime we could, while we
+search for a proper solution, print a warning that we're about to break the=
+ low
+speed peripherals.
+
+Regards,
+Nicolas
+
+
+--=-GGTW+6nQFXkETNpj3DA5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl9+3VkACgkQlfZmHno8
+x/6lNQf/RX2DLfzMbpiRUL7IE3tjUlCl92Irb0CiVN54cIbjREI3mpHvnODwZ54B
+O2PoojpqTltsyyixX6sI3vYUyiYbaWNCC8NEMd2+2h4RFFqdDjZU+L80yQcL7Ms4
+dEOaTNjfm3Fo2wxgUXrt79Z4yotEnT1UVAhqdXXFj+18EMzJfFddMk/0UsO0wP0f
+COkCwXpBy4m3RD/orkS8QHNZxcl2YXzG0GLqm2FCrnypLSCFgXHIzLkyxaHMwxK8
+sE1yZfgoG2QlE7HYFVfNyksx2DT9p0f6EKh7Qi4vk82WsJlJfkywpf3k8wI1jm3J
+ayS4IGCyOSMUrvlZUX/REvUPN3mLLQ==
+=jTkd
+-----END PGP SIGNATURE-----
+
+--=-GGTW+6nQFXkETNpj3DA5--
 
