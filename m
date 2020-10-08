@@ -2,160 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B76287DB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7982B287DB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729198AbgJHVOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 17:14:21 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:45552 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727181AbgJHVOV (ORCPT
+        id S1729480AbgJHVOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 17:14:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52952 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727181AbgJHVOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:14:21 -0400
-Received: by mail-io1-f70.google.com with SMTP id c5so4684432iok.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 14:14:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=vzf609RP+iBVorRyXP7G3xytLVq/dULkfZhJLD/Vp+Y=;
-        b=HVrhMsjPyvEvERPPWW4i9Kh98hm+BeH2i+63rw/JFoRbnrlqgu+kHoUduBQdOy6w00
-         2NZLSmDlIxyRoLiBFY9pciefyQaxvDtjin42Qg1m6/YNIFzwYcEJt0pyVPYrTB7GgCtv
-         GWtuGPmdrtZHtebPAPBGy2bvoz6wek6as4arBxM//g0uxvkgf4p9JBM2QWGnpTRqtHxj
-         9vA9QBFNLc2whvB+9a9jfGIqn+wNnRGZHghz60gwDoh37tR8f3ykrsvBC6Ln1Q/sIyx6
-         TNfj6ZBXTv7UnVuMBddock8scCzkqelvE29trIJB8Re9PbhO/b93/aLH3ggT2xhDj/po
-         Wyrg==
-X-Gm-Message-State: AOAM532kFvZSAB2eH9f4S+KkUzHHLWcPGtKK+4HtRO85zV6CpITpMbrW
-        0fYWg/1sS10f+Zq8s4mIyvrhPL7IFeSYEdqIwLWWQ14dTsyD
-X-Google-Smtp-Source: ABdhPJy39gmzrOCLLQZ7G6Nm64vOvORQcQxIJgEoxmBH4G4VN+5AfQplmJ+gOBnuEg3nM822IUhovQI4FhIpjGY+evNvoAGowBUu
+        Thu, 8 Oct 2020 17:14:30 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602191668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmLeNZlnV7ehVAVhnHCb2FaMBjRQs76k2/xo1iDM6Vg=;
+        b=hD1GAF6+KK2bameAjzzJ7TC3vtVsb89mmEBVTf/g4+gnMQc0Z3LsDMaE2Wn5oGIE3sQbj9
+        LpJU6ZqrAl8XLzEU33GbN0RsY+MzMuPJ3t5B/jyhYcn6tAY0zTXFmdVC6AXT72ITm+V233
+        Af8qSd7vIDLoGGwELr8hfxlKY3DQNWVX0qEArk/WavJ+L5L1fmC2o36VwllwIrHCwUcLhW
+        ESctOmKrjXoBsM0JaHs/L7ktbzGqwzrXX5AxTTZqSicH/j9QuWNhnAJXcVOksLWIlkifAF
+        nXBGH3ITpZTbjZ2EYNSyf8DYp6fmw8+ZS4vU358Ai20uTKsozUM7rgrJUvKBtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602191668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BmLeNZlnV7ehVAVhnHCb2FaMBjRQs76k2/xo1iDM6Vg=;
+        b=IsxncIH0tg45i0pg2oKWmoW1Z58Z/AWtFajrodpTsUGOjnBmdX1vhjHZ/5n5kWrQFUE+Gw
+        /H++gUHzcQG8AXCA==
+To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
+Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+In-Reply-To: <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org> <20201007122046.1113577-1-dwmw2@infradead.org> <20201007122046.1113577-5-dwmw2@infradead.org> <87blhcx6qz.fsf@nanos.tec.linutronix.de> <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org> <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org>
+Date:   Thu, 08 Oct 2020 23:14:28 +0200
+Message-ID: <87362owhcb.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2ac8:: with SMTP id m8mr4903877iov.46.1602191660106;
- Thu, 08 Oct 2020 14:14:20 -0700 (PDT)
-Date:   Thu, 08 Oct 2020 14:14:20 -0700
-In-Reply-To: <00000000000045ac4605b12a1720@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c35f0805b12f5099@google.com>
-Subject: Re: inconsistent lock state in xa_destroy
-From:   syzbot <syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Thu, Oct 08 2020 at 17:08, David Woodhouse wrote:
+> On Thu, 2020-10-08 at 13:55 +0100, David Woodhouse wrote:
+>
+> (We'd want the x86_vector_domain to actually have an MSI compose
+> function in the !CONFIG_PCI_MSI case if we did this, of course.)
 
-HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17dda29f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
-dashboard link: https://syzkaller.appspot.com/bug?extid=cdcbdc0bd42e559b52b9
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14860568500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16367de7900000
+The compose function and the vector domain wrapper can simply move to vector.c
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cdcbdc0bd42e559b52b9@syzkaller.appspotmail.com
+> From 2fbc79588d4677ee1cc9df661162fcf1a7da57f0 Mon Sep 17 00:00:00 2001
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> Date: Thu, 8 Oct 2020 15:44:42 +0100
+> Subject: [PATCH 6/5] x86/ioapic: Generate RTE directly from parent irqchip's MSI
+>  message
+>
+> The IOAPIC generates an MSI cycle with address/data bits taken from its
+> Redirection Table Entry in some combination which used to make sense,
+> but now is just a bunch of bits which get passed through in some
+> seemingly arbitrary order.
+>
+> Instead of making IRQ remapping drivers directly frob the IOAPIC RTE,
+> let them just do their job and generate an MSI message. The bit
+> swizzling to turn that MSI message into the IOAPIC's RTE is the same in
+> all cases, since it's a function of the IOAPIC hardware. The IRQ
+> remappers have no real need to get involved with that.
+>
+> The only slight caveat is that the IOAPIC is interpreting some of
+> those fields too, and it does want the 'vector' field to be unique
+> to make EOI work. The AMD IOMMU happens to put its IRTE index in the
+> bits that the IOAPIC thinks are the vector field, and accommodates
+> this requirement by reserving the first 32 indices for the IOAPIC.
+> The Intel IOMMU doesn't actually use the bits that the IOAPIC thinks
+> are the vector field, so it fills in the 'pin' value there instead.
+>
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> ---
+>  arch/x86/include/asm/hw_irq.h       | 11 +++---
+>  arch/x86/include/asm/msidef.h       |  2 ++
+>  arch/x86/kernel/apic/io_apic.c      | 55 ++++++++++++++++++-----------
+>  drivers/iommu/amd/iommu.c           | 14 --------
+>  drivers/iommu/hyperv-iommu.c        | 31 ----------------
+>  drivers/iommu/intel/irq_remapping.c | 19 +++-------
+>  6 files changed, 46 insertions(+), 86 deletions(-)
 
-================================
-WARNING: inconsistent lock state
-5.9.0-rc8-next-20201008-syzkaller #0 Not tainted
---------------------------------
-inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
-swapper/0/0 [HC0[0]:SC1[1]:HE0:SE0] takes:
-ffff888025f65018 (&xa->xa_lock#7){+.?.}-{2:2}, at: xa_destroy+0xaa/0x350 lib/xarray.c:2205
-{SOFTIRQ-ON-W} state was registered at:
-  lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
-  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
-  spin_lock include/linux/spinlock.h:354 [inline]
-  io_uring_add_task_file fs/io_uring.c:8607 [inline]
-  io_uring_add_task_file+0x207/0x430 fs/io_uring.c:8590
-  io_uring_get_fd fs/io_uring.c:9116 [inline]
-  io_uring_create fs/io_uring.c:9280 [inline]
-  io_uring_setup+0x2727/0x3660 fs/io_uring.c:9314
-  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-irq event stamp: 120141
-hardirqs last  enabled at (120140): [<ffffffff8847f0df>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-hardirqs last  enabled at (120140): [<ffffffff8847f0df>] _raw_spin_unlock_irqrestore+0x6f/0x90 kernel/locking/spinlock.c:191
-hardirqs last disabled at (120141): [<ffffffff8847f6c9>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
-hardirqs last disabled at (120141): [<ffffffff8847f6c9>] _raw_spin_lock_irqsave+0xa9/0xd0 kernel/locking/spinlock.c:159
-softirqs last  enabled at (119956): [<ffffffff814731af>] irq_enter_rcu+0xcf/0xf0 kernel/softirq.c:360
-softirqs last disabled at (119957): [<ffffffff88600f2f>] asm_call_irq_on_stack+0xf/0x20
+Nice :)
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+> +static void mp_swizzle_msi_dest_bits(struct irq_data *irq_data, void *_entry)
+> +{
+> +	struct msi_msg msg;
+> +	u32 *entry = _entry;
+> +
+> +	irq_chip_compose_msi_msg(irq_data, &msg);
 
-       CPU0
-       ----
-  lock(&xa->xa_lock#7);
-  <Interrupt>
-    lock(&xa->xa_lock#7);
+Duh, for some stupid reason it never occured to me to do it that
+way.
 
- *** DEADLOCK ***
+Historically the MSI compose function was part of the MSI PCI chip and I
+just changed that recently when I reworked the code to make IMS support
+possible.
 
-1 lock held by swapper/0/0:
- #0: ffffffff8a554c80 (rcu_callback){....}-{0:0}, at: rcu_do_batch kernel/rcu/tree.c:2474 [inline]
- #0: ffffffff8a554c80 (rcu_callback){....}-{0:0}, at: rcu_core+0x5d8/0x1240 kernel/rcu/tree.c:2718
+Historical blinders are pretty sticky :(
 
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc8-next-20201008-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- print_usage_bug kernel/locking/lockdep.c:3715 [inline]
- valid_state kernel/locking/lockdep.c:3726 [inline]
- mark_lock_irq kernel/locking/lockdep.c:3929 [inline]
- mark_lock.cold+0x32/0x74 kernel/locking/lockdep.c:4396
- mark_usage kernel/locking/lockdep.c:4281 [inline]
- __lock_acquire+0x118a/0x56d0 kernel/locking/lockdep.c:4771
- lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5419
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x94/0xd0 kernel/locking/spinlock.c:159
- xa_destroy+0xaa/0x350 lib/xarray.c:2205
- __io_uring_free+0x60/0xc0 fs/io_uring.c:7693
- io_uring_free include/linux/io_uring.h:40 [inline]
- __put_task_struct+0xff/0x3f0 kernel/fork.c:732
- put_task_struct include/linux/sched/task.h:111 [inline]
- delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:172
- rcu_do_batch kernel/rcu/tree.c:2484 [inline]
- rcu_core+0x645/0x1240 kernel/rcu/tree.c:2718
- __do_softirq+0x203/0xab6 kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0x9b/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:native_safe_halt+0xe/0x10 arch/x86/include/asm/irqflags.h:61
-Code: 89 ef e8 b5 62 6f f9 e9 86 fe ff ff 48 89 df e8 a8 62 6f f9 e9 7b ff ff ff cc cc cc e9 07 00 00 00 0f 00 2d 54 08 61 00 fb f4 <c3> 90 e9 07 00 00 00 0f 00 2d 44 08 61 00 f4 c3 cc cc 55 53 e8 09
-RSP: 0018:ffffffff8a207d48 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 1ffffffff176a7c1
-RDX: ffffffff8a29ce40 RSI: ffffffff8847e5c3 RDI: 0000000000000000
-RBP: ffff888012d2e064 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888012d2e000 R14: ffff888012d2e064 R15: ffff8881339b2004
- arch_safe_halt arch/x86/include/asm/paravirt.h:150 [inline]
- acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
- acpi_idle_do_entry+0x1e8/0x330 drivers/acpi/processor_idle.c:517
- acpi_idle_enter+0x35a/0x550 drivers/acpi/processor_idle.c:648
- cpuidle_enter_state+0x1ab/0xdb0 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:132 [inline]
- cpuidle_idle_call kernel/sched/idle.c:213 [inline]
- do_idle+0x48e/0x730 kernel/sched/idle.c:273
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:369
- start_kernel+0x490/0x4b1 init/main.c:1049
- secondary_startup_64_no_verify+0xa6/0xab
+> +	/*
+> +	 * They're in a bit of a random order for historical reasons, but
+> +	 * the IO/APIC is just a device for turning interrupt lines into
+> +	 * MSIs, and various bits of the MSI addr/data are just swizzled
+> +	 * into/from the bits of Redirection Table Entry.
+> +	 */
+> +	entry[0] &= 0xfffff000;
+> +	entry[0] |= (msg.data & (MSI_DATA_DELIVERY_MODE_MASK |
+> +				 MSI_DATA_VECTOR_MASK));
+> +	entry[0] |= (msg.address_lo & MSI_ADDR_DEST_MODE_MASK) << 9;
+> +
+> +	entry[1] &= 0xffff;
+> +	entry[1] |= (msg.address_lo & MSI_ADDR_DEST_ID_MASK) << 12;
+> +}
+
+....
+
+>  	switch (info->type) {
+>  	case X86_IRQ_ALLOC_TYPE_IOAPIC:
+> -		/* Setup IOAPIC entry */
+> -		entry = info->ioapic.entry;
+> -		info->ioapic.entry = NULL;
+> -		memset(entry, 0, sizeof(*entry));
+> -		entry->vector        = index;
+> -		entry->mask          = 0;
+> -		entry->trigger       = info->ioapic.trigger;
+> -		entry->polarity      = info->ioapic.polarity;
+> -		/* Mask level triggered irqs. */
+> -		if (info->ioapic.trigger)
+> -			entry->mask = 1;
+> -		break;
+> -
+
+Thanks for cleaning this up!
+
+       tglx
 
