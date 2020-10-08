@@ -2,253 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E2A287355
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CCA287358
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728703AbgJHL1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:27:50 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45401 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726065AbgJHL1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:27:49 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D7DA558032E;
-        Thu,  8 Oct 2020 07:27:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 08 Oct 2020 07:27:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=KTPwdqBKAJjRWkkEeQTJTtrMtpG
-        t/EY8qnr4KEuhkqo=; b=lvD7ycev3K8NQWfZ5iKZf3fo84QLHSLZucAG0ZdGXRk
-        4SLAj22MBuPPxpm+Vk9vo0BLDL2xhCxJiX8PN7SbqEQl/+aFb/oaA7jV5TR1yytM
-        b+ageLjU1Jc03eJqZ26dcgSggIHrUij+7LMwgKvFIPEWo6HhqzzXiXkmLsKJ0BJ4
-        qh6v8aXD3DL+pRFKsdmMx51xPYkzmePeo1xLTObC3v64pL2IBjXVwCJF5Zlug2oC
-        Z6dy5loT96Oj1LI+ETmHe+u2Xq3oeAeWMfs6VwO7iiyemWvdmgw6ZBbpk57MoKpo
-        PVjMWNLYdPIbC82hJxVZilNh5shmV90+emdoVd/Q2uw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KTPwdq
-        BKAJjRWkkEeQTJTtrMtpGt/EY8qnr4KEuhkqo=; b=iYr0ajqyKZvq/1vmZEAiBc
-        Z+iGMK+5BvFeVFzS15HGbaJEl+hNnQ91a+srTVAk2m2oXH8BFem6KyV8GViR7fqx
-        63Cy/W3bUBx2xOidvBvgdrv6QmQkrbmaisvVzI6TWb0gCgBIVs1LyAGnlG/3/yxj
-        Fq8tcFCpPYoN0HZmgo0VTdYsZySMv8bdG3Zxnek8zfX5iJrEcDJD1NyTkhXDWBYt
-        A7nfLxZLAe1qO+EteuELUUE0Ue9xb3selORgLshZaomUetA7JdyMybtJEbRHo+mc
-        IIYvAJkKe5C+SJG3cu3fgpscuUDtgip27lqTR1wXPiINEN7Z1O5pgEbRV5/bDwAw
-        ==
-X-ME-Sender: <xms:svd-X2Bj9zAHGaj9fIaqiW4oq4W0eWqyzksvJIImJ_1ZJKafwT8efQ>
-    <xme:svd-XwisE0HjP6AgDZRQ474RCZYgpthiUE08hsQHjLpEKfGV35_btA_2H6bbvmpc7
-    bLqSSvKJ3KttUpWOFk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeelgddufecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:svd-X5nHr-CuTKdp2JjWfC_Pl-681fSOz70nSWOySYcufNhzOBrrbw>
-    <xmx:svd-X0zeGoxzkyGat3RWFoivP8DurFNbK0IlGjpUtLCnW7qRasD1WQ>
-    <xmx:svd-X7SyfN23T3Y76mEh3zpN7Xke9x0KD0Swke4n01QbwrTQ8n2hGQ>
-    <xmx:s_d-X5ARXK-BfMV4MGAIuwJxY3PJshCKWiJA_TRNqh-N-EQnKcTK7Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9F3173280066;
-        Thu,  8 Oct 2020 07:27:46 -0400 (EDT)
-Date:   Thu, 8 Oct 2020 13:27:45 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>, devicetree@vger.kernel.org,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org,
-        =?utf-8?B?64KY7ISx6rWt?= <sungguk.na@samsung.com>
-Subject: Re: [PATCH v5 00/80] drm/vc4: Support BCM2711 Display Pipeline
-Message-ID: <20201008112745.hezf7kerapqgrp6m@gilmour.lan>
-References: <CGME20200904071259epcas1p3de4209531c0bc5ed6ea9ef19827b6ed5@epcas1p3.samsung.com>
- <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
- <cca5234f-e1e8-b642-048b-b710f402409d@samsung.com>
- <20200908120019.3rmhzoijoijrbb7d@gilmour.lan>
- <3e113525-aa89-b1e2-56b7-ca55bd41d057@samsung.com>
- <20200916165705.7pfgesma47vgkfxt@gilmour.lan>
+        id S1729191AbgJHL2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:28:05 -0400
+Received: from mga02.intel.com ([134.134.136.20]:22012 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728711AbgJHL2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 07:28:04 -0400
+IronPort-SDR: QG7coDREibY5FWHsBpsRxGgWzaV6LK2uxrhzG2b4nb8j+ncmdBLeJ54e5vFTBTe+7SxHIoW6PT
+ DOwBgxzLvxEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="152235216"
+X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
+   d="scan'208";a="152235216"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 04:28:03 -0700
+IronPort-SDR: LI0kr9FE2tdovbWtpPErBSS5aB7HmYlC03phkV2tkYYAkT9IowmDX4co3aBdPoW5wUoANJB2wj
+ hrMW7h5esngw==
+X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
+   d="scan'208";a="461783186"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 04:28:01 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kQU6a-001lEN-EQ; Thu, 08 Oct 2020 14:29:04 +0300
+Date:   Thu, 8 Oct 2020 14:29:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sanjay R Mehta <sanmehta@amd.com>
+Cc:     Lukas Wunner <lukas@wunner.de>,
+        Sanjay R Mehta <Sanju.Mehta@amd.com>, bhelgaas@google.com,
+        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: pciehp: Add check for DL_ACTIVE bit in
+ pciehp_check_link_status()
+Message-ID: <20201008112904.GH4077@smile.fi.intel.com>
+References: <1602008668-43646-1-git-send-email-Sanju.Mehta@amd.com>
+ <20201006193830.GA32510@wunner.de>
+ <7309c7f3-a895-e4aa-578e-444c5d5734d6@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vx4lspazv3mcpaic"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916165705.7pfgesma47vgkfxt@gilmour.lan>
+In-Reply-To: <7309c7f3-a895-e4aa-578e-444c5d5734d6@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 08, 2020 at 12:43:17PM +0530, Sanjay R Mehta wrote:
+> On 10/7/2020 1:08 AM, Lukas Wunner wrote:
+> > On Tue, Oct 06, 2020 at 01:24:28PM -0500, Sanjay R Mehta wrote:
+> >> if DL_ACTIVE bit is set it means that there is no need to check
+> >> PCI_EXP_LNKSTA_LT bit, as DL_ACTIVE would have set only if the link
+> >> is already trained. Hence adding a check which takes care of this
+> >> scenario.
+> > 
+> > Sorry for being dense but I don't understand this at all:
+> > 
+> > The PCI_EXP_DPC_CAP_DL_ACTIVE bit which you check here indicates
+> > that the port is capable of sending an ERR_COR interrupt whenever
+> > the link transitions from inactive to active.
+> > 
+> > What is the connection to the PCI_EXP_LNKSTA_LT bit (which indicates
+> > that the link is still being trained)?
+> > 
+> > Also, the negation of a bitwise AND is always either 0 or 1
+> > (!(lnk_status & PCI_EXP_DPC_CAP_DL_ACTIVE)), so bit 0 is set or not set.
+> > However PCI_EXP_LNKSTA_LT is bit 11.  A bitwise AND of bit 11 and 0 is
+> > always 0, so the expression can never be 1.
+> > 
+> > Am I missing something?
+> > 
+> Please accept my sincere apologies for sending the wrong patch.
+> 
+> I am supposed to use PCI_EXP_LNKSTA_DLLLA bit in my patch but have used PCI_EXP_DPC_CAP_DL_ACTIVE.
+> 
+> The correct code should be as below,
+> 
+> -     if ((lnk_status & PCI_EXP_LNKSTA_LT) ||
+> +     if (((lnk_status & PCI_EXP_LNKSTA_LT) &
+> +          !(lnk_status & PCI_EXP_LNKSTA_DLLLA )) ||
+> 
+> Is it right? please share your feedback, if I am wrong. Will send out V2 patch, once you confirm on this.
 
---vx4lspazv3mcpaic
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+At least you are ignoring LKP valid warning...
 
-On Wed, Sep 16, 2020 at 06:57:05PM +0200, Maxime Ripard wrote:
-> On Mon, Sep 14, 2020 at 07:14:11PM +0900, Hoegeun Kwon wrote:
-> > Hi Maxime,
-> >=20
-> > On 9/8/20 9:00 PM, Maxime Ripard wrote:
-> > > Hi Hoegeun,
-> > >
-> > > On Mon, Sep 07, 2020 at 08:49:12PM +0900, Hoegeun Kwon wrote:
-> > >> On 9/3/20 5:00 PM, Maxime Ripard wrote:
-> > >>> Hi everyone,
-> > >>>
-> > >>> Here's a (pretty long) series to introduce support in the VC4 DRM d=
-river
-> > >>> for the display pipeline found in the BCM2711 (and thus the Raspber=
-ryPi 4).
-> > >>>
-> > >>> The main differences are that there's two HDMI controllers and that=
- there's
-> > >>> more pixelvalve now. Those pixelvalve come with a mux in the HVS th=
-at still
-> > >>> have only 3 FIFOs. Both of those differences are breaking a bunch of
-> > >>> expectations in the driver, so we first need a good bunch of cleanu=
-p and
-> > >>> reworks to introduce support for the new controllers.
-> > >>>
-> > >>> Similarly, the HDMI controller has all its registers shuffled and s=
-plit in
-> > >>> multiple controllers now, so we need a bunch of changes to support =
-this as
-> > >>> well.
-> > >>>
-> > >>> Only the HDMI support is enabled for now (even though the DPI and D=
-SI
-> > >>> outputs have been tested too).
-> > >>>
-> > >>> Let me know if you have any comments
-> > >>> Maxime
-> > >>>
-> > >>> Cc: bcm-kernel-feedback-list@broadcom.com
-> > >>> Cc: devicetree@vger.kernel.org
-> > >>> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-> > >>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> > >>> Cc: Rob Herring <robh+dt@kernel.org>
-> > >>> Cc: Stephen Boyd <sboyd@kernel.org>
-> > >>>
-> > >>> Changes from v4:
-> > >>>     - Rebased on top of next-20200828
-> > >>>     - Collected the various tags
-> > >>>     - Fixed some issues with 4k support and dual output (thanks Hoe=
-geun!)
-> > >> Thanks for your v5 patchset.
-> > >>
-> > >> I tested all patches based on the next-20200812.
-> > > Thanks again for testing all the patches
-> > >
-> > >> Everything else is fine, but the dual hdmi modetest doesn't work wel=
-l in my
-> > >> environment...
-> > >>
-> > >> In my environment, dsi is not connected, I have seen your answer[1].
-> > > Can you share a bit more your setup? What monitors are being connected
-> > > to each HDMI port? Do you hotplug any?
-> > Yes, Monitors are being connected to each HDMI ports. (did not use hotp=
-lug)
-> >=20
-> > When booting, both HDMI-0 and 1 are recognized and the kernel log is ou=
-tput.
-> > But after run modetest on HDMI-0(works) and modetest on HDMI-1(works),
-> > crtc timed out occurs on HDMI-0 and does not work.
-> >=20
-> > When HDMI-0 is not working we do a modetest on HDMI-0, it will work agin
-> > after about 40 sec.
-> >=20
-> > Below is the log for modetest.
-> >=20
-> >=20
-> > root:~> modetest -Mvc4 -s 32:1280x720 =A0=A0=A0 =A0=A0=A0 - HDMI-0 works
-> > setting mode 1280x720-60Hz@XR24 on connectors 32, crtc 64
-> > failed to set gamma: Invalid argument
-> >=20
-> > root:~> modetest -Mvc4 -s 32:1280x720 =A0=A0=A0 =A0=A0=A0 - HDMI-0 works
-> > setting mode 1280x720-60Hz@XR24 on connectors 32, crtc 64
-> > failed to set gamma: Invalid argument
-> >=20
-> > root:~> modetest -Mvc4 -s 38:1280x720 =A0=A0=A0 =A0=A0=A0 - HDMI-1 works
-> > setting mode 1280x720-60Hz@XR24 on connectors 38, crtc 69
-> > failed to set gamma: Invalid argument
-> >=20
-> >  =A0=A0=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=
-=A0=A0 =A0=A0=A0 - Crtc timed out occurs on HDMI-0 and=20
-> > does not work.
-> >=20
-> > [=A0=A0 71.134283] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR*=
-=20
-> > [CRTC:64:crtc-3] flip_done timed out
-> > [=A0=A0 81.374296] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR=
-*=20
-> > [CRTC:64:crtc-3] flip_done timed out
-> > [=A0=A0 91.618380] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR=
-*=20
-> > [CONNECTOR:32:HDMI-A-1] flip_done timed out
-> > [=A0 101.854274] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
-=20
-> > [PLANE:60:plane-3] flip_done timed out
-> >=20
-> > [=A0 112.094271] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR*=20
-> > [CRTC:64:crtc-3] flip_done timed out
-> > [=A0 122.590311] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
-=20
-> > [CRTC:64:crtc-3] flip_done timed out
-> >=20
-> > root:~> modetest -Mvc4 -s 32:1280x720
-> > [=A0 132.830309] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
-=20
-> > [CONNECTOR:32:HDMI-A-1] flip_done timed out
-> > [=A0 143.070307] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
-=20
-> > [PLANE:60:plane-3] flip_done timed out
-> > [=A0 153.310303] [drm:drm_atomic_helper_wait_for_flip_done] *ERROR*=20
-> > [CRTC:64:crtc-3] flip_done timed out
-> > setting mode 1280x720-60Hz@XR24 on connectors 32, crtc 64
-> > [=A0 163.550340] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
-=20
-> > [CRTC:64:crtc-3] flip_done timed out
-> > [=A0 173.790277] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
-=20
-> > [CONNECTOR:32:HDMI-A-1] flip_done timed out
-> > [=A0 184.030286] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=
-=20
-> > [PLANE:60:plane-3] flip_done timed out
-> > failed to set gamma: Invalid argument =A0=A0=A0 =A0=A0=A0 - HDMI-0 works
->=20
-> Thanks :)
->=20
-> I was able to reproduce it just by also letting X boot. I'm on a good
-> path to fix it and found a workaround. I'll send you the patch in the
-> upcoming days :)
-
-It took a bit longer than expected but the last 4 patches I just sent
-should fix that issue
-
-Thanks for reporting it!
-
-Maxime
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---vx4lspazv3mcpaic
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX373sQAKCRDj7w1vZxhR
-xaijAQCiVFUZM394JaI2etMYfTg7j/vcScUh7E138WM8+Bf0mgEAmj19xR8DPlxb
-DK5k8BjAT7QqySqs5YVWfcmK8Qc4OQI=
-=k2dm
------END PGP SIGNATURE-----
-
---vx4lspazv3mcpaic--
