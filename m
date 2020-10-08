@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D10B286DE0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9354286DE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgJHFD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53880 "EHLO
+        id S1728404AbgJHFFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgJHFD5 (ORCPT
+        with ESMTP id S1728385AbgJHFFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:03:57 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71760C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 22:03:57 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id i12so4428499ota.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:03:57 -0700 (PDT)
+        Thu, 8 Oct 2020 01:05:12 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B22C061755;
+        Wed,  7 Oct 2020 22:05:12 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id p15so4329494ljj.8;
+        Wed, 07 Oct 2020 22:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y4J6xZLLT7X+F7OLOzqqVjMYajEePxtfk9UzEIVuZt0=;
-        b=kPUNcT6En9JIRrz2QtGnFe3Selq9hqXUXprs+7y6un8lFV/TiArK5U3JSZO6nA0HXc
-         EU4OZInvsC8NfhGrNcJXbKRwIFPmMl52gGu1MbN1wkmVtqNJXZnkisUPsHD1g8cpTvTP
-         /vYBDakKhR3/pdkBfiqsry4OoWqlMvulH6vI0ZzHJz2wwj3Xt3EF7CsCwU6oleYGE1xW
-         Mn+9FWxvPmlHuAGmHkToJ27FQbxcncnyjXun8PnvmbTdM9TevYBPVs8KoHB/UKiPru74
-         oGLab6xbAPZlonR8LD/jDVDjWC/ksf7nTNlNEazWJtI7qa74TS+7TctEknxblIXbVaAW
-         cXvQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Rusu0oIzTOO8ocbnxz5JOA49UqEDQ44SxR4hoPni0y4=;
+        b=DMxlxOaK/nedSuliOtyVH5U0m6WjODloC7rwVN+cLO+FHv+XkmiW9G9++sH9q0Ohoi
+         w4juf+0yq0laq2EsMB3B+8dXcqnnEyZJ2ntqeNMUKLsbVsFg/GK+TH3+M8gTjlFO8PQW
+         qeomMFcDNrpIHkfH0TjkNSUkysUVg7nBB8PchPPapN8TqS2ksIj8+qsV2M/JVMs/eZyD
+         unoYbvp62fB9JAmiXLI0pUqXj9iQRGMm3cVjXFQ1Vz6z03EYONrqX2kzubOjOZjrfZsp
+         e6aodZ7mgEKQS0oFwILkPyi1+LA3C68TpuVMpKtUoKfzVW4UzGbgKN6LDb030rIPOGTX
+         KMdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y4J6xZLLT7X+F7OLOzqqVjMYajEePxtfk9UzEIVuZt0=;
-        b=HBdD9glBPkp6koW9sjANJVywOazoiU9mPolMNP1MGl4GquzfmdYqhxFAV1512k1BvD
-         jYaEfv20ov1sS/EpOPg5HlMbdKA/mpQIkrYHzMgZQzhx29TrzV5oOjzxxa6u9fC4uHdf
-         vNANISg/1fMgriOrAfgQRwJctEZ93oZkX7U2pM5B7QpTtG04OWKazgSV3TRBxjscEP6E
-         BGPX4jPWZVAKHzODb8Ce1SfgTpBOzj6smcE0Sd1dgaQbqEDxLnL2p5XwFNCtg5Ilscos
-         BXy54f1IfbB7ZKvRyMl+4uL8mTMXqoLdo3sflNhSRj2PgnFazVrIa2UEWogd1+8uwut1
-         47Iw==
-X-Gm-Message-State: AOAM532DaPzlTYMXn5daE9A9uXNTc/BnpFK6P2LS2br497izlTDiVn3X
-        efTyZI7N9gaSWrrXC17E+Uxum8cVXJcaHD4Tnk1VmA==
-X-Google-Smtp-Source: ABdhPJz3Gy6/xfKW2fu6IJ5k2Afzci///E5IEtsLrgMBtd+osJAFKkvJwdqpsc7KPM9P0mBGYQzaZrz31q723RwT+C0=
-X-Received: by 2002:a05:6830:196:: with SMTP id q22mr3771201ota.221.1602133436666;
- Wed, 07 Oct 2020 22:03:56 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Rusu0oIzTOO8ocbnxz5JOA49UqEDQ44SxR4hoPni0y4=;
+        b=P7T6PZX8KA8WxaKLPSJG8bUTVMbxE/XhvTfdBELn3G3RuOAI4v8FfRk5czsRH8d6fR
+         2oK0dSGfWrCjuYFNyf9uyVnwb2YYunouT8y+HwIOnh9cRjfum5d8x9zcj142QvcoRNp7
+         SAAISMYkJsYlxxIjLzdEmANPoh7Ga9PIZjit4d02MtSgi8cOSi64jMHFVx+o7uPEFNGc
+         Sv4DSu5Mg8ea+RBu6YHj/7jH77ejuMSJ1IZHJZHKoOtauAE6+qVTBmIBgwHjuG3izEkh
+         L+B0y348xOcSy3B89DtKh5JTn9eyC9YLBkz9MNV/BOz21A2FSoyBJOPHY5PX5D4p2a+H
+         SyuA==
+X-Gm-Message-State: AOAM532Tlilrwb37c0tEHUiwOB+S/iEC0W2nPZZ5R55gJwZ7duEJxAWt
+        4otCGVDPwUXrpk4WeRQfUn0WRNzCTJk=
+X-Google-Smtp-Source: ABdhPJwkr1Tk3q7ENrjOstfBgfgOD/7cM8ziJ+xFeGTQyU6DHpUsCVfPO9+F6oo269EdZNlRS5sn+g==
+X-Received: by 2002:a2e:b055:: with SMTP id d21mr2672202ljl.429.1602133510711;
+        Wed, 07 Oct 2020 22:05:10 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id m19sm716152lji.112.2020.10.07.22.05.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Oct 2020 22:05:09 -0700 (PDT)
+Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
+To:     Stephen Warren <swarren@wwwdotorg.org>, Bob Ham <rah@settrans.net>,
+        Stefan Agner <stefan@agner.ch>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lukas Rusak <lorusak@gmail.com>
+References: <20201004133114.845230-1-pgwipeout@gmail.com>
+ <cdd0f520ae4990de90f461e21cb4f298@agner.ch>
+ <4d3eb998-045b-f288-7a9c-aaa620c38bff@settrans.net>
+ <c8140ea3-8731-8084-47dd-8819b4b4df6a@gmail.com>
+ <f12c1ad2-d180-8981-c3bf-db8ab6afbbaa@wwwdotorg.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <293ed420-259c-33da-eda4-3be94ba8d109@gmail.com>
+Date:   Thu, 8 Oct 2020 08:05:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201003040257.62768-1-john.stultz@linaro.org>
- <20201003040257.62768-8-john.stultz@linaro.org> <20201005134528.GA11644@infradead.org>
-In-Reply-To: <20201005134528.GA11644@infradead.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 7 Oct 2020 22:03:43 -0700
-Message-ID: <CALAqxLWSq3szE40hC_m-qpOOH1193jYLOT1_ZZh-eW9U0gnG8w@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
- re-using the system heap
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        "??rjan Eide" <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f12c1ad2-d180-8981-c3bf-db8ab6afbbaa@wwwdotorg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 6:45 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> How is this going to deal with VIVT caches?
+07.10.2020 19:08, Stephen Warren пишет:
+...
+> The facts[1] that Ouya published the code and that it used GPL-only
+> symbols certainly does imply that they *should* have published under GPL
+> or a compatible license, but doesn't mean that they definitely did. The
+> only way to know that for sure is for there to be evidence in the file
+> content or git history, such as license headers or Signed-off-by lines.
 
-Hrm. That's a good question.   I'm not sure I totally have my head
-around it but, I guess we could make sure to call
-invalidate_kernel_vmap_range() in begin_cpu_access()  and
-flush_kernel_vmap_range() in end_cpu_access() rather then exiting out
-early as we do now?
+The code wasn't only published, but also was distributed in a binary
+form to end users. This means that even if Ouya Inc. still existed and
+they made a mistake by using GPL-only symbols plus GPL-incompatible
+license for the driver, then they had to resilience the code. Hence
+either way it's okay to use downstream code as a reference for the
+upstream driver.
 
-Unless you have better guidance?
-
-Worse case we could check CONFIG_CPU_CACHE_VIVT and not register the
-system-uncached heap.
-
-thanks
--john
+This is my understanding.
