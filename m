@@ -2,126 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EAB2873DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BAC2873E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729626AbgJHMNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:13:43 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:43457 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725871AbgJHMNm (ORCPT
+        id S1729686AbgJHMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:15:24 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:32791 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgJHMPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:13:42 -0400
-X-UUID: 678ba5023dff4fa3be6c744151ed7245-20201008
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=3MSsqoh1JwjXfyI5saR12zhZgmKR4OSbtoJozpp9kpc=;
-        b=GyW6TsgXr4WBE4vWeF+mAqjVdhuazzUYat8H/qp6KuEzZYFBCYYUap7mQ5X+pTz9GIL8CuhQAmIQUhvDzPXe1m4USxq4O/LYsGUxJG2QExK0mcxHfM0nTVD/s2l44q6IsLDmtXXTqP7LOD+p10xnRz7fjeD7owvOnh/mH7PF05Y=;
-X-UUID: 678ba5023dff4fa3be6c744151ed7245-20201008
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 620526542; Thu, 08 Oct 2020 20:13:37 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 8 Oct 2020 20:13:34 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 8 Oct 2020 20:13:34 +0800
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hector.yuan@mediatek.com>
-Subject: [PATCH v1 1/1] cpufreq: mediatek-hw: Register EM power table
-Date:   Thu, 8 Oct 2020 20:13:24 +0800
-Message-ID: <1602159204-13756-2-git-send-email-hector.yuan@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1602159204-13756-1-git-send-email-hector.yuan@mediatek.com>
-References: <1602159204-13756-1-git-send-email-hector.yuan@mediatek.com>
+        Thu, 8 Oct 2020 08:15:22 -0400
+Received: by mail-io1-f69.google.com with SMTP id m10so3530763ioq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:15:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=pIWW7+ADs4mL5pWYTBfL/vsBU9YaDtPFDDib5/UgpPE=;
+        b=I625DV1QUbXfM13DE1nOS0T2ijE4IYWXDX6sgSGY/7vbdwTXLLJ+Ppln0nKkDoz2jW
+         031jjzsJGYtn/nisLfGV1EwUJofjsXJojDFQZklQP/L14Fxn9xIea0eMjFpMpMspfrbT
+         ZbZPBvur/xxA6j3i4+Xzhm2BobaIjZiO4zr9V63GJ8UvewofAbr4XJ+wZohkOOQkkIsT
+         s+pa9Ieizo31/QoSdvIR4ec16Chmpe7EJ/Fp/KaO0e3eN2iIDpEaXDKp4NjRvX0Vig3l
+         JbnCGH4hcPzp/huSNH1C3LM3dUS9lxl7XKnZd5pvZdrYoAZF2kBjeQEoQ71Y+Dk2dEYl
+         GdIg==
+X-Gm-Message-State: AOAM533luywaOT/ycmQhPr9OQCEh/s0z5xJ2DYbcK6RQjkNgPu6vKtJm
+        Rf4ugZQP1zuNHHF1h6pGMp9OGURTDGsgeNd+58JPhfPmliIh
+X-Google-Smtp-Source: ABdhPJxL4+KEXadvLvkpXDJmnZMkeyEECK51lsd0+QRshE77s6Sq56UmHl1/jfTX3vzE5CfM07b4qDdFMW2lpZVnVKsCNhdZucXI
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: F6F2F17101A6B232DE0515C059CB03673413A6D7CCAE1BF62441835C41AF8EBC2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-Received: by 2002:a92:d4d0:: with SMTP id o16mr5040883ilm.152.1602159319952;
+ Thu, 08 Oct 2020 05:15:19 -0700 (PDT)
+Date:   Thu, 08 Oct 2020 05:15:19 -0700
+In-Reply-To: <0000000000009caba805a9c7b840@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000023b29205b127c953@google.com>
+Subject: Re: INFO: rcu detected stall in __se_sys_mount
+From:   syzbot <syzbot+3f2db34df769d77edf8c@syzkaller.appspotmail.com>
+To:     fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogIkhlY3Rvci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KDQpSZWdpc3Rl
-ciBDUFUgcG93ZXIgdGFibGUgdG8gZW5lcmd5IG1vZGVsIGZyYW1ld29yaw0KDQpTaWduZWQtb2Zm
-LWJ5OiBIZWN0b3IuWXVhbiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVy
-cy9jcHVmcmVxL21lZGlhdGVrLWNwdWZyZXEtaHcuYyB8ICAgNTAgKysrKysrKysrKysrKysrKysr
-KysrKysrKy0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKyksIDEyIGRl
-bGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9jcHVmcmVxL21lZGlhdGVrLWNwdWZy
-ZXEtaHcuYyBiL2RyaXZlcnMvY3B1ZnJlcS9tZWRpYXRlay1jcHVmcmVxLWh3LmMNCmluZGV4IDhm
-YTEyZTUuLjM4MDhlYTAgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2NwdWZyZXEvbWVkaWF0ZWstY3B1
-ZnJlcS1ody5jDQorKysgYi9kcml2ZXJzL2NwdWZyZXEvbWVkaWF0ZWstY3B1ZnJlcS1ody5jDQpA
-QCAtNSw2ICs1LDcgQEANCiANCiAjaW5jbHVkZSA8bGludXgvYml0ZmllbGQuaD4NCiAjaW5jbHVk
-ZSA8bGludXgvY3B1ZnJlcS5oPg0KKyNpbmNsdWRlIDxsaW51eC9lbmVyZ3lfbW9kZWwuaD4NCiAj
-aW5jbHVkZSA8bGludXgvaW5pdC5oPg0KICNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4NCiAjaW5j
-bHVkZSA8bGludXgvbW9kdWxlLmg+DQpAQCAtMTcsOSArMTgsMTAgQEANCiAjZGVmaW5lIExVVF9S
-T1dfU0laRQkJCTB4NA0KIA0KIGVudW0gew0KLQlSRUdfTFVUX1RBQkxFLA0KLQlSRUdfRU5BQkxF
-LA0KLQlSRUdfUEVSRl9TVEFURSwNCisJUkVHX0ZSRVFfTFVUX1RBQkxFLA0KKwlSRUdfRlJFUV9F
-TkFCTEUsDQorCVJFR19GUkVRX1BFUkZfU1RBVEUsDQorCVJFR19FTV9QT1dFUl9UQkwsDQogDQog
-CVJFR19BUlJBWV9TSVpFLA0KIH07DQpAQCAtMjcsMjMgKzI5LDQ0IEBAIGVudW0gew0KIHN0cnVj
-dCBjcHVmcmVxX210ayB7DQogCXN0cnVjdCBjcHVmcmVxX2ZyZXF1ZW5jeV90YWJsZSAqdGFibGU7
-DQogCXZvaWQgX19pb21lbSAqcmVnX2Jhc2VzW1JFR19BUlJBWV9TSVpFXTsNCisJaW50IG5yX29w
-cDsNCiAJY3B1bWFza190IHJlbGF0ZWRfY3B1czsNCiB9Ow0KIA0KIHN0YXRpYyBjb25zdCB1MTYg
-Y3B1ZnJlcV9tdGtfb2Zmc2V0c1tSRUdfQVJSQVlfU0laRV0gPSB7DQotCVtSRUdfTFVUX1RBQkxF
-XQkJPSAweDAsDQotCVtSRUdfRU5BQkxFXQkJPSAweDg0LA0KLQlbUkVHX1BFUkZfU1RBVEVdCT0g
-MHg4OCwNCisJW1JFR19GUkVRX0xVVF9UQUJMRV0JPSAweDAsDQorCVtSRUdfRlJFUV9FTkFCTEVd
-CT0gMHg4NCwNCisJW1JFR19GUkVRX1BFUkZfU1RBVEVdCT0gMHg4OCwNCisJW1JFR19FTV9QT1dF
-Ul9UQkxdCT0gMHgzRDAsDQogfTsNCiANCiBzdGF0aWMgc3RydWN0IGNwdWZyZXFfbXRrICptdGtf
-ZnJlcV9kb21haW5fbWFwW05SX0NQVVNdOw0KIA0KK3N0YXRpYyBpbnQgbXRrX2NwdWZyZXFfZ2V0
-X2NwdV9wb3dlcih1bnNpZ25lZCBsb25nICptVywNCisJCQkJICAgICB1bnNpZ25lZCBsb25nICpL
-SHosIGludCBjcHUpDQorew0KKwlzdHJ1Y3QgY3B1ZnJlcV9tdGsgKmMgPSBtdGtfZnJlcV9kb21h
-aW5fbWFwW2NwdV07DQorCWludCBpOw0KKw0KKwlmb3IgKGkgPSAwOyBpIDwgYy0+bnJfb3BwOyBp
-KyspIHsNCisJCWlmIChjLT50YWJsZVtpXS5mcmVxdWVuY3kgPCAqS0h6KQ0KKwkJCWJyZWFrOw0K
-Kwl9DQorCWktLTsNCisNCisJKktIeiA9IGMtPnRhYmxlW2ldLmZyZXF1ZW5jeTsNCisJKm1XID0g
-cmVhZGxfcmVsYXhlZChjLT5yZWdfYmFzZXNbUkVHX0VNX1BPV0VSX1RCTF0gKw0KKwkJCSAgICBp
-ICogTFVUX1JPV19TSVpFKSAvIDEwMDA7DQorDQorCXJldHVybiAwOw0KK30NCisNCiBzdGF0aWMg
-aW50IG10a19jcHVmcmVxX2h3X3RhcmdldF9pbmRleChzdHJ1Y3QgY3B1ZnJlcV9wb2xpY3kgKnBv
-bGljeSwNCiAJCQkJICAgICAgIHVuc2lnbmVkIGludCBpbmRleCkNCiB7DQogCXN0cnVjdCBjcHVm
-cmVxX210ayAqYyA9IHBvbGljeS0+ZHJpdmVyX2RhdGE7DQogDQotCXdyaXRlbF9yZWxheGVkKGlu
-ZGV4LCBjLT5yZWdfYmFzZXNbUkVHX1BFUkZfU1RBVEVdKTsNCisJd3JpdGVsX3JlbGF4ZWQoaW5k
-ZXgsIGMtPnJlZ19iYXNlc1tSRUdfRlJFUV9QRVJGX1NUQVRFXSk7DQogDQogCXJldHVybiAwOw0K
-IH0NCkBAIC01NSw3ICs3OCw3IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgbXRrX2NwdWZyZXFfaHdf
-Z2V0KHVuc2lnbmVkIGludCBjcHUpDQogDQogCWMgPSBtdGtfZnJlcV9kb21haW5fbWFwW2NwdV07
-DQogDQotCWluZGV4ID0gcmVhZGxfcmVsYXhlZChjLT5yZWdfYmFzZXNbUkVHX1BFUkZfU1RBVEVd
-KTsNCisJaW5kZXggPSByZWFkbF9yZWxheGVkKGMtPnJlZ19iYXNlc1tSRUdfRlJFUV9QRVJGX1NU
-QVRFXSk7DQogCWluZGV4ID0gbWluKGluZGV4LCBMVVRfTUFYX0VOVFJJRVMgLSAxKTsNCiANCiAJ
-cmV0dXJuIGMtPnRhYmxlW2luZGV4XS5mcmVxdWVuY3k7DQpAQCAtNjQsNiArODcsNyBAQCBzdGF0
-aWMgdW5zaWduZWQgaW50IG10a19jcHVmcmVxX2h3X2dldCh1bnNpZ25lZCBpbnQgY3B1KQ0KIHN0
-YXRpYyBpbnQgbXRrX2NwdWZyZXFfaHdfY3B1X2luaXQoc3RydWN0IGNwdWZyZXFfcG9saWN5ICpw
-b2xpY3kpDQogew0KIAlzdHJ1Y3QgY3B1ZnJlcV9tdGsgKmM7DQorCXN0cnVjdCBlbV9kYXRhX2Nh
-bGxiYWNrIGVtX2NiID0gRU1fREFUQV9DQihtdGtfY3B1ZnJlcV9nZXRfY3B1X3Bvd2VyKTsNCiAN
-CiAJYyA9IG10a19mcmVxX2RvbWFpbl9tYXBbcG9saWN5LT5jcHVdOw0KIAlpZiAoIWMpIHsNCkBA
-IC03Nyw3ICsxMDEsOCBAQCBzdGF0aWMgaW50IG10a19jcHVmcmVxX2h3X2NwdV9pbml0KHN0cnVj
-dCBjcHVmcmVxX3BvbGljeSAqcG9saWN5KQ0KIAlwb2xpY3ktPmRyaXZlcl9kYXRhID0gYzsNCiAN
-CiAJLyogSFcgc2hvdWxkIGJlIGluIGVuYWJsZWQgc3RhdGUgdG8gcHJvY2VlZCBub3cgKi8NCi0J
-d3JpdGVsX3JlbGF4ZWQoMHgxLCBjLT5yZWdfYmFzZXNbUkVHX0VOQUJMRV0pOw0KKwl3cml0ZWxf
-cmVsYXhlZCgweDEsIGMtPnJlZ19iYXNlc1tSRUdfRlJFUV9FTkFCTEVdKTsNCisJZW1fcmVnaXN0
-ZXJfcGVyZl9kb21haW4ocG9saWN5LT5jcHVzLCBjLT5ucl9vcHAsICZlbV9jYik7DQogDQogCXJl
-dHVybiAwOw0KIH0NCkBAIC05Myw3ICsxMTgsNyBAQCBzdGF0aWMgaW50IG10a19jcHVmcmVxX2h3
-X2NwdV9leGl0KHN0cnVjdCBjcHVmcmVxX3BvbGljeSAqcG9saWN5KQ0KIAl9DQogDQogCS8qIEhX
-IHNob3VsZCBiZSBpbiBwYXVzZWQgc3RhdGUgbm93ICovDQotCXdyaXRlbF9yZWxheGVkKDB4MCwg
-Yy0+cmVnX2Jhc2VzW1JFR19FTkFCTEVdKTsNCisJd3JpdGVsX3JlbGF4ZWQoMHgwLCBjLT5yZWdf
-YmFzZXNbUkVHX0ZSRVFfRU5BQkxFXSk7DQogDQogCXJldHVybiAwOw0KIH0NCkBAIC0xMjIsNyAr
-MTQ3LDcgQEAgc3RhdGljIGludCBtdGtfY3B1X2NyZWF0ZV9mcmVxX3RhYmxlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYsDQogCWlmICghYy0+dGFibGUpDQogCQlyZXR1cm4gLUVOT01FTTsN
-CiANCi0JYmFzZV90YWJsZSA9IGMtPnJlZ19iYXNlc1tSRUdfTFVUX1RBQkxFXTsNCisJYmFzZV90
-YWJsZSA9IGMtPnJlZ19iYXNlc1tSRUdfRlJFUV9MVVRfVEFCTEVdOw0KIA0KIAlmb3IgKGkgPSAw
-OyBpIDwgTFVUX01BWF9FTlRSSUVTOyBpKyspIHsNCiAJCWRhdGEgPSByZWFkbF9yZWxheGVkKGJh
-c2VfdGFibGUgKyAoaSAqIExVVF9ST1dfU0laRSkpOw0KQEAgLTE0MCw2ICsxNjUsNyBAQCBzdGF0
-aWMgaW50IG10a19jcHVfY3JlYXRlX2ZyZXFfdGFibGUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldiwNCiAJfQ0KIA0KIAljLT50YWJsZVtpXS5mcmVxdWVuY3kgPSBDUFVGUkVRX1RBQkxFX0VO
-RDsNCisJYy0+bnJfb3BwID0gaTsNCiANCiAJcmV0dXJuIDA7DQogfQ0KQEAgLTE5Miw3ICsyMTgs
-NyBAQCBzdGF0aWMgaW50IG10a19jcHVfcmVzb3VyY2VzX2luaXQoc3RydWN0IHBsYXRmb3JtX2Rl
-dmljZSAqcGRldiwNCiAJaWYgKElTX0VSUihiYXNlKSkNCiAJCXJldHVybiBQVFJfRVJSKGJhc2Up
-Ow0KIA0KLQlmb3IgKGkgPSBSRUdfTFVUX1RBQkxFOyBpIDwgUkVHX0FSUkFZX1NJWkU7IGkrKykN
-CisJZm9yIChpID0gUkVHX0ZSRVFfTFVUX1RBQkxFOyBpIDwgUkVHX0FSUkFZX1NJWkU7IGkrKykN
-CiAJCWMtPnJlZ19iYXNlc1tpXSA9IGJhc2UgKyBvZmZzZXRzW2ldOw0KIA0KIAlyZXQgPSBtdGtf
-Z2V0X3JlbGF0ZWRfY3B1cyhpbmRleCwgYyk7DQotLSANCjEuNy45LjUNCg==
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b1804f900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=3f2db34df769d77edf8c
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11df5d4f900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157851e0500000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12cedc5c900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11cedc5c900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16cedc5c900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3f2db34df769d77edf8c@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1):
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 7452 at kernel/sched/core.c:3013 rq_unlock kernel/sched/sched.h:1325 [inline]
+WARNING: CPU: 1 PID: 7452 at kernel/sched/core.c:3013 try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/core.c:3019
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 7452 Comm: syz-executor259 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ panic+0x2c0/0x800 kernel/panic.c:231
+ __warn+0x227/0x250 kernel/panic.c:600
+ report_bug+0x1b1/0x2e0 lib/bug.c:198
+ handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/sched.h:1325
+Code: f8 48 c1 e8 03 42 8a 04 38 84 c0 0f 85 10 01 00 00 8b 74 24 18 48 89 ef e8 90 47 09 00 4c 89 ef e8 88 9b fd 06 e9 a4 00 00 00 <0f> 0b e9 2b ff ff ff 48 c7 c1 74 fb af 89 80 e1 07 80 c1 03 38 c1
+RSP: 0018:ffffc90000da8c50 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffffffff896ff600 RCX: 0013916f856b3a00
+RDX: ffffc90000da8d00 RSI: ffffffff8162d990 RDI: ffff88809027e480
+RBP: ffffffff8162d990 R08: dffffc0000000000 R09: fffffbfff12df8f9
+R10: fffffbfff12df8f9 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffffff896ff600 R14: ffff88809027e480 R15: dffffc0000000000
+ rcu_print_task_stall kernel/rcu/tree_stall.h:267 [inline]
+ print_other_cpu_stall kernel/rcu/tree_stall.h:475 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:634 [inline]
+ rcu_pending kernel/rcu/tree.c:3639 [inline]
+ rcu_sched_clock_irq+0x12bc/0x1eb0 kernel/rcu/tree.c:2521
+ update_process_times+0x130/0x1b0 kernel/time/timer.c:1710
+ tick_sched_handle kernel/time/tick-sched.c:176 [inline]
+ tick_sched_timer+0x25e/0x410 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+ __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1588
+ hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1650
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0x94/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
+RIP: 0010:strncasecmp+0x0/0x1c0 lib/string.c:44
+Code: 2b 09 f2 48 01 c8 89 ce c1 e6 11 48 c1 e9 2f 09 f1 89 c6 31 ce 48 c1 e8 20 31 f0 31 d0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc <55> 41 57 41 56 41 55 41 54 53 48 83 ec 10 48 85 d2 0f 84 80 01 00
+RSP: 0018:ffffc90006357b98 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 0000000000000007 RCX: dffffc0000000000
+RDX: 0000000000000007 RSI: ffff88809752ce81 RDI: ffff88809eedc100
+RBP: 0000000000000007 R08: ffffffff82dd8855 R09: ffffed1014220716
+R10: ffffed1014220716 R11: 0000000000000000 R12: 00000000000009a0
+R13: ffff88809eedc100 R14: 0000000000000007 R15: ffff8880a1103800
+ afs_lookup_cell_rcu+0x2bc/0x6f0 fs/afs/cell.c:88
+ afs_lookup_cell+0x246/0x14d0 fs/afs/cell.c:249
+ afs_parse_source fs/afs/super.c:290 [inline]
+ afs_parse_param+0x526/0x790 fs/afs/super.c:326
+ vfs_parse_fs_param+0x1e5/0x460 fs/fs_context.c:117
+ vfs_parse_fs_string fs/fs_context.c:161 [inline]
+ generic_parse_monolithic+0x230/0x350 fs/fs_context.c:201
+ do_new_mount fs/namespace.c:2871 [inline]
+ path_mount+0x176c/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x447a3a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 9d a3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 7a a3 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffc915e4f78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffc915e4fc0 RCX: 0000000000447a3a
+RDX: 0000000020000000 RSI: 0000000020000040 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 00007ffc915e4fc0 R09: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402240
+R13: 00000000004022d0 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
