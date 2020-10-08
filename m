@@ -2,118 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527292876FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB72287703
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbgJHPSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:18:39 -0400
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:33007 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730650AbgJHPSi (ORCPT
+        id S1730965AbgJHPT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730884AbgJHPT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:18:38 -0400
-Received: by mail-oo1-f68.google.com with SMTP id r7so387652ool.0;
-        Thu, 08 Oct 2020 08:18:36 -0700 (PDT)
+        Thu, 8 Oct 2020 11:19:56 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4CDC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:19:56 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id z19so2003331uap.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gSNHNnjnwW5HIpb5AcDU4F3mK+e5nO0jR+KUVma3HaU=;
+        b=mXaU/NV5QqWEm8WCH1SJCEl4v1cf/Nj9ObmhZOh5+zqrC8F19kEg8ZFOJ8KiQZ0fG2
+         FFJPFtI7kPGw95A+a9CnoiLjVsh0H/PNEjOMmrkViNA6HVwP20QrGmdnyCPQoVLN6Ucg
+         X8A3lif9iQU5ZzwHSV+w3ItiZ8XJscK2pVGkTh42ThHuVorvYc+wuKZmXiH1eCGZkG0a
+         ERYrl/YEhS6PfzOLFXPriA8YZQ1W92FRjWbr4WVdRX+xM8tc+OY5JXH5PvSuCAy/k7fD
+         PKBuiExyGVeYa8Hs5hZbe61mDqEP5xyeRdNvNIW2AFFq2o4PKpIwNmENFV0NR+WNZtUY
+         EKKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lVTN3l7RCWCg+57rF3cB/zdsT9nZyrC1LZ/Pc3QOkPg=;
-        b=h5q7OeANNvfFXdqJSfmu5Khf2vG/T318mcNU8r+JewYgqfP62BR0c8gEse+/rnD5wY
-         uTS3eL1YlGdoOwoC/Ec+vMmjqMKW/x0W3pNTcnuomQ9OVsY/8JgK/X2mWB2Y5I7CPJFR
-         25UeSRhjtkEG1mfS3qF3x0B91O+++cFcI4TN2Ew5vJp+NghP0r++AQ5O/0JuKnQighGi
-         prks4Ya3n7yOukWRgd2SRYEbHfo+NFLgvhjeJLZPtTXelll6Itq7/p5ICgCM6Lu1L7ww
-         uMcriwNkVjCw7y49CGTMsuZO4OCW1imdXL9TJAQTi6QzaJLoRteOo8eCN3CuVOKX1s9x
-         +n6g==
-X-Gm-Message-State: AOAM53314IHZt6DIajVG4ThJaP3wq9s3gSLTvJUvenjx7ivkd9M/4cKq
-        wW4Q9f42kaUJW+FdmPvGHFmAXz4Ms12xyzQMw0aRBRwk
-X-Google-Smtp-Source: ABdhPJwdTaCWeEKKtUZT0Fd4ttSycfvOA7vXKrn7kpF0QR9Q67ObsRAossur3ThMA7cjZYizHClXPKC9I5fu/d/hVwo=
-X-Received: by 2002:a4a:d44:: with SMTP id 65mr5852302oob.44.1602170316044;
- Thu, 08 Oct 2020 08:18:36 -0700 (PDT)
+        bh=gSNHNnjnwW5HIpb5AcDU4F3mK+e5nO0jR+KUVma3HaU=;
+        b=rrvuJ9i2MhbXQrbXRzOj2BK4nzcc+z6d0sFCkFoZ9lX6uh+5VkCmuyLOmx7FVUweyL
+         l+oXuqpPOh2B0aI+ieg6DKAoDiujd7EqmUHhzyevQPWnp1ZTrGhOQXX93IrIL0vB6+Ca
+         STeSvttKy33IHU2lq9AnyBAt26bbDskqHfTdZ046VM4n1GG+0rNTAv94QRPojl3Llr5A
+         qUyZKJTyEkh99aGYw5m2sVJHsTeaDZbSs0zCcnNAVm5LKNIBk/YWBsEICgsKOVHPpDLC
+         8jv8BDgF+T2g0UlVTctHh16TRL+zvKhgbE/CHeVAlxcObYcnGf3se29yUmCf3xI+6ht+
+         Yaww==
+X-Gm-Message-State: AOAM532Eb4r90MPgH5fjiFGA7h1RoYoBk7eYYl3KIHLZ9TAqZV4Crd4L
+        LmmFI2PjVg020jgHNhHoh8kV9qmAfjvjI0HEHvtX6Q==
+X-Google-Smtp-Source: ABdhPJyCOCepTDaFd6P37/FAjk8/iu35ntCC5qXytD11zsKYZhOVM3fzXQWx9imFFF06uFVwuqtLRfbJAezjHzM4yuc=
+X-Received: by 2002:ab0:4425:: with SMTP id m34mr4718452uam.19.1602170395303;
+ Thu, 08 Oct 2020 08:19:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200924123016.13427-1-ionela.voinescu@arm.com>
- <CAJZ5v0hr+MZzokObNq5L0q1Fd0M5EXc6QmLXDv9b85P5b4yp4g@mail.gmail.com> <20201008140558.ovytcc34div3ih6m@bogus>
-In-Reply-To: <20201008140558.ovytcc34div3ih6m@bogus>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Oct 2020 17:18:25 +0200
-Message-ID: <CAJZ5v0hYu_86LB=nycAEDQQ3TsMMpcBV=Ue4WuOqH3YhxAehVQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2]cpufreq,topology,arm: disable FI for BL_SWITCHER
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
+References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
+ <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com> <DM6PR11MB28764EC5E1F89D417D700F29B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB28764EC5E1F89D417D700F29B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 8 Oct 2020 17:19:18 +0200
+Message-ID: <CAPDyKFptgKG8uvKUkN56sooFL4xqaBcNdbpo645xRQqPOH4BkQ@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     "Hunter, Adrian" <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 4:06 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+On Thu, 8 Oct 2020 at 12:54, Zulkifli, Muhammad Husaini
+<muhammad.husaini.zulkifli@intel.com> wrote:
 >
-> On Wed, Oct 07, 2020 at 04:34:44PM +0200, Rafael J. Wysocki wrote:
-> > On Thu, Sep 24, 2020 at 2:30 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
-> > >
-> > > This series is the result of the discussions ([1], [2]) around the
-> > > complications that the BL_SWITCHER poses when it comes to Frequency
-> > > Invariance (FI) and it aims to restart the discussions.
-> > >
-> > > To properly scale its per-entity load-tracking signals, the task
-> > > scheduler needs to be given a frequency scale factor, i.e. some image of
-> > > the current frequency the CPU is running at, relative to its maximum
-> > > frequency.
-> > >
-> > > But (reiterating the message in the changelog of patch 2/2), big.LITTLE
-> > > switching complicates the setting of a correct cpufreq-based frequency
-> > > invariance scale factor due to (as observed in
-> > > drivers/cpufreq/vexpress-spc-cpufreq.c):
-> > >  - Incorrect current and maximum frequencies as a result of the
-> > >    exposure of a virtual frequency table to the cpufreq core,
-> > >  - Missed updates as a result of asynchronous frequency adjustments
-> > >    caused by frequency changes in other CPU pairs.
-> > > More information on this feature can be found at [3].
-> > >
-> > > Given that its functionality is atypical in regards to FI and that this
-> > > is an old technology, patch 2/2 disable FI for when big.LITTLE switching
-> > > is configured in to prevent incorrect scale setting.
-> > >
-> > > For this purpose patch 1/2 changes the way arch_set_freq_scale() is
-> > > defined in architecture code which brings it in line with the logic of
-> > > other architectural function definitions while allowing for less invasive
-> > > filtering of FI support.
-> > >
-> > > In the discussions at [2], three possible solutions were suggested:
-> > >  - (1) conditioning FI by !CONFIG_BL_SWITCHER
-> > >  - (2) leave as is with note in driver specifying this FI broken
-> > >    functionality
-> > >  - (3) removing full BL_SWITCHER support
-> > >
-> > > This series restructures the solution at (1). The reason for it is that
-> > > the new patch limits the ifdef filtering to the arm topology include file,
-> > > a location where frequency invariance functions are defined. Therefore,
-> > > this seems more appropriate given that the b.L switcher is an arm
-> > > technology and that the new FI filtering location seems more natural for
-> > > conditioned FI disabling.
-> > >
-> > > Solutions (2) and (3) were not implemented given that there might be some
-> > > remaining users of this technology (Samsung Chromebook 2 - Samsung Exynos
-> > > 5 Octa 5420, Samsung Exynos 5 Octa 5800) and therefore leaving this
-> > > broken (2) seems equally bad to removing support for it (3).
-> > >
-> > > [1] https://lore.kernel.org/lkml/20200701090751.7543-5-ionela.voinescu@arm.com/
-> > > [2] https://lore.kernel.org/lkml/20200722093732.14297-4-ionela.voinescu@arm.com/
-> > > [3] https://lwn.net/Articles/481055/
+> Hi,
+>
+> >-----Original Message-----
+> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >Sent: Thursday, October 8, 2020 5:28 PM
+> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
+> ><michal.simek@xilinx.com>; Shevchenko, Andriy
+> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux ARM
+> ><linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List <linux-
+> >kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
+> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
+> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
+> ><arnd@arndb.de>
+> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+> >Keem Bay SOC
 > >
-> > I can take this set with the ACKs from Viresh if that's fine by
-> > everyone.  Catalin?  Sudeep?
+> >On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com> wrote:
+> >>
+> >> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> >>
+> >> Voltage switching sequence is needed to support UHS-1 interface.
+> >> There are 2 places to control the voltage.
+> >> 1) By setting the AON register using firmware driver calling
+> >> system-level platform management layer (SMC) to set the register.
+> >> 2) By controlling the GPIO expander value to drive either 1.8V or 3.3V
+> >> for power mux input.
+> >>
+> >> Signed-off-by: Muhammad Husaini Zulkifli
+> >> <muhammad.husaini.zulkifli@intel.com>
+> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> >> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> >> ---
+> >>  drivers/mmc/host/sdhci-of-arasan.c | 126
+> >> +++++++++++++++++++++++++++++
+> >>  1 file changed, 126 insertions(+)
+> >>
+> >> diff --git a/drivers/mmc/host/sdhci-of-arasan.c
+> >> b/drivers/mmc/host/sdhci-of-arasan.c
+> >> index 46aea6516133..ea2467b0073d 100644
+> >> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> >> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> >> @@ -16,6 +16,7 @@
+> >>   */
+> >>
+> >>  #include <linux/clk-provider.h>
+> >> +#include <linux/gpio/consumer.h>
+> >>  #include <linux/mfd/syscon.h>
+> >>  #include <linux/module.h>
+> >>  #include <linux/of_device.h>
+> >> @@ -23,6 +24,7 @@
+> >>  #include <linux/regmap.h>
+> >>  #include <linux/of.h>
+> >>  #include <linux/firmware/xlnx-zynqmp.h>
+> >> +#include <linux/firmware/intel/keembay_firmware.h>
+> >>
+> >>  #include "cqhci.h"
+> >>  #include "sdhci-pltfm.h"
+> >> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
+> >>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
+> >>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
+> >>   * @quirks:            Arasan deviations from spec.
+> >> + * @uhs_gpio:          Pointer to the uhs gpio.
+> >>   */
+> >>  struct sdhci_arasan_data {
+> >>         struct sdhci_host *host;
+> >> @@ -150,6 +153,7 @@ struct sdhci_arasan_data {
+> >>         struct regmap   *soc_ctl_base;
+> >>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
+> >>         unsigned int    quirks;
+> >> +       struct gpio_desc *uhs_gpio;
+> >>
+> >>  /* Controller does not have CD wired and will not function normally without
+> >*/
+> >>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
+> >> @@ -361,6 +365,112 @@ static int sdhci_arasan_voltage_switch(struct
+> >mmc_host *mmc,
+> >>         return -EINVAL;
+> >>  }
+> >>
+> >> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host *mmc,
+> >> +                                      struct mmc_ios *ios) {
+> >> +       struct sdhci_host *host = mmc_priv(mmc);
+> >> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> >> +       struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
+> >> +       u16 ctrl_2, clk;
+> >> +       int ret;
+> >> +
+> >> +       switch (ios->signal_voltage) {
+> >> +       case MMC_SIGNAL_VOLTAGE_180:
+> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> >> +               clk &= ~SDHCI_CLOCK_CARD_EN;
+> >> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> >> +
+> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> >> +               if (clk & SDHCI_CLOCK_CARD_EN)
+> >> +                       return -EAGAIN;
+> >> +
+> >> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
+> >> +                                  SDHCI_POWER_CONTROL);
+> >> +
+> >> +               /*
+> >> +                * Set VDDIO_B voltage to Low for 1.8V
+> >> +                * which is controlling by GPIO Expander.
+> >> +                */
+> >> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 0);
+> >> +
+> >> +               /*
+> >> +                * This is like a final gatekeeper. Need to ensure changed voltage
+> >> +                * is settled before and after turn on this bit.
+> >> +                */
+> >> +               usleep_range(1000, 1100);
+> >> +
+> >> +               ret = keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
+> >> +               if (ret)
+> >> +                       return ret;
+> >> +
+> >> +               usleep_range(1000, 1100);
+> >
+> >No, sorry, but I don't like this.
+> >
+> >This looks like a GPIO regulator with an extension of using the
+> >keembay_sd_voltage_selection() thingy. I think you can model these things
+> >behind a regulator and hook it up as a vqmmc supply in DT instead. BTW, this is
+> >the common way we deal with these things for mmc host drivers.
 >
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com> (BL_SWITCHER and topology parts)
+> The SDcard for Keem Bay SOC does not have its own voltage regulator.
+> There are 2 places to control the voltage.
+> 1) By setting the AON register calling system-level platform management layer (SMC)
+>    to set the I/O pads voltage for particular GPIOs line for clk,data and cmd.
+>    The reason why I use this keembay_sd_voltage_selection() via smccc interface it because during voltage switching
+>    I need to access to AON register. On a secure system, we could not directly access to AON register due to some security concern from driver side, thus
+>    cannot exposed any register or address.
+> 2) By controlling the GPIO expander value to drive either 1.8V or 3.3V for power mux input.
 
-OK, the series has been applied as 5.10 material, thanks!
+I see, thanks for clarifying.
+
+To me, it sounds like the best fit is to implement a pinctrl (to
+manage the I/O pads) and a GPIO regulator.
+
+Kind regards
+Uffe
