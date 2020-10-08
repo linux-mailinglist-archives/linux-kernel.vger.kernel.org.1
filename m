@@ -2,165 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCF228762D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C95287638
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730673AbgJHOfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S1730597AbgJHOio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730655AbgJHOf2 (ORCPT
+        with ESMTP id S1729770AbgJHOio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:35:28 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7DDC0613D3;
-        Thu,  8 Oct 2020 07:35:28 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id 33so6029374edq.13;
-        Thu, 08 Oct 2020 07:35:27 -0700 (PDT)
+        Thu, 8 Oct 2020 10:38:44 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D29AC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:38:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id n18so6900721wrs.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:38:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NqaJ51EXPvZCqqLQUo3ryVOLCQr5ZMYt3vugfzRfrK0=;
-        b=RoYUTHJfVJqABI/0nzomh6A+KmpMGrKUoO0nMt3iiQeC0rRPEiB1cOvPyuyEE9MUqM
-         YDq6995HWtuHOGXze62/L3zYMl50xZQX3TDyYbAK0PuijVyqukZ4ajYVVBBAtTxKtC97
-         6pJadbidhgk0keG7EY7488eRR/QeDasVAJinPzgDNjyR6lDb0hFU8ICwK4VrOr8gmBbI
-         kJriXRhgp/PO7TqpQdMmYli9bP1WBZVgFKljgtK6XwSkjulPzhn/8eeSOzi1Mpg1x66X
-         IeCV9hmfcXvSmYap7CplPjR3bnkLYbpi92YQwb0JdBSql36YRF+SRqoFCVekz6hl6bn3
-         n55g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=FB6oiqekxD6KQBOtL25AGTNlxj+owP0Z0d2XXT3CycU=;
+        b=GidDfEuGMf0x3IVybYbsOdgEd2GBGFjOPiSoKOkDqPEEEswCD/uG4ZSPvdKOpsSRxh
+         /I1cdDuDGudQhCVcqZO0KsXYDy4XELuJFg0702rdLRY+dtloRfVM0bZ9LikTfx4F7Eg0
+         KAM+7KANP9Jp19igWILZAuLdvMQiyPAjpuXuJeODcCBHhjn3oC88bHPdMTrOq6uALtCE
+         6EK0NyJedgiLZqVodlpMMb4h3ha+lncFJK0hav9SsYlBeD0QDW+w4+EIwHvZeH+digG+
+         I3NuWcd9hCf3doEjXkMLCHNiD9AUixRIfPum2DvtH2dnCOqUVwN4j0dSTK+hEStqPCm2
+         KuIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NqaJ51EXPvZCqqLQUo3ryVOLCQr5ZMYt3vugfzRfrK0=;
-        b=bgc678OoIQuqtOT5Wgg+54JVcvAqILi3Mo7pFZTyhE5H2CLY8yPa44It+XTA2DbS1n
-         JqqteLFcMJQxtddQtTk6TeWxXHoC/liJg2eQ3aSp9TvIp/9Lo9kVclY3DVGS/gXx9FEd
-         ZtUN7yPd9P3wGsZ48DFq+hi7baTtv3LdnfZhkSqRqxQXTGQsy2d/bk0Q9fBdWRukNcBo
-         E8IT8pdODARSsK43ojuA/C3sRB08hUfvp5Ck9KleWEE6VcYqPD9eYdqECH9T5NDekjg9
-         DZ7V9WUYCKKzJvb6hrwSO/bgGiXyrXlMVb17onPse7l+GeiTg89mU7OH0gkcr4yEfW48
-         3L1w==
-X-Gm-Message-State: AOAM530zWgr09GvAh/GXXRrr4udQ8qMb+g/Iyl1lW7ZbvNuIb312gYjR
-        WvVxjvkCAYeNq8Dcq1JEaKnVMrFUABA=
-X-Google-Smtp-Source: ABdhPJxnqQ55XoJeBEFRENK/zxB/VEZaFTWYUpOYubnrMlf+lSed7w+1E6E6W6pkwOGNovFtsbUPCg==
-X-Received: by 2002:aa7:c586:: with SMTP id g6mr5851078edq.343.1602167726091;
-        Thu, 08 Oct 2020 07:35:26 -0700 (PDT)
-Received: from xws.fritz.box (pd9e5a9e4.dip0.t-ipconnect.de. [217.229.169.228])
-        by smtp.gmail.com with ESMTPSA id b8sm4123763edv.20.2020.10.08.07.35.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FB6oiqekxD6KQBOtL25AGTNlxj+owP0Z0d2XXT3CycU=;
+        b=SPpXqiZYJxOUm8HSGmbBxUbOsxJEshFQvapwX47IXYfk3dUydwiZ3relPzN+F38AZY
+         jXTJtookwcED10BqI/fuynmyLfG8YSFXHvK3H4mtPOiG85ig2YjQDid6mQ9l8ARF53xl
+         zHnGV9kcQcqTULrkgeyl4Yx7yLlvOQsio+CtGQUpmuvjIezG4QNqziRr/zUQZt67MNrP
+         kyZIlP5vGW2sI3/pgIO/zksV7BkrXZfbG3oQIaHFf77f7Z7DBYZhV4kNWPQ1eUOKV190
+         VaeTUTT2azn6ZgL3tPyBDADs4oCziMYJfy6ro0GgfXB1S2dB+anffqmZC5a9ulaytLvR
+         UXGw==
+X-Gm-Message-State: AOAM533YYiUNaGtMLoRUnEAMVZVHqpPk5em1bnkf76kAMdTJ1EM57rjD
+        DV6EPeErmvckqI58dvaM09oLC495PQ4SqVgoDYQ=
+X-Google-Smtp-Source: ABdhPJwirUND1gx/xJWlOO2u3TXTwZvVIJX+XwyFjfELnyCZmUPsWbjhW2AU97TzEb6o9wp12Uv10A==
+X-Received: by 2002:a5d:424e:: with SMTP id s14mr10597990wrr.149.1602167920912;
+        Thu, 08 Oct 2020 07:38:40 -0700 (PDT)
+Received: from lmecxl0524.lme.st.com ([2a04:cec0:11c8:908d:6533:9100:d943:8b22])
+        by smtp.gmail.com with ESMTPSA id y14sm6926942wma.48.2020.10.08.07.38.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 07:35:25 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     platform-driver-x86@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?q?Bla=C5=BE=20Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH v3 5/5] platform/surface: Move Surface Pro 3 Button driver to platform/surface
-Date:   Thu,  8 Oct 2020 16:34:55 +0200
-Message-Id: <20201008143455.340599-6-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201008143455.340599-1-luzmaximilian@gmail.com>
-References: <20201008143455.340599-1-luzmaximilian@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 08 Oct 2020 07:38:40 -0700 (PDT)
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <Souvik.Chakravarty@arm.com>,
+        Etienne Carriere <etienne.carriere@linaro.org>
+Subject: [PATCH 1/5] firmware: arm_scmi: always initialize protocols
+Date:   Thu,  8 Oct 2020 16:37:18 +0200
+Message-Id: <20201008143722.21888-1-etienne.carriere@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the Surface Pro 3 Button driver from platform/x86 to the newly
-created platform/surface directory.
+Remove the IDR replacement that prevent initializing an SCMI protocol
+when it has already been initialized. This is needed when there are
+several SCMI agents that do implement a given SCMI protocol unless
+what only the related SCMI protocol communication is initialized only
+for first probed agent.
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
 ---
- MAINTAINERS                                            | 2 +-
- drivers/platform/surface/Kconfig                       | 6 ++++++
- drivers/platform/surface/Makefile                      | 1 +
- drivers/platform/{x86 => surface}/surfacepro3_button.c | 0
- drivers/platform/x86/Kconfig                           | 6 ------
- drivers/platform/x86/Makefile                          | 3 ---
- 6 files changed, 8 insertions(+), 10 deletions(-)
- rename drivers/platform/{x86 => surface}/surfacepro3_button.c (100%)
+ drivers/firmware/arm_scmi/bus.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1c5be5875769..2ea51dee885f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11545,7 +11545,7 @@ MICROSOFT SURFACE PRO 3 BUTTON DRIVER
- M:	Chen Yu <yu.c.chen@intel.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Supported
--F:	drivers/platform/x86/surfacepro3_button.c
-+F:	drivers/platform/surface/surfacepro3_button.c
+diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
+index 1377ec76a45d..8ea04b069129 100644
+--- a/drivers/firmware/arm_scmi/bus.c
++++ b/drivers/firmware/arm_scmi/bus.c
+@@ -60,11 +60,6 @@ static int scmi_protocol_init(int protocol_id, struct scmi_handle *handle)
+ 	return fn(handle);
+ }
  
- MICROTEK X6 SCANNER
- M:	Oliver Neukum <oliver@neukum.org>
-diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
-index 2af26379804c..fcd80e860132 100644
---- a/drivers/platform/surface/Kconfig
-+++ b/drivers/platform/surface/Kconfig
-@@ -40,4 +40,10 @@ config SURFACE_3_POWER_OPREGION
- 	  This driver provides support for ACPI operation
- 	  region of the Surface 3 battery platform driver.
- 
-+config SURFACE_PRO3_BUTTON
-+	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
-+	depends on ACPI && INPUT
-+	help
-+	  This driver handles the power/home/volume buttons on the Microsoft Surface Pro 3/4 tablet.
-+
- endif # SURFACE_PLATFORM
-diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
-index 4940d4db58b2..dcb1df06d57a 100644
---- a/drivers/platform/surface/Makefile
-+++ b/drivers/platform/surface/Makefile
-@@ -7,3 +7,4 @@
- obj-$(CONFIG_SURFACE3_WMI)		+= surface3-wmi.o
- obj-$(CONFIG_SURFACE_3_BUTTON)		+= surface3_button.o
- obj-$(CONFIG_SURFACE_3_POWER_OPREGION)	+= surface3_power.o
-+obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
-diff --git a/drivers/platform/x86/surfacepro3_button.c b/drivers/platform/surface/surfacepro3_button.c
-similarity index 100%
-rename from drivers/platform/x86/surfacepro3_button.c
-rename to drivers/platform/surface/surfacepro3_button.c
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 8417ee0178d0..6083f8241b7d 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -870,12 +870,6 @@ config INTEL_VBTN
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called intel_vbtn.
- 
--config SURFACE_PRO3_BUTTON
--	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
--	depends on ACPI && INPUT
--	help
--	  This driver handles the power/home/volume buttons on the Microsoft Surface Pro 3/4 tablet.
+-static int scmi_protocol_dummy_init(struct scmi_handle *handle)
+-{
+-	return 0;
+-}
 -
- config MSI_LAPTOP
- 	tristate "MSI Laptop Extras"
- 	depends on ACPI
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index ffa31f57d9a2..aeff497e23a5 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -81,9 +81,6 @@ obj-$(CONFIG_INTEL_MENLOW)		+= intel_menlow.o
- obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
- obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
+ static int scmi_dev_probe(struct device *dev)
+ {
+ 	struct scmi_driver *scmi_drv = to_scmi_driver(dev->driver);
+@@ -83,10 +78,6 @@ static int scmi_dev_probe(struct device *dev)
+ 	if (ret)
+ 		return ret;
  
--# Microsoft
--obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
+-	/* Skip protocol initialisation for additional devices */
+-	idr_replace(&scmi_protocols, &scmi_protocol_dummy_init,
+-		    scmi_dev->protocol_id);
 -
- # MSI
- obj-$(CONFIG_MSI_LAPTOP)	+= msi-laptop.o
- obj-$(CONFIG_MSI_WMI)		+= msi-wmi.o
+ 	return scmi_drv->probe(scmi_dev);
+ }
+ 
 -- 
-2.28.0
+2.17.1
 
