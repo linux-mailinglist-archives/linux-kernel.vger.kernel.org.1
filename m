@@ -2,203 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D88D28747F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36870287482
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgJHMrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:47:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729869AbgJHMrF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:47:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602161222;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=90bOZVsw1KlKvScl54b+RS6ljMpoPyaXt6SFucEwZ/Y=;
-        b=PBCqIQdkf44HWhjhMmqSA5QWwbvWAzavF3j1URiSPt3WZzwE1pWS24FLIW0S0b13S1U+4B
-        QytK0F6Bu8STczPwJWOoposrgdC9FAke1iUAC6vhld2HT514zFN6k0g9B8Qrx7y6U1LEdV
-        ct5gVIj46mQuVHSjKt/Lsmu0/50S6zE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514--zH4dhK6OhahvhSPO-jqZQ-1; Thu, 08 Oct 2020 08:47:00 -0400
-X-MC-Unique: -zH4dhK6OhahvhSPO-jqZQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730126AbgJHMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:47:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729869AbgJHMrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:47:24 -0400
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7564818B6423;
-        Thu,  8 Oct 2020 12:46:59 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-114-62.rdu2.redhat.com [10.10.114.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C81A17664D;
-        Thu,  8 Oct 2020 12:46:58 +0000 (UTC)
-Subject: Re: [PATCH] KVM: SVM: Use a separate vmcb for the nested L2 guest
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     vkuznets@redhat.com, wei.huang2@amd.com
-References: <20200917192306.2080-1-cavery@redhat.com>
- <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
- <aaaadb29-6299-5537-47a9-072ca34ba512@redhat.com>
- <0007205290de75f04f5f2a92b891815438fd2f2f.camel@redhat.com>
- <fe491158e791fbe4381ee7fbe5aa050b4e78060e.camel@redhat.com>
- <51d447be4a6f430ed5cc60242457394aceb004e9.camel@redhat.com>
-From:   Cathy Avery <cavery@redhat.com>
-Message-ID: <85ec3bfd-e46e-a6fa-b530-4dc87f0c7169@redhat.com>
-Date:   Thu, 8 Oct 2020 08:46:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+        by mail.kernel.org (Postfix) with ESMTPSA id EA69B2083B;
+        Thu,  8 Oct 2020 12:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602161243;
+        bh=euznez8g2lNiMUcU12nOD+uysphnv3GB3UYCsmyBzZQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=n5HWs/s6pr4pqch41EhZWUfgPYhpDt7iH/f65wToyLVwvcRc0AXlh4kycBYakzZ2D
+         MyL2+dPvzYhLbQPu2DOira0y9fZR4Ot+EkoIj0SYNRfxpEF63uyY4VOI8UWVVsZrC6
+         muovn52cLMI8CqdagV5fAlngz3Ep4U2jMNS06lWc=
+Received: by mail-oi1-f170.google.com with SMTP id c13so6125991oiy.6;
+        Thu, 08 Oct 2020 05:47:22 -0700 (PDT)
+X-Gm-Message-State: AOAM533JRSb2BRgwjOhQVPDbbaC+CZzzwli5h/1DidrPVAqhGFXQAWWd
+        6M+bo5kCMyV1ZFcw+cTmTpV1+7l48F6Y8ZDOLw==
+X-Google-Smtp-Source: ABdhPJz9uUArDgzQ0KTvCl2mNkGHA+ISn1qwzawVRqnnT3olrVHCvXxi/3AC66jaHc5LwP1s2uxVSvpQOd4ntUNIhHg=
+X-Received: by 2002:a54:4f89:: with SMTP id g9mr5030077oiy.106.1602161242218;
+ Thu, 08 Oct 2020 05:47:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <51d447be4a6f430ed5cc60242457394aceb004e9.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20201007180540.322257-1-kholk11@gmail.com> <20201007180540.322257-4-kholk11@gmail.com>
+In-Reply-To: <20201007180540.322257-4-kholk11@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 8 Oct 2020 07:47:11 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLwWPqyd74bkD2-dG9oKh8AQVD3UB1Wm7SeRvqygCsp9w@mail.gmail.com>
+Message-ID: <CAL_JsqLwWPqyd74bkD2-dG9oKh8AQVD3UB1Wm7SeRvqygCsp9w@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] dt-bindings: touchscreen: Add binding for Novatek
+ NT36xxx series driver
+To:     AngeloGioacchino Del Regno <kholk11@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>, priv.luk@gmail.com,
+        Linux Input <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        marijns95@gmail.com, Konrad Dybcio <konradybcio@gmail.com>,
+        Martin Botka <martin.botka1@gmail.com>,
+        phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 6:54 AM, Maxim Levitsky wrote:
-> On Thu, 2020-10-08 at 13:39 +0300, Maxim Levitsky wrote:
->> On Thu, 2020-10-08 at 13:23 +0300, Maxim Levitsky wrote:
->>> On Thu, 2020-10-08 at 07:52 +0200, Paolo Bonzini wrote:
->>>> On 08/10/20 00:14, Maxim Levitsky wrote:
->>>>>> +	if (svm->vmcb01->control.asid == 0)
->>>>>> +		svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
->>>>> I think that the above should be done always. The asid field is currently host
->>>>> controlled only (that is L2 value is ignored, selective ASID tlb flush is not
->>>>> advertized to the guest and lnvlpga is emulated as invlpg).
->>>> Yes, in fact I suggested that ASID should be in svm->asid and moved to
->>>> svm->vmcb->asid in svm_vcpu_run.  Then there's no need to special case
->>>> it in nested code.
->>> This makes lot of sense!
->>>> This should be a patch coming before this one.
->>>>
->>>>> 1. Something wrong with memory types - like guest is using UC memory for everything.
->>>>>      I can't completely rule that out yet
->>>> You can print g_pat and see if it is all zeroes.
->>> I don't even need to print it. I know that it is never set anywhere, unless guest writes it,
->>> but now that I look at it, we set it to a default value and there is no code to set it to
->>> default value for vmcb02. This is it. now my fedora guest boots just fine!
->>>
->>> I played a lot with g_pat, and yet this didn't occur to me . I was that close :-(
->>> I knew that it has to be something with memory types, but it never occured to me
->>> that guest just doesn't write IA32_PAT and uses our value which we set in init_vmcb
->>>
->>>
->>>> In general I think it's better to be explicit with vmcb01 vs. vmcb02,
->>>> like Cathy did, but I can see it's a matter of personal preference to
->>>> some extent.
->>> I also think so in general, but in the code that is outside 'is_guest_mode'
->>> IMHO it is better to refer to vmcb01 as vmcb, although now that I think of
->>> it, its not wrong to do so either.
->>>
->>>
->>> My windows hyper-v guest doesn't boot though and I know why.
->>>
->>> As we know the vmcb save area has extra state which vmrun/vmexit don't touch.
->>> Now suppose a nested hypervisor wants to enter a nested guest.
->>>
->>> It will do vmload, which will load the extra state from the nested vmcb (vmcb12
->>> or as I woudl say the vmcb that nested hypervisor thinks that it is using),
->>> to the CPU. This can cause some vmexits I think, but this doesn't matter much.
->>>
->>> Now the nested hypervisor does vmrun. The extra state of L2 guest is in CPU registers,
->>> and it is untouched. We do vmsave on vmcb01 to preserve that state, but later
->>> when we do vmload on vmcb02 prior to vmenter on it, which loads stale state from it.
->>> The same issue happens the other way around on nested vmexit.
->>>
->>> I fixed this by doing nested_svm_vmloadsave, but that should be probably be
->>> optimized with dirty bits. Now though I guess the goal it to make
->>> it work first.
->>>
->>> With this fixed HyperV boots fine, and even passes the 'works' test of booting
->>> the windows 10 with hyperv enabled nested itself and starting the vm inside,
->>> which makes that VM L3 (in addition to windows itself that runs as L3 in relation to hyper-v)
->>>
->>> https://i.imgur.com/sRYqtVV.png
->>>
->>> In summary this is the diff of fixes (just pasted to email, probably mangled):
->>>
->>>
->>> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
->>> index 0a06e62010d8c..7293ba23b3cbc 100644
->>> --- a/arch/x86/kvm/svm/nested.c
->>> +++ b/arch/x86/kvm/svm/nested.c
->>> @@ -436,6 +436,9 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
->>>          WARN_ON(svm->vmcb == svm->nested.vmcb02);
->>>   
->>>          svm->nested.vmcb02->control = svm->vmcb01->control;
->>> +
->>> +       nested_svm_vmloadsave(svm->vmcb01, svm->nested.vmcb02);
->>> +
->>>          svm->vmcb = svm->nested.vmcb02;
->>>          svm->vmcb_pa = svm->nested.vmcb02_pa;
->>>          load_nested_vmcb_control(svm, &nested_vmcb->control);
->>> @@ -622,6 +625,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
->>>          if (svm->vmcb01->control.asid == 0)
->>>                  svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
->>>   
->>> +       nested_svm_vmloadsave(svm->nested.vmcb02, svm->vmcb01);
->>>          svm->vmcb = svm->vmcb01;
->>>          svm->vmcb_pa = svm->nested.vmcb01_pa;
->>>   
->>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->>> index b66239b26885d..ee9f87fe611f2 100644
->>> --- a/arch/x86/kvm/svm/svm.c
->>> +++ b/arch/x86/kvm/svm/svm.c
->>> @@ -1097,6 +1097,7 @@ static void init_vmcb(struct vcpu_svm *svm)
->>>                  clr_cr_intercept(svm, INTERCEPT_CR3_READ);
->>>                  clr_cr_intercept(svm, INTERCEPT_CR3_WRITE);
->>>                  save->g_pat = svm->vcpu.arch.pat;
->>> +               svm->nested.vmcb02->save.g_pat = svm->vcpu.arch.pat;
-
-I had noticed that g_pat was not set in vmcb02 and set it to vmcb01's 
-value which was not helpful but I did not try the current vcpu value.
-
-I am getting a #UD which I suspected had something to do with cr3 but 
-I'll know more after I add your suggestions.
-
-emu-system-x86-1647  [033] ....  3167.589402: kvm_nested_vmexit_inject: 
-reason: UD excp ext_inf1: 0x0000000000000000 ext_inf2: 
-0x0000000000000000 ext_int: 0x00000000 ext_int_err: 0x00000000
-
-
->>>                  save->cr3 = 0;
->>>                  save->cr4 = 0;
->>>          }
->>>
->>>
->>>
->>> Best regards,
->>> 	Maxim Levitsky
->>>
->>>> Paolo
->>>>
->> And another thing I spotted before I forget.
->>
->> If we setup a tlb flush in ctl.tlb_ctl of vmcb01, just prior to nested vmentry
->> then this field will be copied to vmcb02 but on next vmexit we clear it in current
->> (that is vmcb02) and that change will not propogate to vmcb01.
-ctl.tlb_ctl is dependent on the value of save.cr4 which was not being 
-set in vmcb02.
->>
->> I am not sure if this is a theorerical issue or not. We probably should apply the same treatment to
->> it as what Paulo suggested to do with asid -
->> set it just prior to vmentry if tlb flush is needed, and clear it afterwards as we do.
-> And yet another thing to note is that we curently ignore L2's g_pat. However it _seems_ that we practically
-> ignore L1 PAT as well in regard to shadowing NPT mmu. I am not 100% sure about this.
-> I'll dig that area eventually.
+On Wed, Oct 7, 2020 at 1:05 PM <kholk11@gmail.com> wrote:
 >
-> Best regards,
-> 	Maxim Levitsky
->
->> Best regards,
->> 	Maxim Levitsky
->
-Thanks,
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-Cathy
+Please send to DT list so checks run and it's in my review queue.
 
+>
+> Add binding for the Novatek NT36xxx series touchscreen driver.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  .../input/touchscreen/novatek,nt36xxx.yaml    | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> new file mode 100644
+> index 000000000000..9f350f4e6d6a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Novatek NT36xxx series touchscreen controller Bindings
+> +
+> +maintainers:
+> +  - TBD
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - novatek,nt36xxx
+> +
+> +  reg:
+> +    enum: [ 0x62 ]
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpio:
+> +    maxItems: 1
+> +
+> +  vdd-supply:
+> +    description: Power supply regulator for VDD pin
+> +
+> +  vio-reg-name:
+> +    description: Power supply regulator on VDD-IO pin
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      nt36xxx@62 {
+> +        compatible = "novatek,nt36xxx";
+> +        reg = <0x62>;
+> +        interrupt-parent = <&tlmm>;
+> +        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
+> +        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
+> +      };
+> +    };
+> +
+> +...
+> --
+> 2.28.0
+>
