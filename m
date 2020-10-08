@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500C328764A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FAF287652
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730654AbgJHOmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:42:55 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:41583 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729833AbgJHOmz (ORCPT
+        id S1730668AbgJHOpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:45:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42635 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729828AbgJHOps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:42:55 -0400
-Received: by mail-lf1-f66.google.com with SMTP id d24so6768509lfa.8
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:42:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6GCfcGuGhykUPUz2Gv9W+UDODiHTW35rWixaMNAJTfY=;
-        b=HcjKEt4fH29+FLfaK92TfW2hpWlHN/lLzI1Qaj87mUR6WEJECFMRSj6rT8K7sIkSoz
-         Nm9KEd0sw0glxMqFtRTxa6O8TR+Oejn28fEcxh+RVyo8eDw717p21TQvYTRMRALrGBlV
-         lj/uGjhXHc+yn0Amcd+CxCBYQvbfhihUFoS5+sxl26ul0k3+is+w7FrUq4zz9vi3oYSM
-         WjCbJcjDzXre9U6oitOxhGpYuIHpQ2c6A1ZHoCBQ+nc/K6WusM2/dibtiYQXXsyEbZxh
-         NR8XqaMGwacV9Y3IWMsbkJhTqZDH/753ftPD+bskfMld9dlyu2Apr1Pwc2nhABlITYr0
-         x4IA==
-X-Gm-Message-State: AOAM532ayeCh1fy0Y6b3s4wC610iXZS62xE76bjtCeSi94xUScG7zm9L
-        OXoYZ3AiE6ZaTa/hqMiRbCU=
-X-Google-Smtp-Source: ABdhPJxIdg5H71Do4072xgufwFOzSgs0WbvVdnbdHeTbloVbwEd3SbDA0DnZHXleyK1YS7YjlPCGBw==
-X-Received: by 2002:a19:c1d7:: with SMTP id r206mr2514118lff.87.1602168173005;
-        Thu, 08 Oct 2020 07:42:53 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id d21sm365053lfl.62.2020.10.08.07.42.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 07:42:52 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kQX83-000716-RE; Thu, 08 Oct 2020 16:42:47 +0200
-Date:   Thu, 8 Oct 2020 16:42:47 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] gnss: simplify the return expression of gnss_uevent
-Message-ID: <20201008144247.GJ26280@localhost>
-References: <20200921131028.91837-1-miaoqinglang@huawei.com>
+        Thu, 8 Oct 2020 10:45:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602168347;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X1kaHWBHLF6as3Dsn7xHzXIh9cJ3AkogIyQtrQFgTrw=;
+        b=aL5VI4R8Ljg0LnQEWdhIkGUffxemDL310B3CcmQ6XmQdqot7GFhBuuYOdXrD8ivIZZmfPx
+        BawjtVXKn4OwYSu2vBvql6CnVb18zmXr/0C0sKesuq0S+JCGQMLyZ7k6lEtOsGRPjeDAc5
+        65MAi8Rn3ygpEHjsyUfLNnN0sDJPgWc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-iuDgOWNRPRyInvvnGfhOxw-1; Thu, 08 Oct 2020 10:45:44 -0400
+X-MC-Unique: iuDgOWNRPRyInvvnGfhOxw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE42D18BE169;
+        Thu,  8 Oct 2020 14:45:42 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.132])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4FA9376648;
+        Thu,  8 Oct 2020 14:45:41 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu,  8 Oct 2020 16:45:42 +0200 (CEST)
+Date:   Thu, 8 Oct 2020 16:45:40 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+Subject: Re: [PATCH 3/6] kernel: split syscall restart from signal handling
+Message-ID: <20201008144539.GJ9995@redhat.com>
+References: <20201005150438.6628-1-axboe@kernel.dk>
+ <20201005150438.6628-4-axboe@kernel.dk>
+ <20201008142135.GH9995@redhat.com>
+ <de00f13d-9ff0-6955-5d37-557f044ce2aa@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921131028.91837-1-miaoqinglang@huawei.com>
+In-Reply-To: <de00f13d-9ff0-6955-5d37-557f044ce2aa@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 09:10:28PM +0800, Qinglang Miao wrote:
-> Simplify the return expression.
+On 10/08, Jens Axboe wrote:
+>
+> On 10/8/20 8:21 AM, Oleg Nesterov wrote:
+> > 
+> > Can't we avoid this patch and the and simplify the change in
+> > exit_to_user_mode_loop() from the next patch? Can't the much more simple
+> > patch below work?
+> > 
+> > Then later we can even change arch_do_signal() to accept the additional
+> > argument, ti_work, so that it can use ti_work & TIF_NOTIFY_SIGNAL/SIGPENDING
+> > instead of test_thread_flag/task_sigpending.
 > 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> Yeah I guess that would be a bit simpler, maybe I'm too focused on
+> decoupling the two. But if we go this route, and avoid sighand->lock for
+> just having TIF_NOTIFY_SIGNAL set, then that should be functionally
+> equivalent as far as I'm concerned.
 
-The current code was written with an explicit error path on purpose, and
-there's no need to change it.
+Not sure I understand... I think that the change I propose is functionally
+equivalent or I missed something.
 
-Same applies to your other gnss ubx patch.
+> I'll make the reduction, I'd prefer to keep this as small/simple as
+> possible initially.
 
-> ---
->  drivers/gnss/core.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gnss/core.c b/drivers/gnss/core.c
-> index e6f94501c..e6b9ac9da 100644
-> --- a/drivers/gnss/core.c
-> +++ b/drivers/gnss/core.c
-> @@ -368,13 +368,8 @@ ATTRIBUTE_GROUPS(gnss);
->  static int gnss_uevent(struct device *dev, struct kobj_uevent_env *env)
->  {
->  	struct gnss_device *gdev = to_gnss_device(dev);
-> -	int ret;
->  
-> -	ret = add_uevent_var(env, "GNSS_TYPE=%s", gnss_type_name(gdev));
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> +	return add_uevent_var(env, "GNSS_TYPE=%s", gnss_type_name(gdev));
->  }
->  
->  static int __init gnss_module_init(void)
+Great, thanks.
 
-Johan
+Oleg.
+
