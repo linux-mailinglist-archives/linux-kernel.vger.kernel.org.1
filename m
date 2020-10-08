@@ -2,191 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA32286CC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A557286CC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgJHCak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 22:30:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbgJHCak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 22:30:40 -0400
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B9CF2145D
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 02:30:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602124239;
-        bh=tHJb3mueFHF3ie2tCZCZmBSRR7A+YvcAIjejINpLILc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N/CoW0GNNxVUUHpGA0WvFml8+Sp0+8lA8m6NZIAakDLBFkPqIQ3PzcUHYCX6TA4M9
-         QcmsYeMhOxB0Yse31e0UiN1f06s8RpUd4MngaGawsG1qfxR6wwvjKdbqvMlHi7XCxK
-         JqXVEwkrgasBpyZmROYTLKapb42jhVtSiXBHoXHw=
-Received: by mail-lj1-f174.google.com with SMTP id d24so1104008ljg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 19:30:38 -0700 (PDT)
-X-Gm-Message-State: AOAM530K+0OS5uUG0+wNLVLQTLVSIZWQl3u1fcZ9Eidc0Q9rXqgoDsYD
-        J83Buwl84ZdvAJNlkvYtGSebrq7/UYj27gTRkMk=
-X-Google-Smtp-Source: ABdhPJw2Ldv9SRuYUPdxQDut9elUb0E6sqEH/x598tBTYZMF0RG8TVWf9Og9Ua/GODwBnleetYvpvT8hEbBZ8UCE4lA=
-X-Received: by 2002:a2e:6c08:: with SMTP id h8mr2128760ljc.66.1602124237280;
- Wed, 07 Oct 2020 19:30:37 -0700 (PDT)
+        id S1728170AbgJHCcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 22:32:03 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:38196 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727253AbgJHCcD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 22:32:03 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982Ufo0006183;
+        Thu, 8 Oct 2020 02:31:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=bJ6fW6B98Zvkr9sht1F7HPr3oF3sns7Es4BDcIoh7Tk=;
+ b=N9pjtaler6yLqJQ4Qqu/25O0c2d4v6SDbkyylMS81woWYD+T5tTGSlF2zXsAKPDNRPaw
+ ukEtCzI3lxRRmKuT4R+ratzwIlNIqSJ/nm0QPeg4fg6jfhNXe8KrdMT91ySgvyNy85zl
+ Gfa7RaVaJ3ng4PKAGXxyFn87m4k6jWJDF+i40Z6yerjk8YXmo2nItHCmbcqn9eXYd9fE
+ cC5AePpMg6jEJNJ/zXpOUjfrRoKvreKt/GlmSzT4uc2Tuz+tQosoGSZArg1OQ5MZTpVE
+ igFkWzYMduJn8YvhDBwrXPXHPFcr34s9sFRBjFrd+VRsFIai3hd9A9FExj67sopxeRM7 xA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 33xetb5avh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 02:31:58 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0982UsvK183631;
+        Thu, 8 Oct 2020 02:31:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 3410k0d72x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 02:31:58 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0982Vt6e012384;
+        Thu, 8 Oct 2020 02:31:56 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 19:31:54 -0700
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        kernel-janitors@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/14] target/rd: drop double zeroing
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq11ri9zbvz.fsf@ca-mkp.ca.oracle.com>
+References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
+        <1600601186-7420-3-git-send-email-Julia.Lawall@inria.fr>
+Date:   Wed, 07 Oct 2020 22:31:52 -0400
+In-Reply-To: <1600601186-7420-3-git-send-email-Julia.Lawall@inria.fr> (Julia
+        Lawall's message of "Sun, 20 Sep 2020 13:26:14 +0200")
 MIME-Version: 1.0
-References: <1602083313-19239-1-git-send-email-guoren@kernel.org>
- <1602083313-19239-2-git-send-email-guoren@kernel.org> <CAOnJCU+xwnQz9tbCDjBbstOzBFT-DU-uTcc0K_M7ppT_Z-V1Fg@mail.gmail.com>
-In-Reply-To: <CAOnJCU+xwnQz9tbCDjBbstOzBFT-DU-uTcc0K_M7ppT_Z-V1Fg@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 8 Oct 2020 10:30:25 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRDh=U6sP_Usvwm9C53NNBc5k_Z8UbK3gQ5+zoAGvEqzg@mail.gmail.com>
-Message-ID: <CAJF2gTRDh=U6sP_Usvwm9C53NNBc5k_Z8UbK3gQ5+zoAGvEqzg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] riscv: Fixup static_obj() fail v2
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>, aurelien@aurel32.net,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 suspectscore=1 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080021
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=1 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 3:46 AM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Wed, Oct 7, 2020 at 8:09 AM <guoren@kernel.org> wrote:
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > v1 is commit: 6184358da0004c8fd940afda6c0a0fa4027dc911 which has
-> > been reverted.
-> >
-> > When enable LOCKDEP, static_obj() will cause error:
-> >
-> > [    0.067192] INFO: trying to register non-static key.
-> > [    0.067325] the code is fine but needs lockdep annotation.
-> > [    0.067449] turning off the locking correctness validator.
-> > [    0.067718] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7-dirty #44
-> > [    0.067945] Call Trace:
-> > [    0.068369] [<ffffffe00020323c>] walk_stackframe+0x0/0xa4
-> > [    0.068506] [<ffffffe000203422>] show_stack+0x2a/0x34
-> > [    0.068631] [<ffffffe000521e4e>] dump_stack+0x94/0xca
-> > [    0.068757] [<ffffffe000255a4e>] register_lock_class+0x5b8/0x5bc
-> > [    0.068969] [<ffffffe000255abe>] __lock_acquire+0x6c/0x1d5c
-> > [    0.069101] [<ffffffe0002550fe>] lock_acquire+0xae/0x312
-> > [    0.069228] [<ffffffe000989a8e>] _raw_spin_lock_irqsave+0x40/0x5a
-> > [    0.069357] [<ffffffe000247c64>] complete+0x1e/0x50
-> > [    0.069479] [<ffffffe000984c38>] rest_init+0x1b0/0x28a
-> > [    0.069660] [<ffffffe0000016a2>] 0xffffffe0000016a2
-> > [    0.069779] [<ffffffe000001b84>] 0xffffffe000001b84
-> > [    0.069953] [<ffffffe000001092>] 0xffffffe000001092
-> >
-> > Because some __initdata static variables is before _stext:
-> >
-> > static int static_obj(const void *obj)
-> > {
-> >         unsigned long start = (unsigned long) &_stext,
-> >                       end   = (unsigned long) &_end,
-> >                       addr  = (unsigned long) obj;
-> >
-> >         /*
-> >          * static variable?
-> >          */
-> >         if ((addr >= start) && (addr < end))
-> >                 return 1;
-> >
-> >         if (arch_is_kernel_data(addr))
-> >                 return 1;
-> >
-> > We could implement arch_is_kernel_data to fixup it.
-> >
-> > Link: https://lore.kernel.org/linux-riscv/1593266228-61125-1-git-send-email-guoren@kernel.org/T/#t
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-> > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > Cc: Atish Patra <atishp@atishpatra.org>
-> > Cc: Andreas Schwab <schwab@linux-m68k.org>
-> > Cc: Aurelien Jarno <aurelien@aurel32.net>
-> > ---
-> >  arch/riscv/include/asm/sections.h | 20 ++++++++++++++++++++
-> >  arch/riscv/kernel/setup.c         |  9 +++++++++
-> >  2 files changed, 29 insertions(+)
-> >  create mode 100644 arch/riscv/include/asm/sections.h
-> >
-> > diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-> > new file mode 100644
-> > index 00000000..2317b9e
-> > --- /dev/null
-> > +++ b/arch/riscv/include/asm/sections.h
->
-> You may want to rebase it on top of for-next as UEFI series also adds this file.
-ok
 
-> .
->
-> > @@ -0,0 +1,20 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +
-> > +#ifndef _ASM_RISCV_SECTIONS_H
-> > +#define _ASM_RISCV_SECTIONS_H
-> > +
-> > +#define arch_is_kernel_data arch_is_kernel_data
-> > +
-> > +#include <asm-generic/sections.h>
-> > +
-> > +extern bool init_mem_is_free;
-> > +
-> > +static inline int arch_is_kernel_data(unsigned long addr)
-> > +{
-> > +       if (init_mem_is_free)
-> > +               return 0;
-> > +
-> > +       return addr >= (unsigned long)__init_begin &&
-> > +               addr < (unsigned long)__init_end;
-> > +}
-> > +#endif /* _ASM_RISCV_SECTIONS_H */
-> > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> > index 2c6dd32..9ebd5eb4 100644
-> > --- a/arch/riscv/kernel/setup.c
-> > +++ b/arch/riscv/kernel/setup.c
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/sched/task.h>
-> >  #include <linux/swiotlb.h>
-> >  #include <linux/smp.h>
-> > +#include <linux/poison.h>
-> >
-> >  #include <asm/cpu_ops.h>
-> >  #include <asm/setup.h>
-> > @@ -112,3 +113,11 @@ static int __init topology_init(void)
-> >         return 0;
-> >  }
-> >  subsys_initcall(topology_init);
-> > +
-> > +bool init_mem_is_free = false;
-> > +
-> > +void free_initmem(void)
-> > +{
-> > +       free_initmem_default(POISON_FREE_INITMEM);
-> > +       init_mem_is_free = true;
-> > +}
-> > --
-> > 2.7.4
-> >
->
-> Looks good. Much cleaner than the first approach.
-> FYI: I am still looking into separating __init text & data so that
-> different permissions can be applied to them.
-> With this patch, we can just separate it on top of _stext.
->
->
-> Reviewed-by: Atish Patra <atish.patra@wdc.com>
->
-> --
-> Regards,
-> Atish
+Julia,
 
+> sg_init_table zeroes its first argument, so the allocation of that argument
+> doesn't have to.
 
+Applied to 5.10/scsi-staging, thanks!
 
 -- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+Martin K. Petersen	Oracle Linux Engineering
