@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B885286D05
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA564286D08
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 05:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgJHDJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 23:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728231AbgJHDJL (ORCPT
+        id S1728369AbgJHDJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 23:09:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55218 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727359AbgJHDJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 23:09:11 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C196C061755;
-        Wed,  7 Oct 2020 20:09:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6GPt1PSzz9sTL;
-        Thu,  8 Oct 2020 14:09:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602126547;
-        bh=WFgb66T8uct3URGR0o6YznmhZVhqUy1KGIGHbN7Hnac=;
-        h=Date:From:To:Cc:Subject:From;
-        b=U8isCq3CHNoPO4LSG1gbdaDkIO4bPITFubkpEs3E9W7wn+oVWW/aPOUUkejzyh8cl
-         BhnGxFsJWZv78i9cZVuO3VOE7dDBBRVjjuaXx8gqvFG5QN4Z+BjC24KXYKSAkC74qS
-         nqDx2AvXCFI3ro4OVgUyDq76VqfNV52Epyi8U8fB6DI5mmCoM2Ys/drznxNqY2rphG
-         HYEsXXzzz7z968gNdVerFXYraPKBUZeDBqECllT8r3CEbEh/ODt52nkMUnOc7jRGdt
-         9Wdw0C4+5fucd4hxxvPqowJ1LnjQcHwB4kmCy6afFsMDuS/vWnkvtSYHexwdAKSFLG
-         Iv2Ykzrzm6dsg==
-Date:   Thu, 8 Oct 2020 14:09:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201008140903.12a411b8@canb.auug.org.au>
+        Wed, 7 Oct 2020 23:09:56 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09830JEn142586;
+        Thu, 8 Oct 2020 03:09:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=Yaw47W6V3396C9R4dsAKmO3J9MefTrKbZvF2+mvgLcQ=;
+ b=HMx1aXakq/WRCltyKfmlTGOsnfhZcZQDp1SG5e2pauudcjUGOQchNmyo2fNfjvS2z0m7
+ YOgYgSysug+C96AK+ofsau9PX2twXDnpacA73/RonBH84sZHAN1NI6VTr3Uw7Ulj7uha
+ +/yHX3W9ngQx3fG4dyYa8JApE6zt96YrgVSo29Z8dgRA3U/a2EnBRyzld+y27CgDEb8B
+ Cm6KFZQMFZ6+gCUBZIoePj1Lt9Ef+O0+c6tt7ys7T6fpOTkZ2Q7Vnwws0YFSlww15mjt
+ yH7cXI4cNGMkd95fVTodruq8dMirbETCl9llFBjqDpbbsJHeAjfh0prTYHpunWmYr7+L bQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33ym34tbbf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 08 Oct 2020 03:09:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09835M4h098395;
+        Thu, 8 Oct 2020 03:09:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33y2vqacju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Oct 2020 03:09:51 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09839m7m026680;
+        Thu, 8 Oct 2020 03:09:49 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 20:09:48 -0700
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     intel-linux-scu@intel.com, artur.paszkiewicz@intel.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: isci: Fix a typo in a comment
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1ft6pwgzv.fsf@ca-mkp.ca.oracle.com>
+References: <20201003055709.766119-1-christophe.jaillet@wanadoo.fr>
+Date:   Wed, 07 Oct 2020 23:09:46 -0400
+In-Reply-To: <20201003055709.766119-1-christophe.jaillet@wanadoo.fr>
+        (Christophe JAILLET's message of "Sat, 3 Oct 2020 07:57:09 +0200")
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WklVzws5ScGzWTI3gSj773.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=914
+ malwarescore=0 suspectscore=1 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010080027
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
+ mlxscore=0 mlxlogscore=928 clxscore=1015 bulkscore=0 spamscore=0
+ malwarescore=0 phishscore=0 suspectscore=1 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010080026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WklVzws5ScGzWTI3gSj773.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Christophe,
 
-After merging the drm-misc tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> s/remtoe/remote/
+> and add a missing '.'
 
-I noticed that the ingenic driver revert I had been waiting for appeared
-in hte drm-misc tree, so I removed the BROKEN dependency for it, but it
-produced the above errors, so I have marked it BROKEN again.
+Applied to 5.10/scsi-staging, thanks!
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WklVzws5ScGzWTI3gSj773.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9+gs8ACgkQAVBC80lX
-0GxTrwf8DR8w5azLvR/u5k/u9K8Ta3cU2eorWJI7Xd3o1NMAXQieljr/0XJD72qA
-x5/QDnHm+GxtxEcJIC8sKBHhBqMHqiDV9uN3A2zns9Z2JKw0jeoaCbrcNq2d6A+C
-SgsGDfi3EdLTmJYUqfrNdz4BBPv4MYqMoO0zwyrP5UdCMXpfyAb5Pk9dD6pdvMAU
-ywTXxYlJx0rCbBme1iC8T6OhhzHe6dAhXKab4UnJITzLuyztqkvjrMNUzjcFpDEI
-jJLP6Npv40fxZ7NFlOK5MeKseVFrvwgK7CXMYc7dJUX3sfmwBY1qBLrSFFgjJE7q
-IVUk8yoATw/Ww1LwQL7n6EqtOJTKqQ==
-=X/fZ
------END PGP SIGNATURE-----
-
---Sig_/WklVzws5ScGzWTI3gSj773.--
+-- 
+Martin K. Petersen	Oracle Linux Engineering
