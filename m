@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A55328749C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265C728748F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730170AbgJHMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:55:39 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:11247 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729722AbgJHMzj (ORCPT
+        id S1730134AbgJHMxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730113AbgJHMxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:55:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602161738; x=1633697738;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Z3iAkvPKJ18aA0Co3RGVC+Xkck5i+HidXXW24mW2/Pc=;
-  b=sCrUwIxXRbxxLOKf04lQYNsHuyhhnPbLNPJaj1VHrwqmPLbw+KTRD3TL
-   PsgJ6lpnbJXng89xC5e/4Pohzhe0ARAFBvIBqMbPFBc2WUFMAJyoxMBOX
-   pocQUN4IYXzXV3koRR83B2q+Y4riHM+161Mg5X03i2eRUE2KxgqrNe7tW
-   CnVu+UgsGjW6pp1NVhuG2boHBonXqmywelvbYKkCNnPZc7/sKylO1lfxQ
-   qQfk9MX6qafGSOsuo09il7TTdmUjSQosL12GAGR8S3wRzRoPMsGT2nogX
-   l/f6p7JmD1OcGPgYDYYVl94Y7HA8PYuoEd2r/Pjv3tuG3jffWAOEUbImk
-   Q==;
-IronPort-SDR: q21pxIvhXmWhfuy3l/Yoex1M2Zr9Ivla3LNQoLSQjuorPpDOgsT0xAMg4r5hjKUyLTfLyHsqC6
- wLivUxa72cT06SA4kISbkYHPTj/jxkRzYNIqA3Vs6Lkzu2KEgv/5fTuoVZofeAXjB0ZtgjKELC
- nApuri5W7TdtC2XNAC2Zf32dlmIWAtp3aE+rCQh2JXqx6uGa9UsVQi2tl4hRcV3suCJNESUif1
- SeVzq3Vy7cyxZoJuVR/QO5tgyvBE0ghUQ1B9J3Ul51ZKw0PXC61vRtmeKBD7F2gPEwp9U3+zb6
- GBU=
-X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="89547880"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Oct 2020 05:55:38 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 8 Oct 2020 05:55:37 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 8 Oct 2020 05:55:36 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Kai Stuhlemmer <kai.stuhlemmer@ebee.de>
-Subject: [PATCH] ARM: at91: sam9x60 SiP types added to soc description
-Date:   Thu, 8 Oct 2020 14:50:28 +0200
-Message-ID: <20201008125028.21071-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.28.0
+        Thu, 8 Oct 2020 08:53:02 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE07C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 05:53:01 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b1so2944818lfp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FxfUEUi6zktpxu/mlP33p6/3OJKcxiReX3Cme3ajLG0=;
+        b=YeojNDCsQODyiJZ/R38+vxn5EJw4k/ERri6Mi8QyXr5m4Me+jTQIAhUUzsaAahWU+X
+         LszzF8mWkioTVYMHddjpOouqAwORZjKguhbls8m0LPvph5zE8AIg86ggT8Ty1xAA8li/
+         18acI8/qw2KPO2xPrPxxe6+D3UdNi4tGtr/kMWBJ0c2mrBwNSoaU1i8hYT6Sz0b1/QbV
+         ZJpD+T/dy4jbFyXOEUtwtcVkw9iXORXjSzA9UqBpf2aIySgyKpvSL7EgImAtb9Kzf50M
+         eE0FGwFohyGIC55kjvSnsDVuNAFxtcRaSrHtjaEfHfSQEziNufD6N8jd28C1D9Oarvlv
+         On4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FxfUEUi6zktpxu/mlP33p6/3OJKcxiReX3Cme3ajLG0=;
+        b=IVDmKODj/CB8nP4Ah/UoOdCAaqBFs3n3RUocU76Mm4TXG7S0MAoJUALhaXhmPQVcdl
+         uq60eteXSEulR5yFv1vLVvmVvR9ZUhBL2FbJIFF8ItZSA0pRko26lFhgUvIm/tckpxct
+         4JeGvN/Nnfsx/nYXPI+5b+nAfo/cbQtQCCT5KBRtt4PHRtNZCT153GRsZP//9kmaN3tl
+         5RGVlUoLCR3FzGKwd/up3wnc5mHOUenwq2IThz8gidabmxItTWW4A80xT8rQdUpQt15C
+         h7CAyhMM9T54GQ9XlzeH4bPP69B0VxyZO83rE17GqSRkD3TXvMzrW+VT6p6gXbigUYOJ
+         nB/Q==
+X-Gm-Message-State: AOAM531M2EfYeRTPRHMFaj6IfrSDKC3zK9LJnB1HBv5pl/qXSN0mgpNI
+        35gW5sbXR8IpVEhkfUJRRJRNRVEOxzPjCXgqFU+seQ==
+X-Google-Smtp-Source: ABdhPJxWSJs3kvo45P2YLqWbDVciugobKkAjYEoD9pfLA4jMPAe/NHoL9+PN3M50sfXIsT8DxeHkPtRiH5Tv6Jpo8p4=
+X-Received: by 2002:ac2:483b:: with SMTP id 27mr2398747lft.441.1602161579900;
+ Thu, 08 Oct 2020 05:52:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20200930092053.2114-1-mike.looijmans@topic.nl>
+ <CACRpkdbsYcmv9m2EiQNgPDZ0MdjPnWTxXvnqATVPvWpB=8Oqkw@mail.gmail.com>
+ <20201006193235.GA2689027@bogus> <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.e0bfef86-33da-4b33-b856-e32dbc3f2992@emailsignatures365.codetwo.com>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.6462df9b-cbe0-4101-9ae9-b09faa895eb1@emailsignatures365.codetwo.com>
+ <CACRpkdZmYKn1JU8PeA+GAJDuVEtWQrH-3KijH4+df88Bt=iZtA@mail.gmail.com> <bbc77660-40b3-72b2-4829-4f1d53cbfd2b@topic.nl>
+In-Reply-To: <bbc77660-40b3-72b2-4829-4f1d53cbfd2b@topic.nl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 8 Oct 2020 14:52:48 +0200
+Message-ID: <CACRpkdZ6W4=MHmsAzoyzDhKu4Btgg73PZjOrOb7UV64OSHWn=Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: gpio: pca953x: Add support for the
+ NXP PCAL9554B/C
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Rob Herring <robh@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Stuhlemmer <kai.stuhlemmer@ebee.de>
+On Thu, Oct 8, 2020 at 9:36 AM Mike Looijmans <mike.looijmans@topic.nl> wrote:
+> On 07-10-2020 11:58, Linus Walleij wrote:
+> > On Tue, Oct 6, 2020 at 9:32 PM Rob Herring <robh@kernel.org> wrote:
+> >> On Wed, Sep 30, 2020 at 11:50:38AM +0200, Linus Walleij wrote:
+> >>> On Wed, Sep 30, 2020 at 11:21 AM Mike Looijmans <mike.looijmans@topic.nl> wrote:
+> >>>
+> >>>> The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
+> >>>> with 8 GPIOs, latched interrupts and some advanced configuration
+> >>>> options. The "C" version only differs in I2C address.
+> >>>>
+> >>>> This adds the entry to the devicetree bindings.
+> >>>>
+> >>>> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> >>>> ---
+> >>>> v2: Split devicetree and code into separate patches
+> >>>
+> >>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> >>>
+> >>> This patch 1/2 does not apply to my tree, I suppose Rob has
+> >>> to apply it?
+> >>
+> >> Nope, no changes in my tree.
+> >
+> > Weird, OK Mike apply this wherever it should be applied or rebase
+> > on my GPIO tree and resend if you want me to apply it.
+> >
+>
+> Could you provide me a git URL + branch to rebase it on, i'll send you a new
+> patch then.
 
-Adding SAM9X60 SIP variants to the soc description list.
+It's this:
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git/log/?h=devel
 
-Signed-off-by: Kai Stuhlemmer <kai.stuhlemmer@ebee.de>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- drivers/soc/atmel/soc.c | 6 ++++++
- drivers/soc/atmel/soc.h | 3 +++
- 2 files changed, 9 insertions(+)
+git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git devel
 
-diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-index 55a1f57a4d8c..c4472b68b7c2 100644
---- a/drivers/soc/atmel/soc.c
-+++ b/drivers/soc/atmel/soc.c
-@@ -69,6 +69,12 @@ static const struct at91_soc __initconst socs[] = {
- #endif
- #ifdef CONFIG_SOC_SAM9X60
- 	AT91_SOC(SAM9X60_CIDR_MATCH, SAM9X60_EXID_MATCH, "sam9x60", "sam9x60"),
-+	AT91_SOC(SAM9X60_CIDR_MATCH, SAM9X60_D5M_EXID_MATCH,
-+		 "sam9x60 64MiB DDR2 SiP", "sam9x60"),
-+	AT91_SOC(SAM9X60_CIDR_MATCH, SAM9X60_D1G_EXID_MATCH,
-+		 "sam9x60 128MiB DDR2 SiP", "sam9x60"),
-+	AT91_SOC(SAM9X60_CIDR_MATCH, SAM9X60_D6K_EXID_MATCH,
-+		 "sam9x60 8MiB SDRAM SiP", "sam9x60"),
- #endif
- #ifdef CONFIG_SOC_SAMA5
- 	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D21CU_EXID_MATCH,
-diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-index ee652e4841a5..5849846a69d6 100644
---- a/drivers/soc/atmel/soc.h
-+++ b/drivers/soc/atmel/soc.h
-@@ -60,6 +60,9 @@ at91_soc_init(const struct at91_soc *socs);
- #define AT91SAM9CN11_EXID_MATCH		0x00000009
- 
- #define SAM9X60_EXID_MATCH		0x00000000
-+#define SAM9X60_D5M_EXID_MATCH		0x00000001
-+#define SAM9X60_D1G_EXID_MATCH		0x00000010
-+#define SAM9X60_D6K_EXID_MATCH		0x00000011
- 
- #define AT91SAM9XE128_CIDR_MATCH	0x329973a0
- #define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
--- 
-2.28.0
-
+Yours,
+Linus Walleij
