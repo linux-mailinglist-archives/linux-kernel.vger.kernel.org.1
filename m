@@ -2,135 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA0228715F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1B728716A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728769AbgJHJYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:24:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725849AbgJHJYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:24:42 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71AFA215A4;
-        Thu,  8 Oct 2020 09:24:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602149082;
-        bh=cu0nQ+F2s+sCxlnVpby8d1SlJWNvj9tLwLZCvbl8+VY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P5XR+0Lvj4PoOIEaG66XRqS1JDdDpDMco5R8RQFmeu0OFFeAEZEZIzYC/W+NgkZ7Y
-         jb+ojIQesRZ44bvV4sY5+nsZxOWYrwCJ3YA9SQrwVF6kWU2PsLs+YfRHOJI+LI9dV6
-         cpTotqapyNhdFkzE5XKabxivUiVnILhimJTFfksY=
-Date:   Thu, 8 Oct 2020 11:25:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "M. Vefa Bicakci" <m.v.b@runbox.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bastien Nocera <hadess@hadess.net>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        syzkaller@googlegroups.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH 5.8 05/85] Revert "usbip: Implement a match function to
- fix usbip"
-Message-ID: <20201008092525.GA263468@kroah.com>
-References: <20201005142114.732094228@linuxfoundation.org>
- <20201005142115.000911358@linuxfoundation.org>
- <ad55b590-da4a-4aa8-7a04-302a8d55d723@runbox.com>
- <20201007091324.GF614379@kroah.com>
- <bb5f0904-af0e-e9a3-3d72-2d2d198ff6fa@runbox.com>
+        id S1728804AbgJHJ0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:26:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18050 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725852AbgJHJ0R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:26:17 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09892j6D133757;
+        Thu, 8 Oct 2020 05:25:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=H5ujSFFLvFTfZOqN4N01nIzgOkdLLij7jTCD7y9DIFY=;
+ b=OXf2kh89YB9KmwPNnbMxTQxptzhuio8QGyeMKMTd59gf4q9R6gQThZpt8ccjXWI2Oif4
+ 9+O/NC7Qx0UZxwVFQBzyzfSvKUmbXiLxAKnjGgA0juOGEbqYCM5ccLAXedCUGZ0yK7Ak
+ uOPWV4Aww9hXkSGZ/UkYHvv0y6lbOpytajKXuSnScGvmzvJW/36E5aFadLach6d6CA58
+ NY0a6eYbkbdKZ3mp1bTEadjrs4oiWaUernNGGzNLzrxUxLnWHMQP0xCypREGMPJ+jtKf
+ ZJKfTa9bvE1cTFtVEaJA8P5wfZ/ExhmzjhSwX1gWoD2xd+vZJj00GwB2N70Cb/2BjGtZ oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 341wwrcc9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Oct 2020 05:25:59 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 098948Px139634;
+        Thu, 8 Oct 2020 05:25:58 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 341wwrcc93-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Oct 2020 05:25:58 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0989CLkx008572;
+        Thu, 8 Oct 2020 09:25:57 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03wdc.us.ibm.com with ESMTP id 33xgx95tu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Oct 2020 09:25:57 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0989PuWt38076816
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Oct 2020 09:25:56 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8946913604F;
+        Thu,  8 Oct 2020 09:25:56 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B84913605D;
+        Thu,  8 Oct 2020 09:25:51 +0000 (GMT)
+Received: from skywalker.ibmuc.com (unknown [9.85.112.45])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  8 Oct 2020 09:25:50 +0000 (GMT)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au
+Cc:     npiggin@gmail.com, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] mm: Avoid using set_pte_at when updating a present pte
+Date:   Thu,  8 Oct 2020 14:55:41 +0530
+Message-Id: <20201008092541.398079-1-aneesh.kumar@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb5f0904-af0e-e9a3-3d72-2d2d198ff6fa@runbox.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-08_04:2020-10-08,2020-10-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=735 priorityscore=1501
+ impostorscore=0 mlxscore=0 suspectscore=0 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010080064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 04:56:56AM -0400, M. Vefa Bicakci wrote:
-> On 07/10/2020 12.13, Greg Kroah-Hartman wrote:
-> > On Tue, Oct 06, 2020 at 04:26:27PM +0300, M. Vefa Bicakci wrote:
-> > > On 05/10/2020 18.26, Greg Kroah-Hartman wrote:
-> > > > From: M. Vefa Bicakci <m.v.b@runbox.com>
-> > > > 
-> > > > commit d6407613c1e2ef90213dee388aa16b6e1bd08cbc upstream.
-> > > > 
-> > > > This commit reverts commit 7a2f2974f265 ("usbip: Implement a match
-> > > > function to fix usbip").
-> > > > 
-> > > > In summary, commit d5643d2249b2 ("USB: Fix device driver race")
-> > > > inadvertently broke usbip functionality, which I resolved in an incorrect
-> > > > manner by introducing a match function to usbip, usbip_match(), that
-> > > > unconditionally returns true.
-> > > > 
-> > > > However, the usbip_match function, as is, causes usbip to take over
-> > > > virtual devices used by syzkaller for USB fuzzing, which is a regression
-> > > > reported by Andrey Konovalov.
-> > > > 
-> > > > Furthermore, in conjunction with the fix of another bug, handled by another
-> > > > patch titled "usbcore/driver: Fix specific driver selection" in this patch
-> > > > set, the usbip_match function causes unexpected USB subsystem behaviour
-> > > > when the usbip_host driver is loaded. The unexpected behaviour can be
-> > > > qualified as follows:
-> > > > - If commit 41160802ab8e ("USB: Simplify USB ID table match") is included
-> > > >     in the kernel, then all USB devices are bound to the usbip_host
-> > > >     driver, which appears to the user as if all USB devices were
-> > > >     disconnected.
-> > > > - If the same commit (41160802ab8e) is not in the kernel (as is the case
-> > > >     with v5.8.10) then all USB devices are re-probed and re-bound to their
-> > > >     original device drivers, which appears to the user as a disconnection
-> > > >     and re-connection of USB devices.
-> > > > 
-> > > > Please note that this commit will make usbip non-operational again,
-> > > > until yet another patch in this patch set is merged, titled
-> > > > "usbcore/driver: Accommodate usbip".
-> > > > 
-> > > > Cc: <stable@vger.kernel.org> # 5.8: 41160802ab8e: USB: Simplify USB ID table match
-> > > > Cc: <stable@vger.kernel.org> # 5.8
-> > > 
-> > > Hello Greg,
-> > > 
-> > > Sorry for the lateness of this e-mail.
-> > > 
-> > > I had noted commit 41160802ab8e ("USB: Simplify USB ID table match") as a
-> > > prerequisite in the commit message, but I just realized that the commit
-> > > identifier refers to a commit in my local git tree, and not to the actual
-> > > commit in Linus Torvalds' git tree! I apologize for this mistake.
-> > > 
-> > > Here is the correct commit identifier:
-> > >    0ed9498f9ecfde50c93f3f3dd64b4cd5414d9944 ("USB: Simplify USB ID table match")
-> > > 
-> > > Perhaps this is why the prerequisite commit was not cherry-picked to the 5.8.y
-> > > branch.
-> > > 
-> > > As a justification for the cherry-pick, commit 0ed9498f9ecf actually resolves
-> > > a bug. In summary, this commit works together with commit adb6e6ac20ee ("USB:
-> > > Also match device drivers using the ->match vfunc", which has been cherry-picked
-> > > as part of v5.8.6) and ensures that a USB driver's ->match function is also
-> > > called during the search for a more specialized/appropriate USB driver, in case
-> > > the driver in question does not have an id_table.
-> > > 
-> > > If I am to be the devil's advocate, however, then given that there is only one
-> > > specialized USB device driver ("apple-mfi-fastcharge"), which conveniently has
-> > > an id_table, and also given that usbip no longer has a match function, I also
-> > > realize that it may not be crucial to cherry-pick 0ed9498f9ecf as a prerequisite
-> > > commit.
-> > 
-> > I'm sorry, but I don't really understand.  Does 5.8.y need an additional
-> > patch here, or is all ok because I missed the above patch?
-> 
-> No worries; sorry for not communicating clearly and for the delay.
-> 
-> I meant to state that it would be good to have commit 0ed9498f9ecf ("USB: Simplify
-> USB ID table match") cherry picked to 5.8.y, as it fixes a bug, albeit a minor one.
+This avoids the below warning
 
-What bug does it fix now?  Is usbip or the apple charger driver not
-working properly on 5.8.14?  If nothing is broken, no need to add this
-patch...
+WARNING: CPU: 0 PID: 30613 at arch/powerpc/mm/pgtable.c:185 set_pte_at+0x2a8/0x3a0 arch/powerpc/mm/pgtable.c:185
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 30613 Comm: syz-executor.0 Not tainted 5.9.0-rc8-syzkaller-00156-gc85fb28b6f99 #0
+Call Trace:
+ [c0000000001cd1f0] panic+0x29c/0x75c kernel/panic.c:231
+ [c0000000001cce24] __warn+0x104/0x1b8 kernel/panic.c:600
+ [c000000000d829e4] report_bug+0x1d4/0x380 lib/bug.c:198
+ [c000000000036800] program_check_exception+0x4e0/0x750 arch/powerpc/kernel/traps.c:1508
+ [c0000000000098a8] program_check_common_virt+0x308/0x360
+--- interrupt: 700 at set_pte_at+0x2a8/0x3a0 arch/powerpc/mm/pgtable.c:185
+    LR = set_pte_at+0x2a4/0x3a0 arch/powerpc/mm/pgtable.c:185
+ [c0000000005d2a7c] copy_present_page mm/memory.c:857 [inline]
+ [c0000000005d2a7c] copy_present_pte mm/memory.c:899 [inline]
+ [c0000000005d2a7c] copy_pte_range mm/memory.c:1014 [inline]
+ [c0000000005d2a7c] copy_pmd_range mm/memory.c:1092 [inline]
+ [c0000000005d2a7c] copy_pud_range mm/memory.c:1127 [inline]
+ [c0000000005d2a7c] copy_p4d_range mm/memory.c:1150 [inline]
+ [c0000000005d2a7c] copy_page_range+0x1f6c/0x2cc0 mm/memory.c:1212
+ [c0000000001c63cc] dup_mmap kernel/fork.c:592 [inline]
+ [c0000000001c63cc] dup_mm+0x77c/0xab0 kernel/fork.c:1355
+ [c0000000001c8f70] copy_mm kernel/fork.c:1411 [inline]
+ [c0000000001c8f70] copy_process+0x1f00/0x2740 kernel/fork.c:2070
+ [c0000000001c9b54] _do_fork+0xc4/0x10b0 kernel/fork.c:2429
+ [c0000000001caf54] __do_sys_clone3+0x1d4/0x2b0 kernel/fork.c:27
 
-thanks,
+Architecture like ppc64 expects set_pte_at to be not used for updating a
+valid pte. This is further explained in
+commit 56eecdb912b5 ("mm: Use ptep/pmdp_set_numa() for updating _PAGE_NUMA bit")
 
-greg k-h
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Kirill Shutemov <kirill@shutemov.name>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+---
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index fcfc4ca36eba..bfe202ef6244 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -854,7 +854,7 @@ copy_present_page(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	 * source pte back to being writable.
+ 	 */
+ 	if (pte_write(pte))
+-		set_pte_at(src_mm, addr, src_pte, pte);
++		ptep_set_access_flags(vma, addr, src_pte, pte, 1);
+ 
+ 	new_page = *prealloc;
+ 	if (!new_page)
+-- 
+2.26.2
+
