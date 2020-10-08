@@ -2,115 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BE9287F3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF92287F4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgJHXqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 19:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgJHXqN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 19:46:13 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C5EC0613D2;
-        Thu,  8 Oct 2020 16:46:12 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id t21so7563324eds.6;
-        Thu, 08 Oct 2020 16:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AEjSqknP1oCJUZw0NkEtwBPT55uFfupDNX0nujX92jY=;
-        b=GWrG7ZlJxcztuWXZUvIrAfhi9uwncN6XEo0oq2M8JMsQwFXvq8h68Sr9KLnM+ZwIfa
-         Owsc9GtFHci0SVMizGU3PBTiCPtPLSbsvkZ2pfupp3lsTOVandmq650Z36VYdeVoujtU
-         V3wEarJGtCdTo5AWhh9NS8bMTcmMv6nn/3Ybmc8J12fZCJuojQqB1b/P4nuyqDa6+lJ7
-         o9NMkI3LWj+Uh/44vGL39oJVrS02UexTPTNFI0vuMVNdQhUulySxkkOAN0rK1duWzhEe
-         rSla9Lin8zL2p51R84dvU3fIftLx3rxgXwkRgKbkwDkLDNQ9lwzRUaC/opKsDcDp1pQK
-         2Vvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AEjSqknP1oCJUZw0NkEtwBPT55uFfupDNX0nujX92jY=;
-        b=hUHTEEjPtiEFFcpatX90Gi3ekii7bRD2RbMP4yMSeLCfM62wpmv7nyejHp+xtWrAJH
-         hbQArM5c876pyu6iqKJlLbWHF5OgIxwJCcv11Sen7+WZTfMIoZSk8da061hSkqs2Hie3
-         UPsdLnfau2G+isAtrG4S+5INgA3/tbqaA/TMIxXGyKiHyoI2HA6u0eP921rjdrsq8dbI
-         7SoGetHD/TxLFLO/kmXAHODJ7Zqf/LuAe89wSCqgmiI3fGaywMmyv+Ud16uW8dpjYgqV
-         mvvxEiUhhFpWZv9/pc15BS4avOG8NifbNlcCDwNT+ehhYIPG/cDsc+7DPSGDWMiOg4/9
-         kc1A==
-X-Gm-Message-State: AOAM530WaTXL9W9veWNQpKizdDsgUM3ELFWlDjHWP1J7c+oX9e7Us91w
-        ZpMgkhDYJuVacd6V0By/G60=
-X-Google-Smtp-Source: ABdhPJzH871e6pCRv5eB3S6xhjqB+QCnAVWqXh0JUJ33ZffSYMGwr7HfLigoej2Ld+mdkGD7QY9/kQ==
-X-Received: by 2002:aa7:ccd9:: with SMTP id y25mr11332579edt.375.1602200771361;
-        Thu, 08 Oct 2020 16:46:11 -0700 (PDT)
-Received: from skbuf ([188.26.229.171])
-        by smtp.gmail.com with ESMTPSA id n4sm5189280ejj.19.2020.10.08.16.46.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 16:46:10 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 02:46:09 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     John Keeping <john@metanate.com>
-Cc:     netdev@vger.kernel.org,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: stmmac: Don't call _irqoff() with hardirqs enabled
-Message-ID: <20201008234609.x3iy65g445hmmt73@skbuf>
-References: <20201008162749.860521-1-john@metanate.com>
+        id S1729646AbgJHX7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 19:59:50 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:50736 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729398AbgJHX7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 19:59:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602201589; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=iMZsobu4errj1Xerzmr09tWrD5DMJzqIEKBDLcR17/I=; b=d4BVdEby4dlG92GQAHnwQLFbH5kz0eDXJSfQnK6g6Oh9T3apnYCdODDRd/XXTRBBL8eOVcLb
+ HaTYJKMgTJHTE/hcoktfkFLpscBa/+U3j5YKiLsTn1QkAEAaCOmgXkVfEwZaNMK5Up6nIYq0
+ fpvZyuUBTZHR2Vhpu0TzQUoavxo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f7fa7edd6d00c7a9e28beb8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 23:59:40
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E421FC433B2; Thu,  8 Oct 2020 23:59:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4FE3CC433FE;
+        Thu,  8 Oct 2020 23:59:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4FE3CC433FE
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
+        agross@kernel.org, robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, sergei.shtylyov@gmail.com,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v10 0/4] Introduce PMIC based USB type C detection
+Date:   Thu,  8 Oct 2020 16:59:30 -0700
+Message-Id: <20201008235934.8931-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008162749.860521-1-john@metanate.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 05:27:49PM +0100, John Keeping wrote:
-> With threadirqs, stmmac_interrupt() is called on a thread with hardirqs
-> enabled so we cannot call __napi_schedule_irqoff().  Under lockdep it
-> leads to:
-> 
-> 	------------[ cut here ]------------
-> 	WARNING: CPU: 0 PID: 285 at kernel/softirq.c:598 __raise_softirq_irqoff+0x6c/0x1c8
-> 	IRQs not disabled as expected
-> 	Modules linked in: brcmfmac hci_uart btbcm cfg80211 brcmutil
-> 	CPU: 0 PID: 285 Comm: irq/41-eth0 Not tainted 5.4.69-rt39 #1
-> 	Hardware name: Rockchip (Device Tree)
-> 	[<c0110d3c>] (unwind_backtrace) from [<c010c284>] (show_stack+0x10/0x14)
-> 	[<c010c284>] (show_stack) from [<c0855504>] (dump_stack+0xa8/0xe0)
-> 	[<c0855504>] (dump_stack) from [<c0120a9c>] (__warn+0xe0/0xfc)
-> 	[<c0120a9c>] (__warn) from [<c0120e80>] (warn_slowpath_fmt+0x7c/0xa4)
-> 	[<c0120e80>] (warn_slowpath_fmt) from [<c01278c8>] (__raise_softirq_irqoff+0x6c/0x1c8)
-> 	[<c01278c8>] (__raise_softirq_irqoff) from [<c056bccc>] (stmmac_interrupt+0x388/0x4e0)
-> 	[<c056bccc>] (stmmac_interrupt) from [<c0178714>] (irq_forced_thread_fn+0x28/0x64)
-> 	[<c0178714>] (irq_forced_thread_fn) from [<c0178924>] (irq_thread+0x124/0x260)
-> 	[<c0178924>] (irq_thread) from [<c0142ee8>] (kthread+0x154/0x164)
-> 	[<c0142ee8>] (kthread) from [<c01010bc>] (ret_from_fork+0x14/0x38)
-> 	Exception stack(0xeb7b5fb0 to 0xeb7b5ff8)
-> 	5fa0:                                     00000000 00000000 00000000 00000000
-> 	5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 	5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> 	irq event stamp: 48
-> 	hardirqs last  enabled at (50): [<c085c200>] prb_unlock+0x7c/0x8c
-> 	hardirqs last disabled at (51): [<c085c0dc>] prb_lock+0x58/0x100
-> 	softirqs last  enabled at (0): [<c011e770>] copy_process+0x550/0x1654
-> 	softirqs last disabled at (25): [<c01786ec>] irq_forced_thread_fn+0x0/0x64
-> 	---[ end trace 0000000000000002 ]---
-> 
-> Use __napi_schedule() instead which will save & restore the interrupt
-> state.
-> 
-> Fixes: 4ccb45857c2c ("net: stmmac: Fix NAPI poll in TX path when in multi-queue")
-> Signed-off-by: John Keeping <john@metanate.com>
-> ---
+Changes in v10:
+ - Modified the type c dt-binding to remove the DRD switch node outside of the
+   connector, as it is more of a SW entity, whereas the USB connector model
+   focuses more on how the connector pins are connected in the HW design.  The
+   binding now matches what is specified in the usb-connector binding.
+ - Change the fwnode to search for the remote endpoint referencing the usb role
+   switch device in qcom-pmic-typec
+ - Rename typec node from "typec" to "usb-typec"
 
-Don't get me wrong, this is so cool that the new lockdep warning is really
-helping out finding real bugs, but the patch that adds that warning
-(https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=cdabce2e3dff7e4bcef73473987618569d178af3)
-isn't in 5.4.69-rt39, is it?
+Changes in v9:
+ - Fixed dt-binding to reference usb-connector from the 'connector' node,
+   removed properties that didn't have further constraints (than specified in
+   usb-connector.yaml), and make 'reg' a required property.
+ - Moved vbus_reg get call into probe(), and will fail if the regulator is not
+   available.
+ - Removed some references from qcom_pmic_typec, as they were not needed after
+   probe().
+ - Moved interrupt registration until after all used variables were initialized.
+
+Changes in v8:
+ - Simplified some property definitions, and corrected the
+   connector reference in the dt binding.
+
+Changes in v7:
+ - Fixups in qcom-pmic-typec.c to remove uncesscary includes, printk formatting,
+   and revising some logic operations. 
+
+Changes in v6:
+ - Removed qcom_usb_vbus-regulator.c and qcom,usb-vbus-regulator.yaml from the
+   series as they have been merged on regulator.git
+ - Added separate references to the usb-connector.yaml in qcom,pmic-typec.yaml
+   instead of referencing the entire schema.
+
+Changes in v5:
+ - Fix dt_binding_check warning/error in qcom,pmic-typec.yaml
+
+Changes in v4:
+ - Modified qcom,pmic-typec binding to include the SS mux and the DRD remote
+   endpoint nodes underneath port@1, which is assigned to the SSUSB path
+   according to usb-connector
+ - Added usb-connector reference to the typec dt-binding
+ - Added tags to the usb type c and vbus nodes
+ - Removed "qcom" tags from type c and vbus nodes
+ - Modified Kconfig module name, and removed module alias from the typec driver
+ 
+Changes in v3:
+ - Fix driver reference to match driver name in Kconfig for
+   qcom_usb_vbus-regulator.c
+ - Utilize regulator bitmap helpers for enable, disable and is enabled calls in
+   qcom_usb_vbus-regulator.c
+ - Use of_get_regulator_init_data() to initialize regulator init data, and to
+   set constraints in qcom_usb_vbus-regulator.c
+ - Remove the need for a local device structure in the vbus regulator driver
+ 
+Changes in v2:
+ - Use devm_kzalloc() in qcom_pmic_typec_probe()
+ - Add checks to make sure return value of typec_find_port_power_role() is
+   valid
+ - Added a VBUS output regulator driver, which will be used by the PMIC USB
+   type c driver to enable/disable the source
+ - Added logic to control vbus source from the PMIC type c driver when
+   UFP/DFP is detected
+ - Added dt-binding for this new regulator driver
+ - Fixed Kconfig typec notation to match others
+ - Leave type C block disabled until enabled by a platform DTS
+
+Add the required drivers for implementing type C orientation and role
+detection using the Qualcomm PMIC.  Currently, PMICs such as the PM8150B
+have an integrated type C block, which can be utilized for this.  This
+series adds the dt-binding, PMIC type C driver, and DTS nodes.
+
+The PMIC type C driver will register itself as a type C port w/ a
+registered type C switch for orientation, and will fetch a USB role switch
+handle for the role notifications.  It will also have the ability to enable
+the VBUS output to any connected devices based on if the device is behaving
+as a UFP or DFP.
+
+Wesley Cheng (4):
+  usb: typec: Add QCOM PMIC typec detection driver
+  dt-bindings: usb: Add Qualcomm PMIC type C controller dt-binding
+  arm64: boot: dts: qcom: pm8150b: Add node for USB type C block
+  arm64: boot: dts: qcom: pm8150b: Add DTS node for PMIC VBUS booster
+
+ .../bindings/usb/qcom,pmic-typec.yaml         | 115 ++++++++
+ arch/arm64/boot/dts/qcom/pm8150b.dtsi         |  13 +
+ arch/arm64/boot/dts/qcom/sm8150-mtp.dts       |   4 +
+ drivers/usb/typec/Kconfig                     |  12 +
+ drivers/usb/typec/Makefile                    |   1 +
+ drivers/usb/typec/qcom-pmic-typec.c           | 262 ++++++++++++++++++
+ 6 files changed, 407 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+ create mode 100644 drivers/usb/typec/qcom-pmic-typec.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
