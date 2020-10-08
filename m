@@ -2,178 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2D4287E26
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8A5287E2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 23:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgJHVkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 17:40:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25864 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730219AbgJHVku (ORCPT
+        id S1727701AbgJHVmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 17:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbgJHVmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:40:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602193248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=WcXXjV46s1bUQqy4uPRXgKfYRGboA2UeGxiflOgLZl8=;
-        b=Fh7BaPwvo5wqmGlqzyRqQGM+JcKQFcUUxbHhBBW8LhjIxJUEuXLBObASXDZh1Q45pigzdE
-        NYzN9kncR937TI4j/6vygtoLMNRN8oUkFWh+USrc6Ts6a1wZkmo9IAUho3fE2hhWhtCXcW
-        d9TV7mw7YT/qHFdKtWaEpbMteGTpwnY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-NWkLUk2COMq4KN2q7EFluw-1; Thu, 08 Oct 2020 17:40:47 -0400
-X-MC-Unique: NWkLUk2COMq4KN2q7EFluw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6AF0210BBEC3;
-        Thu,  8 Oct 2020 21:40:44 +0000 (UTC)
-Received: from [10.10.116.35] (ovpn-116-35.rdu2.redhat.com [10.10.116.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B13A5D9E8;
-        Thu,  8 Oct 2020 21:40:38 +0000 (UTC)
-Subject: Re: [PATCH v4 0/4] isolation: limit msix vectors to housekeeping CPUs
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com
-References: <20200928183529.471328-1-nitesh@redhat.com>
- <20201001154949.GA7303@lothringen>
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- VujM7c/b4pps
-Organization: Red Hat Inc,
-Message-ID: <9c55624f-2a01-b71c-7f66-3747cb844e5a@redhat.com>
-Date:   Thu, 8 Oct 2020 17:40:36 -0400
+        Thu, 8 Oct 2020 17:42:53 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642CBC0613D2;
+        Thu,  8 Oct 2020 14:42:53 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id lw21so10204459ejb.6;
+        Thu, 08 Oct 2020 14:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hFDoG3fQdlhIOZ8IJAwTd18Qq8zG8h1BvVCyh4lmt3Y=;
+        b=HTuKFemmRx2Ymd9m5//8leO6bwra40/yjCvfZ79hk5KjxmPRLcwJRL/ANFoOQz5AYK
+         2Hm5+2CrTJC93AwEvpnHrMdTvdU3qdTM+9eiIrwhZL+P5mjTZJxPFtDY9YpBwwIYUc5x
+         DlS545kIJiwNZSUyg71QejrfTFSCWc5K0ABMZ4uOsUHnU+HLSwKmUBdm+ZmE/s2Lssrx
+         IwI0IcZWzuenqjXTvEOD7gtw4GbGSioHsCem5lvbc0SZ99LYmhveWe/J/CuOHRn5iVXp
+         e+iLDkb9v9S1GtdZs2ciCRygh3NO1Jtwv8TqqjjNwdMMtdIu/DnagIpbnlS7jKhaETm3
+         1wdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hFDoG3fQdlhIOZ8IJAwTd18Qq8zG8h1BvVCyh4lmt3Y=;
+        b=EifLybvtSFvoBZlYGuAFcu5lZWEmnjILYipTXQphLmglEqyFm5HeRpEHOqYIxmaBN1
+         mLyIQ2VB/66QU5/+6bVBGAKV1TjJhedIJlp7K38QflPuWTh+5B1zdeHtiwDw6f5iolBa
+         54d9+6crWo9vCgZ8AjinThfv+PE99qJq+Tkers0dTtGWjzFJlOlT6n7Wxlvla1SR4+KA
+         f3yYacPnh/tvIaNUhkvi9G8OiqY8C/Iw0Z6ZKzPx9GkosW0F/uaRW5D1F2NiX0E8YkbD
+         jEGwYqMhsrSptBLsMqueuIxWc3ssbZTpRVnfJOUkOBxoXzc7EJOCcCmGFnNE/G31iWLW
+         zbEg==
+X-Gm-Message-State: AOAM5319Ou07RjdAwEVYAcNzu9AhxhfsE8SOU/mNB8IiDjg1rfpSS5mh
+        egYPtbntFc+JtR+rlJxNRm0=
+X-Google-Smtp-Source: ABdhPJy9kQW67aVqErjy36BpoDQBTRVwkGVvV6XJITIyjaQrxfGboo8FwLf2Cc9zn2r3s/Utn25xEw==
+X-Received: by 2002:a17:906:70d4:: with SMTP id g20mr11466584ejk.413.1602193371995;
+        Thu, 08 Oct 2020 14:42:51 -0700 (PDT)
+Received: from ?IPv6:2a01:110f:b59:fd00:a188:5df3:7e17:9e85? ([2a01:110f:b59:fd00:a188:5df3:7e17:9e85])
+        by smtp.gmail.com with ESMTPSA id p25sm4935384edm.60.2020.10.08.14.42.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 14:42:51 -0700 (PDT)
+Subject: Re: [PATCH v5 1/2] dt-bindings: leds: Add bindings for MT6360 LED
+To:     Gene Chen <gene.chen.richtek@gmail.com>, pavel@ucw.cz,
+        robh+dt@kernel.org, matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <1602034966-3524-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1602034966-3524-2-git-send-email-gene.chen.richtek@gmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <2dcc2958-8942-642a-8ace-71d397857463@gmail.com>
+Date:   Thu, 8 Oct 2020 23:42:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201001154949.GA7303@lothringen>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="heeEo5bPSt8tDxfLevOi2iHjIVyCmRRtx"
+In-Reply-To: <1602034966-3524-2-git-send-email-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---heeEo5bPSt8tDxfLevOi2iHjIVyCmRRtx
-Content-Type: multipart/mixed; boundary="UTa52EjRe2zfZcHcSODI6jAoxYBPRp7mX"
+Hi Gene,
 
---UTa52EjRe2zfZcHcSODI6jAoxYBPRp7mX
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
+Thanks for the update.
 
+On 10/7/20 3:42 AM, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add bindings document for LED support on MT6360 PMIC
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>   .../devicetree/bindings/leds/leds-mt6360.yaml      | 95 ++++++++++++++++++++++
+>   1 file changed, 95 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> new file mode 100644
+> index 0000000..2fa636f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> @@ -0,0 +1,95 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LED driver for MT6360 PMIC from MediaTek Integrated.
+> +
+> +maintainers:
+> +  - Gene Chen <gene_chen@richtek.com>
+> +
+> +description: |
+> +  This module is part of the MT6360 MFD device.
+> +  see Documentation/devicetree/bindings/mfd/mt6360.yaml
+> +  Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
+> +  and 4-channel RGB LED support Register/Flash/Breath Mode
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6360-led
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^led@[0-3]$":
+> +    type: object
+> +    $ref: common.yaml#
+> +    description:
+> +      Properties for a single LED.
+> +
+> +    properties:
+> +      reg:
+> +        description: Index of the LED.
+> +        enum:
+> +          - 0 # LED output INDICATOR1_RGB
+> +          - 1 # LED output INDICATOR2
+> +          - 2 # LED output FLED1
+> +          - 3 # LED output FLED2
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> + - |
+> +   #include <dt-bindings/leds/common.h>
+> +   led-controller {
+> +     compatible = "mediatek,mt6360-led";
+> +     #address-cells = <1>;
+> +     #size-cells = <0>;
+> +
+> +     led@0 {
+> +       reg = <0>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_RGB>;
+> +       led-max-microamp = <24000>;
+> +     };
 
-On 10/1/20 11:49 AM, Frederic Weisbecker wrote:
-> On Mon, Sep 28, 2020 at 02:35:25PM -0400, Nitesh Narayan Lal wrote:
->> Nitesh Narayan Lal (4):
->>   sched/isolation: API to get number of housekeeping CPUs
->>   sched/isolation: Extend nohz_full to isolate managed IRQs
->>   i40e: Limit msix vectors to housekeeping CPUs
->>   PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
->>
->>  drivers/net/ethernet/intel/i40e/i40e_main.c |  3 ++-
->>  drivers/pci/msi.c                           | 18 ++++++++++++++++++
->>  include/linux/sched/isolation.h             |  9 +++++++++
->>  kernel/sched/isolation.c                    |  2 +-
->>  4 files changed, 30 insertions(+), 2 deletions(-)
-> Acked-by: Frederic Weisbecker <frederic@kernel.org>
->
-> Peter, if you're ok with the set, I guess this should go through
-> the scheduler tree?
->
-> Thanks.
+This should be multi-led node. See [0] for a reference.
 
-Hi Peter,
+> +     led@1 {
+> +       reg = <1>;
+> +       function = LED_FUNCTION_INDICATOR;
 
-I wanted follow up to check if you have any concerns/suggestions that I
-should address in this patch-set before this can be picked?
+Maybe add LED_FUNCTION_MOONLIGHT ?
 
---=20
-Thanks
-Nitesh
+> +       color = <LED_COLOR_ID_AMBER>;
+> +       default-state = "off";
+> +       led-max-microamp = <150000>;
+> +     };
+> +     led@2 {
+> +       reg = <2>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <1>;
+> +       default-state = "off";
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +     led@3 {
+> +       reg = <3>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <2>;
+> +       default-state = "off";
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +   };
+> +...
+> 
 
+[0] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
 
---UTa52EjRe2zfZcHcSODI6jAoxYBPRp7mX--
-
---heeEo5bPSt8tDxfLevOi2iHjIVyCmRRtx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9/h1QACgkQo4ZA3AYy
-oznxaxAAq437n/C4ULMSr9ziKrTkK3qofMr7jMAxbHIMUU4kLdFunyz7EJUoVsap
-z/hyYjVBVBnHsdMiOFLT1uZHAcgDP4bxDkMr6iI8514eu0pYRlrRvifAZZ36+ZXw
-RCc/WnxPWodTp1793s3pCp25IghplWBLvGHVxQ49vtI++FGErB0J2eHVzPY6wtK4
-PMX0Nu2kAf3wiD36aS3HHlLwNSdCtuLL5xgctOfu/SU3ksmWSHyAy7yWmLyUce1G
-SYiIOCMG/nlavgdYEu6k/jiFOGhuPlBMWUvVGgyjlvpxEIx0+nCOu84A7cz6Zv0q
-AajATl37Lvex3kBYQz+ffZh514pBeVuYIhBFsO2ZRn5t0I3eK2Q46BwjK+iJzMft
-zvR0BZkZHFUHETFF6DHcs8k7iymCBjLAlF3XWohPu0sRsY9C70tNzNgi3fW63yLn
-SQiggHg+AsefRE6N0a4k0KSlbBr+lz8o6IhJnHWmwVQi5islK1JvbOkCOnaPXla6
-nrjxaq4c3uUSOuIrWPKacbRoLMnOECxQEzpRZ46XhTyJ1Xc5rpUUQlXasftTO5X/
-3Kbwix7VsiIuyl0kzOkdsv+6jE0TMUZg4Rg6tApa89/iOGsN5PGZwd+2R94VqnYp
-nulQKS+oAZkYlJmNF6X/1H1XJNNsGofeMYHISHoF3isaRVolJ8E=
-=4dfe
------END PGP SIGNATURE-----
-
---heeEo5bPSt8tDxfLevOi2iHjIVyCmRRtx--
-
+-- 
+Best regards,
+Jacek Anaszewski
