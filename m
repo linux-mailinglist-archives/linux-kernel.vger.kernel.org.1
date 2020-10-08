@@ -2,158 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934692871B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19542871B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgJHJhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:37:35 -0400
-Received: from aibo.runbox.com ([91.220.196.211]:45178 "EHLO aibo.runbox.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726019AbgJHJhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:37:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=runbox.com;
-         s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=ELjpSpTAH7ZIHCGvXzFMEwt8FTjC+X1MqxRx4RtC/l4=; b=XqZwAJX065ggfC7PUIHmyA6Dax
-        ynQG+dCLHjSuLAKriTA6uoIp8oc/eEXtPTjkzizv0Gpb9scDEWJ/Ollpeu86ToSwqaVuTIr/8T1sk
-        QUzMBfsBEJtTohr6PvzcrT/b0rfh4HCDSR1gALYwXP5H1dS6Ip8O5LneobIOFSYsa4iNILlGG2awO
-        eVKv5hQR8vNscD2QfhTMwrtbx4GuY5D2CngtWPgEY9CGTS0cqSWUVEtzVsDtxeX2WpDgE/KYRIMr6
-        DD7hBy2HiAMThDRGffXiHwNgv5l6ov4v5fMr5ulT27CwbfYndM9aODBIKuqrMi8qfkpcdTiUlrfNV
-        LjiVqnxw==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-        by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-        (envelope-from <m.v.b@runbox.com>)
-        id 1kQSMX-0001Zw-6c; Thu, 08 Oct 2020 11:37:25 +0200
-Received: by submission02.runbox with esmtpsa  [Authenticated alias (536975)]  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        id 1kQSME-0006iS-VQ; Thu, 08 Oct 2020 11:37:07 +0200
-Subject: Re: [PATCH 5.8 05/85] Revert "usbip: Implement a match function to
- fix usbip"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bastien Nocera <hadess@hadess.net>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        syzkaller@googlegroups.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
- <20201005142115.000911358@linuxfoundation.org>
- <ad55b590-da4a-4aa8-7a04-302a8d55d723@runbox.com>
- <20201007091324.GF614379@kroah.com>
- <bb5f0904-af0e-e9a3-3d72-2d2d198ff6fa@runbox.com>
- <20201008092525.GA263468@kroah.com>
-From:   "M. Vefa Bicakci" <m.v.b@runbox.com>
-Message-ID: <aecd3780-1248-804d-2c74-550ccbaeb993@runbox.com>
-Date:   Thu, 8 Oct 2020 05:37:02 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1729150AbgJHJjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:39:35 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:48815 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725849AbgJHJje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 05:39:34 -0400
+X-UUID: 61258c031da84b0290d979c5424d499e-20201008
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=1Ozpz9ZghRPEXVmLBbry4bfJslMm3ymiwvO7V65jL04=;
+        b=tzXB51OzKySlCiBO0Wd9bdQ4yBhYUf+ofawiHI8M9urGyTi5ysFvhaKM3hsNYWwxbeafQVW38AhoHUqn7JJXzkSdU1O+t6Qz9hD4nFA3TiUkSC29Rqi2SOvBcsMu900WBYbi6c8PjMrbjnoN9BIXuKQoQEw0MkdVY0VRq+1TyAg=;
+X-UUID: 61258c031da84b0290d979c5424d499e-20201008
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 913390972; Thu, 08 Oct 2020 17:39:27 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 8 Oct 2020 17:39:24 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 8 Oct 2020 17:39:25 +0800
+Message-ID: <1602149965.8784.6.camel@mtkswgap22>
+Subject: Re: [PATCH v7 2/2] soc: mediatek: add mt6779 devapc driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Thu, 8 Oct 2020 17:39:25 +0800
+In-Reply-To: <d8aec3a3-10b6-8c9e-6b2d-f9d9c0418b33@gmail.com>
+References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
+         <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
+         <c41ec664-73a0-3c63-a31c-48c89028dfac@gmail.com>
+         <1602124514.28301.17.camel@mtkswgap22>
+         <d8aec3a3-10b6-8c9e-6b2d-f9d9c0418b33@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20201008092525.GA263468@kroah.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2020 05.25, Greg Kroah-Hartman wrote:
-> On Thu, Oct 08, 2020 at 04:56:56AM -0400, M. Vefa Bicakci wrote:
->> On 07/10/2020 12.13, Greg Kroah-Hartman wrote:
->>> On Tue, Oct 06, 2020 at 04:26:27PM +0300, M. Vefa Bicakci wrote:
->>>> On 05/10/2020 18.26, Greg Kroah-Hartman wrote:
->>>>> From: M. Vefa Bicakci <m.v.b@runbox.com>
->>>>>
->>>>> commit d6407613c1e2ef90213dee388aa16b6e1bd08cbc upstream.
->>>>>
->>>>> This commit reverts commit 7a2f2974f265 ("usbip: Implement a match
->>>>> function to fix usbip").
->>>>>
->>>>> In summary, commit d5643d2249b2 ("USB: Fix device driver race")
->>>>> inadvertently broke usbip functionality, which I resolved in an incorrect
->>>>> manner by introducing a match function to usbip, usbip_match(), that
->>>>> unconditionally returns true.
->>>>>
->>>>> However, the usbip_match function, as is, causes usbip to take over
->>>>> virtual devices used by syzkaller for USB fuzzing, which is a regression
->>>>> reported by Andrey Konovalov.
->>>>>
->>>>> Furthermore, in conjunction with the fix of another bug, handled by another
->>>>> patch titled "usbcore/driver: Fix specific driver selection" in this patch
->>>>> set, the usbip_match function causes unexpected USB subsystem behaviour
->>>>> when the usbip_host driver is loaded. The unexpected behaviour can be
->>>>> qualified as follows:
->>>>> - If commit 41160802ab8e ("USB: Simplify USB ID table match") is included
->>>>>      in the kernel, then all USB devices are bound to the usbip_host
->>>>>      driver, which appears to the user as if all USB devices were
->>>>>      disconnected.
->>>>> - If the same commit (41160802ab8e) is not in the kernel (as is the case
->>>>>      with v5.8.10) then all USB devices are re-probed and re-bound to their
->>>>>      original device drivers, which appears to the user as a disconnection
->>>>>      and re-connection of USB devices.
->>>>>
->>>>> Please note that this commit will make usbip non-operational again,
->>>>> until yet another patch in this patch set is merged, titled
->>>>> "usbcore/driver: Accommodate usbip".
->>>>>
->>>>> Cc: <stable@vger.kernel.org> # 5.8: 41160802ab8e: USB: Simplify USB ID table match
->>>>> Cc: <stable@vger.kernel.org> # 5.8
->>>>
->>>> Hello Greg,
->>>>
->>>> Sorry for the lateness of this e-mail.
->>>>
->>>> I had noted commit 41160802ab8e ("USB: Simplify USB ID table match") as a
->>>> prerequisite in the commit message, but I just realized that the commit
->>>> identifier refers to a commit in my local git tree, and not to the actual
->>>> commit in Linus Torvalds' git tree! I apologize for this mistake.
->>>>
->>>> Here is the correct commit identifier:
->>>>     0ed9498f9ecfde50c93f3f3dd64b4cd5414d9944 ("USB: Simplify USB ID table match")
->>>>
->>>> Perhaps this is why the prerequisite commit was not cherry-picked to the 5.8.y
->>>> branch.
->>>>
->>>> As a justification for the cherry-pick, commit 0ed9498f9ecf actually resolves
->>>> a bug. In summary, this commit works together with commit adb6e6ac20ee ("USB:
->>>> Also match device drivers using the ->match vfunc", which has been cherry-picked
->>>> as part of v5.8.6) and ensures that a USB driver's ->match function is also
->>>> called during the search for a more specialized/appropriate USB driver, in case
->>>> the driver in question does not have an id_table.
->>>>
->>>> If I am to be the devil's advocate, however, then given that there is only one
->>>> specialized USB device driver ("apple-mfi-fastcharge"), which conveniently has
->>>> an id_table, and also given that usbip no longer has a match function, I also
->>>> realize that it may not be crucial to cherry-pick 0ed9498f9ecf as a prerequisite
->>>> commit.
->>>
->>> I'm sorry, but I don't really understand.  Does 5.8.y need an additional
->>> patch here, or is all ok because I missed the above patch?
->>
->> No worries; sorry for not communicating clearly and for the delay.
->>
->> I meant to state that it would be good to have commit 0ed9498f9ecf ("USB: Simplify
->> USB ID table match") cherry picked to 5.8.y, as it fixes a bug, albeit a minor one.
-> 
-> What bug does it fix now?  Is usbip or the apple charger driver not
-> working properly on 5.8.14?  If nothing is broken, no need to add this
-> patch...
+T24gVGh1LCAyMDIwLTEwLTA4IGF0IDEwOjQ1ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMDgvMTAvMjAyMCAwNDozNSwgTmVhbCBMaXUgd3JvdGU6DQo+ID4gT24gV2Vk
+LCAyMDIwLTEwLTA3IGF0IDEyOjQ0ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3RlOg0KPiA+
+Pg0KPiA+PiBPbiAyNy8wOC8yMDIwIDA1OjA2LCBOZWFsIExpdSB3cm90ZToNCj4gPj4+IE1lZGlh
+VGVrIGJ1cyBmYWJyaWMgcHJvdmlkZXMgVHJ1c3Rab25lIHNlY3VyaXR5IHN1cHBvcnQgYW5kIGRh
+dGENCj4gPj4+IHByb3RlY3Rpb24gdG8gcHJldmVudCBzbGF2ZXMgZnJvbSBiZWluZyBhY2Nlc3Nl
+ZCBieSB1bmV4cGVjdGVkDQo+ID4+PiBtYXN0ZXJzLg0KPiA+Pj4gVGhlIHNlY3VyaXR5IHZpb2xh
+dGlvbiBpcyBsb2dnZWQgYW5kIHNlbnQgdG8gdGhlIHByb2Nlc3NvciBmb3INCj4gPj4+IGZ1cnRo
+ZXIgYW5hbHlzaXMgb3IgY291bnRlcm1lYXN1cmVzLg0KPiA+Pj4NCj4gPj4+IEFueSBvY2N1cnJl
+bmNlIG9mIHNlY3VyaXR5IHZpb2xhdGlvbiB3b3VsZCByYWlzZSBhbiBpbnRlcnJ1cHQsIGFuZA0K
+PiA+Pj4gaXQgd2lsbCBiZSBoYW5kbGVkIGJ5IG10ay1kZXZhcGMgZHJpdmVyLiBUaGUgdmlvbGF0
+aW9uDQo+ID4+PiBpbmZvcm1hdGlvbiBpcyBwcmludGVkIGluIG9yZGVyIHRvIGZpbmQgdGhlIG11
+cmRlcmVyLg0KPiA+Pg0KPiA+PiAiVGhlIHZpb2xhdGlvbiBpbmZvcm1hdGlvbiBpcyBwcmludGVk
+IGluIG9yZGVyIHRvIGZpbmQgdGhlIHJlc3BvbnNpYmxlIGNvbXBvbmVudC4iDQo+ID4+DQo+ID4+
+IE5vYm9keSBnb3QgYWN0dWFsbHkga2lsbGVkLCByaWdodCA6KQ0KPiA+IA0KPiA+IENvcnJlY3Qg
+IQ0KPiA+Pg0KPiA+Pj4NCj4gPj4+IFNpZ25lZC1vZmYtYnk6IE5lYWwgTGl1IDxuZWFsLmxpdUBt
+ZWRpYXRlay5jb20+DQo+ID4+PiAtLS0NCj4gPj4+ICAgIGRyaXZlcnMvc29jL21lZGlhdGVrL0tj
+b25maWcgICAgICB8ICAgIDkgKysNCj4gPj4+ICAgIGRyaXZlcnMvc29jL21lZGlhdGVrL01ha2Vm
+aWxlICAgICB8ICAgIDEgKw0KPiA+Pj4gICAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFw
+Yy5jIHwgIDMwNSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4+PiAg
+ICAzIGZpbGVzIGNoYW5nZWQsIDMxNSBpbnNlcnRpb25zKCspDQo+ID4+PiAgICBjcmVhdGUgbW9k
+ZSAxMDA2NDQgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jDQo+ID4+Pg0KPiA+Pj4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29jL21lZGlhdGVrL0tjb25maWcgYi9kcml2ZXJzL3NvYy9t
+ZWRpYXRlay9LY29uZmlnDQo+ID4+PiBpbmRleCA1OWE1NmNkLi4xMTc3Yzk4IDEwMDY0NA0KPiA+
+Pj4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvS2NvbmZpZw0KPiA+Pj4gKysrIGIvZHJpdmVy
+cy9zb2MvbWVkaWF0ZWsvS2NvbmZpZw0KPiA+Pj4gQEAgLTE3LDYgKzE3LDE1IEBAIGNvbmZpZyBN
+VEtfQ01EUQ0KPiA+Pj4gICAgCSAgdGltZSBsaW1pdGF0aW9uLCBzdWNoIGFzIHVwZGF0aW5nIGRp
+c3BsYXkgY29uZmlndXJhdGlvbiBkdXJpbmcgdGhlDQo+ID4+PiAgICAJICB2YmxhbmsuDQo+ID4+
+PiAgICANCj4gPj4+ICtjb25maWcgTVRLX0RFVkFQQw0KPiA+Pj4gKwl0cmlzdGF0ZSAiTWVkaWF0
+ZWsgRGV2aWNlIEFQQyBTdXBwb3J0Ig0KPiA+Pj4gKwloZWxwDQo+ID4+PiArCSAgU2F5IHllcyBo
+ZXJlIHRvIGVuYWJsZSBzdXBwb3J0IGZvciBNZWRpYXRlayBEZXZpY2UgQVBDIGRyaXZlci4NCj4g
+Pj4+ICsJICBUaGlzIGRyaXZlciBpcyBtYWlubHkgdXNlZCB0byBoYW5kbGUgdGhlIHZpb2xhdGlv
+biB3aGljaCBjYXRjaGVzDQo+ID4+PiArCSAgdW5leHBlY3RlZCB0cmFuc2FjdGlvbi4NCj4gPj4+
+ICsJICBUaGUgdmlvbGF0aW9uIGluZm9ybWF0aW9uIGlzIGxvZ2dlZCBmb3IgZnVydGhlciBhbmFs
+eXNpcyBvcg0KPiA+Pj4gKwkgIGNvdW50ZXJtZWFzdXJlcy4NCj4gPj4+ICsNCj4gPj4+ICAgIGNv
+bmZpZyBNVEtfSU5GUkFDRkcNCj4gPj4+ICAgIAlib29sICJNZWRpYVRlayBJTkZSQUNGRyBTdXBw
+b3J0Ig0KPiA+Pj4gICAgCXNlbGVjdCBSRUdNQVANCj4gPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L3NvYy9tZWRpYXRlay9NYWtlZmlsZSBiL2RyaXZlcnMvc29jL21lZGlhdGVrL01ha2VmaWxlDQo+
+ID4+PiBpbmRleCAwMWY5Zjg3Li5hYmZkNGJhIDEwMDY0NA0KPiA+Pj4gLS0tIGEvZHJpdmVycy9z
+b2MvbWVkaWF0ZWsvTWFrZWZpbGUNCj4gPj4+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL01h
+a2VmaWxlDQo+ID4+PiBAQCAtMSw1ICsxLDYgQEANCj4gPj4+ICAgICMgU1BEWC1MaWNlbnNlLUlk
+ZW50aWZpZXI6IEdQTC0yLjAtb25seQ0KPiA+Pj4gICAgb2JqLSQoQ09ORklHX01US19DTURRKSAr
+PSBtdGstY21kcS1oZWxwZXIubw0KPiA+Pj4gK29iai0kKENPTkZJR19NVEtfREVWQVBDKSArPSBt
+dGstZGV2YXBjLm8NCj4gPj4+ICAgIG9iai0kKENPTkZJR19NVEtfSU5GUkFDRkcpICs9IG10ay1p
+bmZyYWNmZy5vDQo+ID4+PiAgICBvYmotJChDT05GSUdfTVRLX1BNSUNfV1JBUCkgKz0gbXRrLXBt
+aWMtd3JhcC5vDQo+ID4+PiAgICBvYmotJChDT05GSUdfTVRLX1NDUFNZUykgKz0gbXRrLXNjcHN5
+cy5vDQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5j
+IGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jDQo+ID4+PiBuZXcgZmlsZSBtb2Rl
+IDEwMDY0NA0KPiA+Pj4gaW5kZXggMDAwMDAwMC4uMGJhNjFkNw0KPiA+Pj4gLS0tIC9kZXYvbnVs
+bA0KPiA+Pj4gKysrIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jDQo+ID4+PiBA
+QCAtMCwwICsxLDMwNSBAQA0KPiA+Pj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwt
+Mi4wDQo+ID4+PiArLyoNCj4gPj4+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMjAgTWVkaWFUZWsgSW5j
+Lg0KPiA+Pj4gKyAqLw0KPiA+Pj4gKw0KPiA+Pj4gKyNpbmNsdWRlIDxsaW51eC9jbGsuaD4NCj4g
+Pj4+ICsjaW5jbHVkZSA8bGludXgvaW50ZXJydXB0Lmg+DQo+ID4+PiArI2luY2x1ZGUgPGxpbnV4
+L2lvcG9sbC5oPg0KPiA+Pj4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gPj4+ICsjaW5j
+bHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ID4+PiArI2luY2x1ZGUgPGxpbnV4L29m
+X2RldmljZS5oPg0KPiA+Pj4gKyNpbmNsdWRlIDxsaW51eC9vZl9pcnEuaD4NCj4gPj4+ICsjaW5j
+bHVkZSA8bGludXgvb2ZfYWRkcmVzcy5oPg0KPiA+Pj4gKw0KPiA+Pj4gKyNkZWZpbmUgVklPX01P
+RF9UT19SRUdfSU5EKG0pCSgobSkgLyAzMikNCj4gPj4+ICsjZGVmaW5lIFZJT19NT0RfVE9fUkVH
+X09GRihtKQkoKG0pICUgMzIpDQo+ID4+PiArDQo+ID4+PiArc3RydWN0IG10a19kZXZhcGNfdmlv
+X2RiZ3Mgew0KPiA+Pj4gKwl1bmlvbiB7DQo+ID4+PiArCQl1MzIgdmlvX2RiZzA7DQo+ID4+PiAr
+CQlzdHJ1Y3Qgew0KPiA+Pj4gKwkJCXUzMiBtc3RpZDoxNjsNCj4gPj4+ICsJCQl1MzIgZG1uaWQ6
+NjsNCj4gPj4+ICsJCQl1MzIgdmlvX3c6MTsNCj4gPj4+ICsJCQl1MzIgdmlvX3I6MTsNCj4gPj4+
+ICsJCQl1MzIgYWRkcl9oOjQ7DQo+ID4+PiArCQkJdTMyIHJlc3Y6NDsNCj4gPj4+ICsJCX0gZGJn
+MF9iaXRzOw0KPiA+Pj4gKwl9Ow0KPiA+Pj4gKw0KPiA+Pj4gKwl1MzIgdmlvX2RiZzE7DQo+ID4+
+PiArfTsNCj4gPj4+ICsNCj4gPj4+ICtzdHJ1Y3QgbXRrX2RldmFwY19kYXRhIHsNCj4gPj4+ICsJ
+dTMyIHZpb19pZHhfbnVtOw0KPiA+Pj4gKwl1MzIgdmlvX21hc2tfb2Zmc2V0Ow0KPiA+Pj4gKwl1
+MzIgdmlvX3N0YV9vZmZzZXQ7DQo+ID4+PiArCXUzMiB2aW9fZGJnMF9vZmZzZXQ7DQo+ID4+PiAr
+CXUzMiB2aW9fZGJnMV9vZmZzZXQ7DQo+ID4+PiArCXUzMiBhcGNfY29uX29mZnNldDsNCj4gPj4+
+ICsJdTMyIHZpb19zaGlmdF9zdGFfb2Zmc2V0Ow0KPiA+Pj4gKwl1MzIgdmlvX3NoaWZ0X3NlbF9v
+ZmZzZXQ7DQo+ID4+PiArCXUzMiB2aW9fc2hpZnRfY29uX29mZnNldDsNCj4gPj4+ICt9Ow0KPiA+
+Pg0KPiA+PiBQbGVhc2UgZGVzY3JpYmUgdGhlIGZpZWxkcyBvZiB0aGUgc3RydWN0LCB0aGF0IHdp
+bGwgbWFrZSBpdCBlYXNpZXIgdG8gdW5kZXJzdGFuZA0KPiA+PiB0aGUgZHJpdmVyLg0KPiA+IA0K
+PiA+IE9rYXksIEknbGwgdHJ5IHRvIGFkZCBtb3JlIGRlc2NyaXB0aW9uIGFib3V0IHRoaXMgc3Ry
+dWN0LiBNYXkgYmUgbGlrZToNCj4gPiANCj4gPiBzdHJ1Y3QgbXRrX2RldmFwY19kYXRhIHsNCj4g
+PiAJLyogbnVtYmVycyBvZiB2aW9sYXRpb24gaW5kZXggKi8NCj4gPiAJdTMyIHZpb19pZHhfbnVt
+Ow0KPiA+IA0KPiA+IAkvKiByZWcgb2Zmc2V0ICovDQo+ID4gCXUzMiB2aW9fbWFza19vZmZzZXQ7
+DQo+ID4gCXUzMiB2aW9fc3RhX29mZnNldDsNCj4gPiAJdTMyIHZpb19kYmcwX29mZnNldDsNCj4g
+PiAJdTMyIHZpb19kYmcxX29mZnNldDsNCj4gPiAJdTMyIGFwY19jb25fb2Zmc2V0Ow0KPiA+IAl1
+MzIgdmlvX3NoaWZ0X3N0YV9vZmZzZXQ7DQo+ID4gCXUzMiB2aW9fc2hpZnRfc2VsX29mZnNldDsN
+Cj4gPiAJdTMyIHZpb19zaGlmdF9jb25fb2Zmc2V0Ow0KPiA+IH07DQo+ID4gDQo+ID4+DQo+ID4+
+PiArDQo+ID4+PiArc3RydWN0IG10a19kZXZhcGNfY29udGV4dCB7DQo+ID4+PiArCXN0cnVjdCBk
+ZXZpY2UgKmRldjsNCj4gPj4+ICsJdm9pZCBfX2lvbWVtICppbmZyYV9iYXNlOw0KPiA+Pj4gKwlz
+dHJ1Y3QgY2xrICppbmZyYV9jbGs7DQo+ID4+PiArCWNvbnN0IHN0cnVjdCBtdGtfZGV2YXBjX2Rh
+dGEgKmRhdGE7DQo+ID4+PiArfTsNCj4gPj4+ICsNCj4gPj4+ICtzdGF0aWMgdm9pZCBjbGVhcl92
+aW9fc3RhdHVzKHN0cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmN0eCkNCj4gPj4+ICt7DQo+ID4+
+PiArCXZvaWQgX19pb21lbSAqcmVnOw0KPiA+Pj4gKwlpbnQgaTsNCj4gPj4+ICsNCj4gPj4+ICsJ
+cmVnID0gY3R4LT5pbmZyYV9iYXNlICsgY3R4LT5kYXRhLT52aW9fc3RhX29mZnNldDsNCj4gPj4+
+ICsNCj4gPj4+ICsJZm9yIChpID0gMDsgaSA8IFZJT19NT0RfVE9fUkVHX0lORChjdHgtPmRhdGEt
+PnZpb19pZHhfbnVtIC0gMSk7IGkrKykNCj4gPj4+ICsJCXdyaXRlbChHRU5NQVNLKDMxLCAwKSwg
+cmVnICsgNCAqIGkpOw0KPiA+Pj4gKw0KPiA+Pj4gKwl3cml0ZWwoR0VOTUFTSyhWSU9fTU9EX1RP
+X1JFR19PRkYoY3R4LT5kYXRhLT52aW9faWR4X251bSAtIDEpLCAwKSwNCj4gPj4+ICsJICAgICAg
+IHJlZyArIDQgKiBpKTsNCj4gPj4+ICt9DQo+ID4+PiArDQo+ID4+PiArc3RhdGljIHZvaWQgbWFz
+a19tb2R1bGVfaXJxKHN0cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmN0eCwgYm9vbCBtYXNrKQ0K
+PiA+Pj4gK3sNCj4gPj4+ICsJdm9pZCBfX2lvbWVtICpyZWc7DQo+ID4+PiArCXUzMiB2YWw7DQo+
+ID4+PiArCWludCBpOw0KPiA+Pj4gKw0KPiA+Pj4gKwlyZWcgPSBjdHgtPmluZnJhX2Jhc2UgKyBj
+dHgtPmRhdGEtPnZpb19tYXNrX29mZnNldDsNCj4gPj4+ICsNCj4gPj4+ICsJaWYgKG1hc2spDQo+
+ID4+PiArCQl2YWwgPSBHRU5NQVNLKDMxLCAwKTsNCj4gPj4+ICsJZWxzZQ0KPiA+Pj4gKwkJdmFs
+ID0gMDsNCj4gPj4+ICsNCj4gPj4+ICsJZm9yIChpID0gMDsgaSA8IFZJT19NT0RfVE9fUkVHX0lO
+RChjdHgtPmRhdGEtPnZpb19pZHhfbnVtIC0gMSk7IGkrKykNCj4gPj4NCj4gPj4gRG8gSSBnZXQg
+dGhhdCByaWdodD8gV2UgaGF2ZSBhIG51bWJlciBvZiB2aXJ0dWFsIElPIGlkZW50aWZpZXIuIFRo
+ZWlyDQo+ID4+IGNvcnJlc3BvbmRlbmRpbmcgaW50ZXJydXB0IGFyZSBncm91cGVkIGluIDMyIGJp
+dCByZWdpc3RlcnMuIEFuZCB3ZSB3YW50IHRvDQo+ID4+IGVuYWJsZS9kaXNhYmxlIHRoZW0gYnkg
+d3JpdGluZyAwIG9yIDEuIFdlIGhhdmUgdG8gdGFrZSBjYXJlIG9mIHRoZSBsYXN0DQo+ID4+IHJl
+Z2lzdGVycyBhcyBpdCBjb3VsZCBiZSB0aGUgY2FzZSB0aGF0IHZpb19pZHhfbnVtIGlzIG5vdCBh
+IG11bHRpcGxlIG9mIDMyLCBjb3JyZWN0Pw0KPiA+Pg0KPiA+PiBJbiB0aGlzIGNhc2Ugd2Ugc2hv
+dWxkIHRyYXZlcnNlIFZJT19NT0RfVE9fUkVHX0lORChjdHgtPmRhdGEtPnZpb19pZHhfbnVtKSAt
+IDENCj4gPj4gcmVnaXN0ZXJzLCB3aGljaCBpcyAodmlvX2lkeF9udW0gLyAzMikgLSAxIGFuZCBu
+b3QgKHZpb19pZHhfbnVtIC0gMSkgLyAzMi4NCj4gPj4NCj4gPiANCj4gPiBZZXMsIHlvdXIgdW5k
+ZXJzdGFuZGluZyBpcyBjb3JyZWN0LiBJdCBzaG91bGQgYmUNCj4gPiBWSU9fTU9EX1RPX1JFR19J
+TkQoY3R4LT5kYXRhLT52aW9faWR4X251bSkgLSAxIGluc3RlYWQgb2YNCj4gPiBWSU9fTU9EX1RP
+X1JFR19JTkQoY3R4LT5kYXRhLT52aW9faWR4X251bSAtIDEpLg0KPiA+IA0KPiA+Pj4gKwkJd3Jp
+dGVsKHZhbCwgcmVnICsgNCAqIGkpOw0KPiA+Pj4gKw0KPiA+Pj4gKwl2YWwgPSByZWFkbChyZWcg
+KyA0ICogaSk7DQo+ID4+PiArCWlmIChtYXNrKQ0KPiA+Pj4gKwkJdmFsIHw9IEdFTk1BU0soVklP
+X01PRF9UT19SRUdfT0ZGKGN0eC0+ZGF0YS0+dmlvX2lkeF9udW0gLSAxKSwNCj4gPj4+ICsJCQkg
+ICAgICAgMCk7DQo+ID4+DQo+ID4+IFdlIGhhdmUgNTExIElSUXMsIHdoaWNoIGdpdmVzIHVzIDMx
+IGJpdHMgaW4gdGhlIGxhc3QgcmVnaXN0ZXIgdG8gc2V0L3Vuc2V0Lg0KPiA+PiBUaGF0cyA1MTAu
+LjAgYml0cywgc28gZnJvbSB3aGF0IEkgdW5kZXJzdGFuZCwgb25jZSBhZ2FpbiB3ZSB3YW50DQo+
+ID4+IEdFTk1BU0soVklPX01PRF9UT19SRUdfT0ZGKGN0eC0+ZGF0YS0+dmlvX2lkeF9udW0pIC0g
+MSwgMCkNCj4gPj4gd2hpY2ggaXMgKHZpb19pZHhfbnVtICUgMzIpIC0gMQ0KPiA+Pg0KPiA+PiBD
+b3JyZWN0IG9yIGRvIEkgdW5kZXJzdGFuZCBzb21ldGhpbmcgd3Jvbmc/DQo+ID4+IElmIHNvLCBz
+YW1lIGFwcGxpZXMgdG8gY2xlYXJfdmlvX3N0YXR1cygpLg0KPiA+Pg0KPiA+IA0KPiA+IENvcnJl
+Y3QuIEknbGwgZml4IGl0IG9uIG5leHQgcGF0Y2guDQo+ID4gVGhhbmtzDQo+ID4gDQo+ID4+DQo+
+ID4+PiArCWVsc2UNCj4gPj4+ICsJCXZhbCAmPSB+R0VOTUFTSyhWSU9fTU9EX1RPX1JFR19PRkYo
+Y3R4LT5kYXRhLT52aW9faWR4X251bSAtIDEpLA0KPiA+Pj4gKwkJCQkwKTsNCj4gPj4+ICsNCj4g
+Pj4+ICsJd3JpdGVsKHZhbCwgcmVnICsgNCAqIGkpOw0KPiA+Pj4gK30NCj4gPj4+ICsNCj4gPj4+
+ICsjZGVmaW5lIFBIWV9ERVZBUENfVElNRU9VVAkweDEwMDAwDQo+ID4+PiArDQo+ID4+PiArLyoN
+Cj4gPj4+ICsgKiBkZXZhcGNfc3luY192aW9fZGJnIC0gZG8gInNoaWZ0IiBtZWNoYW5zaW0iIHRv
+IGdldCBmdWxsIHZpb2xhdGlvbiBpbmZvcm1hdGlvbi4NCj4gPj4+ICsgKiAgICAgICAgICAgICAg
+ICAgICAgICAgc2hpZnQgbWVjaGFuaXNtIGlzIGRlcGVuZHMgb24gZGV2YXBjIGhhcmR3YXJlIGRl
+c2lnbi4NCj4gPj4+ICsgKiAgICAgICAgICAgICAgICAgICAgICAgTWVkaWF0ZWsgZGV2YXBjIHNl
+dCBtdWx0aXBsZSBzbGF2ZXMgYXMgYSBncm91cC4NCj4gPj4+ICsgKiAgICAgICAgICAgICAgICAg
+ICAgICAgV2hlbiB2aW9sYXRpb24gaXMgdHJpZ2dlcmVkLCB2aW9sYXRpb24gaW5mbyBpcyBrZXB0
+DQo+ID4+PiArICogICAgICAgICAgICAgICAgICAgICAgIGluc2lkZSBkZXZhcGMgaGFyZHdhcmUu
+DQo+ID4+PiArICogICAgICAgICAgICAgICAgICAgICAgIERyaXZlciBzaG91bGQgZG8gc2hpZnQg
+bWVjaGFuc2ltIHRvIHN5bmMgZnVsbCB2aW9sYXRpb24NCj4gPj4+ICsgKiAgICAgICAgICAgICAg
+ICAgICAgICAgaW5mbyB0byBWSU9fREJHcyByZWdpc3RlcnMuDQo+ID4+PiArICoNCj4gPj4+ICsg
+Ki8NCj4gPj4+ICtzdGF0aWMgaW50IGRldmFwY19zeW5jX3Zpb19kYmcoc3RydWN0IG10a19kZXZh
+cGNfY29udGV4dCAqY3R4KQ0KPiA+Pj4gK3sNCj4gPj4+ICsJdm9pZCBfX2lvbWVtICpwZF92aW9f
+c2hpZnRfc3RhX3JlZzsNCj4gPj4+ICsJdm9pZCBfX2lvbWVtICpwZF92aW9fc2hpZnRfc2VsX3Jl
+ZzsNCj4gPj4+ICsJdm9pZCBfX2lvbWVtICpwZF92aW9fc2hpZnRfY29uX3JlZzsNCj4gPj4+ICsJ
+aW50IG1pbl9zaGlmdF9ncm91cDsNCj4gPj4+ICsJaW50IHJldDsNCj4gPj4+ICsJdTMyIHZhbDsN
+Cj4gPj4+ICsNCj4gPj4+ICsJcGRfdmlvX3NoaWZ0X3N0YV9yZWcgPSBjdHgtPmluZnJhX2Jhc2Ug
+Kw0KPiA+Pj4gKwkJCSAgICAgICBjdHgtPmRhdGEtPnZpb19zaGlmdF9zdGFfb2Zmc2V0Ow0KPiA+
+Pj4gKwlwZF92aW9fc2hpZnRfc2VsX3JlZyA9IGN0eC0+aW5mcmFfYmFzZSArDQo+ID4+PiArCQkJ
+ICAgICAgIGN0eC0+ZGF0YS0+dmlvX3NoaWZ0X3NlbF9vZmZzZXQ7DQo+ID4+PiArCXBkX3Zpb19z
+aGlmdF9jb25fcmVnID0gY3R4LT5pbmZyYV9iYXNlICsNCj4gPj4+ICsJCQkgICAgICAgY3R4LT5k
+YXRhLT52aW9fc2hpZnRfY29uX29mZnNldDsNCj4gPj4+ICsNCj4gPj4+ICsJLyogRmluZCB0aGUg
+bWluaW11bSBzaGlmdCBncm91cCB3aGljaCBoYXMgdmlvbGF0aW9uICovDQo+ID4+PiArCXZhbCA9
+IHJlYWRsKHBkX3Zpb19zaGlmdF9zdGFfcmVnKTsNCj4gPj4+ICsJaWYgKCF2YWwpDQo+ID4+PiAr
+CQlyZXR1cm4gZmFsc2U7DQo+ID4+DQo+ID4+IFNvIGJpdCAwIG9mIHNlbGVjdGlvbiByZWdpc3Rl
+ciAocGRfdmlvX3NoaWZ0X3NlbF9yZWcpIGRvZXMgbm90IHJlcHJlc2VudCBhDQo+ID4+IHZpb2xh
+dGlvbiBncm91cD8NCj4gPj4gSSBkb24ndCBrbm93IGhvdyB0aGUgSFcgd29ya3MsIGJ1dCBpcyBz
+ZWVtcyBvZGQgdG8gbWUuIEluIGNhc2UgdGhhdCdzIGJpdCAwDQo+ID4+IGFjdHVhbGx5IGRvZXNu
+J3QgcmVwcmVzZW50IGFueXRoaW5nOiBob3cgY2FuIGFuIGludGVycnVwdCBiZSB0cmlnZ2VyZWQg
+d2l0aG91dA0KPiA+PiBhbnkgZGVidWcgaW5mb3JtYXRpb24gcHJlc2VudCAobWVhbnMgdmFsID09
+IDApPw0KPiA+IA0KPiA+IFRoaXMgY2hlY2sgaW1wbGllcyBIVyBzdGF0dXMgaGFzIHNvbWV0aGlu
+ZyB3cm9uZy4gSXQgY2Fubm90IGdldCBhbnkNCj4gPiBkZWJ1ZyBpbmZvcm1hdGlvbiBmb3IgdGhp
+cyBjYXNlLg0KPiA+IEl0IHdvbid0IGhhcHBlbiBpbiBub3JtYWwgc2NlbmFyaW8uIFNob3VsZCB3
+ZSByZW1vdmUgdGhpcyBjaGVjaz8NCj4gPiANCj4gDQo+IE5vIEkgdGhpbmsgdGhlIGNoZWNrIGlz
+IGZpbmUuIEknZCBhZGQgYSBXQVJOKCkgbWVzc2FnZSBhcyB0aGlzIGlzIGFuIGluZGljYXRvciAN
+Cj4gdGhhdCB0aGUgSFcgaXMgbm90IHdvcmtpbmcgY29ycmV0bHkuDQoNClN1cmUuIGFkZCBXQVJO
+KCkgbWVzc2FnZSBpcyBtb3JlIGhlbHBmdWwgdG8gdW5kZXJzdGFuZC4NCkknbGwgYWRkIGl0IG9u
+IG5leHQgcGF0Y2guDQpUaGFua3MNCg0KPiANCj4gPj4NCj4gPj4+ICsNCj4gPj4+ICsJbWluX3No
+aWZ0X2dyb3VwID0gX19mZnModmFsKTsNCj4gPj4+ICsNCj4gPj4+ICsJLyogQXNzaWduIHRoZSBn
+cm91cCB0byBzeW5jICovDQo+ID4+PiArCXdyaXRlbCgweDEgPDwgbWluX3NoaWZ0X2dyb3VwLCBw
+ZF92aW9fc2hpZnRfc2VsX3JlZyk7DQo+ID4+PiArDQo+ID4+PiArCS8qIFN0YXJ0IHN5bmNpbmcg
+Ki8NCj4gPj4+ICsJd3JpdGVsKDB4MSwgcGRfdmlvX3NoaWZ0X2Nvbl9yZWcpOw0KPiA+Pj4gKw0K
+PiA+Pj4gKwlyZXQgPSByZWFkbF9wb2xsX3RpbWVvdXQocGRfdmlvX3NoaWZ0X2Nvbl9yZWcsIHZh
+bCwgdmFsID09IDB4MywgMCwNCj4gPj4+ICsJCQkJIFBIWV9ERVZBUENfVElNRU9VVCk7DQo+ID4+
+PiArCWlmIChyZXQpIHsNCj4gPj4+ICsJCWRldl9lcnIoY3R4LT5kZXYsICIlczogU2hpZnQgdmlv
+bGF0aW9uIGluZm8gZmFpbGVkXG4iLCBfX2Z1bmNfXyk7DQo+ID4+DQo+ID4+IEluIHdoaWNoIGNh
+c2UgdGhpcyBjYW4gaGFwcGVuPyBJJ20gYXNraW5nLCBiZWNhdXNlIHdlIGFyZSBjYWxsaW5nDQo+
+ID4+IGRldmFwY19zeW5jX3Zpb19kYmcoKSBpbiBhIHdoaWxlIGxvb3AgdGhhdCBjb3VsZCBtYWtl
+IHRoZSBrZXJuZWwgaGFuZyBoZXJlLg0KPiA+Pg0KPiA+PiBEbyBJIHVuZGVyc3RhbmQgY29ycmVj
+dGx5LCB0aGF0IHdlIGFyZSB1c2luZyB0aGUgd2hpbGUgbG9vcCwgYmVjYXVzZSB0aGVyZSBjYW4N
+Cj4gPj4gYmUgbW9yZSB0aGVuIG9uZSB2aW9sYXRpb24gZ3JvdXAgd2hpY2ggZ290IHRyaWdnZXJl
+ZCAocmVhZCwgbW9yZSB0aGVuIG9uZSBiaXQgaXMNCj4gPj4gc2V0IGluIHBkX3Zpb19zaGlmdF9z
+dGFfcmVnKT8gV291bGQgaXQgbWFrZSBtb3JlIHNlbnNlIHRoZW4gdG8gcmVhZCB0aGUgcmVnaXN0
+ZXINCj4gPj4gb25jZSBhbmQgZG8gYWxsIHRoZSBzaGlmdCBvcGVyYXRpb24gZm9yIGFsbCBncm91
+cHMgd2hpY2ggYml0IHNldCB0byAxIGluIHRoZQ0KPiA+PiBzaGlmdCBzdGF0dXMgcmVnaXN0ZXI/
+DQo+ID4gDQo+ID4gWWVzLCB5b3VyIHVuZGVyc3RhbmRpbmcgaXMgY29ycmVjdC4NCj4gPiBUaGlz
+IGNoZWNrIGFsc28gaW1wbGllcyBIVyBzdGF0dXMgaGFzIHNvbWV0aGluZyB3cm9uZy4gV2UgcmV0
+dXJuIGZhbHNlDQo+ID4gdG8gc2tpcCBmdXJ0aGVyIHZpb2xhdGlvbiBpbmZvIGR1bXAuDQo+ID4g
+SG93IGNvdWxkIHRoaXMgY2FzZSBtYWtlIHRoZSBrZXJuZWwgaGFuZz8NCj4gPiANCj4gDQo+IFRo
+ZSBrZXJuZWwgY2FuJ3QgaGFuZywgc29ycnkgbXkgZmF1bHQuIEluIGFueSBjYXNlIEknZCBhZGQg
+YSBXQVJOKCkgaGVyZSBhcyANCj4gd2VsbC4gSSB1bmRlcnN0YW5kIHRoYXQgaWYgd2UgZXJyb3Ig
+b3V0IGhlcmUsIHdlIGhhdmUgYSBIVy9GVyBidWcgKG15IGZlZWxpbmcgDQo+IGlzLCB0aGF0IGJl
+aGluZCB0aGlzIGlzIGEgbWljcm8gY29udHJvbGxlciBvZiBzb21lIGtpbmQgOikNCj4gDQoNCkkn
+bGwgYWxzbyBhZGQgd2FybiBtZXNzYWdlcyBvbiBuZXh0IHBhdGNoLg0KDQo+ID4+DQo+ID4+PiAr
+CQlyZXR1cm4gZmFsc2U7DQo+ID4+PiArCX0NCj4gPj4+ICsNCj4gPj4+ICsJLyogU3RvcCBzeW5j
+aW5nICovDQo+ID4+PiArCXdyaXRlbCgweDAsIHBkX3Zpb19zaGlmdF9jb25fcmVnKTsNCj4gPj4+
+ICsNCj4gPj4+ICsJLyogV3JpdGUgY2xlYXIgKi8NCj4gPj4+ICsJd3JpdGVsKDB4MSA8PCBtaW5f
+c2hpZnRfZ3JvdXAsIHBkX3Zpb19zaGlmdF9zdGFfcmVnKTsNCj4gPj4+ICsNCj4gPj4+ICsJcmV0
+dXJuIHRydWU7DQo+ID4+PiArfQ0KPiA+Pj4gKw0KPiA+Pj4gKy8qDQo+ID4+PiArICogZGV2YXBj
+X2V4dHJhY3RfdmlvX2RiZyAtIGV4dHJhY3QgZnVsbCB2aW9sYXRpb24gaW5mb3JtYXRpb24gYWZ0
+ZXIgZG9pbmcNCj4gPj4+ICsgKiAgICAgICAgICAgICAgICAgICAgICAgICAgc2hpZnQgbWVjaGFu
+aXNtLg0KPiA+Pj4gKyAqLw0KPiA+Pj4gK3N0YXRpYyB2b2lkIGRldmFwY19leHRyYWN0X3Zpb19k
+Ymcoc3RydWN0IG10a19kZXZhcGNfY29udGV4dCAqY3R4KQ0KPiA+Pj4gK3sNCj4gPj4+ICsJc3Ry
+dWN0IG10a19kZXZhcGNfdmlvX2RiZ3MgdmlvX2RiZ3M7DQo+ID4+PiArCXZvaWQgX19pb21lbSAq
+dmlvX2RiZzBfcmVnOw0KPiA+Pj4gKwl2b2lkIF9faW9tZW0gKnZpb19kYmcxX3JlZzsNCj4gPj4+
+ICsNCj4gPj4+ICsJdmlvX2RiZzBfcmVnID0gY3R4LT5pbmZyYV9iYXNlICsgY3R4LT5kYXRhLT52
+aW9fZGJnMF9vZmZzZXQ7DQo+ID4+PiArCXZpb19kYmcxX3JlZyA9IGN0eC0+aW5mcmFfYmFzZSAr
+IGN0eC0+ZGF0YS0+dmlvX2RiZzFfb2Zmc2V0Ow0KPiA+Pj4gKw0KPiA+Pj4gKwl2aW9fZGJncy52
+aW9fZGJnMCA9IHJlYWRsKHZpb19kYmcwX3JlZyk7DQo+ID4+PiArCXZpb19kYmdzLnZpb19kYmcx
+ID0gcmVhZGwodmlvX2RiZzFfcmVnKTsNCj4gPj4+ICsNCj4gPj4+ICsJLyogUHJpbnQgdmlvbGF0
+aW9uIGluZm9ybWF0aW9uICovDQo+ID4+PiArCWlmICh2aW9fZGJncy5kYmcwX2JpdHMudmlvX3cp
+DQo+ID4+PiArCQlkZXZfaW5mbyhjdHgtPmRldiwgIldyaXRlIFZpb2xhdGlvblxuIik7DQo+ID4+
+PiArCWVsc2UgaWYgKHZpb19kYmdzLmRiZzBfYml0cy52aW9fcikNCj4gPj4+ICsJCWRldl9pbmZv
+KGN0eC0+ZGV2LCAiUmVhZCBWaW9sYXRpb25cbiIpOw0KPiA+Pj4gKw0KPiA+Pj4gKwlkZXZfaW5m
+byhjdHgtPmRldiwgIkJ1cyBJRDoweCV4LCBEb20gSUQ6MHgleCwgVmlvIEFkZHI6MHgleFxuIiwN
+Cj4gPj4+ICsJCSB2aW9fZGJncy5kYmcwX2JpdHMubXN0aWQsIHZpb19kYmdzLmRiZzBfYml0cy5k
+bW5pZCwNCj4gPj4+ICsJCSB2aW9fZGJncy52aW9fZGJnMSk7DQo+ID4+PiArfQ0KPiA+Pj4gKw0K
+PiA+Pj4gKy8qDQo+ID4+PiArICogZGV2YXBjX3Zpb2xhdGlvbl9pcnEgLSB0aGUgZGV2YXBjIElu
+dGVycnVwdCBTZXJ2aWNlIFJvdXRpbmUgKElTUikgd2lsbCBkdW1wDQo+ID4+PiArICogICAgICAg
+ICAgICAgICAgICAgICAgICB2aW9sYXRpb24gaW5mb3JtYXRpb24gaW5jbHVkaW5nIHdoaWNoIG1h
+c3RlciB2aW9sYXRlcw0KPiA+Pj4gKyAqICAgICAgICAgICAgICAgICAgICAgICAgYWNjZXNzIHNs
+YXZlLg0KPiA+Pj4gKyAqLw0KPiA+Pj4gK3N0YXRpYyBpcnFyZXR1cm5fdCBkZXZhcGNfdmlvbGF0
+aW9uX2lycShpbnQgaXJxX251bWJlciwNCj4gPj4+ICsJCQkJCXN0cnVjdCBtdGtfZGV2YXBjX2Nv
+bnRleHQgKmN0eCkNCj4gPj4NCj4gPj4gc3RhdGljIGlycXJldHVybl90IGRldmFwY192aW9sYXRp
+b25faXJxKGludCBpcnFfbnVtYmVyLCB2b2lkICpkYXRhKQ0KPiA+PiB7DQo+ID4+IAlzdHJ1Y3Qg
+bXRrX2RldmFwY19jb250ZXh0ICpjdHggPSBkYXRhOw0KPiA+IA0KPiA+IE9rYXksIEknbGwgZml4
+IGl0IG9uIG5leHQgcGF0Y2guDQo+ID4gVGhhbmtzDQo+ID4gDQo+ID4+DQo+ID4+PiArew0KPiA+
+Pj4gKwl3aGlsZSAoZGV2YXBjX3N5bmNfdmlvX2RiZyhjdHgpKQ0KPiA+Pj4gKwkJZGV2YXBjX2V4
+dHJhY3RfdmlvX2RiZyhjdHgpOw0KPiA+Pj4gKw0KPiA+Pj4gKwljbGVhcl92aW9fc3RhdHVzKGN0
+eCk7DQo+ID4+PiArDQo+ID4+PiArCXJldHVybiBJUlFfSEFORExFRDsNCj4gPj4+ICt9DQo+ID4+
+PiArDQo+ID4+PiArLyoNCj4gPj4+ICsgKiBzdGFydF9kZXZhcGMgLSB1bm1hc2sgc2xhdmUncyBp
+cnEgdG8gc3RhcnQgcmVjZWl2aW5nIGRldmFwYyB2aW9sYXRpb24uDQo+ID4+PiArICovDQo+ID4+
+PiArc3RhdGljIHZvaWQgc3RhcnRfZGV2YXBjKHN0cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmN0
+eCkNCj4gPj4+ICt7DQo+ID4+PiArCXdyaXRlbChCSVQoMzEpLCBjdHgtPmluZnJhX2Jhc2UgKyBj
+dHgtPmRhdGEtPmFwY19jb25fb2Zmc2V0KTsNCj4gPj4+ICsNCj4gPj4+ICsJbWFza19tb2R1bGVf
+aXJxKGN0eCwgZmFsc2UpOw0KPiA+Pj4gK30NCj4gPj4+ICsNCj4gPj4+ICsvKg0KPiA+Pj4gKyAq
+IHN0b3BfZGV2YXBjIC0gbWFzayBzbGF2ZSdzIGlycSB0byBzdG9wIHNlcnZpY2UuDQo+ID4+PiAr
+ICovDQo+ID4+PiArc3RhdGljIHZvaWQgc3RvcF9kZXZhcGMoc3RydWN0IG10a19kZXZhcGNfY29u
+dGV4dCAqY3R4KQ0KPiA+Pj4gK3sNCj4gPj4+ICsJbWFza19tb2R1bGVfaXJxKGN0eCwgdHJ1ZSk7
+DQo+ID4+PiArDQo+ID4+PiArCXdyaXRlbChCSVQoMiksIGN0eC0+aW5mcmFfYmFzZSArIGN0eC0+
+ZGF0YS0+YXBjX2Nvbl9vZmZzZXQpOw0KPiA+Pj4gK30NCj4gPj4+ICsNCj4gPj4+ICtzdGF0aWMg
+Y29uc3Qgc3RydWN0IG10a19kZXZhcGNfZGF0YSBkZXZhcGNfbXQ2Nzc5ID0gew0KPiA+Pj4gKwku
+dmlvX2lkeF9udW0gPSA1MTEsDQo+ID4+PiArCS52aW9fbWFza19vZmZzZXQgPSAweDAsDQo+ID4+
+PiArCS52aW9fc3RhX29mZnNldCA9IDB4NDAwLA0KPiA+Pj4gKwkudmlvX2RiZzBfb2Zmc2V0ID0g
+MHg5MDAsDQo+ID4+PiArCS52aW9fZGJnMV9vZmZzZXQgPSAweDkwNCwNCj4gPj4+ICsJLmFwY19j
+b25fb2Zmc2V0ID0gMHhGMDAsDQo+ID4+PiArCS52aW9fc2hpZnRfc3RhX29mZnNldCA9IDB4RjEw
+LA0KPiA+Pj4gKwkudmlvX3NoaWZ0X3NlbF9vZmZzZXQgPSAweEYxNCwNCj4gPj4+ICsJLnZpb19z
+aGlmdF9jb25fb2Zmc2V0ID0gMHhGMjAsDQo+ID4+PiArfTsNCj4gPj4+ICsNCj4gPj4+ICtzdGF0
+aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtdGtfZGV2YXBjX2R0X21hdGNoW10gPSB7DQo+
+ID4+PiArCXsNCj4gPj4+ICsJCS5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1kZXZhcGMi
+LA0KPiA+Pj4gKwkJLmRhdGEgPSAmZGV2YXBjX210Njc3OSwNCj4gPj4+ICsJfSwgew0KPiA+Pj4g
+Kwl9LA0KPiA+Pj4gK307DQo+ID4+PiArDQo+ID4+PiArc3RhdGljIGludCBtdGtfZGV2YXBjX3By
+b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4+PiArew0KPiA+Pj4gKwlzdHJ1
+Y3QgZGV2aWNlX25vZGUgKm5vZGUgPSBwZGV2LT5kZXYub2Zfbm9kZTsNCj4gPj4+ICsJc3RydWN0
+IG10a19kZXZhcGNfY29udGV4dCAqY3R4Ow0KPiA+Pj4gKwl1MzIgZGV2YXBjX2lycTsNCj4gPj4+
+ICsJaW50IHJldDsNCj4gPj4+ICsNCj4gPj4+ICsJaWYgKElTX0VSUihub2RlKSkNCj4gPj4+ICsJ
+CXJldHVybiAtRU5PREVWOw0KPiA+Pj4gKw0KPiA+Pj4gKwljdHggPSBkZXZtX2t6YWxsb2MoJnBk
+ZXYtPmRldiwgc2l6ZW9mKCpjdHgpLCBHRlBfS0VSTkVMKTsNCj4gPj4+ICsJaWYgKCFjdHgpDQo+
+ID4+PiArCQlyZXR1cm4gLUVOT01FTTsNCj4gPj4+ICsNCj4gPj4+ICsJY3R4LT5kYXRhID0gb2Zf
+ZGV2aWNlX2dldF9tYXRjaF9kYXRhKCZwZGV2LT5kZXYpOw0KPiA+Pj4gKwljdHgtPmRldiA9ICZw
+ZGV2LT5kZXY7DQo+ID4+PiArDQo+ID4+PiArCWN0eC0+aW5mcmFfYmFzZSA9IG9mX2lvbWFwKG5v
+ZGUsIDApOw0KPiA+Pg0KPiA+PiBEb2VzIHRoaXMgbWVhbiB0aGUgZGV2aWNlIGlzIHBhcnQgb2Yg
+dGhlIGluZnJhY2ZnIGJsb2NrPw0KPiA+PiBJIHdhc24ndCBhYmxlIHRvIGZpbmQgYW55IGluZm9y
+bWF0aW9uIGFib3V0IGl0Lg0KPiA+IA0KPiA+IEknbSBub3Qgc3VyZSB3aHkgeW91IHdvdWxkIGFz
+ayBpbmZyYWNmZyBibG9jay4gZGV2YXBjIGlzIHBhcnRzIG9mIG91cg0KPiA+IFNvQyBpbmZyYSwg
+aXQncyBkaWZmZXJlbnQgd2l0aCBpbmZyYWNmZy4NCj4gPiANCj4gDQo+IEknbSBhc2tpbmcgYmVj
+YXVzZSBJIHdhbnQgdG8gdW5kZXJzdGFuZCB0aGUgSFcgYmV0dGVyLiBJJ20gbm90IGFibGUgdG8g
+ZmluZCBhbnkgDQo+IGluZm9ybWF0aW9uIGluIHRoZSBkYXRhc2hlZXRzLiBJIHdhbnQgdG8gYXZv
+aWQgYSBzaXR1YXRpb24gYXMgd2UgaGFkIHdpdGggdGhlIA0KPiBNTVNZUyB3aGVyZSBhIGNsb2Nr
+IGRyaXZlciB3YXMgc3VibWl0dGVkIGZpcnN0IGFuZCBsYXRlciBvbiB3ZSByZWFsaXplZCB0aGF0
+IA0KPiBNTVNZUyBpcyBtdWNoIG1vcmUgdGhlbiB0aGF0IGFuZCB3ZSBoYWQgdG8gd29yayBoYXJk
+IHRvIGdldCB0aGUgZHJpdmVyIHJpZ2h0Lg0KPiANCj4gTm93IGl0J3MgaGFwcGVuaW5nIHdpdGgg
+U0NQU1lTLCB3aGVyZSBhIGRyaXZlciB3aXRoIHRoZSBzY3BzeXMgY29tcGF0aWJsZSB3YXMgDQo+
+IHNlbmQgeWVhcnMgYWdvLiBCdXQgU0NQU1lTIGlzIG11Y2ggbW9yZSB0aGVuIHRoZSBkcml2ZXIg
+c3VibWl0dGVkLiBJbiB0aGlzIGNhc2UgDQo+IHdlIG9wdGVkIHRvIHdyaXRlIGEgbmV3IGRyaXZl
+ciwgYnV0IG1vdmluZyBmcm9tIG9uZSBkcml2ZXIgdG8gYW5vdGhlciBvbmUgaXMgDQo+IHBhaW5m
+dWxsIGFuZCBmdWxsIG9mIHByb2JsZW1zLiBGb3IgdGhhdCBJIHdhbnQgdG8gbWFrZSBzdXJlIHdl
+IGZ1bGx5IHVuZGVyc3RhbmQgDQo+IERldmljZSBBUEMgKGJ5IHRoZSB3YXksIHdoYXQgZG9lcyBB
+UEMgc3RhbmRzIGZvcj8pLiBJcyBpdCBhIHRvdGFsbHkgaW5kZXBlbmRlbnQgDQo+IEhXIGJsb2Nr
+IG9yIGlzIGl0IHBhcnQgb2YgYSBzdWJzeXN0ZW0sIGxpa2UgZm9yIGV4YW1wbGUgU0NQPw0KPiAN
+Cj4gUmVnYXJkcywNCj4gTWF0dGhpYXMNCg0KSXQncyBhIHRvdGFsbHkgaW5kZXBlbmRlbnQgSFcg
+YmxvY2sgaW5zdGVhZCBvZiBhIHN1YnN5c3RlbS4NCkkgdGhpbmsgaXQncyBtb3JlIHNpbXBsZSB0
+aGFuIE1NU1lTIG9yIFNDUFNZUy4gQnV0IGlmIHlvdSB3b3VsZCBsaWtlIHRvDQp1bmRlcnN0YW5k
+IG1vcmUgYWJvdXQgdGhpcyBIVywgd2UgY291bGQgZmluZCBhbm90aGVyIHdheS9jaGFubmVsIHRv
+DQppbnRyb2R1Y2UgaXQuDQoNCg0K
 
-I had tried to describe the bug in my original e-mail; it involves not considering
-the match functions of candidate USB drivers when determining whether a more
-specialized driver exists for a USB device. The bug takes effect when a candidate
-USB driver does not have an id_table, but has a match function.
-
-To the best of my current understanding, however, the impact of the bug is
-currently none/negligible, because the only specialized driver is currently
-the Apple charger driver, and the Apple charger driver uses an id_table and
-not a match function.
-
-All this to say, given your last statement, and having thought about the whole
-thing one more time, perhaps we do not need to cherry-pick the aforementioned
-commit. Sorry for the noise!
-
-Thank you,
-
-Vefa
