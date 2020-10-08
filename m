@@ -2,281 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E2F287134
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75425287137
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgJHJJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgJHJJF (ORCPT
+        id S1728582AbgJHJJR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Oct 2020 05:09:17 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47918 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgJHJJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:09:05 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F23C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 02:09:05 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id x26so1650899uan.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 02:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ys8YNvOHIAk8VrNZZJl76QEza47nB/FfFC5qHScGSYQ=;
-        b=efoHu7drs789U4yzKMxSHSkvPlcbQTJJztg6jbUC2OJTpcDvlFhLVNXI0vsrU7gzDg
-         KDVxR3SGi52hOLOdWqLl4/vp4nBcdg1pR5tPP2mtDqiZzQ19OlfaWvsBhzln23tOR6rR
-         ylAzMsXHFjO9QrCgb2YzpvDtjkwpNGeaDbCK8tkNlWd7OPW2bMoLUiUW0ZhKGoR++v27
-         7+ydyHi85t0pMx5SKQr3yS5I1MhJ0D4+LRJvQeM+V0NDDZoGbCibv4fgnulJIwG0ppB7
-         0FzPXBJpgQ7ifoP/vdQYLsShBhs6kZ/ZV6XF4mOXN8rlL2DLQ11GGHv8/M9DeG/ROvm4
-         dAfQ==
+        Thu, 8 Oct 2020 05:09:15 -0400
+Received: from mail-pl1-f198.google.com ([209.85.214.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kQRvD-0005Rf-Co
+        for linux-kernel@vger.kernel.org; Thu, 08 Oct 2020 09:09:11 +0000
+Received: by mail-pl1-f198.google.com with SMTP id h20so3124549plr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 02:09:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ys8YNvOHIAk8VrNZZJl76QEza47nB/FfFC5qHScGSYQ=;
-        b=p/BIefPmcRC7H6uwOwYU2gt4TFWYZEMidX1GDshmh/RRKXASj2sdR9Po9MdwcbyozB
-         nHBvwoZIiiLTw+Zvg67NGMpBJgfO2f7kZme8ZYkjNEzus5t9MIDiIg2yeZEJ/8DIbNJO
-         ahdAL6tHT0NwOlVUlEpIZYnG5NQ9QlZjV7zZjxRgz2gtHAedXZHK694qYGvz6bvyyQ9k
-         TWhY/cYmlayLr5L3WKWZMuefEYFHivn6xqrl7vMwk9NH57cKD1J7aZEnPb4is2brsQOz
-         Kg6lcajCwaxdSBrdIq3eqCw6TsiebNICfYHIK0SNy0v4j/Ol6xUdj/+P/VuC3mnzaVe/
-         QtSA==
-X-Gm-Message-State: AOAM530YELiDXz5gqdWmo1msesQ1RmQEy30NcjZx9TitR1rsROFGW/Ao
-        2jfIyG+QSXH6QqKXkADsM/HTijaVilZ7v+6vtmrJrg==
-X-Google-Smtp-Source: ABdhPJzfkDaEWr1LMBcvQaebaaMeol2WcIbuZU5mEchl2MyTqCh+XzsTJc8hJB+agiGLkdCC9RTzYjm4sg3ir2YBpMc=
-X-Received: by 2002:ab0:130a:: with SMTP id g10mr4149927uae.100.1602148143769;
- Thu, 08 Oct 2020 02:09:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <e4e6cc45-bc18-40ec-035e-fdb45b9a8f46@gmail.com> <87o8lf74j5.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87o8lf74j5.fsf@nanos.tec.linutronix.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 8 Oct 2020 11:08:27 +0200
-Message-ID: <CAPDyKFosR2wd=jqADBF_dNd3kCMbM4oDAHyxiYC-5RF=SZ_E5A@mail.gmail.com>
-Subject: Re: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Brad Harper <bjharper@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=eM0ZaIOSrP/1MMNDYEsisUH3ndi/GQZX3xWaGniXbR8=;
+        b=HmWDtFLTw5S92m6ehGY9kGuzOA7t/ZQOr9aA1oYWxr5Fh5AFPBfDqx2fjF3WicWUhz
+         5UGKxU2EclpXSz71GD1S/HmZjGn47sJVUfbKpRTxHKPdF35lWjzNXWJnXr77OUt0H5KC
+         6t4d2cwu6HYfLLG+pQmR72W0qjmMLMevfLipQ1HdR5TNIwMiDvMw7U0x0y4Px3vN8a7f
+         BWrg9fbj8zG8zI00hY1QFQO5cO+/2nPaJmlp28M9SJOpwpGHKAEWgVt2LXYLmVZ8m2HS
+         mDuZOJXYz7CkK3yFN5wlKX4Hh8N5Gcsp0ZC8i1nzKcsW54xnAo01zG+Fy1UpQpXfCe6o
+         AMrw==
+X-Gm-Message-State: AOAM531FJzW6bng8muS7e1PtmX1baC17cCgTSAIKoGg4LBWXavgkPtxb
+        1Z3Dn//egFCz7yVxRRO/AjrfBGMkgz+u0aRI4xbFfHKUTwnOduzs/+0TcHso/EMQQKW5fGyuHFG
+        igQIrD7O4FflLOTU2xWVvFEZO34QL9yo3XMXYN+WiSg==
+X-Received: by 2002:a62:1c87:0:b029:155:4601:ab9f with SMTP id c129-20020a621c870000b02901554601ab9fmr2580812pfc.12.1602148149713;
+        Thu, 08 Oct 2020 02:09:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJqps9YD81jjfHdinrGXoSKoOY2ETiPKxf7G4e8UmMCTiFJlWO2mZTAPuaBQY9cqBrYiUD7g==
+X-Received: by 2002:a62:1c87:0:b029:155:4601:ab9f with SMTP id c129-20020a621c870000b02901554601ab9fmr2580792pfc.12.1602148149203;
+        Thu, 08 Oct 2020 02:09:09 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id j12sm6101730pjd.36.2020.10.08.02.09.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 Oct 2020 02:09:08 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [Regression] "tpm: Require that all digests are present in
+ TCG_PCR_EVENT2 structures" causes null pointer dereference
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20200930022040.GG808399@linux.intel.com>
+Date:   Thu, 8 Oct 2020 17:09:06 +0800
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, tyhicks@linux.microsoft.com,
+        linux-integrity@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <A983BE2B-02A7-450B-9FD0-77B1470EF233@canonical.com>
+References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
+ <20200928140623.GA69515@linux.intel.com>
+ <BB63B86E-CA44-4EB7-A5D1-21B0E9EB2850@canonical.com>
+ <846fe4da67d05f57fba33e38c9a6e394e657adc3.camel@linux.ibm.com>
+ <20200930022040.GG808399@linux.intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Oct 2020 at 17:33, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Brad,
->
-> On Wed, Oct 07 2020 at 00:45, Brad Harper wrote:
-> > I'm happy to test anything on a range of amlogic hardware with standard
-> > / rt and  multiple mmc devices.  Ill test Jerome's patch in next 24
-> > hours to report the results.
->
-> please do not top-post and trim your replies.
->
-> > On 6/10/2020 11:43 pm, Thomas Gleixner wrote:
-> >>       We rather should make interrupts which need to have their primary
-> >>       handler in hard interrupt context to set IRQF_NO_THREAD. That
-> >>       should at the same time confirm that the primary handler is RT
-> >>       safe.
-> >>
-> >>       Let me stare at the core code and the actual usage sites some more.
->
-> So there are a few nasties in there and I faintly remember that there
-> was an assumption that interrupts which are requested with both a
-> primary and a secondary handler should quiesce the device interrupt in
-> the primary handler if needed. OTOH, this also enforces that the primary
-> handler is RT safe, which is after a quick scan of all the usage sites
-> not a given and quite some of the users rely on IRQF_ONESHOT.
->
-> The below untested patch should cure the problem and keep the interrupt
-> line masked if requested with IRQF_ONESHOT.
->
-> Thanks,
->
->         tglx
 
-Thomas, thanks a lot for helping out and looking at this!
+> On Sep 30, 2020, at 10:20, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+> 
+> On Tue, Sep 29, 2020 at 01:52:04PM -0400, Mimi Zohar wrote:
+>> On Mon, 2020-09-28 at 22:16 +0800, Kai-Heng Feng wrote:
+>>> Hi Jarkko,
+>>> 
+>>>> On Sep 28, 2020, at 22:06, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+>>>> 
+>>>> On Mon, Sep 28, 2020 at 08:31:04PM +0800, Kai-Heng Feng wrote:
+>>>>> Commit 7f3d176f5f7e "tpm: Require that all digests are present in
+>>>>> TCG_PCR_EVENT2 structures" causes a null pointer dereference on all
+>>>>> laptops I have:
+>>>> 
+>>>> ...
+>>>> 
+>>>>> [   17.868849] BUG: kernel NULL pointer dereference, address: 000000000000002c
+>>>>> [   17.868852] #PF: supervisor read access in kernel mode
+>>>>> [   17.868854] #PF: error_code(0x0000) - not-present page
+>>>>> [   17.868855] PGD 0 P4D 0 
+>>>>> [   17.868858] Oops: 0000 [#1] SMP PTI
+>>>>> [   17.868860] CPU: 0 PID: 1873 Comm: fwupd Not tainted 5.8.0-rc6+ #25
+>>>>> [   17.868861] Hardware name: LENOVO 20LAZ3TXCN/20LAZ3TXCN, BIOS N27ET38W (1.24 ) 11/28/2019
+>>>>> [   17.868866] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
+>>>>> [   17.868868] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
+>>>>> [   17.868869] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
+>>>>> [   17.868871] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 0000000000000010
+>>>>> [   17.868872] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ffff917c99b19438
+>>>>> [   17.868873] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ffff917cbfeae4c0
+>>>>> [   17.868874] R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000010
+>>>>> [   17.868875] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ffff917c99b19470
+>>>>> [   17.868876] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(0000) knlGS:0000000000000000
+>>>>> [   17.868877] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>> [   17.868878] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00000000003606f0
+>>>>> [   17.868879] Call Trace:
+>>>>> [   17.868884]  seq_read+0x95/0x470
+>>>>> [   17.868887]  ? security_file_permission+0x150/0x160
+>>>>> [   17.868889]  vfs_read+0xaa/0x190
+>>>>> [   17.868891]  ksys_read+0x67/0xe0
+>>>>> [   17.868893]  __x64_sys_read+0x1a/0x20
+>>>>> [   17.868896]  do_syscall_64+0x52/0xc0
+>>>>> [   17.868898]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>>> [   17.868900] RIP: 0033:0x7f9d83be91dc
+>>>>> [   17.868901] Code: Bad RIP value.
+>>>>> [   17.868902] RSP: 002b:00007fff7f5e0250 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+>>>>> [   17.868903] RAX: ffffffffffffffda RBX: 00005651d262f420 RCX: 00007f9d83be91dc
+>>>>> [   17.868904] RDX: 0000000000001000 RSI: 00007fff7f5e0350 RDI: 0000000000000010
+>>>>> [   17.868905] RBP: 00007f9d83cc54a0 R08: 0000000000000000 R09: 00005651d26c1830
+>>>>> [   17.868906] R10: 00005651d2582010 R11: 0000000000000246 R12: 0000000000001000
+>>>>> [   17.868907] R13: 00007fff7f5e0350 R14: 0000000000000d68 R15: 00007f9d83cc48a0
+>>>>> [   17.868909] Modules linked in: rfcomm ccm cmac algif_hash algif_skcipher af_alg snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic bnep joydev mei_hdcp wmi_bmof intel_rapl_msr intel_wmi_thunderbolt x86_pkg_temp_thermal intel_powerclamp coretemp nls_iso8859_1 kvm_intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel glue_helper crypto_simd cryptd rapl input_leds intel_cstate snd_hda_intel snd_intel_dspcfg rmi_smbus iwlmvm snd_hda_codec serio_raw snd_hwdep mac80211 rmi_core snd_hda_core libarc4 uvcvideo snd_pcm videobuf2_vmalloc btusb videobuf2_memops iwlwifi videobuf2_v4l2 btrtl btbcm videobuf2_common btintel thunderbolt i915 bluetooth mei_me videodev thinkpad_acpi nvram cfg80211 ledtrig_audio mei mc ecdh_generic ecc i2c_algo_bit processor_thermal_device snd_seq_midi drm_kms_helper snd_seq_midi_event intel_soc_dts_iosf syscopyarea sysfillrect snd_rawmidi intel_pch_thermal sysimgblt intel_rapl_common intel_xhci_usb_role_switch fb_sys_fops u
+>> cs
+>>> i_acpi r
+>>> o
+>>>> les cec
+>>>>> [   17.868935]  typec_ucsi typec nxp_nci_i2c snd_seq nxp_nci wmi nci nfc snd_timer snd_seq_device snd int3403_thermal soundcore int340x_thermal_zone video mac_hid int3400_thermal acpi_pad acpi_thermal_rel sch_fq_codel parport_pc ppdev lp parport drm ip_tables x_tables autofs4 btrfs blake2b_generic libcrc32c xor zstd_compress raid6_pq uas usb_storage psmouse e1000e nvme i2c_i801 i2c_smbus nvme_core intel_lpss_pci intel_lpss idma64 virt_dma pinctrl_sunrisepoint pinctrl_intel
+>>>>> [   17.868951] CR2: 000000000000002c
+>>>>> [   17.868953] ---[ end trace ee7716fff5dec2fb ]---
+>>>>> [   17.868955] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
+>>>>> [   17.868957] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
+>>>>> [   17.868958] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
+>>>>> [   17.868959] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 0000000000000010
+>>>>> [   17.868960] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ffff917c99b19438
+>>>>> [   17.868961] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ffff917cbfeae4c0
+>>>>> [   17.868962] R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000010
+>>>>> [   17.868963] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ffff917c99b19470
+>>>>> [   17.868964] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(0000) knlGS:0000000000000000
+>>>>> [   17.868965] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>> [   17.868966] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00000000003606f0
+>>>> 
+>>>> It is possible but initially feels a bit weird:
+>>>> 
+>>>> -                  sizeof(TCG_SPECID_SIG)) || count > efispecid->num_algs) {
+>>>> +                  sizeof(TCG_SPECID_SIG)) ||
+>>>> +           !efispecid->num_algs || count != efispecid->num_algs) {
+>>>> 
+>>>> Assuming that check does not pass because of a more strict constraint,
+>>>> __calc_tpm2_event_size() returns 0.
+>>>> 
+>>>> It is wrapped like this in drivers/char/tpm/eventlog/tpm2.c:
+>>>> 
+>>>> static size_t calc_tpm2_event_size(struct tcg_pcr_event2_head *event,
+>>>> 				   struct tcg_pcr_event *event_header)
+>>>> {
+>>>> 	return __calc_tpm2_event_size(event, event_header, false);
+>>>> }
+>>>> 
+>>>> I.e. TPM_MEMUNMAP will not get executed because "do_mapping == false".
+>>>> tpm2_bios_measurements_start() checks for "size == 0" and returns NULL
+>>>> whenever this happens.
+>>>> 
+>>>> Are you 100% sure that it is exactly this commit that triggers the bug?
+>>> 
+>>> Yes I am 100% sure. The issue happens all the time, and never happens
+>>> if I checkout the previous commit.
+>> 
+>> I'm seeing this too on my test Ubuntu laptop.  Reverting the patch
+>> fixes it, but there's no data.
+> 
+> I do not have yet any reasonable answer to this and my v5.10 PR is
+> running late. Does everyone agree that I should revert the patch?
 
-It looks like the testing of the patch below went well. Are you
-intending to queue up the patch via your tip tree?
+Given that there are multiple users confirmed reverting the commit helps, can you please revert it and Cc: linux-stable?
 
-If you need any help, just tell us!
+Thanks!
 
-Kind regards
-Uffe
+Kai-Heng
 
-> ---
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -967,8 +967,7 @@ static int irq_wait_for_interrupt(struct
->  static void irq_finalize_oneshot(struct irq_desc *desc,
->                                  struct irqaction *action)
->  {
-> -       if (!(desc->istate & IRQS_ONESHOT) ||
-> -           action->handler == irq_forced_secondary_handler)
-> +       if (!(action->flags & IRQF_ONESHOT))
->                 return;
->  again:
->         chip_bus_lock(desc);
-> @@ -1073,10 +1072,6 @@ irq_forced_thread_fn(struct irq_desc *de
->
->         local_bh_disable();
->         ret = action->thread_fn(action->irq, action->dev_id);
-> -       if (ret == IRQ_HANDLED)
-> -               atomic_inc(&desc->threads_handled);
-> -
-> -       irq_finalize_oneshot(desc, action);
->         local_bh_enable();
->         return ret;
->  }
-> @@ -1089,14 +1084,7 @@ irq_forced_thread_fn(struct irq_desc *de
->  static irqreturn_t irq_thread_fn(struct irq_desc *desc,
->                 struct irqaction *action)
->  {
-> -       irqreturn_t ret;
-> -
-> -       ret = action->thread_fn(action->irq, action->dev_id);
-> -       if (ret == IRQ_HANDLED)
-> -               atomic_inc(&desc->threads_handled);
-> -
-> -       irq_finalize_oneshot(desc, action);
-> -       return ret;
-> +       return action->thread_fn(action->irq, action->dev_id);
->  }
->
->  static void wake_threads_waitq(struct irq_desc *desc)
-> @@ -1172,9 +1160,14 @@ static int irq_thread(void *data)
->                 irq_thread_check_affinity(desc, action);
->
->                 action_ret = handler_fn(desc, action);
-> +               if (action_ret == IRQ_HANDLED)
-> +                       atomic_inc(&desc->threads_handled);
-> +
->                 if (action_ret == IRQ_WAKE_THREAD)
->                         irq_wake_secondary(desc, action);
->
-> +               irq_finalize_oneshot(desc, action);
-> +
->                 wake_threads_waitq(desc);
->         }
->
-> @@ -1219,7 +1212,7 @@ static int irq_setup_forced_threading(st
->  {
->         if (!force_irqthreads)
->                 return 0;
-> -       if (new->flags & (IRQF_NO_THREAD | IRQF_PERCPU | IRQF_ONESHOT))
-> +       if (new->flags & (IRQF_NO_THREAD | IRQF_PERCPU))
->                 return 0;
->
->         /*
-> @@ -1229,8 +1222,6 @@ static int irq_setup_forced_threading(st
->         if (new->handler == irq_default_primary_handler)
->                 return 0;
->
-> -       new->flags |= IRQF_ONESHOT;
-> -
->         /*
->          * Handle the case where we have a real primary handler and a
->          * thread handler. We force thread them as well by creating a
-> @@ -1246,8 +1237,11 @@ static int irq_setup_forced_threading(st
->                 new->secondary->dev_id = new->dev_id;
->                 new->secondary->irq = new->irq;
->                 new->secondary->name = new->name;
-> +               /* Preserve the requested IRQF_ONESHOT */
-> +               new->secondary->flags = new->flags & IRQF_ONESHOT;
->         }
->         /* Deal with the primary handler */
-> +       new->flags |= IRQF_ONESHOT;
->         set_bit(IRQTF_FORCED_THREAD, &new->thread_flags);
->         new->thread_fn = new->handler;
->         new->handler = irq_default_primary_handler;
-> @@ -1341,6 +1335,38 @@ setup_irq_thread(struct irqaction *new,
->         return 0;
->  }
->
-> +static unsigned long thread_mask_alloc(unsigned long thread_mask)
-> +{
-> +       /*
-> +        * Unlikely to have 32 resp 64 irqs sharing one line,
-> +        * but who knows.
-> +        */
-> +       if (thread_mask == ~0UL)
-> +               return 0;
-> +
-> +       /*
-> +        * The thread_mask for the action is or'ed to
-> +        * desc->thread_active to indicate that the
-> +        * IRQF_ONESHOT thread handler has been woken, but not
-> +        * yet finished. The bit is cleared when a thread
-> +        * completes. When all threads of a shared interrupt
-> +        * line have completed desc->threads_active becomes
-> +        * zero and the interrupt line is unmasked. See
-> +        * handle.c:irq_wake_thread() for further information.
-> +        *
-> +        * If no thread is woken by primary (hard irq context)
-> +        * interrupt handlers, then desc->threads_active is
-> +        * also checked for zero to unmask the irq line in the
-> +        * affected hard irq flow handlers
-> +        * (handle_[fasteoi|level]_irq).
-> +        *
-> +        * The new action gets the first zero bit of
-> +        * thread_mask assigned. See the loop above which or's
-> +        * all existing action->thread_mask bits.
-> +        */
-> +       return 1UL << ffz(thread_mask);
-> +}
-> +
->  /*
->   * Internal function to register an irqaction - typically used to
->   * allocate special interrupts that are part of the architecture.
-> @@ -1525,35 +1551,18 @@ static int
->          * conditional in irq_wake_thread().
->          */
->         if (new->flags & IRQF_ONESHOT) {
-> -               /*
-> -                * Unlikely to have 32 resp 64 irqs sharing one line,
-> -                * but who knows.
-> -                */
-> -               if (thread_mask == ~0UL) {
-> -                       ret = -EBUSY;
-> +               ret = -EBUSY;
-> +               new->thread_mask = thread_mask_alloc(thread_mask);
-> +               if (!new->thread_mask)
->                         goto out_unlock;
-> +
-> +               if (new->secondary && (new->secondary->flags & IRQF_ONESHOT)) {
-> +                       thread_mask |= new->thread_mask;
-> +                       new->secondary->thread_mask =
-> +                               thread_mask_alloc(thread_mask);
-> +                       if (!new->secondary->thread_mask)
-> +                               goto out_unlock;
->                 }
-> -               /*
-> -                * The thread_mask for the action is or'ed to
-> -                * desc->thread_active to indicate that the
-> -                * IRQF_ONESHOT thread handler has been woken, but not
-> -                * yet finished. The bit is cleared when a thread
-> -                * completes. When all threads of a shared interrupt
-> -                * line have completed desc->threads_active becomes
-> -                * zero and the interrupt line is unmasked. See
-> -                * handle.c:irq_wake_thread() for further information.
-> -                *
-> -                * If no thread is woken by primary (hard irq context)
-> -                * interrupt handlers, then desc->threads_active is
-> -                * also checked for zero to unmask the irq line in the
-> -                * affected hard irq flow handlers
-> -                * (handle_[fasteoi|level]_irq).
-> -                *
-> -                * The new action gets the first zero bit of
-> -                * thread_mask assigned. See the loop above which or's
-> -                * all existing action->thread_mask bits.
-> -                */
-> -               new->thread_mask = 1UL << ffz(thread_mask);
->
->         } else if (new->handler == irq_default_primary_handler &&
->                    !(desc->irq_data.chip->flags & IRQCHIP_ONESHOT_SAFE)) {
->
->
+> 
+>> 
+>> Mimi
+> 
+> /Jarkko
+
