@@ -2,165 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D593F287B88
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE02287BA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbgJHSSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:18:18 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:50578 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJHSSR (ORCPT
+        id S1728827AbgJHSYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:24:34 -0400
+Received: from forward102j.mail.yandex.net ([5.45.198.243]:49635 "EHLO
+        forward102j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725874AbgJHSYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:18:17 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098IIAaY059566;
-        Thu, 8 Oct 2020 13:18:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602181090;
-        bh=OZ4CI6uU94nRKdZAQZi5RdPMEtud/Gsh2orNwUmssVI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=gAp6umqLQU5C4uX3HgJyCWpgp44fO1M1k018erkc+OZM7Yc28HxljX7uaH3gtaVsQ
-         +gZEg/4CV9X5T60nc+QxSa7hQzdv1zMljVTNCOYufUOUtAZ9xVxmkqmulme9xmJ5tE
-         MpLzzG5suqewHZ/Z0xqyyrdL43hRRxZo2PS2e48k=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098IIAuW101541
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 8 Oct 2020 13:18:10 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
- 2020 13:18:10 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 8 Oct 2020 13:18:09 -0500
-Received: from [10.250.39.105] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098II9xV015780;
-        Thu, 8 Oct 2020 13:18:09 -0500
-Subject: Re: [PATCH net-next 1/2] dt-bindings: dp83td510: Add binding for
- DP83TD510 Ethernet PHY
-To:     Florian Fainelli <f.fainelli@gmail.com>, <davem@davemloft.net>,
-        <andrew@lunn.ch>, <hkallweit1@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201008162347.5290-1-dmurphy@ti.com>
- <20201008162347.5290-2-dmurphy@ti.com>
- <b704d919-b665-04e7-39bf-fadd5bc35ecf@gmail.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <cb44ea1f-4c7a-98c6-6206-526169d8f24b@ti.com>
-Date:   Thu, 8 Oct 2020 13:18:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 8 Oct 2020 14:24:33 -0400
+X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 14:24:32 EDT
+Received: from mxback13j.mail.yandex.net (mxback13j.mail.yandex.net [IPv6:2a02:6b8:0:1619::88])
+        by forward102j.mail.yandex.net (Yandex) with ESMTP id 01D6DF200FC;
+        Thu,  8 Oct 2020 21:18:21 +0300 (MSK)
+Received: from iva5-057a0d1fbbd8.qloud-c.yandex.net (iva5-057a0d1fbbd8.qloud-c.yandex.net [2a02:6b8:c0c:7f1c:0:640:57a:d1f])
+        by mxback13j.mail.yandex.net (mxback/Yandex) with ESMTP id RfimM7jweV-IKdGnEhk;
+        Thu, 08 Oct 2020 21:18:20 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1602181100;
+        bh=cFs6DvdMaKWn5+qm6nyo0Jb17ex+dF10ztqVuJwEsR0=;
+        h=In-Reply-To:From:To:Subject:Cc:Date:References:Message-ID;
+        b=vWLvcpLh5wN8l5/1IwiTYp8M1YjvMoa+R6hg2pkGEwaKmHMiCyX2KM2HDvZbg5qsY
+         wpRi7Op6nJM9HVt7olbLt5ih/PYT1zvNxBC+9nWyhsWxlXDSr5i5p3HmZgyu4NOQAC
+         AAv4elQ82k7g7rqQ1FditDibRWgec/7thmOvU2HA=
+Authentication-Results: mxback13j.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by iva5-057a0d1fbbd8.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id VYNFEb9DbQ-IKmWX7U3;
+        Thu, 08 Oct 2020 21:18:20 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
+ <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
+ <20201008175951.GA9267@linux.intel.com>
+From:   stsp <stsp2@yandex.ru>
+Message-ID: <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
+Date:   Thu, 8 Oct 2020 21:18:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <b704d919-b665-04e7-39bf-fadd5bc35ecf@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201008175951.GA9267@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian
-
-Thanks for the review
-
-On 10/8/20 12:11 PM, Florian Fainelli wrote:
->
->
-> On 10/8/2020 9:23 AM, Dan Murphy wrote:
->> The DP83TD510 is a 10M single twisted pair Ethernet PHY
+08.10.2020 20:59, Sean Christopherson пишет:
+> On Thu, Oct 08, 2020 at 07:00:13PM +0300, stsp wrote:
+>> 07.10.2020 04:44, Sean Christopherson пишет:
+>>> Two bug fixes to handle KVM_SET_SREGS without a preceding KVM_SET_CPUID2.
+>> Hi Sean & KVM devs.
 >>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>   .../devicetree/bindings/net/ti,dp83td510.yaml | 70 +++++++++++++++++++
->>   1 file changed, 70 insertions(+)
->>   create mode 100644 
->> Documentation/devicetree/bindings/net/ti,dp83td510.yaml
+>> I tested the patches, and wherever I
+>> set VMXE in CR4, I now get
+>> KVM: KVM_SET_SREGS: Invalid argument
+>> Before the patch I was able (with many
+>> problems, but still) to set VMXE sometimes.
 >>
->> diff --git a/Documentation/devicetree/bindings/net/ti,dp83td510.yaml 
->> b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
->> new file mode 100644
->> index 000000000000..0f0eac77a11a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/net/ti,dp83td510.yaml
->> @@ -0,0 +1,70 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +# Copyright (C) 2020 Texas Instruments Incorporated
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/net/ti,dp83td510.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: TI DP83TD510 ethernet PHY
->> +
->> +allOf:
->> +  - $ref: "ethernet-controller.yaml#"
->> +
->> +maintainers:
->> +  - Dan Murphy <dmurphy@ti.com>
->> +
->> +description: |
->> +  The PHY is an twisted pair 10Mbps Ethernet PHY that support MII, 
->> RMII and
->> +  RGMII interfaces.
->> +
->> +  Specifications about the Ethernet PHY can be found at:
->> +    http://www.ti.com/lit/ds/symlink/dp83td510e.pdf
->> +
->> +properties:
->> +  reg:
->> +    maxItems: 1
->> +
->> +  tx-fifo-depth:
->> +    description: |
->> +       Transmitt FIFO depth for RMII mode.  The PHY only exposes 4 
->> nibble
->> +       depths. The valid nibble depths are 4, 5, 6 and 8.
->> +    default: 5
->> +
->> +  rx-internal-delay-ps:
->> +    description: |
->> +       Setting this property to a non-zero number sets the RX 
->> internal delay
->> +       for the PHY.  The internal delay for the PHY is fixed to 30ns 
->> relative
->> +       to receive data.
->> +
->> +  tx-internal-delay-ps:
->> +    description: |
->> +       Setting this property to a non-zero number sets the TX 
->> internal delay
->> +       for the PHY.  The internal delay for the PHY has a range of 
->> -4 to 4ns
->> +       relative to transmit data.
->
-> Those two properties are already defined as part of 
-> Documentation/devicetree/bindings/net/ethernet-phy.yaml, so you can 
-> reference that binding, too.
+>> So its a NAK so far, waiting for an update. :)
+> IIRC, you said you were going to test on AMD?  Assuming that's correct,
 
-OK I referenced the ethernet-controller.yaml for the delay. I am 
-wondering if we should add rx/tx-fifo-depth to the ethernet-phy.yaml as 
-well. That way PHYs only have to reference ethernet-phy.yaml.
+Yes, that is true.
 
-Or maybe remove the internal-delay from the ethernet-phy.yaml and 
-reference the ethernet-controller.yaml in the ethernet-phy.yaml so we 
-don't have to maintain duplicate properties
 
->
->> +
->> +  ti,master-slave-mode:
->> +    $ref: /schemas/types.yaml#definitions/uint32
->> +    default: 0
->> +    description: |
->> +      Force the PHY to be configured to a specific mode.
->> +      Force Auto Negotiation - 0
->> +      Force Master mode at 1v p2p - 1
->> +      Force Master mode at 2.4v p2p - 2
->> +      Force Slave mode at 1v p2p - 3
->> +      Force Slave mode at 2.4v p2p - 4
->
-> If you accept different values you should be indicating which values 
-> are supported with an enumeration.
+>   -EINVAL
+> is the expected behavior.  KVM was essentially lying before; it never actually
+> set CR4.VMXE in hardware, it just didn't properply detect the error and so VMXE
+> was set in KVM's shadow of the guest's CR4.
 
-Ah yes forgot the min/max
+Hmm. But at least it was lying
+similarly on AMD and Intel CPUs. :)
+So I was able to reproduce the problems
+myself.
+Do you mean, any AMD tests are now
+useless, and we need to proceed with
+Intel tests only?
+
+Then additional question.
+On old Intel CPUs we needed to set
+VMXE in guest to make it to work in
+nested-guest mode.
+Is it still needed even with your patches?
+Or the nested-guest mode will work
+now even on older Intel CPUs and KVM
+will set VMXE for us itself, when needed?
 
