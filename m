@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FD12879AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875832879AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgJHQFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 12:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgJHQFd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 12:05:33 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF9FC061755;
-        Thu,  8 Oct 2020 09:05:33 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id 33so6342809edq.13;
-        Thu, 08 Oct 2020 09:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=+IxddX4oBk5xd+J6oJQDzodRCbBwVMmnfDSkK4eauMY=;
-        b=PJkgtsftOWBXMcghiv2N5V7s2DI4hHtos1td/PMZB5oE8VKubxXLKA28eJcV9py7uN
-         uMS4163wBmkcYYsUWWD+y6kjGXgPVun3sO17VnUKpKje2Qphzp78/oQe6NOgH0NYSJwx
-         tAt4/i5oD+IEvEE29PDf1WBMxJhshOsn2Nt2Vkq8QgmRlwSUP3TwJSiOapMfhS2J2ACi
-         k/qYpg0rOTn4ZAvh9d/66dMoQOElNdJWN0bNiWhJEi9eWmV2HKP09iYlRzBuUkMk9PSa
-         MumZxYh69Brgba/XzTLHZWtlwpOzaaEgKszQa1ZqZopa7khuV8xRYvD+9wzppU8Afqmi
-         4f2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:references:date
-         :in-reply-to:message-id:user-agent:mime-version;
-        bh=+IxddX4oBk5xd+J6oJQDzodRCbBwVMmnfDSkK4eauMY=;
-        b=EF7w2ohqGV10tMnmVi0HDKhQ0ytsUhIkxctLgH/JtZP2dEEKKrcZK05x9wknfK9gdV
-         L4uP5insF/N+5wxnjIxSIf2szQn+wfeD/5vA1ve5ZC5WaSjub0kpulJ//u/Hhgq3zrYB
-         s28/EtDPOmIE65nNVpZs9kUZhzAlmdtiK2mhksjn7Lyyyqugcd96y6+Ts1MAATE0CUGH
-         zPLdU3XC6lDro1fqcvuceSjZhONMTFAyZBrQRTxwx8xjC7XFUa/O5tyON3/cPHWDC1h9
-         5GcmBJzcD32E3CUHRSbsyYX4BmgKmP2mf6KvkBmQxVwqW7YU/kRAb3kY1WMao8K08Gfs
-         k8gg==
-X-Gm-Message-State: AOAM532LV8l63ZwyUMSUwsExfu8P4ddmt//row+Cm1D0jI4h5KJPquNH
-        k680Qe52HmKp9PbN5ZV9U/g=
-X-Google-Smtp-Source: ABdhPJwuTzS32L+O61zHpVqMV/uEtrOc60vbDockApCbavsHqfioCUhtSmoVPbaRjgAo16HxjFweRw==
-X-Received: by 2002:a50:f613:: with SMTP id c19mr9803727edn.81.1602173132148;
-        Thu, 08 Oct 2020 09:05:32 -0700 (PDT)
-Received: from dell.be.48ers.dk (d51A5BC31.access.telenet.be. [81.165.188.49])
-        by smtp.gmail.com with ESMTPSA id j24sm3863617edq.29.2020.10.08.09.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 09:05:31 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
-        (envelope-from <peter@korsgaard.com>)
-        id 1kQYQ6-0007Is-Hl; Thu, 08 Oct 2020 18:05:30 +0200
-From:   Peter Korsgaard <peter@korsgaard.com>
-To:     Sagar Kadam <sagar.kadam@openfive.com>
-Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv\@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-i2c\@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "andrew\@lunn.ch" <andrew@lunn.ch>,
-        "Paul Walmsley \( Sifive\)" <paul.walmsley@sifive.com>,
-        "palmer\@dabbelt.com" <palmer@dabbelt.com>,
-        "aou\@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH 1/1] i2c: ocores: fix polling mode workaround on FU540-C000 SoC
-References: <1602006796-273724-1-git-send-email-sagar.kadam@sifive.com>
-        <1602006796-273724-2-git-send-email-sagar.kadam@sifive.com>
-        <87imbm4639.fsf@dell.be.48ers.dk>
-        <DM6PR13MB345137AD526D0AAA6CE0DBDF970B0@DM6PR13MB3451.namprd13.prod.outlook.com>
-Date:   Thu, 08 Oct 2020 18:05:30 +0200
-In-Reply-To: <DM6PR13MB345137AD526D0AAA6CE0DBDF970B0@DM6PR13MB3451.namprd13.prod.outlook.com>
-        (Sagar Kadam's message of "Thu, 8 Oct 2020 13:53:55 +0000")
-Message-ID: <87eem84sad.fsf@dell.be.48ers.dk>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1729957AbgJHQHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 12:07:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:37012 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgJHQHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 12:07:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F4F031B;
+        Thu,  8 Oct 2020 09:07:09 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B46953F70D;
+        Thu,  8 Oct 2020 09:07:08 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 17:07:07 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2]cpufreq,topology,arm: disable FI for BL_SWITCHER
+Message-ID: <20201008160707.GA29728@arm.com>
+References: <20200924123016.13427-1-ionela.voinescu@arm.com>
+ <CAJZ5v0hr+MZzokObNq5L0q1Fd0M5EXc6QmLXDv9b85P5b4yp4g@mail.gmail.com>
+ <20201008140558.ovytcc34div3ih6m@bogus>
+ <CAJZ5v0hYu_86LB=nycAEDQQ3TsMMpcBV=Ue4WuOqH3YhxAehVQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hYu_86LB=nycAEDQQ3TsMMpcBV=Ue4WuOqH3YhxAehVQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>> "Sagar" == Sagar Kadam <sagar.kadam@openfive.com> writes:
+On Thursday 08 Oct 2020 at 17:18:25 (+0200), Rafael J. Wysocki wrote:
+> On Thu, Oct 8, 2020 at 4:06 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 04:34:44PM +0200, Rafael J. Wysocki wrote:
+> > > On Thu, Sep 24, 2020 at 2:30 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+> > > >
+> > > > This series is the result of the discussions ([1], [2]) around the
+> > > > complications that the BL_SWITCHER poses when it comes to Frequency
+> > > > Invariance (FI) and it aims to restart the discussions.
+> > > >
+> > > > To properly scale its per-entity load-tracking signals, the task
+> > > > scheduler needs to be given a frequency scale factor, i.e. some image of
+> > > > the current frequency the CPU is running at, relative to its maximum
+> > > > frequency.
+> > > >
+> > > > But (reiterating the message in the changelog of patch 2/2), big.LITTLE
+> > > > switching complicates the setting of a correct cpufreq-based frequency
+> > > > invariance scale factor due to (as observed in
+> > > > drivers/cpufreq/vexpress-spc-cpufreq.c):
+> > > >  - Incorrect current and maximum frequencies as a result of the
+> > > >    exposure of a virtual frequency table to the cpufreq core,
+> > > >  - Missed updates as a result of asynchronous frequency adjustments
+> > > >    caused by frequency changes in other CPU pairs.
+> > > > More information on this feature can be found at [3].
+> > > >
+> > > > Given that its functionality is atypical in regards to FI and that this
+> > > > is an old technology, patch 2/2 disable FI for when big.LITTLE switching
+> > > > is configured in to prevent incorrect scale setting.
+> > > >
+> > > > For this purpose patch 1/2 changes the way arch_set_freq_scale() is
+> > > > defined in architecture code which brings it in line with the logic of
+> > > > other architectural function definitions while allowing for less invasive
+> > > > filtering of FI support.
+> > > >
+> > > > In the discussions at [2], three possible solutions were suggested:
+> > > >  - (1) conditioning FI by !CONFIG_BL_SWITCHER
+> > > >  - (2) leave as is with note in driver specifying this FI broken
+> > > >    functionality
+> > > >  - (3) removing full BL_SWITCHER support
+> > > >
+> > > > This series restructures the solution at (1). The reason for it is that
+> > > > the new patch limits the ifdef filtering to the arm topology include file,
+> > > > a location where frequency invariance functions are defined. Therefore,
+> > > > this seems more appropriate given that the b.L switcher is an arm
+> > > > technology and that the new FI filtering location seems more natural for
+> > > > conditioned FI disabling.
+> > > >
+> > > > Solutions (2) and (3) were not implemented given that there might be some
+> > > > remaining users of this technology (Samsung Chromebook 2 - Samsung Exynos
+> > > > 5 Octa 5420, Samsung Exynos 5 Octa 5800) and therefore leaving this
+> > > > broken (2) seems equally bad to removing support for it (3).
+> > > >
+> > > > [1] https://lore.kernel.org/lkml/20200701090751.7543-5-ionela.voinescu@arm.com/
+> > > > [2] https://lore.kernel.org/lkml/20200722093732.14297-4-ionela.voinescu@arm.com/
+> > > > [3] https://lwn.net/Articles/481055/
+> > >
+> > > I can take this set with the ACKs from Viresh if that's fine by
+> > > everyone.  Catalin?  Sudeep?
+> >
+> > Acked-by: Sudeep Holla <sudeep.holla@arm.com> (BL_SWITCHER and topology parts)
+> 
+> OK, the series has been applied as 5.10 material, thanks!
 
- > Hello Peter,
- >> Are both affected by this issue? if not, we will need to extend the code
- >> to handle them differently.
- >> 
+Many thanks, guys!
+Ionela.
 
- > No, this issue is present in FU540-C000 SoC i.e SoC- specific, and so I can check 
- > for the soc-compatible string as follows:
-
- > -       match = of_match_node(ocores_i2c_match, pdev->dev.of_node);
- > -       if (match && (long)match->data == TYPE_SIFIVE_REV0)
- > +       if (of_device_is_compatible(pdev->dev.of_node,
- > +                                       "sifive,fu540-c000-i2c"))
-
- > Please let me know if this is okay.
-
-Yes, that sounds sensible. Thanks.
-
--- 
-Bye, Peter Korsgaard
