@@ -2,82 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76A6286F45
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A2E286F4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgJHHWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
+        id S1727050AbgJHHX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgJHHWf (ORCPT
+        with ESMTP id S1725874AbgJHHX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:22:35 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3099CC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:22:35 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id k18so3825780ybh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:22:35 -0700 (PDT)
+        Thu, 8 Oct 2020 03:23:27 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF33AC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:23:26 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id w7so1253413oow.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 00:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NVt6HPCbv7NkAw3ASSdTsU1dVq2uc72ksR0NlB2xCJg=;
-        b=kutSNlGCJ4DWn8geC2BcqllTlHrAhFdTBF/cCO7YJMeNrBGCCDWQ37FEUYopj9TwnB
-         Kk55GYLf+Yj9o5CkMTmK37F0rRg1tiAPHFZZkNEUfrR8ap6lbtFUAWT9Fqf0mMzJhQ2p
-         mcoBY+xr69zGzD2/Ofyr4eYlFPvQx91ROInlE6NkEymnoGnv7M/6VKak7kmfuxImRkWZ
-         OaP+Fs2qg57HdvIjh+x1jcF7U6UsMaHNorlCGYG9UIQ8KFvF5GxWdi1vn6VD0BA/rYv3
-         2jPGtJWkmUNNul8SU6+fd3SGVUTjlFdNqGZjPl6b62GdxPzCqmfJyEvjnLwffL8NREs6
-         bDDQ==
+        bh=Ui8WkZ8ZsqWNVKFISnxizxdl1xBQtE0ojtcqIbBf85o=;
+        b=OLHQfD6clKQWUqpmaAK9RMlR/tsEUgzWlL24nlPViG1Rk9p8LHmyCmM7/5WLHXKEvu
+         lI/irRP+aq5gBsvKA49uJgztAy930tPikm27PGApe4JTRXsGR0g3qvfoDhdKCEoe0v+J
+         hUX2iSsNsi3+8JirFm0OBhWG4fOImFFw/17nk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NVt6HPCbv7NkAw3ASSdTsU1dVq2uc72ksR0NlB2xCJg=;
-        b=bhSIQRWX4r81tSR8FOroke5Os60nhul7hRPyFGQy1V+M4UaT1NKVszfF/PYY/1Obw3
-         u7CQ9KZ+YUG7aZj4qRTBIvRzr6RIORT0kPnp/E6OGU39Kauz84egtgWbd/Jkz4mIrZu7
-         GQcHQyMzGHKCC5eaT+EEQX+f5IQiXhkbFIW0lDL5b/H1TeCZFAu18rcoWKsuYdOZzFn9
-         QBsKmBoAWRSL6HOhBSRN8UW8x8c41RQxvAOxxdoRQyRo8wv5DDEq5uitM9DZspR+gGkV
-         mA5Xkofkw9NK8O5CLSxiqdF2LNcYBLWNvj6FELc3RMhMjCtiIW89ldbJ9zX7X/hRWm2v
-         wY2g==
-X-Gm-Message-State: AOAM533q+ojW7QCE1Kq7wd3PRASnHo4q/IJBLR+K3Fuu5KTjjfeBVByd
-        mONGTRdRV6q1y6s/1NM6JIfKpqlPyvJBEf1ZZPLAEg==
-X-Google-Smtp-Source: ABdhPJwpFp41/iqnZPbR9ZaIh0yqzdNQJ50wKIrTOJk31V+lLXBS8CnYFjtdxBlZoVA+/iYDktEcyuwVqP1YU3MRL04=
-X-Received: by 2002:a25:d4d7:: with SMTP id m206mr9441434ybf.332.1602141753828;
- Thu, 08 Oct 2020 00:22:33 -0700 (PDT)
+        bh=Ui8WkZ8ZsqWNVKFISnxizxdl1xBQtE0ojtcqIbBf85o=;
+        b=LPq8pX2vXK1fy5Fl633yagsi7GTaUD0h1Jm8Hj4jT/ZZb2YmlAihzH60MFb0uBQ0bz
+         B5wV079gK0QJ+Kouv3D1PDozZTPbl94Eyx3l0+Tvxa4A8NDvDMmJaSlZM9kYg1HvY7gr
+         SON5OVWUVoT8G03bH07cR7+sgVKK6O/AlPsDdn2SX9hD7K0lnr6N8ARSuA8bHNxuAie3
+         5RETmNyzNEpJDgsGF/zwMrGntF4x3r5hDPuij9rQfdcmwcfOOv1l65g5zoowFAQra72/
+         BZEka2VNfrr2raa7m/28u+PhTZdaNIoHS77bQ751Uvo0xgnqQOXW4jUGDBmppF92Ouj4
+         dMbw==
+X-Gm-Message-State: AOAM533u6uP9Emit5x3RgnGwr3hKsM8HcBHgjcjkobeB/DaF+5LW5X+j
+        uK5RH7F8y1kioe/eGEmGEPGIwP71DQnNWHXqfI4fQA==
+X-Google-Smtp-Source: ABdhPJy3F0IZWGCXcT7DTnuCU2t5bEV1GI8WhdMxAAqDMxgLl6e5j0szfklCmFBV9PnPK7/VfntIN7R+bRVO1DC8GEg=
+X-Received: by 2002:a4a:c011:: with SMTP id v17mr4481557oop.89.1602141806038;
+ Thu, 08 Oct 2020 00:23:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201007184403.1902111-1-axelrasmussen@google.com> <20201007184403.1902111-2-axelrasmussen@google.com>
-In-Reply-To: <20201007184403.1902111-2-axelrasmussen@google.com>
-From:   Michel Lespinasse <walken@google.com>
-Date:   Thu, 8 Oct 2020 00:22:21 -0700
-Message-ID: <CANN689E_uE3MosPqVJwG71Trwo15CGNJB2H5+U_Gg47FtPLbxA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] tracing: support "bool" type in synthetic trace events
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-8-daniel.vetter@ffwll.ch> <852a74ec-339b-4c7f-9e29-b9736111849a@nvidia.com>
+In-Reply-To: <852a74ec-339b-4c7f-9e29-b9736111849a@nvidia.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 8 Oct 2020 09:23:14 +0200
+Message-ID: <CAKMK7uEa1+f+34qeLo9F3-SvYpOKtGmQ+8sDtbEBmFeXkCx9mw@mail.gmail.com>
+Subject: Re: [PATCH 07/13] mm: close race in generic_access_phys
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Rik van Riel <riel@redhat.com>,
+        Benjamin Herrensmidt <benh@kernel.crashing.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Hugh Dickins <hugh@veritas.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Daniel Vetter <daniel.vetter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 11:44 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> It's common [1] to define tracepoint fields as "bool" when they contain
-> a true / false value. Currently, defining a synthetic event with a
-> "bool" field yields EINVAL. It's possible to work around this by using
-> e.g. u8 (assuming sizeof(bool) is 1, and bool is unsigned; if either of
-> these properties don't match, you get EINVAL [2]).
+On Thu, Oct 8, 2020 at 2:44 AM John Hubbard <jhubbard@nvidia.com> wrote:
 >
-> Supporting "bool" explicitly makes hooking this up easier and more
-> portable for userspace.
+> On 10/7/20 9:44 AM, Daniel Vetter wrote:
+> > Way back it was a reasonable assumptions that iomem mappings never
+> > change the pfn range they point at. But this has changed:
+> >
+> > - gpu drivers dynamically manage their memory nowadays, invalidating
+> >    ptes with unmap_mapping_range when buffers get moved
+> >
+> > - contiguous dma allocations have moved from dedicated carvetouts to
+>
+> s/carvetouts/carveouts/
+>
+> >    cma regions. This means if we miss the unmap the pfn might contain
+> >    pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> >
+> > - even /dev/mem now invalidates mappings when the kernel requests that
+> >    iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> >    ("/dev/mem: Revoke mappings when a driver claims the region")
+>
+> Thanks for putting these references into the log, it's very helpful.
+> ...
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index fcfc4ca36eba..8d467e23b44e 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -4873,28 +4873,68 @@ int follow_phys(struct vm_area_struct *vma,
+> >       return ret;
+> >   }
+> >
+> > +/**
+> > + * generic_access_phys - generic implementation for iomem mmap access
+> > + * @vma: the vma to access
+> > + * @addr: userspace addres, not relative offset within @vma
+> > + * @buf: buffer to read/write
+> > + * @len: length of transfer
+> > + * @write: set to FOLL_WRITE when writing, otherwise reading
+> > + *
+> > + * This is a generic implementation for &vm_operations_struct.access for an
+> > + * iomem mapping. This callback is used by access_process_vm() when the @vma is
+> > + * not page based.
+> > + */
+> >   int generic_access_phys(struct vm_area_struct *vma, unsigned long addr,
+> >                       void *buf, int len, int write)
+> >   {
+> >       resource_size_t phys_addr;
+> >       unsigned long prot = 0;
+> >       void __iomem *maddr;
+> > +     pte_t *ptep, pte;
+> > +     spinlock_t *ptl;
+> >       int offset = addr & (PAGE_SIZE-1);
+> > +     int ret = -EINVAL;
+> > +
+> > +     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+> > +             return -EINVAL;
+> > +
+> > +retry:
+> > +     if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
+> > +             return -EINVAL;
+> > +     pte = *ptep;
+> > +     pte_unmap_unlock(ptep, ptl);
+> >
+> > -     if (follow_phys(vma, addr, write, &prot, &phys_addr))
+> > +     prot = pgprot_val(pte_pgprot(pte));
+> > +     phys_addr = (resource_size_t)pte_pfn(pte) << PAGE_SHIFT;
+> > +
+> > +     if ((write & FOLL_WRITE) && !pte_write(pte))
+> >               return -EINVAL;
+> >
+> >       maddr = ioremap_prot(phys_addr, PAGE_ALIGN(len + offset), prot);
+> >       if (!maddr)
+> >               return -ENOMEM;
+> >
+> > +     if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
+> > +             goto out_unmap;
+> > +
+> > +     if (pte_same(pte, *ptep)) {
+>
+>
+> The ioremap area is something I'm sorta new to, so a newbie question:
+> is it possible for the same pte to already be there, ever? If so, we
+> be stuck in an infinite loop here.  I'm sure that's not the case, but
+> it's not yet obvious to me why it's impossible. Resource reservations
+> maybe?
 
-Acked-by: Michel Lespinasse <walken@google.com>
-
-Looks fine to me, but you really want to get Steven's opinion over mine here :)
+It's just buggy, it should be !pte_same. And I need to figure out how
+to test this I guess.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
