@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7229287CB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FE1287CB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgJHUAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        id S1729654AbgJHUAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:00:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729454AbgJHUAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:00:06 -0400
+        id S1729451AbgJHUAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 16:00:05 -0400
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602187205;
-        bh=eZsDfZl5sMC9EEWPMUZ2j8FlHfnnmv/xFAcWNb6R59U=;
+        bh=1WhE5EzPegLl39at06cilTCOFsyWTja12hZlDpWb/d4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WjcX2uHrv0Xbas8veuzNPB4flcN7rXquCQ0Pk/sg9WhCDaJvl06geKEiqeONC6rbA
-         CPQXolfyVmvGcBjMrJi3VrhPIQHL5+IDtRl1TcoPP+1Z6XEzWnSOvVCpyqfiTklnEN
-         fzHDdOHmi7TgZg5aoR0baLLMDDNa916IAmaK8D7s=
+        b=Ev69BPsUnGFThD4QuhjsMdaITkLXmaCxF1IF1nEtbtZ5WyP0MB4/DF23UujrfOZEb
+         k2v9b6PnFSqsV+R6ZwBZswxvbCsO+YnCkhirg4GIo93a9y3C6Z7/rovZElPtaLdXEh
+         fNDquAxg25EMer+Ql6/V8t3O+arZ7XN/drZBZbEE=
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: wireless: nl80211: fix out-of-bounds access in
- nl80211_del_key()
+Subject: Re: [PATCH net] bridge: Netlink interface fix.
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160218720521.8125.768342314968863398.git-patchwork-notify@kernel.org>
+Message-Id: <160218720516.8125.842220080436586129.git-patchwork-notify@kernel.org>
 Date:   Thu, 08 Oct 2020 20:00:05 +0000
-References: <20201007035401.9522-1-anant.thazhemadam@gmail.com>
-In-Reply-To: <20201007035401.9522-1-anant.thazhemadam@gmail.com>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+b1bb342d1d097516cbda@syzkaller.appspotmail.com,
-        johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20201007120700.2152699-1-henrik.bjoernlund@microchip.com>
+In-Reply-To: <20201007120700.2152699-1-henrik.bjoernlund@microchip.com>
+To:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+Cc:     davem@davemloft.net, roopa@nvidia.com, nikolay@nvidia.com,
+        kuba@kernel.org, bridge@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, horatiu.vultur@microchip.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -42,21 +40,22 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Wed,  7 Oct 2020 09:24:01 +0530 you wrote:
-> In nl80211_parse_key(), key.idx is first initialized as -1.
-> If this value of key.idx remains unmodified and gets returned, and
-> nl80211_key_allowed() also returns 0, then rdev_del_key() gets called
-> with key.idx = -1.
-> This causes an out-of-bounds array access.
+On Wed, 7 Oct 2020 12:07:00 +0000 you wrote:
+> This commit is correcting NETLINK br_fill_ifinfo() to be able to
+> handle 'filter_mask' with multiple flags asserted.
 > 
-> Handle this issue by checking if the value of key.idx after
-> nl80211_parse_key() is called and return -EINVAL if key.idx < 0.
+> Fixes: 36a8e8e265420 ("bridge: Extend br_fill_ifinfo to return MPR status")
+> 
+> Signed-off-by: Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+> Reviewed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Suggested-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+> Tested-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - net: wireless: nl80211: fix out-of-bounds access in nl80211_del_key()
-    https://git.kernel.org/netdev/net/c/3dc289f8f139
+  - [net] bridge: Netlink interface fix.
+    https://git.kernel.org/netdev/net/c/b6c02ef54913
 
 You are awesome, thank you!
 --
