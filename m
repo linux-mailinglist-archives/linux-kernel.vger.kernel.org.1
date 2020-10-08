@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E956E286DD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 06:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D10B286DE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgJHExw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 00:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgJHExw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 00:53:52 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E87D2087D;
-        Thu,  8 Oct 2020 04:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602132831;
-        bh=iqmUTBIDdUuqz2KotJy15SIZ9KrQbHnFX5lfzKeQ8X8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zktop6C6VdZF/5FN0Eciv9w+xFxDlnIdaILb/s9qtZBfyPx+q5D3Sx9GI8PWc20Ps
-         hQlfzjctLAfe24Xcx/x3YsBmwEXtfmsGTxshPYNsdm44s7rvq2yGH0WFz6SZxj+TlJ
-         op+mPvbi9XEOBV2WGzA2IQYp+l4tIcPrSXFrIOis=
-Date:   Thu, 8 Oct 2020 06:54:35 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] misc: Kconfig: add a new dependency for HISI_HIKEY_USB
-Message-ID: <20201008045435.GC163423@kroah.com>
-References: <CALAqxLU672fOHudfvZWDEoO=fHYt79isz35e9EaJAsvTCg5How@mail.gmail.com>
- <0e49432d0db9ee8429a9923a1d995935b6b83552.1602047370.git.mchehab+huawei@kernel.org>
- <20201008021802.GA2858196@ubuntu-m3-large-x86>
+        id S1728376AbgJHFD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgJHFD5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:03:57 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71760C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 22:03:57 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id i12so4428499ota.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 22:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y4J6xZLLT7X+F7OLOzqqVjMYajEePxtfk9UzEIVuZt0=;
+        b=kPUNcT6En9JIRrz2QtGnFe3Selq9hqXUXprs+7y6un8lFV/TiArK5U3JSZO6nA0HXc
+         EU4OZInvsC8NfhGrNcJXbKRwIFPmMl52gGu1MbN1wkmVtqNJXZnkisUPsHD1g8cpTvTP
+         /vYBDakKhR3/pdkBfiqsry4OoWqlMvulH6vI0ZzHJz2wwj3Xt3EF7CsCwU6oleYGE1xW
+         Mn+9FWxvPmlHuAGmHkToJ27FQbxcncnyjXun8PnvmbTdM9TevYBPVs8KoHB/UKiPru74
+         oGLab6xbAPZlonR8LD/jDVDjWC/ksf7nTNlNEazWJtI7qa74TS+7TctEknxblIXbVaAW
+         cXvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y4J6xZLLT7X+F7OLOzqqVjMYajEePxtfk9UzEIVuZt0=;
+        b=HBdD9glBPkp6koW9sjANJVywOazoiU9mPolMNP1MGl4GquzfmdYqhxFAV1512k1BvD
+         jYaEfv20ov1sS/EpOPg5HlMbdKA/mpQIkrYHzMgZQzhx29TrzV5oOjzxxa6u9fC4uHdf
+         vNANISg/1fMgriOrAfgQRwJctEZ93oZkX7U2pM5B7QpTtG04OWKazgSV3TRBxjscEP6E
+         BGPX4jPWZVAKHzODb8Ce1SfgTpBOzj6smcE0Sd1dgaQbqEDxLnL2p5XwFNCtg5Ilscos
+         BXy54f1IfbB7ZKvRyMl+4uL8mTMXqoLdo3sflNhSRj2PgnFazVrIa2UEWogd1+8uwut1
+         47Iw==
+X-Gm-Message-State: AOAM532DaPzlTYMXn5daE9A9uXNTc/BnpFK6P2LS2br497izlTDiVn3X
+        efTyZI7N9gaSWrrXC17E+Uxum8cVXJcaHD4Tnk1VmA==
+X-Google-Smtp-Source: ABdhPJz3Gy6/xfKW2fu6IJ5k2Afzci///E5IEtsLrgMBtd+osJAFKkvJwdqpsc7KPM9P0mBGYQzaZrz31q723RwT+C0=
+X-Received: by 2002:a05:6830:196:: with SMTP id q22mr3771201ota.221.1602133436666;
+ Wed, 07 Oct 2020 22:03:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008021802.GA2858196@ubuntu-m3-large-x86>
+References: <20201003040257.62768-1-john.stultz@linaro.org>
+ <20201003040257.62768-8-john.stultz@linaro.org> <20201005134528.GA11644@infradead.org>
+In-Reply-To: <20201005134528.GA11644@infradead.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 7 Oct 2020 22:03:43 -0700
+Message-ID: <CALAqxLWSq3szE40hC_m-qpOOH1193jYLOT1_ZZh-eW9U0gnG8w@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
+ re-using the system heap
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        "??rjan Eide" <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 07:18:02PM -0700, Nathan Chancellor wrote:
-> On Wed, Oct 07, 2020 at 07:09:54AM +0200, Mauro Carvalho Chehab wrote:
-> > As warned by Randy:
-> > 
-> > 	on x86_64:
-> > 	CONFIG_USB_ROLE_SWITCH=m
-> > 	and HISI_HIKEY_USB=y.
-> > 
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_remove':
-> > 	hisi_hikey_usb.c:(.text+0x61): undefined reference to `usb_role_switch_unregister'
-> > 	ld: hisi_hikey_usb.c:(.text+0xa4): undefined reference to `usb_role_switch_put'
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `hub_usb_role_switch_set':
-> > 	hisi_hikey_usb.c:(.text+0xd3): undefined reference to `usb_role_switch_get_drvdata'
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `relay_set_role_switch':
-> > 	hisi_hikey_usb.c:(.text+0x54d): undefined reference to `usb_role_switch_set_role'
-> > 	ld: drivers/misc/hisi_hikey_usb.o: in function `hisi_hikey_usb_probe':
-> > 	hisi_hikey_usb.c:(.text+0x8a5): undefined reference to `usb_role_switch_get'
-> > 	ld: hisi_hikey_usb.c:(.text+0xa08): undefined reference to `usb_role_switch_register'
-> > 	ld: hisi_hikey_usb.c:(.text+0xa6e): undefined reference to `usb_role_switch_put'
-> > 
-> > Make it dependent on CONFIG_USB_ROLE_SWITCH.
-> > 
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/misc/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> > index e19e1dcceb41..7cee2b72c09e 100644
-> > --- a/drivers/misc/Kconfig
-> > +++ b/drivers/misc/Kconfig
-> > @@ -459,6 +459,7 @@ config PVPANIC
-> >  config HISI_HIKEY_USB
-> >  	tristate "USB GPIO Hub on HiSilicon Hikey 960/970 Platform"
-> >  	depends on (OF && GPIOLIB) || COMPILE_TEST
-> > +	depends on CONFIG_USB_ROLE_SWITCH
-> 
-> Shouldn't this be
-> 
-> depends on USB_ROLE_SWITCH
-> 
-> ? Now it will never be selectable.
+On Mon, Oct 5, 2020 at 6:45 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> How is this going to deal with VIVT caches?
 
-{sigh}
+Hrm. That's a good question.   I'm not sure I totally have my head
+around it but, I guess we could make sure to call
+invalidate_kernel_vmap_range() in begin_cpu_access()  and
+flush_kernel_vmap_range() in end_cpu_access() rather then exiting out
+early as we do now?
 
-Yes, that is correct.
+Unless you have better guidance?
 
-Mauro, can you send a fix-up patch for this, as your original is now in
-my tree.
+Worse case we could check CONFIG_CPU_CACHE_VIVT and not register the
+system-uncached heap.
 
-thanks,
-
-greg k-h
+thanks
+-john
