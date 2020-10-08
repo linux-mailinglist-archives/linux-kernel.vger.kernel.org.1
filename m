@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFACA28730A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23418287310
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728887AbgJHLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:02:17 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:48477 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbgJHLCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:02:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602154933; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=eJBexxd8ncXOiQfY+iAAWapiGqaBRPOkeIcaQjW/Sdw=; b=YWrjF8eSkGmjZXbnNp0Q7beglqF3IQsNz+GyWTHUXqiiU/8lJcWxSGTbuoMsBCad4ju96qwW
- qPRl/3jQrDJlCSpt2Cx1IiuZoX6Nx14EO3SUkMxLmkoIUwTWRAE4L7H5Q69f1v+24ZXcZdPU
- aOSrfe3SJPVN99twW13grR0hlYw=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f7ef170856d9308b50ff985 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 11:01:04
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0C905C433F1; Thu,  8 Oct 2020 11:01:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6B91C433CA;
-        Thu,  8 Oct 2020 11:01:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6B91C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 0/7] wfx: move out from the staging area
-References: <20201007101943.749898-1-Jerome.Pouiller@silabs.com>
-        <20201007105513.GA1078344@kroah.com> <87ft6p2n0h.fsf@codeaurora.org>
-        <16184307.3FagCOgvEJ@pc-42>
-Date:   Thu, 08 Oct 2020 14:00:59 +0300
-In-Reply-To: <16184307.3FagCOgvEJ@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
- Pouiller"'s message of "Thu,
-        08 Oct 2020 12:10:08 +0200")
-Message-ID: <87tuv50yok.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1729741AbgJHLCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726273AbgJHLCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 07:02:45 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99351C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 04:02:45 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w21so3688251pfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 04:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=seYFO3MZi0exVs/ZUxcuhNhvgzjGR2rTrbYBZtZEJqA=;
+        b=kMyxFGgBawxNBTQkES346ihp5Px1Yewo0rFQz6YH6VmOiboGAuW+Kc7SatGALM65E0
+         iT7DA4ut81fCnHG53ACbd2vu34dEZt/jAsbai6qqt17HAlTY+4prLKD5NUX9C8CMaYvJ
+         9RjhhL8f+09SPFEHjXfh+qlAghK5R1SmwXPAKuaVyXPJMtWeTQdCZcP0F5Lc6BvXWxYJ
+         fVeS6xoGB+hlBizvf9oPRFdHnG0QTdXc8u/4In2veNI0XJs1J84buFuAh/xIHy47ZFk4
+         r/HiywwhpNlOyDBX80X5tKVXy4JNljsxJzA9cGD6qr0tkGXNNqF7WXoOli+64cPW9BwG
+         aXYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=seYFO3MZi0exVs/ZUxcuhNhvgzjGR2rTrbYBZtZEJqA=;
+        b=ZiVoGXSE8CEg2XoHa5K564tEKNkersIHlTlcxG1nPCvj0Z0p7WIIVVKt+bmKATnRX6
+         CtaoeTVhKaaXEJeYUC6fGwR+hqHHBpElpavNO0JIo2FiLRCpxfCoxzLlRDlNEg8fnJs9
+         gOPzz5P4sq6HtM6k0tDXvOx8rYLn0DL6NCIe232SWVjWmHodipm7HHTQsh5uw0bneC/C
+         TItK2oBP48I1MyREF6ArjcCscoBWPTj12GCwDd0OQpMrLcHEUC+apGKJj20Vc3v1g2d5
+         /Ac8GxGf5bp4vaO0vfj/eUh6fHoduRKNilkuUGy5dOX41AAeTT1qz6YZ7qatoSw9mF8+
+         JB1g==
+X-Gm-Message-State: AOAM532SSWYWrRwlWL/9CI395JCTJrjyN1RpJDA+fV5JjS0W59R0t3Kg
+        WE3L8nfF+6qrxYBkefaR6jBydA==
+X-Google-Smtp-Source: ABdhPJxjpMounYBj09y8+gSGlN9nIF2DacFiUHEb7lVsdfQZ7veWAJwaqYxBeajp2YolegGCcyBJ+Q==
+X-Received: by 2002:a63:ec4c:: with SMTP id r12mr6743483pgj.74.1602154965062;
+        Thu, 08 Oct 2020 04:02:45 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id v3sm7015641pjk.23.2020.10.08.04.02.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 Oct 2020 04:02:44 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 16:32:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, daniel.lezcano@linaro.org,
+        morten.rasmussen@arm.com, chris.redpath@arm.com
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
+References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+ <20200924095347.32148-3-nicola.mazzucato@arm.com>
+ <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
+ <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
+On 07-10-20, 13:58, Nicola Mazzucato wrote:
+> Hi Viresh,
+> 
+> performance controls is what is exposed by the firmware through a protocol that
+> is not capable of describing hardware (say SCMI). For example, the firmware can
+> tell that the platform has N controls, but it can't say to which hardware they
+> are "wired" to. This is done in dt, where, for example, we map these controls
+> to cpus, gpus, etc.
+> 
+> Let's focus on cpus.
+> 
+> Normally we would have N of performance controls (what comes from f/w)
+> that that correspond to hardware clock/dvfs domains.
+> 
+> However, some firmware implementations might benefit from having finer
+> grained information about the performance requirements (e.g.
+> per-CPU) and therefore choose to present M performance controls to the
+> OS. DT would be adjusted accordingly to "wire" these controls to cpus
+> or set of cpus.
+> In this scenario, the f/w will make aggregation decisions based on the
+> requests it receives on these M controls.
+> 
+> Here we would have M cpufreq policies which do not necessarily reflect the
+> underlying clock domains, thus some s/w components will underperform
+> (EAS and thermal, for example).
+> 
+> A real example would be a platform in which the firmware describes the system
+> having M per-cpu control, and the cpufreq subsystem will have M policies while
+> in fact these cpus are "performance-dependent" each other (e.g. are in the same
+> clock domain).
 
-> On Thursday 8 October 2020 09:30:06 CEST Kalle Valo wrote:
-> [...]
->> Yes, the driver needs to be reviewed in linux-wireless list. I recommend
->> submitting the whole driver in a patchset with one file per patch, which
->> seems to be the easiest way to review a full driver. The final move will
->> be in just one commit moving the driver, just like patch 7 does here. As
->> an example see how wilc1000 review was done.
->
-> I see. I suppose it is still a bit complicated to review? Maybe I could
-> try to make things easier.
->
-> For my submission to staging/ I had taken time to split the driver in an
-> understandable series of patches[1]. I think it was easier to review than
-> just sending files one by one. I could do the same thing for the
-> submission to linux-wireless. It would ask me a bit of work but, since I
-> already have a template, it is conceivable.
->
-> Do you think it is worth it, or it would be an unnecessary effort?
->
-> [1]
-> https://lore.kernel.org/driverdev-devel/20190919142527.31797-1-Jerome.Pou=
-iller@silabs.com/
->      or commits a7a91ca5a23d^..40115bbc40e2
+If the CPUs are in the same clock domain, they must be part of the
+same cpufreq policy.
 
-I don't know how others think, but I prefer to review new drivers "one
-file per patch" style as I get to see the big picture easily. And
-besides, splitting the driver like that would be a huge job for you. I
-don't think it's worth your time in this case. And making changes in the
-driver during review process becomes even more complex.
+> This performance dependency information is essential for some
+> components that take information from the cpufreq policy.
+> 
+> To restore functionality we can use the optional node
+> 'cpu-performance-dependencies' in dt which will provide such dependency
+> information and we can add a new cpumask 'dependency_cpus' in policy.
+> 
+> Hope it gives some clarity.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Some, but I am still confused :(
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Can you give a real example, with exact number of CPUs, how they share
+clocks/voltage domains and what else the firmware needs in terms of
+performance-domains ? That may make it easier for me to understand it.
+
+-- 
+viresh
