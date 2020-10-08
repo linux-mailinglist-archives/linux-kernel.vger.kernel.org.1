@@ -2,96 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E65286E4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E34286E4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgJHFtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgJHFtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:49:18 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37EA420725;
-        Thu,  8 Oct 2020 05:49:16 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 08:49:13 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20201008054913.GE13580@unreal>
-References: <20200927062337.GE2280698@unreal>
- <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
- <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
- <20200928124937.GN9916@ziepe.ca>
- <CAHk-=wj6aTsqq6BAUci-NYJ3b-EkDwVgz_NvW_kW8KBqGocouQ@mail.gmail.com>
- <20200928172256.GB59869@xz-x1>
- <CAHk-=wi=iCnYCARbPGjkVJu9eyYeZ13N64tZYLdOB8CP5Q_PLw@mail.gmail.com>
- <20200928183928.GR9916@ziepe.ca>
- <CAHk-=wgu+6Cx_=U1Vh4Fzm97JA1k76fS905uEAVK-2eJ_1KukQ@mail.gmail.com>
- <CAHk-=wiWr+gO0Ro4LvnJBMs90OiePNyrE3E+pJvc9PzdBShdmw@mail.gmail.com>
+        id S1728409AbgJHFwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:52:19 -0400
+Received: from smtprelay0103.hostedemail.com ([216.40.44.103]:33388 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726245AbgJHFwT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:52:19 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 0F3F6127F;
+        Thu,  8 Oct 2020 05:52:18 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:2903:3138:3139:3140:3141:3142:3622:3865:3867:3868:3870:3871:3872:3874:4250:4321:5007:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: toe57_3515d0f271d5
+X-Filterd-Recvd-Size: 1362
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  8 Oct 2020 05:52:16 +0000 (UTC)
+Message-ID: <2279bdda913b31bdea68c23a9889e056c3947201.camel@perches.com>
+Subject: Re: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
+From:   Joe Perches <joe@perches.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 07 Oct 2020 22:52:15 -0700
+In-Reply-To: <20201008054128.GD13580@unreal>
+References: <cover.1602122879.git.joe@perches.com>
+         <20201008054128.GD13580@unreal>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiWr+gO0Ro4LvnJBMs90OiePNyrE3E+pJvc9PzdBShdmw@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:50:03PM -0700, Linus Torvalds wrote:
-> On Mon, Sep 28, 2020 at 12:36 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > So I'll do the pte wrprotect/restore removal. Anybody willing to do
-> > and test the sequence count approach?
->
-> So the wrprotect removal is trivial, with most of it being about the comments.
->
-> However, when I look at this, I am - once again - tempted to just add a
->
->         if (__page_mapcount(page) > 1)
->                 return 1;
->
-> there too. Because we know it's a private mapping (shared mappings we
-> checked for with the "is_cow_mapping()" earlier), and the only case we
-> really care about is the one where the page is only mapped in the
-> current mm (because that's what a write pinning will have done, and as
-> mentioned, a read pinning doesn't do anything wrt fork() right now
-> anyway).
->
-> So if it's mapped in another mm, the COW clearly hasn't been broken by
-> a pin, and a read pinned page had already gone through a fork.
->
-> But the more I look at this code, the more I go "ok, I want somebody
-> to actually test this with the rdma case".
->
-> So I'll attach my suggested patch, but I won't actually commit it. I'd
-> really like to have this tested, possibly _together_ with the sequence
-> count addition..
+On Thu, 2020-10-08 at 08:41 +0300, Leon Romanovsky wrote:
+> On Wed, Oct 07, 2020 at 07:36:23PM -0700, Joe Perches wrote:
+> > A recent commit added a sysfs_emit and sysfs_emit_at to allow various
+> > sysfs show functions to ensure that the PAGE_SIZE buffer argument is
+> > never overrun and always NUL terminated.
+> 
+> Unfortunately but the sysfs_emit commit is not in rdma-next tree yet.
 
-Hi Linus,
-
-We tested the suggested patch for last two weeks in our nightly regressions
-and didn't experience any new failures. It looks like it is safe to use
-it, but better to take the patch during/after merge window to minimize risk
-of delaying v5.9.
-
-Thanks
-
->
->                Linus
+Likely it'll still apply fairly well when the sysfs_emit commit is...
 
 
