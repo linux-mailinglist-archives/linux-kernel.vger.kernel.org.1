@@ -2,109 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45BF28770A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD6628770C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730988AbgJHPVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:21:12 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:38701 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730550AbgJHPVL (ORCPT
+        id S1730944AbgJHPWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730550AbgJHPWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:21:11 -0400
-Received: by mail-lf1-f67.google.com with SMTP id c141so313677lfg.5;
-        Thu, 08 Oct 2020 08:21:09 -0700 (PDT)
+        Thu, 8 Oct 2020 11:22:37 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A33C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 08:22:36 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id m6so7073458wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 08:22:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FpuEMVNbSmMookoZuIiFxOhuCjbkYVS6c3Dh28U/Kf4=;
+        b=PQ0kFEj3WXMAAhE+DjOOdKkt20OTfc4JbX3UoVo2P6SgQ3+tif3Be3U/wXVVEB/IUu
+         qhGSMOWmixDG66VDaepIkY2QFMukiDUu5zjUGOmAsCKnz9k4rBJrwd+Zjq8tAO0cQKXZ
+         T4NstH+yuwzjEJ+9RPtb8sXmluqZhah/gifGNif2NRFcehWBrDvNY1eEbw12rLvqQGT0
+         feZVeIFveLz5XdmQB5DqfPfAuWqouZDiWnWXI4IRDNSL4AROM6w14wd9kKRHZ8u4ipY1
+         QrLQdk0CSq2FXE9HGpzr4ilbyRKB1SLG9owgFo2buVAS6sjKmewa4vKieycj9Pa6GdMW
+         ezbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qdx7FXoulf6+KPVkuCgYPh/M6PGV5WCjB+JKWP2F7cM=;
-        b=J20gJy+UhC0NVGIXtG4TrgXsA/qMY4vqAVccPoDoLXAI2ypZaZhrQmUooA3eNshPdI
-         eqaoRy3ArHbVk84GCdMRnRogUhYSQ4ZO9GAfBEQ7c95NLIuRVMiumR1AJb9+7ZJMGW7D
-         SqYMj+O8ZWQ4eOp37+jdGIEJFBJ2Gdf1tSMe0K+bxzAgmsUoIExwSvG0PHzd2gwfBAze
-         M/CXPk+WPejf6qHNH68mYCbOZfHEWhaIn0UqvHvsS5YgxXG8mDe0y/Ir8eXg5RY71pBA
-         nMX77nLbla7/EGszRPSHSz/BlaWAYFJzHgWxooppHhJumT4feNQAYWe6lSfUEK4zBY/W
-         boBQ==
-X-Gm-Message-State: AOAM530ZShypIGd0ckNir/qhdfrTfq+FMjMJLnsLlGYwlSG7gySjMVSZ
-        oqdd1acoPEnbsrjIX5f4C5U=
-X-Google-Smtp-Source: ABdhPJy+Ly+jsWC46OYzqg9Ez1Qcu80smXv99kE8n47XWxVqqo9MljznCwTRar6pNDX4j0Il5aMkiA==
-X-Received: by 2002:a05:6512:1182:: with SMTP id g2mr479865lfr.198.1602170468914;
-        Thu, 08 Oct 2020 08:21:08 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id z84sm166953lfa.45.2020.10.08.08.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 08:21:08 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kQXj5-0007GR-7u; Thu, 08 Oct 2020 17:21:03 +0200
-Date:   Thu, 8 Oct 2020 17:21:03 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: ftdi_sio: Fix serial port stall after resume
-Message-ID: <20201008152103.GK26280@localhost>
-References: <20200929193327.GA13987@ls3530.fritz.box>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FpuEMVNbSmMookoZuIiFxOhuCjbkYVS6c3Dh28U/Kf4=;
+        b=hTlPszqDOja+2j1FJTpPDatb7hRgddCQ2MEP/RLT3bINZWblr6lk1Sqe1+1JzvNmXh
+         mFx/WCnatRiDFlKCv235G+4unDi2BMOBm5YD4LkCq7x9OUGimZ4TIhhchu6FT/RgP9EL
+         gu7iErk1ZUMmYgh4hSauRguNMzh5jiq3OXuhZaSJfjxD/USbwXOu7Cf0HT974Uoi7nz0
+         Q9usJm4ME63/zjnVcUogbH9LcpXQqdAC4PczpDh8ZJMWkx+oA283HpucwHR6cz/uO3Ni
+         C4M4NdPNYghLM/LONFPnh6OEC6NYyRY/S699Q5Grx/2QKmmAsRhg2XBaCxBEdNKLPJ/7
+         vt/Q==
+X-Gm-Message-State: AOAM5302G8cAj09jTWyZCvouBa1/BF2hhK3q43SrYnIupcJD14ZnqvGa
+        GSjY3nVoGlczFPGnnANJCfYFYHmbvdzup0BQf1mCMA==
+X-Google-Smtp-Source: ABdhPJyp7iZ8KqryWvP3KdG+rynu11U5yw1vmis10aBL3RpHmAgCs1hNX5JOKeyoNgsZWmhGgjQ2IeHou0cOXXPXloE=
+X-Received: by 2002:adf:b641:: with SMTP id i1mr9589309wre.376.1602170555340;
+ Thu, 08 Oct 2020 08:22:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929193327.GA13987@ls3530.fritz.box>
+References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-2-jolsa@kernel.org>
+ <20201001190530.GD3999500@krava> <CAM9d7chyjSaqhjjT4myfs5p9ExH-3Rugme-OFaF8454yO4_s1w@mail.gmail.com>
+ <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com>
+ <20201002192944.GH3999500@krava> <CAM9d7cgoaU4wcid46+uScFcZtMZZQR+fijuE7XO1mjC2cLwX-A@mail.gmail.com>
+ <20201008091153.GB656950@krava>
+In-Reply-To: <20201008091153.GB656950@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 8 Oct 2020 08:22:23 -0700
+Message-ID: <CAP-5=fWM4X_AaFWc97s2m2KpEo7veE01gN9YQtnawbqQU=YH7w@mail.gmail.com>
+Subject: Re: [PATCHv2 1/9] perf tools: Add build id shell test
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 09:33:27PM +0200, Helge Deller wrote:
-> With a 4-port serial USB HUB with FT232BM chips the serial ports stop
-> working after a software suspend/resume cycle.
-> Rewriting the latency timer during the resume phase fixes it.
+On Thu, Oct 8, 2020 at 2:12 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Oct 06, 2020 at 10:37:45AM +0900, Namhyung Kim wrote:
+> > On Sat, Oct 3, 2020 at 4:29 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Fri, Oct 02, 2020 at 10:34:51AM -0700, Ian Rogers wrote:
+> > >
+> > > SNIP
+> > >
+> > > > > > +
+> > > > > >  LIBJVMTI = libperf-jvmti.so
+> > > > > >
+> > > > > >  ifndef NO_JVMTI
+> > > > > > @@ -756,6 +763,13 @@ $(OUTPUT)perf-read-vdsox32: perf-read-vdso.c util/find-map.c
+> > > > > >         $(QUIET_CC)$(CC) -mx32 $(filter -static,$(LDFLAGS)) -Wall -Werror -o $@ perf-read-vdso.c
+> > > > > >  endif
+> > > > > >
+> > > > > > +ifndef NO_BUILDID_EX
+> > > > > > +$(OUTPUT)buildid-ex-sha1:
+> > > > > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=sha1 -o $@ -x c -
+> > > > > > +$(OUTPUT)buildid-ex-md5:
+> > > > > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=md5 -o $@ -x c -
+> > > > > > +endif
+> > > > >
+> > > > > Can we just build them in the test shell script instead?
+> > >
+> > > it would solve the build-directory/install-directory
+> > > lookup search.. but it'd need to do detect compiler
+> > > and depend on it as Ian said
+> > >
+> > > do you have some other reason to compile it in test?
+> >
+> > No I just wanted to make it easy to find the binaries
+> > and assumed a compiler is available in the test machine
+> > (which is not true for my company setup.... :-/)
+> >
+> > But otherwise we should keep the binaries somewhere
+> > in the install directory..
+>
+> hum, could we go in with the v3 and then you guys
+> could customize it to what would work for you?
 
-Hmm. This sounds weird. Why would the latency timer make such a
-difference?
+v3 is fine with me, it is progress to have a test. Longer term I hope
+we can have binary dependencies on shell tests and get them installed,
+etc. libperf would be a motivating case.
 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> 
-> diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
-> index 9823bb424abd..8ee6cf6215c1 100644
-> --- a/drivers/usb/serial/ftdi_sio.c
-> +++ b/drivers/usb/serial/ftdi_sio.c
-> @@ -1092,6 +1092,7 @@ static u32 ftdi_232bm_baud_base_to_divisor(int baud, int base);
->  static u32 ftdi_232bm_baud_to_divisor(int baud);
->  static u32 ftdi_2232h_baud_base_to_divisor(int baud, int base);
->  static u32 ftdi_2232h_baud_to_divisor(int baud);
-> +static int ftdi_reset_resume(struct usb_serial *serial);
-> 
->  static struct usb_serial_driver ftdi_sio_device = {
->  	.driver = {
-> @@ -1122,6 +1123,7 @@ static struct usb_serial_driver ftdi_sio_device = {
->  	.set_termios =		ftdi_set_termios,
->  	.break_ctl =		ftdi_break_ctl,
->  	.tx_empty =		ftdi_tx_empty,
-> +	.reset_resume =		ftdi_reset_resume,
->  };
-> 
->  static struct usb_serial_driver * const serial_drivers[] = {
-> @@ -2379,6 +2381,16 @@ static int ftdi_stmclite_probe(struct usb_serial *serial)
->  	return 0;
->  }
-> 
-> +static int ftdi_reset_resume(struct usb_serial *serial)
-> +{
-> +	struct usb_serial_port *port = serial->port[0];
-> +
-> +	if (tty_port_initialized(&port->port))
-> +		write_latency_timer(port);
+Acked-by: Ian Rogers <irogers@google.com>
 
-Why are you only doing this for open ports?
+Thanks,
+Ian
 
-> +
-> +	return usb_serial_generic_resume(serial);
-> +}
-
-And if the device has been reset there may need to reconfigured the
-termios settings for open ports.
-
-Could you expand a bit on what the problem is here?
-
-Johan
+> thanks,
+> jirka
+>
