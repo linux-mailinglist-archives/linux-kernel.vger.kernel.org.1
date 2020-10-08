@@ -2,121 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5C9287574
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76CD287576
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730452AbgJHNvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730390AbgJHNvR (ORCPT
+        id S1729789AbgJHNwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:52:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36672 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726875AbgJHNwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:51:17 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6759AC061755;
-        Thu,  8 Oct 2020 06:51:17 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id y14so4038509pfp.13;
-        Thu, 08 Oct 2020 06:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BGJxnYOQa3Y8yW+6IGpNbRgbyhmWBF9gOjrbgkWUlUk=;
-        b=s0Hn6HSyug6MtbYwXDy5MMovwqe7T9d9Oxc7pEcapI4xBlmdc+UfbrurhqvX2p3DVT
-         P6gIbc1MYrJz7DRZSBFi0LxVLvzsymFVV4Tubd4tzaNMmMuSz4ZemKlUZY8K0/dwaN1E
-         Uomy+N0udyVzRD8Io3JksLlaEKHnZcfmVxgahJRv4gN9qZJH9ephMfNSJkjiQUkqAItL
-         mSx/9kf1MWEDFixqITRwW3RP+3qUWZ8Xi+MZDw2QzxerjkKEVooY0Y4DUw/23LmH1WYo
-         Yi7b+8fA0/gspO8RL+Y0ZNYLdaHbNbqROd2qOhq0hDYeVfQYI1a94KYs25fGZ2H/0zAX
-         1Y7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BGJxnYOQa3Y8yW+6IGpNbRgbyhmWBF9gOjrbgkWUlUk=;
-        b=avIrzkSw49Yh42c6ECcAlby6b/RugOcrJKzc/vRY7tJfZiuPUX4Ih/AxUbYO03m/Nk
-         nR7HCIsbmy4qYjWloGp9ONJUUJSkahhqUiy4iiG8vF2EGjZNkBy0iJyDwDos2n8yArLb
-         TH+Zp5y1l2vdngg2I00HcOIbaizoqzE5iFd1IZ/TD8ebEmx63LZ8kaUlZRBeWPh9KmOY
-         1gOdnRZWg+rgs7s4Z2hDGOnhXjYB4cQpbQ0Y0CA+Zbb69fYsiQwPuR4eaWhGfr7DpcTg
-         gs9gdjz2A5LREZa4r09sn7WR52GU2zFuPFWHE020S81w6JH+s9mlIrYXL85EB/lqztbI
-         oVgg==
-X-Gm-Message-State: AOAM530Yu5xgD1mi4E5Tpf7Zf01bBrHmYdLk/gOTMrnsTAsfh2BfrNwt
-        Wnhc0J2dcBcXgUuTdkK2TbChKas0m4JCXg2Fg6M=
-X-Google-Smtp-Source: ABdhPJwoJblbPsnDYvaj+l/dr0UYzgyYoZiqik+faeg+TPsWqAWZUD95BObOBIIJdRqd9nmuAvelvPPj6Cx4kv1vINU=
-X-Received: by 2002:a62:5e81:0:b029:152:2f99:d9e3 with SMTP id
- s123-20020a625e810000b02901522f99d9e3mr7364545pfb.7.1602165076874; Thu, 08
- Oct 2020 06:51:16 -0700 (PDT)
+        Thu, 8 Oct 2020 09:52:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602165155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Id51AkevDvlRXn2T0LeihSzukCE3ghuQz0fO1Hi0XjQ=;
+        b=OCmcnlb1QUnmYbEV+50mrcRS9eEB8eVUDUE6ixuzRyXUQL3WOCw376YXO5Z3H/Cq1XVfy6
+        Sj/lYoFkfv4EBPhiyFW6OCKzyiZZ+KVc0oEPmGLyiw4FdhRP+nDcbpH26/w2Gc4kB3vRvs
+        TQUR8YhUJPt6H6R7coCZ/mNaxHwcfMs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-143-D3XJvrh4PyCG0b9f9Uy62Q-1; Thu, 08 Oct 2020 09:52:31 -0400
+X-MC-Unique: D3XJvrh4PyCG0b9f9Uy62Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43F0618A076B;
+        Thu,  8 Oct 2020 13:52:30 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-114-62.rdu2.redhat.com [10.10.114.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 91BF56EF5D;
+        Thu,  8 Oct 2020 13:52:29 +0000 (UTC)
+Subject: Re: [PATCH] KVM: SVM: Use a separate vmcb for the nested L2 guest
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, wei.huang2@amd.com
+References: <20200917192306.2080-1-cavery@redhat.com>
+ <587d1da1a037dd3ab7844c5cacc50bfda5ce6021.camel@redhat.com>
+ <aaaadb29-6299-5537-47a9-072ca34ba512@redhat.com>
+ <0007205290de75f04f5f2a92b891815438fd2f2f.camel@redhat.com>
+ <fe491158e791fbe4381ee7fbe5aa050b4e78060e.camel@redhat.com>
+ <51d447be4a6f430ed5cc60242457394aceb004e9.camel@redhat.com>
+ <85ec3bfd-e46e-a6fa-b530-4dc87f0c7169@redhat.com>
+ <fd60d936d1856cafc509c14efa7f2b98d8a1e2ce.camel@redhat.com>
+From:   Cathy Avery <cavery@redhat.com>
+Message-ID: <be93feed-7425-32ea-3e64-99d398674bb1@redhat.com>
+Date:   Thu, 8 Oct 2020 09:52:28 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-References: <20201005160307.39201-1-luzmaximilian@gmail.com> <a82e3aff-801d-d116-bbf4-91f3981f713b@redhat.com>
-In-Reply-To: <a82e3aff-801d-d116-bbf4-91f3981f713b@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 8 Oct 2020 16:52:06 +0300
-Message-ID: <CAHp75VeC+5b16+FOJh8PdCbueB13evDjE8g18+-GS3YZeoRd_A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] platform/surface: Create a platform subdirectory
- for Microsoft Surface devices
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fd60d936d1856cafc509c14efa7f2b98d8a1e2ce.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 2:44 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 10/5/20 6:03 PM, Maximilian Luz wrote:
-> > As has come up in the discussion around
-> >
-> >    [RFC PATCH] Add support for Microsoft Surface System Aggregator Module
-> >
-> > it may make sense to add a Microsoft Surface specific platform
-> > subdirectory. Andy has suggested drivers/platform/surface for that.
-> > This series follows said suggestion and creates that subdirectory, as
-> > well as moves Microsoft Surface related drivers over to it and updates
-> > their MAINTAINERS entries (if available) accordingly.
-> >
-> > This series does not modify any existing driver code, symbols, or help
-> > text.
+On 10/8/20 9:11 AM, Maxim Levitsky wrote:
+> On Thu, 2020-10-08 at 08:46 -0400, Cathy Avery wrote:
+>> On 10/8/20 6:54 AM, Maxim Levitsky wrote:
+>>> On Thu, 2020-10-08 at 13:39 +0300, Maxim Levitsky wrote:
+>>>> On Thu, 2020-10-08 at 13:23 +0300, Maxim Levitsky wrote:
+>>>>> On Thu, 2020-10-08 at 07:52 +0200, Paolo Bonzini wrote:
+>>>>>> On 08/10/20 00:14, Maxim Levitsky wrote:
+>>>>>>>> +	if (svm->vmcb01->control.asid == 0)
+>>>>>>>> +		svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+>>>>>>> I think that the above should be done always. The asid field is currently host
+>>>>>>> controlled only (that is L2 value is ignored, selective ASID tlb flush is not
+>>>>>>> advertized to the guest and lnvlpga is emulated as invlpg).
+>>>>>> Yes, in fact I suggested that ASID should be in svm->asid and moved to
+>>>>>> svm->vmcb->asid in svm_vcpu_run.  Then there's no need to special case
+>>>>>> it in nested code.
+>>>>> This makes lot of sense!
+>>>>>> This should be a patch coming before this one.
+>>>>>>
+>>>>>>> 1. Something wrong with memory types - like guest is using UC memory for everything.
+>>>>>>>       I can't completely rule that out yet
+>>>>>> You can print g_pat and see if it is all zeroes.
+>>>>> I don't even need to print it. I know that it is never set anywhere, unless guest writes it,
+>>>>> but now that I look at it, we set it to a default value and there is no code to set it to
+>>>>> default value for vmcb02. This is it. now my fedora guest boots just fine!
+>>>>>
+>>>>> I played a lot with g_pat, and yet this didn't occur to me . I was that close :-(
+>>>>> I knew that it has to be something with memory types, but it never occured to me
+>>>>> that guest just doesn't write IA32_PAT and uses our value which we set in init_vmcb
+>>>>>
+>>>>>
+>>>>>> In general I think it's better to be explicit with vmcb01 vs. vmcb02,
+>>>>>> like Cathy did, but I can see it's a matter of personal preference to
+>>>>>> some extent.
+>>>>> I also think so in general, but in the code that is outside 'is_guest_mode'
+>>>>> IMHO it is better to refer to vmcb01 as vmcb, although now that I think of
+>>>>> it, its not wrong to do so either.
+>>>>>
+>>>>>
+>>>>> My windows hyper-v guest doesn't boot though and I know why.
+>>>>>
+>>>>> As we know the vmcb save area has extra state which vmrun/vmexit don't touch.
+>>>>> Now suppose a nested hypervisor wants to enter a nested guest.
+>>>>>
+>>>>> It will do vmload, which will load the extra state from the nested vmcb (vmcb12
+>>>>> or as I woudl say the vmcb that nested hypervisor thinks that it is using),
+>>>>> to the CPU. This can cause some vmexits I think, but this doesn't matter much.
+>>>>>
+>>>>> Now the nested hypervisor does vmrun. The extra state of L2 guest is in CPU registers,
+>>>>> and it is untouched. We do vmsave on vmcb01 to preserve that state, but later
+>>>>> when we do vmload on vmcb02 prior to vmenter on it, which loads stale state from it.
+>>>>> The same issue happens the other way around on nested vmexit.
+>>>>>
+>>>>> I fixed this by doing nested_svm_vmloadsave, but that should be probably be
+>>>>> optimized with dirty bits. Now though I guess the goal it to make
+>>>>> it work first.
+>>>>>
+>>>>> With this fixed HyperV boots fine, and even passes the 'works' test of booting
+>>>>> the windows 10 with hyperv enabled nested itself and starting the vm inside,
+>>>>> which makes that VM L3 (in addition to windows itself that runs as L3 in relation to hyper-v)
+>>>>>
+>>>>> https://i.imgur.com/sRYqtVV.png
+>>>>>
+>>>>> In summary this is the diff of fixes (just pasted to email, probably mangled):
+>>>>>
+>>>>>
+>>>>> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+>>>>> index 0a06e62010d8c..7293ba23b3cbc 100644
+>>>>> --- a/arch/x86/kvm/svm/nested.c
+>>>>> +++ b/arch/x86/kvm/svm/nested.c
+>>>>> @@ -436,6 +436,9 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+>>>>>           WARN_ON(svm->vmcb == svm->nested.vmcb02);
+>>>>>    
+>>>>>           svm->nested.vmcb02->control = svm->vmcb01->control;
+>>>>> +
+>>>>> +       nested_svm_vmloadsave(svm->vmcb01, svm->nested.vmcb02);
+>>>>> +
+>>>>>           svm->vmcb = svm->nested.vmcb02;
+>>>>>           svm->vmcb_pa = svm->nested.vmcb02_pa;
+>>>>>           load_nested_vmcb_control(svm, &nested_vmcb->control);
+>>>>> @@ -622,6 +625,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>>>>>           if (svm->vmcb01->control.asid == 0)
+>>>>>                   svm->vmcb01->control.asid = svm->nested.vmcb02->control.asid;
+>>>>>    
+>>>>> +       nested_svm_vmloadsave(svm->nested.vmcb02, svm->vmcb01);
+>>>>>           svm->vmcb = svm->vmcb01;
+>>>>>           svm->vmcb_pa = svm->nested.vmcb01_pa;
+>>>>>    
+>>>>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>>>>> index b66239b26885d..ee9f87fe611f2 100644
+>>>>> --- a/arch/x86/kvm/svm/svm.c
+>>>>> +++ b/arch/x86/kvm/svm/svm.c
+>>>>> @@ -1097,6 +1097,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+>>>>>                   clr_cr_intercept(svm, INTERCEPT_CR3_READ);
+>>>>>                   clr_cr_intercept(svm, INTERCEPT_CR3_WRITE);
+>>>>>                   save->g_pat = svm->vcpu.arch.pat;
+>>>>> +               svm->nested.vmcb02->save.g_pat = svm->vcpu.arch.pat;
+>> I had noticed that g_pat was not set in vmcb02 and set it to vmcb01's
+>> value which was not helpful but I did not try the current vcpu value.
+>>
+>> I am getting a #UD which I suspected had something to do with cr3 but
+>> I'll know more after I add your suggestions.
+>>
+>> emu-system-x86-1647  [033] ....  3167.589402: kvm_nested_vmexit_inject:
+>> reason: UD excp ext_inf1: 0x0000000000000000 ext_inf2:
+>> 0x0000000000000000 ext_int: 0x00000000 ext_int_err: 0x00000000
+>>
+>>
+>>>>>                   save->cr3 = 0;
+>>>>>                   save->cr4 = 0;
+>>>>>           }
+>>>>>
+>>>>>
+>>>>>
+>>>>> Best regards,
+>>>>> 	Maxim Levitsky
+>>>>>
+>>>>>> Paolo
+>>>>>>
+>>>> And another thing I spotted before I forget.
+>>>>
+>>>> If we setup a tlb flush in ctl.tlb_ctl of vmcb01, just prior to nested vmentry
+>>>> then this field will be copied to vmcb02 but on next vmexit we clear it in current
+>>>> (that is vmcb02) and that change will not propogate to vmcb01.
+>> ctl.tlb_ctl is dependent on the value of save.cr4 which was not being
+>> set in vmcb02.
+> Not sure I understand. Could you explain?
 >
-> In case you do not know I'm taking over from any as
-> drivers/platform/x86 maintainer.
->
-> I'm fine with the concept of this series, but who is going to maintain
-> this new drivers/platform/surface directory ?
->
-> Ah I see that the first patch answers that question and the plan
-> is to keep this part of the pdx86 maintainership.
->
-> I would prefer for the new dir to have its own
-> MAINTAINERS entry if I'm honest, I would like to try and
-> split maintainership for the surface stuff as follows:
->
-> 1. Who will review (and add their Reviewed-by or ask for improvements
->     or nack) patches to files in this dir?
->
-> 2. Who will gather approved patches apply them to a for-next branch
->     and send them out to Linus during the merge Window?
->
-> I can pick up 2. but I could really use some help with 1. So I
-> was thinking having a separate MAINTAINERS entry for the new
-> dir with you (Maximilian) (and me and Mark Gross) listed as
-> MAINTAINERS; and then I'm hoping that you can do the review
-> of surface related patches. At least those which you have not
-> written yourself.
+> The vmcb02.save.cr4 is set in nested_prepare_vmcb_save, which does
+> svm_set_cr4(&svm->vcpu, nested_vmcb->save.cr4),
+> which eventually does 'to_svm(vcpu)->vmcb->save.cr4 = cr4;'
+> And in this point vmcb points to vmcb02.
 
-The idea was exactly like you described, i.e. taking 2 while relying
-on 1 done by someone more familiar with that. JFYI: for Mellanox we
-required Vadim to Rb their code before us.
+Yes it points to vmcb02 but
 
--- 
-With Best Regards,
-Andy Shevchenko
+int svm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+{
+         unsigned long host_cr4_mce = cr4_read_shadow() & X86_CR4_MCE;
+         unsigned long old_cr4 = to_svm(vcpu)->vmcb->save.cr4;  <--- 
+this vmcb02 was never initialized and will always be zero. Where 
+previously it would have contained L1.save.cr4 and tbl_ctl is set to 
+something other than TLB_CONTROL_DO_NOTHING. I saw this in my traces.
+
+>
+> Besides SEV, it seems like ctl.tlb_ctl is set by svm_flush_tlb,
+> which is indeed called from svm_set_cr4, but it is also exposed
+> but .tlb_flush* callbacks from KVM core.
+>
+> What I meant is that we can create vcpu->arch->needs_tlb_flush, set it in svm_flush_tlb instead of tlb_ctl,
+> and then svm_vcpu_run can set tlb_ctl in the current ctl to that TLB_CONTROL_FLUSH_ASID when
+> vcpu->arch->needs_tlb_flush is set.
+>
+> Best regards,
+> 	Maxim Levitsky
+>
+>
+>>>> I am not sure if this is a theorerical issue or not. We probably should apply the same treatment to
+>>>> it as what Paulo suggested to do with asid -
+>>>> set it just prior to vmentry if tlb flush is needed, and clear it afterwards as we do.
+>>> And yet another thing to note is that we curently ignore L2's g_pat. However it _seems_ that we practically
+>>> ignore L1 PAT as well in regard to shadowing NPT mmu. I am not 100% sure about this.
+>>> I'll dig that area eventually.
+>>>
+>>> Best regards,
+>>> 	Maxim Levitsky
+>>>
+>>>> Best regards,
+>>>> 	Maxim Levitsky
+>> Thanks,
+>>
+>> Cathy
+>>
+>
+
