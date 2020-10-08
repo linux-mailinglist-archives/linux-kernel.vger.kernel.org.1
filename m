@@ -2,299 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6766A28700A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88398286FB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgJHHyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728741AbgJHHyk (ORCPT
+        id S1728115AbgJHHkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:40:49 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:53659 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727172AbgJHHkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:54:40 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E574C0613D2;
-        Thu,  8 Oct 2020 00:54:40 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y20so2350798pll.12;
-        Thu, 08 Oct 2020 00:54:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=RcgMyRpYCMFPKKfeQGBLX4f9whd1oMvUnXei2mI75rM=;
-        b=l8Ra7EksFBkM7aXJFPrA2eB3Xq6pYyiOaYXhMElfS3EIROnXctXddcVbTpovgAd9GT
-         JXVolSyYuXt7B85Zx26ehB6xnboOlS+fMVLj3sz+vnFdiTJcz896cYCldVaJVNWQ7X1M
-         NC/53HhkjRP00ZeAw3CNfU6HUxuemiqjcLxXynmIa8HNsMgaOaSGxCgNYGNmxluT1P/q
-         sz3olzOcFf0tTibaHXgbGIxy3qYF/5fKbGiuIz3TSyLdNlh1eDCXgf1kqGYm5LezKRFE
-         VeZ3haQMKU1mxBsxZCJvqoNVa75YuSXMi5uZTDU1+NF7mAr6WMvjG5zZvX5mAQOlndw4
-         5uAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=RcgMyRpYCMFPKKfeQGBLX4f9whd1oMvUnXei2mI75rM=;
-        b=g9kMlp04OfUER+TGVyCzwHjg6iyEDSBhY0jZcC4Y+CrDTjlBm45fJJ3kgX3tilnAlI
-         BpUYfgkNuI1O8DaFAfNvsEy6CjL572AgbgziB3SzQPLgYgrnU0VMgk8OJctY0pj1Jfi8
-         FVXyEbhtPNnS+yi8nWm2++CGN1Vx5HcUwt1mi5FjozoKrtUfKfHuG9aRB0EN/pa5N1AJ
-         kb8gley00OUWdf7NJO7LZnhBiuN1yPcvlgI7aL09b/D7hQm7JBWrXNYuXIKTwGLv9ohB
-         JVjCYP07v2mGoYR5wKkGhcEmtwxLmZx7/mRRC9PMURTDvYMSlX04HhnJVWKjeVRgiiy/
-         w4zw==
-X-Gm-Message-State: AOAM530mYhdtSm1D/F3srPcj16f2EjIAQwZ/mKx+Nc1t9B36aNiD4juC
-        wAerGJEOmg2ATXHCmqQiS74=
-X-Google-Smtp-Source: ABdhPJywCdHXkBPuQ18NYaJDK8Gmg6c0dxeop4xWSXCznUS07DUepLINsWQt1Z3SQMFam5b8lu+S5w==
-X-Received: by 2002:a17:902:d888:b029:d0:cb2d:f274 with SMTP id b8-20020a170902d888b02900d0cb2df274mr6276533plz.13.1602143679895;
-        Thu, 08 Oct 2020 00:54:39 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.61])
-        by smtp.gmail.com with ESMTPSA id k206sm6777106pfd.126.2020.10.08.00.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 00:54:39 -0700 (PDT)
-From:   yulei.kernel@gmail.com
-X-Google-Original-From: yuleixzhang@tencent.com
-To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        viro@zeniv.linux.org.uk, pbonzini@redhat.com
-Cc:     linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Haiwei Li <gerryhwli@tencent.com>
-Subject: [PATCH 12/35] dmem: introduce mempolicy support
-Date:   Thu,  8 Oct 2020 15:54:02 +0800
-Message-Id: <1fce243b3bcd347c951a0991a6daf0645d441e4d.1602093760.git.yuleixzhang@tencent.com>
+        Thu, 8 Oct 2020 03:40:49 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201008074045epoutp02034d30c325075840b02276fc7f2a43a2~79G3p2wnu0252902529epoutp02D
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:40:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201008074045epoutp02034d30c325075840b02276fc7f2a43a2~79G3p2wnu0252902529epoutp02D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1602142845;
+        bh=MCtneW5ZW/xmqkxzmXsjRSEsnWZHb9ZS23VNZRV6ibc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=n+VbEf0aSLLGfrngWsKOd01UpzqHgyKL3pAeHoqRKD0VaunNfhM3dP36BA+xiVE5z
+         vkGzNsJHULcpF4rUDx8WTSNb7YXd1eUiH0JNMVR62LjsXb96RMuqD0jwlmbBOSSk9H
+         fR/VHgs1pDg2nglIWj7ox6NiYUVK6/WbOlbb/sUw=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20201008074044epcas1p434b3e3a72e061d241efb67191e9be50b~79G3F1xJS2323723237epcas1p40;
+        Thu,  8 Oct 2020 07:40:44 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4C6NRG1Pk5zMqYkx; Thu,  8 Oct
+        2020 07:40:42 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        58.BC.09582.972CE7F5; Thu,  8 Oct 2020 16:40:42 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa~79G0E4tq42323723237epcas1p4t;
+        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201008074041epsmtrp268fbdd1dc89a06c212a1749305d634b4~79G0D4AYR0844008440epsmtrp2-;
+        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-c9-5f7ec279fc14
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8D.5D.08745.972CE7F5; Thu,  8 Oct 2020 16:40:41 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201008074041epsmtip1ad808c752984c3329a97746b32478c0f~79Gz3hu3j3022330223epsmtip1r;
+        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     mka@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
+        cw00.choi@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+Subject: [PATCH 3/3] PM / devfreq: Add tracepoint for frequency changes
+Date:   Thu,  8 Oct 2020 16:54:03 +0900
+Message-Id: <20201008075403.26181-4-cw00.choi@samsung.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
-In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
+In-Reply-To: <20201008075403.26181-1-cw00.choi@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLKsWRmVeSWpSXmKPExsWy7bCmrm7Vobp4g/52RouJN66wWFz/8pzV
+        4mzTG3aLy7vmsFl87j3CaHHpwAImi88bHjNa3G5cwWaxr+MBkwOnx+yGiyweLftusXtsWtXJ
+        5vF+31U2j74tqxg9Pm+SC2CLyrbJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LI
+        S8xNtVVy8QnQdcvMAbpKSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgWaBXnJhb
+        XJqXrpecn2tlaGBgZApUmJCdMf12F0vBFOGKyQsnMTcwLhDoYuTkkBAwkVh04yJLFyMXh5DA
+        DkaJn53/mSGcT4wSF7e9Z4RwPjNKHFhxgRGm5dTkQ2wQiV2MEuvnHGOHcL4wSsw7ehqsik1A
+        S2L/ixtsILaIgJXE6f8dYHOZBeYzSvy9+xOsSFjAXeLZqc1MXYwcHCwCqhL9F8RBwrxA9R0/
+        XrJBbJOXWL3hADOIzSlgLfH99A+wORICj9glfrzdwQpR5CJx+M0KJghbWOLV8S3sELaUxOd3
+        e6EGVUusPHmEDaK5g1Fiy/4LUM3GEvuXTgY7gllAU2L9Ln2IsKLEzt9zwe5kFuCTePe1hxWk
+        REKAV6KjTQiiRFni8oO7UGslJRa3d0Kt8pBom/WIFRIofYwSeyc2ME9glJuFsGEBI+MqRrHU
+        guLc9NRiwwJj5DjbxAhOd1rmOxinvf2gd4iRiYPxEKMEB7OSCG+6d028EG9KYmVValF+fFFp
+        TmrxIUZTYOBNZJYSTc4HJty8knhDUyNjY2MLE0MzU0NDJXHeh7cU4oUE0hNLUrNTUwtSi2D6
+        mDg4pRqYtpwP0LjCrnjEy8Hbim8pw4tnTnmNE+fcmnrOo/RwSwDH7ek+SvNM53FwrHhT5Npz
+        6Oi2VTr8TqcFAx9dcgjasE7UriCi4ITq2puzP4k9qtya++uwQ07OeqbvM6WiDl9vvlXMdSr5
+        7mXDMydenvMu6jVgtuaseJR24Od0xqoPFXFivElZmUwPNxaxGJjcmvF45e8WTVYXfl8/w3ui
+        rAUHDrmYTX42repbOYfapRmCdzk+HH4q2bEw5WDKM7dL5h/u1FR8nXX24brMiMAtCx0ExMz3
+        x2eVJm5dsbc+66XOG86d+zbHiR4QWyxqv1RsdWr4nIPLrz12seiKaZu5u7LerStYJY1j1Z3s
+        FSW5AtHmSizFGYmGWsxFxYkAiD8zgwAEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCLMWRmVeSWpSXmKPExsWy7bCSnG7lobp4g67/khYTb1xhsbj+5Tmr
+        xdmmN+wWl3fNYbP43HuE0eLSgQVMFp83PGa0uN24gs1iX8cDJgdOj9kNF1k8WvbdYvfYtKqT
+        zeP9vqtsHn1bVjF6fN4kF8AWxWWTkpqTWZZapG+XwJUx/XYXS8EU4YrJCycxNzAuEOhi5OSQ
+        EDCRODX5EFsXIxeHkMAORonH3ctZIRKSEtMuHmXuYuQAsoUlDh8uhqj5xCgx68lNdpAaNgEt
+        if0vbrCB2CICNhJ3F19jAbGZBZYzSsxtFQSxhQXcJZ6d2swEModFQFWi/4I4SJhXwEqi48dL
+        NohV8hKrNxxgBrE5Bawlvp/+AWYLAdWs3PeEaQIj3wJGhlWMkqkFxbnpucWGBUZ5qeV6xYm5
+        xaV56XrJ+bmbGMEBqaW1g3HPqg96hxiZOBgPMUpwMCuJ8KZ718QL8aYkVlalFuXHF5XmpBYf
+        YpTmYFES5/06a2GckEB6YklqdmpqQWoRTJaJg1OqgWn6k5jwoy52hlPnxOw/tvdHWMsslWv7
+        VBhnsroVfIhgvbhq3dEXzZc+lGoZSfUVlpxuv6S0+oGM04+Vl3czFmQlhFy5YX9/l63nY+ub
+        jb4L7SdzKxZ8UHpWMlGm3npOyUwj0Sv232Z+9foyu1OtNLBur/HHh+FyFgoFLQfkjkadYT//
+        50Xo+bXS5iun97SWfXl2+i/38wTb5B+zlB4F9LhN2ubaufNOq6XTnKa/Tl+LmyM5XknOZ2ZJ
+        /c625ZJ5pXL3bcEd1gYnFlsxfIpQ33vF7uB9wfOpD1wmKU3v0DbeJjdpokFItPHrsPoC7fdy
+        1tr7Pb0Mhbjnuf7NrJY4wLeVf3GSqOsr5sSfVnveJCqxFGckGmoxFxUnAgCEz+sHtwIAAA==
+X-CMS-MailID: 20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa
+References: <20201008075403.26181-1-cw00.choi@samsung.com>
+        <CGME20201008074041epcas1p4d2b9c36c5b3fef5c10db602b9d90c2aa@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yulei Zhang <yuleixzhang@tencent.com>
+From: Matthias Kaehlcke <mka@chromium.org>
 
-It adds mempolicy support for dmem to allocates memory
-from mempolicy specified nodes.
+Add a tracepoint for frequency changes of devfreq devices and
+use it.
 
-Signed-off-by: Haiwei Li   <gerryhwli@tencent.com>
-Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+[cw00.choi: Move print position of tracepoint and add more information]
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 ---
- arch/x86/Kconfig                     |  1 +
- arch/x86/include/asm/pgtable.h       |  7 ++++
- arch/x86/include/asm/pgtable_types.h | 13 +++++-
- fs/dmemfs/Kconfig                    |  3 ++
- include/linux/pgtable.h              |  7 ++++
- mm/Kconfig                           |  3 ++
- mm/dmem.c                            | 63 +++++++++++++++++++++++++++-
- 7 files changed, 94 insertions(+), 3 deletions(-)
+ drivers/devfreq/devfreq.c      |  8 ++++++++
+ include/trace/events/devfreq.h | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7101ac64bb20..86f3139edfc7 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -73,6 +73,7 @@ config X86
- 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PMEM_API		if X86_64
- 	select ARCH_HAS_PTE_DEVMAP		if X86_64
-+	select ARCH_HAS_PTE_DMEM		if X86_64
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_UACCESS_FLUSHCACHE	if X86_64
- 	select ARCH_HAS_UACCESS_MCSAFE		if X86_64 && X86_MCE
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index b836138ce852..ea4554a728bc 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -453,6 +453,13 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
- 	return pmd_set_flags(pmd, _PAGE_DEVMAP);
- }
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index 5b069a8a1026..d4c4aa050efa 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -369,6 +369,14 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
+ 		return err;
+ 	}
  
-+#ifdef CONFIG_ARCH_HAS_PTE_DMEM
-+static inline pmd_t pmd_mkdmem(pmd_t pmd)
-+{
-+	return pmd_set_flags(pmd, _PAGE_SPECIAL | _PAGE_DMEM);
-+}
-+#endif
++	/*
++	 * Print devfreq_frequency trace information between DEVFREQ_PRECHANGE
++	 * and DEVFREQ_POSTCHANGE because for showing the correct frequency
++	 * change order of between devfreq device and passive devfreq device.
++	 */
++	if (trace_devfreq_frequency_enabled() && new_freq != cur_freq)
++		trace_devfreq_frequency(devfreq, new_freq, cur_freq);
 +
- static inline pmd_t pmd_mkhuge(pmd_t pmd)
- {
- 	return pmd_set_flags(pmd, _PAGE_PSE);
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 816b31c68550..ee4cae110f5c 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -23,6 +23,15 @@
- #define _PAGE_BIT_SOFTW2	10	/* " */
- #define _PAGE_BIT_SOFTW3	11	/* " */
- #define _PAGE_BIT_PAT_LARGE	12	/* On 2MB or 1GB pages */
-+#define _PAGE_BIT_DMEM		57	/* Flag used to indicate dmem pmd.
-+					 * Since _PAGE_BIT_SPECIAL is defined
-+					 * same as _PAGE_BIT_CPA_TEST, we can
-+					 * not only use _PAGE_BIT_SPECIAL, so
-+					 * add _PAGE_BIT_DMEM to help
-+					 * indicate it. Since dmem pte will
-+					 * never be splitting, setting
-+					 * _PAGE_BIT_SPECIAL for pte is enough.
-+					 */
- #define _PAGE_BIT_SOFTW4	58	/* available for programmer */
- #define _PAGE_BIT_PKEY_BIT0	59	/* Protection Keys, bit 1/4 */
- #define _PAGE_BIT_PKEY_BIT1	60	/* Protection Keys, bit 2/4 */
-@@ -112,9 +121,11 @@
- #if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
- #define _PAGE_NX	(_AT(pteval_t, 1) << _PAGE_BIT_NX)
- #define _PAGE_DEVMAP	(_AT(u64, 1) << _PAGE_BIT_DEVMAP)
-+#define _PAGE_DMEM	(_AT(u64, 1) << _PAGE_BIT_DMEM)
- #else
- #define _PAGE_NX	(_AT(pteval_t, 0))
- #define _PAGE_DEVMAP	(_AT(pteval_t, 0))
-+#define _PAGE_DMEM	(_AT(pteval_t, 0))
- #endif
+ 	freqs.new = new_freq;
+ 	devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
  
- #define _PAGE_PROTNONE	(_AT(pteval_t, 1) << _PAGE_BIT_PROTNONE)
-@@ -128,7 +139,7 @@
- #define _PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |		\
- 			 _PAGE_SPECIAL | _PAGE_ACCESSED | _PAGE_DIRTY |	\
- 			 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP | _PAGE_ENC |  \
--			 _PAGE_UFFD_WP)
-+			 _PAGE_UFFD_WP | _PAGE_DMEM)
- #define _HPAGE_CHG_MASK (_PAGE_CHG_MASK | _PAGE_PSE)
+diff --git a/include/trace/events/devfreq.h b/include/trace/events/devfreq.h
+index bd36d28d16bc..7627c620bbda 100644
+--- a/include/trace/events/devfreq.h
++++ b/include/trace/events/devfreq.h
+@@ -8,6 +8,34 @@
+ #include <linux/devfreq.h>
+ #include <linux/tracepoint.h>
  
- /*
-diff --git a/fs/dmemfs/Kconfig b/fs/dmemfs/Kconfig
-index d2894a513de0..19ca3914da39 100644
---- a/fs/dmemfs/Kconfig
-+++ b/fs/dmemfs/Kconfig
-@@ -1,5 +1,8 @@
- config DMEM_FS
- 	tristate "Direct Memory filesystem support"
-+	depends on DMEM
-+	depends on TRANSPARENT_HUGEPAGE
-+	depends on ARCH_HAS_PTE_DMEM
- 	help
- 	  dmemfs (Direct Memory filesystem) is device memory or reserved
- 	  memory based filesystem. This kind of memory is special as it
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index e8cbc2e795d5..45d4c4a3e519 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1129,6 +1129,13 @@ static inline int pud_trans_unstable(pud_t *pud)
- #endif
- }
++TRACE_EVENT(devfreq_frequency,
++	TP_PROTO(struct devfreq *devfreq, unsigned long freq,
++		 unsigned long prev_freq),
++
++	TP_ARGS(devfreq, freq, prev_freq),
++
++	TP_STRUCT__entry(
++		__string(dev_name, dev_name(&devfreq->dev))
++		__field(unsigned long, freq)
++		__field(unsigned long, prev_freq)
++		__field(unsigned long, busy_time)
++		__field(unsigned long, total_time)
++	),
++
++	TP_fast_assign(
++		__assign_str(dev_name, dev_name(&devfreq->dev));
++		__entry->freq = freq;
++		__entry->prev_freq = prev_freq;
++		__entry->busy_time = devfreq->last_status.busy_time;
++		__entry->total_time = devfreq->last_status.total_time;
++	),
++
++	TP_printk("dev_name=%-30s freq=%-12lu prev_freq=%-12lu load=%-2lu",
++		__get_str(dev_name), __entry->freq, __entry->prev_freq,
++		__entry->total_time == 0 ? 0 :
++			(100 * __entry->busy_time) / __entry->total_time)
++);
++
+ TRACE_EVENT(devfreq_monitor,
+ 	TP_PROTO(struct devfreq *devfreq),
  
-+#ifndef CONFIG_ARCH_HAS_PTE_DMEM
-+static inline pmd_t pmd_mkdmem(pmd_t pmd)
-+{
-+	return pmd;
-+}
-+#endif
-+
- #ifndef pmd_read_atomic
- static inline pmd_t pmd_read_atomic(pmd_t *pmdp)
- {
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 8a67c8933a42..09d1b1551a44 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -795,6 +795,9 @@ config IDLE_PAGE_TRACKING
- config ARCH_HAS_PTE_DEVMAP
- 	bool
- 
-+config ARCH_HAS_PTE_DMEM
-+	bool
-+
- config ZONE_DEVICE
- 	bool "Device memory (pmem, HMM, etc...) hotplug support"
- 	depends on MEMORY_HOTPLUG
-diff --git a/mm/dmem.c b/mm/dmem.c
-index 6992e57d5df0..2e61dbddbc62 100644
---- a/mm/dmem.c
-+++ b/mm/dmem.c
-@@ -822,6 +822,56 @@ dmem_alloc_pages_nodemask(int nid, nodemask_t *nodemask, unsigned int try_max,
- }
- EXPORT_SYMBOL(dmem_alloc_pages_nodemask);
- 
-+/* Return a nodelist indicated for current node representing a mempolicy */
-+static int *policy_nodelist(struct mempolicy *policy)
-+{
-+	int nd = numa_node_id();
-+
-+	switch (policy->mode) {
-+	case MPOL_PREFERRED:
-+		if (!(policy->flags & MPOL_F_LOCAL))
-+			nd = policy->v.preferred_node;
-+		break;
-+	case MPOL_BIND:
-+		if (unlikely(!node_isset(nd, policy->v.nodes)))
-+			nd = first_node(policy->v.nodes);
-+		break;
-+	default:
-+		WARN_ON(1);
-+	}
-+	return dmem_nodelist(nd);
-+}
-+
-+static nodemask_t *dmem_policy_nodemask(struct mempolicy *policy)
-+{
-+	if (unlikely(policy->mode == MPOL_BIND) &&
-+			cpuset_nodemask_valid_mems_allowed(&policy->v.nodes))
-+		return &policy->v.nodes;
-+
-+	return NULL;
-+}
-+
-+static void
-+get_mempolicy_nlist_and_nmask(struct mempolicy *pol,
-+			      struct vm_area_struct *vma, unsigned long addr,
-+			      int **nl, nodemask_t **nmask)
-+{
-+	if (pol->mode == MPOL_INTERLEAVE) {
-+		unsigned int nid;
-+
-+		/*
-+		 * we use dpage_shift to interleave numa nodes although
-+		 * multiple dpages may be allocated
-+		 */
-+		nid = interleave_nid(pol, vma, addr, dmem_pool.dpage_shift);
-+		*nl = dmem_nodelist(nid);
-+		*nmask = NULL;
-+	} else {
-+		*nl = policy_nodelist(pol);
-+		*nmask = dmem_policy_nodemask(pol);
-+	}
-+}
-+
- /*
-  * dmem_alloc_pages_vma - Allocate pages for a VMA.
-  *
-@@ -830,6 +880,9 @@ EXPORT_SYMBOL(dmem_alloc_pages_nodemask);
-  *   @try_max: try to allocate @try_max dpages if possible
-  *   @result_nr: allocated dpage number returned to the caller
-  *
-+ * This function allocates pages from dmem pool and applies a NUMA policy
-+ * associated with the VMA.
-+ *
-  * Return the physical address of the first dpage allocated from dmem
-  * pool, or 0 on failure. The allocated dpage number is filled into
-  * @result_nr
-@@ -839,13 +892,19 @@ dmem_alloc_pages_vma(struct vm_area_struct *vma, unsigned long addr,
- 		     unsigned int try_max, unsigned int *result_nr)
- {
- 	phys_addr_t phys_addr;
-+	struct mempolicy *pol;
- 	int *nl;
-+	nodemask_t *nmask;
- 	unsigned int cpuset_mems_cookie;
- 
- retry_cpuset:
--	nl = dmem_nodelist(numa_node_id());
-+	pol = get_vma_policy(vma, addr);
-+	cpuset_mems_cookie = read_mems_allowed_begin();
-+
-+	get_mempolicy_nlist_and_nmask(pol, vma, addr, &nl, &nmask);
-+	mpol_cond_put(pol);
- 
--	phys_addr = dmem_alloc_pages_from_nodelist(nl, NULL, try_max,
-+	phys_addr = dmem_alloc_pages_from_nodelist(nl, nmask, try_max,
- 						   result_nr);
- 	if (unlikely(!phys_addr && read_mems_allowed_retry(cpuset_mems_cookie)))
- 		goto retry_cpuset;
 -- 
-2.28.0
+2.17.1
 
