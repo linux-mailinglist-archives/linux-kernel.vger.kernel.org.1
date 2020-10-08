@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455F628766E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD68328767E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730731AbgJHOxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729833AbgJHOxY (ORCPT
+        id S1730755AbgJHO4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:56:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47792 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730721AbgJHO4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:53:24 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CFDC061755;
-        Thu,  8 Oct 2020 07:53:24 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id g10so4200113pfc.8;
-        Thu, 08 Oct 2020 07:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ha0d5CLuHhVVoYjJQruOkutfT7+02DFIs5Gu0a061nE=;
-        b=ucE2HXFTBzt2xCH+lw/zkhvBygbUz6gMTAx/aZ1kStXt8D4D9oXH+LNPa3EvEwQdgl
-         je6OhGCPH5du0dpl32RB4U9XxYn3iLOjpdM4KnTa1ELXGJlSEkFuvvB8/08nSh+MnrN9
-         dcxuu3FEfscqo1I7qKL+SR2EcQ6wVvOf72HvxATlbxzQZ2q5zMS5zUfJIXks/vrhzvgC
-         iM3M10tZQcK+EWpSE/DqfO+VI138W6PYhs8FFQ2kM0w80HGqQMXTz74PBEE48s/uSgE/
-         QmDR0FZO8Lgj5KBaCtX0NnWprmy3Exs6ezLNxZ0zDDd6+TP8Q/pEMYt1LgBLdXrSShqV
-         8o8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ha0d5CLuHhVVoYjJQruOkutfT7+02DFIs5Gu0a061nE=;
-        b=o5R92ffQa9MpZrVmsaPrOGaWmJJ/6Inp8p7MimLzPwseywUbEDX9EoRjIOn97DNnt3
-         mFF1kbDEsJfaaz3bsz8HOAS4EihAT/KPsupItchF0v8/tzZ5KsADqaTMF16P2e0QEaRw
-         itYjEkyP1A+GZjODJYrqo0wJ9Xm6XcfcjcbQ2wJeGFmaWuXTuT4qYP86eiK2etIm71qt
-         4jNsb65Si4EdJ4DeijQQQgsR2ZFgymp60hhblip2/yc80oA+eIXSZpQQly6FhIs67//C
-         PudsQnZTatF2UcX0usRFWMKxqH+8kfsxTA3Z5l4GNh0YOMkf1a7f3L11Nvl4i0+fyptQ
-         AsQw==
-X-Gm-Message-State: AOAM53294bTtMLRUkHoo4jI3RchU3fMMBCHor+3MoVQmFJ3t2Gt2l20b
-        Py/6W3rnt+5YCODoEnZDUaHAD7KdrIdP03/SoOo=
-X-Google-Smtp-Source: ABdhPJzH0YUIt357lYfLm+tps99aiJ+RrH5f2bg8DC16qMOhR4eBjpysHxmP4fb31EFv9NUmVS9L+7Wm+8/v6XDmJcQ=
-X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr9009139pjb.228.1602168804458;
- Thu, 08 Oct 2020 07:53:24 -0700 (PDT)
+        Thu, 8 Oct 2020 10:56:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602168981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GRXQSa6ZC+nnaEc4pw80e/cx2CLDkgRRUVhzsvrA1kM=;
+        b=C+HNpFnjKpn9RL0Lc6wL5hP2fZgjJYvdtkYj7S/9/Ejr6hHbZlocDqP8Wn22TSinn2iCNl
+        qCPawQh2PThskAXxJSIFEnLCvdn/GnDqjnUcfMQjhjKR6nWMzsOG+YsvBLeRj+3SRH9PjY
+        gCXB8UniWeyj0/FthU6QYjsx5v2yKPA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-TTlEaReGNDirHxMkhKntvA-1; Thu, 08 Oct 2020 10:56:16 -0400
+X-MC-Unique: TTlEaReGNDirHxMkhKntvA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19C8F10BBEC3;
+        Thu,  8 Oct 2020 14:56:15 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.132])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B186610013C1;
+        Thu,  8 Oct 2020 14:56:12 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu,  8 Oct 2020 16:56:14 +0200 (CEST)
+Date:   Thu, 8 Oct 2020 16:56:11 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
+Message-ID: <20201008145610.GK9995@redhat.com>
+References: <20201005150438.6628-1-axboe@kernel.dk>
 MIME-Version: 1.0
-References: <20201008143455.340599-1-luzmaximilian@gmail.com> <20201008143455.340599-3-luzmaximilian@gmail.com>
-In-Reply-To: <20201008143455.340599-3-luzmaximilian@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 8 Oct 2020 17:54:14 +0300
-Message-ID: <CAHp75VfPaGqb=yCpi_2f8SNzrj+0pd-r5VqAEgRgMCiJJB6D0w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] platform/surface: Move Surface 3 WMI driver to platform/surface
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005150438.6628-1-axboe@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 5:35 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+On 10/05, Jens Axboe wrote:
 >
-> Move the Surface 3 WMI driver from platform/x86 to the newly created
-> platform/surface directory.
+> Hi,
+>
+> The goal is this patch series is to decouple TWA_SIGNAL based task_work
+> from real signals and signal delivery.
 
-> -# place Microsoft Surface platform drivers here
+I think TIF_NOTIFY_SIGNAL can have more users. Say, we can move
+try_to_freeze() from get_signal() to tracehook_notify_signal(), kill
+fake_signal_wake_up(), and remove freezing() from recalc_sigpending().
 
-> -# place Microsoft Surface platform drivers here
+Probably the same for TIF_PATCH_PENDING, klp_send_signals() can use
+set_notify_signal() rather than signal_wake_up().
 
-Not sure if we need these comments in the first place.
+Oleg.
 
--- 
-With Best Regards,
-Andy Shevchenko
