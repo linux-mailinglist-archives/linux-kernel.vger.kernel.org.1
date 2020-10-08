@@ -2,134 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B59286EDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B11286EDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 08:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgJHGxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 02:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgJHGxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 02:53:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FDEC061755;
-        Wed,  7 Oct 2020 23:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=BKPfVq1WNjEP482JRlMf/O/7ehMr1L/SqAOw+UYjUwE=; b=HyXdCXS8uEhcA2dJEClupFhOz2
-        LtB+vTMDvLfw3IzGcJDivlJDj6Wspmd9ZbVS3URjMkWmtP4C0S3X1G08RPg/uEidfXs87/6h+YP5j
-        ylDby8rfMPx5sazy4N43fKD98qEldElgYco30Nno+lRvu8TV3HH/Ltai0ibJUKZYunzlVZXcxNtjS
-        uoxhN+pFlXoplNTSNqnAaqxtn/nvsvrWKBlLLJVS6YbL5+ms4cKjmp2OPwUr3H1bktKRygGefgUTx
-        2B2M0Qhj0oBO7uHS80HQRKwV/pJ4w8iTryUm5T5YLcmStvXdicNqFHQhPk6GexoSa+zUX0T3Bu1KG
-        Bfq/e+UQ==;
-Received: from [2001:4bb8:184:92a2:5831:14b2:58c8:625e] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQPnU-0000Sl-JV; Thu, 08 Oct 2020 06:53:05 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     rafael.j.wysocki@intel.com
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pnp: remove the now unused pnp_find_card function
-Date:   Thu,  8 Oct 2020 08:53:03 +0200
-Message-Id: <20201008065303.1486028-1-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
+        id S1728227AbgJHGyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 02:54:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726013AbgJHGyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 02:54:40 -0400
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98AD22168B;
+        Thu,  8 Oct 2020 06:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602140079;
+        bh=xets6aocGoBonJWZWZR/AqSEf1Th8uPkmzNNEDt6KFE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i+OlTFuEwT0wNF5dNY+Nzl3gOhkaJuibi5BepaLzFGvx5DXa78zYIvpWM0kiEYORz
+         PvmM8m0qQtj15D+PuMK+zXFVXicCZU9w2FQtaF/DeFl70rD/UB9IY7YFmzII//Rh1v
+         GFhzzj9yKyGwVzc3iVHM6EWIPCVYJ2RWCEPheOmk=
+Received: by mail-ed1-f46.google.com with SMTP id l24so4690306edj.8;
+        Wed, 07 Oct 2020 23:54:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531GtgvLd0ViYeChmmjbtrWWZ6Rw4maOm0nU7tcOp70SIG9aI23p
+        g9yrXo8zxRvNfXTMokwmCf5pJJN217cAUL/neAs=
+X-Google-Smtp-Source: ABdhPJy+9gE89PnSy3HmXagIvjctuY9MSJe7IsZxoIYvJsTYc0E89DdzYTlR+ULlO53SZOEjz53Yn+Jdef1VUgHPX+E=
+X-Received: by 2002:a50:cc8d:: with SMTP id q13mr7286456edi.298.1602140078091;
+ Wed, 07 Oct 2020 23:54:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20201007180540.322257-1-kholk11@gmail.com> <20201007180540.322257-4-kholk11@gmail.com>
+In-Reply-To: <20201007180540.322257-4-kholk11@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 8 Oct 2020 08:54:26 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPcKPXFehzoa65YxjY8+qs-8JxAzj-ER58Y2V43RMD1qYQ@mail.gmail.com>
+Message-ID: <CAJKOXPcKPXFehzoa65YxjY8+qs-8JxAzj-ER58Y2V43RMD1qYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] dt-bindings: touchscreen: Add binding for Novatek
+ NT36xxx series driver
+To:     kholk11@gmail.com
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org, rydberg@bitmath.org,
+        priv.luk@gmail.com, linux-input@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All user of the pnp_find_card compat wrapper are gone, so remove
-the function as well.
+On Wed, 7 Oct 2020 at 20:22, <kholk11@gmail.com> wrote:
+>
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+>
+> Add binding for the Novatek NT36xxx series touchscreen driver.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  .../input/touchscreen/novatek,nt36xxx.yaml    | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> new file mode 100644
+> index 000000000000..9f350f4e6d6a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/novatek,nt36xxx.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/novatek,nt36xxx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Novatek NT36xxx series touchscreen controller Bindings
+> +
+> +maintainers:
+> +  - TBD
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- Documentation/admin-guide/pnp.rst |  4 ----
- drivers/pnp/isapnp/compat.c       | 23 -----------------------
- include/linux/isapnp.h            |  6 ------
- 3 files changed, 33 deletions(-)
+Hi,
 
-diff --git a/Documentation/admin-guide/pnp.rst b/Documentation/admin-guide/pnp.rst
-index bab2d10631f00d..3eda08191d139a 100644
---- a/Documentation/admin-guide/pnp.rst
-+++ b/Documentation/admin-guide/pnp.rst
-@@ -281,10 +281,6 @@ ISAPNP drivers.  They should serve as a temporary solution only.
- 
- They are as follows::
- 
--	struct pnp_card *pnp_find_card(unsigned short vendor,
--				       unsigned short device,
--				       struct pnp_card *from)
--
- 	struct pnp_dev *pnp_find_dev(struct pnp_card *card,
- 				     unsigned short vendor,
- 				     unsigned short function,
-diff --git a/drivers/pnp/isapnp/compat.c b/drivers/pnp/isapnp/compat.c
-index 6c845b6283163d..035e9509248968 100644
---- a/drivers/pnp/isapnp/compat.c
-+++ b/drivers/pnp/isapnp/compat.c
-@@ -21,28 +21,6 @@ static void pnp_convert_id(char *buf, unsigned short vendor,
- 		(device >> 12) & 0x0f, (device >> 8) & 0x0f);
- }
- 
--struct pnp_card *pnp_find_card(unsigned short vendor, unsigned short device,
--			       struct pnp_card *from)
--{
--	char id[8];
--	char any[8];
--	struct list_head *list;
--
--	pnp_convert_id(id, vendor, device);
--	pnp_convert_id(any, ISAPNP_ANY_ID, ISAPNP_ANY_ID);
--
--	list = from ? from->global_list.next : pnp_cards.next;
--
--	while (list != &pnp_cards) {
--		struct pnp_card *card = global_to_pnp_card(list);
--
--		if (compare_pnp_id(card->id, id) || (memcmp(id, any, 7) == 0))
--			return card;
--		list = list->next;
--	}
--	return NULL;
--}
--
- struct pnp_dev *pnp_find_dev(struct pnp_card *card, unsigned short vendor,
- 			     unsigned short function, struct pnp_dev *from)
- {
-@@ -86,5 +64,4 @@ struct pnp_dev *pnp_find_dev(struct pnp_card *card, unsigned short vendor,
- 	return NULL;
- }
- 
--EXPORT_SYMBOL(pnp_find_card);
- EXPORT_SYMBOL(pnp_find_dev);
-diff --git a/include/linux/isapnp.h b/include/linux/isapnp.h
-index 11edb2109a68f6..dba18c95844bde 100644
---- a/include/linux/isapnp.h
-+++ b/include/linux/isapnp.h
-@@ -75,9 +75,6 @@ static inline int isapnp_proc_done(void) { return 0; }
- #endif
- 
- /* compat */
--struct pnp_card *pnp_find_card(unsigned short vendor,
--			       unsigned short device,
--			       struct pnp_card *from);
- struct pnp_dev *pnp_find_dev(struct pnp_card *card,
- 			     unsigned short vendor,
- 			     unsigned short function,
-@@ -92,9 +89,6 @@ static inline int isapnp_cfg_end(void) { return -ENODEV; }
- static inline unsigned char isapnp_read_byte(unsigned char idx) { return 0xff; }
- static inline void isapnp_write_byte(unsigned char idx, unsigned char val) { ; }
- 
--static inline struct pnp_card *pnp_find_card(unsigned short vendor,
--					     unsigned short device,
--					     struct pnp_card *from) { return NULL; }
- static inline struct pnp_dev *pnp_find_dev(struct pnp_card *card,
- 					   unsigned short vendor,
- 					   unsigned short function,
--- 
-2.28.0
+It is surprising that this is your v3 and you put here TBD. In such
+case, add here subsystem maintainer:
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
+
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - novatek,nt36xxx
+
+This is not an enum, but one const.
+
+> +
+> +  reg:
+> +    enum: [ 0x62 ]
+
+Usually addresses are fixed in schema, because they could change (e.g.
+by some pin configuration). Just use maxItems: 1.
+
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpio:
+> +    maxItems: 1
+> +
+> +  vdd-supply:
+> +    description: Power supply regulator for VDD pin
+> +
+> +  vio-reg-name:
+> +    description: Power supply regulator on VDD-IO pin
+
+What is this for? Is it a supply for the device or the device is a
+regulator provider?
+
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      nt36xxx@62 {
+
+Incorrect node name - should be touchscreen.
+
+Best regards,
+Krzysztof
