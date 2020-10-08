@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CD9286E56
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8918E286E5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgJHFzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:55:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37198 "EHLO mx2.suse.de"
+        id S1728312AbgJHF61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:58:27 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:41258 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728312AbgJHFzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:55:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1BA43B00A;
-        Thu,  8 Oct 2020 05:55:02 +0000 (UTC)
-Subject: Re: [v5 01/12] struct device: Add function callback durable_name
-To:     tasleson@redhat.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-scsi@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-        pmladek@suse.com, David Lehman <dlehman@redhat.com>,
-        sergey.senozhatsky@gmail.com, jbaron@akamai.com,
-        James.Bottomley@HansenPartnership.com,
-        linux-kernel@vger.kernel.org, rafael@kernel.org,
-        martin.petersen@oracle.com, kbusch@kernel.org, axboe@fb.com,
-        sagi@grimberg.me, akpm@linux-foundation.org, orson.zhai@unisoc.com,
-        viro@zeniv.linux.org.uk
-References: <20200925161929.1136806-1-tasleson@redhat.com>
- <20200925161929.1136806-2-tasleson@redhat.com>
- <20200929175102.GA1613@infradead.org> <20200929180415.GA1400445@kroah.com>
- <20e220a6-4bde-2331-6e5e-24de39f9aa3b@redhat.com>
- <20200930073859.GA1509708@kroah.com>
- <c6b031b8-f617-0580-52a5-26532da4ee03@redhat.com>
- <20201001114832.GC2368232@kroah.com>
- <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <dedb9926-d4fb-af1a-8dc8-2bc0680d971a@suse.de>
-Date:   Thu, 8 Oct 2020 07:54:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726245AbgJHF61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:58:27 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kQOwT-0006fQ-Q9; Thu, 08 Oct 2020 16:58:18 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 08 Oct 2020 16:58:18 +1100
+Date:   Thu, 8 Oct 2020 16:58:18 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [PATCH] lib/mpi: Remove unused scalar_copied
+Message-ID: <20201008055818.GB9813@gondor.apana.org.au>
+References: <20200928182438.GA11739@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <72be0597-a3e2-bf7b-90b2-799d10fdf56c@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928182438.GA11739@embeddedor>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/20 10:10 PM, Tony Asleson wrote:
-> On 10/1/20 6:48 AM, Greg Kroah-Hartman wrote:
->> On Wed, Sep 30, 2020 at 09:35:52AM -0500, Tony Asleson wrote:
->>> On 9/30/20 2:38 AM, Greg Kroah-Hartman wrote:
->>>> On Tue, Sep 29, 2020 at 05:04:32PM -0500, Tony Asleson wrote:
->>>>> I'm trying to figure out a way to positively identify which storage
->>>>> device an error belongs to over time.
->>>>
->>>> "over time" is not the kernel's responsibility.
->>>>
->>>> This comes up every 5 years or so. The kernel provides you, at runtime,
->>>> a mapping between a hardware device and a "logical" device.  It can
->>>> provide information to userspace about this mapping, but once that
->>>> device goes away, the kernel is free to reuse that logical device again.
->>>>
->>>> If you want to track what logical devices match up to what physical
->>>> device, then do it in userspace, by parsing the log files.
->>>
->>> I don't understand why people think it's acceptable to ask user space to
->>> parse text that is subject to change.
->>
->> What text is changing? The format of of the prefix of dev_*() is well
->> known and has been stable for 15+ years now, right?  What is difficult
->> in parsing it?
+On Mon, Sep 28, 2020 at 01:24:38PM -0500, Gustavo A. R. Silva wrote:
 > 
-> Many of the storage layer messages are using printk, not dev_printk.
+> I'm reporting the following bug detected by Coverity:
 > 
-So that would be the immediate angle of attack ...
-
->>>>> Thank you for supplying some feedback and asking questions.  I've been
->>>>> asking for suggestions and would very much like to have a discussion on
->>>>> how this issue is best solved.  I'm not attached to what I've provided.
->>>>> I'm just trying to get towards a solution.
->>>>
->>>> Again, solve this in userspace, you have the information there at
->>>> runtime, why not use it?
->>>
->>> We usually don't have the needed information if you remove the
->>> expectation that user space should parse the human readable portion of
->>> the error message.
->>
->> I don't expect that userspace should have to parse any human readable
->> portion, if they don't want to.  But if you do want it to, it is pretty
->> trivial to parse what you have today:
->>
->> 	scsi 2:0:0:0: Direct-Access     Generic  STORAGE DEVICE   1531 PQ: 0 ANSI: 6
->>
->> If you really have a unique identifier, then great, parse it today:
->>
->> 	usb 4-1.3.1: Product: USB3.0 Card Reader
->> 	usb 4-1.3.1: Manufacturer: Generic
->> 	usb 4-1.3.1: SerialNumber: 000000001531
->>
->> What's keeping that from working now?
+> The _scalar_copied_ variable is set to 0 at
 > 
-> I believe these examples are using dev_printk.  With dev_printk we don't
-> need to parse the text, we can use the meta data.
-> So it looks as most of your usecase would be solved by moving to 
-dev_printk().
-Why not work on that instead?
-I do presume this will have immediate benefits for everybody, and will 
-have approval from everyone.
+> lib/mpi/ec.c:1255:
+> 1255                 int scalar_copied = 0;
+> 
+> and it is never updated before reaching the code below:
+> 
+> lib/mpi/ec.c:1317
+> 1317                 if (scalar_copied)                                                         
+> 1318                         mpi_free(scalar);
+> 
+> This code was introduced by commit d58bb7e55a8a ("lib/mpi: Introduce ec
+> implementation to MPI library")
+> 
+> Any ideas on what's the right solution for this?
 
-Cheers,
+I think it should be removed.
 
-Hannes
+---8<---
+The scalar_copied variable is not as the scalar is never copied
+in that block.  This patch removes it.
+
+Fixes: d58bb7e55a8a ("lib/mpi: Introduce ec implementation to...")
+Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+diff --git a/lib/mpi/ec.c b/lib/mpi/ec.c
+index c21470122dfc..40f5908e57a4 100644
+--- a/lib/mpi/ec.c
++++ b/lib/mpi/ec.c
+@@ -1252,7 +1252,6 @@ void mpi_ec_mul_point(MPI_POINT result,
+ 		MPI_POINT q1, q2, prd, sum;
+ 		unsigned long sw;
+ 		mpi_size_t rsize;
+-		int scalar_copied = 0;
+ 
+ 		/* Compute scalar point multiplication with Montgomery Ladder.
+ 		 * Note that we don't use Y-coordinate in the points at all.
+@@ -1314,8 +1313,6 @@ void mpi_ec_mul_point(MPI_POINT result,
+ 		point_free(&p2);
+ 		point_free(&p1_);
+ 		point_free(&p2_);
+-		if (scalar_copied)
+-			mpi_free(scalar);
+ 		return;
+ 	}
+ 
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
