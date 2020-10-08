@@ -2,84 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3105F28713C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E08C28713E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbgJHJKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:10:07 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:42952 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725802AbgJHJKH (ORCPT
+        id S1728707AbgJHJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgJHJKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:10:07 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 098988QE020349;
-        Thu, 8 Oct 2020 11:09:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=jXqH2UDOby99d4qrNiPaX/nj3Vx3ew8x+EOd0UDJu8g=;
- b=dMJroOBtEk4LKhs71+0vuMln0FbG6WS3sBLvWzCpgAT3rvVxLqDB3ijZuqQBg2yR4U/R
- op/71VIZm+MpKDFhwUgXr5qpi9odKGXdEPEndv7449ufwwPBQAGbJwx43dzTFUjwgZfY
- buwgiMKrtzz6G+TtPz+18vVEyNWD4YnV3vKmkeBzRBdPSZMeNkHH4hWVvUluuhJM2ib3
- KC8DX4DyRt/qEqY2r0skTZmGNudHoZhL/TWm9lL1X1PCmAWSa0of+5/DIli/12chTz65
- k8p287bNs7hxtLw1LV4FbIN2q4TnEsJ4rd645B7is4yYHdK1ToHQYkRvaBt8GnEueH7k OA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3402tk9wf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 11:09:53 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3A4CA10002A;
-        Thu,  8 Oct 2020 11:09:51 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 25F5F2AE6B1;
-        Thu,  8 Oct 2020 11:09:51 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG1NODE1.st.com (10.75.127.1)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct 2020 11:09:50
- +0200
-From:   Hugues Fruchet <hugues.fruchet@st.com>
-To:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Amelie DELAUNAY <amelie.delaunay@st.com>
-Subject: [PATCH] ARM: dts: stm32: fix DCMI DMA features on stm32mp15 family
-Date:   Thu, 8 Oct 2020 11:09:42 +0200
-Message-ID: <1602148182-25869-1-git-send-email-hugues.fruchet@st.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 8 Oct 2020 05:10:23 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF826C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 02:10:22 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e17so5693992wru.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 02:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NmvuDeQQ68fAr0cZvkw5ZZnQ3bYV0o7ikQbQcMSffHA=;
+        b=IoMP30tFPiiyY7f7IUPEUA40EfgfRPZaLhIqfx2wcIEygd6oOg7riHRTfX2TaCutXo
+         pnRZ1GaAndBxRFh5A7RAD/v+lZngkZEC74SMRcjicdjX3dZg97AVZATnbe4owIY7Z+CZ
+         czqp49LbLEPYEjMUzLhFgZj+Of8R52buKekio=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=NmvuDeQQ68fAr0cZvkw5ZZnQ3bYV0o7ikQbQcMSffHA=;
+        b=F2mfMOLRAvrYUtUClpTE556MhT/gr4ZusDdawzJ9P5wzAGYh2ZgBISvx1WazPLaKfN
+         nWh7s/y0wP38VrK6p8yuActjrwnQh8YAb+uRdzx8wW7Z9cPyczqTIVBb//+swawD+oI7
+         7HUGAgR+V2J/TKmyy3opgorxxiakSsYWv0eYtuXlssRJcCwQekhO6s6IfngIcGNSrFSH
+         9p8j7BRns0cPvDJjKUjQjdAqVUJKkRiOXKQWsYjf5hGGHOwWIa30j2WNwWFAOU+BhoUF
+         qslc3vBFjbGz1ab7afid4qbNpmHnO8Yd2iWdlHosVN6ssnT8ruliDr/XfqijOJJZRtMR
+         Of0g==
+X-Gm-Message-State: AOAM530THg+8Cbp8DEJtE7prhAsF2/Fi22b4y1Cqw976gl/Ic1kXwzj4
+        ZdqMAJhF+htiSx6cSpCmQbTucg==
+X-Google-Smtp-Source: ABdhPJxavnqU27cCyEwcnlUtPCpLyPk7lCEdLgWu69HmsqTzMqtdt3s1KzZQcfTNVvPj6zLjH4WxkA==
+X-Received: by 2002:adf:de11:: with SMTP id b17mr8040287wrm.82.1602148221365;
+        Thu, 08 Oct 2020 02:10:21 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id y14sm5713916wma.48.2020.10.08.02.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 02:10:20 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 11:10:17 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
+Message-ID: <20201008091017.GD438822@phenom.ffwll.local>
+Mail-Followup-To: Qais Yousef <qais.yousef@arm.com>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20200930211723.3028059-1-robdclark@gmail.com>
+ <20201002110105.e56qrvzoqfioi4hs@e107158-lin.cambridge.arm.com>
+ <CAF6AEGvWMvZuy7CcGhzUSbwGtEkrNkzWHu_BN1cbdBJdZtvevA@mail.gmail.com>
+ <20201005150024.mchfdtd62rlkuh4s@e107158-lin.cambridge.arm.com>
+ <CAF6AEGs7NmCPyLdg+gg5jTTe-wgi2myRQ80tum6odv6tLLQ0DQ@mail.gmail.com>
+ <20201006105918.v3xspb6xasjyy5ky@e107158-lin.cambridge.arm.com>
+ <CAF6AEGu_V_EGcPQ+F_Z73cMCAcFPoM-GuiGWUPr+=6GD4Om=zg@mail.gmail.com>
+ <20201007103653.qjohhta7douhlb22@e107158-lin.cambridge.arm.com>
+ <CAF6AEGsA_enFOUkV4Rw=Sxyjf=_oFLjwbz-Y4jTO=TUraOCzVQ@mail.gmail.com>
+ <20201007163010.bfgst6xfvkn2lzrk@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG1NODE1.st.com
- (10.75.127.1)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-08_04:2020-10-08,2020-10-08 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007163010.bfgst6xfvkn2lzrk@e107158-lin.cambridge.arm.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable FIFO mode with half-full threshold.
+On Wed, Oct 07, 2020 at 05:30:10PM +0100, Qais Yousef wrote:
+> On 10/07/20 08:57, Rob Clark wrote:
+> > Yeah, I think we will end up making some use of uclamp.. there is
+> > someone else working on that angle
+> > 
+> > But without it, this is a case that exposes legit prioritization
+> > problems with commit_work which we should fix ;-)
+> 
+> I wasn't suggesting this as an alternative to fixing the other problem. But it
+> seemed you had a different problem here that I thought I could help with :-)
+> 
+> I did give my opinion about how to handle that priority issue. If the 2 threads
+> are kernel threads and by design they need relative priorities IMO the kernel
+> need to be taught to set this relative priority. It seemed the vblank worker
+> could run as SCHED_DEADLINE. If this works, then the priority problem for
+> commit_work disappears as SCHED_DEADLINE will preempt RT. If commit_work uses
+> sched_set_fifo(), its priority will be 50, hence your SF threads can no longer
+> preempt it. And you can manage the SF threads to be any value you want relative
+> to 50 anyway without having to manage commit_work itself.
+> 
+> I'm not sure if you have problems with RT tasks preempting important CFS
+> tasks. My brain registered two conflicting statements.
 
-Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think the problem is there's two modes cros runs in: Normal cros mode,
+which mostly works like a linux desktop. CFS commit work seems fine.
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index bfe2902..cfba9a1 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1091,7 +1091,7 @@
- 			resets = <&rcc CAMITF_R>;
- 			clocks = <&rcc DCMI>;
- 			clock-names = "mclk";
--			dmas = <&dmamux1 75 0x400 0x0d>;
-+			dmas = <&dmamux1 75 0x400 0x01>;
- 			dma-names = "tx";
- 			status = "disabled";
- 		};
+Other mode is android emulation, where we have the surface flinger thread
+running at SCHED_FIFO. I think Rob's plan is to runtime switch priorities
+to match each use case.
+-Daniel
 -- 
-2.7.4
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
