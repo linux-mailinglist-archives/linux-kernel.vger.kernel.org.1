@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE02287BA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B095287B98
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgJHSYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:24:34 -0400
-Received: from forward102j.mail.yandex.net ([5.45.198.243]:49635 "EHLO
-        forward102j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725874AbgJHSYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:24:33 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 14:24:32 EDT
-Received: from mxback13j.mail.yandex.net (mxback13j.mail.yandex.net [IPv6:2a02:6b8:0:1619::88])
-        by forward102j.mail.yandex.net (Yandex) with ESMTP id 01D6DF200FC;
-        Thu,  8 Oct 2020 21:18:21 +0300 (MSK)
-Received: from iva5-057a0d1fbbd8.qloud-c.yandex.net (iva5-057a0d1fbbd8.qloud-c.yandex.net [2a02:6b8:c0c:7f1c:0:640:57a:d1f])
-        by mxback13j.mail.yandex.net (mxback/Yandex) with ESMTP id RfimM7jweV-IKdGnEhk;
-        Thu, 08 Oct 2020 21:18:20 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1602181100;
-        bh=cFs6DvdMaKWn5+qm6nyo0Jb17ex+dF10ztqVuJwEsR0=;
-        h=In-Reply-To:From:To:Subject:Cc:Date:References:Message-ID;
-        b=vWLvcpLh5wN8l5/1IwiTYp8M1YjvMoa+R6hg2pkGEwaKmHMiCyX2KM2HDvZbg5qsY
-         wpRi7Op6nJM9HVt7olbLt5ih/PYT1zvNxBC+9nWyhsWxlXDSr5i5p3HmZgyu4NOQAC
-         AAv4elQ82k7g7rqQ1FditDibRWgec/7thmOvU2HA=
-Authentication-Results: mxback13j.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by iva5-057a0d1fbbd8.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id VYNFEb9DbQ-IKmWX7U3;
-        Thu, 08 Oct 2020 21:18:20 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH 0/6] KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        id S1728446AbgJHSV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:21:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:32109 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725857AbgJHSV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 14:21:56 -0400
+IronPort-SDR: zmgzx/BpB6kxb+OEswHtFgI0guzPH9HdU3vbyQtSBwF5mzr+YDp+BDd8rx5oayeC7KSfh8nXcK
+ v5hO+V0tzL5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="250078373"
+X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
+   d="scan'208";a="250078373"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 11:21:56 -0700
+IronPort-SDR: Chg/XTQdWr1LDnCCUXQi3nRs6M9ZWgfacurGVYoBejW5BSQFGWOO0ZERpitAKBnqZSfNlGf33Q
+ feoQitKleHjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
+   d="scan'208";a="349572516"
+Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Oct 2020 11:21:53 -0700
+From:   muhammad.husaini.zulkifli@intel.com
+To:     adrian.hunter@intel.com, michal.simek@xilinx.com,
+        andriy.shevchenko@intel.com, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
- <20201008175951.GA9267@linux.intel.com>
-From:   stsp <stsp2@yandex.ru>
-Message-ID: <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
-Date:   Thu, 8 Oct 2020 21:18:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20201008175951.GA9267@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Cc:     lakshmi.bai.raja.subramanian@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com,
+        muhammad.husaini.zulkifli@intel.com, arnd@arndb.de
+Subject: [PATCH v5 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+Date:   Fri,  9 Oct 2020 02:18:40 +0800
+Message-Id: <20201008181844.27947-1-muhammad.husaini.zulkifli@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.10.2020 20:59, Sean Christopherson пишет:
-> On Thu, Oct 08, 2020 at 07:00:13PM +0300, stsp wrote:
->> 07.10.2020 04:44, Sean Christopherson пишет:
->>> Two bug fixes to handle KVM_SET_SREGS without a preceding KVM_SET_CPUID2.
->> Hi Sean & KVM devs.
->>
->> I tested the patches, and wherever I
->> set VMXE in CR4, I now get
->> KVM: KVM_SET_SREGS: Invalid argument
->> Before the patch I was able (with many
->> problems, but still) to set VMXE sometimes.
->>
->> So its a NAK so far, waiting for an update. :)
-> IIRC, you said you were going to test on AMD?  Assuming that's correct,
+From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-Yes, that is true.
+Hi.
 
+The first patch is the header file to handle ATF call.
 
->   -EINVAL
-> is the expected behavior.  KVM was essentially lying before; it never actually
-> set CR4.VMXE in hardware, it just didn't properply detect the error and so VMXE
-> was set in KVM's shadow of the guest's CR4.
+The second patch is DT binding for arasan controller for uhs support.
 
-Hmm. But at least it was lying
-similarly on AMD and Intel CPUs. :)
-So I was able to reproduce the problems
-myself.
-Do you mean, any AMD tests are now
-useless, and we need to proceed with
-Intel tests only?
+The third patch is to introduce the structure device pointer in arasan controller probe.
 
-Then additional question.
-On old Intel CPUs we needed to set
-VMXE in guest to make it to work in
-nested-guest mode.
-Is it still needed even with your patches?
-Or the nested-guest mode will work
-now even on older Intel CPUs and KVM
-will set VMXE for us itself, when needed?
+The fourth patch is to enable UHS-1 Support for Keem Bay EVM.
+
+All of these patches was tested with Keem Bay evaluation module board.
+
+Kindly help to review this patch set.
+
+Thank you.
+
+Changes since v4:
+- Fixed comment by Andy and Sudeep on first patch.
+- Add Acked-by tag.
+- Fixed comment by Michal and Andy on the third patch to replace current users of &pdev->dev.
+
+Changes since v3:
+- Add Dt bindings for uhs gpio.
+- Fixed comment by Michal and Sudeep on header file for the macro and error code.
+- Fixed comment by Andy and created 1 new patch to separate the struc dev pointer in probe func.
+- Fixed comment by Michal in arasan controller code.
+
+Changes since v2:
+- Removed Document DT Bindings for Keembay Firmware.
+- Removed Firmware Driver to handle ATF Service call.
+- Add header file to handle API function for device driver to communicate with Arm Trusted Firmware.
+
+Changes since v1:
+- Add Document DT Bindings for Keembay Firmware.
+- Created Firmware Driver to handle ATF Service call
+- Provide API for arasan driver for sd card voltage changes
+
+Muhammad Husaini Zulkifli (4):
+  firmware: keembay: Add support for Trusted Firmware Service call
+  dt-bindings: mmc: Add uhs-gpio for Keem Bay UHS-1 Support
+  mmc: sdhci-of-arasan: Add structure device pointer in probe
+  mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+
+ .../devicetree/bindings/mmc/arasan,sdhci.yaml |   8 +-
+ drivers/mmc/host/sdhci-of-arasan.c            | 163 ++++++++++++++++--
+ include/linux/firmware/intel/keembay.h        |  47 +++++
+ 3 files changed, 199 insertions(+), 19 deletions(-)
+ create mode 100644 include/linux/firmware/intel/keembay.h
+
+--
+2.17.1
 
