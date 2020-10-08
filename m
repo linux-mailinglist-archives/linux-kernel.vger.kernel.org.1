@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D5828780A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2F4287801
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731320AbgJHPt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:49:29 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:50393 "EHLO
+        id S1731307AbgJHPt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:49:27 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:49485 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgJHPtW (ORCPT
+        with ESMTP id S1729866AbgJHPtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:49:22 -0400
+        Thu, 8 Oct 2020 11:49:21 -0400
 Received: from localhost.localdomain ([192.30.34.233]) by
  mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MmkjY-1kpOnC0irW-00jnld; Thu, 08 Oct 2020 17:48:37 +0200
+ 1MStT6-1jwLIa42la-00ULFd; Thu, 08 Oct 2020 17:48:43 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -37,497 +37,146 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 12/13] timekeeping: default GENERIC_CLOCKEVENTS to enabled
-Date:   Thu,  8 Oct 2020 17:46:50 +0200
-Message-Id: <20201008154651.1901126-13-arnd@arndb.de>
+Subject: [RFC 13/13] m68k: mac: convert to generic clockevent
+Date:   Thu,  8 Oct 2020 17:46:51 +0200
+Message-Id: <20201008154651.1901126-14-arnd@arndb.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201008154651.1901126-1-arnd@arndb.de>
 References: <20201008154651.1901126-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:7ucb1lwfY52+dKVVsc4Lsrz1MSdDMxITcHlJH7jAN7OZDEd8SIb
- 3foh8oZmtaP6MQJ9Tr4xbm4uhdHuG8e1jJmN8B0V9HyOxokq0tZ/U/zb+rTGrrdz+19lOcO
- Iif0bpawPadmL8j1quUf6XB0+uDSKO+mu3iu7zhU+ua/9dNJZy+zByMU0urTV+lEU/gKbnz
- 6jDQCl6bKN7AxTkLSioTw==
+X-Provags-ID: V03:K1:t2TT0Gg6iZNzNSgl+OLD57/ppw5gg1Qso/eeRLVLEYaTBf/jIqQ
+ Hjytsid5qWOgO94sXb2HqufDu6sYujxasZU8I0d6fpbSQ3aPXdulhuhjy1hT49RzBos4jzD
+ TAn0VTtO47u4tnZhkeNMXUv9noQBvjvT6/jveq0eVE28BolhK15dXE6GaGQHpS+2wQbV7+C
+ u0hUaI+Xe6zAY/NJfNthg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WWrdhm5PmF8=:IF/aluLuwvVtHEC52vjtMv
- 4/4q2B/v/XQloPlWUAfWW9PpilnpvsQH6O2iXs1up1E3idrjuLoW46QcFANlbLqaXIBjLGNf0
- ee7vytDuXnQKXZsGxHdCKhWQGPc2TZQ9DmduRkRjilNE7BNEi7xCHR5RjX1dO8XX1XT1Wd+6j
- 50Dx/lejKeVPan6TOsl6Tk5XyoGhSNQSejBifHZTKMt352kf9Waq2Mb4jjemWlWPEUDI2eIzz
- 3PvwFyxP6MdemPUHWxIFHX8Jop4hZN8VmrtNL84BrqKSIfbk70oJR7mlucQ7Vwy140xrXdR+U
- 7f6qLVQZbuU20W0qH4X7px0cSb6vKbVp3ck63oDJDhs3vbjakd3gAd7odMI2l8ZuP7fxxlOvc
- Ok/9U+i/iZUeenTZaRJfmhCMdeMjiboqTTEAEsCyFEn1JNiZZVPALDagVPRLuS5qF60GGBbVr
- Vk4VahXFgo0IAmvn/Wm5Eu7276iOss9zLiYQrPcmLM7Qoe7531mkiwBpZZEGNxaiLuriNxm3l
- aS9U5+PCJzuZnm3J/k0xK9XXLl84dGHI8FJCHjPomfHnh4JD8KpinNp8NHQMgHilDQy5lVbuv
- Hhtl5hDQ7d/qcFz9vohvW/ThzQQpg2iQiIqcpUnnM0/I3pS3ZCANaMRzgeU7AxjJrfoaD3CfK
- e4kFlSo8x2wv2O7CCCM+YxLoOLdc7/FBEJJHnIcuthDoDwJYl/mgmS4jIbsthUTeIFwdJUTxr
- SE/VBoX1Ux7E6pOAUmtEAikBY6zOdBUJwxBdTkY3n6iiTCzKMEGLZozJZ92ciqg1AzJIFDHaf
- Sh3q5ILz/IWepnrjXYedlCJIfb8xCmpFJVhJJ9mPCrYQImz5/NqlfpjXi3d7QTTUHqqhbPO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gXB8YuDxJok=:EX4k3kZ8QtbIajiEgQTjiv
+ SxHIuk7BFtV13qQjcBtlTsbXwtVoVK8kQhARoOlwilggxhieawtrezJt3Nn/X5O7tByqjdCC0
+ BF62tpUUIYAbDtBIVIyZL2hUzvGMBZNsEbCoqkY9JNhrpx9qZIHES7A8RwQ3xHrexkILfIFta
+ ySe2T7/BEMRY7zaRt35YvBZwbB2RYMnEHD4/epdU+npcF0vqxHlZ8EGd349xDSIQkFZLZ5/Qd
+ A6jnQYe7kQEHk2S9vzlaQOLax2NzPVWqx2qJ8khlWwesz67wbkkbpL0Dia4r2XK7k5JK1j+1D
+ OMulG+KxbdmVVTvwvWNoHtad5bJVLSuGm2XUP6X+H61R+j+K8DXxGPjyevNrwIRaX6RLhZxQP
+ zqis6uJwcdAddHd2+B9sXPL6z4eBoA1GmBGjW/SJD50AJACvQ4E0e/0i2tHiNHS0rnm3bJLBJ
+ lwrq4bHMoSrC7PqyJ7+CBr3egpqFuksOiesZ1mQdOw3OPSAD6kA3Yr0hajcJyhVUXPycwhCVN
+ C++u17zvMBTUP/mYPIpUdEBDhmSi38cn4WzhKDeC3hciNlHjXobBSdiixilXs3+Dw4XeCYSVz
+ 7Jy4BI50XcOxXCsnDEB4OPfSY3lqmAlyfxuSOW71Bbyl2aq4pE3hKYNiEQgx7M9GbLDsZCOhK
+ /hwCC8rZXxH5x7+rCA0y7WcXnU+HjxGdER3IrB1Y5dZA3PXErgwUwwS2FAj8rlOKAMDs2zlVj
+ BCQFJHvQcyP0SVgL+KsIAIoC2cONpmrqvhYyJ8KXY4ZKZCPOXJYlz2xx0MLLHvLC31pYlmJdM
+ gh3zpYEZMSfwruQm5IBEZRtnKPMy9488EKTQyfQYASbr3lI25bzfMveHN011XHRSJ3ZPMfJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Almost all machines use GENERIC_CLOCKEVENTS, so it feels wrong to
-require each one to select that symbol manually.
+Now that the infrastructure allows kernels to have both legacy timer
+ticks and clockevent drivers in the same image, start by moving one
+platform to generic clockevents.
 
-Instead, enable it whenever CONFIG_LEGACY_TIMER_TICK is disabled as
-a simplification. It should be possible to select both
-GENERIC_CLOCKEVENTS and LEGACY_TIMER_TICK from an architecture now
-and decide at runtime between the two.
+As qemu only supports the q800 platform among the classic m68k, use
+that as an example.
 
-For the clockevents arch-support.txt file, this means that additional
-architectures are marked as TODO when they have at least one machine
-that still uses LEGACY_TIMER_TICK, rather than being marked 'ok' when
-at least one machine has been converted. This means that both m68k and
-arm (for riscpc) revert to TODO.
-
-At this point, we could just always enable CONFIG_GENERIC_CLOCKEVENTS
-rather than leaving it off when not needed. I built an m68k
-defconfig kernel (using gcc-10.1.0) and found that this would add
-around 5.5KB in kernel image size:
-
-   text	   data	    bss	    dec	    hex	filename
-3861936	1092236	 196656	5150828	 4e986c	obj-m68k/vmlinux-no-clockevent
-3866201	1093832	 196184	5156217	 4ead79	obj-m68k/vmlinux-clockevent
-
-On Arm (MACH_RPC), that difference appears to be twice as large,
-around 11KB on top of an 6MB vmlinux.
+I also tried adding oneshot mode, which was successful but broke
+the clocksource. It's probably not hard to make it work properly,
+but this is where I've stopped.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../features/time/clockevents/arch-support.txt       |  6 +++---
- arch/alpha/Kconfig                                   |  1 -
- arch/arc/Kconfig                                     |  1 -
- arch/arm/Kconfig                                     | 12 ------------
- arch/arm64/Kconfig                                   |  1 -
- arch/arm64/Kconfig.platforms                         |  1 -
- arch/c6x/Kconfig                                     |  1 -
- arch/csky/Kconfig                                    |  1 -
- arch/h8300/Kconfig                                   |  1 -
- arch/hexagon/Kconfig                                 |  1 -
- arch/m68k/Kconfig.cpu                                |  1 -
- arch/microblaze/Kconfig                              |  1 -
- arch/mips/Kconfig                                    |  1 -
- arch/nds32/Kconfig                                   |  1 -
- arch/nios2/Kconfig                                   |  1 -
- arch/openrisc/Kconfig                                |  1 -
- arch/powerpc/Kconfig                                 |  1 -
- arch/riscv/Kconfig                                   |  1 -
- arch/s390/Kconfig                                    |  1 -
- arch/sh/Kconfig                                      |  1 -
- arch/sparc/Kconfig                                   |  1 -
- arch/um/Kconfig                                      |  1 -
- arch/x86/Kconfig                                     |  1 -
- arch/xtensa/Kconfig                                  |  1 -
- kernel/time/Kconfig                                  |  2 +-
- 25 files changed, 4 insertions(+), 38 deletions(-)
+I have never tried implementing a clockevent or clocksource
+driver in the past, so this is really just an experiment and
+I expect I got something wrong.
 
-diff --git a/Documentation/features/time/clockevents/arch-support.txt b/Documentation/features/time/clockevents/arch-support.txt
-index 61a5c9d68c15..6863a3fbddad 100644
---- a/Documentation/features/time/clockevents/arch-support.txt
-+++ b/Documentation/features/time/clockevents/arch-support.txt
-@@ -1,6 +1,6 @@
- #
- # Feature name:          clockevents
--#         Kconfig:       GENERIC_CLOCKEVENTS
-+#         Kconfig:       !LEGACY_TIMER_TICK
- #         description:   arch support generic clock events
- #
-     -----------------------
-@@ -8,14 +8,14 @@
-     -----------------------
-     |       alpha: |  ok  |
-     |         arc: |  ok  |
--    |         arm: |  ok  |
-+    |         arm: | TODO |
-     |       arm64: |  ok  |
-     |         c6x: |  ok  |
-     |        csky: |  ok  |
-     |       h8300: |  ok  |
-     |     hexagon: |  ok  |
-     |        ia64: | TODO |
--    |        m68k: |  ok  |
-+    |        m68k: | TODO |
-     |  microblaze: |  ok  |
-     |        mips: |  ok  |
-     |       nds32: |  ok  |
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index d6e9fc7a7b19..f0a700946cac 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -27,7 +27,6 @@ config ALPHA
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select AUDIT_ARCH
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_STRNCPY_FROM_USER
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 0a89cc9def65..061eb8e23739 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -19,7 +19,6 @@ config ARC
- 	select COMMON_CLK
- 	select DMA_DIRECT_REMAP
- 	select GENERIC_ATOMIC64 if !ISA_ARCV2 || !(ARC_HAS_LL64 && ARC_HAS_LLSC)
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_FIND_FIRST_BIT
- 	# for now, we don't need GENERIC_IRQ_PROBE, CONFIG_GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_SHOW
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 13af8d7a6c17..7adbc7387146 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -322,7 +322,6 @@ config ARCH_MULTIPLATFORM
- 	select AUTO_ZRELADDR
- 	select TIMER_OF
- 	select COMMON_CLK
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select HAVE_PCI
- 	select PCI_DOMAINS_GENERIC if PCI
-@@ -337,7 +336,6 @@ config ARM_SINGLE_ARMV7M
- 	select TIMER_OF
- 	select COMMON_CLK
- 	select CPU_V7M
--	select GENERIC_CLOCKEVENTS
- 	select NO_IOPORT_MAP
- 	select SPARSE_IRQ
- 	select USE_OF
-@@ -366,7 +364,6 @@ config ARCH_EP93XX
- 	select CLKDEV_LOOKUP
- 	select CLKSRC_MMIO
- 	select CPU_ARM920T
--	select GENERIC_CLOCKEVENTS
- 	select GPIOLIB
- 	select HAVE_LEGACY_CLK
+
+ arch/m68k/Kconfig.machine |  2 +-
+ arch/m68k/mac/via.c       | 44 ++++++++++++++++++++++++++++++++-------
+ 2 files changed, 37 insertions(+), 9 deletions(-)
+
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 8a4e8bd8aade..cccabdad618e 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -30,7 +30,7 @@ config MAC
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
+ 	select HAVE_ARCH_NVRAM_OPS
+-	select LEGACY_TIMER_TICK
++	select GENERIC_CLOCKEVENTS
  	help
-@@ -376,7 +373,6 @@ config ARCH_FOOTBRIDGE
- 	bool "FootBridge"
- 	select CPU_SA110
- 	select FOOTBRIDGE
--	select GENERIC_CLOCKEVENTS
- 	select HAVE_IDE
- 	select NEED_MACH_IO_H if !MMU
- 	select NEED_MACH_MEMORY_H
-@@ -404,7 +400,6 @@ config ARCH_IXP4XX
- 	select ARCH_SUPPORTS_BIG_ENDIAN
- 	select CPU_XSCALE
- 	select DMABOUNCE if PCI
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIO_IXP4XX
- 	select GPIOLIB
-@@ -420,7 +415,6 @@ config ARCH_IXP4XX
- config ARCH_DOVE
- 	bool "Marvell Dove"
- 	select CPU_PJ4
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIOLIB
- 	select HAVE_PCI
-@@ -444,7 +438,6 @@ config ARCH_PXA
- 	select CLKSRC_MMIO
- 	select TIMER_OF
- 	select CPU_XSCALE if !CPU_XSC3
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIO_PXA
- 	select GPIOLIB
-@@ -485,7 +478,6 @@ config ARCH_SA1100
- 	select COMMON_CLK
- 	select CPU_FREQ
- 	select CPU_SA1100
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIOLIB
- 	select HAVE_IDE
-@@ -500,7 +492,6 @@ config ARCH_S3C24XX
- 	bool "Samsung S3C24XX SoCs"
- 	select ATAGS
- 	select CLKSRC_SAMSUNG_PWM
--	select GENERIC_CLOCKEVENTS
- 	select GPIO_SAMSUNG
- 	select GPIOLIB
- 	select GENERIC_IRQ_MULTI_HANDLER
-@@ -524,7 +515,6 @@ config ARCH_OMAP1
- 	select ARCH_OMAP
- 	select CLKDEV_LOOKUP
- 	select CLKSRC_MMIO
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GPIOLIB
-@@ -787,7 +777,6 @@ config ARCH_ACORN
+ 	  This option enables support for the Apple Macintosh series of
+ 	  computers (yes, there is experimental support now, at least for part
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 8ad734e3c934..dd4c13c318b6 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -24,6 +24,7 @@
+  */
  
- config PLAT_IOP
- 	bool
--	select GENERIC_CLOCKEVENTS
+ #include <linux/clocksource.h>
++#include <linux/clockchips.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+@@ -602,27 +603,54 @@ static u32 clk_total, clk_offset;
  
- config PLAT_ORION
- 	bool
-@@ -1178,7 +1167,6 @@ config HAVE_SMP
- config SMP
- 	bool "Symmetric Multi-Processing"
- 	depends on CPU_V6K || CPU_V7
--	depends on GENERIC_CLOCKEVENTS
- 	depends on HAVE_SMP
- 	depends on MMU || ARM_MPU
- 	select IRQ_WORK
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 08fa3a1c50f0..3e56f6840a32 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -101,7 +101,6 @@ config ARM64
- 	select FRAME_POINTER
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ARCH_TOPOLOGY
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index 6f2494dd6d60..748e6d8c3b94 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -256,7 +256,6 @@ config ARCH_TEGRA
- 	select ARM_GIC_PM
- 	select CLKSRC_MMIO
- 	select TIMER_OF
--	select GENERIC_CLOCKEVENTS
- 	select GPIOLIB
- 	select PINCTRL
- 	select PM
-diff --git a/arch/c6x/Kconfig b/arch/c6x/Kconfig
-index 48d66bf0465d..bdeeac28b1be 100644
---- a/arch/c6x/Kconfig
-+++ b/arch/c6x/Kconfig
-@@ -19,7 +19,6 @@ config C6X
- 	select IRQ_DOMAIN
- 	select OF
- 	select OF_EARLY_FLATTREE
--	select GENERIC_CLOCKEVENTS
- 	select MODULES_USE_ELF_RELA
- 	select MMU_GATHER_NO_RANGE if MMU
- 	select SET_FS
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 50bb8b4477be..8fec85ab5da6 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -28,7 +28,6 @@ config CSKY
- 	select GENERIC_LIB_UCMPDI2
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_PROBE
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 7945de067e9f..3e3e0f16f7e0 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -12,7 +12,6 @@ config H8300
- 	select FRAME_POINTER
- 	select GENERIC_CPU_DEVICES
- 	select MODULES_USE_ELF_RELA
--	select GENERIC_CLOCKEVENTS
- 	select COMMON_CLK
- 	select ARCH_WANT_FRAME_POINTERS
- 	select OF
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index f2afabbadd43..6e00c16a36b5 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -27,7 +27,6 @@ config HEXAGON
- 	select GENERIC_IOMAP
- 	select GENERIC_SMP_IDLE_THREAD
- 	select STACKTRACE_SUPPORT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select MODULES_USE_ELF_RELA
- 	select GENERIC_CPU_DEVICES
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 322a35ef14c6..abeb2e4dc72d 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -315,7 +315,6 @@ config M54xx
+ static irqreturn_t via_timer_handler(int irq, void *dev_id)
+ {
++	struct clock_event_device *evt = dev_id;
++
+ 	clk_total += VIA_TIMER_CYCLES;
+ 	clk_offset = 0;
+-	legacy_timer_tick(1);
++	evt->event_handler(evt);
  
- config COLDFIRE_PIT_TIMER
- 	bool
--	select GENERIC_CLOCKEVENTS
+ 	return IRQ_HANDLED;
+ }
  
- config COLDFIRE_TIMERS
- 	bool
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index 33925ffed68f..2f0d3f431faf 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -17,7 +17,6 @@ config MICROBLAZE
- 	select COMMON_CLK
- 	select DMA_DIRECT_REMAP if MMU
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IDLE_POLL_SETUP
- 	select GENERIC_IRQ_PROBE
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index f52fa211a4cf..977c50d90933 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -21,7 +21,6 @@ config MIPS
- 	select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
- 	select CPU_PM if CPU_IDLE
- 	select GENERIC_ATOMIC64 if !64BIT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_GETTIMEOFDAY
-diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
-index e8e541fd2267..62313902d75d 100644
---- a/arch/nds32/Kconfig
-+++ b/arch/nds32/Kconfig
-@@ -17,7 +17,6 @@ config NDS32
- 	select DMA_DIRECT_REMAP
- 	select GENERIC_ATOMIC64
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_CHIP
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_IOREMAP
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index c7c6ba6bec9d..c24955c81c92 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -10,7 +10,6 @@ config NIOS2
- 	select COMMON_CLK
- 	select TIMER_OF
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IRQ_PROBE
- 	select GENERIC_IRQ_SHOW
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index 6233c6293180..591acc5990dc 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -24,7 +24,6 @@ config OPENRISC
- 	select GENERIC_CPU_DEVICES
- 	select HAVE_UID16
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select GENERIC_STRNCPY_FROM_USER
- 	select GENERIC_STRNLEN_USER
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 47a639ba7084..4a4c0c9e2287 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -163,7 +163,6 @@ config PPC
- 	select EDAC_ATOMIC_SCRUB
- 	select EDAC_SUPPORT
- 	select GENERIC_ATOMIC64			if PPC32
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 44377fd7860e..3842bbb4fe62 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -37,7 +37,6 @@ config RISCV
- 	select EDAC_SUPPORT
- 	select GENERIC_ARCH_TOPOLOGY if SMP
- 	select GENERIC_ATOMIC64 if !64BIT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_EARLY_IOREMAP
- 	select GENERIC_GETTIMEOFDAY if HAVE_GENERIC_VDSO
- 	select GENERIC_IOREMAP
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 34371539a9b9..a91a678b33f9 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -116,7 +116,6 @@ config S390
- 	select CLONE_BACKWARDS2
- 	select DMA_OPS if PCI
- 	select DYNAMIC_FTRACE if FUNCTION_TRACER
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_FIND_FIRST_BIT
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 159da4ed578f..5fa580219a86 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -16,7 +16,6 @@ config SUPERH
- 	select CPU_NO_EFFICIENT_FFS
- 	select DMA_DECLARE_COHERENT
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
- 	select GENERIC_IDLE_POLL_SETUP
- 	select GENERIC_IRQ_SHOW
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 54bd4143b02f..36a69443241c 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -39,7 +39,6 @@ config SPARC
- 	select HAVE_EBPF_JIT if SPARC64
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select GENERIC_SMP_IDLE_THREAD
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_STRNCPY_FROM_USER
- 	select GENERIC_STRNLEN_USER
- 	select MODULES_USE_ELF_RELA
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 78c14216c11b..27a964cba2a5 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -17,7 +17,6 @@ config UML
- 	select NO_DMA
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_CLOCKEVENTS
- 	select HAVE_GCC_PLUGINS
- 	select SET_FS
- 	select TTY # Needed for line.c
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index fca50af29faf..badeb71fdf6e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -108,7 +108,6 @@ config X86
- 	select DCACHE_WORD_ACCESS
- 	select EDAC_ATOMIC_SCRUB
- 	select EDAC_SUPPORT
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_CLOCKEVENTS_BROADCAST	if X86_64 || (X86_32 && X86_LOCAL_APIC)
- 	select GENERIC_CLOCKEVENTS_MIN_ADJUST
- 	select GENERIC_CMOS_UPDATE
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index d0dfa50bd0bb..2611ba336af8 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -16,7 +16,6 @@ config XTENSA
- 	select COMMON_CLK
- 	select DMA_REMAP if MMU
- 	select GENERIC_ATOMIC64
--	select GENERIC_CLOCKEVENTS
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_PCI_IOMAP
- 	select GENERIC_SCHED_CLOCK
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index f2b0cfeade47..22ec4d89e57d 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -32,7 +32,7 @@ config ARCH_USES_GETTIMEOFFSET
+-void __init via_init_clock(void)
++static int via_set_periodic(struct clock_event_device *evt)
+ {
+-	if (request_irq(IRQ_MAC_TIMER_1, via_timer_handler, IRQF_TIMER, "timer",
+-			NULL)) {
+-		pr_err("Couldn't register %s interrupt\n", "timer");
+-		return;
+-	}
+-
+ 	via1[vT1LL] = VIA_TC_LOW;
+ 	via1[vT1LH] = VIA_TC_HIGH;
+ 	via1[vT1CL] = VIA_TC_LOW;
+ 	via1[vT1CH] = VIA_TC_HIGH;
+ 	via1[vACR] |= 0x40;
  
- # The generic clock events infrastructure
- config GENERIC_CLOCKEVENTS
--	bool
-+	def_bool !LEGACY_TIMER_TICK
++	return 0;
++}
++
++static int via_set_shutdown(struct clock_event_device *evt)
++{
++	via1[vACR] &= ~0x40;
++
++	return 0;
++}
++
++static struct clock_event_device via_clk_event = {
++	.name	= "via1",
++	.rating = 250,
++	.irq	= IRQ_MAC_TIMER_1,
++	.owner	= THIS_MODULE,
++
++	.features		= CLOCK_EVT_FEAT_PERIODIC,
++	.set_state_shutdown	= via_set_shutdown,
++	.set_state_periodic	= via_set_periodic,
++};
++
++void __init via_init_clock(void)
++{
++	clockevents_config_and_register(&via_clk_event, VIA_CLOCK_FREQ, 1, 0xffff);
++
++	if (request_irq(IRQ_MAC_TIMER_1, via_timer_handler, IRQF_TIMER, "timer",
++			&via_clk_event)) {
++		pr_err("Couldn't register %s interrupt\n", "timer");
++		return;
++	}
++
+ 	clocksource_register_hz(&mac_clk, VIA_CLOCK_FREQ);
+ }
  
- # Architecture can handle broadcast in a driver-agnostic way
- config ARCH_HAS_TICK_BROADCAST
 -- 
 2.27.0
 
