@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6FB287668
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C61287676
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730719AbgJHOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
+        id S1730742AbgJHOzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729833AbgJHOwK (ORCPT
+        with ESMTP id S1730353AbgJHOzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:52:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BDFC061755;
-        Thu,  8 Oct 2020 07:52:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b26so4207175pff.3;
-        Thu, 08 Oct 2020 07:52:10 -0700 (PDT)
+        Thu, 8 Oct 2020 10:55:10 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933FEC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:55:09 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w12so7283267qki.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:55:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SYh7aWK4xIgcsuY1+FJJjva+eJ1k1GLi/gSRWTHUeCM=;
-        b=lY68qoXZoea7DaLmCvM8oHJ6+uklyANHT2wmYcbOzL0L8+EGHspmX/YlaHdJ6631df
-         i1VN3oXOXebUBrmo0k8ZLh3TCQocAYLu5NfYw4vDhe6dGvYEQzqtoq4Oz3Pq5T+PMnhu
-         DV7SPaCtHUy8IzY1ZiOF0hroveWvz+Pm2I3/K245K526t4LhoH4Zwd1zqh5MFYEU9D2T
-         di5oakXnuASpmX0ZpjqDkjzFWRLqueLMsKm77tFLw05vZJVJHNAMnRrO8YA/d8nlzSCT
-         mJn4S5pZ7iWAApb+LaDRWYS3T9kD7aIflBP8mcXl8nV0+fjo7LHe+b9W4J7PHWbRjlLd
-         L2rw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uyKHtfoarsj+UYs2PP4XCdlBcu5iL8M8TqmjexyJtjo=;
+        b=gSpOReNk6UlU6+gBPtDU3TmLons5StnRVP+CSGLouttWxPrXlWzOUzwAitmC+kccP2
+         0zmeEv8fvogdspFm1WObJnfz37SM5ZQXGJVkNbRt3U9rIh7Pyw4kD0vw0G9kikekdRdl
+         C2gz/68+9dh12edgZNkL+yu9ynPSKifE62fxva7Ow56HS1u8kUWSsGm2yoI9rtaJKJiN
+         nJA/QAp95vu+Fs1ILvQcjFYZDG+JxrV4BqbTRG3oG/QYOK4UZCI4Cc9geDfeNj3qsVsq
+         MFI8DWNCMjRkARF4wR2mrx1S+YWbkkW2KhHKaCXXeQQUOCxJQtRVVlpJiKio3PpqqbwF
+         TK5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SYh7aWK4xIgcsuY1+FJJjva+eJ1k1GLi/gSRWTHUeCM=;
-        b=aSjGkU+/avGf2iGzzbvRDuLZKWqlrKAsVhgtVWQXZ14pByvsKbnIYozO+DT7Ky1j8i
-         5vB3qRlYjNgTYC2FFBLbxw0AGLHYytRRRrFshGMSlSd1Vsv30yrYLobxDYJz7esK+NrB
-         0dxUBHRc+pscMo+hBO9MHeNwHRC3/g/M3puHssuURxoK6cdY/9rnXDvcl7X203NS2/9H
-         C/Rn/hRUQ3JDnPBMvJDWly4JR8orXRgKgT+pDvJGvp870Myebf/xH0UiiQJNJc1lSWRf
-         jmRp7Ijri/bvUtOH3O3xIIFcmSHrAPQqjWOS8idJFpvFq5rIa4kNqL9QFFsgsmtmqgIo
-         95HQ==
-X-Gm-Message-State: AOAM531p7WGdCrk47KwclDKwWuFOpowC7pg7DoVeHvwpCVL1G3cs2LTN
-        mByuRT3+H0au3wqshJUDlSnZ95DCucVo+HnrdhaluHI0Wo0GhCr/
-X-Google-Smtp-Source: ABdhPJzfj6+Va3YRM5LtE93jDVpdMBlQa0rDrqpIpTpApWkQwJTUr9fyLEk9IVCTX1LzCQsThx92GvK0dYgrvpvt+LQ=
-X-Received: by 2002:aa7:81d5:0:b029:142:2501:39fa with SMTP id
- c21-20020aa781d50000b0290142250139famr8041946pfn.73.1602168729817; Thu, 08
- Oct 2020 07:52:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uyKHtfoarsj+UYs2PP4XCdlBcu5iL8M8TqmjexyJtjo=;
+        b=lqtEa4E7G4RzSKOJeCE3xxWRe+pT0PDd0PlRDzUxHEL9twbLNGPSfyrNEfwSZHb8GT
+         02/SqMC+pi5dxVh1hI2Q+E0r1mqTZNimKHM9AZDlzamFdDk9gB5mWpolJwmTzZgi1Vsk
+         uIWCZ/6welpNExJCq4FmA7yB/XfjNx6ljmuu8ErbVCs/FEhTjKKEod6QSmPbhhfaUm7l
+         W799q8qFJuZymXQPVjD6F4WWZi5d1E9YDRIK0HyCb9+20FSUrByaJyWtq0VDveZJrTv6
+         9DI5tlf7Q0gvFFKCKoBtYnTeWo5uMiw29t2DKcjFyEPRQmqIqP1KPdmIiJiQLOOyZrwk
+         8zcA==
+X-Gm-Message-State: AOAM532XhaZSzwQdXxeknyOL0PaDyXvf/aWbDLwbAoJ8cm92zymJLPwb
+        xa4xYM2Cpq38yn12yUrQ9dh64w==
+X-Google-Smtp-Source: ABdhPJwCjDD186qpBAmnjaTWRt1sPwSBHJUbvD4s+XLrOlPjgXCU4uGDse/682h+yj3I+EQxRHgfig==
+X-Received: by 2002:ae9:e644:: with SMTP id x4mr8391439qkl.270.1602168908459;
+        Thu, 08 Oct 2020 07:55:08 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:9294])
+        by smtp.gmail.com with ESMTPSA id e23sm3955591qkl.67.2020.10.08.07.55.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 07:55:07 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 10:53:36 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        SeongJae Park <sjpark@amazon.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20201008145336.GA163830@cmpxchg.org>
+References: <20200909215752.1725525-1-shakeelb@google.com>
+ <20200928210216.GA378894@cmpxchg.org>
+ <20200929150444.GG2277@dhcp22.suse.cz>
+ <20200929215341.GA408059@cmpxchg.org>
+ <CALvZod5eN0PDtKo8SEp1n-xGvgCX9k6-OBGYLT3RmzhA+Q-2hw@mail.gmail.com>
+ <20201001143149.GA493631@cmpxchg.org>
+ <CALvZod59cU40A3nbQtkP50Ae3g6T2MQSt+q1=O2=Gy9QUzNkbg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201008143455.340599-1-luzmaximilian@gmail.com> <20201008143455.340599-2-luzmaximilian@gmail.com>
-In-Reply-To: <20201008143455.340599-2-luzmaximilian@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 8 Oct 2020 17:52:59 +0300
-Message-ID: <CAHp75Vd61qnLMUbted_ohqEtMdVFbqKhKf3kKh0ombAwhf8dCA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] platform: Add Surface platform directory
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod59cU40A3nbQtkP50Ae3g6T2MQSt+q1=O2=Gy9QUzNkbg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 5:35 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->
-> It may make sense to split the Microsoft Surface hardware platform
-> drivers out to a separate subdirectory, since some of it may be shared
-> between ARM and x86 in the future (regarding devices like the Surface
-> Pro X).
->
-> Further, newer Surface devices will require additional platform drivers
-> for fundamental support (mostly regarding their embedded controller),
-> which may also warrant this split from a size perspective.
->
-> This commit introduces a new platform/surface subdirectory for the
-> Surface device family, with subsequent commits moving existing Surface
-> drivers over from platform/x86.
->
-> A new MAINTAINERS entry is added for this directory. Patches to files in
-> this directory will be taken up by the platform-drivers-x86 team (i.e.
-> Hans de Goede and Mark Gross) after they have been reviewed by
-> Maximilian Luz.
+On Tue, Oct 06, 2020 at 09:55:43AM -0700, Shakeel Butt wrote:
+> On Thu, Oct 1, 2020 at 7:33 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> [snip]
+> > > >    So instead of asking users for a target size whose suitability
+> > > >    heavily depends on the kernel's LRU implementation, the readahead
+> > > >    code, the IO device's capability and general load, why not directly
+> > > >    ask the user for a pressure level that the workload is comfortable
+> > > >    with and which captures all of the above factors implicitly? Then
+> > > >    let the kernel do this feedback loop from a per-cgroup worker.
+> > >
+> > > I am assuming here by pressure level you are referring to the PSI like
+> > > interface e.g. allowing the users to tell about their jobs that X
+> > > amount of stalls in a fixed time window is tolerable.
+> >
+> > Right, essentially the same parameters that psi poll() would take.
+> 
+> I thought a bit more on the semantics of the psi usage for the
+> proactive reclaim.
+> 
+> Suppose I have a top level cgroup A on which I want to enable
+> proactive reclaim. Which memory psi events should the proactive
+> reclaim should consider?
+> 
+> The simplest would be the memory.psi at 'A'. However memory.psi is
+> hierarchical and I would not really want the pressure due limits in
+> children of 'A' to impact the proactive reclaim.
 
-Thanks for the patch, my minor comments below.
+I don't think pressure from limits down the tree can be separated out,
+generally. All events are accounted recursively as well. Of course, we
+remember the reclaim level for evicted entries - but if there is
+reclaim triggered at A and A/B concurrently, the distribution of who
+ends up reclaiming the physical pages in A/B is pretty arbitrary/racy.
 
-...
+If A/B decides to do its own proactive reclaim with the sublimit, and
+ends up consuming the pressure budget assigned to proactive reclaim in
+A, there isn't much that can be done.
 
-> +MICROSOFT SURFACE PLATFORM DRIVERS
+It's also possible that proactive reclaim in A keeps A/B from hitting
+its limit in the first place.
 
-(1)
+I have to say, the configuration doesn't really strike me as sensible,
+though. Limits make sense for doing fixed partitioning: A gets 4G, A/B
+gets 2G out of that. But if you do proactive reclaim on A you're
+essentially saying A as a whole is auto-sizing dynamically based on
+its memory access pattern. I'm not sure what it means to then start
+doing fixed partitions in the sublevel.
 
-> +M:     Hans de Goede <hdegoede@redhat.com>
-> +M:     Mark Gross <mgross@linux.intel.com>
-> +M:     Maximilian Luz <luzmaximilian@gmail.com>
-> +L:     platform-driver-x86@vger.kernel.org
-> +S:     Maintained
+> PSI due to refaults and slow IO should be included or maybe only
+> those which are caused by the proactive reclaim itself. I am
+> undecided on the PSI due to compaction. PSI due to global reclaim
+> for 'A' is even more complicated. This is a stall due to reclaiming
+> from the system including self. It might not really cause more
+> refaults and IOs for 'A'. Should proactive reclaim ignore the
+> pressure due to global pressure when tuning its aggressiveness.
 
-> +T:     git git://git.infradead.org/linux-platform-drivers-x86.git
+Yeah, I think they should all be included, because ultimately what
+matters is what the workload can tolerate without sacrificing
+performance.
 
-It's now on kernel.org.
-git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+Proactive reclaim can destroy THPs, so the cost of recreating them
+should be reflected. Otherwise you can easily overpressurize.
 
-> +F:     drivers/platform/surface/
-
-> @@ -9,3 +9,4 @@ obj-$(CONFIG_MIPS)              += mips/
->  obj-$(CONFIG_OLPC_EC)          += olpc/
->  obj-$(CONFIG_GOLDFISH)         += goldfish/
->  obj-$(CONFIG_CHROME_PLATFORMS) += chrome/
-> +obj-$(CONFIG_SURFACE_PLATFORM) += surface/
-
-(2)
-
-> +menuconfig SURFACE_PLATFORM
-
-(3a)
-
-> +if SURFACE_PLATFORM
-
-(3b)
-
-> +endif # SURFACE_PLATFORM
-
-(3c)
-
-I think in (1), (2) and (3) it makes sense to mimic Chrome, i.e. use
-plural: PLATFORMS.
-
--- 
-With Best Regards,
-Andy Shevchenko
+For global reclaim, if you say you want a workload pressurized to X
+percent in order to drive the LRUs and chop off all cold pages the
+workload can live without, it doesn't matter who does the work. If
+there is an abundance of physical memory, it's going to be proactive
+reclaim. If physical memory is already tight enough that global
+reclaim does it for you, there is nothing to be done in addition, and
+proactive reclaim should hang back. Otherwise you can again easily
+overpressurize the workload.
