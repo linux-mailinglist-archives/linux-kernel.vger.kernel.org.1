@@ -2,97 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9354286DE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE09286DE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgJHFFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
+        id S1728132AbgJHFLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgJHFFM (ORCPT
+        with ESMTP id S1726279AbgJHFLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:05:12 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B22C061755;
-        Wed,  7 Oct 2020 22:05:12 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id p15so4329494ljj.8;
-        Wed, 07 Oct 2020 22:05:12 -0700 (PDT)
+        Thu, 8 Oct 2020 01:11:18 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDE5C061755;
+        Wed,  7 Oct 2020 22:11:18 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id h6so3260658pgk.4;
+        Wed, 07 Oct 2020 22:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Rusu0oIzTOO8ocbnxz5JOA49UqEDQ44SxR4hoPni0y4=;
-        b=DMxlxOaK/nedSuliOtyVH5U0m6WjODloC7rwVN+cLO+FHv+XkmiW9G9++sH9q0Ohoi
-         w4juf+0yq0laq2EsMB3B+8dXcqnnEyZJ2ntqeNMUKLsbVsFg/GK+TH3+M8gTjlFO8PQW
-         qeomMFcDNrpIHkfH0TjkNSUkysUVg7nBB8PchPPapN8TqS2ksIj8+qsV2M/JVMs/eZyD
-         unoYbvp62fB9JAmiXLI0pUqXj9iQRGMm3cVjXFQ1Vz6z03EYONrqX2kzubOjOZjrfZsp
-         e6aodZ7mgEKQS0oFwILkPyi1+LA3C68TpuVMpKtUoKfzVW4UzGbgKN6LDb030rIPOGTX
-         KMdA==
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=DGXqI+4Sh6rs8urwhC133dx8DNmlAjYdeCRk7jyHfZg=;
+        b=OfFdEtFhTKkRCe5RhlJFEaguPGSub55q1j5ONalcOHYwpD35DWTogG8xfJy0GBysMo
+         dxcYGiB8uyMdFWDnNUp7Hd1hPovvpAuxunu94srqIv0CH5Y6e48+RSphHQi8uqeyh8Da
+         NR10jkXD0hVtDZjJIaqnPL+rlortGJ3JWWQUy4OcFaQj5dFCWB2MYVBCzgqh7XThOKLO
+         XNUDKQBQ+/NmCUKSNM2WiorrxI9tZk3qOoqZxaHMhl/tTEx6ihRc1b8ABChignNYILSS
+         RTfW+NoPm8MxlQ7BdzJigZFnU1+GryvjXu3yPndZip5zzdffGbaSC8zKCCstTDPilIbm
+         viIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Rusu0oIzTOO8ocbnxz5JOA49UqEDQ44SxR4hoPni0y4=;
-        b=P7T6PZX8KA8WxaKLPSJG8bUTVMbxE/XhvTfdBELn3G3RuOAI4v8FfRk5czsRH8d6fR
-         2oK0dSGfWrCjuYFNyf9uyVnwb2YYunouT8y+HwIOnh9cRjfum5d8x9zcj142QvcoRNp7
-         SAAISMYkJsYlxxIjLzdEmANPoh7Ga9PIZjit4d02MtSgi8cOSi64jMHFVx+o7uPEFNGc
-         Sv4DSu5Mg8ea+RBu6YHj/7jH77ejuMSJ1IZHJZHKoOtauAE6+qVTBmIBgwHjuG3izEkh
-         L+B0y348xOcSy3B89DtKh5JTn9eyC9YLBkz9MNV/BOz21A2FSoyBJOPHY5PX5D4p2a+H
-         SyuA==
-X-Gm-Message-State: AOAM532Tlilrwb37c0tEHUiwOB+S/iEC0W2nPZZ5R55gJwZ7duEJxAWt
-        4otCGVDPwUXrpk4WeRQfUn0WRNzCTJk=
-X-Google-Smtp-Source: ABdhPJwkr1Tk3q7ENrjOstfBgfgOD/7cM8ziJ+xFeGTQyU6DHpUsCVfPO9+F6oo269EdZNlRS5sn+g==
-X-Received: by 2002:a2e:b055:: with SMTP id d21mr2672202ljl.429.1602133510711;
-        Wed, 07 Oct 2020 22:05:10 -0700 (PDT)
-Received: from [192.168.2.145] ([109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id m19sm716152lji.112.2020.10.07.22.05.09
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=DGXqI+4Sh6rs8urwhC133dx8DNmlAjYdeCRk7jyHfZg=;
+        b=HicVhaozVc1jqGgFcqKjzPZjoaVYA5zXYlzApN3Fl27GNr6i+sZsjJzZXYlDdQjjLl
+         OPYjexN470cUdj1TiyFdTTNkLGhLrK8Z89Bjsn52ABl8FtmUYdgJHyWySedVis6OQJYq
+         8f2YFVGrYaAYJe6ivr8BlzRAFrktJQNudCUSRxhoUSmOQ7QyR3QdK0oHkFLlsKfOT/jh
+         u/ecJgTN1eM97il/CsmT036xVSTpurJQTFnIrJJnvIvD4SXcANESNLunDomxZocOAq0K
+         cYjYYwvTNJbmwUuVHhVv8VE5wkobRiAFiV5I3Bi5fPZ172Qg0rD+jhp+5+/agMazWYhR
+         zfiw==
+X-Gm-Message-State: AOAM533IZ9F/wO5ArBMOwek7OwA5bSSL4pLT6vbSK6crjouNHC1NzbWG
+        EUoF8bF3O07h81PFK6zjtms=
+X-Google-Smtp-Source: ABdhPJycc1QbXjDu44U3IZ20piKXkYt9w5+DehGFEbkwhNjBd2/NDvFAV6yf0lZsSAksNGlo65uF5g==
+X-Received: by 2002:a17:90a:73c9:: with SMTP id n9mr6194715pjk.90.1602133877705;
+        Wed, 07 Oct 2020 22:11:17 -0700 (PDT)
+Received: from ?IPv6:2402:b801:2840:8200:64bb:b626:4f99:bb54? ([2402:b801:2840:8200:64bb:b626:4f99:bb54])
+        by smtp.gmail.com with ESMTPSA id k7sm4643537pjs.9.2020.10.07.22.11.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 22:05:09 -0700 (PDT)
-Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
-To:     Stephen Warren <swarren@wwwdotorg.org>, Bob Ham <rah@settrans.net>,
-        Stefan Agner <stefan@agner.ch>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lukas Rusak <lorusak@gmail.com>
-References: <20201004133114.845230-1-pgwipeout@gmail.com>
- <cdd0f520ae4990de90f461e21cb4f298@agner.ch>
- <4d3eb998-045b-f288-7a9c-aaa620c38bff@settrans.net>
- <c8140ea3-8731-8084-47dd-8819b4b4df6a@gmail.com>
- <f12c1ad2-d180-8981-c3bf-db8ab6afbbaa@wwwdotorg.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <293ed420-259c-33da-eda4-3be94ba8d109@gmail.com>
-Date:   Thu, 8 Oct 2020 08:05:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 07 Oct 2020 22:11:17 -0700 (PDT)
+Subject: Re: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+References: <e4e6cc45-bc18-40ec-035e-fdb45b9a8f46@gmail.com>
+ <87o8lf74j5.fsf@nanos.tec.linutronix.de>
+ <1jy2ki1db4.fsf@starbuckisacylon.baylibre.com>
+From:   Brad Harper <bjharper@gmail.com>
+Message-ID: <c8a8797e-a8ef-6d22-be76-97c27cea6819@gmail.com>
+Date:   Thu, 8 Oct 2020 16:11:10 +1100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <f12c1ad2-d180-8981-c3bf-db8ab6afbbaa@wwwdotorg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <1jy2ki1db4.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.10.2020 19:08, Stephen Warren пишет:
-...
-> The facts[1] that Ouya published the code and that it used GPL-only
-> symbols certainly does imply that they *should* have published under GPL
-> or a compatible license, but doesn't mean that they definitely did. The
-> only way to know that for sure is for there to be evidence in the file
-> content or git history, such as license headers or Signed-off-by lines.
+On 7/10/2020 10:32 pm, Jerome Brunet wrote:
+> With arm64 defconfig on Khadas vim3, no obvious regression. Looks good.
+>
+> Tested-by: Jerome Brunet <jbrunet@baylibre.com>
+>
+> I did not test with RT. Brad, Could you let us know is Thomas's patch
+> works for you ? Thx
+There was a merge conflict in applying against v5.9-rc8-rt12 with
+particular this patch:
+https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/kernel/irq/manage.c?h=linux-5.9.y-rt&id=18df00ef0b2b1513dc8f1a9ed26b11fff2261c30
 
-The code wasn't only published, but also was distributed in a binary
-form to end users. This means that even if Ouya Inc. still existed and
-they made a mistake by using GPL-only symbols plus GPL-incompatible
-license for the driver, then they had to resilience the code. Hence
-either way it's okay to use downstream code as a reference for the
-upstream driver.
+I did manage to add the patch after attempting to resolve the conflict
+which solves the deadlock issue I am seeing with mmc and works fine during
+testing (a kernel compilation on preempt_rt configured kernel).
 
-This is my understanding.
+irq_thread in /kernel/irq/manage.c Looks like this (not 100% sure I
+should have placed the irq_finalize_oneshot before
+add_interrupt_randomness).
+
+Based on this I can provide
+
+Tested-by: Brad Harper <bjharper@gmail.com>
+
+---
+static int irq_thread(void *data)
+{
+         struct callback_head on_exit_work;
+         struct irqaction *action = data;
+         struct irq_desc *desc = irq_to_desc(action->irq);
+         irqreturn_t (*handler_fn)(struct irq_desc *desc,
+                         struct irqaction *action);
+
+         if (force_irqthreads && test_bit(IRQTF_FORCED_THREAD,
+&action->thread_flags))
+                 handler_fn = irq_forced_thread_fn;
+         else
+                 handler_fn = irq_thread_fn;
+
+         init_task_work(&on_exit_work, irq_thread_dtor);
+         task_work_add(current, &on_exit_work, false);
+
+         irq_thread_check_affinity(desc, action);
+
+         while (!irq_wait_for_interrupt(action)) {
+                 irqreturn_t action_ret;
+
+                 irq_thread_check_affinity(desc, action);
+
+                 action_ret = handler_fn(desc, action);
+                 if (action_ret == IRQ_HANDLED)
+                         atomic_inc(&desc->threads_handled);
+
+                 if (action_ret == IRQ_WAKE_THREAD)
+                         irq_wake_secondary(desc, action);
+
+                 irq_finalize_oneshot(desc, action);
+
+                 if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+                        migrate_disable();
+                        add_interrupt_randomness(action->irq, 0,
+                                 desc->random_ip ^ (unsigned long) action);
+                        migrate_enable();
+                 }
+                 wake_threads_waitq(desc);
+         }
+
+         /*
+          * This is the regular exit path. __free_irq() is stopping the
+          * thread via kthread_stop() after calling
+          * synchronize_hardirq(). So neither IRQTF_RUNTHREAD nor the
+          * oneshot mask bit can be set.
+          */
+         task_work_cancel(current, irq_thread_dtor);
+         return 0;
+}
+
+---
+
