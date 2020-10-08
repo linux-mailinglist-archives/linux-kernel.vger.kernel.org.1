@@ -2,115 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EA0286DF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD89286E03
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728323AbgJHFRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:17:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4330 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728132AbgJHFRg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:17:36 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09857bs2050696;
-        Thu, 8 Oct 2020 01:17:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=NawSu7taze30v9JrwKG21rHX7O3UERKk5e7HU0ddEqs=;
- b=keRb4EW6iNfG8XIWZcHr5FR9aqZ9cYqEelpjfvJUKPKkHG/l6grDgpdRvM4PC0QC8rzY
- OSiMsKXunVXH2yxNgXg5TjlogjaSYE+/vBNdCzrdkTOODQEZMm+vDE1fJ4szTnF9onov
- e72VNGNSTeDrPGl+t2bB/8ZQYI3kQb0yF1pyCWu49/X4v4yI9oAqLija7UbaXVZVh382
- fv91tqGNcJsjhQ4oCUwN2rsLN7B/5FMCDCPjym3UabzVkGlnUh63H1QLQenB4B25rgeT
- le6oa9TZ7TA8339yOgPBGtw5JFlecod00pR0YY7rVUze8ao0cKla7GhLFxQ8u6uSFkRJ +Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 341unssc4h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 01:17:15 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0985HE6u083044;
-        Thu, 8 Oct 2020 01:17:14 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 341unssc3m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 01:17:14 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09858HL1008864;
-        Thu, 8 Oct 2020 05:17:12 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 33xgx8ak2q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Oct 2020 05:17:12 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0985H98h30540256
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Oct 2020 05:17:09 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB8684C040;
-        Thu,  8 Oct 2020 05:17:09 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D3244C050;
-        Thu,  8 Oct 2020 05:17:05 +0000 (GMT)
-Received: from ram-ibm-com.ibm.com (unknown [9.85.204.94])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  8 Oct 2020 05:17:05 +0000 (GMT)
-Date:   Wed, 7 Oct 2020 22:17:02 -0700
-From:   Ram Pai <linuxram@us.ibm.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, kvm-ppc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH v3 2/2] mm: remove extra ZONE_DEVICE struct page
- refcount
-Message-ID: <20201008051702.GA4773@ram-ibm-com.ibm.com>
-Reply-To: Ram Pai <linuxram@us.ibm.com>
-References: <20201001181715.17416-1-rcampbell@nvidia.com>
- <20201001181715.17416-3-rcampbell@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001181715.17416-3-rcampbell@nvidia.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-08_01:2020-10-07,2020-10-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- clxscore=1011 adultscore=0 phishscore=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 suspectscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010080035
+        id S1728544AbgJHFSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:18:16 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:57852 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728489AbgJHFSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:18:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602134292; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=BmGbxM/rQmgQFBEkLvQNCtbkIB+DElAyYmbt6LOXnSw=; b=EeWJvQ1rVCRqJWiRrf9zyXqo+W7HfM7BJNjRboUrJro2z2Tv5+qqvScDt8uRpez1k9HfTNFO
+ PS/cWc6XY3v6RZxDgJ4n11TDjf+qIz8Kg3A1I6/LYy3u67immhsZmElmrbMgduHmb4bvUW/a
+ xm4jav07DBuD9xHiwsOIDyG6Fk4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f7ea10583370fa1c1767257 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 05:17:57
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 440E9C43443; Thu,  8 Oct 2020 05:17:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E44C1C433AF;
+        Thu,  8 Oct 2020 05:17:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E44C1C433AF
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v11 6/7] Asoc: qcom: lpass-platform : Increase buffer size
+Date:   Thu,  8 Oct 2020 10:47:02 +0530
+Message-Id: <1602134223-2562-7-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
+References: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:17:15AM -0700, Ralph Campbell wrote:
-> ZONE_DEVICE struct pages have an extra reference count that complicates the
-> code for put_page() and several places in the kernel that need to check the
-> reference count to see that a page is not being used (gup, compaction,
-> migration, etc.). Clean up the code so the reference count doesn't need to
-> be treated specially for ZONE_DEVICE.
+From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 
+Increase buffer size to support audio over DP.
 
-I was hoping this patch would resolve a page-reference issue that we run
-into at random times while migrating a page to a device page backed by
-secure-memory.
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Unfortunately I continue to see the problem. There is a reference
-held on that page, which fails the migration.
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 49abbb2..36d1512 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -23,7 +23,7 @@ struct lpass_pcm_data {
+ 	int i2s_port;
+ };
+ 
+-#define LPASS_PLATFORM_BUFFER_SIZE	(16 * 1024)
++#define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
+ #define LPASS_PLATFORM_PERIODS		2
+ 
+ static const struct snd_pcm_hardware lpass_platform_pcm_hardware = {
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-FYI
-RP
