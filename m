@@ -2,116 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3A628752F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211BC287531
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730101AbgJHNT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbgJHNT7 (ORCPT
+        id S1730208AbgJHNUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:20:24 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56861 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729885AbgJHNUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:19:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D4C061755;
-        Thu,  8 Oct 2020 06:19:58 -0700 (PDT)
-Date:   Thu, 08 Oct 2020 13:19:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602163197;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EG9ZlchHlc+2jUhtfi09OQdoBZEh71inrCFmLU+JAzE=;
-        b=i2At+S4uFkZJDPPqOsm7GM7DRF476QnWN/Jd7L5X0K50UqzSQWfz/7cio32LBIqJ8ta++4
-        4l0rEwTwVX1Eav/IDWARNdrrSq7LGYx2obtANp1UQ51grkv5ia8LdqrGBOMh02LL7Dqis2
-        yxqh8YvkdCubgndmHAicHlxMXcWSvdcq+INjzTuZqayXZwmNmazA+29bJqkmUXD1PCu0gD
-        5PijDDbK2et9OvpMt+6MRWpjR6MzTONRO6nDY3U341ObrVpC/fUy3ERtAEE6vo7Px1JZld
-        7rYhkmCoMFZ39jGbn1qtt5tuZ/ORO2O615Al0d9TXxwySg8s6XHwMUAWRpQ+PQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602163197;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EG9ZlchHlc+2jUhtfi09OQdoBZEh71inrCFmLU+JAzE=;
-        b=j7zZ2t91H7FTYNZw7ojG6SB3mbIZgH9D9lByDkHtXPZKScLBFXi4UwfWcHX/w4joyTFL69
-        pc/swEywfy3cxOAg==
-From:   "tip-bot2 for Kajol Jain" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Fix task_function_call() error handling
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Barret Rhoden <brho@google.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200827064732.20860-1-kjain@linux.ibm.com>
-References: <20200827064732.20860-1-kjain@linux.ibm.com>
+        Thu, 8 Oct 2020 09:20:24 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id A4098CC1;
+        Thu,  8 Oct 2020 09:20:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 08 Oct 2020 09:20:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=+heDfJakzKF+R2u0q1lN7twC7gD
+        CHgtByTX1mOeLU5Q=; b=FTHJ9hoLeLwdWCd9lHDqKhQe6kynAYEnPxEmOKlHPCB
+        rBk1kIKHMFa3vYPD54fnHb4k+uhc2hwYWOqFwQIX3/RASeAa3ntf3VhaQVhfci5V
+        rUa2M6+ysjWfWnUY9obF5WeB8cD2cReuf1mvT/p8F7Gn0fnLs5EH8HGepGb9T1t3
+        /ufZVuiaSyI9F04lBx1/QFBaMwUyQORv4Gt41GMhAHFN5frwN014Gr0ReRzDwJ0R
+        ++ixgjsrf3/RJxW5vVlPNPbBcfO1lVxIObCKsDDVIbepwSsyrN+Bq2Mp6XdOc0Dt
+        rsFJyPQC3pV1C3kTrrG6gZIXJrxcrT5ihHQiS+ntCeg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+heDfJ
+        akzKF+R2u0q1lN7twC7gDCHgtByTX1mOeLU5Q=; b=Tx9WRZH2LxOnH9hOCzITms
+        nIGrPyiwDYWv6MWYPQe1rX+zvFnnRC7yWg8tfC17Tld3ItMN1OB0aC5dbKkEENsm
+        Ud9l3oXjiZalmRw6TH+20vAhbfGbRVJ37Qp1Hxy1uz5t7RDNIHobKSXe00vW/sAp
+        dYyWUdrPP5n9JCoXxiLXj1IREerHgiA9p1zj1SmsKeIoBnZUfk7OgCTzlcIX6JGV
+        DTt51YO5kBIZJZDCyFatGrc+95AA4xdvXfCxWPTCravXg3gfT00kYW9A1ejLc2OT
+        5ny/zY7pYvAoX6AkmruQoigzGpWU79dcYLuw5ZcjXLoQmdhNDygU8Ij02si8eLKA
+        ==
+X-ME-Sender: <xms:ExJ_X-AaO918uQgO33-7hBRByqlJJXcsr_GczFAQWl-H1QT6IPDvnw>
+    <xme:ExJ_X4jNxZrCQ5QqMj1FGe3gU5bLZ_qbdYcJ5yoyZogdTaBxjd8AgXPTgaoQL6Mlr
+    AUpPiHF6Y1cxGCpxYE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeelgdefiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:ExJ_XxkLof05unpkecc-iI6Rar3DWBXvZrgMsqn_pJTKU2XgCe0ibQ>
+    <xmx:ExJ_X8ybedtCL3e3owJleY4mOq-2v9foLyahXn7BVweo3px_9XRNvg>
+    <xmx:ExJ_XzRiFHnYuHsLry0Tfs5MMb7BNcuqHSE8QFWTWpoILS5rN4TqfA>
+    <xmx:FhJ_X0IDFH9GNF_2su3-BNN0O_VDTcu3c8PfhLx6ooR8INWYVYZ3Gw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 073E83280063;
+        Thu,  8 Oct 2020 09:20:18 -0400 (EDT)
+Date:   Thu, 8 Oct 2020 15:20:17 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Yangtao Li <frank@allwinnertech.com>
+Subject: Re: linux-next: manual merge of the sunxi tree with the arm-soc tree
+Message-ID: <20201008132017.ju5ih5prn4aifeml@gilmour.lan>
+References: <20201006145637.57d20ba1@canb.auug.org.au>
 MIME-Version: 1.0
-Message-ID: <160216319621.7002.17454541069760802602.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nar4feg742sntlic"
+Content-Disposition: inline
+In-Reply-To: <20201006145637.57d20ba1@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     84ad70320241566e028ada955c694ab92f3351e3
-Gitweb:        https://git.kernel.org/tip/84ad70320241566e028ada955c694ab92f3351e3
-Author:        Kajol Jain <kjain@linux.ibm.com>
-AuthorDate:    Thu, 27 Aug 2020 12:17:32 +05:30
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 08 Oct 2020 15:16:29 +02:00
+--nar4feg742sntlic
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-perf: Fix task_function_call() error handling
+Hi Stephen,
 
-The error handling introduced by commit:
+On Tue, Oct 06, 2020 at 02:56:37PM +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the sunxi tree got a conflict in:
+>=20
+>   arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+>=20
+> between commit:
+>=20
+>   0dea1794f3b4 ("arm64: allwinner: A100: add the basical Allwinner A100 D=
+TSI file")
+>=20
+> from the arm-soc tree and commit:
+>=20
+>   7e66a778cb8b ("arm64: allwinner: A100: add the basical Allwinner A100 D=
+TSI file")
+>=20
+> from the sunxi tree.
+>=20
+> These are 2 versions of the same patch.  For now I am just using the
+> version in the arm-soc tree ... please sort this out.
+>=20
+> I fixed it up (see above) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-  2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
+The branch in arm-soc has a build breakage (that doesn't happen in
+linux-next since the clk tree has the commit to fix it) so I sent a new
+PR
 
-looses any return value from smp_call_function_single() that is not
-{0, -EINVAL}. This is a problem because it will return -EXNIO when the
-target CPU is offline. Worse, in that case it'll turn into an infinite
-loop.
+Once that PR is in arm-soc, I guess that merge issue will go away
 
-Fixes: 2ed6edd33a21 ("perf: Add cond_resched() to task_function_call()")
-Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Barret Rhoden <brho@google.com>
-Tested-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Link: https://lkml.kernel.org/r/20200827064732.20860-1-kjain@linux.ibm.com
----
- kernel/events/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+maxime
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 45edb85..85a6e7f 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -99,7 +99,7 @@ static void remote_function(void *data)
-  * retry due to any failures in smp_call_function_single(), such as if the
-  * task_cpu() goes offline concurrently.
-  *
-- * returns @func return value or -ESRCH when the process isn't running
-+ * returns @func return value or -ESRCH or -ENXIO when the process isn't running
-  */
- static int
- task_function_call(struct task_struct *p, remote_function_f func, void *info)
-@@ -115,7 +115,8 @@ task_function_call(struct task_struct *p, remote_function_f func, void *info)
- 	for (;;) {
- 		ret = smp_call_function_single(task_cpu(p), remote_function,
- 					       &data, 1);
--		ret = !ret ? data.ret : -EAGAIN;
-+		if (!ret)
-+			ret = data.ret;
- 
- 		if (ret != -EAGAIN)
- 			break;
+--nar4feg742sntlic
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX38SEQAKCRDj7w1vZxhR
+xVH2AP9J/UDmbsh8i7nc+j+/V4LS37nq/ODXBfuJ2roRxTBSNQEAjXoQ9IxrzTUR
+EmNB3t5eIApr1TCyADosIA54XVBWPgk=
+=Mq81
+-----END PGP SIGNATURE-----
+
+--nar4feg742sntlic--
