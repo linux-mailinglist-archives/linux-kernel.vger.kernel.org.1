@@ -2,134 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10643287D86
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CAA287D8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730832AbgJHUyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:54:45 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58896 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgJHUyp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:54:45 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098Ko1ik177988;
-        Thu, 8 Oct 2020 20:54:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=0UrPukTFX1Z7kaEleosD+wgwp8yeWbRUVs/KYLs/Wx4=;
- b=Rx0mdCEym/ZOjzA5qv+8tVgkyMjyZISU+doDjT8jD88Q4FIvBeOy1NJbHW/xRyGkBOIO
- n6bIsrqnYcQDeQ+NOrzjQnT9bOmBg4x4+XasIpB1rN5eQn09dbAOLxyvTUHW8r6aztAG
- w3nd0uOKXfAotzHWB0VZxXZcuJQKcCIdzJmDaghXdlBZ7+LJ8A/WX0tGoKdNhASbdE6J
- PlDu+TJTkt5F6OLn3al2FmjYNxPVkSH7uS844B7ttYGeagaqnGxn9QWHPewhBzC9N1+U
- RzzqhCpi/EznCIqi9CWFwpP0OsgWu/Ofb0m56Yziv0npIeuzWaMt/yXxeRl1eyhlXqJK 0A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 3429jur7jq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 20:54:39 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 098KkE6X048228;
-        Thu, 8 Oct 2020 20:54:39 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3429k0989b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 20:54:38 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 098KsbAe016639;
-        Thu, 8 Oct 2020 20:54:38 GMT
-Received: from [20.15.0.202] (/73.88.28.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 08 Oct 2020 13:54:37 -0700
-Subject: Re: [PATCH v2 1/1] scsi: libiscsi: fix NOP race condition
-From:   Mike Christie <michael.christie@oracle.com>
-To:     lduncan@suse.com, linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, open-iscsi@googlegroups.com,
-        martin.petersen@oracle.com, mchristi@redhat.com, hare@suse.com
-References: <cover.1601058301.git.lduncan@suse.com>
- <02b452b2e33d0728091d27d44794934c134a803e.1601058301.git.lduncan@suse.com>
- <5e1fb4eb-dd10-dbad-3da9-e8affc4f5cf0@oracle.com>
-Message-ID: <47eca384-b54e-63cc-0f84-7ed6501f427e@oracle.com>
-Date:   Thu, 8 Oct 2020 15:54:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730851AbgJHU6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:58:20 -0400
+Received: from ozlabs.org ([203.11.71.1]:59203 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725931AbgJHU6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 16:58:20 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6k7Y3zKsz9sSC;
+        Fri,  9 Oct 2020 07:58:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602190698;
+        bh=9c1Til4Y3UBbGWRrIquuN5DFOYAZEZAYupyZq9Fi8gM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=E5jxrI87KzDCdl/PkOEPlDk4jDzArGl+ZINhFsuHiQwuJE27/bb7MPSjotXbgGrtM
+         B8wtOPr5tsXmZaNJDxZ0+ym/i1k0r7cUsKf1cGyREgjAY3ibY8R8ye8J3SJ6W+jizY
+         pYMtjjjVhORPd4YDgI69oqYQTMjqCZqOskTOLFpblzvSF+1A8M/7Ih6kPT3jNvRVVU
+         hhuJG1UYna9IEUGg6Qof7rPS2Gyam3oyoVIXfF2KMSoWoxX0mv179sfGsOcz+CHJY7
+         8el7f2QtJUFm0DkF1LBjgPhBmFj7ikWX5VOqLieZqRlP3mkA2Kykdeci7WOzq0rUK3
+         uEyXmRc35YyrQ==
+Date:   Fri, 9 Oct 2020 07:58:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the powerpc tree
+Message-ID: <20201009075816.0cb5a86f@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <5e1fb4eb-dd10-dbad-3da9-e8affc4f5cf0@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 suspectscore=2 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010080147
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9768 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 bulkscore=0 suspectscore=2 lowpriorityscore=0 spamscore=0
- clxscore=1015 malwarescore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010080147
+Content-Type: multipart/signed; boundary="Sig_//dl+c07CTYJmvMsmyJW1Iqc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 12:11 PM, Mike Christie wrote:
-> On 9/25/20 1:41 PM, lduncan@suse.com wrote:
->> From: Lee Duncan <lduncan@suse.com>
->>
->> iSCSI NOPs are sometimes "lost", mistakenly sent to the
->> user-land iscsid daemon instead of handled in the kernel,
->> as they should be, resulting in a message from the daemon like:
->>
->>> iscsid: Got nop in, but kernel supports nop handling.
->>
->> This can occur because of the forward- and back-locks
->> in the kernel iSCSI code, and the fact that an iSCSI NOP
->> response can be processed before processing of the NOP send
->> is complete. This can result in "conn->ping_task" being NULL
->> in iscsi_nop_out_rsp(), when the pointer is actually in
->> the process of being set.
->>
->> To work around this, we add a new state to the "ping_task"
->> pointer. In addition to NULL (not assigned) and a pointer
->> (assigned), we add the state "being set", which is signaled
->> with an INVALID pointer (using "-1").
->>
->> Signed-off-by: Lee Duncan <lduncan@suse.com>
->> ---
->>  drivers/scsi/libiscsi.c | 13 ++++++++++---
->>  include/scsi/libiscsi.h |  3 +++
->>  2 files changed, 13 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
->> index 1e9c3171fa9f..cade108c33b6 100644
->> --- a/drivers/scsi/libiscsi.c
->> +++ b/drivers/scsi/libiscsi.c
->> @@ -738,6 +738,9 @@ __iscsi_conn_send_pdu(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
->>  						   task->conn->session->age);
->>  	}
->>  
->> +	if (unlikely(READ_ONCE(conn->ping_task) == INVALID_SCSI_TASK))
->> +		WRITE_ONCE(conn->ping_task, task);
->> +
->>  	if (!ihost->workq) {
->>  		if (iscsi_prep_mgmt_task(conn, task))
->>  			goto free_task;
-> 
-> I think the API gets a little weird now where in some cases
-> __iscsi_conn_send_pdu checks the opcode to see what type of request
-> it is but above we the caller sets the ping_task.
-> 
-> For login, tmfs and passthrough, we assume the __iscsi_conn_send_pdu
-> has sent or cleaned up everything. I think it might be nicer to just
-> have __iscsi_conn_send_pdu set the ping_task field before doing the
-> xmit/queue call. It would then work similar to the conn->login_task
-> case where that function knows about that special task too.
-> 
-> So in __iscsi_conn_send_pdu add a "if (opcode == ISCSI_OP_NOOP_OUT)",
-> and check if it's a nop we need to track. If so set conn->ping_task.
-> 
-Ignore this. It won't work nicely either. To figure out if the nop is
-our internal transport test ping vs a userspace ping that also needs
-a reply, we would need to do something like you did above so there is
-no point.
+--Sig_//dl+c07CTYJmvMsmyJW1Iqc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+In commit
+
+  a2d0230b91f7 ("cpufreq: powernv: Fix frame-size-overflow in powernv_cpufr=
+eq_reboot_notifier")
+
+Fixes tag
+
+  Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency dur=
+ing reboot/kexec")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_//dl+c07CTYJmvMsmyJW1Iqc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9/fWgACgkQAVBC80lX
+0Gxr0gf8DYBDjl0ngETwLLLd7UDYnOunr5gO7MKaHqpeUtqlvXTRCfJNBerWqCNL
+qTh8ni4Ud9JclJiAy1Mjxb3ONdmlzccgWYr7kXELlElWvcxrNhRknEuOMQpIhx7n
+zmR/lsy+yRcu+oDBWUw+CK/tuRs5iN9CTdBmThbkPx8EL++Ee4NpgrThkNHPUbqS
+mNl88leOb13ENKxcyHm1c0a5TopoHlRQgBj/xnXDnFJDuLmHki1SOJfApzvqvNHv
+dRoZ0K51dLeT5b+pd+e0SD4miMjMEP7GWHGE1aBVtkKPsMb9mF9M8TOxRQnHDJlu
+tnWDes8v/IKZPtA2jhP7Zw2KKlG/9A==
+=9V2B
+-----END PGP SIGNATURE-----
+
+--Sig_//dl+c07CTYJmvMsmyJW1Iqc--
