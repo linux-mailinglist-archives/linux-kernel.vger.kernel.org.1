@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F68287399
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA482873A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 13:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgJHLwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 07:52:20 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36692 "EHLO
+        id S1729703AbgJHLw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 07:52:59 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36696 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728536AbgJHLwR (ORCPT
+        with ESMTP id S1728736AbgJHLwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 07:52:17 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098BqA8Y072973;
-        Thu, 8 Oct 2020 06:52:10 -0500
+        Thu, 8 Oct 2020 07:52:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 098BqCvX072979;
+        Thu, 8 Oct 2020 06:52:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602157930;
-        bh=hEpI9BOlL/6hRHdawgkAaZESrEiT4XahjCyAND4NstY=;
+        s=ti-com-17Q1; t=1602157932;
+        bh=lAoyifoJt5Zlvh5uDnyEQfmzp70glWFb5P9ohB6bI/Y=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=WFiu0n4t3Jcb6gMwgyfBGcMWUdxikl2Ajh6ZfFtsvsx1duBn5/lx0Q/ln3B8ukZXl
-         xoNHWvsg0102t0QmVA71XvWWsaEZvZLzrqrRvr3iuKZa3cJl9TABYqOXmuE3b9fuLj
-         z+d6hv1Y8p4NhgV7LAlf1cQEO6EKEqLrji+IkbwE=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098BqAj2085456
+        b=iIAOE5PM6iv2PS6rUb1bPdWm+62hvH3eRLFzmvCKkkylEwCi1+TSg2JnggJjHKDMf
+         qg7e7TRN7Yba1xFnWLtLCW5TrsteFzEjgG9sa8GyugptxTY3YlwEJFcYmqeSteQDVu
+         CrUJogMgNsbQy6hEDpgDhlNOH9QXUiXS2UA6Qa+Q=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 098BqC1M003663
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 8 Oct 2020 06:52:10 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 8 Oct 2020 06:52:12 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 8 Oct
- 2020 06:52:10 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 06:52:12 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 8 Oct 2020 06:52:10 -0500
+ Frontend Transport; Thu, 8 Oct 2020 06:52:12 -0500
 Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098Bq3s4083508;
-        Thu, 8 Oct 2020 06:52:08 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 098Bq3s5083508;
+        Thu, 8 Oct 2020 06:52:10 -0500
 From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
 To:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
         <lokeshvutla@ti.com>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <grygorii.strashko@ti.com>
-Subject: [PATCH v2 02/11] firmware: ti_sci: Use struct ti_sci_resource_desc in get_range ops
-Date:   Thu, 8 Oct 2020 14:52:15 +0300
-Message-ID: <20201008115224.1591-3-peter.ujfalusi@ti.com>
+Subject: [PATCH v2 03/11] firmware: ti_sci: rm: Add support for second resource range
+Date:   Thu, 8 Oct 2020 14:52:16 +0300
+Message-ID: <20201008115224.1591-4-peter.ujfalusi@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201008115224.1591-1-peter.ujfalusi@ti.com>
 References: <20201008115224.1591-1-peter.ujfalusi@ti.com>
@@ -56,177 +56,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the ti_sci_resource_desc directly and update it's start and num members
-directly instead of requiring individual parameters for them.
+Sysfw added support for a second range in the resource range API to be able
+to describe complex allocations mainly for DMA channels.
 
-This will allow easy extension of the RM parameters without changing API.
+Update the ti_sci part to consider the second range as well.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- drivers/firmware/ti_sci.c              | 32 ++++++++++++--------------
- include/linux/soc/ti/ti_sci_protocol.h | 32 +++++++++++++-------------
- 2 files changed, 31 insertions(+), 33 deletions(-)
+ drivers/firmware/ti_sci.c              | 48 +++++++++++++++++---------
+ drivers/firmware/ti_sci.h              |  8 +++--
+ include/linux/soc/ti/ti_sci_protocol.h |  8 +++--
+ 3 files changed, 43 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-index 65a8c2e82093..7a777e91ce3e 100644
+index 7a777e91ce3e..2793bb923881 100644
 --- a/drivers/firmware/ti_sci.c
 +++ b/drivers/firmware/ti_sci.c
-@@ -1703,14 +1703,14 @@ static int ti_sci_cmd_core_reboot(const struct ti_sci_handle *handle)
-  * @subtype:		Resource assignment subtype that is being requested
-  *			from the given device.
-  * @s_host:		Host processor ID to which the resources are allocated
-- * @range_start:	Start index of the resource range
-- * @range_num:		Number of resources in the range
-+ * @desc:		Pointer to ti_sci_resource_desc to be updated with the
-+ *			resource range start index and number of resources
-  *
-  * Return: 0 if all went fine, else return appropriate error.
-  */
- static int ti_sci_get_resource_range(const struct ti_sci_handle *handle,
- 				     u32 dev_id, u8 subtype, u8 s_host,
--				     u16 *range_start, u16 *range_num)
-+				     struct ti_sci_resource_desc *desc)
- {
- 	struct ti_sci_msg_resp_get_resource_range *resp;
- 	struct ti_sci_msg_req_get_resource_range *req;
-@@ -1721,7 +1721,7 @@ static int ti_sci_get_resource_range(const struct ti_sci_handle *handle,
+@@ -1751,11 +1751,14 @@ static int ti_sci_get_resource_range(const struct ti_sci_handle *handle,
  
- 	if (IS_ERR(handle))
- 		return PTR_ERR(handle);
--	if (!handle)
-+	if (!handle || !desc)
- 		return -EINVAL;
- 
- 	info = handle_to_ti_sci_info(handle);
-@@ -1754,8 +1754,8 @@ static int ti_sci_get_resource_range(const struct ti_sci_handle *handle,
- 	} else if (!resp->range_start && !resp->range_num) {
+ 	if (!ti_sci_is_response_ack(resp)) {
+ 		ret = -ENODEV;
+-	} else if (!resp->range_start && !resp->range_num) {
++	} else if (!resp->range_num && !resp->range_num_sec) {
++		/* Neither of the two resource range is valid */
  		ret = -ENODEV;
  	} else {
--		*range_start = resp->range_start;
--		*range_num = resp->range_num;
-+		desc->start = resp->range_start;
-+		desc->num = resp->range_num;
+ 		desc->start = resp->range_start;
+ 		desc->num = resp->range_num;
++		desc->start_sec = resp->range_start_sec;
++		desc->num_sec = resp->range_num_sec;
  	};
  
  fail:
-@@ -1771,18 +1771,18 @@ static int ti_sci_get_resource_range(const struct ti_sci_handle *handle,
-  * @dev_id:		TISCI device ID.
-  * @subtype:		Resource assignment subtype that is being requested
-  *			from the given device.
-- * @range_start:	Start index of the resource range
-- * @range_num:		Number of resources in the range
-+ * @desc:		Pointer to ti_sci_resource_desc to be updated with the
-+ *			resource range start index and number of resources
-  *
-  * Return: 0 if all went fine, else return appropriate error.
-  */
- static int ti_sci_cmd_get_resource_range(const struct ti_sci_handle *handle,
- 					 u32 dev_id, u8 subtype,
--					 u16 *range_start, u16 *range_num)
-+					 struct ti_sci_resource_desc *desc)
- {
- 	return ti_sci_get_resource_range(handle, dev_id, subtype,
- 					 TI_SCI_IRQ_SECONDARY_HOST_INVALID,
--					 range_start, range_num);
-+					 desc);
- }
+@@ -3157,12 +3160,18 @@ u16 ti_sci_get_free_resource(struct ti_sci_resource *res)
  
- /**
-@@ -1793,18 +1793,17 @@ static int ti_sci_cmd_get_resource_range(const struct ti_sci_handle *handle,
-  * @subtype:		Resource assignment subtype that is being requested
-  *			from the given device.
-  * @s_host:		Host processor ID to which the resources are allocated
-- * @range_start:	Start index of the resource range
-- * @range_num:		Number of resources in the range
-+ * @desc:		Pointer to ti_sci_resource_desc to be updated with the
-+ *			resource range start index and number of resources
-  *
-  * Return: 0 if all went fine, else return appropriate error.
-  */
- static
- int ti_sci_cmd_get_resource_range_from_shost(const struct ti_sci_handle *handle,
- 					     u32 dev_id, u8 subtype, u8 s_host,
--					     u16 *range_start, u16 *range_num)
-+					     struct ti_sci_resource_desc *desc)
- {
--	return ti_sci_get_resource_range(handle, dev_id, subtype, s_host,
--					 range_start, range_num);
-+	return ti_sci_get_resource_range(handle, dev_id, subtype, s_host, desc);
- }
+ 	raw_spin_lock_irqsave(&res->lock, flags);
+ 	for (set = 0; set < res->sets; set++) {
+-		free_bit = find_first_zero_bit(res->desc[set].res_map,
+-					       res->desc[set].num);
+-		if (free_bit != res->desc[set].num) {
+-			set_bit(free_bit, res->desc[set].res_map);
++		struct ti_sci_resource_desc *desc = &res->desc[set];
++		int res_count = desc->num + desc->num_sec;
++
++		free_bit = find_first_zero_bit(desc->res_map, res_count);
++		if (free_bit != res_count) {
++			set_bit(free_bit, desc->res_map);
+ 			raw_spin_unlock_irqrestore(&res->lock, flags);
+-			return res->desc[set].start + free_bit;
++
++			if (desc->num && free_bit < desc->num)
++				return desc->start + free_bit;
++			else
++				return desc->start_sec + free_bit;
+ 		}
+ 	}
+ 	raw_spin_unlock_irqrestore(&res->lock, flags);
+@@ -3183,10 +3192,14 @@ void ti_sci_release_resource(struct ti_sci_resource *res, u16 id)
  
- /**
-@@ -3243,8 +3242,7 @@ devm_ti_sci_get_resource_sets(const struct ti_sci_handle *handle,
- 	for (i = 0; i < res->sets; i++) {
- 		ret = handle->ops.rm_core_ops.get_range(handle, dev_id,
- 							sub_types[i],
--							&res->desc[i].start,
--							&res->desc[i].num);
-+							&res->desc[i]);
+ 	raw_spin_lock_irqsave(&res->lock, flags);
+ 	for (set = 0; set < res->sets; set++) {
+-		if (res->desc[set].start <= id &&
+-		    (res->desc[set].num + res->desc[set].start) > id)
+-			clear_bit(id - res->desc[set].start,
+-				  res->desc[set].res_map);
++		struct ti_sci_resource_desc *desc = &res->desc[set];
++
++		if (desc->num && desc->start <= id &&
++		    (desc->start + desc->num) > id)
++			clear_bit(id - desc->start, desc->res_map);
++		else if (desc->num_sec && desc->start_sec <= id &&
++			 (desc->start_sec + desc->num_sec) > id)
++			clear_bit(id - desc->start_sec, desc->res_map);
+ 	}
+ 	raw_spin_unlock_irqrestore(&res->lock, flags);
+ }
+@@ -3203,7 +3216,7 @@ u32 ti_sci_get_num_resources(struct ti_sci_resource *res)
+ 	u32 set, count = 0;
+ 
+ 	for (set = 0; set < res->sets; set++)
+-		count += res->desc[set].num;
++		count += res->desc[set].num + res->desc[set].num_sec;
+ 
+ 	return count;
+ }
+@@ -3227,7 +3240,7 @@ devm_ti_sci_get_resource_sets(const struct ti_sci_handle *handle,
+ {
+ 	struct ti_sci_resource *res;
+ 	bool valid_set = false;
+-	int i, ret;
++	int i, ret, res_count;
+ 
+ 	res = devm_kzalloc(dev, sizeof(*res), GFP_KERNEL);
+ 	if (!res)
+@@ -3246,18 +3259,19 @@ devm_ti_sci_get_resource_sets(const struct ti_sci_handle *handle,
  		if (ret) {
  			dev_dbg(dev, "dev = %d subtype %d not allocated for this host\n",
  				dev_id, sub_types[i]);
+-			res->desc[i].start = 0;
+-			res->desc[i].num = 0;
++			memset(&res->desc[i], 0, sizeof(res->desc[i]));
+ 			continue;
+ 		}
+ 
+-		dev_dbg(dev, "dev = %d, subtype = %d, start = %d, num = %d\n",
++		dev_dbg(dev, "dev/sub_type: %d/%d, start/num: %d/%d | %d/%d\n",
+ 			dev_id, sub_types[i], res->desc[i].start,
+-			res->desc[i].num);
++			res->desc[i].num, res->desc[i].start_sec,
++			res->desc[i].num_sec);
+ 
+ 		valid_set = true;
++		res_count = res->desc[i].num + res->desc[i].num_sec;
+ 		res->desc[i].res_map =
+-			devm_kzalloc(dev, BITS_TO_LONGS(res->desc[i].num) *
++			devm_kzalloc(dev, BITS_TO_LONGS(res_count) *
+ 				     sizeof(*res->desc[i].res_map), GFP_KERNEL);
+ 		if (!res->desc[i].res_map)
+ 			return ERR_PTR(-ENOMEM);
+diff --git a/drivers/firmware/ti_sci.h b/drivers/firmware/ti_sci.h
+index dca19ca5fc49..4d980eb592c4 100644
+--- a/drivers/firmware/ti_sci.h
++++ b/drivers/firmware/ti_sci.h
+@@ -574,8 +574,10 @@ struct ti_sci_msg_req_get_resource_range {
+ /**
+  * struct ti_sci_msg_resp_get_resource_range - Response to resource get range.
+  * @hdr:		Generic Header
+- * @range_start:	Start index of the resource range.
+- * @range_num:		Number of resources in the range.
++ * @range_start:	Start index of the first resource range.
++ * @range_num:		Number of resources in the first range.
++ * @range_start_sec:	Start index of the second resource range.
++ * @range_num_sec:	Number of resources in the second range.
+  *
+  * Response to request TI_SCI_MSG_GET_RESOURCE_RANGE.
+  */
+@@ -583,6 +585,8 @@ struct ti_sci_msg_resp_get_resource_range {
+ 	struct ti_sci_msg_hdr hdr;
+ 	u16 range_start;
+ 	u16 range_num;
++	u16 range_start_sec;
++	u16 range_num_sec;
+ } __packed;
+ 
+ /**
 diff --git a/include/linux/soc/ti/ti_sci_protocol.h b/include/linux/soc/ti/ti_sci_protocol.h
-index d254d99fd45b..6cd537db4d33 100644
+index 6cd537db4d33..9699b260de59 100644
 --- a/include/linux/soc/ti/ti_sci_protocol.h
 +++ b/include/linux/soc/ti/ti_sci_protocol.h
-@@ -195,6 +195,18 @@ struct ti_sci_clk_ops {
- 			u64 *current_freq);
- };
+@@ -197,13 +197,17 @@ struct ti_sci_clk_ops {
  
-+/**
-+ * struct ti_sci_resource_desc - Description of TI SCI resource instance range.
-+ * @start:	Start index of the resource.
-+ * @num:	Number of resources.
-+ * @res_map:	Bitmap to manage the allocation of these resources.
-+ */
-+struct ti_sci_resource_desc {
-+	u16 start;
-+	u16 num;
-+	unsigned long *res_map;
-+};
-+
  /**
-  * struct ti_sci_rm_core_ops - Resource management core operations
-  * @get_range:		Get a range of resources belonging to ti sci host.
-@@ -209,15 +221,15 @@ struct ti_sci_clk_ops {
-  * - dev_id:	TISCI device ID.
-  * - subtype:	Resource assignment subtype that is being requested
-  *		from the given device.
-- * - range_start:	Start index of the resource range
-- * - range_end:		Number of resources in the range
-+ * - desc:	Pointer to ti_sci_resource_desc to be updated with the resource
-+ *		range start index and number of resources
-  */
- struct ti_sci_rm_core_ops {
- 	int (*get_range)(const struct ti_sci_handle *handle, u32 dev_id,
--			 u8 subtype, u16 *range_start, u16 *range_num);
-+			 u8 subtype, struct ti_sci_resource_desc *desc);
- 	int (*get_range_from_shost)(const struct ti_sci_handle *handle,
- 				    u32 dev_id, u8 subtype, u8 s_host,
--				    u16 *range_start, u16 *range_num);
-+				    struct ti_sci_resource_desc *desc);
- };
- 
- #define TI_SCI_RESASG_SUBTYPE_IR_OUTPUT		0
-@@ -522,18 +534,6 @@ struct ti_sci_handle {
- 
- #define TI_SCI_RESOURCE_NULL	0xffff
- 
--/**
-- * struct ti_sci_resource_desc - Description of TI SCI resource instance range.
+  * struct ti_sci_resource_desc - Description of TI SCI resource instance range.
 - * @start:	Start index of the resource.
 - * @num:	Number of resources.
-- * @res_map:	Bitmap to manage the allocation of these resources.
-- */
--struct ti_sci_resource_desc {
--	u16 start;
--	u16 num;
--	unsigned long *res_map;
--};
--
- /**
-  * struct ti_sci_resource - Structure representing a resource assigned
-  *			    to a device.
++ * @start:	Start index of the first resource range.
++ * @num:	Number of resources in the first range.
++ * @start_sec:	Start index of the second resource range.
++ * @num_sec:	Number of resources in the second range.
+  * @res_map:	Bitmap to manage the allocation of these resources.
+  */
+ struct ti_sci_resource_desc {
+ 	u16 start;
+ 	u16 num;
++	u16 start_sec;
++	u16 num_sec;
+ 	unsigned long *res_map;
+ };
+ 
 -- 
 Peter
 
