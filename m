@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D104C287E6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2138287E6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 00:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgJHWBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 18:01:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53764 "EHLO mail.kernel.org"
+        id S1729730AbgJHWBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 18:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728746AbgJHWBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 18:01:43 -0400
+        id S1725852AbgJHWBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 18:01:48 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0ED3422243;
-        Thu,  8 Oct 2020 22:01:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C60322243;
+        Thu,  8 Oct 2020 22:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602194502;
-        bh=a9Ail/qdFEZX2JwtyGVuRlxv0Gv5RrrOtq42kRFg5Vw=;
+        s=default; t=1602194508;
+        bh=SJbewqLgKiH7DipcMNarxqI5TH6mS3oztln4+Iqn+hg=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ZItfGq8P3wb9cQh63ObzPaVust3eYOQJ4rSjDNC4BrQvfn1NTQwlnnMQ2WdtuhBiQ
-         kT5vIU8nfEOUhh9CsOSymeYWW1MMLQwRVEfbNyPZpRS1sfYcr9qFRXggYnLp5zenSQ
-         umBD1hs30+3bJKCfY1DZxO6DsqPPA3chZUlz0sxo=
-Date:   Thu, 08 Oct 2020 23:01:40 +0100
+        b=dgWdQjdSQu3eVskKMJFenWXb3VUi+tT38flhllaqOcKoiRlLfzP/eP0Prb9aN+INo
+         a+yBriZcWNM0dPXFJ9PE/1msxo9BVGiFuOTzPHG24cxROHrVcLaIJLfs006k3NYDYt
+         Enp+AGy1NN9xigJ3u7fscCaJ1HifO8vTZOAkSkrk=
+Date:   Thu, 08 Oct 2020 23:01:45 +0100
 From:   Mark Brown <broonie@kernel.org>
 To:     tiwai@suse.com, lgirdwood@gmail.com, Dan Murphy <dmurphy@ti.com>,
         robh+dt@kernel.org
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         alsa-devel@alsa-project.org
-In-Reply-To: <20201007155341.10139-1-dmurphy@ti.com>
-References: <20201007155341.10139-1-dmurphy@ti.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: tas2764: Add the TAS2764 binding doc
-Message-Id: <160219448332.29664.500640476412734254.b4-ty@kernel.org>
+In-Reply-To: <20201006172341.16423-1-dmurphy@ti.com>
+References: <20201006172341.16423-1-dmurphy@ti.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: tas2764: Add the TAS2764 binding doc
+Message-Id: <160219448331.29664.11194939509733491326.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,7 +40,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Oct 2020 10:53:40 -0500, Dan Murphy wrote:
+On Tue, 6 Oct 2020 12:23:40 -0500, Dan Murphy wrote:
 > Add the binding for the TAS2764 Smart Amplifier.
 
 Applied to
