@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913F428718B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B242871B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgJHJbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:31:43 -0400
-Received: from out28-221.mail.aliyun.com ([115.124.28.221]:35958 "EHLO
-        out28-221.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726273AbgJHJbm (ORCPT
+        id S1729203AbgJHJiC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Oct 2020 05:38:02 -0400
+Received: from wildebeest.demon.nl ([212.238.236.112]:43594 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgJHJiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 05:31:42 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08136451|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0399064-0.000837473-0.959256;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.IgbT2aG_1602149484;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IgbT2aG_1602149484)
-          by smtp.aliyun-inc.com(10.147.40.2);
-          Thu, 08 Oct 2020 17:31:39 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 2/2] dt-bindings: dmaengine: Add X2000 bindings.
-Date:   Thu,  8 Oct 2020 17:31:00 +0800
-Message-Id: <20201008093100.88405-3-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201008093100.88405-1-zhouyanjie@wanyeetech.com>
-References: <20201008093100.88405-1-zhouyanjie@wanyeetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Thu, 8 Oct 2020 05:38:02 -0400
+X-Greylist: delayed 328 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 05:38:02 EDT
+Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id E1828300160F;
+        Thu,  8 Oct 2020 11:32:32 +0200 (CEST)
+Received: by tarox.wildebeest.org (Postfix, from userid 1000)
+        id 945F440007BE; Thu,  8 Oct 2020 11:32:32 +0200 (CEST)
+Message-ID: <50338de81b34031db8637337f08b89b588476211.camel@klomp.org>
+Subject: Re: Additional debug info to aid cacheline analysis
+From:   Mark Wielaard <mark@klomp.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>
+Cc:     linux-toolchains@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Phillips, Kim" <kim.phillips@amd.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Date:   Thu, 08 Oct 2020 11:32:32 +0200
+In-Reply-To: <20201008070231.GS2628@hirez.programming.kicks-ass.net>
+References: <20201006131703.GR2628@hirez.programming.kicks-ass.net>
+         <CABPqkBSkdqXjm6QuF9j6AO8MUnt1yZ_cA2PV=Qo8e4wKmK_6Ug@mail.gmail.com>
+         <20201008070231.GS2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
+Mime-Version: 1.0
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the dmaengine bindings for the X2000 SoC from Ingenic.
+Hi,
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- include/dt-bindings/dma/x2000-dma.h | 54 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 include/dt-bindings/dma/x2000-dma.h
+On Thu, 2020-10-08 at 09:02 +0200, Peter Zijlstra wrote:
+> Some time ago, I had my intern pursue the other 2 approaches for
+> > symbolization. The one I see as most promising is by using the DWARF
+> > information (no BPF needed). The good news is that I believe we do not
+> > need more information than what is already there. We just need the
+> > compiler to generate valid DWARF at most optimization levels, which I
+> > believe is not the case for LLVM based compilers but maybe okay for
+> > GCC.
+> 
+> Right, I think GCC improved a lot on this front over the past few years.
+> Also added Andi and Masami, who have worked on this or related topics.
 
-diff --git a/include/dt-bindings/dma/x2000-dma.h b/include/dt-bindings/dma/x2000-dma.h
-new file mode 100644
-index 000000000000..db2cd4830b00
---- /dev/null
-+++ b/include/dt-bindings/dma/x2000-dma.h
-@@ -0,0 +1,54 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * This header provides macros for X2000 DMA bindings.
-+ *
-+ * Copyright (c) 2020 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+ */
-+
-+#ifndef __DT_BINDINGS_DMA_X2000_DMA_H__
-+#define __DT_BINDINGS_DMA_X2000_DMA_H__
-+
-+/*
-+ * Request type numbers for the X2000 DMA controller (written to the DRTn
-+ * register for the channel).
-+ */
-+#define X2000_DMA_AUTO		0x8
-+#define X2000_DMA_UART5_TX	0xa
-+#define X2000_DMA_UART5_RX	0xb
-+#define X2000_DMA_UART4_TX	0xc
-+#define X2000_DMA_UART4_RX	0xd
-+#define X2000_DMA_UART3_TX	0xe
-+#define X2000_DMA_UART3_RX	0xf
-+#define X2000_DMA_UART2_TX	0x10
-+#define X2000_DMA_UART2_RX	0x11
-+#define X2000_DMA_UART1_TX	0x12
-+#define X2000_DMA_UART1_RX	0x13
-+#define X2000_DMA_UART0_TX	0x14
-+#define X2000_DMA_UART0_RX	0x15
-+#define X2000_DMA_SSI0_TX	0x16
-+#define X2000_DMA_SSI0_RX	0x17
-+#define X2000_DMA_SSI1_TX	0x18
-+#define X2000_DMA_SSI1_RX	0x19
-+#define X2000_DMA_I2C0_TX	0x24
-+#define X2000_DMA_I2C0_RX	0x25
-+#define X2000_DMA_I2C1_TX	0x26
-+#define X2000_DMA_I2C1_RX	0x27
-+#define X2000_DMA_I2C2_TX	0x28
-+#define X2000_DMA_I2C2_RX	0x29
-+#define X2000_DMA_I2C3_TX	0x2a
-+#define X2000_DMA_I2C3_RX	0x2b
-+#define X2000_DMA_I2C4_TX	0x2c
-+#define X2000_DMA_I2C4_RX	0x2d
-+#define X2000_DMA_I2C5_TX	0x2e
-+#define X2000_DMA_I2C5_RX	0x2f
-+#define X2000_DMA_UART6_TX	0x30
-+#define X2000_DMA_UART6_RX	0x31
-+#define X2000_DMA_UART7_TX	0x32
-+#define X2000_DMA_UART7_RX	0x33
-+#define X2000_DMA_UART8_TX	0x34
-+#define X2000_DMA_UART8_RX	0x35
-+#define X2000_DMA_UART9_TX	0x36
-+#define X2000_DMA_UART9_RX	0x37
-+#define X2000_DMA_SADC_RX	0x38
-+
-+#endif /* __DT_BINDINGS_DMA_X2000_DMA_H__ */
--- 
-2.11.0
+For GCC Alexandre Oliva did a really thorough write up of all the
+various optimization and their effect on debugging/DWARF:
+https://www.fsfla.org/~lxoliva/writeups/gOlogy/gOlogy.html
 
+GCC using -fvar-tracking and -fvar-tracking-assignments is pretty good
+at keeping track of where variables are held (in memory or registers)
+when in the program, even through various optimizations.
+
+-fvar-tracking-assignments is the default with -g -O2.
+Except for the upstream linux kernel code. Most distros enable it
+again, but you do want to enable it by hand when building from the
+upstream linux git repo.
+
+Basically you simply want to remove this line in the top-level
+Makefile:
+
+DEBUG_CFLAGS    := $(call cc-option, -fno-var-tracking-assignments)
+
+Cheers,
+
+Mark
