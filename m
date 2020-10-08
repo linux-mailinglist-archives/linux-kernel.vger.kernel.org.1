@@ -2,245 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5C9286DFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C34286E15
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 07:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728436AbgJHFSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 01:18:05 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:26945 "EHLO m42-4.mailgun.net"
+        id S1727828AbgJHF2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 01:28:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728358AbgJHFSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 01:18:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602134283; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=fEiNiE7WcOtOuwWFNUUBWC5/RBsAGoYkHCbf1P9TbYE=; b=FbHRM0Nuxmi2mnMwMJmafnXnM/uD72xgJRj+UJ8wEan9qalrLGCvip3KhfYZH0KGPOAXP+J7
- N+U0REHxPUTLBputv3xe35JQfMGSE4OtAa08fRGkPOz4z4J5rM2aw+dd6DD7wQpKDEVA21xn
- EAMHUvrrfJVw26420U4UIsIl73E=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f7ea10ba03b63d6735f08b3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Oct 2020 05:18:03
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E18A6C4344C; Thu,  8 Oct 2020 05:18:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1725858AbgJHF2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 01:28:04 -0400
+Received: from coco.lan (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 96ECCC433FE;
-        Thu,  8 Oct 2020 05:17:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 96ECCC433FE
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao <srivasam@codeaurora.org>
-Subject: [PATCH v11 7/7] ASoC: qcom: sc7180: Add support for audio over DP
-Date:   Thu,  8 Oct 2020 10:47:03 +0530
-Message-Id: <1602134223-2562-8-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
-References: <1602134223-2562-1-git-send-email-srivasam@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A2FD2087D;
+        Thu,  8 Oct 2020 05:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602134883;
+        bh=ZopNFXHd+TvEsylau77g8IQKUvJq42zhnvRYMjB0RYI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AjWYK4+ndZwuYapeb61RhbG61KPqp1rEvogGs+dYXFhmWsFmRl7cRAeHbpLhxJITa
+         b8Kt7+YDvm5poLmAAkd4JxYJwOgrK5bzEbF/3zkv2uKklC5s0AAPUargMlxuD0GWau
+         F33kbu9z+1PhTlPLuZMyw0FH/N2B7q04EMx4mbTI=
+Date:   Thu, 8 Oct 2020 07:27:57 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>,
+        linux-doc@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Subject: Re: [PATCH] docs: Make automarkup ready for Sphinx 3.1+
+Message-ID: <20201008072757.0ca42539@coco.lan>
+In-Reply-To: <20201007231214.326456-1-nfraprado@protonmail.com>
+References: <20201007231214.326456-1-nfraprado@protonmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Hi N=C3=ADcolas,
 
-Add support for audio playback over DP in lpass
-sc7180 platform driver. Update lpass_variant
-structure for hdmi data configuaration.
+Em Wed, 07 Oct 2020 23:12:25 +0000
+N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com> escreveu:
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-sc7180.c | 116 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 102 insertions(+), 14 deletions(-)
+> While Sphinx 2 used a single c:type role for struct, union, enum and
+> typedef, Sphinx 3 uses a specific role for each one.
+> To keep backward compatibility, detect the Sphinx version and use the
+> correct roles for that version.
+>=20
+> Also, Sphinx 3 is more strict with its C domain and generated warnings,
+> exposing issues in the parsing.
+> To fix the warnings, make the C regexes use ASCII, ensure the
+> expressions only match the beginning of words and skip trying to
+> cross-reference C reserved words.
+>=20
+> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+> ---
+>=20
+> Hi,
+>=20
+> after Mauro's series making everything ready for Sphinx 3.1, only the aut=
+omarkup
+> was left to be ported.
+> This patch makes the needed changes to automarkup so that we can soon fli=
+p the
+> switch to Sphinx 3.1.
+>=20
+> This change was tested both with Sphinx 2.4.4 and Sphinx 3.1.
+>=20
+> This change doesn't add any warnings to the Documentation build.
+> I tested it with Mauro's series but later rebased it to docs-next, and it=
+ can be
+> accepted independently of that series.
+>=20
+> I ended up doing more than one thing in this single patch, but since it w=
+as all
+> changing the same lines and for the same purpose, I felt it would be bett=
+er to
+> keep it as a single commit.
+>=20
 
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index a8a3d8f..c6292f9e 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -60,38 +60,65 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
- 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
- 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
- 	},
-+	[LPASS_DP_RX] = {
-+		.id = LPASS_DP_RX,
-+		.name = "Hdmi",
-+		.playback = {
-+			.stream_name = "Hdmi Playback",
-+			.formats	= SNDRV_PCM_FMTBIT_S24,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.rate_min	= 48000,
-+			.rate_max	= 48000,
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+		},
-+		.ops    = &asoc_qcom_lpass_hdmi_dai_ops,
-+	},
- };
- 
- static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
--					   int direction)
-+					   int direction, unsigned int dai_id)
- {
- 	struct lpass_variant *v = drvdata->variant;
- 	int chan = 0;
- 
--	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
--		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
--					v->rdma_channels);
-+	if (dai_id == LPASS_DP_RX) {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
-+						v->hdmi_rdma_channels);
-+
-+			if (chan >= v->hdmi_rdma_channels)
-+				return -EBUSY;
-+		}
-+		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	} else {
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
-+						v->rdma_channels);
- 
- 		if (chan >= v->rdma_channels)
- 			return -EBUSY;
--	} else {
--		chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
-+		} else {
-+			chan = find_next_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->wrdma_channel_start +
- 					v->wrdma_channels,
- 					v->wrdma_channel_start);
- 
--		if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
--			return -EBUSY;
--	}
--
--	set_bit(chan, &drvdata->dma_ch_bit_map);
-+			if (chan >=  v->wrdma_channel_start + v->wrdma_channels)
-+				return -EBUSY;
-+		}
- 
-+		set_bit(chan, &drvdata->dma_ch_bit_map);
-+	}
- 	return chan;
- }
- 
--static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan)
-+static int sc7180_lpass_free_dma_channel(struct lpass_data *drvdata, int chan, unsigned int dai_id)
- {
--	clear_bit(chan, &drvdata->dma_ch_bit_map);
-+	if (dai_id == LPASS_DP_RX)
-+		clear_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
-+	else
-+		clear_bit(chan, &drvdata->dma_ch_bit_map);
- 
- 	return 0;
- }
-@@ -144,6 +171,9 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_reg_base		= 0xC000,
- 	.rdma_reg_stride	= 0x1000,
- 	.rdma_channels		= 5,
-+	.hdmi_rdma_reg_base		= 0x64000,
-+	.hdmi_rdma_reg_stride	= 0x1000,
-+	.hdmi_rdma_channels		= 4,
- 	.dmactl_audif_start	= 1,
- 	.wrdma_reg_base		= 0x18000,
- 	.wrdma_reg_stride	= 0x1000,
-@@ -163,7 +193,7 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
- 	.rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
- 	.rdma_wpscnt		= REG_FIELD_ID(0xC000, 16, 19, 5, 0x1000),
--	.rdma_intf		= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
-+	.rdma_intf			= REG_FIELD_ID(0xC000, 12, 15, 5, 0x1000),
- 	.rdma_fifowm		= REG_FIELD_ID(0xC000, 1, 5, 5, 0x1000),
- 	.rdma_enable		= REG_FIELD_ID(0xC000, 0, 0, 5, 0x1000),
- 
-@@ -174,6 +204,64 @@ static struct lpass_variant sc7180_data = {
- 	.wrdma_fifowm		= REG_FIELD_ID(0x18000, 1, 5, 4, 0x1000),
- 	.wrdma_enable		= REG_FIELD_ID(0x18000, 0, 0, 4, 0x1000),
- 
-+	.hdmi_tx_ctl_addr	= 0x1000,
-+	.hdmi_legacy_addr	= 0x1008,
-+	.hdmi_vbit_addr		= 0x610c0,
-+	.hdmi_ch_lsb_addr	= 0x61048,
-+	.hdmi_ch_msb_addr	= 0x6104c,
-+	.ch_stride		= 0x8,
-+	.hdmi_parity_addr	= 0x61034,
-+	.hdmi_dmactl_addr	= 0x61038,
-+	.hdmi_dma_stride	= 0x4,
-+	.hdmi_DP_addr		= 0x610c8,
-+	.hdmi_sstream_addr	= 0x6101c,
-+	.hdmi_irq_reg_base		= 0x63000,
-+	.hdmi_irq_ports		= 1,
-+
-+	.hdmi_rdma_dyncclk		= REG_FIELD_ID(0x64000, 14, 14, 4, 0x1000),
-+	.hdmi_rdma_bursten		= REG_FIELD_ID(0x64000, 13, 13, 4, 0x1000),
-+	.hdmi_rdma_burst8		= REG_FIELD_ID(0x64000, 15, 15, 4, 0x1000),
-+	.hdmi_rdma_burst16		= REG_FIELD_ID(0x64000, 16, 16, 4, 0x1000),
-+	.hdmi_rdma_dynburst		= REG_FIELD_ID(0x64000, 18, 18, 4, 0x1000),
-+	.hdmi_rdma_wpscnt		= REG_FIELD_ID(0x64000, 10, 12, 4, 0x1000),
-+	.hdmi_rdma_fifowm		= REG_FIELD_ID(0x64000, 1, 5, 4, 0x1000),
-+	.hdmi_rdma_enable		= REG_FIELD_ID(0x64000, 0, 0, 4, 0x1000),
-+
-+	.sstream_en		= REG_FIELD(0x6101c, 0, 0),
-+	.dma_sel			= REG_FIELD(0x6101c, 1, 2),
-+	.auto_bbit_en	= REG_FIELD(0x6101c, 3, 3),
-+	.layout			= REG_FIELD(0x6101c, 4, 4),
-+	.layout_sp		= REG_FIELD(0x6101c, 5, 8),
-+	.set_sp_on_en	= REG_FIELD(0x6101c, 10, 10),
-+	.dp_audio		= REG_FIELD(0x6101c, 11, 11),
-+	.dp_staffing_en	= REG_FIELD(0x6101c, 12, 12),
-+	.dp_sp_b_hw_en	= REG_FIELD(0x6101c, 13, 13),
-+
-+	.mute			= REG_FIELD(0x610c8, 0, 0),
-+	.as_sdp_cc		= REG_FIELD(0x610c8, 1, 3),
-+	.as_sdp_ct		= REG_FIELD(0x610c8, 4, 7),
-+	.aif_db4			= REG_FIELD(0x610c8, 8, 15),
-+	.frequency		= REG_FIELD(0x610c8, 16, 21),
-+	.mst_index		= REG_FIELD(0x610c8, 28, 29),
-+	.dptx_index		= REG_FIELD(0x610c8, 30, 31),
-+
-+	.soft_reset		= REG_FIELD(0x1000, 31, 31),
-+	.force_reset	= REG_FIELD(0x1000, 30, 30),
-+
-+	.use_hw_chs		= REG_FIELD(0x61038, 0, 0),
-+	.use_hw_usr		= REG_FIELD(0x61038, 1, 1),
-+	.hw_chs_sel		= REG_FIELD(0x61038, 2, 4),
-+	.hw_usr_sel		= REG_FIELD(0x61038, 5, 6),
-+
-+	.replace_vbit	= REG_FIELD(0x610c0, 0, 0),
-+	.vbit_stream	= REG_FIELD(0x610c0, 1, 1),
-+
-+	.legacy_en		=  REG_FIELD(0x1008, 0, 0),
-+	.calc_en		=  REG_FIELD(0x61034, 0, 0),
-+	.lsb_bits		=  REG_FIELD(0x61048, 0, 31),
-+	.msb_bits		=  REG_FIELD(0x6104c, 0, 31),
-+
-+
- 	.clk_name		= (const char*[]) {
- 				   "pcnoc-sway-clk",
- 				   "audio-core",
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Thanks for doing this! That was the last missing part on fully supporting
+Sphinx 3.1+.
 
+> Mauro,
+> if this patch is ok, the 3rd patch in your series, which disables automar=
+kup for
+> sphinx 3, should be dropped.
+
+Yeah, sure.
+
+> Although I'm not sure what the implications of your patches adding namesp=
+aces
+> and using the c:macro for functions are.
+
+With regards to namespaces:
+
+Currently, only the media docs use namespaces, and it declares it at the
+beginning of each file that needs it, without overriding it later[1].
+
+[1] btw, the cdomain.py backward compat code doesn't support namespace
+    changes - as it parses namespaces before handling the C domain tags.
+    I doubt that we'll need to have a single .rst file using more than
+    one namespace anyway.
+
+The main usage is to avoid conflicts for uAPI documentation for
+syscalls - actually for libc userspace wrappers to syscalls. It documents
+things like: open, close, read, write, ioctl, poll, select.
+
+I'm not sure if the automarkup should be aware of it, or if the c.py code
+at Sphinx 3.x will add the namespace automatically, but I suspect that
+automarkup will need to handle it as well.
+
+One file you could use for checking it is this one:
+
+	Documentation/userspace-api/media/v4l/hist-v4l2.rst
+
+It contains a namespace directive and documents what changed without
+using any explicit reference (after my patch series + linux-next).
+
+With regards to c:macro vs c:function:
+
+I suspect that automarkup should test both when trying to do=20
+cross-references for function-like calls. E. g. test first if
+there is a :c:function, falling back to check for :c:macro.
+
+I would add a "sphinx3_c_func_ref" function that would handle
+such special case, e. g. something like:
+
+    markup_func_sphinx3 =3D {RE_doc: markup_doc_ref,
+                           RE_function: sphinx3_c_func_ref,
+                           RE_struct: markup_c_ref,
+                           RE_union: markup_c_ref,
+                           RE_enum: markup_c_ref,
+                           RE_typedef: markup_c_ref}
+
+> All I did here was use the specific roles for sphinx 3 and fix the warnin=
+gs, but
+> that was enough to get correct cross-references even after your series.
+>=20
+> Thanks,
+> N=C3=ADcolas
+
+>=20
+>=20
+>  Documentation/sphinx/automarkup.py | 69 ++++++++++++++++++++++++++----
+>  1 file changed, 60 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/au=
+tomarkup.py
+> index a1b0f554cd82..fd1e927408ad 100644
+> --- a/Documentation/sphinx/automarkup.py
+> +++ b/Documentation/sphinx/automarkup.py
+> @@ -22,13 +22,34 @@ from itertools import chain
+>  # :c:func: block (i.e. ":c:func:`mmap()`s" flakes out), so the last
+>  # bit tries to restrict matches to things that won't create trouble.
+>  #
+> -RE_function =3D re.compile(r'(([\w_][\w\d_]+)\(\))')
+> -RE_type =3D re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d_]+)')
+> +RE_function =3D re.compile(r'\b(([a-zA-Z_]\w+)\(\))', flags=3Dre.ASCII)
+> +
+> +#
+> +# Sphinx 2 uses the same :c:type role for struct, union, enum and typedef
+> +#
+> +RE_generic_type =3D re.compile(r'\b(struct|union|enum|typedef)\s+([a-zA-=
+Z_]\w+)',
+> +                             flags=3Dre.ASCII)
+> +
+> +#
+> +# Sphinx 3 uses a different C role for each one of struct, union, enum a=
+nd
+> +# typedef
+> +#
+> +RE_struct =3D re.compile(r'\b(struct)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCI=
+I)
+> +RE_union =3D re.compile(r'\b(union)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCII)
+> +RE_enum =3D re.compile(r'\b(enum)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCII)
+> +RE_typedef =3D re.compile(r'\b(typedef)\s+([a-zA-Z_]\w+)', flags=3Dre.AS=
+CII)
+> +
+>  #
+>  # Detects a reference to a documentation page of the form Documentation/=
+... with
+>  # an optional extension
+>  #
+> -RE_doc =3D re.compile(r'Documentation(/[\w\-_/]+)(\.\w+)*')
+> +RE_doc =3D re.compile(r'\bDocumentation(/[\w\-_/]+)(\.\w+)*')
+> +
+> +#
+> +# Reserved C words that we should skip when cross-referencing
+> +#
+> +Skipnames =3D [ 'for', 'if', 'register', 'sizeof', 'struct', 'unsigned' ]
+> +
+> =20
+>  #
+>  # Many places in the docs refer to common system calls.  It is
+> @@ -48,9 +69,22 @@ def markup_refs(docname, app, node):
+>      #
+>      # Associate each regex with the function that will markup its matches
+>      #
+> -    markup_func =3D {RE_type: markup_c_ref,
+> -                   RE_function: markup_c_ref,
+> -                   RE_doc: markup_doc_ref}
+> +    markup_func_sphinx2 =3D {RE_doc: markup_doc_ref,
+> +                           RE_function: markup_c_ref,
+> +                           RE_generic_type: markup_c_ref}
+> +
+> +    markup_func_sphinx3 =3D {RE_doc: markup_doc_ref,
+> +                           RE_function: markup_c_ref,
+> +                           RE_struct: markup_c_ref,
+> +                           RE_union: markup_c_ref,
+> +                           RE_enum: markup_c_ref,
+> +                           RE_typedef: markup_c_ref}
+> +
+> +    if sphinx.__version__[0] =3D=3D '3':
+> +        markup_func =3D markup_func_sphinx3
+> +    else:
+> +        markup_func =3D markup_func_sphinx2
+> +
+>      match_iterators =3D [regex.finditer(t) for regex in markup_func]
+>      #
+>      # Sort all references by the starting position in text
+> @@ -79,8 +113,24 @@ def markup_refs(docname, app, node):
+>  # type_name) with an appropriate cross reference.
+>  #
+>  def markup_c_ref(docname, app, match):
+> -    class_str =3D {RE_function: 'c-func', RE_type: 'c-type'}
+> -    reftype_str =3D {RE_function: 'function', RE_type: 'type'}
+> +    class_str =3D {RE_function: 'c-func',
+> +                 # Sphinx 2 only
+> +                 RE_generic_type: 'c-type',
+> +                 # Sphinx 3+ only
+> +                 RE_struct: 'c-struct',
+> +                 RE_union: 'c-union',
+> +                 RE_enum: 'c-enum',
+> +                 RE_typedef: 'c-type',
+> +                 }
+> +    reftype_str =3D {RE_function: 'function',
+> +                   # Sphinx 2 only
+> +                   RE_generic_type: 'type',
+> +                   # Sphinx 3+ only
+> +                   RE_struct: 'struct',
+> +                   RE_union: 'union',
+> +                   RE_enum: 'enum',
+> +                   RE_typedef: 'type',
+> +                   }
+> =20
+>      cdom =3D app.env.domains['c']
+>      #
+> @@ -89,7 +139,8 @@ def markup_c_ref(docname, app, match):
+>      target =3D match.group(2)
+>      target_text =3D nodes.Text(match.group(0))
+>      xref =3D None
+> -    if not (match.re =3D=3D RE_function and target in Skipfuncs):
+> +    if not ((match.re =3D=3D RE_function and target in Skipfuncs)
+> +            or (target in Skipnames)):
+>          lit_text =3D nodes.literal(classes=3D['xref', 'c', class_str[mat=
+ch.re]])
+>          lit_text +=3D target_text
+>          pxref =3D addnodes.pending_xref('', refdomain =3D 'c',
+
+
+
+Thanks,
+Mauro
