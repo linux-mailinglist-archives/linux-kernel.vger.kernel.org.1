@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065C528717E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A2728717C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 11:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729054AbgJHJaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 05:30:19 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35156 "EHLO huawei.com"
+        id S1729013AbgJHJaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 05:30:18 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35144 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726273AbgJHJaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727709AbgJHJaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Oct 2020 05:30:17 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 4D36BE57EAAFBFC61C40;
+        by Forcepoint Email with ESMTP id 45D49F56B5E2CD97C29D;
         Thu,  8 Oct 2020 17:30:14 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 8 Oct 2020 17:30:05 +0800
+ 14.3.487.0; Thu, 8 Oct 2020 17:30:06 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <Frank.li@nxp.com>, <will@kernel.org>, <mark.rutland@arm.com>,
         <robh+dt@kernel.org>, <zhangshaokun@hisilicon.com>,
@@ -26,9 +26,9 @@ CC:     <linuxarm@huawei.com>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <acme@kernel.org>,
         <jolsa@redhat.com>, <irogers@google.com>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH v2 3/4] perf/imx_ddr: Add system PMU identifier for userspace
-Date:   Thu, 8 Oct 2020 17:26:20 +0800
-Message-ID: <1602149181-237415-4-git-send-email-john.garry@huawei.com>
+Subject: [PATCH v2 4/4] perf/smmuv3: Support sysfs identifier file
+Date:   Thu, 8 Oct 2020 17:26:21 +0800
+Message-ID: <1602149181-237415-5-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1602149181-237415-1-git-send-email-john.garry@huawei.com>
 References: <1602149181-237415-1-git-send-email-john.garry@huawei.com>
@@ -40,101 +40,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+SMMU_PMCG_IIDR was added in the SMMUv3.3 spec.
 
-The DDR Perf for i.MX8 is a system PMU whose AXI ID would different from
-SoC to SoC. Need expose system PMU identifier for userspace which refer
-to /sys/bus/event_source/devices/<PMU DEVICE>/identifier.
+For the perf tool to know the specific HW implementation, expose the
+PMCG_IIDR contents only when set.
 
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- drivers/perf/fsl_imx8_ddr_perf.c | 45 +++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 3 deletions(-)
+ drivers/perf/arm_smmuv3_pmu.c | 39 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
-index 397540a4b799..c537cd9b8142 100644
---- a/drivers/perf/fsl_imx8_ddr_perf.c
-+++ b/drivers/perf/fsl_imx8_ddr_perf.c
-@@ -50,21 +50,38 @@ static DEFINE_IDA(ddr_ida);
- 
- struct fsl_ddr_devtype_data {
- 	unsigned int quirks;    /* quirks needed for different DDR Perf core */
-+	const char *identifier;	/* system PMU identifier for userspace */
+diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+index 5274f7fe359e..74474bb322c3 100644
+--- a/drivers/perf/arm_smmuv3_pmu.c
++++ b/drivers/perf/arm_smmuv3_pmu.c
+@@ -74,6 +74,7 @@
+ #define SMMU_PMCG_CFGR_NCTR             GENMASK(5, 0)
+ #define SMMU_PMCG_CR                    0xE04
+ #define SMMU_PMCG_CR_ENABLE             BIT(0)
++#define SMMU_PMCG_IIDR                  0xE08
+ #define SMMU_PMCG_CEID0                 0xE20
+ #define SMMU_PMCG_CEID1                 0xE28
+ #define SMMU_PMCG_IRQ_CTRL              0xE50
+@@ -112,6 +113,7 @@ struct smmu_pmu {
+ 	void __iomem *reloc_base;
+ 	u64 counter_mask;
+ 	u32 options;
++	u32 iidr;
+ 	bool global_filter;
  };
  
--static const struct fsl_ddr_devtype_data imx8_devtype_data;
-+static const struct fsl_ddr_devtype_data imx8_devtype_data = {
-+	.identifier = "i.MX8",
-+};
-+
-+static const struct fsl_ddr_devtype_data imx8mq_devtype_data = {
-+	.quirks = DDR_CAP_AXI_ID_FILTER,
-+	.identifier = "i.MX8MQ",
-+};
-+
-+static const struct fsl_ddr_devtype_data imx8mm_devtype_data = {
-+	.quirks = DDR_CAP_AXI_ID_FILTER,
-+	.identifier = "i.MX8MM",
-+};
- 
--static const struct fsl_ddr_devtype_data imx8m_devtype_data = {
-+static const struct fsl_ddr_devtype_data imx8mn_devtype_data = {
- 	.quirks = DDR_CAP_AXI_ID_FILTER,
-+	.identifier = "i.MX8MN",
+@@ -552,6 +554,40 @@ static struct attribute_group smmu_pmu_events_group = {
+ 	.is_visible = smmu_pmu_event_is_visible,
  };
  
- static const struct fsl_ddr_devtype_data imx8mp_devtype_data = {
- 	.quirks = DDR_CAP_AXI_ID_FILTER_ENHANCED,
-+	.identifier = "i.MX8MP",
- };
- 
- static const struct of_device_id imx_ddr_pmu_dt_ids[] = {
- 	{ .compatible = "fsl,imx8-ddr-pmu", .data = &imx8_devtype_data},
--	{ .compatible = "fsl,imx8m-ddr-pmu", .data = &imx8m_devtype_data},
-+	{ .compatible = "fsl,imx8mq-ddr-pmu", .data = &imx8mq_devtype_data},
-+	{ .compatible = "fsl,imx8mm-ddr-pmu", .data = &imx8mm_devtype_data},
-+	{ .compatible = "fsl,imx8mn-ddr-pmu", .data = &imx8mn_devtype_data},
- 	{ .compatible = "fsl,imx8mp-ddr-pmu", .data = &imx8mp_devtype_data},
- 	{ /* sentinel */ }
- };
-@@ -84,6 +101,27 @@ struct ddr_pmu {
- 	int id;
- };
- 
-+static ssize_t ddr_perf_identifier_show(struct device *dev,
++static ssize_t smmu_pmu_identifier_attr_show(struct device *dev,
 +					struct device_attribute *attr,
 +					char *page)
 +{
-+	struct ddr_pmu *pmu = dev_get_drvdata(dev);
++	struct smmu_pmu *smmu_pmu = to_smmu_pmu(dev_get_drvdata(dev));
 +
-+	return sprintf(page, "%s\n", pmu->devtype_data->identifier);
++	return snprintf(page, PAGE_SIZE, "0x%08x\n", smmu_pmu->iidr);
 +}
 +
-+static struct device_attribute ddr_perf_identifier_attr =
-+	__ATTR(identifier, 0444, ddr_perf_identifier_show, NULL);
++static umode_t smmu_pmu_identifier_attr_visible(struct kobject *kobj,
++						struct attribute *attr,
++						int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct smmu_pmu *smmu_pmu = to_smmu_pmu(dev_get_drvdata(dev));
 +
-+static struct attribute *ddr_perf_identifier_attrs[] = {
-+	&ddr_perf_identifier_attr.attr,
-+	NULL,
++	if (!smmu_pmu->iidr)
++		return 0;
++	return attr->mode;
++}
++
++static struct device_attribute smmu_pmu_identifier_attr =
++	__ATTR(identifier, 0444, smmu_pmu_identifier_attr_show, NULL);
++
++static struct attribute *smmu_pmu_identifier_attrs[] = {
++	&smmu_pmu_identifier_attr.attr,
++	NULL
 +};
 +
-+static struct attribute_group ddr_perf_identifier_attr_group = {
-+	.attrs = ddr_perf_identifier_attrs,
++static struct attribute_group smmu_pmu_identifier_group = {
++	.attrs = smmu_pmu_identifier_attrs,
++	.is_visible = smmu_pmu_identifier_attr_visible,
 +};
 +
- enum ddr_perf_filter_capabilities {
- 	PERF_CAP_AXI_ID_FILTER = 0,
- 	PERF_CAP_AXI_ID_FILTER_ENHANCED,
-@@ -237,6 +275,7 @@ static const struct attribute_group *attr_groups[] = {
- 	&ddr_perf_format_attr_group,
- 	&ddr_perf_cpumask_attr_group,
- 	&ddr_perf_filter_cap_attr_group,
-+	&ddr_perf_identifier_attr_group,
- 	NULL,
+ /* Formats */
+ PMU_FORMAT_ATTR(event,		   "config:0-15");
+ PMU_FORMAT_ATTR(filter_stream_id,  "config1:0-31");
+@@ -575,6 +611,7 @@ static const struct attribute_group *smmu_pmu_attr_grps[] = {
+ 	&smmu_pmu_cpumask_group,
+ 	&smmu_pmu_events_group,
+ 	&smmu_pmu_format_group,
++	&smmu_pmu_identifier_group,
+ 	NULL
  };
  
+@@ -795,6 +832,8 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
++	smmu_pmu->iidr = readl_relaxed(smmu_pmu->reg_base + SMMU_PMCG_IIDR);
++
+ 	name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "smmuv3_pmcg_%llx",
+ 			      (res_0->start) >> SMMU_PMCG_PA_SHIFT);
+ 	if (!name) {
 -- 
 2.26.2
 
