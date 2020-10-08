@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1821E287249
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC72728724F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbgJHKMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 06:12:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48694 "EHLO mail.kernel.org"
+        id S1729416AbgJHKOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 06:14:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729132AbgJHKMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:12:16 -0400
+        id S1729341AbgJHKN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 06:13:59 -0400
 Received: from gaia (unknown [95.149.105.49])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE8312145D;
-        Thu,  8 Oct 2020 10:12:12 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 11:12:10 +0100
+        by mail.kernel.org (Postfix) with ESMTPSA id BC20720708;
+        Thu,  8 Oct 2020 10:13:56 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 11:13:54 +0100
 From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Khalid Aziz <khalid.aziz@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
- and with length
-Message-ID: <20201008101209.GD7661@gaia>
-References: <20201007073932.865218-1-jannh@google.com>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        will@kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
+        hch@lst.de, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+Message-ID: <20201008101353.GE7661@gaia>
+References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
+ <20201001161740.29064-2-nsaenzjulienne@suse.de>
+ <20201001171500.GN21544@gaia>
+ <20201001172320.GQ21544@gaia>
+ <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+ <20201002115541.GC7034@gaia>
+ <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201007073932.865218-1-jannh@google.com>
+In-Reply-To: <12f33d487eabd626db4c07ded5a1447795eed355.camel@suse.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 09:39:31AM +0200, Jann Horn wrote:
-> arch_validate_prot() is a hook that can validate whether a given set of
-> protection flags is valid in an mprotect() operation. It is given the set
-> of protection flags and the address being modified.
+On Thu, Oct 08, 2020 at 12:05:25PM +0200, Nicolas Saenz Julienne wrote:
+> On Fri, 2020-10-02 at 12:55 +0100, Catalin Marinas wrote:
+> > On Thu, Oct 01, 2020 at 07:31:19PM +0200, Nicolas Saenz Julienne wrote:
+> > > On Thu, 2020-10-01 at 18:23 +0100, Catalin Marinas wrote:
+> > > > On Thu, Oct 01, 2020 at 06:15:01PM +0100, Catalin Marinas wrote:
+> > > > > On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Julienne wrote:
+> > > > > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> > > > > > index 4602e467ca8b..cd0d115ef329 100644
+> > > > > > --- a/drivers/of/fdt.c
+> > > > > > +++ b/drivers/of/fdt.c
+> > > > > > @@ -25,6 +25,7 @@
+> > > > > >  #include <linux/serial_core.h>
+> > > > > >  #include <linux/sysfs.h>
+> > > > > >  #include <linux/random.h>
+> > > > > > +#include <linux/dma-direct.h>	/* for zone_dma_bits */
+> > > > > >  
+> > > > > >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+> > > > > >  #include <asm/page.h>
+> > > > > > @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nodes(void)
+> > > > > >  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
+> > > > > >  }
+> > > > > >  
+> > > > > > +void __init early_init_dt_update_zone_dma_bits(void)
+> > > > > > +{
+> > > > > > +	unsigned long dt_root = of_get_flat_dt_root();
+> > > > > > +
+> > > > > > +	if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711"))
+> > > > > > +		zone_dma_bits = 30;
+> > > > > > +}
+> > > > > 
+> > > > > I think we could keep this entirely in the arm64 setup_machine_fdt() and
+> > > > > not pollute the core code with RPi4-specific code.
+> > > > 
+> > > > Actually, even better, could we not move the check to
+> > > > arm64_memblock_init() when we initialise zone_dma_bits?
+> > > 
+> > > I did it this way as I vaguely remembered Rob saying he wanted to centralise
+> > > all early boot fdt code in one place. But I'll be happy to move it there.
+> > 
+> > I can see Rob replied and I'm fine if that's his preference. However,
+> > what I don't particularly like is that in the arm64 code, if
+> > zone_dma_bits == 24, we set it to 32 assuming that it wasn't touched by
+> > the early_init_dt_update_zone_dma_bits(). What if at some point we'll
+> > get a platform that actually needs 24 here (I truly hope not, but just
+> > the principle of relying on magic values)?
+> > 
+> > So rather than guessing, I'd prefer if the arch code can override
+> > ZONE_DMA_BITS_DEFAULT. Then, in arm64, we'll just set it to 32 and no
+> > need to explicitly touch the zone_dma_bits variable.
 > 
-> However, the address being modified can currently not actually be used in
-> a meaningful way because:
+> Yes, sonds like the way to go. TBH I wasn't happy with that solution either,
+> but couldn't think of a nicer alternative.
 > 
-> 1. Only the address is given, but not the length, and the operation can
->    span multiple VMAs. Therefore, the callee can't actually tell which
->    virtual address range, or which VMAs, are being targeted.
-> 2. The mmap_lock is not held, meaning that if the callee were to check
->    the VMA at @addr, that VMA would be unrelated to the one the
->    operation is performed on.
-> 
-> Currently, custom arch_validate_prot() handlers are defined by
-> arm64, powerpc and sparc.
-> arm64 and powerpc don't care about the address range, they just check the
-> flags against CPU support masks.
-> sparc's arch_validate_prot() attempts to look at the VMA, but doesn't take
-> the mmap_lock.
-> 
-> Change the function signature to also take a length, and move the
-> arch_validate_prot() call in mm/mprotect.c down into the locked region.
+> Sadly I just realised that the series is incomplete, we have RPi4 users that
+> want to boot unsing ACPI, and this series would break things for them. I'll
+> have a word with them to see what we can do for their use-case.
 
-For arm64 mte, I noticed the arch_validate_prot() issue with multiple
-vmas and addressed this in a different way:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/mte&id=c462ac288f2c97e0c1d9ff6a65955317e799f958
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/mte&id=0042090548740921951f31fc0c20dcdb96638cb0
-
-Both patches queued for 5.10.
-
-Basically, arch_calc_vm_prot_bits() returns a VM_MTE if PROT_MTE has
-been requested. The newly introduced arch_validate_flags() will check
-the VM_MTE flag against what the system supports and this covers both
-mmap() and mprotect(). Note that arch_validate_prot() only handles the
-latter and I don't think it's sufficient for SPARC ADI. For arm64 MTE we
-definitely wanted mmap() flags to be validated.
-
-In addition, there's a new arch_calc_vm_flag_bits() which allows us to
-set a VM_MTE_ALLOWED on a vma if the conditions are right (MAP_ANONYMOUS
-or shmem_mmap():
-
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/mte&id=b3fbbea4c00220f62e6f7e2514466e6ee81f7f60
+Is there a way to get some SoC information from ACPI?
 
 -- 
 Catalin
