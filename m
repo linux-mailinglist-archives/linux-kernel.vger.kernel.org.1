@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDEF287591
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD3B287594
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730268AbgJHOBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:01:55 -0400
-Received: from www.zeus03.de ([194.117.254.33]:49324 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726875AbgJHOBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:01:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=B25JFZ56dNNTT3gHzxvxMM9PgiUs
-        jCDPWLcYTA5adRM=; b=MQl++c6gzpEe8RbkM2Ny4gru4tZSMdCxRqEqD69FKCYI
-        GjaPuw+vgsOoIU2K8V4hSitF+UMk3sUGmr+JSZJnPyMQjPorEx5dG8AheuLAm85/
-        Un0XifRkMvCRxCP7SWTr77RH33M6hZWiteIAI0jQFmHS7hnvszP7yRryLyHEsrI=
-Received: (qmail 3366732 invoked from network); 8 Oct 2020 16:01:51 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 8 Oct 2020 16:01:51 +0200
-X-UD-Smtp-Session: l3s3148p1@4WUfRimx2pEgAwDPXwzvAOi1YJpFLj+d
-Date:   Thu, 8 Oct 2020 16:01:51 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
-        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
-        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
-        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
-Subject: Re: [PATCH v3] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20201008140151.GE897@ninjato>
-References: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
+        id S1730330AbgJHOCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726875AbgJHOCK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 10:02:10 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BD7C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:02:08 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id l8so6209085ioh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+v0FBMBQHdikeISvOs9/H6RdJVjsvgJipGvlxdEATrw=;
+        b=OtjKLWoNFnJwBG+iIBsnfGAFJ4zdt7leYN6+IZMnSqbHnvoXh5fOLZV1t5S4zHKUK+
+         KlLNhwQDcsdOJ+V6LCgAsTRNBvCb+hz8mhghFlo0yiw4O2KRm4ZtDM9yfQnRV0uSBSer
+         C9/7OPQObbekrl9Gh4aVoZUyL5YHShCtmwpHSrZO3WnByHNC2KioGmRAmwwGQnvmB2VT
+         zZjChPKRCnH8sXBxdxwX+sVzpfg5961ZI6KZIqRSaKXhs2v0NxRWX9XSl4VdF3M1eOP6
+         09lAFvYNw26lHxgYb/xSqunH/NmCfM9e73cUCb7zv4dadb8bBohqNr3EeFusZoM46jjQ
+         DEPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+v0FBMBQHdikeISvOs9/H6RdJVjsvgJipGvlxdEATrw=;
+        b=msAS4aJS+PO8M7JqjiwHfCwsJULfKpp5opDh0rrGISDS1FwGFSjyhxSq4mKW+2z5I4
+         Ud1m0mdOgfozTOyQvHWJGb0PUJeXv2ScqX/0SwuJZc2MZQ+tystsxT2u3oS0uf0Z+U4t
+         pJSmXkHVUy8QXU7sZkZoCByTlnZpzzqYtFK14cCAUkWziGOPrfJrxbrrARqzl9wgzxCD
+         X3wYTtVGEF/wVzFCThwLxrfSRwA5K5NjsQ81WkyciexFFOE1szSNEmkxOoHWtaMvV5lE
+         bNTTdfzAVEwAIcxI40JOwjUssAQwWT7iMirGMmRC7dAwAfRN7/wRE1WxhCw4raoDypKY
+         b+lg==
+X-Gm-Message-State: AOAM530ghNuM+m+uoQW88VtN62sVLja2CjNkWE4oKhVGMBo2B/BXNjiG
+        ZCKozRdPEhIZp2vzByXcw05uMrK7HNV0dg==
+X-Google-Smtp-Source: ABdhPJy/LL8lIwlhJyCrinad2Oa+KhO+WtX+sKYdSYwFbXtVAptuvPI1GFZpqt98YjTtzz2k0dg+Lg==
+X-Received: by 2002:a02:82c8:: with SMTP id u8mr6948237jag.61.1602165727444;
+        Thu, 08 Oct 2020 07:02:07 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id l4sm2695327ilk.14.2020.10.08.07.02.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 07:02:06 -0700 (PDT)
+Subject: Re: [PATCH v2 0/8] Some improvements for blk throttle
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>, tj@kernel.org
+Cc:     baolin.wang7@gmail.com, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b54c6741-10dc-2768-bc37-f1965672f039@kernel.dk>
+Date:   Thu, 8 Oct 2020 08:02:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="phCU5ROyZO6kBE05"
-Content-Disposition: inline
-In-Reply-To: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
+In-Reply-To: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/7/20 9:52 PM, Baolin Wang wrote:
+> Hi,
+> 
+> This patch set did some improvements for blk throttle, please
+> help to review. Thanks.
+> 
+> Changes from v1:
+>  - Add another 4 new patches in this patch set.
+> 
+> Baolin Wang (8):
+>   blk-throttle: Remove a meaningless parameter for
+>     throtl_downgrade_state()
+>   blk-throttle: Avoid getting the current time if tg->last_finish_time
+>     is 0
+>   blk-throttle: Avoid tracking latency if low limit is invalid
+>   blk-throttle: Fix IO hang for a corner case
+>   blk-throttle: Move the list operation after list validation
+>   blk-throttle: Move service tree validation out of the
+>     throtl_rb_first()
+>   blk-throttle: Open code __throtl_de/enqueue_tg()
+>   blk-throttle: Re-use the throtl_set_slice_end()
+> 
+>  block/blk-throttle.c | 69 ++++++++++++++++++++++++++--------------------------
+>  1 file changed, 35 insertions(+), 34 deletions(-)
 
---phCU5ROyZO6kBE05
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+LGTM, applied, thanks.
 
-Hi,
+-- 
+Jens Axboe
 
-some super high level questions:
-
-> different controllers according to their needs. A backend
-> example can be found in the device model of the open source
-> project ACRN. For more information, please refer to
-> https://projectacrn.org.
-
-Could you provide a link directly to the backend, please?
-
-> The device ID request:
->         https://github.com/oasis-tcs/virtio-spec/issues/85
-
-Shall we wait for this to be approved? Or will it get only approved once
-the driver here is upstream?
-
-> +	  If you say yes to this option, support will be included for the virtio
-> +	  I2C adapter driver. The hardware can be emulated by any device model
-> +	  software according to the virtio protocol.
-
-That means stuff like "limiting which devices on a given bus can be
-accessed" will be handled by the backends, or?
-
-What kind of testing has been done with this on which setup?
-
-Thanks and happy hacking,
-
-   Wolfram
-
-
---phCU5ROyZO6kBE05
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9/G8sACgkQFA3kzBSg
-KbZpUA/+MK6H+3FNinSddnI4K6iznndiLMD9yBhDzPgTahxvk5mO54a3D0xZEyOJ
-X4mVguBCy9glZaPIRSIox+X6fjyzKXnWunyPcqNDmrF4PrzEwkAHCHeN3Kz92j/A
-Xi1+uaoJOBj3oRnNPo92r968MEPFwwu5xGQXMak6V2vjTLH9jEwB8Y4XbZohpwLU
-TzEoWJZdanu4j8MsNxuvC2vwkMiw4PFaPJu/Sgs28JUx8WOm0zjPV1AUsYUz9WUU
-SwlZhs1Q38uTiky2wXzYD+HtNMwQ6IWVZ8DcOBxZgz329oRLwnBMdUyIWw2ImQ5t
-9571jQBLhX2kP2gwqlPlURdUPH36ePyYIaW6M8yjha3oyGsX0KCRSSPT8SlKIXtR
-eiKhK1Ov/q9KdvfXjqrUHI3crXMNk4e7OJoSB2jTmILfFlSPAvhZqdffD+bUAH3p
-qme+cbUo/ziuxxhMcFaVdGYniDu4lf5S4qemaK9FGb8KeXM0Wnqiwh1mFH/sA7Pd
-ba2Z7nstcG14tHbbg1tID9nHSn3QB5xUMemk7PfnhhLaiCqdLlZ8bUIwUqJ58ank
-ynPpopCbEnoB2C5mWkzkDVWU0IE4dLwYMR6hD8p5QVdE0wvQuqxUyUCyLDxzs0UC
-9S4OOr8RsZawybmgUpmvTz8bbT9QxybOpcnnR+Npd78dxuMkChE=
-=7jcK
------END PGP SIGNATURE-----
-
---phCU5ROyZO6kBE05--
