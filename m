@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A272D2874C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8857B2874D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 15:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730262AbgJHNEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 09:04:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730154AbgJHNEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 09:04:52 -0400
-Received: from localhost (p54b3300d.dip0.t-ipconnect.de [84.179.48.13])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4DFD2083B;
-        Thu,  8 Oct 2020 13:04:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602162291;
-        bh=ASgWedu6TAR+2NxULnjFNczobY3wsbEPfYsc85da2JI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bu1MZEzncti+rh2+k6qNinYOcjHRVm734X7vio/bcaXfQCod9zhiiyfbe0VBU6HLN
-         1Y1l9ZJZ94ZV0M3dHKLaxMCAv4pKMnS/juPWXptW56fPYlVNswvb2W7nsB0RKBgM9C
-         rL4pP3g+NhXrDCE/HpTkIQCSh+DHA8SLm9YX7Fc8=
-Date:   Thu, 8 Oct 2020 15:04:47 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH V5 1/3] soc: qcom: geni: Remove "iova" check
-Message-ID: <20201008130447.GD897@ninjato>
-References: <20201001084425.23117-1-rojay@codeaurora.org>
- <20201001084425.23117-2-rojay@codeaurora.org>
+        id S1730270AbgJHNFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 09:05:25 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:31763 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730154AbgJHNFZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 09:05:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1602162324; x=1633698324;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9GFFb9L2XzgUgsFOeudZEQsFIoN33NW0oarxi224QDE=;
+  b=xEFnJJMjkneKnmjf/Ou8pXEPhbSV/K9tsdn4r4aFzwLNVBT/6u6wfFwe
+   iW39XSwLUkqPmr/BTN2CY0xMR9C4+XJRnjCdl71aO+50UDgX5j1R9hVX7
+   x3kQ2YayKhCX3NWe6E1ogfa94dkV2nXzqIngAfQH5eBzJu1axz9PGNPs3
+   RW5ykr4EvO6xyjozWOYSw/TjhyflfqXdm57UvLraBd1hUJS/TnF8BHdH1
+   OOoLkKxUyLn1KCsTgFvGyVrION3uiPcyJyEwKrl1bllbmgAY/9LY2uSNs
+   gOwnUuPfygtZc7ChKRLHG4Uh+TyCvuS291xPzzZ/Mn4peKRWdYnlGHCOb
+   A==;
+IronPort-SDR: ThkiY8+hMWSka3fMBOvGwsQzUna2DkYVJukGXpP+7HVh30aLLBAbw3dTQhmY6UzxaztEjwKKM1
+ wn0AI6nwad1GLz2a9L6pCT+XhXwuiQJgQzCzCE4ntKgm8D3jttAMbiZTTUg+nIWuHrA+v/XU4O
+ fDTzbLWd7qdE5sCcBPNdkajASuYNKOBkI9Ggkb4l2Ul8/XtHaV7l4DKOeyRtHBHHLsf0S+4PET
+ mAqYgggIDbyYb76yi7jYRxJIKGJIo2Zcijpx4KdzaDHMAwyXkC+ogppx24SvmC6pLoCPhgJB+o
+ CRs=
+X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
+   d="scan'208";a="93868367"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Oct 2020 06:05:24 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 8 Oct 2020 06:04:57 -0700
+Received: from soft-dev10.microsemi.net (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 8 Oct 2020 06:05:21 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v5 0/3] pinctrl: Adding support for Microchip/Microsemi serial GPIO controller
+Date:   Thu, 8 Oct 2020 15:05:12 +0200
+Message-ID: <20201008130515.2385825-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6WlEvdN9Dv0WHSBl"
-Content-Disposition: inline
-In-Reply-To: <20201001084425.23117-2-rojay@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The series add support for the serial GPIO controller used by
+Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
 
---6WlEvdN9Dv0WHSBl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v5 changes (driver comments from Linus):
+- Collect bank data in sgpio_bank struct
+- Add is_input boolean to sgpio_bank struct
+- Use single-bit bitmasks in sgpio_output_set() and sgpio_output_get()
+- Eliminate superfluous struct pinctrl_dev *pctl_dev in bank data
+- Fix wrong ngpio consistency check
 
-On Thu, Oct 01, 2020 at 02:14:23PM +0530, Roja Rani Yarubandi wrote:
-> Remove "iova" check from geni_se_tx_dma_unprep and geni_se_rx_dma_unprep
-> fucntions as invalidating with dma_mapping_error() is enough.
->=20
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+v4 changes (binding comments from Rob):
+- microchip,sgpio-port-ranges changed to uint32-matrix so tuples can
+  be represented properly.
+- gpio controller node name changed to "gpio@[0-1]"
+- whitespace fixes
+- DT files updated as per schema changes
 
-Applied to for-next, thanks!
+v3 changes:
+- Renamed all usage of "mchp" abbrevation with "microchip".
+- Split the in/output directions into (two) separate banks.
+- Eliminated the bindings include file (from above)
+- Changed SPDX license to "GPL-2.0-or-later"
+- Change -ENOTSUPP to -EOPNOTSUPP
+- Minor type/symbol naming changes
 
-The other patches need updates, it seems.
+v2 changes:
+- Adds both in and output modes.
+- Use direct adressing of the individual banks (#gpio-cells = <4>),
+  also osoleting need for addressing macros in bindings include file.
+- Property 'microchip,sgpio-ports' (uint32, bitmask) replaced by
+  proper range set (array of [start,end]) 'microchip,sgpio-port-ranges'.
+- Fixes whitespace issues in Kconfig file
 
+Lars Povlsen (3):
+  dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
+  pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi
+    Serial GPIO
+  arm64: dts: sparx5: Add SGPIO devices
 
---6WlEvdN9Dv0WHSBl
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../pinctrl/microchip,sparx5-sgpio.yaml       | 140 ++++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  91 +++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |   5 +
+ .../dts/microchip/sparx5_pcb134_board.dtsi    | 258 +++++++
+ .../dts/microchip/sparx5_pcb135_board.dtsi    |  55 ++
+ drivers/pinctrl/Kconfig                       |  18 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-microchip-sgpio.c     | 665 ++++++++++++++++++
+ 9 files changed, 1234 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-microchip-sgpio.c
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9/Dm8ACgkQFA3kzBSg
-KbYeVA//Y6rXaoICwSJU8D3g9fDiYZFl8NleWfxdukOlyBzvFtS9xXg6QQ8Ba0o7
-oPo8rqQe4q7nOTWxtO8p4t2riSamZGbq2R95slgxGKh/zpZ1aGh8Dize/cnxr7/m
-jR97jqQHW5V/F+qSYzgyejgqt59WqmB+5zWUyYurf+zTjlPTnpHLjAY6vpOn/Ifn
-ybPqsPTnuod8uxLuk9nAtd3IyB+mByMGo8ipCbnudAZK6ebde0DBAAZH9InFmPmW
-2Ba+zuf5+GV54WTv5YL1Qu0aTKXaQPK/0mvobu3z8D7c6gbrwNAJaX9eJzufTO1Z
-ubLFJnRZ8nSP9uWX12NVwqKgpiPxReyb8L5bwuyJfh+8ZmmKy+77ZLLR4b5lSOOu
-hGZvPsvE8v95ju0QlkbJXMc8rZU56rstJmw2kWAOOmTJnXoT/dcC4KAPqRW9L3m9
-/HYiRYMpgaOADWqsaS35ViQmn4uG/3hzaU1tHGcKnPhVUOxdfyLHx3w2rEDWkCSc
-489Mm63+B6xSkGLAjlR425ZIHUKnrCyhZ15zJn+/XH3fetATHu1sghE3oMHh9L6B
-c4xeYug4AeowRf7YOJ0yEAtfS15gZrJXmV+j6o8ac/934jHOgv3SP/VTWni87Oiq
-Xn0mfxBApf/sNBqziH04jG5GrSJoRCMemhJsEKtFRjK7aSy7ag8=
-=zSze
------END PGP SIGNATURE-----
-
---6WlEvdN9Dv0WHSBl--
+--
+2.25.1
