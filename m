@@ -2,98 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425982873E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4992873F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 14:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729596AbgJHMTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 08:19:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgJHMTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 08:19:38 -0400
-Received: from localhost (p54b3300d.dip0.t-ipconnect.de [84.179.48.13])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F9B020B1F;
-        Thu,  8 Oct 2020 12:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602159577;
-        bh=fiqDhCMV8n0MQQAK3+HhaM5O8Q7sYp1IPV9oFOCkGkM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ddW8H0o0niAGS4BCnJQdIbJXPI9ZpVGFsLr4OEkhSVahL33fMwrO5tmcyCT/y8R4z
-         CdOk9YEfciDL2R7Ic02Tc88dTEIuFhklyFAaBDo2mkRD3RInpc4fVzEZYgBXrB1+6S
-         Hf76KAd/Qy9wRlM2sLMK2/s7CaqTmvQeRXiijqxU=
-Date:   Thu, 8 Oct 2020 14:19:32 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH 5/5] i2c: geni: sdm845: dont perform DMA for the
- oneplus6
-Message-ID: <20201008121932.GA897@ninjato>
-References: <20201007174736.292968-1-caleb@connolly.tech>
- <20201007174736.292968-6-caleb@connolly.tech>
- <20201008100352.GF76290@ninjato>
- <27ffa058-c800-4ce7-4db5-8896ad136abf@connolly.tech>
+        id S1729774AbgJHMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 08:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgJHMUq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:20:46 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173B9C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 05:20:46 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so3848290pff.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 05:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i113na5WZQwVLGUym6+dZhvqLmyupFHhMJH579nd8mo=;
+        b=S0H1H9iDbJ2q36sWSl1CSICTXdhdPJuQrcVbJlUHTdPBdYn7ia+rIqZoiNVRq+vZkT
+         RYThFs8qtPnMqA5ek5/MIcmpoxY1NtaiAiFDqpo4PKE9aUbJiuRidpkr4tnJhJzK3Jz8
+         Pa5zd7yAY1GHEnsVb0FLrbpoyr53W74uTK02E0DzJ5Ntf9249NW/8UwJ+m7Ei0c0Ftcc
+         zQ6LNpLSCD56fmXtix7IwpJBX3XPWus1YmRgPmuv+KzLdrSeNshIWvS0SlmuS2HobLKr
+         dVSiKCaQnlfIW4MoT6tfrAdxA9e1ERplw6iXK8aRyKTuKB7U06+8hip7BGxyPl3M4BV1
+         BOvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i113na5WZQwVLGUym6+dZhvqLmyupFHhMJH579nd8mo=;
+        b=HejH5584rReEmv5oirSQOqTj6KkO18Izx0sF41KXt2e0YQMfbaR67QBKnbmdUtxIdM
+         xubwDZ2y4f/7+8FRegcCoaT6j1aFArxxwb9+pwXw9A4XVeoY0CZ5ljg/DMIm/FXGJ10U
+         tDh41rrXCjqiXz1G1gj4nRXe4BcAFovGHWS7617O9v0M7ZWRdQDHJO/eSkCVQZhuYU+x
+         SJHaJ3U6wGjpGuQH2KD5nj6+967PVbNqhngPzklTdzkmIkjblujsfGf5SCUCcKToKiz9
+         TSPRJI4xAX57hOISCJLysk1lrRYZbsD8wHmRD/2D6JDb8QQvRKh3kH/0ZeWTr0QlD+nx
+         DrVg==
+X-Gm-Message-State: AOAM531B/dWiSdS7aXzVh/LlYnihEcHwJljhHY8qw1PJC7vaLxAn9azA
+        QZQgepp7kElkF5V/rxAbbEg=
+X-Google-Smtp-Source: ABdhPJwGaCAxtlGSLZRqjYdmCSdxO2/+akfrj/mU8BkOwFoIrKWBFWz2i51FYsg5NZrgtN6zTc8b0A==
+X-Received: by 2002:a62:6042:0:b029:155:7e44:ed3d with SMTP id u63-20020a6260420000b02901557e44ed3dmr96751pfb.73.1602159645561;
+        Thu, 08 Oct 2020 05:20:45 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id m11sm6768775pfk.57.2020.10.08.05.20.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 05:20:44 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 21:20:42 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
+        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] printk: handle blank console arguments passed in.
+Message-ID: <20201008122042.GB127397@jagdpanzerIV.localdomain>
+References: <20201006025935.GA597@jagdpanzerIV.localdomain>
+ <f19c18fd-20b3-b694-5448-7d899966a868@roeck-us.net>
+ <20201006095226.GB32369@alley>
+ <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
+ <20201006134328.GD32369@alley>
+ <20201006163514.GE32369@alley>
+ <20201006171504.GA64770@jagdpanzerIV.localdomain>
+ <20201007072853.GF32369@alley>
+ <20201007123044.GA509@jagdpanzerIV.localdomain>
+ <20201008085008.GA16837@alley>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <27ffa058-c800-4ce7-4db5-8896ad136abf@connolly.tech>
+In-Reply-To: <20201008085008.GA16837@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/10/08 10:50), Petr Mladek wrote:
+> On Wed 2020-10-07 21:30:44, Sergey Senozhatsky wrote:
+> > On (20/10/07 09:28), Petr Mladek wrote:
+> > > 
+> > > 		/*
+> > > 		 * Dirty hack to prevent using any console with tty
+> > > 		 * binding as a fallback and adding the empty
+> > > 		 * name into console_cmdline array.
+> > > 		 */
+> > > 		preferred_console = MAX_CMDLINECONSOLES;
+> > 
+> > Let me dump my findings so far. I still don't understand what exactly
+> > crashes the laptop (blank screen is not very helpful).
+> > 
+> > So, things start with the "preferred_console = -1". In console_setup()
+> > we call __add_preferred_console(). Since we have no consoles, the
+> > name matching loop is not executed, and console selection counter remains
+> > at 0. After the loop, despite the fact that we don't have the console
+> > (`name' is empty), we still set `preferred_console', to 0.
+> 
+> Heh, we actually add the console.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To the console drovers list? I don't think so. At least on my laptop
+what I have is as follows:
 
-On Thu, Oct 08, 2020 at 10:46:05AM +0000, Caleb Connolly wrote:
-> On 2020-10-08 11:03, Wolfram Sang wrote:
-> > On Wed, Oct 07, 2020 at 05:49:35PM +0000, Caleb Connolly wrote:
-> >> The OnePlus 6/T has the same issues as the c630 causing a crash when D=
-MA
-> >> is used for i2c, so disable it.
-> >>
-> >> https://patchwork.kernel.org/patch/11133827/
-> >> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-> > May I ask for a quick review here, so we can get this into 5.9 if
-> > qcom-geni maintainers agree this is good to go?
->=20
-> Sorry it wasn't mentioned in my first message, this patch depends on the=
-=20
-> rest in the series found here:=20
-> https://lore.kernel.org/linux-arm-msm/20201007174736.292968-1-caleb@conno=
-lly.tech/#r
+	/* See if this console matches one we selected on the command line */
+	err = try_enable_new_console(newcon, true);
 
-Ah, so the device is not upstream yet and there is no hurry. Good to
-know. Thanks!
+	/* If not, try to match against the platform default(s) */
+	if (err == -ENOENT)
+		err = try_enable_new_console(newcon, false);
 
+	/* printk() messages are not printed to the Braille console. */
+	if (err || newcon->flags & CON_BRL)
+		return;
 
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
+We hit this error return. Because both try_enable_new_console() return
+-ENOENT. So this is never executed
 
------BEGIN PGP SIGNATURE-----
+	...
+	console_lock();
+	if ((newcon->flags & CON_CONSDEV) || console_drivers == NULL) {
+		newcon->next = console_drivers;
+		console_drivers = newcon;
+		if (newcon->next)
+			newcon->next->flags &= ~CON_CONSDEV;
+		/* Ensure this flag is always set for the head of the list */
+		newcon->flags |= CON_CONSDEV;
+	} else {
+		newcon->next = console_drivers->next;
+		console_drivers->next = newcon;
+	}
+	...
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9/A9AACgkQFA3kzBSg
-KbaAdRAAiLf1VXITCS45WVKXM7QITSNtCiswN+R+RFL3n18cgTEpjKOoN4fqqUPy
-ngVwYlcFd3/qszlZ1KDkUHm5TvTzxWB4cANL9BhnXhB7DfPgsONGix6CBBm0oBzm
-dUrl9Li/aZElj43tHXPsntDbqWhQQc8SMGZXl4p/gPdB6OqgQ81El+0h8M0rDPzp
-plErJXs2DryZ85hzXgvhyGfxmFpmqmzJAnhpEbCwX9H9+U/YYSBokYL5jK9cX6dK
-n9SCAslPphTszQutta3jN/XvR78kZgQFpPs77o0gm4w/DQc5BKVQ1GURy2p/CrJg
-taYqvxy1MsWbRj4KfkkgOGR23mflPHnk/+WXcRB/9L/JUmifo/PpAGlGiaQis6H+
-gxxqsqqhub51V8VE55mnkfEpfSGR2t+sTs5FgKQG4/wb+K0gUuXU2Qr219/P8UWB
-T5yC9NOew5tpFqJGDfw1aezkW+U/kHz7lG5bLOGwHQCTA6v4TgFaPamiqIPBcXT4
-qPyOzP9QSF8ETdqC3PCpTFllpHXn+/0r812DPvJTYww9TyE5dPEEG+B+OR/54/ZJ
-Pu++c1Kr0P1VPeT8Akh9ezA9ezQM2DX0eqmB9sGmREXlddPbJldOvniJ5uUT2rM1
-TZzwF+AN/yL8oDOPkD9BrkiBCmARZCFkp67w980dyofMtjhzatk=
-=2INH
------END PGP SIGNATURE-----
+The console driver list is 0x00.
 
---NzB8fVQJ5HfG6fxh--
+> I wonder if you see the problem solved by the commit 2d3145f8d2809592ef8
+> ("early init: fix error handling when opening /dev/console").
+
+/dev/console does exist. What does not exist is console driver, because
+console drivers list is NULL. So the failure here is not filp_open()
+per se, but tty_lookup_driver()->console_device(), which returns NULL.
+As far as I'm concerned.
+
+> I am also curious about the commit 74f1a299107b9e1a56 "Revert "fs:
+> remove ksys_dup()"". I wonder why it was safe to call ksys_dup(0);
+> even though the previous ksys_open() failed.
+
+I'm quite sure ksys_dup(0) fails, in fact. I guess the issue here boils
+down to user-space that does modprobe/fsck/mount and what kind of things
+it attempts to do with standard file descriptors 0/1/2.
+
+> PS: I am quite busy with something else this week.
+
+Sure, no prob. Thanks.
+
+	-ss
