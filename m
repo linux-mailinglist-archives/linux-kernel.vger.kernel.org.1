@@ -2,181 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFF0287AC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FF1287AC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731837AbgJHRPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:15:00 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:36725 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731799AbgJHRO7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:14:59 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 6A273B4C;
-        Thu,  8 Oct 2020 13:14:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 08 Oct 2020 13:14:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=FUvHxf5u9Y1Zg6BGA5ag/iMYoYT
-        rV69WKHkeNHoU7UI=; b=t2r0hTIzajpJ73M8n6VK1IHffLejjkwAPU/FdYcRDMV
-        MoJxwxeOOioOiDGdSU1LUT/CMYlN/2ZhYJFE3KhytAb7nKHl2vcLzNAnuIuodELE
-        uqNAYOMSV77YZaGkKYPvAHcO+YdKGZluKHqTnQPawy1xLeXAEpYF1MrwwizJeS6t
-        RhXScn4T1gvjTb03GAJoo4CJEHFSVXtMA6TJtkPSyK5jTcjZlMpthcKEzaOp32Ta
-        kGQsofdjuTZ5a/2Bz5qtOWMteTN99dHZlX/T/Pzi18Cfs68smRaUNLdkHVj2puPh
-        mIyB/bisLxQNz+AypjrSPO8zXUvNbcsXrtb6AhIynpw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=FUvHxf
-        5u9Y1Zg6BGA5ag/iMYoYTrV69WKHkeNHoU7UI=; b=XY6io0ksYdOzxk3m1a5kSP
-        jUZrgcdsDgFDdzSNnrWRLP7O8JfTppDgfSPBjArTrzFy8QtKj9zVmpr4XcIwqkvq
-        tzHf7czjgYKJsnVhy8a1387ITeGjydnRgWynqdCZKkWmvI6jr8ZGFBzhdm/oFT8r
-        6yiDrcaqGOuVW35fhVORdbI7wOLPotv3NXw1asdEo7Q8f2w44NagCMzu8Ka6fDCV
-        Mp2m4KXUGrzOxSOoyV/0KxF635DJOW453J/uc+MPEenN6OvbpbBtCaHAC8/k2lP/
-        p7rYKjX2SolbxH9TLn23eGAmomfx3db0f6kje9CTrDwpOfz2iKcmmZtpJENrnl6Q
-        ==
-X-ME-Sender: <xms:EUl_X7W2onwTmXJwjCiaOGYXUC41GJUjayncDaQ4U9SuXYQkbewAeg>
-    <xme:EUl_XzmFQO7FTNZb0-tH0h4IGDWXqXOJedqp12Zqi4B5Ytb3xKU7TVQzw9YnCDxLv
-    eT9fFsUIZd91cf_NSE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgeelgdekhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:EUl_X3ZHFp_HYR53DMYBzGP7LFJZC3Qv8exECXQQasFLxuzjMujY2w>
-    <xmx:EUl_X2XdWzp1GIngNzB7iCJa_5W-FMhWlQeAOkPHpE1R18KYyojPLQ>
-    <xmx:EUl_X1nGZU3yKylfZnSMYdP3G-ZL6TpTQNkqKYZ_ja6bHFsWfs1d5w>
-    <xmx:Ekl_X7hbdJkd85BM9nx6UZKGCqRkDirf1XvZKmvpuOF57wSdDjnydQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C04B63280063;
-        Thu,  8 Oct 2020 13:14:56 -0400 (EDT)
-Date:   Thu, 8 Oct 2020 19:14:54 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: sun8i: h2+: Enable optional SPI flash on
- Orange Pi Zero board
-Message-ID: <20201008171454.qixrcjmhzko766su@gilmour.lan>
-References: <20200929083025.2089-1-msuchanek@suse.de>
- <20201008151315.v3geykbs6musl4wq@gilmour.lan>
- <20201008160219.GM29778@kitsune.suse.cz>
+        id S1731857AbgJHRPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 13:15:51 -0400
+Received: from mga14.intel.com ([192.55.52.115]:34491 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730261AbgJHRPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:15:50 -0400
+IronPort-SDR: PRXVjiQOfO9NbECaA7l5aOwm6grg87XUThOwniSvIJS7avgz3btmJlBb41HTuS5miFZwQQbfYD
+ fp7JhdBgZEUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9768"; a="164584976"
+X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
+   d="scan'208";a="164584976"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 10:15:49 -0700
+IronPort-SDR: NrFpWhw4HCbPGKlNDxf6uWO/Aa3k5DKKLvRG//d+1tFRb2d4sfiXsHFYbP1F5c9Rtb868qWqvq
+ UIAOUxqEbK0w==
+X-IronPort-AV: E=Sophos;i="5.77,351,1596524400"; 
+   d="scan'208";a="355452759"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.148.62]) ([10.249.148.62])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 10:15:48 -0700
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+References: <20201006083639.GJ3227@techsingularity.net>
+ <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+ <20201006190322.GL3227@techsingularity.net>
+ <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
+ <20201006211820.GN3227@techsingularity.net>
+ <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
+ <20201008090909.GP3227@techsingularity.net>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
+Date:   Thu, 8 Oct 2020 19:15:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3gpiop36hze6ih2e"
-Content-Disposition: inline
-In-Reply-To: <20201008160219.GM29778@kitsune.suse.cz>
+In-Reply-To: <20201008090909.GP3227@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/8/2020 11:09 AM, Mel Gorman wrote:
+> On Wed, Oct 07, 2020 at 05:45:30PM +0200, Rafael J. Wysocki wrote:
+>>> pre-cst is just before your patch
+>>> enable-cst is your patch that was bisected
+>>> enable-cst-no-hsx-acpi is your patch with use_acpi disabled
+>>> 5.9-rc8-vanilla is what it sounds like
+>>> 5.9-rc8-no-hsx-acpi disables use_acpi
+>>>
+>>> The enable-cst-no-hsx-acpi result indicates that use_acpi was the issue for
+>>> Haswell (at least these machines). Looking just at 5.9-rc8-vanillaa might
+>>> have been misleading because its performance is not far off the baseline
+>>> due to unrelated changes that mostly offset the performance penalty.
+>>>
+>>> The key question is -- how appropriate would it be to disable acpi for
+>>> Haswell? Would that be generally safe or could it hide other surprises?
+>>>
+>> It should be safe, but let's try to do something more fine-grained.
+>>
+>> There is the CPUIDLE_FLAG_ALWAYS_ENABLE flag that is set for C1E.  Can you
+>> please try to set it for C6 in hsw_cstates instead of clearing use_acpi in
+>> idle_cpu_hsx and retest?
+>>
+> Performance-wise, always enabling C6 helps but it may be specific to
+> this workload. Looking across all tested kernels I get;
+>
+> netperf-udp
+>                                        5.5.0              5.5.0-rc2              5.5.0-rc2              5.9.0-rc8              5.9.0-rc8              5.9.0-rc8
+>                                      vanilla                pre-cst             enable-cst                vanilla           disable-acpi              enable-c6
+> Hmean     send-64         196.31 (   0.00%)      208.56 *   6.24%*      181.15 *  -7.72%*      199.84 *   1.80%*      235.09 *  19.76%*      234.79 *  19.60%*
+> Hmean     send-128        391.75 (   0.00%)      408.13 *   4.18%*      359.92 *  -8.12%*      396.81 (   1.29%)      469.44 *  19.83%*      465.55 *  18.84%*
+> Hmean     send-256        776.38 (   0.00%)      798.39 *   2.84%*      707.31 *  -8.90%*      781.63 (   0.68%)      917.19 *  18.14%*      905.06 *  16.57%*
+> Hmean     send-1024      3019.64 (   0.00%)     3099.00 *   2.63%*     2756.32 *  -8.72%*     3017.06 (  -0.09%)     3509.84 *  16.23%*     3532.85 *  17.00%*
+> Hmean     send-2048      5790.31 (   0.00%)     6209.53 *   7.24%*     5394.42 *  -6.84%*     5846.11 (   0.96%)     6861.93 *  18.51%*     6852.08 *  18.34%*
+> Hmean     send-3312      8909.98 (   0.00%)     9483.92 *   6.44%*     8332.35 *  -6.48%*     9047.52 *   1.54%*    10677.93 *  19.84%*    10509.41 *  17.95%*
+> Hmean     send-4096     10517.63 (   0.00%)    11044.19 *   5.01%*     9851.70 *  -6.33%*    10914.24 *   3.77%*    12719.58 *  20.94%*    12731.06 *  21.04%*
+> Hmean     send-8192     17355.48 (   0.00%)    18344.50 *   5.70%*    15844.38 *  -8.71%*    17690.46 (   1.93%)    20777.97 *  19.72%*    20220.24 *  16.51%*
+> Hmean     send-16384    28585.78 (   0.00%)    28950.90 (   1.28%)    25946.88 *  -9.23%*    26643.69 *  -6.79%*    30891.89 *   8.07%*    30701.46 *   7.40%*
+>
+> The difference between always using ACPI and force enabling C6 is
+> negligible in this case but more on that later
+>
+> netperf-udp
+>                                    5.9.0-rc8              5.9.0-rc8
+>                                 disable-acpi              enable-c6
+> Hmean     send-64         235.09 (   0.00%)      234.79 (  -0.13%)
+> Hmean     send-128        469.44 (   0.00%)      465.55 (  -0.83%)
+> Hmean     send-256        917.19 (   0.00%)      905.06 (  -1.32%)
+> Hmean     send-1024      3509.84 (   0.00%)     3532.85 (   0.66%)
+> Hmean     send-2048      6861.93 (   0.00%)     6852.08 (  -0.14%)
+> Hmean     send-3312     10677.93 (   0.00%)    10509.41 *  -1.58%*
+> Hmean     send-4096     12719.58 (   0.00%)    12731.06 (   0.09%)
+> Hmean     send-8192     20777.97 (   0.00%)    20220.24 *  -2.68%*
+> Hmean     send-16384    30891.89 (   0.00%)    30701.46 (  -0.62%)
+>
+> The default status and enabled states differ.
+>
+> For 5.9-rc8 vanilla, the default and disabled status for cstates are
+>
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:1
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:1
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:disabled
+> ./5.9.0-rc8-vanilla/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:disabled
+>
+> For use_acpi == false, all c-states are enabled
+>
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:0
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:0
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:enabled
+> ./5.9.0-rc8-disable-acpi/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:enabled
+>
+> Force enabling C6
+>
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:1
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:0
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:disabled
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:enabled
+>
+> Note that as expected, C3 remains disabled when only C6 is forced (state3
+> == c3, state4 == c6). While this particular workload does not appear to
+> care as it does not remain idle for long, the exit latency difference
+> between c3 and c6 is large so potentially a workload that idles for short
+> durations that are somewhere between c1e and c3 exit latency might take
+> a larger penalty exiting from c6 state if the deeper c-state is selected
+> for idling.
+>
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/residency:0
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/residency:2
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/residency:20
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/residency:100
+> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/residency:400
+>
+If you are worried that C6 might be used instead of C3 in some cases, 
+this is not going to happen.
 
---3gpiop36hze6ih2e
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I all cases in which C3 would have been used had it not been disabled, 
+C1E will be used instead.
 
-On Thu, Oct 08, 2020 at 06:02:19PM +0200, Michal Such=E1nek wrote:
-> On Thu, Oct 08, 2020 at 05:13:15PM +0200, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Tue, Sep 29, 2020 at 10:30:25AM +0200, Michal Suchanek wrote:
-> > > The flash is present on all new boards and users went out of their way
-> > > to add it on the old ones.
-> > >=20
-> > > Enabling it makes a more reasonable default.
-> > >=20
-> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > ---
-> > >  arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts b/arch=
-/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
-> > > index f19ed981da9d..061d295bbba7 100644
-> > > --- a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
-> > > +++ b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
-> > > @@ -163,8 +163,8 @@ &ohci1 {
-> > >  };
-> > > =20
-> > >  &spi0 {
-> > > -	/* Disable SPI NOR by default: it optional on Orange Pi Zero boards=
- */
-> > > -	status =3D "disabled";
-> > > +	/* Enable optional SPI NOR by default */
-> > > +	status =3D "okay";
-> > > =20
-> > >  	flash@0 {
-> > >  		#address-cells =3D <1>;
-> >=20
-> > Unfortunately, it's optional, so there's really no reason to enable it
-> > all the time. If it's troublesome to users, then the distros or vendors
-> > should make the changes necessary to the hardware, bootloader or their
-> > documentation to make it easier for those users.
->=20
-> I don't understand the reasoning. Why must it be disabled when optional?
+Which BTW indicates that using C1E more often adds a lot of latency to 
+the workload (if C3 and C6 are both disabled, C1E is used in all cases 
+in which one of them would have been used). With C6 enabled, that state 
+is used at least sometimes (so C1E is used less often), but PC6 doesn't 
+seem to be really used - it looks like core C6 only is entered and which 
+may be why C6 adds less latency than C1E (and analogously for C3).
 
-Think about it the other way around. If we enable everything that is
-optional, we're going to have a multitude of conflicts everywhere, and
-without a clear decision as to who is "best" and thus how we should
-resolve it.
 
-On a separate platform, recently I've been using a VGA bridge for the
-RaspberryPi that takes the UART pins as well. It's definitely optional,
-should I enable it by default? At the same time, enabling by default the
-UART is just as arbitrary and will result in people using the VGA bridge
-to complain about their regression (rightfully so).
-
-So, really, if it's optional, it means that it not always there. If it's
-not always there, it's meant to be supported by an overlay.
-
-> By the same reasoning there is no reason to disable it all the time.
-
-I'm not sure I follow you here. The least common denominator is that
-it's not there, so it's not enabled.
-
-> Also the boards that do not have the flsh are either broken or
-> obsolete.
-
-Making general statements without arguments doesn't really make it true
-though. Plenty of boards to have flash and are neither broken nor
-obsolete.
-
-> So most of the time enabling the flash chip is the right thing.
->=20
-> Or do we need two DTBs like sun8i-h2-plus-orangepi-zero.dts and
-> sun8i-h2-plus-orangepi-zero-no-spi-nor.dts
-
-No, you need sun8i-h2-plus-orangepi-zero plus an overlay for the
-SPI-NOR.
-
-> There is no way to change the setting on a runnig system, the pins are
-> routed to the flash pads anyway so are not usable for anything else. The
-> only thing that happens on boards that do not have the flash is kernel
-> probing it and complaining that the ID 00 00 00 is not valid SPI NOR
-> flash memory ID.
-
-We have people reporting bugs about completely innocuous error messages
-without any side effects already. An error about a missing or broken
-storage device will surely raise some eyebrows.
-
-Maxime
-
---3gpiop36hze6ih2e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX39JDgAKCRDj7w1vZxhR
-xWYCAP4hhSm4f5GM2iD7i6x++2ALyXsf7QhxO15ZYgu0Qh0ReQD/T0zvFuqJDMF2
-5spX2m34fPYJM/5ibaOLl103p2EnVAQ=
-=Dtct
------END PGP SIGNATURE-----
-
---3gpiop36hze6ih2e--
