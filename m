@@ -2,88 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04333286C1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C149F286C1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbgJHAid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 20:38:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726138AbgJHAid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 20:38:33 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B294207EA;
-        Thu,  8 Oct 2020 00:38:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602117512;
-        bh=H/qocNI2hftGBcrST8buDAfvQgAF6ShTxtWAxGgNncM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jHxQwEDANdug0DL6sGGJBg8CbfKw00x/cb5egt/rVMGv3O1I4Z7W4DBuzZNTDa9W8
-         ovqg6NwayPiryPE6DAGq4aq8NMzR26Mya/yp0lg6DcM6uYzFNq1Ao75TrCfpaPSpd+
-         hpkmpn4h4/6vXM8SoEyzs8fD1EAeB3JG3HVFKNik=
-Date:   Thu, 8 Oct 2020 09:38:28 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/7] tracing: Add README information for
- synthetic_events file
-Message-Id: <20201008093828.d9ac6e49299e0e4f79c349eb@kernel.org>
-In-Reply-To: <3c7f178cf95aaeebc01eda7d95600dd937233eb7.1601848695.git.zanussi@kernel.org>
-References: <cover.1601848695.git.zanussi@kernel.org>
-        <3c7f178cf95aaeebc01eda7d95600dd937233eb7.1601848695.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727857AbgJHAne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 20:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727732AbgJHAne (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 20:43:34 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2F3C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 17:43:34 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id u7so2133414vsq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 17:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s1vFaQwEYAj+kfpG7wmgAvUX+m94PjPvEEFq0pb+beU=;
+        b=Wp5sVtYz9RFuTf8HwWQcjRqk2whZSdWTSRmHelxkoLivWhEMRrU80IIg0ORfASmxcF
+         Ds2gAwd6GPVZHTi/jSu3NlpIeC4hjGoeQIyn5acmCD0zUs8scF+bGfKwqLd2r3XhPu1M
+         ogURv6eN7z1wFOaBtykUW+a7yfiKds6xXU3Y3C1Ao18Q1zmYxBy6YSU06qV996aDEVBU
+         nzriS/au8lNLN/M3eaZWcLp9AMuLe8B/V4YNR3PGTIEQXYIU0XQrTnB3qmBuAZEzch8D
+         i+qDFMouMGrrxDkWn8dGpbnf8TguzX5KTzBv7yTMa81v5/14Ac4UNNCXox5W8DI/tEMA
+         XEyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s1vFaQwEYAj+kfpG7wmgAvUX+m94PjPvEEFq0pb+beU=;
+        b=pDw1HmOMutgGGOL3QpcBBsXze1yJ6Skqb5rOVC+IgUfelORVyxBnQyfQ0hXS+PBV62
+         e3c1nCrWMWbpio/MvxkARvuLk4DTDhafayyiI5a/sY4prHTkAdUYg+jZH3fkd5ObxZd2
+         9oaTotBjo7CY18x02lTPEzNovBDQ+4lQkI4Sqw2AQ0nABEyojDgtHS5j6BR5tSViTih0
+         3GWrqQqNMJnyWvvDwO/UN5Xti/ITOLoCLkt2N3OZDdB067FrkjKfagzVl761jmEGh2in
+         uSNEZqbWqRRMV5jRf6HWAnIvZoCVQYaN1so0i567uiW4GgYLGG3dWvxZY8DSDx9Vb5xQ
+         IJ3w==
+X-Gm-Message-State: AOAM532jS344khdkcxXVE1XF8juCBWGFPqNTzYuoPGz2Z2Zfo5h02r1I
+        +wOs6Sqow+L7nBvApgRO7rUXZ9lTF82/Px3rMX0KvA==
+X-Google-Smtp-Source: ABdhPJz+HZTLyoGMy4yKKuwstafPHRZcaQ9eu/Qk3P+I6Eahit+EF/pbkIYjvwdX4S62JcdOrVR2+idvgFxLuQUKg40=
+X-Received: by 2002:a67:ee1a:: with SMTP id f26mr3620209vsp.48.1602117813213;
+ Wed, 07 Oct 2020 17:43:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-4-badhri@google.com>
+ <20201005144618.GA154206@bogus>
+In-Reply-To: <20201005144618.GA154206@bogus>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 7 Oct 2020 17:42:57 -0700
+Message-ID: <CAPTae5+e74k22Vcf-cnFLFGnR-mBdb9qvN6i-E-31VexhpUSeA@mail.gmail.com>
+Subject: Re: [PATCH v9 03/15] dt-bindings: usb: Maxim type-c controller device
+ tree binding document
+To:     Rob Herring <robh@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+Hi Robb,
 
-On Sun,  4 Oct 2020 17:14:07 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+Thanks for the reviews ! Responses inline.
 
-> Add an entry with a basic description of events/synthetic_events along
-> with a simple example.
-> 
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Regards,
+Badhri
 
-This looks good to me.
+On Mon, Oct 5, 2020 at 7:46 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Sep 28, 2020 at 07:39:52PM -0700, Badhri Jagan Sridharan wrote:
+> > Add device tree binding document for Maxim TCPCI based Type-C chip driver
+> >
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > ---
+> > Changes since v1:
+> > - Changing patch version to v6 to fix version number confusion.
+> >
+> > Changes since v6:
+> > - Migrated to yaml format.
+> >
+> > Changes since v7:
+> > - Rebase on usb-next
+> >
+> > Changes since v8:
+> > - Fix errors from make dt_binding_check as suggested by
+> >   Rob Herring.
+> > ---
+> >  .../devicetree/bindings/usb/maxim,tcpci.yaml  | 68 +++++++++++++++++++
+> >  1 file changed, 68 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> > new file mode 100644
+> > index 000000000000..f4b5f1a09b98
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> > @@ -0,0 +1,68 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/usb/maxim,tcpci.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Maxim TCPCI Type-C PD controller DT bindings
+> > +
+> > +maintainers:
+> > +  - Badhri Jagan Sridharan <badhri@google.com>
+> > +
+> > +description: Maxim TCPCI Type-C PD controller
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - maxim,tcpci
+>
+> Is there a datasheet for this? Searching for 'tcpci' doesn't really come
+> up with anything other than this patch. Only chip I found is MAX77958.
+> Bindings are for specific h/w devices.
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Unfortunately the datasheet cannot be made public yet. Has the datasheet
+have to be made public before sending the bindings ?
 
-Thank you,
+>
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  connector:
+> > +    type: object
+> > +    $ref: ../connector/usb-connector.yaml#
+> > +    description:
+> > +      Properties for usb c connector.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+>
+> additionalProperties: false
 
-> ---
->  kernel/trace/trace.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 3f2533adae72..73fd0e0c0f39 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -5249,7 +5249,12 @@ static const char readme_msg[] =
->  	"\t        trace(<synthetic_event>,param list)  - generate synthetic event\n"
->  	"\t        save(field,...)                      - save current event fields\n"
->  #ifdef CONFIG_TRACER_SNAPSHOT
-> -	"\t        snapshot()                           - snapshot the trace buffer\n"
-> +	"\t        snapshot()                           - snapshot the trace buffer\n\n"
-> +#endif
-> +#ifdef CONFIG_SYNTH_EVENTS
-> +	"  events/synthetic_events\t- Create/append/remove/show synthetic events\n"
-> +	"\t  Write into this file to define/undefine new synthetic events.\n"
-> +	"\t     example: echo 'myevent u64 lat; char name[]' >> synthetic_events\n"
->  #endif
->  #endif
->  ;
-> -- 
-> 2.17.1
-> 
+ACK. Adding to the next version of the patch.
 
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+>
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    #include <dt-bindings/usb/pd.h>
+> > +    i2c0 {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        maxtcpc@25 {
+> > +            compatible = "maxim,tcpc";
+> > +            reg = <0x25>;
+> > +            interrupt-parent = <&gpa8>;
+> > +            interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+> > +
+> > +            connector {
+> > +                compatible = "usb-c-connector";
+> > +                label = "USB-C";
+> > +                data-role = "dual";
+> > +                power-role = "dual";
+> > +                try-power-role = "sink";
+> > +                self-powered;
+> > +                op-sink-microwatt = <2600000>;
+> > +                source-pdos = <PDO_FIXED(5000, 900,
+> > +                                         PDO_FIXED_SUSPEND |
+> > +                                         PDO_FIXED_USB_COMM |
+> > +                                         PDO_FIXED_DATA_SWAP |
+> > +                                         PDO_FIXED_DUAL_ROLE)>;
+> > +                sink-pdos = <PDO_FIXED(5000, 3000,
+> > +                                       PDO_FIXED_USB_COMM |
+> > +                                       PDO_FIXED_DATA_SWAP |
+> > +                                       PDO_FIXED_DUAL_ROLE)
+> > +                                       PDO_FIXED(9000, 2000, 0)>;
+> > +            };
+> > +        };
+> > +    };
+> > +...
+> > --
+> > 2.28.0.709.gb0816b6eb0-goog
+> >
