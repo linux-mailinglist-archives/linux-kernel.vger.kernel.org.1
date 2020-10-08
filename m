@@ -2,177 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3690287C9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90F8287CA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgJHTne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 15:43:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30071 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725616AbgJHTne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:43:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602186212;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NOtFHzdgOPYEPQlpsFHGlFvhk+BmuqanWqZYZHmYBJ4=;
-        b=ZOhME7pdSpml+cznn8821LrxOwS60jN3dVAeMpHx/ZrV6X3/RheiEOkgwBbaPDmfOCqgq0
-        IKzaujcepjRKuP1LNnCpAccRSbxVWyRUXXpNFGWuuyP88obHr51VoJygtlDYf+8nyovyHA
-        LIfJpoUBTi9KlU6Vq3GbnRZHGnR2PL8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-Xx4BIQm8M5GJyG4MMH4Njg-1; Thu, 08 Oct 2020 15:43:30 -0400
-X-MC-Unique: Xx4BIQm8M5GJyG4MMH4Njg-1
-Received: by mail-ej1-f72.google.com with SMTP id k23so2655069ejx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 12:43:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NOtFHzdgOPYEPQlpsFHGlFvhk+BmuqanWqZYZHmYBJ4=;
-        b=pHNlt2rB8qaq82NJTUrofwyrNSXwjpKbAZxUN9df2hsPWUIwQST5bbDANroT882Ah9
-         ScnLa1bmtkHWEHqfJR642wKd9LUnz7FRC4Iz/HOu+rSi0XWDtBU5UhsoH7v4frH2VyCJ
-         ofZMzud/Ufsr/OInNBViLxg0NmgJ3W1Hdkf3NhuGrdSAKEbBKhDMNidEiRNAqWcwYLYq
-         7VwmEqWnITxGzCoi4pdxaa/e/qM0udqcUa8VIpI8NVIpgIupkmH6eaPlOE63P97RnIcV
-         oVmbQUEIfZIxY3qLGeR/Pso4feLcr8thZ5SLm5z1hBD4Ztkmj/ep1+DXJA3VHLR/4oHV
-         WSNw==
-X-Gm-Message-State: AOAM530hKNE1iM/nhm5IE5b2LygwQ1PH+6BJwLI10muyFO1KA7fm9HFm
-        mEMmG85MsTOHY1X8jI3w/inCA8HWuZuuadcjWZZsb9US/BGj6BfoORZvNqVBaKRpqtrfpKSCzgm
-        mJluW3FjLtb68lqacIWpRkjtq
-X-Received: by 2002:a17:906:5613:: with SMTP id f19mr10253877ejq.441.1602186209033;
-        Thu, 08 Oct 2020 12:43:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZD/2+q+cwyMjqyHZTVAEzHh9PzliQ1g6A79cs0ikR6wi+vFb7Sl1H62w4QH+L0aTf2IXAew==
-X-Received: by 2002:a17:906:5613:: with SMTP id f19mr10253856ejq.441.1602186208806;
-        Thu, 08 Oct 2020 12:43:28 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id f20sm4668479ejc.90.2020.10.08.12.43.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 12:43:28 -0700 (PDT)
-Subject: Re: [PATCH v3 1/5] platform: Add Surface platform directory
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201008143455.340599-1-luzmaximilian@gmail.com>
- <20201008143455.340599-2-luzmaximilian@gmail.com>
- <CAHp75Vd61qnLMUbted_ohqEtMdVFbqKhKf3kKh0ombAwhf8dCA@mail.gmail.com>
- <9711c3c9-63ed-8c9f-b77b-d1feb2c07f78@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a76d53a7-4489-fac2-443b-2dfccc2ea802@redhat.com>
-Date:   Thu, 8 Oct 2020 21:43:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729081AbgJHTrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 15:47:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgJHTrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 15:47:23 -0400
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6841E22200;
+        Thu,  8 Oct 2020 19:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602186442;
+        bh=SogUjMB0CBlzI2GJG+eOsj9We4ZGEMenuo5pC/MW5eQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pSfKtOkAypzDoteeVFxZt86mzhGnusdufe5AeGmfvWZbYg/ZTKlCqNUkNaE4eIQJ6
+         svxa2XxdTtuoAYygm/TAu6gPgxjlMbQ0sFLodUAsU/uxuvMtIEygFvaGQ3vj95e6Y3
+         fvYXRR9Tn+8OASb9L0Mz7A8fS1SBp6yvo0aB5ujA=
+Received: by mail-oi1-f177.google.com with SMTP id z26so7548988oih.12;
+        Thu, 08 Oct 2020 12:47:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530XNtyE3ooxdDMYnn+sNizrv0qadU616ijoUjy+u0MTpRNuk718
+        Z7ANpjb+OBjKKVwdFtT1W9wY9XyA2Fm1od2BAg==
+X-Google-Smtp-Source: ABdhPJz2oNaku/oyyTmq42V8qnOXwViBgeYQXBKIrGbtQCDZkxU2VZpGkDVbUpGPZwahfqM+0DKZamEWEptncS+yMbQ=
+X-Received: by 2002:aca:4c52:: with SMTP id z79mr275043oia.147.1602186441518;
+ Thu, 08 Oct 2020 12:47:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9711c3c9-63ed-8c9f-b77b-d1feb2c07f78@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200921092951.945382-1-enric.balletbo@collabora.com>
+ <20201007151159.GA221754@bogus> <CAFqH_531fkh_gZbOMuzhsRj-72NeWsPyxWoFQh9bAF3CZwTfNw@mail.gmail.com>
+In-Reply-To: <CAFqH_531fkh_gZbOMuzhsRj-72NeWsPyxWoFQh9bAF3CZwTfNw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 8 Oct 2020 14:47:08 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL7ej3o_qzb7r+Nmdp=YkuYciqRYYcFo4Z21OGOvkn-3A@mail.gmail.com>
+Message-ID: <CAL_JsqL7ej3o_qzb7r+Nmdp=YkuYciqRYYcFo4Z21OGOvkn-3A@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: power: rockchip: Convert to json-schema
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Caesar Wang <wxt@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 7, 2020 at 3:57 PM Enric Balletbo Serra <eballetbo@gmail.com> w=
+rote:
+>
+> Hi Rob,
+>
+> Missatge de Rob Herring <robh@kernel.org> del dia dc., 7 d=E2=80=99oct. 2=
+020 a
+> les 17:12:
+> >
+> > On Mon, Sep 21, 2020 at 11:29:51AM +0200, Enric Balletbo i Serra wrote:
+> > > Convert the soc/rockchip/power_domain.txt binding document to json-sc=
+hema
+> > > and move to the power bindings directory.
+> > >
+> > > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > > ---
+> > >
+> > > Changes in v3:
+> > > - Fixed tab errors found by bot
+> > >
+> > > Changes in v2:
+> > > - Fixed a warning that says that 'syscon' should not be used alone.
+> > > - Use patternProperties to define a new level for power-domains.
+> > > - Add const values for power-domain-cells, address-cells, etc.
+> > >
+> > >  .../power/rockchip,power-controller.yaml      | 207 ++++++++++++++++=
+++
+> > >  .../bindings/soc/rockchip/power_domain.txt    | 136 ------------
+> > >  2 files changed, 207 insertions(+), 136 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/power/rockchip,=
+power-controller.yaml
+> > >  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/po=
+wer_domain.txt
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/power/rockchip,power-c=
+ontroller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-con=
+troller.yaml
+> > > new file mode 100644
+> > > index 000000000000..b23ea37e2a08
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/power/rockchip,power-controll=
+er.yaml
+> > > @@ -0,0 +1,207 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/power/rockchip,power-controller.y=
+aml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Rockchip Power Domains
+> > > +
+> > > +maintainers:
+> > > +  - Caesar Wang <wxt@rock-chips.com>
+> > > +  - Heiko Stuebner <heiko@sntech.de>
+> > > +
+> > > +description: |
+> > > +  Rockchip processors include support for multiple power domains whi=
+ch can be
+> > > +  powered up/down by software based on different application scenes =
+to save power.
+> > > +
+> > > +  Power domains contained within power-controller node are generic p=
+ower domain
+> > > +  providers documented in Documentation/devicetree/bindings/power/po=
+wer-domain.yaml.
+> > > +
+> > > +  IP cores belonging to a power domain should contain a 'power-domai=
+ns'
+> > > +  property that is a phandle for the power domain node representing =
+the domain.
+> > > +
+> > > +properties:
+> > > +  $nodename:
+> > > +    const: power-controller
+> > > +
+> > > +  compatible:
+> > > +    enum:
+> > > +      - rockchip,px30-power-controller
+> > > +      - rockchip,rk3036-power-controller
+> > > +      - rockchip,rk3066-power-controller
+> > > +      - rockchip,rk3128-power-controller
+> > > +      - rockchip,rk3188-power-controller
+> > > +      - rockchip,rk3228-power-controller
+> > > +      - rockchip,rk3288-power-controller
+> > > +      - rockchip,rk3328-power-controller
+> > > +      - rockchip,rk3366-power-controller
+> > > +      - rockchip,rk3368-power-controller
+> > > +      - rockchip,rk3399-power-controller
+> > > +
+> > > +  '#power-domain-cells':
+> > > +    const: 1
+> > > +
+> > > +  '#address-cells':
+> > > +    const: 1
+> > > +
+> > > +  '#size-cells':
+> > > +    const: 0
+> > > +
+> > > +patternProperties:
+> > > +  "^power-domain@[0-9]+$":
+> >
+> > unit-addresses are hex.
+> >
+> > > +    type: object
+> > > +    description: |
+> > > +      Represents the power domains within the power controller node =
+as documented
+> > > +      in Documentation/devicetree/bindings/power/power-domain.yaml.
+> > > +
+> > > +    properties:
+> > > +
+> > > +      '#power-domain-cells':
+> > > +        description:
+> > > +            Must be 0 for nodes representing a single PM domain and =
+1 for nodes
+> > > +            providing multiple PM domains.
+> > > +
+> > > +      '#address-cells':
+> > > +        const: 1
+> > > +
+> > > +      '#size-cells':
+> > > +        const: 0
+> > > +
+> > > +      reg:
+> > > +        description: |
+> > > +          Power domain index. Valid values are defined in:
+> > > +          "include/dt-bindings/power/px30-power.h" - for PX30 type p=
+ower domain.
+> > > +          "include/dt-bindings/power/rk3036-power.h" - for RK3036 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3066-power.h" - for RK3066 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3128-power.h" - for RK3128 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3188-power.h" - for RK3188 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3228-power.h" - for RK3228 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3288-power.h" - for RK3288 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3328-power.h" - for RK3328 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3366-power.h" - for RK3366 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3368-power.h" - for RK3368 ty=
+pe power domain.
+> > > +          "include/dt-bindings/power/rk3399-power.h" - for RK3399 ty=
+pe power domain.
+> > > +        maxItems: 1
+> >
+> > Range of values?
+> >
+> > > +
+> > > +      clocks:
+> > > +        description: |
+> > > +          A number of phandles to clocks that need to be enabled whi=
+le power domain
+> > > +          switches state.
+> >
+> > Can you at least put a range of how many clocks?
+> >
+> > > +
+> > > +      pm_qos:
+> > > +        description: |
+> > > +          A number of phandles to qos blocks which need to be saved =
+and restored
+> > > +          while power domain switches state.
+> >
+> > And here.
+> >
+> > > +
+> > > +    required:
+> > > +      - reg
+> >
+> >        additionalProperties: false
+> >
+> > Which in turn means the nested power domains will throw an error, so yo=
+u
+> > can do:
+> >
+> >        patternProperties:
+> >          "^power-domain@[0-9a-f]+$":
+> >            $ref: '#/patternProperties/^power-domain@[0-9a-f]+$'
+> >
+>
+> When I tried this I got the following error:
+>
+> rockchip,power-controller.yaml:
+> patternProperties:^power-domain@[0-9a-f]+$:patternProperties:^power-domai=
+n@[0-9a-f]+$:$ref:
+> '#/patternProperties/^power-domain@[0-9a-f]+$' is not a
+> 'uri-reference'
+>
+> Not sure if is my environment or I am still doing something silly, can
+> you confirm that this works for you? It doesn't seem to be any binding
+> doing this actually.
 
-On 10/8/20 5:18 PM, Maximilian Luz wrote:
-> On 10/8/20 4:52 PM, Andy Shevchenko wrote:
->> On Thu, Oct 8, 2020 at 5:35 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->>>
->>> It may make sense to split the Microsoft Surface hardware platform
->>> drivers out to a separate subdirectory, since some of it may be shared
->>> between ARM and x86 in the future (regarding devices like the Surface
->>> Pro X).
->>>
->>> Further, newer Surface devices will require additional platform drivers
->>> for fundamental support (mostly regarding their embedded controller),
->>> which may also warrant this split from a size perspective.
->>>
->>> This commit introduces a new platform/surface subdirectory for the
->>> Surface device family, with subsequent commits moving existing Surface
->>> drivers over from platform/x86.
->>>
->>> A new MAINTAINERS entry is added for this directory. Patches to files in
->>> this directory will be taken up by the platform-drivers-x86 team (i.e.
->>> Hans de Goede and Mark Gross) after they have been reviewed by
->>> Maximilian Luz.
->>
->> Thanks for the patch, my minor comments below.
->>
->> ...
->>
->>> +MICROSOFT SURFACE PLATFORM DRIVERS
->>
->> (1)
->>
->>> +M:     Hans de Goede <hdegoede@redhat.com>
->>> +M:     Mark Gross <mgross@linux.intel.com>
->>> +M:     Maximilian Luz <luzmaximilian@gmail.com>
->>> +L:     platform-driver-x86@vger.kernel.org
->>> +S:     Maintained
->>
->>> +T:     git git://git.infradead.org/linux-platform-drivers-x86.git
->>
->> It's now on kernel.org.
->> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
-> 
-> Thank you, will update this. FYI: The entry was mostly copied from the
-> X86 PLATFORM DRIVERS entry, so it should probably be updated there, too.
+I think the regex would have to be escaped to be a valid URI:
 
-That is a good point I've pushed a commit fixing this to the for-next
-branch of: git://git.infradead.org/linux-platform-drivers-x86.git
+$ref: '%23/patternProperties/%5Epower-domain@%5B0-9a-f%5D+%24'
 
-Please base the next version of this patch-set on top of that.
+That's not the most readable nor am I sure it would get translated
+back to the right path, so it's probably going to be best to just
+define the child nodes even if duplicated.
 
-Regards,
-
-Hans
-
-
-
-> 
->>> +F:     drivers/platform/surface/
->>
->>> @@ -9,3 +9,4 @@ obj-$(CONFIG_MIPS)              += mips/
->>>   obj-$(CONFIG_OLPC_EC)          += olpc/
->>>   obj-$(CONFIG_GOLDFISH)         += goldfish/
->>>   obj-$(CONFIG_CHROME_PLATFORMS) += chrome/
->>> +obj-$(CONFIG_SURFACE_PLATFORM) += surface/
->>
->> (2)
->>
->>> +menuconfig SURFACE_PLATFORM
->>
->> (3a)
->>
->>> +if SURFACE_PLATFORM
->>
->> (3b)
->>
->>> +endif # SURFACE_PLATFORM
->>
->> (3c)
->>
->> I think in (1), (2) and (3) it makes sense to mimic Chrome, i.e. use
->> plural: PLATFORMS.
-> 
-> I agree with (2) and (3), but I'm not so sure about (1). For Chrome, the
-> entry is CHROME HARDWARE PLATFORM SUPPORT, so should I change it to
-> MICROSOFT SURFACE HARDWARE PLATFORM SUPPORT?
-> 
-> Thanks,
-> Max
-> 
-
+Rob
