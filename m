@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65380287C1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD75287C26
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgJHTMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 15:12:41 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:43797 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgJHTMk (ORCPT
+        id S1729591AbgJHTNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 15:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726831AbgJHTNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:12:40 -0400
-Received: from localhost (unknown [67.5.25.97])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 4603110000B;
-        Thu,  8 Oct 2020 19:12:34 +0000 (UTC)
-Date:   Thu, 8 Oct 2020 12:12:31 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: ext4 regression in v5.9-rc2 from e7bfb5c9bb3d on ro fs with
- overlapped bitmaps
-Message-ID: <20201008191231.GA44285@localhost>
-References: <20201005173639.GA2311765@magnolia>
- <20201006003216.GB6553@localhost>
- <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <F9799E9E-6AC8-4C66-B6C6-31CDFA8F55A6@dilger.ca>
+        Thu, 8 Oct 2020 15:13:44 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5705C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 12:13:43 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g4so6996341edk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 12:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MD5qdM4y5+/ccgMrP1k9E25iq0CoiOLNN0HNPRrcG58=;
+        b=DpUGB6BQRDH9BaQ/nG5mUoHH829Ux6FtNtcd+nkC8CiUE8c1mEQs7AWde9cccHglT8
+         RobwOlxnUx2OXfk4Z26M+CPplbYejMpNczwVzuDRuWRTOvuTeRG+bTkj3lpMYo+BeRrw
+         8tgWi5vDC19TLxM+3cUv6svbvUwW08/5agjfPL3zbg/kH0rE6X+fqw9MwSeSd+lKAJN4
+         jEzbY08O6moENOKeth0R6XeLpyk1+eeZmDUQiS+O0uvGVujEQZtfdnoGwJ1KTs8VXvhh
+         TPZQhFVbTJYG2cEW2sjfOlq5NxTV+aftWRS2CdgEq3G6xCCZ3tcdRFCPPY1BU73uRI3p
+         qxzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MD5qdM4y5+/ccgMrP1k9E25iq0CoiOLNN0HNPRrcG58=;
+        b=ZY0/3nsbFma2uqYpMPS4d+0/ookL+IZelcqkNzDMmvj4Itgn6UGqulXOwpvwdiNwvw
+         0UU4Ob4yMmG5dyLzSZei/RDv/CIXdo1PuhopWOunhJq+xD0GWLwjS/jyOO/pqCbGYhFq
+         PlShN9ClolCbO31DZjWW+SsUP2OtBI4togBtMo/n56lZJcYrsN5/Af4yQoRQpmJVbl45
+         OGj06Z2nTtFfQQdt3Sq1DxSlUnIYbO7pVHs5IvVFoRut6RohX5jdqmyvv32jaxXxSamo
+         Sb4qE32KmDLjofnXLaGSaREJdejVlbMyyVBNyEXegbVf4j52z/jTgGp9cg55hbUVKHIt
+         L5Iw==
+X-Gm-Message-State: AOAM532hiF6gjvSowrjYycaZfFehi2vIxtJnCnpIzOVptZLOfotjTTeO
+        DqOfJO2Re2egz8L1YkmZHBMKpmdlRGC4AnIE3eFBzQ==
+X-Google-Smtp-Source: ABdhPJxVKRIAyl2fZrCxv9N7Eg/tbxJSi5Z2oIn7bsd9l66WVVHOpypjPgqQjftYXt+nzoF3S1j8JESEXwKTQ2nv25U=
+X-Received: by 2002:a05:6402:74f:: with SMTP id p15mr1470411edy.69.1602184422053;
+ Thu, 08 Oct 2020 12:13:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F9799E9E-6AC8-4C66-B6C6-31CDFA8F55A6@dilger.ca>
+References: <f7ac4874-9c6c-4f41-653b-b5a664bfc843@canonical.com>
+In-Reply-To: <f7ac4874-9c6c-4f41-653b-b5a664bfc843@canonical.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 8 Oct 2020 21:13:15 +0200
+Message-ID: <CAG48ez1i9pTYihJAd8sXC5BdP+5fLO-mcqDU1TdA2C3bKTXYCw@mail.gmail.com>
+Subject: Re: io_uring: process task work in io_uring_register()
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 08:57:12PM -0600, Andreas Dilger wrote:
-> On Oct 7, 2020, at 2:14 PM, Josh Triplett <josh@joshtriplett.org> wrote:
-> > If those aren't the right way to express that, I could potentially
-> > adapt. I had a similar such conversation on linux-ext4 already (about
-> > inline data with 128-bit inodes), which led to me choosing to abandon
-> > 128-byte inodes rather than try to get ext4 to support what I wanted
-> > with them, because I didn't want to be disruptive to ext4 for a niche
-> > use case. In the particular case that motivated this thread, what I was
-> > doing already worked in previous kernels, and it seemed reasonable to
-> > ask for it to continue to work in new kernels, while preserving the
-> > newly added checks in the new kernels.
-> 
-> This was discussed in the "Inline data with 128-byte inodes?" thread
-> back in May.  While Jan was not necessarily in favour of this, I was
-> actually OK with improving the ext4 code to handle this case better,
-> since it would (at minimum) clean up ext4 to make a clear separation
-> of how it is detecting data in the i_block[] array and the system.data
-> xattr, and I don't think it added any complexity to the code.
-> 
-> I even posted a WIP patch to that effect, but didn't get a response back:
-> https://marc.info/?l=linux-ext4&m=158863275019187
+On Thu, Oct 8, 2020 at 8:24 PM Colin Ian King <colin.king@canonical.com> wrote:
+> Static analysis with Coverity has detected a "dead-code" issue with the
+> following commit:
+>
+> commit af9c1a44f8dee7a958e07977f24ba40e3c770987
+> Author: Jens Axboe <axboe@kernel.dk>
+> Date:   Thu Sep 24 13:32:18 2020 -0600
+>
+>     io_uring: process task work in io_uring_register()
+>
+> The analysis is as follows:
+>
+> 9513                do {
+> 9514                        ret =
+> wait_for_completion_interruptible(&ctx->ref_comp);
+>
+> cond_const: Condition ret, taking false branch. Now the value of ret is
+> equal to 0.
 
-My apologies, I thought I responded to that. It looks promising to me,
-though I wouldn't have the bandwidth to take it to completion anytime
-soon.
-
-> I *do* think that inline_data is an under-appreciated feature that I
-> would be happy to see some improvements with.  I don't think that small
-> files are a niche use case, and if we can clean up the inline_data code
-> to work with 128-byte inodes I'm not against that, even though I'm not
-> going to use that combination of features myself.
-
-I'd love to see that happen. At the time, it seemed like too large of a
-change to block on, which is why I ended up deciding to switch to
-256-byte inodes.
+Does this mean Coverity is claiming that
+wait_for_completion_interruptible() can't return non-zero values? If
+so, can you figure out why Coverity thinks that? If that was true,
+it'd sound like a core kernel bug, rather than a uring issue...
