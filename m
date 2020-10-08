@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC89C287C76
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53001287C81
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 21:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgJHT0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 15:26:51 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:36632 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJHT0u (ORCPT
+        id S1726361AbgJHTce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 15:32:34 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13437 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgJHTce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:26:50 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id EB80529DAB8
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Daniel Rosenberg <drosen@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com
-Subject: Re: [PATCH] f2fs: reject CASEFOLD inode flag without casefold feature
-Organization: Collabora
-References: <00000000000085be6f05b12a1366@google.com>
-        <20201008191522.1948889-1-ebiggers@kernel.org>
-Date:   Thu, 08 Oct 2020 15:26:45 -0400
-In-Reply-To: <20201008191522.1948889-1-ebiggers@kernel.org> (Eric Biggers's
-        message of "Thu, 8 Oct 2020 12:15:22 -0700")
-Message-ID: <87ft6oldsa.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Thu, 8 Oct 2020 15:32:34 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7f68440000>; Thu, 08 Oct 2020 12:28:04 -0700
+Received: from [10.2.85.86] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
+ 2020 19:28:22 +0000
+Subject: Re: [PATCH] Documentation: filesystems: better locations for
+ sysfs-pci, sysfs-tagging
+To:     Jonathan Corbet <corbet@lwn.net>
+CC:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20201007233151.490953-1-jhubbard@nvidia.com>
+ <20201008100427.39ca3c1f@lwn.net>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <d91a1088-641c-07e1-4065-bbd8ad79332c@nvidia.com>
+Date:   Thu, 8 Oct 2020 12:28:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201008100427.39ca3c1f@lwn.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602185284; bh=SDS6BGkPbeIhE1YR1pvqQexHVFA/bCFdW7c+ZbpQHZc=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=VhSeSrRrNiRttdO08KwCiAM8uK6vaaI2YouT1s+XQOJGBL2Yp5cx2noXhZe8QHRpM
+         RwY9KvPRSwwrxcEaNTokxVj7unRI3foMuYEKljGo2v1CnRMYeZmF2EEoMQQ4ifNqGl
+         oCGdHzoKe7kGbpPkgTxcjs2KOLmgzvkNoXta8Taig2jCQndhExqc5WM+7vM++rcbJa
+         Gj4nKgBebdxSF13ClIHFyV4JLzh83uYBLPcS+8Nm6mupmSvwseb/EvnwruzcVtZV/S
+         AvkfsDX9YYfENIUsxS5K7rJkqo3mPYuDKAt7G9CjsyZ7z7QXBvwEtCoswS6qnlz57p
+         5CVmUbc31bi3g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+On 10/8/20 9:04 AM, Jonathan Corbet wrote:
+> On Wed, 7 Oct 2020 16:31:51 -0700
+> John Hubbard <jhubbard@nvidia.com> wrote:
+> 
+>> sysfs-pci and sysfs-tagging were mis-filed: their locations with
+>> Documentation/ implied that they were related to file systems. Actually,
+>> each topic is about a very specific *use* of sysfs, and sysfs *happens*
+>> to be a (virtual) filesystem, so this is not really the right place.
+>>
+>> It's jarring to be reading about filesystems in general and then come
+>> across these specific details about PCI, and tagging...and then back to
+>> general filesystems again.
+>>
+>> Move sysfs-pci and sysfs-tagging to a location under the sysfs topic.
+>>
+>> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> 
+> I see why you want to do this, but I have to wonder if moving them out of
+> Documentation/filesystems entirely might not be a better approach.
+> sysfs-pci.rst might better belong in the admin guide or under PCI/, while
+> sysfs-tagging.rst could go under networking/.
+> 
+> Make sense?
+> 
 
-> From: Eric Biggers <ebiggers@google.com>
->
-> syzbot reported:
->
->     general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
->     KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
->     CPU: 0 PID: 6860 Comm: syz-executor835 Not tainted 5.9.0-rc8-syzkaller #0
->     Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->     RIP: 0010:utf8_casefold+0x43/0x1b0 fs/unicode/utf8-core.c:107
->     [...]
->     Call Trace:
->      f2fs_init_casefolded_name fs/f2fs/dir.c:85 [inline]
->      __f2fs_setup_filename fs/f2fs/dir.c:118 [inline]
->      f2fs_prepare_lookup+0x3bf/0x640 fs/f2fs/dir.c:163
->      f2fs_lookup+0x10d/0x920 fs/f2fs/namei.c:494
->      __lookup_hash+0x115/0x240 fs/namei.c:1445
->      filename_create+0x14b/0x630 fs/namei.c:3467
->      user_path_create fs/namei.c:3524 [inline]
->      do_mkdirat+0x56/0x310 fs/namei.c:3664
->      do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
->      entry_SYSCALL_64_after_hwframe+0x44/0xa9
->     [...]
->
-> The problem is that an inode has F2FS_CASEFOLD_FL set, but the
-> filesystem doesn't have the casefold feature flag set, and therefore
-> super_block::s_encoding is NULL.
->
-> Fix this by making sanity_check_inode() reject inodes that have
-> F2FS_CASEFOLD_FL when the filesystem doesn't have the casefold feature.
->
-> Reported-by: syzbot+05139c4039d0679e19ff@syzkaller.appspotmail.com
-> Fixes: 2c2eb7a300cd ("f2fs: Support case-insensitive file name lookups")
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Absolutely, I'll post a v2 that does it that way.
 
-Looks good.  For the record, this is fixed on ext4 already.
-
-Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-
+thanks,
 -- 
-Gabriel Krisman Bertazi
+John Hubbard
+NVIDIA
