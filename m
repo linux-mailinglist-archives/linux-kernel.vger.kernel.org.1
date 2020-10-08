@@ -2,130 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8A3286FAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF37287006
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 09:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728225AbgJHHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 03:40:50 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:53692 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727224AbgJHHkt (ORCPT
+        id S1728807AbgJHHyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 03:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728789AbgJHHyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 03:40:49 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201008074047epoutp02eb031ac17807299c850aba137dcc204f~79G5OAz_E0172401724epoutp02Z
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:40:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201008074047epoutp02eb031ac17807299c850aba137dcc204f~79G5OAz_E0172401724epoutp02Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602142847;
-        bh=R6fv09mNOqfqOl9fbsB3SRUWydTcHfWetpFYSlcV4zU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gPIJsZyCSqDxW+rKdRvokg6Tg+mkdNIAvs3fb8fYBdRhdwxUq3sIk8r+s2EDcUFNy
-         vmdTRajni40wbGq0qGT5c9KUxDyv2/4SezleJ/b2ehGuUEsH6/b3LA0uefb5PUAvlI
-         K1O77Kk1PlPXKvMnDq+ZyKRzFh/MpxuOQCKsPtAM=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201008074046epcas1p1e0c825f8a14b582d2570e532f4346137~79G4zMsKa1555315553epcas1p1z;
-        Thu,  8 Oct 2020 07:40:46 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4C6NRG028fzMqYm2; Thu,  8 Oct
-        2020 07:40:42 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9C.7B.10463.972CE7F5; Thu,  8 Oct 2020 16:40:41 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201008074041epcas1p4b369a0bf9f2207a2d6e878385e23187b~79Gz4pU-F2048920489epcas1p4S;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201008074041epsmtrp22615185a72f3f4b345221b7ace5f965f~79Gz37eKN0843908439epsmtrp2I;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-51-5f7ec27907f7
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EC.5D.08745.972CE7F5; Thu,  8 Oct 2020 16:40:41 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201008074041epsmtip1062d198531397ce8c88e35a6c63e13a3~79GzotpF63022630226epsmtip1b;
-        Thu,  8 Oct 2020 07:40:41 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     mka@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
-        cw00.choi@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-Subject: [PATCH 1/3] trace: events: devfreq: Use fixed indentation size to
- improve readability
-Date:   Thu,  8 Oct 2020 16:54:01 +0900
-Message-Id: <20201008075403.26181-2-cw00.choi@samsung.com>
+        Thu, 8 Oct 2020 03:54:35 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B76C061755;
+        Thu,  8 Oct 2020 00:54:35 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id x16so3598881pgj.3;
+        Thu, 08 Oct 2020 00:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :in-reply-to:references;
+        bh=1mPWQ3y+ekTW2WnE7lidu19L3jZpv/s0br4tyldlnIk=;
+        b=u7N268Ibc1GyZOWe2Vp3htaWdl1D35g97xP1MMM5NTjbKU+P8Jzh+igerBc40RQKgh
+         6zkjjA313LKMHX0tL52mWjT2utbTjNyHSK17UImwVFJb7ufJEEyT11XKvdFfJ54UXAR6
+         1rgnTcke5IKs0jdm2kmuxF/B3qulSe+tEXX8bipSjOapveRZB0AADfMsjMNJ7XY6K35K
+         /qjCs0/CdusCucNvXudHB+r9shZxIBqz+imd9W8a7aiO44Aa9rt2+JOKauTFc2Zjc8gL
+         PSRVbVd3V4LwM4sQ+ws8krJvdc1h4FpHxXFjDs+PVzYf8x0hEokWQTNfCKJaH/62Bmys
+         ZEKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:in-reply-to:references;
+        bh=1mPWQ3y+ekTW2WnE7lidu19L3jZpv/s0br4tyldlnIk=;
+        b=RH7nQQt+ycO91nxByu3JAuYWVC2B6wt7IloHTQKfkAWN/vkgmL5mszlwFy8m9a/HIO
+         PdUgMQE9XMeBVhwUkrxH0sB6+Eq8gnF0e+zTlVue05K7K0W5g351N0zSxQDkNcDoeEKP
+         q36SVTyIQ5koDIL3IdE2kvL7Kv6iX1GR0Ee06inYMhVZf4EQQWEN0QVpKuO4B6Fw3u9C
+         YKK6jkz5RyNbHUyrcyyDUDTADQjCREey7APCBfh8Y0z4q0tkR7gyQEFEioecjY41/90M
+         0kfpW2Qf/hp2/wrw6I3prFgasc4ycKl2AWn36GqIrGk9M8nhK2XiDTZ6KCyInLQIvobH
+         rlNg==
+X-Gm-Message-State: AOAM533Yyq7bzmXn0JSEZXSsavX3ih3I3YVsGvhgoN5BDPt1V2vRdJYW
+        uAWHYtcg1bcLO4ASpt46oPc=
+X-Google-Smtp-Source: ABdhPJxvPPJlPTIc7/Sww4pvhKsLUACWnjRw8fA95iAdwKiT8jaYpm8/ZJDRZmCpaRDJhlfUCx9lNg==
+X-Received: by 2002:a17:90a:e64c:: with SMTP id ep12mr6750661pjb.43.1602143674884;
+        Thu, 08 Oct 2020 00:54:34 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.61])
+        by smtp.gmail.com with ESMTPSA id k206sm6777106pfd.126.2020.10.08.00.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 00:54:34 -0700 (PDT)
+From:   yulei.kernel@gmail.com
+X-Google-Original-From: yuleixzhang@tencent.com
+To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        viro@zeniv.linux.org.uk, pbonzini@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Subject: [PATCH 11/35] mm: export mempolicy interfaces to serve dmem allocator
+Date:   Thu,  8 Oct 2020 15:54:01 +0800
+Message-Id: <aaac5819def07f59de431ef6e05d19d8cd60e067.1602093760.git.yuleixzhang@tencent.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201008075403.26181-1-cw00.choi@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLKsWRmVeSWpSXmKPExsWy7bCmgW7lobp4gw0PLSwm3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8WlAwuYLD5veMxocbtxBZvFvo4HTA6cHrMbLrJ4tOy7xe6xaVUn
-        m8f7fVfZPPq2rGL0+LxJLoAtKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkh
-        LzE31VbJxSdA1y0zB+gqJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BZYFecWJu
-        cWleul5yfq6VoYGBkSlQYUJ2xuoVrSwFv9kqVt6ZxNrA+Iu1i5GTQ0LARGLCimNsXYxcHEIC
-        OxglPrT0MkI4nxglDt7ezQThfGaUWHL3PBNMy5u1h6BadjFKdK7ezQ7hfGGU+HTlDAtIFZuA
-        lsT+FzfYQGwRASuJ0/87mEGKmAXmM0r8vfuTESQhLJAgsXblDbCxLAKqEov+fQFr4AVqOPFp
-        CdSF8hKrNxxgBrE5Bawlvp/+ATZIQuAWu8Tyte1ARRxAjovE7g9hEPXCEq+Ob2GHsKUkPr/b
-        ywZhV0usPHmEDaK3g1Fiy/4LUAuMJfYvncwEModZQFNi/S59iLCixM7fc8HuZBbgk3j3tQdq
-        Fa9ER5sQRImyxOUHd6GhIimxuL0TapWHxOxZb6Dh2McocXrVH+YJjHKzEDYsYGRcxSiWWlCc
-        m55abFhgghxnmxjB6U7LYgfj3Lcf9A4xMnEwHmKU4GBWEuFN966JF+JNSaysSi3Kjy8qzUkt
-        PsRoCgy8icxSosn5wISbVxJvaGpkbGxsYWJoZmpoqCTO+/CWQryQQHpiSWp2ampBahFMHxMH
-        p1QDk0vDLI3Fmuprv297vGX1Znf9y0JsobxX/U4sTr3sqWf34e7H9X9deV1d7+4pi01wPXxf
-        40GhR+GhVW2+0mE/CtbPPVTz/ND75h/XvxVtuCc6TfMRN7PREXM5dUG/Ty/z90xe+axnUcxs
-        c7EJioz/kvocfRxrLy6XSexe0aTy0brsUKj1lCtM9q8WJ15jsvJb0XzI+azotOId23hfHP03
-        U8u770mqo1JtqNMLr4gHTx1r1p/l1fwuJ+uYbsJRevu7wr2fxcdsd/R/ZLuou+TJXTf9Eqs+
-        jY1a1evLPtvZTNlYZXnc+7Trk28i5/Zl7T2+vFPL/oDvvR+u84TMNl9f8JnDe9Plky07ql5P
-        OVrDcVCJpTgj0VCLuag4EQCmgNF2AAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKLMWRmVeSWpSXmKPExsWy7bCSnG7lobp4g7+L+C0m3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8WlAwuYLD5veMxocbtxBZvFvo4HTA6cHrMbLrJ4tOy7xe6xaVUn
-        m8f7fVfZPPq2rGL0+LxJLoAtissmJTUnsyy1SN8ugStj9YpWloLfbBUr70xibWD8xdrFyMkh
-        IWAi8WbtIbYuRi4OIYEdjBJ3HncwQyQkJaZdPApkcwDZwhKHDxdD1HxilHg6pZUFpIZNQEti
-        /4sbbCC2iICNxN3F18DizALLGSXmtgqC2MICcRJrNtwDm8kioCqx6N8XsHpeASuJE5+WQB0h
-        L7F6wwGwGk4Ba4nvp3+A2UJANSv3PWGawMi3gJFhFaNkakFxbnpusWGBUV5quV5xYm5xaV66
-        XnJ+7iZGcEhqae1g3LPqg94hRiYOxkOMEhzMSiK86d418UK8KYmVValF+fFFpTmpxYcYpTlY
-        lMR5v85aGCckkJ5YkpqdmlqQWgSTZeLglGpgCrKSzbdLOdjkMHnavc/z/Hh1T323/8YvI3Xz
-        pMxh6UtN/+0Lb+c+cf2dlJBeZuPx17kptk9PoZ6lXPr3GtO+IKOnNxrcxf3mO76wdr3kZHTo
-        fuaf6bpdR9VYDGe86efvXXVwc4/6phrZ1Zu1Hjsofg599DDynsa/TaG954SbK1jftNgbn479
-        0y0br+1qpvz22fldcbJlX5bPtndeHnQo6DfHbu37PVGJLBVz3YKObwm5t2OF73GeT1sYAuIe
-        tjzedczD1l5R9O1NUZWVK/ZttOg1qZVuEVugY69qXujZ/mX7VXHukNrEZVZHrjUHxJhbiPQ/
-        rzEJOT/dVpjJPzlQ+Wv8NwkhiUvfT8YskFJiKc5INNRiLipOBAAb3UzquAIAAA==
-X-CMS-MailID: 20201008074041epcas1p4b369a0bf9f2207a2d6e878385e23187b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201008074041epcas1p4b369a0bf9f2207a2d6e878385e23187b
-References: <20201008075403.26181-1-cw00.choi@samsung.com>
-        <CGME20201008074041epcas1p4b369a0bf9f2207a2d6e878385e23187b@epcas1p4.samsung.com>
+In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
+In-Reply-To: <cover.1602093760.git.yuleixzhang@tencent.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each tracepoint infromation consist of the different size value.
-So, in order to improve the readability, use the fixed indentation size.
+From: Yulei Zhang <yuleixzhang@tencent.com>
 
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Export interface interleave_nid() to serve dmem allocator.
+
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
 ---
- include/trace/events/devfreq.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mempolicy.h | 3 +++
+ mm/mempolicy.c            | 4 ++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/trace/events/devfreq.h b/include/trace/events/devfreq.h
-index cf5b8772175d..bd36d28d16bc 100644
---- a/include/trace/events/devfreq.h
-+++ b/include/trace/events/devfreq.h
-@@ -29,7 +29,7 @@ TRACE_EVENT(devfreq_monitor,
- 		__assign_str(dev_name, dev_name(&devfreq->dev));
- 	),
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index 5f1c74df264d..478966133514 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -139,6 +139,9 @@ struct mempolicy *mpol_shared_policy_lookup(struct shared_policy *sp,
+ struct mempolicy *get_task_policy(struct task_struct *p);
+ struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
+ 		unsigned long addr);
++struct mempolicy *get_vma_policy(struct vm_area_struct *vma, unsigned long addr);
++unsigned interleave_nid(struct mempolicy *pol, struct vm_area_struct *vma,
++			unsigned long addr, int shift);
+ bool vma_policy_mof(struct vm_area_struct *vma);
  
--	TP_printk("dev_name=%s freq=%lu polling_ms=%u load=%lu",
-+	TP_printk("dev_name=%-30s freq=%-12lu polling_ms=%-3u load=%-2lu",
- 		__get_str(dev_name), __entry->freq, __entry->polling_ms,
- 		__entry->total_time == 0 ? 0 :
- 			(100 * __entry->busy_time) / __entry->total_time)
+ extern void numa_default_policy(void);
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index eddbe4e56c73..b3103f5d9123 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1816,7 +1816,7 @@ struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
+  * freeing by another task.  It is the caller's responsibility to free the
+  * extra reference for shared policies.
+  */
+-static struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
++struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
+ 						unsigned long addr)
+ {
+ 	struct mempolicy *pol = __get_vma_policy(vma, addr);
+@@ -1982,7 +1982,7 @@ static unsigned offset_il_node(struct mempolicy *pol, unsigned long n)
+ }
+ 
+ /* Determine a node number for interleave */
+-static inline unsigned interleave_nid(struct mempolicy *pol,
++unsigned interleave_nid(struct mempolicy *pol,
+ 		 struct vm_area_struct *vma, unsigned long addr, int shift)
+ {
+ 	if (vma) {
 -- 
-2.17.1
+2.28.0
 
