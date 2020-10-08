@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBACE286C27
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE94286C33
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgJHAoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 20:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
+        id S1728193AbgJHApF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 20:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728020AbgJHAov (ORCPT
+        with ESMTP id S1728042AbgJHAow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 20:44:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB25BC0613D2;
-        Wed,  7 Oct 2020 17:44:50 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a200so2542618pfa.10;
-        Wed, 07 Oct 2020 17:44:50 -0700 (PDT)
+        Wed, 7 Oct 2020 20:44:52 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15970C0613D3;
+        Wed,  7 Oct 2020 17:44:52 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g9so2763821pgh.8;
+        Wed, 07 Oct 2020 17:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=FG1OkLKNhedfjn4j1mmL6YOHUlRev6qzvK0rtufvQ04=;
-        b=XHK9cV8zeK1J+by8dmx32Mtc6IMO5SR+LXBNKhp7E9NWPmIy15JRQboioa1EUSObus
-         Qx1LiSnXJ1ZVKMcqqOeSy7CX2BbKOHNFDyyxBN7rWMQlcvD40ICz51Q8HcgndNFIxtSA
-         h84OeLy6G+I6X6fCJwnd6G2O8ILMvlIhs7lD2M52IqsfsysoaMEVou0FYXoOkDNgFMHJ
-         2DvOX1eTId/Zsvsym+Kg+8ukFHMH+wz1QVPAfLgof5KdyaIlHFgjZ2WUNi2pn19vTdxx
-         T384ZyUFp/hxgl9yHgw2tOilvj2Y2tfDW9Vr/uvoOguak99xLUHn8FEFQCpzT5v2L15U
-         /lXA==
+        bh=wDcnx4o46kavjub3gbCMWwLMubPVR9TvAn/9VACrPZs=;
+        b=ihe7WbOt8l+H8LWSBf9ZgygRdgpdcZVisOKcqp1nnBRreE/rPsZpO0PPY/psfAd49D
+         1kXlWaU1dZHDuQ3T/bZEoV/LRAwgACkdtMbLjbwJj8t6fcmIkqaz7WkOGEJn5CMd07id
+         aY287+r7pgXi+90dwuT6aQKn18VF+kEfVhwS6xkqjTmbjVTEzwd38P5CGHEQKzOxZOjW
+         V2oUnfseiZfVAw0iVqXyC3c8NVW7YagbH9Qyhd0e9C8a+87aOrrx9mEgqZsjxCwhpLAH
+         G1R1U7MO4a7HBvg3BaXPE5gruAW51d90GmbxbMyoehgHQv2VChSWUJ7xx0/MgW9cwK8X
+         slHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=FG1OkLKNhedfjn4j1mmL6YOHUlRev6qzvK0rtufvQ04=;
-        b=X5h/kCr4n7Jzjk+b7TpCYUWCTpqy+HTyFNRxkGbuSOkK08KaPo4TJ+Z+hzRvc5jzi7
-         mgWOVIGMNT+83oo0IaB2dcOH/7d+7XUqLdxd08D7hMdPEBYfyMnXG9IPhD+il8qLX7ba
-         lv68SGCkRtG278udfUbPS81yNsz1FvZOxoKuta9L0kj8X/lT5hutoQC/5VY0V6okMjcC
-         LZkTWNpqfUhoZhe0pT4Mh/BSyyZlxE1l7LAcUxnpGtFINpg/UCSsFM1mSI0w5w5ii2aD
-         zhmyBfXFePsJCM7/c9008DhkPqBaqzz7EACNpORNLsRSTCgoC6ZJ7cwu5X7dpZV63YyQ
-         j6gA==
-X-Gm-Message-State: AOAM5305bxNrVVWbr75PowzgYW9zeRi8yUHpdwgx9o7dLuxXWnCjBLTM
-        iUsCvuQdj51Jc1WDbpFm/lfVZP/rv2U=
-X-Google-Smtp-Source: ABdhPJzO2XvMIz0iL9fbB8ui2KrEzRgOgsmhFPYlkXT9my290SkmGdaGDq5OXM9WHQ8IexoJs6HOew==
-X-Received: by 2002:a17:90a:62c4:: with SMTP id k4mr5219122pjs.174.1602117890449;
-        Wed, 07 Oct 2020 17:44:50 -0700 (PDT)
+        bh=wDcnx4o46kavjub3gbCMWwLMubPVR9TvAn/9VACrPZs=;
+        b=hT4LguzQw/pfQq8AsYqsOhzXXHbUiDlCA0v41Ozz+w9ErBIfGS9T0sGlKRPNbZmMnp
+         HbA5vWp34aBom6u2len2PGVws6+2cmG/r8M+BJ6tvFCWFWET63jfX5EjT3cJp7fpwds4
+         Zhl2BguzPv3j+koV9fabPVVzTuH3m5mY682cOFjhjIINedvSEQpJNJUcPvumGZKHjD+p
+         YnY683oK+tMc0P8QI44bbLjeM9n55pgmav5OMSlUKEbz0mKMknF+MpK/i1y5273f9K3d
+         1BNiNsfsRNUPuP+g5qPob1zccO1KtvjOZ+ZYa+Fiz536rGCXmD4rdn4RhKpAolNvamb1
+         lSAQ==
+X-Gm-Message-State: AOAM532Z+YCG1WiiuG/QkkLZuQG2k8jMh8tzL+SEKboNuF6gDOmEFyu6
+        68z3bv8pT2I5n3o7DUywbW4H9mhKAlc=
+X-Google-Smtp-Source: ABdhPJzcDRVdif0xyZWFdDhYgdGmpRIjOMB409WV3Zds6A3po0jgkdPW7kMqYy50mSKoj0wEIHnktA==
+X-Received: by 2002:a17:90a:c28d:: with SMTP id f13mr5069450pjt.145.1602117891610;
+        Wed, 07 Oct 2020 17:44:51 -0700 (PDT)
 Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id z6sm4939922pfg.12.2020.10.07.17.44.49
+        by smtp.gmail.com with ESMTPSA id z6sm4939922pfg.12.2020.10.07.17.44.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Oct 2020 17:44:50 -0700 (PDT)
+        Wed, 07 Oct 2020 17:44:51 -0700 (PDT)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
 To:     krzk@kernel.org, thierry.reding@gmail.com, robh+dt@kernel.org
 Cc:     jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] memory: tegra: Sort tegra210_swgroups by reg address
-Date:   Wed,  7 Oct 2020 17:37:44 -0700
-Message-Id: <20201008003746.25659-4-nicoleotsuka@gmail.com>
+Subject: [PATCH 4/5] dt-bindings: memory: tegra: Add missing swgroups
+Date:   Wed,  7 Oct 2020 17:37:45 -0700
+Message-Id: <20201008003746.25659-5-nicoleotsuka@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201008003746.25659-1-nicoleotsuka@gmail.com>
 References: <20201008003746.25659-1-nicoleotsuka@gmail.com>
@@ -61,60 +61,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a cleanup change to prepare for new swgroups.
+According to Tegra X1 TRM, there are missing swgroups in the
+tegra210_swgroups list. So this patch adds them in bindings.
+
+Note that the TEGRA_SWGROUP_GPU (in list) should be actually
+TEGRA_SWGROUP_GPUB (in TRM), yet TEGRA_SWGROUP_GPU (in TRM)
+is not being used -- only TEGRA_SWGROUP_GPUB (in TRM) is. So
+this patch does not add TEGRA_SWGROUP_GPU (in TRM) and keeps
+TEGRA_SWGROUP_GPU (in list) as it is.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- drivers/memory/tegra/tegra210.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ include/dt-bindings/memory/tegra210-mc.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/memory/tegra/tegra210.c b/drivers/memory/tegra/tegra210.c
-index e8a7d266802c..b400802c9f14 100644
---- a/drivers/memory/tegra/tegra210.c
-+++ b/drivers/memory/tegra/tegra210.c
-@@ -1020,32 +1020,32 @@ static const struct tegra_mc_client tegra210_mc_clients[] = {
- };
+diff --git a/include/dt-bindings/memory/tegra210-mc.h b/include/dt-bindings/memory/tegra210-mc.h
+index c226cba9e077..f9fcb18a6d9b 100644
+--- a/include/dt-bindings/memory/tegra210-mc.h
++++ b/include/dt-bindings/memory/tegra210-mc.h
+@@ -33,6 +33,16 @@
+ #define TEGRA_SWGROUP_AXIAP	28
+ #define TEGRA_SWGROUP_ETR	29
+ #define TEGRA_SWGROUP_TSECB	30
++#define TEGRA_SWGROUP_NV	31
++#define TEGRA_SWGROUP_NV2	32
++#define TEGRA_SWGROUP_PPCS1	33
++#define TEGRA_SWGROUP_DC1	34
++#define TEGRA_SWGROUP_PPCS2	35
++#define TEGRA_SWGROUP_HC1	36
++#define TEGRA_SWGROUP_SE1	37
++#define TEGRA_SWGROUP_TSEC1	38
++#define TEGRA_SWGROUP_TSECB1	39
++#define TEGRA_SWGROUP_NVDEC1	40
  
- static const struct tegra_smmu_swgroup tegra210_swgroups[] = {
--	{ .name = "dc",        .swgroup = TEGRA_SWGROUP_DC,        .reg = 0x240 },
--	{ .name = "dcb",       .swgroup = TEGRA_SWGROUP_DCB,       .reg = 0x244 },
- 	{ .name = "afi",       .swgroup = TEGRA_SWGROUP_AFI,       .reg = 0x238 },
- 	{ .name = "avpc",      .swgroup = TEGRA_SWGROUP_AVPC,      .reg = 0x23c },
--	{ .name = "hda",       .swgroup = TEGRA_SWGROUP_HDA,       .reg = 0x254 },
-+	{ .name = "dc",        .swgroup = TEGRA_SWGROUP_DC,        .reg = 0x240 },
-+	{ .name = "dcb",       .swgroup = TEGRA_SWGROUP_DCB,       .reg = 0x244 },
- 	{ .name = "hc",        .swgroup = TEGRA_SWGROUP_HC,        .reg = 0x250 },
-+	{ .name = "hda",       .swgroup = TEGRA_SWGROUP_HDA,       .reg = 0x254 },
-+	{ .name = "isp2",      .swgroup = TEGRA_SWGROUP_ISP2,      .reg = 0x258 },
- 	{ .name = "nvenc",     .swgroup = TEGRA_SWGROUP_NVENC,     .reg = 0x264 },
- 	{ .name = "ppcs",      .swgroup = TEGRA_SWGROUP_PPCS,      .reg = 0x270 },
- 	{ .name = "sata",      .swgroup = TEGRA_SWGROUP_SATA,      .reg = 0x274 },
--	{ .name = "isp2",      .swgroup = TEGRA_SWGROUP_ISP2,      .reg = 0x258 },
-+	{ .name = "vi",        .swgroup = TEGRA_SWGROUP_VI,        .reg = 0x280 },
-+	{ .name = "vic",       .swgroup = TEGRA_SWGROUP_VIC,       .reg = 0x284 },
- 	{ .name = "xusb_host", .swgroup = TEGRA_SWGROUP_XUSB_HOST, .reg = 0x288 },
- 	{ .name = "xusb_dev",  .swgroup = TEGRA_SWGROUP_XUSB_DEV,  .reg = 0x28c },
--	{ .name = "isp2b",     .swgroup = TEGRA_SWGROUP_ISP2B,     .reg = 0xaa4 },
--	{ .name = "tsec",      .swgroup = TEGRA_SWGROUP_TSEC,      .reg = 0x294 },
- 	{ .name = "a9avp",     .swgroup = TEGRA_SWGROUP_A9AVP,     .reg = 0x290 },
--	{ .name = "gpu",       .swgroup = TEGRA_SWGROUP_GPU,       .reg = 0xaac },
-+	{ .name = "tsec",      .swgroup = TEGRA_SWGROUP_TSEC,      .reg = 0x294 },
- 	{ .name = "sdmmc1a",   .swgroup = TEGRA_SWGROUP_SDMMC1A,   .reg = 0xa94 },
- 	{ .name = "sdmmc2a",   .swgroup = TEGRA_SWGROUP_SDMMC2A,   .reg = 0xa98 },
- 	{ .name = "sdmmc3a",   .swgroup = TEGRA_SWGROUP_SDMMC3A,   .reg = 0xa9c },
- 	{ .name = "sdmmc4a",   .swgroup = TEGRA_SWGROUP_SDMMC4A,   .reg = 0xaa0 },
--	{ .name = "vic",       .swgroup = TEGRA_SWGROUP_VIC,       .reg = 0x284 },
--	{ .name = "vi",        .swgroup = TEGRA_SWGROUP_VI,        .reg = 0x280 },
-+	{ .name = "isp2b",     .swgroup = TEGRA_SWGROUP_ISP2B,     .reg = 0xaa4 },
-+	{ .name = "gpu",       .swgroup = TEGRA_SWGROUP_GPU,       .reg = 0xaac },
- 	{ .name = "nvdec",     .swgroup = TEGRA_SWGROUP_NVDEC,     .reg = 0xab4 },
- 	{ .name = "ape",       .swgroup = TEGRA_SWGROUP_APE,       .reg = 0xab8 },
--	{ .name = "nvjpg",     .swgroup = TEGRA_SWGROUP_NVJPG,     .reg = 0xac0 },
- 	{ .name = "se",        .swgroup = TEGRA_SWGROUP_SE,        .reg = 0xabc },
-+	{ .name = "nvjpg",     .swgroup = TEGRA_SWGROUP_NVJPG,     .reg = 0xac0 },
- 	{ .name = "axiap",     .swgroup = TEGRA_SWGROUP_AXIAP,     .reg = 0xacc },
- 	{ .name = "etr",       .swgroup = TEGRA_SWGROUP_ETR,       .reg = 0xad0 },
- 	{ .name = "tsecb",     .swgroup = TEGRA_SWGROUP_TSECB,     .reg = 0xad4 },
+ #define TEGRA210_MC_RESET_AFI		0
+ #define TEGRA210_MC_RESET_AVPC		1
 -- 
 2.17.1
 
