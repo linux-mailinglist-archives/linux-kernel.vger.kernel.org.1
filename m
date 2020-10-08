@@ -2,159 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182F7287B3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 19:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2C5287BF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgJHRzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 13:55:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57358 "EHLO mx2.suse.de"
+        id S1729411AbgJHS7v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Oct 2020 14:59:51 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:61790 "EHLO mx.metalurgs.lv"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgJHRzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:55:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 299F6AEEE;
-        Thu,  8 Oct 2020 17:55:04 +0000 (UTC)
-Subject: Re: [PATCH v2 5/7] mm, page_alloc: cache pageset high and batch in
- struct zone
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20201008114201.18824-1-vbabka@suse.cz>
- <20201008114201.18824-6-vbabka@suse.cz>
- <20201008123129.GC4967@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <fb44322e-c1b1-83e1-de94-e3837c363b95@suse.cz>
-Date:   Thu, 8 Oct 2020 19:55:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1725908AbgJHS7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 14:59:51 -0400
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 0819D60300
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:55:29 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id ABBEB5CFD0
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 21:50:32 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id C1D195C884; Thu,  8 Oct 2020 21:12:46 +0300 (EEST)
+Received: from [100.64.1.74] (unknown [190.15.125.55])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id 6547F611BF;
+        Thu,  8 Oct 2020 20:57:14 +0300 (EEST)
 MIME-Version: 1.0
-In-Reply-To: <20201008123129.GC4967@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Description: Mail message body
+To:     Recipients <financialcapability6@gmail.com>
+From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
+Date:   Thu, 08 Oct 2020 14:57:07 -0300
+Reply-To: hmurrah39@gmail.com
+X-SpamTest-Envelope-From: financialcapability6@gmail.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 55
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20201008184040.C1D195C884@mx.metalurgs.lv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Low Rate Loan./n
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20201008 notchecked
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 2:31 PM, Michal Hocko wrote:
-> On Thu 08-10-20 13:41:59, Vlastimil Babka wrote:
->> All per-cpu pagesets for a zone use the same high and batch values, that are
->> duplicated there just for performance (locality) reasons. This patch adds the
->> same variables also to struct zone as a shared copy.
->> 
->> This will be useful later for making possible to disable pcplists temporarily
->> by setting high value to 0, while remembering the values for restoring them
->> later. But we can also immediately benefit from not updating pagesets of all
->> possible cpus in case the newly recalculated values (after sysctl change or
->> memory online/offline) are actually unchanged from the previous ones.
->> 
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
+Hello Dear,
 
-Thanks!
+We are Investment Company offering Corporate and Personal
+Loan at 3% Interest Rate for a duration of 10Years.
 
-> I would consider the check flipped with early return more pleasing to my
-> eyes but nothing to lose sleep over.
+We also pay 1% commission to brokers, who introduce project
+owners for finance or other opportunities.
 
-Right, here's updated patch:
+Please get back to me if you are interested for more
+details.
 
-----8<----
- From 6ab0f03762d122a896349d5e568f75c20875eb42 Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, 7 Sep 2020 14:20:08 +0200
-Subject: [PATCH v2 5/7] mm, page_alloc: cache pageset high and batch in struct
-  zone
-
-All per-cpu pagesets for a zone use the same high and batch values, that are
-duplicated there just for performance (locality) reasons. This patch adds the
-same variables also to struct zone as a shared copy.
-
-This will be useful later for making possible to disable pcplists temporarily
-by setting high value to 0, while remembering the values for restoring them
-later. But we can also immediately benefit from not updating pagesets of all
-possible cpus in case the newly recalculated values (after sysctl change or
-memory online/offline) are actually unchanged from the previous ones.
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
-  include/linux/mmzone.h |  6 ++++++
-  mm/page_alloc.c        | 16 ++++++++++++++--
-  2 files changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index fb3bf696c05e..c63863794afc 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -470,6 +470,12 @@ struct zone {
-  #endif
-  	struct pglist_data	*zone_pgdat;
-  	struct per_cpu_pageset __percpu *pageset;
-+	/*
-+	 * the high and batch values are copied to individual pagesets for
-+	 * faster access
-+	 */
-+	int pageset_high;
-+	int pageset_batch;
-
-  #ifndef CONFIG_SPARSEMEM
-  	/*
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f33c36312eb5..057baefba8f3 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5900,6 +5900,9 @@ static void build_zonelists(pg_data_t *pgdat)
-   * Other parts of the kernel may not check if the zone is available.
-   */
-  static void pageset_init(struct per_cpu_pageset *p);
-+/* These effectively disable the pcplists in the boot pageset completely */
-+#define BOOT_PAGESET_HIGH	0
-+#define BOOT_PAGESET_BATCH	1
-  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
-  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
-
-@@ -6289,8 +6292,8 @@ static void pageset_init(struct per_cpu_pageset *p)
-  	 * need to be as careful as pageset_update() as nobody can access the
-  	 * pageset yet.
-  	 */
--	pcp->high = 0;
--	pcp->batch = 1;
-+	pcp->high = BOOT_PAGESET_HIGH;
-+	pcp->batch = BOOT_PAGESET_BATCH;
-  }
-
-  /*
-@@ -6314,6 +6317,13 @@ static void zone_set_pageset_high_and_batch(struct zone 
-*zone)
-  		new_batch = max(1UL, 1 * new_batch);
-  	}
-
-+	if (zone->pageset_high == new_high &&
-+	    zone->pageset_batch == new_batch)
-+		return;
-+
-+	zone->pageset_high = new_high;
-+	zone->pageset_batch = new_batch;
-+
-  	for_each_possible_cpu(cpu) {
-  		p = per_cpu_ptr(zone->pageset, cpu);
-  		pageset_update(&p->pcp, new_high, new_batch);
-@@ -6374,6 +6384,8 @@ static __meminit void zone_pcp_init(struct zone *zone)
-  	 * offset of a (static) per cpu variable into the per cpu area.
-  	 */
-  	zone->pageset = &boot_pageset;
-+	zone->pageset_high = BOOT_PAGESET_HIGH;
-+	zone->pageset_batch = BOOT_PAGESET_BATCH;
-
-  	if (populated_zone(zone))
-  		printk(KERN_DEBUG "  %s zone: %lu pages, LIFO batch:%u\n",
--- 
-2.28.0
-
-
-
+Yours faithfully,
+Hashim Bin 
