@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C23E287BA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94813287B93
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgJHSYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJHSYi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:24:38 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D746C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 11:24:38 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id lw21so9493207ejb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 11:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Borjchw/TSeW3kJDI9UKxpuNWct0CBHNGPaPSuEeWc0=;
-        b=IRLUvU6KvCA9S8YqNRovWPVwdRX38O6TQeYHK3U+O1R156cyJO7W0l5DeI6ZC6WDUj
-         8bAcQcTGuQ80kphRc7K57wpCXH02eMHVeEat+TbOJfRp2LGKVnvmlu7XCq/8P8Khf7LI
-         fJp/AB1ZS/Cdp9N99hecl6fZ5uRXvRFDepWAUt/clMIL5Cl2cJPK8QdHb/v7jbFDnO/U
-         JwoRHe6FM8obRsuCAyuye38uRj58FOZqbWKkQF8WMSCds5U7Ao9OAMAKC/5RUN012jmW
-         3yRJKx6UGAWBwIHpmBzHrBr1BAHD+I2YkdymeW0lrwPbzXjcY7dv0vNOyIqSBCl4i7og
-         Rekg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Borjchw/TSeW3kJDI9UKxpuNWct0CBHNGPaPSuEeWc0=;
-        b=RpGQHGU8UqNCCe/p4AckmcTTskbCXW7rxA7+MvFvtHdoWGbaTf3/9MiqnCC39jfuXE
-         oi/aBTmyCDvjHcAUTX4Kdv83WQwYld84wlk5zSHEU6LpH+MV3KwyIhPEyJ1h8gNAZlfV
-         f3aFXAsSTQybu/ZzO/Gxjz9tmJZxQQ/4kitA74QrFFrZy6JGevggQKNmQq24CCNRAhku
-         Bj22QIs82WgQEu/mTX5OWQFDoiFbklbnOvmBCy/f4WOU5Fl2ellZZzn4Hpe5ARA94XeA
-         Tda8AgTBqDWHpcYmCV3cO+lRyEqimNtteDwVA72xTpZCFSvd78iOZoZcS5TMkQ2cVEwN
-         mMzw==
-X-Gm-Message-State: AOAM532o96jfT4gbU3jV7FXbGjxf81J9AveximktIjR7kcNPfjExAqXO
-        nxV0uSbi3NWgNvUFeDDo1gPu0xRdOQHcPWmPkiCnxg==
-X-Google-Smtp-Source: ABdhPJzL2QX6JHv/YMDr/k6dMfOuCOooSIAnhsR97uRydnSAr6eU9VWguUWdd7kXmEHnUTejzMEO8wZSq7maWqIl8UQ=
-X-Received: by 2002:a17:906:fcae:: with SMTP id qw14mr10420740ejb.537.1602181476510;
- Thu, 08 Oct 2020 11:24:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201008165408.38228-1-toiwoton@gmail.com> <CAG48ez1OU9PFQ06mf4L59SEmi6Vwxnao8RuVXH=dCiyMhqVwYA@mail.gmail.com>
- <3413d0c8-17c7-fbae-e5fa-74a918e61239@gmail.com>
-In-Reply-To: <3413d0c8-17c7-fbae-e5fa-74a918e61239@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 8 Oct 2020 20:24:10 +0200
-Message-ID: <CAG48ez2bDCEKxUdFUQ2MAkJgKi1zN+h46ypC2zNr0a1fp-FqWQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2] mm: Optional full ASLR for mmap() and mremap()
-To:     Topi Miettinen <toiwoton@gmail.com>
-Cc:     linux-hardening@vger.kernel.org,
+        id S1728243AbgJHSVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:21:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:42906 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgJHSVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 14:21:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91CC4D6E;
+        Thu,  8 Oct 2020 11:21:35 -0700 (PDT)
+Received: from [10.37.12.22] (unknown [10.37.12.22])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D4F63F802;
+        Thu,  8 Oct 2020 11:21:31 -0700 (PDT)
+Subject: Re: [PATCH v4 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
+ exit
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1601593784.git.andreyknvl@google.com>
+ <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
+ <20201002140652.GG7034@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <1b2327ee-5f30-e412-7359-32a7a38b4c8d@arm.com>
+Date:   Thu, 8 Oct 2020 19:24:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201002140652.GG7034@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 8:10 PM Topi Miettinen <toiwoton@gmail.com> wrote:
-> On 8.10.2020 20.13, Jann Horn wrote:
-> > On Thu, Oct 8, 2020 at 6:54 PM Topi Miettinen <toiwoton@gmail.com> wrote:
-> >> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
-> >> enables full randomization of memory mappings created with mmap(NULL,
-> >> ...). With 2, the base of the VMA used for such mappings is random,
-> >> but the mappings are created in predictable places within the VMA and
-> >> in sequential order. With 3, new VMAs are created to fully randomize
-> >> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
-> >> even if not necessary.
-> > [...]
-> >> +       if ((flags & MREMAP_MAYMOVE) && randomize_va_space >= 3) {
-> >> +               /*
-> >> +                * Caller is happy with a different address, so let's
-> >> +                * move even if not necessary!
-> >> +                */
-> >> +               new_addr = arch_mmap_rnd();
-> >> +
-> >> +               ret = mremap_to(addr, old_len, new_addr, new_len,
-> >> +                               &locked, flags, &uf, &uf_unmap_early,
-> >> +                               &uf_unmap);
-> >> +               goto out;
-> >> +       }
-> >
-> > You just pick a random number as the address, and try to place the
-> > mapping there? Won't this fail if e.g. the old address range overlaps
-> > with the new one, causing mremap_to() to bail out at "if (addr +
-> > old_len > new_addr && new_addr + new_len > addr)"?
->
-> Thanks for the review. I think overlap would be OK in this case and the
-> check should be skipped.
+Hi Catalin,
 
-No, mremap() can't deal with overlap (and trying to add such support
-would make mremap() unnecessarily complicated).
+On 10/2/20 3:06 PM, Catalin Marinas wrote:
+> On Fri, Oct 02, 2020 at 01:10:30AM +0200, Andrey Konovalov wrote:
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index 7c67ac6f08df..d1847f29f59b 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -23,6 +23,8 @@
+>>  #include <asm/ptrace.h>
+>>  #include <asm/sysreg.h>
+>>  
+>> +u64 gcr_kernel_excl __ro_after_init;
+>> +
+>>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>>  {
+>>  	pte_t old_pte = READ_ONCE(*ptep);
+>> @@ -120,6 +122,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>>  	return ptr;
+>>  }
+>>  
+>> +void mte_init_tags(u64 max_tag)
+>> +{
+>> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
+> 
+> Nitpick: it's not obvious that MTE_TAG_MAX is a mask, so better write
+> this as GENMASK(min(max_tag, MTE_TAG_MAX), 0).
+> 
+
+The two things do not seem equivalent because the format of the tags in KASAN is
+0xFF and in MTE is 0xF, hence if extract the minimum whatever is the tag passed
+by KASAN it will always be MTE_TAG_MAX.
+
+To make it cleaner I propose: GENMASK(FIELD_GET(MTE_TAG_MAX, max_tag), 0);
+
+> Otherwise it looks fine.
+> 
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> 
+
+-- 
+Regards,
+Vincenzo
