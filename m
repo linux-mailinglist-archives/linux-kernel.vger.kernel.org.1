@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571A028723E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FAE28723F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 12:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbgJHKKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729331AbgJHKKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 8 Oct 2020 06:10:05 -0400
-Received: from mga02.intel.com ([134.134.136.20]:16099 "EHLO mga02.intel.com"
+Received: from mga09.intel.com ([134.134.136.24]:51641 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729210AbgJHKKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728575AbgJHKKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Oct 2020 06:10:05 -0400
-IronPort-SDR: tsV/jE4TZ6pYvp1DWoX7Kdp0X4VKNuIrQ2F38Pr8REv7X/8Fq4sWGt29Nd3PRq8FJEZGmsYG4A
- FfC+c5SN4QrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="152227980"
+IronPort-SDR: vF8M3b9omqhfHpEsfBxg+dvboqCHUpFRFZSWtyVDWdzrUE2YAlappEnRVs7K53usB3y+ENx3nv
+ OIESsUTfzEQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="165421490"
 X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="152227980"
+   d="scan'208";a="165421490"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 03:10:03 -0700
-IronPort-SDR: I4MOMjdh2fQROgjgA1FsfZCwc80vfTzukfE9vNk8yu3tvUFYlSl6KIaJqM8awCgqjKwyuwhrnb
- Vne6fwT8jZ+Q==
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2020 03:10:03 -0700
+IronPort-SDR: oERASaXzxFxIW+1k3nFrgG0HAMXMQys0LBA2IDWVhNnQSZV/b2wBs3Ivo4umqUVXNSiBlbvS5q
+ FdEDChW2t8/g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,350,1596524400"; 
-   d="scan'208";a="349444877"
+   d="scan'208";a="518245946"
 Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Oct 2020 03:10:02 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 08 Oct 2020 03:10:02 -0700
 Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kQSs5-00022j-Vm; Thu, 08 Oct 2020 10:10:01 +0000
-Date:   Thu, 08 Oct 2020 18:09:55 +0800
+        id 1kQSs5-00022g-Uf; Thu, 08 Oct 2020 10:10:01 +0000
+Date:   Thu, 08 Oct 2020 18:09:59 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/pasid] BUILD SUCCESS
- 7f5933f81bd85a0bf6a87d65c7327ea048a75e54
-Message-ID: <5f7ee573.wheX8AuiDs5ebOD+%lkp@intel.com>
+Subject: [tip:locking/core] BUILD SUCCESS
+ 820d8a6c966343059ba58b9a82f570f27bf147d6
+Message-ID: <5f7ee577.+9S6+6msv0SJXwtK%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/pasid
-branch HEAD: 7f5933f81bd85a0bf6a87d65c7327ea048a75e54  x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/core
+branch HEAD: 820d8a6c966343059ba58b9a82f570f27bf147d6  lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"
 
-elapsed time: 722m
+elapsed time: 723m
 
-configs tested: 125
+configs tested: 103
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -62,11 +62,6 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-mips                         bigsur_defconfig
-powerpc                       eiger_defconfig
-mips                       rbtx49xx_defconfig
-arm                           tegra_defconfig
-powerpc                        icon_defconfig
 mips                malta_qemu_32r6_defconfig
 arm                        magician_defconfig
 powerpc                     tqm8540_defconfig
@@ -89,32 +84,15 @@ h8300                       h8s-sim_defconfig
 m68k                       m5249evb_defconfig
 xtensa                    smp_lx200_defconfig
 arm                        keystone_defconfig
-mips                      pic32mzda_defconfig
-mips                          rb532_defconfig
-arm                         mv78xx0_defconfig
-arm                         assabet_defconfig
-powerpc                     tqm8548_defconfig
-arm                       aspeed_g4_defconfig
-arm                         hackkit_defconfig
-powerpc                      pcm030_defconfig
-arm                          gemini_defconfig
-ia64                        generic_defconfig
-arm                          tango4_defconfig
 s390                       zfcpdump_defconfig
 powerpc                       ebony_defconfig
+mips                         bigsur_defconfig
 arm                           h5000_defconfig
-arm                        clps711x_defconfig
-arm                          ep93xx_defconfig
-h8300                               defconfig
-sh                              ul2_defconfig
 nds32                             allnoconfig
 powerpc                      cm5200_defconfig
 sh                   sh7770_generic_defconfig
 arm                           spitz_defconfig
 arm                          iop32x_defconfig
-sh                          r7780mp_defconfig
-microblaze                          defconfig
-mips                           ip22_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
