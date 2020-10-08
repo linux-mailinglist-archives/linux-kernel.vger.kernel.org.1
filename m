@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FAF287652
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58F3287655
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730668AbgJHOpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:45:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42635 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729828AbgJHOps (ORCPT
+        id S1730678AbgJHOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730353AbgJHOrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:45:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602168347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X1kaHWBHLF6as3Dsn7xHzXIh9cJ3AkogIyQtrQFgTrw=;
-        b=aL5VI4R8Ljg0LnQEWdhIkGUffxemDL310B3CcmQ6XmQdqot7GFhBuuYOdXrD8ivIZZmfPx
-        BawjtVXKn4OwYSu2vBvql6CnVb18zmXr/0C0sKesuq0S+JCGQMLyZ7k6lEtOsGRPjeDAc5
-        65MAi8Rn3ygpEHjsyUfLNnN0sDJPgWc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-iuDgOWNRPRyInvvnGfhOxw-1; Thu, 08 Oct 2020 10:45:44 -0400
-X-MC-Unique: iuDgOWNRPRyInvvnGfhOxw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE42D18BE169;
-        Thu,  8 Oct 2020 14:45:42 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.132])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4FA9376648;
-        Thu,  8 Oct 2020 14:45:41 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  8 Oct 2020 16:45:42 +0200 (CEST)
-Date:   Thu, 8 Oct 2020 16:45:40 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de
-Subject: Re: [PATCH 3/6] kernel: split syscall restart from signal handling
-Message-ID: <20201008144539.GJ9995@redhat.com>
-References: <20201005150438.6628-1-axboe@kernel.dk>
- <20201005150438.6628-4-axboe@kernel.dk>
- <20201008142135.GH9995@redhat.com>
- <de00f13d-9ff0-6955-5d37-557f044ce2aa@kernel.dk>
+        Thu, 8 Oct 2020 10:47:10 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D266FC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 07:47:09 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so6474596ioo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 07:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JfyqMEd778QyNbtI/v0Y/4c53t1ox1t/PqY3/TlES/c=;
+        b=VHGJaG8lcYxKBr8ZUrviwB3LO58EAwFpRxS1d9tiNKSGj948O4EBvxsaGIQcUx64nx
+         +S7pTXP0QX0N6YG62tvhobyWwwlmhihK+6FbGKpigc+dc2NqfrLf2ZnBV1Ltk1NZZxKh
+         4Wen+xjOlaT3UX+pN4YbuyNpkLCAZQ784Bgmmj7brvPnewQIukU4ZuPfdFIpAn4J0u6u
+         GHqgBRYb4zyZlK9ZgEvhIkTHF/ZMZ8smSwQ8iXsrM3qadJZJgPB21yqd6jiNAP+dGWD4
+         9xwaGBaQKsFH8mZfZtxwtAnR6/ZbQ/230WOZzLV7N7WWRoZ4JWcjm8ppl5Yb2Yp2CH0N
+         Ghlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JfyqMEd778QyNbtI/v0Y/4c53t1ox1t/PqY3/TlES/c=;
+        b=evUgl/LIse6PVLsvQidDqKQ2R36rGEJg/nZmu2hi9EMGXbLCDKvgp0OYt4sIOF11HG
+         L2rTLJ3tJdPp/K/kXpVPqUeF7IthAPoBy9mIwVlI/yVpFrMlgUzf3IeiOTrosCwMK5I2
+         nBv2LNGIRmklSuPjy4I1y13M5btD91cOh8b32/SccMEQlSkqKBwplixolixSMlrntnYO
+         j3WrTp6jArMusbkN/mPSJJkd03vDYANCVUH9Bin/Chhv8MT3XdYQJdD2EUCO84bbRNaH
+         987ydoMjZSWER92+pLJkcy6qYSuRjBuovXETb9flDznKetLaQ0ZbQXLRmpCDZtc6mzsL
+         g2QQ==
+X-Gm-Message-State: AOAM5335ZClKwQ6XcER/hXGLw/briS+DLCXHAkdFOGig6jS+0hasRGJg
+        aJAtQ2qI3Knqa+X1q3eQ1Gj4G8TGIOfzVfbUhHpSJw==
+X-Google-Smtp-Source: ABdhPJw75ddyXkeM7k24xVz+a/obQzBxen8AUggFQ4shVf63vktSWKeHv9wbpC3JuJkin1zy+5RAk4ua6HAXEL2CHiY=
+X-Received: by 2002:a5e:9b11:: with SMTP id j17mr6086128iok.176.1602168428872;
+ Thu, 08 Oct 2020 07:47:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de00f13d-9ff0-6955-5d37-557f044ce2aa@kernel.dk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com> <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
+ <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
+ <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <20200928093911.GB12010@e121166-lin.cambridge.arm.com> <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
+ <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com>
+ <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com> <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
+ <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com> <99d24fe08ecb5a6f5bba7dc6b1e2b42b@walle.cc>
+ <CA+G9fYtR5MwQ_Gd1=R=815eCAz+5uC67wXV2x094pc_=PtkA2g@mail.gmail.com>
+In-Reply-To: <CA+G9fYtR5MwQ_Gd1=R=815eCAz+5uC67wXV2x094pc_=PtkA2g@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 8 Oct 2020 20:16:57 +0530
+Message-ID: <CA+G9fYsubwpT9HY7Dx-+zvYdM1t1m+mrnH8WfHJ-_BpMTt40vA@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of dw_child_pcie_ops
+To:     Zhiqiang.Hou@nxp.com, Rob Herring <robh@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08, Jens Axboe wrote:
+On Fri, 2 Oct 2020 at 14:59, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 >
-> On 10/8/20 8:21 AM, Oleg Nesterov wrote:
-> > 
-> > Can't we avoid this patch and the and simplify the change in
-> > exit_to_user_mode_loop() from the next patch? Can't the much more simple
-> > patch below work?
-> > 
-> > Then later we can even change arch_do_signal() to accept the additional
-> > argument, ti_work, so that it can use ti_work & TIF_NOTIFY_SIGNAL/SIGPENDING
-> > instead of test_thread_flag/task_sigpending.
-> 
-> Yeah I guess that would be a bit simpler, maybe I'm too focused on
-> decoupling the two. But if we go this route, and avoid sighand->lock for
-> just having TIF_NOTIFY_SIGNAL set, then that should be functionally
-> equivalent as far as I'm concerned.
+> On Thu, 1 Oct 2020 at 22:16, Michael Walle <michael@walle.cc> wrote:
+> >
+> > Am 2020-10-01 15:32, schrieb Kishon Vijay Abraham I:
+> >
+> > > Meanwhile would it be okay to add linkup check atleast for DRA7X so
+> > > that
+> > > we could have it booting in linux-next?
+> >
+> > Layerscape SoCs (at least the LS1028A) are also still broken in
+> > linux-next,
+> > did I miss something here?
+>
+> I have been monitoring linux next boot and functional testing on nxp devices
+> for more than two week and still the problem exists on nxp-ls2088.
+>
+> Do you mind checking the possibilities to revert bad patches on linux next tree
+> and continue to work on fixes please ?
+>
+> suspected bad commit: [ I have not bisected this problem ]
+> c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
+>
+> crash log snippet:
+> [    1.563008] SError Interrupt on CPU5, code 0xbf000002 -- SError
+> [    1.563010] CPU: 5 PID: 1 Comm: swapper/0 Not tainted
+> 5.9.0-rc7-next-20201001 #1
+> [    1.563011] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+> [    1.563013] pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
+> [    1.563014] pc : pci_generic_config_read+0x44/0xe8
+> [    1.563015] lr : pci_generic_config_read+0x2c/0xe8
 
-Not sure I understand... I think that the change I propose is functionally
-equivalent or I missed something.
 
-> I'll make the reduction, I'd prefer to keep this as small/simple as
-> possible initially.
+This reported issue is gone now on Linux next master branch.
+I am not sure which is a fix commit.
 
-Great, thanks.
-
-Oleg.
-
+- Naresh
