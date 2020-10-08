@@ -2,148 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D5D287F25
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB00287F2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Oct 2020 01:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731035AbgJHXcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 19:32:18 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2986 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgJHXcR (ORCPT
+        id S1731054AbgJHXeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 19:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgJHXet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 19:32:17 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7fa1490000>; Thu, 08 Oct 2020 16:31:21 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
- 2020 23:32:15 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 8 Oct 2020 23:32:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TWNHKUdaDPE1VNAPxR6Gt2K5FuH2pqnpqwaEj03IGPuwVHyxyqjgl2pktCKBJb/SW+mMZJPPqxSHugGaWbz3/gzvjdha1zW3OzOhBdeV9wQM86Vdu2s4QLL5Jrgvb6Wk/apl74D9/xG52igA1ACd8c6zhEdr1/kVLpAyDLgEBAT99/gGBmRI64AhJAa2/UW+m0SAIcSJITsWrJwWSMnOBon++DDVb6htZ1u+VIbqVLCukaiI+YpE2YvzBhljQoM/zLQcdDx8s+KfGTtx7LlKoR3VUmfx1uOXLSnlj5eWg2vBbwAXbOlv3WJ6KH7oUJ/0EJn9rnukwIiwBJSWcp1Vlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aBtcuxQxGJxVZM+1oIT81t1EHEQwgCbCuLxZ/puM0lM=;
- b=Ng8NwShyoTROn0u6U5WEyQMWzqKTTTZ2S7UfXi4myfX7LvqOMM8OwcGC1i83MaV5tnor/cuQ+Cn8YQqIzNmvmHcZGtk3GiXehjoasKWzSphbpgypnFbKDbuTwu7BU3mBv0/tuA3SRHNS5oByZqMAsbPjJQyM6vD8Ajvo1NbxnJc2VNIZpO4BKYOL4+46jU+oWsx5vGn5Mep3cO9pLeYwdiD6+ilMP7clwaeFAlaE068HDpQi+492O3e6qBqMxE8W5DCI15xwgmtJ8NOLuAEPEWewOnrcsbb9HxZJW0YaVeFjAdQRFv5TS3ySpsPRkGkQvwl7zIkuxAzztHosbGv9WQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4235.namprd12.prod.outlook.com (2603:10b6:5:220::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Thu, 8 Oct
- 2020 23:32:12 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.046; Thu, 8 Oct 2020
- 23:32:12 +0000
-Date:   Thu, 8 Oct 2020 20:32:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     Dave Jiang <dave.jiang@intel.com>, <vkoul@kernel.org>,
-        <megha.dey@intel.com>, <maz@kernel.org>, <bhelgaas@google.com>,
-        <alex.williamson@redhat.com>, <jacob.jun.pan@intel.com>,
-        <ashok.raj@intel.com>, <yi.l.liu@intel.com>, <baolu.lu@intel.com>,
-        <kevin.tian@intel.com>, <sanjay.k.kumar@intel.com>,
-        <tony.luck@intel.com>, <jing.lin@intel.com>,
-        <dan.j.williams@intel.com>, <kwankhede@nvidia.com>,
-        <eric.auger@redhat.com>, <parav@mellanox.com>, <rafael@kernel.org>,
-        <netanelg@mellanox.com>, <shahafs@mellanox.com>,
-        <yan.y.zhao@linux.intel.com>, <pbonzini@redhat.com>,
-        <samuel.ortiz@intel.com>, <mona.hossain@intel.com>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <x86@kernel.org>, <linux-pci@vger.kernel.org>,
-        <kvm@vger.kernel.org>
-Subject: Re: [PATCH v3 11/18] dmaengine: idxd: ims setup for the vdcm
-Message-ID: <20201008233210.GH4734@nvidia.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
- <160021253189.67751.12686144284999931703.stgit@djiang5-desk3.ch.intel.com>
- <87mu17ghr1.fsf@nanos.tec.linutronix.de>
- <0f9bdae0-73d7-1b4e-b478-3cbd05c095f4@intel.com>
- <87r1q92mkx.fsf@nanos.tec.linutronix.de>
- <44e19c5d-a0d2-0ade-442c-61727701f4d8@intel.com>
- <87y2kgux2l.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <87y2kgux2l.fsf@nanos.tec.linutronix.de>
-X-ClientProxiedBy: MN2PR01CA0053.prod.exchangelabs.com (2603:10b6:208:23f::22)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        Thu, 8 Oct 2020 19:34:49 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB0EC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 16:34:49 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y1so12581plp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Oct 2020 16:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MRZxCY82VT8AbmDDW9cNgiSjhXieUNCL4lvDa6bH9cQ=;
+        b=k2l02j+qVTgPRzl0YEB+iSSs1OzEALMQl31r6XgVZU/yO4vFIlyi/eqIIu/eZ2jIXL
+         oD6Ai7UmXysgGKc6ayu+h5ZHYMxGqlk/cmIoX3T89xR0Ad7c3hY+n5cJC1Kv4L8ZAc3l
+         5J341dy3JiQZ5XmfItqHSYWmpOXA3bVvHSkpk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MRZxCY82VT8AbmDDW9cNgiSjhXieUNCL4lvDa6bH9cQ=;
+        b=d6J04TsOWLRPXHvgXu3+NId/q5CeCezrUa8vOAybSODPEHOyaMOFqdeUawWg2Q+CgU
+         DJRJKro2bJIA9+TUXfHp0uTWVBVt3tgWQ0+bB2kKTbNg6vjI6lwaN9Is3s3QRuaQB06j
+         aji9FbzjWkU653mRQpJNJBTnmpjQQgO8LesQZa3Vz3zDALWss9EAYoq01+adJnhpjccE
+         tT2MZXiUL0zUDo5rV+tT6YjVJhlhkU8p2o29RY8anzzpKTLyQ5G9RhGOm+3sbA8TcJtM
+         HUoqPoJgWBCXz90sqp8bNzyDKki11exSs4aBiF8EqEkdOlmlEb2SvCCpKcjr9GrsYOKh
+         sg5Q==
+X-Gm-Message-State: AOAM533EskGOoP+LxNpkvfkfmK9lknFXfSGX+0JQAYTDQpQFwLypKHOY
+        Zh0Ogl6vW78cwc+rsTjNO1AYug==
+X-Google-Smtp-Source: ABdhPJyexpe9/8XvCs+4d0A3Z2MTbhqPh7RXZQkKLPSCe9cckWw8dLV1aj2qH4TGZOwGLSFuLsmsAw==
+X-Received: by 2002:a17:902:8d8e:b029:d3:df0c:60a0 with SMTP id v14-20020a1709028d8eb02900d3df0c60a0mr9331844plo.35.1602200088961;
+        Thu, 08 Oct 2020 16:34:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c21sm8660051pfo.139.2020.10.08.16.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 16:34:48 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>,
+        stable@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH] slub: Actually fix freelist pointer vs redzoning
+Date:   Thu,  8 Oct 2020 16:34:43 -0700
+Message-Id: <20201008233443.3335464-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR01CA0053.prod.exchangelabs.com (2603:10b6:208:23f::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Thu, 8 Oct 2020 23:32:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kQfOM-001m41-HQ; Thu, 08 Oct 2020 20:32:10 -0300
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602199881; bh=aBtcuxQxGJxVZM+1oIT81t1EHEQwgCbCuLxZ/puM0lM=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
-        b=B/JDEQlZM46MkF3BhLd4T+hnuXCsrXAHZucvFPgqloQbGFehwUZBZlljDAGFWQ06A
-         cFLP0poowVHeHzDZrxYUhSnsK14XZYbBqN0A+teX0lffrc3E5PAlrbTbx8FvDhGRN/
-         YvAG7hKXOVlYo9CdMthkfEe4Y08kP2srpuNWN526VeqRCWrMJyTV52H09tBSeS+q/2
-         C5JtWR/2sjTE9p/O34uvcEPHQxMkuR1uY/qOFvE+guM/Ep1LlyOMCwr6EMqbrtm2f3
-         E+nwpUQ8y2AKKWxwY5khNN9yaNxpFENbmZSESJOtqNjAGUb+xkr+WMIwNYBaF0Ufe/
-         ysW7kPitaWw4g==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 01:17:38AM +0200, Thomas Gleixner wrote:
-> Dave,
-> 
-> On Thu, Oct 08 2020 at 09:51, Dave Jiang wrote:
-> > On 10/8/2020 12:39 AM, Thomas Gleixner wrote:
-> >> On Wed, Oct 07 2020 at 14:54, Dave Jiang wrote:
-> >>> On 9/30/2020 12:57 PM, Thomas Gleixner wrote:
-> >>>> Aside of that this is fiddling in the IMS storage array behind the irq
-> >>>> chips back without any comment here and a big fat comment about the
-> >>>> shared usage of ims_slot::ctrl in the irq chip driver.
-> >>>>
-> >>> This is to program the pasid fields in the IMS table entry. Was
-> >>> thinking the pasid fields may be considered device specific so didn't
-> >>> attempt to add the support to the core code.
-> >> 
-> >> Well, the problem is that this is not really irq chip functionality.
-> >> 
-> >> But the PASID programming needs to touch the IMS storage which is also
-> >> touched by the irq chip.
-> >> 
-> >> This might be correct as is, but without a big fat comment explaining
-> >> WHY it is safe to do so without any form of serialization this is just
-> >> voodoo and unreviewable.
-> >> 
-> >> Can you please explain when the PASID is programmed and what the state
-> >> of the interrupt is at that point? Is this a one off setup operation or
-> >> does this happen dynamically at random points during runtime?
-> >
-> > I will put in comments for the function to explain why and when we modify the 
-> > pasid field for the IMS entry. Programming of the pasid is done right before we 
-> > request irq. And the clearing is done after we free the irq. We will not be 
-> > touching the IMS field at runtime. So the touching of the entry should be safe.
-> 
-> Thanks for clarifying that.
-> 
-> Thinking more about it, that very same thing will be needed for any
-> other IMS device and of course this is not going to end well because
-> some driver will fiddle with the PASID at the wrong time.
+It turns out that SLUB redzoning ("slub_debug=Z") checks from
+s->object_size rather than from s->inuse (which is normally bumped to
+make room for the freelist pointer), so a cache created with an object
+size less than 24 would have their freelist pointer written beyond
+s->object_size, causing the redzone to corrupt the freelist pointer.
+This was very visible with "slub_debug=ZF":
 
-Why? This looks like some quirk of the IDXD HW where it just randomly
-put PASID along with the IRQ mask register. Probably because PASID is
-not the full 32 bits.
+BUG test (Tainted: G    B            ): Redzone overwritten
+-----------------------------------------------------------------------------
 
-AFAIK the PASID is not tagged on the MemWr TLP triggering the
-interrupt, so it really is unrelated to the irq.
+INFO: 0xffff957ead1c05de-0xffff957ead1c05df @offset=1502. First byte 0x1a instead of 0xbb
+INFO: Slab 0xffffef3950b47000 objects=170 used=170 fp=0x0000000000000000 flags=0x8000000000000200
+INFO: Object 0xffff957ead1c05d8 @offset=1496 fp=0xffff957ead1c0620
 
-I think the ioread to get the PASID is rather ugly, it should pluck
-the PASID out of some driver specific data structure with proper
-locking, and thus use the sleepable version of the irqchip?
+Redzone (____ptrval____): bb bb bb bb bb bb bb bb               ........
+Object  (____ptrval____): 00 00 00 00 00 f6 f4 a5               ........
+Redzone (____ptrval____): 40 1d e8 1a aa                        @....
+Padding (____ptrval____): 00 00 00 00 00 00 00 00               ........
 
-This is really not that different from what I was describing for queue
-contexts - the queue context needs to be assigned to the irq # before
-it can be used in the irq chip other wise there is no idea where to
-write the msg to. Just like pasid here.
+Adjust the offset to stay within s->object_size.
 
-Jason
+(Note that there appear to be no such small-sized caches in the kernel
+currently.)
+
+Reported-by: Marco Elver <elver@google.com>
+Link: https://lore.kernel.org/linux-mm/20200807160627.GA1420741@elver.google.com/
+Fixes: 89b83f282d8b (slub: avoid redzone when choosing freepointer location)
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ mm/slub.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 68c02b2eecd9..979f5da26992 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3641,7 +3641,6 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+ {
+ 	slab_flags_t flags = s->flags;
+ 	unsigned int size = s->object_size;
+-	unsigned int freepointer_area;
+ 	unsigned int order;
+ 
+ 	/*
+@@ -3650,13 +3649,6 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+ 	 * the possible location of the free pointer.
+ 	 */
+ 	size = ALIGN(size, sizeof(void *));
+-	/*
+-	 * This is the area of the object where a freepointer can be
+-	 * safely written. If redzoning adds more to the inuse size, we
+-	 * can't use that portion for writing the freepointer, so
+-	 * s->offset must be limited within this for the general case.
+-	 */
+-	freepointer_area = size;
+ 
+ #ifdef CONFIG_SLUB_DEBUG
+ 	/*
+@@ -3682,7 +3674,7 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+ 
+ 	/*
+ 	 * With that we have determined the number of bytes in actual use
+-	 * by the object. This is the potential offset to the free pointer.
++	 * by the object and redzoning.
+ 	 */
+ 	s->inuse = size;
+ 
+@@ -3694,7 +3686,8 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+ 		 * kmem_cache_free.
+ 		 *
+ 		 * This is the case if we do RCU, have a constructor or
+-		 * destructor or are poisoning the objects.
++		 * destructor, are poisoning the objects, or are
++		 * redzoning an object smaller than sizeof(void *).
+ 		 *
+ 		 * The assumption that s->offset >= s->inuse means free
+ 		 * pointer is outside of the object is used in the
+@@ -3703,13 +3696,13 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+ 		 */
+ 		s->offset = size;
+ 		size += sizeof(void *);
+-	} else if (freepointer_area > sizeof(void *)) {
++	} else {
+ 		/*
+ 		 * Store freelist pointer near middle of object to keep
+ 		 * it away from the edges of the object to avoid small
+ 		 * sized over/underflows from neighboring allocations.
+ 		 */
+-		s->offset = ALIGN(freepointer_area / 2, sizeof(void *));
++		s->offset = ALIGN_DOWN(s->object_size / 2, sizeof(void *));
+ 	}
+ 
+ #ifdef CONFIG_SLUB_DEBUG
+-- 
+2.25.1
+
