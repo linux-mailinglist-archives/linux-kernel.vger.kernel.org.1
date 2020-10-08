@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F26286BEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95617286BEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbgJHAGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 20:06:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46036 "EHLO mail.kernel.org"
+        id S1727449AbgJHAHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 20:07:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726129AbgJHAGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 20:06:07 -0400
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+        id S1726129AbgJHAHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 20:07:51 -0400
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 042A520739
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:06:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 762492177B
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Oct 2020 00:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602115566;
-        bh=bS0l/wIJtDRND8W0efdV/S17wUdgcGyO+U2nsP9YKT0=;
+        s=default; t=1602115670;
+        bh=SFKYXAM/6wL1kNkLhG1rEA3Coy5dc1T0O5EbE8h9jL0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pJ+giGL2pM4ZgcTYomhm617uKI4eenEIRjun0ZlD1EiY3xuQUnR6NbBV1dG9SrV49
-         s4RyC/61cIRjvPKdYBShORwp2CIRv7CbAGHuUQy9+sX9HPiguWd1LoGGY2Jor/X2Lz
-         M9ZjiODPL0PQL02R2GZ6E/C6Des4YJGm2xBULdmQ=
-Received: by mail-wr1-f44.google.com with SMTP id n6so4033198wrm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 17:06:05 -0700 (PDT)
-X-Gm-Message-State: AOAM530OeKsx8zuMBnn6RJ8u7ovapV25+imll1oxeS08yedKDrXdBXD/
-        zN17lrZIrjBgI7gvvbVzbv+GvGS55WfJ10BbkyoqkQ==
-X-Google-Smtp-Source: ABdhPJwn4+QJw2ybHRs+h9LAqbPLXTIZ0OyVRfGd/uVU/L4Y5hWr0t58YtmHSd6y2U4hai2CM8tN6nrYfFKMAlCYsQY=
-X-Received: by 2002:a05:6000:1202:: with SMTP id e2mr5998788wrx.75.1602115564523;
- Wed, 07 Oct 2020 17:06:04 -0700 (PDT)
+        b=zP7G0tPKMtP8RwB8+wKwEIHVMmHCJBKZ6E5BBRqDAauDdxfvd6R7VC6TkLPNI2sYE
+         xBNqxgr3RZl2V7i/Vo85dnMWYGsfEKLXK2DjpN68u2wzfXST8XK7R9vM8wOCroLRo1
+         4cQMSDkF6in5wC63IQN4auejf6KkO7D65pF2OP4c=
+Received: by mail-wr1-f42.google.com with SMTP id n6so4036736wrm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 17:07:50 -0700 (PDT)
+X-Gm-Message-State: AOAM531DtnRiYIt7dLkVuYEj4Ymo2k0uqaaz35/8EQfAW9d0eUF3kf19
+        aO3Tjz1tdw9MpXdWbYyALDxyjGoCuoX22lacKolvqA==
+X-Google-Smtp-Source: ABdhPJzPEErmo9+52LOeopgEfoPAEh5KoqjqpZ7S/kUMvmxhl0Zxzz7pKAMbiycOB2wSHtHMnMEKycPFqySCCQFpB+U=
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr6011139wrb.70.1602115668829;
+ Wed, 07 Oct 2020 17:07:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201004032536.1229030-1-krisman@collabora.com> <20201004032536.1229030-7-krisman@collabora.com>
-In-Reply-To: <20201004032536.1229030-7-krisman@collabora.com>
+References: <20201004032536.1229030-1-krisman@collabora.com> <20201004032536.1229030-10-krisman@collabora.com>
+In-Reply-To: <20201004032536.1229030-10-krisman@collabora.com>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 7 Oct 2020 17:05:51 -0700
-X-Gmail-Original-Message-ID: <CALCETrW5Oq0L0G7JrjYLFp08+y4kr0STkmn8cf4LKcHOfz0heQ@mail.gmail.com>
-Message-ID: <CALCETrW5Oq0L0G7JrjYLFp08+y4kr0STkmn8cf4LKcHOfz0heQ@mail.gmail.com>
-Subject: Re: [PATCH v3 06/10] x86: elf: Use e_machine to select start_thread
- for x32
+Date:   Wed, 7 Oct 2020 17:07:37 -0700
+X-Gmail-Original-Message-ID: <CALCETrVVii5+d1xDiFX03wdS1XhxmezemhHTG7FArF50uVAJRw@mail.gmail.com>
+Message-ID: <CALCETrVVii5+d1xDiFX03wdS1XhxmezemhHTG7FArF50uVAJRw@mail.gmail.com>
+Subject: Re: [PATCH v3 09/10] x86: Convert mmu context ia32_compat into a
+ proper flags field
 To:     Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc:     Andrew Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -59,15 +59,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Sat, Oct 3, 2020 at 8:26 PM Gabriel Krisman Bertazi
 <krisman@collabora.com> wrote:
 >
-> Since TIF_X32 is going away, avoid using it to find the ELF type in
-> compat_start_thread.
+> The ia32_compat attribute is a weird thing.  It mirrors TIF_IA32 and
+> TIF_X32 and is used only in two very unrelated places: (1) to decide if
+> the vsyscall page is accessible (2) for uprobes to find whether the
+> patched instruction is 32 or 64 bit.  In preparation to remove the TI
+> flags, we want new values for ia32_compat, but given its odd semantics,
+> I'd rather make it a real flags field that configures these specific
+> behaviours.  So, set_personality_x64 can ask for the vsyscall page,
+> which is not available in x32/ia32 and set_personality_ia32 can
+> configure the uprobe code as needed.
 >
-> According to SysV AMD64 ABI Draft, an AMD64 ELF object using ILP32 must
-> have ELFCLASS32 with (E_MACHINE == EM_X86_64), so use that ELF field to
-> differentiate a x32 object from a IA32 object when executing
-> start_thread in compat mode.
+> uprobe cannot rely on other methods like user_64bit_mode() to decide how
+> to patch, so it needs some specific flag like this.
 
-Hmm, I suppose I can live with this.  It's not fundamentally worse
-than any of the other ELF compat hacks.
+Acked-by: Andy Lutomirski<luto@kernel.org>
 
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
+There are still issues with vsyscall control, but they were
+pre-existing and I'll try to get them fixed up.
+
+--Andy
