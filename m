@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EC6287BBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21974287BC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgJHScl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728464AbgJHScl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:32:41 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 773602145D;
-        Thu,  8 Oct 2020 18:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602181960;
-        bh=/8fOwt/Qn5xe/dYjyUSsAHEDn2T/gSBbNJtdJH0G9q0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rekAvmMoqxdT8aLb8t4dTGfslNnoBg1qFhMCXA01qhfaDg8SGWsipwsjh447JaX7j
-         wKltTDgCHKyhF1P+kUuW/sRiNOsWA4C7KSpQlgffnL0FXnC0JQISmDYI4xFWEaV8yL
-         XnABhduU0dwhBjnixh+VVmUnHom1Yw0jSc/nuy88=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1231235228D5; Thu,  8 Oct 2020 11:32:39 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 11:32:39 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Bug in herd7 [Was: Re: Litmus test for question from Al Viro]
-Message-ID: <20201008183239.GZ29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201005191801.GF29330@paulmck-ThinkPad-P72>
- <20201005194834.GB389867@rowland.harvard.edu>
- <20201006163954.GM29330@paulmck-ThinkPad-P72>
- <20201006170525.GA423499@rowland.harvard.edu>
- <20201007175040.GQ29330@paulmck-ThinkPad-P72>
- <20201007194050.GC468921@rowland.harvard.edu>
- <20201007223851.GV29330@paulmck-ThinkPad-P72>
- <20201008022537.GA480405@rowland.harvard.edu>
- <20201008025025.GX29330@paulmck-ThinkPad-P72>
- <20201008140148.GA495091@rowland.harvard.edu>
+        id S1729126AbgJHSdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728464AbgJHSdJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 14:33:09 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7C6C061755;
+        Thu,  8 Oct 2020 11:33:08 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q9so7359637iow.6;
+        Thu, 08 Oct 2020 11:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0vV4Mb98vlQIwwZ0z4qtbWCxs9fA4GO948r8Iey6zXY=;
+        b=IyefXmudAS05tO7aFl4A85mBPzjTiyMd73wrzuWmi+XHbF3v25yu+m5vxpB2A2FpV8
+         nUzUL4JdairnVbPM0YS3nx4QJ0ZTaknynWl9oGU6IDmFXpgkRR/sjAK/Eqg9jaDYuuHY
+         bp216KyM8Q2JdHT3FRpVgsVZMyOtz7B8pZ+Q41Kj5A0vCCGTf5zaAKJUAWghhZ/ME2bz
+         /3gVjqpwMJX4BZGx7mTCm5WabN611FEuTXHjDoW3zI8wJ9Yi3PeljSr0IA6b+uj62ghT
+         gxlelyMF0NO11HyYazv0qbvTRu046GU2IdbRkBqOmdp9EnMS5cHkTica6lvtem6IBRg5
+         EmEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0vV4Mb98vlQIwwZ0z4qtbWCxs9fA4GO948r8Iey6zXY=;
+        b=L6yrPOEx4eLtbidNqm0l3AG+Jq3zfTi7IMh4PWCxivq/brhsR4rJT5p9DIhVyreTWL
+         /ADBefsgGLD4qRcz7/J8QHjMD5RFS5QqZBd7BFJ5XVrlosfyPphrlImFHf8dWMf22pbr
+         xAC7xethI0iTtvJr3zZKKMj5wGWj/CWB0wRjnucdhuFZXdQU2KLOqFfMHioT775oMFOS
+         i+1as0JFAs2kRBm+eYEb7Tr9UPfBN/0ttcz8J9VKi2xcykKRLFa5Injuww+oMJ1+tf7+
+         y9C4Rw/uYNjLL6UG8/gXbGNPrWDj7oAlDligrRAqghZNKktETbQkmfGCMNMfB20yByqy
+         AVQA==
+X-Gm-Message-State: AOAM531ssM9WLT+FMOvTi1GBTM4f9Ih5xBVP80w0vO0lLEF4lJuGXtH8
+        VtLfc5OPmrKv6jQllCiOXgy+eOL/i88uEw==
+X-Google-Smtp-Source: ABdhPJy/JhePvsbaaNGnqX+bcq4B236D1/woZ8hSpzdfQRDXaw0drHDhyPtsp9jyGcfLnTUXBRFzUA==
+X-Received: by 2002:a02:cc8d:: with SMTP id s13mr8019937jap.4.1602181988120;
+        Thu, 08 Oct 2020 11:33:08 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:7c62:dd9d:b755:cfbd])
+        by smtp.gmail.com with ESMTPSA id r2sm2446268ile.1.2020.10.08.11.33.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 11:33:07 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, krzk@kernel.org,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] arm64: dts imx8mn: Remove non-existent USB OTG2
+Date:   Thu,  8 Oct 2020 13:33:00 -0500
+Message-Id: <20201008183300.726756-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008140148.GA495091@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 10:01:48AM -0400, Alan Stern wrote:
-> On Wed, Oct 07, 2020 at 07:50:25PM -0700, Paul E. McKenney wrote:
-> > There are some distractions at the moment.
-> > 
-> > Please see below.  If this is not exactly correct, I will use "git rm"
-> > and let you submit the patch as you wish.
-> > 
-> > 						Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit dc0119c24b64f9d541b94ba5d17eec0cbc265bfa
-> > Author: Alan Stern <stern@rowland.harvard.edu>
-> > Date:   Tue Oct 6 09:38:37 2020 -0700
-> > 
-> >     manual/kernel: Add LB data dependency test with no intermediate variable
-> >     
-> >     Test whether herd7 can detect a data dependency when there is no
-> >     intermediate local variable, as in WRITE_ONCE(*x, READ_ONCE(*y)).
-> >     Commit 0f3f8188a326 in herdtools fixed an oversight which caused such
-> >     dependencies to be missed.
-> >     
-> >     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/manual/kernel/C-LB+mb+data.litmus b/manual/kernel/C-LB+mb+data.litmus
-> > new file mode 100644
-> > index 0000000..e9e24e0
-> > --- /dev/null
-> > +++ b/manual/kernel/C-LB+mb+data.litmus
-> > @@ -0,0 +1,27 @@
-> > +C LB+mb+data
-> > +(*
-> > + * Result: Never
-> > + *
-> > + * Versions of herd7 prior to commit 0f3f8188a326 ("[herd] Fix dependency
-> > + * definition") recognize data dependencies only when they flow through
-> > + * an intermediate local variable.  Since the dependency in P1 doesn't,
-> > + * those versions get the wrong answer for this test.
-> > + *)
-> > +
-> > +{}
-> > +
-> > +P0(int *x, int *y)
-> > +{
-> > +	int r1;
-> > +
-> > +	r1 = READ_ONCE(*x);
-> > +	smp_mb();
-> > +	WRITE_ONCE(*y, r1);
-> > +}
-> > +
-> > +P1(int *x, int *y)
-> > +{
-> > +	WRITE_ONCE(*x, READ_ONCE(*y));
-> > +}
-> > +
-> > +exists (0:r1=1)
-> 
-> Okay, that's exactly what it should be.  :-)
+According to the i.MX8MN TRM, there is only one OTG port.  The
+address for OTG2 is reserved on Nano.
 
-Whew!!!  ;-)
+This patch removes the non-existent OTG2, usbphynop2, and the usbmisc2
+nodes.
 
-							Thanx, Paul
+Fixes: 6c3debcbae47 ("arm64: dts: freescale: Add i.MX8MN dtsi support")
+
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+V2:  Remove usbmisc2 and usbphynop2 in addition to the otg2 node.
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 746faf1cf2fb..16c7202885d7 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -790,28 +790,6 @@ usbmisc1: usbmisc@32e40200 {
+ 				#index-cells = <1>;
+ 				reg = <0x32e40200 0x200>;
+ 			};
+-
+-			usbotg2: usb@32e50000 {
+-				compatible = "fsl,imx8mn-usb", "fsl,imx7d-usb";
+-				reg = <0x32e50000 0x200>;
+-				interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+-				clocks = <&clk IMX8MN_CLK_USB1_CTRL_ROOT>;
+-				clock-names = "usb1_ctrl_root_clk";
+-				assigned-clocks = <&clk IMX8MN_CLK_USB_BUS>,
+-						  <&clk IMX8MN_CLK_USB_CORE_REF>;
+-				assigned-clock-parents = <&clk IMX8MN_SYS_PLL2_500M>,
+-							 <&clk IMX8MN_SYS_PLL1_100M>;
+-				fsl,usbphy = <&usbphynop2>;
+-				fsl,usbmisc = <&usbmisc2 0>;
+-				status = "disabled";
+-			};
+-
+-			usbmisc2: usbmisc@32e50200 {
+-				compatible = "fsl,imx8mn-usbmisc", "fsl,imx7d-usbmisc";
+-				#index-cells = <1>;
+-				reg = <0x32e50200 0x200>;
+-			};
+-
+ 		};
+ 
+ 		dma_apbh: dma-controller@33000000 {
+@@ -876,12 +854,4 @@ usbphynop1: usbphynop1 {
+ 		assigned-clock-parents = <&clk IMX8MN_SYS_PLL1_100M>;
+ 		clock-names = "main_clk";
+ 	};
+-
+-	usbphynop2: usbphynop2 {
+-		compatible = "usb-nop-xceiv";
+-		clocks = <&clk IMX8MN_CLK_USB_PHY_REF>;
+-		assigned-clocks = <&clk IMX8MN_CLK_USB_PHY_REF>;
+-		assigned-clock-parents = <&clk IMX8MN_SYS_PLL1_100M>;
+-		clock-names = "main_clk";
+-	};
+ };
+-- 
+2.25.1
+
