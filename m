@@ -2,195 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C149F286C1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B13286C32
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 02:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgJHAne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 20:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727732AbgJHAne (ORCPT
+        id S1728231AbgJHApH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 20:45:07 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1211 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728023AbgJHAow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 20:43:34 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2F3C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Oct 2020 17:43:34 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id u7so2133414vsq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Oct 2020 17:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s1vFaQwEYAj+kfpG7wmgAvUX+m94PjPvEEFq0pb+beU=;
-        b=Wp5sVtYz9RFuTf8HwWQcjRqk2whZSdWTSRmHelxkoLivWhEMRrU80IIg0ORfASmxcF
-         Ds2gAwd6GPVZHTi/jSu3NlpIeC4hjGoeQIyn5acmCD0zUs8scF+bGfKwqLd2r3XhPu1M
-         ogURv6eN7z1wFOaBtykUW+a7yfiKds6xXU3Y3C1Ao18Q1zmYxBy6YSU06qV996aDEVBU
-         nzriS/au8lNLN/M3eaZWcLp9AMuLe8B/V4YNR3PGTIEQXYIU0XQrTnB3qmBuAZEzch8D
-         i+qDFMouMGrrxDkWn8dGpbnf8TguzX5KTzBv7yTMa81v5/14Ac4UNNCXox5W8DI/tEMA
-         XEyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s1vFaQwEYAj+kfpG7wmgAvUX+m94PjPvEEFq0pb+beU=;
-        b=pDw1HmOMutgGGOL3QpcBBsXze1yJ6Skqb5rOVC+IgUfelORVyxBnQyfQ0hXS+PBV62
-         e3c1nCrWMWbpio/MvxkARvuLk4DTDhafayyiI5a/sY4prHTkAdUYg+jZH3fkd5ObxZd2
-         9oaTotBjo7CY18x02lTPEzNovBDQ+4lQkI4Sqw2AQ0nABEyojDgtHS5j6BR5tSViTih0
-         3GWrqQqNMJnyWvvDwO/UN5Xti/ITOLoCLkt2N3OZDdB067FrkjKfagzVl761jmEGh2in
-         uSNEZqbWqRRMV5jRf6HWAnIvZoCVQYaN1so0i567uiW4GgYLGG3dWvxZY8DSDx9Vb5xQ
-         IJ3w==
-X-Gm-Message-State: AOAM532jS344khdkcxXVE1XF8juCBWGFPqNTzYuoPGz2Z2Zfo5h02r1I
-        +wOs6Sqow+L7nBvApgRO7rUXZ9lTF82/Px3rMX0KvA==
-X-Google-Smtp-Source: ABdhPJz+HZTLyoGMy4yKKuwstafPHRZcaQ9eu/Qk3P+I6Eahit+EF/pbkIYjvwdX4S62JcdOrVR2+idvgFxLuQUKg40=
-X-Received: by 2002:a67:ee1a:: with SMTP id f26mr3620209vsp.48.1602117813213;
- Wed, 07 Oct 2020 17:43:33 -0700 (PDT)
+        Wed, 7 Oct 2020 20:44:52 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7e60960000>; Wed, 07 Oct 2020 17:43:02 -0700
+Received: from [10.2.85.86] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 8 Oct
+ 2020 00:44:46 +0000
+Subject: Re: [PATCH 07/13] mm: close race in generic_access_phys
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Rik van Riel <riel@redhat.com>,
+        Benjamin Herrensmidt <benh@kernel.crashing.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Hugh Dickins <hugh@veritas.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <20201007164426.1812530-1-daniel.vetter@ffwll.ch>
+ <20201007164426.1812530-8-daniel.vetter@ffwll.ch>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <852a74ec-339b-4c7f-9e29-b9736111849a@nvidia.com>
+Date:   Wed, 7 Oct 2020 17:44:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-4-badhri@google.com>
- <20201005144618.GA154206@bogus>
-In-Reply-To: <20201005144618.GA154206@bogus>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Wed, 7 Oct 2020 17:42:57 -0700
-Message-ID: <CAPTae5+e74k22Vcf-cnFLFGnR-mBdb9qvN6i-E-31VexhpUSeA@mail.gmail.com>
-Subject: Re: [PATCH v9 03/15] dt-bindings: usb: Maxim type-c controller device
- tree binding document
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201007164426.1812530-8-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602117782; bh=5uceI5LiOq5+y7CKrEdS7/p/1zSG6F9z/ywEQqsl+0Q=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=bOv1zchIGPZ4VmVobYy9ouKvwkK5z2iFx0tCygQStaL5H7jfVh0290LObbayaaJdS
+         WHEwgcF93dN/WBuw358p5ASUvd7jq2UVbYaEsfmxxLYQKm9SIHpvw1Azpcdj8EvlkO
+         +h0jsBZCIPOWXbnWZglvtlNPQ9RozMAAGu9n2l/aM37dTFHaW2PBaPyNHrvz3GBICy
+         9TRkHD5naSV5XLswp6NmgWYjti6DfG9Id8SNalhueNWQcUu+7yGRlg+spys2z8hb56
+         zeyo4ufqohIWRiSETZ13zhAJ7qYzaQsz7j6WHTgK/Hmqk/WB97CYrfy3hYU2QFR/25
+         OfakNOpxWk5cA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robb,
+On 10/7/20 9:44 AM, Daniel Vetter wrote:
+> Way back it was a reasonable assumptions that iomem mappings never
+> change the pfn range they point at. But this has changed:
+> 
+> - gpu drivers dynamically manage their memory nowadays, invalidating
+>    ptes with unmap_mapping_range when buffers get moved
+> 
+> - contiguous dma allocations have moved from dedicated carvetouts to
 
-Thanks for the reviews ! Responses inline.
+s/carvetouts/carveouts/
 
-Regards,
-Badhri
+>    cma regions. This means if we miss the unmap the pfn might contain
+>    pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> 
+> - even /dev/mem now invalidates mappings when the kernel requests that
+>    iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+>    ("/dev/mem: Revoke mappings when a driver claims the region")
 
-On Mon, Oct 5, 2020 at 7:46 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, Sep 28, 2020 at 07:39:52PM -0700, Badhri Jagan Sridharan wrote:
-> > Add device tree binding document for Maxim TCPCI based Type-C chip driver
-> >
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > ---
-> > Changes since v1:
-> > - Changing patch version to v6 to fix version number confusion.
-> >
-> > Changes since v6:
-> > - Migrated to yaml format.
-> >
-> > Changes since v7:
-> > - Rebase on usb-next
-> >
-> > Changes since v8:
-> > - Fix errors from make dt_binding_check as suggested by
-> >   Rob Herring.
-> > ---
-> >  .../devicetree/bindings/usb/maxim,tcpci.yaml  | 68 +++++++++++++++++++
-> >  1 file changed, 68 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > new file mode 100644
-> > index 000000000000..f4b5f1a09b98
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > @@ -0,0 +1,68 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: "http://devicetree.org/schemas/usb/maxim,tcpci.yaml#"
-> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > +
-> > +title: Maxim TCPCI Type-C PD controller DT bindings
-> > +
-> > +maintainers:
-> > +  - Badhri Jagan Sridharan <badhri@google.com>
-> > +
-> > +description: Maxim TCPCI Type-C PD controller
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - maxim,tcpci
->
-> Is there a datasheet for this? Searching for 'tcpci' doesn't really come
-> up with anything other than this patch. Only chip I found is MAX77958.
-> Bindings are for specific h/w devices.
+Thanks for putting these references into the log, it's very helpful.
+...
+> diff --git a/mm/memory.c b/mm/memory.c
+> index fcfc4ca36eba..8d467e23b44e 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4873,28 +4873,68 @@ int follow_phys(struct vm_area_struct *vma,
+>   	return ret;
+>   }
+>   
+> +/**
+> + * generic_access_phys - generic implementation for iomem mmap access
+> + * @vma: the vma to access
+> + * @addr: userspace addres, not relative offset within @vma
+> + * @buf: buffer to read/write
+> + * @len: length of transfer
+> + * @write: set to FOLL_WRITE when writing, otherwise reading
+> + *
+> + * This is a generic implementation for &vm_operations_struct.access for an
+> + * iomem mapping. This callback is used by access_process_vm() when the @vma is
+> + * not page based.
+> + */
+>   int generic_access_phys(struct vm_area_struct *vma, unsigned long addr,
+>   			void *buf, int len, int write)
+>   {
+>   	resource_size_t phys_addr;
+>   	unsigned long prot = 0;
+>   	void __iomem *maddr;
+> +	pte_t *ptep, pte;
+> +	spinlock_t *ptl;
+>   	int offset = addr & (PAGE_SIZE-1);
+> +	int ret = -EINVAL;
+> +
+> +	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+> +		return -EINVAL;
+> +
+> +retry:
+> +	if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
+> +		return -EINVAL;
+> +	pte = *ptep;
+> +	pte_unmap_unlock(ptep, ptl);
+>   
+> -	if (follow_phys(vma, addr, write, &prot, &phys_addr))
+> +	prot = pgprot_val(pte_pgprot(pte));
+> +	phys_addr = (resource_size_t)pte_pfn(pte) << PAGE_SHIFT;
+> +
+> +	if ((write & FOLL_WRITE) && !pte_write(pte))
+>   		return -EINVAL;
+>   
+>   	maddr = ioremap_prot(phys_addr, PAGE_ALIGN(len + offset), prot);
+>   	if (!maddr)
+>   		return -ENOMEM;
+>   
+> +	if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
+> +		goto out_unmap;
+> +
+> +	if (pte_same(pte, *ptep)) {
 
-Unfortunately the datasheet cannot be made public yet. Has the datasheet
-have to be made public before sending the bindings ?
 
->
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  connector:
-> > +    type: object
-> > +    $ref: ../connector/usb-connector.yaml#
-> > +    description:
-> > +      Properties for usb c connector.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
->
-> additionalProperties: false
+The ioremap area is something I'm sorta new to, so a newbie question:
+is it possible for the same pte to already be there, ever? If so, we
+be stuck in an infinite loop here.  I'm sure that's not the case, but
+it's not yet obvious to me why it's impossible. Resource reservations
+maybe?
 
-ACK. Adding to the next version of the patch.
 
->
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    #include <dt-bindings/usb/pd.h>
-> > +    i2c0 {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        maxtcpc@25 {
-> > +            compatible = "maxim,tcpc";
-> > +            reg = <0x25>;
-> > +            interrupt-parent = <&gpa8>;
-> > +            interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
-> > +
-> > +            connector {
-> > +                compatible = "usb-c-connector";
-> > +                label = "USB-C";
-> > +                data-role = "dual";
-> > +                power-role = "dual";
-> > +                try-power-role = "sink";
-> > +                self-powered;
-> > +                op-sink-microwatt = <2600000>;
-> > +                source-pdos = <PDO_FIXED(5000, 900,
-> > +                                         PDO_FIXED_SUSPEND |
-> > +                                         PDO_FIXED_USB_COMM |
-> > +                                         PDO_FIXED_DATA_SWAP |
-> > +                                         PDO_FIXED_DUAL_ROLE)>;
-> > +                sink-pdos = <PDO_FIXED(5000, 3000,
-> > +                                       PDO_FIXED_USB_COMM |
-> > +                                       PDO_FIXED_DATA_SWAP |
-> > +                                       PDO_FIXED_DUAL_ROLE)
-> > +                                       PDO_FIXED(9000, 2000, 0)>;
-> > +            };
-> > +        };
-> > +    };
-> > +...
-> > --
-> > 2.28.0.709.gb0816b6eb0-goog
-> >
+thanks,
+-- 
+John Hubbard
+NVIDIA
