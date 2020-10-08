@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CF2286C91
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCB9286C9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 04:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgJHCGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Oct 2020 22:06:24 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49182 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgJHCGY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Oct 2020 22:06:24 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09824RFp175278;
-        Thu, 8 Oct 2020 02:06:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=97yZT1cefAY4ZTPsmF9ckUOhMiUfZRa7uRF+Ezhf5DM=;
- b=F/vdbKLjVMknEe5Rz1H/iH/pVZ74AaC9lXy3P0ks0JwM8hmaL1sSrZcMA3KAm8UUqxfz
- T/R4SNlrJlpH7LGIHqjEmP+NO06DNpmFf0wGtUaPoNHVt0dvHYLYAcRblT3N0AS8dl6O
- 4b5N+haprl7uFKlDjayqY8BcPmwcCBxP+aqdiebwHl9SwHT4MpthsPcwxBTIkaJNB3Dl
- OZamy6Po0v/yjVHlht5VuziSJ3XzgxNECAZu1NlQWpbN7mAZZXURKRlAW/bRqQ9bK0pm
- q/NMKJyKqwk+5+AvivkM0LZpqvqdHp+o6Q1Tz9Cu2UicvaRdto3Ith+Fo2Uulxk4CaVX CA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33xhxn51y3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 08 Oct 2020 02:06:20 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09824vdk115013;
-        Thu, 8 Oct 2020 02:06:19 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3410k0cfs3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 08 Oct 2020 02:06:19 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09826Fwf012435;
-        Thu, 8 Oct 2020 02:06:17 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Oct 2020 19:06:14 -0700
-To:     ching Huang <ching2048@areca.com.tw>
-Cc:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/2] scsi: arcmsr: use upper_32_bits() instead of
- dma_addr_hi32()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1zh4xzd2z.fsf@ca-mkp.ca.oracle.com>
-References: <9846b9ef4f8dcdac543270c3268d1ebb31aad6a7.camel@areca.com.tw>
-Date:   Wed, 07 Oct 2020 22:06:12 -0400
-In-Reply-To: <9846b9ef4f8dcdac543270c3268d1ebb31aad6a7.camel@areca.com.tw>
-        (ching Huang's message of "Wed, 07 Oct 2020 15:20:14 +0800")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=921 spamscore=0
- adultscore=0 bulkscore=0 malwarescore=0 suspectscore=1 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080017
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9767 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=1 phishscore=0
- mlxlogscore=953 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010080017
+        id S1727977AbgJHCMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Oct 2020 22:12:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:31771 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727345AbgJHCMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Oct 2020 22:12:48 -0400
+IronPort-SDR: 4xC+YK24E2Hmmh7HepWnd43QltlxctlkcmWDmyR34LmBPRObmq62/Lsa3JtA9ECBbSSAnj4Hi3
+ sI/+ceDTA8YA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9767"; a="152154691"
+X-IronPort-AV: E=Sophos;i="5.77,349,1596524400"; 
+   d="scan'208";a="152154691"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2020 19:12:47 -0700
+IronPort-SDR: koBqk6+6qChIDfC1odQe1YOdDdplcX5P9to+IEEk8KRbccgfobBiH7jehekdDXWkht7pdK4QEY
+ 8/gI5OJXU8OA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,349,1596524400"; 
+   d="scan'208";a="355211171"
+Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
+  by orsmga007.jf.intel.com with ESMTP; 07 Oct 2020 19:12:44 -0700
+From:   muhammad.husaini.zulkifli@intel.com
+To:     adrian.hunter@intel.com, michal.simek@xilinx.com,
+        andriy.shevchenko@intel.com, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     lakshmi.bai.raja.subramanian@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com,
+        muhammad.husaini.zulkifli@intel.com, arnd@arndb.de
+Subject: [PATCH v4 0/4] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+Date:   Thu,  8 Oct 2020 10:09:32 +0800
+Message-Id: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-Ching,
+Hi.
 
-> 1. Use upper_32_bits() instead of dma_addr_hi32().
-> 2. Use round_up() instead of logical operation.
+The first patch is the header file to handle ATF call.
 
-Merged these. Thanks!
+The second patch is DT binding for arasan controller for uhs support.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The third patch is to introduce the structure device pointer in arasan controller probe.
+
+The fourth patch is to enable UHS-1 Support for Keem Bay EVM.
+
+All of these patches was tested with Keem Bay evaluation module board.
+
+Kindly help to review this patch set.
+
+Thank you.
+
+Changes since v3:
+- Add Dt bindings for uhs gpio.
+- Fixed comment by Michal and Sudeep on header file for the macro and error code.
+- Fixed comment by Andy and created 1 new patch to separate the struc dev pointer in probe func.
+- Fixed comment by Michal in arasan controller code.
+
+Changes since v2:
+- Removed Document DT Bindings for Keembay Firmware.
+- Removed Firmware Driver to handle ATF Service call.
+- Add header file to handle API function for device driver to communicate with Arm Trusted Firmware.
+
+Changes since v1:
+- Add Document DT Bindings for Keembay Firmware.
+- Created Firmware Driver to handle ATF Service call
+- Provide API for arasan driver for sd card voltage changes
+
+Muhammad Husaini Zulkifli (4):
+  firmware: keembay: Add support for Arm Trusted Firmware Service call
+  dt-bindings: mmc: Add uhs-gpio for Keem Bay UHS-1 Support
+  mmc: sdhci-of-arasan: Add structure device pointer in probe
+  mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+
+ .../devicetree/bindings/mmc/arasan,sdhci.yaml |   8 +-
+ drivers/mmc/host/sdhci-of-arasan.c            | 127 ++++++++++++++++++
+ .../linux/firmware/intel/keembay_firmware.h   |  47 +++++++
+ 3 files changed, 181 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/firmware/intel/keembay_firmware.h
+
+--
+2.17.1
+
