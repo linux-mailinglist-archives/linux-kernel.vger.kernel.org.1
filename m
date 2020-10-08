@@ -2,66 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683A2287BDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668D7287BE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 20:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729352AbgJHSoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 14:44:20 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:37468 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729331AbgJHSoT (ORCPT
+        id S1729369AbgJHStB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 14:49:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45914 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725908AbgJHStA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:44:19 -0400
-Received: by mail-oi1-f193.google.com with SMTP id t77so7407804oie.4;
-        Thu, 08 Oct 2020 11:44:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nhaf7VstnY9U3VG5uxKi48X4aznhV2MNfNHXbJ6mppE=;
-        b=cOsX1+Ribdoa/F+wkyfMkUIQ2THXgCEbmsOp+oA0V8XyxhHbAItmFQQ/MDyH7cfSQZ
-         WGnJHysG/RJfwshmlb5OspFwUf9ZcIEI19wD9XlIYe16XFqnu1Xwoxg9uzkP6dtN7AuS
-         VGKECsdEKrxja4Jcrs2V6e5/5TEcqp6bx7M+C9F4tD/ireF0taAf3JYA+dhxscPpr1dV
-         L+aEFtSr/MkBjbpSG+hkI9LyTgiOHBG+m2WBMbuh6tN/aj8lV80LRgubS9I33dfxIkPR
-         yVagwr83zn1re/dv+ijzzIlvFNTJCKsJGLfNFGl8Bpxh/TgAeSFlZoHcAgzotIXmi/3h
-         VdqQ==
-X-Gm-Message-State: AOAM532+ekTaO2HZ15O2nDGNLJkcHAn10nVwlVY2Xeo2JEkXguBVUz3Z
-        4TkwcuuxvXlhJNSLfqOc2H8ogS2119/V
-X-Google-Smtp-Source: ABdhPJzZgSafOved2t30rvjMdGvMLMYEG3EKmM30Dj0ir1oV15GOGx3lVl4CTO2MTirABiTeUKRQ8g==
-X-Received: by 2002:aca:b554:: with SMTP id e81mr116572oif.105.1602182659228;
-        Thu, 08 Oct 2020 11:44:19 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 68sm4623112otu.33.2020.10.08.11.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 11:44:18 -0700 (PDT)
-Received: (nullmailer pid 2425486 invoked by uid 1000);
-        Thu, 08 Oct 2020 18:44:17 -0000
-Date:   Thu, 8 Oct 2020 13:44:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Naoki Hayama <naoki.hayama@lineo.co.jp>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] dt-bindings: pinctrl: sirf: Fix typo abitrary
-Message-ID: <20201008184417.GA2425438@bogus>
-References: <614fe604-ab8e-21cb-0c3a-db6ddeff2a4e@lineo.co.jp>
+        Thu, 8 Oct 2020 14:49:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602182938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XKvUN7mKPbV+B612jB+Si5npQlDaawUSuukFx01DKck=;
+        b=Qm3OHv+7WtTMRXEPblASj+0Yaa3t9mT2F+0gIRDfz+feq89PxT1NqQDEuxoSdnI5KxnftT
+        Y6oPv0d9Ok52HEJw/XN5ez6ZU9kEePOAe7o8mjkyQqt/tQSDlkBrfl6oOwTPvs2xOs/JO+
+        Zgqguu7OaLIjtlSLlQc3AnxG3/l6i9A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-d1bW96jfNOOyzfUHXbAlQw-1; Thu, 08 Oct 2020 14:48:54 -0400
+X-MC-Unique: d1bW96jfNOOyzfUHXbAlQw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01FB99CC11;
+        Thu,  8 Oct 2020 18:48:53 +0000 (UTC)
+Received: from redhat.com (ovpn-119-161.rdu2.redhat.com [10.10.119.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C7DC66EF4A;
+        Thu,  8 Oct 2020 18:48:51 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 14:48:49 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>,
+        Josef Bacik <jbacik@fb.com>
+Subject: Re: [PATCH 00/14] Small step toward KSM for file back page.
+Message-ID: <20201008184849.GA3514601@redhat.com>
+References: <20201007010603.3452458-1-jglisse@redhat.com>
+ <20201007032013.GS20115@casper.infradead.org>
+ <20201007144835.GA3471400@redhat.com>
+ <20201007170558.GU20115@casper.infradead.org>
+ <20201007175419.GA3478056@redhat.com>
+ <20201007220916.GX20115@casper.infradead.org>
+ <20201008153028.GA3508856@redhat.com>
+ <20201008154341.GJ20115@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <614fe604-ab8e-21cb-0c3a-db6ddeff2a4e@lineo.co.jp>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201008154341.GJ20115@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 08 Oct 2020 17:47:42 +0900, Naoki Hayama wrote:
-> Fix comment typo.
-> s/abitrary/arbitrary/
+On Thu, Oct 08, 2020 at 04:43:41PM +0100, Matthew Wilcox wrote:
+> On Thu, Oct 08, 2020 at 11:30:28AM -0400, Jerome Glisse wrote:
+> > On Wed, Oct 07, 2020 at 11:09:16PM +0100, Matthew Wilcox wrote:
+> > > So ... why don't you put a PageKsm page in the page cache?  That way you
+> > > can share code with the current KSM implementation.  You'd need
+> > > something like this:
+> > 
+> > I do just that but there is no need to change anything in page cache.
 > 
-> Signed-off-by: Naoki Hayama <naoki.hayama@lineo.co.jp>
-> ---
->  Documentation/devicetree/bindings/pinctrl/pinctrl-atlas7.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> That's clearly untrue.  If you just put a PageKsm page in the page
+> cache today, here's what will happen on a truncate:
 > 
+> void truncate_inode_pages_range(struct address_space *mapping,
+>                                 loff_t lstart, loff_t lend)
+> {
+> ...
+>                 struct page *page = find_lock_page(mapping, start - 1);
+> 
+> find_lock_page() does this:
+>         return pagecache_get_page(mapping, offset, FGP_LOCK, 0);
+> 
+> pagecache_get_page():
+> 
+> repeat:
+>         page = find_get_entry(mapping, index);
+> ...
+>         if (fgp_flags & FGP_LOCK) {
+> ...
+>                 if (unlikely(compound_head(page)->mapping != mapping)) {
+>                         unlock_page(page);
+>                         put_page(page);
+>                         goto repeat;
+> 
+> so it's just going to spin.  There are plenty of other codepaths that
+> would need to be checked.  If you haven't found them, that shows you
+> don't understand the problem deeply enough yet.
 
-Applied, thanks!
+I also change truncate, splice and few other special cases that do
+not goes through GUP/page fault/mkwrite (memory debug too but that's
+a different beast).
+
+
+> I believe we should solve this problem, but I don't think you're going
+> about it the right way.
+
+I have done much more than what i posted but there is bug that i
+need to hammer down before posting everything and i wanted to get
+the discussion started. I guess i will finish tracking that one
+down and post the whole thing.
+
+
+> > So flow is:
+> > 
+> >   Same as before:
+> >     1 - write fault (address, vma)
+> >     2 - regular write fault handler -> find page in page cache
+> > 
+> >   New to common page fault code:
+> >     3 - ksm check in write fault common code (same as ksm today
+> >         for anonymous page fault code path).
+> >     4 - break ksm (address, vma) -> (file offset, mapping)
+> >         4.a - use mapping and file offset to lookup the proper
+> >               fs specific information that were save when the
+> >               page was made ksm.
+> >         4.b - allocate new page and initialize it with that
+> >               information (and page content), update page cache
+> >               and mappings ie all the pte who where pointing to
+> >               the ksm for that mapping at that offset to now use
+> >               the new page (like KSM for anonymous page today).
+> 
+> But by putting that logic in the page fault path, you've missed
+> the truncate path.  And maybe other places.  Putting the logic
+> down in pagecache_get_page() means you _don't_ need to find
+> all the places that call pagecache_get_page().
+
+They are cases where pagecache is not even in the loop ie you
+already have the page and you do not need to look it up (page
+fault, some fs common code, anything that goes through GUP,
+memory reclaim, ...). Making all those places having to go
+through page cache all the times will slow them down and many
+are hot code path that i do not believe we want to slow even
+if a feature is not use.
+
+Cheers,
+Jérôme
+
