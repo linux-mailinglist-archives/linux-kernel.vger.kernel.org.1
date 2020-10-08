@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBB1287708
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45BF28770A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 17:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730978AbgJHPVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 11:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730550AbgJHPVH (ORCPT
+        id S1730988AbgJHPVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 11:21:12 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:38701 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730550AbgJHPVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:21:07 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B542C061755;
-        Thu,  8 Oct 2020 08:21:07 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id ce10so8678343ejc.5;
-        Thu, 08 Oct 2020 08:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7b9bPM9ozWv6eodPlM25Czef20DS/g6Ct72sKICVZ3M=;
-        b=W9yQuzlFfqey107f7z3a98FoBs4EqT5pqQYUKi+TUBUfgNZ4+/wemOquoQFRjf1GQL
-         D88bpziz/pjWU42I4bvg/Ph60wD8yU0/xoTT5u9DfQgMowILQeIO+E/h2Uik3hswBmLS
-         GucDeRjQIoUkwmk2bqg9ppLbZJhcqOUYhqumimuQzMC53/EqE/I9u60mekxkUDknXtar
-         2m3C0hRSekTY5++7XUJOCy+z6LRcrGzNItge0Cjgj4XrNlFqmFVANSAI3Pd9t7jb2+ov
-         o8ayHVQ00ckvwqRTC0S5QIJyhhX2x6b8QIe0JtgRymQIYwsFiHYI1GXTM0dA1FHTt01V
-         oOQg==
+        Thu, 8 Oct 2020 11:21:11 -0400
+Received: by mail-lf1-f67.google.com with SMTP id c141so313677lfg.5;
+        Thu, 08 Oct 2020 08:21:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7b9bPM9ozWv6eodPlM25Czef20DS/g6Ct72sKICVZ3M=;
-        b=Hl19RwMvqRI/a2UBpJN5hen759m7BXEdfIORKzBV234eCI+94PWNTzqvDobDv7VVg3
-         ke89PXpxhByfdiLmEmIQljphO12uvBbE8MxACkYllzaIIqp9FJ5sUoSSsk6o61S5fHGZ
-         txlFkJhUCfd5UvPoSvpFMPuUl7YLuNn6rkqvbAx3BRwaf4/4TmUYmSt8TvFMB3crBf3G
-         oSEvrGNWC2ZPEY5ajL4CvhK4dk7lAJnKHAqNQgiMOVnI3SPDcJWw12bk/5+ubuS5S/L6
-         4jMw3H9H2iy+MJ1397MXSAK2PWQloHWVcz5YEq7388leGGHZWTaGZVDrDY1mASVkTJ3C
-         hzNQ==
-X-Gm-Message-State: AOAM5307OJYMfOcuF8Ah/nBoMkXymmn5n5CPhKiHSMesSGH/SsI+ZVUO
-        den/YGPmFcR9Oz1cswJi+vt41Mwe/y0=
-X-Google-Smtp-Source: ABdhPJzVCj3REfVxUBcJr6XGkysMBJeA0PuXLmQUsnoGcN8R2pHUxwepJAgSn/sYoI7dadiz4BbI1w==
-X-Received: by 2002:a17:906:28db:: with SMTP id p27mr9501417ejd.424.1602170465730;
-        Thu, 08 Oct 2020 08:21:05 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9e4.dip0.t-ipconnect.de. [217.229.169.228])
-        by smtp.gmail.com with ESMTPSA id mc4sm4331846ejb.61.2020.10.08.08.21.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 08:21:04 -0700 (PDT)
-Subject: Re: [PATCH v3 2/5] platform/surface: Move Surface 3 WMI driver to
- platform/surface
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201008143455.340599-1-luzmaximilian@gmail.com>
- <20201008143455.340599-3-luzmaximilian@gmail.com>
- <CAHp75VfPaGqb=yCpi_2f8SNzrj+0pd-r5VqAEgRgMCiJJB6D0w@mail.gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <79cf1a3a-93e1-5f34-27ae-9fea31a99df7@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qdx7FXoulf6+KPVkuCgYPh/M6PGV5WCjB+JKWP2F7cM=;
+        b=J20gJy+UhC0NVGIXtG4TrgXsA/qMY4vqAVccPoDoLXAI2ypZaZhrQmUooA3eNshPdI
+         eqaoRy3ArHbVk84GCdMRnRogUhYSQ4ZO9GAfBEQ7c95NLIuRVMiumR1AJb9+7ZJMGW7D
+         SqYMj+O8ZWQ4eOp37+jdGIEJFBJ2Gdf1tSMe0K+bxzAgmsUoIExwSvG0PHzd2gwfBAze
+         M/CXPk+WPejf6qHNH68mYCbOZfHEWhaIn0UqvHvsS5YgxXG8mDe0y/Ir8eXg5RY71pBA
+         nMX77nLbla7/EGszRPSHSz/BlaWAYFJzHgWxooppHhJumT4feNQAYWe6lSfUEK4zBY/W
+         boBQ==
+X-Gm-Message-State: AOAM530ZShypIGd0ckNir/qhdfrTfq+FMjMJLnsLlGYwlSG7gySjMVSZ
+        oqdd1acoPEnbsrjIX5f4C5U=
+X-Google-Smtp-Source: ABdhPJy+Ly+jsWC46OYzqg9Ez1Qcu80smXv99kE8n47XWxVqqo9MljznCwTRar6pNDX4j0Il5aMkiA==
+X-Received: by 2002:a05:6512:1182:: with SMTP id g2mr479865lfr.198.1602170468914;
+        Thu, 08 Oct 2020 08:21:08 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id z84sm166953lfa.45.2020.10.08.08.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 08:21:08 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kQXj5-0007GR-7u; Thu, 08 Oct 2020 17:21:03 +0200
 Date:   Thu, 8 Oct 2020 17:21:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+From:   Johan Hovold <johan@kernel.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: ftdi_sio: Fix serial port stall after resume
+Message-ID: <20201008152103.GK26280@localhost>
+References: <20200929193327.GA13987@ls3530.fritz.box>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfPaGqb=yCpi_2f8SNzrj+0pd-r5VqAEgRgMCiJJB6D0w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200929193327.GA13987@ls3530.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/20 4:54 PM, Andy Shevchenko wrote:
-> On Thu, Oct 8, 2020 at 5:35 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->>
->> Move the Surface 3 WMI driver from platform/x86 to the newly created
->> platform/surface directory.
-> 
->> -# place Microsoft Surface platform drivers here
-> 
->> -# place Microsoft Surface platform drivers here
-> 
-> Not sure if we need these comments in the first place.
+On Tue, Sep 29, 2020 at 09:33:27PM +0200, Helge Deller wrote:
+> With a 4-port serial USB HUB with FT232BM chips the serial ports stop
+> working after a software suspend/resume cycle.
+> Rewriting the latency timer during the resume phase fixes it.
 
-I thought it might look a bit weird having the "if" directly followed by
-"endif" without at least a comment in between. I'll remove them if you
-prefer that.
+Hmm. This sounds weird. Why would the latency timer make such a
+difference?
 
-Thanks,
-Max
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> 
+> diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+> index 9823bb424abd..8ee6cf6215c1 100644
+> --- a/drivers/usb/serial/ftdi_sio.c
+> +++ b/drivers/usb/serial/ftdi_sio.c
+> @@ -1092,6 +1092,7 @@ static u32 ftdi_232bm_baud_base_to_divisor(int baud, int base);
+>  static u32 ftdi_232bm_baud_to_divisor(int baud);
+>  static u32 ftdi_2232h_baud_base_to_divisor(int baud, int base);
+>  static u32 ftdi_2232h_baud_to_divisor(int baud);
+> +static int ftdi_reset_resume(struct usb_serial *serial);
+> 
+>  static struct usb_serial_driver ftdi_sio_device = {
+>  	.driver = {
+> @@ -1122,6 +1123,7 @@ static struct usb_serial_driver ftdi_sio_device = {
+>  	.set_termios =		ftdi_set_termios,
+>  	.break_ctl =		ftdi_break_ctl,
+>  	.tx_empty =		ftdi_tx_empty,
+> +	.reset_resume =		ftdi_reset_resume,
+>  };
+> 
+>  static struct usb_serial_driver * const serial_drivers[] = {
+> @@ -2379,6 +2381,16 @@ static int ftdi_stmclite_probe(struct usb_serial *serial)
+>  	return 0;
+>  }
+> 
+> +static int ftdi_reset_resume(struct usb_serial *serial)
+> +{
+> +	struct usb_serial_port *port = serial->port[0];
+> +
+> +	if (tty_port_initialized(&port->port))
+> +		write_latency_timer(port);
+
+Why are you only doing this for open ports?
+
+> +
+> +	return usb_serial_generic_resume(serial);
+> +}
+
+And if the device has been reset there may need to reconfigured the
+termios settings for open ports.
+
+Could you expand a bit on what the problem is here?
+
+Johan
