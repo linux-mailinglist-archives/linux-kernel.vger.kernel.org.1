@@ -2,140 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8FE28799D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CED52879A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 18:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731329AbgJHQBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 12:01:17 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43964 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgJHQBQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 12:01:16 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n61so5917976ota.10;
-        Thu, 08 Oct 2020 09:01:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ncmA7l15CwxkJeU0tFbx/6ulFLyyd5NMWl1kTa2aMeY=;
-        b=N7ouX/L5co+1EyHWCyK8ARJa57Y5dyn3h+8190y1zZyDPa3emhMMP/fetBNCuCweS3
-         01eOtnBqs9+sT3xKekUkOtiWWObr38bchz2boKQqZxIHi6yjVa+AzpVMdXsUg9nSKpaX
-         9IiGfVAfmlc+b0D9INeTywijtZ8vwG8m6wINWh+EZvP6VukZrVG142VSSfFRCudv3Z/b
-         N6Z6c0F4rCsqXKY52RXJFvEXasiDKZZ3xmZR1PuVrZArd9/zi8NnYK7GzzDsVZxc6tL8
-         flh50phd3Rrv/yuBgbxBAKqe3Cnd6YDk+mZL75M1n9FT4R+fYfVVR4GDJIydy4cCnREu
-         FjIA==
-X-Gm-Message-State: AOAM531HupoiNQrFbRrw5YgjHtiRXV1yl5scVFme2lihwRzcu6XTeFrp
-        YgYEoM75m55DM+I/mxfSoMk8x6Net3kRFVYLtoQ=
-X-Google-Smtp-Source: ABdhPJxU8jb1koWqPLPrOgwYJIofMG+fbuiw+LoHMTx4gKOs8sqyCneL/oTRNwbHogsKiheouEFqDHSA7V4QEKsnBsw=
-X-Received: by 2002:a9d:3626:: with SMTP id w35mr5880870otb.206.1602172874763;
- Thu, 08 Oct 2020 09:01:14 -0700 (PDT)
+        id S1729766AbgJHQCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 12:02:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43352 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgJHQCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 12:02:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0E993ABF4;
+        Thu,  8 Oct 2020 16:02:22 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 18:02:19 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun8i: h2+: Enable optional SPI flash on
+ Orange Pi Zero board
+Message-ID: <20201008160219.GM29778@kitsune.suse.cz>
+References: <20200929083025.2089-1-msuchanek@suse.de>
+ <20201008151315.v3geykbs6musl4wq@gilmour.lan>
 MIME-Version: 1.0
-References: <20201008065303.1486028-1-hch@lst.de>
-In-Reply-To: <20201008065303.1486028-1-hch@lst.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Oct 2020 18:01:03 +0200
-Message-ID: <CAJZ5v0jRj1Ni+470yPksa0=J16yM_5TfZgUssApNQN43WMY1Ug@mail.gmail.com>
-Subject: Re: [PATCH] pnp: remove the now unused pnp_find_card function
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008151315.v3geykbs6musl4wq@gilmour.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 8:53 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> All user of the pnp_find_card compat wrapper are gone, so remove
-> the function as well.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  Documentation/admin-guide/pnp.rst |  4 ----
->  drivers/pnp/isapnp/compat.c       | 23 -----------------------
->  include/linux/isapnp.h            |  6 ------
->  3 files changed, 33 deletions(-)
->
-> diff --git a/Documentation/admin-guide/pnp.rst b/Documentation/admin-guide/pnp.rst
-> index bab2d10631f00d..3eda08191d139a 100644
-> --- a/Documentation/admin-guide/pnp.rst
-> +++ b/Documentation/admin-guide/pnp.rst
-> @@ -281,10 +281,6 @@ ISAPNP drivers.  They should serve as a temporary solution only.
->
->  They are as follows::
->
-> -       struct pnp_card *pnp_find_card(unsigned short vendor,
-> -                                      unsigned short device,
-> -                                      struct pnp_card *from)
-> -
->         struct pnp_dev *pnp_find_dev(struct pnp_card *card,
->                                      unsigned short vendor,
->                                      unsigned short function,
-> diff --git a/drivers/pnp/isapnp/compat.c b/drivers/pnp/isapnp/compat.c
-> index 6c845b6283163d..035e9509248968 100644
-> --- a/drivers/pnp/isapnp/compat.c
-> +++ b/drivers/pnp/isapnp/compat.c
-> @@ -21,28 +21,6 @@ static void pnp_convert_id(char *buf, unsigned short vendor,
->                 (device >> 12) & 0x0f, (device >> 8) & 0x0f);
->  }
->
-> -struct pnp_card *pnp_find_card(unsigned short vendor, unsigned short device,
-> -                              struct pnp_card *from)
-> -{
-> -       char id[8];
-> -       char any[8];
-> -       struct list_head *list;
-> -
-> -       pnp_convert_id(id, vendor, device);
-> -       pnp_convert_id(any, ISAPNP_ANY_ID, ISAPNP_ANY_ID);
-> -
-> -       list = from ? from->global_list.next : pnp_cards.next;
-> -
-> -       while (list != &pnp_cards) {
-> -               struct pnp_card *card = global_to_pnp_card(list);
-> -
-> -               if (compare_pnp_id(card->id, id) || (memcmp(id, any, 7) == 0))
-> -                       return card;
-> -               list = list->next;
-> -       }
-> -       return NULL;
-> -}
-> -
->  struct pnp_dev *pnp_find_dev(struct pnp_card *card, unsigned short vendor,
->                              unsigned short function, struct pnp_dev *from)
->  {
-> @@ -86,5 +64,4 @@ struct pnp_dev *pnp_find_dev(struct pnp_card *card, unsigned short vendor,
->         return NULL;
->  }
->
-> -EXPORT_SYMBOL(pnp_find_card);
->  EXPORT_SYMBOL(pnp_find_dev);
-> diff --git a/include/linux/isapnp.h b/include/linux/isapnp.h
-> index 11edb2109a68f6..dba18c95844bde 100644
-> --- a/include/linux/isapnp.h
-> +++ b/include/linux/isapnp.h
-> @@ -75,9 +75,6 @@ static inline int isapnp_proc_done(void) { return 0; }
->  #endif
->
->  /* compat */
-> -struct pnp_card *pnp_find_card(unsigned short vendor,
-> -                              unsigned short device,
-> -                              struct pnp_card *from);
->  struct pnp_dev *pnp_find_dev(struct pnp_card *card,
->                              unsigned short vendor,
->                              unsigned short function,
-> @@ -92,9 +89,6 @@ static inline int isapnp_cfg_end(void) { return -ENODEV; }
->  static inline unsigned char isapnp_read_byte(unsigned char idx) { return 0xff; }
->  static inline void isapnp_write_byte(unsigned char idx, unsigned char val) { ; }
->
-> -static inline struct pnp_card *pnp_find_card(unsigned short vendor,
-> -                                            unsigned short device,
-> -                                            struct pnp_card *from) { return NULL; }
->  static inline struct pnp_dev *pnp_find_dev(struct pnp_card *card,
->                                            unsigned short vendor,
->                                            unsigned short function,
-> --
+On Thu, Oct 08, 2020 at 05:13:15PM +0200, Maxime Ripard wrote:
+> Hi,
+> 
+> On Tue, Sep 29, 2020 at 10:30:25AM +0200, Michal Suchanek wrote:
+> > The flash is present on all new boards and users went out of their way
+> > to add it on the old ones.
+> > 
+> > Enabling it makes a more reasonable default.
+> > 
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > ---
+> >  arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> > index f19ed981da9d..061d295bbba7 100644
+> > --- a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> > +++ b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
+> > @@ -163,8 +163,8 @@ &ohci1 {
+> >  };
+> >  
+> >  &spi0 {
+> > -	/* Disable SPI NOR by default: it optional on Orange Pi Zero boards */
+> > -	status = "disabled";
+> > +	/* Enable optional SPI NOR by default */
+> > +	status = "okay";
+> >  
+> >  	flash@0 {
+> >  		#address-cells = <1>;
+> 
+> Unfortunately, it's optional, so there's really no reason to enable it
+> all the time. If it's troublesome to users, then the distros or vendors
+> should make the changes necessary to the hardware, bootloader or their
+> documentation to make it easier for those users.
 
-Applied as 5.10 material, thanks!
+I don't understand the reasoning. Why must it be disabled when optional?
+
+By the same reasoning there is no reason to disable it all the time.
+Also the boards that do not have the flsh are either broken or obsolete.
+So most of the time enabling the flash chip is the right thing.
+
+Or do we need two DTBs like sun8i-h2-plus-orangepi-zero.dts and
+sun8i-h2-plus-orangepi-zero-no-spi-nor.dts
+
+There is no way to change the setting on a runnig system, the pins are
+routed to the flash pads anyway so are not usable for anything else. The
+only thing that happens on boards that do not have the flash is kernel
+probing it and complaining that the ID 00 00 00 is not valid SPI NOR
+flash memory ID.
+
+Thanks
+
+Michal
+
+Thanks
+
+Michal
