@@ -2,50 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8962875B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AE82875B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 16:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730467AbgJHOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 10:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730469AbgJHOJV (ORCPT
+        id S1730509AbgJHOJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 10:09:30 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:42135 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1730494AbgJHOJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 10:09:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DCAC061755;
-        Thu,  8 Oct 2020 07:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xQnI5k0UWbQqEXwkaaqkzKf//Jwim2eyhVqcWr5X3k0=; b=eyb/ytN85F4OFwh/oOn68rQQiT
-        AmoWru00FPRzao0qpCuB9UwUnJrsyO7m8PQ5sn+WuLeZpbFR6WVWuuhWY7XqgoWdzZKDmvRb9gI9/
-        aX+eWxsLCaXmpmJORZFG0WhLmCWaMTB1AfEJv6gf2E725IQ6EY9YsGh7UHJ9gCr4y1vC3osHCNT/5
-        M7JK76IZ4zjMZXRsWgkQUGqk4eQPInphO1SoPm8SyN7r5rYPFKj3bDP2iDqiUZWiwC5tVKX0BFxrR
-        k4S717MFQ1Zbx8VIbgChK4RvzrmdKuBYFQvMJYYpeCA8s+Ih2WoT9RLpV1Hi8dDJbreDHzxuRurqU
-        Pf0urdbw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQWbf-0003EA-2z; Thu, 08 Oct 2020 14:09:19 +0000
-Date:   Thu, 8 Oct 2020 15:09:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the xarray tree
-Message-ID: <20201008140919.GF20115@casper.infradead.org>
-References: <20201008175540.13dc645d@canb.auug.org.au>
+        Thu, 8 Oct 2020 10:09:28 -0400
+Received: (qmail 496113 invoked by uid 1000); 8 Oct 2020 10:09:27 -0400
+Date:   Thu, 8 Oct 2020 10:09:27 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201008140927.GB495091@rowland.harvard.edu>
+References: <20201006171524.GB423499@rowland.harvard.edu>
+ <20201006192536.GB191572@google.com>
+ <20201007010023.GA438733@rowland.harvard.edu>
+ <20201007160336.GA620323@google.com>
+ <20201007163838.GA457977@rowland.harvard.edu>
+ <20201007172847.GB620323@google.com>
+ <20201007192542.GA468921@rowland.harvard.edu>
+ <20201007194229.GC620323@google.com>
+ <20201007201732.GE468921@rowland.harvard.edu>
+ <20201007214226.GA669360@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008175540.13dc645d@canb.auug.org.au>
+In-Reply-To: <20201007214226.GA669360@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 05:55:40PM +1100, Stephen Rothwell wrote:
-> After merging the xarray tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
+On Wed, Oct 07, 2020 at 02:42:26PM -0700, Matthias Kaehlcke wrote:
+> On Wed, Oct 07, 2020 at 04:17:32PM -0400, Alan Stern wrote:
+> > The peering relation goes both ways, so it should be included in the 
+> > hub_2_0 description too.  Given that, the driver could check hub_2_0's 
+> > peer's DT description for the appropriate resources.
+> 
+> That mitigates the issue somewhat, however we still have to convince Rob that
+> both references are needed.
 
-Thanks, fixed both problems.
+Strictly speaking, the peering relation applies to ports, not
+devices.  The representation in DT doesn't have to be symmetrical; as
+long as the kernel understands it, the kernel can set up its own
+internal symmetrical respresentation.
 
+> > > All this mess can be avoided by having a single instance in control of the
+> > > resources which is guaranteed to suspend after the USB devices.
+> > 
+> > Yes.  At the cost of registering, adding a driver for, and making users 
+> > aware of a fictitious platform device.
+> 
+> Registration is trivial and the driver code will be needed anyway, I'm
+> pretty convinced that a separate platform driver will be simpler than
+> plumbing things into the hub driver, with the additional checks of who is
+> suspended or not, etc. If other resources like resets are involved there
+> could be further possible race conditions at probe time. Another issue is
+> the sysfs attribute. We said to attach it to the primary hub. What happens
+> when the primary hub goes away? I guess we could force unbinding the peers
+> as we did in the driver under discussion to avoid confusion/inconsistencies,
+> but it's another tradeoff.
+> 
+> My view of the pros and cons of extending the hub driver vs. having a platform
+> driver:
+> 
+> - pros
+>   - sysfs attribute is attached to a USB hub device
+>   - no need to register a platform device (trivial)
+>   - potentially more USB awareness (not clear if needed)
+> 
+> - cons
+>   - possible races involving resources between peer hubs during initialization
+>   - increased complexity from keeping track of peers, checking suspend order
+>     and avoiding races
+>   - peers are forced to unbind when primary goes away
+>   - need DT links to peers for all USB hubs, not only in the primary
+>   - pollution of the generic hub code with device specific stuff instead
+>     of keeping it in a self contained driver
+>   - sysfs attribute is attached to only one of the hubs, which is better than
+>     having it on both, but not necessarily better than attaching it to the
+>     platform device with the 'control logic'
+> 
+> So yes, there are tradeoffs, IMO balance isn't as clear as your comment
+> suggests.
+
+Well, I guess I'm okay with either approach.
+
+One more thing to keep in mind, though: With the platform device,
+there should be symlinks from the hubs' sysfs directories to the
+platform device (and possibly symlinks going the other way as well).
+
+Alan Stern
