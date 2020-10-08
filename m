@@ -2,87 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CAA287D8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888D7287D90
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Oct 2020 22:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730851AbgJHU6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Oct 2020 16:58:20 -0400
-Received: from ozlabs.org ([203.11.71.1]:59203 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725931AbgJHU6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Oct 2020 16:58:20 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C6k7Y3zKsz9sSC;
-        Fri,  9 Oct 2020 07:58:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602190698;
-        bh=9c1Til4Y3UBbGWRrIquuN5DFOYAZEZAYupyZq9Fi8gM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=E5jxrI87KzDCdl/PkOEPlDk4jDzArGl+ZINhFsuHiQwuJE27/bb7MPSjotXbgGrtM
-         B8wtOPr5tsXmZaNJDxZ0+ym/i1k0r7cUsKf1cGyREgjAY3ibY8R8ye8J3SJ6W+jizY
-         pYMtjjjVhORPd4YDgI69oqYQTMjqCZqOskTOLFpblzvSF+1A8M/7Ih6kPT3jNvRVVU
-         hhuJG1UYna9IEUGg6Qof7rPS2Gyam3oyoVIXfF2KMSoWoxX0mv179sfGsOcz+CHJY7
-         8el7f2QtJUFm0DkF1LBjgPhBmFj7ikWX5VOqLieZqRlP3mkA2Kykdeci7WOzq0rUK3
-         uEyXmRc35YyrQ==
-Date:   Fri, 9 Oct 2020 07:58:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the powerpc tree
-Message-ID: <20201009075816.0cb5a86f@canb.auug.org.au>
+        id S1730870AbgJHU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Oct 2020 16:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgJHU7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Oct 2020 16:59:14 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F6EC0613D2;
+        Thu,  8 Oct 2020 13:59:13 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t18so7156678ilo.12;
+        Thu, 08 Oct 2020 13:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Q/EQhcs1vcXl6exyIHWBGzBWdidXnM11CQoUo331TY=;
+        b=KAZn8tcJYLP4ydNypVbG3Ck4t+RM6ez2oUOjMq+su6SeXb0XTSriximubAzYXzInw5
+         Og3jih//hLjpNmULRctgGP6DboBokziw76yj4uuI095a1pBLWOl7Px8DdNY8kmnaao0+
+         f/IeKu8AEbyF6kk8DITlH7ehMIjgZFlRTTX9eZT81tCaCnvv1ckJvJjN1/dB5KBPDqSC
+         58X8WdFdo+M1knd2VYnpkJvVHwU2yXUYccrTIgziHZMqPLFzwn3OtgDkJsPn6E7Vj4xA
+         +aMCK+m/rKui3CdhiFBEnj7mHOtY4h+AWX2tcwihUcOCEHgdSCn1PZfaSQgvebW5AtUy
+         yukg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Q/EQhcs1vcXl6exyIHWBGzBWdidXnM11CQoUo331TY=;
+        b=stITGCmOv61yhU/gLYjWf9OzSY5lOEWi54iIXrVb6uJazR6ueeIH7vymSgBaMkT6Mq
+         RFlU90E2TrcWdjtOM734yXAmUhzCVI+RLeJIuZ5+EZMXw6sN4qodB7uUEXlatPN3v/Qx
+         jJWhMppWoLyDtTu6WUsuQa9QDDCEStFi+Kyl1uEiW6o+4kdS83bL1p8p8zFyQGLo/L/J
+         RMkxKT+zBWJxuEe+62XbETYWS0RZLbprOAlkEtAonUbkrLIK2YMavJCzKisGtm7ScUsQ
+         OXK+TfR91+Zm18U22ywMx9JeWXWcnaT3rIu4l5BZYYQdIWUV6kYos16I7fclwxYUzMQN
+         29ng==
+X-Gm-Message-State: AOAM532Gw2AeLa7T2DMkx4R2mrTPUZUumvJiGw4BOy7KL0z0URX0mUM1
+        HCWhdcSialZyfS8JtmcVsf9+J09dutsB9PewgJM9pVg1poI=
+X-Google-Smtp-Source: ABdhPJzPN71Uweb2NW0+SHEvtXJUe+jkBXhHFgRUldBdFWWCKN+x53Q6fjP3BNAJzXUq3qESPxCM4O7wQlRZ4c0bDOc=
+X-Received: by 2002:a92:d906:: with SMTP id s6mr7883981iln.89.1602190752682;
+ Thu, 08 Oct 2020 13:59:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//dl+c07CTYJmvMsmyJW1Iqc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200911123157.759379-1-aford173@gmail.com>
+In-Reply-To: <20200911123157.759379-1-aford173@gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 8 Oct 2020 15:59:01 -0500
+Message-ID: <CAHCN7xK2TQsjFUCty2TFgx9HsPMvuuSF6ae5iKCouWFsv7Npzw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] thermal: ti-soc-thermal: Enable addition power management
+To:     linux-pm@vger.kernel.org, Linux-OMAP <linux-omap@vger.kernel.org>
+Cc:     Adam Ford-BE <aford@beaconembedded.com>,
+        kernel test robot <lkp@intel.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//dl+c07CTYJmvMsmyJW1Iqc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 11, 2020 at 7:32 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> The bandgap sensor can be idled when the processor is too, but it
+> isn't currently being done, so the power consumption of OMAP3
+> boards can elevated if the bangap sensor is enabled.
+>
+> This patch attempts to use some additional power management
+> to idle the clock to the bandgap when not needed.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Tested-by: Andreas Kemnade <andreas@kemnade.info> # GTA04
+> ---
+> V3:  bandgap_omap_cpu_notifier is only defined when CONFIG_PM_SLEEP
+>      is enabled, so make all references to it also depend on
+>      CONFIG_PM_SLEEP as well
+>
 
-Hi all,
+Gentle nudge on this one.  It was in the queue for a while, and got
+lost, then resurrected again.
 
-In commit
+thanks
 
-  a2d0230b91f7 ("cpufreq: powernv: Fix frame-size-overflow in powernv_cpufr=
-eq_reboot_notifier")
+adam
 
-Fixes tag
-
-  Fixes: cf30af76 ("cpufreq: powernv: Set the cpus to nominal frequency dur=
-ing reboot/kexec")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//dl+c07CTYJmvMsmyJW1Iqc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9/fWgACgkQAVBC80lX
-0Gxr0gf8DYBDjl0ngETwLLLd7UDYnOunr5gO7MKaHqpeUtqlvXTRCfJNBerWqCNL
-qTh8ni4Ud9JclJiAy1Mjxb3ONdmlzccgWYr7kXELlElWvcxrNhRknEuOMQpIhx7n
-zmR/lsy+yRcu+oDBWUw+CK/tuRs5iN9CTdBmThbkPx8EL++Ee4NpgrThkNHPUbqS
-mNl88leOb13ENKxcyHm1c0a5TopoHlRQgBj/xnXDnFJDuLmHki1SOJfApzvqvNHv
-dRoZ0K51dLeT5b+pd+e0SD4miMjMEP7GWHGE1aBVtkKPsMb9mF9M8TOxRQnHDJlu
-tnWDes8v/IKZPtA2jhP7Zw2KKlG/9A==
-=9V2B
------END PGP SIGNATURE-----
-
---Sig_//dl+c07CTYJmvMsmyJW1Iqc--
+> V2: Fix issue where variable stating the suspend mode isn't being
+>     properly set and cleared.
+>
+> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> index ab19ceff6e2a..5e596168ba73 100644
+> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+> @@ -25,10 +25,20 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/io.h>
+> +#include <linux/cpu_pm.h>
+> +#include <linux/device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/pm.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+>
+>  #include "ti-bandgap.h"
+>
+>  static int ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id);
+> +#ifdef CONFIG_PM_SLEEP
+> +static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
+> +                                 unsigned long cmd, void *v);
+> +#endif
+>
+>  /***   Helper functions to access registers and their bitfields   ***/
+>
+> @@ -1008,6 +1018,11 @@ int ti_bandgap_probe(struct platform_device *pdev)
+>                 }
+>         }
+>
+> +#ifdef CONFIG_PM_SLEEP
+> +       bgp->nb.notifier_call = bandgap_omap_cpu_notifier;
+> +       cpu_pm_register_notifier(&bgp->nb);
+> +#endif
+> +
+>         return 0;
+>
+>  remove_last_cooling:
+> @@ -1041,7 +1056,9 @@ int ti_bandgap_remove(struct platform_device *pdev)
+>         struct ti_bandgap *bgp = platform_get_drvdata(pdev);
+>         int i;
+>
+> -       /* First thing is to remove sensor interfaces */
+> +       cpu_pm_unregister_notifier(&bgp->nb);
+> +
+> +       /* Remove sensor interfaces */
+>         for (i = 0; i < bgp->conf->sensor_count; i++) {
+>                 if (bgp->conf->sensors[i].unregister_cooling)
+>                         bgp->conf->sensors[i].unregister_cooling(bgp, i);
+> @@ -1150,9 +1167,43 @@ static int ti_bandgap_suspend(struct device *dev)
+>         if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+>                 clk_disable_unprepare(bgp->fclock);
+>
+> +       bgp->is_suspended = true;
+> +
+>         return err;
+>  }
+>
+> +static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
+> +                                 unsigned long cmd, void *v)
+> +{
+> +       struct ti_bandgap *bgp;
+> +
+> +       bgp = container_of(nb, struct ti_bandgap, nb);
+> +
+> +       spin_lock(&bgp->lock);
+> +       switch (cmd) {
+> +       case CPU_CLUSTER_PM_ENTER:
+> +               if (bgp->is_suspended)
+> +                       break;
+> +               ti_bandgap_save_ctxt(bgp);
+> +               ti_bandgap_power(bgp, false);
+> +               if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+> +                       clk_disable(bgp->fclock);
+> +               break;
+> +       case CPU_CLUSTER_PM_ENTER_FAILED:
+> +       case CPU_CLUSTER_PM_EXIT:
+> +               if (bgp->is_suspended)
+> +                       break;
+> +               if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
+> +                       clk_enable(bgp->fclock);
+> +               ti_bandgap_power(bgp, true);
+> +               ti_bandgap_restore_ctxt(bgp);
+> +               break;
+> +       }
+> +       spin_unlock(&bgp->lock);
+> +
+> +       return NOTIFY_OK;
+> +}
+> +
+>  static int ti_bandgap_resume(struct device *dev)
+>  {
+>         struct ti_bandgap *bgp = dev_get_drvdata(dev);
+> @@ -1161,6 +1212,7 @@ static int ti_bandgap_resume(struct device *dev)
+>                 clk_prepare_enable(bgp->fclock);
+>
+>         ti_bandgap_power(bgp, true);
+> +       bgp->is_suspended = false;
+>
+>         return ti_bandgap_restore_ctxt(bgp);
+>  }
+> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.h b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+> index fce4657e9486..ed0ea4b17b25 100644
+> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
+> @@ -12,6 +12,10 @@
+>  #include <linux/spinlock.h>
+>  #include <linux/types.h>
+>  #include <linux/err.h>
+> +#include <linux/cpu_pm.h>
+> +#include <linux/device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/pm.h>
+>
+>  struct gpio_desc;
+>
+> @@ -203,6 +207,8 @@ struct ti_bandgap {
+>         int                             irq;
+>         struct gpio_desc                *tshut_gpiod;
+>         u32                             clk_rate;
+> +       struct notifier_block           nb;
+> +       unsigned int is_suspended:1;
+>  };
+>
+>  /**
+> --
+> 2.25.1
+>
